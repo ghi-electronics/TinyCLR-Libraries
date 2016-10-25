@@ -1,0 +1,13 @@
+/Features
+/Subset_of_VisualBasic
+/Tools
+/UnitTest
+
+build.dirproj
+key.snk
+
+# Build
+*.cache
+
+# Visual Studio
+*.suo
