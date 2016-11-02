@@ -3,7 +3,7 @@
     <AssemblyName>Microsoft.SPOT.Time</AssemblyName>
     <OutputType>Library</OutputType>
     <RootNamespace>Microsoft.SPOT</RootNamespace>
-    <ProjectTypeGuids>{b69e3092-b931-443c-abe7-7e7b65f2a37f};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <ProjectTypeGuids>{A1948822-69DD-4150-919B-F3F42EFB71CC};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <NoWarn>$(NoWarn),0169</NoWarn>
     <ComponentGuid>{4d7dfbc0-8478-45fd-ba40-40c2a8f1daa7}</ComponentGuid>
     <AssemblyBothEndian>true</AssemblyBothEndian>

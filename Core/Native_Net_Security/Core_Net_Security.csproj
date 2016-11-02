@@ -3,7 +3,7 @@
     <AssemblyName>Microsoft.SPOT.Net.Security</AssemblyName>
     <OutputType>Library</OutputType>
     <RootNamespace>Microsoft.SPOT</RootNamespace>
-    <ProjectTypeGuids>{b69e3092-b931-443c-abe7-7e7b65f2a37f};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <ProjectTypeGuids>{A1948822-69DD-4150-919B-F3F42EFB71CC};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <NoWarn>$(NoWarn),0169</NoWarn>
     <ComponentGuid>{30a6ceaa-f3ce-416f-a2ee-39e29bf1f0af}</ComponentGuid>
     <ProjectGuid>{4FEB560D-5F3A-4FA8-AE41-FBE7714813A7}</ProjectGuid>

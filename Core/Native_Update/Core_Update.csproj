@@ -4,7 +4,7 @@
     <AssemblyName>Microsoft.SPOT.Update</AssemblyName>
     <OutputType>Library</OutputType>
     <RootNamespace>Microsoft.SPOT.MFUpdate</RootNamespace>
-    <ProjectTypeGuids>{b69e3092-b931-443c-abe7-7e7b65f2a37f};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <ProjectTypeGuids>{A1948822-69DD-4150-919B-F3F42EFB71CC};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <ProjectGuid>{BC866ADB-8FEA-42AB-A107-A20D71754389}</ProjectGuid>
     <NoWarn>$(NoWarn),0169</NoWarn>
     <ComponentGuid>{ED7F6C54-9774-410F-A617-CAD58589FB5D}</ComponentGuid>

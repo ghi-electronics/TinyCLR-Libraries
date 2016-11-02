@@ -3,7 +3,7 @@
     <AssemblyName>Microsoft.SPOT.Wireless.IEEE_802_15_4.Phy</AssemblyName>
     <OutputType>Library</OutputType>
     <RootNamespace>Microsoft.SPOT.Wireless.IEEE_802_15_4</RootNamespace>
-    <ProjectTypeGuids>{b69e3092-b931-443c-abe7-7e7b65f2a37f};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <ProjectTypeGuids>{A1948822-69DD-4150-919B-F3F42EFB71CC};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
      <ProjectGuid>{66E93520-CC2D-4011-B8B9-0D57AD99D9C7}</ProjectGuid>
     <ComponentGuid>{20114ba4-f7e8-4fb0-95cf-eccec07000d6}</ComponentGuid>
     <DefineConstants>TRACE;DEBUG;MICROFRAMEWORK;RTEXTENSIONS</DefineConstants>

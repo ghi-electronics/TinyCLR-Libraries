@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <PlatformFamilyName>SmartWatch</PlatformFamilyName>
     <AssemblyName>Microsoft.SPOT.Drivers.$(MSBuildProjectName)</AssemblyName>
-    <ProjectTypeGuids>{b69e3092-b931-443c-abe7-7e7b65f2a37f};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <ProjectTypeGuids>{A1948822-69DD-4150-919B-F3F42EFB71CC};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <ProjectGuid>{88BA0B86-9585-4F71-A5DD-E292A0D8F2A5}</ProjectGuid>
     <RootNamespace>Microsoft.SPOT.Drivers.Bluetooth</RootNamespace>
     <ComponentGuid>{27c22bf0-f1a3-4b2b-ab89-dc046fc2205b}</ComponentGuid>
