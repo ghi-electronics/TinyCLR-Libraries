@@ -14,15 +14,15 @@
     <copyright>Copyright GHI Electronics, LLC 2016</copyright>
     <tags>TinyCLR</tags>
     <dependencies>
-      <dependency id="GHIElectronics.TinyCLR.VisualStudio.Build" version="0.0.1" />
+      <dependency id="GHIElectronics.TinyCLR.MsBuild" version="0.0.1" />
     </dependencies>
   </metadata>
   <files>
-    <file src="..\Build\GHIElectronics.TinyCLR.Core.dll" target="lib\netmf" />
-    <file src="..\Build\GHIElectronics.TinyCLR.Core.pdb" target="lib\netmf" />
-    <file src="..\Build\le\GHIElectronics.TinyCLR.Core.pe" target="lib\netmf\le" />
-    <file src="..\Build\le\GHIElectronics.TinyCLR.Core.pdbx" target="lib\netmf\le" />
-    <file src="..\Build\be\GHIElectronics.TinyCLR.Core.pe" target="lib\netmf\be" />
-    <file src="..\Build\be\GHIElectronics.TinyCLR.Core.pdbx" target="lib\netmf\be" />
+    <file src="..\Build\GHIElectronics.TinyCLR.Core.dll" target="lib\TinyCLR" />
+    <file src="..\Build\GHIElectronics.TinyCLR.Core.pdb" target="lib\TinyCLR" />
+    <file src="..\Build\le\GHIElectronics.TinyCLR.Core.pe" target="lib\TinyCLR\le" />
+    <file src="..\Build\le\GHIElectronics.TinyCLR.Core.pdbx" target="lib\TinyCLR\le" />
+    <file src="..\Build\be\GHIElectronics.TinyCLR.Core.pe" target="lib\TinyCLR\be" />
+    <file src="..\Build\be\GHIElectronics.TinyCLR.Core.pdbx" target="lib\TinyCLR\be" />
   </files>
 </package>
