@@ -20,9 +20,9 @@
   <files>
     <file src="..\Build\GHIElectronics.TinyCLR.Core.dll" target="lib\TinyCLR" />
     <file src="..\Build\GHIElectronics.TinyCLR.Core.pdb" target="lib\TinyCLR" />
-    <file src="..\Build\le\GHIElectronics.TinyCLR.Core.pe" target="lib\TinyCLR\le" />
-    <file src="..\Build\le\GHIElectronics.TinyCLR.Core.pdbx" target="lib\TinyCLR\le" />
-    <file src="..\Build\be\GHIElectronics.TinyCLR.Core.pe" target="lib\TinyCLR\be" />
-    <file src="..\Build\be\GHIElectronics.TinyCLR.Core.pdbx" target="lib\TinyCLR\be" />
+    <file src="..\Build\GHIElectronics.TinyCLR.Core.le.pe" target="lib\TinyCLR" />
+    <file src="..\Build\GHIElectronics.TinyCLR.Core.le.pdbx" target="lib\TinyCLR" />
+    <file src="..\Build\GHIElectronics.TinyCLR.Core.be.pe" target="lib\TinyCLR" />
+    <file src="..\Build\GHIElectronics.TinyCLR.Core.be.pdbx" target="lib\TinyCLR" />
   </files>
 </package>
