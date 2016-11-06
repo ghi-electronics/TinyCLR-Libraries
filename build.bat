@@ -1,21 +1,16 @@
-pushd .
+ECHO OFF
 
-D:
-cd D:\Repos\TinyCLR_Firmware\src\
+SET Target=%1
+SET Configuration=%2
 
-call build_firmware.bat G80 build release
-call msbuild Framework\Subset_of_CorLib\SpotCorLib.csproj /p:TinyCLR_Platform=Client;SuppressMscorlibReference=True;AssemblyName=GHIElectronics.TinyCLR.Core
+CALL "%~dp0\..\TinyCLR_Firmware\src\setenv_gcc.cmd" 5.4.1 "C:\Program Files (x86)\GNU Tools ARM Embedded\5.4 2016q3"
 
-popd
+msbuild "%~dp0\Subset_of_CorLib\SpotCorLib.csproj" /p:TinyCLR_Platform=Client;SuppressMscorlibReference=True;AssemblyName=GHIElectronics.TinyCLR.Core;Flavor=%Configuration%;Configuration=%Configuration% /t:%Target%
 
-robocopy "D:\Repos\TinyCLR_Firmware\src\BuildOutput\Public\release\Client\dll" "D:\Repos\TinyCLR Libraries\Build" *.dll *.pdb
-robocopy "D:\Repos\TinyCLR_Firmware\src\BuildOutput\Public\release\Client\pe\le" "D:\Repos\TinyCLR Libraries\Build\le" *.pe *.pdbx
-robocopy "D:\Repos\TinyCLR_Firmware\src\BuildOutput\Public\release\Client\pe\be" "D:\Repos\TinyCLR Libraries\Build\be" *.pe *.pdbx
+robocopy "%~dp0\..\TinyCLR_Firmware\src\BuildOutput\Public\%Configuration%\Client\dll" "%~dp0\Build" *.dll *.pdb *.pe *.pdbx
 
-cd NuGet
+nuget pack "%~dp0\NuGet\GHIElectronics.TinyCLR.Core.nuspec" -OutputDirectory "%~dp0\Build"
 
-nuget pack GHIElectronics.TinyCLR.Core.nuspec
+robocopy "%~dp0\Build" "%~dp0\..\TinyCLR SDK\Build\bin\%Configuration%" *.nupkg
 
-robocopy "." "D:\Build\NuGet" *.nupkg
-
-cd ..
+IF %ERRORLEVEL% LSS 8 EXIT /b 0
