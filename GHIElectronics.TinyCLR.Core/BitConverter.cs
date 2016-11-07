@@ -87,7 +87,8 @@ namespace System
 		/// <param name="value">The number to convert.</param>
 		/// <returns>An array of bytes with length 4.</returns>
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		extern public static byte[] GetBytes(uint value);
+        [CLSCompliant(false)]
+        extern public static byte[] GetBytes(uint value);
 
 		/// <summary>
 		/// Returns the specified 64-bit unsigned integer value as an array of bytes.
@@ -95,7 +96,8 @@ namespace System
 		/// <param name="value">The number to convert.</param>
 		/// <returns>An array of bytes with length 8.</returns>
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		extern public static byte[] GetBytes(ulong value);
+        [CLSCompliant(false)]
+        extern public static byte[] GetBytes(ulong value);
 
 		/// <summary>
 		/// Returns the specified 16-bit unsigned integer value as an array of bytes.
@@ -103,7 +105,8 @@ namespace System
 		/// <param name="value">The number to convert.</param>
 		/// <returns>An array of bytes with length 2.</returns>
 		[MethodImplAttribute(MethodImplOptions.InternalCall)]
-		extern public static byte[] GetBytes(ushort value);
+        [CLSCompliant(false)]
+        extern public static byte[] GetBytes(ushort value);
 
 		/// <summary>
 		/// Converts the specified 64-bit signed integer to a double-precision floating point number.

@@ -453,6 +453,7 @@ namespace System.Text
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
+        [CLSCompliant(false)]
         public StringBuilder Append(sbyte value)
         {
             return this.Append(value.ToString());
@@ -473,6 +474,7 @@ namespace System.Text
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
+        [CLSCompliant(false)]
         public StringBuilder Append(ushort value)
         {
             return this.Append(value.ToString());
@@ -483,6 +485,7 @@ namespace System.Text
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
+        [CLSCompliant(false)]
         public StringBuilder Append(uint value)
         {
             return this.Append(value.ToString());
@@ -493,6 +496,7 @@ namespace System.Text
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
+        [CLSCompliant(false)]
         public StringBuilder Append(ulong value)
         {
             return this.Append(value.ToString());
