@@ -13,7 +13,9 @@ namespace System
     [Serializable, CLSCompliant(false)]
     public struct UInt16
     {
+#pragma warning disable CS0649 // Field is never assigned to, and will always have its default value
         private ushort m_value;
+#pragma warning restore CS0649 // Field is never assigned to, and will always have its default value
 
         public const ushort MaxValue = (ushort)0xFFFF;
         public const ushort MinValue = 0;

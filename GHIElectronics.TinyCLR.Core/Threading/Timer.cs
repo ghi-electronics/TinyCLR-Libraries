@@ -12,9 +12,11 @@ namespace System.Threading
     public sealed class Timer : MarshalByRefObject, IDisposable
     {
         [System.Reflection.FieldNoReflection]
+#pragma warning disable CS0169 // The field is never used
         private object m_timer;
         private object m_state;
         private TimerCallback m_callback;
+#pragma warning restore CS0169 // The field is never used
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         extern public Timer(TimerCallback callback, Object state, int dueTime, int period);
 

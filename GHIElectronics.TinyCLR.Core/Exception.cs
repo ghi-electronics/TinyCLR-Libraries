@@ -12,7 +12,9 @@ namespace System
     {
         private string _message;
         private Exception m_innerException;
+#pragma warning disable CS0169 // The field is never used
         private object m_stackTrace;
+#pragma warning restore CS0169 // The field is never used
         protected int m_HResult;
 
         public Exception()

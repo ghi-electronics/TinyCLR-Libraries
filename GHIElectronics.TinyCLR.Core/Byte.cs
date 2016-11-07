@@ -15,7 +15,9 @@ namespace System
     [Serializable]
     public struct Byte
     {
+#pragma warning disable CS0649 // Field is never assigned to, and will always have its default value
         private byte m_value;
+#pragma warning restore CS0649 // Field is never assigned to, and will always have its default value
 
         /**
          * The maximum value that a <code>Byte</code> may represent: 127.

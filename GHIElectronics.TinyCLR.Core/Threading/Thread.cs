@@ -11,6 +11,7 @@ namespace System.Threading
     // deliberately not [serializable]
     public sealed class Thread
     {
+#pragma warning disable CS0169 // The field is never used
         private Delegate m_Delegate;
         private int m_Priority;
         [System.Reflection.FieldNoReflection]
@@ -18,6 +19,7 @@ namespace System.Threading
         [System.Reflection.FieldNoReflection]
         private object m_AppDomain;
         private int    m_Id;
+#pragma warning restore CS0169 // The field is never used
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         extern public Thread(ThreadStart start);
         [MethodImplAttribute(MethodImplOptions.InternalCall)]

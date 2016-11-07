@@ -11,7 +11,9 @@ namespace System
     [Serializable]
     public struct Int16
     {
+#pragma warning disable CS0649 // Field is never assigned to, and will always have its default value
         internal short m_value;
+#pragma warning restore CS0649 // Field is never assigned to, and will always have its default value
 
         public const short MaxValue = (short)0x7FFF;
         public const short MinValue = unchecked((short)0x8000);

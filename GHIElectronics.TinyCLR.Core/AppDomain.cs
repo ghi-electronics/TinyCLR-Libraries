@@ -12,8 +12,12 @@ namespace System
     public sealed class AppDomain : MarshalByRefObject
     {
         [System.Reflection.FieldNoReflection]
+#pragma warning disable CS0649 // Field is never assigned to, and will always have its default value
+#pragma warning disable CS0169 // The field is never used
         private object m_appDomain;
+#pragma warning disable CS0169 // The field is never used
         private string m_friendlyName;
+#pragma warning restore CS0649 // Field is never assigned to, and will always have its default value
 
         private AppDomain()
         {

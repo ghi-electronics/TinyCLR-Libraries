@@ -11,7 +11,9 @@ namespace System
     [Serializable]
     public struct Double
     {
+#pragma warning disable CS0649 // Field is never assigned to, and will always have its default value
         internal double m_value;
+#pragma warning restore CS0649 // Field is never assigned to, and will always have its default value
 
         // Public Constants
 

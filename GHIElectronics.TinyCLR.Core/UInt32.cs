@@ -13,7 +13,9 @@ namespace System
     [Serializable, CLSCompliant(false)]
     public struct UInt32
     {
+#pragma warning disable CS0649 // Field is never assigned to, and will always have its default value
         private uint m_value;
+#pragma warning restore CS0649 // Field is never assigned to, and will always have its default value
 
         public const uint MaxValue = (uint)0xffffffff;
         public const uint MinValue = 0U;

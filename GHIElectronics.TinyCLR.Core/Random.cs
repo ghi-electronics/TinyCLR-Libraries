@@ -13,7 +13,9 @@ namespace System
     /// </summary>
     public class Random
     {
+#pragma warning disable CS0169 // The field is never used
         private object _random;
+#pragma warning restore CS0169 // The field is never used
 
         /// <summary>
         /// Initializes a new instance of the Random class, using a time-
