@@ -5,13 +5,16 @@ namespace System
 {
     using System.Globalization;
 
+
     // A Version object contains four hierarchical numeric components: major, minor,
     // revision and build.  Revision and build may be unspecified, which is represented
     // internally as a -1.  By definition, an unspecified component matches anything
     // (both unspecified and specified), and an unspecified component is "less than" any
     // specified component.
 
+#pragma warning disable CS0659 // Type overrides Object.Equals(object o) but does not override Object.GetHashCode()
     public sealed class Version // : ICloneable, IComparable, IComparable<Version>, IEquatable<Version>
+#pragma warning restore CS0659 // Type overrides Object.Equals(object o) but does not override Object.GetHashCode()
     {
         // AssemblyName depends on the order staying the same
         private int _Major;
