@@ -1,5 +1,6 @@
 # Build
 Build/
+packages/
 
 # Visual Studio
 *.suo
