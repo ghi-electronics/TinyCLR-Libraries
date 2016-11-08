@@ -1,4 +1,4 @@
-namespace Windows.Devices.Spi
+namespace GHIElectronics.TinyCLR.Devices.Spi
 {
     /// <summary>
     /// Defines the SPI communication mode. The communication mode defines the clock edge on which the master out line

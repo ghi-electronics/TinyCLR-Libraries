@@ -1,4 +1,4 @@
-namespace Windows.Devices.I2c
+namespace GHIElectronics.TinyCLR.Devices.I2c
 {
     /// <summary>
     /// Describes the bus speeds that are available for connecting to an inter-integrated circuit (I²C) device. The bus

@@ -1,4 +1,4 @@
-namespace Windows.Devices.Spi
+namespace GHIElectronics.TinyCLR.Devices.Spi
 {
     /// <summary>
     /// Represents the settings for the connection with a device.

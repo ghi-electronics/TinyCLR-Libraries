@@ -1,4 +1,4 @@
-namespace Windows.Devices.Pwm
+namespace GHIElectronics.TinyCLR.Devices.Pwm
 {
     public enum PwmPulsePolarity
     {

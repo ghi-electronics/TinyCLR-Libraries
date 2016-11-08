@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.CompilerServices;
 
-namespace Windows.Devices.Gpio
+namespace GHIElectronics.TinyCLR.Devices.Gpio
 {
     // FUTURE: This should be "EventHandler<GpioPinValueChangedEventArgs>"
     public delegate void GpioPinValueChangedEventHandler(

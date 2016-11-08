@@ -1,4 +1,4 @@
-namespace Windows.Devices.Gpio
+namespace GHIElectronics.TinyCLR.Devices.Gpio
 {
     /// <summary>
     /// Provides data about the GpioPin.ValueChanged event that occurs when the value of the general-purpose I/O (GPIO)

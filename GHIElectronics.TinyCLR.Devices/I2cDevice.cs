@@ -1,7 +1,6 @@
 using System;
-using Microsoft.SPOT.Hardware;
 
-namespace Windows.Devices.I2c
+namespace GHIElectronics.TinyCLR.Devices.I2c
 {
     /// <summary>
     /// Provides information about whether the data transfers that the ReadPartial, WritePartial, or WriteReadPartial
@@ -31,7 +30,7 @@ namespace Windows.Devices.I2c
         // We need to share a single device between all instances, since it reserves the pins.
         private static object s_deviceLock = new object();
         private static int s_deviceRefs = 0;
-        private static I2CDevice s_device = null;
+        //RE-ADD private static I2CDevice s_device = null;
         private static string s_I2cPrefix = "I2C";
 
         private readonly string m_deviceId;
@@ -39,7 +38,7 @@ namespace Windows.Devices.I2c
 
         private object m_syncLock = new object();
         private bool m_disposed = false;
-        private I2CDevice.Configuration m_configuration;
+        //RE-ADD private I2CDevice.Configuration m_configuration;
 
         /// <summary>
         /// Constructs a new I2cDevice object.
@@ -58,13 +57,13 @@ namespace Windows.Devices.I2c
                 clockRateKhz = 400;
             }
 
-            m_configuration = new I2CDevice.Configuration((ushort)settings.SlaveAddress, clockRateKhz);
+            //RE-ADD  m_configuration = new I2CDevice.Configuration((ushort)settings.SlaveAddress, clockRateKhz);
 
             lock (s_deviceLock)
             {
-                if (s_device == null)
+                //RE-ADD if (s_device == null)
                 {
-                    s_device = new I2CDevice(m_configuration);
+                    //RE-ADD s_device = new I2CDevice(m_configuration);
                 }
 
                 ++s_deviceRefs;
@@ -185,8 +184,8 @@ namespace Windows.Devices.I2c
                     throw new ObjectDisposedException();
                 }
 
-                var transactions = new I2CDevice.I2CTransaction[] { I2CDevice.CreateWriteTransaction(buffer) };
-                return ExecuteTransactions(transactions);
+                //RE-ADD var transactions = new I2CDevice.I2CTransaction[] { I2CDevice.CreateWriteTransaction(buffer) };
+                return ExecuteTransactions();//RE-ADD transactions);
             }
         }
 
@@ -218,8 +217,8 @@ namespace Windows.Devices.I2c
                     throw new ObjectDisposedException();
                 }
 
-                var transactions = new I2CDevice.I2CTransaction[] { I2CDevice.CreateReadTransaction(buffer) };
-                return ExecuteTransactions(transactions);
+                //RE-ADD var transactions = new I2CDevice.I2CTransaction[] { I2CDevice.CreateReadTransaction(buffer) };
+                return ExecuteTransactions();//RE-ADD  transactions);
             }
         }
 
@@ -257,10 +256,10 @@ namespace Windows.Devices.I2c
                     throw new ObjectDisposedException();
                 }
 
-                var transactions = new I2CDevice.I2CTransaction[] {
-                    I2CDevice.CreateWriteTransaction(writeBuffer),
-                    I2CDevice.CreateReadTransaction(readBuffer) };
-                return ExecuteTransactions(transactions);
+                //RE-ADD var transactions = new I2CDevice.I2CTransaction[] {
+                //RE-ADD I2CDevice.CreateWriteTransaction(writeBuffer),
+                //RE-ADD I2CDevice.CreateReadTransaction(readBuffer) };
+                return ExecuteTransactions();//RE-ADD  transactions);
             }
         }
 
@@ -294,10 +293,14 @@ namespace Windows.Devices.I2c
         /// <returns>A structure that contains information about whether both the read and write parts of the operation
         ///     succeeded and the sum of the actual number of bytes that the operation wrote and the actual number of
         ///     bytes that the operation read.</returns>
-        private I2cTransferResult ExecuteTransactions(I2CDevice.I2CTransaction[] transactions)
+        //RE-ADD 
+
+        private I2cTransferResult ExecuteTransactions()//RE-ADD  I2CDevice.I2CTransaction[] transactions)
         {
             // FUTURE: Investigate how short we can make this timeout. UWP APIs should take no
             // longer than 15ms, but this is insufficient for micro-devices.
+
+            /*
             const int transactionTimeoutMs = 1000;
 
             uint bytesRequested = 0;
@@ -326,8 +329,9 @@ namespace Windows.Devices.I2c
             {
                 result.Status = I2cTransferStatus.PartialTransfer;
             }
+            */
 
-            return result;
+            return new I2cTransferResult();
         }
 
         /// <summary>
@@ -341,10 +345,10 @@ namespace Windows.Devices.I2c
                 lock (s_deviceLock)
                 {
                     --s_deviceRefs;
-                    if ((s_deviceRefs == 0) && (s_device != null))
+                    //RE-ADD if ((s_deviceRefs == 0) && (s_device != null))
                     {
-                        s_device.Dispose();
-                        s_device = null;
+                        //RE-ADD s_device.Dispose();
+                        //RE-ADD s_device = null;
                     }
                 }
             }

@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Runtime.CompilerServices;
 
-namespace Windows.Devices.Spi
+namespace GHIElectronics.TinyCLR.Devices.Spi
 {
 // warning CS0649: Field 'Windows.Devices.Spi.SpiBusInfo.xxx' is never assigned to, and will always have its default value 0
 //                 - These are all initialized in native code constructor.

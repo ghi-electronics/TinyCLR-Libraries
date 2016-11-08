@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 
-namespace Windows.Devices.Enumeration
+namespace GHIElectronics.TinyCLR.Devices.Enumeration
 {
     public sealed class DeviceInformation
     {
@@ -71,7 +71,7 @@ namespace Windows.Devices.Enumeration
             ArrayList foundDevices = new ArrayList();
 
             // Find all I2C buses which contain the given prefix.
-            var i2cBusNames = I2c.I2cDevice.GetValidBusNames();
+            var i2cBusNames = new string[0];//RE-ADD  I2c.I2cDevice.GetValidBusNames();
             for (int i = 0; i < i2cBusNames.Length; ++i)
             {
                 if (i2cBusNames[i].IndexOf(aqsFilter) == 0)

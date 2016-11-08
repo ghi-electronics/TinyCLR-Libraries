@@ -1,4 +1,4 @@
-namespace Windows.Devices.Adc
+namespace GHIElectronics.TinyCLR.Devices.Adc
 {
     public enum AdcChannelMode
     {
@@ -7,7 +7,7 @@ namespace Windows.Devices.Adc
     }
 }
 
-namespace Windows.Devices.Adc.Provider
+namespace GHIElectronics.TinyCLR.Devices.Adc.Provider
 {
     public enum ProviderAdcChannelMode
     {

@@ -1,4 +1,4 @@
-namespace Windows.Devices.Gpio
+namespace GHIElectronics.TinyCLR.Devices.Gpio
 {
     /// <summary>
     /// Describes the modes in which you can open a general-purpose I/O (GPIO) pin. These modes determine whether other

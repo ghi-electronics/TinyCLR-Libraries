@@ -1,6 +1,6 @@
 using System;
 
-namespace Windows.Devices.I2c
+namespace GHIElectronics.TinyCLR.Devices.I2c
 {
     /// <summary>
     /// Represents the connection settings you want to use for an inter-integrated circuit (I²C) device.

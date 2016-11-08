@@ -1,6 +1,6 @@
 using System;
 
-namespace Windows.Devices.Adc.Provider
+namespace GHIElectronics.TinyCLR.Devices.Adc.Provider
 {
     public interface IAdcControllerProvider
     {

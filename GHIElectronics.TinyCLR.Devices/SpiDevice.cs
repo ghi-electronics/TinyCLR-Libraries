@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.CompilerServices;
 
-namespace Windows.Devices.Spi
+namespace GHIElectronics.TinyCLR.Devices.Spi
 {
     // warning CS0414: The field 'Windows.Devices.Spi.SpiDevice.xxx' is assigned but its value is never used
     //                 - These are all used in native code methods.

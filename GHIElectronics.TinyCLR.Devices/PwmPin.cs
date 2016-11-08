@@ -1,7 +1,7 @@
 using System;
-using Windows.Devices.Pwm.Provider;
+using GHIElectronics.TinyCLR.Devices.Pwm.Provider;
 
-namespace Windows.Devices.Pwm
+namespace GHIElectronics.TinyCLR.Devices.Pwm
 {
     public sealed class PwmPin : IDisposable
     {

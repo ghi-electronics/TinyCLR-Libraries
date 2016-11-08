@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.CompilerServices;
 
-namespace Windows.Devices.Gpio
+namespace GHIElectronics.TinyCLR.Devices.Gpio
 {
     /// <summary>
     /// Represents the default general-purpose I/O (GPIO) controller for the system.

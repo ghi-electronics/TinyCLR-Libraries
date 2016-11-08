@@ -1,7 +1,7 @@
 using System;
-using Windows.Devices.Adc.Provider;
+using GHIElectronics.TinyCLR.Devices.Adc.Provider;
 
-namespace Windows.Devices.Adc
+namespace GHIElectronics.TinyCLR.Devices.Adc
 {
     public sealed class AdcController
     {

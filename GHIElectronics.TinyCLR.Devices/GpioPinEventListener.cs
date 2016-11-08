@@ -1,26 +1,27 @@
 using System;
 using System.Collections;
-using Microsoft.SPOT;
 
-namespace Windows.Devices.Gpio
+namespace GHIElectronics.TinyCLR.Devices.Gpio
 {
-    internal class GpioPinEvent : BaseEvent
+    internal class GpioPinEvent //RE-ADD : BaseEvent
     {
         public int PinNumber;
         public GpioPinEdge Edge;
     }
 
-    internal class GpioPinEventListener : IEventProcessor, IEventListener
+    internal class GpioPinEventListener //RE-ADD : IEventProcessor, IEventListener
     {
         // Map of pin numbers to GpioPin objects.
         private IDictionary m_pinMap = new Hashtable();
 
         public GpioPinEventListener()
         {
-            EventSink.AddEventProcessor(EventCategory.Gpio, this);
-            EventSink.AddEventListener(EventCategory.Gpio, this);
+            //RE-ADD EventSink.AddEventProcessor(EventCategory.Gpio, this);
+            //RE-ADD EventSink.AddEventListener(EventCategory.Gpio, this);
         }
 
+        //RE-ADD 
+        /*
         public BaseEvent ProcessEvent(uint data1, uint data2, DateTime time)
         {
             return new GpioPinEvent
@@ -30,12 +31,14 @@ namespace Windows.Devices.Gpio
                 Edge = (data2 == 0) ? GpioPinEdge.FallingEdge : GpioPinEdge.RisingEdge,
             };
         }
+        */
 
         public void InitializeForEventSource()
         {
         }
 
-        public bool OnEvent(BaseEvent ev)
+        //RE-ADD 
+        /*public bool OnEvent(BaseEvent ev)
         {
             var pinEvent = (GpioPinEvent)ev;
             GpioPin pin = null;
@@ -56,6 +59,7 @@ namespace Windows.Devices.Gpio
 
             return true;
         }
+        */
 
         public void AddPin(int pinNumber, GpioPin pin)
         {

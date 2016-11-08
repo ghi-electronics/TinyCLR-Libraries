@@ -1,6 +1,6 @@
 using System;
 
-namespace Windows.Devices.Pwm.Provider
+namespace GHIElectronics.TinyCLR.Devices.Pwm.Provider
 {
     public interface IPwmControllerProvider
     {
