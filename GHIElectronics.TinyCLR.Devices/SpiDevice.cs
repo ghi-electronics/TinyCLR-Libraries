@@ -10,7 +10,6 @@ namespace GHIElectronics.TinyCLR.Devices.Spi
     public sealed class SpiDevice : IDisposable
     {
         private static string s_SpiPrefix = "SPI";
-        private readonly SpiBusInfo m_busInfo;
 
         private readonly string m_deviceId;
         private readonly SpiConnectionSettings m_settings;

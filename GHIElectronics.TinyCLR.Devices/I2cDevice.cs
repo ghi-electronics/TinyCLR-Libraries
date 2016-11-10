@@ -51,7 +51,9 @@ namespace GHIElectronics.TinyCLR.Devices.I2c
             m_deviceId = deviceId.Substring(0, deviceId.Length);
             m_settings = new I2cConnectionSettings(settings);
 
+#pragma warning disable CS0219 // Variable is assigned but its value is never used
             int clockRateKhz = 100;
+#pragma warning restore CS0219 // Variable is assigned but its value is never used
             if (settings.BusSpeed == I2cBusSpeed.FastMode)
             {
                 clockRateKhz = 400;

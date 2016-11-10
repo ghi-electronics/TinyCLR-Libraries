@@ -5,8 +5,10 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio
 {
     internal class GpioPinEvent //RE-ADD : BaseEvent
     {
+#pragma warning disable CS0649 // Field is never assigned to, and will always have its default value
         public int PinNumber;
         public GpioPinEdge Edge;
+#pragma warning disable CS0649 // Field is never assigned to, and will always have its default value
     }
 
     internal class GpioPinEventListener //RE-ADD : IEventProcessor, IEventListener
