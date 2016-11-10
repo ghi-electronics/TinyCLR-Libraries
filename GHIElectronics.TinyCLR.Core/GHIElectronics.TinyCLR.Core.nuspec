@@ -19,7 +19,6 @@
   </metadata>
   <files>
     <file src="$TargetDir$GHIElectronics.TinyCLR.Core.dll" target="lib\tinyclr10" />
-    <file src="$TargetDir$GHIElectronics.TinyCLR.Core.pdb" target="lib\tinyclr10" />
     <file src="$TargetDir$GHIElectronics.TinyCLR.Core.le.pe" target="lib\tinyclr10" />
     <file src="$TargetDir$GHIElectronics.TinyCLR.Core.le.pdbx" target="lib\tinyclr10" />
     <file src="$TargetDir$GHIElectronics.TinyCLR.Core.be.pe" target="lib\tinyclr10" />
