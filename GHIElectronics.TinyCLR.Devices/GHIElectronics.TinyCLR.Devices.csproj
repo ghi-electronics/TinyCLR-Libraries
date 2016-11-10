@@ -64,7 +64,7 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="GHIElectronics.TinyCLR.Core, Version=0.0.1.0, Culture=neutral">
-      <HintPath>..\packages\GHIElectronics.TinyCLR.Core.0.0.1\lib\TinyCLR\GHIElectronics.TinyCLR.Core.dll</HintPath>
+      <HintPath>..\packages\GHIElectronics.TinyCLR.Core.0.0.1\lib\tinyclr10\GHIElectronics.TinyCLR.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
@@ -73,12 +73,12 @@
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\GHIElectronics.TinyCLR.MsBuild.0.0.1\build\GHIElectronics.TinyCLR.MsBuild.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\GHIElectronics.TinyCLR.MsBuild.0.0.1\build\GHIElectronics.TinyCLR.MsBuild.props'))" />
-    <Error Condition="!Exists('..\packages\GHIElectronics.TinyCLR.MsBuild.0.0.1\build\GHIElectronics.TinyCLR.MsBuild.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\GHIElectronics.TinyCLR.MsBuild.0.0.1\build\GHIElectronics.TinyCLR.MsBuild.targets'))" />
+    <Error Condition="!Exists('..\packages\GHIElectronics.TinyCLR.MsBuild.0.0.1\build\tinyclr10\GHIElectronics.TinyCLR.MsBuild.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\GHIElectronics.TinyCLR.MsBuild.0.0.1\build\tinyclr10\GHIElectronics.TinyCLR.MsBuild.props'))" />
+    <Error Condition="!Exists('..\packages\GHIElectronics.TinyCLR.MsBuild.0.0.1\build\tinyclr10\GHIElectronics.TinyCLR.MsBuild.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\GHIElectronics.TinyCLR.MsBuild.0.0.1\build\tinyclr10\GHIElectronics.TinyCLR.MsBuild.targets'))" />
     <Error Condition="!Exists('..\packages\GHIElectronics.Tools.AssemblySigner.1.0.0\build\GHIElectronics.Tools.AssemblySigner.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\GHIElectronics.Tools.AssemblySigner.1.0.0\build\GHIElectronics.Tools.AssemblySigner.targets'))" />
     <Error Condition="!Exists('..\packages\GHIElectronics.Tools.NuGetPacker.1.0.0\build\GHIElectronics.Tools.NuGetPacker.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\GHIElectronics.Tools.NuGetPacker.1.0.0\build\GHIElectronics.Tools.NuGetPacker.targets'))" />
   </Target>
-  <Import Project="..\packages\GHIElectronics.TinyCLR.MsBuild.0.0.1\build\GHIElectronics.TinyCLR.MsBuild.targets" Condition="Exists('..\packages\GHIElectronics.TinyCLR.MsBuild.0.0.1\build\GHIElectronics.TinyCLR.MsBuild.targets')" />
+  <Import Project="..\packages\GHIElectronics.TinyCLR.MsBuild.0.0.1\build\tinyclr10\GHIElectronics.TinyCLR.MsBuild.targets" Condition="Exists('..\packages\GHIElectronics.TinyCLR.MsBuild.0.0.1\build\tinyclr10\GHIElectronics.TinyCLR.MsBuild.targets')" />
   <Import Project="..\packages\GHIElectronics.Tools.AssemblySigner.1.0.0\build\GHIElectronics.Tools.AssemblySigner.targets" Condition="Exists('..\packages\GHIElectronics.Tools.AssemblySigner.1.0.0\build\GHIElectronics.Tools.AssemblySigner.targets')" />
   <Import Project="..\packages\GHIElectronics.Tools.NuGetPacker.1.0.0\build\GHIElectronics.Tools.NuGetPacker.targets" Condition="Exists('..\packages\GHIElectronics.Tools.NuGetPacker.1.0.0\build\GHIElectronics.Tools.NuGetPacker.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
