@@ -60,13 +60,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="GHIElectronics.TinyCLR.Devices.nuspec" />
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="GHIElectronics.TinyCLR.Core, Version=0.0.1.0, Culture=neutral">
-      <HintPath>..\packages\GHIElectronics.TinyCLR.Core.0.0.1\lib\tinyclr10\GHIElectronics.TinyCLR.Core.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
+    <ProjectReference Include="..\GHIElectronics.TinyCLR.Core\GHIElectronics.TinyCLR.Core.csproj">
+      <Project>{AA751E21-9220-42CE-8180-516BB59E4555}</Project>
+      <Name>GHIElectronics.TinyCLR.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
