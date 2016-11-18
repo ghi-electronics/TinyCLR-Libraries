@@ -18,21 +18,21 @@ namespace System.Globalization
         [NonSerialized]
         private CultureInfo m_parent;
         const string c_ResourceBase = "System.Globalization.Resources.CultureInfo";
-        internal string EnsureStringResource(ref string str, string id)
+        internal string EnsureStringResource(ref string str, System.Globalization.Resources.CultureInfo.StringResources id)
         {
             if (str == null)
             {
-                str = id;
+                str = (string)ResourceManager.GetObject(m_rm, id);
             }
 
             return str;
         }
 
-        internal string[] EnsureStringArrayResource(ref string[] strArray, string id)
+        internal string[] EnsureStringArrayResource(ref string[] strArray, System.Globalization.Resources.CultureInfo.StringResources id)
         {
             if (strArray == null)
             {
-                string str = (string)id;
+                string str = (string)ResourceManager.GetObject(m_rm, id);
                 strArray = str.Split('|');
             }
 

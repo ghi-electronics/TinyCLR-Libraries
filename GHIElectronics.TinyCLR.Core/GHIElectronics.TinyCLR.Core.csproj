@@ -87,6 +87,11 @@
     <Compile Include="Globalization\DateTimeFormatInfo.cs" />
     <Compile Include="Globalization\DaylightTime.cs" />
     <Compile Include="Globalization\NumberFormatInfo.cs" />
+    <Compile Include="Globalization\Resources\CultureInfo.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CultureInfo.resx</DependentUpon>
+    </Compile>
     <Compile Include="Guid.cs" />
     <Compile Include="IAsyncResult.cs" />
     <Compile Include="ICloneable.cs" />
@@ -198,6 +203,16 @@
   <ItemGroup>
     <None Include="GHIElectronics.TinyCLR.Core.nuspec" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Globalization\Resources\CultureInfo.en.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Globalization\Resources\CultureInfo.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>CultureInfo.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

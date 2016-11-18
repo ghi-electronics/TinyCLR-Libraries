@@ -58,7 +58,7 @@ namespace System.Globalization
                 {
                     String sizesStr = null;
 
-                    m_cultureInfo.EnsureStringResource(ref sizesStr, "3");
+                    m_cultureInfo.EnsureStringResource(ref sizesStr, System.Globalization.Resources.CultureInfo.StringResources.NumberGroupSizes);
 
                     int sizesLen = sizesStr.Length;
                     numberGroupSizes = new int[sizesLen];
@@ -93,7 +93,7 @@ namespace System.Globalization
         {
             get
             {
-                return m_cultureInfo.EnsureStringResource(ref this.negativeSign, "-");
+                return m_cultureInfo.EnsureStringResource(ref this.negativeSign, System.Globalization.Resources.CultureInfo.StringResources.NegativeSign);
             }
         }
 
@@ -101,7 +101,7 @@ namespace System.Globalization
         {
             get
             {
-                return m_cultureInfo.EnsureStringResource(ref this.numberDecimalSeparator, ".");
+                return m_cultureInfo.EnsureStringResource(ref this.numberDecimalSeparator, System.Globalization.Resources.CultureInfo.StringResources.NumberDecimalSeparator);
             }
         }
 
@@ -109,7 +109,7 @@ namespace System.Globalization
         {
             get
             {
-                return m_cultureInfo.EnsureStringResource(ref this.numberGroupSeparator, ",");
+                return m_cultureInfo.EnsureStringResource(ref this.numberGroupSeparator, System.Globalization.Resources.CultureInfo.StringResources.NumberGroupSeparator);
             }
         }
 
@@ -117,7 +117,7 @@ namespace System.Globalization
         {
             get
             {
-                return m_cultureInfo.EnsureStringResource(ref this.positiveSign, "+");
+                return m_cultureInfo.EnsureStringResource(ref this.positiveSign, System.Globalization.Resources.CultureInfo.StringResources.PositiveSign);
             }
         }
     } // NumberFormatInfo

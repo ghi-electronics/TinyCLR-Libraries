@@ -46,7 +46,7 @@ namespace System.Globalization
         {
             get
             {
-                return m_cultureInfo.EnsureStringResource(ref this.amDesignator, "AM");
+                return m_cultureInfo.EnsureStringResource(ref this.amDesignator, System.Globalization.Resources.CultureInfo.StringResources.AMDesignator);
             }
         }
 
@@ -54,7 +54,7 @@ namespace System.Globalization
         {
             get
             {
-                return m_cultureInfo.EnsureStringResource(ref this.dateSeparator, "/");
+                return m_cultureInfo.EnsureStringResource(ref this.dateSeparator, System.Globalization.Resources.CultureInfo.StringResources.DateSeparator);
             }
         }
 
@@ -75,7 +75,7 @@ namespace System.Globalization
         {
             get
             {
-                return m_cultureInfo.EnsureStringResource(ref longDatePattern, "dddd, dd MMMM yyyy");
+                return m_cultureInfo.EnsureStringResource(ref longDatePattern, System.Globalization.Resources.CultureInfo.StringResources.LongDatePattern);
             }
         }
 
@@ -83,7 +83,7 @@ namespace System.Globalization
         {
             get
             {
-                return m_cultureInfo.EnsureStringResource(ref this.longTimePattern, "HH:mm:ss");
+                return m_cultureInfo.EnsureStringResource(ref this.longTimePattern, System.Globalization.Resources.CultureInfo.StringResources.LongTimePattern);
             }
         }
 
@@ -91,7 +91,7 @@ namespace System.Globalization
         {
             get
             {
-                return m_cultureInfo.EnsureStringResource(ref this.monthDayPattern, "MMMM dd");
+                return m_cultureInfo.EnsureStringResource(ref this.monthDayPattern, System.Globalization.Resources.CultureInfo.StringResources.MonthDayPattern);
             }
         }
 
@@ -99,7 +99,7 @@ namespace System.Globalization
         {
             get
             {
-                return m_cultureInfo.EnsureStringResource(ref this.pmDesignator, "PM");
+                return m_cultureInfo.EnsureStringResource(ref this.pmDesignator, System.Globalization.Resources.CultureInfo.StringResources.PMDesignator);
             }
         }
 
@@ -115,7 +115,7 @@ namespace System.Globalization
         {
             get
             {
-                return m_cultureInfo.EnsureStringResource(ref this.shortDatePattern, "MM/dd/yyyy");
+                return m_cultureInfo.EnsureStringResource(ref this.shortDatePattern, System.Globalization.Resources.CultureInfo.StringResources.ShortDatePattern);
             }
         }
 
@@ -123,7 +123,7 @@ namespace System.Globalization
         {
             get
             {
-                return m_cultureInfo.EnsureStringResource(ref this.shortTimePattern, "HH:mm");
+                return m_cultureInfo.EnsureStringResource(ref this.shortTimePattern, System.Globalization.Resources.CultureInfo.StringResources.ShortTimePattern);
             }
         }
 
@@ -171,7 +171,7 @@ namespace System.Globalization
         {
             get
             {
-                return m_cultureInfo.EnsureStringResource(ref this.timeSeparator, ":");
+                return m_cultureInfo.EnsureStringResource(ref this.timeSeparator, System.Globalization.Resources.CultureInfo.StringResources.TimeSeparator);
             }
         }
 
@@ -187,7 +187,7 @@ namespace System.Globalization
         {
             get
             {
-                return m_cultureInfo.EnsureStringResource(ref this.yearMonthPattern, "yyyy MMMM");
+                return m_cultureInfo.EnsureStringResource(ref this.yearMonthPattern, System.Globalization.Resources.CultureInfo.StringResources.YearMonthPattern);
             }
         }
 
@@ -195,7 +195,7 @@ namespace System.Globalization
         {
             get
             {
-                return m_cultureInfo.EnsureStringArrayResource(ref abbreviatedDayNames, "Sun|Mon|Tue|Wed|Thu|Fri|Sat");
+                return m_cultureInfo.EnsureStringArrayResource(ref abbreviatedDayNames, System.Globalization.Resources.CultureInfo.StringResources.AbbreviatedDayNames);
             }
         }
 
@@ -203,7 +203,7 @@ namespace System.Globalization
         {
             get
             {
-                return m_cultureInfo.EnsureStringArrayResource(ref dayNames, "Sunday|Monday|Tuesday|Wednesday|Thursday|Friday|Saturday");
+                return m_cultureInfo.EnsureStringArrayResource(ref dayNames, System.Globalization.Resources.CultureInfo.StringResources.DayNames);
             }
         }
 
@@ -211,7 +211,7 @@ namespace System.Globalization
         {
             get
             {
-                return m_cultureInfo.EnsureStringArrayResource(ref abbreviatedMonthNames, "Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec");
+                return m_cultureInfo.EnsureStringArrayResource(ref abbreviatedMonthNames, System.Globalization.Resources.CultureInfo.StringResources.AbbreviatedMonthNames);
             }
         }
 
@@ -219,7 +219,7 @@ namespace System.Globalization
         {
             get
             {
-                return m_cultureInfo.EnsureStringArrayResource(ref monthNames, "January|February|March|April|May|June|July|August|September|October|November|December");
+                return m_cultureInfo.EnsureStringArrayResource(ref monthNames, System.Globalization.Resources.CultureInfo.StringResources.MonthNames);
             }
         }
     }
