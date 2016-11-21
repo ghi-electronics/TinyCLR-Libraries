@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>GHIElectronics.TinyCLR.Native</id>
+    <version>0.0.1</version>
+    <authors>GHI Electronics, LLC</authors>
+    <owners>GHI Electronics, LLC</owners>
+    <projectUrl>https://www.ghielectronics.com/</projectUrl>
+    <iconUrl>https://www.ghielectronics.com/downloads/marketing/logo/GHILogo-NuGet.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>The native library for TinyCLR.</description>
+    <releaseNotes>Initial release.</releaseNotes>
+    <copyright>Copyright GHI Electronics, LLC 2016</copyright>
+    <tags>TinyCLR</tags>
+    <dependencies>
+      <dependency id="GHIElectronics.TinyCLR.Core" version="0.0.1" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="$TargetDir$GHIElectronics.TinyCLR.Native.dll" target="lib\tinyclr10" />
+    <file src="$TargetDir$GHIElectronics.TinyCLR.Native.le.pe" target="lib\tinyclr10" />
+    <file src="$TargetDir$GHIElectronics.TinyCLR.Native.le.pdbx" target="lib\tinyclr10" />
+    <file src="$TargetDir$GHIElectronics.TinyCLR.Native.be.pe" target="lib\tinyclr10" />
+    <file src="$TargetDir$GHIElectronics.TinyCLR.Native.be.pdbx" target="lib\tinyclr10" />
+  </files>
+</package>
