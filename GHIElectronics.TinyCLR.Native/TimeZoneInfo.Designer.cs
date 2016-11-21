@@ -8,26 +8,26 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Microsoft.SPOT
+namespace GHIElectronics.TinyCLR.Native
 {
 
-    internal class Native_Resources
+    internal class TimeZoneInfo
     {
         private static System.Resources.ResourceManager manager;
         internal static System.Resources.ResourceManager ResourceManager
         {
             get
             {
-                if ((Native_Resources.manager == null))
+                if ((TimeZoneInfo.manager == null))
                 {
-                    Native_Resources.manager = new System.Resources.ResourceManager("Microsoft.SPOT.Native_Resources", typeof(Native_Resources).Assembly);
+                    TimeZoneInfo.manager = new System.Resources.ResourceManager("GHIElectronics.TinyCLR.Native.TimeZoneInfo", typeof(TimeZoneInfo).Assembly);
                 }
 
-                return Native_Resources.manager;
+                return TimeZoneInfo.manager;
             }
         }
 
-        internal static string GetString(Native_Resources.StringResources id)
+        internal static string GetString(TimeZoneInfo.StringResources id)
         {
             return ((string)(Microsoft.SPOT.ResourceUtility.GetObject(ResourceManager, id)));
         }

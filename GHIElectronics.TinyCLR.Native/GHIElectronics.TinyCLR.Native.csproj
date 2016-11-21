@@ -48,12 +48,12 @@
     <Compile Include="Messaging.cs" />
     <Compile Include="Reflection.cs" />
     <Compile Include="Resources.cs" />
-    <Compile Include="Resources.Designer.cs">
+    <Compile Include="Timers.cs" />
+    <Compile Include="TimeZoneInfo.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
+      <DependentUpon>TimeZoneInfo.resx</DependentUpon>
     </Compile>
-    <Compile Include="Timers.cs" />
     <Compile Include="WeakReference.cs" />
     <Compile Include="X509Certificate.cs" />
   </ItemGroup>
@@ -63,10 +63,10 @@
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
-  <ItemGroup>  
-    <EmbeddedResource Include="Resources.resx">
+  <ItemGroup>
+    <EmbeddedResource Include="TimeZoneInfo.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <LastGenOutput>TimeZoneInfo.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
