@@ -70,6 +70,12 @@ namespace System.Globalization
 
                 return culture;
             }
+            set {
+                if (value == null)
+                    throw new ArgumentNullException();
+
+                CurrentUICultureInternal = value;
+            }
         }
 
         private extern static CultureInfo CurrentUICultureInternal
