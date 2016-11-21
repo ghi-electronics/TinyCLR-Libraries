@@ -229,7 +229,10 @@ namespace System.Resources
         }
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static object GetObject(System.Resources.ResourceManager rm, Enum id);
+        public extern static object GetObject(System.Resources.ResourceManager rm, Enum id);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public extern static object GetObject(System.Resources.ResourceManager rm, Enum id, int offset, int length);
     }
 }
 
