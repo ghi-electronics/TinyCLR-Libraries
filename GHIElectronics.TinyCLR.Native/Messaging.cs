@@ -12,7 +12,9 @@ namespace Microsoft.SPOT.Messaging
     public sealed class EndPoint
     {
         [Microsoft.SPOT.FieldNoReflection]
+#pragma warning disable CS0169 // The field is never used
         private object m_handle;
+#pragma warning restore CS0169 // The field is never used
 
         //--//
 
@@ -61,11 +63,17 @@ namespace Microsoft.SPOT.Messaging
             }
         }
 
+#pragma warning disable CS0649 // Field is never assigned to, and will always have its default value
         EndPoint m_source;
+#pragma warning restore CS0649 // Field is never assigned to, and will always have its default value
+#pragma warning disable CS0169 // The field is never used
         Type m_selector;
         uint m_id;
         uint m_seq;
+#pragma warning restore CS0169 // The field is never used
+#pragma warning disable CS0649 // Field is never assigned to, and will always have its default value
         byte[] m_payload;
+#pragma warning restore CS0649 // Field is never assigned to, and will always have its default value
 
         //--//
 

@@ -136,9 +136,11 @@ namespace Microsoft.SPOT
         }
 
         [Microsoft.SPOT.FieldNoReflection]
+#pragma warning disable CS0169 // The field is never used
         private object m_timer;
         private object m_state;
         private System.Threading.TimerCallback m_callback;
+#pragma warning restore CS0169 // The field is never used
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         extern public ExtendedTimer(System.Threading.TimerCallback callback, object state, int dueTime, int period);
