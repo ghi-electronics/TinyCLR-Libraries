@@ -5,7 +5,7 @@
 using System;
 using System.Runtime.CompilerServices;
 
-namespace Microsoft.SPOT
+namespace GHIElectronics.TinyCLR.Native
 {
     public static class Math
     {

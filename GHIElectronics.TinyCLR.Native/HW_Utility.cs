@@ -7,7 +7,7 @@ using System.Collections;
 using System.Runtime.CompilerServices;
 using System.Threading;
 
-namespace Microsoft.SPOT.Hardware
+namespace GHIElectronics.TinyCLR.Native.Hardware
 {
     public static class Utility
     {

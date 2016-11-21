@@ -29,7 +29,7 @@ namespace GHIElectronics.TinyCLR.Native
 
         internal static string GetString(TimeZoneInfo.StringResources id)
         {
-            return ((string)(Microsoft.SPOT.ResourceUtility.GetObject(ResourceManager, id)));
+            return ((string)(ResourceUtility.GetObject(ResourceManager, id)));
         }
 
         [System.SerializableAttribute()]

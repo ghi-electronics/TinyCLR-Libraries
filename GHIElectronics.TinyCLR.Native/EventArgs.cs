@@ -8,9 +8,7 @@ using System.Reflection;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
-using Microsoft.SPOT.Hardware;
-
-namespace Microsoft.SPOT
+namespace GHIElectronics.TinyCLR.Native
 {
     public class EventArgs
     {

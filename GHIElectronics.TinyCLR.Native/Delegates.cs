@@ -8,7 +8,7 @@ using System.Reflection;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
-namespace Microsoft.SPOT
+namespace GHIElectronics.TinyCLR.Native
 {
     public static class WeakDelegate
     {

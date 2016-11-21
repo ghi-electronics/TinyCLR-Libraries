@@ -7,11 +7,11 @@ using System.Collections;
 using System.Runtime.CompilerServices;
 using System.Threading;
 
-namespace Microsoft.SPOT.Messaging
+namespace GHIElectronics.TinyCLR.Native.Messaging
 {
     public sealed class EndPoint
     {
-        [Microsoft.SPOT.FieldNoReflection]
+        [FieldNoReflection]
 #pragma warning disable CS0169 // The field is never used
         private object m_handle;
 #pragma warning restore CS0169 // The field is never used
@@ -30,11 +30,11 @@ namespace Microsoft.SPOT.Messaging
         
         public object SendMessage(Type selector, uint id, int timeout, object payload)
         {
-            byte[] res = SendMessageRaw(selector, id, timeout, Microsoft.SPOT.Reflection.Serialize(payload, null));
+            byte[] res = SendMessageRaw(selector, id, timeout, Reflection.Serialize(payload, null));
 
             if (res == null) return null;
 
-            return Microsoft.SPOT.Reflection.Deserialize(res, null);
+            return Reflection.Deserialize(res, null);
         }
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
@@ -81,7 +81,7 @@ namespace Microsoft.SPOT.Messaging
         {
             get
             {
-                return Microsoft.SPOT.Reflection.Deserialize(m_payload, null);
+                return Reflection.Deserialize(m_payload, null);
             }
         }
 
@@ -97,7 +97,7 @@ namespace Microsoft.SPOT.Messaging
 
         public void Reply(object data)
         {
-            m_source.ReplyRaw(this, Microsoft.SPOT.Reflection.Serialize(data, null));
+            m_source.ReplyRaw(this, Reflection.Serialize(data, null));
         }
 
         public void ReplyRaw(byte[] data)

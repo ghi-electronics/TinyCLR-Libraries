@@ -8,7 +8,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Diagnostics;
 
-namespace Microsoft.SPOT
+namespace GHIElectronics.TinyCLR.Native
 {
     [Serializable]
     public enum TimeZoneId
@@ -135,7 +135,7 @@ namespace Microsoft.SPOT
             SetTime,
         }
 
-        [Microsoft.SPOT.FieldNoReflection]
+        [FieldNoReflection]
 #pragma warning disable CS0169 // The field is never used
         private object m_timer;
         private object m_state;

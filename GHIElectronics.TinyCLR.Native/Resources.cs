@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Globalization;
 using System.Resources;
 
-namespace Microsoft.SPOT
+namespace GHIElectronics.TinyCLR.Native
 {
     public static class ResourceUtility
     {
