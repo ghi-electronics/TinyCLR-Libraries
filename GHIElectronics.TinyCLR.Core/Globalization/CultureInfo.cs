@@ -119,7 +119,7 @@ namespace System.Globalization
             for (int iAssembly = 0; iAssembly < assemblies.Length; iAssembly++)
             {
                 Assembly assembly = assemblies[iAssembly];
-                string mscorlib = "mscorlib";
+                string mscorlib = "GHIElectronics.TinyCLR.Core";
                 string fullName = assembly.FullName;
                 // consider adding startswith ?
                 if ((mscorlib.Length <= fullName.Length) && (fullName.Substring(0, mscorlib.Length) == mscorlib))
