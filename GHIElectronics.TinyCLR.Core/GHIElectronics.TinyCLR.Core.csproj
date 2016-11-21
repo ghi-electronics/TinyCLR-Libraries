@@ -8,7 +8,7 @@
     <ProjectGuid>{AA751E21-9220-42CE-8180-516BB59E4555}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GHIElectronics.TinyCLR.Core</RootNamespace>
+    <RootNamespace>System</RootNamespace>
     <AssemblyName>GHIElectronics.TinyCLR.Core</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <BaseIntermediateOutputPath>$(SolutionDir)Build\obj\</BaseIntermediateOutputPath>
