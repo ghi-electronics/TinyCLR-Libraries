@@ -50,6 +50,7 @@
     <Compile Include="I2cConnectionSettings.cs" />
     <Compile Include="I2cDevice.cs" />
     <Compile Include="I2cEnums.cs" />
+    <Compile Include="Internal.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PwmController.cs" />
     <Compile Include="PwmEnums.cs" />

@@ -1,9 +1,10 @@
+using GHIElectronics.TinyCLR.Devices.Internal;
 using System;
 using System.Collections;
 
 namespace GHIElectronics.TinyCLR.Devices.Gpio
 {
-    internal class GpioPinEvent //RE-ADD : BaseEvent
+    internal class GpioPinEvent : BaseEvent
     {
 #pragma warning disable CS0649 // Field is never assigned to, and will always have its default value
         public int PinNumber;
@@ -11,19 +12,17 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio
 #pragma warning disable CS0649 // Field is never assigned to, and will always have its default value
     }
 
-    internal class GpioPinEventListener //RE-ADD : IEventProcessor, IEventListener
+    internal class GpioPinEventListener : IEventProcessor, IEventListener
     {
         // Map of pin numbers to GpioPin objects.
         private IDictionary m_pinMap = new Hashtable();
 
         public GpioPinEventListener()
         {
-            //RE-ADD EventSink.AddEventProcessor(EventCategory.Gpio, this);
-            //RE-ADD EventSink.AddEventListener(EventCategory.Gpio, this);
+            EventSink.AddEventProcessor(EventCategory.Gpio, this);
+            EventSink.AddEventListener(EventCategory.Gpio, this);
         }
 
-        //RE-ADD 
-        /*
         public BaseEvent ProcessEvent(uint data1, uint data2, DateTime time)
         {
             return new GpioPinEvent
@@ -33,14 +32,12 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio
                 Edge = (data2 == 0) ? GpioPinEdge.FallingEdge : GpioPinEdge.RisingEdge,
             };
         }
-        */
 
         public void InitializeForEventSource()
         {
         }
 
-        //RE-ADD 
-        /*public bool OnEvent(BaseEvent ev)
+        public bool OnEvent(BaseEvent ev)
         {
             var pinEvent = (GpioPinEvent)ev;
             GpioPin pin = null;
@@ -61,7 +58,6 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio
 
             return true;
         }
-        */
 
         public void AddPin(int pinNumber, GpioPin pin)
         {
