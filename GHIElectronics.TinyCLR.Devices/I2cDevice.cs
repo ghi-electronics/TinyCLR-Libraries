@@ -146,7 +146,7 @@ namespace GHIElectronics.TinyCLR.Devices.I2c
         public static I2cDevice FromId(string deviceId, I2cConnectionSettings settings)
         {
             // FUTURE: This should should be "Task<I2cDevice> FromIdAsync(...)"
-            if ((settings.SlaveAddress > 0) || (settings.SlaveAddress < 127))
+            if ((settings.SlaveAddress < 0) || (settings.SlaveAddress > 127))
             {
                 throw new ArgumentOutOfRangeException();
             }
