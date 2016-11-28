@@ -6,6 +6,7 @@ namespace GHIElectronics.TinyCLR.Devices.Adc
     public sealed class AdcController
     {
         private IAdcControllerProvider m_provider;
+        private static AdcController instance;
 
         internal AdcController(IAdcControllerProvider provider)
         {
@@ -65,6 +66,10 @@ namespace GHIElectronics.TinyCLR.Devices.Adc
 
                 m_provider.ChannelMode = (ProviderAdcChannelMode)value;
             }
+        }
+
+        public static AdcController GetDefault() {
+            return AdcController.instance ?? (AdcController.instance = new AdcController(new DefaultAdcControllerProvider()));
         }
 
         public static AdcController[] GetControllers(IAdcProvider provider)

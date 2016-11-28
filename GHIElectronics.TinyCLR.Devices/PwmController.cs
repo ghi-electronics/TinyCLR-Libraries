@@ -6,6 +6,7 @@ namespace GHIElectronics.TinyCLR.Devices.Pwm
     public sealed class PwmController
     {
         private IPwmControllerProvider m_provider;
+        private static PwmController instance;
 
         internal PwmController(IPwmControllerProvider provider)
         {
@@ -42,6 +43,10 @@ namespace GHIElectronics.TinyCLR.Devices.Pwm
             {
                 return m_provider.ActualFrequency;
             }
+        }
+
+        public static PwmController GetDefault() {
+            return PwmController.instance ?? (PwmController.instance = new PwmController(new DefaultPwmControllerProvider()));
         }
 
         public static PwmController[] GetControllers(IPwmProvider provider)
