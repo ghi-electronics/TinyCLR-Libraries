@@ -11,9 +11,9 @@ namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
 
     public enum SerialHandshake {
         None,
-        RequestToSend,
-        XOnXOff,
-        RequestToSendXOnXOff
+        RequestToSend = 0x06,
+        XOnXOff = 0x18,
+        RequestToSendXOnXOff = RequestToSend | XOnXOff
     }
 
     public enum SerialParity {
@@ -33,9 +33,9 @@ namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
     }
 
     public enum SerialStopBitCount {
-        One,
-        OnePointFive,
-        Two
+        One = 1,
+        OnePointFive = 3,
+        Two = 2
     }
 
     public class ErrorReceivedEventArgs {
@@ -80,7 +80,7 @@ namespace GHIElectronics.TinyCLR.Storage.Streams {
         private uint length;
         private byte[] data;
 
-        internal byte[] Data => this.data;
+        public byte[] Data => this.data;
         public uint Capacity => this.length;
 
         public uint Length {
@@ -105,9 +105,9 @@ namespace GHIElectronics.TinyCLR.Storage.Streams {
             this.length = (uint)data.Length;
         }
 
-        public Buffer(uint length) {
-            this.data = new byte[length];
-            this.length = length;
+        public Buffer(uint capacity) {
+            this.data = new byte[capacity];
+            this.length = capacity;
         }
     }
 }
