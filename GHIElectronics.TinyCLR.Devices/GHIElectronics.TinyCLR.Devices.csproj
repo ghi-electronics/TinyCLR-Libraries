@@ -56,6 +56,8 @@
     <Compile Include="PwmEnums.cs" />
     <Compile Include="PwmPin.cs" />
     <Compile Include="PwmProvider.cs" />
+    <Compile Include="SerialCommunicationDevice.cs" />
+    <Compile Include="SerialCommunicationEnums.cs" />
     <Compile Include="SpiBusInfo.cs" />
     <Compile Include="SpiConnectionSettings.cs" />
     <Compile Include="SpiDevice.cs" />
