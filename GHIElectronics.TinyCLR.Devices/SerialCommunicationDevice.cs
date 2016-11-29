@@ -110,7 +110,7 @@ namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
             }
 
             public uint ReadAsync(IBuffer buffer, uint count, InputStreamOptions options) {
-                if (count > buffer.Capacity) throw new InvalidOperationException($"{nameof(count)} is more than the capacity of {nameof(buffer)}.");
+                if (count > buffer.Capacity) throw new InvalidOperationException(nameof(count) + " is more than the capacity of " + nameof(buffer) + ".");
                 if (this.parent.disposed) throw new ObjectDisposedException();
 
                 this.Open();
