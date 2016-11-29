@@ -30,10 +30,18 @@ namespace System
         internal long m_ticks;
 
         public const long TicksPerMillisecond = 10000;
+        private const double MillisecondsPerTick = 1.0 / TicksPerMillisecond;
         public const long TicksPerSecond = TicksPerMillisecond * 1000;
+        private const double SecondsPerTick = 1.0 / TicksPerSecond;
         public const long TicksPerMinute = TicksPerSecond * 60;
+        private const double MinutesPerTick = 1.0 / TicksPerMinute;
         public const long TicksPerHour = TicksPerMinute * 60;
+        private const double HoursPerTick = 1.0 / TicksPerHour;
         public const long TicksPerDay = TicksPerHour * 24;
+        private const double DaysPerTick = 1.0 / TicksPerDay;
+
+        private const long MaxMilliSeconds = Int64.MaxValue / TicksPerMillisecond;
+        private const long MinMilliSeconds = Int64.MinValue / TicksPerMillisecond;
 
         public static readonly TimeSpan Zero = new TimeSpan(0);
 
@@ -100,6 +108,35 @@ namespace System
             {
                 return (int)((m_ticks / TicksPerSecond) % 60);
             }
+        }
+
+        public double TotalDays {
+            get { return m_ticks * DaysPerTick; }
+        }
+
+        public double TotalHours {
+            get { return m_ticks * HoursPerTick; }
+        }
+
+        public double TotalMilliseconds {
+            get {
+                double temp = m_ticks * MillisecondsPerTick;
+                if (temp > MaxMilliSeconds)
+                    return MaxMilliSeconds;
+
+                if (temp < MinMilliSeconds)
+                    return MinMilliSeconds;
+
+                return temp;
+            }
+        }
+
+        public double TotalMinutes {
+            get { return m_ticks * MinutesPerTick; }
+        }
+
+        public double TotalSeconds {
+            get { return m_ticks * SecondsPerTick; }
         }
 
         public TimeSpan Add(TimeSpan ts)
