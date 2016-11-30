@@ -63,12 +63,12 @@ namespace GHIElectronics.TinyCLR.Storage.Streams {
     }
 
     public interface IOutputStream : IDisposable {
-        bool FlushAsync();
-        uint WriteAsync(IBuffer buffer);
+        bool Flush();
+        uint Write(IBuffer buffer);
     }
 
     public interface IInputStream : IDisposable {
-        uint ReadAsync(IBuffer buffer, uint count, InputStreamOptions options);
+        uint Read(IBuffer buffer, uint count, InputStreamOptions options);
     }
 
     public interface IBuffer {
