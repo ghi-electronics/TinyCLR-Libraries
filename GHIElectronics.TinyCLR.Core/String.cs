@@ -42,6 +42,41 @@ namespace System
             return false;
         }
 
+        public static string Format(string format, params object[] args) {
+            var result = "";
+            var last = 0;
+            var next = 0;
+            var end = 0;
+
+            while ((next = format.IndexOf("{", last)) >= 0 && (end = format.IndexOf("}", next)) > 0) {
+                result += format.Substring(last, next - last);
+
+                var current = format.Substring(next + 1, end - next - 1);
+                var parts = current.Split(':');
+                var index = 0;
+
+                try {
+                    index = int.Parse(parts[0]);
+                }
+                catch {
+                    break;
+                }
+
+                if (parts.Length == 1) {
+                    result += args[index].ToString();
+                }
+                else {
+                    var member = args[index].GetType().GetMethod("ToString", new Type[] { typeof(string) });
+
+                    result += member.Invoke(args[index], new object[] { parts[1].ToString() });
+                }
+
+                format = format.Substring(end + 1);
+            }
+
+            return result;
+        }
+
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public extern static bool Equals(String a, String b);
 

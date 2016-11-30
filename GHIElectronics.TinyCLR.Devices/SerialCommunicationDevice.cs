@@ -111,9 +111,9 @@ namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
 
             public uint Read(IBuffer buffer, uint count, InputStreamOptions options) {
                 if (buffer == null) throw new ArgumentNullException(nameof(buffer));
-                if (count > buffer.Capacity) throw new InvalidOperationException(nameof(count) + " is more than the capacity of " + nameof(buffer) + ".");
+                if (count > buffer.Capacity) throw new InvalidOperationException($"{nameof(count)} is more than the capacity of {nameof(buffer)}.");
                 if (this.parent.disposed) throw new ObjectDisposedException();
-                if (options != InputStreamOptions.None) throw new NotSupportedException(nameof(options) + " is not supported.");
+                if (options != InputStreamOptions.None) throw new NotSupportedException($"{nameof(options)} is not supported.");
 
                 this.Open();
 
