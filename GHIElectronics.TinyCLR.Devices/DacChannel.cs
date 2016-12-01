@@ -17,9 +17,7 @@ namespace GHIElectronics.TinyCLR.Devices.Dac {
             this.provider.AcquireChannel(channel);
         }
 
-        ~DacChannel() {
-            this.Dispose(false);
-        }
+        ~DacChannel() => this.Dispose(false);
 
         public void Dispose() {
             this.Dispose(true);
@@ -30,7 +28,7 @@ namespace GHIElectronics.TinyCLR.Devices.Dac {
             if (this.disposed) return;
 
             if (disposing) {
-                this.provider.ReleaseChannel(channel);
+                this.provider.ReleaseChannel(this.channel);
 
                 this.provider = null;
                 this.controller = null;
@@ -49,7 +47,7 @@ namespace GHIElectronics.TinyCLR.Devices.Dac {
 
             this.LastWrittenValue = value;
 
-            provider.WriteValue(this.channel, this.LastWrittenValue);
+            this.provider.WriteValue(this.channel, this.LastWrittenValue);
         }
 
         public void WriteValue(double ratio) {

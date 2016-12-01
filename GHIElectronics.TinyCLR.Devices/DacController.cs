@@ -10,10 +10,10 @@ namespace GHIElectronics.TinyCLR.Devices.Dac {
             this.provider = provider;
         }
 
-        public int ChannelCount => provider.ChannelCount;
-        public int ResolutionInBits => provider.ResolutionInBits;
-        public int MinValue => provider.MinValue;
-        public int MaxValue => provider.MaxValue;
+        public int ChannelCount => this.provider.ChannelCount;
+        public int ResolutionInBits => this.provider.ResolutionInBits;
+        public int MinValue => this.provider.MinValue;
+        public int MaxValue => this.provider.MaxValue;
 
         public static DacController GetDefault() => DacController.instance ?? (DacController.instance = new DacController(new NativeDacControllerProvider()));
 
@@ -28,9 +28,9 @@ namespace GHIElectronics.TinyCLR.Devices.Dac {
         }
 
         public DacChannel OpenChannel(int channel) {
-            if (channel < 0 || channel >= provider.ChannelCount) throw new ArgumentOutOfRangeException();
+            if (channel < 0 || channel >= this.provider.ChannelCount) throw new ArgumentOutOfRangeException();
 
-            return new DacChannel(this, provider, channel);
+            return new DacChannel(this, this.provider, channel);
         }
     }
 }
