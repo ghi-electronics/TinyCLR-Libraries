@@ -1,6 +1,5 @@
 ﻿namespace GHIElectronics.TinyCLR.Pins {
     /// <summary>Board definition for the G80.</summary>
-    /// <remarks>I2C can be found on PB7 (SDA) and PB6 (SCL).</remarks>
     public static class G80 {
         /// <summary>The analog input precision supported by the board.</summary>
         public const int SupportedAnalogInputPrecision = 12;
@@ -11,265 +10,265 @@
         /// <summary>GPIO definitions.</summary>
         public static class Gpio {
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PA0 = (Cpu.Pin)(0);
+            public const int PA0 = 0;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PA1 = (Cpu.Pin)(1);
+            public const int PA1 = 1;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PA2 = (Cpu.Pin)(2);
+            public const int PA2 = 2;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PA3 = (Cpu.Pin)(3);
+            public const int PA3 = 3;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PA4 = (Cpu.Pin)(4);
+            public const int PA4 = 4;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PA5 = (Cpu.Pin)(5);
+            public const int PA5 = 5;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PA6 = (Cpu.Pin)(6);
+            public const int PA6 = 6;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PA7 = (Cpu.Pin)(7);
+            public const int PA7 = 7;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PA8 = (Cpu.Pin)(8);
+            public const int PA8 = 8;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PA9 = (Cpu.Pin)(9);
+            public const int PA9 = 9;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PA10 = (Cpu.Pin)(10);
+            public const int PA10 = 10;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PA11 = (Cpu.Pin)(11);
+            public const int PA11 = 11;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PA12 = (Cpu.Pin)(12);
+            public const int PA12 = 12;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PA13 = (Cpu.Pin)(13);
+            public const int PA13 = 13;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PA14 = (Cpu.Pin)(14);
+            public const int PA14 = 14;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PA15 = (Cpu.Pin)(15);
+            public const int PA15 = 15;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PB0 = (Cpu.Pin)(0 + 16);
+            public const int PB0 = 0 + 16;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PB1 = (Cpu.Pin)(1 + 16);
+            public const int PB1 = 1 + 16;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PB2 = (Cpu.Pin)(2 + 16);
+            public const int PB2 = 2 + 16;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PB3 = (Cpu.Pin)(3 + 16);
+            public const int PB3 = 3 + 16;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PB4 = (Cpu.Pin)(4 + 16);
+            public const int PB4 = 4 + 16;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PB5 = (Cpu.Pin)(5 + 16);
+            public const int PB5 = 5 + 16;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PB6 = (Cpu.Pin)(6 + 16);
+            public const int PB6 = 6 + 16;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PB7 = (Cpu.Pin)(7 + 16);
+            public const int PB7 = 7 + 16;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PB8 = (Cpu.Pin)(8 + 16);
+            public const int PB8 = 8 + 16;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PB9 = (Cpu.Pin)(9 + 16);
+            public const int PB9 = 9 + 16;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PB10 = (Cpu.Pin)(10 + 16);
+            public const int PB10 = 10 + 16;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PB11 = (Cpu.Pin)(11 + 16);
+            public const int PB11 = 11 + 16;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PB12 = (Cpu.Pin)(12 + 16);
+            public const int PB12 = 12 + 16;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PB13 = (Cpu.Pin)(13 + 16);
+            public const int PB13 = 13 + 16;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PB14 = (Cpu.Pin)(14 + 16);
+            public const int PB14 = 14 + 16;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PB15 = (Cpu.Pin)(15 + 16);
+            public const int PB15 = 15 + 16;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PC0 = (Cpu.Pin)(0 + 32);
+            public const int PC0 = 0 + 32;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PC1 = (Cpu.Pin)(1 + 32);
+            public const int PC1 = 1 + 32;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PC2 = (Cpu.Pin)(2 + 32);
+            public const int PC2 = 2 + 32;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PC3 = (Cpu.Pin)(3 + 32);
+            public const int PC3 = 3 + 32;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PC4 = (Cpu.Pin)(4 + 32);
+            public const int PC4 = 4 + 32;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PC5 = (Cpu.Pin)(5 + 32);
+            public const int PC5 = 5 + 32;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PC6 = (Cpu.Pin)(6 + 32);
+            public const int PC6 = 6 + 32;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PC7 = (Cpu.Pin)(7 + 32);
+            public const int PC7 = 7 + 32;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PC8 = (Cpu.Pin)(8 + 32);
+            public const int PC8 = 8 + 32;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PC9 = (Cpu.Pin)(9 + 32);
+            public const int PC9 = 9 + 32;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PC10 = (Cpu.Pin)(10 + 32);
+            public const int PC10 = 10 + 32;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PC11 = (Cpu.Pin)(11 + 32);
+            public const int PC11 = 11 + 32;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PC12 = (Cpu.Pin)(12 + 32);
+            public const int PC12 = 12 + 32;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PC13 = (Cpu.Pin)(13 + 32);
+            public const int PC13 = 13 + 32;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PC14 = (Cpu.Pin)(14 + 32);
+            public const int PC14 = 14 + 32;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PC15 = (Cpu.Pin)(15 + 32);
+            public const int PC15 = 15 + 32;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PD0 = (Cpu.Pin)(0 + 48);
+            public const int PD0 = 0 + 48;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PD1 = (Cpu.Pin)(1 + 48);
+            public const int PD1 = 1 + 48;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PD2 = (Cpu.Pin)(2 + 48);
+            public const int PD2 = 2 + 48;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PD3 = (Cpu.Pin)(3 + 48);
+            public const int PD3 = 3 + 48;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PD4 = (Cpu.Pin)(4 + 48);
+            public const int PD4 = 4 + 48;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PD5 = (Cpu.Pin)(5 + 48);
+            public const int PD5 = 5 + 48;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PD6 = (Cpu.Pin)(6 + 48);
+            public const int PD6 = 6 + 48;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PD7 = (Cpu.Pin)(7 + 48);
+            public const int PD7 = 7 + 48;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PD8 = (Cpu.Pin)(8 + 48);
+            public const int PD8 = 8 + 48;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PD9 = (Cpu.Pin)(9 + 48);
+            public const int PD9 = 9 + 48;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PD10 = (Cpu.Pin)(10 + 48);
+            public const int PD10 = 10 + 48;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PD11 = (Cpu.Pin)(11 + 48);
+            public const int PD11 = 11 + 48;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PD12 = (Cpu.Pin)(12 + 48);
+            public const int PD12 = 12 + 48;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PD13 = (Cpu.Pin)(13 + 48);
+            public const int PD13 = 13 + 48;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PD14 = (Cpu.Pin)(14 + 48);
+            public const int PD14 = 14 + 48;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PD15 = (Cpu.Pin)(15 + 48);
+            public const int PD15 = 15 + 48;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PE0 = (Cpu.Pin)(0 + 64);
+            public const int PE0 = 0 + 64;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PE1 = (Cpu.Pin)(1 + 64);
+            public const int PE1 = 1 + 64;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PE2 = (Cpu.Pin)(2 + 64);
+            public const int PE2 = 2 + 64;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PE3 = (Cpu.Pin)(3 + 64);
+            public const int PE3 = 3 + 64;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PE4 = (Cpu.Pin)(4 + 64);
+            public const int PE4 = 4 + 64;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PE5 = (Cpu.Pin)(5 + 64);
+            public const int PE5 = 5 + 64;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PE6 = (Cpu.Pin)(6 + 64);
+            public const int PE6 = 6 + 64;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PE7 = (Cpu.Pin)(7 + 64);
+            public const int PE7 = 7 + 64;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PE8 = (Cpu.Pin)(8 + 64);
+            public const int PE8 = 8 + 64;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PE9 = (Cpu.Pin)(9 + 64);
+            public const int PE9 = 9 + 64;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PE10 = (Cpu.Pin)(10 + 64);
+            public const int PE10 = 10 + 64;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PE11 = (Cpu.Pin)(11 + 64);
+            public const int PE11 = 11 + 64;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PE12 = (Cpu.Pin)(12 + 64);
+            public const int PE12 = 12 + 64;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PE13 = (Cpu.Pin)(13 + 64);
+            public const int PE13 = 13 + 64;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PE14 = (Cpu.Pin)(14 + 64);
+            public const int PE14 = 14 + 64;
             /// <summary>GPIO pin.</summary>
-            public const Cpu.Pin PE15 = (Cpu.Pin)(15 + 64);
+            public const int PE15 = 15 + 64;
         }
 
         /// <summary>Analog input definitions.</summary>
         public static class AnalogInput {
             /// <summary>Analog channel.</summary>
-            public const Cpu.AnalogChannel PA0 = (Cpu.AnalogChannel)0;
+            public const int PA0 = 0;
             /// <summary>Analog channel.</summary>
-            public const Cpu.AnalogChannel PA1 = (Cpu.AnalogChannel)1;
+            public const int PA1 = 1;
             /// <summary>Analog channel.</summary>
-            public const Cpu.AnalogChannel PA2 = (Cpu.AnalogChannel)2;
+            public const int PA2 = 2;
             /// <summary>Analog channel.</summary>
-            public const Cpu.AnalogChannel PA3 = (Cpu.AnalogChannel)3;
+            public const int PA3 = 3;
             /// <summary>Analog channel.</summary>
-            public const Cpu.AnalogChannel PA4 = (Cpu.AnalogChannel)4;
+            public const int PA4 = 4;
             /// <summary>Analog channel.</summary>
-            public const Cpu.AnalogChannel PA5 = (Cpu.AnalogChannel)5;
+            public const int PA5 = 5;
             /// <summary>Analog channel.</summary>
-            public const Cpu.AnalogChannel PA6 = (Cpu.AnalogChannel)6;
+            public const int PA6 = 6;
             /// <summary>Analog channel.</summary>
-            public const Cpu.AnalogChannel PA7 = (Cpu.AnalogChannel)7;
+            public const int PA7 = 7;
             /// <summary>Analog channel.</summary>
-            public const Cpu.AnalogChannel PB0 = (Cpu.AnalogChannel)8;
+            public const int PB0 = 8;
             /// <summary>Analog channel.</summary>
-            public const Cpu.AnalogChannel PB1 = (Cpu.AnalogChannel)9;
+            public const int PB1 = 9;
             /// <summary>Analog channel.</summary>
-            public const Cpu.AnalogChannel PC0 = (Cpu.AnalogChannel)10;
+            public const int PC0 = 10;
             /// <summary>Analog channel.</summary>
-            public const Cpu.AnalogChannel PC1 = (Cpu.AnalogChannel)11;
+            public const int PC1 = 11;
             /// <summary>Analog channel.</summary>
-            public const Cpu.AnalogChannel PC2 = (Cpu.AnalogChannel)12;
+            public const int PC2 = 12;
             /// <summary>Analog channel.</summary>
-            public const Cpu.AnalogChannel PC3 = (Cpu.AnalogChannel)13;
+            public const int PC3 = 13;
             /// <summary>Analog channel.</summary>
-            public const Cpu.AnalogChannel PC4 = (Cpu.AnalogChannel)14;
+            public const int PC4 = 14;
             /// <summary>Analog channel.</summary>
-            public const Cpu.AnalogChannel PC5 = (Cpu.AnalogChannel)15;
+            public const int PC5 = 15;
         }
 
         /// <summary>Analog output definitions.</summary>
         public static class AnalogOutput {
             /// <summary>Analog channel.</summary>
-            public const Cpu.AnalogOutputChannel PA4 = (Cpu.AnalogOutputChannel)0;
+            public const int PA4 = 0;
             /// <summary>Analog channel.</summary>
-            public const Cpu.AnalogOutputChannel PA5 = (Cpu.AnalogOutputChannel)1;
+            public const int PA5 = 1;
         }
 
         /// <summary>PWM output definitions.</summary>
         public static class PwmOutput {
             /// <summary>PWM channel.</summary>
-            public const Cpu.PWMChannel PE9 = (Cpu.PWMChannel)0;
+            public const int PE9 = 0;
             /// <summary>PWM channel.</summary>
-            public const Cpu.PWMChannel PE11 = (Cpu.PWMChannel)1;
+            public const int PE11 = 1;
             /// <summary>PWM channel.</summary>
-            public const Cpu.PWMChannel PE13 = (Cpu.PWMChannel)2;
+            public const int PE13 = 2;
             /// <summary>PWM channel.</summary>
-            public const Cpu.PWMChannel PE14 = (Cpu.PWMChannel)3;
+            public const int PE14 = 3;
             /// <summary>PWM channel.</summary>
-            public const Cpu.PWMChannel PA15 = (Cpu.PWMChannel)4;
+            public const int PA15 = 4;
             /// <summary>PWM channel.</summary>
-            public const Cpu.PWMChannel PB3 = (Cpu.PWMChannel)5;
+            public const int PB3 = 5;
             /// <summary>PWM channel.</summary>
-            public const Cpu.PWMChannel PB10 = (Cpu.PWMChannel)6;
+            public const int PB10 = 6;
             /// <summary>PWM channel.</summary>
-            public const Cpu.PWMChannel PB11 = (Cpu.PWMChannel)7;
+            public const int PB11 = 7;
             /// <summary>PWM channel.</summary>
-            public const Cpu.PWMChannel PB4 = (Cpu.PWMChannel)8;
+            public const int PB4 = 8;
             /// <summary>PWM channel.</summary>
-            public const Cpu.PWMChannel PB5 = (Cpu.PWMChannel)9;
+            public const int PB5 = 9;
             /// <summary>PWM channel.</summary>
-            public const Cpu.PWMChannel PB0 = (Cpu.PWMChannel)10;
+            public const int PB0 = 10;
             /// <summary>PWM channel.</summary>
-            public const Cpu.PWMChannel PB1 = (Cpu.PWMChannel)11;
+            public const int PB1 = 11;
             /// <summary>PWM channel.</summary>
-            public const Cpu.PWMChannel PD12 = (Cpu.PWMChannel)12;
+            public const int PD12 = 12;
             /// <summary>PWM channel.</summary>
-            public const Cpu.PWMChannel PD13 = (Cpu.PWMChannel)13;
+            public const int PD13 = 13;
             /// <summary>PWM channel.</summary>
-            public const Cpu.PWMChannel PD14 = (Cpu.PWMChannel)14;
+            public const int PD14 = 14;
             /// <summary>PWM channel.</summary>
-            public const Cpu.PWMChannel PD15 = (Cpu.PWMChannel)15;
+            public const int PD15 = 15;
             /// <summary>PWM channel.</summary>
-            public const Cpu.PWMChannel PC6 = (Cpu.PWMChannel)16;
+            public const int PC6 = 16;
             /// <summary>PWM channel.</summary>
-            public const Cpu.PWMChannel PC7 = (Cpu.PWMChannel)17;
+            public const int PC7 = 17;
             /// <summary>PWM channel.</summary>
-            public const Cpu.PWMChannel PC8 = (Cpu.PWMChannel)18;
+            public const int PC8 = 18;
             /// <summary>PWM channel.</summary>
-            public const Cpu.PWMChannel PC9 = (Cpu.PWMChannel)19;
+            public const int PC9 = 19;
             /// <summary>PWM channel.</summary>
-            public const Cpu.PWMChannel PA2 = (Cpu.PWMChannel)20;
+            public const int PA2 = 20;
             /// <summary>PWM channel.</summary>
-            public const Cpu.PWMChannel PA3 = (Cpu.PWMChannel)21;
+            public const int PA3 = 21;
             /// <summary>PWM channel.</summary>
-            public const Cpu.PWMChannel PB8 = (Cpu.PWMChannel)22;
+            public const int PB8 = 22;
             /// <summary>PWM channel.</summary>
-            public const Cpu.PWMChannel PB9 = (Cpu.PWMChannel)23;
+            public const int PB9 = 23;
             /// <summary>PWM channel.</summary>
-            public const Cpu.PWMChannel PA6 = (Cpu.PWMChannel)24;
+            public const int PA6 = 24;
             /// <summary>PWM channel.</summary>
-            public const Cpu.PWMChannel PA7 = (Cpu.PWMChannel)25;
+            public const int PA7 = 25;
         }
 
         /// <summary>Serial port definitions.</summary>
@@ -287,9 +286,15 @@
         /// <summary>SPI bus definitions.</summary>
         public static class SpiBus {
             /// <summary>SPI bus on PB5 (MOSI), PB4 (MISO), and PB3 (SCK).</summary>
-            public const SPI.SPI_module Spi1 = SPI.SPI_module.SPI1;
+            public const string Spi1 = "SPI1";
             /// <summary>SPI bus on PC3 (MOSI), PC2 (MISO), and PB10 (SCK).</summary>
-            public const SPI.SPI_module Spi2 = SPI.SPI_module.SPI2;
+            public const string Spi2 = "SPI2";
+        }
+
+        /// <summary>I2C bus definitions.</summary>
+        public static class I2cBus {
+            /// <summary>SPI bus on PB7 (SDA) and PB6 (SCL).</summary>
+            public const string I2c1 = "I2C1";
         }
 
         /// <summary>CAN bus definitions.</summary>
