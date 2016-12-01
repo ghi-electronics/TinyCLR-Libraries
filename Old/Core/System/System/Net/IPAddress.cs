@@ -90,6 +90,19 @@ namespace System.Net
             return new IPAddress((long)ipAddress);
         }
 
+        public static bool TryParse(string s, out IPAddress b) {
+            b = default(IPAddress);
+
+            try {
+                b = IPAddress.Parse(s);
+
+                return true;
+            }
+            catch {
+                return false;
+            }
+        }
+
         public override string ToString()
         {
             return ((byte)(m_Address)).ToString() +

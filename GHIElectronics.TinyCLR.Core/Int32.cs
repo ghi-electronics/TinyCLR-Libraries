@@ -36,6 +36,19 @@ namespace System
             return Convert.ToInt32(s);
         }
 
+        public static bool TryParse(string s, out int b) {
+            b = default(int);
+
+            try {
+                b = int.Parse(s);
+
+                return true;
+            }
+            catch {
+                return false;
+            }
+        }
+
     }
 }
 

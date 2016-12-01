@@ -41,6 +41,19 @@ namespace System
             return Convert.ToUInt16(s);
         }
 
+        public static bool TryParse(string s, out ushort b) {
+            b = default(ushort);
+
+            try {
+                b = ushort.Parse(s);
+
+                return true;
+            }
+            catch {
+                return false;
+            }
+        }
+
     }
 }
 

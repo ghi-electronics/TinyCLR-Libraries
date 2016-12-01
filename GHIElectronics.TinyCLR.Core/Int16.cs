@@ -38,6 +38,19 @@ namespace System
             return Convert.ToInt16(s);
         }
 
+        public static bool TryParse(string s, out short b) {
+            b = default(short);
+
+            try {
+                b = short.Parse(s);
+
+                return true;
+            }
+            catch {
+                return false;
+            }
+        }
+
     }
 }
 

@@ -36,6 +36,19 @@ namespace System
             return Convert.ToInt64(s);
         }
 
+        public static bool TryParse(string s, out long b) {
+            b = default(long);
+
+            try {
+                b = long.Parse(s);
+
+                return true;
+            }
+            catch {
+                return false;
+            }
+        }
+
     }
 }
 

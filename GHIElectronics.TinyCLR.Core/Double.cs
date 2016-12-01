@@ -164,6 +164,20 @@ namespace System
 
             return Convert.ToDouble(s);
         }
+
+        public static bool TryParse(string s, out double b) {
+            b = default(double);
+
+            try {
+                b = double.Parse(s);
+
+                return true;
+            }
+            catch {
+                return false;
+            }
+        }
+
         //
         // Summary:
         //     Converts the numeric value of this instance to its equivalent string representation.
@@ -219,45 +233,7 @@ namespace System
 
             return Number.Format(m_value, false, format, NumberFormatInfo.CurrentInfo);
         }
-        //
-        // Summary:
-        //     Converts the string representation of a number to its double-precision floating-point
-        //     number equivalent. A return value indicates whether the conversion succeeded
-        //     or failed.
-        //
-        // Parameters:
-        //   s:
-        //     A string containing a number to convert.
-        //
-        //   result:
-        //     When this method returns, contains the double-precision floating-point number
-        //     equivalent to the s parameter, if the conversion succeeded, or zero if the
-        //     conversion failed. The conversion fails if the s parameter is null, is not
-        //     a number in a valid format, or represents a number less than System.Double.MinValue
-        //     or greater than System.Double.MaxValue. This parameter is passed uninitialized.
-        //
-        // Returns:
-        //     true if s was converted successfully; otherwise, false.
-        public static bool TryParse(string s, out double result)
-        {
-            result = 0.0;
 
-            if (s == null)
-            {
-                return false;
-            }
-
-            try
-            {
-                result = Convert.ToDouble(s);
-                return true;
-            }
-            catch
-            {
-                result = 0.0;
-            }
-            return false;
-        }
         //
         // Summary:
         //     Converts the string representation of a number in a specified style and culture-specific

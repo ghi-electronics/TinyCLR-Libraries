@@ -50,6 +50,18 @@ namespace System
             return Convert.ToByte(s);
         }
 
+        public static bool TryParse(string s, out byte b) {
+            b = default(byte);
+
+            try {
+                b = byte.Parse(s);
+
+                return true;
+            }
+            catch {
+                return false;
+            }
+        }
     }
 }
 

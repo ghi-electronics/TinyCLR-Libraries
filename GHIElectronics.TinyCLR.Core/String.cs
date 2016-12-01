@@ -55,12 +55,7 @@ namespace System
                 var parts = current.Split(':');
                 var index = 0;
 
-                try {
-                    index = int.Parse(parts[0]);
-                }
-                catch {
-                    break;
-                }
+                int.TryParse(parts[0], out index);
 
                 if (parts.Length == 1) {
                     result += args[index].ToString();

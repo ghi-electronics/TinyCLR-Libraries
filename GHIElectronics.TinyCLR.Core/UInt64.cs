@@ -39,6 +39,19 @@ namespace System
             return Convert.ToUInt64(s);
         }
 
+        public static bool TryParse(string s, out ulong b) {
+            b = default(ulong);
+
+            try {
+                b = ulong.Parse(s);
+
+                return true;
+            }
+            catch {
+                return false;
+            }
+        }
+
     }
 }
 

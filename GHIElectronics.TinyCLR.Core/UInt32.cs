@@ -41,6 +41,19 @@ namespace System
             return Convert.ToUInt32(s);
         }
 
+        public static bool TryParse(string s, out uint b) {
+            b = default(uint);
+
+            try {
+                b = uint.Parse(s);
+
+                return true;
+            }
+            catch {
+                return false;
+            }
+        }
+
     }
 }
 
