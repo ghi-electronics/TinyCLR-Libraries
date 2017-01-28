@@ -289,6 +289,24 @@ namespace System
 
             if (isInteger)
             {
+                if (formatCh == 'N' || formatCh == 'F' || formatCh == 'G') // remove '0' infront, except for formatCh = 'D'
+                {
+                    if (result != null && result.Length > 1)
+                    {
+                        bool negative = result[0] == '-' ? true : false;
+
+                        result = result.TrimStart(new char[] { '0', '-' });
+
+                        if (result == "")
+                            result = "0";
+
+                        if (negative)
+                            result = "-" + result;
+                    }
+                }
+
+                if ((formatCh == 'N' || formatCh == 'F'|| formatCh == 'D') && precision == 0 && ((int)value == 0))
+                    return "0";
                 return PostProcessInteger(value, result, formatCh, precision, info);
             }
             else
@@ -401,6 +419,22 @@ namespace System
                     break;
             }
 
+            if (result != null && result.Length > 0 && result[0] == '-') // if it is zero, no negative sign
+            {
+                int i = 1;
+
+                for (; i < result.Length; i++)
+                {
+                    if (result[i] != '.' && result[i] != '0' && result[i] != ',')
+                        break;
+                }
+
+                if (i == result.Length)
+                {
+                    result = result.Substring(1);
+                }
+            }
+
             return result;
         }
 
@@ -415,6 +449,22 @@ namespace System
 
             result = ReplaceDecimalSeperator(result, info);
             result = ReplaceNegativeSign(result, info);
+
+            if (result != null && result.Length > 0 && result[0] == '-') // if it is zero, no negative sign
+            {
+                int i = 1;
+
+                for (; i < result.Length; i++)
+                {
+                    if (result[i] != '.' && result[i] != '0' && result[i] != ',')
+                        break;
+                }
+
+                if (i == result.Length)
+                {
+                    result = result.Substring(1);
+                }
+            }
 
             return result;
         }
@@ -501,6 +551,7 @@ namespace System
 
             return result;
         }
+        
     }
 }
 
