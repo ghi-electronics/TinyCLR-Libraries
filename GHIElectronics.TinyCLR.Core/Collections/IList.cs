@@ -16,7 +16,7 @@ namespace System.Collections
         /**
          * The Item property provides methods to read and edit entries in the List.
          */
-        Object this[int index]
+        object this[int index]
         {
             get;
             set;
@@ -28,12 +28,12 @@ namespace System.Collections
          * in the last available location, a SortedList most likely would not.
          * The return value is the position the new element was inserted in.
          */
-        int Add(Object value);
+        int Add(object value);
 
         /**
          * Returns whether the list contains a particular item.
          */
-        bool Contains(Object value);
+        bool Contains(object value);
 
         /**
          * Removes all items from the list.
@@ -52,7 +52,7 @@ namespace System.Collections
          * Returns the index of a particular item, if it is in the list.
          * Returns -1 if the item isn't in the list.
          */
-        int IndexOf(Object value);
+        int IndexOf(object value);
 
         /**
          * Inserts <var>value</var> into the list at position <var>index</var>.
@@ -60,12 +60,12 @@ namespace System.Collections
          * number of elements in the list.  If <var>index</var> equals the number
          * of items in the list, then <var>value</var> is appended to the end.
          */
-        void Insert(int index, Object value);
+        void Insert(int index, object value);
 
         /**
          * Removes an item from the list.
          */
-        void Remove(Object value);
+        void Remove(object value);
 
         /**
          * Removes the item at position <var>index</var>.

@@ -23,15 +23,11 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio
             EventSink.AddEventListener(EventCategory.Gpio, this);
         }
 
-        public BaseEvent ProcessEvent(uint data1, uint data2, DateTime time)
-        {
-            return new GpioPinEvent
-            {
-                // Data1 is packed by PostManagedEvent, so we need to unpack the high word.
-                PinNumber = (int)(data1 >> 16),
-                Edge = (data2 == 0) ? GpioPinEdge.FallingEdge : GpioPinEdge.RisingEdge,
-            };
-        }
+        public BaseEvent ProcessEvent(uint data1, uint data2, DateTime time) => new GpioPinEvent {
+            // Data1 is packed by PostManagedEvent, so we need to unpack the high word.
+            PinNumber = (int)(data1 >> 16),
+            Edge = (data2 == 0) ? GpioPinEdge.FallingEdge : GpioPinEdge.RisingEdge,
+        };
 
         public void InitializeForEventSource()
         {
@@ -42,11 +38,11 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio
             var pinEvent = (GpioPinEvent)ev;
             GpioPin pin = null;
 
-            lock (m_pinMap)
+            lock (this.m_pinMap)
             {
-                if (m_pinMap.Contains(pinEvent.PinNumber))
+                if (this.m_pinMap.Contains(pinEvent.PinNumber))
                 {
-                    pin = (GpioPin)m_pinMap[pinEvent.PinNumber];
+                    pin = (GpioPin)this.m_pinMap[pinEvent.PinNumber];
                 }
             }
 
@@ -61,19 +57,19 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio
 
         public void AddPin(int pinNumber, GpioPin pin)
         {
-            lock (m_pinMap)
+            lock (this.m_pinMap)
             {
-                m_pinMap[pin.PinNumber] = pin;
+                this.m_pinMap[pin.PinNumber] = pin;
             }
         }
 
         public void RemovePin(int pinNumber)
         {
-            lock (m_pinMap)
+            lock (this.m_pinMap)
             {
-                if (m_pinMap.Contains(pinNumber))
+                if (this.m_pinMap.Contains(pinNumber))
                 {
-                    m_pinMap.Remove(pinNumber);
+                    this.m_pinMap.Remove(pinNumber);
                 }
             }
         }

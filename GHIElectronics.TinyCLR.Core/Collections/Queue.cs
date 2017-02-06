@@ -14,7 +14,7 @@ namespace System.Collections
     [Serializable()]
     public class Queue : ICollection, ICloneable
     {
-        private Object[] _array;
+        private object[] _array;
         private int _head;       // First valid element in the queue
         private int _tail;       // Last valid element in the queue
         private int _size;       // Number of elements.
@@ -28,41 +28,37 @@ namespace System.Collections
         /// </summary>
         public Queue()
         {
-            _array = new Object[_defaultCapacity];
-            _head = 0;
-            _tail = 0;
-            _size = 0;
+            this._array = new object[_defaultCapacity];
+            this._head = 0;
+            this._tail = 0;
+            this._size = 0;
         }
 
         /// <summary>
         /// Gets the number of elements contained in the Queue.
         /// </summary>
-        public virtual int Count
-        {
-            get { return _size; }
-        }
-
+        public virtual int Count => this._size;
         /// <summary>
         /// Creates a shallow copy of the Queue.
         /// </summary>
         /// <returns>A shallow copy of the Queue.</returns>
-        public virtual Object Clone()
+        public virtual object Clone()
         {
-            Queue q = new Queue();
+            var q = new Queue();
 
-            if (_size > _defaultCapacity)
+            if (this._size > _defaultCapacity)
             {
                 // only re-allocate a new array if the size isn't what we need.
                 // otherwise, the one allocated in the constructor will be just fine
-                q._array = new Object[_size];
+                q._array = new object[this._size];
             }
             else
             {
                 // if size is not the same as capacity, we need to adjust tail accordingly
-                q._tail = _size % _defaultCapacity;
+                q._tail = this._size % _defaultCapacity;
             }
 
-            q._size = _size;
+            q._size = this._size;
 
             CopyTo(q._array, 0);
 
@@ -73,19 +69,11 @@ namespace System.Collections
         /// Gets a value indicating whether access to the Queue is synchronized (thread safe).
         /// Always return false.
         /// </summary>
-        public virtual bool IsSynchronized
-        {
-            get { return false; }
-        }
-
+        public virtual bool IsSynchronized => false;
         /// <summary>
         /// Gets an object that can be used to synchronize access to the Queue.
         /// </summary>
-        public virtual Object SyncRoot
-        {
-            get { return this; }
-        }
-
+        public virtual object SyncRoot => this;
         /// <summary>
         /// Removes all objects from the Queue.
         /// </summary>
@@ -106,7 +94,7 @@ namespace System.Collections
         /// </summary>
         /// <param name="obj">The object to add to the Queue.</param>
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern virtual void Enqueue(Object obj);
+        public extern virtual void Enqueue(object obj);
 
         /// <summary>
         /// Returns an enumerator that iterates through the Queue.
@@ -114,11 +102,11 @@ namespace System.Collections
         /// <returns>An IEnumerator for the Queue.</returns>
         public virtual IEnumerator GetEnumerator()
         {
-            int endIndex = _tail;
+            var endIndex = this._tail;
 
-            if (_size > 0 && _tail <= _head) endIndex += _array.Length;
+            if (this._size > 0 && this._tail <= this._head) endIndex += this._array.Length;
 
-            return new Array.SZArrayEnumerator(_array, _head, endIndex);
+            return new Array.SZArrayEnumerator(this._array, this._head, endIndex);
         }
 
         /// <summary>
@@ -126,33 +114,33 @@ namespace System.Collections
         /// </summary>
         /// <returns>The object that is removed from the beginning of the Queue.</returns>
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern virtual Object Dequeue();
+        public extern virtual object Dequeue();
 
         /// <summary>
         /// Returns the object at the beginning of the Queue without removing it.
         /// </summary>
         /// <returns>The object at the beginning of the Queue.</returns>
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern virtual Object Peek();
+        public extern virtual object Peek();
 
         /// <summary>
         /// Determines whether an element is in the Queue.
         /// </summary>
         /// <param name="obj">The Object to locate in the Queue.</param>
         /// <returns>true if obj is found in the Queue; otherwise, false.</returns>
-        public virtual bool Contains(Object obj)
+        public virtual bool Contains(object obj)
         {
-            if (_size == 0)
+            if (this._size == 0)
                 return false;
 
-            if (_head < _tail)
+            if (this._head < this._tail)
             {
-                return Array.IndexOf(_array, obj, _head, _size) >= 0;
+                return Array.IndexOf(this._array, obj, this._head, this._size) >= 0;
             }
             else
             {
-                return (Array.IndexOf(_array, obj, _head, _array.Length - _head) >= 0) ||
-                       (Array.IndexOf(_array, obj, 0, _tail) >= 0);
+                return (Array.IndexOf(this._array, obj, this._head, this._array.Length - this._head) >= 0) ||
+                       (Array.IndexOf(this._array, obj, 0, this._tail) >= 0);
             }
         }
 
@@ -162,9 +150,9 @@ namespace System.Collections
         /// to its end.
         /// </summary>
         /// <returns>A new array containing elements copied from the Queue.</returns>
-        public virtual Object[] ToArray()
+        public virtual object[] ToArray()
         {
-            Object[] arr = new Object[_size];
+            var arr = new object[this._size];
 
             CopyTo(arr, 0);
 

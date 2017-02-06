@@ -38,7 +38,7 @@ namespace System.Collections
          * has been modified since this enumerator was created, or if the Enumerator
          * is positioned before or after the valid range.
          */
-        Object Current
+        object Current
         {
             get;
         }

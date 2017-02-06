@@ -17,10 +17,7 @@ namespace GHIElectronics.TinyCLR.Devices.I2c
         /// speed and exclusive sharing mode.
         /// </summary>
         /// <param name="slaveAddress">Initial address of the device.</param>
-        public I2cConnectionSettings(int slaveAddress)
-        {
-            m_slaveAddress = slaveAddress;
-        }
+        public I2cConnectionSettings(int slaveAddress) => this.m_slaveAddress = slaveAddress;
 
         /// <summary>
         /// Construct a copy of an I2cConnectionSettings object.
@@ -28,9 +25,9 @@ namespace GHIElectronics.TinyCLR.Devices.I2c
         /// <param name="source">Source object to copy from.</param>
         internal I2cConnectionSettings(I2cConnectionSettings source)
         {
-            m_slaveAddress = source.m_slaveAddress;
-            m_busSpeed = source.m_busSpeed;
-            m_sharingMode = source.m_sharingMode;
+            this.m_slaveAddress = source.m_slaveAddress;
+            this.m_busSpeed = source.m_busSpeed;
+            this.m_sharingMode = source.m_sharingMode;
         }
 
         /// <summary>
@@ -40,15 +37,9 @@ namespace GHIElectronics.TinyCLR.Devices.I2c
         ///     is from 8 to 119.</value>
         public int SlaveAddress
         {
-            get
-            {
-                return m_slaveAddress;
-            }
+            get => m_slaveAddress;
 
-            set
-            {
-                m_slaveAddress = value;
-            }
+            set => m_slaveAddress = value;
         }
 
         /// <summary>
@@ -58,15 +49,9 @@ namespace GHIElectronics.TinyCLR.Devices.I2c
         /// <value>The bus speed to use for connecting to an I²C device.</value>
         public I2cBusSpeed BusSpeed
         {
-            get
-            {
-                return m_busSpeed;
-            }
+            get => m_busSpeed;
 
-            set
-            {
-                m_busSpeed = value;
-            }
+            set => m_busSpeed = value;
         }
 
         /// <summary>
@@ -77,15 +62,9 @@ namespace GHIElectronics.TinyCLR.Devices.I2c
         /// <value>The sharing mode to use to connect to the I²C bus address.</value>
         public I2cSharingMode SharingMode
         {
-            get
-            {
-                return m_sharingMode;
-            }
+            get => m_sharingMode;
 
-            set
-            {
-                m_sharingMode = value;
-            }
+            set => m_sharingMode = value;
         }
     }
 }

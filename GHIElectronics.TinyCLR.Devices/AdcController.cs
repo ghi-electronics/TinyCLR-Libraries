@@ -8,49 +8,19 @@ namespace GHIElectronics.TinyCLR.Devices.Adc
         private IAdcControllerProvider m_provider;
         private static AdcController instance;
 
-        internal AdcController(IAdcControllerProvider provider)
-        {
-            m_provider = provider;
-        }
+        internal AdcController(IAdcControllerProvider provider) => this.m_provider = provider;
 
-        public int ChannelCount
-        {
-            get
-            {
-                return m_provider.ChannelCount;
-            }
-        }
+        public int ChannelCount => this.m_provider.ChannelCount;
 
-        public int ResolutionInBits
-        {
-            get
-            {
-                return m_provider.ResolutionInBits;
-            }
-        }
+        public int ResolutionInBits => this.m_provider.ResolutionInBits;
 
-        public int MinValue
-        {
-            get
-            {
-                return m_provider.MinValue;
-            }
-        }
+        public int MinValue => this.m_provider.MinValue;
 
-        public int MaxValue
-        {
-            get
-            {
-                return m_provider.MaxValue;
-            }
-        }
+        public int MaxValue => this.m_provider.MaxValue;
 
         public AdcChannelMode ChannelMode
         {
-            get
-            {
-                return (AdcChannelMode)m_provider.ChannelMode;
-            }
+            get => (AdcChannelMode)m_provider.ChannelMode;
 
             set
             {
@@ -64,13 +34,11 @@ namespace GHIElectronics.TinyCLR.Devices.Adc
                     throw new ArgumentException();
                 }
 
-                m_provider.ChannelMode = (ProviderAdcChannelMode)value;
+                this.m_provider.ChannelMode = (ProviderAdcChannelMode)value;
             }
         }
 
-        public static AdcController GetDefault() {
-            return AdcController.instance ?? (AdcController.instance = new AdcController(new DefaultAdcControllerProvider()));
-        }
+        public static AdcController GetDefault() => AdcController.instance ?? (AdcController.instance = new AdcController(new DefaultAdcControllerProvider()));
 
         public static AdcController[] GetControllers(IAdcProvider provider)
         {
@@ -79,7 +47,7 @@ namespace GHIElectronics.TinyCLR.Devices.Adc
             var providers = provider.GetControllers();
             var controllers = new AdcController[providers.Length];
 
-            for (int i = 0; i < providers.Length; ++i)
+            for (var i = 0; i < providers.Length; ++i)
             {
                 controllers[i] = new AdcController(providers[i]);
             }
@@ -99,17 +67,17 @@ namespace GHIElectronics.TinyCLR.Devices.Adc
                 throw new ArgumentException();
             }
 
-            return m_provider.IsChannelModeSupported((ProviderAdcChannelMode)channelMode);
+            return this.m_provider.IsChannelModeSupported((ProviderAdcChannelMode)channelMode);
         }
 
         public AdcChannel OpenChannel(int channelNumber)
         {
-            if ((channelNumber < 0) || (channelNumber >= m_provider.ChannelCount))
+            if ((channelNumber < 0) || (channelNumber >= this.m_provider.ChannelCount))
             {
                 throw new ArgumentOutOfRangeException();
             }
 
-            return new AdcChannel(this, m_provider, channelNumber);
+            return new AdcChannel(this, this.m_provider, channelNumber);
         }
     }
 }

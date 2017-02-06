@@ -13,12 +13,12 @@ namespace System
         {
         }
 
-        public InvalidOperationException(String message)
+        public InvalidOperationException(string message)
             : base(message)
         {
         }
 
-        public InvalidOperationException(String message, Exception innerException)
+        public InvalidOperationException(string message, Exception innerException)
             : base(message, innerException)
         {
         }

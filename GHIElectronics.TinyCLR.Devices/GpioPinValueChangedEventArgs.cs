@@ -9,10 +9,7 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio
     {
         private GpioPinEdge m_edge;
 
-        internal GpioPinValueChangedEventArgs(GpioPinEdge edge)
-        {
-            m_edge = edge;
-        }
+        internal GpioPinValueChangedEventArgs(GpioPinEdge edge) => this.m_edge = edge;
 
         /// <summary>
         /// Gets the type of change that occurred to the value of the general-purpose I/O (GPIO) pin for the
@@ -20,12 +17,6 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio
         /// </summary>
         /// <value>An enumeration value that indicates the type of change that occurred to the value of the GPIO pin for
         ///     the GpioPin.ValueChanged event.</value>
-        public GpioPinEdge Edge
-        {
-            get
-            {
-                return m_edge;
-            }
-        }
+        public GpioPinEdge Edge => this.m_edge;
     }
 }

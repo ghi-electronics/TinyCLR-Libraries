@@ -12,7 +12,7 @@ namespace System
     {
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern WeakReference(Object target);
+        public extern WeakReference(object target);
 
         public extern virtual bool IsAlive
         {
@@ -20,7 +20,7 @@ namespace System
             get;
         }
 
-        public extern virtual Object Target
+        public extern virtual object Target
         {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
             get;

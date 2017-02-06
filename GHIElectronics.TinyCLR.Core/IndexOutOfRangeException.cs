@@ -8,12 +8,12 @@ namespace System
         {
         }
 
-        public IndexOutOfRangeException(String message)
+        public IndexOutOfRangeException(string message)
             : base(message)
         {
         }
 
-        public IndexOutOfRangeException(String message, Exception innerException)
+        public IndexOutOfRangeException(string message, Exception innerException)
             : base(message, innerException)
         {
         }

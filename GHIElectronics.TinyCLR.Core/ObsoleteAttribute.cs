@@ -20,37 +20,29 @@ namespace System
         , Inherited = false)]
     public sealed class ObsoleteAttribute : Attribute
     {
-        private String _message;
+        private string _message;
         private bool _error;
 
         public ObsoleteAttribute()
         {
-            _message = null;
-            _error = false;
+            this._message = null;
+            this._error = false;
         }
 
-        public ObsoleteAttribute(String message)
+        public ObsoleteAttribute(string message)
         {
-            _message = message;
-            _error = false;
+            this._message = message;
+            this._error = false;
         }
 
-        public ObsoleteAttribute(String message, bool error)
+        public ObsoleteAttribute(string message, bool error)
         {
-            _message = message;
-            _error = error;
+            this._message = message;
+            this._error = error;
         }
 
-        public String Message
-        {
-            get { return _message; }
-        }
-
-        public bool IsError
-        {
-            get { return _error; }
-        }
-
+        public string Message => this._message;
+        public bool IsError => this._error;
     }
 }
 

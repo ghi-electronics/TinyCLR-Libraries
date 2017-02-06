@@ -8,18 +8,9 @@ namespace System
     {
         private bool m_compliant;
 
-        public CLSCompliantAttribute(bool isCompliant)
-        {
-            m_compliant = isCompliant;
-        }
+        public CLSCompliantAttribute(bool isCompliant) => this.m_compliant = isCompliant;
 
-        public bool IsCompliant
-        {
-            get
-            {
-                return m_compliant;
-            }
-        }
+        public bool IsCompliant => this.m_compliant;
     }
 }
 

@@ -109,7 +109,7 @@ namespace System
                 throw new ArgumentOutOfRangeException("ticks", "Ticks must be between DateTime.MinValue.Ticks and DateTime.MaxValue.Ticks.");
             }
 
-            m_ticks = (ulong)ticks;
+            this.m_ticks = (ulong)ticks;
         }
 
         public DateTime(long ticks, DateTimeKind kind)
@@ -117,11 +117,11 @@ namespace System
         {
             if (kind == DateTimeKind.Local)
             {
-                m_ticks &= ~UTCMask;
+                this.m_ticks &= ~UTCMask;
             }
             else
             {
-                m_ticks |= UTCMask;
+                this.m_ticks |= UTCMask;
             }
         }
 
@@ -138,51 +138,27 @@ namespace System
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public extern DateTime(int year, int month, int day, int hour, int minute, int second, int millisecond);
 
-        public DateTime Add(TimeSpan val)
-        {
-            return new DateTime((long)m_ticks + val.Ticks);
-        }
+        public DateTime Add(TimeSpan val) => new DateTime((long)this.m_ticks + val.Ticks);
 
-        private DateTime Add(double val, int scale)
-        {
-            return new DateTime((long)((long)m_ticks + (long)(val * scale * TicksPerMillisecond + (val >= 0 ? 0.5 : -0.5))));
-        }
+        private DateTime Add(double val, int scale) => new DateTime((long)((long)this.m_ticks + (long)(val * scale * TicksPerMillisecond + (val >= 0 ? 0.5 : -0.5))));
 
-        public DateTime AddDays(double val)
-        {
-            return Add(val, MillisPerDay);
-        }
+        public DateTime AddDays(double val) => Add(val, MillisPerDay);
 
-        public DateTime AddHours(double val)
-        {
-            return Add(val, MillisPerHour);
-        }
+        public DateTime AddHours(double val) => Add(val, MillisPerHour);
 
-        public DateTime AddMilliseconds(double val)
-        {
-            return Add(val, 1);
-        }
+        public DateTime AddMilliseconds(double val) => Add(val, 1);
 
-        public DateTime AddMinutes(double val)
-        {
-            return Add(val, MillisPerMinute);
-        }
+        public DateTime AddMinutes(double val) => Add(val, MillisPerMinute);
 
-        public DateTime AddSeconds(double val)
-        {
-            return Add(val, MillisPerSecond);
-        }
+        public DateTime AddSeconds(double val) => Add(val, MillisPerSecond);
 
-        public DateTime AddTicks(long val)
-        {
-            return new DateTime((long)m_ticks + val);
-        }
+        public DateTime AddTicks(long val) => new DateTime((long)this.m_ticks + val);
 
         public static int Compare(DateTime t1, DateTime t2)
         {
             // Get ticks, clear UTC mask
-            ulong t1_ticks = t1.m_ticks & TickMask;
-            ulong t2_ticks = t2.m_ticks & TickMask;
+            var t1_ticks = t1.m_ticks & TickMask;
+            var t2_ticks = t2.m_ticks & TickMask;
 
             // Compare ticks, ignore the Kind property.
             if (t1_ticks > t2_ticks)
@@ -199,7 +175,7 @@ namespace System
             return 0;
         }
 
-        public int CompareTo(Object val)
+        public int CompareTo(object val)
         {
             if (val == null) return 1;
 
@@ -209,7 +185,7 @@ namespace System
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public extern static int DaysInMonth(int year, int month);
 
-        public override bool Equals(Object val)
+        public override bool Equals(object val)
         {
             if (val is DateTime)
             {
@@ -218,30 +194,27 @@ namespace System
                 // "this" may still have type int64.
                 // Convertion to object and back is a workaround.
                 object o = this;
-                DateTime thisTime = (DateTime)o;
+                var thisTime = (DateTime)o;
                 return Compare(thisTime, (DateTime)val) == 0;
             }
 
             return false;
         }
 
-        public static bool Equals(DateTime t1, DateTime t2)
-        {
-            return Compare(t1, t2) == 0;
-        }
+        public static bool Equals(DateTime t1, DateTime t2) => Compare(t1, t2) == 0;
 
         public DateTime Date
         {
             get
             {
                 // Need to remove UTC mask before arithmetic operations. Then set it back.
-                if ((m_ticks & UTCMask) != 0)
+                if ((this.m_ticks & UTCMask) != 0)
                 {
-                    return new DateTime((long)(((m_ticks & TickMask) - (m_ticks & TickMask) % TicksPerDay) | UTCMask));
+                    return new DateTime((long)(((this.m_ticks & TickMask) - (this.m_ticks & TickMask) % TicksPerDay) | UTCMask));
                 }
                 else
                 {
-                    return new DateTime((long)(m_ticks - m_ticks % TicksPerDay));
+                    return new DateTime((long)(this.m_ticks - this.m_ticks % TicksPerDay));
                 }
             }
         }
@@ -249,53 +222,35 @@ namespace System
         public int Day
         {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
-            get
-            {
-                return 0;
-            }
+            get => 0;
         }
 
         public DayOfWeek DayOfWeek
         {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
-            get
-            {
-                return DayOfWeek.Monday;
-            }
+            get => DayOfWeek.Monday;
         }
 
         public int DayOfYear
         {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
-            get
-            {
-                return 0;
-            }
+            get => 0;
         }
 
         /// Reduce size by calling a single method?
         public int Hour
         {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
-            get
-            {
-                return 0;
-            }
+            get => 0;
         }
 
-        public DateTimeKind Kind
-        {
-            get
-            {
+        public DateTimeKind Kind =>
                 // If mask for UTC time is set - return UTC. If no maskk - return local.
-                return (m_ticks & UTCMask) != 0 ? DateTimeKind.Utc : DateTimeKind.Local;
-            }
-
-        }
+                (this.m_ticks & UTCMask) != 0 ? DateTimeKind.Utc : DateTimeKind.Local;
 
         public static DateTime SpecifyKind(DateTime value, DateTimeKind kind)
         {
-            DateTime retVal = new DateTime((long)value.m_ticks);
+            var retVal = new DateTime((long)value.m_ticks);
 
             if (kind == DateTimeKind.Utc)
             {
@@ -313,55 +268,37 @@ namespace System
         public int Millisecond
         {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
-            get
-            {
-                return 0;
-            }
+            get => 0;
         }
 
         public int Minute
         {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
-            get
-            {
-                return 0;
-            }
+            get => 0;
         }
 
         public int Month
         {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
-            get
-            {
-                return 0;
-            }
+            get => 0;
         }
 
         public static DateTime Now
         {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
-            get
-            {
-                return new DateTime();
-            }
+            get => new DateTime();
         }
 
         public static DateTime UtcNow
         {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
-            get
-            {
-                return new DateTime();
-            }
+            get => new DateTime();
         }
 
         public int Second
         {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
-            get
-            {
-                return 0;
-            }
+            get => 0;
         }
 
         /// Our origin is at 1601/01/01:00:00:00.000
@@ -370,111 +307,54 @@ namespace System
         /// See DeviceCode\PAL\time_decl.h for explanation of why we are taking
         /// year 1601 as origin for our HAL, PAL, and CLR.
         // static Int64 ticksAtOrigin = 504911232000000000;
-        static Int64 ticksAtOrigin = 0;
-        public long Ticks
-        {
-            get
-            {
-                return (long)(m_ticks & TickMask) + ticksAtOrigin;
-            }
-        }
+        static long ticksAtOrigin = 0;
+        public long Ticks => (long)(this.m_ticks & TickMask) + ticksAtOrigin;
 
-        public TimeSpan TimeOfDay
-        {
-            get
-            {
-                return new TimeSpan((long)((m_ticks & TickMask) % TicksPerDay));
-            }
-        }
+        public TimeSpan TimeOfDay => new TimeSpan((long)((this.m_ticks & TickMask) % TicksPerDay));
 
         public static DateTime Today
         {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
-            get
-            {
-                return new DateTime();
-            }
+            get => new DateTime();
         }
 
         public int Year
         {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
-            get
-            {
-                return 0;
-            }
+            get => 0;
         }
 
-        public TimeSpan Subtract(DateTime val)
-        {
-            return new TimeSpan((long)(m_ticks & TickMask) - (long)(val.m_ticks & TickMask));
-        }
+        public TimeSpan Subtract(DateTime val) => new TimeSpan((long)(this.m_ticks & TickMask) - (long)(val.m_ticks & TickMask));
 
-        public DateTime Subtract(TimeSpan val)
-        {
-            return new DateTime((long)(m_ticks - (ulong)val.m_ticks));
-        }
+        public DateTime Subtract(TimeSpan val) => new DateTime((long)(this.m_ticks - (ulong)val.m_ticks));
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public extern DateTime ToLocalTime();
 
-        public override String ToString()
-        {
-            return DateTimeFormat.Format(this, null, DateTimeFormatInfo.CurrentInfo);
-        }
+        public override string ToString() => DateTimeFormat.Format(this, null, DateTimeFormatInfo.CurrentInfo);
 
-        public String ToString(String format)
-        {
-            return DateTimeFormat.Format(this, format, DateTimeFormatInfo.CurrentInfo);
-        }
+        public string ToString(string format) => DateTimeFormat.Format(this, format, DateTimeFormatInfo.CurrentInfo);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public extern DateTime ToUniversalTime();
 
-        public static DateTime operator +(DateTime d, TimeSpan t)
-        {
-            return new DateTime((long)(d.m_ticks + (ulong)t.m_ticks));
-        }
+        public static DateTime operator +(DateTime d, TimeSpan t) => new DateTime((long)(d.m_ticks + (ulong)t.m_ticks));
 
-        public static DateTime operator -(DateTime d, TimeSpan t)
-        {
-            return new DateTime((long)(d.m_ticks - (ulong)t.m_ticks));
-        }
+        public static DateTime operator -(DateTime d, TimeSpan t) => new DateTime((long)(d.m_ticks - (ulong)t.m_ticks));
 
-        public static TimeSpan operator -(DateTime d1, DateTime d2)
-        {
-            return d1.Subtract(d2);
-        }
+        public static TimeSpan operator -(DateTime d1, DateTime d2) => d1.Subtract(d2);
 
-        public static bool operator ==(DateTime d1, DateTime d2)
-        {
-            return Compare(d1, d2) == 0;
-        }
+        public static bool operator ==(DateTime d1, DateTime d2) => Compare(d1, d2) == 0;
 
-        public static bool operator !=(DateTime t1, DateTime t2)
-        {
-            return Compare(t1, t2) != 0;
-        }
+        public static bool operator !=(DateTime t1, DateTime t2) => Compare(t1, t2) != 0;
 
-        public static bool operator <(DateTime t1, DateTime t2)
-        {
-            return Compare(t1, t2) < 0;
-        }
+        public static bool operator <(DateTime t1, DateTime t2) => Compare(t1, t2) < 0;
 
-        public static bool operator <=(DateTime t1, DateTime t2)
-        {
-            return Compare(t1, t2) <= 0;
-        }
+        public static bool operator <=(DateTime t1, DateTime t2) => Compare(t1, t2) <= 0;
 
-        public static bool operator >(DateTime t1, DateTime t2)
-        {
-            return Compare(t1, t2) > 0;
-        }
+        public static bool operator >(DateTime t1, DateTime t2) => Compare(t1, t2) > 0;
 
-        public static bool operator >=(DateTime t1, DateTime t2)
-        {
-            return Compare(t1, t2) >= 0;
-        }
+        public static bool operator >=(DateTime t1, DateTime t2) => Compare(t1, t2) >= 0;
     }
 }
 

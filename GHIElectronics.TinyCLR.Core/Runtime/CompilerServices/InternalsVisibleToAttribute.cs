@@ -11,18 +11,9 @@ namespace System.Runtime.CompilerServices
     {
         private string _assemblyName;
 
-        public InternalsVisibleToAttribute(string assemblyName)
-        {
-            this._assemblyName = assemblyName;
-        }
+        public InternalsVisibleToAttribute(string assemblyName) => this._assemblyName = assemblyName;
 
-        public string AssemblyName
-        {
-            get
-            {
-                return _assemblyName;
-            }
-        }
+        public string AssemblyName => this._assemblyName;
 
     }
 }

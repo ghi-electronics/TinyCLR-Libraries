@@ -14,7 +14,7 @@ namespace System.Reflection
             get;
         }
 
-        public abstract String Name
+        public abstract string Name
         {
             get;
         }

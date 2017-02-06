@@ -20,10 +20,10 @@ namespace System
         }
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public static extern void SuppressFinalize(Object obj);
+        public static extern void SuppressFinalize(object obj);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public static extern void ReRegisterForFinalize(Object obj);
+        public static extern void ReRegisterForFinalize(object obj);
 
     }
 }

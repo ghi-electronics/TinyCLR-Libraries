@@ -10,18 +10,9 @@ namespace System.Runtime.CompilerServices
     {
         private readonly string propertyName;
 
-        public AccessedThroughPropertyAttribute(string propertyName)
-        {
-            this.propertyName = propertyName;
-        }
+        public AccessedThroughPropertyAttribute(string propertyName) => this.propertyName = propertyName;
 
-        public string PropertyName
-        {
-            get
-            {
-                return propertyName;
-            }
-        }
+        public string PropertyName => this.propertyName;
     }
 }
 

@@ -15,8 +15,8 @@ namespace GHIElectronics.TinyCLR.Devices.Enumeration
         /// <param name="isDefault">Whether this is the default device for a given device class.</param>
         internal DeviceInformation(string id, bool isDefault)
         {
-            m_id = id;
-            m_isDefault = isDefault;
+            this.m_id = id;
+            this.m_isDefault = isDefault;
         }
 
         /// <summary>
@@ -28,35 +28,21 @@ namespace GHIElectronics.TinyCLR.Devices.Enumeration
         ///     <para>The DeviceInformation object that the Id property identifies is actually a device interface. For
         ///         simplicity in this documentation, the DeviceInformation object is called a device, and the
         ///         identifier in its Id property is called a DeviceInformation ID.</para></remarks>
-        public string Id
-        {
-            get
-            {
-                return m_id;
-            }
-        }
+        public string Id => this.m_id;
 
         /// <summary>
         /// Indicates whether this device is the default device for the class.
         /// </summary>
         /// <value>Indicates whether this device is the default device for the class.</value>
-        public bool IsDefault
-        {
-            get
-            {
-                return m_isDefault;
-            }
-        }
+        public bool IsDefault => this.m_isDefault;
 
         /// <summary>
         /// Enumerates all DeviceInformation objects.
         /// </summary>
         /// <returns>List of all available DeviceInformation objects.</returns>
-        public static DeviceInformation[] FindAll()
-        {
+        public static DeviceInformation[] FindAll() =>
             // FUTURE: This should return DeviceInformationCollection
-            return FindAll(string.Empty);
-        }
+            FindAll(string.Empty);
 
         /// <summary>
         /// Enumerates DeviceInformation objects matching the specified Advanced Query Syntax (AQS) string.
@@ -68,11 +54,11 @@ namespace GHIElectronics.TinyCLR.Devices.Enumeration
             // We don't support full AQS in the Micro Framework. Instead, we use a pre-set list of
             // hard-coded strings. These strings should be considered opaque, so developers should use
             // the GetDeviceSelector helpers to ensure future compatibility.
-            ArrayList foundDevices = new ArrayList();
+            var foundDevices = new ArrayList();
 
             // Find all I2C buses which contain the given prefix.
             var i2cBusNames = I2c.I2cDevice.GetValidBusNames();
-            for (int i = 0; i < i2cBusNames.Length; ++i)
+            for (var i = 0; i < i2cBusNames.Length; ++i)
             {
                 if (i2cBusNames[i].IndexOf(aqsFilter) == 0)
                 {
@@ -83,7 +69,7 @@ namespace GHIElectronics.TinyCLR.Devices.Enumeration
 
             // Find all SPI buses which contain the given prefix.
             var spiBusNames = Spi.SpiDevice.GetValidBusNames();
-            for (int i = 0; i < spiBusNames.Length; ++i)
+            for (var i = 0; i < spiBusNames.Length; ++i)
             {
                 if (spiBusNames[i].IndexOf(aqsFilter) == 0)
                 {

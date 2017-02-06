@@ -32,7 +32,7 @@ namespace System
          * <i>this</i> = <i>object</i>, or a value greater than zero if <i>this</i>
          * > <i>object</i>.
          */
-        int CompareTo(Object obj);
+        int CompareTo(object obj);
     }
 
 }

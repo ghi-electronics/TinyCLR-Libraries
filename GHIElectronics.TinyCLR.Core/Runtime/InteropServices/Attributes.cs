@@ -9,24 +9,18 @@ namespace System.Runtime.InteropServices
     public sealed class ComVisibleAttribute : Attribute
     {
         internal bool _val;
-        public ComVisibleAttribute(bool visibility)
-        {
-            _val = visibility;
-        }
+        public ComVisibleAttribute(bool visibility) => this._val = visibility;
 
-        public bool Value { get { return _val; } }
+        public bool Value => this._val;
     }
 
     [AttributeUsage(AttributeTargets.Assembly | AttributeTargets.Interface | AttributeTargets.Class | AttributeTargets.Enum | AttributeTargets.Struct | AttributeTargets.Delegate, Inherited = false)]
     public sealed class GuidAttribute : Attribute
     {
-        internal String _val;
-        public GuidAttribute(String guid)
-        {
-            _val = guid;
-        }
+        internal string _val;
+        public GuidAttribute(string guid) => this._val = guid;
 
-        public String Value { get { return _val; } }
+        public string Value => this._val;
     }
 
     [AttributeUsage(AttributeTargets.Parameter, Inherited = false)]
@@ -41,18 +35,11 @@ namespace System.Runtime.InteropServices
     public sealed class StructLayoutAttribute : Attribute
     {
         internal LayoutKind _val;
-        public StructLayoutAttribute(LayoutKind layoutKind)
-        {
-            _val = layoutKind;
-        }
+        public StructLayoutAttribute(LayoutKind layoutKind) => this._val = layoutKind;
 
-        public StructLayoutAttribute(short layoutKind)
-        {
-            _val = (LayoutKind)layoutKind;
-        }
+        public StructLayoutAttribute(short layoutKind) => this._val = (LayoutKind)layoutKind;
 
-        public LayoutKind Value { get { return _val; } }
-        public int Pack;
+        public LayoutKind Value => this._val; public int Pack;
         public int Size;
         public CharSet CharSet;
     }

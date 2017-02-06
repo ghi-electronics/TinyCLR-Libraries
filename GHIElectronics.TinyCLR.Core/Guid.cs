@@ -30,12 +30,12 @@ namespace System
         /// <param name="k">The next byte of the Guid.</param>
         public Guid(int a, short b, short c, byte d, byte e, byte f, byte g, byte h, byte i, byte j, byte k)
         {
-            m_data = new int[4];
+            this.m_data = new int[4];
 
-            m_data[0] = a;
-            m_data[1] = (ushort)b | (ushort)c << 16;
-            m_data[2] = d | (e | (f | g << 8) << 8) << 8;
-            m_data[3] = h | (i | (j | k << 8) << 8) << 8;
+            this.m_data[0] = a;
+            this.m_data[1] = (ushort)b | (ushort)c << 16;
+            this.m_data[2] = d | (e | (f | g << 8) << 8) << 8;
+            this.m_data[3] = h | (i | (j | k << 8) << 8) << 8;
         }
 
         /// <summary>
@@ -55,12 +55,12 @@ namespace System
         [CLSCompliant(false)]
         public Guid(uint a, ushort b, ushort c, byte d, byte e, byte f, byte g, byte h, byte i, byte j, byte k)
         {
-            m_data = new int[4];
+            this.m_data = new int[4];
 
-            m_data[0] = (int)a;
-            m_data[1] = b | c << 16;
-            m_data[2] = d | (e | (f | g << 8) << 8) << 8;
-            m_data[3] = h | (i | (j | k << 8) << 8) << 8;
+            this.m_data[0] = (int)a;
+            this.m_data[1] = b | c << 16;
+            this.m_data[2] = d | (e | (f | g << 8) << 8) << 8;
+            this.m_data[3] = h | (i | (j | k << 8) << 8) << 8;
         }
 
         /// <summary>
@@ -79,12 +79,12 @@ namespace System
                 throw new ArgumentException();
             }
 
-            m_data = new int[4];
+            this.m_data = new int[4];
 
-            int i = 0;
-            for (int j = 0; j < 4; j++)
+            var i = 0;
+            for (var j = 0; j < 4; j++)
             {
-                m_data[j] = b[i] | (b[i + 1] | (b[i + 2] | b[i + 3] << 8) << 8) << 8;
+                this.m_data[j] = b[i] | (b[i + 1] | (b[i + 2] | b[i + 3] << 8) << 8) << 8;
                 i += 4;
             }
         }
@@ -94,7 +94,7 @@ namespace System
         /// </summary>
         /// <param name="value">Guid instance to compare, or null.</param>
         /// <returns>Indication of the relative values (0 = equal, -1 = this instance less, +1 = this instance greater)</returns>
-        public int CompareTo(Object value)
+        public int CompareTo(object value)
         {
             if (value == null)
             {
@@ -106,12 +106,12 @@ namespace System
                 throw new ArgumentException();
             }
 
-            int[] other = ((Guid)value).m_data;
-            for (int i = 0; i < 4; i++)
+            var other = ((Guid)value).m_data;
+            for (var i = 0; i < 4; i++)
             {
-                if (m_data[i] != other[i])
+                if (this.m_data[i] != other[i])
                 {
-                    return m_data[i] - other[i];
+                    return this.m_data[i] - other[i];
                 }
             }
 
@@ -124,13 +124,13 @@ namespace System
         /// <returns>16 element byte array containing the value of the Guid instance.</returns>
         public byte[] ToByteArray()
         {
-            byte[] buffer = new byte[16];
+            var buffer = new byte[16];
 
-            int index = 0;
-            for (int i = 0; i < 4; i++)
+            var index = 0;
+            for (var i = 0; i < 4; i++)
             {
-                int value = m_data[i];
-                for (int j = 0; j < 4; j++)
+                var value = this.m_data[i];
+                for (var j = 0; j < 4; j++)
                 {
                     buffer[index++] = (byte)(value & 0xFF);
                     value = value >> 8;
@@ -144,11 +144,12 @@ namespace System
         {
             // registry format is 08B03E06-01A8-4cd9-9971-ED45E2E84A53
 
-            if (m_data == null) m_data = new int[4];
+            if (this.m_data == null)
+                this.m_data = new int[4];
 
-            byte[] bytes = ToByteArray();
+            var bytes = ToByteArray();
 
-            char[] chars = new char[36];
+            var chars = new char[36];
 
             int i = -1, j;
 
@@ -193,33 +194,30 @@ namespace System
         /// <summary>
         /// Overriden. Compares this instance to another Guid and returns whether they are equal or not.
         /// </summary>
-        public override bool Equals(Object obj)
+        public override bool Equals(object obj)
         {
             if (!(obj is Guid))
             {
                 return false;
             }
 
-            int[] other = ((Guid)obj).m_data;
+            var other = ((Guid)obj).m_data;
 
-            return (m_data[0] == other[0]) && (m_data[1] == other[1]) && (m_data[2] == other[2]) && (m_data[3] == other[3]);
+            return (this.m_data[0] == other[0]) && (this.m_data[1] == other[1]) && (this.m_data[2] == other[2]) && (this.m_data[3] == other[3]);
         }
 
         /// <summary>
         /// Overriden. Returns a hash value for the Guid instance.
         /// </summary>
-        public override int GetHashCode()
-        {
-            return m_data[0] ^ m_data[1] ^ m_data[2] ^ m_data[3];
-        }
+        public override int GetHashCode() => this.m_data[0] ^ this.m_data[1] ^ this.m_data[2] ^ this.m_data[3];
 
         //--//
 
         public static Guid NewGuid()
         {
-            Guid newGuid = new Guid();
-            
-            newGuid.m_data = new int[4];
+            var newGuid = new Guid() {
+                m_data = new int[4]
+            };
 
             newGuid.m_data[0] = m_rand.Next();
             newGuid.m_data[1] = m_rand.Next();
@@ -234,10 +232,7 @@ namespace System
 
         //--//
 
-        private static char HexToChar(int a)
-        {
-            return (char)((a > 9) ? a - 10 + 0x61 : a + 0x30);
-        }
+        private static char HexToChar(int a) => (char)((a > 9) ? a - 10 + 0x61 : a + 0x30);
     }
 }
 

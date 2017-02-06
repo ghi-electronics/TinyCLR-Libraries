@@ -6,9 +6,7 @@ namespace GHIElectronics.TinyCLR.Devices.Dac {
         private readonly IDacControllerProvider provider;
         private static DacController instance;
 
-        internal DacController(IDacControllerProvider provider) {
-            this.provider = provider;
-        }
+        internal DacController(IDacControllerProvider provider) => this.provider = provider;
 
         public int ChannelCount => this.provider.ChannelCount;
         public int ResolutionInBits => this.provider.ResolutionInBits;

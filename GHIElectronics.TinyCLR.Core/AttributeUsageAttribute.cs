@@ -16,27 +16,18 @@ namespace System
         internal static AttributeUsageAttribute Default = new AttributeUsageAttribute(AttributeTargets.All);
 
         //Constructors
-        public AttributeUsageAttribute(AttributeTargets validOn)
-        {
-            m_attributeTarget = validOn;
-        }
+        public AttributeUsageAttribute(AttributeTargets validOn) => this.m_attributeTarget = validOn;
 
         //Properties
-        public AttributeTargets ValidOn
-        {
-            get { return m_attributeTarget; }
-        }
-
+        public AttributeTargets ValidOn => this.m_attributeTarget;
         public bool AllowMultiple
         {
-            get { return m_allowMultiple; }
-            set { m_allowMultiple = value; }
+            get => m_allowMultiple; set => m_allowMultiple = value;
         }
 
         public bool Inherited
         {
-            get { return m_inherited; }
-            set { m_inherited = value; }
+            get => m_inherited; set => m_inherited = value;
         }
     }
 }

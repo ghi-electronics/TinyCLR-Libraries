@@ -21,13 +21,7 @@ namespace System.IO
             get;
         }
 
-        public virtual bool CanTimeout
-        {
-            get
-            {
-                return false;
-            }
-        }
+        public virtual bool CanTimeout => false;
 
         public abstract bool CanWrite
         {
@@ -47,28 +41,16 @@ namespace System.IO
 
         public virtual int ReadTimeout
         {
-            get
-            {
-                throw new InvalidOperationException();
-            }
+            get => throw new InvalidOperationException();
 
-            set
-            {
-                throw new InvalidOperationException();
-            }
+            set => throw new InvalidOperationException();
         }
 
         public virtual int WriteTimeout
         {
-            get
-            {
-                throw new InvalidOperationException();
-            }
+            get => throw new InvalidOperationException();
 
-            set
-            {
-                throw new InvalidOperationException();
-            }
+            set => throw new InvalidOperationException();
         }
 
         // Stream used to require that all cleanup logic went into Close(),
@@ -120,8 +102,8 @@ namespace System.IO
         // significantly for people who are reading one byte at a time.
         public virtual int ReadByte()
         {
-            byte[] oneByteArray = new byte[1];
-            int r = Read(oneByteArray, 0, 1);
+            var oneByteArray = new byte[1];
+            var r = Read(oneByteArray, 0, 1);
             if (r == 0)
                 return -1;
             return oneByteArray[0];
@@ -136,7 +118,7 @@ namespace System.IO
         // significantly for people who are writing one byte at a time.
         public virtual void WriteByte(byte value)
         {
-            byte[] oneByteArray = new byte[1];
+            var oneByteArray = new byte[1];
             oneByteArray[0] = value;
             Write(oneByteArray, 0, 1);
         }

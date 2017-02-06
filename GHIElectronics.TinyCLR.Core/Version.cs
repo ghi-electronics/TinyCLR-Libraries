@@ -27,10 +27,10 @@ namespace System
             if (major < 0 || minor < 0 || revision < 0 || build < 0)
                 throw new ArgumentOutOfRangeException();
 
-            _Major = major;
-            _Minor = minor;
-            _Revision = revision;
-            _Build = build;
+            this._Major = major;
+            this._Minor = minor;
+            this._Revision = revision;
+            this._Build = build;
         }
 
         public Version(int major, int minor)
@@ -41,42 +41,26 @@ namespace System
             if (minor < 0)
                 throw new ArgumentOutOfRangeException();
 
-            _Major = major;
-            _Minor = minor;
+            this._Major = major;
+            this._Minor = minor;
 
             // Other 2 initialize to -1 as it done on desktop and CE
-            _Build = -1;
-            _Revision = -1;
+            this._Build = -1;
+            this._Revision = -1;
         }
 
         // Properties for setting and getting version numbers
-        public int Major
+        public int Major => this._Major;
+        public int Minor => this._Minor;
+        public int Revision => this._Revision;
+        public int Build => this._Build;
+        public override bool Equals(object obj)
         {
-            get { return _Major; }
-        }
-
-        public int Minor
-        {
-            get { return _Minor; }
-        }
-
-        public int Revision
-        {
-            get { return _Revision; }
-        }
-
-        public int Build
-        {
-            get { return _Build; }
-        }
-
-        public override bool Equals(Object obj)
-        {
-            if (((Object)obj == null) ||
+            if (((object)obj == null) ||
                 (!(obj is Version)))
                 return false;
 
-            Version v = (Version)obj;
+            var v = (Version)obj;
             // check that major, minor, build & revision numbers match
             if ((this._Major != v._Major) ||
                 (this._Minor != v._Minor) ||
@@ -87,17 +71,17 @@ namespace System
             return true;
         }
 
-        public override String ToString()
+        public override string ToString()
         {
-            string retStr = _Major + "." + _Minor;
+            var retStr = this._Major + "." + this._Minor;
 
             // Adds _Build and then _Revision if they are positive. They could be -1 in this case not added.
-            if (_Build >= 0)
+            if (this._Build >= 0)
             {
-                retStr += "." + _Build;
-                if (_Revision >= 0)
+                retStr += "." + this._Build;
+                if (this._Revision >= 0)
                 {
-                    retStr += "." + _Revision;
+                    retStr += "." + this._Revision;
                 }
             }
 

@@ -29,9 +29,9 @@ namespace GHIElectronics.TinyCLR.Devices.Spi
         {
             // Device ID must match the index in device information.
             // We don't have many buses, so just hard-code the valid ones instead of parsing.
-            m_spiBus = GetBusNum( deviceId );
-            m_deviceId = deviceId.Substring( 0 );
-            m_settings = new SpiConnectionSettings( settings );
+            this.m_spiBus = GetBusNum( deviceId );
+            this.m_deviceId = deviceId.Substring( 0 );
+            this.m_settings = new SpiConnectionSettings( settings );
 
             InitNative( );
         }
@@ -49,12 +49,12 @@ namespace GHIElectronics.TinyCLR.Devices.Spi
         {
             get
             {
-                if( m_disposed )
+                if(this.m_disposed )
                 {
                     throw new ObjectDisposedException( );
                 }
 
-                return m_deviceId.Substring( 0 );
+                return this.m_deviceId.Substring( 0 );
             }
         }
 
@@ -66,13 +66,13 @@ namespace GHIElectronics.TinyCLR.Devices.Spi
         {
             get
             {
-                if( m_disposed )
+                if(this.m_disposed )
                 {
                     throw new ObjectDisposedException( );
                 }
 
                 // We must return a copy so the caller can't accidentally mutate our internal settings.
-                return new SpiConnectionSettings( m_settings );
+                return new SpiConnectionSettings(this.m_settings );
             }
         }
 
@@ -80,10 +80,7 @@ namespace GHIElectronics.TinyCLR.Devices.Spi
         /// Gets all the SPI buses found on the system.
         /// </summary>
         /// <returns>String containing all the buses found on the system.</returns>
-        public static string GetDeviceSelector( )
-        {
-            return s_SpiPrefix;
-        }
+        public static string GetDeviceSelector() => s_SpiPrefix;
 
         /// <summary>
         /// Gets all the SPI buses found on the system that match the input parameter.
@@ -91,10 +88,7 @@ namespace GHIElectronics.TinyCLR.Devices.Spi
         /// <param name="friendlyName">Input parameter specifying an identifying name for the desired bus. This usually
         ///     corresponds to a name on the schematic.</param>
         /// <returns>String containing all the buses that have the input in the name.</returns>
-        public static string GetDeviceSelector( string friendlyName )
-        {
-            return friendlyName;
-        }
+        public static string GetDeviceSelector(string friendlyName) => friendlyName;
 
         /// <summary>
         /// Retrieves the info about a certain bus.
@@ -103,7 +97,7 @@ namespace GHIElectronics.TinyCLR.Devices.Spi
         /// <returns>The bus info requested.</returns>
         public static SpiBusInfo GetBusInfo( string busId )
         {
-            int busNum = GetBusNum( busId );
+            var busNum = GetBusNum( busId );
             return new SpiBusInfo( busNum );
         }
 
@@ -215,23 +209,20 @@ namespace GHIElectronics.TinyCLR.Devices.Spi
         /// </summary>
         public void Dispose( )
         {
-            if( !m_disposed )
+            if( !this.m_disposed )
             {
                 Dispose( true );
                 GC.SuppressFinalize( this );
-                m_disposed = true;
+                this.m_disposed = true;
             }
         }
 
-        internal static string[ ] GetValidBusNames( )
-        {
-            return new string[ ] {
+        internal static string[] GetValidBusNames() => new string[] {
                 s_SpiPrefix + "1",
                 s_SpiPrefix + "2",
                 s_SpiPrefix + "3",
                 s_SpiPrefix + "4",
             };
-        }
 
         [MethodImplAttribute( MethodImplOptions.InternalCall )]
         extern private void InitNative( );
@@ -244,9 +235,9 @@ namespace GHIElectronics.TinyCLR.Devices.Spi
 
         private static int GetBusNum( string deviceId )
         {
-            int retVal = -1;
+            var retVal = -1;
             var spiBusNames = GetValidBusNames( );
-            for( int i = 0; i < spiBusNames.Length; ++i )
+            for( var i = 0; i < spiBusNames.Length; ++i )
             {
                 if( spiBusNames[ i ] == deviceId )
                 {

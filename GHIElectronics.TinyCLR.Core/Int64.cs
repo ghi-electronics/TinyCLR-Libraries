@@ -16,17 +16,11 @@ namespace System
         public const long MaxValue = 0x7fffffffffffffffL;
         public const long MinValue = unchecked((long)0x8000000000000000L);
 
-        public override String ToString()
-        {
-            return Number.Format(m_value, true, "G", NumberFormatInfo.CurrentInfo);
-        }
+        public override string ToString() => Number.Format(this.m_value, true, "G", NumberFormatInfo.CurrentInfo);
 
-        public String ToString(String format)
-        {
-            return Number.Format(m_value, true, format, NumberFormatInfo.CurrentInfo);
-        }
+        public string ToString(string format) => Number.Format(this.m_value, true, format, NumberFormatInfo.CurrentInfo);
 
-        public static long Parse(String s)
+        public static long Parse(string s)
         {
             if (s == null)
             {

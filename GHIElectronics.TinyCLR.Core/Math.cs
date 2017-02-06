@@ -30,10 +30,7 @@ namespace System
         //
         // Returns:
         //     An integer, x, such that 0 = x =System.Integer.MaxValue.
-        public static int Abs(int val)
-        {
-            return (val >= 0) ? val : -val;
-        }
+        public static int Abs(int val) => (val >= 0) ? val : -val;
         //
         // Summary:
         //     Returns the larger of two integer numbers.
@@ -47,10 +44,7 @@ namespace System
         //
         // Returns:
         //     Parameter val1 or val2, whichever is larger. 
-        public static int Max(int val1, int val2)
-        {
-            return (val1 >= val2) ? val1 : val2;
-        }
+        public static int Max(int val1, int val2) => (val1 >= val2) ? val1 : val2;
         //
         // Summary:
         //     Returns the smaller of two integer numbers.
@@ -64,10 +58,7 @@ namespace System
         //
         // Returns:
         //     Parameter val1 or val2, whichever is smaller. 
-        public static int Min(int val1, int val2)
-        {
-            return (val1 <= val2) ? val1 : val2;
-        }
+        public static int Min(int val1, int val2) => (val1 <= val2) ? val1 : val2;
 
 
         // Summary:
@@ -79,10 +70,7 @@ namespace System
         //
         // Returns:
         //     A double-precision floating-point number, x, such that 0 = x =System.Double.MaxValue.
-        public static double Abs(double val)
-        {
-            return (val >= 0) ? val : -val;
-        }
+        public static double Abs(double val) => (val >= 0) ? val : -val;
         //
         // Summary:
         //     Returns the angle whose cosine is the specified number.
@@ -279,10 +267,7 @@ namespace System
         // Returns:
         //     Parameter val1 or val2, whichever is larger. If val1, val2, or both val1
         //     and val2 are equal to System.Double.NaN, System.Double.NaN is returned.
-        public static double Max(double x, double y)
-        {
-            return (x >= y) ? x : y;
-        }
+        public static double Max(double x, double y) => (x >= y) ? x : y;
         //
         // Summary:
         //     Returns the smaller of two double-precision floating-point numbers.
@@ -297,10 +282,7 @@ namespace System
         // Returns:
         //     Parameter val1 or val2, whichever is smaller. If val1, val2, or both val1
         //     and val2 are equal to System.Double.NaN, System.Double.NaN is returned.
-        public static double Min(double x, double y)
-        {
-            return (x <= y) ? x : y;
-        }
+        public static double Min(double x, double y) => (x <= y) ? x : y;
         //
         // Summary:
         //     Returns a specified number raised to the specified power.

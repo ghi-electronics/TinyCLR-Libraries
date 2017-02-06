@@ -5,7 +5,7 @@ namespace System
     {
         public ArgumentNullException() : base() { }
         public ArgumentNullException(string argument) : base(null, argument) { }
-        public ArgumentNullException(String paramName, String message) : base(message, paramName) { }
+        public ArgumentNullException(string paramName, string message) : base(message, paramName) { }
     }
 }
 

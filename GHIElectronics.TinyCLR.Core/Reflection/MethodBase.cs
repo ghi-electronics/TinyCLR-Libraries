@@ -47,8 +47,8 @@ namespace System.Reflection
         [Diagnostics.DebuggerStepThrough]
         [Diagnostics.DebuggerHidden]
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern Object Invoke(Object obj, Object[] parameters);
-        public extern override String Name
+        public extern object Invoke(object obj, object[] parameters);
+        public extern override string Name
         {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
             get;

@@ -20,12 +20,12 @@ namespace System
         {
         }
 
-        public ArgumentOutOfRangeException(String paramName)
+        public ArgumentOutOfRangeException(string paramName)
             : base(null, paramName)
         {
         }
 
-        public ArgumentOutOfRangeException(String paramName, String message)
+        public ArgumentOutOfRangeException(string paramName, string message)
             : base(message, paramName)
         {
         }

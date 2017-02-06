@@ -59,14 +59,10 @@ namespace System.Resources
             this.m_resourceFileId = iResourceFileId;
         }
 
-        private bool IsValid
-        {
-            get { return m_resourceFileId >= 0; }
-        }
-
+        private bool IsValid => this.m_resourceFileId >= 0;
         private string GetParentCultureName(string cultureName)
         {
-            int iDash = cultureName.LastIndexOf('-');
+            var iDash = cultureName.LastIndexOf('-');
             if (iDash < 0)
                 cultureName = "";
             else
@@ -77,20 +73,20 @@ namespace System.Resources
 
         internal bool Initialize(string baseName, Assembly assembly, string cultureName)
         {
-            string cultureNameSav = cultureName;
-            Assembly assemblySav = assembly;
+            var cultureNameSav = cultureName;
+            var assemblySav = assembly;
 
-            m_resourceFileId = -1;  //set to invalid state
+            this.m_resourceFileId = -1;  //set to invalid state
 
-            bool fTryBaseAssembly = false;
+            var fTryBaseAssembly = false;
 
             while (true)
             {
-                bool fInvariantCulture = (cultureName == "");
+                var fInvariantCulture = (cultureName == "");
 
-                string[] splitName = assemblySav.FullName.Split(',');
+                var splitName = assemblySav.FullName.Split(',');
 
-                string assemblyName = splitName[0];
+                var assemblyName = splitName[0];
  
                 if(!fInvariantCulture)
                 {
@@ -136,8 +132,8 @@ namespace System.Resources
         {
             while (true)
             {
-                string resourceName = baseName;
-                bool fInvariantCulture = (cultureName == "");
+                var resourceName = baseName;
+                var fInvariantCulture = (cultureName == "");
 
                 if (!fInvariantCulture)
                 {
@@ -146,7 +142,7 @@ namespace System.Resources
 
                 resourceName = resourceName + s_fileExtension;
 
-                int iResourceFileId = FindResource(resourceName, assemblyResource);
+                var iResourceFileId = FindResource(resourceName, assemblyResource);
 
                 if (iResourceFileId >= 0)
                 {
@@ -172,11 +168,11 @@ namespace System.Resources
 
         private object GetObjectFromId(short id)
         {
-            ResourceManager rm = this;
+            var rm = this;
 
             while (rm != null)
             {
-                object obj = rm.GetObjectInternal(id);
+                var obj = rm.GetObjectInternal(id);
 
                 if (obj != null)
                     return obj;
@@ -185,8 +181,8 @@ namespace System.Resources
                 {
                     if (rm.m_cultureName != "")
                     {
-                        string cultureNameParent = GetParentCultureName(rm.m_cultureName);
-                        ResourceManager rmFallback = new ResourceManager(m_baseName, m_baseAssembly, cultureNameParent, false);
+                        var cultureNameParent = GetParentCultureName(rm.m_cultureName);
+                        var rmFallback = new ResourceManager(this.m_baseName, this.m_baseAssembly, cultureNameParent, false);
 
                         if (rmFallback.IsValid)
                             rm.m_rmFallback = rmFallback;
@@ -201,11 +197,11 @@ namespace System.Resources
 
         private object GetObjectChunkFromId(short id, int offset, int length)
         {
-            ResourceManager rm = this;
+            var rm = this;
 
             while (rm != null)
             {
-                object obj = rm.GetObjectInternal(id, offset, length);
+                var obj = rm.GetObjectInternal(id, offset, length);
 
                 if (obj != null)
                     return obj;
@@ -214,8 +210,8 @@ namespace System.Resources
                 {
                     if (rm.m_cultureName != "")
                     {
-                        string cultureNameParent = GetParentCultureName(rm.m_cultureName);
-                        ResourceManager rmFallback = new ResourceManager(m_baseName, m_baseAssembly, cultureNameParent, false);
+                        var cultureNameParent = GetParentCultureName(rm.m_cultureName);
+                        var rmFallback = new ResourceManager(this.m_baseName, this.m_baseAssembly, cultureNameParent, false);
 
                         if (rmFallback.IsValid)
                             rm.m_rmFallback = rmFallback;

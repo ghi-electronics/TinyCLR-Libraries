@@ -8,12 +8,12 @@ namespace System
         {
         }
 
-        public ObjectDisposedException(String message)
+        public ObjectDisposedException(string message)
             : base(message)
         {
         }
 
-        public ObjectDisposedException(String message, Exception innerException)
+        public ObjectDisposedException(string message, Exception innerException)
             : base(message, innerException)
         {
         }

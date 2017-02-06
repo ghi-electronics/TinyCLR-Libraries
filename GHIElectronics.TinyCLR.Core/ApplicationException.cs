@@ -9,12 +9,12 @@ namespace System
         {
         }
 
-        public ApplicationException(String message)
+        public ApplicationException(string message)
             : base(message)
         {
         }
 
-        public ApplicationException(String message, Exception innerException)
+        public ApplicationException(string message, Exception innerException)
             : base(message, innerException)
         {
         }

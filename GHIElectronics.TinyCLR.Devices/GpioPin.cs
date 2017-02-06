@@ -5,7 +5,7 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio
 {
     // FUTURE: This should be "EventHandler<GpioPinValueChangedEventArgs>"
     public delegate void GpioPinValueChangedEventHandler(
-        Object sender,
+        object sender,
         GpioPinValueChangedEventArgs e);
 
     /// <summary>
@@ -25,7 +25,7 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio
 
         internal GpioPin()
         {
-            if (m_lastOutputValue == GpioPinValue.Low) { } // Silence an unused variable warning.
+            if (this.m_lastOutputValue == GpioPinValue.Low) { } // Silence an unused variable warning.
         }
 
         ~GpioPin()
@@ -42,24 +42,24 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio
         {
             add
             {
-                lock (m_syncLock)
+                lock (this.m_syncLock)
                 {
-                    if (m_disposed)
+                    if (this.m_disposed)
                     {
                         throw new ObjectDisposedException();
                     }
 
-                    var callbacksOld = m_callbacks;
+                    var callbacksOld = this.m_callbacks;
                     var callbacksNew = (GpioPinValueChangedEventHandler)Delegate.Combine(callbacksOld, value);
 
                     try
                     {
-                        m_callbacks = callbacksNew;
-                        SetDriveModeInternal(m_driveMode);
+                        this.m_callbacks = callbacksNew;
+                        SetDriveModeInternal(this.m_driveMode);
                     }
                     catch
                     {
-                        m_callbacks = callbacksOld;
+                        this.m_callbacks = callbacksOld;
                         throw;
                     }
                 }
@@ -67,24 +67,24 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio
 
             remove
             {
-                lock (m_syncLock)
+                lock (this.m_syncLock)
                 {
-                    if (m_disposed)
+                    if (this.m_disposed)
                     {
                         throw new ObjectDisposedException();
                     }
 
-                    var callbacksOld = m_callbacks;
+                    var callbacksOld = this.m_callbacks;
                     var callbacksNew = (GpioPinValueChangedEventHandler)Delegate.Remove(callbacksOld, value);
 
                     try
                     {
-                        m_callbacks = callbacksNew;
-                        SetDriveModeInternal(m_driveMode);
+                        this.m_callbacks = callbacksNew;
+                        SetDriveModeInternal(this.m_driveMode);
                     }
                     catch
                     {
-                        m_callbacks = callbacksOld;
+                        this.m_callbacks = callbacksOld;
                         throw;
                     }
                 }
@@ -115,14 +115,14 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio
         {
             get
             {
-                lock (m_syncLock)
+                lock (this.m_syncLock)
                 {
-                    if (m_disposed)
+                    if (this.m_disposed)
                     {
                         throw new ObjectDisposedException();
                     }
 
-                    return m_pinNumber;
+                    return this.m_pinNumber;
                 }
             }
         }
@@ -131,13 +131,7 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio
         /// Gets the sharing mode in which the general-purpose I/O (GPIO) pin is open.
         /// </summary>
         /// <value>The sharing mode in which the GPIO pin is open.</value>
-        public GpioSharingMode SharingMode
-        {
-            get
-            {
-                return GpioSharingMode.Exclusive;
-            }
-        }
+        public GpioSharingMode SharingMode => GpioSharingMode.Exclusive;
 
         /// <summary>
         /// Reads the current value of the general-purpose I/O (GPIO) pin.
@@ -193,14 +187,14 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio
         ///     onto the pin.</returns>
         public GpioPinDriveMode GetDriveMode()
         {
-            lock (m_syncLock)
+            lock (this.m_syncLock)
             {
-                if (m_disposed)
+                if (this.m_disposed)
                 {
                     throw new ObjectDisposedException();
                 }
 
-                return m_driveMode;
+                return this.m_driveMode;
             }
         }
 
@@ -213,17 +207,17 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio
         ///     driven onto the pin.</param>
         public void SetDriveMode(GpioPinDriveMode driveMode)
         {
-            lock (m_syncLock)
+            lock (this.m_syncLock)
             {
-                if (m_disposed)
+                if (this.m_disposed)
                 {
                     throw new ObjectDisposedException();
                 }
 
-                if (driveMode != m_driveMode)
+                if (driveMode != this.m_driveMode)
                 {
                     SetDriveModeInternal(driveMode);
-                    m_driveMode = driveMode;
+                    this.m_driveMode = driveMode;
                 }
             }
         }
@@ -233,13 +227,13 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio
         /// </summary>
         public void Dispose()
         {
-            lock (m_syncLock)
+            lock (this.m_syncLock)
             {
-                if (!m_disposed)
+                if (!this.m_disposed)
                 {
                     Dispose(true);
                     GC.SuppressFinalize(this);
-                    m_disposed = true;
+                    this.m_disposed = true;
                 }
             }
         }
@@ -252,7 +246,7 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio
         /// <remarks>If this method throws or returns false, there is no need to dispose the pin. </remarks>
         internal bool Init(int pinNumber)
         {
-            bool foundPin = InitNative(pinNumber);
+            var foundPin = InitNative(pinNumber);
             if (foundPin)
             {
                 s_eventListener.AddPin(pinNumber, this);
@@ -269,18 +263,15 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio
         {
             GpioPinValueChangedEventHandler callbacks = null;
 
-            lock (m_syncLock)
+            lock (this.m_syncLock)
             {
-                if (!m_disposed)
+                if (!this.m_disposed)
                 {
-                    callbacks = m_callbacks;
+                    callbacks = this.m_callbacks;
                 }
             }
 
-            if (callbacks != null)
-            {
-                callbacks(this, new GpioPinValueChangedEventArgs(edge));
-            }
+            callbacks?.Invoke(this, new GpioPinValueChangedEventArgs(edge));
         }
 
         /// <summary>
@@ -313,7 +304,7 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio
             if (disposing)
             {
                 DisposeNative();
-                s_eventListener.RemovePin(m_pinNumber);
+                s_eventListener.RemovePin(this.m_pinNumber);
             }
         }
     }

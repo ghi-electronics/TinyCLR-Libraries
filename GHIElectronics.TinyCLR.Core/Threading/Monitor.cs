@@ -10,9 +10,9 @@ namespace System.Threading
     public static class Monitor
     {
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public static extern void Enter(Object obj);
+        public static extern void Enter(object obj);
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public static extern void Exit(Object obj);
+        public static extern void Exit(object obj);
     }
 }
 

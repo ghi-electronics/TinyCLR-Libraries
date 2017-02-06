@@ -28,7 +28,7 @@ namespace System.Collections
         int Count
         { get; }
 
-        Object SyncRoot
+        object SyncRoot
         { get; }
         bool IsSynchronized
         { get; }

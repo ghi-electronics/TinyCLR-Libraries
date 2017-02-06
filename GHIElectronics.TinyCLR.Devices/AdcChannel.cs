@@ -12,11 +12,11 @@ namespace GHIElectronics.TinyCLR.Devices.Adc
 
         internal AdcChannel(AdcController controller, IAdcControllerProvider provider, int channelNumber)
         {
-            m_controller = controller;
-            m_provider = provider;
-            m_channelNumber = channelNumber;
+            this.m_controller = controller;
+            this.m_provider = provider;
+            this.m_channelNumber = channelNumber;
 
-            m_provider.AcquireChannel(channelNumber);
+            this.m_provider.AcquireChannel(channelNumber);
         }
 
         ~AdcChannel()
@@ -28,42 +28,42 @@ namespace GHIElectronics.TinyCLR.Devices.Adc
         {
             get
             {
-                if (m_disposed)
+                if (this.m_disposed)
                 {
                     throw new ObjectDisposedException();
                 }
 
-                return m_controller;
+                return this.m_controller;
             }
         }
 
         public int ReadValue()
         {
-            if (m_disposed)
+            if (this.m_disposed)
             {
                 throw new ObjectDisposedException();
             }
 
-            return m_provider.ReadValue(m_channelNumber);
+            return this.m_provider.ReadValue(this.m_channelNumber);
         }
 
         public double ReadRatio()
         {
-            if (m_disposed)
+            if (this.m_disposed)
             {
                 throw new ObjectDisposedException();
             }
 
-            return ((double)m_provider.ReadValue(m_channelNumber)) / m_provider.MaxValue;
+            return ((double)this.m_provider.ReadValue(this.m_channelNumber)) / this.m_provider.MaxValue;
         }
 
         public void Dispose()
         {
-            if (!m_disposed)
+            if (!this.m_disposed)
             {
                 Dispose(true);
                 GC.SuppressFinalize(this);
-                m_disposed = true;
+                this.m_disposed = true;
             }
         }
 
@@ -71,9 +71,9 @@ namespace GHIElectronics.TinyCLR.Devices.Adc
         {
             if (disposing)
             {
-                m_provider.ReleaseChannel(m_channelNumber);
-                m_controller = null;
-                m_provider = null;
+                this.m_provider.ReleaseChannel(this.m_channelNumber);
+                this.m_controller = null;
+                this.m_provider = null;
             }
         }
     }

@@ -9,61 +9,40 @@ namespace System.Reflection
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = false)]
     public sealed class AssemblyCultureAttribute : Attribute
     {
-        private String m_culture;
+        private string m_culture;
 
-        public AssemblyCultureAttribute(String culture)
-        {
-            m_culture = culture;
-        }
+        public AssemblyCultureAttribute(string culture) => this.m_culture = culture;
 
-        public String Culture
-        {
-            get { return m_culture; }
-        }
+        public string Culture => this.m_culture;
     }
 
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = false)]
     public sealed class AssemblyVersionAttribute : Attribute
     {
-        private String m_version;
+        private string m_version;
 
-        public AssemblyVersionAttribute(String version)
-        {
-            m_version = version;
-        }
+        public AssemblyVersionAttribute(string version) => this.m_version = version;
 
     }
 
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = false)]
     public sealed class AssemblyKeyFileAttribute : Attribute
     {
-        private String m_keyFile;
+        private string m_keyFile;
 
-        public AssemblyKeyFileAttribute(String keyFile)
-        {
-            m_keyFile = keyFile;
-        }
+        public AssemblyKeyFileAttribute(string keyFile) => this.m_keyFile = keyFile;
 
-        public String KeyFile
-        {
-            get { return m_keyFile; }
-        }
+        public string KeyFile => this.m_keyFile;
     }
 
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = false)]
     public sealed class AssemblyKeyNameAttribute : Attribute
     {
-        private String m_keyName;
+        private string m_keyName;
 
-        public AssemblyKeyNameAttribute(String keyName)
-        {
-            m_keyName = keyName;
-        }
+        public AssemblyKeyNameAttribute(string keyName) => this.m_keyName = keyName;
 
-        public String KeyName
-        {
-            get { return m_keyName; }
-        }
+        public string KeyName => this.m_keyName;
     }
 
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = false)]
@@ -71,16 +50,9 @@ namespace System.Reflection
     {
         private bool m_delaySign;
 
-        public AssemblyDelaySignAttribute(bool delaySign)
-        {
-            m_delaySign = delaySign;
-        }
+        public AssemblyDelaySignAttribute(bool delaySign) => this.m_delaySign = delaySign;
 
-        public bool DelaySign
-        {
-            get
-            { return m_delaySign; }
-        }
+        public bool DelaySign => this.m_delaySign;
     }
 
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = false)]
@@ -89,39 +61,21 @@ namespace System.Reflection
         private AssemblyNameFlags m_flags;
 
         [CLSCompliant(false)]
-        public AssemblyFlagsAttribute(uint flags)
-        {
-            m_flags = (AssemblyNameFlags)flags;
-        }
+        public AssemblyFlagsAttribute(uint flags) => this.m_flags = (AssemblyNameFlags)flags;
 
         [CLSCompliant(false)]
-        public uint Flags
-        {
-            get { return (uint)m_flags; }
-        }
-
-        public AssemblyFlagsAttribute(AssemblyNameFlags assemblyFlags)
-        {
-            m_flags = assemblyFlags;
-        }
+        public uint Flags => (uint)this.m_flags;
+        public AssemblyFlagsAttribute(AssemblyNameFlags assemblyFlags) => this.m_flags = assemblyFlags;
     }
 
     [AttributeUsage(AttributeTargets.Assembly, Inherited = false)]
     public sealed class AssemblyFileVersionAttribute : Attribute
     {
-        private String _version;
+        private string _version;
 
-        public AssemblyFileVersionAttribute(String version)
-        {
-            if (version == null)
-                throw new ArgumentNullException("version");
-            _version = version;
-        }
+        public AssemblyFileVersionAttribute(string version) => this._version = version ?? throw new ArgumentNullException("version");
 
-        public String Version
-        {
-            get { return _version; }
-        }
+        public string Version => this._version;
     }
 }
 

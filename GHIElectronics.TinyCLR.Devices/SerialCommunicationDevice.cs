@@ -9,16 +9,9 @@ namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
     public class SerialDevice : IDisposable {
         private bool disposed;
 
-        public bool BreakSignalState { get { throw new NotSupportedException(); } }
-        public uint BytesReceived { get { throw new NotSupportedException(); } }
-        public bool CarrierDetectState { get { throw new NotSupportedException(); } }
-        public bool ClearToSendState { get { throw new NotSupportedException(); } }
-        public bool DataSetReadyState { get { throw new NotSupportedException(); } }
-        public bool IsDataTerminalReadyEnabled { get { throw new NotSupportedException(); } set { throw new NotSupportedException(); } }
-        public bool IsRequestToSendEnabled { get { throw new NotSupportedException(); } set { throw new NotSupportedException(); } }
-        public ushort UsbProductId { get { throw new NotSupportedException(); } }
-        public ushort UsbVendorId { get { throw new NotSupportedException(); } }
-
+        public bool BreakSignalState => throw new NotSupportedException(); public uint BytesReceived => throw new NotSupportedException(); public bool CarrierDetectState => throw new NotSupportedException(); public bool ClearToSendState => throw new NotSupportedException(); public bool DataSetReadyState => throw new NotSupportedException(); public bool IsDataTerminalReadyEnabled { get => throw new NotSupportedException(); set => throw new NotSupportedException(); }
+        public bool IsRequestToSendEnabled { get => throw new NotSupportedException(); set => throw new NotSupportedException(); }
+        public ushort UsbProductId => throw new NotSupportedException(); public ushort UsbVendorId => throw new NotSupportedException();
         public string PortName { get; private set; }
         public uint BaudRate { get; set; }
         public ushort DataBits { get; set; }
@@ -36,8 +29,7 @@ namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
 
         public static string GetDeviceSelector() => string.Empty;
         public static string GetDeviceSelector(string portName) => string.Empty + portName;
-        public static string GetDeviceSelectorFromUsbVidPid(ushort vendorId, ushort productId) { throw new NotSupportedException(); }
-
+        public static string GetDeviceSelectorFromUsbVidPid(ushort vendorId, ushort productId) => throw new NotSupportedException();
         public static SerialDevice FromId(string deviceId) {
             if (deviceId == null) throw new ArgumentNullException(nameof(deviceId));
             if (deviceId.Length < 4 || deviceId.ToUpper().IndexOf("COM") != 0 || deviceId[3] == '0') throw new ArgumentException("Invalid COM port.", nameof(deviceId));
@@ -97,9 +89,7 @@ namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
 
             public void Dispose() => this.parent.Dispose();
 
-            internal void ParentDispose() {
-                Stream.NativeClose(this.port, (uint)this.parent.Handshake);
-            }
+            internal void ParentDispose() => Stream.NativeClose(this.port, (uint)this.parent.Handshake);
 
             public bool Flush() {
                 this.Open();

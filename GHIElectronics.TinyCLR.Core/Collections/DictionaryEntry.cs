@@ -8,13 +8,13 @@ namespace System.Collections
 {
     public class DictionaryEntry
     {
-        public Object Key;
-        public Object Value;
+        public object Key;
+        public object Value;
 
-        public DictionaryEntry(Object key, Object value)
+        public DictionaryEntry(object key, object value)
         {
-            Key = key;
-            Value = value;
+            this.Key = key;
+            this.Value = value;
         }
     }
 }

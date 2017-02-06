@@ -8,12 +8,12 @@ namespace System
         {
         }
 
-        public OutOfMemoryException(String message)
+        public OutOfMemoryException(string message)
             : base(message)
         {
         }
 
-        public OutOfMemoryException(String message, Exception innerException)
+        public OutOfMemoryException(string message, Exception innerException)
             : base(message, innerException)
         {
         }

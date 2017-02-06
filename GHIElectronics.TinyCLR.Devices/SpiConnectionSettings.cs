@@ -15,10 +15,7 @@ namespace GHIElectronics.TinyCLR.Devices.Spi
         /// Initializes new instance of SpiConnectionSettings.
         /// </summary>
         /// <param name="chipSelectionLine">The chip select line on which the connection will be made.</param>
-        public SpiConnectionSettings(int chipSelectionLine)
-        {
-            m_chipSelectionLine = chipSelectionLine;
-        }
+        public SpiConnectionSettings(int chipSelectionLine) => this.m_chipSelectionLine = chipSelectionLine;
 
         /// <summary>
         /// Construct a copy of an SpiConnectionSettings object.
@@ -26,11 +23,11 @@ namespace GHIElectronics.TinyCLR.Devices.Spi
         /// <param name="source">Source object to copy from.</param>
         internal SpiConnectionSettings(SpiConnectionSettings source)
         {
-            m_chipSelectionLine = source.m_chipSelectionLine;
-            m_dataBitLength = source.m_dataBitLength;
-            m_clockFrequency = source.m_clockFrequency;
-            m_mode = source.m_mode;
-            m_sharingMode = source.m_sharingMode;
+            this.m_chipSelectionLine = source.m_chipSelectionLine;
+            this.m_dataBitLength = source.m_dataBitLength;
+            this.m_clockFrequency = source.m_clockFrequency;
+            this.m_mode = source.m_mode;
+            this.m_sharingMode = source.m_sharingMode;
         }
 
         /// <summary>
@@ -39,15 +36,9 @@ namespace GHIElectronics.TinyCLR.Devices.Spi
         /// <value>The chip select line.</value>
         public int ChipSelectionLine
         {
-            get
-            {
-                return m_chipSelectionLine;
-            }
+            get => m_chipSelectionLine;
 
-            set
-            {
-                m_chipSelectionLine = value;
-            }
+            set => m_chipSelectionLine = value;
         }
 
         /// <summary>
@@ -56,15 +47,9 @@ namespace GHIElectronics.TinyCLR.Devices.Spi
         /// <value>The communication mode.</value>
         public SpiMode Mode
         {
-            get
-            {
-                return m_mode;
-            }
+            get => m_mode;
 
-            set
-            {
-                m_mode = value;
-            }
+            set => m_mode = value;
         }
 
         /// <summary>
@@ -73,15 +58,9 @@ namespace GHIElectronics.TinyCLR.Devices.Spi
         /// <value>The data bit length.</value>
         public int DataBitLength
         {
-            get
-            {
-                return m_dataBitLength;
-            }
+            get => m_dataBitLength;
 
-            set
-            {
-                m_dataBitLength = value;
-            }
+            set => m_dataBitLength = value;
         }
 
         /// <summary>
@@ -90,15 +69,9 @@ namespace GHIElectronics.TinyCLR.Devices.Spi
         /// <value>Value of the clock frequency in Hz.</value>
         public int ClockFrequency
         {
-            get
-            {
-                return m_clockFrequency;
-            }
+            get => m_clockFrequency;
 
-            set
-            {
-                m_clockFrequency = value;
-            }
+            set => m_clockFrequency = value;
         }
 
         /// <summary>
@@ -107,15 +80,9 @@ namespace GHIElectronics.TinyCLR.Devices.Spi
         /// <value>The sharing mode.</value>
         public SpiSharingMode SharingMode
         {
-            get
-            {
-                return m_sharingMode;
-            }
+            get => m_sharingMode;
 
-            set
-            {
-                m_sharingMode = value;
-            }
+            set => m_sharingMode = value;
         }
     }
 }

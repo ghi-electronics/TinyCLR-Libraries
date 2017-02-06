@@ -20,13 +20,7 @@ namespace System.Text
         /// <summary>
         /// Gets the maximum capacity of this instance. 
         /// </summary>
-        public int MaxCapacity
-        {
-            get
-            {
-                return this.m_MaxCapacity;
-            }
-        }
+        public int MaxCapacity => this.m_MaxCapacity;
 
         /// <summary>
         /// Gets or sets a character from the underlying buffer
@@ -37,10 +31,10 @@ namespace System.Text
         {
             get
             {
-                StringBuilder chunkPrevious = this;
+                var chunkPrevious = this;
                 while (true)
                 {
-                    int num = index - chunkPrevious.m_ChunkOffset;
+                    var num = index - chunkPrevious.m_ChunkOffset;
                     if (num >= 0)
                     {
                         if (num >= chunkPrevious.m_ChunkLength)
@@ -59,7 +53,7 @@ namespace System.Text
             set
             {
                 int num;
-                StringBuilder chunkPrevious = this;
+                var chunkPrevious = this;
             Label_0002:
                 num = index - chunkPrevious.m_ChunkOffset;
                 if (num >= 0)
@@ -87,10 +81,7 @@ namespace System.Text
         /// </summary>
         public int Capacity
         {
-            get
-            {
-                return (this.m_ChunkChars.Length + this.m_ChunkOffset);
-            }
+            get => (this.m_ChunkChars.Length + this.m_ChunkOffset);
             set
             {
                 if (value < 0)
@@ -107,8 +98,8 @@ namespace System.Text
                 }
                 if (this.Capacity != value)
                 {
-                    int num = value - this.m_ChunkOffset;
-                    char[] destinationArray = new char[num];
+                    var num = value - this.m_ChunkOffset;
+                    var destinationArray = new char[num];
                     Array.Copy(this.m_ChunkChars, destinationArray, this.m_ChunkLength);
                     this.m_ChunkChars = destinationArray;
                 }
@@ -120,10 +111,7 @@ namespace System.Text
         /// </summary>
         public int Length
         {
-            get
-            {
-                return (this.m_ChunkOffset + this.m_ChunkLength);
-            }
+            get => (this.m_ChunkOffset + this.m_ChunkLength);
             set
             {
                 if (value < 0)
@@ -134,7 +122,7 @@ namespace System.Text
                 {
                     throw new ArgumentOutOfRangeException("value");
                 }
-                int capacity = this.Capacity;
+                var capacity = this.Capacity;
                 if ((value == 0) && (this.m_ChunkPrevious == null))
                 {
                     this.m_ChunkLength = 0;
@@ -142,18 +130,18 @@ namespace System.Text
                 }
                 else
                 {
-                    int repeatCount = value - this.Length;
+                    var repeatCount = value - this.Length;
                     if (repeatCount > 0)
                     {
                         this.Append('\0', repeatCount);
                     }
                     else
                     {
-                        StringBuilder builder = this.FindChunkForIndex(value);
+                        var builder = this.FindChunkForIndex(value);
                         if (builder != this)
                         {
-                            int num3 = capacity - builder.m_ChunkOffset;
-                            char[] destinationArray = new char[num3];
+                            var num3 = capacity - builder.m_ChunkOffset;
+                            var destinationArray = new char[num3];
                             Array.Copy(builder.m_ChunkChars, destinationArray, builder.m_ChunkLength);
                             this.m_ChunkChars = destinationArray;
                             this.m_ChunkPrevious = builder.m_ChunkPrevious;
@@ -312,20 +300,14 @@ namespace System.Text
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public StringBuilder Append(bool value)
-        {
-            return this.Append(value.ToString());
-        }
+        public StringBuilder Append(bool value) => this.Append(value.ToString());
 
         /// <summary>
         /// Appends the string representation of a specified 8-bit unsigned integer to this instance. 
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public StringBuilder Append(byte value)
-        {
-            return this.Append(value.ToString());
-        }
+        public StringBuilder Append(byte value) => this.Append(value.ToString());
 
         /// <summary>
         /// Appends the string representation of a specified Unicode character to this instance. 
@@ -358,20 +340,14 @@ namespace System.Text
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public StringBuilder Append(double value)
-        {
-            return this.Append(value.ToString());
-        }
+        public StringBuilder Append(double value) => this.Append(value.ToString());
 
         /// <summary>
         /// Appends the string representation of a specified 16-bit signed integer to this instance. 
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public StringBuilder Append(short value)
-        {
-            return this.Append(value.ToString());
-        }
+        public StringBuilder Append(short value) => this.Append(value.ToString());
 
         /// <summary>
         /// Appends the string representation of the Unicode characters in a specified array to this instance. 
@@ -392,20 +368,14 @@ namespace System.Text
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public StringBuilder Append(int value)
-        {
-            return this.Append(value.ToString());
-        }
+        public StringBuilder Append(int value) => this.Append(value.ToString());
 
         /// <summary>
         /// Appends the string representation of a specified 64-bit unsigned integer to this instance. 
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public StringBuilder Append(long value)
-        {
-            return this.Append(value.ToString());
-        }
+        public StringBuilder Append(long value) => this.Append(value.ToString());
 
         /// <summary>
         /// Appends the string representation of a specified object to this instance. 
@@ -422,10 +392,10 @@ namespace System.Text
         {
             if (value != null && value != string.Empty)
             {
-                char[] chunkChars = this.m_ChunkChars;
-                int chunkLength = this.m_ChunkLength;
-                int length = value.Length;
-                int num3 = chunkLength + length;
+                var chunkChars = this.m_ChunkChars;
+                var chunkLength = this.m_ChunkLength;
+                var length = value.Length;
+                var num3 = chunkLength + length;
                 if (num3 < chunkChars.Length)
                 {
                     if (length <= 2)
@@ -435,7 +405,7 @@ namespace System.Text
                     }
                     else
                     {                        
-                        char[] tmp = value.ToCharArray();
+                        var tmp = value.ToCharArray();
                         System.Array.Copy(tmp, 0, chunkChars, chunkLength, length);                       
                     }
                     this.m_ChunkLength = num3;
@@ -454,20 +424,14 @@ namespace System.Text
         /// <param name="value"></param>
         /// <returns></returns>
         [CLSCompliant(false)]
-        public StringBuilder Append(sbyte value)
-        {
-            return this.Append(value.ToString());
-        }
+        public StringBuilder Append(sbyte value) => this.Append(value.ToString());
 
         /// <summary>
         /// Appends the string representation of a specified double-precision floating-point number to this instance. 
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public StringBuilder Append(float value)
-        {
-            return this.Append(value.ToString());
-        }
+        public StringBuilder Append(float value) => this.Append(value.ToString());
 
         /// <summary>
         /// Appends the string representation of a specified 16-bit unsigned integer to this instance. 
@@ -475,10 +439,7 @@ namespace System.Text
         /// <param name="value"></param>
         /// <returns></returns>
         [CLSCompliant(false)]
-        public StringBuilder Append(ushort value)
-        {
-            return this.Append(value.ToString());
-        }
+        public StringBuilder Append(ushort value) => this.Append(value.ToString());
 
         /// <summary>
         /// Appends the string representation of a specified 32-bit unsigned integer to this instance. 
@@ -486,10 +447,7 @@ namespace System.Text
         /// <param name="value"></param>
         /// <returns></returns>
         [CLSCompliant(false)]
-        public StringBuilder Append(uint value)
-        {
-            return this.Append(value.ToString());
-        }
+        public StringBuilder Append(uint value) => this.Append(value.ToString());
 
         /// <summary>
         /// Appends the string representation of a specified 64-bit unsigned integer to this instance. 
@@ -497,10 +455,7 @@ namespace System.Text
         /// <param name="value"></param>
         /// <returns></returns>
         [CLSCompliant(false)]
-        public StringBuilder Append(ulong value)
-        {
-            return this.Append(value.ToString());
-        }
+        public StringBuilder Append(ulong value) => this.Append(value.ToString());
 
         /// <summary>
         /// Appends a copy of a specified substring to this instance. 
@@ -569,7 +524,7 @@ namespace System.Text
             }
             if (charCount != 0)
             {
-                for(int i = startIndex; i < startIndex + charCount; ++i)
+                for(var i = startIndex; i < startIndex + charCount; ++i)
                 {
                     this.Append(value[i], 1);
                 }
@@ -591,7 +546,7 @@ namespace System.Text
             }
             if (repeatCount != 0)
             {
-                int chunkLength = this.m_ChunkLength;
+                var chunkLength = this.m_ChunkLength;
                 while (repeatCount > 0)
                 {
                     if (chunkLength < this.m_ChunkChars.Length)
@@ -638,9 +593,7 @@ namespace System.Text
             }
             if (length > 0)
             {
-                StringBuilder builder;
-                int num;
-                this.Remove(startIndex, length, out builder, out num);
+                this.Remove(startIndex, length, out var builder, out var num);
             }
             return this;
         }
@@ -651,15 +604,15 @@ namespace System.Text
         /// <returns></returns>
         public override string ToString()
         {
-            char[] result = new char[this.Length];
-            StringBuilder chunkPrevious = this;
+            var result = new char[this.Length];
+            var chunkPrevious = this;
             do
             {
                 if (chunkPrevious.m_ChunkLength > 0)
                 {
-                    char[] chunkChars = chunkPrevious.m_ChunkChars;
-                    int chunkOffset = chunkPrevious.m_ChunkOffset;
-                    int chunkLength = chunkPrevious.m_ChunkLength;
+                    var chunkChars = chunkPrevious.m_ChunkChars;
+                    var chunkOffset = chunkPrevious.m_ChunkOffset;
+                    var chunkLength = chunkPrevious.m_ChunkLength;
                     System.Array.Copy(chunkChars, 0, result, chunkOffset, chunkLength);
                 }
                 chunkPrevious = chunkPrevious.m_ChunkPrevious;
@@ -676,7 +629,7 @@ namespace System.Text
         /// <returns></returns>
         public string ToString(int startIndex, int length)
         {
-            int num = this.Length;
+            var num = this.Length;
             if (startIndex < 0)
             {
                 throw new ArgumentOutOfRangeException("startIndex");
@@ -693,22 +646,22 @@ namespace System.Text
             {
                 throw new ArgumentOutOfRangeException("length");
             }
-            StringBuilder chunkPrevious = this;
-            int num2 = startIndex + length;
-            char[] result = new char[this.Length];
-            int num3 = length;
+            var chunkPrevious = this;
+            var num2 = startIndex + length;
+            var result = new char[this.Length];
+            var num3 = length;
             while (num3 > 0)
             {
-                int chunkLength = num2 - chunkPrevious.m_ChunkOffset;
+                var chunkLength = num2 - chunkPrevious.m_ChunkOffset;
                 if (chunkLength >= 0)
                 {
                     if (chunkLength > chunkPrevious.m_ChunkLength)
                     {
                         chunkLength = chunkPrevious.m_ChunkLength;
                     }
-                    int num5 = num3;
-                    int charCount = num5;
-                    int index = chunkLength - num5;
+                    var num5 = num3;
+                    var charCount = num5;
+                    var index = chunkLength - num5;
                     if (index < 0)
                     {
                         charCount += index;
@@ -717,7 +670,7 @@ namespace System.Text
                     num3 -= charCount;
                     if (charCount > 0)
                     {
-                        char[] chunkChars = chunkPrevious.m_ChunkChars;
+                        var chunkChars = chunkPrevious.m_ChunkChars;
                         if ((((charCount + num3)) > length) || ((charCount + index) > chunkChars.Length))
                         {
                             throw new ArgumentOutOfRangeException("chunkCount");
@@ -743,26 +696,24 @@ namespace System.Text
             {
                 throw new ArgumentOutOfRangeException("count");
             }
-            int length = this.Length;
+            var length = this.Length;
             if (index > length)
             {
                 throw new ArgumentOutOfRangeException("index");
             }
             if (((value != null) && (value.Length != 0)) && (count != 0))
             {
-                StringBuilder builder;
-                int num3;
                 long num2 = value.Length * count;
                 if (num2 > (this.MaxCapacity - this.Length))
                 {
                     throw new OutOfMemoryException();
                 }
-                this.MakeRoom(index, (int)num2, out builder, out num3, false);
-                char[] chars = value.ToCharArray();
-                int charLength = chars.Length;
+                this.MakeRoom(index, (int)num2, out var builder, out var num3, false);
+                var chars = value.ToCharArray();
+                var charLength = chars.Length;
                 while (count > 0)
                 {                    
-                    int cindex = 0;
+                    var cindex = 0;
                     this.ReplaceInPlaceAtChunk(ref builder, ref num3, chars, ref cindex, charLength);
                     --count;
                 }
@@ -780,7 +731,7 @@ namespace System.Text
         /// <returns></returns>
         public StringBuilder Insert(int index, char[] value, int startIndex, int charCount)
         {
-            int length = this.Length;
+            var length = this.Length;
             if (index > length)
             {
                 throw new ArgumentOutOfRangeException("index");
@@ -823,7 +774,7 @@ namespace System.Text
         public StringBuilder Replace(char oldChar, char newChar, int startIndex, int count)
         {
             int num3;
-            int length = this.Length;
+            var length = this.Length;
             if (startIndex > length)
             {
                 throw new ArgumentOutOfRangeException("startIndex");
@@ -832,15 +783,15 @@ namespace System.Text
             {
                 throw new ArgumentOutOfRangeException("count");
             }
-            int num2 = startIndex + count;
-            StringBuilder chunkPrevious = this;
+            var num2 = startIndex + count;
+            var chunkPrevious = this;
         Label_0048:
             num3 = num2 - chunkPrevious.m_ChunkOffset;
-            int num4 = startIndex - chunkPrevious.m_ChunkOffset;
+            var num4 = startIndex - chunkPrevious.m_ChunkOffset;
             if (num3 >= 0)
             {
-                int index = Math.Max(num4, 0);
-                int num6 = Math.Min(chunkPrevious.m_ChunkLength, num3);
+                var index = Math.Max(num4, 0);
+                var num6 = Math.Min(chunkPrevious.m_ChunkLength, num3);
                 while (index < num6)
                 {
                     if (chunkPrevious.m_ChunkChars[index] == oldChar)
@@ -864,10 +815,7 @@ namespace System.Text
         /// <param name="oldChar"></param>
         /// <param name="newChar"></param>
         /// <returns></returns>
-        public StringBuilder Replace(char oldChar, char newChar)
-        {
-            return this.Replace(oldChar, newChar, 0, this.Length);
-        }
+        public StringBuilder Replace(char oldChar, char newChar) => this.Replace(oldChar, newChar, 0, this.Length);
 
         /// <summary>
         /// Replaces, within a substring of this instance, all occurrences of a specified string with another specified string. 
@@ -879,7 +827,7 @@ namespace System.Text
         /// <returns></returns>
         public StringBuilder Replace(string oldValue, string newValue, int startIndex, int count)
         {
-            int length = this.Length;
+            var length = this.Length;
             if (startIndex > length)
             {
                 throw new ArgumentOutOfRangeException("startIndex");
@@ -900,12 +848,12 @@ namespace System.Text
             {
                 newValue = string.Empty;
             }
-            int newLength = newValue.Length;
-            int oldLength = oldValue.Length;
+            var newLength = newValue.Length;
+            var oldLength = oldValue.Length;
             int[] sourceArray = null;
-            int replacementsCount = 0;
-            StringBuilder chunk = this.FindChunkForIndex(startIndex);
-            int indexInChunk = startIndex - chunk.m_ChunkOffset;
+            var replacementsCount = 0;
+            var chunk = this.FindChunkForIndex(startIndex);
+            var indexInChunk = startIndex - chunk.m_ChunkOffset;
             //While there is a replacement remaining
             while (count > 0)
             {                
@@ -920,7 +868,7 @@ namespace System.Text
                     else if (replacementsCount >= sourceArray.Length)
                     {
                         //We have more matches than allocated for resize the buffer
-                        int[] destinationArray = new int[((sourceArray.Length * 3) / 2) + 4];
+                        var destinationArray = new int[((sourceArray.Length * 3) / 2) + 4];
                         Array.Copy(sourceArray, destinationArray, sourceArray.Length);
                         sourceArray = destinationArray;
                     }
@@ -945,7 +893,7 @@ namespace System.Text
                 if ((indexInChunk >= chunk.m_ChunkLength) || (count == 0))
                 {
                     //Determine the index
-                    int index = indexInChunk + chunk.m_ChunkOffset;
+                    var index = indexInChunk + chunk.m_ChunkOffset;
                     //Replace the remaining characters
                     this.ReplaceAllInChunk(sourceArray, replacementsCount, chunk, oldLength, newValue);
                     //Move the index
@@ -967,10 +915,7 @@ namespace System.Text
         /// <param name="oldValue"></param>
         /// <param name="newValue"></param>
         /// <returns></returns>
-        public StringBuilder Replace(string oldValue, string newValue)
-        {
-            return this.Replace(oldValue, newValue, 0, this.Length);
-        }
+        public StringBuilder Replace(string oldValue, string newValue) => this.Replace(oldValue, newValue, 0, this.Length);
 
         /// <summary>
         /// Append the provided line along with a new line.
@@ -985,10 +930,7 @@ namespace System.Text
         /// <summary>
         /// Appends a NewLine onto the String
         /// </summary>
-        public StringBuilder AppendLine()
-        {
-            return this.Append("\r\n");
-        }
+        public StringBuilder AppendLine() => this.Append("\r\n");
 
         #endregion
 
@@ -1037,20 +979,20 @@ namespace System.Text
             if (replacementsCount > 0)
             {
                 //Determine the cmount of characters to remove
-                int count = (value.Length - removeCount) * replacementsCount;
+                var count = (value.Length - removeCount) * replacementsCount;
                 //Scope the working chunk
-                StringBuilder chunk = sourceChunk;
+                var chunk = sourceChunk;
                 //Determine the index of the first replacement
-                int indexInChunk = replacements[0];
+                var indexInChunk = replacements[0];
                 //If there is a character being added make room
                 if (count > 0)
                 {
                     this.MakeRoom(chunk.m_ChunkOffset + indexInChunk, count, out chunk, out indexInChunk, true);
                 }
                 //Start at the first replacement
-                int index = 0;
-                int replacementIndex = 0;
-                char[] chars = value.ToCharArray();
+                var index = 0;
+                var replacementIndex = 0;
+                var chars = value.ToCharArray();
             ReplaceValue:
                 //Replace the value                 
                 this.ReplaceInPlaceAtChunk(ref chunk, ref indexInChunk, chars, ref replacementIndex, value.Length);
@@ -1060,14 +1002,14 @@ namespace System.Text
                 }
 
                 //Determine the next replacement 
-                int valueIndex = replacements[index] + removeCount;
+                var valueIndex = replacements[index] + removeCount;
                 //Move the pointer of the working replacement
                 ++index;
                 //If we are not past the replacement boundry
                 if (index < replacementsCount)
                 {
                     //Determine the next replacement
-                    int nextIndex = replacements[index];
+                    var nextIndex = replacements[index];
                     //If there is a character remaining to be replaced
                     if (count != 0)
                     {
@@ -1104,7 +1046,7 @@ namespace System.Text
             while (true)
             {
                 //int num = chunk.m_ChunkLength - indexInChunk;
-                int length = Math.Min(chunk.m_ChunkLength - indexInChunk, count);
+                var length = Math.Min(chunk.m_ChunkLength - indexInChunk, count);
                 //ThreadSafeCopy(value, ref valueIndex, chunk.m_ChunkChars, ref indexInChunk, num2);
                 System.Array.Copy(value, valueIndex, chunk.m_ChunkChars, indexInChunk, length);
                 indexInChunk += length;
@@ -1131,7 +1073,7 @@ namespace System.Text
             indexInChunk = index - chunk.m_ChunkOffset;
             if ((!doneMoveFollowingChars && (chunk.m_ChunkLength <= 0x20)) && ((chunk.m_ChunkChars.Length - chunk.m_ChunkLength) >= count))
             {
-                int chunkLength = chunk.m_ChunkLength;
+                var chunkLength = chunk.m_ChunkLength;
                 while (chunkLength > indexInChunk)
                 {
                     chunkLength--;
@@ -1141,13 +1083,14 @@ namespace System.Text
             }
             else
             {
-                StringBuilder builder = new StringBuilder(Math.Max(count, 0x10), chunk.m_MaxCapacity, chunk.m_ChunkPrevious);
-                builder.m_ChunkLength = count;
-                int length = Math.Min(count, indexInChunk);
+                var builder = new StringBuilder(Math.Max(count, 0x10), chunk.m_MaxCapacity, chunk.m_ChunkPrevious) {
+                    m_ChunkLength = count
+                };
+                var length = Math.Min(count, indexInChunk);
                 if (length > 0)
                 {
                     System.Array.Copy(chunk.m_ChunkChars, 0, builder.m_ChunkChars, 0, length);
-                    int nextLength = indexInChunk - length;
+                    var nextLength = indexInChunk - length;
                     if (nextLength >= 0)
                     {
                         System.Array.Copy(chunk.m_ChunkChars, length, chunk.m_ChunkChars, 0, nextLength);
@@ -1166,7 +1109,7 @@ namespace System.Text
 
         internal StringBuilder FindChunkForIndex(int index)
         {
-            StringBuilder chunkPrevious = this;
+            var chunkPrevious = this;
             while (chunkPrevious.m_ChunkOffset > index) chunkPrevious = chunkPrevious.m_ChunkPrevious;
             return chunkPrevious;
         }
@@ -1180,7 +1123,7 @@ namespace System.Text
         internal void ExpandByABlock(int minBlockCharCount)
         {
             if ((minBlockCharCount + this.Length) > this.m_MaxCapacity) throw new ArgumentOutOfRangeException("requiredLength");
-            int num = Math.Max(minBlockCharCount, Math.Min(this.Length, 0x1f40));
+            var num = Math.Max(minBlockCharCount, Math.Min(this.Length, 0x1f40));
             this.m_ChunkPrevious = new StringBuilder(this);
             this.m_ChunkOffset += this.m_ChunkLength;
             this.m_ChunkLength = 0;
@@ -1195,10 +1138,10 @@ namespace System.Text
 
         internal void Remove(int startIndex, int count, out StringBuilder chunk, out int indexInChunk)
         {
-            int num = startIndex + count;
+            var num = startIndex + count;
             chunk = this;
             StringBuilder builder = null;
-            int sourceIndex = 0;
+            var sourceIndex = 0;
             while (true)
             {
                 if ((num - chunk.m_ChunkOffset) >= 0)
@@ -1211,8 +1154,8 @@ namespace System.Text
                     if ((startIndex - chunk.m_ChunkOffset) >= 0)
                     {
                         indexInChunk = startIndex - chunk.m_ChunkOffset;
-                        int destinationIndex = indexInChunk;
-                        int num4 = builder.m_ChunkLength - sourceIndex;
+                        var destinationIndex = indexInChunk;
+                        var num4 = builder.m_ChunkLength - sourceIndex;
                         if (builder != chunk)
                         {
                             destinationIndex = 0;
@@ -1241,7 +1184,7 @@ namespace System.Text
 
         internal void Append(char[] value, int valueCount)
         {
-            int num = valueCount + this.m_ChunkLength;
+            var num = valueCount + this.m_ChunkLength;
             if (num <= this.m_ChunkChars.Length)
             {
                 //ThreadSafeCopy(value, this.m_ChunkChars, this.m_ChunkLength, valueCount);
@@ -1250,14 +1193,14 @@ namespace System.Text
             }
             else
             {
-                int count = this.m_ChunkChars.Length - this.m_ChunkLength;
+                var count = this.m_ChunkChars.Length - this.m_ChunkLength;
                 if (count > 0)
                 {
                     //ThreadSafeCopy(value, this.m_ChunkChars, this.m_ChunkLength, count);
                     System.Array.Copy(value, 0, this.m_ChunkChars, this.m_ChunkLength, count);
                     this.m_ChunkLength = this.m_ChunkChars.Length;
                 }
-                int minBlockCharCount = valueCount - count;
+                var minBlockCharCount = valueCount - count;
                 this.ExpandByABlock(minBlockCharCount);
                 //ThreadSafeCopy(value + count, this.m_ChunkChars, 0, minBlockCharCount);
                 System.Array.Copy(value, count, this.m_ChunkChars, 0, minBlockCharCount);

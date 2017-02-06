@@ -17,7 +17,7 @@ namespace System
     {
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public override extern bool Equals(Object obj);
+        public override extern bool Equals(object obj);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public static extern Delegate Combine(Delegate a, Delegate b);
@@ -28,7 +28,7 @@ namespace System
             get;
         }
 
-        extern public Object Target
+        extern public object Target
         {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
             get;

@@ -22,7 +22,7 @@ namespace System.Globalization
         {
             if (str == null)
             {
-                str = (string)ResourceManager.GetObject(m_rm, id);
+                str = (string)ResourceManager.GetObject(this.m_rm, id);
             }
 
             return str;
@@ -32,7 +32,7 @@ namespace System.Globalization
         {
             if (strArray == null)
             {
-                string str = (string)ResourceManager.GetObject(m_rm, id);
+                var str = (string)ResourceManager.GetObject(this.m_rm, id);
                 strArray = str.Split('|');
             }
 
@@ -46,14 +46,14 @@ namespace System.Globalization
                 throw new ArgumentNullException("name");
             }
 
-            m_rm = new ResourceManager(c_ResourceBase, typeof(CultureInfo).Assembly, name, true);
-            m_name = m_rm.m_cultureName;
+            this.m_rm = new ResourceManager(c_ResourceBase, typeof(CultureInfo).Assembly, name, true);
+            this.m_name = this.m_rm.m_cultureName;
         }
 
         internal CultureInfo(ResourceManager resourceManager)
         {
-            m_rm = resourceManager;
-            m_name = resourceManager.m_cultureName;
+            this.m_rm = resourceManager;
+            this.m_name = resourceManager.m_cultureName;
         }
 
         public static CultureInfo CurrentUICulture
@@ -61,7 +61,7 @@ namespace System.Globalization
             get
             {
                 //only one system-wide culture.  We do not currently support per-thread cultures
-                CultureInfo culture = CurrentUICultureInternal;
+                var culture = CurrentUICultureInternal;
                 if (culture == null)
                 {
                     culture = new CultureInfo("");
@@ -70,12 +70,7 @@ namespace System.Globalization
 
                 return culture;
             }
-            set {
-                if (value == null)
-                    throw new ArgumentNullException();
-
-                CurrentUICultureInternal = value;
-            }
+            set => CurrentUICultureInternal = value ?? throw new ArgumentNullException();
         }
 
         private extern static CultureInfo CurrentUICultureInternal
@@ -90,16 +85,16 @@ namespace System.Globalization
         {
             get
             {
-                if (m_parent == null)
+                if (this.m_parent == null)
                 {
-                    if (m_name == "") //Invariant culture
+                    if (this.m_name == "") //Invariant culture
                     {
-                        m_parent = this;
+                        this.m_parent = this;
                     }
                     else
                     {
-                        string parentName = m_name;
-                        int iDash = m_name.LastIndexOf('-');
+                        var parentName = this.m_name;
+                        var iDash = this.m_name.LastIndexOf('-');
                         if (iDash >= 0)
                         {
                             parentName = parentName.Substring(0, iDash);
@@ -109,36 +104,36 @@ namespace System.Globalization
                             parentName = "";
                         }
 
-                        m_parent = new CultureInfo(parentName);
+                        this.m_parent = new CultureInfo(parentName);
                     }
                 }
 
-                return m_parent;
+                return this.m_parent;
             }
         }
 
         public static CultureInfo[] GetCultures(CultureTypes types)
         {
-            ArrayList listCultures = new ArrayList();
+            var listCultures = new ArrayList();
             //Look for all assemblies/satellite assemblies
-            Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
-            for (int iAssembly = 0; iAssembly < assemblies.Length; iAssembly++)
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            for (var iAssembly = 0; iAssembly < assemblies.Length; iAssembly++)
             {
-                Assembly assembly = assemblies[iAssembly];
-                string mscorlib = "GHIElectronics.TinyCLR.Core";
-                string fullName = assembly.FullName;
+                var assembly = assemblies[iAssembly];
+                var mscorlib = "GHIElectronics.TinyCLR.Core";
+                var fullName = assembly.FullName;
                 // consider adding startswith ?
                 if ((mscorlib.Length <= fullName.Length) && (fullName.Substring(0, mscorlib.Length) == mscorlib))
                 {
-                    string[] resources = assembly.GetManifestResourceNames();
-                    for (int iResource = 0; iResource < resources.Length; iResource++)
+                    var resources = assembly.GetManifestResourceNames();
+                    for (var iResource = 0; iResource < resources.Length; iResource++)
                     {
-                        string resource = resources[iResource];
-                        string ciResource = c_ResourceBase;
+                        var resource = resources[iResource];
+                        var ciResource = c_ResourceBase;
                         if (ciResource.Length < resource.Length && resource.Substring(0, ciResource.Length) == ciResource)
                         {
                             //System.Globalization.Resources.CultureInfo.<culture>.tinyresources
-                            string cultureName = resource.Substring(ciResource.Length, resource.Length - ciResource.Length - System.Resources.ResourceManager.s_fileExtension.Length);
+                            var cultureName = resource.Substring(ciResource.Length, resource.Length - ciResource.Length - System.Resources.ResourceManager.s_fileExtension.Length);
                             // remove the leading "."
                             if (cultureName != "")
                             {
@@ -155,84 +150,75 @@ namespace System.Globalization
             return (CultureInfo[])listCultures.ToArray(typeof(CultureInfo));
         }
 
-        public virtual String Name
-        {
-            get
-            {
-                return m_name;
-            }
-        }
+        public virtual string Name => this.m_name;
 
-        public override String ToString()
-        {
-            return m_name;
-        }
+        public override string ToString() => this.m_name;
 
-//        public virtual Object GetFormat(Type formatType) {
-//            if (formatType == typeof(NumberFormatInfo)) {
-//                return (NumberFormat);
-//            }
-//            if (formatType == typeof(DateTimeFormatInfo)) {
-//                return (DateTimeFormat);
-//            }
-//            return (null);
-//        }
+        //        public virtual Object GetFormat(Type formatType) {
+        //            if (formatType == typeof(NumberFormatInfo)) {
+        //                return (NumberFormat);
+        //            }
+        //            if (formatType == typeof(DateTimeFormatInfo)) {
+        //                return (DateTimeFormat);
+        //            }
+        //            return (null);
+        //        }
 
-//        internal static void CheckNeutral(CultureInfo culture) {
-//            if (culture.IsNeutralCulture) {
-//                    BCLDebug.Assert(culture.m_name != null, "[CultureInfo.CheckNeutral]Always expect m_name to be set");
-//                    throw new NotSupportedException(
-//                                    Environment.GetResourceString("Argument_CultureInvalidFormat",
-//                                    culture.m_name));
-//            }
-//        }
+        //        internal static void CheckNeutral(CultureInfo culture) {
+        //            if (culture.IsNeutralCulture) {
+        //                    BCLDebug.Assert(culture.m_name != null, "[CultureInfo.CheckNeutral]Always expect m_name to be set");
+        //                    throw new NotSupportedException(
+        //                                    Environment.GetResourceString("Argument_CultureInvalidFormat",
+        //                                    culture.m_name));
+        //            }
+        //        }
 
-//        [System.Runtime.InteropServices.ComVisible(false)]
-//        public CultureTypes CultureTypes
-//        {
-//            get
-//            {
-//                CultureTypes types = 0;
+        //        [System.Runtime.InteropServices.ComVisible(false)]
+        //        public CultureTypes CultureTypes
+        //        {
+        //            get
+        //            {
+        //                CultureTypes types = 0;
 
-//                if (m_cultureTableRecord.IsNeutralCulture)
-//                    types |= CultureTypes.NeutralCultures;
-//                else 
-//                    types |= CultureTypes.SpecificCultures;
+        //                if (m_cultureTableRecord.IsNeutralCulture)
+        //                    types |= CultureTypes.NeutralCultures;
+        //                else 
+        //                    types |= CultureTypes.SpecificCultures;
 
-//                if (m_cultureTableRecord.IsSynthetic)
-//                    types |= CultureTypes.WindowsOnlyCultures | CultureTypes.InstalledWin32Cultures; // Synthetic is installed culture too.
-//                else
-//                {
-//                    // Not Synthetic
-//                    if (CultureTable.IsInstalledLCID(cultureID)) 
-//                        types |= CultureTypes.InstalledWin32Cultures;
-                        
-//                    if (!m_cultureTableRecord.IsCustomCulture || m_cultureTableRecord.IsReplacementCulture)
-//                        types |= CultureTypes.FrameworkCultures;
-//                }
+        //                if (m_cultureTableRecord.IsSynthetic)
+        //                    types |= CultureTypes.WindowsOnlyCultures | CultureTypes.InstalledWin32Cultures; // Synthetic is installed culture too.
+        //                else
+        //                {
+        //                    // Not Synthetic
+        //                    if (CultureTable.IsInstalledLCID(cultureID)) 
+        //                        types |= CultureTypes.InstalledWin32Cultures;
 
-//                if (m_cultureTableRecord.IsCustomCulture)
-//                {
-//                    types |= CultureTypes.UserCustomCulture;
+        //                    if (!m_cultureTableRecord.IsCustomCulture || m_cultureTableRecord.IsReplacementCulture)
+        //                        types |= CultureTypes.FrameworkCultures;
+        //                }
 
-//                    if (m_cultureTableRecord.IsReplacementCulture)
-//                        types |= CultureTypes.ReplacementCultures;
-//                }
+        //                if (m_cultureTableRecord.IsCustomCulture)
+        //                {
+        //                    types |= CultureTypes.UserCustomCulture;
+
+        //                    if (m_cultureTableRecord.IsReplacementCulture)
+        //                        types |= CultureTypes.ReplacementCultures;
+        //                }
 
 
-//                return types;
-//            }
-//        }
+        //                return types;
+        //            }
+        //        }
 
         public virtual NumberFormatInfo NumberFormat {
             get {
 
-                if(numInfo == null)
+                if(this.numInfo == null)
                 {
-                    numInfo = new NumberFormatInfo(this);
+                    this.numInfo = new NumberFormatInfo(this);
                 }
 
-                return numInfo;
+                return this.numInfo;
             }
         }
 
@@ -240,12 +226,12 @@ namespace System.Globalization
         {
             get
             {
-                if (dateTimeInfo == null)
+                if (this.dateTimeInfo == null)
                 {
-                    dateTimeInfo = new DateTimeFormatInfo(this);
+                    this.dateTimeInfo = new DateTimeFormatInfo(this);
                 }
 
-                return dateTimeInfo;
+                return this.dateTimeInfo;
             }
         }
     }

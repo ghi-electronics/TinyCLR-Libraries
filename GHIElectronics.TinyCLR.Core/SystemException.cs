@@ -13,12 +13,12 @@ namespace System
         {
         }
 
-        public SystemException(String message)
+        public SystemException(string message)
             : base(message)
         {
         }
 
-        public SystemException(String message, Exception innerException)
+        public SystemException(string message, Exception innerException)
             : base(message, innerException)
         {
         }

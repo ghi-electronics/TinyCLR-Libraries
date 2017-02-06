@@ -8,12 +8,12 @@ namespace System
         {
         }
 
-        public NullReferenceException(String message)
+        public NullReferenceException(string message)
             : base(message)
         {
         }
 
-        public NullReferenceException(String message, Exception innerException)
+        public NullReferenceException(string message, Exception innerException)
             : base(message, innerException)
         {
         }

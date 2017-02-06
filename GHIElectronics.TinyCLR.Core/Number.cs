@@ -279,13 +279,11 @@ namespace System
     //This class contains only static members and does not need to be serializable
     internal static class Number
     {
-        public static String Format(Object value, bool isInteger, String format, NumberFormatInfo info)
+        public static string Format(object value, bool isInteger, string format, NumberFormatInfo info)
         {
-            char formatCh;
-            int precision;
-            ValidateFormat(format, out formatCh, out precision);
+            ValidateFormat(format, out var formatCh, out var precision);
 
-            String result = FormatNative(value, formatCh, precision);
+            var result = FormatNative(value, formatCh, precision);
 
             if (isInteger)
             {
@@ -293,7 +291,7 @@ namespace System
                 {
                     if (result != null && result.Length > 1)
                     {
-                        bool negative = result[0] == '-' ? true : false;
+                        var negative = result[0] == '-' ? true : false;
 
                         result = result.TrimStart(new char[] { '0', '-' });
 
@@ -316,9 +314,9 @@ namespace System
         }
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        private static extern String FormatNative(Object value, char format, int precision);
+        private static extern string FormatNative(object value, char format, int precision);
 
-        private static void ValidateFormat(String format, out char formatCh, out int precision)
+        private static void ValidateFormat(string format, out char formatCh, out int precision)
         {
             precision = 0;
 
@@ -336,7 +334,7 @@ namespace System
                 formatCh = (char)(formatCh - ('a' - 'A'));
             }
 
-            int formatLen = format.Length;
+            var formatLen = format.Length;
 
             if (formatLen > 1)
             {
@@ -348,7 +346,7 @@ namespace System
                     throw new ArgumentException();
                 }
 
-                for (int i = 1; i < formatLen; i++)
+                for (var i = 1; i < formatLen; i++)
                 {
                     digit = (ushort)(format[i] - '0');
 
@@ -377,9 +375,9 @@ namespace System
             }
         }
 
-        private static String PostProcessInteger(Object value, String original, char format, int precision, NumberFormatInfo info)
+        private static string PostProcessInteger(object value, string original, char format, int precision, NumberFormatInfo info)
         {
-            String result = original;
+            var result = original;
 
             switch (format)
             {
@@ -387,7 +385,7 @@ namespace System
                     // truncate negative numbers to 
                     if (result.Length > precision && (result[0] == 'F' || result[0] == 'f'))
                     {
-                        int len = result.Length;
+                        var len = result.Length;
 
                         if(value is sbyte || value is byte)
                         {
@@ -421,7 +419,7 @@ namespace System
 
             if (result != null && result.Length > 0 && result[0] == '-') // if it is zero, no negative sign
             {
-                int i = 1;
+                var i = 1;
 
                 for (; i < result.Length; i++)
                 {
@@ -438,9 +436,9 @@ namespace System
             return result;
         }
 
-        private static String PostProcessFloat(String original, char format, NumberFormatInfo info)
+        private static string PostProcessFloat(string original, char format, NumberFormatInfo info)
         {
-            String result = original;
+            var result = original;
 
             if (format == 'N')
             {
@@ -452,7 +450,7 @@ namespace System
 
             if (result != null && result.Length > 0 && result[0] == '-') // if it is zero, no negative sign
             {
-                int i = 1;
+                var i = 1;
 
                 for (; i < result.Length; i++)
                 {
@@ -469,11 +467,11 @@ namespace System
             return result;
         }
 
-        private static String AppendTrailingZeros(String original, int count, NumberFormatInfo info)
+        private static string AppendTrailingZeros(string original, int count, NumberFormatInfo info)
         {
             if (count > 0)
             {
-                return original + info.NumberDecimalSeparator + new String('0', count);
+                return original + info.NumberDecimalSeparator + new string('0', count);
             }
             else
             {
@@ -481,7 +479,7 @@ namespace System
             }
         }
 
-        private static String ReplaceNegativeSign(String original, NumberFormatInfo info)
+        private static string ReplaceNegativeSign(string original, NumberFormatInfo info)
         {
             if (original[0] == '-')
             {
@@ -493,9 +491,9 @@ namespace System
             }
         }
 
-        private static String ReplaceDecimalSeperator(String original, NumberFormatInfo info)
+        private static string ReplaceDecimalSeperator(string original, NumberFormatInfo info)
         {
-            int pos = original.IndexOf('.');
+            var pos = original.IndexOf('.');
 
             if (pos != -1)
             {
@@ -507,27 +505,27 @@ namespace System
             }
         }
 
-        private static String InsertGroupSeperators(String original, NumberFormatInfo info)
+        private static string InsertGroupSeperators(string original, NumberFormatInfo info)
         {
-            int digitsStartPos = (original[0] == '-') ? 1 : 0;
+            var digitsStartPos = (original[0] == '-') ? 1 : 0;
 
-            int decimalPointPos = original.IndexOf('.');
+            var decimalPointPos = original.IndexOf('.');
             if (decimalPointPos == -1) decimalPointPos = original.Length;
 
-            String prefix = (digitsStartPos == 1) ? "-" : "";
-            String suffix = original.Substring(decimalPointPos);
-            String digits = original.Substring(digitsStartPos, decimalPointPos - digitsStartPos);
+            var prefix = (digitsStartPos == 1) ? "-" : "";
+            var suffix = original.Substring(decimalPointPos);
+            var digits = original.Substring(digitsStartPos, decimalPointPos - digitsStartPos);
 
-            String result = String.Empty;
+            var result = string.Empty;
 
-            int[] groupSizes = info.NumberGroupSizes;
+            var groupSizes = info.NumberGroupSizes;
 
-            int sizeInd = 0;
-            int size = groupSizes[sizeInd];
-            int pos = digits.Length - size;
+            var sizeInd = 0;
+            var size = groupSizes[sizeInd];
+            var pos = digits.Length - size;
 
-            String seperator = info.NumberGroupSeparator;
-            int lastSizeInd = groupSizes.Length - 1;
+            var seperator = info.NumberGroupSeparator;
+            var lastSizeInd = groupSizes.Length - 1;
 
             while (pos > 0)
             {

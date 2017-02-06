@@ -9,145 +9,91 @@ namespace System.Reflection
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = false)]
     public sealed class AssemblyCopyrightAttribute : Attribute
     {
-        private String m_copyright;
+        private string m_copyright;
 
-        public AssemblyCopyrightAttribute(String copyright)
-        {
-            m_copyright = copyright;
-        }
+        public AssemblyCopyrightAttribute(string copyright) => this.m_copyright = copyright;
 
-        public String Copyright
-        {
-            get { return m_copyright; }
-        }
+        public string Copyright => this.m_copyright;
     }
 
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = false)]
     public sealed class AssemblyTrademarkAttribute : Attribute
     {
-        private String m_trademark;
+        private string m_trademark;
 
-        public AssemblyTrademarkAttribute(String trademark)
-        {
-            m_trademark = trademark;
-        }
+        public AssemblyTrademarkAttribute(string trademark) => this.m_trademark = trademark;
 
-        public String Trademark
-        {
-            get { return m_trademark; }
-        }
+        public string Trademark => this.m_trademark;
     }
 
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = false)]
     public sealed class AssemblyProductAttribute : Attribute
     {
-        private String m_product;
+        private string m_product;
 
-        public AssemblyProductAttribute(String product)
-        {
-            m_product = product;
-        }
+        public AssemblyProductAttribute(string product) => this.m_product = product;
 
-        public String Product
-        {
-            get { return m_product; }
-        }
+        public string Product => this.m_product;
     }
 
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = false)]
     public sealed class AssemblyCompanyAttribute : Attribute
     {
-        private String m_company;
+        private string m_company;
 
-        public AssemblyCompanyAttribute(String company)
-        {
-            m_company = company;
-        }
+        public AssemblyCompanyAttribute(string company) => this.m_company = company;
 
-        public String Company
-        {
-            get { return m_company; }
-        }
+        public string Company => this.m_company;
     }
 
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = false)]
     public sealed class AssemblyDescriptionAttribute : Attribute
     {
-        private String m_description;
+        private string m_description;
 
-        public AssemblyDescriptionAttribute(String description)
-        {
-            m_description = description;
-        }
+        public AssemblyDescriptionAttribute(string description) => this.m_description = description;
 
-        public String Description
-        {
-            get { return m_description; }
-        }
+        public string Description => this.m_description;
     }
 
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = false)]
     public sealed class AssemblyTitleAttribute : Attribute
     {
-        private String m_title;
+        private string m_title;
 
-        public AssemblyTitleAttribute(String title)
-        {
-            m_title = title;
-        }
+        public AssemblyTitleAttribute(string title) => this.m_title = title;
 
-        public String Title
-        {
-            get { return m_title; }
-        }
+        public string Title => this.m_title;
     }
 
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = false)]
     public sealed class AssemblyConfigurationAttribute : Attribute
     {
-        private String m_configuration;
+        private string m_configuration;
 
-        public AssemblyConfigurationAttribute(String configuration)
-        {
-            m_configuration = configuration;
-        }
+        public AssemblyConfigurationAttribute(string configuration) => this.m_configuration = configuration;
 
-        public String Configuration
-        {
-            get { return m_configuration; }
-        }
+        public string Configuration => this.m_configuration;
     }
 
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = false)]
     public sealed class AssemblyDefaultAliasAttribute : Attribute
     {
-        private String m_defaultAlias;
+        private string m_defaultAlias;
 
-        public AssemblyDefaultAliasAttribute(String defaultAlias)
-        {
-            m_defaultAlias = defaultAlias;
-        }
+        public AssemblyDefaultAliasAttribute(string defaultAlias) => this.m_defaultAlias = defaultAlias;
 
-        public String DefaultAlias
-        {
-            get { return m_defaultAlias; }
-        }
+        public string DefaultAlias => this.m_defaultAlias;
     }
 
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = false)]
     public sealed class AssemblyInformationalVersionAttribute : Attribute
     {
-        private String m_informationalVersion;
+        private string m_informationalVersion;
 
-        public AssemblyInformationalVersionAttribute(String informationalVersion)
-        {
-            m_informationalVersion = informationalVersion;
-        }
+        public AssemblyInformationalVersionAttribute(string informationalVersion) => this.m_informationalVersion = informationalVersion;
 
-        public String InformationalVersion
-        {
-            get { return m_informationalVersion; }
-        }
+        public string InformationalVersion => this.m_informationalVersion;
     }
 }
 

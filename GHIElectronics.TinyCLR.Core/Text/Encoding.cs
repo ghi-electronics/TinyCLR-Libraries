@@ -69,34 +69,16 @@ namespace System.Text
     [Serializable()]
     public abstract class Encoding
     {
-        public virtual byte[] GetBytes(String s)
-        {
-            return null;
-        }
+        public virtual byte[] GetBytes(string s) => null;
 
-        public virtual int GetBytes(string s, int charIndex, int charCount, byte[] bytes, int byteIndex)
-        {
-            throw new NotImplementedException();
-        }
+        public virtual int GetBytes(string s, int charIndex, int charCount, byte[] bytes, int byteIndex) => throw new NotImplementedException();
 
-        public virtual char[] GetChars(byte[] bytes)
-        {
-            throw new NotImplementedException();
-        }
+        public virtual char[] GetChars(byte[] bytes) => throw new NotImplementedException();
 
-        public virtual char[] GetChars(byte[] bytes, int byteIndex, int byteCount)
-        {
-            throw new NotImplementedException();
-        }
+        public virtual char[] GetChars(byte[] bytes, int byteIndex, int byteCount) => throw new NotImplementedException();
 
         public abstract Decoder GetDecoder();
-        public static Encoding UTF8
-        {
-            get
-            {
-                return new UTF8Encoding();
-            }
-        }
+        public static Encoding UTF8 => new UTF8Encoding();
     }
 }
 

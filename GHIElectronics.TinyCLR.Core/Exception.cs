@@ -21,47 +21,40 @@ namespace System
         {
         }
 
-        public Exception(String message)
+        public Exception(string message) => this._message = message;
+
+        public Exception(string message, Exception innerException)
         {
-            _message = message;
+            this._message = message;
+            this.m_innerException = innerException;
         }
 
-        public Exception(String message, Exception innerException)
-        {
-            _message = message;
-            m_innerException = innerException;
-        }
-
-        public virtual String Message
+        public virtual string Message
         {
             get
             {
-                if (_message == null)
+                if (this._message == null)
                 {
                     return "Exception was thrown: " + this.GetType().FullName;
                 }
                 else
                 {
-                    return _message;
+                    return this._message;
                 }
             }
         }
 
-        public Exception InnerException
-        {
-            get { return m_innerException; }
-        }
-
-        public extern virtual String StackTrace
+        public Exception InnerException => this.m_innerException;
+        public extern virtual string StackTrace
         {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
             get;
         }
 
-        public override String ToString()
+        public override string ToString()
         {
-            String message = Message;
-            String s = base.ToString();
+            var message = this.Message;
+            var s = base.ToString();
 
             if (message != null && message.Length > 0)
             {

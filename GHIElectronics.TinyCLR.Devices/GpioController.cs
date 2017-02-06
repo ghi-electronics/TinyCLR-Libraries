@@ -26,10 +26,7 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio
         /// Gets the default general-purpose I/O (GPIO) controller for the system.
         /// </summary>
         /// <returns>The default GPIO controller for the system, or null if the system has no GPIO controller.</returns>
-        public static GpioController GetDefault()
-        {
-            return s_instance;
-        }
+        public static GpioController GetDefault() => s_instance;
 
         /// <summary>
         /// Opens a connection to the specified general-purpose I/O (GPIO) pin in exclusive mode.
@@ -38,10 +35,7 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio
         ///     in user mode. For information about how the pin numbers correspond to physical pins, see the
         ///     documentation for your circuit board.</param>
         /// <returns>The opened GPIO pin.</returns>
-        public GpioPin OpenPin(int pinNumber)
-        {
-            return OpenPin(pinNumber, GpioSharingMode.Exclusive);
-        }
+        public GpioPin OpenPin(int pinNumber) => OpenPin(pinNumber, GpioSharingMode.Exclusive);
 
         /// <summary>
         /// Opens the specified general-purpose I/O (GPIO) pin in the specified mode.
@@ -54,7 +48,7 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio
         /// <returns>The opened GPIO pin.</returns>
         public GpioPin OpenPin(int pinNumber, GpioSharingMode sharingMode)
         {
-            GpioPin pin = new GpioPin();
+            var pin = new GpioPin();
             if (!pin.Init(pinNumber))
             {
                 throw new InvalidOperationException();
@@ -78,7 +72,7 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio
         /// <returns>True if the pin could be opened; otherwise false.</returns>
         public bool TryOpenPin(int pinNumber, GpioSharingMode sharingMode, out GpioPin pin, out GpioOpenStatus openStatus)
         {
-            GpioPin newPin = new GpioPin();
+            var newPin = new GpioPin();
             if (!newPin.Init(pinNumber))
             {
                 pin = null;

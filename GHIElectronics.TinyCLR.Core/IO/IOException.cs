@@ -28,26 +28,20 @@ namespace System.IO
         {
         }
 
-        public IOException(String message)
+        public IOException(string message)
             : base(message)
         {
         }
 
-        public IOException(String message, int hresult)
-            : base(message)
-        {
-            m_HResult = hresult;
-        }
+        public IOException(string message, int hresult)
+            : base(message) => this.m_HResult = hresult;
 
-        public IOException(String message, Exception innerException)
+        public IOException(string message, Exception innerException)
             : base(message, innerException)
         {
         }
 
-        public IOExceptionErrorCode ErrorCode
-        {
-            get { return (IOExceptionErrorCode)m_HResult; }
-        }
+        public IOExceptionErrorCode ErrorCode => (IOExceptionErrorCode)this.m_HResult;
     }
 }
 

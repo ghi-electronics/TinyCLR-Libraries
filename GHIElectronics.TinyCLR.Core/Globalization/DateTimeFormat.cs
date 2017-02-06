@@ -136,11 +136,11 @@ namespace System.Globalization
         //
         ////////////////////////////////////////////////////////////////////////////
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        private static extern String FormatDigits(int value, int len);
-        static int ParseRepeatPattern(String format, int pos, char patternChar)
+        private static extern string FormatDigits(int value, int len);
+        static int ParseRepeatPattern(string format, int pos, char patternChar)
         {
-            int len = format.Length;
-            int index = pos + 1;
+            var len = format.Length;
+            var index = pos + 1;
             while ((index < len) && (format[index] == patternChar))
             {
                 index++;
@@ -153,20 +153,20 @@ namespace System.Globalization
         // The pos should point to a quote character. This method will
         // get the string encloed by the quote character.
         //
-        internal static String ParseQuoteString(String format, int pos, out int count)
+        internal static string ParseQuoteString(string format, int pos, out int count)
         {
             //
             // NOTE : pos will be the index of the quote character in the 'format' string.
             //
-            String result = String.Empty;
-            int formatLen = format.Length;
-            int beginPos = pos;
-            char quoteChar = format[pos++]; // Get the character used to quote the following string.
+            var result = string.Empty;
+            var formatLen = format.Length;
+            var beginPos = pos;
+            var quoteChar = format[pos++]; // Get the character used to quote the following string.
 
-            bool foundQuote = false;
+            var foundQuote = false;
             while (pos < formatLen)
             {
-                char ch = format[pos++];
+                var ch = format[pos++];
                 if (ch == quoteChar)
                 {
                     foundQuote = true;
@@ -217,7 +217,7 @@ namespace System.Globalization
         // Return value of -1 means 'pos' is already at the end of the 'format' string.
         // Otherwise, return value is the int value of the next character.
         //
-        private static int ParseNextChar(String format, int pos)
+        private static int ParseNextChar(string format, int pos)
         {
             if (pos >= format.Length - 1)
             {
@@ -232,19 +232,19 @@ namespace System.Globalization
         //
         //  Actions: Format the DateTime instance using the specified format.
         //
-        private static String FormatCustomized(DateTime dateTime, String format, DateTimeFormatInfo dtfi)
+        private static string FormatCustomized(DateTime dateTime, string format, DateTimeFormatInfo dtfi)
         {
-            String result = String.Empty;
-            int i = 0;
+            var result = string.Empty;
+            var i = 0;
             int tokenLen = 1, hour12;
-            int formatLen = format.Length;
+            var formatLen = format.Length;
 
             while (i < formatLen)
             {
-                char ch = format[i];
+                var ch = format[i];
                 int nextChar;
-                bool doneParsingCh = true;
-                String tempResult = String.Empty;
+                var doneParsingCh = true;
+                var tempResult = string.Empty;
 
                 switch (ch)
                 {
@@ -335,8 +335,8 @@ namespace System.Globalization
                         case 'f':
                             if (tokenLen <= MaxSecondsFractionDigits)
                             {
-                                int precision = 3;
-                                int fraction = dateTime.Millisecond;
+                                var precision = 3;
+                                var fraction = dateTime.Millisecond;
 
                                 // Note: Need to add special case when tokenLen > precision to begin with
                                 // if we're to change MaxSecondsFractionDigits to be more than 3
@@ -391,7 +391,7 @@ namespace System.Globalization
                             }
                             else
                             {
-                                int dayOfWeek = (int)dateTime.DayOfWeek;
+                                var dayOfWeek = (int)dateTime.DayOfWeek;
 
                                 if (tokenLen == 3)
                                 {
@@ -410,7 +410,7 @@ namespace System.Globalization
                             // tokenLen == 3 : Month as a three-letter abbreviation.
                             // tokenLen >= 4 : Month as its full name.
                             //
-                            int month = dateTime.Month;
+                            var month = dateTime.Month;
                             if (tokenLen <= 2)
                             {
                                 tempResult = FormatDigits(month, tokenLen);
@@ -433,7 +433,7 @@ namespace System.Globalization
                             // yy: Always print (year % 100) with leading zero.
                             // yyy/yyyy/yyyyy/... : Print year value.  With leading zeros.
 
-                            int year = dateTime.Year;
+                            var year = dateTime.Year;
 
                             if (tokenLen <= 2)
                             {
@@ -458,7 +458,7 @@ namespace System.Globalization
                             }
                             else
                             {
-                                tempResult = new String(ch, tokenLen);
+                                tempResult = new string(ch, tokenLen);
                             }
                             break;
                     }
@@ -471,9 +471,9 @@ namespace System.Globalization
             return result;
         }
 
-        internal static String GetRealFormat(String format, DateTimeFormatInfo dtfi)
+        internal static string GetRealFormat(string format, DateTimeFormatInfo dtfi)
         {
-            String realFormat = null;
+            string realFormat = null;
 
             switch (format[0])
             {
@@ -529,7 +529,7 @@ namespace System.Globalization
             return (realFormat);
         }
 
-        internal static String Format(DateTime dateTime, String format, DateTimeFormatInfo dtfi)
+        internal static string Format(DateTime dateTime, string format, DateTimeFormatInfo dtfi)
         {
             if (format == null || format.Length == 0)
             {

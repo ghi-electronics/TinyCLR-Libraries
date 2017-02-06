@@ -20,18 +20,12 @@ namespace System
         public const ushort MaxValue = (ushort)0xFFFF;
         public const ushort MinValue = 0;
 
-        public override String ToString()
-        {
-            return Number.Format(m_value, true, "G", NumberFormatInfo.CurrentInfo);
-        }
+        public override string ToString() => Number.Format(this.m_value, true, "G", NumberFormatInfo.CurrentInfo);
 
-        public String ToString(String format)
-        {
-            return Number.Format(m_value, true, format, NumberFormatInfo.CurrentInfo);
-        }
+        public string ToString(string format) => Number.Format(this.m_value, true, format, NumberFormatInfo.CurrentInfo);
 
         [CLSCompliant(false)]
-        public static ushort Parse(String s)
+        public static ushort Parse(string s)
         {
             if (s == null)
             {

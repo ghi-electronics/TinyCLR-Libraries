@@ -8,12 +8,12 @@ namespace System
         {
         }
 
-        public InvalidCastException(String message)
+        public InvalidCastException(string message)
             : base(message)
         {
         }
 
-        public InvalidCastException(String message, Exception innerException)
+        public InvalidCastException(string message, Exception innerException)
             : base(message, innerException)
         {
         }

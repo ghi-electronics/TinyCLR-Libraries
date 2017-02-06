@@ -13,13 +13,7 @@ namespace System.Reflection
         /**
          * The Member type Field.
          */
-        public override MemberTypes MemberType
-        {
-            get
-            {
-                return System.Reflection.MemberTypes.Field;
-            }
-        }
+        public override MemberTypes MemberType => System.Reflection.MemberTypes.Field;
 
         public abstract Type FieldType
         {
@@ -32,7 +26,7 @@ namespace System.Reflection
         [Diagnostics.DebuggerStepThrough]
         [Diagnostics.DebuggerHidden]
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern virtual void SetValue(Object obj, Object value);
+        public extern virtual void SetValue(object obj, object value);
     }
 }
 

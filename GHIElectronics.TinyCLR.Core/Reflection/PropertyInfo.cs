@@ -17,11 +17,11 @@ namespace System.Reflection
         [Diagnostics.DebuggerStepThrough]
         [Diagnostics.DebuggerHidden]
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern virtual Object GetValue(Object obj, Object[] index);
+        public extern virtual object GetValue(object obj, object[] index);
         [Diagnostics.DebuggerStepThrough]
         [Diagnostics.DebuggerHidden]
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern virtual void SetValue(Object obj, Object value, Object[] index);
+        public extern virtual void SetValue(object obj, object value, object[] index);
     }
 }
 

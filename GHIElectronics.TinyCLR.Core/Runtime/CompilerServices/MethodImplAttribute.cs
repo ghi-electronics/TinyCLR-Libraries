@@ -39,21 +39,15 @@ namespace System.Runtime.CompilerServices
         internal MethodImplOptions _val;
         public MethodCodeType MethodCodeType;
 
-        public MethodImplAttribute(MethodImplOptions methodImplOptions)
-        {
-            _val = methodImplOptions;
-        }
+        public MethodImplAttribute(MethodImplOptions methodImplOptions) => this._val = methodImplOptions;
 
-        public MethodImplAttribute(short value)
-        {
-            _val = (MethodImplOptions)value;
-        }
+        public MethodImplAttribute(short value) => this._val = (MethodImplOptions)value;
 
         public MethodImplAttribute()
         {
         }
 
-        public MethodImplOptions Value { get { return _val; } }
+        public MethodImplOptions Value => this._val;
     }
 
 }

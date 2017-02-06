@@ -155,7 +155,7 @@ namespace System
         //   System.OverflowException:
         //     s represents a number that is less than System.Double.MinValue or greater
         //     than System.Double.MaxValue.
-        public static double Parse(String s)
+        public static double Parse(string s)
         {
             if (s == null)
             {
@@ -184,7 +184,7 @@ namespace System
         //
         // Returns:
         //     The string representation of the value of this instance.        
-        public override String ToString()
+        public override string ToString()
         {
             if(IsPositiveInfinity(this))
             {
@@ -199,7 +199,7 @@ namespace System
                 return "NaN";
             }
 
-            return Number.Format(m_value, false, "G", NumberFormatInfo.CurrentInfo);
+            return Number.Format(this.m_value, false, "G", NumberFormatInfo.CurrentInfo);
         }
         //
         // Summary:
@@ -216,7 +216,7 @@ namespace System
         // Exceptions:
         //   System.FormatException:
         //     format is invalid.
-        public String ToString(String format)
+        public string ToString(string format)
         {
             if (IsPositiveInfinity(this))
             {
@@ -231,7 +231,7 @@ namespace System
                 return "NaN";
             }
 
-            return Number.Format(m_value, false, format, NumberFormatInfo.CurrentInfo);
+            return Number.Format(this.m_value, false, format, NumberFormatInfo.CurrentInfo);
         }
 
         //

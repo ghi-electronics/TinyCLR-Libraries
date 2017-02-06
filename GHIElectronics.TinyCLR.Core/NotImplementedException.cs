@@ -8,12 +8,12 @@ namespace System
         {
         }
 
-        public NotImplementedException(String message)
+        public NotImplementedException(string message)
             : base(message)
         {
         }
 
-        public NotImplementedException(String message, Exception innerException)
+        public NotImplementedException(string message, Exception innerException)
             : base(message, innerException)
         {
         }

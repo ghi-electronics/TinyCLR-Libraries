@@ -23,7 +23,7 @@ namespace System
          *
          * @return A new object that represents a clone of the object.
          */
-        Object Clone();
+        object Clone();
     }
 }
 

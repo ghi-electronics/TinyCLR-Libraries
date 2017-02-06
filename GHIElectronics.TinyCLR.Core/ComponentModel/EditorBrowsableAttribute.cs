@@ -26,10 +26,7 @@ namespace System.ComponentModel
 
         public EditorBrowsableAttribute() : this(EditorBrowsableState.Always) { }
 
-        public EditorBrowsableAttribute(EditorBrowsableState state)
-        {
-            this.browsableState = state;
-        }
+        public EditorBrowsableAttribute(EditorBrowsableState state) => this.browsableState = state;
 
         public override bool Equals(object obj)
         {
@@ -38,22 +35,14 @@ namespace System.ComponentModel
                 return true;
             }
 
-            EditorBrowsableAttribute attribute1 = obj as EditorBrowsableAttribute;
-            if (attribute1 != null)
-            {
+            if (obj is EditorBrowsableAttribute attribute1) {
                 return (attribute1.browsableState == this.browsableState);
             }
 
             return false;
         }
 
-        public EditorBrowsableState State
-        {
-            get
-            {
-                return this.browsableState;
-            }
-        }
+        public EditorBrowsableState State => this.browsableState;
 
     }
 }

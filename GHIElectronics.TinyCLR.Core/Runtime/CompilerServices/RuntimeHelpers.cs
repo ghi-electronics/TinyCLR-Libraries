@@ -30,7 +30,7 @@ namespace System.Runtime.CompilerServices
          * @return a shallow copy of 'obj' if it is a value class, 'obj' itself otherwise
          */
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public static extern Object GetObjectValue(Object obj);
+        public static extern object GetObjectValue(object obj);
 
         /**
          * RunClassConstructor causes the class constructor for the given type to be triggered

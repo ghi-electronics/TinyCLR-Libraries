@@ -24,40 +24,23 @@ namespace GHIElectronics.TinyCLR.Devices.Spi
         /// Gets the number of chip select lines available on the bus.
         /// </summary>
         /// <value>Number of chip select lines.</value>
-        public int ChipSelectLineCount
-        {
-            get { return ChipSelectLineCount_; }
-        }
-
+        public int ChipSelectLineCount => this.ChipSelectLineCount_;
         /// <summary>
         /// Minimum clock cycle frequency of the bus.
         /// </summary>
         /// <value>The clock cycle in Hz.</value>
-        public int MinClockFrequency
-        {
-            get { return MinClockFrequency_; }
-        }
-
+        public int MinClockFrequency => this.MinClockFrequency_;
         /// <summary>
         /// Maximum clock cycle frequency of the bus.
         /// </summary>
         /// <value>The clock cycle in Hz.</value>
-        public int MaxClockFrequency
-        {
-            get { return MaxClockFrequency_; }
-        }
-
+        public int MaxClockFrequency => this.MaxClockFrequency_;
         /// <summary>
         /// Gets the bit lengths that can be used on the bus for transmitting data.
         /// </summary>
         /// <value>The supported data lengths.</value>
-        public int[] SupportedDataBitLengths
-        {
-            get
-            {
+        public int[] SupportedDataBitLengths =>
                 // Currently only support BYTE and USHORT.
-                return new int[ ] { 8, 16 };
-            }
-        }
+                new int[] { 8, 16 };
     }
 }

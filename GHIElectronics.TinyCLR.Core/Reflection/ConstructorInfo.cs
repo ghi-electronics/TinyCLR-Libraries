@@ -12,15 +12,11 @@ namespace System.Reflection
     [Serializable()]
     abstract public class ConstructorInfo : MethodBase
     {
-        public override MemberTypes MemberType
-        {
-            get { return System.Reflection.MemberTypes.Constructor; }
-        }
-
+        public override MemberTypes MemberType => System.Reflection.MemberTypes.Constructor;
         [Diagnostics.DebuggerStepThrough]
         [Diagnostics.DebuggerHidden]
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern Object Invoke(Object[] parameters);
+        public extern object Invoke(object[] parameters);
     }
 }
 

@@ -14,7 +14,7 @@ namespace System
     {
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern override bool Equals(Object obj);
+        public extern override bool Equals(object obj);
 
     }
 }

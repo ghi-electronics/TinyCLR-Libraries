@@ -48,7 +48,7 @@ namespace System.Text
         }
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern override byte[] GetBytes(String s);
+        public extern override byte[] GetBytes(string s);
 
         
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
@@ -60,10 +60,7 @@ namespace System.Text
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public extern override char[] GetChars(byte[] bytes, int byteIndex, int byteCount);
 
-        public override Decoder GetDecoder()
-        {
-            return new UTF8Decoder();
-        }
+        public override Decoder GetDecoder() => new UTF8Decoder();
     }
 }
 

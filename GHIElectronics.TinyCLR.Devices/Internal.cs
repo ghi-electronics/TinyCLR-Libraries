@@ -12,15 +12,7 @@ namespace GHIElectronics.TinyCLR.Devices.Internal
 
             //--//
 
-            protected I2CTransaction(byte[] buffer)
-            {
-                if (buffer == null)
-                {
-                    throw new ArgumentNullException();
-                }
-
-                this.Buffer = buffer;
-            }
+            protected I2CTransaction(byte[] buffer) => this.Buffer = buffer ?? throw new ArgumentNullException();
         }
 
         //--//
@@ -79,14 +71,12 @@ namespace GHIElectronics.TinyCLR.Devices.Internal
         {
             this.Config = config;
 
-            HardwareProvider hwProvider = HardwareProvider.HwProvider;
+            var hwProvider = HardwareProvider.HwProvider;
 
             if (hwProvider != null)
             {
-                Cpu.Pin scl;
-                Cpu.Pin sda;
 
-                hwProvider.GetI2CPins(out scl, out sda);
+                hwProvider.GetI2CPins(out var scl, out var sda);
 
                 if (scl != Cpu.Pin.GPIO_NONE)
                 {
@@ -101,7 +91,7 @@ namespace GHIElectronics.TinyCLR.Devices.Internal
 
             Initialize();
 
-            m_disposed = false;
+            this.m_disposed = false;
         }
 
         ~I2CDevice()
@@ -112,18 +102,16 @@ namespace GHIElectronics.TinyCLR.Devices.Internal
         [MethodImplAttribute(MethodImplOptions.Synchronized)]
         private void Dispose(bool fDisposing)
         {
-            if (!m_disposed)
+            if (!this.m_disposed)
             {
                 try
                 {
-                    HardwareProvider hwProvider = HardwareProvider.HwProvider;
+                    var hwProvider = HardwareProvider.HwProvider;
 
                     if (hwProvider != null)
                     {
-                        Cpu.Pin scl;
-                        Cpu.Pin sda;
 
-                        hwProvider.GetI2CPins(out scl, out sda);
+                        hwProvider.GetI2CPins(out var scl, out var sda);
 
                         if (scl != Cpu.Pin.GPIO_NONE)
                         {
@@ -138,7 +126,7 @@ namespace GHIElectronics.TinyCLR.Devices.Internal
                 }
                 finally
                 {
-                    m_disposed = true;
+                    this.m_disposed = true;
                 }
             }
         }
@@ -150,15 +138,9 @@ namespace GHIElectronics.TinyCLR.Devices.Internal
             GC.SuppressFinalize(this);
         }
 
-        public static I2CReadTransaction CreateReadTransaction(byte[] buffer)
-        {
-            return new I2CReadTransaction(buffer);
-        }
+        public static I2CReadTransaction CreateReadTransaction(byte[] buffer) => new I2CReadTransaction(buffer);
 
-        public static I2CWriteTransaction CreateWriteTransaction(byte[] buffer)
-        {
-            return new I2CWriteTransaction(buffer);
-        }
+        public static I2CWriteTransaction CreateWriteTransaction(byte[] buffer) => new I2CWriteTransaction(buffer);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         extern public int Execute(I2CTransaction[] xActions, int timeout);
@@ -251,8 +233,8 @@ namespace GHIElectronics.TinyCLR.Devices.Internal
         {
             public EventInfo()
             {
-                EventListener = null;
-                EventFilter = null;
+                this.EventListener = null;
+                this.EventFilter = null;
             }
 
             public IEventListener EventListener;
@@ -311,7 +293,7 @@ namespace GHIElectronics.TinyCLR.Devices.Internal
         [MethodImplAttribute(MethodImplOptions.Synchronized)]
         public static void AddEventListener(EventCategory eventCategory, IEventListener eventListener)
         {
-            EventInfo eventInfo = GetEventInfo(eventCategory);
+            var eventInfo = GetEventInfo(eventCategory);
             eventInfo.EventListener = eventListener;
             eventListener.InitializeForEventSource();
         }
@@ -319,7 +301,7 @@ namespace GHIElectronics.TinyCLR.Devices.Internal
         [MethodImplAttribute(MethodImplOptions.Synchronized)]
         public static void AddEventProcessor(EventCategory eventCategory, IEventProcessor eventProcessor)
         {
-            EventInfo eventInfo = GetEventInfo(eventCategory);
+            var eventInfo = GetEventInfo(eventCategory);
             eventInfo.EventProcessor = eventProcessor;
         }
 
@@ -331,7 +313,7 @@ namespace GHIElectronics.TinyCLR.Devices.Internal
             ///
 
             EventInfo eventInfo = null;
-            for (int i = 0; i < _eventInfoTable.Count; i++)
+            for (var i = 0; i < _eventInfoTable.Count; i++)
             {
                 if (((EventInfo)_eventInfoTable[i]).Category == category)
                 {
@@ -342,8 +324,9 @@ namespace GHIElectronics.TinyCLR.Devices.Internal
 
             if (eventInfo == null)
             {
-                eventInfo = new EventInfo();
-                eventInfo.Category = category;
+                eventInfo = new EventInfo() {
+                    Category = category
+                };
                 _eventInfoTable.Add(eventInfo);
             }
 
@@ -352,7 +335,7 @@ namespace GHIElectronics.TinyCLR.Devices.Internal
 
         private static void GetEvent(uint data1, uint data2, DateTime time, ref EventInfo eventInfo, ref BaseEvent ev)
         {
-            byte category = (byte)((data1 >> 8) & 0xFF);
+            var category = (byte)((data1 >> 8) & 0xFF);
 
             eventInfo = GetEventInfo((EventCategory)category);
             if (eventInfo.EventProcessor != null)
@@ -361,13 +344,14 @@ namespace GHIElectronics.TinyCLR.Devices.Internal
             }
             else
             {
-                GenericEvent genericEvent = new GenericEvent();
-                genericEvent.Y = (int)(data2 & 0xFFFF);
-                genericEvent.X = (int)((data2 >> 16) & 0xFFFF);
-                genericEvent.Time = time;
-                genericEvent.EventMessage = (byte)(data1 & 0xFF);
-                genericEvent.EventCategory = category;
-                genericEvent.EventData = (data1 >> 16) & 0xFFFF;
+                var genericEvent = new GenericEvent() {
+                    Y = (int)(data2 & 0xFFFF),
+                    X = (int)((data2 >> 16) & 0xFFFF),
+                    Time = time,
+                    EventMessage = (byte)(data1 & 0xFF),
+                    EventCategory = category,
+                    EventData = (data1 >> 16) & 0xFFFF
+                };
 
                 ev = genericEvent;
             }
@@ -408,30 +392,30 @@ namespace GHIElectronics.TinyCLR.Devices.Internal
         [MethodImplAttribute(MethodImplOptions.Synchronized)]
         public virtual void Dispose()
         {
-            if (!m_disposed)
+            if (!this.m_disposed)
             {
                 Dispose(true);
 
                 GC.SuppressFinalize(this);
 
-                m_disposed = true;
+                this.m_disposed = true;
             }
         }
 
         public event NativeEventHandler OnInterrupt {
             [MethodImplAttribute(MethodImplOptions.Synchronized)]
             add {
-                if (m_disposed)
+                if (this.m_disposed)
                 {
                     throw new ObjectDisposedException();
                 }
 
-                NativeEventHandler callbacksOld = m_callbacks;
+                NativeEventHandler callbacksOld = this.m_callbacks;
                 NativeEventHandler callbacksNew = (NativeEventHandler)Delegate.Combine(callbacksOld, value);
 
                 try
                 {
-                    m_callbacks = callbacksNew;
+                    this.m_callbacks = callbacksNew;
 
                     if (callbacksNew != null)
                     {
@@ -446,11 +430,11 @@ namespace GHIElectronics.TinyCLR.Devices.Internal
                         }
                     }
 
-                    m_threadSpawn = callbacksNew;
+                    this.m_threadSpawn = callbacksNew;
                 }
                 catch
                 {
-                    m_callbacks = callbacksOld;
+                    this.m_callbacks = callbacksOld;
 
                     if (callbacksOld == null)
                     {
@@ -463,17 +447,17 @@ namespace GHIElectronics.TinyCLR.Devices.Internal
 
             [MethodImplAttribute(MethodImplOptions.Synchronized)]
             remove {
-                if (m_disposed)
+                if (this.m_disposed)
                 {
                     throw new ObjectDisposedException();
                 }
 
-                NativeEventHandler callbacksOld = m_callbacks;
+                NativeEventHandler callbacksOld = this.m_callbacks;
                 NativeEventHandler callbacksNew = (NativeEventHandler)Delegate.Remove(callbacksOld, value);
 
                 try
                 {
-                    m_callbacks = (NativeEventHandler)callbacksNew;
+                    this.m_callbacks = (NativeEventHandler)callbacksNew;
 
                     if (callbacksNew == null && callbacksOld != null)
                     {
@@ -482,21 +466,13 @@ namespace GHIElectronics.TinyCLR.Devices.Internal
                 }
                 catch
                 {
-                    m_callbacks = callbacksOld;
+                    this.m_callbacks = callbacksOld;
 
                     throw;
                 }
             }
         }
 
-        private void MultiCastCase(uint port, uint state, DateTime time)
-        {
-            NativeEventHandler callbacks = m_callbacks;
-
-            if (callbacks != null)
-            {
-                callbacks(port, state, time);
-            }
-        }
+        private void MultiCastCase(uint port, uint state, DateTime time) => this.m_callbacks?.Invoke(port, state, time);
     }
 }

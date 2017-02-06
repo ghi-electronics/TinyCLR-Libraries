@@ -14,26 +14,11 @@ namespace System.Reflection
 
         //--//
 
-        internal AssemblyName(Assembly assm)
-        {
-            _assembly = assm;
-        }
+        internal AssemblyName(Assembly assm) => this._assembly = assm;
 
-        public String Name
-        {
-            get
-            {
-                return _assembly.FullName.Substring(0, _assembly.FullName.IndexOf(','));
-            }
-        }
+        public string Name => this._assembly.FullName.Substring(0, this._assembly.FullName.IndexOf(','));
 
-        public String FullName
-        {
-            get
-            {
-                return _assembly.FullName;
-            }
-        }
+        public string FullName => this._assembly.FullName;
 
         public Version Version
         {
@@ -41,7 +26,7 @@ namespace System.Reflection
             {
                 int major = -1, minor = -1, build = -1, revision = -1;
 
-                _assembly.GetVersion(ref major, ref minor, ref build, ref revision);
+                this._assembly.GetVersion(ref major, ref minor, ref build, ref revision);
 
                 return new Version(major, minor, build, revision);
             }
@@ -51,7 +36,7 @@ namespace System.Reflection
     [Serializable()]
     public class Assembly
     {
-        public extern virtual String FullName
+        public extern virtual string FullName
         {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
             get;
@@ -63,21 +48,15 @@ namespace System.Reflection
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         internal extern void GetVersion(ref int major, ref int minor, ref int build, ref int revision);
 
-        public AssemblyName GetName()
-        {
-            return new AssemblyName(this);
-        }
+        public AssemblyName GetName() => new AssemblyName(this);
 
-        public static Assembly GetAssembly(Type type)
-        {
-            return type.Assembly;
-        }
+        public static Assembly GetAssembly(Type type) => type.Assembly;
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern virtual Type GetType(String name);
-        public virtual Type GetType(String name, bool throwOnError)
+        public extern virtual Type GetType(string name);
+        public virtual Type GetType(string name, bool throwOnError)
         {
-            Type type = GetType(name);
+            var type = GetType(name);
 
             if (type == null)
             {
@@ -97,12 +76,12 @@ namespace System.Reflection
             }
 
             Assembly assm = null;
-            string baseName = this.FullName;
+            var baseName = this.FullName;
             string cultureName;
 
             while (assm == null && (cultureName = culture.Name) != "")
             {
-                string assmName = baseName + "." + cultureName;
+                var assmName = baseName + "." + cultureName;
 
                 assm = Assembly.Load(assmName, false);
 
@@ -118,7 +97,7 @@ namespace System.Reflection
             return assm;
         }
 
-        public static Assembly Load(String assemblyString)
+        public static Assembly Load(string assemblyString)
         {
             if (assemblyString == null)
             {
@@ -128,7 +107,7 @@ namespace System.Reflection
             return Load(assemblyString, true);
         }
 
-        internal static string ParseAssemblyName(String assemblyString, ref bool fVersion, ref int[] ver)
+        internal static string ParseAssemblyName(string assemblyString, ref bool fVersion, ref int[] ver)
         {
             // valid names are in the forms:
             // 1) "Microsoft.SPOT.Native" or
@@ -157,7 +136,7 @@ namespace System.Reflection
                     // the "version=" string must come right after the ' ,'
                     if (versionIdx == commaIdx + 2)
                     {
-                        int startIdx = versionIdx + c_versionTag.Length;
+                        var startIdx = versionIdx + c_versionTag.Length;
                         int endIdx;
                         
                         // trim off the Culture, PublicKeyToken, etc for now
@@ -171,10 +150,10 @@ namespace System.Reflection
                         }
 
                         // at this point we have assemblyString = "1.2.3.4"
-                        string[] version = assemblyString.Split('.');
+                        var version = assemblyString.Split('.');
 
-                        if (version.Length > 0) ver[0] = UInt16.Parse(version[0]);
-                        if (version.Length > 1) ver[1] = UInt16.Parse(version[1]);
+                        if (version.Length > 0) ver[0] = ushort.Parse(version[0]);
+                        if (version.Length > 1) ver[1] = ushort.Parse(version[1]);
                         // build and revision versions may be -1 (which means "don't care")
                         if (version.Length > 2) ver[2] = int.Parse(version[2]);
                         if (version.Length > 3) ver[3] = int.Parse(version[3]);
@@ -197,14 +176,14 @@ namespace System.Reflection
             return name;
         }
 
-        internal static Assembly Load(String assemblyString, bool fThrowOnError)
+        internal static Assembly Load(string assemblyString, bool fThrowOnError)
         {
-            bool fVersion = false;
-            int[] ver = new int[4];
+            var fVersion = false;
+            var ver = new int[4];
 
-            string name = ParseAssemblyName(assemblyString, ref fVersion, ref ver);
+            var name = ParseAssemblyName(assemblyString, ref fVersion, ref ver);
 
-            Assembly assm = LoadInternal(name, fVersion, ver[0], ver[1], ver[2], ver[3]);
+            var assm = LoadInternal(name, fVersion, ver[0], ver[1], ver[2], ver[3]);
 
             if (assm == null)
             {
@@ -219,11 +198,11 @@ namespace System.Reflection
         }
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static Assembly LoadInternal(String assemblyString, bool fVersion, int maj, int min, int build, int rev);
+        internal extern static Assembly LoadInternal(string assemblyString, bool fVersion, int maj, int min, int build, int rev);
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         static extern public Assembly Load(byte[] rawAssembly);
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern String[] GetManifestResourceNames();
+        internal extern string[] GetManifestResourceNames();
     }
 }
 

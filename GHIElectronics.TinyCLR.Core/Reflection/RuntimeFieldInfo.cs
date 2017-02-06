@@ -10,7 +10,7 @@ namespace System.Reflection
     [Serializable()]
     internal sealed class RuntimeFieldInfo : FieldInfo
     {
-        public extern override String Name
+        public extern override string Name
         {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
             get;
@@ -29,7 +29,7 @@ namespace System.Reflection
         }
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern override Object GetValue(Object obj);
+        public extern override object GetValue(object obj);
     }
 }
 

@@ -29,7 +29,7 @@ namespace System.Collections
          * @return A value less than zero if x < y, zero if x = y, or a value
          * greater than zero if x > y.
          */
-        int Compare(Object x, Object y);
+        int Compare(object x, object y);
     }
 }
 

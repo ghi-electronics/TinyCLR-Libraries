@@ -7,7 +7,7 @@ namespace System
     using System;
     public interface IFormattable
     {
-        String ToString(String format, IFormatProvider formatProvider);
+        string ToString(string format, IFormatProvider formatProvider);
     }
 }
 

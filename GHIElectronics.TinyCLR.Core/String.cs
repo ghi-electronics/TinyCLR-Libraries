@@ -30,12 +30,10 @@ namespace System
 #pragma warning restore CS0661 // Type defines operator == or operator != but does not override Object.GetHashCode()
 #pragma warning restore CS0659 // Type overrides Object.Equals(object o) but does not override Object.GetHashCode()
     {
-        public static readonly String Empty = "";
+        public static readonly string Empty = "";
         public override bool Equals(object obj)
         {
-            String s = obj as String;
-            if (s != null)
-            {
+            if (obj is string s) {
                 return String.Equals(this, s);
             }
 
@@ -53,9 +51,8 @@ namespace System
 
                 var current = format.Substring(next + 1, end - next - 1);
                 var parts = current.Split(':');
-                var index = 0;
 
-                int.TryParse(parts[0], out index);
+                int.TryParse(parts[0], out var index);
 
                 if (parts.Length == 1) {
                     result += args[index].ToString();
@@ -73,13 +70,13 @@ namespace System
         }
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static bool Equals(String a, String b);
+        public extern static bool Equals(string a, string b);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static bool operator ==(String a, String b);
+        public extern static bool operator ==(string a, string b);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static bool operator !=(String a, String b);
+        public extern static bool operator !=(string a, string b);
 
         [System.Runtime.CompilerServices.IndexerName("Chars")]
         public extern char this[int index]
@@ -101,25 +98,25 @@ namespace System
         }
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern String[] Split(params char[] separator);
+        public extern string[] Split(params char[] separator);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern String[] Split(char[] separator, int count);
+        public extern string[] Split(char[] separator, int count);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern String Substring(int startIndex);
+        public extern string Substring(int startIndex);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern String Substring(int startIndex, int length);
+        public extern string Substring(int startIndex, int length);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern String Trim(params char[] trimChars);
+        public extern string Trim(params char[] trimChars);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern String TrimStart(params char[] trimChars);
+        public extern string TrimStart(params char[] trimChars);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern String TrimEnd(params char[] trimChars);
+        public extern string TrimEnd(params char[] trimChars);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public extern String(char[] value, int startIndex, int length);
@@ -131,13 +128,13 @@ namespace System
         public extern String(char c, int count);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static int Compare(String strA, String strB);
+        public extern static int Compare(string strA, string strB);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern int CompareTo(Object value);
+        public extern int CompareTo(object value);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern int CompareTo(String strB);
+        public extern int CompareTo(string strB);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public extern int IndexOf(char value);
@@ -158,13 +155,13 @@ namespace System
         public extern int IndexOfAny(char[] anyOf, int startIndex, int count);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern int IndexOf(String value);
+        public extern int IndexOf(string value);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern int IndexOf(String value, int startIndex);
+        public extern int IndexOf(string value, int startIndex);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern int IndexOf(String value, int startIndex, int count);
+        public extern int IndexOf(string value, int startIndex, int count);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public extern int LastIndexOf(char value);
@@ -185,30 +182,27 @@ namespace System
         public extern int LastIndexOfAny(char[] anyOf, int startIndex, int count);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern int LastIndexOf(String value);
+        public extern int LastIndexOf(string value);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern int LastIndexOf(String value, int startIndex);
+        public extern int LastIndexOf(string value, int startIndex);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern int LastIndexOf(String value, int startIndex, int count);
+        public extern int LastIndexOf(string value, int startIndex, int count);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern String ToLower();
+        public extern string ToLower();
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern String ToUpper();
+        public extern string ToUpper();
 
-        public override String ToString()
-        {
-            return this;
-        }
+        public override string ToString() => this;
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern String Trim();
+        public extern string Trim();
         ////// This method contains the same functionality as StringBuilder Replace. The only difference is that
         ////// a new String has to be allocated since Strings are immutable
-        public static String Concat(Object arg0)
+        public static string Concat(object arg0)
         {
             if (arg0 == null)
             {
@@ -218,7 +212,7 @@ namespace System
             return arg0.ToString();
         }
 
-        public static String Concat(Object arg0, Object arg1)
+        public static string Concat(object arg0, object arg1)
         {
             if (arg0 == null)
             {
@@ -233,7 +227,7 @@ namespace System
             return Concat(arg0.ToString(), arg1.ToString());
         }
 
-        public static String Concat(Object arg0, Object arg1, Object arg2)
+        public static string Concat(object arg0, object arg1, object arg2)
         {
             if (arg0 == null)
             {
@@ -253,17 +247,17 @@ namespace System
             return Concat(arg0.ToString(), arg1.ToString(), arg2.ToString());
         }
 
-        public static String Concat(params Object[] args)
+        public static string Concat(params object[] args)
         {
             if (args == null)
             {
                 throw new ArgumentNullException("args");
             }
 
-            int length = args.Length;
-            String[] sArgs = new String[length];
+            var length = args.Length;
+            var sArgs = new string[length];
 
-            for (int i = 0; i < length; i++)
+            for (var i = 0; i < length; i++)
             {
                 sArgs[i] = ((args[i] == null) ? (String.Empty) : (args[i].ToString()));
             }
@@ -272,28 +266,24 @@ namespace System
         }
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static String Concat(String str0, String str1);
+        public extern static string Concat(string str0, string str1);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static String Concat(String str0, String str1, String str2);
+        public extern static string Concat(string str0, string str1, string str2);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static String Concat(String str0, String str1, String str2, String str3);
+        public extern static string Concat(string str0, string str1, string str2, string str3);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static String Concat(params String[] values);
+        public extern static string Concat(params string[] values);
 
-        public static String Intern(String str)
-        {
+        public static string Intern(string str) =>
             // We don't support "interning" of strings. So simply return the string.
-            return str;
-        }
+            str;
 
-        public static String IsInterned(String str)
-        {
+        public static string IsInterned(string str) =>
             // We don't support "interning" of strings. So simply return the string.
-            return str;
-        }
+            str;
 
     }
 }

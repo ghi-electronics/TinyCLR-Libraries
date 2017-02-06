@@ -10,24 +10,20 @@ namespace System
     [Serializable]
     public abstract class TimeZone
     {
+#pragma warning disable 0649
         internal int m_id;
+#pragma warning restore
 
         protected TimeZone() { }
 
-        public static TimeZone CurrentTimeZone
-        {
-            get
-            {
-                return new CurrentSystemTimeZone(GetTimeZoneOffset());
-            }
-        }
+        public static TimeZone CurrentTimeZone => new CurrentSystemTimeZone(GetTimeZoneOffset());
 
-        public abstract String StandardName
+        public abstract string StandardName
         {
             get;
         }
 
-        public abstract String DaylightName
+        public abstract string DaylightName
         {
             get;
         }
@@ -52,10 +48,7 @@ namespace System
 
         public abstract DaylightTime GetDaylightChanges(int year);
 
-        public virtual bool IsDaylightSavingTime(DateTime time)
-        {
-            return false;
-        }
+        public virtual bool IsDaylightSavingTime(DateTime time) => false;
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         internal extern static long GetTimeZoneOffset();
@@ -70,38 +63,20 @@ namespace System
         {
         }
 
-        internal CurrentSystemTimeZone(long ticksOffset)
-        {
-            m_ticksOffset = ticksOffset;
-        }
+        internal CurrentSystemTimeZone(long ticksOffset) => this.m_ticksOffset = ticksOffset;
 
-        public override String StandardName
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public override string StandardName => throw new NotImplementedException();
 
-        public override String DaylightName
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public override string DaylightName => throw new NotImplementedException();
 
-        public override DaylightTime GetDaylightChanges(int year)
-        {
-            throw new NotImplementedException();
-        }
+        public override DaylightTime GetDaylightChanges(int year) => throw new NotImplementedException();
 
         public override TimeSpan GetUtcOffset(DateTime time)
         {
             if (time.Kind == DateTimeKind.Utc)
                 return TimeSpan.Zero;
 
-            return new TimeSpan(m_ticksOffset);
+            return new TimeSpan(this.m_ticksOffset);
         }
     }
 }

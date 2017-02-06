@@ -40,86 +40,53 @@ namespace System.Globalization
     sealed public class NumberFormatInfo /*: ICloneable, IFormatProvider*/
     {
         internal int[] numberGroupSizes = null;//new int[] { 3 };
-        internal String positiveSign = null;//"+";
-        internal String negativeSign = null;//"-";
-        internal String numberDecimalSeparator = null;//".";
-        internal String numberGroupSeparator = null;//",";
+        internal string positiveSign = null;//"+";
+        internal string negativeSign = null;//"-";
+        internal string numberDecimalSeparator = null;//".";
+        internal string numberGroupSeparator = null;//",";
         private CultureInfo m_cultureInfo;
-        internal NumberFormatInfo(CultureInfo cultureInfo)
-        {
-            m_cultureInfo = cultureInfo;
-        }
+        internal NumberFormatInfo(CultureInfo cultureInfo) => this.m_cultureInfo = cultureInfo;
 
         public int[] NumberGroupSizes
         {
             get
             {
-                if (numberGroupSizes == null)
+                if (this.numberGroupSizes == null)
                 {
-                    String sizesStr = null;
+                    string sizesStr = null;
 
-                    m_cultureInfo.EnsureStringResource(ref sizesStr, System.Globalization.Resources.CultureInfo.StringResources.NumberGroupSizes);
+                    this.m_cultureInfo.EnsureStringResource(ref sizesStr, System.Globalization.Resources.CultureInfo.StringResources.NumberGroupSizes);
 
-                    int sizesLen = sizesStr.Length;
-                    numberGroupSizes = new int[sizesLen];
+                    var sizesLen = sizesStr.Length;
+                    this.numberGroupSizes = new int[sizesLen];
 
                     int size;
-                    for (int i = 0; i < sizesLen; i++)
+                    for (var i = 0; i < sizesLen; i++)
                     {
                         size = sizesStr[i] - '0';
                         if (size > 9 || size < 0)
                         {
-                            numberGroupSizes = null;
+                            this.numberGroupSizes = null;
                             throw new InvalidOperationException();
                         }
 
-                        numberGroupSizes[i] = size;
+                        this.numberGroupSizes[i] = size;
                     }
                 }
 
-                return ((int[])numberGroupSizes.Clone());
+                return ((int[])this.numberGroupSizes.Clone());
             }
         }
 
-        public static NumberFormatInfo CurrentInfo
-        {
-            get
-            {
-                return CultureInfo.CurrentUICulture.NumberFormat;
-            }
-        }
+        public static NumberFormatInfo CurrentInfo => CultureInfo.CurrentUICulture.NumberFormat;
 
-        public String NegativeSign
-        {
-            get
-            {
-                return m_cultureInfo.EnsureStringResource(ref this.negativeSign, System.Globalization.Resources.CultureInfo.StringResources.NegativeSign);
-            }
-        }
+        public string NegativeSign => this.m_cultureInfo.EnsureStringResource(ref this.negativeSign, System.Globalization.Resources.CultureInfo.StringResources.NegativeSign);
 
-        public String NumberDecimalSeparator
-        {
-            get
-            {
-                return m_cultureInfo.EnsureStringResource(ref this.numberDecimalSeparator, System.Globalization.Resources.CultureInfo.StringResources.NumberDecimalSeparator);
-            }
-        }
+        public string NumberDecimalSeparator => this.m_cultureInfo.EnsureStringResource(ref this.numberDecimalSeparator, System.Globalization.Resources.CultureInfo.StringResources.NumberDecimalSeparator);
 
-        public String NumberGroupSeparator
-        {
-            get
-            {
-                return m_cultureInfo.EnsureStringResource(ref this.numberGroupSeparator, System.Globalization.Resources.CultureInfo.StringResources.NumberGroupSeparator);
-            }
-        }
+        public string NumberGroupSeparator => this.m_cultureInfo.EnsureStringResource(ref this.numberGroupSeparator, System.Globalization.Resources.CultureInfo.StringResources.NumberGroupSeparator);
 
-        public String PositiveSign
-        {
-            get
-            {
-                return m_cultureInfo.EnsureStringResource(ref this.positiveSign, System.Globalization.Resources.CultureInfo.StringResources.PositiveSign);
-            }
-        }
+        public string PositiveSign => this.m_cultureInfo.EnsureStringResource(ref this.positiveSign, System.Globalization.Resources.CultureInfo.StringResources.PositiveSign);
     } // NumberFormatInfo
 }
 

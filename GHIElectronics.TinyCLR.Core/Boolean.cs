@@ -21,10 +21,7 @@ namespace System
         private bool m_value;
 #pragma warning restore CS0649 // Field is never assigned to, and will always have its default value
 
-        public override String ToString()
-        {
-            return (m_value) ? TrueString : FalseString;
-        }
+        public override string ToString() => (this.m_value) ? TrueString : FalseString;
 
     }
 }

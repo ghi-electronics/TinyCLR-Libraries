@@ -41,17 +41,13 @@ namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
     public class ErrorReceivedEventArgs {
         public SerialError Error { get; }
 
-        internal ErrorReceivedEventArgs(SerialError error) {
-            this.Error = error;
-        }
+        internal ErrorReceivedEventArgs(SerialError error) => this.Error = error;
     }
 
     public class PinChangedEventArgs {
         public SerialPinChange PinChange { get; }
 
-        internal PinChangedEventArgs(SerialPinChange pinChange) {
-            this.PinChange = pinChange;
-        }
+        internal PinChangedEventArgs(SerialPinChange pinChange) => this.PinChange = pinChange;
     }
 }
 
@@ -84,9 +80,7 @@ namespace GHIElectronics.TinyCLR.Storage.Streams {
         public uint Capacity => this.length;
 
         public uint Length {
-            get {
-                return this.length;
-            }
+            get => this.length;
             set {
                 this.length = value;
 
@@ -99,9 +93,7 @@ namespace GHIElectronics.TinyCLR.Storage.Streams {
         }
 
         public Buffer(byte[] data) {
-            if (data == null) throw new ArgumentNullException(nameof(data));
-
-            this.data = data;
+            this.data = data ?? throw new ArgumentNullException(nameof(data));
             this.length = (uint)data.Length;
         }
 

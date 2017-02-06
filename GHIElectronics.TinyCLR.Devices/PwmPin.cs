@@ -15,11 +15,11 @@ namespace GHIElectronics.TinyCLR.Devices.Pwm
 
         internal PwmPin(PwmController controller, IPwmControllerProvider provider, int pinNumber)
         {
-            m_controller = controller;
-            m_provider = provider;
-            m_pinNumber = pinNumber;
+            this.m_controller = controller;
+            this.m_provider = provider;
+            this.m_pinNumber = pinNumber;
 
-            m_provider.AcquirePin(pinNumber);
+            this.m_provider.AcquirePin(pinNumber);
         }
 
         ~PwmPin()
@@ -31,12 +31,12 @@ namespace GHIElectronics.TinyCLR.Devices.Pwm
         {
             get
             {
-                if (m_disposed)
+                if (this.m_disposed)
                 {
                     throw new ObjectDisposedException();
                 }
 
-                return m_controller;
+                return this.m_controller;
             }
         }
 
@@ -44,17 +44,17 @@ namespace GHIElectronics.TinyCLR.Devices.Pwm
         {
             get
             {
-                if (m_disposed)
+                if (this.m_disposed)
                 {
                     throw new ObjectDisposedException();
                 }
 
-                return m_polarity;
+                return this.m_polarity;
             }
 
             set
             {
-                if (m_disposed)
+                if (this.m_disposed)
                 {
                     throw new ObjectDisposedException();
                 }
@@ -69,10 +69,10 @@ namespace GHIElectronics.TinyCLR.Devices.Pwm
                     throw new ArgumentException();
                 }
 
-                if (m_started)
+                if (this.m_started)
                 {
-                    m_provider.SetPulseParameters(m_pinNumber, m_dutyCycle, value == PwmPulsePolarity.ActiveLow);
-                    m_polarity = value;
+                    this.m_provider.SetPulseParameters(this.m_pinNumber, this.m_dutyCycle, value == PwmPulsePolarity.ActiveLow);
+                    this.m_polarity = value;
                 }
             }
         }
@@ -81,57 +81,57 @@ namespace GHIElectronics.TinyCLR.Devices.Pwm
         {
             get
             {
-                if (m_disposed)
+                if (this.m_disposed)
                 {
                     throw new ObjectDisposedException();
                 }
 
-                return m_started;
+                return this.m_started;
             }
         }
 
         public void Start()
         {
-            if (m_disposed)
+            if (this.m_disposed)
             {
                 throw new ObjectDisposedException();
             }
 
-            if (!m_started)
+            if (!this.m_started)
             {
-                m_provider.EnablePin(m_pinNumber);
-                m_provider.SetPulseParameters(m_pinNumber, m_dutyCycle, m_polarity == PwmPulsePolarity.ActiveLow);
-                m_started = true;
+                this.m_provider.EnablePin(this.m_pinNumber);
+                this.m_provider.SetPulseParameters(this.m_pinNumber, this.m_dutyCycle, this.m_polarity == PwmPulsePolarity.ActiveLow);
+                this.m_started = true;
             }
         }
 
         public void Stop()
         {
-            if (m_disposed)
+            if (this.m_disposed)
             {
                 throw new ObjectDisposedException();
             }
 
-            if (m_started)
+            if (this.m_started)
             {
-                m_provider.DisablePin(m_pinNumber);
-                m_started = false;
+                this.m_provider.DisablePin(this.m_pinNumber);
+                this.m_started = false;
             }
         }
 
         public double GetActiveDutyCyclePercentage()
         {
-            if (m_disposed)
+            if (this.m_disposed)
             {
                 throw new ObjectDisposedException();
             }
 
-            return m_dutyCycle;
+            return this.m_dutyCycle;
         }
 
         public void SetActiveDutyCyclePercentage(double dutyCyclePercentage)
         {
-            if (m_disposed)
+            if (this.m_disposed)
             {
                 throw new ObjectDisposedException();
             }
@@ -141,20 +141,20 @@ namespace GHIElectronics.TinyCLR.Devices.Pwm
                 throw new ArgumentOutOfRangeException();
             }
 
-            if (m_started)
+            if (this.m_started)
             {
-                m_provider.SetPulseParameters(m_pinNumber, dutyCyclePercentage, m_polarity == PwmPulsePolarity.ActiveLow);
-                m_dutyCycle = dutyCyclePercentage;
+                this.m_provider.SetPulseParameters(this.m_pinNumber, dutyCyclePercentage, this.m_polarity == PwmPulsePolarity.ActiveLow);
+                this.m_dutyCycle = dutyCyclePercentage;
             }
         }
 
         public void Dispose()
         {
-            if (!m_disposed)
+            if (!this.m_disposed)
             {
                 Dispose(true);
                 GC.SuppressFinalize(this);
-                m_disposed = true;
+                this.m_disposed = true;
             }
         }
 
@@ -162,9 +162,9 @@ namespace GHIElectronics.TinyCLR.Devices.Pwm
         {
             if (disposing)
             {
-                m_provider.ReleasePin(m_pinNumber);
-                m_controller = null;
-                m_provider = null;
+                this.m_provider.ReleasePin(this.m_pinNumber);
+                this.m_controller = null;
+                this.m_provider = null;
             }
         }
     }

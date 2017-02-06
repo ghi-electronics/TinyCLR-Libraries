@@ -8,7 +8,7 @@ namespace System
     public interface ICustomFormatter
     {
         // Interface does not need to be marked with the serializable attribute
-        String Format(String format, Object arg, IFormatProvider formatProvider);
+        string Format(string format, object arg, IFormatProvider formatProvider);
 
     }
 }

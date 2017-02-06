@@ -8,12 +8,12 @@ namespace System
         {
         }
 
-        public AppDomainUnloadedException(String message)
+        public AppDomainUnloadedException(string message)
             : base(message)
         {
         }
 
-        public AppDomainUnloadedException(String message, Exception innerException)
+        public AppDomainUnloadedException(string message, Exception innerException)
             : base(message, innerException)
         {
         }

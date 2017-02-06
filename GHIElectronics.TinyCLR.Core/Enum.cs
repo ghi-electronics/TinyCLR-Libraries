@@ -11,11 +11,11 @@ namespace System
     public abstract class Enum : ValueType
     {
 
-        public override String ToString()
+        public override string ToString()
         {
-            Type eT = this.GetType();
-            FieldInfo fi = eT.GetField("value__");
-            object obj = fi.GetValue(this);
+            var eT = this.GetType();
+            var fi = eT.GetField("value__");
+            var obj = fi.GetValue(this);
 
             return obj.ToString();
         }

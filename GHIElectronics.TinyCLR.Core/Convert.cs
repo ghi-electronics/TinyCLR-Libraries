@@ -11,54 +11,27 @@ namespace System
     public static class Convert
     {
         [CLSCompliant(false)]
-        public static char ToChar(ushort value)
-        {
-            return (char)value;
-        }
+        public static char ToChar(ushort value) => (char)value;
 
         [CLSCompliant(false)]
-        public static sbyte ToSByte(string value)
-        {
-            return (sbyte)ToInt64(value, true, SByte.MinValue, SByte.MaxValue);
-        }
+        public static sbyte ToSByte(string value) => (sbyte)ToInt64(value, true, sbyte.MinValue, sbyte.MaxValue);
 
-        public static byte ToByte(string value)
-        {
-            return (byte)ToInt64(value, false, Byte.MinValue, Byte.MaxValue);
-        }
+        public static byte ToByte(string value) => (byte)ToInt64(value, false, byte.MinValue, byte.MaxValue);
 
-        public static short ToInt16(string value)
-        {
-            return (short)ToInt64(value, true, Int16.MinValue, Int16.MaxValue);
-        }
+        public static short ToInt16(string value) => (short)ToInt64(value, true, short.MinValue, short.MaxValue);
 
         [CLSCompliant(false)]
-        public static ushort ToUInt16(string value)
-        {
-            return (ushort)ToInt64(value, false, UInt16.MinValue, UInt16.MaxValue);;
-        }
+        public static ushort ToUInt16(string value) => (ushort)ToInt64(value, false, ushort.MinValue, ushort.MaxValue);
 
-        public static int ToInt32(string value)
-        {
-            return (int)ToInt64(value, true, Int32.MinValue, Int32.MaxValue);
-        }
+        public static int ToInt32(string value) => (int)ToInt64(value, true, int.MinValue, int.MaxValue);
 
         [CLSCompliant(false)]
-        public static uint ToUInt32(string value)
-        {
-            return (uint)ToInt64(value, false, UInt32.MinValue, UInt32.MaxValue);
-        }
+        public static uint ToUInt32(string value) => (uint)ToInt64(value, false, uint.MinValue, uint.MaxValue);
 
-        public static long ToInt64(string value)
-        {
-            return ToInt64(value, true, Int64.MinValue, Int64.MaxValue);
-        }
+        public static long ToInt64(string value) => ToInt64(value, true, long.MinValue, long.MaxValue);
 
         [CLSCompliant(false)]
-        public static ulong ToUInt64(string value)
-        {
-            return (ulong)ToInt64(value, false, 0, 0);
-        }
+        public static ulong ToUInt64(string value) => (ulong)ToInt64(value, false, 0, 0);
 
         //--//
 
@@ -70,14 +43,14 @@ namespace System
             if (fromBase != 16)
                 throw new ArgumentException();
 
-            int result = 0;
+            var result = 0;
             int digit;
 
-            char[] hexDigit = hexNumber.Trim(' ').ToUpper().ToCharArray();
+            var hexDigit = hexNumber.Trim(' ').ToUpper().ToCharArray();
 
             // Trim hex sentinal if present 
-            int len = hexDigit.Length;
-            int i   = (len >= 2 && hexDigit[0] == '0' && hexDigit[1] == 'X') ? 2 : 0;
+            var len = hexDigit.Length;
+            var i   = (len >= 2 && hexDigit[0] == '0' && hexDigit[1] == 'X') ? 2 : 0;
 
             // 8 hex chars == 4 bytes == sizeof(Int32)
             if ((len - i) > 8) throw new ArgumentException();
@@ -85,7 +58,7 @@ namespace System
             // Convert hex to integer
             for (; i < len; i++)
             {
-                char c = hexDigit[i];
+                var c = hexDigit[i];
 
                 switch (c)
                 {
@@ -157,26 +130,25 @@ namespace System
 
             if(s.Length == 0) return 0;
 
-            int decimalpoint = s.IndexOf('.');
-            int exp          = s.IndexOf('e');
+            var decimalpoint = s.IndexOf('.');
+            var exp          = s.IndexOf('e');
             
             if (exp != -1 && decimalpoint > exp)
                 throw new Exception();
 
-            char [] chars           = s.ToCharArray();
-            int     len             = chars.Length;
+            var chars           = s.ToCharArray();
+            var     len             = chars.Length;
             double  power           = 0;
             double  rightDecimal    = 0;
-            int     decLeadingZeros = 0;
+            var     decLeadingZeros = 0;
             double  leftDecimal     = 0;
-            int     leftDecLen      = 0;
-            bool    isNeg           = chars[0] == '-';
+            var     leftDecLen      = 0;
+            var    isNeg           = chars[0] == '-';
 
             // convert the exponential portion to a number            
             if (exp != -1 && exp + 1 < len - 1)
             {
-                int tmp;
-                power = GetDoubleNumber(chars, exp + 1, len - (exp + 1), out tmp);
+                power = GetDoubleNumber(chars, exp + 1, len - (exp + 1), out var tmp);
             }
 
             // convert the decimal portion to a number
@@ -202,13 +174,15 @@ namespace System
             // convert the integer portion to a number
             if (decimalpoint != 0)
             {
-                int leadingZeros;
-                
-                     if (decimalpoint == -1 && exp == -1) leftDecLen = len;
-                else if (decimalpoint != -1)              leftDecLen = decimalpoint;
-                else                                      leftDecLen = exp;
 
-                leftDecimal = GetDoubleNumber(chars, 0, leftDecLen, out leadingZeros);
+                if (decimalpoint == -1 && exp == -1)
+                    leftDecLen = len;
+                else if (decimalpoint != -1)
+                    leftDecLen = decimalpoint;
+                else
+                    leftDecLen = exp;
+
+                leftDecimal = GetDoubleNumber(chars, 0, leftDecLen, out var leadingZeros);
                 // subtract leading zeros from integer length
                 leftDecLen -= leadingZeros;
 
@@ -306,7 +280,8 @@ namespace System
 
             if(isNeg && value > 0)
             {
-                value = -value;
+                value = -value;
+
             }
 
             return value;
@@ -321,11 +296,11 @@ namespace System
 
             value = value.Trim(' ');
 
-            char[] num    = value.ToCharArray();
-            int    len    = num.Length;
+            var num    = value.ToCharArray();
+            var    len    = num.Length;
             ulong  result = 0;
-            int    index  = 0;
-            bool   isNeg  = false;
+            var    index  = 0;
+            var   isNeg  = false;
 
             // check the sign
             if (num[0] == '-')
@@ -338,10 +313,10 @@ namespace System
                 index = 1;
             }
             
-            for (int i = index; i < len; i++)
+            for (var i = index; i < len; i++)
             {
                 ulong digit;
-                char c = num[i];
+                var c = num[i];
 
                 // switch statement is faster than subtracting '0'
                 switch(c)
@@ -421,8 +396,8 @@ namespace System
         private static double GetDoubleNumber(char[] chars, int start, int length, out int numLeadingZeros)
         {
             double number = 0;
-            bool   isNeg  = false;
-            int    end    = start + length;
+            var   isNeg  = false;
+            var    end    = start + length;
 
             numLeadingZeros = 0;
 
@@ -436,10 +411,10 @@ namespace System
                 start++;
             }
 
-            for (int i = start; i < end; i++)
+            for (var i = start; i < end; i++)
             {
                 int  digit;
-                char c = chars[i];
+                var c = chars[i];
 
                 // switch statement is faster than subtracting '0'                
                 switch(c)
@@ -540,16 +515,11 @@ namespace System
         private const int CCH_B64_IN_QUARTET = 4;
         private const int CB_B64_OUT_TRIO = 3;
 
-        static private int GetBase64EncodedLength(int binaryLen)
-        {
-            return (((binaryLen / 3) + (((binaryLen % 3) != 0) ? 1 : 0)) * 4);
-
-        }
+        static private int GetBase64EncodedLength(int binaryLen) => (((binaryLen / 3) + (((binaryLen % 3) != 0) ? 1 : 0)) * 4);
 
         public static bool UseRFC4648Encoding
         {
-            get { return s_rgchBase64Encoding == s_rgchBase64EncodingRFC4648; }
-            set { s_rgchBase64Encoding = (value ? s_rgchBase64EncodingRFC4648 : s_rgchBase64EncodingDefault); }
+            get => s_rgchBase64Encoding == s_rgchBase64EncodingRFC4648; set => s_rgchBase64Encoding = (value ? s_rgchBase64EncodingRFC4648 : s_rgchBase64EncodingDefault);
         }
 
         /// <summary>
@@ -557,10 +527,7 @@ namespace System
         /// </summary>
         /// <param name="inArray">An array of 8-bit unsigned integers. </param>
         /// <returns>The String representation, in base 64, of the contents of inArray.</returns>
-        public static string ToBase64String(byte[] inArray)
-        {
-            return ToBase64String(inArray, 0, inArray.Length);
-        }
+        public static string ToBase64String(byte[] inArray) => ToBase64String(inArray, 0, inArray.Length);
 
         public static string ToBase64String(byte[] inArray, int offset, int length)
         {
@@ -574,9 +541,9 @@ namespace System
             if(offset + length > inArray.Length) throw new ArgumentOutOfRangeException();
 
             // Create array of characters with appropriate length.
-            int inArrayLen = length;
-            int outArrayLen = GetBase64EncodedLength(inArrayLen);
-            char[] outArray = new char[outArrayLen];
+            var inArrayLen = length;
+            var outArrayLen = GetBase64EncodedLength(inArrayLen);
+            var outArray = new char[outArrayLen];
 
             /* encoding starts from end of string */
 
@@ -584,7 +551,7 @@ namespace System
             ** Convert the input buffer bytes through the encoding table and
             ** out into the output buffer.
             */
-            int iInputEnd = offset + (outArrayLen / CCH_B64_IN_QUARTET - 1) * CB_B64_OUT_TRIO;
+            var iInputEnd = offset + (outArrayLen / CCH_B64_IN_QUARTET - 1) * CB_B64_OUT_TRIO;
             int iInput = offset, iOutput = 0;
             byte uc0 = 0, uc1 = 0, uc2 = 0;
             // Loop is for all trios except of last one.
@@ -649,7 +616,7 @@ namespace System
                 throw new ArgumentNullException();
             }
 
-            char []chArray = inString.ToCharArray();
+            var chArray = inString.ToCharArray();
             
             return FromBase64CharArray(chArray, 0, chArray.Length);
         }
@@ -659,14 +626,14 @@ namespace System
             if(length == 0) return new byte[0];
 
             // Checks that length of string is multiple of 4
-            int inLength = length;
+            var inLength = length;
             if (inLength % CCH_B64_IN_QUARTET != 0)
             {
                 throw new ArgumentException("Encoded string length should be multiple of 4");
             }
 
             // Maximum buffer size needed.
-            int outCurPos = (((inLength + (CCH_B64_IN_QUARTET - 1)) / CCH_B64_IN_QUARTET) * CB_B64_OUT_TRIO);
+            var outCurPos = (((inLength + (CCH_B64_IN_QUARTET - 1)) / CCH_B64_IN_QUARTET) * CB_B64_OUT_TRIO);
             if (inString[offset + inLength - 1] == '=')
             {   // If the last was "=" - it means last byte was padded/
                 --outCurPos;
@@ -678,18 +645,18 @@ namespace System
             }
 
             // Output array.
-            byte[] retArray = new byte[outCurPos];
+            var retArray = new byte[outCurPos];
             // Array of 4 bytes - temporary.
-            byte[] rgbOutput = new byte[CCH_B64_IN_QUARTET];
+            var rgbOutput = new byte[CCH_B64_IN_QUARTET];
             // Loops over each 4 bytes quartet.
-            for (int inCurPos = offset + inLength;
+            for (var inCurPos = offset + inLength;
                  inCurPos > offset;
                  inCurPos -= CCH_B64_IN_QUARTET)
             {
-                int ibDest = 0;
+                var ibDest = 0;
                 for (; ibDest < CB_B64_OUT_TRIO + 1; ibDest++)
                 {
-                    int ichGet = inCurPos + ibDest - CCH_B64_IN_QUARTET;
+                    var ichGet = inCurPos + ibDest - CCH_B64_IN_QUARTET;
                     // Equal sign can be only at the end and maximum of 2
                     if (inString[ichGet] == '=')
                     {

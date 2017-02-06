@@ -7,7 +7,7 @@ namespace System.Threading
     using System;
     using System.Runtime.CompilerServices;
 
-    public delegate void TimerCallback(Object state);
+    public delegate void TimerCallback(object state);
 
     public sealed class Timer : MarshalByRefObject, IDisposable
     {
@@ -18,10 +18,10 @@ namespace System.Threading
         private TimerCallback m_callback;
 #pragma warning restore CS0169 // The field is never used
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        extern public Timer(TimerCallback callback, Object state, int dueTime, int period);
+        extern public Timer(TimerCallback callback, object state, int dueTime, int period);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        extern public Timer(TimerCallback callback, Object state, TimeSpan dueTime, TimeSpan period);
+        extern public Timer(TimerCallback callback, object state, TimeSpan dueTime, TimeSpan period);
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         extern public bool Change(int dueTime, int period);
         [MethodImplAttribute(MethodImplOptions.InternalCall)]

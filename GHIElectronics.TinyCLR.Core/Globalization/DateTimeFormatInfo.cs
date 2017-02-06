@@ -8,143 +8,74 @@ namespace System.Globalization
     using System.Collections;
     public sealed class DateTimeFormatInfo /*: ICloneable, IFormatProvider*/
     {
-        internal String amDesignator = null;
-        internal String pmDesignator = null;
-        internal String dateSeparator = null;
-        internal String longTimePattern = null;
-        internal String shortTimePattern = null;
-        internal String generalShortTimePattern = null;
-        internal String generalLongTimePattern = null;
-        internal String timeSeparator = null;
-        internal String monthDayPattern = null;
-        internal const String rfc1123Pattern = "ddd, dd MMM yyyy HH':'mm':'ss 'GMT'";
-        internal const String sortableDateTimePattern = "yyyy'-'MM'-'dd'T'HH':'mm':'ss";
-        internal const String universalSortableDateTimePattern = "yyyy'-'MM'-'dd HH':'mm':'ss'Z'";
-        internal String fullDateTimePattern = null;
-        internal String longDatePattern = null;
-        internal String shortDatePattern = null;
-        internal String yearMonthPattern = null;
-        internal String[] abbreviatedDayNames = null;
-        internal String[] dayNames = null;
-        internal String[] abbreviatedMonthNames = null;
-        internal String[] monthNames = null;
+        internal string amDesignator = null;
+        internal string pmDesignator = null;
+        internal string dateSeparator = null;
+        internal string longTimePattern = null;
+        internal string shortTimePattern = null;
+        internal string generalShortTimePattern = null;
+        internal string generalLongTimePattern = null;
+        internal string timeSeparator = null;
+        internal string monthDayPattern = null;
+        internal const string rfc1123Pattern = "ddd, dd MMM yyyy HH':'mm':'ss 'GMT'";
+        internal const string sortableDateTimePattern = "yyyy'-'MM'-'dd'T'HH':'mm':'ss";
+        internal const string universalSortableDateTimePattern = "yyyy'-'MM'-'dd HH':'mm':'ss'Z'";
+        internal string fullDateTimePattern = null;
+        internal string longDatePattern = null;
+        internal string shortDatePattern = null;
+        internal string yearMonthPattern = null;
+        internal string[] abbreviatedDayNames = null;
+        internal string[] dayNames = null;
+        internal string[] abbreviatedMonthNames = null;
+        internal string[] monthNames = null;
         CultureInfo m_cultureInfo;
-        internal DateTimeFormatInfo(CultureInfo cultureInfo)
-        {
-            m_cultureInfo = cultureInfo;
-        }
+        internal DateTimeFormatInfo(CultureInfo cultureInfo) => this.m_cultureInfo = cultureInfo;
 
-        public static DateTimeFormatInfo CurrentInfo
+        public static DateTimeFormatInfo CurrentInfo => CultureInfo.CurrentUICulture.DateTimeFormat;
+
+        public string AMDesignator => this.m_cultureInfo.EnsureStringResource(ref this.amDesignator, System.Globalization.Resources.CultureInfo.StringResources.AMDesignator);
+
+        public string DateSeparator => this.m_cultureInfo.EnsureStringResource(ref this.dateSeparator, System.Globalization.Resources.CultureInfo.StringResources.DateSeparator);
+
+        public string FullDateTimePattern
         {
             get
             {
-                return CultureInfo.CurrentUICulture.DateTimeFormat;
-            }
-        }
-
-        public String AMDesignator
-        {
-            get
-            {
-                return m_cultureInfo.EnsureStringResource(ref this.amDesignator, System.Globalization.Resources.CultureInfo.StringResources.AMDesignator);
-            }
-        }
-
-        public String DateSeparator
-        {
-            get
-            {
-                return m_cultureInfo.EnsureStringResource(ref this.dateSeparator, System.Globalization.Resources.CultureInfo.StringResources.DateSeparator);
-            }
-        }
-
-        public String FullDateTimePattern
-        {
-            get
-            {
-                if (fullDateTimePattern == null)
+                if (this.fullDateTimePattern == null)
                 {
-                    fullDateTimePattern = LongDatePattern + " " + LongTimePattern;
+                    this.fullDateTimePattern = this.LongDatePattern + " " + this.LongTimePattern;
                 }
 
-                return (fullDateTimePattern);
+                return (this.fullDateTimePattern);
             }
         }
 
-        public String LongDatePattern
-        {
-            get
-            {
-                return m_cultureInfo.EnsureStringResource(ref longDatePattern, System.Globalization.Resources.CultureInfo.StringResources.LongDatePattern);
-            }
-        }
+        public string LongDatePattern => this.m_cultureInfo.EnsureStringResource(ref this.longDatePattern, System.Globalization.Resources.CultureInfo.StringResources.LongDatePattern);
 
-        public String LongTimePattern
-        {
-            get
-            {
-                return m_cultureInfo.EnsureStringResource(ref this.longTimePattern, System.Globalization.Resources.CultureInfo.StringResources.LongTimePattern);
-            }
-        }
+        public string LongTimePattern => this.m_cultureInfo.EnsureStringResource(ref this.longTimePattern, System.Globalization.Resources.CultureInfo.StringResources.LongTimePattern);
 
-        public String MonthDayPattern
-        {
-            get
-            {
-                return m_cultureInfo.EnsureStringResource(ref this.monthDayPattern, System.Globalization.Resources.CultureInfo.StringResources.MonthDayPattern);
-            }
-        }
+        public string MonthDayPattern => this.m_cultureInfo.EnsureStringResource(ref this.monthDayPattern, System.Globalization.Resources.CultureInfo.StringResources.MonthDayPattern);
 
-        public String PMDesignator
-        {
-            get
-            {
-                return m_cultureInfo.EnsureStringResource(ref this.pmDesignator, System.Globalization.Resources.CultureInfo.StringResources.PMDesignator);
-            }
-        }
+        public string PMDesignator => this.m_cultureInfo.EnsureStringResource(ref this.pmDesignator, System.Globalization.Resources.CultureInfo.StringResources.PMDesignator);
 
-        public String RFC1123Pattern
-        {
-            get
-            {
-                return (rfc1123Pattern);
-            }
-        }
+        public string RFC1123Pattern => (rfc1123Pattern);
 
-        public String ShortDatePattern
-        {
-            get
-            {
-                return m_cultureInfo.EnsureStringResource(ref this.shortDatePattern, System.Globalization.Resources.CultureInfo.StringResources.ShortDatePattern);
-            }
-        }
+        public string ShortDatePattern => this.m_cultureInfo.EnsureStringResource(ref this.shortDatePattern, System.Globalization.Resources.CultureInfo.StringResources.ShortDatePattern);
 
-        public String ShortTimePattern
-        {
-            get
-            {
-                return m_cultureInfo.EnsureStringResource(ref this.shortTimePattern, System.Globalization.Resources.CultureInfo.StringResources.ShortTimePattern);
-            }
-        }
+        public string ShortTimePattern => this.m_cultureInfo.EnsureStringResource(ref this.shortTimePattern, System.Globalization.Resources.CultureInfo.StringResources.ShortTimePattern);
 
-        public String SortableDateTimePattern
-        {
-            get
-            {
-                return (sortableDateTimePattern);
-            }
-        }
+        public string SortableDateTimePattern => (sortableDateTimePattern);
 
-        internal String GeneralShortTimePattern
+        internal string GeneralShortTimePattern
         {
             get
             {
-                if (generalShortTimePattern == null)
+                if (this.generalShortTimePattern == null)
                 {
-                    generalShortTimePattern = ShortDatePattern + " " + ShortTimePattern;
+                    this.generalShortTimePattern = this.ShortDatePattern + " " + this.ShortTimePattern;
                 }
 
-                return (generalShortTimePattern);
+                return (this.generalShortTimePattern);
             }
         }
 
@@ -154,74 +85,32 @@ namespace System.Globalization
         **      We put this internal property here so that we can avoid doing the
         **      concatation every time somebody asks for the general format.
         ==============================================================================*/
-        internal String GeneralLongTimePattern
+        internal string GeneralLongTimePattern
         {
             get
             {
-                if (generalLongTimePattern == null)
+                if (this.generalLongTimePattern == null)
                 {
-                    generalLongTimePattern = ShortDatePattern + " " + LongTimePattern;
+                    this.generalLongTimePattern = this.ShortDatePattern + " " + this.LongTimePattern;
                 }
 
-                return (generalLongTimePattern);
+                return (this.generalLongTimePattern);
             }
         }
 
-        public String TimeSeparator
-        {
-            get
-            {
-                return m_cultureInfo.EnsureStringResource(ref this.timeSeparator, System.Globalization.Resources.CultureInfo.StringResources.TimeSeparator);
-            }
-        }
+        public string TimeSeparator => this.m_cultureInfo.EnsureStringResource(ref this.timeSeparator, System.Globalization.Resources.CultureInfo.StringResources.TimeSeparator);
 
-        public String UniversalSortableDateTimePattern
-        {
-            get
-            {
-                return (universalSortableDateTimePattern);
-            }
-        }
+        public string UniversalSortableDateTimePattern => (universalSortableDateTimePattern);
 
-        public String YearMonthPattern
-        {
-            get
-            {
-                return m_cultureInfo.EnsureStringResource(ref this.yearMonthPattern, System.Globalization.Resources.CultureInfo.StringResources.YearMonthPattern);
-            }
-        }
+        public string YearMonthPattern => this.m_cultureInfo.EnsureStringResource(ref this.yearMonthPattern, System.Globalization.Resources.CultureInfo.StringResources.YearMonthPattern);
 
-        public String[] AbbreviatedDayNames
-        {
-            get
-            {
-                return m_cultureInfo.EnsureStringArrayResource(ref abbreviatedDayNames, System.Globalization.Resources.CultureInfo.StringResources.AbbreviatedDayNames);
-            }
-        }
+        public string[] AbbreviatedDayNames => this.m_cultureInfo.EnsureStringArrayResource(ref this.abbreviatedDayNames, System.Globalization.Resources.CultureInfo.StringResources.AbbreviatedDayNames);
 
-        public String[] DayNames
-        {
-            get
-            {
-                return m_cultureInfo.EnsureStringArrayResource(ref dayNames, System.Globalization.Resources.CultureInfo.StringResources.DayNames);
-            }
-        }
+        public string[] DayNames => this.m_cultureInfo.EnsureStringArrayResource(ref this.dayNames, System.Globalization.Resources.CultureInfo.StringResources.DayNames);
 
-        public String[] AbbreviatedMonthNames
-        {
-            get
-            {
-                return m_cultureInfo.EnsureStringArrayResource(ref abbreviatedMonthNames, System.Globalization.Resources.CultureInfo.StringResources.AbbreviatedMonthNames);
-            }
-        }
+        public string[] AbbreviatedMonthNames => this.m_cultureInfo.EnsureStringArrayResource(ref this.abbreviatedMonthNames, System.Globalization.Resources.CultureInfo.StringResources.AbbreviatedMonthNames);
 
-        public String[] MonthNames
-        {
-            get
-            {
-                return m_cultureInfo.EnsureStringArrayResource(ref monthNames, System.Globalization.Resources.CultureInfo.StringResources.MonthNames);
-            }
-        }
+        public string[] MonthNames => this.m_cultureInfo.EnsureStringArrayResource(ref this.monthNames, System.Globalization.Resources.CultureInfo.StringResources.MonthNames);
     }
 }
 

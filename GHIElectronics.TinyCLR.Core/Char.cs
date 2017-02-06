@@ -29,29 +29,26 @@ namespace System
          */
         public const char MinValue = (char)0x00;
 
-        public override String ToString()
-        {
-            return new String(m_value, 1);
-        }
+        public override string ToString() => new string(this.m_value, 1);
 
         public char ToLower()
         {
-            if('A' <= m_value && m_value <= 'Z')
+            if('A' <= this.m_value && this.m_value <= 'Z')
             {
-                return (char)(m_value - ('A' - 'a'));
+                return (char)(this.m_value - ('A' - 'a'));
             }
 
-            return m_value;
+            return this.m_value;
         }
 
         public char ToUpper()
         {
-            if('a' <= m_value && m_value <= 'z')
+            if('a' <= this.m_value && this.m_value <= 'z')
             {
-                return (char)(m_value + ('A' - 'a'));
+                return (char)(this.m_value + ('A' - 'a'));
             }
 
-            return m_value;
+            return this.m_value;
         }
     }
 }

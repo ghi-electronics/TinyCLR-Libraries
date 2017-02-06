@@ -19,44 +19,31 @@ namespace System
         private string m_friendlyName;
 #pragma warning restore CS0649 // Field is never assigned to, and will always have its default value
 
-        private AppDomain()
-        {
-            throw new Exception();
-        }
+        private AppDomain() => throw new Exception();
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static AppDomain CreateDomain(String friendlyName);
+        public extern static AppDomain CreateDomain(string friendlyName);
 
-        public Object CreateInstanceAndUnwrap(String assemblyName, String typeName)
+        public object CreateInstanceAndUnwrap(string assemblyName, string typeName)
         {
-            Assembly assembly = Assembly.Load(assemblyName);
-            Type type = assembly.GetType(typeName);
+            var assembly = Assembly.Load(assemblyName);
+            var type = assembly.GetType(typeName);
 
-            ConstructorInfo ci = type.GetConstructor(new Type[0]);
-            object obj = ci.Invoke(null);
+            var ci = type.GetConstructor(new Type[0]);
+            var obj = ci.Invoke(null);
 
             return obj;
         }
 
-        public static AppDomain CurrentDomain
-        {
-            get { return Thread.GetDomain(); }
-        }
+        public static AppDomain CurrentDomain => Thread.GetDomain();
+        public string FriendlyName => this.m_friendlyName;
 
-        public String FriendlyName
+        public Assembly Load(string assemblyString)
         {
-            get
-            {
-                return m_friendlyName;
-            }
-        }
+            var fVersion = false;
+            var ver = new int[4];
 
-        public Assembly Load(String assemblyString)
-        {
-            bool fVersion = false;
-            int[] ver = new int[4];
-
-            string name = Assembly.ParseAssemblyName(assemblyString, ref fVersion, ref ver);
+            var name = Assembly.ParseAssemblyName(assemblyString, ref fVersion, ref ver);
 
             return LoadInternal(name, fVersion, ver[0], ver[1], ver[2], ver[3]);
 
@@ -66,7 +53,7 @@ namespace System
         public extern Assembly[] GetAssemblies();
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        private extern Assembly LoadInternal(String assemblyString, bool fVersion, int maj, int min, int build, int rev);
+        private extern Assembly LoadInternal(string assemblyString, bool fVersion, int maj, int min, int build, int rev);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public static extern void Unload(AppDomain domain);

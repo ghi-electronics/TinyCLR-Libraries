@@ -18,14 +18,14 @@ namespace System
             get;
         }
 
-        public static Type GetType(String typeName)
+        public static Type GetType(string typeName)
         {
-            bool fVersion = false;
-            int[] ver = new int[4];
-            string assemblyString = String.Empty;
-            string assemblyName = "";
+            var fVersion = false;
+            var ver = new int[4];
+            var assemblyString = string.Empty;
+            var assemblyName = "";
 
-            string name = ParseTypeName(typeName, ref assemblyString);
+            var name = ParseTypeName(typeName, ref assemblyString);
 
             if (assemblyString.Length > 0)
             {
@@ -36,12 +36,12 @@ namespace System
         }
         
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        private static extern Type GetTypeInternal(String typeName, string assemblyName, bool fVersion, int[] ver);
+        private static extern Type GetTypeInternal(string typeName, string assemblyName, bool fVersion, int[] ver);
 
         [Diagnostics.DebuggerStepThrough]
         [Diagnostics.DebuggerHidden]
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern Object InvokeMember(String name, BindingFlags invokeAttr, Binder binder, Object target, Object[] args);
+        public extern object InvokeMember(string name, BindingFlags invokeAttr, Binder binder, object target, object[] args);
 
         public abstract Assembly Assembly
         {
@@ -51,12 +51,12 @@ namespace System
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public extern static Type GetTypeFromHandle(RuntimeTypeHandle handle);
 
-        public abstract String FullName
+        public abstract string FullName
         {
             get;
         }
 
-        public abstract String AssemblyQualifiedName
+        public abstract string AssemblyQualifiedName
         {
             get;
         }
@@ -70,34 +70,25 @@ namespace System
         public extern ConstructorInfo GetConstructor(Type[] types);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern MethodInfo GetMethod(String name, Type[] types);
+        public extern MethodInfo GetMethod(string name, Type[] types);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern MethodInfo GetMethod(String name, BindingFlags bindingAttr);
+        public extern MethodInfo GetMethod(string name, BindingFlags bindingAttr);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern MethodInfo GetMethod(String name);
+        public extern MethodInfo GetMethod(string name);
 
         // GetMethods
         // This routine will return all the methods implemented by the class
-        public MethodInfo[] GetMethods()
-        {
-            return GetMethods(Type.DefaultLookup);
-        }
+        public MethodInfo[] GetMethods() => GetMethods(Type.DefaultLookup);
 
         abstract public MethodInfo[] GetMethods(BindingFlags bindingAttr);
 
-        abstract public FieldInfo GetField(String name, BindingFlags bindingAttr);
+        abstract public FieldInfo GetField(string name, BindingFlags bindingAttr);
 
-        public FieldInfo GetField(String name)
-        {
-            return GetField(name, Type.DefaultLookup);
-        }
+        public FieldInfo GetField(string name) => GetField(name, Type.DefaultLookup);
 
-        public FieldInfo[] GetFields()
-        {
-            return GetFields(Type.DefaultLookup);
-        }
+        public FieldInfo[] GetFields() => GetFields(Type.DefaultLookup);
 
         abstract public FieldInfo[] GetFields(BindingFlags bindingAttr);
 
@@ -174,7 +165,7 @@ namespace System
 
         public virtual bool IsSubclassOf(Type c)
         {
-            Type p = this;
+            var p = this;
             if (p == c)
                 return false;
             while (p != null)
@@ -188,19 +179,16 @@ namespace System
         }
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern virtual bool IsInstanceOfType(Object o);
+        public extern virtual bool IsInstanceOfType(object o);
 
-        public override String ToString()
-        {
-            return this.FullName;
-        }
+        public override string ToString() => this.FullName;
 
         // private convenience data
         private const BindingFlags DefaultLookup = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public;
 
         //--//
         
-        private static string ParseTypeName(String typeName, ref String assemblyString)
+        private static string ParseTypeName(string typeName, ref string assemblyString)
         {
             // valid names are in the forms:
             // 1) "Microsoft.SPOT.Hardware.Cpu.Pin" or

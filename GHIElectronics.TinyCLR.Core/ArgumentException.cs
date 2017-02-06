@@ -12,7 +12,7 @@ namespace System
     [Serializable()]
     public class ArgumentException : SystemException
     {
-        private String m_paramName;
+        private string m_paramName;
 
         // Creates a new ArgumentException with its message
         // string set to the empty string.
@@ -24,47 +24,37 @@ namespace System
         // Creates a new ArgumentException with its message
         // string set to message.
         //
-        public ArgumentException(String message)
+        public ArgumentException(string message)
             : base(message)
         {
         }
 
-        public ArgumentException(String message, Exception innerException)
+        public ArgumentException(string message, Exception innerException)
             : base(message, innerException)
         {
         }
 
-        public ArgumentException(String message, String paramName, Exception innerException)
-            : base(message, innerException)
-        {
-            m_paramName = paramName;
-        }
+        public ArgumentException(string message, string paramName, Exception innerException)
+            : base(message, innerException) => this.m_paramName = paramName;
 
-        public ArgumentException(String message, String paramName)
+        public ArgumentException(string message, string paramName)
 
-            : base(message)
-        {
-            m_paramName = paramName;
-        }
+            : base(message) => this.m_paramName = paramName;
 
-        public override String Message
+        public override string Message
         {
             get
             {
-                String s = base.Message;
-                if (!((m_paramName == null) ||
-                       (m_paramName.Length == 0)))
-                    return s + "\n" + "Invalid argument " + "'" + m_paramName + "'";
+                var s = base.Message;
+                if (!((this.m_paramName == null) ||
+                       (this.m_paramName.Length == 0)))
+                    return s + "\n" + "Invalid argument " + "'" + this.m_paramName + "'";
                 else
                     return s;
             }
         }
 
-        public virtual String ParamName
-        {
-            get { return m_paramName; }
-        }
-
+        public virtual string ParamName => this.m_paramName;
     }
 }
 

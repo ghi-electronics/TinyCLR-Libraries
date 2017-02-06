@@ -56,38 +56,24 @@ namespace System.Diagnostics
         public DebuggableAttribute(bool isJITTrackingEnabled,
                                    bool isJITOptimizerDisabled)
         {
-            m_debuggingModes = 0;
+            this.m_debuggingModes = 0;
 
             if (isJITTrackingEnabled)
             {
-                m_debuggingModes |= DebuggingModes.Default;
+                this.m_debuggingModes |= DebuggingModes.Default;
             }
 
             if (isJITOptimizerDisabled)
             {
-                m_debuggingModes |= DebuggingModes.DisableOptimizations;
+                this.m_debuggingModes |= DebuggingModes.DisableOptimizations;
             }
         }
 
-        public DebuggableAttribute(DebuggingModes modes)
-        {
-            m_debuggingModes = modes;
-        }
+        public DebuggableAttribute(DebuggingModes modes) => this.m_debuggingModes = modes;
 
-        public bool IsJITTrackingEnabled
-        {
-            get { return ((m_debuggingModes & DebuggingModes.Default) != 0); }
-        }
-
-        public bool IsJITOptimizerDisabled
-        {
-            get { return ((m_debuggingModes & DebuggingModes.DisableOptimizations) != 0); }
-        }
-
-        public DebuggingModes DebuggingFlags
-        {
-            get { return m_debuggingModes; }
-        }
+        public bool IsJITTrackingEnabled => ((this.m_debuggingModes & DebuggingModes.Default) != 0);
+        public bool IsJITOptimizerDisabled => ((this.m_debuggingModes & DebuggingModes.DisableOptimizations) != 0);
+        public DebuggingModes DebuggingFlags => this.m_debuggingModes;
     }
 
     //  DebuggerBrowsableState states are defined as follows:
@@ -121,10 +107,7 @@ namespace System.Diagnostics
             this.state = state;
         }
 
-        public DebuggerBrowsableState State
-        {
-            get { return state; }
-        }
+        public DebuggerBrowsableState State => this.state;
     }
 
     // DebuggerTypeProxyAttribute
@@ -145,16 +128,9 @@ namespace System.Diagnostics
             this.typeName = type.FullName + "," + type.Assembly.FullName;
         }
 
-        public DebuggerTypeProxyAttribute(string typeName)
-        {
-            this.typeName = typeName;
-        }
+        public DebuggerTypeProxyAttribute(string typeName) => this.typeName = typeName;
 
-        public string ProxyTypeName
-        {
-            get { return typeName; }
-        }
-
+        public string ProxyTypeName => this.typeName;
         public Type Target
         {
             set
@@ -164,18 +140,16 @@ namespace System.Diagnostics
                     throw new ArgumentNullException("value");
                 }
 
-                targetName = value.FullName + "," + value.Assembly.FullName;
-                target = value;
+                this.targetName = value.FullName + "," + value.Assembly.FullName;
+                this.target = value;
             }
 
-            get { return target; }
+            get => target;
         }
 
         public string TargetTypeName
         {
-            get { return targetName; }
-            set { targetName = value; }
-
+            get => targetName; set => targetName = value;
         }
     }
 
@@ -208,25 +182,19 @@ namespace System.Diagnostics
                 this.value = value;
             }
 
-            name = "";
-            type = "";
+            this.name = "";
+            this.type = "";
         }
 
-        public string Value
-        {
-            get { return this.value; }
-        }
-
+        public string Value => this.value;
         public string Name
         {
-            get { return name; }
-            set { name = value; }
+            get => name; set => name = value;
         }
 
         public string Type
         {
-            get { return type; }
-            set { type = value; }
+            get => type; set => type = value;
         }
 
         public Type Target
@@ -238,18 +206,16 @@ namespace System.Diagnostics
                     throw new ArgumentNullException("value");
                 }
 
-                targetName = value.FullName + "," + value.Assembly.FullName;
-                target = value;
+                this.targetName = value.FullName + "," + value.Assembly.FullName;
+                this.target = value;
             }
 
-            get { return target; }
+            get => target;
         }
 
         public string TargetTypeName
         {
-            get { return targetName; }
-            set { targetName = value; }
-
+            get => targetName; set => targetName = value;
         }
     }
 }

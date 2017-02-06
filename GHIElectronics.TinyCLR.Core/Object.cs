@@ -22,15 +22,12 @@ namespace System
         {
         }
 
-        public virtual String ToString()
-        {
-            return GetType().FullName;
-        }
+        public virtual string ToString() => GetType().FullName;
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern virtual bool Equals(Object obj);
+        public extern virtual bool Equals(object obj);
 
-        public static bool Equals(Object objA, Object objB)
+        public static bool Equals(object objA, object objB)
         {
             if (objA == objB)
             {
@@ -46,7 +43,7 @@ namespace System
         }
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static bool ReferenceEquals(Object objA, Object objB);
+        public extern static bool ReferenceEquals(object objA, object objB);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public extern virtual int GetHashCode();
@@ -60,7 +57,7 @@ namespace System
         }
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        protected extern Object MemberwiseClone();
+        protected extern object MemberwiseClone();
 
     }
 }

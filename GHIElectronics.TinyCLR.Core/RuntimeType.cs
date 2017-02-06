@@ -12,13 +12,7 @@ namespace System
     internal sealed class RuntimeType : Type
     {
 
-        public override MemberTypes MemberType
-        {
-            get
-            {
-                return (this.DeclaringType != null) ? MemberTypes.NestedType : MemberTypes.TypeInfo;
-            }
-        }
+        public override MemberTypes MemberType => (this.DeclaringType != null) ? MemberTypes.NestedType : MemberTypes.TypeInfo;
 
         public extern override Assembly Assembly
         {
@@ -26,25 +20,19 @@ namespace System
             get;
         }
 
-        public extern override String Name
+        public extern override string Name
         {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
             get;
         }
 
-        public extern override String FullName
+        public extern override string FullName
         {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
             get;
         }
 
-        public override String AssemblyQualifiedName
-        {
-            get
-            {
-                return FullName + ", " + this.Assembly.FullName;
-            }
-        }
+        public override string AssemblyQualifiedName => this.FullName + ", " + this.Assembly.FullName;
 
         public extern override Type BaseType
         {
@@ -56,7 +44,7 @@ namespace System
         public extern override MethodInfo[] GetMethods(BindingFlags bindingAttr);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern override FieldInfo GetField(String name, BindingFlags bindingAttr);
+        public extern override FieldInfo GetField(string name, BindingFlags bindingAttr);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public extern override FieldInfo[] GetFields(BindingFlags bindingAttr);

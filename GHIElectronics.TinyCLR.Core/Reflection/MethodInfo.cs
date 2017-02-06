@@ -14,11 +14,7 @@ namespace System.Reflection
     [Serializable()]
     abstract public class MethodInfo : MethodBase
     {
-        public override MemberTypes MemberType
-        {
-            get { return System.Reflection.MemberTypes.Method; }
-        }
-
+        public override MemberTypes MemberType => System.Reflection.MemberTypes.Method;
         public abstract Type ReturnType
         {
             get;

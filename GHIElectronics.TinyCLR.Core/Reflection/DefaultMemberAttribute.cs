@@ -10,21 +10,15 @@ namespace System.Reflection
     public sealed class DefaultMemberAttribute : Attribute
     {
         // The name of the member
-        private String m_memberName;
+        private string m_memberName;
 
         // You must provide the name of the member, this is required
-        public DefaultMemberAttribute(String memberName)
-        {
-            m_memberName = memberName;
-        }
+        public DefaultMemberAttribute(string memberName) => this.m_memberName = memberName;
 
         // A get accessor to return the name from the attribute.
         // NOTE: There is no setter because the name must be provided
         //  to the constructor.  The name is not optional.
-        public String MemberName
-        {
-            get { return m_memberName; }
-        }
+        public string MemberName => this.m_memberName;
     }
 }
 

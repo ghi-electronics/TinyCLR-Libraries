@@ -49,24 +49,24 @@ namespace GHIElectronics.TinyCLR.Devices.I2c
         /// <param name="busSpeed"></param>
         internal I2cDevice(string deviceId, I2cConnectionSettings settings)
         {
-            m_deviceId = deviceId.Substring(0, deviceId.Length);
-            m_settings = new I2cConnectionSettings(settings);
+            this.m_deviceId = deviceId.Substring(0, deviceId.Length);
+            this.m_settings = new I2cConnectionSettings(settings);
 
 #pragma warning disable CS0219 // Variable is assigned but its value is never used
-            int clockRateKhz = 100;
+            var clockRateKhz = 100;
 #pragma warning restore CS0219 // Variable is assigned but its value is never used
             if (settings.BusSpeed == I2cBusSpeed.FastMode)
             {
                 clockRateKhz = 400;
             }
 
-            m_configuration = new I2CDevice.Configuration((ushort)settings.SlaveAddress, clockRateKhz);
+            this.m_configuration = new I2CDevice.Configuration((ushort)settings.SlaveAddress, clockRateKhz);
 
             lock (s_deviceLock)
             {
                 if (s_device == null)
                 {
-                    s_device = new I2CDevice(m_configuration);
+                    s_device = new I2CDevice(this.m_configuration);
                 }
 
                 ++s_deviceRefs;
@@ -83,13 +83,7 @@ namespace GHIElectronics.TinyCLR.Devices.I2c
         /// </summary>
         /// <value>The plug and play device identifier of the inter-integrated circuit (I²C) bus controller for the
         ///     device.</value>
-        public string DeviceId
-        {
-            get
-            {
-                return m_deviceId.Substring(0, m_deviceId.Length);
-            }
-        }
+        public string DeviceId => this.m_deviceId.Substring(0, this.m_deviceId.Length);
 
         /// <summary>
         /// Gets the connection settings used for communication with the inter-integrated circuit (I²C) device.
@@ -100,13 +94,7 @@ namespace GHIElectronics.TinyCLR.Devices.I2c
         ///     the I2cDevice object. To specify the connection settings, use the I2cConnectionSettings(Int32)
         ///     constructor to create an I2cConnectionSettings object, and set the property values for that
         ///     I2cConnectionSettings object before you pass it to the FromIdAsync method to create the I2cDevice object.</remarks>
-        public I2cConnectionSettings ConnectionSettings
-        {
-            get
-            {
-                return new I2cConnectionSettings(m_settings);
-            }
-        }
+        public I2cConnectionSettings ConnectionSettings => new I2cConnectionSettings(this.m_settings);
 
         /// <summary>
         /// Retrieves an Advanced Query Syntax (AQS) string for all of the inter-integrated circuit (I²C) bus
@@ -115,10 +103,7 @@ namespace GHIElectronics.TinyCLR.Devices.I2c
         /// </summary>
         /// <returns>An AQS string for all of the I²C bus controllers on the system, which you can use with the
         ///     DeviceInformation.FindAllAsync method to get DeviceInformation objects for those bus controllers.</returns>
-        public static string GetDeviceSelector()
-        {
-            return s_I2cPrefix;
-        }
+        public static string GetDeviceSelector() => s_I2cPrefix;
 
         /// <summary>
         /// Retrieves an Advanced Query Syntax (AQS) string for the inter-integrated circuit (I²C) bus that has the
@@ -129,10 +114,7 @@ namespace GHIElectronics.TinyCLR.Devices.I2c
         ///     which you want to get the AQS string.</param>
         /// <returns>An AQS string for the I²C bus that friendlyName specifies, which you can use with the
         ///     DeviceInformation.FindAllAsync method to get a DeviceInformation object for that bus.</returns>
-        public static string GetDeviceSelector(string friendlyName)
-        {
-            return friendlyName;
-        }
+        public static string GetDeviceSelector(string friendlyName) => friendlyName;
 
         /// <summary>
         /// Retrieves an I2cDevice object asynchronously for the inter-integrated circuit (I²C) bus controller that has
@@ -165,10 +147,7 @@ namespace GHIElectronics.TinyCLR.Devices.I2c
         /// </summary>
         /// <param name="writeBuffer">A buffer that contains the data that you want to write to the I²C device. This
         ///     data should not include the bus address.</param>
-        public void Write(byte[] writeBuffer)
-        {
-            WritePartial(writeBuffer);
-        }
+        public void Write(byte[] writeBuffer) => WritePartial(writeBuffer);
 
         /// <summary>
         /// Writes data to the inter-integrated circuit (I²C) bus on which the device is connected, and returns
@@ -180,9 +159,9 @@ namespace GHIElectronics.TinyCLR.Devices.I2c
         ///     number of bytes that the operation wrote into the buffer.</returns>
         public I2cTransferResult WritePartial(byte[] buffer)
         {
-            lock (m_syncLock)
+            lock (this.m_syncLock)
             {
-                if (m_disposed)
+                if (this.m_disposed)
                 {
                     throw new ObjectDisposedException();
                 }
@@ -198,10 +177,7 @@ namespace GHIElectronics.TinyCLR.Devices.I2c
         /// </summary>
         /// <param name="readBuffer">The buffer to which you want to read the data from the I²C bus. The length of the
         ///     buffer determines how much data to request from the device.</param>
-        public void Read(byte[] readBuffer)
-        {
-            ReadPartial(readBuffer);
-        }
+        public void Read(byte[] readBuffer) => ReadPartial(readBuffer);
 
         /// <summary>
         /// Reads data from the inter-integrated circuit (I²C) bus on which the device is connected into the specified
@@ -213,9 +189,9 @@ namespace GHIElectronics.TinyCLR.Devices.I2c
         ///     of bytes that the operation read into the buffer.</returns>
         public I2cTransferResult ReadPartial(byte[] buffer)
         {
-            lock (m_syncLock)
+            lock (this.m_syncLock)
             {
-                if (m_disposed)
+                if (this.m_disposed)
                 {
                     throw new ObjectDisposedException();
                 }
@@ -233,10 +209,7 @@ namespace GHIElectronics.TinyCLR.Devices.I2c
         ///     data should not include the bus address.</param>
         /// <param name="readBuffer">The buffer to which you want to read the data from the I²C bus. The length of the
         ///     buffer determines how much data to request from the device.</param>
-        public void WriteRead(byte[] writeBuffer, byte[] readBuffer)
-        {
-            WriteReadPartial(writeBuffer, readBuffer);
-        }
+        public void WriteRead(byte[] writeBuffer, byte[] readBuffer) => WriteReadPartial(writeBuffer, readBuffer);
 
         /// <summary>
         /// Performs an atomic operation to write data to and then read data from the inter-integrated circuit (I²C) bus
@@ -252,9 +225,9 @@ namespace GHIElectronics.TinyCLR.Devices.I2c
         ///     bytes that the operation read.</returns>
         public I2cTransferResult WriteReadPartial(byte[] writeBuffer, byte[] readBuffer)
         {
-            lock (m_syncLock)
+            lock (this.m_syncLock)
             {
-                if (m_disposed)
+                if (this.m_disposed)
                 {
                     throw new ObjectDisposedException();
                 }
@@ -271,23 +244,20 @@ namespace GHIElectronics.TinyCLR.Devices.I2c
         /// </summary>
         public void Dispose()
         {
-            lock (m_syncLock)
+            lock (this.m_syncLock)
             {
-                if (!m_disposed)
+                if (!this.m_disposed)
                 {
                     Dispose(true);
                     GC.SuppressFinalize(this);
-                    m_disposed = true;
+                    this.m_disposed = true;
                 }
             }
         }
 
-        internal static string[] GetValidBusNames()
-        {
-            return new string[] {
+        internal static string[] GetValidBusNames() => new string[] {
                 s_I2cPrefix + "1",
             };
-        }
 
         /// <summary>
         /// Executes an arbitrary transaction against the wrapped Microsoft.SPOT.Hardware.I2CDevice.
@@ -313,7 +283,7 @@ namespace GHIElectronics.TinyCLR.Devices.I2c
 
             lock (s_deviceLock)
             {
-                s_device.Config = m_configuration;
+                s_device.Config = this.m_configuration;
                 result.BytesTransferred = (uint)s_device.Execute(transactions, transactionTimeoutMs);
             }
 
