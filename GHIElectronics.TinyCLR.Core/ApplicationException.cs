@@ -1,4 +1,3 @@
-
 namespace System {
     [Serializable()]
     public class ApplicationException : Exception {
