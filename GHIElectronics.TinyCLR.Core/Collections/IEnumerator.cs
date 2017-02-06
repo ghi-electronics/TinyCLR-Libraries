@@ -1,16 +1,12 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-namespace System.Collections
-{
-    using System;
-
+namespace System.Collections {
     /**
      * Base interface for all enumerators, providing a simple approach
      * to iterating over a collection.
      */
-    public interface IEnumerator
-    {
+    public interface IEnumerator {
         // Interfaces are not serializable
         /**
          * Advances the enumerator to the next element of the enumeration and
@@ -38,8 +34,7 @@ namespace System.Collections
          * has been modified since this enumerator was created, or if the Enumerator
          * is positioned before or after the valid range.
          */
-        object Current
-        {
+        object Current {
             get;
         }
 

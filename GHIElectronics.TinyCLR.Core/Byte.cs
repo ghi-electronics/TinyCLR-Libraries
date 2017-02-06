@@ -1,11 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-namespace System
-{
+namespace System {
     using System.Globalization;
-    using System;
-    using System.Runtime.CompilerServices;
 
     /**
      * A place holder class for signed bytes.
@@ -13,8 +10,7 @@ namespace System
      * @version
      */
     [Serializable]
-    public struct Byte
-    {
+    public struct Byte {
 #pragma warning disable CS0649 // Field is never assigned to, and will always have its default value
         private byte m_value;
 #pragma warning restore CS0649 // Field is never assigned to, and will always have its default value
@@ -34,10 +30,8 @@ namespace System
         public string ToString(string format) => Number.Format(this.m_value, true, format, NumberFormatInfo.CurrentInfo);
 
         [CLSCompliant(false)]
-        public static byte Parse(string s)
-        {
-            if (s == null)
-            {
+        public static byte Parse(string s) {
+            if (s == null) {
                 throw new ArgumentNullException();
             }
 

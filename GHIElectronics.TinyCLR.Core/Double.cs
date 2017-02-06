@@ -1,16 +1,12 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-namespace System
-{
-
-    using System;
+namespace System {
     using System.Globalization;
     using System.Runtime.CompilerServices;
 
     [Serializable]
-    public struct Double
-    {
+    public struct Double {
 #pragma warning disable CS0649 // Field is never assigned to, and will always have its default value
         internal double m_value;
 #pragma warning restore CS0649 // Field is never assigned to, and will always have its default value
@@ -155,10 +151,8 @@ namespace System
         //   System.OverflowException:
         //     s represents a number that is less than System.Double.MinValue or greater
         //     than System.Double.MaxValue.
-        public static double Parse(string s)
-        {
-            if (s == null)
-            {
+        public static double Parse(string s) {
+            if (s == null) {
                 throw new ArgumentNullException();
             }
 
@@ -184,18 +178,14 @@ namespace System
         //
         // Returns:
         //     The string representation of the value of this instance.        
-        public override string ToString()
-        {
-            if(IsPositiveInfinity(this))
-            {
+        public override string ToString() {
+            if (IsPositiveInfinity(this)) {
                 return "Infinity";
             }
-            else if(IsNegativeInfinity(this))
-            {
+            else if (IsNegativeInfinity(this)) {
                 return "-Infinity";
             }
-            else if(IsNaN(this))
-            {
+            else if (IsNaN(this)) {
                 return "NaN";
             }
 
@@ -216,18 +206,14 @@ namespace System
         // Exceptions:
         //   System.FormatException:
         //     format is invalid.
-        public string ToString(string format)
-        {
-            if (IsPositiveInfinity(this))
-            {
+        public string ToString(string format) {
+            if (IsPositiveInfinity(this)) {
                 return "Infinity";
             }
-            else if (IsNegativeInfinity(this))
-            {
+            else if (IsNegativeInfinity(this)) {
                 return "-Infinity";
             }
-            else if (IsNaN(this))
-            {
+            else if (IsNaN(this)) {
                 return "NaN";
             }
 
@@ -269,7 +255,7 @@ namespace System
         //   System.ArgumentException:
         //     style is not a System.Globalization.NumberStyles value. -or-style includes
         //     the System.Globalization.NumberStyles.AllowHexSpecifier value.
-//        public static bool TryParse(string s, NumberStyles style, IFormatProvider provider, out double result);
+        //        public static bool TryParse(string s, NumberStyles style, IFormatProvider provider, out double result);
     }
 }
 

@@ -1,11 +1,9 @@
-namespace GHIElectronics.TinyCLR.Devices.I2c
-{
+namespace GHIElectronics.TinyCLR.Devices.I2c {
     /// <summary>
     /// Describes the bus speeds that are available for connecting to an inter-integrated circuit (I²C) device. The bus
     /// speed is the frequency at which to clock the I²C bus when accessing the device.
     /// </summary>
-    public enum I2cBusSpeed
-    {
+    public enum I2cBusSpeed {
         /// <summary>
         /// The standard speed of 100 kilohertz (kHz). This speed is the default.
         /// </summary>
@@ -22,8 +20,7 @@ namespace GHIElectronics.TinyCLR.Devices.I2c
     /// determine whether other connections to the I²C bus address can be opened while you are connected to the I²C bus
     /// address.
     /// </summary>
-    public enum I2cSharingMode
-    {
+    public enum I2cSharingMode {
         /// <summary>
         /// Connects to the I²C bus address exclusively, so that no other connection to the I²C bus address can be made
         /// while you remain connected. This mode is the default mode.
@@ -45,8 +42,7 @@ namespace GHIElectronics.TinyCLR.Devices.I2c
     /// Describes whether the data transfers that the ReadPartial, WritePartial, or WriteReadPartial method performed
     /// succeeded, or provides the reason that the transfers did not succeed.
     /// </summary>
-    public enum I2cTransferStatus
-    {
+    public enum I2cTransferStatus {
         /// <summary>
         /// The data was entirely transferred. For WriteReadPartial, the data for both the write and the read operations
         /// was entirely transferred.

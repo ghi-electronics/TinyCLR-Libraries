@@ -1,11 +1,9 @@
-namespace GHIElectronics.TinyCLR.Devices.Gpio
-{
+namespace GHIElectronics.TinyCLR.Devices.Gpio {
     /// <summary>
     /// Describes the modes in which you can open a general-purpose I/O (GPIO) pin. These modes determine whether other
     /// connections to the GPIO pin can be opened while you have the pin open.
     /// </summary>
-    public enum GpioSharingMode
-    {
+    public enum GpioSharingMode {
         /// <summary>
         /// Opens the GPIO pin exclusively, so that no other connection to the pin can be opened.
         /// </summary>
@@ -20,8 +18,7 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio
     /// <summary>
     /// Describes the possible results of opening a pin with the GpioPin.TryOpenPin method.
     /// </summary>
-    public enum GpioOpenStatus
-    {
+    public enum GpioOpenStatus {
         /// <summary>
         /// The GPIO pin was successfully opened.
         /// </summary>
@@ -42,8 +39,7 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio
     /// Describes whether a general-purpose I/O (GPIO) pin is configured as an input or an output, and how values are
     /// driven onto the pin.
     /// </summary>
-    public enum GpioPinDriveMode
-    {
+    public enum GpioPinDriveMode {
         /// <summary>
         /// Configures the GPIO pin in floating mode, with high impedance.
         /// <para>If you call the GpioPin.Read method for this pin, the method returns the current state of the pin as
@@ -105,8 +101,7 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio
     /// <summary>
     /// Describes the possible values for a general-purpose I/O (GPIO) pin.
     /// </summary>
-    public enum GpioPinValue
-    {
+    public enum GpioPinValue {
         /// <summary>
         /// The value of the GPIO pin is low.
         /// </summary>
@@ -122,8 +117,7 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio
     /// Describes the possible types of change that can occur to the value of the general-purpose I/O (GPIO) pin for the
     /// GpioPin.ValueChanged event.
     /// </summary>
-    public enum GpioPinEdge
-    {
+    public enum GpioPinEdge {
         /// <summary>
         /// The value of the GPIO pin changed from high to low.
         /// </summary>

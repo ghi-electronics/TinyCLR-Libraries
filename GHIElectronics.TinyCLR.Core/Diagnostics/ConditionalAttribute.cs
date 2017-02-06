@@ -2,13 +2,10 @@
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-using System;
 
-namespace System.Diagnostics
-{
+namespace System.Diagnostics {
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = true), Serializable]
-    public sealed class ConditionalAttribute : Attribute
-    {
+    public sealed class ConditionalAttribute : Attribute {
         public ConditionalAttribute(string conditionString) => this.m_conditionString = conditionString;
 
         public string ConditionString => this.m_conditionString;

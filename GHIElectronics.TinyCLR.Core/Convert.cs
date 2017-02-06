@@ -2,14 +2,11 @@
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-using System;
 
-namespace System
-{
+namespace System {
     //We don't want to implement this whole class, but VB needs an external function to convert any integer type to a Char.
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
-    public static class Convert
-    {
+    public static class Convert {
         [CLSCompliant(false)]
         public static char ToChar(ushort value) => (char)value;
 
@@ -35,8 +32,7 @@ namespace System
 
         //--//
 
-        public static int ToInt32(string hexNumber, int fromBase)
-        {
+        public static int ToInt32(string hexNumber, int fromBase) {
             if (hexNumber == null)
                 return 0;
 
@@ -50,18 +46,17 @@ namespace System
 
             // Trim hex sentinal if present 
             var len = hexDigit.Length;
-            var i   = (len >= 2 && hexDigit[0] == '0' && hexDigit[1] == 'X') ? 2 : 0;
+            var i = (len >= 2 && hexDigit[0] == '0' && hexDigit[1] == 'X') ? 2 : 0;
 
             // 8 hex chars == 4 bytes == sizeof(Int32)
-            if ((len - i) > 8) throw new ArgumentException();
+            if ((len - i) > 8)
+                throw new ArgumentException();
 
             // Convert hex to integer
-            for (; i < len; i++)
-            {
+            for (; i < len; i++) {
                 var c = hexDigit[i];
 
-                switch (c)
-                {
+                switch (c) {
                     case '0':
                         digit = 0;
                         break;
@@ -121,48 +116,44 @@ namespace System
             return result;
         }
 
-        public static double ToDouble(string s)
-        {
+        public static double ToDouble(string s) {
             if (s == null)
                 return 0;
 
             s = s.Trim(' ').ToLower();
 
-            if(s.Length == 0) return 0;
+            if (s.Length == 0)
+                return 0;
 
             var decimalpoint = s.IndexOf('.');
-            var exp          = s.IndexOf('e');
-            
+            var exp = s.IndexOf('e');
+
             if (exp != -1 && decimalpoint > exp)
                 throw new Exception();
 
-            var chars           = s.ToCharArray();
-            var     len             = chars.Length;
-            double  power           = 0;
-            double  rightDecimal    = 0;
-            var     decLeadingZeros = 0;
-            double  leftDecimal     = 0;
-            var     leftDecLen      = 0;
-            var    isNeg           = chars[0] == '-';
+            var chars = s.ToCharArray();
+            var len = chars.Length;
+            double power = 0;
+            double rightDecimal = 0;
+            var decLeadingZeros = 0;
+            double leftDecimal = 0;
+            var leftDecLen = 0;
+            var isNeg = chars[0] == '-';
 
             // convert the exponential portion to a number            
-            if (exp != -1 && exp + 1 < len - 1)
-            {
+            if (exp != -1 && exp + 1 < len - 1) {
                 power = GetDoubleNumber(chars, exp + 1, len - (exp + 1), out var tmp);
             }
 
             // convert the decimal portion to a number
-            if (decimalpoint != -1)
-            {
+            if (decimalpoint != -1) {
                 double number;
                 int decLen;
 
-                if (exp == -1)
-                {
+                if (exp == -1) {
                     decLen = len - (decimalpoint + 1);
                 }
-                else
-                {
+                else {
                     decLen = (exp - (decimalpoint + 1));
                 }
 
@@ -172,8 +163,7 @@ namespace System
             }
 
             // convert the integer portion to a number
-            if (decimalpoint != 0)
-            {
+            if (decimalpoint != 0) {
 
                 if (decimalpoint == -1 && exp == -1)
                     leftDecLen = len;
@@ -186,76 +176,70 @@ namespace System
                 // subtract leading zeros from integer length
                 leftDecLen -= leadingZeros;
 
-                if (chars[0] == '-' || chars[0] == '+') leftDecLen--;
+                if (chars[0] == '-' || chars[0] == '+')
+                    leftDecLen--;
             }
 
             double value = 0;
-            if (leftDecimal < 0)
-            {
+            if (leftDecimal < 0) {
                 value = -leftDecimal + rightDecimal;
                 value = -value;
             }
-            else
-            {
+            else {
                 value = leftDecimal + rightDecimal;
             }
 
             // lets normalize the integer portion first
-            while(leftDecLen > 1)
-            {
-                switch(leftDecLen)
-                {
+            while (leftDecLen > 1) {
+                switch (leftDecLen) {
                     case 2:
-                        value      /= 10.0;
-                        power      += 1;
+                        value /= 10.0;
+                        power += 1;
                         leftDecLen -= 1;
                         break;
                     case 3:
-                        value      /= 100.0;
-                        power      += 2;
+                        value /= 100.0;
+                        power += 2;
                         leftDecLen -= 2;
-                        break;                    
+                        break;
                     case 4:
-                        value      /= 1000.0;
-                        power      += 3;
+                        value /= 1000.0;
+                        power += 3;
                         leftDecLen -= 3;
                         break;
                     default:
-                        value      /= 10000.0;
-                        power      += 4;
+                        value /= 10000.0;
+                        power += 4;
                         leftDecLen -= 4;
                         break;
                 }
             }
 
             // now normalize the decimal portion
-            if (value != 0.0 && value < 1.0 && value > -1.0)
-            {
+            if (value != 0.0 && value < 1.0 && value > -1.0) {
                 // for normalization we want x.xxx instead of 0.xxx
                 decLeadingZeros++;
 
-                while(decLeadingZeros > 0)
-                {
-                    switch (decLeadingZeros)
-                    {
+                while (decLeadingZeros > 0) {
+                    switch (decLeadingZeros) {
                         case 1:
-                            value           *= 10.0;
-                            power           -= 1;
+                            value *= 10.0;
+                            power -= 1;
                             decLeadingZeros -= 1;
                             break;
                         case 2:
-                            value           *= 100.0;
-                            power           -= 2;
+                            value *= 100.0;
+                            power -= 2;
                             decLeadingZeros -= 2;
                             break;
                         case 3:
-                            value           *= 1000.0;
-                            power           -= 3;
+                            value *= 1000.0;
+                            power -= 3;
                             decLeadingZeros -= 3;
                             break;
                         default:
-                            value           *= 10000.0;
-                            power           -= 4;
+                            value *= 10000.0;
+                            power -= 4;
                             decLeadingZeros -= 4;
                             break;
                     }
@@ -263,23 +247,19 @@ namespace System
             }
 
             // special case for epsilon (the System.Math.Pow native method will return zero for -324)
-            if (power == -324)
-            {
+            if (power == -324) {
                 value = value * System.Math.Pow(10, power + 1);
                 value /= 10.0;
             }
-            else
-            {
+            else {
                 value = value * System.Math.Pow(10, power);
             }
 
-            if (value == double.PositiveInfinity || value == double.NegativeInfinity)
-            {
+            if (value == double.PositiveInfinity || value == double.NegativeInfinity) {
                 throw new Exception();
             }
 
-            if(isNeg && value > 0)
-            {
+            if (isNeg && value > 0) {
                 value = -value;
 
             }
@@ -289,38 +269,33 @@ namespace System
 
         //--//
 
-        private static long ToInt64(string value, bool signed, long min, long max)
-        {
+        private static long ToInt64(string value, bool signed, long min, long max) {
             if (value == null)
                 return 0;
 
             value = value.Trim(' ');
 
-            var num    = value.ToCharArray();
-            var    len    = num.Length;
-            ulong  result = 0;
-            var    index  = 0;
-            var   isNeg  = false;
+            var num = value.ToCharArray();
+            var len = num.Length;
+            ulong result = 0;
+            var index = 0;
+            var isNeg = false;
 
             // check the sign
-            if (num[0] == '-')
-            {
+            if (num[0] == '-') {
                 isNeg = true;
                 index = 1;
             }
-            else if (num[0] == '+')
-            {
+            else if (num[0] == '+') {
                 index = 1;
             }
-            
-            for (var i = index; i < len; i++)
-            {
+
+            for (var i = index; i < len; i++) {
                 ulong digit;
                 var c = num[i];
 
                 // switch statement is faster than subtracting '0'
-                switch(c)
-                {
+                switch (c) {
                     case '0':
                         digit = 0;
                         break;
@@ -357,9 +332,8 @@ namespace System
 
                 // check for overflow - any number greater than this number will cause an overflow
                 // when multiplied by 10
-                if(( signed && result > 0x0CCCCCCCCCCCCCCC) || 
-                   (!signed && result > 0x1999999999999999))
-                {
+                if ((signed && result > 0x0CCCCCCCCCCCCCCC) ||
+                   (!signed && result > 0x1999999999999999)) {
                     throw new Exception();
                 }
 
@@ -367,62 +341,58 @@ namespace System
                 result += digit;
             }
 
-            if (isNeg && !signed && result != 0) throw new Exception();
+            if (isNeg && !signed && result != 0)
+                throw new Exception();
 
             long res;
 
-            if (isNeg)
-            {
+            if (isNeg) {
                 res = -(long)result;
 
                 // if the result is not negative, we had an overflow
-                if(res > 0) throw new Exception();
+                if (res > 0)
+                    throw new Exception();
             }
-            else
-            {
+            else {
                 res = (long)result;
 
                 // if the result is negative and we are not converting a
                 // UInt64, we had an overflow
-                if(max != 0 && res < 0) throw new Exception();
+                if (max != 0 && res < 0)
+                    throw new Exception();
             }
 
             // final check for max/min
-            if (max != 0 && (res < min || res > max)) throw new Exception();
+            if (max != 0 && (res < min || res > max))
+                throw new Exception();
 
             return res;
         }
 
-        private static double GetDoubleNumber(char[] chars, int start, int length, out int numLeadingZeros)
-        {
+        private static double GetDoubleNumber(char[] chars, int start, int length, out int numLeadingZeros) {
             double number = 0;
-            var   isNeg  = false;
-            var    end    = start + length;
+            var isNeg = false;
+            var end = start + length;
 
             numLeadingZeros = 0;
 
-            if(chars[start] == '-')
-            {
-                isNeg      = true;
+            if (chars[start] == '-') {
+                isNeg = true;
                 start++;
             }
-            else if(chars[start] == '+')
-            {
+            else if (chars[start] == '+') {
                 start++;
             }
 
-            for (var i = start; i < end; i++)
-            {
-                int  digit;
+            for (var i = start; i < end; i++) {
+                int digit;
                 var c = chars[i];
 
                 // switch statement is faster than subtracting '0'                
-                switch(c)
-                {
+                switch (c) {
                     case '0':
                         // update the number of leading zeros (used for normalizing)
-                        if((numLeadingZeros + start) == i)
-                        {
+                        if ((numLeadingZeros + start) == i) {
                             numLeadingZeros++;
                         }
                         digit = 0;
@@ -517,8 +487,7 @@ namespace System
 
         static private int GetBase64EncodedLength(int binaryLen) => (((binaryLen / 3) + (((binaryLen % 3) != 0) ? 1 : 0)) * 4);
 
-        public static bool UseRFC4648Encoding
-        {
+        public static bool UseRFC4648Encoding {
             get => s_rgchBase64Encoding == s_rgchBase64EncodingRFC4648; set => s_rgchBase64Encoding = (value ? s_rgchBase64EncodingRFC4648 : s_rgchBase64EncodingDefault);
         }
 
@@ -529,16 +498,16 @@ namespace System
         /// <returns>The String representation, in base 64, of the contents of inArray.</returns>
         public static string ToBase64String(byte[] inArray) => ToBase64String(inArray, 0, inArray.Length);
 
-        public static string ToBase64String(byte[] inArray, int offset, int length)
-        {
-            if (inArray == null)
-            {
+        public static string ToBase64String(byte[] inArray, int offset, int length) {
+            if (inArray == null) {
                 throw new ArgumentNullException();
             }
 
-            if(length == 0) return "";
+            if (length == 0)
+                return "";
 
-            if(offset + length > inArray.Length) throw new ArgumentOutOfRangeException();
+            if (offset + length > inArray.Length)
+                throw new ArgumentOutOfRangeException();
 
             // Create array of characters with appropriate length.
             var inArrayLen = length;
@@ -555,8 +524,7 @@ namespace System
             int iInput = offset, iOutput = 0;
             byte uc0 = 0, uc1 = 0, uc2 = 0;
             // Loop is for all trios except of last one.
-            for (; iInput < iInputEnd; iInput += CB_B64_OUT_TRIO, iOutput += CCH_B64_IN_QUARTET)
-            {
+            for (; iInput < iInputEnd; iInput += CB_B64_OUT_TRIO, iOutput += CCH_B64_IN_QUARTET) {
                 uc0 = inArray[iInput];
                 uc1 = inArray[iInput + 1];
                 uc2 = inArray[iInput + 2];
@@ -578,8 +546,7 @@ namespace System
             outArray[iOutput + 2] = s_rgchBase64Encoding[((uc1 << 2) & 0x3c) | ((uc2 >> 6) & 0x3)];
             outArray[iOutput + 3] = s_rgchBase64Encoding[uc2 & 0x3f];
 
-            switch (inArrayLen % CB_B64_OUT_TRIO)
-            {
+            switch (inArrayLen % CB_B64_OUT_TRIO) {
                 /*
                 ** One byte out of three, add padding and fall through
                 */
@@ -609,37 +576,32 @@ namespace System
         /// An arbitrary number of white space characters can appear in s because all white space characters are ignored.
         /// The valueless character, '=', is used for trailing padding. The end of s can consist of zero, one, or two padding characters.
         /// </remarks>
-        public static byte[] FromBase64String(string inString)
-        {
-            if (inString == null)
-            {
+        public static byte[] FromBase64String(string inString) {
+            if (inString == null) {
                 throw new ArgumentNullException();
             }
 
             var chArray = inString.ToCharArray();
-            
+
             return FromBase64CharArray(chArray, 0, chArray.Length);
         }
 
-        public static byte[] FromBase64CharArray(char[] inString, int offset, int length)
-        {
-            if(length == 0) return new byte[0];
+        public static byte[] FromBase64CharArray(char[] inString, int offset, int length) {
+            if (length == 0)
+                return new byte[0];
 
             // Checks that length of string is multiple of 4
             var inLength = length;
-            if (inLength % CCH_B64_IN_QUARTET != 0)
-            {
+            if (inLength % CCH_B64_IN_QUARTET != 0) {
                 throw new ArgumentException("Encoded string length should be multiple of 4");
             }
 
             // Maximum buffer size needed.
             var outCurPos = (((inLength + (CCH_B64_IN_QUARTET - 1)) / CCH_B64_IN_QUARTET) * CB_B64_OUT_TRIO);
-            if (inString[offset + inLength - 1] == '=')
-            {   // If the last was "=" - it means last byte was padded/
+            if (inString[offset + inLength - 1] == '=') {   // If the last was "=" - it means last byte was padded/
                 --outCurPos;
                 // If one more '=' - two bytes were actually padded.
-                if (inString[offset + inLength - 2] == '=')
-                {
+                if (inString[offset + inLength - 2] == '=') {
                     --outCurPos;
                 }
             }
@@ -651,17 +613,13 @@ namespace System
             // Loops over each 4 bytes quartet.
             for (var inCurPos = offset + inLength;
                  inCurPos > offset;
-                 inCurPos -= CCH_B64_IN_QUARTET)
-            {
+                 inCurPos -= CCH_B64_IN_QUARTET) {
                 var ibDest = 0;
-                for (; ibDest < CB_B64_OUT_TRIO + 1; ibDest++)
-                {
+                for (; ibDest < CB_B64_OUT_TRIO + 1; ibDest++) {
                     var ichGet = inCurPos + ibDest - CCH_B64_IN_QUARTET;
                     // Equal sign can be only at the end and maximum of 2
-                    if (inString[ichGet] == '=')
-                    {
-                        if (ibDest < 2 || inCurPos != (offset + inLength))
-                        {
+                    if (inString[ichGet] == '=') {
+                        if (ibDest < 2 || inCurPos != (offset + inLength)) {
                             throw new ArgumentException("Invalid base64 encoded string");
                         }
                         break;
@@ -672,8 +630,7 @@ namespace System
                 }
 
                 // Convert 4 bytes in rgbOutput, each having 6 bits into three bytes in final data.
-                switch (ibDest)
-                {
+                switch (ibDest) {
                     default:
                         retArray[--outCurPos] = (byte)(((rgbOutput[2] & 0x03) << 6) | rgbOutput[3]);
                         goto case 3;

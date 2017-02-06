@@ -1,14 +1,12 @@
 using GHIElectronics.TinyCLR.Devices.Internal;
 using System;
 
-namespace GHIElectronics.TinyCLR.Devices.I2c
-{
+namespace GHIElectronics.TinyCLR.Devices.I2c {
     /// <summary>
     /// Provides information about whether the data transfers that the ReadPartial, WritePartial, or WriteReadPartial
     /// method performed succeeded, and the actual number of bytes the method transferred.
     /// </summary>
-    public struct I2cTransferResult
-    {
+    public struct I2cTransferResult {
         /// <summary>
         /// An enumeration value that indicates if the read or write operation transferred the full number of bytes that
         /// the method requested, or the reason that the full transfer did not succeed. For WriteReadPartial, the value
@@ -26,8 +24,7 @@ namespace GHIElectronics.TinyCLR.Devices.I2c
     /// <summary>
     /// Represents a communications channel to a device on an inter-integrated circuit (I²C) bus.
     /// </summary>
-    public sealed class I2cDevice : IDisposable
-    {
+    public sealed class I2cDevice : IDisposable {
         // We need to share a single device between all instances, since it reserves the pins.
         private static object s_deviceLock = new object();
         private static int s_deviceRefs = 0;
@@ -47,25 +44,21 @@ namespace GHIElectronics.TinyCLR.Devices.I2c
         /// <param name="slaveAddress">The bus address of the I²C device. Only 7-bit addressing is supported, so the
         ///     range of valid values is from 8 to 119.</param>
         /// <param name="busSpeed"></param>
-        internal I2cDevice(string deviceId, I2cConnectionSettings settings)
-        {
+        internal I2cDevice(string deviceId, I2cConnectionSettings settings) {
             this.m_deviceId = deviceId.Substring(0, deviceId.Length);
             this.m_settings = new I2cConnectionSettings(settings);
 
 #pragma warning disable CS0219 // Variable is assigned but its value is never used
             var clockRateKhz = 100;
 #pragma warning restore CS0219 // Variable is assigned but its value is never used
-            if (settings.BusSpeed == I2cBusSpeed.FastMode)
-            {
+            if (settings.BusSpeed == I2cBusSpeed.FastMode) {
                 clockRateKhz = 400;
             }
 
             this.m_configuration = new I2CDevice.Configuration((ushort)settings.SlaveAddress, clockRateKhz);
 
-            lock (s_deviceLock)
-            {
-                if (s_device == null)
-                {
+            lock (s_deviceLock) {
+                if (s_device == null) {
                     s_device = new I2CDevice(this.m_configuration);
                 }
 
@@ -73,8 +66,7 @@ namespace GHIElectronics.TinyCLR.Devices.I2c
             }
         }
 
-        ~I2cDevice()
-        {
+        ~I2cDevice() {
             Dispose(false);
         }
 
@@ -125,16 +117,13 @@ namespace GHIElectronics.TinyCLR.Devices.I2c
         /// <param name="settings">The connection settings to use for communication with the I²C bus controller that
         ///     <paramref name="deviceId"/> specifies.</param>
         /// <returns>The I2cDevice object.</returns>
-        public static I2cDevice FromId(string deviceId, I2cConnectionSettings settings)
-        {
+        public static I2cDevice FromId(string deviceId, I2cConnectionSettings settings) {
             // FUTURE: This should should be "Task<I2cDevice> FromIdAsync(...)"
-            if ((settings.SlaveAddress < 0) || (settings.SlaveAddress > 127))
-            {
+            if ((settings.SlaveAddress < 0) || (settings.SlaveAddress > 127)) {
                 throw new ArgumentOutOfRangeException();
             }
 
-            if (deviceId != (s_I2cPrefix + "1"))
-            {
+            if (deviceId != (s_I2cPrefix + "1")) {
                 throw new InvalidOperationException();
             }
 
@@ -157,12 +146,9 @@ namespace GHIElectronics.TinyCLR.Devices.I2c
         ///     should not include the bus address.</param>
         /// <returns>A structure that contains information about the success of the write operation and the actual
         ///     number of bytes that the operation wrote into the buffer.</returns>
-        public I2cTransferResult WritePartial(byte[] buffer)
-        {
-            lock (this.m_syncLock)
-            {
-                if (this.m_disposed)
-                {
+        public I2cTransferResult WritePartial(byte[] buffer) {
+            lock (this.m_syncLock) {
+                if (this.m_disposed) {
                     throw new ObjectDisposedException();
                 }
 
@@ -187,12 +173,9 @@ namespace GHIElectronics.TinyCLR.Devices.I2c
         ///     buffer determines how much data to request from the device.</param>
         /// <returns>A structure that contains information about the success of the read operation and the actual number
         ///     of bytes that the operation read into the buffer.</returns>
-        public I2cTransferResult ReadPartial(byte[] buffer)
-        {
-            lock (this.m_syncLock)
-            {
-                if (this.m_disposed)
-                {
+        public I2cTransferResult ReadPartial(byte[] buffer) {
+            lock (this.m_syncLock) {
+                if (this.m_disposed) {
                     throw new ObjectDisposedException();
                 }
 
@@ -223,12 +206,9 @@ namespace GHIElectronics.TinyCLR.Devices.I2c
         /// <returns>A structure that contains information about whether both the read and write parts of the operation
         ///     succeeded and the sum of the actual number of bytes that the operation wrote and the actual number of
         ///     bytes that the operation read.</returns>
-        public I2cTransferResult WriteReadPartial(byte[] writeBuffer, byte[] readBuffer)
-        {
-            lock (this.m_syncLock)
-            {
-                if (this.m_disposed)
-                {
+        public I2cTransferResult WriteReadPartial(byte[] writeBuffer, byte[] readBuffer) {
+            lock (this.m_syncLock) {
+                if (this.m_disposed) {
                     throw new ObjectDisposedException();
                 }
 
@@ -242,12 +222,9 @@ namespace GHIElectronics.TinyCLR.Devices.I2c
         /// <summary>
         /// Closes the connection to the inter-integrated circuit (I2C) device.
         /// </summary>
-        public void Dispose()
-        {
-            lock (this.m_syncLock)
-            {
-                if (!this.m_disposed)
-                {
+        public void Dispose() {
+            lock (this.m_syncLock) {
+                if (!this.m_disposed) {
                     Dispose(true);
                     GC.SuppressFinalize(this);
                     this.m_disposed = true;
@@ -266,37 +243,31 @@ namespace GHIElectronics.TinyCLR.Devices.I2c
         /// <returns>A structure that contains information about whether both the read and write parts of the operation
         ///     succeeded and the sum of the actual number of bytes that the operation wrote and the actual number of
         ///     bytes that the operation read.</returns>
-        private I2cTransferResult ExecuteTransactions(I2CDevice.I2CTransaction[] transactions)
-        {
+        private I2cTransferResult ExecuteTransactions(I2CDevice.I2CTransaction[] transactions) {
             // FUTURE: Investigate how short we can make this timeout. UWP APIs should take no
             // longer than 15ms, but this is insufficient for micro-devices.
 
             const int transactionTimeoutMs = 1000;
 
             uint bytesRequested = 0;
-            foreach (var transaction in transactions)
-            {
+            foreach (var transaction in transactions) {
                 bytesRequested += (uint)transaction.Buffer.Length;
             }
 
             I2cTransferResult result;
 
-            lock (s_deviceLock)
-            {
+            lock (s_deviceLock) {
                 s_device.Config = this.m_configuration;
                 result.BytesTransferred = (uint)s_device.Execute(transactions, transactionTimeoutMs);
             }
 
-            if (result.BytesTransferred == bytesRequested)
-            {
+            if (result.BytesTransferred == bytesRequested) {
                 result.Status = I2cTransferStatus.FullTransfer;
             }
-            else if (result.BytesTransferred == 0)
-            {
+            else if (result.BytesTransferred == 0) {
                 result.Status = I2cTransferStatus.SlaveAddressNotAcknowledged;
             }
-            else
-            {
+            else {
                 result.Status = I2cTransferStatus.PartialTransfer;
             }
 
@@ -307,15 +278,11 @@ namespace GHIElectronics.TinyCLR.Devices.I2c
         /// Releases internal resources held by the device.
         /// </summary>
         /// <param name="disposing">True if called from Dispose, false if called from the finalizer.</param>
-        private void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                lock (s_deviceLock)
-                {
+        private void Dispose(bool disposing) {
+            if (disposing) {
+                lock (s_deviceLock) {
                     --s_deviceRefs;
-                    if ((s_deviceRefs == 0) && (s_device != null))
-                    {
+                    if ((s_deviceRefs == 0) && (s_device != null)) {
                         s_device.Dispose();
                         s_device = null;
                     }

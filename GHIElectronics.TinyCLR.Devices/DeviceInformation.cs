@@ -1,10 +1,7 @@
-using System;
 using System.Collections;
 
-namespace GHIElectronics.TinyCLR.Devices.Enumeration
-{
-    public sealed class DeviceInformation
-    {
+namespace GHIElectronics.TinyCLR.Devices.Enumeration {
+    public sealed class DeviceInformation {
         private string m_id;
         private bool m_isDefault;
 
@@ -13,8 +10,7 @@ namespace GHIElectronics.TinyCLR.Devices.Enumeration
         /// </summary>
         /// <param name="id">Unique identifier describing this device.</param>
         /// <param name="isDefault">Whether this is the default device for a given device class.</param>
-        internal DeviceInformation(string id, bool isDefault)
-        {
+        internal DeviceInformation(string id, bool isDefault) {
             this.m_id = id;
             this.m_isDefault = isDefault;
         }
@@ -49,8 +45,7 @@ namespace GHIElectronics.TinyCLR.Devices.Enumeration
         /// </summary>
         /// <param name="aqsFilter"></param>
         /// <returns>List of available DeviceInformation objects matching the given criteria..</returns>
-        public static DeviceInformation[] FindAll(string aqsFilter)
-        {
+        public static DeviceInformation[] FindAll(string aqsFilter) {
             // We don't support full AQS in the Micro Framework. Instead, we use a pre-set list of
             // hard-coded strings. These strings should be considered opaque, so developers should use
             // the GetDeviceSelector helpers to ensure future compatibility.
@@ -58,10 +53,8 @@ namespace GHIElectronics.TinyCLR.Devices.Enumeration
 
             // Find all I2C buses which contain the given prefix.
             var i2cBusNames = I2c.I2cDevice.GetValidBusNames();
-            for (var i = 0; i < i2cBusNames.Length; ++i)
-            {
-                if (i2cBusNames[i].IndexOf(aqsFilter) == 0)
-                {
+            for (var i = 0; i < i2cBusNames.Length; ++i) {
+                if (i2cBusNames[i].IndexOf(aqsFilter) == 0) {
                     // TODO: Issue #102: Determine whether this bus exists.
                     foundDevices.Add(new DeviceInformation(i2cBusNames[i], i == 0));
                 }
@@ -69,10 +62,8 @@ namespace GHIElectronics.TinyCLR.Devices.Enumeration
 
             // Find all SPI buses which contain the given prefix.
             var spiBusNames = Spi.SpiDevice.GetValidBusNames();
-            for (var i = 0; i < spiBusNames.Length; ++i)
-            {
-                if (spiBusNames[i].IndexOf(aqsFilter) == 0)
-                {
+            for (var i = 0; i < spiBusNames.Length; ++i) {
+                if (spiBusNames[i].IndexOf(aqsFilter) == 0) {
                     // TODO: Issue #102: Determine whether this bus exists.
                     foundDevices.Add(new DeviceInformation(spiBusNames[i], i == 0));
                 }

@@ -1,13 +1,11 @@
 using System;
 using System.Runtime.CompilerServices;
 
-namespace GHIElectronics.TinyCLR.Devices.Gpio
-{
+namespace GHIElectronics.TinyCLR.Devices.Gpio {
     /// <summary>
     /// Represents the default general-purpose I/O (GPIO) controller for the system.
     /// </summary>
-    public sealed class GpioController
-    {
+    public sealed class GpioController {
         private static GpioController s_instance = new GpioController();
 
         /// <summary>
@@ -16,8 +14,7 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio
         /// <value>The number of pins on the GPIO controller. Some pins may not be available in user mode. For
         ///     information about how the pin numbers correspond to physical pins, see the documentation for your
         ///     circuit board.</value>
-        extern public int PinCount
-        {
+        extern public int PinCount {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
             get;
         }
@@ -46,11 +43,9 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio
         /// <param name="sharingMode">The mode in which you want to open the GPIO pin, which determines whether other
         ///     connections to the pin can be opened while you have the pin open.</param>
         /// <returns>The opened GPIO pin.</returns>
-        public GpioPin OpenPin(int pinNumber, GpioSharingMode sharingMode)
-        {
+        public GpioPin OpenPin(int pinNumber, GpioSharingMode sharingMode) {
             var pin = new GpioPin();
-            if (!pin.Init(pinNumber))
-            {
+            if (!pin.Init(pinNumber)) {
                 throw new InvalidOperationException();
             }
 
@@ -70,11 +65,9 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio
         /// <param name="openStatus">An enumeration value that indicates either that the attempt to open the GPIO pin
         ///     succeeded, or the reason that the attempt to open the GPIO pin failed.</param>
         /// <returns>True if the pin could be opened; otherwise false.</returns>
-        public bool TryOpenPin(int pinNumber, GpioSharingMode sharingMode, out GpioPin pin, out GpioOpenStatus openStatus)
-        {
+        public bool TryOpenPin(int pinNumber, GpioSharingMode sharingMode, out GpioPin pin, out GpioOpenStatus openStatus) {
             var newPin = new GpioPin();
-            if (!newPin.Init(pinNumber))
-            {
+            if (!newPin.Init(pinNumber)) {
                 pin = null;
                 openStatus = GpioOpenStatus.PinUnavailable;
                 return true;

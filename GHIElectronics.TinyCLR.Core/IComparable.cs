@@ -1,10 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////namespace System
-namespace System
-{
-
-    using System;
+namespace System {
     /**
      * The <i>IComparable</i> interface is implemented by classes that support an
      * <i>ordering</i> of instances of the class. The ordering represented by
@@ -17,8 +14,7 @@ namespace System
      * @see System.List#BinarySearch
      * @see System.SortedList
      */
-    public interface IComparable
-    {
+    public interface IComparable {
         // Interface does not need to be marked with the serializable attribute
         /**
          * Compares this object to another object, returning an integer that

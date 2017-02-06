@@ -4,10 +4,8 @@
 
 using System.Runtime.CompilerServices;
 
-namespace System.Text
-{
-    internal class UTF8Decoder : Decoder
-    {
+namespace System.Text {
+    internal class UTF8Decoder : Decoder {
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public override extern void Convert(byte[] bytes, int byteIndex, int byteCount,
             char[] chars, int charIndex, int charCount, bool flush,

@@ -1,23 +1,18 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-namespace System.Collections
-{
-
-    using System;
+namespace System.Collections {
     /**
      * An IList is an ordered collection of objects.  The exact ordering
      * is up to the implementation of the list, ranging from a sorted
      * order to insertion order.
      */
-    public interface IList : ICollection
-    {
+    public interface IList : ICollection {
         // Interfaces are not serializable
         /**
          * The Item property provides methods to read and edit entries in the List.
          */
-        object this[int index]
-        {
+        object this[int index] {
             get;
             set;
         }
@@ -40,11 +35,9 @@ namespace System.Collections
          */
         void Clear();
 
-        bool IsReadOnly
-        { get; }
+        bool IsReadOnly { get; }
 
-        bool IsFixedSize
-        {
+        bool IsFixedSize {
             get;
         }
 

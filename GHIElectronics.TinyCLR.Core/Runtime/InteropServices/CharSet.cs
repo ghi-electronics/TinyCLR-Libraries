@@ -1,8 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////namespace System.Runtime.InteropServices
-namespace System.Runtime.InteropServices
-{
+namespace System.Runtime.InteropServices {
     using System;
     /**
      * Use this in P/Direct function prototypes to specify
@@ -13,8 +12,7 @@ namespace System.Runtime.InteropServices
      * right thing 99% of the time.
      */
     [Serializable]
-    public enum CharSet
-    {
+    public enum CharSet {
         None = 1,       // User didn't specify how to marshal strings.
         Ansi = 2,       // Strings should be marshalled as ANSI 1 byte chars.
         Unicode = 3,    // Strings should be marshalled as Unicode 2 byte chars.

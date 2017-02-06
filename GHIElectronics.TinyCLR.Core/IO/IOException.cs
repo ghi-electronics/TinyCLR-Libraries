@@ -1,16 +1,12 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-using System;
 
-namespace System.IO
-{
+namespace System.IO {
 
     [Serializable]
-    public class IOException : SystemException
-    {
-        public enum IOExceptionErrorCode : int
-        {
+    public class IOException : SystemException {
+        public enum IOExceptionErrorCode : int {
             Others = unchecked((int)0xE0000000), // CLR_E_FILE_IO
             InvalidDriver = unchecked((int)0xE1000000), // CLR_E_INVALID_DRIVER
             FileNotFound = unchecked((int)0xE2000000), // CLR_E_FILE_NOT_FOUND
@@ -24,21 +20,18 @@ namespace System.IO
         }
 
         public IOException()
-            : base()
-        {
+            : base() {
         }
 
         public IOException(string message)
-            : base(message)
-        {
+            : base(message) {
         }
 
         public IOException(string message, int hresult)
             : base(message) => this.m_HResult = hresult;
 
         public IOException(string message, Exception innerException)
-            : base(message, innerException)
-        {
+            : base(message, innerException) {
         }
 
         public IOExceptionErrorCode ErrorCode => (IOExceptionErrorCode)this.m_HResult;

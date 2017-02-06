@@ -1,13 +1,10 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-namespace System
-{
+namespace System {
     //This class contains only static members and doesn't require serialization.
-    using System;
     using System.Runtime.CompilerServices;
-    public static class Math
-    {
+    public static class Math {
         // Public Constants
 
         // Summary:
@@ -193,7 +190,7 @@ namespace System
         //     is returned.
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public static extern double IEEERemainder(double x, double y);
-         //
+        //
         // Summary:
         //     Returns e raised to the specified power.
         //
@@ -222,7 +219,7 @@ namespace System
         //     is returned.
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public static extern double Floor(double d);
-        
+
         //
         // Summary:
         //     Returns the natural (base e) logarithm of a specified number.

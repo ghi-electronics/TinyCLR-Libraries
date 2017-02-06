@@ -2,14 +2,11 @@
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////#define ENABLE_CROSS_APPDOMAIN
 #define ENABLE_CROSS_APPDOMAIN
-namespace System.Globalization
-{
+namespace System.Globalization {
     using System;
-    using System.Threading;
     using System.Collections;
-    using System.Runtime.CompilerServices;
-    using System.Reflection;
     using System.Resources;
+    using System.Runtime.CompilerServices;
     public class CultureInfo /*: ICloneable , IFormatProvider*/ {
         internal NumberFormatInfo numInfo = null;
         internal DateTimeFormatInfo dateTimeInfo = null;
@@ -18,20 +15,16 @@ namespace System.Globalization
         [NonSerialized]
         private CultureInfo m_parent;
         const string c_ResourceBase = "System.Globalization.Resources.CultureInfo";
-        internal string EnsureStringResource(ref string str, System.Globalization.Resources.CultureInfo.StringResources id)
-        {
-            if (str == null)
-            {
+        internal string EnsureStringResource(ref string str, System.Globalization.Resources.CultureInfo.StringResources id) {
+            if (str == null) {
                 str = (string)ResourceManager.GetObject(this.m_rm, id);
             }
 
             return str;
         }
 
-        internal string[] EnsureStringArrayResource(ref string[] strArray, System.Globalization.Resources.CultureInfo.StringResources id)
-        {
-            if (strArray == null)
-            {
+        internal string[] EnsureStringArrayResource(ref string[] strArray, System.Globalization.Resources.CultureInfo.StringResources id) {
+            if (strArray == null) {
                 var str = (string)ResourceManager.GetObject(this.m_rm, id);
                 strArray = str.Split('|');
             }
@@ -39,10 +32,8 @@ namespace System.Globalization
             return (string[])strArray.Clone();
         }
 
-        public CultureInfo(string name)
-        {
-            if (name == null)
-            {
+        public CultureInfo(string name) {
+            if (name == null) {
                 throw new ArgumentNullException("name");
             }
 
@@ -50,20 +41,16 @@ namespace System.Globalization
             this.m_name = this.m_rm.m_cultureName;
         }
 
-        internal CultureInfo(ResourceManager resourceManager)
-        {
+        internal CultureInfo(ResourceManager resourceManager) {
             this.m_rm = resourceManager;
             this.m_name = resourceManager.m_cultureName;
         }
 
-        public static CultureInfo CurrentUICulture
-        {
-            get
-            {
+        public static CultureInfo CurrentUICulture {
+            get {
                 //only one system-wide culture.  We do not currently support per-thread cultures
                 var culture = CurrentUICultureInternal;
-                if (culture == null)
-                {
+                if (culture == null) {
                     culture = new CultureInfo("");
                     CurrentUICultureInternal = culture;
                 }
@@ -73,34 +60,27 @@ namespace System.Globalization
             set => CurrentUICultureInternal = value ?? throw new ArgumentNullException();
         }
 
-        private extern static CultureInfo CurrentUICultureInternal
-        {
+        private extern static CultureInfo CurrentUICultureInternal {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
             get;
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
             set;
         }
 
-        public virtual CultureInfo Parent
-        {
-            get
-            {
-                if (this.m_parent == null)
-                {
+        public virtual CultureInfo Parent {
+            get {
+                if (this.m_parent == null) {
                     if (this.m_name == "") //Invariant culture
                     {
                         this.m_parent = this;
                     }
-                    else
-                    {
+                    else {
                         var parentName = this.m_name;
                         var iDash = this.m_name.LastIndexOf('-');
-                        if (iDash >= 0)
-                        {
+                        if (iDash >= 0) {
                             parentName = parentName.Substring(0, iDash);
                         }
-                        else
-                        {
+                        else {
                             parentName = "";
                         }
 
@@ -112,31 +92,25 @@ namespace System.Globalization
             }
         }
 
-        public static CultureInfo[] GetCultures(CultureTypes types)
-        {
+        public static CultureInfo[] GetCultures(CultureTypes types) {
             var listCultures = new ArrayList();
             //Look for all assemblies/satellite assemblies
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-            for (var iAssembly = 0; iAssembly < assemblies.Length; iAssembly++)
-            {
+            for (var iAssembly = 0; iAssembly < assemblies.Length; iAssembly++) {
                 var assembly = assemblies[iAssembly];
                 var mscorlib = "GHIElectronics.TinyCLR.Core";
                 var fullName = assembly.FullName;
                 // consider adding startswith ?
-                if ((mscorlib.Length <= fullName.Length) && (fullName.Substring(0, mscorlib.Length) == mscorlib))
-                {
+                if ((mscorlib.Length <= fullName.Length) && (fullName.Substring(0, mscorlib.Length) == mscorlib)) {
                     var resources = assembly.GetManifestResourceNames();
-                    for (var iResource = 0; iResource < resources.Length; iResource++)
-                    {
+                    for (var iResource = 0; iResource < resources.Length; iResource++) {
                         var resource = resources[iResource];
                         var ciResource = c_ResourceBase;
-                        if (ciResource.Length < resource.Length && resource.Substring(0, ciResource.Length) == ciResource)
-                        {
+                        if (ciResource.Length < resource.Length && resource.Substring(0, ciResource.Length) == ciResource) {
                             //System.Globalization.Resources.CultureInfo.<culture>.tinyresources
                             var cultureName = resource.Substring(ciResource.Length, resource.Length - ciResource.Length - System.Resources.ResourceManager.s_fileExtension.Length);
                             // remove the leading "."
-                            if (cultureName != "")
-                            {
+                            if (cultureName != "") {
                                 cultureName = cultureName.Substring(1, cultureName.Length - 1);
                             }
 
@@ -213,8 +187,7 @@ namespace System.Globalization
         public virtual NumberFormatInfo NumberFormat {
             get {
 
-                if(this.numInfo == null)
-                {
+                if (this.numInfo == null) {
                     this.numInfo = new NumberFormatInfo(this);
                 }
 
@@ -222,12 +195,9 @@ namespace System.Globalization
             }
         }
 
-        public virtual DateTimeFormatInfo DateTimeFormat
-        {
-            get
-            {
-                if (this.dateTimeInfo == null)
-                {
+        public virtual DateTimeFormatInfo DateTimeFormat {
+            get {
+                if (this.dateTimeInfo == null) {
                     this.dateTimeInfo = new DateTimeFormatInfo(this);
                 }
 

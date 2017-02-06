@@ -1,26 +1,19 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////namespace System
-namespace System
-{
-
-    using System;
+namespace System {
     [Serializable()]
-    public class SystemException : Exception
-    {
+    public class SystemException : Exception {
         public SystemException()
-            : base()
-        {
+            : base() {
         }
 
         public SystemException(string message)
-            : base(message)
-        {
+            : base(message) {
         }
 
         public SystemException(string message, Exception innerException)
-            : base(message, innerException)
-        {
+            : base(message, innerException) {
         }
 
     }

@@ -1,8 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////namespace System.Runtime.CompilerServices
-namespace System.Runtime.CompilerServices
-{
+namespace System.Runtime.CompilerServices {
 
     using System;
 
@@ -11,8 +10,7 @@ namespace System.Runtime.CompilerServices
      */
 
     [Serializable]
-    public enum MethodImplOptions
-    {
+    public enum MethodImplOptions {
         Unmanaged = System.Reflection.MethodImplAttributes.Unmanaged,
         ForwardRef = System.Reflection.MethodImplAttributes.ForwardRef,
         PreserveSig = System.Reflection.MethodImplAttributes.PreserveSig,
@@ -22,8 +20,7 @@ namespace System.Runtime.CompilerServices
     }
 
     [Serializable]
-    public enum MethodCodeType
-    {
+    public enum MethodCodeType {
         IL = System.Reflection.MethodImplAttributes.IL,
         Native = System.Reflection.MethodImplAttributes.Native,
         /// <internalonly/>
@@ -34,8 +31,7 @@ namespace System.Runtime.CompilerServices
     /** Custom attribute to specify additional method properties.
      */
     [Serializable, AttributeUsage(AttributeTargets.Method | AttributeTargets.Constructor, Inherited = false)]
-    sealed public class MethodImplAttribute : Attribute
-    {
+    sealed public class MethodImplAttribute : Attribute {
         internal MethodImplOptions _val;
         public MethodCodeType MethodCodeType;
 
@@ -43,8 +39,7 @@ namespace System.Runtime.CompilerServices
 
         public MethodImplAttribute(short value) => this._val = (MethodImplOptions)value;
 
-        public MethodImplAttribute()
-        {
+        public MethodImplAttribute() {
         }
 
         public MethodImplOptions Value => this._val;

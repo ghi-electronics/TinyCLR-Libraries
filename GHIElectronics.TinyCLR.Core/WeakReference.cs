@@ -1,27 +1,20 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-namespace System
-{
-
-    using System;
+namespace System {
     using System.Runtime.CompilerServices;
-    using System.Threading;
     [Serializable()]
-    public class WeakReference
-    {
+    public class WeakReference {
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public extern WeakReference(object target);
 
-        public extern virtual bool IsAlive
-        {
+        public extern virtual bool IsAlive {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
             get;
         }
 
-        public extern virtual object Target
-        {
+        public extern virtual object Target {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
             get;
 

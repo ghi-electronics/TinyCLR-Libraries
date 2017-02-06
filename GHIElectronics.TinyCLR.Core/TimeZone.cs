@@ -1,15 +1,12 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////namespace System
-namespace System
-{
-    using System;
-    using System.Runtime.CompilerServices;
+namespace System {
     using System.Globalization;
+    using System.Runtime.CompilerServices;
 
     [Serializable]
-    public abstract class TimeZone
-    {
+    public abstract class TimeZone {
 #pragma warning disable 0649
         internal int m_id;
 #pragma warning restore
@@ -18,28 +15,24 @@ namespace System
 
         public static TimeZone CurrentTimeZone => new CurrentSystemTimeZone(GetTimeZoneOffset());
 
-        public abstract string StandardName
-        {
+        public abstract string StandardName {
             get;
         }
 
-        public abstract string DaylightName
-        {
+        public abstract string DaylightName {
             get;
         }
 
         public abstract TimeSpan GetUtcOffset(DateTime time);
 
-        public virtual DateTime ToUniversalTime(DateTime time)
-        {
+        public virtual DateTime ToUniversalTime(DateTime time) {
             if (time.Kind == DateTimeKind.Utc)
                 return time;
 
             return new DateTime(time.Ticks - GetTimeZoneOffset(), DateTimeKind.Utc);
         }
 
-        public virtual DateTime ToLocalTime(DateTime time)
-        {
+        public virtual DateTime ToLocalTime(DateTime time) {
             if (time.Kind == DateTimeKind.Local)
                 return time;
 
@@ -55,12 +48,10 @@ namespace System
     }
 
     [Serializable]
-    internal class CurrentSystemTimeZone : TimeZone
-    {
+    internal class CurrentSystemTimeZone : TimeZone {
         protected long m_ticksOffset = 0;
 
-        internal CurrentSystemTimeZone()
-        {
+        internal CurrentSystemTimeZone() {
         }
 
         internal CurrentSystemTimeZone(long ticksOffset) => this.m_ticksOffset = ticksOffset;
@@ -71,8 +62,7 @@ namespace System
 
         public override DaylightTime GetDaylightChanges(int year) => throw new NotImplementedException();
 
-        public override TimeSpan GetUtcOffset(DateTime time)
-        {
+        public override TimeSpan GetUtcOffset(DateTime time) {
             if (time.Kind == DateTimeKind.Utc)
                 return TimeSpan.Zero;
 

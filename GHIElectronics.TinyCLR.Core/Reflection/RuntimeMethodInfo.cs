@@ -1,8 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////namespace System.Reflection
-namespace System.Reflection
-{
+namespace System.Reflection {
 
     using System;
     using System.Runtime.CompilerServices;
@@ -10,10 +9,8 @@ namespace System.Reflection
     // This is defined to support VarArgs
     //typedef ArgIterator  va_list;
     [Serializable()]
-    internal sealed class RuntimeMethodInfo : MethodInfo
-    {
-        public extern override Type ReturnType
-        {
+    internal sealed class RuntimeMethodInfo : MethodInfo {
+        public extern override Type ReturnType {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
             get;
         }

@@ -1,41 +1,33 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////namespace System
-namespace System
-{
-
-    using System;
+namespace System {
     using System.Reflection;
     using System.Runtime.CompilerServices;
 
     [Serializable()]
-    internal sealed class RuntimeType : Type
-    {
+    internal sealed class RuntimeType : Type {
 
         public override MemberTypes MemberType => (this.DeclaringType != null) ? MemberTypes.NestedType : MemberTypes.TypeInfo;
 
-        public extern override Assembly Assembly
-        {
+        public extern override Assembly Assembly {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
             get;
         }
 
-        public extern override string Name
-        {
+        public extern override string Name {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
             get;
         }
 
-        public extern override string FullName
-        {
+        public extern override string FullName {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
             get;
         }
 
         public override string AssemblyQualifiedName => this.FullName + ", " + this.Assembly.FullName;
 
-        public extern override Type BaseType
-        {
+        public extern override Type BaseType {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
             get;
         }

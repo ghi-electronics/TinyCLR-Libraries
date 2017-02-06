@@ -1,33 +1,26 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-namespace System
-{
-
-    using System;
+namespace System {
     // The ArgumentOutOfRangeException is thrown when an argument
     // is outside the legal range for that argument.  This may often be caused
     // by
     //
     [Serializable()]
-    public class ArgumentOutOfRangeException : ArgumentException
-    {
+    public class ArgumentOutOfRangeException : ArgumentException {
 
         // Creates a new ArgumentOutOfRangeException with its message
         // string set to a default message explaining an argument was out of range.
         public ArgumentOutOfRangeException()
-            : this(null)
-        {
+            : this(null) {
         }
 
         public ArgumentOutOfRangeException(string paramName)
-            : base(null, paramName)
-        {
+            : base(null, paramName) {
         }
 
         public ArgumentOutOfRangeException(string paramName, string message)
-            : base(message, paramName)
-        {
+            : base(message, paramName) {
         }
 
         // We will not use this in the classlibs, but we'll provide it for

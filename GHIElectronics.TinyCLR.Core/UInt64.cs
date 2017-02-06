@@ -1,18 +1,14 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-namespace System
-{
-    using System;
-    using System.Runtime.CompilerServices;
+namespace System {
     using System.Globalization;
 
     /**
      * Wrapper for unsigned 64 bit integers.
      */
     [Serializable, CLSCompliant(false)]
-    public struct UInt64
-    {
+    public struct UInt64 {
         private ulong m_value;
 
         public const ulong MaxValue = (ulong)0xffffffffffffffffL;
@@ -23,10 +19,8 @@ namespace System
         public string ToString(string format) => Number.Format(this.m_value, true, format, NumberFormatInfo.CurrentInfo);
 
         [CLSCompliant(false)]
-        public static ulong Parse(string s)
-        {
-            if (s == null)
-            {
+        public static ulong Parse(string s) {
+            if (s == null) {
                 throw new ArgumentNullException();
             }
 

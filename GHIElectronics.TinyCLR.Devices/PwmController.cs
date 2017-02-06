@@ -1,10 +1,8 @@
-using System;
 using GHIElectronics.TinyCLR.Devices.Pwm.Provider;
+using System;
 
-namespace GHIElectronics.TinyCLR.Devices.Pwm
-{
-    public sealed class PwmController
-    {
+namespace GHIElectronics.TinyCLR.Devices.Pwm {
+    public sealed class PwmController {
         private IPwmControllerProvider m_provider;
         private static PwmController instance;
 
@@ -20,35 +18,29 @@ namespace GHIElectronics.TinyCLR.Devices.Pwm
 
         public static PwmController GetDefault() => PwmController.instance ?? (PwmController.instance = new PwmController(new DefaultPwmControllerProvider()));
 
-        public static PwmController[] GetControllers(IPwmProvider provider)
-        {
+        public static PwmController[] GetControllers(IPwmProvider provider) {
             // FUTURE: This should return "Task<IReadOnlyList<PwmController>>"
 
             var providers = provider.GetControllers();
             var controllers = new PwmController[providers.Length];
 
-            for (var i = 0; i < providers.Length; ++i)
-            {
+            for (var i = 0; i < providers.Length; ++i) {
                 controllers[i] = new PwmController(providers[i]);
             }
 
             return controllers;
         }
 
-        public double SetDesiredFrequency(double desiredFrequency)
-        {
-            if ((desiredFrequency < this.m_provider.MinFrequency) || (desiredFrequency > this.m_provider.MaxFrequency))
-            {
+        public double SetDesiredFrequency(double desiredFrequency) {
+            if ((desiredFrequency < this.m_provider.MinFrequency) || (desiredFrequency > this.m_provider.MaxFrequency)) {
                 throw new ArgumentOutOfRangeException();
             }
 
             return this.m_provider.SetDesiredFrequency(desiredFrequency);
         }
 
-        public PwmPin OpenPin(int pinNumber)
-        {
-            if ((pinNumber < 0) || (pinNumber >= this.m_provider.PinCount))
-            {
+        public PwmPin OpenPin(int pinNumber) {
+            if ((pinNumber < 0) || (pinNumber >= this.m_provider.PinCount)) {
                 throw new ArgumentOutOfRangeException();
             }
 

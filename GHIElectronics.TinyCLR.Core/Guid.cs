@@ -1,12 +1,10 @@
 
-namespace System
-{
+namespace System {
     [Serializable]
-    public struct Guid
-    {
+    public struct Guid {
         internal int[] m_data;
 
-        
+
         private static Random m_rand = new Random();
 
         /// <summary>
@@ -28,8 +26,7 @@ namespace System
         /// <param name="i">The next byte of the Guid.</param>
         /// <param name="j">The next byte of the Guid.</param>
         /// <param name="k">The next byte of the Guid.</param>
-        public Guid(int a, short b, short c, byte d, byte e, byte f, byte g, byte h, byte i, byte j, byte k)
-        {
+        public Guid(int a, short b, short c, byte d, byte e, byte f, byte g, byte h, byte i, byte j, byte k) {
             this.m_data = new int[4];
 
             this.m_data[0] = a;
@@ -53,8 +50,7 @@ namespace System
         /// <param name="j">The next byte of the Guid.</param>
         /// <param name="k">The next byte of the Guid.</param>
         [CLSCompliant(false)]
-        public Guid(uint a, ushort b, ushort c, byte d, byte e, byte f, byte g, byte h, byte i, byte j, byte k)
-        {
+        public Guid(uint a, ushort b, ushort c, byte d, byte e, byte f, byte g, byte h, byte i, byte j, byte k) {
             this.m_data = new int[4];
 
             this.m_data[0] = (int)a;
@@ -67,23 +63,19 @@ namespace System
         /// Initializes an instance of the Guid class
         /// </summary>
         /// <param name="b">A 16 element byte array containing the values with which to initialize the Guid.</param>
-        public Guid(byte[] b)
-        {
-            if (b == null)
-            {
+        public Guid(byte[] b) {
+            if (b == null) {
                 throw new ArgumentNullException();
             }
 
-            if (b.Length != 16)
-            {
+            if (b.Length != 16) {
                 throw new ArgumentException();
             }
 
             this.m_data = new int[4];
 
             var i = 0;
-            for (var j = 0; j < 4; j++)
-            {
+            for (var j = 0; j < 4; j++) {
                 this.m_data[j] = b[i] | (b[i + 1] | (b[i + 2] | b[i + 3] << 8) << 8) << 8;
                 i += 4;
             }
@@ -94,23 +86,18 @@ namespace System
         /// </summary>
         /// <param name="value">Guid instance to compare, or null.</param>
         /// <returns>Indication of the relative values (0 = equal, -1 = this instance less, +1 = this instance greater)</returns>
-        public int CompareTo(object value)
-        {
-            if (value == null)
-            {
+        public int CompareTo(object value) {
+            if (value == null) {
                 return 1;
             }
 
-            if (!(value is Guid))
-            {
+            if (!(value is Guid)) {
                 throw new ArgumentException();
             }
 
             var other = ((Guid)value).m_data;
-            for (var i = 0; i < 4; i++)
-            {
-                if (this.m_data[i] != other[i])
-                {
+            for (var i = 0; i < 4; i++) {
+                if (this.m_data[i] != other[i]) {
                     return this.m_data[i] - other[i];
                 }
             }
@@ -122,16 +109,13 @@ namespace System
         /// Gets the instance value as a byte array
         /// </summary>
         /// <returns>16 element byte array containing the value of the Guid instance.</returns>
-        public byte[] ToByteArray()
-        {
+        public byte[] ToByteArray() {
             var buffer = new byte[16];
 
             var index = 0;
-            for (var i = 0; i < 4; i++)
-            {
+            for (var i = 0; i < 4; i++) {
                 var value = this.m_data[i];
-                for (var j = 0; j < 4; j++)
-                {
+                for (var j = 0; j < 4; j++) {
                     buffer[index++] = (byte)(value & 0xFF);
                     value = value >> 8;
                 }
@@ -140,8 +124,7 @@ namespace System
             return buffer;
         }
 
-        public override string ToString()
-        {
+        public override string ToString() {
             // registry format is 08B03E06-01A8-4cd9-9971-ED45E2E84A53
 
             if (this.m_data == null)
@@ -153,37 +136,32 @@ namespace System
 
             int i = -1, j;
 
-            for (j = 3; j >= 0; --j)
-            {
+            for (j = 3; j >= 0; --j) {
                 chars[++i] = HexToChar((bytes[j] & 0xF0) >> 4);
                 chars[++i] = HexToChar((bytes[j] & 0x0F));
             }
 
             chars[++i] = '-';
-            for (j = 5; j >= 4; --j)
-            {
+            for (j = 5; j >= 4; --j) {
                 chars[++i] = HexToChar((bytes[j] & 0xF0) >> 4);
                 chars[++i] = HexToChar((bytes[j] & 0x0F));
             }
 
             chars[++i] = '-';
-            for (j = 7; j >= 6; --j)
-            {
+            for (j = 7; j >= 6; --j) {
                 chars[++i] = HexToChar((bytes[j] & 0xF0) >> 4);
                 chars[++i] = HexToChar((bytes[j] & 0x0F));
             }
 
             chars[++i] = '-';
 
-            for (j = 8; j <= 9; ++j)
-            {
+            for (j = 8; j <= 9; ++j) {
                 chars[++i] = HexToChar((bytes[j] & 0xF0) >> 4);
                 chars[++i] = HexToChar((bytes[j] & 0x0F));
             }
 
             chars[++i] = '-';
-            for (j = 10; j <= 15; ++j)
-            {
+            for (j = 10; j <= 15; ++j) {
                 chars[++i] = HexToChar((bytes[j] & 0xF0) >> 4);
                 chars[++i] = HexToChar((bytes[j] & 0x0F));
             }
@@ -194,10 +172,8 @@ namespace System
         /// <summary>
         /// Overriden. Compares this instance to another Guid and returns whether they are equal or not.
         /// </summary>
-        public override bool Equals(object obj)
-        {
-            if (!(obj is Guid))
-            {
+        public override bool Equals(object obj) {
+            if (!(obj is Guid)) {
                 return false;
             }
 
@@ -213,8 +189,7 @@ namespace System
 
         //--//
 
-        public static Guid NewGuid()
-        {
+        public static Guid NewGuid() {
             var newGuid = new Guid() {
                 m_data = new int[4]
             };

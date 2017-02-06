@@ -1,9 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////namespace System.Reflection
-namespace System.Reflection
-{
-    using System.Runtime.CompilerServices;
+namespace System.Reflection {
     ////////////////////////////////////////////////////////////////////////////////
     //   Method is the class which represents a Method. These are accessed from
     //   Class through getMethods() or getMethod(). This class contains information
@@ -11,35 +9,30 @@ namespace System.Reflection
     //   on an instance.
     ////////////////////////////////////////////////////////////////////////////////
     using System;
+    using System.Runtime.CompilerServices;
     [Serializable()]
-    public abstract class MethodBase : MemberInfo
-    {
-        public extern bool IsPublic
-        {
+    public abstract class MethodBase : MemberInfo {
+        public extern bool IsPublic {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
             get;
         }
 
-        public extern bool IsStatic
-        {
+        public extern bool IsStatic {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
             get;
         }
 
-        public extern bool IsFinal
-        {
+        public extern bool IsFinal {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
             get;
         }
 
-        public extern bool IsVirtual
-        {
+        public extern bool IsVirtual {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
             get;
         }
 
-        public extern bool IsAbstract
-        {
+        public extern bool IsAbstract {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
             get;
         }
@@ -48,14 +41,12 @@ namespace System.Reflection
         [Diagnostics.DebuggerHidden]
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public extern object Invoke(object obj, object[] parameters);
-        public extern override string Name
-        {
+        public extern override string Name {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
             get;
         }
 
-        public extern override Type DeclaringType
-        {
+        public extern override Type DeclaringType {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
             get;
         }

@@ -31,8 +31,10 @@ namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
         public static string GetDeviceSelector(string portName) => string.Empty + portName;
         public static string GetDeviceSelectorFromUsbVidPid(ushort vendorId, ushort productId) => throw new NotSupportedException();
         public static SerialDevice FromId(string deviceId) {
-            if (deviceId == null) throw new ArgumentNullException(nameof(deviceId));
-            if (deviceId.Length < 4 || deviceId.ToUpper().IndexOf("COM") != 0 || deviceId[3] == '0') throw new ArgumentException("Invalid COM port.", nameof(deviceId));
+            if (deviceId == null)
+                throw new ArgumentNullException(nameof(deviceId));
+            if (deviceId.Length < 4 || deviceId.ToUpper().IndexOf("COM") != 0 || deviceId[3] == '0')
+                throw new ArgumentException("Invalid COM port.", nameof(deviceId));
 
             try {
                 uint.Parse(deviceId.Substring(3));
@@ -100,10 +102,14 @@ namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
             }
 
             public uint Read(IBuffer buffer, uint count, InputStreamOptions options) {
-                if (buffer == null) throw new ArgumentNullException(nameof(buffer));
-                if (count > buffer.Capacity) throw new InvalidOperationException($"{nameof(count)} is more than the capacity of {nameof(buffer)}.");
-                if (this.parent.disposed) throw new ObjectDisposedException();
-                if (options != InputStreamOptions.None) throw new NotSupportedException($"{nameof(options)} is not supported.");
+                if (buffer == null)
+                    throw new ArgumentNullException(nameof(buffer));
+                if (count > buffer.Capacity)
+                    throw new InvalidOperationException($"{nameof(count)} is more than the capacity of {nameof(buffer)}.");
+                if (this.parent.disposed)
+                    throw new ObjectDisposedException();
+                if (options != InputStreamOptions.None)
+                    throw new NotSupportedException($"{nameof(options)} is not supported.");
 
                 this.Open();
 
@@ -111,8 +117,10 @@ namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
             }
 
             public uint Write(IBuffer buffer) {
-                if (buffer == null) throw new ArgumentNullException(nameof(buffer));
-                if (this.parent.disposed) throw new ObjectDisposedException();
+                if (buffer == null)
+                    throw new ArgumentNullException(nameof(buffer));
+                if (this.parent.disposed)
+                    throw new ObjectDisposedException();
 
                 this.Open();
 

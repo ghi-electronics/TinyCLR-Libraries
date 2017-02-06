@@ -1,14 +1,12 @@
 using System;
 using System.Runtime.CompilerServices;
 
-namespace GHIElectronics.TinyCLR.Devices.Spi
-{
+namespace GHIElectronics.TinyCLR.Devices.Spi {
     // warning CS0414: The field 'Windows.Devices.Spi.SpiDevice.xxx' is assigned but its value is never used
     //                 - These are all used in native code methods.
-    #pragma warning disable 0414
+#pragma warning disable 0414
 
-    public sealed class SpiDevice : IDisposable
-    {
+    public sealed class SpiDevice : IDisposable {
         private static string s_SpiPrefix = "SPI";
 
         private readonly string m_deviceId;
@@ -25,36 +23,31 @@ namespace GHIElectronics.TinyCLR.Devices.Spi
         /// </summary>
         /// <param name="deviceId">The unique name of the device.</param>
         /// <param name="settings">Settings to open the device with.</param>
-        internal SpiDevice( string deviceId, SpiConnectionSettings settings )
-        {
+        internal SpiDevice(string deviceId, SpiConnectionSettings settings) {
             // Device ID must match the index in device information.
             // We don't have many buses, so just hard-code the valid ones instead of parsing.
-            this.m_spiBus = GetBusNum( deviceId );
-            this.m_deviceId = deviceId.Substring( 0 );
-            this.m_settings = new SpiConnectionSettings( settings );
+            this.m_spiBus = GetBusNum(deviceId);
+            this.m_deviceId = deviceId.Substring(0);
+            this.m_settings = new SpiConnectionSettings(settings);
 
-            InitNative( );
+            InitNative();
         }
 
-        ~SpiDevice( )
-        {
-            Dispose( false );
+        ~SpiDevice() {
+            Dispose(false);
         }
 
         /// <summary>
         /// Gets the unique ID associated with the device.
         /// </summary>
         /// <value>The ID.</value>
-        public string DeviceId
-        {
-            get
-            {
-                if(this.m_disposed )
-                {
-                    throw new ObjectDisposedException( );
+        public string DeviceId {
+            get {
+                if (this.m_disposed) {
+                    throw new ObjectDisposedException();
                 }
 
-                return this.m_deviceId.Substring( 0 );
+                return this.m_deviceId.Substring(0);
             }
         }
 
@@ -62,17 +55,14 @@ namespace GHIElectronics.TinyCLR.Devices.Spi
         /// Gets the connection settings for the device.
         /// </summary>
         /// <value>The connection settings.</value>
-        public SpiConnectionSettings ConnectionSettings
-        {
-            get
-            {
-                if(this.m_disposed )
-                {
-                    throw new ObjectDisposedException( );
+        public SpiConnectionSettings ConnectionSettings {
+            get {
+                if (this.m_disposed) {
+                    throw new ObjectDisposedException();
                 }
 
                 // We must return a copy so the caller can't accidentally mutate our internal settings.
-                return new SpiConnectionSettings(this.m_settings );
+                return new SpiConnectionSettings(this.m_settings);
             }
         }
 
@@ -95,10 +85,9 @@ namespace GHIElectronics.TinyCLR.Devices.Spi
         /// </summary>
         /// <param name="busId">The id of the bus.</param>
         /// <returns>The bus info requested.</returns>
-        public static SpiBusInfo GetBusInfo( string busId )
-        {
-            var busNum = GetBusNum( busId );
-            return new SpiBusInfo( busNum );
+        public static SpiBusInfo GetBusInfo(string busId) {
+            var busNum = GetBusNum(busId);
+            return new SpiBusInfo(busNum);
         }
 
         /// <summary>
@@ -107,70 +96,62 @@ namespace GHIElectronics.TinyCLR.Devices.Spi
         /// <param name="busId">The id of the bus.</param>
         /// <param name="settings"></param>
         /// <returns></returns>
-        public static SpiDevice FromId( string busId, SpiConnectionSettings settings )
-        {
+        public static SpiDevice FromId(string busId, SpiConnectionSettings settings) {
             // FUTURE: This should be "Task<SpiDevice*> FromIdAsync(...)"
-            switch( settings.Mode )
-            {
-            case SpiMode.Mode0:
-            case SpiMode.Mode1:
-            case SpiMode.Mode2:
-            case SpiMode.Mode3:
-                break;
+            switch (settings.Mode) {
+                case SpiMode.Mode0:
+                case SpiMode.Mode1:
+                case SpiMode.Mode2:
+                case SpiMode.Mode3:
+                    break;
 
-            default:
-                throw new ArgumentException( );
+                default:
+                    throw new ArgumentException();
             }
 
-            switch( settings.SharingMode )
-            {
-            case SpiSharingMode.Exclusive:
-            case SpiSharingMode.Shared:
-                break;
+            switch (settings.SharingMode) {
+                case SpiSharingMode.Exclusive:
+                case SpiSharingMode.Shared:
+                    break;
 
-            default:
-                throw new ArgumentException( );
+                default:
+                    throw new ArgumentException();
             }
 
-            switch( settings.DataBitLength )
-            {
-            case 8:
-            case 16:
-                break;
+            switch (settings.DataBitLength) {
+                case 8:
+                case 16:
+                    break;
 
-            default:
-                throw new ArgumentException( );
+                default:
+                    throw new ArgumentException();
             }
 
-            return new SpiDevice( busId, settings );
+            return new SpiDevice(busId, settings);
         }
 
         /// <summary>
         /// Writes to the connected device.
         /// </summary>
         /// <param name="buffer">Array containing the data to write to the device.</param>
-        public void Write( byte[ ] buffer )
-        {
-            if( buffer == null )
-            {
-                throw new ArgumentException( );
+        public void Write(byte[] buffer) {
+            if (buffer == null) {
+                throw new ArgumentException();
             }
 
-            TransferInternal( buffer, null, false );
+            TransferInternal(buffer, null, false);
         }
 
         /// <summary>
         /// Reads from the connected device.
         /// </summary>
         /// <param name="readBuffer">Array containing data read from the device.</param>
-        public void Read( byte[ ] buffer )
-        {
-            if( buffer == null )
-            {
-                throw new ArgumentException( );
+        public void Read(byte[] buffer) {
+            if (buffer == null) {
+                throw new ArgumentException();
             }
 
-            TransferInternal( null, buffer, false );
+            TransferInternal(null, buffer, false);
         }
 
         /// <summary>
@@ -178,14 +159,12 @@ namespace GHIElectronics.TinyCLR.Devices.Spi
         /// </summary>
         /// <param name="writeBuffer">Array containing data to write to the device.</param>
         /// <param name="readBuffer">Array containing data read from the device.</param>
-        public void TransferSequential( byte[ ] writeBuffer, byte[ ] readBuffer )
-        {
-            if( ( writeBuffer == null ) || ( readBuffer == null ) )
-            {
-                throw new ArgumentException( );
+        public void TransferSequential(byte[] writeBuffer, byte[] readBuffer) {
+            if ((writeBuffer == null) || (readBuffer == null)) {
+                throw new ArgumentException();
             }
 
-            TransferInternal( writeBuffer, readBuffer, false );
+            TransferInternal(writeBuffer, readBuffer, false);
         }
 
         /// <summary>
@@ -194,25 +173,21 @@ namespace GHIElectronics.TinyCLR.Devices.Spi
         /// </summary>
         /// <param name="writeBuffer">Array containing data to write to the device.</param>
         /// <param name="readBuffer">Array containing data read from the device.</param>
-        public void TransferFullDuplex( byte[ ] writeBuffer, byte[ ] readBuffer )
-        {
-            if( ( writeBuffer == null ) || ( readBuffer == null ) )
-            {
-                throw new ArgumentException( );
+        public void TransferFullDuplex(byte[] writeBuffer, byte[] readBuffer) {
+            if ((writeBuffer == null) || (readBuffer == null)) {
+                throw new ArgumentException();
             }
 
-            TransferInternal( writeBuffer, readBuffer, true );
+            TransferInternal(writeBuffer, readBuffer, true);
         }
 
         /// <summary>
         /// Closes the connection to the device.
         /// </summary>
-        public void Dispose( )
-        {
-            if( !this.m_disposed )
-            {
-                Dispose( true );
-                GC.SuppressFinalize( this );
+        public void Dispose() {
+            if (!this.m_disposed) {
+                Dispose(true);
+                GC.SuppressFinalize(this);
                 this.m_disposed = true;
             }
         }
@@ -224,31 +199,27 @@ namespace GHIElectronics.TinyCLR.Devices.Spi
                 s_SpiPrefix + "4",
             };
 
-        [MethodImplAttribute( MethodImplOptions.InternalCall )]
-        extern private void InitNative( );
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        extern private void InitNative();
 
-        [MethodImplAttribute( MethodImplOptions.InternalCall )]
-        extern private void DisposeNative( );
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        extern private void DisposeNative();
 
-        [MethodImplAttribute( MethodImplOptions.InternalCall )]
-        extern private void TransferInternal( byte[ ] writeBuffer, byte[ ] readBuffer, bool fullDuplex );
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        extern private void TransferInternal(byte[] writeBuffer, byte[] readBuffer, bool fullDuplex);
 
-        private static int GetBusNum( string deviceId )
-        {
+        private static int GetBusNum(string deviceId) {
             var retVal = -1;
-            var spiBusNames = GetValidBusNames( );
-            for( var i = 0; i < spiBusNames.Length; ++i )
-            {
-                if( spiBusNames[ i ] == deviceId )
-                {
+            var spiBusNames = GetValidBusNames();
+            for (var i = 0; i < spiBusNames.Length; ++i) {
+                if (spiBusNames[i] == deviceId) {
                     retVal = i;
                 }
             }
 
             // If we didn't find the exact device name in our pre-built bus list, bail out.
-            if( retVal == -1 )
-            {
-                throw new ArgumentException( );
+            if (retVal == -1) {
+                throw new ArgumentException();
             }
 
             return retVal;
@@ -258,11 +229,9 @@ namespace GHIElectronics.TinyCLR.Devices.Spi
         /// Releases internal resources held by the device.
         /// </summary>
         /// <param name="disposing">True if called from Dispose, false if called from the finalizer.</param>
-        private void Dispose( bool disposing )
-        {
-            if( disposing )
-            {
-                DisposeNative( );
+        private void Dispose(bool disposing) {
+            if (disposing) {
+                DisposeNative();
             }
         }
     }

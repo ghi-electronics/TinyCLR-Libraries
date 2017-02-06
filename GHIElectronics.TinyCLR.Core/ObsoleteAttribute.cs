@@ -1,10 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-namespace System
-{
-
-    using System;
+namespace System {
     /**
      * This attribute is attached to members that are not to be used any longer.
      * Message is some human readable explanation of what to use
@@ -18,25 +15,21 @@ namespace System
     [Serializable(), AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Enum |
         AttributeTargets.Interface | AttributeTargets.Constructor | AttributeTargets.Method | AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Event | AttributeTargets.Delegate
         , Inherited = false)]
-    public sealed class ObsoleteAttribute : Attribute
-    {
+    public sealed class ObsoleteAttribute : Attribute {
         private string _message;
         private bool _error;
 
-        public ObsoleteAttribute()
-        {
+        public ObsoleteAttribute() {
             this._message = null;
             this._error = false;
         }
 
-        public ObsoleteAttribute(string message)
-        {
+        public ObsoleteAttribute(string message) {
             this._message = message;
             this._error = false;
         }
 
-        public ObsoleteAttribute(string message, bool error)
-        {
+        public ObsoleteAttribute(string message, bool error) {
             this._message = message;
             this._error = error;
         }

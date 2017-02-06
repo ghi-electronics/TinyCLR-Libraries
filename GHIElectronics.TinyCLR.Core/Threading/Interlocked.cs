@@ -1,17 +1,14 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////namespace System.Threading
-namespace System.Threading
-{
-    using System;
+namespace System.Threading {
     using System.Runtime.CompilerServices;
     // After much discussion, we decided the Interlocked class doesn't need
     // any HPA's for synchronization or external threading.  They hurt C#'s
     // codegen for the yield keyword, and arguably they didn't protect much.
     // Instead, they penalized people (and compilers) for writing threadsafe
     // code.
-    public static class Interlocked
-    {
+    public static class Interlocked {
         /******************************
          * Increment
          *   Implemented: int

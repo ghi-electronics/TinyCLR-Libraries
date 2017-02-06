@@ -1,20 +1,15 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////namespace System
-namespace System
-{
-
-    using System;
-    using System.Runtime.CompilerServices;
-    using System.Threading;
+namespace System {
     using System.Globalization;
+    using System.Runtime.CompilerServices;
 
     // Summary:
     //     Specifies whether a System.DateTime object represents a local time, a Coordinated
     //     Universal Time (UTC), or is not specified as either local time or UTC.
     [Serializable]
-    public enum DateTimeKind
-    {
+    public enum DateTimeKind {
         // Summary:
         //     The time represented is not specified as either local time or Coordinated
         //     Universal Time (UTC).
@@ -102,10 +97,8 @@ namespace System
 
         private ulong m_ticks;
 
-        public DateTime(long ticks)
-        {
-            if (((ticks & (long)TickMask) < MinTicks) || ((ticks & (long)TickMask) > MaxTicks))
-            {
+        public DateTime(long ticks) {
+            if (((ticks & (long)TickMask) < MinTicks) || ((ticks & (long)TickMask) > MaxTicks)) {
                 throw new ArgumentOutOfRangeException("ticks", "Ticks must be between DateTime.MinValue.Ticks and DateTime.MaxValue.Ticks.");
             }
 
@@ -113,26 +106,21 @@ namespace System
         }
 
         public DateTime(long ticks, DateTimeKind kind)
-            : this(ticks)
-        {
-            if (kind == DateTimeKind.Local)
-            {
+            : this(ticks) {
+            if (kind == DateTimeKind.Local) {
                 this.m_ticks &= ~UTCMask;
             }
-            else
-            {
+            else {
                 this.m_ticks |= UTCMask;
             }
         }
 
         public DateTime(int year, int month, int day)
-            : this(year, month, day, 0, 0, 0)
-        {
+            : this(year, month, day, 0, 0, 0) {
         }
 
         public DateTime(int year, int month, int day, int hour, int minute, int second)
-            : this(year, month, day, hour, minute, second, 0)
-        {
+            : this(year, month, day, hour, minute, second, 0) {
         }
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
@@ -154,20 +142,17 @@ namespace System
 
         public DateTime AddTicks(long val) => new DateTime((long)this.m_ticks + val);
 
-        public static int Compare(DateTime t1, DateTime t2)
-        {
+        public static int Compare(DateTime t1, DateTime t2) {
             // Get ticks, clear UTC mask
             var t1_ticks = t1.m_ticks & TickMask;
             var t2_ticks = t2.m_ticks & TickMask;
 
             // Compare ticks, ignore the Kind property.
-            if (t1_ticks > t2_ticks)
-            {
+            if (t1_ticks > t2_ticks) {
                 return 1;
             }
 
-            if (t1_ticks < t2_ticks)
-            {
+            if (t1_ticks < t2_ticks) {
                 return -1;
             }
 
@@ -175,9 +160,9 @@ namespace System
             return 0;
         }
 
-        public int CompareTo(object val)
-        {
-            if (val == null) return 1;
+        public int CompareTo(object val) {
+            if (val == null)
+                return 1;
 
             return DateTime.Compare(this, (DateTime)val);
         }
@@ -185,10 +170,8 @@ namespace System
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public extern static int DaysInMonth(int year, int month);
 
-        public override bool Equals(object val)
-        {
-            if (val is DateTime)
-            {
+        public override bool Equals(object val) {
+            if (val is DateTime) {
                 // Call compare for proper comparison of 2 DateTime objects
                 // Since DateTime is optimized value and internally represented by int64
                 // "this" may still have type int64.
@@ -203,43 +186,35 @@ namespace System
 
         public static bool Equals(DateTime t1, DateTime t2) => Compare(t1, t2) == 0;
 
-        public DateTime Date
-        {
-            get
-            {
+        public DateTime Date {
+            get {
                 // Need to remove UTC mask before arithmetic operations. Then set it back.
-                if ((this.m_ticks & UTCMask) != 0)
-                {
+                if ((this.m_ticks & UTCMask) != 0) {
                     return new DateTime((long)(((this.m_ticks & TickMask) - (this.m_ticks & TickMask) % TicksPerDay) | UTCMask));
                 }
-                else
-                {
+                else {
                     return new DateTime((long)(this.m_ticks - this.m_ticks % TicksPerDay));
                 }
             }
         }
 
-        public int Day
-        {
+        public int Day {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
             get => 0;
         }
 
-        public DayOfWeek DayOfWeek
-        {
+        public DayOfWeek DayOfWeek {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
             get => DayOfWeek.Monday;
         }
 
-        public int DayOfYear
-        {
+        public int DayOfYear {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
             get => 0;
         }
 
         /// Reduce size by calling a single method?
-        public int Hour
-        {
+        public int Hour {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
             get => 0;
         }
@@ -248,55 +223,46 @@ namespace System
                 // If mask for UTC time is set - return UTC. If no maskk - return local.
                 (this.m_ticks & UTCMask) != 0 ? DateTimeKind.Utc : DateTimeKind.Local;
 
-        public static DateTime SpecifyKind(DateTime value, DateTimeKind kind)
-        {
+        public static DateTime SpecifyKind(DateTime value, DateTimeKind kind) {
             var retVal = new DateTime((long)value.m_ticks);
 
-            if (kind == DateTimeKind.Utc)
-            {
+            if (kind == DateTimeKind.Utc) {
                 // Set UTC mask
                 retVal.m_ticks = value.m_ticks | UTCMask;
             }
-            else
-            {   // Clear UTC mask
+            else {   // Clear UTC mask
                 retVal.m_ticks = value.m_ticks & ~UTCMask;
             }
 
             return retVal;
         }
 
-        public int Millisecond
-        {
+        public int Millisecond {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
             get => 0;
         }
 
-        public int Minute
-        {
+        public int Minute {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
             get => 0;
         }
 
-        public int Month
-        {
+        public int Month {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
             get => 0;
         }
 
-        public static DateTime Now
-        {
+        public static DateTime Now {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
             get => new DateTime();
         }
 
-        public static DateTime UtcNow
-        {
+        public static DateTime UtcNow {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
             get => new DateTime();
         }
 
-        public int Second
-        {
+        public int Second {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
             get => 0;
         }
@@ -312,14 +278,12 @@ namespace System
 
         public TimeSpan TimeOfDay => new TimeSpan((long)((this.m_ticks & TickMask) % TicksPerDay));
 
-        public static DateTime Today
-        {
+        public static DateTime Today {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
             get => new DateTime();
         }
 
-        public int Year
-        {
+        public int Year {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
             get => 0;
         }

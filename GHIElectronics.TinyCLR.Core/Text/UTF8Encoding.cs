@@ -14,9 +14,7 @@
 // the problem is fastloop-specific.
 #define FASTLOOP
 
-namespace System.Text
-{
-    using System;
+namespace System.Text {
     using System.Runtime.CompilerServices;
     // Encodes text into and out of UTF-8.  UTF-8 is a way of writing
     // Unicode characters with variable numbers of bytes per character,
@@ -29,8 +27,7 @@ namespace System.Text
     // (0xFEFF) written in UTF-8 (0xEF 0xBB 0xBF).  The byte order mark is
     // used mostly to distinguish UTF-8 text from other encodings, and doesn't
     // switch the byte orderings.
-    public class UTF8Encoding : Encoding
-    {
+    public class UTF8Encoding : Encoding {
         /*
             bytes   bits    UTF-8 representation
             -----   ----    -----------------------------------
@@ -43,14 +40,13 @@ namespace System.Text
             Surrogate:
             Real Unicode value = (HighSurrogate - 0xD800) * 0x400 + (LowSurrogate - 0xDC00) + 0x10000
          */
-        public UTF8Encoding()
-        {
+        public UTF8Encoding() {
         }
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public extern override byte[] GetBytes(string s);
 
-        
+
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public extern override int GetBytes(string s, int charIndex, int charCount, byte[] bytes, int byteIndex);
 

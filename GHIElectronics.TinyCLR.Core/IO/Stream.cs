@@ -2,52 +2,41 @@
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-using System.Threading;
-using System.Runtime.InteropServices;
 
-namespace System.IO
-{
+namespace System.IO {
     [Serializable()]
-    public abstract class Stream : MarshalByRefObject, IDisposable
-    {
-        public abstract bool CanRead
-        {
+    public abstract class Stream : MarshalByRefObject, IDisposable {
+        public abstract bool CanRead {
             get;
         }
 
         // If CanSeek is false, Position, Seek, Length, and SetLength should throw.
-        public abstract bool CanSeek
-        {
+        public abstract bool CanSeek {
             get;
         }
 
         public virtual bool CanTimeout => false;
 
-        public abstract bool CanWrite
-        {
+        public abstract bool CanWrite {
             get;
         }
 
-        public abstract long Length
-        {
+        public abstract long Length {
             get;
         }
 
-        public abstract long Position
-        {
+        public abstract long Position {
             get;
             set;
         }
 
-        public virtual int ReadTimeout
-        {
+        public virtual int ReadTimeout {
             get => throw new InvalidOperationException();
 
             set => throw new InvalidOperationException();
         }
 
-        public virtual int WriteTimeout
-        {
+        public virtual int WriteTimeout {
             get => throw new InvalidOperationException();
 
             set => throw new InvalidOperationException();
@@ -61,30 +50,24 @@ namespace System.IO
         // base class switching to the Dispose pattern.  We're moving
         // Stream to the Dispose(bool) pattern - that's where all subclasses
         // should put their cleanup starting in V2.
-        public virtual void Close()
-        {
+        public virtual void Close() {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
 
-        public void Dispose()
-        {
-            try
-            {
+        public void Dispose() {
+            try {
                 Close();
             }
-            catch
-            {
+            catch {
             }
         }
 
-        ~Stream()
-        {
+        ~Stream() {
             Dispose(false);
         }
 
-        protected virtual void Dispose(bool disposing)
-        {
+        protected virtual void Dispose(bool disposing) {
         }
 
         public abstract void Flush();
@@ -100,8 +83,7 @@ namespace System.IO
         // byte[] each time you call it, and should be overridden by any
         // subclass that maintains an internal buffer.  Then, it can help perf
         // significantly for people who are reading one byte at a time.
-        public virtual int ReadByte()
-        {
+        public virtual int ReadByte() {
             var oneByteArray = new byte[1];
             var r = Read(oneByteArray, 0, 1);
             if (r == 0)
@@ -116,8 +98,7 @@ namespace System.IO
         // byte[] each time you call it, and should be overridden by any
         // subclass that maintains an internal buffer.  Then, it can help perf
         // significantly for people who are writing one byte at a time.
-        public virtual void WriteByte(byte value)
-        {
+        public virtual void WriteByte(byte value) {
             var oneByteArray = new byte[1];
             oneByteArray[0] = value;
             Write(oneByteArray, 0, 1);

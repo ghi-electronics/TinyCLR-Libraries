@@ -1,8 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////namespace System.Globalization
-namespace System.Globalization
-{
+namespace System.Globalization {
     using System;
     //
     // Property             Default Description
@@ -47,12 +46,9 @@ namespace System.Globalization
         private CultureInfo m_cultureInfo;
         internal NumberFormatInfo(CultureInfo cultureInfo) => this.m_cultureInfo = cultureInfo;
 
-        public int[] NumberGroupSizes
-        {
-            get
-            {
-                if (this.numberGroupSizes == null)
-                {
+        public int[] NumberGroupSizes {
+            get {
+                if (this.numberGroupSizes == null) {
                     string sizesStr = null;
 
                     this.m_cultureInfo.EnsureStringResource(ref sizesStr, System.Globalization.Resources.CultureInfo.StringResources.NumberGroupSizes);
@@ -61,11 +57,9 @@ namespace System.Globalization
                     this.numberGroupSizes = new int[sizesLen];
 
                     int size;
-                    for (var i = 0; i < sizesLen; i++)
-                    {
+                    for (var i = 0; i < sizesLen; i++) {
                         size = sizesStr[i] - '0';
-                        if (size > 9 || size < 0)
-                        {
+                        if (size > 9 || size < 0) {
                             this.numberGroupSizes = null;
                             throw new InvalidOperationException();
                         }

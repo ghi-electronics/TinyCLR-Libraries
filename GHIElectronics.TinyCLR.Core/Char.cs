@@ -1,15 +1,9 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-namespace System
-{
-
-    using System;
-    using System.Runtime.CompilerServices;
-
+namespace System {
     [Serializable]
-    public struct Char
-    {
+    public struct Char {
         //
         // Member Variables
         //
@@ -31,20 +25,16 @@ namespace System
 
         public override string ToString() => new string(this.m_value, 1);
 
-        public char ToLower()
-        {
-            if('A' <= this.m_value && this.m_value <= 'Z')
-            {
+        public char ToLower() {
+            if ('A' <= this.m_value && this.m_value <= 'Z') {
                 return (char)(this.m_value - ('A' - 'a'));
             }
 
             return this.m_value;
         }
 
-        public char ToUpper()
-        {
-            if('a' <= this.m_value && this.m_value <= 'z')
-            {
+        public char ToUpper() {
+            if ('a' <= this.m_value && this.m_value <= 'z') {
                 return (char)(this.m_value + ('A' - 'a'));
             }
 

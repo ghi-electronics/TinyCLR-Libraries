@@ -1,32 +1,24 @@
-using System;
 using System.Runtime.CompilerServices;
 
-namespace GHIElectronics.TinyCLR.Devices.Adc.Provider
-{
-    public interface IAdcControllerProvider
-    {
-        int ChannelCount
-        {
+namespace GHIElectronics.TinyCLR.Devices.Adc.Provider {
+    public interface IAdcControllerProvider {
+        int ChannelCount {
             get;
         }
 
-        int ResolutionInBits
-        {
+        int ResolutionInBits {
             get;
         }
 
-        int MinValue
-        {
+        int MinValue {
             get;
         }
 
-        int MaxValue
-        {
+        int MaxValue {
             get;
         }
 
-        ProviderAdcChannelMode ChannelMode
-        {
+        ProviderAdcChannelMode ChannelMode {
             get;
             set;
         }
@@ -37,8 +29,7 @@ namespace GHIElectronics.TinyCLR.Devices.Adc.Provider
         int ReadValue(int channelNumber);
     }
 
-    public interface IAdcProvider
-    {
+    public interface IAdcProvider {
         IAdcControllerProvider[] GetControllers();
     }
 

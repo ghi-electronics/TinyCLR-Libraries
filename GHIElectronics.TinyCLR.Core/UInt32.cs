@@ -1,18 +1,14 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-namespace System
-{
-    using System;
-    using System.Runtime.CompilerServices;
+namespace System {
     using System.Globalization;
 
     /**
      * * Wrapper for unsigned 32 bit integers.
      */
     [Serializable, CLSCompliant(false)]
-    public struct UInt32
-    {
+    public struct UInt32 {
 #pragma warning disable CS0649 // Field is never assigned to, and will always have its default value
         private uint m_value;
 #pragma warning restore CS0649 // Field is never assigned to, and will always have its default value
@@ -25,10 +21,8 @@ namespace System
         public string ToString(string format) => Number.Format(this.m_value, true, format, NumberFormatInfo.CurrentInfo);
 
         [CLSCompliant(false)]
-        public static uint Parse(string s)
-        {
-            if (s == null)
-            {
+        public static uint Parse(string s) {
+            if (s == null) {
                 throw new ArgumentNullException();
             }
 

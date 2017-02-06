@@ -3,17 +3,12 @@
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-using System;
-using System.Collections;
+using System.Globalization;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Diagnostics;
-using System.Globalization;
 
-namespace System.Resources
-{
-    public class ResourceManager
-    {
+namespace System.Resources {
+    public class ResourceManager {
         internal const string s_fileExtension = ".tinyresources";
         internal const string s_resourcesExtension = ".resources";
 
@@ -29,28 +24,23 @@ namespace System.Resources
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         extern private object GetObjectInternal(short id);
-        
+
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         extern private object GetObjectInternal(short id, int offset, int length);
 
         public ResourceManager(string baseName, Assembly assembly)
-            : this(baseName, assembly, CultureInfo.CurrentUICulture.Name, true)
-        {
+            : this(baseName, assembly, CultureInfo.CurrentUICulture.Name, true) {
         }
 
-        internal ResourceManager(string baseName, Assembly assembly, string cultureName, bool fThrowOnFailure)
-        {
-            if (!Initialize(baseName, assembly, cultureName))
-            {
-                if (fThrowOnFailure)
-                {
+        internal ResourceManager(string baseName, Assembly assembly, string cultureName, bool fThrowOnFailure) {
+            if (!Initialize(baseName, assembly, cultureName)) {
+                if (fThrowOnFailure) {
                     throw new ArgumentException();
                 }
             }
         }
 
-        internal ResourceManager(string baseName, string cultureName, int iResourceFileId, Assembly assemblyBase, Assembly assemblyResource)
-        {
+        internal ResourceManager(string baseName, string cultureName, int iResourceFileId, Assembly assemblyBase, Assembly assemblyResource) {
             //found resource
             this.m_baseAssembly = assemblyBase;
             this.m_assembly = assemblyResource;
@@ -60,8 +50,7 @@ namespace System.Resources
         }
 
         private bool IsValid => this.m_resourceFileId >= 0;
-        private string GetParentCultureName(string cultureName)
-        {
+        private string GetParentCultureName(string cultureName) {
             var iDash = cultureName.LastIndexOf('-');
             if (iDash < 0)
                 cultureName = "";
@@ -71,8 +60,7 @@ namespace System.Resources
             return cultureName;
         }
 
-        internal bool Initialize(string baseName, Assembly assembly, string cultureName)
-        {
+        internal bool Initialize(string baseName, Assembly assembly, string cultureName) {
             var cultureNameSav = cultureName;
             var assemblySav = assembly;
 
@@ -80,47 +68,39 @@ namespace System.Resources
 
             var fTryBaseAssembly = false;
 
-            while (true)
-            {
+            while (true) {
                 var fInvariantCulture = (cultureName == "");
 
                 var splitName = assemblySav.FullName.Split(',');
 
                 var assemblyName = splitName[0];
- 
-                if(!fInvariantCulture)
-                {
+
+                if (!fInvariantCulture) {
                     assemblyName = assemblyName + "." + cultureName;
                 }
-                else if (!fTryBaseAssembly)
-                {
+                else if (!fTryBaseAssembly) {
                     assemblyName = assemblyName + s_resourcesExtension;
                 }
 
                 // append version
-                if (splitName.Length >= 1 && splitName[1] != null)
-                {
+                if (splitName.Length >= 1 && splitName[1] != null) {
                     assemblyName += ", " + splitName[1].Trim();
                 }
 
-                assembly = Assembly.Load( assemblyName, false );
+                assembly = Assembly.Load(assemblyName, false);
 
-                if (assembly != null)
-                {
+                if (assembly != null) {
                     if (Initialize(baseName, assemblySav, cultureNameSav, assembly))
                         return true;
                 }
 
-                if (!fInvariantCulture)
-                {
+                if (!fInvariantCulture) {
                     cultureName = GetParentCultureName(cultureName);
                 }
-                else if (!fTryBaseAssembly)
-                {
+                else if (!fTryBaseAssembly) {
                     fTryBaseAssembly = true;
                 }
-                else
-                {
+                else {
                     break;
                 }
             }
@@ -128,15 +108,12 @@ namespace System.Resources
             return false;
         }
 
-        internal bool Initialize(string baseName, Assembly assemblyBase, string cultureName, Assembly assemblyResource)
-        {
-            while (true)
-            {
+        internal bool Initialize(string baseName, Assembly assemblyBase, string cultureName, Assembly assemblyResource) {
+            while (true) {
                 var resourceName = baseName;
                 var fInvariantCulture = (cultureName == "");
 
-                if (!fInvariantCulture)
-                {
+                if (!fInvariantCulture) {
                     resourceName = baseName + "." + cultureName;
                 }
 
@@ -144,8 +121,7 @@ namespace System.Resources
 
                 var iResourceFileId = FindResource(resourceName, assemblyResource);
 
-                if (iResourceFileId >= 0)
-                {
+                if (iResourceFileId >= 0) {
                     //found resource
                     this.m_baseAssembly = assemblyBase;
                     this.m_assembly = assemblyResource;
@@ -155,8 +131,7 @@ namespace System.Resources
 
                     break;
                 }
-                else if (fInvariantCulture)
-                {
+                else if (fInvariantCulture) {
                     break;
                 }
 
@@ -166,21 +141,17 @@ namespace System.Resources
             return this.IsValid;
         }
 
-        private object GetObjectFromId(short id)
-        {
+        private object GetObjectFromId(short id) {
             var rm = this;
 
-            while (rm != null)
-            {
+            while (rm != null) {
                 var obj = rm.GetObjectInternal(id);
 
                 if (obj != null)
                     return obj;
 
-                if (rm.m_rmFallback == null)
-                {
-                    if (rm.m_cultureName != "")
-                    {
+                if (rm.m_rmFallback == null) {
+                    if (rm.m_cultureName != "") {
                         var cultureNameParent = GetParentCultureName(rm.m_cultureName);
                         var rmFallback = new ResourceManager(this.m_baseName, this.m_baseAssembly, cultureNameParent, false);
 
@@ -195,21 +166,17 @@ namespace System.Resources
             throw new ArgumentException();
         }
 
-        private object GetObjectChunkFromId(short id, int offset, int length)
-        {
+        private object GetObjectChunkFromId(short id, int offset, int length) {
             var rm = this;
 
-            while (rm != null)
-            {
+            while (rm != null) {
                 var obj = rm.GetObjectInternal(id, offset, length);
 
                 if (obj != null)
                     return obj;
 
-                if (rm.m_rmFallback == null)
-                {
-                    if (rm.m_cultureName != "")
-                    {
+                if (rm.m_rmFallback == null) {
+                    if (rm.m_cultureName != "") {
                         var cultureNameParent = GetParentCultureName(rm.m_cultureName);
                         var rmFallback = new ResourceManager(this.m_baseName, this.m_baseAssembly, cultureNameParent, false);
 

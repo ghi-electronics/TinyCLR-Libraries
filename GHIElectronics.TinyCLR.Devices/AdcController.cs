@@ -1,10 +1,8 @@
-using System;
 using GHIElectronics.TinyCLR.Devices.Adc.Provider;
+using System;
 
-namespace GHIElectronics.TinyCLR.Devices.Adc
-{
-    public sealed class AdcController
-    {
+namespace GHIElectronics.TinyCLR.Devices.Adc {
+    public sealed class AdcController {
         private IAdcControllerProvider m_provider;
         private static AdcController instance;
 
@@ -18,20 +16,17 @@ namespace GHIElectronics.TinyCLR.Devices.Adc
 
         public int MaxValue => this.m_provider.MaxValue;
 
-        public AdcChannelMode ChannelMode
-        {
+        public AdcChannelMode ChannelMode {
             get => (AdcChannelMode)m_provider.ChannelMode;
 
-            set
-            {
-                switch (value)
-                {
-                case AdcChannelMode.Differential:
-                case AdcChannelMode.SingleEnded:
-                    break;
+            set {
+                switch (value) {
+                    case AdcChannelMode.Differential:
+                    case AdcChannelMode.SingleEnded:
+                        break;
 
-                default:
-                    throw new ArgumentException();
+                    default:
+                        throw new ArgumentException();
                 }
 
                 this.m_provider.ChannelMode = (ProviderAdcChannelMode)value;
@@ -40,40 +35,34 @@ namespace GHIElectronics.TinyCLR.Devices.Adc
 
         public static AdcController GetDefault() => AdcController.instance ?? (AdcController.instance = new AdcController(new DefaultAdcControllerProvider()));
 
-        public static AdcController[] GetControllers(IAdcProvider provider)
-        {
+        public static AdcController[] GetControllers(IAdcProvider provider) {
             // FUTURE: This should return "Task<IVectorView<AdcController>>"
 
             var providers = provider.GetControllers();
             var controllers = new AdcController[providers.Length];
 
-            for (var i = 0; i < providers.Length; ++i)
-            {
+            for (var i = 0; i < providers.Length; ++i) {
                 controllers[i] = new AdcController(providers[i]);
             }
 
             return controllers;
         }
 
-        public bool IsChannelModeSupported(AdcChannelMode channelMode)
-        {
-            switch (channelMode)
-            {
-            case AdcChannelMode.Differential:
-            case AdcChannelMode.SingleEnded:
-                break;
+        public bool IsChannelModeSupported(AdcChannelMode channelMode) {
+            switch (channelMode) {
+                case AdcChannelMode.Differential:
+                case AdcChannelMode.SingleEnded:
+                    break;
 
-            default:
-                throw new ArgumentException();
+                default:
+                    throw new ArgumentException();
             }
 
             return this.m_provider.IsChannelModeSupported((ProviderAdcChannelMode)channelMode);
         }
 
-        public AdcChannel OpenChannel(int channelNumber)
-        {
-            if ((channelNumber < 0) || (channelNumber >= this.m_provider.ChannelCount))
-            {
+        public AdcChannel OpenChannel(int channelNumber) {
+            if ((channelNumber < 0) || (channelNumber >= this.m_provider.ChannelCount)) {
                 throw new ArgumentOutOfRangeException();
             }
 

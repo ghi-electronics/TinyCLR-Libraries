@@ -1,18 +1,15 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-using System;
 
 
-namespace System.Collections
-{
+namespace System.Collections {
     /// <summary>
     /// HashTable is an Associative Container.
     /// Created in March 2010.
     /// by Eric Harlow.
     /// </summary>
-    public class Hashtable : ICloneable, IDictionary
-    {
+    public class Hashtable : ICloneable, IDictionary {
         Entry[] _buckets;
         int _numberOfBuckets;
         int _count;
@@ -43,8 +40,7 @@ namespace System.Collections
         public Hashtable(int capacity, int maxLoadFactor) => InitializeHashTable(capacity, maxLoadFactor);
 
         //initialize attributes
-        private void InitializeHashTable(int capacity, int maxLoadFactor)
-        {
+        private void InitializeHashTable(int capacity, int maxLoadFactor) {
             this._buckets = new Entry[capacity];
             this._numberOfBuckets = capacity;
             this._maxLoadFactor = maxLoadFactor;
@@ -57,8 +53,7 @@ namespace System.Collections
         /// A higher number can decrease lookup performance for large collections.
         /// While a value of 1 maintains a constant time complexity at the cost of increased memory requirements.   
         /// </summary>
-        public int MaxLoadFactor
-        {
+        public int MaxLoadFactor {
             get => _maxLoadFactor; set => _maxLoadFactor = value;
         }
 
@@ -66,28 +61,23 @@ namespace System.Collections
         /// GrowthFactor Property is a multiplier to increase the HashTable size by during a rehash.
         /// Default value is 2.
         /// </summary>
-        public double GrowthFactor
-        {
+        public double GrowthFactor {
             get => _growthFactor; set => _growthFactor = value;
         }
 
         //adding for internal purposes
-        private void Add(ref Entry[] buckets, object key, object value, bool overwrite)
-        {
+        private void Add(ref Entry[] buckets, object key, object value, bool overwrite) {
             var whichBucket = Hash(key, this._numberOfBuckets);
             var match = EntryForKey(key, buckets[whichBucket]);
 
-            if (match != null && overwrite)
-            { //i.e. already exists in table
+            if (match != null && overwrite) { //i.e. already exists in table
                 match.value = value;
                 return;
             }
-            else if ((match != null && !overwrite))
-            {
+            else if ((match != null && !overwrite)) {
                 throw new ArgumentException("key exists");
             }
-            else
-            {            // insert at front
+            else {            // insert at front
                 var newOne = new Entry(key, value, ref buckets[whichBucket]);
                 buckets[whichBucket] = newOne;
                 this._count++;
@@ -97,8 +87,7 @@ namespace System.Collections
         }
 
         // Hash function.
-        private int Hash(object key, int numOfBuckets)
-        {
+        private int Hash(object key, int numOfBuckets) {
             var hashcode = key.GetHashCode();
 
             if (hashcode < 0) // don't know how to mod with a negative number
@@ -108,23 +97,20 @@ namespace System.Collections
         }
 
         //looks up value in bucket
-        private Entry EntryForKey(object key, Entry head)
-        {
+        private Entry EntryForKey(object key, Entry head) {
             for (var cur = head; cur != null; cur = cur.next)
-                if (cur.key.Equals(key)) return cur;
+                if (cur.key.Equals(key))
+                    return cur;
             return null;
         }
 
         //Rehashes the table to reduce the load factor
-        private void Rehash(int newSize)
-        {
+        private void Rehash(int newSize) {
             var newTable = new Entry[newSize];
             this._numberOfBuckets = newSize;
             this._count = 0;
-            for (var i = 0; i < this._buckets.Length; i++)
-            {
-                if (this._buckets[i] != null)
-                {
+            for (var i = 0; i < this._buckets.Length; i++) {
+                if (this._buckets[i] != null) {
                     for (var cur = this._buckets[i]; cur != null; cur = cur.next)
                         Add(ref newTable, cur.key, cur.value, false);
                 }
@@ -133,18 +119,15 @@ namespace System.Collections
         }
 
         //implementation for KeyCollection and ValueCollection copyTo method
-        private void CopyToCollection(Array array, int index, EnumeratorType type)
-        {
+        private void CopyToCollection(Array array, int index, EnumeratorType type) {
             if (index < 0 && index > this._numberOfBuckets)
                 throw new IndexOutOfRangeException("index");
 
             var j = 0;
             var len = array.Length;
-            
-            for (var i = index; i < this._numberOfBuckets; i++)
-            {
-                for (var cur = this._buckets[i]; cur != null && j < len; cur = cur.next)
-                {
+
+            for (var i = index; i < this._numberOfBuckets; i++) {
+                for (var cur = this._buckets[i]; cur != null && j < len; cur = cur.next) {
                     if (type == EnumeratorType.KEY)
                         ((IList)array)[j] = cur.key;
                     else
@@ -157,8 +140,7 @@ namespace System.Collections
 
         #region ICloneable Members
         //shallow copy
-        public object Clone()
-        {
+        public object Clone() {
             var ht = new Hashtable();
             ht.InitializeHashTable(this._numberOfBuckets, this._maxLoadFactor);
             ht._count = this._count;
@@ -180,17 +162,14 @@ namespace System.Collections
         public int Count => this._count;
         public bool IsSynchronized => false;
         public object SyncRoot => this;
-        public void CopyTo(Array array, int index)
-        {
+        public void CopyTo(Array array, int index) {
             if (index < 0 && index > this._buckets.Length)
                 throw new IndexOutOfRangeException("index");
 
             var j = 0;
             var len = array.Length;
-            for (var i = index; i < this._buckets.Length; i++)
-            {
-                for (var cur = this._buckets[i]; cur != null && j<len; cur = cur.next)
-                {
+            for (var i = index; i < this._buckets.Length; i++) {
+                for (var cur = this._buckets[i]; cur != null && j < len; cur = cur.next) {
                     ((IList)array)[j] = new DictionaryEntry(cur.key, cur.value);
                     j++;
                 }
@@ -207,47 +186,45 @@ namespace System.Collections
 
         public ICollection Values => new ValueCollection(this);
 
-        public object this[object key]
-        {
-            get
-            {
-                if (key == null) throw new ArgumentNullException("key is null");
+        public object this[object key] {
+            get {
+                if (key == null)
+                    throw new ArgumentNullException("key is null");
                 var whichBucket = Hash(key, this._numberOfBuckets);
                 var match = EntryForKey(key, this._buckets[whichBucket]);
                 if (match != null)
                     return match.value;
                 return null;
             }
-            set
-            {
-                if (key == null) throw new ArgumentNullException("key is null");
+            set {
+                if (key == null)
+                    throw new ArgumentNullException("key is null");
 
-                Add(ref this._buckets ,key,value,true);
+                Add(ref this._buckets, key, value, true);
                 if (this._loadFactor >= this._maxLoadFactor)
                     Rehash((int)(this._numberOfBuckets * this._growthFactor));
             }
         }
 
-        public void Add(object key, object value)
-        {
-            if (key == null) throw new ArgumentNullException("key is null");
+        public void Add(object key, object value) {
+            if (key == null)
+                throw new ArgumentNullException("key is null");
 
             Add(ref this._buckets, key, value, false);
             if (this._loadFactor >= this._maxLoadFactor)
                 Rehash((int)(this._numberOfBuckets * this._growthFactor));
         }
 
-        public void Clear()
-        {
+        public void Clear() {
             this._buckets = new Entry[_defaultCapacity];
             this._numberOfBuckets = _defaultCapacity;
             this._loadFactor = 0;
             this._count = 0;
         }
 
-        public bool Contains(object key)
-        {
-            if (key == null) throw new ArgumentNullException("key is null");
+        public bool Contains(object key) {
+            if (key == null)
+                throw new ArgumentNullException("key is null");
             var whichBucket = Hash(key, this._numberOfBuckets);
             var match = EntryForKey(key, this._buckets[whichBucket]);
 
@@ -256,9 +233,9 @@ namespace System.Collections
             return false;
         }
 
-        public void Remove(object key)
-        {
-            if (key == null) throw new ArgumentNullException("key is null"); 
+        public void Remove(object key) {
+            if (key == null)
+                throw new ArgumentNullException("key is null");
             var whichBucket = Hash(key, this._numberOfBuckets);
             var match = EntryForKey(key, this._buckets[whichBucket]);
 
@@ -267,18 +244,15 @@ namespace System.Collections
                 return;
 
             //is entry at front?
-            if (this._buckets[whichBucket] == match)
-            {
+            if (this._buckets[whichBucket] == match) {
                 this._buckets[whichBucket] = match.next;
                 this._count--;
                 return;
             }
 
             //handle entry in middle and at the end
-            for (var cur = this._buckets[whichBucket]; cur != null; cur = cur.next)
-            {
-                if (cur.next == match)
-                {
+            for (var cur = this._buckets[whichBucket]; cur != null; cur = cur.next) {
+                if (cur.next == match) {
                     cur.next = match.next;
                     this._count--;
                     return;
@@ -288,40 +262,33 @@ namespace System.Collections
 
         #endregion IDictionary Members
 
-        private class Entry
-        {
+        private class Entry {
             public object key;
             public object value;
             public Entry next;
 
-            public Entry(object key, object value, ref Entry n)
-            {
+            public Entry(object key, object value, ref Entry n) {
                 this.key = key;
                 this.value = value;
                 this.next = n;
             }
         }
 
-        private class HashtableEnumerator : IEnumerator
-        {
+        private class HashtableEnumerator : IEnumerator {
             Hashtable ht;
             Entry temp;
             int index = -1;
             EnumeratorType returnType;
 
-            public HashtableEnumerator(Hashtable hashtable, EnumeratorType type)
-            {
+            public HashtableEnumerator(Hashtable hashtable, EnumeratorType type) {
                 this.ht = hashtable;
                 this.returnType = type;
             }
 
             // Return the current item.
-            public object Current
-            {
-                get 
-                {
-                    switch (this.returnType)
-                    {
+            public object Current {
+                get {
+                    switch (this.returnType) {
                         case EnumeratorType.DE:
                             return new DictionaryEntry(this.temp.key, this.temp.value);
 
@@ -334,17 +301,15 @@ namespace System.Collections
                         default:
                             break;
                     }
-                    return new DictionaryEntry(this.temp.key, this.temp.value); 
+                    return new DictionaryEntry(this.temp.key, this.temp.value);
                 }
             }
 
             // Advance to the next item.
-            public bool MoveNext()
-            {
+            public bool MoveNext() {
                 startLoop:
                 //iterate index or list
-                if (this.temp == null)
-                {
+                if (this.temp == null) {
                     this.index++;
                     if (this.index < this.ht._numberOfBuckets)
                         this.temp = this.ht._buckets[this.index];
@@ -352,12 +317,12 @@ namespace System.Collections
                         return false;
                 }
                 else
-                    this.temp = this.temp.next;                    
+                    this.temp = this.temp.next;
 
                 //null check
                 if (this.temp == null)
                     goto startLoop;
-                    
+
                 return true;
             }
 
@@ -366,8 +331,7 @@ namespace System.Collections
         }
 
         // EnumeratorType - Enum that describes which object the Enumerator's Current property will return.
-        private enum EnumeratorType
-        {
+        private enum EnumeratorType {
             // DictionaryEntry object. 
             DE,
 
@@ -378,8 +342,7 @@ namespace System.Collections
             VALUE
         }
 
-        private class KeyCollection : ICollection
-        {
+        private class KeyCollection : ICollection {
             Hashtable ht;
 
             public KeyCollection(Hashtable hashtable) => this.ht = hashtable;
@@ -403,8 +366,7 @@ namespace System.Collections
             #endregion
         }
 
-        private class ValueCollection : ICollection
-        {
+        private class ValueCollection : ICollection {
             Hashtable ht;
 
             public ValueCollection(Hashtable hashtable) => this.ht = hashtable;

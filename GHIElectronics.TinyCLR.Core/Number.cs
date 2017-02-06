@@ -1,10 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////namespace System
-namespace System
-{
-
-    using System;
+namespace System {
     using System.Globalization;
     using System.Runtime.CompilerServices;
     // The Number class implements methods for formatting and parsing
@@ -277,20 +274,16 @@ namespace System
     // NaNs or Infinities.
     //
     //This class contains only static members and does not need to be serializable
-    internal static class Number
-    {
-        public static string Format(object value, bool isInteger, string format, NumberFormatInfo info)
-        {
+    internal static class Number {
+        public static string Format(object value, bool isInteger, string format, NumberFormatInfo info) {
             ValidateFormat(format, out var formatCh, out var precision);
 
             var result = FormatNative(value, formatCh, precision);
 
-            if (isInteger)
-            {
+            if (isInteger) {
                 if (formatCh == 'N' || formatCh == 'F' || formatCh == 'G') // remove '0' infront, except for formatCh = 'D'
                 {
-                    if (result != null && result.Length > 1)
-                    {
+                    if (result != null && result.Length > 1) {
                         var negative = result[0] == '-' ? true : false;
 
                         result = result.TrimStart(new char[] { '0', '-' });
@@ -303,12 +296,11 @@ namespace System
                     }
                 }
 
-                if ((formatCh == 'N' || formatCh == 'F'|| formatCh == 'D') && precision == 0 && ((int)value == 0))
+                if ((formatCh == 'N' || formatCh == 'F' || formatCh == 'D') && precision == 0 && ((int)value == 0))
                     return "0";
                 return PostProcessInteger(value, result, formatCh, precision, info);
             }
-            else
-            {
+            else {
                 return PostProcessFloat(result, formatCh, info);
             }
         }
@@ -316,12 +308,10 @@ namespace System
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         private static extern string FormatNative(object value, char format, int precision);
 
-        private static void ValidateFormat(string format, out char formatCh, out int precision)
-        {
+        private static void ValidateFormat(string format, out char formatCh, out int precision) {
             precision = 0;
 
-            if (format == null || format == "")
-            {
+            if (format == null || format == "") {
                 formatCh = 'G';
                 return;
             }
@@ -329,29 +319,24 @@ namespace System
             formatCh = format[0];
 
             // ToUpper, since all the supported format characters are invariant in case
-            if (formatCh >= 'a' && formatCh <= 'z')
-            {
+            if (formatCh >= 'a' && formatCh <= 'z') {
                 formatCh = (char)(formatCh - ('a' - 'A'));
             }
 
             var formatLen = format.Length;
 
-            if (formatLen > 1)
-            {
+            if (formatLen > 1) {
                 ushort digit;
 
-                if (formatLen > 4)
-                {
+                if (formatLen > 4) {
                     // Invalid Format
                     throw new ArgumentException();
                 }
 
-                for (var i = 1; i < formatLen; i++)
-                {
+                for (var i = 1; i < formatLen; i++) {
                     digit = (ushort)(format[i] - '0');
 
-                    if (digit > 9)
-                    {
+                    if (digit > 9) {
                         throw new ArgumentException();
                     }
 
@@ -360,50 +345,43 @@ namespace System
             }
 
             // Set default precision, if neccessary + check for valid formatCh
-            switch (formatCh)
-            {
+            switch (formatCh) {
                 case 'G':
                     break;
                 case 'X':
                 case 'F':
                 case 'N':
                 case 'D':
-                    if (formatLen == 1) precision = 2; // if no precision is specified, use the default
+                    if (formatLen == 1)
+                        precision = 2; // if no precision is specified, use the default
                     break;
                 default:
                     throw new ArgumentException();
             }
         }
 
-        private static string PostProcessInteger(object value, string original, char format, int precision, NumberFormatInfo info)
-        {
+        private static string PostProcessInteger(object value, string original, char format, int precision, NumberFormatInfo info) {
             var result = original;
 
-            switch (format)
-            {
+            switch (format) {
                 case 'X':
                     // truncate negative numbers to 
-                    if (result.Length > precision && (result[0] == 'F' || result[0] == 'f'))
-                    {
+                    if (result.Length > precision && (result[0] == 'F' || result[0] == 'f')) {
                         var len = result.Length;
 
-                        if(value is sbyte || value is byte)
-                        {
-                            if (len > 2)
-                            {
+                        if (value is sbyte || value is byte) {
+                            if (len > 2) {
                                 result = result.Substring(len - 2, 2);
                             }
                         }
-                        else if (value is short)
-                        {
-                            if (len > 4)
-                            {
+                        else if (value is short) {
+                            if (len > 4) {
                                 result = result.Substring(len - 4, 4);
                             }
                         }
                     }
                     break;
-                
+
                 case 'N':
                     // InsertGroupSeperators, AppendTrailingZeros, ReplaceNegativeSign
                     result = InsertGroupSeperators(result, info);
@@ -421,14 +399,12 @@ namespace System
             {
                 var i = 1;
 
-                for (; i < result.Length; i++)
-                {
+                for (; i < result.Length; i++) {
                     if (result[i] != '.' && result[i] != '0' && result[i] != ',')
                         break;
                 }
 
-                if (i == result.Length)
-                {
+                if (i == result.Length) {
                     result = result.Substring(1);
                 }
             }
@@ -436,12 +412,10 @@ namespace System
             return result;
         }
 
-        private static string PostProcessFloat(string original, char format, NumberFormatInfo info)
-        {
+        private static string PostProcessFloat(string original, char format, NumberFormatInfo info) {
             var result = original;
 
-            if (format == 'N')
-            {
+            if (format == 'N') {
                 result = InsertGroupSeperators(result, info);
             }
 
@@ -452,14 +426,12 @@ namespace System
             {
                 var i = 1;
 
-                for (; i < result.Length; i++)
-                {
+                for (; i < result.Length; i++) {
                     if (result[i] != '.' && result[i] != '0' && result[i] != ',')
                         break;
                 }
 
-                if (i == result.Length)
-                {
+                if (i == result.Length) {
                     result = result.Substring(1);
                 }
             }
@@ -467,50 +439,41 @@ namespace System
             return result;
         }
 
-        private static string AppendTrailingZeros(string original, int count, NumberFormatInfo info)
-        {
-            if (count > 0)
-            {
+        private static string AppendTrailingZeros(string original, int count, NumberFormatInfo info) {
+            if (count > 0) {
                 return original + info.NumberDecimalSeparator + new string('0', count);
             }
-            else
-            {
+            else {
                 return original;
             }
         }
 
-        private static string ReplaceNegativeSign(string original, NumberFormatInfo info)
-        {
-            if (original[0] == '-')
-            {
+        private static string ReplaceNegativeSign(string original, NumberFormatInfo info) {
+            if (original[0] == '-') {
                 return info.NegativeSign + original.Substring(1);
             }
-            else
-            {
+            else {
                 return original;
             }
         }
 
-        private static string ReplaceDecimalSeperator(string original, NumberFormatInfo info)
-        {
+        private static string ReplaceDecimalSeperator(string original, NumberFormatInfo info) {
             var pos = original.IndexOf('.');
 
-            if (pos != -1)
-            {
+            if (pos != -1) {
                 return original.Substring(0, pos) + info.NumberDecimalSeparator + original.Substring(pos + 1);
             }
-            else
-            {
+            else {
                 return original;
             }
         }
 
-        private static string InsertGroupSeperators(string original, NumberFormatInfo info)
-        {
+        private static string InsertGroupSeperators(string original, NumberFormatInfo info) {
             var digitsStartPos = (original[0] == '-') ? 1 : 0;
 
             var decimalPointPos = original.IndexOf('.');
-            if (decimalPointPos == -1) decimalPointPos = original.Length;
+            if (decimalPointPos == -1)
+                decimalPointPos = original.Length;
 
             var prefix = (digitsStartPos == 1) ? "-" : "";
             var suffix = original.Substring(decimalPointPos);
@@ -527,12 +490,10 @@ namespace System
             var seperator = info.NumberGroupSeparator;
             var lastSizeInd = groupSizes.Length - 1;
 
-            while (pos > 0)
-            {
+            while (pos > 0) {
                 result = seperator + digits.Substring(pos, size) + result;
 
-                if (sizeInd < lastSizeInd)
-                {
+                if (sizeInd < lastSizeInd) {
                     sizeInd++;
                     size = groupSizes[sizeInd];
 
@@ -549,7 +510,7 @@ namespace System
 
             return result;
         }
-        
+
     }
 }
 

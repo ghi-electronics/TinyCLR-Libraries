@@ -1,8 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////namespace System.Text
-namespace System.Text
-{
+namespace System.Text {
     // This abstract base class represents a character encoding. The class provides
     // methods to convert arrays and strings of Unicode characters to and from
     // arrays of bytes. A number of Encoding implementations are provided in
@@ -67,8 +66,7 @@ namespace System.Text
     //
 
     [Serializable()]
-    public abstract class Encoding
-    {
+    public abstract class Encoding {
         public virtual byte[] GetBytes(string s) => null;
 
         public virtual int GetBytes(string s, int charIndex, int charCount, byte[] bytes, int byteIndex) => throw new NotImplementedException();

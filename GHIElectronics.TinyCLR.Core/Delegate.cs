@@ -1,12 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////namespace System
-namespace System
-{
-
-    using System;
+namespace System {
     using System.Reflection;
-    using System.Threading;
     using System.Runtime.CompilerServices;
     [Serializable()]
 #pragma warning disable CS0659 // Type overrides Object.Equals(object o) but does not override Object.GetHashCode()
@@ -22,14 +18,12 @@ namespace System
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public static extern Delegate Combine(Delegate a, Delegate b);
 
-        extern public MethodInfo Method
-        {
+        extern public MethodInfo Method {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
             get;
         }
 
-        extern public object Target
-        {
+        extern public object Target {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
             get;
         }

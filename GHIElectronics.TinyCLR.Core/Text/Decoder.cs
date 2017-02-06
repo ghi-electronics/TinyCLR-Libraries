@@ -2,8 +2,7 @@
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-namespace System.Text
-{
+namespace System.Text {
     /*
      * A <i>Decoder</i> is used to decode a sequence of blocks of bytes into a
      * sequence of blocks of characters. Following instantiation of a decoder,
@@ -16,8 +15,7 @@ namespace System.Text
      * class are typically obtained through calls to the <i>GetDecoder</i> method
      * of <i>Encoding</i> objects.
      */
-    public abstract class Decoder
-    {
+    public abstract class Decoder {
         public abstract void Convert(byte[] bytes, int byteIndex, int byteCount,
             char[] chars, int charIndex, int charCount, bool flush,
             out int bytesUsed, out int charsUsed, out bool completed);

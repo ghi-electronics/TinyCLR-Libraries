@@ -11,7 +11,6 @@
 **   Emitted by VS, and can help catch deployment problems.
 **
 ===========================================================*/
-using System;
 
 namespace System.Runtime.Versioning {
 

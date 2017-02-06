@@ -1,21 +1,16 @@
-namespace System
-{
+namespace System {
     [Serializable()]
-    public class OutOfMemoryException : SystemException
-    {
+    public class OutOfMemoryException : SystemException {
         public OutOfMemoryException()
-            : base()
-        {
+            : base() {
         }
 
         public OutOfMemoryException(string message)
-            : base(message)
-        {
+            : base(message) {
         }
 
         public OutOfMemoryException(string message, Exception innerException)
-            : base(message, innerException)
-        {
+            : base(message, innerException) {
         }
     }
 }

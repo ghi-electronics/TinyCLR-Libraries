@@ -1,16 +1,11 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-namespace System
-{
-
-    using System;
-    using System.Runtime.CompilerServices;
+namespace System {
     using System.Globalization;
 
     [Serializable]
-    public struct Int16
-    {
+    public struct Int16 {
 #pragma warning disable CS0649 // Field is never assigned to, and will always have its default value
         internal short m_value;
 #pragma warning restore CS0649 // Field is never assigned to, and will always have its default value
@@ -22,10 +17,8 @@ namespace System
 
         public string ToString(string format) => Number.Format(this.m_value, true, format, NumberFormatInfo.CurrentInfo);
 
-        public static short Parse(string s)
-        {
-            if (s == null)
-            {
+        public static short Parse(string s) {
+            if (s == null) {
                 throw new ArgumentNullException();
             }
 

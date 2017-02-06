@@ -1,15 +1,13 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-namespace System.Reflection
-{
+namespace System.Reflection {
 
     using System;
-    using CultureInfo = System.Globalization.CultureInfo;
     using System.Runtime.CompilerServices;
+    using CultureInfo = System.Globalization.CultureInfo;
 
-    public sealed class AssemblyName
-    {
+    public sealed class AssemblyName {
         private Assembly _assembly;
 
         //--//
@@ -20,10 +18,8 @@ namespace System.Reflection
 
         public string FullName => this._assembly.FullName;
 
-        public Version Version
-        {
-            get
-            {
+        public Version Version {
+            get {
                 int major = -1, minor = -1, build = -1, revision = -1;
 
                 this._assembly.GetVersion(ref major, ref minor, ref build, ref revision);
@@ -34,10 +30,8 @@ namespace System.Reflection
     }
 
     [Serializable()]
-    public class Assembly
-    {
-        public extern virtual string FullName
-        {
+    public class Assembly {
+        public extern virtual string FullName {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
             get;
         }
@@ -54,12 +48,10 @@ namespace System.Reflection
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public extern virtual Type GetType(string name);
-        public virtual Type GetType(string name, bool throwOnError)
-        {
+        public virtual Type GetType(string name, bool throwOnError) {
             var type = GetType(name);
 
-            if (type == null)
-            {
+            if (type == null) {
                 throw new ArgumentException();
             }
 
@@ -68,10 +60,8 @@ namespace System.Reflection
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public extern virtual Type[] GetTypes();
-        public Assembly GetSatelliteAssembly(CultureInfo culture)
-        {
-            if (culture == null)
-            {
+        public Assembly GetSatelliteAssembly(CultureInfo culture) {
+            if (culture == null) {
                 throw new ArgumentNullException("culture");
             }
 
@@ -79,8 +69,7 @@ namespace System.Reflection
             var baseName = this.FullName;
             string cultureName;
 
-            while (assm == null && (cultureName = culture.Name) != "")
-            {
+            while (assm == null && (cultureName = culture.Name) != "") {
                 var assmName = baseName + "." + cultureName;
 
                 assm = Assembly.Load(assmName, false);
@@ -88,8 +77,7 @@ namespace System.Reflection
                 culture = culture.Parent;
             }
 
-            if (assm == null)
-            {
+            if (assm == null) {
                 throw new ArgumentException();
                 // FIXME -- throw new FileNotFoundException();
             }
@@ -97,18 +85,15 @@ namespace System.Reflection
             return assm;
         }
 
-        public static Assembly Load(string assemblyString)
-        {
-            if (assemblyString == null)
-            {
+        public static Assembly Load(string assemblyString) {
+            if (assemblyString == null) {
                 throw new ArgumentNullException("assemblyString");
             }
 
             return Load(assemblyString, true);
         }
 
-        internal static string ParseAssemblyName(string assemblyString, ref bool fVersion, ref int[] ver)
-        {
+        internal static string ParseAssemblyName(string assemblyString, ref bool fVersion, ref int[] ver) {
             // valid names are in the forms:
             // 1) "Microsoft.SPOT.Native" or
             // 2) "Microsoft.SPOT.Native, Version=1.2.3.4" or
@@ -122,62 +107,57 @@ namespace System.Reflection
             fVersion = false;
 
             // if there is no comma then we have an assembly name in the form with no version
-            if ((commaIdx = assemblyString.IndexOf(',')) != -1)
-            {
+            if ((commaIdx = assemblyString.IndexOf(',')) != -1) {
                 name = assemblyString.Substring(0, commaIdx);
 
                 const string c_versionTag = "version=";
 
                 // verify that the format with the version is correct and skip the ", Version=" part of the string
-                if ((versionIdx = assemblyString.ToLower().IndexOf(c_versionTag)) != 0)
-                {
+                if ((versionIdx = assemblyString.ToLower().IndexOf(c_versionTag)) != 0) {
                     fVersion = true;
 
                     // the "version=" string must come right after the ' ,'
-                    if (versionIdx == commaIdx + 2)
-                    {
+                    if (versionIdx == commaIdx + 2) {
                         var startIdx = versionIdx + c_versionTag.Length;
                         int endIdx;
-                        
+
                         // trim off the Culture, PublicKeyToken, etc for now
-                        if(-1 != (endIdx = assemblyString.IndexOf(',', startIdx)))
-                        {
+                        if (-1 != (endIdx = assemblyString.IndexOf(',', startIdx))) {
                             assemblyString = assemblyString.Substring(startIdx, endIdx - startIdx);
                         }
-                        else
-                        {
+                        else {
                             assemblyString = assemblyString.Substring(startIdx);
                         }
 
                         // at this point we have assemblyString = "1.2.3.4"
                         var version = assemblyString.Split('.');
 
-                        if (version.Length > 0) ver[0] = ushort.Parse(version[0]);
-                        if (version.Length > 1) ver[1] = ushort.Parse(version[1]);
+                        if (version.Length > 0)
+                            ver[0] = ushort.Parse(version[0]);
+                        if (version.Length > 1)
+                            ver[1] = ushort.Parse(version[1]);
                         // build and revision versions may be -1 (which means "don't care")
-                        if (version.Length > 2) ver[2] = int.Parse(version[2]);
-                        if (version.Length > 3) ver[3] = int.Parse(version[3]);
+                        if (version.Length > 2)
+                            ver[2] = int.Parse(version[2]);
+                        if (version.Length > 3)
+                            ver[3] = int.Parse(version[3]);
                     }
-                    else
-                    {
+                    else {
                         throw new ArgumentException();
                     }
                 }
-                else
-                {
+                else {
                     throw new ArgumentException();
                 }
             }
-            else
-            {
+            else {
                 name = assemblyString;
             }
 
             return name;
         }
 
-        internal static Assembly Load(string assemblyString, bool fThrowOnError)
-        {
+        internal static Assembly Load(string assemblyString, bool fThrowOnError) {
             var fVersion = false;
             var ver = new int[4];
 
@@ -185,10 +165,8 @@ namespace System.Reflection
 
             var assm = LoadInternal(name, fVersion, ver[0], ver[1], ver[2], ver[3]);
 
-            if (assm == null)
-            {
-                if (fThrowOnError)
-                {
+            if (assm == null) {
+                if (fThrowOnError) {
                     // FIXME -- should be FileNotFoundException, per spec.
                     throw new ArgumentException();
                 }

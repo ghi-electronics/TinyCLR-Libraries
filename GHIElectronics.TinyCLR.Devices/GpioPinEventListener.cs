@@ -2,23 +2,19 @@ using GHIElectronics.TinyCLR.Devices.Internal;
 using System;
 using System.Collections;
 
-namespace GHIElectronics.TinyCLR.Devices.Gpio
-{
-    internal class GpioPinEvent : BaseEvent
-    {
+namespace GHIElectronics.TinyCLR.Devices.Gpio {
+    internal class GpioPinEvent : BaseEvent {
 #pragma warning disable CS0649 // Field is never assigned to, and will always have its default value
         public int PinNumber;
         public GpioPinEdge Edge;
 #pragma warning disable CS0649 // Field is never assigned to, and will always have its default value
     }
 
-    internal class GpioPinEventListener : IEventProcessor, IEventListener
-    {
+    internal class GpioPinEventListener : IEventProcessor, IEventListener {
         // Map of pin numbers to GpioPin objects.
         private IDictionary m_pinMap = new Hashtable();
 
-        public GpioPinEventListener()
-        {
+        public GpioPinEventListener() {
             EventSink.AddEventProcessor(EventCategory.Gpio, this);
             EventSink.AddEventListener(EventCategory.Gpio, this);
         }
@@ -29,46 +25,36 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio
             Edge = (data2 == 0) ? GpioPinEdge.FallingEdge : GpioPinEdge.RisingEdge,
         };
 
-        public void InitializeForEventSource()
-        {
+        public void InitializeForEventSource() {
         }
 
-        public bool OnEvent(BaseEvent ev)
-        {
+        public bool OnEvent(BaseEvent ev) {
             var pinEvent = (GpioPinEvent)ev;
             GpioPin pin = null;
 
-            lock (this.m_pinMap)
-            {
-                if (this.m_pinMap.Contains(pinEvent.PinNumber))
-                {
+            lock (this.m_pinMap) {
+                if (this.m_pinMap.Contains(pinEvent.PinNumber)) {
                     pin = (GpioPin)this.m_pinMap[pinEvent.PinNumber];
                 }
             }
 
             // Avoid calling this under a lock to prevent a potential lock inversion.
-            if (pin != null)
-            {
+            if (pin != null) {
                 pin.OnPinChangedInternal(pinEvent.Edge);
             }
 
             return true;
         }
 
-        public void AddPin(int pinNumber, GpioPin pin)
-        {
-            lock (this.m_pinMap)
-            {
+        public void AddPin(int pinNumber, GpioPin pin) {
+            lock (this.m_pinMap) {
                 this.m_pinMap[pin.PinNumber] = pin;
             }
         }
 
-        public void RemovePin(int pinNumber)
-        {
-            lock (this.m_pinMap)
-            {
-                if (this.m_pinMap.Contains(pinNumber))
-                {
+        public void RemovePin(int pinNumber) {
+            lock (this.m_pinMap) {
+                if (this.m_pinMap.Contains(pinNumber)) {
                     this.m_pinMap.Remove(pinNumber);
                 }
             }

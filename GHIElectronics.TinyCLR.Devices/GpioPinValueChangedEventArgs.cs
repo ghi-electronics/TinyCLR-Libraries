@@ -1,12 +1,10 @@
-namespace GHIElectronics.TinyCLR.Devices.Gpio
-{
+namespace GHIElectronics.TinyCLR.Devices.Gpio {
     /// <summary>
     /// Provides data about the GpioPin.ValueChanged event that occurs when the value of the general-purpose I/O (GPIO)
     /// pin changes, either because of an external stimulus when the pin is configured as an input, or when a value is
     /// written to the pin when the pin in configured as an output.
     /// </summary>
-    public sealed class GpioPinValueChangedEventArgs
-    {
+    public sealed class GpioPinValueChangedEventArgs {
         private GpioPinEdge m_edge;
 
         internal GpioPinValueChangedEventArgs(GpioPinEdge edge) => this.m_edge = edge;

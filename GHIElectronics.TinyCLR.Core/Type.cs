@@ -1,25 +1,19 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////namespace System
-namespace System
-{
-
-    using System;
+namespace System {
     using System.Reflection;
     using System.Runtime.CompilerServices;
 
     [Serializable()]
-    public abstract class Type : MemberInfo, IReflect
-    {
+    public abstract class Type : MemberInfo, IReflect {
 
-        public extern override Type DeclaringType
-        {
+        public extern override Type DeclaringType {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
             get;
         }
 
-        public static Type GetType(string typeName)
-        {
+        public static Type GetType(string typeName) {
             var fVersion = false;
             var ver = new int[4];
             var assemblyString = string.Empty;
@@ -27,14 +21,13 @@ namespace System
 
             var name = ParseTypeName(typeName, ref assemblyString);
 
-            if (assemblyString.Length > 0)
-            {
-                assemblyName = Assembly.ParseAssemblyName( assemblyString, ref fVersion, ref ver );
+            if (assemblyString.Length > 0) {
+                assemblyName = Assembly.ParseAssemblyName(assemblyString, ref fVersion, ref ver);
             }
 
             return GetTypeInternal(name, assemblyName, fVersion, ver);
         }
-        
+
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         private static extern Type GetTypeInternal(string typeName, string assemblyName, bool fVersion, int[] ver);
 
@@ -43,26 +36,22 @@ namespace System
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public extern object InvokeMember(string name, BindingFlags invokeAttr, Binder binder, object target, object[] args);
 
-        public abstract Assembly Assembly
-        {
+        public abstract Assembly Assembly {
             get;
         }
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public extern static Type GetTypeFromHandle(RuntimeTypeHandle handle);
 
-        public abstract string FullName
-        {
+        public abstract string FullName {
             get;
         }
 
-        public abstract string AssemblyQualifiedName
-        {
+        public abstract string AssemblyQualifiedName {
             get;
         }
 
-        public abstract Type BaseType
-        {
+        public abstract Type BaseType {
             get;
         }
 
@@ -107,69 +96,58 @@ namespace System
         //////  class inside the runtime.
         //////
         ////////////////////////////////////////////////////////////////////////////////////
-        public extern bool IsNotPublic
-        {
+        public extern bool IsNotPublic {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
             get;
         }
 
-        public extern bool IsPublic
-        {
+        public extern bool IsPublic {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
             get;
         }
 
-        public extern bool IsClass
-        {
+        public extern bool IsClass {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
             get;
         }
 
-        public extern bool IsInterface
-        {
+        public extern bool IsInterface {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
             get;
         }
 
-        public extern bool IsValueType
-        {
+        public extern bool IsValueType {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
             get;
         }
 
-        public extern bool IsAbstract
-        {
+        public extern bool IsAbstract {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
             get;
         }
 
-        public extern bool IsEnum
-        {
+        public extern bool IsEnum {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
             get;
         }
 
-        public extern bool IsSerializable
-        {
+        public extern bool IsSerializable {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
             get;
         }
 
-        public extern bool IsArray
-        {
+        public extern bool IsArray {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
             get;
         }
 
         abstract public Type GetElementType();
 
-        public virtual bool IsSubclassOf(Type c)
-        {
+        public virtual bool IsSubclassOf(Type c) {
             var p = this;
             if (p == c)
                 return false;
-            while (p != null)
-            {
+            while (p != null) {
                 if (p == c)
                     return true;
                 p = p.BaseType;
@@ -187,9 +165,8 @@ namespace System
         private const BindingFlags DefaultLookup = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public;
 
         //--//
-        
-        private static string ParseTypeName(string typeName, ref string assemblyString)
-        {
+
+        private static string ParseTypeName(string typeName, ref string assemblyString) {
             // valid names are in the forms:
             // 1) "Microsoft.SPOT.Hardware.Cpu.Pin" or
             // 2) "Microsoft.SPOT.Hardware.Cpu.Pin, Microsoft.SPOT.Hardware" or
@@ -200,14 +177,12 @@ namespace System
             string name;
 
             // if there is no comma then we have an assembly name in the form with no version
-            if ((commaIdx = typeName.IndexOf(',')) != -1)
-            {
+            if ((commaIdx = typeName.IndexOf(',')) != -1) {
                 // we grab the type name, but we already know there is more
                 name = typeName.Substring(0, commaIdx);
 
                 // after the comma we need ONE (1) space only and then the assembly name
-                if(typeName.Length <= commaIdx + 2)
-                {
+                if (typeName.Length <= commaIdx + 2) {
                     throw new ArgumentException();
                 }
 
@@ -215,8 +190,7 @@ namespace System
                 // at this point there could be also the Version appended to it
                 assemblyString = typeName.Substring(commaIdx + 2);
             }
-            else
-            {
+            else {
                 name = typeName;
                 assemblyString = "";
             }

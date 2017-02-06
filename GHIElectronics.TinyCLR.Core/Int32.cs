@@ -1,16 +1,11 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-namespace System
-{
-
-    using System;
-    using System.Runtime.CompilerServices;
+namespace System {
     using System.Globalization;
 
     [Serializable]
-    public struct Int32
-    {
+    public struct Int32 {
         internal int m_value;
 
         public const int MaxValue = 0x7fffffff;
@@ -20,10 +15,8 @@ namespace System
 
         public string ToString(string format) => Number.Format(this.m_value, true, format, NumberFormatInfo.CurrentInfo);
 
-        public static int Parse(string s)
-        {
-            if (s == null)
-            {
+        public static int Parse(string s) {
+            if (s == null) {
                 throw new ArgumentNullException();
             }
 

@@ -1,21 +1,16 @@
-namespace System
-{
+namespace System {
     [Serializable()]
-    public class NullReferenceException : SystemException
-    {
+    public class NullReferenceException : SystemException {
         public NullReferenceException()
-            : base()
-        {
+            : base() {
         }
 
         public NullReferenceException(string message)
-            : base(message)
-        {
+            : base(message) {
         }
 
         public NullReferenceException(string message, Exception innerException)
-            : base(message, innerException)
-        {
+            : base(message, innerException) {
         }
     }
 }

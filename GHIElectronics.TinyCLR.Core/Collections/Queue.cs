@@ -1,19 +1,16 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
-namespace System.Collections
-{
+namespace System.Collections {
     /// <summary>
     /// A circular-array implementation of a queue. Enqueue can be O(n).  Dequeue is O(1).
     /// </summary>
     [DebuggerDisplay("Count = {Count}")]
     [Serializable()]
-    public class Queue : ICollection, ICloneable
-    {
+    public class Queue : ICollection, ICloneable {
         private object[] _array;
         private int _head;       // First valid element in the queue
         private int _tail;       // Last valid element in the queue
@@ -26,8 +23,7 @@ namespace System.Collections
         /// Initializes a new instance of the Queue class that is empty, has the default initial
         /// capacity, and uses the default growth factor (2x).
         /// </summary>
-        public Queue()
-        {
+        public Queue() {
             this._array = new object[_defaultCapacity];
             this._head = 0;
             this._tail = 0;
@@ -42,18 +38,15 @@ namespace System.Collections
         /// Creates a shallow copy of the Queue.
         /// </summary>
         /// <returns>A shallow copy of the Queue.</returns>
-        public virtual object Clone()
-        {
+        public virtual object Clone() {
             var q = new Queue();
 
-            if (this._size > _defaultCapacity)
-            {
+            if (this._size > _defaultCapacity) {
                 // only re-allocate a new array if the size isn't what we need.
                 // otherwise, the one allocated in the constructor will be just fine
                 q._array = new object[this._size];
             }
-            else
-            {
+            else {
                 // if size is not the same as capacity, we need to adjust tail accordingly
                 q._tail = this._size % _defaultCapacity;
             }
@@ -100,11 +93,11 @@ namespace System.Collections
         /// Returns an enumerator that iterates through the Queue.
         /// </summary>
         /// <returns>An IEnumerator for the Queue.</returns>
-        public virtual IEnumerator GetEnumerator()
-        {
+        public virtual IEnumerator GetEnumerator() {
             var endIndex = this._tail;
 
-            if (this._size > 0 && this._tail <= this._head) endIndex += this._array.Length;
+            if (this._size > 0 && this._tail <= this._head)
+                endIndex += this._array.Length;
 
             return new Array.SZArrayEnumerator(this._array, this._head, endIndex);
         }
@@ -128,17 +121,14 @@ namespace System.Collections
         /// </summary>
         /// <param name="obj">The Object to locate in the Queue.</param>
         /// <returns>true if obj is found in the Queue; otherwise, false.</returns>
-        public virtual bool Contains(object obj)
-        {
+        public virtual bool Contains(object obj) {
             if (this._size == 0)
                 return false;
 
-            if (this._head < this._tail)
-            {
+            if (this._head < this._tail) {
                 return Array.IndexOf(this._array, obj, this._head, this._size) >= 0;
             }
-            else
-            {
+            else {
                 return (Array.IndexOf(this._array, obj, this._head, this._array.Length - this._head) >= 0) ||
                        (Array.IndexOf(this._array, obj, 0, this._tail) >= 0);
             }
@@ -150,8 +140,7 @@ namespace System.Collections
         /// to its end.
         /// </summary>
         /// <returns>A new array containing elements copied from the Queue.</returns>
-        public virtual object[] ToArray()
-        {
+        public virtual object[] ToArray() {
             var arr = new object[this._size];
 
             CopyTo(arr, 0);

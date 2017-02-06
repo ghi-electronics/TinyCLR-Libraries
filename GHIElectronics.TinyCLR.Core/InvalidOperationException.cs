@@ -1,26 +1,19 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-namespace System
-{
-
-    using System;
+namespace System {
     [Serializable()]
-    public class InvalidOperationException : SystemException
-    {
+    public class InvalidOperationException : SystemException {
         public InvalidOperationException()
-            : base()
-        {
+            : base() {
         }
 
         public InvalidOperationException(string message)
-            : base(message)
-        {
+            : base(message) {
         }
 
         public InvalidOperationException(string message, Exception innerException)
-            : base(message, innerException)
-        {
+            : base(message, innerException) {
         }
 
     }

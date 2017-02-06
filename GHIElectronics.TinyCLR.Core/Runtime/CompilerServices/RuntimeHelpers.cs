@@ -1,14 +1,11 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////namespace System.Runtime.CompilerServices
-namespace System.Runtime.CompilerServices
-{
+namespace System.Runtime.CompilerServices {
 
     using System;
-    using System.Runtime.CompilerServices;
     [Serializable]
-    public static class RuntimeHelpers
-    {
+    public static class RuntimeHelpers {
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public static extern void InitializeArray(Array array, RuntimeFieldHandle fldHandle);
 
@@ -45,8 +42,7 @@ namespace System.Runtime.CompilerServices
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public static extern void RunClassConstructor(RuntimeTypeHandle type);
 
-        extern public static int OffsetToStringData
-        {
+        extern public static int OffsetToStringData {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
             get;
         }

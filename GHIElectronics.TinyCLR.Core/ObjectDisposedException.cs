@@ -1,21 +1,16 @@
-namespace System
-{
+namespace System {
     [Serializable()]
-    public class ObjectDisposedException : SystemException
-    {
+    public class ObjectDisposedException : SystemException {
         public ObjectDisposedException()
-            : base()
-        {
+            : base() {
         }
 
         public ObjectDisposedException(string message)
-            : base(message)
-        {
+            : base(message) {
         }
 
         public ObjectDisposedException(string message, Exception innerException)
-            : base(message, innerException)
-        {
+            : base(message, innerException) {
         }
     }
 }

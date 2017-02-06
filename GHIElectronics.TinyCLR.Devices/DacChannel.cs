@@ -1,5 +1,5 @@
-using System;
 using GHIElectronics.TinyCLR.Devices.Dac.Provider;
+using System;
 
 namespace GHIElectronics.TinyCLR.Devices.Dac {
     public sealed class DacChannel : IDisposable {
@@ -25,7 +25,8 @@ namespace GHIElectronics.TinyCLR.Devices.Dac {
         }
 
         private void Dispose(bool disposing) {
-            if (this.disposed) return;
+            if (this.disposed)
+                return;
 
             if (disposing) {
                 this.provider.ReleaseChannel(this.channel);
@@ -42,8 +43,10 @@ namespace GHIElectronics.TinyCLR.Devices.Dac {
         public int LastWrittenValue { get; private set; }
 
         public void WriteValue(int value) {
-            if (this.disposed) throw new ObjectDisposedException();
-            if (value < this.provider.MinValue || value > this.provider.MaxValue) throw new ArgumentOutOfRangeException(nameof(value));
+            if (this.disposed)
+                throw new ObjectDisposedException();
+            if (value < this.provider.MinValue || value > this.provider.MaxValue)
+                throw new ArgumentOutOfRangeException(nameof(value));
 
             this.LastWrittenValue = value;
 
@@ -51,8 +54,10 @@ namespace GHIElectronics.TinyCLR.Devices.Dac {
         }
 
         public void WriteValue(double ratio) {
-            if (this.disposed) throw new ObjectDisposedException();
-            if (ratio < 0.0 || ratio > 1.0) throw new ArgumentOutOfRangeException(nameof(ratio));
+            if (this.disposed)
+                throw new ObjectDisposedException();
+            if (ratio < 0.0 || ratio > 1.0)
+                throw new ArgumentOutOfRangeException(nameof(ratio));
 
             this.WriteValue((int)(ratio * (this.provider.MaxValue - this.provider.MinValue)) + this.provider.MinValue);
         }

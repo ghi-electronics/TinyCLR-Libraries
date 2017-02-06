@@ -1,8 +1,7 @@
 using System;
 using System.Runtime.CompilerServices;
 
-namespace GHIElectronics.TinyCLR.Devices.Gpio
-{
+namespace GHIElectronics.TinyCLR.Devices.Gpio {
     // FUTURE: This should be "EventHandler<GpioPinValueChangedEventArgs>"
     public delegate void GpioPinValueChangedEventHandler(
         object sender,
@@ -11,8 +10,7 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio
     /// <summary>
     /// Represents a general-purpose I/O (GPIO) pin.
     /// </summary>
-    public sealed class GpioPin : IDisposable
-    {
+    public sealed class GpioPin : IDisposable {
         private static GpioPinEventListener s_eventListener = new GpioPinEventListener();
 
         private object m_syncLock = new object();
@@ -23,13 +21,11 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio
         private GpioPinValue m_lastOutputValue = GpioPinValue.Low;
         private GpioPinValueChangedEventHandler m_callbacks = null;
 
-        internal GpioPin()
-        {
+        internal GpioPin() {
             if (this.m_lastOutputValue == GpioPinValue.Low) { } // Silence an unused variable warning.
         }
 
-        ~GpioPin()
-        {
+        ~GpioPin() {
             Dispose(false);
         }
 
@@ -38,52 +34,41 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio
         /// when the pin is configured as an input, or when a value is written to the pin when the pin is configured as
         /// an output.
         /// </summary>
-        public event GpioPinValueChangedEventHandler ValueChanged
-        {
-            add
-            {
-                lock (this.m_syncLock)
-                {
-                    if (this.m_disposed)
-                    {
+        public event GpioPinValueChangedEventHandler ValueChanged {
+            add {
+                lock (this.m_syncLock) {
+                    if (this.m_disposed) {
                         throw new ObjectDisposedException();
                     }
 
                     var callbacksOld = this.m_callbacks;
                     var callbacksNew = (GpioPinValueChangedEventHandler)Delegate.Combine(callbacksOld, value);
 
-                    try
-                    {
+                    try {
                         this.m_callbacks = callbacksNew;
                         SetDriveModeInternal(this.m_driveMode);
                     }
-                    catch
-                    {
+                    catch {
                         this.m_callbacks = callbacksOld;
                         throw;
                     }
                 }
             }
 
-            remove
-            {
-                lock (this.m_syncLock)
-                {
-                    if (this.m_disposed)
-                    {
+            remove {
+                lock (this.m_syncLock) {
+                    if (this.m_disposed) {
                         throw new ObjectDisposedException();
                     }
 
                     var callbacksOld = this.m_callbacks;
                     var callbacksNew = (GpioPinValueChangedEventHandler)Delegate.Remove(callbacksOld, value);
 
-                    try
-                    {
+                    try {
                         this.m_callbacks = callbacksNew;
                         SetDriveModeInternal(this.m_driveMode);
                     }
-                    catch
-                    {
+                    catch {
                         this.m_callbacks = callbacksOld;
                         throw;
                     }
@@ -98,8 +83,7 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio
         /// <value> The debounce timeout for the GPIO pin, which is an interval during which changes to the value of the
         ///     pin are filtered out and do not generate <c>ValueChanged</c> events. If the length of this interval is
         ///     0, all changes to the value of the pin generate <c>ValueChanged</c> events.</value>
-        extern public TimeSpan DebounceTimeout
-        {
+        extern public TimeSpan DebounceTimeout {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
             get;
 
@@ -111,14 +95,10 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio
         /// Gets the pin number of the general-purpose I/O (GPIO) pin.
         /// </summary>
         /// <value>The pin number of the GPIO pin.</value>
-        public int PinNumber
-        {
-            get
-            {
-                lock (this.m_syncLock)
-                {
-                    if (this.m_disposed)
-                    {
+        public int PinNumber {
+            get {
+                lock (this.m_syncLock) {
+                    if (this.m_disposed) {
                         throw new ObjectDisposedException();
                     }
 
@@ -164,15 +144,13 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio
         /// <returns>True if the GPIO pin supports the drive mode that driveMode specifies; otherwise false. If you
         ///     specify a drive mode for which this method returns false when you call SetDriveMode, SetDriveMode
         ///     generates an exception.</param>
-        public bool IsDriveModeSupported(GpioPinDriveMode driveMode)
-        {
-            switch (driveMode)
-            {
-            case GpioPinDriveMode.Input:
-            case GpioPinDriveMode.Output:
-            case GpioPinDriveMode.InputPullUp:
-            case GpioPinDriveMode.InputPullDown:
-                return true;
+        public bool IsDriveModeSupported(GpioPinDriveMode driveMode) {
+            switch (driveMode) {
+                case GpioPinDriveMode.Input:
+                case GpioPinDriveMode.Output:
+                case GpioPinDriveMode.InputPullUp:
+                case GpioPinDriveMode.InputPullDown:
+                    return true;
             }
 
             return false;
@@ -185,12 +163,9 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio
         /// <returns>An enumeration value that indicates the current drive mode for the GPIO pin. The drive mode
         ///     specifies whether the pin is configured as an input or an output, and determines how values are driven
         ///     onto the pin.</returns>
-        public GpioPinDriveMode GetDriveMode()
-        {
-            lock (this.m_syncLock)
-            {
-                if (this.m_disposed)
-                {
+        public GpioPinDriveMode GetDriveMode() {
+            lock (this.m_syncLock) {
+                if (this.m_disposed) {
                     throw new ObjectDisposedException();
                 }
 
@@ -205,17 +180,13 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio
         /// <param name="driveMode">An enumeration value that specifies drive mode to use for the GPIO pin. The drive
         ///     mode specifies whether the pin is configured as an input or an output, and determines how values are
         ///     driven onto the pin.</param>
-        public void SetDriveMode(GpioPinDriveMode driveMode)
-        {
-            lock (this.m_syncLock)
-            {
-                if (this.m_disposed)
-                {
+        public void SetDriveMode(GpioPinDriveMode driveMode) {
+            lock (this.m_syncLock) {
+                if (this.m_disposed) {
                     throw new ObjectDisposedException();
                 }
 
-                if (driveMode != this.m_driveMode)
-                {
+                if (driveMode != this.m_driveMode) {
                     SetDriveModeInternal(driveMode);
                     this.m_driveMode = driveMode;
                 }
@@ -225,12 +196,9 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio
         /// <summary>
         /// Closes the general-purpose I/O (GPIO) pin and releases the resources associated with it.
         /// </summary>
-        public void Dispose()
-        {
-            lock (this.m_syncLock)
-            {
-                if (!this.m_disposed)
-                {
+        public void Dispose() {
+            lock (this.m_syncLock) {
+                if (!this.m_disposed) {
                     Dispose(true);
                     GC.SuppressFinalize(this);
                     this.m_disposed = true;
@@ -244,11 +212,9 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio
         /// <param name="pinNumber">Number of the pin to bind this object to.</param>
         /// <returns>True if the pin was found and reserved; otherwise false.</returns>
         /// <remarks>If this method throws or returns false, there is no need to dispose the pin. </remarks>
-        internal bool Init(int pinNumber)
-        {
+        internal bool Init(int pinNumber) {
             var foundPin = InitNative(pinNumber);
-            if (foundPin)
-            {
+            if (foundPin) {
                 s_eventListener.AddPin(pinNumber, this);
             }
 
@@ -259,14 +225,11 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio
         /// Handles internal events and re-dispatches them to the publicly subsribed delegates.
         /// </summary>
         /// <param name="edge">The state transition for this event.</param>
-        internal void OnPinChangedInternal(GpioPinEdge edge)
-        {
+        internal void OnPinChangedInternal(GpioPinEdge edge) {
             GpioPinValueChangedEventHandler callbacks = null;
 
-            lock (this.m_syncLock)
-            {
-                if (!this.m_disposed)
-                {
+            lock (this.m_syncLock) {
+                if (!this.m_disposed) {
                     callbacks = this.m_callbacks;
                 }
             }
@@ -299,10 +262,8 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio
         /// Releases internal resources held by the GPIO pin.
         /// </summary>
         /// <param name="disposing">True if called from Dispose, false if called from the finalizer.</param>
-        private void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
+        private void Dispose(bool disposing) {
+            if (disposing) {
                 DisposeNative();
                 s_eventListener.RemovePin(this.m_pinNumber);
             }

@@ -1,27 +1,20 @@
-using System;
 using System.Runtime.CompilerServices;
 
-namespace GHIElectronics.TinyCLR.Devices.Pwm.Provider
-{
-    public interface IPwmControllerProvider
-    {
-        int PinCount
-        {
+namespace GHIElectronics.TinyCLR.Devices.Pwm.Provider {
+    public interface IPwmControllerProvider {
+        int PinCount {
             get;
         }
 
-        double MinFrequency
-        {
+        double MinFrequency {
             get;
         }
 
-        double MaxFrequency
-        {
+        double MaxFrequency {
             get;
         }
 
-        double ActualFrequency
-        {
+        double ActualFrequency {
             get;
         }
 
@@ -33,8 +26,7 @@ namespace GHIElectronics.TinyCLR.Devices.Pwm.Provider
         void SetPulseParameters(int pin, double dutyCycle, bool invertPolarity);
     }
 
-    public interface IPwmProvider
-    {
+    public interface IPwmProvider {
         // FUTURE: This should return "IReadOnlyList<IPwmControllerProvider>"
         IPwmControllerProvider[] GetControllers();
     }

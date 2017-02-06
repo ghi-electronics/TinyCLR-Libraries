@@ -1,11 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////namespace System.Globalization
-namespace System.Globalization
-{
+namespace System.Globalization {
     using System;
-    using System.Threading;
-    using ArrayList = System.Collections.ArrayList;
     using System.Runtime.CompilerServices;
     /*
      Customized format patterns:
@@ -116,8 +113,7 @@ namespace System.Globalization
 
     //This class contains only static members and does not require the serializable attribute.
     internal static
-    class DateTimeFormat
-    {
+    class DateTimeFormat {
 
         internal const int MaxSecondsFractionDigits = 3;
         ////////////////////////////////////////////////////////////////////////////
@@ -137,12 +133,10 @@ namespace System.Globalization
         ////////////////////////////////////////////////////////////////////////////
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         private static extern string FormatDigits(int value, int len);
-        static int ParseRepeatPattern(string format, int pos, char patternChar)
-        {
+        static int ParseRepeatPattern(string format, int pos, char patternChar) {
             var len = format.Length;
             var index = pos + 1;
-            while ((index < len) && (format[index] == patternChar))
-            {
+            while ((index < len) && (format[index] == patternChar)) {
                 index++;
             }
 
@@ -153,8 +147,7 @@ namespace System.Globalization
         // The pos should point to a quote character. This method will
         // get the string encloed by the quote character.
         //
-        internal static string ParseQuoteString(string format, int pos, out int count)
-        {
+        internal static string ParseQuoteString(string format, int pos, out int count) {
             //
             // NOTE : pos will be the index of the quote character in the 'format' string.
             //
@@ -164,27 +157,22 @@ namespace System.Globalization
             var quoteChar = format[pos++]; // Get the character used to quote the following string.
 
             var foundQuote = false;
-            while (pos < formatLen)
-            {
+            while (pos < formatLen) {
                 var ch = format[pos++];
-                if (ch == quoteChar)
-                {
+                if (ch == quoteChar) {
                     foundQuote = true;
                     break;
                 }
-                else if (ch == '\\')
-                {
+                else if (ch == '\\') {
                     // The following are used to support escaped character.
                     // Escaped character is also supported in the quoted string.
                     // Therefore, someone can use a format like "'minute:' mm\"" to display:
                     //  minute: 45"
                     // because the second double quote is escaped.
-                    if (pos < formatLen)
-                    {
+                    if (pos < formatLen) {
                         result += format[pos++];
                     }
-                    else
-                    {
+                    else {
                         //
                         // This means that '\' is at the end of the formatting string.
                         //
@@ -192,14 +180,12 @@ namespace System.Globalization
                         //throw new FormatException( Environment.GetResourceString( "Format_InvalidString" ) );
                     }
                 }
-                else
-                {
+                else {
                     result += ch;
                 }
             }
 
-            if (!foundQuote)
-            {
+            if (!foundQuote) {
                 // Here we can't find the matching quote.
                 throw new ArgumentException("Format_BadQuote");
             }
@@ -217,10 +203,8 @@ namespace System.Globalization
         // Return value of -1 means 'pos' is already at the end of the 'format' string.
         // Otherwise, return value is the int value of the next character.
         //
-        private static int ParseNextChar(string format, int pos)
-        {
-            if (pos >= format.Length - 1)
-            {
+        private static int ParseNextChar(string format, int pos) {
+            if (pos >= format.Length - 1) {
                 return (-1);
             }
 
@@ -232,22 +216,19 @@ namespace System.Globalization
         //
         //  Actions: Format the DateTime instance using the specified format.
         //
-        private static string FormatCustomized(DateTime dateTime, string format, DateTimeFormatInfo dtfi)
-        {
+        private static string FormatCustomized(DateTime dateTime, string format, DateTimeFormatInfo dtfi) {
             var result = string.Empty;
             var i = 0;
             int tokenLen = 1, hour12;
             var formatLen = format.Length;
 
-            while (i < formatLen)
-            {
+            while (i < formatLen) {
                 var ch = format[i];
                 int nextChar;
                 var doneParsingCh = true;
                 var tempResult = string.Empty;
 
-                switch (ch)
-                {
+                switch (ch) {
                     case ':':
                         tempResult = dtfi.TimeSeparator;
                         tokenLen = 1;
@@ -267,13 +248,11 @@ namespace System.Globalization
                         nextChar = ParseNextChar(format, i);
                         // nextChar will be -1 if we already reach the end of the format string.
                         // Besides, we will not allow "%%" appear in the pattern.
-                        if (nextChar >= 0 && nextChar != (int)'%')
-                        {
+                        if (nextChar >= 0 && nextChar != (int)'%') {
                             tempResult = FormatCustomized(dateTime, ((char)nextChar).ToString(), dtfi);
                             tokenLen = 2;
                         }
-                        else
-                        {
+                        else {
                             //
                             // This means that '%' is at the end of the format string or
                             // "%%" appears in the format string.
@@ -291,13 +270,11 @@ namespace System.Globalization
                         // then we can remove this character.
                         //
                         nextChar = ParseNextChar(format, i);
-                        if (nextChar >= 0)
-                        {
+                        if (nextChar >= 0) {
                             tempResult = ((char)nextChar).ToString();
                             tokenLen = 2;
                         }
-                        else
-                        {
+                        else {
                             //
                             // This means that '\' is at the end of the formatting string.
                             //
@@ -309,15 +286,12 @@ namespace System.Globalization
                         break;
                 }
 
-                if (!doneParsingCh)
-                {
+                if (!doneParsingCh) {
                     tokenLen = ParseRepeatPattern(format, i, ch);
-                    switch (ch)
-                    {
+                    switch (ch) {
                         case 'h':
                             hour12 = dateTime.Hour % 12;
-                            if (hour12 == 0)
-                            {
+                            if (hour12 == 0) {
                                 hour12 = 12;
                             }
 
@@ -333,48 +307,39 @@ namespace System.Globalization
                             tempResult = FormatDigits(dateTime.Second, tokenLen);
                             break;
                         case 'f':
-                            if (tokenLen <= MaxSecondsFractionDigits)
-                            {
+                            if (tokenLen <= MaxSecondsFractionDigits) {
                                 var precision = 3;
                                 var fraction = dateTime.Millisecond;
 
                                 // Note: Need to add special case when tokenLen > precision to begin with
                                 // if we're to change MaxSecondsFractionDigits to be more than 3
 
-                                while (tokenLen < precision)
-                                {
+                                while (tokenLen < precision) {
                                     fraction /= 10;
                                     precision--;
                                 }
 
                                 tempResult = FormatDigits(fraction, tokenLen);
                             }
-                            else
-                            {
+                            else {
                                 throw new ArgumentException("Format_InvalidString");
                             }
                             break;
                         case 't':
-                            if (tokenLen == 1)
-                            {
-                                if (dateTime.Hour < 12)
-                                {
-                                    if (dtfi.AMDesignator.Length >= 1)
-                                    {
+                            if (tokenLen == 1) {
+                                if (dateTime.Hour < 12) {
+                                    if (dtfi.AMDesignator.Length >= 1) {
                                         tempResult = dtfi.AMDesignator[0].ToString();
                                     }
                                 }
-                                else
-                                {
-                                    if (dtfi.PMDesignator.Length >= 1)
-                                    {
+                                else {
+                                    if (dtfi.PMDesignator.Length >= 1) {
                                         tempResult = dtfi.PMDesignator[0].ToString();
                                     }
                                 }
 
                             }
-                            else
-                            {
+                            else {
                                 tempResult = (dateTime.Hour < 12 ? dtfi.AMDesignator : dtfi.PMDesignator);
                             }
                             break;
@@ -385,20 +350,16 @@ namespace System.Globalization
                             // tokenLen == 3 : Day of week as a three-leter abbreviation.
                             // tokenLen >= 4 : Day of week as its full name.
                             //
-                            if (tokenLen <= 2)
-                            {
+                            if (tokenLen <= 2) {
                                 tempResult = FormatDigits(dateTime.Day, tokenLen);
                             }
-                            else
-                            {
+                            else {
                                 var dayOfWeek = (int)dateTime.DayOfWeek;
 
-                                if (tokenLen == 3)
-                                {
+                                if (tokenLen == 3) {
                                     tempResult = dtfi.AbbreviatedDayNames[dayOfWeek];
                                 }
-                                else
-                                {
+                                else {
                                     tempResult = dtfi.DayNames[dayOfWeek];
                                 }
                             }
@@ -411,18 +372,14 @@ namespace System.Globalization
                             // tokenLen >= 4 : Month as its full name.
                             //
                             var month = dateTime.Month;
-                            if (tokenLen <= 2)
-                            {
+                            if (tokenLen <= 2) {
                                 tempResult = FormatDigits(month, tokenLen);
                             }
-                            else
-                            {
-                                if (tokenLen == 3)
-                                {
+                            else {
+                                if (tokenLen == 3) {
                                     tempResult = dtfi.AbbreviatedMonthNames[month - 1];
                                 }
-                                else
-                                {
+                                else {
                                     tempResult = dtfi.MonthNames[month - 1];
                                 }
                             }
@@ -435,29 +392,24 @@ namespace System.Globalization
 
                             var year = dateTime.Year;
 
-                            if (tokenLen <= 2)
-                            {
+                            if (tokenLen <= 2) {
                                 tempResult = FormatDigits(year % 100, tokenLen);
                             }
-                            else
-                            {
+                            else {
                                 tempResult = year.ToString();
 
                             }
 
-                            if (tempResult.Length < tokenLen)
-                            {
+                            if (tempResult.Length < tokenLen) {
                                 tempResult = new string('0', tokenLen - tempResult.Length) + tempResult;
                             }
                             break;
 
                         default:
-                            if (tokenLen == 1)
-                            {
+                            if (tokenLen == 1) {
                                 tempResult = ch.ToString();
                             }
-                            else
-                            {
+                            else {
                                 tempResult = new string(ch, tokenLen);
                             }
                             break;
@@ -471,12 +423,10 @@ namespace System.Globalization
             return result;
         }
 
-        internal static string GetRealFormat(string format, DateTimeFormatInfo dtfi)
-        {
+        internal static string GetRealFormat(string format, DateTimeFormatInfo dtfi) {
             string realFormat = null;
 
-            switch (format[0])
-            {
+            switch (format[0]) {
                 case 'd':       // Short Date
                     realFormat = dtfi.ShortDatePattern;
                     break;
@@ -529,15 +479,12 @@ namespace System.Globalization
             return (realFormat);
         }
 
-        internal static string Format(DateTime dateTime, string format, DateTimeFormatInfo dtfi)
-        {
-            if (format == null || format.Length == 0)
-            {
+        internal static string Format(DateTime dateTime, string format, DateTimeFormatInfo dtfi) {
+            if (format == null || format.Length == 0) {
                 format = "G";
             }
 
-            if (format.Length == 1)
-            {
+            if (format.Length == 1) {
                 format = GetRealFormat(format, dtfi);
             }
 

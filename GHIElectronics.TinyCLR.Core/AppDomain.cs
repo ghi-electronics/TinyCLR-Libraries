@@ -3,14 +3,12 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 using System.Reflection;
-using System.Threading;
 using System.Runtime.CompilerServices;
+using System.Threading;
 
-namespace System
-{
+namespace System {
 
-    public sealed class AppDomain : MarshalByRefObject
-    {
+    public sealed class AppDomain : MarshalByRefObject {
         [System.Reflection.FieldNoReflection]
 #pragma warning disable CS0649 // Field is never assigned to, and will always have its default value
 #pragma warning disable CS0169 // The field is never used
@@ -24,8 +22,7 @@ namespace System
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public extern static AppDomain CreateDomain(string friendlyName);
 
-        public object CreateInstanceAndUnwrap(string assemblyName, string typeName)
-        {
+        public object CreateInstanceAndUnwrap(string assemblyName, string typeName) {
             var assembly = Assembly.Load(assemblyName);
             var type = assembly.GetType(typeName);
 
@@ -38,8 +35,7 @@ namespace System
         public static AppDomain CurrentDomain => Thread.GetDomain();
         public string FriendlyName => this.m_friendlyName;
 
-        public Assembly Load(string assemblyString)
-        {
+        public Assembly Load(string assemblyString) {
             var fVersion = false;
             var ver = new int[4];
 

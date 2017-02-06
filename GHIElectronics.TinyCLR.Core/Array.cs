@@ -5,11 +5,9 @@
 using System.Collections;
 using System.Runtime.CompilerServices;
 
-namespace System
-{
+namespace System {
     [Serializable]
-    public abstract class Array : ICloneable, IList
-    {
+    public abstract class Array : ICloneable, IList {
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public static extern Array CreateInstance(Type elementType, int length);
 
@@ -23,8 +21,7 @@ namespace System
 
         public object GetValue(int index) => ((IList)this)[index];
 
-        public extern int Length
-        {
+        public extern int Length {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
             get;
         }
@@ -35,8 +32,7 @@ namespace System
         public bool IsReadOnly => false;
         public bool IsFixedSize => true;
         public bool IsSynchronized => false;
-        extern object IList.this[int index]
-        {
+        extern object IList.this[int index] {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
             get;
 
@@ -58,8 +54,7 @@ namespace System
 
         void IList.RemoveAt(int index) => throw new NotSupportedException();
 
-        public object Clone()
-        {
+        public object Clone() {
             var length = this.Length;
             var destArray = Array.CreateInstance(this.GetType().GetElementType(), length);
             Array.Copy(this, destArray, length);
@@ -69,39 +64,32 @@ namespace System
 
         public static int BinarySearch(Array array, object value, IComparer comparer) => BinarySearch(array, 0, array.Length, value, comparer);
 
-        public static int BinarySearch(Array array, int index, int length, object value, IComparer comparer)
-        {
+        public static int BinarySearch(Array array, int index, int length, object value, IComparer comparer) {
             var lo = index;
             var hi = index + length - 1;
-            while (lo <= hi)
-            {
+            while (lo <= hi) {
                 var i = (lo + hi) >> 1;
 
                 int c;
-                if (comparer == null)
-                {
-                    try
-                    {
+                if (comparer == null) {
+                    try {
                         var elementComparer = array.GetValue(i) as IComparable;
                         c = elementComparer.CompareTo(value);
                     }
-                    catch (Exception e)
-                    {
+                    catch (Exception e) {
                         throw new InvalidOperationException("Failed to compare two elements in the array", e);
                     }
                 }
-                else
-                {
+                else {
                     c = comparer.Compare(array.GetValue(i), value);
                 }
 
-                if (c == 0) return i;
-                if (c < 0)
-                {
+                if (c == 0)
+                    return i;
+                if (c < 0) {
                     lo = i + 1;
                 }
-                else
-                {
+                else {
                     hi = i - 1;
                 }
             }
@@ -117,8 +105,7 @@ namespace System
 
         public static int IndexOf(Array array, object value, int startIndex) => IndexOf(array, value, startIndex, array.Length - startIndex);
 
-        public static int IndexOf(Array array, object value, int startIndex, int count)
-        {
+        public static int IndexOf(Array array, object value, int startIndex, int count) {
             // Try calling a quick native method to handle primitive types.
 
             if (TrySZIndexOf(array, startIndex, count, value, out var retVal)) {
@@ -127,11 +114,11 @@ namespace System
 
             var endIndex = startIndex + count;
 
-            for (var i = startIndex; i < endIndex; i++)
-            {
+            for (var i = startIndex; i < endIndex; i++) {
                 var obj = array.GetValue(i);
 
-                if (Object.Equals(obj, value)) return i;
+                if (Object.Equals(obj, value))
+                    return i;
             }
 
             return -1;
@@ -143,16 +130,14 @@ namespace System
         // This is the underlying Enumerator for all of our array-based data structures (Array, ArrayList, Stack, and Queue)
         // It supports enumerating over an array, a part of an array, and also will wrap around when the endIndex
         // specified is larger than the size of the array (to support Queue's internal circular array)
-        internal class SZArrayEnumerator : IEnumerator
-        {
+        internal class SZArrayEnumerator : IEnumerator {
             private Array _array;
             private int _index;
             private int _endIndex;
             private int _startIndex;
             private int _arrayLength;
 
-            internal SZArrayEnumerator(Array array)
-            {
+            internal SZArrayEnumerator(Array array) {
                 this._array = array;
                 this._arrayLength = this._array.Length;
                 this._endIndex = this._arrayLength;
@@ -171,8 +156,7 @@ namespace System
             // For example, if array is of size 5,
             // new SZArrayEnumerator(array, 4, 7) will enumerate through
             // array[4], array[0], array[1]
-            internal SZArrayEnumerator(Array array, int startIndex, int endIndex)
-            {
+            internal SZArrayEnumerator(Array array, int startIndex, int endIndex) {
                 this._array = array;
                 this._arrayLength = this._array.Length;
                 this._endIndex = endIndex;
@@ -180,10 +164,8 @@ namespace System
                 this._index = this._startIndex - 1;
             }
 
-            public bool MoveNext()
-            {
-                if (this._index < this._endIndex)
-                {
+            public bool MoveNext() {
+                if (this._index < this._endIndex) {
                     this._index++;
                     return (this._index < this._endIndex);
                 }

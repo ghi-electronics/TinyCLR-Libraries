@@ -1,22 +1,17 @@
 
-namespace System
-{
+namespace System {
     [Serializable()]
-    public class ApplicationException : Exception
-    {
+    public class ApplicationException : Exception {
         public ApplicationException()
-            : base()
-        {
+            : base() {
         }
 
         public ApplicationException(string message)
-            : base(message)
-        {
+            : base(message) {
         }
 
         public ApplicationException(string message, Exception innerException)
-            : base(message, innerException)
-        {
+            : base(message, innerException) {
         }
     }
 }

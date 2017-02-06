@@ -1,16 +1,14 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-namespace System.Collections
-{
+namespace System.Collections {
     using System;
 
     /**
      * Base interface for all collections, defining enumerators, size, and
      * synchronization methods.
      */
-    public interface ICollection : IEnumerable
-    {
+    public interface ICollection : IEnumerable {
         // Interfaces are not serialable
         /**
          * CopyTo copies a collection into an Array, starting at a particular
@@ -25,13 +23,10 @@ namespace System.Collections
         /**
          * Number of items in the collections.
          */
-        int Count
-        { get; }
+        int Count { get; }
 
-        object SyncRoot
-        { get; }
-        bool IsSynchronized
-        { get; }
+        object SyncRoot { get; }
+        bool IsSynchronized { get; }
     }
 }
 

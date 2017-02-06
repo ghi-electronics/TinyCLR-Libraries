@@ -1,12 +1,9 @@
 ﻿////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-using System;
 
-namespace System.Collections
-{
-    public interface IDictionary : ICollection
-    {
+namespace System.Collections {
+    public interface IDictionary : ICollection {
         bool IsReadOnly { get; }
         bool IsFixedSize { get; }
         ICollection Keys { get; }
@@ -17,7 +14,7 @@ namespace System.Collections
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        object this[object key]{ get; set; }
+        object this[object key] { get; set; }
 
         /// <summary>
         /// Adds a key/value pair to the dictionary.  The exact position in the dictionary is

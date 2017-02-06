@@ -1,16 +1,12 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-namespace System.Threading
-{
-    using System.Threading;
-    using System.Runtime.InteropServices;
+namespace System.Threading {
     using System;
     using System.Runtime.CompilerServices;
 
     // deliberately not [serializable]
-    public sealed class Thread
-    {
+    public sealed class Thread {
 #pragma warning disable CS0169 // The field is never used
         private Delegate m_Delegate;
         private int m_Priority;
@@ -18,7 +14,7 @@ namespace System.Threading
         private object m_Thread;
         [System.Reflection.FieldNoReflection]
         private object m_AppDomain;
-        private int    m_Id;
+        private int m_Id;
 #pragma warning restore CS0169 // The field is never used
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         extern public Thread(ThreadStart start);
@@ -30,8 +26,7 @@ namespace System.Threading
         extern public void Suspend();
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         extern public void Resume();
-        extern public ThreadPriority Priority
-        {
+        extern public ThreadPriority Priority {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
             get;
 
@@ -39,14 +34,12 @@ namespace System.Threading
             set;
         }
 
-        extern public int ManagedThreadId
-        {
+        extern public int ManagedThreadId {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
             get;
         }
 
-        extern public bool IsAlive
-        {
+        extern public bool IsAlive {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
             get;
         }
@@ -59,14 +52,12 @@ namespace System.Threading
         extern public bool Join(TimeSpan timeout);
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         extern public static void Sleep(int millisecondsTimeout);
-        extern public static Thread CurrentThread
-        {
+        extern public static Thread CurrentThread {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
             get;
         }
 
-        extern public ThreadState ThreadState
-        {
+        extern public ThreadState ThreadState {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
             get;
         }

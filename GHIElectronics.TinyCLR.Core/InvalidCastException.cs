@@ -1,21 +1,16 @@
-namespace System
-{
+namespace System {
     [Serializable()]
-    public class InvalidCastException : SystemException
-    {
+    public class InvalidCastException : SystemException {
         public InvalidCastException()
-            : base()
-        {
+            : base() {
         }
 
         public InvalidCastException(string message)
-            : base(message)
-        {
+            : base(message) {
         }
 
         public InvalidCastException(string message, Exception innerException)
-            : base(message, innerException)
-        {
+            : base(message, innerException) {
         }
     }
 }

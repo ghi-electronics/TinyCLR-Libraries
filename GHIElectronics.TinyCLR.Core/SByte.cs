@@ -1,10 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-namespace System
-{
-    using System;
-    using System.Runtime.CompilerServices;
+namespace System {
     using System.Globalization;
 
     /**
@@ -13,8 +10,7 @@ namespace System
      * @version
      */
     [Serializable, CLSCompliant(false)]
-    public struct SByte
-    {
+    public struct SByte {
 #pragma warning disable CS0649 // Field is never assigned to, and will always have its default value
         private sbyte m_value;
 #pragma warning restore CS0649 // Field is never assigned to, and will always have its default value
@@ -34,10 +30,8 @@ namespace System
         public string ToString(string format) => Number.Format(this.m_value, true, format, NumberFormatInfo.CurrentInfo);
 
         [CLSCompliant(false)]
-        public static sbyte Parse(string s)
-        {
-            if (s == null)
-            {
+        public static sbyte Parse(string s) {
+            if (s == null) {
                 throw new ArgumentNullException();
             }
 

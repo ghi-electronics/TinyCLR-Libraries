@@ -1,9 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-namespace System
-{
-    using System;
+namespace System {
     using System.Runtime.CompilerServices;
     /**
      * The <i>Object</i> is the root class for all object in the CLR System. <i>Object</i>
@@ -15,11 +13,9 @@ namespace System
      */
     //This class contains no data and does not need to be serializable
     [Serializable()]
-    public class Object
-    {
+    public class Object {
         [Diagnostics.DebuggerHidden]
-        public Object()
-        {
+        public Object() {
         }
 
         public virtual string ToString() => GetType().FullName;
@@ -27,15 +23,12 @@ namespace System
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public extern virtual bool Equals(object obj);
 
-        public static bool Equals(object objA, object objB)
-        {
-            if (objA == objB)
-            {
+        public static bool Equals(object objA, object objB) {
+            if (objA == objB) {
                 return true;
             }
 
-            if (objA == null || objB == null)
-            {
+            if (objA == null || objB == null) {
                 return false;
             }
 
@@ -52,8 +45,7 @@ namespace System
         public extern Type GetType();
 
         [Diagnostics.DebuggerHidden]
-        ~Object()
-        {
+        ~Object() {
         }
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]

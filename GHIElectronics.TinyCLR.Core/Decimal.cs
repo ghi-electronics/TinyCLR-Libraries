@@ -2,14 +2,11 @@
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-using System;
 
-namespace System
-{
+namespace System {
 
     [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
-    public struct Decimal
-    {
+    public struct Decimal {
         //The VB IDE starts to run amuck when it tries to do syntax checking on sources that contain Decimal
         //and causes the compiler to repeatedly crash unless it finds a constructor.
         public Decimal(int value) { }

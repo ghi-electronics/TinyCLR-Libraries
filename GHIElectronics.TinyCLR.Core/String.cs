@@ -1,11 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-namespace System
-{
-    using System;
-    using System.Threading;
-    using System.Collections;
+namespace System {
     using System.Runtime.CompilerServices;
     /**
      * <p>The <code>String</code> class represents a static string of characters.  Many of
@@ -31,8 +27,7 @@ namespace System
 #pragma warning restore CS0659 // Type overrides Object.Equals(object o) but does not override Object.GetHashCode()
     {
         public static readonly string Empty = "";
-        public override bool Equals(object obj)
-        {
+        public override bool Equals(object obj) {
             if (obj is string s) {
                 return String.Equals(this, s);
             }
@@ -79,8 +74,7 @@ namespace System
         public extern static bool operator !=(string a, string b);
 
         [System.Runtime.CompilerServices.IndexerName("Chars")]
-        public extern char this[int index]
-        {
+        public extern char this[int index] {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
             get;
         }
@@ -91,8 +85,7 @@ namespace System
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public extern char[] ToCharArray(int startIndex, int length);
 
-        public extern int Length
-        {
+        public extern int Length {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
             get;
         }
@@ -202,63 +195,51 @@ namespace System
         public extern string Trim();
         ////// This method contains the same functionality as StringBuilder Replace. The only difference is that
         ////// a new String has to be allocated since Strings are immutable
-        public static string Concat(object arg0)
-        {
-            if (arg0 == null)
-            {
+        public static string Concat(object arg0) {
+            if (arg0 == null) {
                 return String.Empty;
             }
 
             return arg0.ToString();
         }
 
-        public static string Concat(object arg0, object arg1)
-        {
-            if (arg0 == null)
-            {
+        public static string Concat(object arg0, object arg1) {
+            if (arg0 == null) {
                 arg0 = String.Empty;
             }
 
-            if (arg1 == null)
-            {
+            if (arg1 == null) {
                 arg1 = String.Empty;
             }
 
             return Concat(arg0.ToString(), arg1.ToString());
         }
 
-        public static string Concat(object arg0, object arg1, object arg2)
-        {
-            if (arg0 == null)
-            {
+        public static string Concat(object arg0, object arg1, object arg2) {
+            if (arg0 == null) {
                 arg0 = String.Empty;
             }
 
-            if (arg1 == null)
-            {
+            if (arg1 == null) {
                 arg1 = String.Empty;
             }
 
-            if (arg2 == null)
-            {
+            if (arg2 == null) {
                 arg2 = String.Empty;
             }
 
             return Concat(arg0.ToString(), arg1.ToString(), arg2.ToString());
         }
 
-        public static string Concat(params object[] args)
-        {
-            if (args == null)
-            {
+        public static string Concat(params object[] args) {
+            if (args == null) {
                 throw new ArgumentNullException("args");
             }
 
             var length = args.Length;
             var sArgs = new string[length];
 
-            for (var i = 0; i < length; i++)
-            {
+            for (var i = 0; i < length; i++) {
                 sArgs[i] = ((args[i] == null) ? (String.Empty) : (args[i].ToString()));
             }
 

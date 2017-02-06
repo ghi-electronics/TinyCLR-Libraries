@@ -2,10 +2,7 @@
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////#define ENABLE_CROSS_APPDOMAIN
 #define ENABLE_CROSS_APPDOMAIN
-namespace System.Globalization
-{
-    using System;
-    using System.Collections;
+namespace System.Globalization {
     public sealed class DateTimeFormatInfo /*: ICloneable, IFormatProvider*/
     {
         internal string amDesignator = null;
@@ -37,12 +34,9 @@ namespace System.Globalization
 
         public string DateSeparator => this.m_cultureInfo.EnsureStringResource(ref this.dateSeparator, System.Globalization.Resources.CultureInfo.StringResources.DateSeparator);
 
-        public string FullDateTimePattern
-        {
-            get
-            {
-                if (this.fullDateTimePattern == null)
-                {
+        public string FullDateTimePattern {
+            get {
+                if (this.fullDateTimePattern == null) {
                     this.fullDateTimePattern = this.LongDatePattern + " " + this.LongTimePattern;
                 }
 
@@ -66,12 +60,9 @@ namespace System.Globalization
 
         public string SortableDateTimePattern => (sortableDateTimePattern);
 
-        internal string GeneralShortTimePattern
-        {
-            get
-            {
-                if (this.generalShortTimePattern == null)
-                {
+        internal string GeneralShortTimePattern {
+            get {
+                if (this.generalShortTimePattern == null) {
                     this.generalShortTimePattern = this.ShortDatePattern + " " + this.ShortTimePattern;
                 }
 
@@ -85,12 +76,9 @@ namespace System.Globalization
         **      We put this internal property here so that we can avoid doing the
         **      concatation every time somebody asks for the general format.
         ==============================================================================*/
-        internal string GeneralLongTimePattern
-        {
-            get
-            {
-                if (this.generalLongTimePattern == null)
-                {
+        internal string GeneralLongTimePattern {
+            get {
+                if (this.generalLongTimePattern == null) {
                     this.generalLongTimePattern = this.ShortDatePattern + " " + this.LongTimePattern;
                 }
 

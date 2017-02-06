@@ -1,11 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-namespace System
-{
-    using System.Globalization;
-
-
+namespace System {
     // A Version object contains four hierarchical numeric components: major, minor,
     // revision and build.  Revision and build may be unspecified, which is represented
     // internally as a -1.  By definition, an unspecified component matches anything
@@ -22,8 +18,7 @@ namespace System
         private int _Build;// = -1;
         private int _Revision;// = -1;
 
-        public Version(int major, int minor, int build, int revision)
-        {
+        public Version(int major, int minor, int build, int revision) {
             if (major < 0 || minor < 0 || revision < 0 || build < 0)
                 throw new ArgumentOutOfRangeException();
 
@@ -33,8 +28,7 @@ namespace System
             this._Build = build;
         }
 
-        public Version(int major, int minor)
-        {
+        public Version(int major, int minor) {
             if (major < 0)
                 throw new ArgumentOutOfRangeException();
 
@@ -54,8 +48,7 @@ namespace System
         public int Minor => this._Minor;
         public int Revision => this._Revision;
         public int Build => this._Build;
-        public override bool Equals(object obj)
-        {
+        public override bool Equals(object obj) {
             if (((object)obj == null) ||
                 (!(obj is Version)))
                 return false;
@@ -71,16 +64,13 @@ namespace System
             return true;
         }
 
-        public override string ToString()
-        {
+        public override string ToString() {
             var retStr = this._Major + "." + this._Minor;
 
             // Adds _Build and then _Revision if they are positive. They could be -1 in this case not added.
-            if (this._Build >= 0)
-            {
+            if (this._Build >= 0) {
                 retStr += "." + this._Build;
-                if (this._Revision >= 0)
-                {
+                if (this._Revision >= 0) {
                     retStr += "." + this._Revision;
                 }
             }

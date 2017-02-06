@@ -5,12 +5,10 @@
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
-namespace System.Collections
-{
+namespace System.Collections {
     [Serializable()]
     [DebuggerDisplay("Count = {Count}")]
-    public class ArrayList : IList, ICloneable
-    {
+    public class ArrayList : IList, ICloneable {
         private object[] _items;
         private int _size;
 
@@ -19,8 +17,7 @@ namespace System.Collections
 
         public ArrayList() => this._items = new object[_defaultCapacity];
 
-        public virtual int Capacity
-        {
+        public virtual int Capacity {
             get => _items.Length; set => SetCapacity(value);
         }
 
@@ -32,8 +29,7 @@ namespace System.Collections
         public virtual bool IsReadOnly => false;
         public virtual bool IsSynchronized => false;
         public virtual object SyncRoot => this;
-        public extern virtual object this[int index]
-        {
+        public extern virtual object this[int index] {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
             get;
 
@@ -49,12 +45,10 @@ namespace System.Collections
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public extern virtual void Clear();
 
-        public virtual object Clone()
-        {
+        public virtual object Clone() {
             var la = new ArrayList();
 
-            if (this._size > _defaultCapacity)
-            {
+            if (this._size > _defaultCapacity) {
                 // only re-allocate a new array if the size isn't what we need.
                 // otherwise, the one allocated in the constructor will be just fine
                 la._items = new object[this._size];
@@ -82,11 +76,9 @@ namespace System.Collections
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public extern virtual void Insert(int index, object value);
 
-        public virtual void Remove(object obj)
-        {
+        public virtual void Remove(object obj) {
             var index = Array.IndexOf(this._items, obj, 0, this._size);
-            if (index >= 0)
-            {
+            if (index >= 0) {
                 RemoveAt(index);
             }
         }
@@ -96,8 +88,7 @@ namespace System.Collections
 
         public virtual object[] ToArray() => (object[])ToArray(typeof(object));
 
-        public virtual Array ToArray(Type type)
-        {
+        public virtual Array ToArray(Type type) {
             var array = Array.CreateInstance(type, this._size);
 
             Array.Copy(this._items, 0, array, 0, this._size);

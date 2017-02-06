@@ -1,13 +1,10 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-namespace System.Threading
-{
-    using System.Threading;
-    using System.Runtime.CompilerServices;
+namespace System.Threading {
     using System;
-    public abstract class WaitHandle : MarshalByRefObject
-    {
+    using System.Runtime.CompilerServices;
+    public abstract class WaitHandle : MarshalByRefObject {
         public const int WaitTimeout = 0x102;
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         extern public virtual bool WaitOne(int millisecondsTimeout, bool exitContext);

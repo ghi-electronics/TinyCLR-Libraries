@@ -1,26 +1,21 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////namespace System.Reflection
-namespace System.Reflection
-{
+namespace System.Reflection {
 
     using System;
 
     [Serializable()]
-    public abstract class MemberInfo
-    {
-        public abstract MemberTypes MemberType
-        {
+    public abstract class MemberInfo {
+        public abstract MemberTypes MemberType {
             get;
         }
 
-        public abstract string Name
-        {
+        public abstract string Name {
             get;
         }
 
-        public abstract Type DeclaringType
-        {
+        public abstract Type DeclaringType {
             get;
         }
     }

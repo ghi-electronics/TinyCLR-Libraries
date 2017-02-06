@@ -1,22 +1,19 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////namespace System.Reflection
-namespace System.Reflection
-{
+namespace System.Reflection {
     using System;
     using System.Runtime.CompilerServices;
 
     [Serializable()]
-    abstract public class FieldInfo : MemberInfo
-    {
+    abstract public class FieldInfo : MemberInfo {
 
         /**
          * The Member type Field.
          */
         public override MemberTypes MemberType => System.Reflection.MemberTypes.Field;
 
-        public abstract Type FieldType
-        {
+        public abstract Type FieldType {
             get;
         }
 
