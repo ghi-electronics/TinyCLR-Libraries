@@ -20,9 +20,5 @@
   </metadata>
   <files>
     <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.dll" target="lib\tinyclr10" />
-    <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.le.pe" target="lib\tinyclr10" />
-    <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.le.pdbx" target="lib\tinyclr10" />
-    <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.be.pe" target="lib\tinyclr10" />
-    <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.be.pdbx" target="lib\tinyclr10" />
   </files>
 </package>

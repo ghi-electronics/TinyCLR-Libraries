@@ -14,15 +14,8 @@
     <releaseNotes>Initial release.</releaseNotes>
     <copyright>Copyright GHI Electronics, LLC 2016</copyright>
     <tags>TinyCLR</tags>
-    <dependencies>
-      <dependency id="GHIElectronics.TinyCLR.MsBuild" version="0.1.0" />
-    </dependencies>
   </metadata>
   <files>
     <file src="$TargetDir$GHIElectronics.TinyCLR.Core.dll" target="lib\tinyclr10" />
-    <file src="$TargetDir$GHIElectronics.TinyCLR.Core.le.pe" target="lib\tinyclr10" />
-    <file src="$TargetDir$GHIElectronics.TinyCLR.Core.le.pdbx" target="lib\tinyclr10" />
-    <file src="$TargetDir$GHIElectronics.TinyCLR.Core.be.pe" target="lib\tinyclr10" />
-    <file src="$TargetDir$GHIElectronics.TinyCLR.Core.be.pdbx" target="lib\tinyclr10" />
   </files>
 </package>
