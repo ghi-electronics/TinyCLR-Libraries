@@ -206,9 +206,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Globalization\Resources\CultureInfo.en.resx">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="Globalization\Resources\CultureInfo.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>CultureInfo.Designer.cs</LastGenOutput>
