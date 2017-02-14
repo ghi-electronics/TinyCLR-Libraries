@@ -1,5 +1,6 @@
 # Build
-Build/
+bin/
+obj/
 packages/
 
 # Visual Studio

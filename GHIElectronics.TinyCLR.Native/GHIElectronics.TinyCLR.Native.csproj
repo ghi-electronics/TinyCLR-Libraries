@@ -10,8 +10,7 @@
     <RootNamespace>GHIElectronics.TinyCLR.Native</RootNamespace>
     <AssemblyName>GHIElectronics.TinyCLR.Native</AssemblyName>
     <FileAlignment>512</FileAlignment>
-    <BaseIntermediateOutputPath>$(SolutionDir)Build\obj\</BaseIntermediateOutputPath>
-    <OutputPath>$(SolutionDir)Build\bin\$(Configuration)\</OutputPath>
+    <OutputPath>bin\$(Configuration)</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TargetFrameworkIdentifier>TinyCLR</TargetFrameworkIdentifier>

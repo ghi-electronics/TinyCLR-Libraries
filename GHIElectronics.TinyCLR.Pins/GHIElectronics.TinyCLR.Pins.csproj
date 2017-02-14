@@ -10,8 +10,7 @@
     <RootNamespace>GHIElectronics.TinyCLR.Pins</RootNamespace>
     <AssemblyName>GHIElectronics.TinyCLR.Pins</AssemblyName>
     <FileAlignment>512</FileAlignment>
-    <BaseIntermediateOutputPath>$(SolutionDir)Build\obj\</BaseIntermediateOutputPath>
-    <OutputPath>$(SolutionDir)Build\bin\$(Configuration)\</OutputPath>
+    <OutputPath>bin\$(Configuration)</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TargetFrameworkIdentifier>TinyCLR</TargetFrameworkIdentifier>
