@@ -4,6 +4,6 @@ obj/
 packages/
 
 # Visual Studio
+.vs/
 *.suo
 *.user
-.vs/

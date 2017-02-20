@@ -32,6 +32,16 @@ namespace GHIElectronics.TinyCLR.Devices.Pwm.Provider {
     }
 
     internal class DefaultPwmControllerProvider : IPwmControllerProvider {
+        private double[] dutyCycles;
+        private bool[] inverts;
+        private bool[] actives;
+
+        public DefaultPwmControllerProvider() {
+            this.dutyCycles = new double[this.PinCount];
+            this.inverts = new bool[this.PinCount];
+            this.actives = new bool[this.PinCount];
+        }
+
         public extern double ActualFrequency {
             [MethodImpl(MethodImplOptions.InternalCall)]
             get;
@@ -52,8 +62,34 @@ namespace GHIElectronics.TinyCLR.Devices.Pwm.Provider {
             get;
         }
 
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern void AcquirePin(int pin);
+        public double SetDesiredFrequency(double frequency) {
+            var result = this.SetDesiredFrequencyInternal(frequency);
+
+            for (var i = 0; i < this.PinCount; i++)
+                if (this.actives[i])
+                    this.SetPulseParameters(i, this.dutyCycles[i], this.inverts[i]);
+
+            return result;
+        }
+
+        public void SetPulseParameters(int pin, double dutyCycle, bool invertPolarity) {
+            this.SetPulseParametersInternal(pin, dutyCycle, invertPolarity);
+
+            this.dutyCycles[pin] = dutyCycle;
+            this.inverts[pin] = invertPolarity;
+        }
+
+        public void AcquirePin(int pin) {
+            this.AcquirePinInternal(pin);
+
+            this.actives[pin] = true;
+        }
+
+        public void ReleasePin(int pin) {
+            this.ReleasePinInternal(pin);
+
+            this.actives[pin] = false;
+        }
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         public extern void DisablePin(int pin);
@@ -62,12 +98,15 @@ namespace GHIElectronics.TinyCLR.Devices.Pwm.Provider {
         public extern void EnablePin(int pin);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern void ReleasePin(int pin);
+        private extern void AcquirePinInternal(int pin);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern double SetDesiredFrequency(double frequency);
+        private extern void ReleasePinInternal(int pin);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern void SetPulseParameters(int pin, double dutyCycle, bool invertPolarity);
+        private extern double SetDesiredFrequencyInternal(double frequency);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private extern void SetPulseParametersInternal(int pin, double dutyCycle, bool invertPolarity);
     }
 }
