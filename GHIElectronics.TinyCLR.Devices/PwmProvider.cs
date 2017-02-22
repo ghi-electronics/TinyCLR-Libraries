@@ -42,10 +42,7 @@ namespace GHIElectronics.TinyCLR.Devices.Pwm.Provider {
             this.actives = new bool[this.PinCount];
         }
 
-        public extern double ActualFrequency {
-            [MethodImpl(MethodImplOptions.InternalCall)]
-            get;
-        }
+        public double ActualFrequency { get; private set; }
 
         public extern double MaxFrequency {
             [MethodImpl(MethodImplOptions.InternalCall)]
@@ -69,7 +66,7 @@ namespace GHIElectronics.TinyCLR.Devices.Pwm.Provider {
                 if (this.actives[i])
                     this.SetPulseParameters(i, this.dutyCycles[i], this.inverts[i]);
 
-            return result;
+            return this.ActualFrequency = result;
         }
 
         public void SetPulseParameters(int pin, double dutyCycle, bool invertPolarity) {

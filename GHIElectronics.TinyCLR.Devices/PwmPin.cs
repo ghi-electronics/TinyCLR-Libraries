@@ -56,9 +56,10 @@ namespace GHIElectronics.TinyCLR.Devices.Pwm {
                         throw new ArgumentException();
                 }
 
+                this.m_polarity = value;
+
                 if (this.m_started) {
                     this.m_provider.SetPulseParameters(this.m_pinNumber, this.m_dutyCycle, value == PwmPulsePolarity.ActiveLow);
-                    this.m_polarity = value;
                 }
             }
         }
@@ -113,9 +114,10 @@ namespace GHIElectronics.TinyCLR.Devices.Pwm {
                 throw new ArgumentOutOfRangeException();
             }
 
+            this.m_dutyCycle = dutyCyclePercentage;
+
             if (this.m_started) {
-                this.m_provider.SetPulseParameters(this.m_pinNumber, dutyCyclePercentage, this.m_polarity == PwmPulsePolarity.ActiveLow);
-                this.m_dutyCycle = dutyCyclePercentage;
+                this.m_provider.SetPulseParameters(this.m_pinNumber, this.m_dutyCycle, this.m_polarity == PwmPulsePolarity.ActiveLow);
             }
         }
 
