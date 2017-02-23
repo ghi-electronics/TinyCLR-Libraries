@@ -1,17 +1,17 @@
 namespace GHIElectronics.TinyCLR.Pins {
     /// <summary>Board definition for the FEZ Cobra III.</summary>
     public static class FEZCobraIII {
-        /// <summary>GPIO definitions.</summary>
+        /// <summary>GPIO pin definitions.</summary>
         public static class GpioPin {
-            /// <summary>The pin for LED 1.</summary>
+            /// <summary>GPIO pin for LED1.</summary>
             public const int Led1 = G120.GpioPin.P1_14;
-            /// <summary>The pin for LED 2.</summary>
+            /// <summary>GPIO pin for LED2.</summary>
             public const int Led2 = G120.GpioPin.P1_19;
-            /// <summary>The pin for the LDR0 button.</summary>
+            /// <summary>GPIO pin for LDR0.</summary>
             public const int Ldr0 = G120.GpioPin.P2_10;
-            /// <summary>The pin for the LDR1 button.</summary>
+            /// <summary>GPIO pin for LDR1.</summary>
             public const int Ldr1 = G120.GpioPin.P0_22;
-            /// <summary>The SD card detect pin.</summary>
+            /// <summary>GPIO pin for SD card detect.</summary>
             public const int SdCardDetect = G120.GpioPin.P2_11;
             /// <summary>GPIO pin.</summary>
             public const int D0 = G120.GpioPin.P0_3;
@@ -137,47 +137,47 @@ namespace GHIElectronics.TinyCLR.Pins {
             public const int D62 = G120.GpioPin.P2_21;
         }
 
-        /// <summary>Analog input definitions.</summary>
+        /// <summary>ADC channel definitions.</summary>
         public static class AdcChannel {
-            /// <summary>Analog channel.</summary>
+            /// <summary>ADC channel.</summary>
             public const int D18 = G120.AdcChannel.P0_12;
-            /// <summary>Analog channel.</summary>
+            /// <summary>ADC channel.</summary>
             public const int D19 = G120.AdcChannel.P0_13;
-            /// <summary>Analog channel.</summary>
+            /// <summary>ADC channel.</summary>
             public const int D54 = G120.AdcChannel.P0_23;
-            /// <summary>Analog channel.</summary>
+            /// <summary>ADC channel.</summary>
             public const int D52 = G120.AdcChannel.P0_24;
-            /// <summary>Analog channel.</summary>
+            /// <summary>ADC channel.</summary>
             public const int D16 = G120.AdcChannel.P0_25;
-            /// <summary>Analog channel.</summary>
+            /// <summary>ADC channel.</summary>
             public const int D17 = G120.AdcChannel.P0_26;
-            /// <summary>Analog channel.</summary>
+            /// <summary>ADC channel.</summary>
             public const int D14 = G120.AdcChannel.P1_30;
-            /// <summary>Analog channel.</summary>
+            /// <summary>ADC channel.</summary>
             public const int D15 = G120.AdcChannel.P1_31;
         }
 
-        /// <summary>Analog output definitions.</summary>
+        /// <summary>DAC channel definitions.</summary>
         public static class DacChannel {
-            /// <summary>Analog channel.</summary>
+            /// <summary>DAC channel.</summary>
             public const int D17 = G120.DacChannel.P0_26;
         }
 
-        /// <summary>PWM output definitions.</summary>
+        /// <summary>PWM pin definitions.</summary>
         public static class PwmPin {
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int D56 = G120.PwmPin.P1_5;
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int D30 = G120.PwmPin.P2_3;
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int D38 = G120.PwmPin.P2_4;
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int D31 = G120.PwmPin.P2_5;
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int D58 = G120.PwmPin.P3_24;
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int D6 = G120.PwmPin.P3_25;
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int D5 = G120.PwmPin.P3_26;
         }
 
@@ -207,15 +207,15 @@ namespace GHIElectronics.TinyCLR.Pins {
 
         /// <summary>I2C bus definitions.</summary>
         public static class I2cBus {
-            /// <summary>SPI bus on D2 (SDA) and D3 (SCL).</summary>
+            /// <summary>I2C bus on D2 (SDA) and D3 (SCL).</summary>
             public const string I2c1 = G120.I2cBus.I2c1;
         }
 
         /// <summary>CAN bus definitions.</summary>
         public static class CanBus {
-            /// <summary>CAN channel on D7 (TX) and D4 (RX).</summary>
+            /// <summary>CAN bus on D7 (TX) and D4 (RX).</summary>
             public const int Can1 = G120.CanBus.Can1;
-            /// <summary>CAN channel on D51 (TX) and D50 (RX).</summary>
+            /// <summary>CAN bus on D51 (TX) and D50 (RX).</summary>
             public const int Can2 = G120.CanBus.Can2;
         }
     }

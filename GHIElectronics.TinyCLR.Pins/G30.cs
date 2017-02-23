@@ -1,7 +1,7 @@
 ﻿namespace GHIElectronics.TinyCLR.Pins {
     /// <summary>Board definition for the G30.</summary>
     public static class G30 {
-        /// <summary>GPIO definitions.</summary>
+        /// <summary>GPIO pin definitions.</summary>
         public static class GpioPin {
             /// <summary>GPIO pin.</summary>
             public const int PA0 = 0;
@@ -101,73 +101,73 @@
             public const int PD2 = 2 + 48;
         }
 
-        /// <summary>Analog input definitions.</summary>
+        /// <summary>ADC channel definitions.</summary>
         public static class AdcChannel {
-            /// <summary>Analog channel.</summary>
+            /// <summary>ADC channel.</summary>
             public const int PA0 = 0;
-            /// <summary>Analog channel.</summary>
+            /// <summary>ADC channel.</summary>
             public const int PA1 = 1;
-            /// <summary>Analog channel.</summary>
+            /// <summary>ADC channel.</summary>
             public const int PA2 = 2;
-            /// <summary>Analog channel.</summary>
+            /// <summary>ADC channel.</summary>
             public const int PA3 = 3;
-            /// <summary>Analog channel.</summary>
+            /// <summary>ADC channel.</summary>
             public const int PA4 = 4;
-            /// <summary>Analog channel.</summary>
+            /// <summary>ADC channel.</summary>
             public const int PA5 = 5;
-            /// <summary>Analog channel.</summary>
+            /// <summary>ADC channel.</summary>
             public const int PA6 = 6;
-            /// <summary>Analog channel.</summary>
+            /// <summary>ADC channel.</summary>
             public const int PA7 = 7;
-            /// <summary>Analog channel.</summary>
+            /// <summary>ADC channel.</summary>
             public const int PB0 = 8;
-            /// <summary>Analog channel.</summary>
+            /// <summary>ADC channel.</summary>
             public const int PB1 = 9;
-            /// <summary>Analog channel.</summary>
+            /// <summary>ADC channel.</summary>
             public const int PC0 = 10;
-            /// <summary>Analog channel.</summary>
+            /// <summary>ADC channel.</summary>
             public const int PC1 = 11;
-            /// <summary>Analog channel.</summary>
+            /// <summary>ADC channel.</summary>
             public const int PC2 = 12;
-            /// <summary>Analog channel.</summary>
+            /// <summary>ADC channel.</summary>
             public const int PC3 = 13;
-            /// <summary>Analog channel.</summary>
+            /// <summary>ADC channel.</summary>
             public const int PC4 = 14;
-            /// <summary>Analog channel.</summary>
+            /// <summary>ADC channel.</summary>
             public const int PC5 = 15;
         }
 
-        /// <summary>PWM output definitions.</summary>
+        /// <summary>PWM pin definitions.</summary>
         public static class PwmPin {
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int PA8 = 0;
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int PA9 = 1;
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int PA10 = 2;
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int PA0 = 3;
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int PA1 = 4;
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int PA2 = 5;
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int PA3 = 6;
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int PC6 = 7;
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int PC7 = 8;
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int PC8 = 9;
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int PC9 = 10;
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int PB6 = 11;
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int PB7 = 12;
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int PB8 = 13;
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int PB9 = 14;
         }
 
@@ -181,7 +181,7 @@
 
         /// <summary>I2C bus definitions.</summary>
         public static class I2cBus {
-            /// <summary>SPI bus on PB7 (SDA) and PB6 (SCL).</summary>
+            /// <summary>I2C bus on PB7 (SDA) and PB6 (SCL).</summary>
             public const string I2c1 = "I2C1";
         }
 

@@ -1,17 +1,17 @@
 ﻿namespace GHIElectronics.TinyCLR.Pins {
     /// <summary>Board definition for the FEZ Lemur.</summary>
     public static class FEZLemur {
-        /// <summary>GPIO definitions.</summary>
+        /// <summary>GPIO pin definitions.</summary>
         public static class GpioPin {
-            /// <summary>The pin for LED 1.</summary>
+            /// <summary>GPIO pin for LED1.</summary>
             public const int Led1 = G30.GpioPin.PB9;
-            /// <summary>The pin for LED 2.</summary>
+            /// <summary>GPIO pin for LED2.</summary>
             public const int Led2 = G30.GpioPin.PB8;
-            /// <summary>The pin for the LDR0 button.</summary>
+            /// <summary>GPIO pin for LDR0.</summary>
             public const int Ldr0 = G30.GpioPin.PA15;
-            /// <summary>The pin for the LDR1 button.</summary>
+            /// <summary>GPIO pin for LDR1.</summary>
             public const int Ldr1 = G30.GpioPin.PC13;
-            /// <summary>The SD card detect pin.</summary>
+            /// <summary>GPIO pin for SD card detect.</summary>
             public const int SdCardDetect = G30.GpioPin.PB12;
             /// <summary>GPIO pin.</summary>
             public const int A0 = G30.GpioPin.PA4;
@@ -85,69 +85,69 @@
             public const int D33 = G30.GpioPin.PC5;
         }
 
-        /// <summary>Analog input definitions.</summary>
+        /// <summary>ADC channel definitions.</summary>
         public static class AdcChannel {
-            /// <summary>Analog channel.</summary>
+            /// <summary>ADC channel.</summary>
             public const int D6 = G30.AdcChannel.PA0;
-            /// <summary>Analog channel.</summary>
+            /// <summary>ADC channel.</summary>
             public const int D5 = G30.AdcChannel.PA1;
-            /// <summary>Analog channel.</summary>
+            /// <summary>ADC channel.</summary>
             public const int D9 = G30.AdcChannel.PA2;
-            /// <summary>Analog channel.</summary>
+            /// <summary>ADC channel.</summary>
             public const int D10 = G30.AdcChannel.PA3;
-            /// <summary>Analog channel.</summary>
+            /// <summary>ADC channel.</summary>
             public const int A0 = G30.AdcChannel.PA4;
-            /// <summary>Analog channel.</summary>
+            /// <summary>ADC channel.</summary>
             public const int A1 = G30.AdcChannel.PA5;
-            /// <summary>Analog channel.</summary>
+            /// <summary>ADC channel.</summary>
             public const int A2 = G30.AdcChannel.PA6;
-            /// <summary>Analog channel.</summary>
+            /// <summary>ADC channel.</summary>
             public const int A3 = G30.AdcChannel.PA7;
-            /// <summary>Analog channel.</summary>
+            /// <summary>ADC channel.</summary>
             public const int A4 = G30.AdcChannel.PB0;
-            /// <summary>Analog channel.</summary>
+            /// <summary>ADC channel.</summary>
             public const int A5 = G30.AdcChannel.PB1;
-            /// <summary>Analog channel.</summary>
+            /// <summary>ADC channel.</summary>
             public const int D20 = G30.AdcChannel.PC0;
-            /// <summary>Analog channel.</summary>
+            /// <summary>ADC channel.</summary>
             public const int D21 = G30.AdcChannel.PC1;
-            /// <summary>Analog channel.</summary>
+            /// <summary>ADC channel.</summary>
             public const int D24 = G30.AdcChannel.PC2;
-            /// <summary>Analog channel.</summary>
+            /// <summary>ADC channel.</summary>
             public const int D25 = G30.AdcChannel.PC3;
-            /// <summary>Analog channel.</summary>
+            /// <summary>ADC channel.</summary>
             public const int D32 = G30.AdcChannel.PC4;
-            /// <summary>Analog channel.</summary>
+            /// <summary>ADC channel.</summary>
             public const int D33 = G30.AdcChannel.PC5;
         }
 
-        /// <summary>PWM output definitions.</summary>
+        /// <summary>PWM pin definitions.</summary>
         public static class PwmPin {
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int D8 = G30.PwmPin.PA8;
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int D1 = G30.PwmPin.PA9;
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int D0 = G30.PwmPin.PA10;
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int Led2 = G30.PwmPin.PB8;
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int Led1 = G30.PwmPin.PB9;
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int D6 = G30.PwmPin.PA0;
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int D5 = G30.PwmPin.PA1;
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int D9 = G30.PwmPin.PA2;
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int D10 = G30.PwmPin.PA3;
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int D29 = G30.PwmPin.PC6;
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int D30 = G30.PwmPin.PC7;
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int D3 = G30.PwmPin.PB6;
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int D2 = G30.PwmPin.PB7;
         }
 
@@ -161,7 +161,7 @@
 
         /// <summary>I2C bus definitions.</summary>
         public static class I2cBus {
-            /// <summary>SPI bus on D2 (SDA) and D3 (SCL).</summary>
+            /// <summary>I2C bus on D2 (SDA) and D3 (SCL).</summary>
             public const string I2c1 = G30.I2cBus.I2c1;
         }
 

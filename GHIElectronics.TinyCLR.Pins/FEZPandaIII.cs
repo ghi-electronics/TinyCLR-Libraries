@@ -1,21 +1,21 @@
 ﻿namespace GHIElectronics.TinyCLR.Pins {
     /// <summary>Board definition for the FEZ Panda III.</summary>
     public static class FEZPandaIII {
-        /// <summary>GPIO definitions.</summary>
+        /// <summary>GPIO pin definitions.</summary>
         public static class GpioPin {
-            /// <summary>The pin for LED 1.</summary>
+            /// <summary>GPIO pin for LED1.</summary>
             public const int Led1 = G80.GpioPin.PE14;
-            /// <summary>The pin for LED 2.</summary>
+            /// <summary>GPIO pin for LED2.</summary>
             public const int Led2 = G80.GpioPin.PE13;
-            /// <summary>The pin for LED 3.</summary>
+            /// <summary>GPIO pin for LED3.</summary>
             public const int Led3 = G80.GpioPin.PE11;
-            /// <summary>The pin for LED 4.</summary>
+            /// <summary>GPIO pin for LED4.</summary>
             public const int Led4 = G80.GpioPin.PE9;
-            /// <summary>The pin for the LDR0 button.</summary>
+            /// <summary>GPIO pin for LDR0.</summary>
             public const int Ldr0 = G80.GpioPin.PE3;
-            /// <summary>The pin for the LDR1 button.</summary>
+            /// <summary>GPIO pin for LDR1.</summary>
             public const int Ldr1 = G80.GpioPin.PE4;
-            /// <summary>The SD card detect pin.</summary>
+            /// <summary>GPIO pin for SD card detect.</summary>
             public const int SdCardDetect = G80.GpioPin.PD10;
             /// <summary>GPIO pin.</summary>
             public const int A0 = G80.GpioPin.PA2;
@@ -127,93 +127,93 @@
             public const int D52 = G80.GpioPin.PA8;
         }
 
-        /// <summary>Analog input definitions.</summary>
+        /// <summary>ADC channel definitions.</summary>
         public static class AdcChannel {
-            /// <summary>Analog channel.</summary>
+            /// <summary>ADC channel.</summary>
             public const int D33 = G80.AdcChannel.PA0;
-            /// <summary>Analog channel.</summary>
+            /// <summary>ADC channel.</summary>
             public const int D31 = G80.AdcChannel.PA1;
-            /// <summary>Analog channel.</summary>
+            /// <summary>ADC channel.</summary>
             public const int A0 = G80.AdcChannel.PA2;
-            /// <summary>Analog channel.</summary>
+            /// <summary>ADC channel.</summary>
             public const int A1 = G80.AdcChannel.PA3;
-            /// <summary>Analog channel.</summary>
+            /// <summary>ADC channel.</summary>
             public const int A2 = G80.AdcChannel.PA4;
-            /// <summary>Analog channel.</summary>
+            /// <summary>ADC channel.</summary>
             public const int A3 = G80.AdcChannel.PA5;
-            /// <summary>Analog channel.</summary>
+            /// <summary>ADC channel.</summary>
             public const int A4 = G80.AdcChannel.PA6;
-            /// <summary>Analog channel.</summary>
+            /// <summary>ADC channel.</summary>
             public const int A5 = G80.AdcChannel.PA7;
-            /// <summary>Analog channel.</summary>
+            /// <summary>ADC channel.</summary>
             public const int D9 = G80.AdcChannel.PB0;
-            /// <summary>Analog channel.</summary>
+            /// <summary>ADC channel.</summary>
             public const int D8 = G80.AdcChannel.PB1;
-            /// <summary>Analog channel.</summary>
+            /// <summary>ADC channel.</summary>
             public const int D23 = G80.AdcChannel.PC0;
-            /// <summary>Analog channel.</summary>
+            /// <summary>ADC channel.</summary>
             public const int D25 = G80.AdcChannel.PC1;
-            /// <summary>Analog channel.</summary>
+            /// <summary>ADC channel.</summary>
             public const int D36 = G80.AdcChannel.PC2;
-            /// <summary>Analog channel.</summary>
+            /// <summary>ADC channel.</summary>
             public const int D38 = G80.AdcChannel.PC3;
-            /// <summary>Analog channel.</summary>
+            /// <summary>ADC channel.</summary>
             public const int D27 = G80.AdcChannel.PC4;
-            /// <summary>Analog channel.</summary>
+            /// <summary>ADC channel.</summary>
             public const int D29 = G80.AdcChannel.PC5;
         }
 
-        /// <summary>Analog output definitions.</summary>
+        /// <summary>DAC channel definitions.</summary>
         public static class DacChannel {
-            /// <summary>Analog channel.</summary>
+            /// <summary>DAC channel.</summary>
             public const int A2 = G80.DacChannel.PA4;
-            /// <summary>Analog channel.</summary>
+            /// <summary>DAC channel.</summary>
             public const int A3 = G80.DacChannel.PA5;
         }
 
-        /// <summary>PWM output definitions.</summary>
+        /// <summary>PWM pin definitions.</summary>
         public static class PwmPin {
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int Led4 = G80.PwmPin.PE9;
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int Led3 = G80.PwmPin.PE11;
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int Led2 = G80.PwmPin.PE13;
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int Led1 = G80.PwmPin.PE14;
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int D10 = G80.PwmPin.PA15;
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int D13 = G80.PwmPin.PB3;
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int D35 = G80.PwmPin.PB10;
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int D21 = G80.PwmPin.PB11;
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int D12 = G80.PwmPin.PB4;
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int D11 = G80.PwmPin.PB5;
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int D9 = G80.PwmPin.PB0;
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int D8 = G80.PwmPin.PB1;
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int D46 = G80.PwmPin.PD12;
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int D48 = G80.PwmPin.PC6;
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int D50 = G80.PwmPin.PC7;
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int A0 = G80.PwmPin.PA2;
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int A1 = G80.PwmPin.PA3;
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int D6 = G80.PwmPin.PB8;
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int D5 = G80.PwmPin.PB9;
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int A4 = G80.PwmPin.PA6;
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int A5 = G80.PwmPin.PA7;
         }
 
@@ -231,7 +231,7 @@
 
         /// <summary>I2C bus definitions.</summary>
         public static class I2cBus {
-            /// <summary>SPI bus on D2 (SDA) and D3 (SCL).</summary>
+            /// <summary>I2C bus on D2 (SDA) and D3 (SCL).</summary>
             public const string I2c1 = G80.I2cBus.I2c1;
         }
 
@@ -245,9 +245,9 @@
 
         /// <summary>CAN bus definitions.</summary>
         public static class CanBus {
-            /// <summary>CAN channel on D7 (TX) and D4 (RX).</summary>
+            /// <summary>CAN bus on D7 (TX) and D4 (RX).</summary>
             public const int Can1 = G80.CanBus.Can1;
-            /// <summary>CAN channel on D32 (TX) and D30 (RX).</summary>
+            /// <summary>CAN bus on D32 (TX) and D30 (RX).</summary>
             public const int Can2 = G80.CanBus.Can2;
         }
     }

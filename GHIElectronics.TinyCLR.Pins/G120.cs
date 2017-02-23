@@ -1,7 +1,7 @@
 ﻿namespace GHIElectronics.TinyCLR.Pins {
     /// <summary>Board definition for the G120.</summary>
     public static class G120 {
-        /// <summary>GPIO definitions.</summary>
+        /// <summary>GPIO pin definitions.</summary>
         public static class GpioPin {
             /// <summary>GPIO pin.</summary>
             public const int P0_0 = 0 + 0 * 32;
@@ -149,57 +149,57 @@
             public const int P4_29 = 29 + 4 * 32;
         }
 
-        /// <summary>Analog input definitions.</summary>
+        /// <summary>ADC channel definitions.</summary>
         public static class AdcChannel {
-            /// <summary>Analog channel.</summary>
+            /// <summary>ADC channel.</summary>
             public const int P0_23 = 0;
-            /// <summary>Analog channel.</summary>
+            /// <summary>ADC channel.</summary>
             public const int P0_24 = 1;
-            /// <summary>Analog channel.</summary>
+            /// <summary>ADC channel.</summary>
             public const int P0_25 = 2;
-            /// <summary>Analog channel.</summary>
+            /// <summary>ADC channel.</summary>
             public const int P0_26 = 3;
-            /// <summary>Analog channel.</summary>
+            /// <summary>ADC channel.</summary>
             public const int P1_30 = 4;
-            /// <summary>Analog channel.</summary>
+            /// <summary>ADC channel.</summary>
             public const int P1_31 = 5;
-            /// <summary>Analog channel.</summary>
+            /// <summary>ADC channel.</summary>
             public const int P0_12 = 6;
-            /// <summary>Analog channel.</summary>
+            /// <summary>ADC channel.</summary>
             public const int P0_13 = 7;
         }
 
-        /// <summary>Analog output definitions.</summary>
+        /// <summary>DAC channel definitions.</summary>
         public static class DacChannel {
-            /// <summary>Analog output channel.</summary>
+            /// <summary>DAC channel channel.</summary>
             public const int P0_26 = 0;
         }
 
-        /// <summary>PWM output definitions.</summary>
+        /// <summary>PWM pin definitions.</summary>
         public static class PwmPin {
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int P1_2 = 0;
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int P1_3 = 1;
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int P1_5 = 2;
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int P1_6 = 3;
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int P1_7 = 4;
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int P1_11 = 5;
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int P3_24 = 6;
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int P3_25 = 7;
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int P3_26 = 8;
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int P2_3 = 9;
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int P2_4 = 10;
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int P2_5 = 11;
         }
 
@@ -219,7 +219,7 @@
 
         /// <summary>I2C bus definitions.</summary>
         public static class I2cBus {
-            /// <summary>SPI bus on P0_27 (SDA) and P0_28 (SCL).</summary>
+            /// <summary>I2C bus on P0_27 (SDA) and P0_28 (SCL).</summary>
             public const string I2c1 = "I2C1";
         }
 
@@ -235,9 +235,9 @@
 
         /// <summary>CAN bus definitions.</summary>
         public static class CanBus {
-            /// <summary>CAN channel on P0.1 (TX) and P0.0 (RX).</summary>
+            /// <summary>CAN bus on P0.1 (TX) and P0.0 (RX).</summary>
             public const int Can1 = 0;
-            /// <summary>CAN channel on P0.5 (TX) and P0.4 (RX).</summary>
+            /// <summary>CAN bus on P0.5 (TX) and P0.4 (RX).</summary>
             public const int Can2 = 1;
         }
     }
