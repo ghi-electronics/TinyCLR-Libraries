@@ -34,8 +34,11 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="FEZCobraIII.cs" />
     <Compile Include="FEZLemur.cs" />
     <Compile Include="FEZPandaIII.cs" />
+    <Compile Include="G120.cs" />
+    <Compile Include="G120E.cs" />
     <Compile Include="G30.cs" />
     <Compile Include="G80.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
