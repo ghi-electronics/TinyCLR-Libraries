@@ -19,6 +19,6 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="$TargetDir$GHIElectronics.TinyCLR.Pins.dll" target="lib\net46" />
+    <file src="$TargetDir$GHIElectronics.TinyCLR.Pins.dll" target="lib\net452" />
   </files>
 </package>
