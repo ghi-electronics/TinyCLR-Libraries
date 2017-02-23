@@ -1,226 +1,220 @@
 ﻿namespace GHIElectronics.TinyCLR.Pins {
     /// <summary>Board definition for the FEZ Panda III.</summary>
     public static class FEZPandaIII {
-        /// <summary>The analog input precision supported by the board.</summary>
-        public const int SupportedAnalogInputPrecision = G80.SupportedAnalogInputPrecision;
-
-        /// <summary>The analog output precision supported by the board.</summary>
-        public const int SupportedAnalogOutputPrecision = G80.SupportedAnalogOutputPrecision;
-
         /// <summary>GPIO definitions.</summary>
-        public static class Gpio {
+        public static class GpioPin {
             /// <summary>The pin for LED 1.</summary>
-            public const int Led1 = G80.Gpio.PE14;
+            public const int Led1 = G80.GpioPin.PE14;
             /// <summary>The pin for LED 2.</summary>
-            public const int Led2 = G80.Gpio.PE13;
+            public const int Led2 = G80.GpioPin.PE13;
             /// <summary>The pin for LED 3.</summary>
-            public const int Led3 = G80.Gpio.PE11;
+            public const int Led3 = G80.GpioPin.PE11;
             /// <summary>The pin for LED 4.</summary>
-            public const int Led4 = G80.Gpio.PE9;
+            public const int Led4 = G80.GpioPin.PE9;
             /// <summary>The pin for the LDR0 button.</summary>
-            public const int Ldr0 = G80.Gpio.PE3;
+            public const int Ldr0 = G80.GpioPin.PE3;
             /// <summary>The pin for the LDR1 button.</summary>
-            public const int Ldr1 = G80.Gpio.PE4;
+            public const int Ldr1 = G80.GpioPin.PE4;
             /// <summary>The SD card detect pin.</summary>
-            public const int SdCardDetect = G80.Gpio.PD10;
+            public const int SdCardDetect = G80.GpioPin.PD10;
             /// <summary>GPIO pin.</summary>
-            public const int A0 = G80.Gpio.PA2;
+            public const int A0 = G80.GpioPin.PA2;
             /// <summary>GPIO pin.</summary>
-            public const int A1 = G80.Gpio.PA3;
+            public const int A1 = G80.GpioPin.PA3;
             /// <summary>GPIO pin.</summary>
-            public const int A2 = G80.Gpio.PA4;
+            public const int A2 = G80.GpioPin.PA4;
             /// <summary>GPIO pin.</summary>
-            public const int A3 = G80.Gpio.PA5;
+            public const int A3 = G80.GpioPin.PA5;
             /// <summary>GPIO pin.</summary>
-            public const int A4 = G80.Gpio.PA6;
+            public const int A4 = G80.GpioPin.PA6;
             /// <summary>GPIO pin.</summary>
-            public const int A5 = G80.Gpio.PA7;
+            public const int A5 = G80.GpioPin.PA7;
             /// <summary>GPIO pin.</summary>
-            public const int D0 = G80.Gpio.PA10;
+            public const int D0 = G80.GpioPin.PA10;
             /// <summary>GPIO pin.</summary>
-            public const int D1 = G80.Gpio.PA9;
+            public const int D1 = G80.GpioPin.PA9;
             /// <summary>GPIO pin.</summary>
-            public const int D2 = G80.Gpio.PB7;
+            public const int D2 = G80.GpioPin.PB7;
             /// <summary>GPIO pin.</summary>
-            public const int D3 = G80.Gpio.PB6;
+            public const int D3 = G80.GpioPin.PB6;
             /// <summary>GPIO pin.</summary>
-            public const int D4 = G80.Gpio.PD0;
+            public const int D4 = G80.GpioPin.PD0;
             /// <summary>GPIO pin.</summary>
-            public const int D5 = G80.Gpio.PB9;
+            public const int D5 = G80.GpioPin.PB9;
             /// <summary>GPIO pin.</summary>
-            public const int D6 = G80.Gpio.PB8;
+            public const int D6 = G80.GpioPin.PB8;
             /// <summary>GPIO pin.</summary>
-            public const int D7 = G80.Gpio.PD1;
+            public const int D7 = G80.GpioPin.PD1;
             /// <summary>GPIO pin.</summary>
-            public const int D8 = G80.Gpio.PB1;
+            public const int D8 = G80.GpioPin.PB1;
             /// <summary>GPIO pin.</summary>
-            public const int D9 = G80.Gpio.PB0;
+            public const int D9 = G80.GpioPin.PB0;
             /// <summary>GPIO pin.</summary>
-            public const int D10 = G80.Gpio.PA15;
+            public const int D10 = G80.GpioPin.PA15;
             /// <summary>GPIO pin.</summary>
-            public const int D11 = G80.Gpio.PB5;
+            public const int D11 = G80.GpioPin.PB5;
             /// <summary>GPIO pin.</summary>
-            public const int D12 = G80.Gpio.PB4;
+            public const int D12 = G80.GpioPin.PB4;
             /// <summary>GPIO pin.</summary>
-            public const int D13 = G80.Gpio.PB3;
+            public const int D13 = G80.GpioPin.PB3;
             /// <summary>GPIO pin.</summary>
-            public const int D20 = G80.Gpio.PE2;
+            public const int D20 = G80.GpioPin.PE2;
             /// <summary>GPIO pin.</summary>
-            public const int D21 = G80.Gpio.PB11;
+            public const int D21 = G80.GpioPin.PB11;
             /// <summary>GPIO pin.</summary>
-            public const int D22 = G80.Gpio.PE5;
+            public const int D22 = G80.GpioPin.PE5;
             /// <summary>GPIO pin.</summary>
-            public const int D23 = G80.Gpio.PC0;
+            public const int D23 = G80.GpioPin.PC0;
             /// <summary>GPIO pin.</summary>
-            public const int D24 = G80.Gpio.PE6;
+            public const int D24 = G80.GpioPin.PE6;
             /// <summary>GPIO pin.</summary>
-            public const int D25 = G80.Gpio.PC1;
+            public const int D25 = G80.GpioPin.PC1;
             /// <summary>GPIO pin.</summary>
-            public const int D26 = G80.Gpio.PA13;
+            public const int D26 = G80.GpioPin.PA13;
             /// <summary>GPIO pin.</summary>
-            public const int D27 = G80.Gpio.PC4;
+            public const int D27 = G80.GpioPin.PC4;
             /// <summary>GPIO pin.</summary>
-            public const int D28 = G80.Gpio.PA14;
+            public const int D28 = G80.GpioPin.PA14;
             /// <summary>GPIO pin.</summary>
-            public const int D29 = G80.Gpio.PC5;
+            public const int D29 = G80.GpioPin.PC5;
             /// <summary>GPIO pin.</summary>
-            public const int D30 = G80.Gpio.PB12;
+            public const int D30 = G80.GpioPin.PB12;
             /// <summary>GPIO pin.</summary>
-            public const int D31 = G80.Gpio.PA1;
+            public const int D31 = G80.GpioPin.PA1;
             /// <summary>GPIO pin.</summary>
-            public const int D32 = G80.Gpio.PB13;
+            public const int D32 = G80.GpioPin.PB13;
             /// <summary>GPIO pin.</summary>
-            public const int D33 = G80.Gpio.PA0;
+            public const int D33 = G80.GpioPin.PA0;
             /// <summary>GPIO pin.</summary>
-            public const int D34 = G80.Gpio.PB2;
+            public const int D34 = G80.GpioPin.PB2;
             /// <summary>GPIO pin.</summary>
-            public const int D35 = G80.Gpio.PB10;
+            public const int D35 = G80.GpioPin.PB10;
             /// <summary>GPIO pin.</summary>
-            public const int Mod = G80.Gpio.PE15;
+            public const int Mod = G80.GpioPin.PE15;
             /// <summary>GPIO pin.</summary>
-            public const int D36 = G80.Gpio.PC2;
+            public const int D36 = G80.GpioPin.PC2;
             /// <summary>GPIO pin.</summary>
-            public const int D37 = G80.Gpio.PD6;
+            public const int D37 = G80.GpioPin.PD6;
             /// <summary>GPIO pin.</summary>
-            public const int D38 = G80.Gpio.PC3;
+            public const int D38 = G80.GpioPin.PC3;
             /// <summary>GPIO pin.</summary>
-            public const int D39 = G80.Gpio.PD5;
+            public const int D39 = G80.GpioPin.PD5;
             /// <summary>GPIO pin.</summary>
-            public const int D40 = G80.Gpio.PD9;
+            public const int D40 = G80.GpioPin.PD9;
             /// <summary>GPIO pin.</summary>
-            public const int D41 = G80.Gpio.PD3;
+            public const int D41 = G80.GpioPin.PD3;
             /// <summary>GPIO pin.</summary>
-            public const int D42 = G80.Gpio.PD8;
+            public const int D42 = G80.GpioPin.PD8;
             /// <summary>GPIO pin.</summary>
-            public const int D43 = G80.Gpio.PD4;
+            public const int D43 = G80.GpioPin.PD4;
             /// <summary>GPIO pin.</summary>
-            public const int D44 = G80.Gpio.PD11;
+            public const int D44 = G80.GpioPin.PD11;
             /// <summary>GPIO pin.</summary>
-            public const int D45 = G80.Gpio.PE7;
+            public const int D45 = G80.GpioPin.PE7;
             /// <summary>GPIO pin.</summary>
-            public const int D46 = G80.Gpio.PD12;
+            public const int D46 = G80.GpioPin.PD12;
             /// <summary>GPIO pin.</summary>
-            public const int D47 = G80.Gpio.PE8;
+            public const int D47 = G80.GpioPin.PE8;
             /// <summary>GPIO pin.</summary>
-            public const int D48 = G80.Gpio.PC6;
+            public const int D48 = G80.GpioPin.PC6;
             /// <summary>GPIO pin.</summary>
-            public const int D49 = G80.Gpio.PE0;
+            public const int D49 = G80.GpioPin.PE0;
             /// <summary>GPIO pin.</summary>
-            public const int D50 = G80.Gpio.PC7;
+            public const int D50 = G80.GpioPin.PC7;
             /// <summary>GPIO pin.</summary>
-            public const int D51 = G80.Gpio.PE1;
+            public const int D51 = G80.GpioPin.PE1;
             /// <summary>GPIO pin.</summary>
-            public const int D52 = G80.Gpio.PA8;
+            public const int D52 = G80.GpioPin.PA8;
         }
 
         /// <summary>Analog input definitions.</summary>
-        public static class AnalogInput {
+        public static class AdcChannel {
             /// <summary>Analog channel.</summary>
-            public const int D33 = G80.AnalogInput.PA0;
+            public const int D33 = G80.AdcChannel.PA0;
             /// <summary>Analog channel.</summary>
-            public const int D31 = G80.AnalogInput.PA1;
+            public const int D31 = G80.AdcChannel.PA1;
             /// <summary>Analog channel.</summary>
-            public const int A0 = G80.AnalogInput.PA2;
+            public const int A0 = G80.AdcChannel.PA2;
             /// <summary>Analog channel.</summary>
-            public const int A1 = G80.AnalogInput.PA3;
+            public const int A1 = G80.AdcChannel.PA3;
             /// <summary>Analog channel.</summary>
-            public const int A2 = G80.AnalogInput.PA4;
+            public const int A2 = G80.AdcChannel.PA4;
             /// <summary>Analog channel.</summary>
-            public const int A3 = G80.AnalogInput.PA5;
+            public const int A3 = G80.AdcChannel.PA5;
             /// <summary>Analog channel.</summary>
-            public const int A4 = G80.AnalogInput.PA6;
+            public const int A4 = G80.AdcChannel.PA6;
             /// <summary>Analog channel.</summary>
-            public const int A5 = G80.AnalogInput.PA7;
+            public const int A5 = G80.AdcChannel.PA7;
             /// <summary>Analog channel.</summary>
-            public const int D9 = G80.AnalogInput.PB0;
+            public const int D9 = G80.AdcChannel.PB0;
             /// <summary>Analog channel.</summary>
-            public const int D8 = G80.AnalogInput.PB1;
+            public const int D8 = G80.AdcChannel.PB1;
             /// <summary>Analog channel.</summary>
-            public const int D23 = G80.AnalogInput.PC0;
+            public const int D23 = G80.AdcChannel.PC0;
             /// <summary>Analog channel.</summary>
-            public const int D25 = G80.AnalogInput.PC1;
+            public const int D25 = G80.AdcChannel.PC1;
             /// <summary>Analog channel.</summary>
-            public const int D36 = G80.AnalogInput.PC2;
+            public const int D36 = G80.AdcChannel.PC2;
             /// <summary>Analog channel.</summary>
-            public const int D38 = G80.AnalogInput.PC3;
+            public const int D38 = G80.AdcChannel.PC3;
             /// <summary>Analog channel.</summary>
-            public const int D27 = G80.AnalogInput.PC4;
+            public const int D27 = G80.AdcChannel.PC4;
             /// <summary>Analog channel.</summary>
-            public const int D29 = G80.AnalogInput.PC5;
+            public const int D29 = G80.AdcChannel.PC5;
         }
 
         /// <summary>Analog output definitions.</summary>
-        public static class AnalogOutput {
+        public static class DacChannel {
             /// <summary>Analog channel.</summary>
-            public const int A2 = G80.AnalogOutput.PA4;
+            public const int A2 = G80.DacChannel.PA4;
             /// <summary>Analog channel.</summary>
-            public const int A3 = G80.AnalogOutput.PA5;
+            public const int A3 = G80.DacChannel.PA5;
         }
 
         /// <summary>PWM output definitions.</summary>
-        public static class PwmOutput {
+        public static class PwmPin {
             /// <summary>PWM channel.</summary>
-            public const int Led4 = G80.PwmOutput.PE9;
+            public const int Led4 = G80.PwmPin.PE9;
             /// <summary>PWM channel.</summary>
-            public const int Led3 = G80.PwmOutput.PE11;
+            public const int Led3 = G80.PwmPin.PE11;
             /// <summary>PWM channel.</summary>
-            public const int Led2 = G80.PwmOutput.PE13;
+            public const int Led2 = G80.PwmPin.PE13;
             /// <summary>PWM channel.</summary>
-            public const int Led1 = G80.PwmOutput.PE14;
+            public const int Led1 = G80.PwmPin.PE14;
             /// <summary>PWM channel.</summary>
-            public const int D10 = G80.PwmOutput.PA15;
+            public const int D10 = G80.PwmPin.PA15;
             /// <summary>PWM channel.</summary>
-            public const int D13 = G80.PwmOutput.PB3;
+            public const int D13 = G80.PwmPin.PB3;
             /// <summary>PWM channel.</summary>
-            public const int D35 = G80.PwmOutput.PB10;
+            public const int D35 = G80.PwmPin.PB10;
             /// <summary>PWM channel.</summary>
-            public const int D21 = G80.PwmOutput.PB11;
+            public const int D21 = G80.PwmPin.PB11;
             /// <summary>PWM channel.</summary>
-            public const int D12 = G80.PwmOutput.PB4;
+            public const int D12 = G80.PwmPin.PB4;
             /// <summary>PWM channel.</summary>
-            public const int D11 = G80.PwmOutput.PB5;
+            public const int D11 = G80.PwmPin.PB5;
             /// <summary>PWM channel.</summary>
-            public const int D9 = G80.PwmOutput.PB0;
+            public const int D9 = G80.PwmPin.PB0;
             /// <summary>PWM channel.</summary>
-            public const int D8 = G80.PwmOutput.PB1;
+            public const int D8 = G80.PwmPin.PB1;
             /// <summary>PWM channel.</summary>
-            public const int D46 = G80.PwmOutput.PD12;
+            public const int D46 = G80.PwmPin.PD12;
             /// <summary>PWM channel.</summary>
-            public const int D48 = G80.PwmOutput.PC6;
+            public const int D48 = G80.PwmPin.PC6;
             /// <summary>PWM channel.</summary>
-            public const int D50 = G80.PwmOutput.PC7;
+            public const int D50 = G80.PwmPin.PC7;
             /// <summary>PWM channel.</summary>
-            public const int A0 = G80.PwmOutput.PA2;
+            public const int A0 = G80.PwmPin.PA2;
             /// <summary>PWM channel.</summary>
-            public const int A1 = G80.PwmOutput.PA3;
+            public const int A1 = G80.PwmPin.PA3;
             /// <summary>PWM channel.</summary>
-            public const int D6 = G80.PwmOutput.PB8;
+            public const int D6 = G80.PwmPin.PB8;
             /// <summary>PWM channel.</summary>
-            public const int D5 = G80.PwmOutput.PB9;
+            public const int D5 = G80.PwmPin.PB9;
             /// <summary>PWM channel.</summary>
-            public const int A4 = G80.PwmOutput.PA6;
+            public const int A4 = G80.PwmPin.PA6;
             /// <summary>PWM channel.</summary>
-            public const int A5 = G80.PwmOutput.PA7;
+            public const int A5 = G80.PwmPin.PA7;
         }
 
         /// <summary>Serial port definitions.</summary>

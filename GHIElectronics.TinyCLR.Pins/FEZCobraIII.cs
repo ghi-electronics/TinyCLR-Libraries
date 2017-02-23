@@ -1,190 +1,184 @@
 namespace GHIElectronics.TinyCLR.Pins {
     /// <summary>Board definition for the FEZ Cobra III.</summary>
     public static class FEZCobraIII {
-        /// <summary>The analog input precision supported by the board.</summary>
-        public const int SupportedAnalogInputPrecision = G120.SupportedAnalogInputPrecision;
-
-        /// <summary>The analog output precision supported by the board.</summary>
-        public const int SupportedAnalogOutputPrecision = G120.SupportedAnalogOutputPrecision;
-
         /// <summary>GPIO definitions.</summary>
-        public static class Gpio {
+        public static class GpioPin {
             /// <summary>The pin for LED 1.</summary>
-            public const int Led1 = G120.P1_14;
+            public const int Led1 = G120.GpioPin.P1_14;
             /// <summary>The pin for LED 2.</summary>
-            public const int Led2 = G120.P1_19;
+            public const int Led2 = G120.GpioPin.P1_19;
             /// <summary>The pin for the LDR0 button.</summary>
-            public const int Ldr0 = G120.P2_10;
+            public const int Ldr0 = G120.GpioPin.P2_10;
             /// <summary>The pin for the LDR1 button.</summary>
-            public const int Ldr1 = G120.P0_22;
+            public const int Ldr1 = G120.GpioPin.P0_22;
             /// <summary>The SD card detect pin.</summary>
-            public const int SdCardDetect = G120.P2_11;
+            public const int SdCardDetect = G120.GpioPin.P2_11;
             /// <summary>GPIO pin.</summary>
-            public const int D0 = G120.P0_3;
+            public const int D0 = G120.GpioPin.P0_3;
             /// <summary>GPIO pin.</summary>
-            public const int D1 = G120.P0_2;
+            public const int D1 = G120.GpioPin.P0_2;
             /// <summary>GPIO pin.</summary>
-            public const int D2 = G120.P0_27;
+            public const int D2 = G120.GpioPin.P0_27;
             /// <summary>GPIO pin.</summary>
-            public const int D3 = G120.P0_28;
+            public const int D3 = G120.GpioPin.P0_28;
             /// <summary>GPIO pin.</summary>
-            public const int D4 = G120.P0_0;
+            public const int D4 = G120.GpioPin.P0_0;
             /// <summary>GPIO pin.</summary>
-            public const int D5 = G120.P3_26;
+            public const int D5 = G120.GpioPin.P3_26;
             /// <summary>GPIO pin.</summary>
-            public const int D6 = G120.P3_25;
+            public const int D6 = G120.GpioPin.P3_25;
             /// <summary>GPIO pin.</summary>
-            public const int D7 = G120.P0_1;
+            public const int D7 = G120.GpioPin.P0_1;
             /// <summary>GPIO pin.</summary>
-            public const int D8 = G120.P1_10;
+            public const int D8 = G120.GpioPin.P1_10;
             /// <summary>GPIO pin.</summary>
-            public const int D9 = G120.P1_9;
+            public const int D9 = G120.GpioPin.P1_9;
             /// <summary>GPIO pin.</summary>
-            public const int D10 = G120.P1_8;
+            public const int D10 = G120.GpioPin.P1_8;
             /// <summary>GPIO pin.</summary>
-            public const int D11 = G120.P0_18;
+            public const int D11 = G120.GpioPin.P0_18;
             /// <summary>GPIO pin.</summary>
-            public const int D12 = G120.P0_17;
+            public const int D12 = G120.GpioPin.P0_17;
             /// <summary>GPIO pin.</summary>
-            public const int D13 = G120.P0_15;
+            public const int D13 = G120.GpioPin.P0_15;
             /// <summary>GPIO pin.</summary>
-            public const int D14 = G120.P1_30;
+            public const int D14 = G120.GpioPin.P1_30;
             /// <summary>GPIO pin.</summary>
-            public const int D15 = G120.P1_31;
+            public const int D15 = G120.GpioPin.P1_31;
             /// <summary>GPIO pin.</summary>
-            public const int D16 = G120.P0_25;
+            public const int D16 = G120.GpioPin.P0_25;
             /// <summary>GPIO pin.</summary>
-            public const int D17 = G120.P0_26;
+            public const int D17 = G120.GpioPin.P0_26;
             /// <summary>GPIO pin.</summary>
-            public const int D18 = G120.P0_12;
+            public const int D18 = G120.GpioPin.P0_12;
             /// <summary>GPIO pin.</summary>
-            public const int D19 = G120.P0_13;
+            public const int D19 = G120.GpioPin.P0_13;
             /// <summary>GPIO pin.</summary>
-            public const int D20 = G120.P0_11;
+            public const int D20 = G120.GpioPin.P0_11;
             /// <summary>GPIO pin.</summary>
-            public const int D21 = G120.P0_10;
+            public const int D21 = G120.GpioPin.P0_10;
             /// <summary>GPIO pin.</summary>
-            public const int D22 = G120.P1_17;
+            public const int D22 = G120.GpioPin.P1_17;
             /// <summary>GPIO pin.</summary>
-            public const int D23 = G120.P1_16;
+            public const int D23 = G120.GpioPin.P1_16;
             /// <summary>GPIO pin.</summary>
-            public const int D24 = G120.P1_15;
+            public const int D24 = G120.GpioPin.P1_15;
             /// <summary>GPIO pin.</summary>
-            public const int D25 = G120.P1_0;
+            public const int D25 = G120.GpioPin.P1_0;
             /// <summary>GPIO pin.</summary>
-            public const int D26 = G120.P1_4;
+            public const int D26 = G120.GpioPin.P1_4;
             /// <summary>GPIO pin.</summary>
-            public const int D27 = G120.P1_1;
+            public const int D27 = G120.GpioPin.P1_1;
             /// <summary>GPIO pin.</summary>
-            public const int D28 = G120.P0_16;
+            public const int D28 = G120.GpioPin.P0_16;
             /// <summary>GPIO pin.</summary>
-            public const int D29 = G120.P2_0;
+            public const int D29 = G120.GpioPin.P2_0;
             /// <summary>GPIO pin.</summary>
-            public const int Mod = G120.P2_1;
+            public const int Mod = G120.GpioPin.P2_1;
             /// <summary>GPIO pin.</summary>
-            public const int D30 = G120.P2_3;
+            public const int D30 = G120.GpioPin.P2_3;
             /// <summary>GPIO pin.</summary>
-            public const int D31 = G120.P2_5;
+            public const int D31 = G120.GpioPin.P2_5;
             /// <summary>GPIO pin.</summary>
-            public const int D32 = G120.P2_2;
+            public const int D32 = G120.GpioPin.P2_2;
             /// <summary>GPIO pin.</summary>
-            public const int D33 = G120.P2_12;
+            public const int D33 = G120.GpioPin.P2_12;
             /// <summary>GPIO pin.</summary>
-            public const int D34 = G120.P2_6;
+            public const int D34 = G120.GpioPin.P2_6;
             /// <summary>GPIO pin.</summary>
-            public const int D35 = G120.P2_7;
+            public const int D35 = G120.GpioPin.P2_7;
             /// <summary>GPIO pin.</summary>
-            public const int D36 = G120.P2_8;
+            public const int D36 = G120.GpioPin.P2_8;
             /// <summary>GPIO pin.</summary>
-            public const int D37 = G120.P2_9;
+            public const int D37 = G120.GpioPin.P2_9;
             /// <summary>GPIO pin.</summary>
-            public const int D38 = G120.P2_4;
+            public const int D38 = G120.GpioPin.P2_4;
             /// <summary>GPIO pin.</summary>
-            public const int D39 = G120.P1_20;
+            public const int D39 = G120.GpioPin.P1_20;
             /// <summary>GPIO pin.</summary>
-            public const int D40 = G120.P1_21;
+            public const int D40 = G120.GpioPin.P1_21;
             /// <summary>GPIO pin.</summary>
-            public const int D41 = G120.P1_22;
+            public const int D41 = G120.GpioPin.P1_22;
             /// <summary>GPIO pin.</summary>
-            public const int D42 = G120.P1_23;
+            public const int D42 = G120.GpioPin.P1_23;
             /// <summary>GPIO pin.</summary>
-            public const int D43 = G120.P1_24;
+            public const int D43 = G120.GpioPin.P1_24;
             /// <summary>GPIO pin.</summary>
-            public const int D44 = G120.P1_25;
+            public const int D44 = G120.GpioPin.P1_25;
             /// <summary>GPIO pin.</summary>
-            public const int D45 = G120.P2_13;
+            public const int D45 = G120.GpioPin.P2_13;
             /// <summary>GPIO pin.</summary>
-            public const int D46 = G120.P1_26;
+            public const int D46 = G120.GpioPin.P1_26;
             /// <summary>GPIO pin.</summary>
-            public const int D47 = G120.P1_27;
+            public const int D47 = G120.GpioPin.P1_27;
             /// <summary>GPIO pin.</summary>
-            public const int D48 = G120.P1_28;
+            public const int D48 = G120.GpioPin.P1_28;
             /// <summary>GPIO pin.</summary>
-            public const int D49 = G120.P1_29;
+            public const int D49 = G120.GpioPin.P1_29;
             /// <summary>GPIO pin.</summary>
-            public const int D50 = G120.P0_4;
+            public const int D50 = G120.GpioPin.P0_4;
             /// <summary>GPIO pin.</summary>
-            public const int D51 = G120.P0_5;
+            public const int D51 = G120.GpioPin.P0_5;
             /// <summary>GPIO pin.</summary>
-            public const int D52 = G120.P0_24;
+            public const int D52 = G120.GpioPin.P0_24;
             /// <summary>GPIO pin.</summary>
-            public const int D54 = G120.P0_23;
+            public const int D54 = G120.GpioPin.P0_23;
             /// <summary>GPIO pin.</summary>
-            public const int D56 = G120.P1_5;
+            public const int D56 = G120.GpioPin.P1_5;
             /// <summary>GPIO pin.</summary>
-            public const int D58 = G120.P3_24;
+            public const int D58 = G120.GpioPin.P3_24;
             /// <summary>GPIO pin.</summary>
-            public const int D59 = G120.P4_28;
+            public const int D59 = G120.GpioPin.P4_28;
             /// <summary>GPIO pin.</summary>
-            public const int D60 = G120.P0_6;
+            public const int D60 = G120.GpioPin.P0_6;
             /// <summary>GPIO pin.</summary>
-            public const int D61 = G120.P4_29;
+            public const int D61 = G120.GpioPin.P4_29;
             /// <summary>GPIO pin.</summary>
-            public const int D62 = G120.P2_21;
+            public const int D62 = G120.GpioPin.P2_21;
         }
 
         /// <summary>Analog input definitions.</summary>
-        public static class AnalogInput {
+        public static class AdcChannel {
             /// <summary>Analog channel.</summary>
-            public const int D18 = G120.AnalogInput.P0_12;
+            public const int D18 = G120.AdcChannel.P0_12;
             /// <summary>Analog channel.</summary>
-            public const int D19 = G120.AnalogInput.P0_13;
+            public const int D19 = G120.AdcChannel.P0_13;
             /// <summary>Analog channel.</summary>
-            public const int D54 = G120.AnalogInput.P0_23;
+            public const int D54 = G120.AdcChannel.P0_23;
             /// <summary>Analog channel.</summary>
-            public const int D52 = G120.AnalogInput.P0_24;
+            public const int D52 = G120.AdcChannel.P0_24;
             /// <summary>Analog channel.</summary>
-            public const int D16 = G120.AnalogInput.P0_25;
+            public const int D16 = G120.AdcChannel.P0_25;
             /// <summary>Analog channel.</summary>
-            public const int D17 = G120.AnalogInput.P0_26;
+            public const int D17 = G120.AdcChannel.P0_26;
             /// <summary>Analog channel.</summary>
-            public const int D14 = G120.AnalogInput.P1_30;
+            public const int D14 = G120.AdcChannel.P1_30;
             /// <summary>Analog channel.</summary>
-            public const int D15 = G120.AnalogInput.P1_31;
+            public const int D15 = G120.AdcChannel.P1_31;
         }
 
         /// <summary>Analog output definitions.</summary>
-        public static class AnalogOutput {
+        public static class DacChannel {
             /// <summary>Analog channel.</summary>
-            public const int D17 = G120.AnalogOutput.P0_26;
+            public const int D17 = G120.DacChannel.P0_26;
         }
 
         /// <summary>PWM output definitions.</summary>
-        public static class PwmOutput {
+        public static class PwmPin {
             /// <summary>PWM channel.</summary>
-            public const int D56 = G120.PwmOutput.P1_5;
+            public const int D56 = G120.PwmPin.P1_5;
             /// <summary>PWM channel.</summary>
-            public const int D30 = G120.PwmOutput.P2_3;
+            public const int D30 = G120.PwmPin.P2_3;
             /// <summary>PWM channel.</summary>
-            public const int D38 = G120.PwmOutput.P2_4;
+            public const int D38 = G120.PwmPin.P2_4;
             /// <summary>PWM channel.</summary>
-            public const int D31 = G120.PwmOutput.P2_5;
+            public const int D31 = G120.PwmPin.P2_5;
             /// <summary>PWM channel.</summary>
-            public const int D58 = G120.PwmOutput.P3_24;
+            public const int D58 = G120.PwmPin.P3_24;
             /// <summary>PWM channel.</summary>
-            public const int D6 = G120.PwmOutput.P3_25;
+            public const int D6 = G120.PwmPin.P3_25;
             /// <summary>PWM channel.</summary>
-            public const int D5 = G120.PwmOutput.P3_26;
+            public const int D5 = G120.PwmPin.P3_26;
         }
 
         /// <summary>Serial port definitions.</summary>

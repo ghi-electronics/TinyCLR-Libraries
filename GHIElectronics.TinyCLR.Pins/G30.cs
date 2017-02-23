@@ -1,11 +1,8 @@
 ﻿namespace GHIElectronics.TinyCLR.Pins {
     /// <summary>Board definition for the G30.</summary>
     public static class G30 {
-        /// <summary>The analog input precision supported by the board.</summary>
-        public const int SupportedAnalogInputPrecision = 12;
-
         /// <summary>GPIO definitions.</summary>
-        public static class Gpio {
+        public static class GpioPin {
             /// <summary>GPIO pin.</summary>
             public const int PA0 = 0;
             /// <summary>GPIO pin.</summary>
@@ -105,7 +102,7 @@
         }
 
         /// <summary>Analog input definitions.</summary>
-        public static class AnalogInput {
+        public static class AdcChannel {
             /// <summary>Analog channel.</summary>
             public const int PA0 = 0;
             /// <summary>Analog channel.</summary>
@@ -141,7 +138,7 @@
         }
 
         /// <summary>PWM output definitions.</summary>
-        public static class PwmOutput {
+        public static class PwmPin {
             /// <summary>PWM channel.</summary>
             public const int PA8 = 0;
             /// <summary>PWM channel.</summary>

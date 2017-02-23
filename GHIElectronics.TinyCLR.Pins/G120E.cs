@@ -1,14 +1,8 @@
 ﻿namespace GHIElectronics.TinyCLR.Pins {
     /// <summary>Board definition for the G120E.</summary>
     public static class G120E {
-        /// <summary>The analog input precision supported by the board.</summary>
-        public const int SupportedAnalogInputPrecision = 12;
-
-        /// <summary>The analog output precision supported by the board.</summary>
-        public const int SupportedAnalogOutputPrecision = 10;
-
         /// <summary>GPIO definitions.</summary>
-        public static class Gpio {
+        public static class GpioPin {
             /// <summary>GPIO pin.</summary>
             public const int P0_0 = (0 * 32) + 0;
             /// <summary>GPIO pin.</summary>
@@ -172,7 +166,7 @@
         }
 
         /// <summary>Analog input definitions.</summary>
-        public static class AnalogInput {
+        public static class AdcChannel {
             /// <summary>Analog channel.</summary>
             public const int P0_23 = 0;
             /// <summary>Analog channel.</summary>
@@ -192,13 +186,13 @@
         }
 
         /// <summary>Analog output definitions.</summary>
-        public static class AnalogOutput {
+        public static class DacChannel {
             /// <summary>Analog output channel.</summary>
             public const int P0_26 = 0;
         }
 
         /// <summary>PWM output definitions.</summary>
-        public static class PwmOutput {
+        public static class PwmPin {
             /// <summary>PWM channel.</summary>
             public const int P3_16 = 0;
             /// <summary>PWM channel.</summary>
@@ -256,9 +250,9 @@
         /// <summary>CAN bus definitions.</summary>
         public static class CanBus {
             /// <summary>CAN channel on P0.1 (TX) and P0.0 (RX).</summary>
-            public const int Can1 = 1;
+            public const int Can1 = 0;
             /// <summary>CAN channel on P0.5 (TX) and P0.4 (RX).</summary>
-            public const int Can2 = 2;
+            public const int Can2 = 1;
         }
     }
 }

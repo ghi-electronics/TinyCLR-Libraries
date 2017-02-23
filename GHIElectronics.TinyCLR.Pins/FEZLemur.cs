@@ -1,157 +1,154 @@
 ﻿namespace GHIElectronics.TinyCLR.Pins {
     /// <summary>Board definition for the FEZ Lemur.</summary>
     public static class FEZLemur {
-        /// <summary>The analog input precision supported by the board.</summary>
-        public const int SupportedAnalogInputPrecision = G30.SupportedAnalogInputPrecision;
-
         /// <summary>GPIO definitions.</summary>
-        public static class Gpio {
+        public static class GpioPin {
             /// <summary>The pin for LED 1.</summary>
-            public const int Led1 = G30.Gpio.PB9;
+            public const int Led1 = G30.GpioPin.PB9;
             /// <summary>The pin for LED 2.</summary>
-            public const int Led2 = G30.Gpio.PB8;
+            public const int Led2 = G30.GpioPin.PB8;
             /// <summary>The pin for the LDR0 button.</summary>
-            public const int Ldr0 = G30.Gpio.PA15;
+            public const int Ldr0 = G30.GpioPin.PA15;
             /// <summary>The pin for the LDR1 button.</summary>
-            public const int Ldr1 = G30.Gpio.PC13;
+            public const int Ldr1 = G30.GpioPin.PC13;
             /// <summary>The SD card detect pin.</summary>
-            public const int SdCardDetect = G30.Gpio.PB12;
+            public const int SdCardDetect = G30.GpioPin.PB12;
             /// <summary>GPIO pin.</summary>
-            public const int A0 = G30.Gpio.PA4;
+            public const int A0 = G30.GpioPin.PA4;
             /// <summary>GPIO pin.</summary>
-            public const int A1 = G30.Gpio.PA5;
+            public const int A1 = G30.GpioPin.PA5;
             /// <summary>GPIO pin.</summary>
-            public const int A2 = G30.Gpio.PA6;
+            public const int A2 = G30.GpioPin.PA6;
             /// <summary>GPIO pin.</summary>
-            public const int A3 = G30.Gpio.PA7;
+            public const int A3 = G30.GpioPin.PA7;
             /// <summary>GPIO pin.</summary>
-            public const int A4 = G30.Gpio.PB0;
+            public const int A4 = G30.GpioPin.PB0;
             /// <summary>GPIO pin.</summary>
-            public const int A5 = G30.Gpio.PB1;
+            public const int A5 = G30.GpioPin.PB1;
             /// <summary>GPIO pin.</summary>
-            public const int D0 = G30.Gpio.PA10;
+            public const int D0 = G30.GpioPin.PA10;
             /// <summary>GPIO pin.</summary>
-            public const int D1 = G30.Gpio.PA9;
+            public const int D1 = G30.GpioPin.PA9;
             /// <summary>GPIO pin.</summary>
-            public const int D2 = G30.Gpio.PB7;
+            public const int D2 = G30.GpioPin.PB7;
             /// <summary>GPIO pin.</summary>
-            public const int D3 = G30.Gpio.PB6;
+            public const int D3 = G30.GpioPin.PB6;
             /// <summary>GPIO pin.</summary>
-            public const int D4 = G30.Gpio.PC15;
+            public const int D4 = G30.GpioPin.PC15;
             /// <summary>GPIO pin.</summary>
-            public const int D5 = G30.Gpio.PA1;
+            public const int D5 = G30.GpioPin.PA1;
             /// <summary>GPIO pin.</summary>
-            public const int D6 = G30.Gpio.PA0;
+            public const int D6 = G30.GpioPin.PA0;
             /// <summary>GPIO pin.</summary>
-            public const int D7 = G30.Gpio.PC14;
+            public const int D7 = G30.GpioPin.PC14;
             /// <summary>GPIO pin.</summary>
-            public const int D8 = G30.Gpio.PA8;
+            public const int D8 = G30.GpioPin.PA8;
             /// <summary>GPIO pin.</summary>
-            public const int D9 = G30.Gpio.PA2;
+            public const int D9 = G30.GpioPin.PA2;
             /// <summary>GPIO pin.</summary>
-            public const int D10 = G30.Gpio.PA3;
+            public const int D10 = G30.GpioPin.PA3;
             /// <summary>GPIO pin.</summary>
-            public const int D11 = G30.Gpio.PB5;
+            public const int D11 = G30.GpioPin.PB5;
             /// <summary>GPIO pin.</summary>
-            public const int D12 = G30.Gpio.PB4;
+            public const int D12 = G30.GpioPin.PB4;
             /// <summary>GPIO pin.</summary>
-            public const int D13 = G30.Gpio.PB3;
+            public const int D13 = G30.GpioPin.PB3;
             /// <summary>GPIO pin.</summary>
-            public const int D20 = G30.Gpio.PC0;
+            public const int D20 = G30.GpioPin.PC0;
             /// <summary>GPIO pin.</summary>
-            public const int D21 = G30.Gpio.PC1;
+            public const int D21 = G30.GpioPin.PC1;
             /// <summary>GPIO pin.</summary>
-            public const int D22 = G30.Gpio.PA13;
+            public const int D22 = G30.GpioPin.PA13;
             /// <summary>GPIO pin.</summary>
-            public const int D23 = G30.Gpio.PA14;
+            public const int D23 = G30.GpioPin.PA14;
             /// <summary>GPIO pin.</summary>
-            public const int D24 = G30.Gpio.PC2;
+            public const int D24 = G30.GpioPin.PC2;
             /// <summary>GPIO pin.</summary>
-            public const int D25 = G30.Gpio.PC3;
+            public const int D25 = G30.GpioPin.PC3;
             /// <summary>GPIO pin.</summary>
-            public const int Mod = G30.Gpio.PB10;
+            public const int Mod = G30.GpioPin.PB10;
             /// <summary>GPIO pin.</summary>
-            public const int D26 = G30.Gpio.PB13;
+            public const int D26 = G30.GpioPin.PB13;
             /// <summary>GPIO pin.</summary>
-            public const int D27 = G30.Gpio.PB14;
+            public const int D27 = G30.GpioPin.PB14;
             /// <summary>GPIO pin.</summary>
-            public const int D28 = G30.Gpio.PB15;
+            public const int D28 = G30.GpioPin.PB15;
             /// <summary>GPIO pin.</summary>
-            public const int D29 = G30.Gpio.PC6;
+            public const int D29 = G30.GpioPin.PC6;
             /// <summary>GPIO pin.</summary>
-            public const int D30 = G30.Gpio.PC7;
+            public const int D30 = G30.GpioPin.PC7;
             /// <summary>GPIO pin.</summary>
-            public const int D31 = G30.Gpio.PB2;
+            public const int D31 = G30.GpioPin.PB2;
             /// <summary>GPIO pin.</summary>
-            public const int D32 = G30.Gpio.PC4;
+            public const int D32 = G30.GpioPin.PC4;
             /// <summary>GPIO pin.</summary>
-            public const int D33 = G30.Gpio.PC5;
+            public const int D33 = G30.GpioPin.PC5;
         }
 
         /// <summary>Analog input definitions.</summary>
-        public static class AnalogInput {
+        public static class AdcChannel {
             /// <summary>Analog channel.</summary>
-            public const int D6 = G30.AnalogInput.PA0;
+            public const int D6 = G30.AdcChannel.PA0;
             /// <summary>Analog channel.</summary>
-            public const int D5 = G30.AnalogInput.PA1;
+            public const int D5 = G30.AdcChannel.PA1;
             /// <summary>Analog channel.</summary>
-            public const int D9 = G30.AnalogInput.PA2;
+            public const int D9 = G30.AdcChannel.PA2;
             /// <summary>Analog channel.</summary>
-            public const int D10 = G30.AnalogInput.PA3;
+            public const int D10 = G30.AdcChannel.PA3;
             /// <summary>Analog channel.</summary>
-            public const int A0 = G30.AnalogInput.PA4;
+            public const int A0 = G30.AdcChannel.PA4;
             /// <summary>Analog channel.</summary>
-            public const int A1 = G30.AnalogInput.PA5;
+            public const int A1 = G30.AdcChannel.PA5;
             /// <summary>Analog channel.</summary>
-            public const int A2 = G30.AnalogInput.PA6;
+            public const int A2 = G30.AdcChannel.PA6;
             /// <summary>Analog channel.</summary>
-            public const int A3 = G30.AnalogInput.PA7;
+            public const int A3 = G30.AdcChannel.PA7;
             /// <summary>Analog channel.</summary>
-            public const int A4 = G30.AnalogInput.PB0;
+            public const int A4 = G30.AdcChannel.PB0;
             /// <summary>Analog channel.</summary>
-            public const int A5 = G30.AnalogInput.PB1;
+            public const int A5 = G30.AdcChannel.PB1;
             /// <summary>Analog channel.</summary>
-            public const int D20 = G30.AnalogInput.PC0;
+            public const int D20 = G30.AdcChannel.PC0;
             /// <summary>Analog channel.</summary>
-            public const int D21 = G30.AnalogInput.PC1;
+            public const int D21 = G30.AdcChannel.PC1;
             /// <summary>Analog channel.</summary>
-            public const int D24 = G30.AnalogInput.PC2;
+            public const int D24 = G30.AdcChannel.PC2;
             /// <summary>Analog channel.</summary>
-            public const int D25 = G30.AnalogInput.PC3;
+            public const int D25 = G30.AdcChannel.PC3;
             /// <summary>Analog channel.</summary>
-            public const int D32 = G30.AnalogInput.PC4;
+            public const int D32 = G30.AdcChannel.PC4;
             /// <summary>Analog channel.</summary>
-            public const int D33 = G30.AnalogInput.PC5;
+            public const int D33 = G30.AdcChannel.PC5;
         }
 
         /// <summary>PWM output definitions.</summary>
-        public static class PwmOutput {
+        public static class PwmPin {
             /// <summary>PWM channel.</summary>
-            public const int D8 = G30.PwmOutput.PA8;
+            public const int D8 = G30.PwmPin.PA8;
             /// <summary>PWM channel.</summary>
-            public const int D1 = G30.PwmOutput.PA9;
+            public const int D1 = G30.PwmPin.PA9;
             /// <summary>PWM channel.</summary>
-            public const int D0 = G30.PwmOutput.PA10;
+            public const int D0 = G30.PwmPin.PA10;
             /// <summary>PWM channel.</summary>
-            public const int Led2 = G30.PwmOutput.PB8;
+            public const int Led2 = G30.PwmPin.PB8;
             /// <summary>PWM channel.</summary>
-            public const int Led1 = G30.PwmOutput.PB9;
+            public const int Led1 = G30.PwmPin.PB9;
             /// <summary>PWM channel.</summary>
-            public const int D6 = G30.PwmOutput.PA0;
+            public const int D6 = G30.PwmPin.PA0;
             /// <summary>PWM channel.</summary>
-            public const int D5 = G30.PwmOutput.PA1;
+            public const int D5 = G30.PwmPin.PA1;
             /// <summary>PWM channel.</summary>
-            public const int D9 = G30.PwmOutput.PA2;
+            public const int D9 = G30.PwmPin.PA2;
             /// <summary>PWM channel.</summary>
-            public const int D10 = G30.PwmOutput.PA3;
+            public const int D10 = G30.PwmPin.PA3;
             /// <summary>PWM channel.</summary>
-            public const int D29 = G30.PwmOutput.PC6;
+            public const int D29 = G30.PwmPin.PC6;
             /// <summary>PWM channel.</summary>
-            public const int D30 = G30.PwmOutput.PC7;
+            public const int D30 = G30.PwmPin.PC7;
             /// <summary>PWM channel.</summary>
-            public const int D3 = G30.PwmOutput.PB6;
+            public const int D3 = G30.PwmPin.PB6;
             /// <summary>PWM channel.</summary>
-            public const int D2 = G30.PwmOutput.PB7;
+            public const int D2 = G30.PwmPin.PB7;
         }
 
         /// <summary>Serial port definitions.</summary>
