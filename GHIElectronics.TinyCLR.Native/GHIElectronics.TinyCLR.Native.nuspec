@@ -3,7 +3,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>GHIElectronics.TinyCLR.Native</id>
-    <version>0.1.0</version>
+    <version>0.2.0</version>
     <authors>GHI Electronics, LLC</authors>
     <owners>GHI Electronics, LLC</owners>
     <projectUrl>https://www.ghielectronics.com/</projectUrl>
@@ -15,7 +15,7 @@
     <copyright>Copyright GHI Electronics, LLC 2016</copyright>
     <tags>TinyCLR</tags>
     <dependencies>
-      <dependency id="GHIElectronics.TinyCLR.Core" version="0.1.0" />
+      <dependency id="GHIElectronics.TinyCLR.Core" version="0.2.0" />
     </dependencies>
   </metadata>
   <files>
