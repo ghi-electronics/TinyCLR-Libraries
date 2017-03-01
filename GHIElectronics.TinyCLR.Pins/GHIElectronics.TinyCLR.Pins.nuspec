@@ -12,7 +12,7 @@
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>The pins library for TinyCLR.</description>
     <releaseNotes>Initial release.</releaseNotes>
-    <copyright>Copyright GHI Electronics, LLC 2016</copyright>
+    <copyright>Copyright GHI Electronics, LLC 2017</copyright>
     <tags>TinyCLR</tags>
     <dependencies>
       <dependency id="GHIElectronics.TinyCLR.Core" version="0.2.0" />
