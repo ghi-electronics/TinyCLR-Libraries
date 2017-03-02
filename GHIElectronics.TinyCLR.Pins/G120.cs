@@ -219,7 +219,7 @@
 
         /// <summary>I2C bus definitions.</summary>
         public static class I2cBus {
-            /// <summary>I2C bus on P0_27 (SDA) and P0_28 (SCL).</summary>
+            /// <summary>I2C bus on P0.27 (SDA) and P0.28 (SCL).</summary>
             public const string I2c1 = "I2C1";
         }
 
@@ -236,9 +236,9 @@
         /// <summary>CAN bus definitions.</summary>
         public static class CanBus {
             /// <summary>CAN bus on P0.1 (TX) and P0.0 (RX).</summary>
-            public const int Can1 = 0;
+            public const string Can1 = "CAN1";
             /// <summary>CAN bus on P0.5 (TX) and P0.4 (RX).</summary>
-            public const int Can2 = 1;
+            public const string Can2 = "CAN2";
         }
     }
 }

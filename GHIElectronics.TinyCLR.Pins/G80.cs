@@ -294,9 +294,9 @@
         /// <summary>CAN bus definitions.</summary>
         public static class CanBus {
             /// <summary>CAN bus on PD1 (TX) and PD0 (RX).</summary>
-            public const int Can1 = 1;
+            public const string Can1 = "CAN1";
             /// <summary>CAN bus on PB13 (TX) and PB12 (RX).</summary>
-            public const int Can2 = 2;
+            public const string Can2 = "CAN2";
         }
     }
 }

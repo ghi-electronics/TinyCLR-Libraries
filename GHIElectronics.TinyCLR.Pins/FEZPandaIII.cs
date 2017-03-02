@@ -246,9 +246,9 @@
         /// <summary>CAN bus definitions.</summary>
         public static class CanBus {
             /// <summary>CAN bus on D7 (TX) and D4 (RX).</summary>
-            public const int Can1 = G80.CanBus.Can1;
+            public const string Can1 = G80.CanBus.Can1;
             /// <summary>CAN bus on D32 (TX) and D30 (RX).</summary>
-            public const int Can2 = G80.CanBus.Can2;
+            public const string Can2 = G80.CanBus.Can2;
         }
     }
 }
