@@ -11,7 +11,6 @@
     <licenseUrl>https://www.ghielectronics.com/downloads/man/License.html</licenseUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>The pins library for TinyCLR.</description>
-    <releaseNotes>Initial release.</releaseNotes>
     <copyright>Copyright GHI Electronics, LLC 2017</copyright>
     <tags>TinyCLR</tags>
     <dependencies>
