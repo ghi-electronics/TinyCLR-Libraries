@@ -278,7 +278,7 @@ namespace System {
             var result = FormatNative(value, formatCh, precision);
 
             if (isInteger) {
-                if (formatCh == 'N' || formatCh == 'F' || formatCh == 'G') // remove '0' infront, except for formatCh = 'D'
+                if (formatCh == 'N' || formatCh == 'F' || formatCh == 'G' || formatCh == 'g') // remove '0' infront, except for formatCh = 'D'
                 {
                     if (result != null && result.Length > 1) {
                         var negative = result[0] == '-' ? true : false;
@@ -315,9 +315,11 @@ namespace System {
 
             formatCh = format[0];
 
-            // ToUpper, since all the supported format characters are invariant in case
-            if (formatCh >= 'a' && formatCh <= 'z') {
-                formatCh = (char)(formatCh - ('a' - 'A'));
+            if (formatCh != 'g') {
+                // ToUpper, since all the supported format characters are invariant in case
+                if (formatCh >= 'a' && formatCh <= 'z') {
+                    formatCh = (char)(formatCh - ('a' - 'A'));
+                }
             }
 
             var formatLen = format.Length;
@@ -344,6 +346,7 @@ namespace System {
             // Set default precision, if neccessary + check for valid formatCh
             switch (formatCh) {
                 case 'G':
+                case 'g':
                     break;
                 case 'X':
                 case 'F':
@@ -388,6 +391,7 @@ namespace System {
                     result = AppendTrailingZeros(result, precision, info);
                     goto case 'G'; // falls through
                 case 'G':
+                case 'g':
                     result = ReplaceNegativeSign(result, info);
                     break;
             }
