@@ -315,7 +315,7 @@ namespace System {
 
             formatCh = format[0];
 
-            if (formatCh != 'g') {
+            if (formatCh != 'g' && formatCh != 'x') {
                 // ToUpper, since all the supported format characters are invariant in case
                 if (formatCh >= 'a' && formatCh <= 'z') {
                     formatCh = (char)(formatCh - ('a' - 'A'));
@@ -349,6 +349,7 @@ namespace System {
                 case 'g':
                     break;
                 case 'X':
+                case 'x':
                 case 'F':
                 case 'N':
                 case 'D':
@@ -365,6 +366,7 @@ namespace System {
 
             switch (format) {
                 case 'X':
+                case 'x':
                     // truncate negative numbers to 
                     if (result.Length > precision && (result[0] == 'F' || result[0] == 'f')) {
                         var len = result.Length;
