@@ -152,6 +152,7 @@
     <Compile Include="RuntimeType.cs" />
     <Compile Include="RuntimeTypeHandle.cs" />
     <Compile Include="Runtime\CompilerServices\AccessedThroughPropertyAttribute.cs" />
+    <Compile Include="Runtime\CompilerServices\CompilerGeneratedAttribute.cs" />
     <Compile Include="Runtime\CompilerServices\ExtensionAttribute.cs" />
     <Compile Include="Runtime\CompilerServices\IndexerNameAttribute.cs" />
     <Compile Include="Runtime\CompilerServices\InternalsVisibleToAttribute.cs" />
