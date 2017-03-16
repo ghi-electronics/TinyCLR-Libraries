@@ -1,7 +1,27 @@
 ﻿namespace System.Diagnostics {
     public static class Trace {
+        private static TraceListenerCollection listeners;
+        private static object syncRoot = new object();
+
+        public static TraceListenerCollection Listeners {
+            get {
+                if (Trace.listeners == null) {
+                    lock (Trace.syncRoot) {
+                        if (Trace.listeners == null) {
+                            Trace.listeners = new TraceListenerCollection { new DefaultTraceListener() };
+                        }
+                    }
+                }
+
+                return Trace.listeners;
+            }
+        }
+
         [Conditional("TRACE")]
-        public static void WriteLine(string message) => Debugger.Log(0, string.Empty, message + "\r\n");
+        public static void WriteLine(string message) {
+            foreach (var listener in Trace.Listeners)
+                ((TraceListener)listener).WriteLine(message);
+        }
 
         [Conditional("TRACE")]
         public static void WriteLineIf(bool condition, string message) {

@@ -1,7 +1,12 @@
 ﻿namespace System.Diagnostics {
     public static class Debug {
+        public static TraceListenerCollection Listeners => Trace.Listeners;
+
         [Conditional("DEBUG")]
-        public static void WriteLine(string message) => Debugger.Log(0, string.Empty, message + "\r\n");
+        public static void WriteLine(string message) {
+            foreach (var listener in Debug.Listeners)
+                ((TraceListener)listener).WriteLine(message);
+        }
 
         [Conditional("DEBUG")]
         public static void WriteLineIf(bool condition, string message) {
