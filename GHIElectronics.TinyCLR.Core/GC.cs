@@ -1,25 +1,26 @@
+using System.Runtime.CompilerServices;
+using System.Threading;
+
 namespace System {
-    //This class only static members and doesn't require the serializable keyword.
-
-    using System.Runtime.CompilerServices;
-
     public static class GC {
-
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern bool AnyPendingFinalizers();
 
         public static void WaitForPendingFinalizers() {
-            while (AnyPendingFinalizers())
-                System.Threading.Thread.Sleep(10);
+            while (GC.AnyPendingFinalizers())
+                Thread.Sleep(10);
         }
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        [MethodImpl(MethodImplOptions.InternalCall)]
         public static extern void SuppressFinalize(object obj);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        [MethodImpl(MethodImplOptions.InternalCall)]
         public static extern void ReRegisterForFinalize(object obj);
 
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        public static extern void Collect();
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        public static extern long GetTotalMemory(bool forceFullCollection);
     }
 }
-
-
