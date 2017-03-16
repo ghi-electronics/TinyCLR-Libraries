@@ -1,12 +1,7 @@
-﻿using System.Runtime.CompilerServices;
-
-namespace System.Diagnostics {
+﻿namespace System.Diagnostics {
     public static class Debug {
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        internal static extern void WriteLineNative(string message);
-
         [Conditional("DEBUG")]
-        public static void WriteLine(string message) => Debug.WriteLineNative(message);
+        public static void WriteLine(string message) => Debugger.Log(0, string.Empty, message + "\r\n");
 
         [Conditional("DEBUG")]
         public static void WriteLineIf(bool condition, string message) {

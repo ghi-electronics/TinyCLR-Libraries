@@ -1,7 +1,7 @@
 ﻿namespace System.Diagnostics {
     public static class Trace {
         [Conditional("TRACE")]
-        public static void WriteLine(string message) => Debug.WriteLineNative(message);
+        public static void WriteLine(string message) => Debugger.Log(0, string.Empty, message + "\r\n");
 
         [Conditional("TRACE")]
         public static void WriteLineIf(bool condition, string message) {
