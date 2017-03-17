@@ -278,8 +278,8 @@ namespace System {
             var result = FormatNative(value, formatCh, precision);
 
             if (isInteger) {
-                if (formatCh == 'N' || formatCh == 'F' || formatCh == 'G' || formatCh == 'g') // remove '0' infront, except for formatCh = 'D'
-                {
+                // remove '0' infront, except for formatCh = 'D'
+                if (formatCh == 'N' || formatCh == 'F' || formatCh == 'G' || formatCh == 'g') {
                     if (result != null && result.Length > 1) {
                         var negative = result[0] == '-' ? true : false;
 
@@ -293,8 +293,9 @@ namespace System {
                     }
                 }
 
-                if ((formatCh == 'N' || formatCh == 'F' || formatCh == 'D') && precision == 0 && ((int)value == 0))
+                if ((formatCh == 'N' || formatCh == 'F' || formatCh == 'D') && precision == 0 && value.Equals(0))
                     return "0";
+
                 return PostProcessInteger(value, result, formatCh, precision, info);
             }
             else {
@@ -367,7 +368,7 @@ namespace System {
             switch (format) {
                 case 'X':
                 case 'x':
-                    // truncate negative numbers to 
+                    // truncate negative numbers to
                     if (result.Length > precision && (result[0] == 'F' || result[0] == 'f')) {
                         var len = result.Length;
 
