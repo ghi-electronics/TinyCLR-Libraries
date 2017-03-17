@@ -1,21 +1,6 @@
 ﻿namespace System.Diagnostics {
     public static class Trace {
-        private static TraceListenerCollection listeners;
-        private static object syncRoot = new object();
-
-        public static TraceListenerCollection Listeners {
-            get {
-                if (Trace.listeners == null) {
-                    lock (Trace.syncRoot) {
-                        if (Trace.listeners == null) {
-                            Trace.listeners = new TraceListenerCollection { new DefaultTraceListener() };
-                        }
-                    }
-                }
-
-                return Trace.listeners;
-            }
-        }
+        public static TraceListenerCollection Listeners { get; } = new TraceListenerCollection { new DefaultTraceListener() };
 
         [Conditional("TRACE")]
         public static void WriteLine(string message) {
