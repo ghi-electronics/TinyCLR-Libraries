@@ -33,7 +33,10 @@ namespace System {
 
         public override string Message {
             get {
+                //TODO Remove once this or me qualification is no longer flagged for base access https://github.com/dotnet/roslyn/issues/17711
+#pragma warning disable IDE0009 // Member access should be qualified.
                 var s = base.Message;
+#pragma warning restore IDE0009 // Member access should be qualified.
                 if (!((this.m_paramName == null) ||
                        (this.m_paramName.Length == 0)))
                     return s + "\n" + "Invalid argument " + "'" + this.m_paramName + "'";
