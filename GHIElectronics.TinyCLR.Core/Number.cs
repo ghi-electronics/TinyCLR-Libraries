@@ -293,8 +293,18 @@ namespace System {
                     }
                 }
 
-                if ((formatCh == 'N' || formatCh == 'F' || formatCh == 'D') && precision == 0 && value.Equals(0))
-                    return "0";
+                if ((formatCh == 'N' || formatCh == 'F' || formatCh == 'D') && precision == 0) {
+                    var type = value.GetType();
+
+                    if (type == typeof(sbyte) && ((sbyte)value) == 0) return "0";
+                    else if (type == typeof(short) && ((short)value) == 0) return "0";
+                    else if (type == typeof(int) && ((int)value) == 0) return "0";
+                    else if (type == typeof(long) && ((long)value) == 0) return "0";
+                    else if (type == typeof(byte) && ((byte)value) == 0) return "0";
+                    else if (type == typeof(ushort) && ((ushort)value) == 0) return "0";
+                    else if (type == typeof(uint) && ((uint)value) == 0) return "0";
+                    else if (type == typeof(ulong) && ((ulong)value) == 0) return "0";
+                }
 
                 return PostProcessInteger(value, result, formatCh, precision, info);
             }
