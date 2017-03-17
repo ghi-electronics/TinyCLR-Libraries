@@ -209,20 +209,10 @@ namespace GHIElectronics.TinyCLR.Devices.Spi {
         extern private void TransferInternal(byte[] writeBuffer, byte[] readBuffer, bool fullDuplex);
 
         private static int GetBusNum(string deviceId) {
-            var retVal = -1;
-            var spiBusNames = GetValidBusNames();
-            for (var i = 0; i < spiBusNames.Length; ++i) {
-                if (spiBusNames[i] == deviceId) {
-                    retVal = i;
-                }
-            }
+            if (deviceId == null) throw new ArgumentNullException(nameof(deviceId));
+            if (deviceId.Length < 4 || deviceId.IndexOf("SPI") != 0 || !int.TryParse(deviceId.Substring(3), out var id) || id <= 0) throw new ArgumentException("Invalid SPI bus", nameof(deviceId));
 
-            // If we didn't find the exact device name in our pre-built bus list, bail out.
-            if (retVal == -1) {
-                throw new ArgumentException();
-            }
-
-            return retVal;
+            return id - 1;
         }
 
         /// <summary>
