@@ -84,6 +84,8 @@
     <Compile Include="Enum.cs" />
     <Compile Include="Exception.cs" />
     <Compile Include="FlagsAttribute.cs" />
+    <Compile Include="FormatException.cs" />
+    <Compile Include="FormattableString.cs" />
     <Compile Include="GC.cs" />
     <Compile Include="Globalization\CultureInfo.cs" />
     <Compile Include="Globalization\CultureTypes.cs" />
@@ -158,6 +160,7 @@
     <Compile Include="Runtime\CompilerServices\AccessedThroughPropertyAttribute.cs" />
     <Compile Include="Runtime\CompilerServices\CompilerGeneratedAttribute.cs" />
     <Compile Include="Runtime\CompilerServices\ExtensionAttribute.cs" />
+    <Compile Include="Runtime\CompilerServices\FormattableStringFactory.cs" />
     <Compile Include="Runtime\CompilerServices\IndexerNameAttribute.cs" />
     <Compile Include="Runtime\CompilerServices\InternalsVisibleToAttribute.cs" />
     <Compile Include="Runtime\CompilerServices\MethodImplAttribute.cs" />
