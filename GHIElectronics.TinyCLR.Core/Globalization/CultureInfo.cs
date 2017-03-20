@@ -4,7 +4,7 @@ namespace System.Globalization {
     using System.Collections;
     using System.Resources;
     using System.Runtime.CompilerServices;
-    public class CultureInfo /*: ICloneable , IFormatProvider*/ {
+    public class CultureInfo : IFormatProvider /* ICloneable */ {
         internal NumberFormatInfo numInfo = null;
         internal DateTimeFormatInfo dateTimeInfo = null;
         internal string m_name = null;
@@ -42,6 +42,9 @@ namespace System.Globalization {
             this.m_rm = resourceManager;
             this.m_name = resourceManager.m_cultureName;
         }
+
+        public static CultureInfo InvariantCulture { get; } = new CultureInfo("");
+        public static CultureInfo CurrentCulture => CultureInfo.CurrentUICulture;
 
         public static CultureInfo CurrentUICulture {
             get {
@@ -125,6 +128,16 @@ namespace System.Globalization {
 
         public override string ToString() => this.m_name;
 
+        public virtual object GetFormat(Type formatType) {
+            if (formatType == typeof(NumberFormatInfo)) {
+                return this.NumberFormat;
+            }
+            if (formatType == typeof(DateTimeFormatInfo)) {
+                return this.DateTimeFormat;
+            }
+            return null;
+        }
+
         //        public virtual Object GetFormat(Type formatType) {
         //            if (formatType == typeof(NumberFormatInfo)) {
         //                return (NumberFormat);
@@ -153,7 +166,7 @@ namespace System.Globalization {
 
         //                if (m_cultureTableRecord.IsNeutralCulture)
         //                    types |= CultureTypes.NeutralCultures;
-        //                else 
+        //                else
         //                    types |= CultureTypes.SpecificCultures;
 
         //                if (m_cultureTableRecord.IsSynthetic)
@@ -161,7 +174,7 @@ namespace System.Globalization {
         //                else
         //                {
         //                    // Not Synthetic
-        //                    if (CultureTable.IsInstalledLCID(cultureID)) 
+        //                    if (CultureTable.IsInstalledLCID(cultureID))
         //                        types |= CultureTypes.InstalledWin32Cultures;
 
         //                    if (!m_cultureTableRecord.IsCustomCulture || m_cultureTableRecord.IsReplacementCulture)
