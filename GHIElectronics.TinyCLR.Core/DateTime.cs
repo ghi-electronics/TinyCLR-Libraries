@@ -48,7 +48,7 @@ namespace System {
     [Serializable()]
 #pragma warning disable CS0659 // Type overrides Object.Equals(object o) but does not override Object.GetHashCode()
 #pragma warning disable CS0661 // Type defines operator == or operator != but does not override Object.GetHashCode()
-    public struct DateTime
+    public struct DateTime : IFormattable
 #pragma warning restore CS0661 // Type defines operator == or operator != but does not override Object.GetHashCode()
 #pragma warning restore CS0659 // Type overrides Object.Equals(object o) but does not override Object.GetHashCode()
     {
@@ -295,6 +295,7 @@ namespace System {
         public override string ToString() => DateTimeFormat.Format(this, null, DateTimeFormatInfo.CurrentInfo);
 
         public string ToString(string format) => DateTimeFormat.Format(this, format, DateTimeFormatInfo.CurrentInfo);
+        public string ToString(string format, IFormatProvider formatProvider) => DateTimeFormat.Format(this, format, DateTimeFormatInfo.GetInstance(formatProvider));
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public extern DateTime ToUniversalTime();

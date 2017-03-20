@@ -2,7 +2,7 @@ namespace System {
     using System.Globalization;
 
     [Serializable]
-    public struct Int16 {
+    public struct Int16 : IFormattable {
 #pragma warning disable CS0649 // Field is never assigned to, and will always have its default value
         internal short m_value;
 #pragma warning restore CS0649 // Field is never assigned to, and will always have its default value
@@ -13,6 +13,7 @@ namespace System {
         public override string ToString() => Number.Format(this.m_value, true, "G", NumberFormatInfo.CurrentInfo);
 
         public string ToString(string format) => Number.Format(this.m_value, true, format, NumberFormatInfo.CurrentInfo);
+        public string ToString(string format, IFormatProvider provider) => Number.Format(this.m_value, true, format, NumberFormatInfo.GetInstance(provider));
 
         public static short Parse(string s) {
             if (s == null) {

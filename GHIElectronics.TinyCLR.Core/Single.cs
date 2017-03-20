@@ -3,7 +3,7 @@ namespace System {
     using System.Globalization;
 
     [Serializable()]
-    public struct Single {
+    public struct Single : IFormattable {
 #pragma warning disable CS0649 // Field is never assigned to, and will always have its default value
         internal float m_value;
 #pragma warning restore CS0649 // Field is never assigned to, and will always have its default value
@@ -41,6 +41,8 @@ namespace System {
                     return Number.Format(this.m_value, false, format, NumberFormatInfo.CurrentInfo);
             }
         }
+
+        public string ToString(string format, IFormatProvider provider) => Number.Format(this.m_value, false, format, NumberFormatInfo.GetInstance(provider));
     }
 }
 

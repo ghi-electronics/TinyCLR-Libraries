@@ -2,7 +2,7 @@ using System.ComponentModel;
 
 namespace System {
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public struct Decimal {
+    public struct Decimal : IFormattable {
         [CLSCompliant(false)]
         public Decimal(uint value) { }
 
@@ -17,5 +17,6 @@ namespace System {
         public Decimal(int lo, int mid, int hi, bool isNegative, byte scale) { }
 
         public string ToString(string format) => string.Empty;
+        public string ToString(string format, IFormatProvider formatProvider) => string.Empty;
     }
 }

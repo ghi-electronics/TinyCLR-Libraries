@@ -1,6 +1,6 @@
 namespace System {
     [Serializable]
-    public struct Guid {
+    public struct Guid : IFormattable {
         internal int[] m_data;
 
 
@@ -122,6 +122,8 @@ namespace System {
 
             return buffer;
         }
+
+        public string ToString(string format, IFormatProvider formatProvider) => this.ToString();
 
         public override string ToString() {
             // registry format is 08B03E06-01A8-4cd9-9971-ED45E2E84A53
