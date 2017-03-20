@@ -33,7 +33,7 @@ namespace System.Globalization {
     //
 
     [Serializable]
-    sealed public class NumberFormatInfo /*: ICloneable, IFormatProvider*/
+    sealed public class NumberFormatInfo : IFormatProvider /* ICloneable */
     {
         internal int[] numberGroupSizes = null;//new int[] { 3 };
         internal string positiveSign = null;//"+";
@@ -68,6 +68,34 @@ namespace System.Globalization {
                 return ((int[])this.numberGroupSizes.Clone());
             }
         }
+
+        public static NumberFormatInfo GetInstance(IFormatProvider formatProvider) {
+            // Fast case for a regular CultureInfo
+            NumberFormatInfo info;
+            if (formatProvider is CultureInfo cultureProvider) {
+                info = cultureProvider.numInfo;
+                if (info != null) {
+                    return info;
+                }
+                else {
+                    return cultureProvider.NumberFormat;
+                }
+            }
+            // Fast case for an NFI;
+            info = formatProvider as NumberFormatInfo;
+            if (info != null) {
+                return info;
+            }
+            if (formatProvider != null) {
+                info = formatProvider.GetFormat(typeof(NumberFormatInfo)) as NumberFormatInfo;
+                if (info != null) {
+                    return info;
+                }
+            }
+            return CurrentInfo;
+        }
+
+        public object GetFormat(Type formatType) => formatType == typeof(NumberFormatInfo) ? this : null;
 
         public static NumberFormatInfo CurrentInfo => CultureInfo.CurrentUICulture.NumberFormat;
 

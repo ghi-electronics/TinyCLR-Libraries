@@ -1,6 +1,6 @@
 #define ENABLE_CROSS_APPDOMAIN
 namespace System.Globalization {
-    public sealed class DateTimeFormatInfo /*: ICloneable, IFormatProvider*/
+    public sealed class DateTimeFormatInfo : IFormatProvider /* ICloneable */
     {
         internal string amDesignator = null;
         internal string pmDesignator = null;
@@ -96,7 +96,30 @@ namespace System.Globalization {
         public string[] AbbreviatedMonthNames => this.m_cultureInfo.EnsureStringArrayResource(ref this.abbreviatedMonthNames, System.Globalization.Resources.CultureInfo.StringResources.AbbreviatedMonthNames);
 
         public string[] MonthNames => this.m_cultureInfo.EnsureStringArrayResource(ref this.monthNames, System.Globalization.Resources.CultureInfo.StringResources.MonthNames);
+
+        public static DateTimeFormatInfo GetInstance(IFormatProvider provider) {
+            // Fast case for a regular CultureInfo
+            DateTimeFormatInfo info;
+            if (provider is CultureInfo cultureProvider) {
+                return cultureProvider.DateTimeFormat;
+            }
+            // Fast case for a DTFI;
+            info = provider as DateTimeFormatInfo;
+            if (info != null) {
+                return info;
+            }
+            // Wasn't cultureInfo or DTFI, do it the slower way
+            if (provider != null) {
+                info = provider.GetFormat(typeof(DateTimeFormatInfo)) as DateTimeFormatInfo;
+                if (info != null) {
+                    return info;
+                }
+            }
+            // Couldn't get anything, just use currentInfo as fallback
+            return CurrentInfo;
+        }
+
+
+        public object GetFormat(Type formatType) => formatType == typeof(DateTimeFormatInfo) ? this : null;
     }
 }
-
-
