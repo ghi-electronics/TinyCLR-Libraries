@@ -1,21 +1,21 @@
 namespace System {
     using System.Runtime.CompilerServices;
     /**
-     * <p>The <code>String</code> class represents a static string of characters.  Many of
-     * the <code>String</code> methods perform some type of transformation on the current
-     * instance and return the result as a new <code>String</code>. All comparison methods are
-     * implemented as a part of <code>String</code>.</p>  As with arrays, character positions
-     * (indices) are zero-based.
-     *
-     * <p>When passing a null string into a constructor in VJ and VC, the null should be
-     * explicitly type cast to a <code>String</code>.</p>
-     * <p>For Example:<br>
-     * <pre>String s = new String((String)null);
-     * Text.Out.WriteLine(s);</pre></p>
-     *
-     * @author Jay Roxe (jroxe)
-     * @version
-     */
+* <p>The <code>String</code> class represents a static string of characters.  Many of
+* the <code>String</code> methods perform some type of transformation on the current
+* instance and return the result as a new <code>String</code>. All comparison methods are
+* implemented as a part of <code>String</code>.</p>  As with arrays, character positions
+* (indices) are zero-based.
+*
+* <p>When passing a null string into a constructor in VJ and VC, the null should be
+* explicitly type cast to a <code>String</code>.</p>
+* <p>For Example:<br>
+* <pre>String s = new String((String)null);
+* Text.Out.WriteLine(s);</pre></p>
+*
+* @author Jay Roxe (jroxe)
+* @version
+*/
     [Serializable]
 #pragma warning disable CS0659 // Type overrides Object.Equals(object o) but does not override Object.GetHashCode()
 #pragma warning disable CS0661 // Type defines operator == or operator != but does not override Object.GetHashCode()
@@ -32,32 +32,147 @@ namespace System {
             return false;
         }
 
-        public static string Format(string format, params object[] args) {
+        public static string Format(string format, params object[] args) => string.Format(null, format, args);
+
+        public static string Format(IFormatProvider provider, string format, params object[] args) {
             var result = "";
-            var last = 0;
-            var next = 0;
-            var end = 0;
 
-            while ((next = format.IndexOf("{", last)) >= 0 && (end = format.IndexOf("}", next)) > 0) {
-                result += format.Substring(last, next - last);
-
-                var current = format.Substring(next + 1, end - next - 1);
-                var parts = current.Split(':');
-
-                int.TryParse(parts[0], out var index);
-
-                if (parts.Length == 1) {
-                    result += args[index].ToString();
-                }
-                else {
-                    var member = args[index].GetType().GetMethod("ToString", new Type[] { typeof(string) });
-
-                    result += member.Invoke(args[index], new object[] { parts[1].ToString() });
-                }
-
-                format = format.Substring(end + 1);
+            if (format == null) {
+                throw new ArgumentNullException("format");
             }
 
+            var pos = 0;
+            var len = format.Length;
+            var ch = '\x0';
+
+            ICustomFormatter cf = null;
+            if (provider != null) {
+                cf = (ICustomFormatter)provider.GetFormat(typeof(ICustomFormatter));
+            }
+
+            while (true) {
+                var p = pos;
+                var i = pos;
+                while (pos < len) {
+                    ch = format[pos];
+
+                    pos++;
+                    if (ch == '}') {
+                        if (pos < len && format[pos] == '}') // Treat as escape character for }}
+                            pos++;
+                        else
+                            throw new FormatException();
+                    }
+
+                    if (ch == '{') {
+                        if (pos < len && format[pos] == '{') // Treat as escape character for {{
+                            pos++;
+                        else {
+                            pos--;
+                            break;
+                        }
+                    }
+
+                    result += ch;
+                }
+
+                if (pos == len) break;
+                pos++;
+                if (pos == len || (ch = format[pos]) < '0' || ch > '9') throw new FormatException();
+                var index = 0;
+                do {
+                    index = index * 10 + ch - '0';
+                    pos++;
+                    if (pos == len) throw new FormatException();
+                    ch = format[pos];
+                } while (ch >= '0' && ch <= '9' && index < 1000000);
+                if (index >= args.Length) throw new FormatException("Index out of range.");
+                while (pos < len && (ch = format[pos]) == ' ') pos++;
+                var leftJustify = false;
+                var width = 0;
+                if (ch == ',') {
+                    pos++;
+                    while (pos < len && format[pos] == ' ') pos++;
+
+                    if (pos == len) throw new FormatException();
+                    ch = format[pos];
+                    if (ch == '-') {
+                        leftJustify = true;
+                        pos++;
+                        if (pos == len) throw new FormatException();
+                        ch = format[pos];
+                    }
+                    if (ch < '0' || ch > '9') throw new FormatException();
+                    do {
+                        width = width * 10 + ch - '0';
+                        pos++;
+                        if (pos == len) throw new FormatException();
+                        ch = format[pos];
+                    } while (ch >= '0' && ch <= '9' && width < 1000000);
+                }
+
+                while (pos < len && (ch = format[pos]) == ' ') pos++;
+                var arg = args[index];
+                string fmt = null;
+                if (ch == ':') {
+                    pos++;
+                    p = pos;
+                    i = pos;
+                    while (true) {
+                        if (pos == len) throw new FormatException();
+                        ch = format[pos];
+                        pos++;
+                        if (ch == '{') {
+                            if (pos < len && format[pos] == '{')  // Treat as escape character for {{
+                                pos++;
+                            else
+                                throw new FormatException();
+                        }
+                        else if (ch == '}') {
+                            if (pos < len && format[pos] == '}')  // Treat as escape character for }}
+                                pos++;
+                            else {
+                                pos--;
+                                break;
+                            }
+                        }
+
+                        if (fmt == null) {
+                            fmt = "";
+                        }
+                        fmt += ch;
+                    }
+                }
+                if (ch != '}') throw new FormatException();
+                pos++;
+                string sFmt = null;
+                string s = null;
+                if (cf != null) {
+                    if (fmt != null) {
+                        sFmt = fmt.ToString();
+                    }
+                    s = cf.Format(sFmt, arg, provider);
+                }
+
+                if (s == null) {
+                    if (arg is IFormattable formattableArg) {
+                        if (sFmt == null && fmt != null) {
+                            sFmt = fmt.ToString();
+                        }
+
+                        s = formattableArg.ToString(sFmt, provider);
+                    }
+                    else if (arg != null) {
+                        s = arg.ToString();
+                    }
+                }
+
+                if (s == null) s = String.Empty;
+                var pad = width - s.Length;
+                if (!leftJustify && pad > 0) result += new string(' ', pad);
+                result += s;
+                if (leftJustify && pad > 0) result += new string(' ', pad);
+            }
             return result;
         }
 
