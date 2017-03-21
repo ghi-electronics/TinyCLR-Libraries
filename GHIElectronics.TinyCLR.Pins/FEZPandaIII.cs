@@ -173,48 +173,107 @@
 
         /// <summary>PWM pin definitions.</summary>
         public static class PwmPin {
-            /// <summary>PWM pin.</summary>
-            public const int Led4 = G80.PwmPin.PE9;
-            /// <summary>PWM pin.</summary>
-            public const int Led3 = G80.PwmPin.PE11;
-            /// <summary>PWM pin.</summary>
-            public const int Led2 = G80.PwmPin.PE13;
-            /// <summary>PWM pin.</summary>
-            public const int Led1 = G80.PwmPin.PE14;
-            /// <summary>PWM pin.</summary>
-            public const int D10 = G80.PwmPin.PA15;
-            /// <summary>PWM pin.</summary>
-            public const int D13 = G80.PwmPin.PB3;
-            /// <summary>PWM pin.</summary>
-            public const int D35 = G80.PwmPin.PB10;
-            /// <summary>PWM pin.</summary>
-            public const int D21 = G80.PwmPin.PB11;
-            /// <summary>PWM pin.</summary>
-            public const int D12 = G80.PwmPin.PB4;
-            /// <summary>PWM pin.</summary>
-            public const int D11 = G80.PwmPin.PB5;
-            /// <summary>PWM pin.</summary>
-            public const int D9 = G80.PwmPin.PB0;
-            /// <summary>PWM pin.</summary>
-            public const int D8 = G80.PwmPin.PB1;
-            /// <summary>PWM pin.</summary>
-            public const int D46 = G80.PwmPin.PD12;
-            /// <summary>PWM pin.</summary>
-            public const int D48 = G80.PwmPin.PC6;
-            /// <summary>PWM pin.</summary>
-            public const int D50 = G80.PwmPin.PC7;
-            /// <summary>PWM pin.</summary>
-            public const int A0 = G80.PwmPin.PA2;
-            /// <summary>PWM pin.</summary>
-            public const int A1 = G80.PwmPin.PA3;
-            /// <summary>PWM pin.</summary>
-            public const int D6 = G80.PwmPin.PB8;
-            /// <summary>PWM pin.</summary>
-            public const int D5 = G80.PwmPin.PB9;
-            /// <summary>PWM pin.</summary>
-            public const int A4 = G80.PwmPin.PA6;
-            /// <summary>PWM pin.</summary>
-            public const int A5 = G80.PwmPin.PA7;
+            /// <summary>PWM timer.</summary>
+            public static class Timer1 {
+                public const string Id = G80.PwmPin.Timer1.Id;
+
+                /// <summary>PWM pin.</summary>
+                public const int Led4 = G80.PwmPin.Timer1.PE9;
+                /// <summary>PWM pin.</summary>
+                public const int Led3 = G80.PwmPin.Timer1.PE11;
+                /// <summary>PWM pin.</summary>
+                public const int Led2 = G80.PwmPin.Timer1.PE13;
+                /// <summary>PWM pin.</summary>
+                public const int Led1 = G80.PwmPin.Timer1.PE14;
+            }
+
+            /// <summary>PWM timer.</summary>
+            public static class Timer2 {
+                public const string Id = G80.PwmPin.Timer2.Id;
+
+                /// <summary>PWM pin.</summary>
+                public const int D10 = G80.PwmPin.Timer2.PA15;
+                /// <summary>PWM pin.</summary>
+                public const int D13 = G80.PwmPin.Timer2.PB3;
+                /// <summary>PWM pin.</summary>
+                public const int D35 = G80.PwmPin.Timer2.PB10;
+                /// <summary>PWM pin.</summary>
+                public const int D21 = G80.PwmPin.Timer2.PB11;
+            }
+
+            /// <summary>PWM timer.</summary>
+            public static class Timer3 {
+                public const string Id = G80.PwmPin.Timer3.Id;
+
+                /// <summary>PWM pin.</summary>
+                public const int D12 = G80.PwmPin.Timer3.PB4;
+                /// <summary>PWM pin.</summary>
+                public const int D11 = G80.PwmPin.Timer3.PB5;
+                /// <summary>PWM pin.</summary>
+                public const int D9 = G80.PwmPin.Timer3.PB0;
+                /// <summary>PWM pin.</summary>
+                public const int D8 = G80.PwmPin.Timer3.PB1;
+            }
+
+            /// <summary>PWM timer.</summary>
+            public static class Timer4 {
+                public const string Id = G80.PwmPin.Timer4.Id;
+
+                /// <summary>PWM pin.</summary>
+                public const int D46 = G80.PwmPin.Timer4.PD12;
+            }
+
+            /// <summary>PWM timer.</summary>
+            public static class Timer8 {
+                public const string Id = G80.PwmPin.Timer8.Id;
+
+                /// <summary>PWM pin.</summary>
+                public const int D48 = G80.PwmPin.Timer8.PC6;
+                /// <summary>PWM pin.</summary>
+                public const int D50 = G80.PwmPin.Timer8.PC7;
+            }
+
+            /// <summary>PWM timer.</summary>
+            public static class Timer9 {
+                public const string Id = G80.PwmPin.Timer9.Id;
+
+                /// <summary>PWM pin.</summary>
+                public const int A0 = G80.PwmPin.Timer9.PA2;
+                /// <summary>PWM pin.</summary>
+                public const int A1 = G80.PwmPin.Timer9.PA3;
+            }
+
+            /// <summary>PWM timer.</summary>
+            public static class Timer10 {
+                public const string Id = G80.PwmPin.Timer10.Id;
+
+                /// <summary>PWM pin.</summary>
+                public const int D6 = G80.PwmPin.Timer10.PB8;
+            }
+
+            /// <summary>PWM timer.</summary>
+            public static class Timer11 {
+                public const string Id = G80.PwmPin.Timer11.Id;
+
+                /// <summary>PWM pin.</summary>
+                public const int D5 = G80.PwmPin.Timer11.PB9;
+            }
+
+            /// <summary>PWM timer.</summary>
+            public static class Timer13 {
+                public const string Id = G80.PwmPin.Timer13.Id;
+
+                /// <summary>PWM pin.</summary>
+                public const int A4 = G80.PwmPin.Timer13.PA6;
+            }
+
+            /// <summary>PWM timer.</summary>
+            public static class Timer14 {
+                public const string Id = G80.PwmPin.Timer14.Id;
+
+                /// <summary>PWM pin.</summary>
+                public const int A5 = G80.PwmPin.Timer14.PA7;
+            }
         }
 
         /// <summary>Serial port definitions.</summary>

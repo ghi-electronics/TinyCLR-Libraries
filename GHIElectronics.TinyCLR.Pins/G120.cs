@@ -177,30 +177,41 @@
 
         /// <summary>PWM pin definitions.</summary>
         public static class PwmPin {
-            /// <summary>PWM pin.</summary>
-            public const int P1_2 = 0;
-            /// <summary>PWM pin.</summary>
-            public const int P1_3 = 1;
-            /// <summary>PWM pin.</summary>
-            public const int P1_5 = 2;
-            /// <summary>PWM pin.</summary>
-            public const int P1_6 = 3;
-            /// <summary>PWM pin.</summary>
-            public const int P1_7 = 4;
-            /// <summary>PWM pin.</summary>
-            public const int P1_11 = 5;
-            /// <summary>PWM pin.</summary>
-            public const int P3_24 = 6;
-            /// <summary>PWM pin.</summary>
-            public const int P3_25 = 7;
-            /// <summary>PWM pin.</summary>
-            public const int P3_26 = 8;
-            /// <summary>PWM pin.</summary>
-            public const int P2_3 = 9;
-            /// <summary>PWM pin.</summary>
-            public const int P2_4 = 10;
-            /// <summary>PWM pin.</summary>
-            public const int P2_5 = 11;
+            /// <summary>PWM timer.</summary>
+            public static class Timer0 {
+                public const string Id = "TIM0";
+
+                /// <summary>PWM pin.</summary>
+                public const int P1_2 = 0;
+                /// <summary>PWM pin.</summary>
+                public const int P1_3 = 1;
+                /// <summary>PWM pin.</summary>
+                public const int P1_5 = 2;
+                /// <summary>PWM pin.</summary>
+                public const int P1_6 = 3;
+                /// <summary>PWM pin.</summary>
+                public const int P1_7 = 4;
+                /// <summary>PWM pin.</summary>
+                public const int P1_11 = 5;
+            }
+
+            /// <summary>PWM timer.</summary>
+            public static class Timer1 {
+                public const string Id = "TIM1";
+
+                /// <summary>PWM pin.</summary>
+                public const int P3_24 = 0;
+                /// <summary>PWM pin.</summary>
+                public const int P3_25 = 1;
+                /// <summary>PWM pin.</summary>
+                public const int P3_26 = 2;
+                /// <summary>PWM pin.</summary>
+                public const int P2_3 = 3;
+                /// <summary>PWM pin.</summary>
+                public const int P2_4 = 4;
+                /// <summary>PWM pin.</summary>
+                public const int P2_5 = 5;
+            }
         }
 
         /// <summary>Serial port definitions.</summary>
