@@ -165,30 +165,30 @@ namespace GHIElectronics.TinyCLR.Pins {
 
         /// <summary>PWM pin definitions.</summary>
         public static class PwmPin {
-            /// <summary>PWM timer.</summary>
-            public static class Timer0 {
-                public const string Id = G120.PwmPin.Timer0.Id;
+            /// <summary>PWM controller.</summary>
+            public static class Controller0 {
+                public const string Id = G120.PwmPin.Controller0.Id;
 
                 /// <summary>PWM pin.</summary>
-                public const int D56 = G120.PwmPin.Timer0.P1_5;
+                public const int D56 = G120.PwmPin.Controller0.P1_5;
             }
 
-            /// <summary>PWM timer.</summary>
-            public static class Timer1 {
-                public const string Id = G120.PwmPin.Timer1.Id;
+            /// <summary>PWM controller.</summary>
+            public static class Controller1 {
+                public const string Id = G120.PwmPin.Controller1.Id;
 
                 /// <summary>PWM pin.</summary>
-                public const int D30 = G120.PwmPin.Timer1.P2_3;
+                public const int D30 = G120.PwmPin.Controller1.P2_3;
                 /// <summary>PWM pin.</summary>
-                public const int D38 = G120.PwmPin.Timer1.P2_4;
+                public const int D38 = G120.PwmPin.Controller1.P2_4;
                 /// <summary>PWM pin.</summary>
-                public const int D31 = G120.PwmPin.Timer1.P2_5;
+                public const int D31 = G120.PwmPin.Controller1.P2_5;
                 /// <summary>PWM pin.</summary>
-                public const int D58 = G120.PwmPin.Timer1.P3_24;
+                public const int D58 = G120.PwmPin.Controller1.P3_24;
                 /// <summary>PWM pin.</summary>
-                public const int D6 = G120.PwmPin.Timer1.P3_25;
+                public const int D6 = G120.PwmPin.Controller1.P3_25;
                 /// <summary>PWM pin.</summary>
-                public const int D5 = G120.PwmPin.Timer1.P3_26;
+                public const int D5 = G120.PwmPin.Controller1.P3_26;
             }
         }
 

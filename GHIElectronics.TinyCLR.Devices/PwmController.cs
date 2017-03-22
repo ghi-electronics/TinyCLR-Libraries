@@ -3,7 +3,7 @@ using System;
 
 namespace GHIElectronics.TinyCLR.Devices.Pwm {
     public sealed class PwmController {
-        private static string PwmPrefix => "TIM";
+        private static string PwmPrefix => "CON";
 
         private IPwmControllerProvider m_provider;
 

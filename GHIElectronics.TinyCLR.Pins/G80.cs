@@ -211,9 +211,9 @@
 
         /// <summary>PWM pin definitions.</summary>
         public static class PwmPin {
-            /// <summary>PWM timer.</summary>
-            public static class Timer1 {
-                public const string Id = "TIM1";
+            /// <summary>PWM controller.</summary>
+            public static class Controller1 {
+                public const string Id = "CON1";
 
                 /// <summary>PWM pin.</summary>
                 public const int PE9 = 0;
@@ -225,9 +225,9 @@
                 public const int PE14 = 3;
             }
 
-            /// <summary>PWM timer.</summary>
-            public static class Timer2 {
-                public const string Id = "TIM2";
+            /// <summary>PWM controller.</summary>
+            public static class Controller2 {
+                public const string Id = "CON2";
 
                 /// <summary>PWM pin.</summary>
                 public const int PA15 = 0;
@@ -239,9 +239,9 @@
                 public const int PB11 = 3;
             }
 
-            /// <summary>PWM timer.</summary>
-            public static class Timer3 {
-                public const string Id = "TIM3";
+            /// <summary>PWM controller.</summary>
+            public static class Controller3 {
+                public const string Id = "CON3";
 
                 /// <summary>PWM pin.</summary>
                 public const int PB4 = 0;
@@ -253,9 +253,9 @@
                 public const int PB1 = 3;
             }
 
-            /// <summary>PWM timer.</summary>
-            public static class Timer4 {
-                public const string Id = "TIM4";
+            /// <summary>PWM controller.</summary>
+            public static class Controller4 {
+                public const string Id = "CON4";
 
                 /// <summary>PWM pin.</summary>
                 public const int PD12 = 0;
@@ -267,9 +267,9 @@
                 public const int PD15 = 3;
             }
 
-            /// <summary>PWM timer.</summary>
-            public static class Timer8 {
-                public const string Id = "TIM8";
+            /// <summary>PWM controller.</summary>
+            public static class Controller8 {
+                public const string Id = "CON8";
 
                 /// <summary>PWM pin.</summary>
                 public const int PC6 = 0;
@@ -281,9 +281,9 @@
                 public const int PC9 = 3;
             }
 
-            /// <summary>PWM timer.</summary>
-            public static class Timer9 {
-                public const string Id = "TIM9";
+            /// <summary>PWM controller.</summary>
+            public static class Controller9 {
+                public const string Id = "CON9";
 
                 /// <summary>PWM pin.</summary>
                 public const int PA2 = 0;
@@ -291,33 +291,33 @@
                 public const int PA3 = 1;
             }
 
-            /// <summary>PWM timer.</summary>
-            public static class Timer10 {
-                public const string Id = "TIM10";
+            /// <summary>PWM controller.</summary>
+            public static class Controller10 {
+                public const string Id = "CON10";
 
                 /// <summary>PWM pin.</summary>
                 public const int PB8 = 0;
             }
 
-            /// <summary>PWM timer.</summary>
-            public static class Timer11 {
-                public const string Id = "TIM11";
+            /// <summary>PWM controller.</summary>
+            public static class Controller11 {
+                public const string Id = "CON11";
 
                 /// <summary>PWM pin.</summary>
                 public const int PB9 = 0;
             }
 
-            /// <summary>PWM timer.</summary>
-            public static class Timer13 {
-                public const string Id = "TIM13";
+            /// <summary>PWM controller.</summary>
+            public static class Controller13 {
+                public const string Id = "CON13";
 
                 /// <summary>PWM pin.</summary>
                 public const int PA6 = 0;
             }
 
-            /// <summary>PWM timer.</summary>
-            public static class Timer14 {
-                public const string Id = "TIM14";
+            /// <summary>PWM controller.</summary>
+            public static class Controller14 {
+                public const string Id = "CON14";
 
                 /// <summary>PWM pin.</summary>
                 public const int PA7 = 0;

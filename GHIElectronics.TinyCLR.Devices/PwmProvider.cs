@@ -33,15 +33,15 @@ namespace GHIElectronics.TinyCLR.Devices.Pwm.Provider {
     }
 
     internal class DefaultPwmControllerProvider : IPwmControllerProvider {
-        private readonly int timer;
+        private readonly int controller;
         private double[] dutyCycles;
         private bool[] inverts;
         private bool[] actives;
 
-        public DefaultPwmControllerProvider(int timer) {
-            if (!DefaultPwmControllerProvider.IsTimerValid(timer)) throw new ArgumentException("Invalid timer.", nameof(timer));
+        public DefaultPwmControllerProvider(int controller) {
+            if (!DefaultPwmControllerProvider.IsTimerValid(controller)) throw new ArgumentException("Invalid controller.", nameof(controller));
 
-            this.timer = timer;
+            this.controller = controller;
             this.dutyCycles = new double[this.PinCount];
             this.inverts = new bool[this.PinCount];
             this.actives = new bool[this.PinCount];

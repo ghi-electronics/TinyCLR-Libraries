@@ -177,9 +177,9 @@
 
         /// <summary>PWM pin definitions.</summary>
         public static class PwmPin {
-            /// <summary>PWM timer.</summary>
-            public static class Timer0 {
-                public const string Id = "TIM0";
+            /// <summary>PWM controller.</summary>
+            public static class Controller0 {
+                public const string Id = "CON0";
 
                 /// <summary>PWM pin.</summary>
                 public const int P1_2 = 0;
@@ -195,9 +195,9 @@
                 public const int P1_11 = 5;
             }
 
-            /// <summary>PWM timer.</summary>
-            public static class Timer1 {
-                public const string Id = "TIM1";
+            /// <summary>PWM controller.</summary>
+            public static class Controller1 {
+                public const string Id = "CON1";
 
                 /// <summary>PWM pin.</summary>
                 public const int P3_24 = 0;
