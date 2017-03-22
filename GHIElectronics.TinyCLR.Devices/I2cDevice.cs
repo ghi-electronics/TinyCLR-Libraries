@@ -271,7 +271,7 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
                 result.Status = I2cTransferStatus.PartialTransfer;
             }
 
-            return new I2cTransferResult();
+            return result;
         }
 
         /// <summary>
