@@ -22,7 +22,7 @@ namespace GHIElectronics.TinyCLR.Devices.Pwm {
 
         public static PwmController FromId(string deviceId) {
             if (deviceId == null) throw new ArgumentNullException(nameof(deviceId));
-            if (deviceId.Length < 4 || deviceId.IndexOf(PwmController.PwmPrefix) != 0 || !int.TryParse(deviceId.Substring(PwmController.PwmPrefix.Length), out var id) || id <= 0) throw new ArgumentException("Invalid device ID.", nameof(deviceId));
+            if (deviceId.Length < 4 || deviceId.IndexOf(PwmController.PwmPrefix) != 0 || !int.TryParse(deviceId.Substring(PwmController.PwmPrefix.Length), out var id) || id < 0) throw new ArgumentException("Invalid device ID.", nameof(deviceId));
 
             return new PwmController(new DefaultPwmControllerProvider(id));
         }
