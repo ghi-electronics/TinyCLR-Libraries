@@ -49,7 +49,9 @@
     <Compile Include="GpioPinEventListener.cs" />
     <Compile Include="GpioPinValueChangedEventArgs.cs" />
     <Compile Include="I2cConnectionSettings.cs" />
+    <Compile Include="I2cController.cs" />
     <Compile Include="I2cDevice.cs" />
+    <Compile Include="I2cProvider.cs" />
     <Compile Include="I2cEnums.cs" />
     <Compile Include="Internal.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
