@@ -20,151 +20,151 @@ namespace GHIElectronics.TinyCLR.Devices.Spi {
         }
 
         public ISpiControllerProvider[] GetControllers() => this.controllers = (this.controllers ?? new[] { new SpiSoftwareControllerProvider(this.controller, this.miso, this.mosi, this.sck) });
+    }
 
-        private class SpiSoftwareControllerProvider : ISpiControllerProvider {
-            private readonly GpioController controller;
-            private readonly int miso;
-            private readonly int mosi;
-            private readonly int sck;
+    internal class SpiSoftwareControllerProvider : ISpiControllerProvider {
+        private readonly GpioController controller;
+        private readonly int miso;
+        private readonly int mosi;
+        private readonly int sck;
 
-            public SpiSoftwareControllerProvider(GpioController controller, int miso, int mosi, int sck) {
-                this.controller = controller;
-                this.miso = miso;
-                this.mosi = mosi;
-                this.sck = sck;
-            }
-
-            public ISpiDeviceProvider GetDeviceProvider(ProviderSpiConnectionSettings settings) {
-                GpioPin mosi = null, sck = null;
-
-                if (this.controller.TryOpenPin(this.miso, GpioSharingMode.Exclusive, out var miso, out _) && this.controller.TryOpenPin(this.mosi, GpioSharingMode.Exclusive, out mosi, out _) && this.controller.TryOpenPin(this.sck, GpioSharingMode.Exclusive, out sck, out _) && this.controller.TryOpenPin(settings.ChipSelectionLine, GpioSharingMode.Exclusive, out var cs, out _))
-                    return new SpiManagedSoftwareDeviceProvider(settings, miso, mosi, sck, cs);
-
-                miso?.Dispose();
-                mosi?.Dispose();
-                sck?.Dispose();
-
-                throw new InvalidOperationException();
-            }
+        public SpiSoftwareControllerProvider(GpioController controller, int miso, int mosi, int sck) {
+            this.controller = controller;
+            this.miso = miso;
+            this.mosi = mosi;
+            this.sck = sck;
         }
 
-        private class SpiManagedSoftwareDeviceProvider : ISpiDeviceProvider {
-            private readonly GpioPin miso;
-            private readonly GpioPin mosi;
-            private readonly GpioPin sck;
-            private readonly GpioPin cs;
-            private readonly bool captureOnRisingEdge;
-            private readonly GpioPinValue clockActiveState;
-            private bool disposed;
+        public ISpiDeviceProvider GetDeviceProvider(ProviderSpiConnectionSettings settings) {
+            GpioPin mosi = null, sck = null;
 
-            public SpiManagedSoftwareDeviceProvider(ProviderSpiConnectionSettings settings, GpioPin miso, GpioPin mosi, GpioPin sck, GpioPin cs) {
-                if (settings.DataBitLength != 8) throw new NotSupportedException("Must use 8 bit mode.");
-                if (settings.SharingMode != ProviderSpiSharingMode.Exclusive) throw new NotSupportedException("Must use exclusive mode.");
+            if (this.controller.TryOpenPin(this.miso, GpioSharingMode.Exclusive, out var miso, out _) && this.controller.TryOpenPin(this.mosi, GpioSharingMode.Exclusive, out mosi, out _) && this.controller.TryOpenPin(this.sck, GpioSharingMode.Exclusive, out sck, out _) && this.controller.TryOpenPin(settings.ChipSelectionLine, GpioSharingMode.Exclusive, out var cs, out _))
+                return new SpiManagedSoftwareDeviceProvider(settings, miso, mosi, sck, cs);
 
-                this.ConnectionSettings = settings;
-                this.miso = miso;
-                this.mosi = mosi;
-                this.sck = sck;
-                this.cs = cs;
-                this.clockActiveState = (((int)settings.Mode) & 0x02) == 0 ? GpioPinValue.Low : GpioPinValue.High;
-                this.captureOnRisingEdge = ((((int)settings.Mode) & 0x01) == 0);
-                this.disposed = false;
+            miso?.Dispose();
+            mosi?.Dispose();
+            sck?.Dispose();
 
-                this.sck.Write(this.clockActiveState);
-                this.miso.Read();
-                this.mosi.Write(GpioPinValue.High);
-                this.cs.Write(GpioPinValue.High);
-            }
+            throw new InvalidOperationException();
+        }
+    }
 
-            public ProviderSpiConnectionSettings ConnectionSettings { get; }
-            public string DeviceId => $"SPI-SWM-{this.miso.PinNumber}-{this.mosi.PinNumber}-{this.sck.PinNumber}";
+    internal class SpiManagedSoftwareDeviceProvider : ISpiDeviceProvider {
+        private readonly GpioPin miso;
+        private readonly GpioPin mosi;
+        private readonly GpioPin sck;
+        private readonly GpioPin cs;
+        private readonly bool captureOnRisingEdge;
+        private readonly GpioPinValue clockActiveState;
+        private bool disposed;
 
-            public void Write(byte[] buffer) {
-                if (buffer == null) throw new ArgumentNullException(nameof(buffer));
+        public SpiManagedSoftwareDeviceProvider(ProviderSpiConnectionSettings settings, GpioPin miso, GpioPin mosi, GpioPin sck, GpioPin cs) {
+            if (settings.DataBitLength != 8) throw new NotSupportedException("Must use 8 bit mode.");
+            if (settings.SharingMode != ProviderSpiSharingMode.Exclusive) throw new NotSupportedException("Must use exclusive mode.");
 
-                this.WriteRead(buffer, null, true);
-            }
+            this.ConnectionSettings = settings;
+            this.miso = miso;
+            this.mosi = mosi;
+            this.sck = sck;
+            this.cs = cs;
+            this.clockActiveState = (((int)settings.Mode) & 0x02) == 0 ? GpioPinValue.Low : GpioPinValue.High;
+            this.captureOnRisingEdge = ((((int)settings.Mode) & 0x01) == 0);
+            this.disposed = false;
 
-            public void Read(byte[] buffer) {
-                if (buffer == null) throw new ArgumentNullException(nameof(buffer));
+            this.sck.Write(this.clockActiveState);
+            this.miso.Read();
+            this.mosi.Write(GpioPinValue.High);
+            this.cs.Write(GpioPinValue.High);
+        }
 
-                this.WriteRead(null, buffer, true);
-            }
+        public ProviderSpiConnectionSettings ConnectionSettings { get; }
+        public string DeviceId => $"SPI-SWM-{this.miso.PinNumber}-{this.mosi.PinNumber}-{this.sck.PinNumber}";
 
-            public void TransferSequential(byte[] writeBuffer, byte[] readBuffer) {
-                if (readBuffer == null) throw new ArgumentNullException(nameof(readBuffer));
-                if (writeBuffer == null) throw new ArgumentNullException(nameof(writeBuffer));
+        public void Write(byte[] buffer) {
+            if (buffer == null) throw new ArgumentNullException(nameof(buffer));
 
-                this.WriteRead(writeBuffer, null, false);
-                this.WriteRead(null, readBuffer, true);
-            }
+            this.WriteRead(buffer, null, true);
+        }
 
-            public void TransferFullDuplex(byte[] writeBuffer, byte[] readBuffer) {
-                if (readBuffer == null) throw new ArgumentNullException(nameof(readBuffer));
-                if (writeBuffer == null) throw new ArgumentNullException(nameof(writeBuffer));
+        public void Read(byte[] buffer) {
+            if (buffer == null) throw new ArgumentNullException(nameof(buffer));
 
-                this.WriteRead(writeBuffer, readBuffer, true);
-            }
+            this.WriteRead(null, buffer, true);
+        }
 
-            private void WriteRead(byte[] writeBuffer, byte[] readBuffer, bool deselectAfter) {
-                var writeLength = writeBuffer != null ? writeBuffer.Length : 0;
-                var readLength = readBuffer != null ? readBuffer.Length : 0;
+        public void TransferSequential(byte[] writeBuffer, byte[] readBuffer) {
+            if (readBuffer == null) throw new ArgumentNullException(nameof(readBuffer));
+            if (writeBuffer == null) throw new ArgumentNullException(nameof(writeBuffer));
 
-                if (readBuffer != null)
-                    Array.Clear(readBuffer, 0, readLength);
+            this.WriteRead(writeBuffer, null, false);
+            this.WriteRead(null, readBuffer, true);
+        }
 
-                this.sck.Write(this.clockActiveState);
-                this.cs.Write(GpioPinValue.Low);
+        public void TransferFullDuplex(byte[] writeBuffer, byte[] readBuffer) {
+            if (readBuffer == null) throw new ArgumentNullException(nameof(readBuffer));
+            if (writeBuffer == null) throw new ArgumentNullException(nameof(writeBuffer));
 
-                for (var i = 0; i < Math.Max(readLength, writeLength); i++) {
-                    byte mask = 0x80;
-                    var w = i < writeLength && writeBuffer != null ? writeBuffer[i] : (byte)0;
-                    var r = false;
+            this.WriteRead(writeBuffer, readBuffer, true);
+        }
 
-                    for (var j = 0; j < 8; j++) {
-                        if (this.captureOnRisingEdge) {
-                            this.sck.Write(this.clockActiveState);
+        private void WriteRead(byte[] writeBuffer, byte[] readBuffer, bool deselectAfter) {
+            var writeLength = writeBuffer != null ? writeBuffer.Length : 0;
+            var readLength = readBuffer != null ? readBuffer.Length : 0;
 
-                            this.mosi.Write((w & mask) != 0 ? GpioPinValue.High : GpioPinValue.Low);
-                            r = this.miso.Read() == GpioPinValue.High;
+            if (readBuffer != null)
+                Array.Clear(readBuffer, 0, readLength);
 
-                            this.sck.Write(this.clockActiveState);
-                        }
-                        else {
-                            this.sck.Write(this.clockActiveState);
+            this.sck.Write(this.clockActiveState);
+            this.cs.Write(GpioPinValue.Low);
 
-                            this.mosi.Write((w & mask) != 0 ? GpioPinValue.High : GpioPinValue.Low);
-                            r = this.miso.Read() == GpioPinValue.High;
+            for (var i = 0; i < Math.Max(readLength, writeLength); i++) {
+                byte mask = 0x80;
+                var w = i < writeLength && writeBuffer != null ? writeBuffer[i] : (byte)0;
+                var r = false;
 
-                            this.sck.Write(this.clockActiveState);
-                        }
+                for (var j = 0; j < 8; j++) {
+                    if (this.captureOnRisingEdge) {
+                        this.sck.Write(this.clockActiveState);
 
-                        if (i < readLength && readBuffer != null && r)
-                            readBuffer[i] |= mask;
+                        this.mosi.Write((w & mask) != 0 ? GpioPinValue.High : GpioPinValue.Low);
+                        r = this.miso.Read() == GpioPinValue.High;
 
-                        mask >>= 1;
+                        this.sck.Write(this.clockActiveState);
                     }
+                    else {
+                        this.sck.Write(this.clockActiveState);
+
+                        this.mosi.Write((w & mask) != 0 ? GpioPinValue.High : GpioPinValue.Low);
+                        r = this.miso.Read() == GpioPinValue.High;
+
+                        this.sck.Write(this.clockActiveState);
+                    }
+
+                    if (i < readLength && readBuffer != null && r)
+                        readBuffer[i] |= mask;
+
+                    mask >>= 1;
                 }
-
-                this.sck.Write(this.clockActiveState);
-
-                if (deselectAfter)
-                    this.cs.Write(GpioPinValue.High);
             }
 
-            public void Dispose() {
-                if (!this.disposed) {
-                    this.miso.Dispose();
-                    this.mosi.Dispose();
-                    this.sck.Dispose();
-                    this.cs.Dispose();
-                    this.disposed = true;
-                }
+            this.sck.Write(this.clockActiveState);
 
-                GC.SuppressFinalize(this);
-            }
-
-            ~SpiManagedSoftwareDeviceProvider() => this.Dispose();
+            if (deselectAfter)
+                this.cs.Write(GpioPinValue.High);
         }
+
+        public void Dispose() {
+            if (!this.disposed) {
+                this.miso.Dispose();
+                this.mosi.Dispose();
+                this.sck.Dispose();
+                this.cs.Dispose();
+                this.disposed = true;
+            }
+
+            GC.SuppressFinalize(this);
+        }
+
+        ~SpiManagedSoftwareDeviceProvider() => this.Dispose();
     }
 }
