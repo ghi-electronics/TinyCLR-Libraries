@@ -55,6 +55,7 @@ namespace GHIElectronics.TinyCLR.Devices.Spi {
         private readonly GpioPin sck;
         private readonly GpioPin cs;
         private readonly bool captureOnRisingEdge;
+        private readonly GpioPinValue clockIdleState;
         private readonly GpioPinValue clockActiveState;
         private bool disposed;
 
@@ -67,13 +68,21 @@ namespace GHIElectronics.TinyCLR.Devices.Spi {
             this.mosi = mosi;
             this.sck = sck;
             this.cs = cs;
-            this.clockActiveState = (((int)settings.Mode) & 0x02) == 0 ? GpioPinValue.Low : GpioPinValue.High;
             this.captureOnRisingEdge = ((((int)settings.Mode) & 0x01) == 0);
+            this.clockActiveState = (((int)settings.Mode) & 0x02) == 0 ? GpioPinValue.High : GpioPinValue.Low;
+            this.clockIdleState = this.clockActiveState == GpioPinValue.High ? GpioPinValue.Low : GpioPinValue.High;
             this.disposed = false;
 
-            this.sck.Write(this.clockActiveState);
+            this.sck.SetDriveMode(GpioPinDriveMode.Output);
+            this.sck.Write(this.clockIdleState);
+
+            this.miso.SetDriveMode(GpioPinDriveMode.Input);
             this.miso.Read();
+
+            this.mosi.SetDriveMode(GpioPinDriveMode.Output);
             this.mosi.Write(GpioPinValue.High);
+
+            this.cs.SetDriveMode(GpioPinDriveMode.Output);
             this.cs.Write(GpioPinValue.High);
         }
 
@@ -114,7 +123,7 @@ namespace GHIElectronics.TinyCLR.Devices.Spi {
             if (readBuffer != null)
                 Array.Clear(readBuffer, 0, readLength);
 
-            this.sck.Write(this.clockActiveState);
+            this.sck.Write(this.clockIdleState);
             this.cs.Write(GpioPinValue.Low);
 
             for (var i = 0; i < Math.Max(readLength, writeLength); i++) {
@@ -124,7 +133,7 @@ namespace GHIElectronics.TinyCLR.Devices.Spi {
 
                 for (var j = 0; j < 8; j++) {
                     if (this.captureOnRisingEdge) {
-                        this.sck.Write(this.clockActiveState);
+                        this.sck.Write(this.clockIdleState);
 
                         this.mosi.Write((w & mask) != 0 ? GpioPinValue.High : GpioPinValue.Low);
                         r = this.miso.Read() == GpioPinValue.High;
@@ -137,7 +146,7 @@ namespace GHIElectronics.TinyCLR.Devices.Spi {
                         this.mosi.Write((w & mask) != 0 ? GpioPinValue.High : GpioPinValue.Low);
                         r = this.miso.Read() == GpioPinValue.High;
 
-                        this.sck.Write(this.clockActiveState);
+                        this.sck.Write(this.clockIdleState);
                     }
 
                     if (i < readLength && readBuffer != null && r)
@@ -147,7 +156,7 @@ namespace GHIElectronics.TinyCLR.Devices.Spi {
                 }
             }
 
-            this.sck.Write(this.clockActiveState);
+            this.sck.Write(this.clockIdleState);
 
             if (deselectAfter)
                 this.cs.Write(GpioPinValue.High);

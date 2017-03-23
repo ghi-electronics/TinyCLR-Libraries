@@ -136,7 +136,7 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
         }
 
         private void ClearSda() {
-            this.scl.SetDriveMode(GpioPinDriveMode.Output);
+            this.sda.SetDriveMode(GpioPinDriveMode.Output);
             this.sda.Write(GpioPinValue.Low);
         }
 
@@ -146,12 +146,18 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
         }
 
         private void ReleaseSda() {
-            this.scl.SetDriveMode(this.useSoftwarePullups ? GpioPinDriveMode.InputPullUp : GpioPinDriveMode.Input);
+            this.sda.SetDriveMode(this.useSoftwarePullups ? GpioPinDriveMode.InputPullUp : GpioPinDriveMode.Input);
             this.ReadSda();
         }
 
-        private bool ReadScl() => this.scl.Read() == GpioPinValue.High;
-        private bool ReadSda() => this.sda.Read() == GpioPinValue.High;
+        private bool ReadScl() {
+            this.scl.SetDriveMode(this.useSoftwarePullups ? GpioPinDriveMode.InputPullUp : GpioPinDriveMode.Input);
+            return this.scl.Read() == GpioPinValue.High;
+        }
+        private bool ReadSda() {
+            this.sda.SetDriveMode(this.useSoftwarePullups ? GpioPinDriveMode.InputPullUp : GpioPinDriveMode.Input);
+            return this.sda.Read() == GpioPinValue.High;
+        }
 
         private void WaitForScl() {
             var i = 0;
