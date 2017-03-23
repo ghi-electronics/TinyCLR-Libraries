@@ -8,7 +8,7 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
         internal I2cController(II2cControllerProvider provider) => this.provider = provider;
 
         public static I2cController GetDefault() => throw new NotSupportedException();
-        public I2cDevice GetDevice(I2cConnectionSettings settings) => new I2cDevice(this.provider.GetDeviceProvider(new ProviderI2cConnectionSettings(settings)));
+        public I2cDevice GetDevice(I2cConnectionSettings settings) => new I2cDevice(settings, this.provider.GetDeviceProvider(new ProviderI2cConnectionSettings(settings)));
 
         public static I2cController[] GetControllers(II2cProvider provider) {
             var providers = provider.GetControllers();
