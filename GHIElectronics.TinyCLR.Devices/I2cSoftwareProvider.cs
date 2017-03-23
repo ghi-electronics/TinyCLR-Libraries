@@ -44,14 +44,10 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
                     return new I2cNativeSoftwareDeviceProvider(settings, this.sda, this.scl, this.useSoftwarePullups);
                 }
                 else {
-                    if (this.controller.TryOpenPin(this.sda, GpioSharingMode.Exclusive, out var sda, out _)) {
-                        if (this.controller.TryOpenPin(this.scl, GpioSharingMode.Exclusive, out var scl, out _)) {
-                            return new I2cManagedSoftwareDeviceProvider(settings, sda, scl, this.useSoftwarePullups);
-                        }
-                        else {
-                            sda.Dispose();
-                        }
-                    }
+                    if (this.controller.TryOpenPin(this.sda, GpioSharingMode.Exclusive, out var sda, out _) && this.controller.TryOpenPin(this.scl, GpioSharingMode.Exclusive, out var scl, out _))
+                        return new I2cManagedSoftwareDeviceProvider(settings, sda, scl, this.useSoftwarePullups);
+
+                    sda?.Dispose();
 
                     throw new InvalidOperationException();
                 }
@@ -368,3 +364,4 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
             }
         }
     }
+}
