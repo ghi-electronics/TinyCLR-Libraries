@@ -45,6 +45,7 @@
     <Compile Include="DeviceInformation.cs" />
     <Compile Include="GpioController.cs" />
     <Compile Include="GpioEnums.cs" />
+    <Compile Include="GpioProvider.cs" />
     <Compile Include="GpioPin.cs" />
     <Compile Include="GpioPinEventListener.cs" />
     <Compile Include="GpioPinValueChangedEventArgs.cs" />
