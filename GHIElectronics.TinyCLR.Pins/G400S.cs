@@ -220,7 +220,7 @@
                 public const string Id = "CON1";
 
                 /// <summary>PWM pin.</summary>
-                public const int PC19 = 1;
+                public const int PC19 = 0;
             }
 
             /// <summary>PWM controller.</summary>
@@ -228,7 +228,7 @@
                 public const string Id = "CON2";
 
                 /// <summary>PWM pin.</summary>
-                public const int PC20 = 2;
+                public const int PC20 = 0;
             }
 
             /// <summary>PWM controller.</summary>
@@ -236,7 +236,7 @@
                 public const string Id = "CON3";
 
                 /// <summary>PWM pin.</summary>
-                public const int PC21 = 3;
+                public const int PC21 = 0;
             }
         }
 
