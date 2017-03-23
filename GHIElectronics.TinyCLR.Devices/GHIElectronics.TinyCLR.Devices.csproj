@@ -50,6 +50,7 @@
     <Compile Include="GpioPinEventListener.cs" />
     <Compile Include="GpioPinValueChangedEventArgs.cs" />
     <Compile Include="I2cConnectionSettings.cs" />
+    <Compile Include="I2cSoftwareProvider.cs" />
     <Compile Include="SpiController.cs" />
     <Compile Include="I2cController.cs" />
     <Compile Include="I2cDevice.cs" />
