@@ -61,7 +61,7 @@ namespace GHIElectronics.TinyCLR.Devices.Enumeration {
             }
 
             // Find all SPI buses which contain the given prefix.
-            var spiBusNames = Spi.SpiDevice.GetValidBusNames();
+            var spiBusNames = Spi.Provider.DefaultSpiDeviceProvider.GetValidBusNames();
             for (var i = 0; i < spiBusNames.Length; ++i) {
                 if (spiBusNames[i].IndexOf(aqsFilter) == 0) {
                     // TODO: Issue #102: Determine whether this bus exists.
