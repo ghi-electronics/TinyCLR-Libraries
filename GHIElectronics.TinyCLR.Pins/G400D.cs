@@ -1,4 +1,4 @@
-﻿namespace GHI.Pins {
+﻿namespace GHIElectronics.TinyCLR.Pins {
     /// <summary>Board definition for the G400.</summary>
     public static class G400D {
         /// <summary>GPIO pin definitions.</summary>
