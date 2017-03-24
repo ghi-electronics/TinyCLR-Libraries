@@ -1,5 +1,4 @@
 ﻿using GHIElectronics.TinyCLR.Devices.Spi.Provider;
-using System;
 
 namespace GHIElectronics.TinyCLR.Devices.Spi {
     public sealed class SpiController {
@@ -7,7 +6,8 @@ namespace GHIElectronics.TinyCLR.Devices.Spi {
 
         internal SpiController(ISpiControllerProvider provider) => this.provider = provider;
 
-        public static SpiController GetDefault() => throw new NotSupportedException();
+        public static SpiController GetDefault() => LowLevelDevicesController.DefaultProvider.SpiControllerProvider != null ? new SpiController(LowLevelDevicesController.DefaultProvider.SpiControllerProvider) : null;
+
         public SpiDevice GetDevice(SpiConnectionSettings settings) => new SpiDevice(settings, this.provider.GetDeviceProvider(new ProviderSpiConnectionSettings(settings)));
 
         public static SpiController[] GetControllers(ISpiProvider provider) {

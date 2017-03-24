@@ -4,7 +4,6 @@ using System;
 namespace GHIElectronics.TinyCLR.Devices.Dac {
     public sealed class DacController {
         private readonly IDacControllerProvider provider;
-        private static DacController instance;
 
         internal DacController(IDacControllerProvider provider) => this.provider = provider;
 
@@ -13,7 +12,7 @@ namespace GHIElectronics.TinyCLR.Devices.Dac {
         public int MinValue => this.provider.MinValue;
         public int MaxValue => this.provider.MaxValue;
 
-        public static DacController GetDefault() => DacController.instance ?? (DacController.instance = new DacController(new NativeDacControllerProvider()));
+        public static DacController GetDefault() => LowLevelDevicesController.DefaultProvider.DacControllerProvider != null ? new DacController(LowLevelDevicesController.DefaultProvider.DacControllerProvider) : null;
 
         public static DacController[] GetControllers(IDacProvider provider) {
             var providers = provider.GetControllers();

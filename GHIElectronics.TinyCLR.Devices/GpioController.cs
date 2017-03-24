@@ -5,8 +5,7 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio {
     /// Represents the default general-purpose I/O (GPIO) controller for the system.
     /// </summary>
     public sealed class GpioController {
-        private readonly IGpioControllerProvider provider;
-        private static GpioController instance;
+        internal readonly IGpioControllerProvider provider;
 
         internal GpioController(IGpioControllerProvider provider) => this.provider = provider;
 
@@ -22,7 +21,7 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio {
         /// Gets the default general-purpose I/O (GPIO) controller for the system.
         /// </summary>
         /// <returns>The default GPIO controller for the system, or null if the system has no GPIO controller.</returns>
-        public static GpioController GetDefault() => GpioController.instance ?? (GpioController.instance = new GpioController(new DefaultGpioControllerProvider()));
+        public static GpioController GetDefault() => LowLevelDevicesController.DefaultProvider.GpioControllerProvider != null ? new GpioController(LowLevelDevicesController.DefaultProvider.GpioControllerProvider) : null;
 
         public static GpioController[] GetControllers(IGpioProvider provider) {
             var providers = provider.GetControllers();

@@ -4,6 +4,7 @@ using GHIElectronics.TinyCLR.Devices.Internal;
 using System;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using GHIElectronics.TinyCLR.Devices.Gpio.Provider;
 
 namespace GHIElectronics.TinyCLR.Devices.I2c {
     public class I2cSoftwareProvider : II2cProvider {
@@ -41,7 +42,7 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
         }
 
         public II2cDeviceProvider GetDeviceProvider(ProviderI2cConnectionSettings settings) {
-            if (object.ReferenceEquals(this.controller, GpioController.GetDefault())) {
+            if (this.controller.provider is DefaultGpioControllerProvider) {
                 return new I2cNativeSoftwareDeviceProvider(settings, this.sda, this.scl, this.useSoftwarePullups);
             }
             else {
