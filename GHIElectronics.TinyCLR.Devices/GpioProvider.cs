@@ -52,6 +52,10 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio.Provider {
     }
 
     internal sealed class DefaultGpioControllerProvider : IGpioControllerProvider {
+        public static DefaultGpioControllerProvider Instance { get; } = new DefaultGpioControllerProvider();
+
+        private DefaultGpioControllerProvider() { }
+
         public extern int PinCount {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
             get;

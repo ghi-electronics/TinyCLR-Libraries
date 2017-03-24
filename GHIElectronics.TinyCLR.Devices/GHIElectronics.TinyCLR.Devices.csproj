@@ -51,6 +51,9 @@
     <Compile Include="GpioPinValueChangedEventArgs.cs" />
     <Compile Include="I2cConnectionSettings.cs" />
     <Compile Include="LowLevelDevicesController.cs" />
+    <Compile Include="PulseFeedback.cs" />
+    <Compile Include="SignalCapture.cs" />
+    <Compile Include="SignalGenerator.cs" />
     <Compile Include="SpiSoftwareProvider.cs" />
     <Compile Include="I2cSoftwareProvider.cs" />
     <Compile Include="SpiController.cs" />

@@ -7,7 +7,7 @@ using GHIElectronics.TinyCLR.Devices.Spi.Provider;
 
 namespace GHIElectronics.TinyCLR.Devices {
     public sealed class LowLevelDevicesController {
-        public static ILowLevelDevicesAggregateProvider DefaultProvider { get; set; } = new LowLevelDevicesAggregateProvider(new DefaultAdcControllerProvider(), new NativeDacControllerProvider(), null, new DefaultGpioControllerProvider(), null, null);
+        public static ILowLevelDevicesAggregateProvider DefaultProvider { get; set; } = new LowLevelDevicesAggregateProvider(new DefaultAdcControllerProvider(), new NativeDacControllerProvider(), null, DefaultGpioControllerProvider.Instance, null, null);
     }
 
     public interface ILowLevelDevicesAggregateProvider {
