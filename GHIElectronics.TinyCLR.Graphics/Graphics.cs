@@ -140,7 +140,9 @@ namespace GHIElectronics.TinyCLR.Drawing {
 
     namespace Internal {
         internal class Bitmap : MarshalByRefObject, IDisposable {
+#pragma warning disable CS0169 // The field is never used
             private object m_bitmap;
+#pragma warning restore CS0169 // The field is never used
 
             public void Dispose() {
                 this.Dispose(true);

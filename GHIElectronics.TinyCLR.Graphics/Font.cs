@@ -3,7 +3,9 @@ using System.Runtime.CompilerServices;
 
 namespace GHIElectronics.TinyCLR.Drawing {
     public sealed class Font : MarshalByRefObject, ICloneable, IDisposable {
+#pragma warning disable CS0169 // The field is never used
         private object m_font;
+#pragma warning restore CS0169 // The field is never used
 
         // Must keep in sync with CLR_GFX_Font::c_DefaultKerning
         private const int DefaultKerning = 1024;
