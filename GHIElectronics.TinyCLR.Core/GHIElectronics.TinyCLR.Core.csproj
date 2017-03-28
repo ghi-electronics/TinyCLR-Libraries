@@ -131,6 +131,7 @@
     <Compile Include="ObjectDisposedException.cs" />
     <Compile Include="ObsoleteAttribute.cs" />
     <Compile Include="OutOfMemoryException.cs" />
+    <Compile Include="OverflowException.cs" />
     <Compile Include="ParamArrayAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Random.cs" />
