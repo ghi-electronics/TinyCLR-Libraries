@@ -27,14 +27,15 @@ namespace GHIElectronics.TinyCLR.Drawing {
             this.Clear();
         }
 
-        public static Graphics FromScreen() {
+        public static Graphics FromHdc(IntPtr hdc) {
+            var config = DisplayConfiguration.GetForCurrentDisplay();
+
+            if (config == null || config.Width == 0 || config.Height == 0) throw new InvalidOperationException("No screen configured.");
+            if (hdc != config.Hdc) throw new ArgumentException("Invalid handle.", nameof(hdc));
+
             lock (Graphics.screenLock) {
                 if (Graphics.screenCreated)
                     throw new InvalidOperationException("Graphics already created for screen.");
-
-                var config = DisplayConfiguration.GetForCurrentDisplay();
-
-                if (config == null || config.Width == 0 || config.Height == 0) throw new InvalidOperationException("No screen configured.");
 
                 Graphics.screenCreated = true;
 

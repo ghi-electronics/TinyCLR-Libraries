@@ -1,8 +1,11 @@
+using System;
 using System.Runtime.CompilerServices;
 
 namespace GHIElectronics.TinyCLR.Graphics.Display {
     public sealed class DisplayConfiguration {
         private static DisplayConfiguration current;
+
+        public IntPtr Hdc => new IntPtr(int.MaxValue);
 
         public uint Width { get; set; }
         public uint Height { get; set; }
