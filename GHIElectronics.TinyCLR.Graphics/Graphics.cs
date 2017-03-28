@@ -246,7 +246,7 @@ namespace GHIElectronics.TinyCLR.Drawing {
                 var xRelStart = 0;
                 var yRelStart = 0;
 
-                DrawTextInRect(ref text, ref xRelStart, ref yRelStart, x, y, width, height, dtFlags, color, font);
+                DrawTextInRect(ref text, ref xRelStart, ref yRelStart, x, y, width, height, dtFlags, (uint)color.ToArgb(), font);
             }
 
             //public void DrawEllipse(Color colorOutline, int x, int y, int xRadius, int yRadius) => DrawEllipse(colorOutline, 1, x, y, xRadius, yRadius, Color.Black, 0, 0, Color.Black, 0, 0, OpacityOpaque);
@@ -260,34 +260,34 @@ namespace GHIElectronics.TinyCLR.Drawing {
             public extern void SetClippingRectangle(int x, int y, int width, int height);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern bool DrawTextInRect(ref string text, ref int xRelStart, ref int yRelStart, int x, int y, int width, int height, uint dtFlags, Color color, Font font);
+            public extern bool DrawTextInRect(ref string text, ref int xRelStart, ref int yRelStart, int x, int y, int width, int height, uint dtFlags, uint color, Font font);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern void RotateImage(int angle, int xDst, int yDst, Graphics bitmap, int xSrc, int ySrc, int width, int height, ushort opacity);
+            public extern void RotateImage(int angle, int xDst, int yDst, Bitmap bitmap, int xSrc, int ySrc, int width, int height, ushort opacity);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern void MakeTransparent(Color color);
+            public extern void MakeTransparent(uint color);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern void StretchImage(int xDst, int yDst, Graphics bitmap, int width, int height, ushort opacity);
+            public extern void StretchImage(int xDst, int yDst, Bitmap bitmap, int width, int height, ushort opacity);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern void SetPixel(int xPos, int yPos, Color color);
+            public extern void SetPixel(int xPos, int yPos, uint color);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern Color GetPixel(int xPos, int yPos);
+            public extern uint GetPixel(int xPos, int yPos);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern byte[] GetBitmap();
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern void StretchImage(int xDst, int yDst, int widthDst, int heightDst, Graphics bitmap, int xSrc, int ySrc, int widthSrc, int heightSrc, ushort opacity);
+            public extern void StretchImage(int xDst, int yDst, int widthDst, int heightDst, Bitmap bitmap, int xSrc, int ySrc, int widthSrc, int heightSrc, ushort opacity);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern void TileImage(int xDst, int yDst, Graphics bitmap, int width, int height, ushort opacity);
+            public extern void TileImage(int xDst, int yDst, Bitmap bitmap, int width, int height, ushort opacity);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern void Scale9Image(int xDst, int yDst, int widthDst, int heightDst, Graphics bitmap, int leftBorder, int topBorder, int rightBorder, int bottomBorder, ushort opacity);
+            public extern void Scale9Image(int xDst, int yDst, int widthDst, int heightDst, Bitmap bitmap, int leftBorder, int topBorder, int rightBorder, int bottomBorder, ushort opacity);
         }
     }
 }
