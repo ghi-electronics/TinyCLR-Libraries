@@ -10,7 +10,7 @@ namespace GHIElectronics.TinyCLR.Drawing {
         internal int Width => this.surface.Width;
         internal int Height => this.surface.Height;
 
-        private Internal.Bitmap surface;
+        internal Internal.Bitmap surface;
         private bool forScreen;
         private bool disposed;
 

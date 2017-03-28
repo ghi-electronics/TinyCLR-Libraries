@@ -16,9 +16,14 @@ namespace GHIElectronics.TinyCLR.Drawing {
         public Image FromStream(Stream stream) => new Bitmap(stream);
 
         public void Save(Stream stream, ImageFormat format) {
+            if (stream == null) throw new ArgumentNullException(nameof(stream));
+            if (format == null) throw new ArgumentNullException(nameof(format));
             if (format != ImageFormat.MemoryBmp) throw new ArgumentException("Only MemoryBmp supported.");
 
-            stream.Write(null, 0, 0);
+            var buf = this.data.surface.GetBitmap();
+
+            stream.Seek(0, SeekOrigin.Begin);
+            stream.Write(buf, 0, buf.Length);
         }
 
         protected virtual void Dispose(bool disposing) {
@@ -41,6 +46,8 @@ namespace GHIElectronics.TinyCLR.Drawing {
         public Bitmap(int width, int height) => this.data = new Graphics(width, height);
 
         public Bitmap(Stream stream) {
+            if (stream == null) throw new ArgumentNullException(nameof(stream));
+
             var buffer = new byte[(int)stream.Length];
 
             stream.Read(buffer, 0, buffer.Length);
