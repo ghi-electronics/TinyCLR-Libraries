@@ -171,7 +171,14 @@ namespace GHIElectronics.TinyCLR.Drawing {
         public static bool operator ==(Color left, Color right) => left.value == right.value;
         public static bool operator !=(Color left, Color right) => !(left == right);
 
-        public override bool Equals(object obj) => obj is Color right && this.value == right.value;
         public override int GetHashCode() => this.value.GetHashCode();
+
+        //C# compiler crashes when using pattern matching
+        public override bool Equals(object obj) {
+            if (obj is Color)
+                return this.value == ((Color)obj).value;
+
+            return false;
+        }
     }
 }

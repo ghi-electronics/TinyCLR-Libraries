@@ -12,8 +12,15 @@ namespace System {
         public IntPtr(int value) => this.value = value;
         public IntPtr(long value) => this.value = checked((int)value);
 
-        public override bool Equals(object obj) => obj is IntPtr ptr && this.value == ptr.value;
         public override int GetHashCode() => this.value;
+
+        //C# compiler crashes when using pattern matching
+        public override bool Equals(object obj) {
+            if (obj is IntPtr)
+                return this.value == ((IntPtr)obj).value;
+
+            return false;
+        }
 
         public int ToInt32() => this.value;
         public long ToInt64() => this.value;
