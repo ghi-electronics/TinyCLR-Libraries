@@ -10,7 +10,12 @@ namespace System {
         public static readonly IntPtr Zero;
 
         public IntPtr(int value) => this.value = value;
-        public IntPtr(long value) => this.value = checked((int)value);
+
+        public IntPtr(long value) {
+            if (value > int.MaxValue) throw new OverflowException();
+
+            this.value = (int)value;
+        }
 
         public override int GetHashCode() => this.value;
 

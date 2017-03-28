@@ -350,6 +350,7 @@ namespace System.Diagnostics.Contracts {
 #endif
         public static void Requires(bool condition, string userMessage) => AssertMustUseRewriter(ContractFailureKind.Precondition, "Requires");
 
+#if false
         /// <summary>
         /// Specifies a contract such that the expression <paramref name="condition"/> must be true before the enclosing method or property is invoked.
         /// </summary>
@@ -385,10 +386,11 @@ namespace System.Diagnostics.Contracts {
         [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
 #endif
         public static void Requires<TException>(bool condition, string userMessage) where TException : Exception => AssertMustUseRewriter(ContractFailureKind.Precondition, "Requires<TException>");
+#endif
 
-        #endregion Requires
+#endregion Requires
 
-        #region Ensures
+#region Ensures
 
         /// <summary>
         /// Specifies a public contract such that the expression <paramref name="condition"/> will be true when the enclosing method or property returns normally.
@@ -423,6 +425,7 @@ namespace System.Diagnostics.Contracts {
 #endif
         public static void Ensures(bool condition, string userMessage) => AssertMustUseRewriter(ContractFailureKind.Postcondition, "Ensures");
 
+#if false
         /// <summary>
         /// Specifies a contract such that if an exception of type <typeparamref name="TException"/> is thrown then the expression <paramref name="condition"/> will be true when the enclosing method or property terminates abnormally.
         /// </summary>
@@ -460,7 +463,7 @@ namespace System.Diagnostics.Contracts {
 #endif
         public static void EnsuresOnThrow<TException>(bool condition, string userMessage) where TException : Exception => AssertMustUseRewriter(ContractFailureKind.PostconditionOnException, "EnsuresOnThrow");
 
-        #region Old, Result, and Out Parameters
+#region Old, Result, and Out Parameters
 
         /// <summary>
         /// Represents the result (a.k.a. return value) of a method or property.
@@ -507,11 +510,13 @@ namespace System.Diagnostics.Contracts {
         [ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)]
 #endif
         public static T OldValue<T>(T value) => default(T);
-        #endregion Old, Result, and Out Parameters
+#endregion Old, Result, and Out Parameters
 
-        #endregion Ensures
+#endif
 
-        #region Invariant
+#endregion Ensures
+
+#region Invariant
 
         /// <summary>
         /// Specifies a contract such that the expression <paramref name="condition"/> will be true after every method or property on the enclosing class.
@@ -546,12 +551,12 @@ namespace System.Diagnostics.Contracts {
 #endif
         public static void Invariant(bool condition, string userMessage) => AssertMustUseRewriter(ContractFailureKind.Invariant, "Invariant");
 
-        #endregion Invariant
+#endregion Invariant
 
 #if false
-        #region Quantifiers
+#region Quantifiers
 
-        #region ForAll
+#region ForAll
         /// <summary>
         /// Returns whether the <paramref name="predicate"/> returns <c>true</c>
         /// for all integers starting from <paramref name="fromInclusive"/> to <paramref name="toExclusive"/> - 1.
@@ -608,9 +613,9 @@ namespace System.Diagnostics.Contracts {
             return true;
         }
 
-        #endregion ForAll
+#endregion ForAll
 
-        #region Exists
+#region Exists
 
         /// <summary>
         /// Returns whether the <paramref name="predicate"/> returns <c>true</c>
@@ -667,12 +672,12 @@ namespace System.Diagnostics.Contracts {
             return false;
         }
 
-        #endregion Exists
+#endregion Exists
 
-        #endregion Quantifiers
+#endregion Quantifiers
 #endif
 
-        #region Pointers
+#region Pointers
         // @
 #if FEATURE_UNSAFE_CONTRACTS
         /// <summary>
@@ -778,9 +783,9 @@ namespace System.Diagnostics.Contracts {
 #endif
         unsafe public static ulong ReadableBytes(void* startAddress) { return MaxWritableExtent - (ulong)startAddress; }
 #endif // FEATURE_UNSAFE_CONTRACTS
-        #endregion
+#endregion
 
-        #region Misc.
+#region Misc.
 
         /// <summary>
         /// Marker to indicate the end of the contract section of a method.
@@ -791,11 +796,11 @@ namespace System.Diagnostics.Contracts {
 #endif
         public static void EndContractBlock() { }
 
-        #endregion
+#endregion
 
-        #endregion User Methods
+#endregion User Methods
 
-        #region Failure Behavior
+#region Failure Behavior
 
         /// <summary>
         /// Without contract rewriting, failing Assert/Assumes end up calling this method.
@@ -811,7 +816,7 @@ namespace System.Diagnostics.Contracts {
         /// </summary>
         static partial void AssertMustUseRewriter(ContractFailureKind kind, string contractKind);
 
-        #endregion
+#endregion
     }
 
     public enum ContractFailureKind {
@@ -835,7 +840,7 @@ namespace System.Diagnostics.Contracts {
 namespace System.Diagnostics.Contracts.Internal {
     [Obsolete("Use the ContractHelper class in the System.Runtime.CompilerServices namespace instead.")]
     public static class ContractHelper {
-        #region Rewriter Failure Hooks
+#region Rewriter Failure Hooks
 
         /// <summary>
         /// Rewriter will call this method on a contract failure to allow listeners to be notified.
@@ -859,14 +864,14 @@ namespace System.Diagnostics.Contracts.Internal {
 #endif
         public static void TriggerFailure(ContractFailureKind kind, string displayMessage, string userMessage, string conditionText, Exception innerException) => System.Runtime.CompilerServices.ContractHelper.TriggerFailure(kind, displayMessage, userMessage, conditionText, innerException);
 
-        #endregion Rewriter Failure Hooks
+#endregion Rewriter Failure Hooks
     }
 }  // namespace System.Diagnostics.Contracts.Internal
 
 
 namespace System.Runtime.CompilerServices {
     public static partial class ContractHelper {
-        #region Rewriter Failure Hooks
+#region Rewriter Failure Hooks
 
         /// <summary>
         /// Rewriter will call this method on a contract failure to allow listeners to be notified.
@@ -895,9 +900,9 @@ namespace System.Runtime.CompilerServices {
 #endif
         public static void TriggerFailure(ContractFailureKind kind, string displayMessage, string userMessage, string conditionText, Exception innerException) => TriggerFailureImplementation(kind, displayMessage, userMessage, conditionText, innerException);
 
-        #endregion Rewriter Failure Hooks
+#endregion Rewriter Failure Hooks
 
-        #region Implementation Stubs
+#region Implementation Stubs
 
         /// <summary>
         /// Rewriter will call this method on a contract failure to allow listeners to be notified.
@@ -917,6 +922,6 @@ namespace System.Runtime.CompilerServices {
         /// </summary>
         static partial void TriggerFailureImplementation(ContractFailureKind kind, string displayMessage, string userMessage, string conditionText, Exception innerException);
 
-        #endregion Implementation Stubs
+#endregion Implementation Stubs
     }
 }  // namespace System.Runtime.CompilerServices

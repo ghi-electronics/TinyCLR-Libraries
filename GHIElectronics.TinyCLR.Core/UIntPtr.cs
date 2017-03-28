@@ -11,7 +11,12 @@ namespace System {
         public static readonly UIntPtr Zero;
 
         public UIntPtr(uint value) => this.value = value;
-        public UIntPtr(ulong value) => this.value = checked((uint)value);
+
+        public UIntPtr(ulong value) {
+            if (value > uint.MaxValue) throw new OverflowException();
+
+            this.value = (uint)value;
+        }
 
         public override int GetHashCode() => unchecked((int)this.value) & 0x7FFFFFFF;
 

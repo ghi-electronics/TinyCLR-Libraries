@@ -41,7 +41,7 @@ namespace GHIElectronics.TinyCLR.Drawing {
         public Bitmap(int width, int height) => this.data = new Graphics(width, height);
 
         public Bitmap(Stream stream) {
-            var buffer = new byte[stream.Length];
+            var buffer = new byte[(int)stream.Length];
 
             stream.Read(buffer, 0, buffer.Length);
 
