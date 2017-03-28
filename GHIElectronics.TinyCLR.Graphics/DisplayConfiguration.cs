@@ -5,7 +5,7 @@ namespace GHIElectronics.TinyCLR.Graphics.Display {
     public sealed class DisplayConfiguration {
         private static DisplayConfiguration current;
 
-        public IntPtr Hdc => new IntPtr(int.MaxValue);
+        public IntPtr Hdc => new IntPtr(1);
 
         public uint Width { get; set; }
         public uint Height { get; set; }

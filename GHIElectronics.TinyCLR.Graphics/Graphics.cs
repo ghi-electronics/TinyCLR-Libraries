@@ -15,7 +15,7 @@ namespace GHIElectronics.TinyCLR.Drawing {
         private bool disposed;
 
         internal Graphics(byte[] buffer) {
-            this.surface = new Internal.Bitmap(buffer, 3);
+            this.surface = new Internal.Bitmap(buffer, Internal.Bitmap.BitmapImageType.Bmp);
             this.forScreen = false;
         }
 
@@ -153,7 +153,7 @@ namespace GHIElectronics.TinyCLR.Drawing {
             public extern int Height { [MethodImpl(MethodImplOptions.InternalCall)] get; }
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern Bitmap(byte[] imageData, byte type);
+            public extern Bitmap(byte[] imageData, BitmapImageType type);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern Bitmap(int width, int height);
@@ -182,110 +182,110 @@ namespace GHIElectronics.TinyCLR.Drawing {
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void DrawRectangle(uint colorOutline, int thicknessOutline, int x, int y, int width, int height, int xCornerRadius, int yCornerRadius, uint colorGradientStart, int xGradientStart, int yGradientStart, uint colorGradientEnd, int xGradientEnd, int yGradientEnd, ushort opacity);
 
-            //private static readonly int MaxWidth;//      = 220;
-            //private static readonly int MaxHeight;// = 176;
-            //private static readonly int CenterX;// = (MaxWidth - 1) / 2;
-            //private static readonly int CenterY;// = (MaxHeight - 1) / 2;
+            public static readonly int MaxWidth;//      = 220;
+            public static readonly int MaxHeight;// = 176;
+            public static readonly int CenterX;// = (MaxWidth - 1) / 2;
+            public static readonly int CenterY;// = (MaxHeight - 1) / 2;
+
+            static Bitmap() {
+                var config = DisplayConfiguration.GetForCurrentDisplay();
+
+                if (config == null || config.Width == 0 || config.Height == 0) return;
+
+                MaxWidth = (int)config.Width;
+                MaxHeight = (int)config.Height;
+
+                CenterX = (MaxWidth - 1) / 2;
+                CenterY = (MaxHeight - 1) / 2;
+            }
+
+            public const ushort OpacityOpaque = 0xFF;
+            public const ushort OpacityTransparent = 0;
+
+            public const int SRCCOPY = 0x00000001;
+            public const int PATINVERT = 0x00000002;
+            public const int DSTINVERT = 0x00000003;
+            public const int BLACKNESS = 0x00000004;
+            public const int WHITENESS = 0x00000005;
+            public const int DSTGRAY = 0x00000006;
+            public const int DSTLTGRAY = 0x00000007;
+            public const int DSTDKGRAY = 0x00000008;
+            public const int SINGLEPIXEL = 0x00000009;
+            public const int RANDOM = 0x0000000a;
+
             //
-            //static Graphics() {
-            //    var config = DisplayConfiguration.GetForCurrentDisplay();
+            // These have to be kept in sync with the CLR_GFX_Bitmap::c_DrawText_ flags.
             //
-            //    if (config == null || config.Width == 0 || config.Height == 0) throw new InvalidOperationException();
-            //
-            //    MaxWidth = (int)config.Width;
-            //    MaxHeight = (int)config.Height;
-            //
-            //    CenterX = (MaxWidth - 1) / 2;
-            //    CenterY = (MaxHeight - 1) / 2;
-            //}
-            //
-            //public const ushort OpacityOpaque = 0xFF;
-            //public const ushort OpacityTransparent = 0;
-            //
-            //public const int SRCCOPY = 0x00000001;
-            //public const int PATINVERT = 0x00000002;
-            //public const int DSTINVERT = 0x00000003;
-            //public const int BLACKNESS = 0x00000004;
-            //public const int WHITENESS = 0x00000005;
-            //public const int DSTGRAY = 0x00000006;
-            //public const int DSTLTGRAY = 0x00000007;
-            //public const int DSTDKGRAY = 0x00000008;
-            //public const int SINGLEPIXEL = 0x00000009;
-            //public const int RANDOM = 0x0000000a;
-            //
-            ////
-            //// These have to be kept in sync with the CLR_GFX_Bitmap::c_DrawText_ flags.
-            ////
-            //public const uint DT_None = 0x00000000;
-            //public const uint DT_WordWrap = 0x00000001;
-            //public const uint DT_TruncateAtBottom = 0x00000004;
-            //[Obsolete("Use DT_TrimmingWordEllipsis or DT_TrimmingCharacterEllipsis to specify the type of trimming needed.", false)]
-            //public const uint DT_Ellipsis = 0x00000008;
-            //public const uint DT_IgnoreHeight = 0x00000010;
-            //public const uint DT_AlignmentLeft = 0x00000000;
-            //public const uint DT_AlignmentCenter = 0x00000002;
-            //public const uint DT_AlignmentRight = 0x00000020;
-            //public const uint DT_AlignmentMask = 0x00000022;
-            //
-            //public const uint DT_TrimmingNone = 0x00000000;
-            //public const uint DT_TrimmingWordEllipsis = 0x00000008;
-            //public const uint DT_TrimmingCharacterEllipsis = 0x00000040;
-            //public const uint DT_TrimmingMask = 0x00000048;
-            //
-            // Note that these values have to match the c_Type* consts in CLR_GFX_BitmapDescription
-            //public enum BitmapImageType : byte {
-            //    TinyCLRBitmap = 0,
-            //    Gif = 1,
-            //    Jpeg = 2,
-            //    Bmp = 3 // The windows .bmp format
-            //}
-            //
+            public const uint DT_None = 0x00000000;
+            public const uint DT_WordWrap = 0x00000001;
+            public const uint DT_TruncateAtBottom = 0x00000004;
+            [Obsolete("Use DT_TrimmingWordEllipsis or DT_TrimmingCharacterEllipsis to specify the type of trimming needed.", false)]
+            public const uint DT_Ellipsis = 0x00000008;
+            public const uint DT_IgnoreHeight = 0x00000010;
+            public const uint DT_AlignmentLeft = 0x00000000;
+            public const uint DT_AlignmentCenter = 0x00000002;
+            public const uint DT_AlignmentRight = 0x00000020;
+            public const uint DT_AlignmentMask = 0x00000022;
+
+            public const uint DT_TrimmingNone = 0x00000000;
+            public const uint DT_TrimmingWordEllipsis = 0x00000008;
+            public const uint DT_TrimmingCharacterEllipsis = 0x00000040;
+            public const uint DT_TrimmingMask = 0x00000048;
+
+            //Note that these values have to match the c_Type* consts in CLR_GFX_BitmapDescription
+            public enum BitmapImageType : byte {
+                TinyCLRBitmap = 0,
+                Gif = 1,
+                Jpeg = 2,
+                Bmp = 3 // The windows .bmp format
+            }
+
+            public void DrawTextInRect(string text, int x, int y, int width, int height, uint dtFlags, Color color, Font font) {
+                var xRelStart = 0;
+                var yRelStart = 0;
+
+                DrawTextInRect(ref text, ref xRelStart, ref yRelStart, x, y, width, height, dtFlags, color, font);
+            }
+
             //public void DrawEllipse(Color colorOutline, int x, int y, int xRadius, int yRadius) => DrawEllipse(colorOutline, 1, x, y, xRadius, yRadius, Color.Black, 0, 0, Color.Black, 0, 0, OpacityOpaque);
             //
             //public void DrawImage(int xDst, int yDst, Graphics bitmap, int xSrc, int ySrc, int width, int height) => DrawImage(xDst, yDst, bitmap, xSrc, ySrc, width, height, OpacityOpaque);
-            //
-            //public void DrawTextInRect(string text, int x, int y, int width, int height, uint dtFlags, Color color, Font font) {
-            //    var xRelStart = 0;
-            //    var yRelStart = 0;
-            //
-            //    DrawTextInRect(ref text, ref xRelStart, ref yRelStart, x, y, width, height, dtFlags, color, font);
-            //}
-            //
-            //[MethodImpl(MethodImplOptions.InternalCall)]
-            //public extern void Flush(int x, int y, int width, int height);
-            //
-            //[MethodImpl(MethodImplOptions.InternalCall)]
-            //public extern void SetClippingRectangle(int x, int y, int width, int height);
-            //
-            //[MethodImpl(MethodImplOptions.InternalCall)]
-            //public extern bool DrawTextInRect(ref string text, ref int xRelStart, ref int yRelStart, int x, int y, int width, int height, uint dtFlags, Color color, Font font);
-            //
-            //[MethodImpl(MethodImplOptions.InternalCall)]
-            //public extern void RotateImage(int angle, int xDst, int yDst, Graphics bitmap, int xSrc, int ySrc, int width, int height, ushort opacity);
-            //
-            //[MethodImpl(MethodImplOptions.InternalCall)]
-            //public extern void MakeTransparent(Color color);
-            //
-            //[MethodImpl(MethodImplOptions.InternalCall)]
-            //public extern void StretchImage(int xDst, int yDst, Graphics bitmap, int width, int height, ushort opacity);
-            //
-            //[MethodImpl(MethodImplOptions.InternalCall)]
-            //public extern void SetPixel(int xPos, int yPos, Color color);
-            //
-            //[MethodImpl(MethodImplOptions.InternalCall)]
-            //public extern Color GetPixel(int xPos, int yPos);
-            //
-            //[MethodImpl(MethodImplOptions.InternalCall)]
-            //public extern byte[] GetBitmap();
-            //
-            //[MethodImpl(MethodImplOptions.InternalCall)]
-            //public extern void StretchImage(int xDst, int yDst, int widthDst, int heightDst, Graphics bitmap, int xSrc, int ySrc, int widthSrc, int heightSrc, ushort opacity);
-            //
-            //[MethodImpl(MethodImplOptions.InternalCall)]
-            //public extern void TileImage(int xDst, int yDst, Graphics bitmap, int width, int height, ushort opacity);
-            //
-            //[MethodImpl(MethodImplOptions.InternalCall)]
-            //public extern void Scale9Image(int xDst, int yDst, int widthDst, int heightDst, Graphics bitmap, int leftBorder, int topBorder, int rightBorder, int bottomBorder, ushort opacity);
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            public extern void Flush(int x, int y, int width, int height);
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            public extern void SetClippingRectangle(int x, int y, int width, int height);
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            public extern bool DrawTextInRect(ref string text, ref int xRelStart, ref int yRelStart, int x, int y, int width, int height, uint dtFlags, Color color, Font font);
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            public extern void RotateImage(int angle, int xDst, int yDst, Graphics bitmap, int xSrc, int ySrc, int width, int height, ushort opacity);
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            public extern void MakeTransparent(Color color);
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            public extern void StretchImage(int xDst, int yDst, Graphics bitmap, int width, int height, ushort opacity);
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            public extern void SetPixel(int xPos, int yPos, Color color);
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            public extern Color GetPixel(int xPos, int yPos);
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            public extern byte[] GetBitmap();
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            public extern void StretchImage(int xDst, int yDst, int widthDst, int heightDst, Graphics bitmap, int xSrc, int ySrc, int widthSrc, int heightSrc, ushort opacity);
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            public extern void TileImage(int xDst, int yDst, Graphics bitmap, int width, int height, ushort opacity);
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            public extern void Scale9Image(int xDst, int yDst, int widthDst, int heightDst, Graphics bitmap, int leftBorder, int topBorder, int rightBorder, int bottomBorder, ushort opacity);
         }
     }
 }
