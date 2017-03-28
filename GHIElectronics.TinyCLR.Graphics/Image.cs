@@ -13,7 +13,7 @@ namespace GHIElectronics.TinyCLR.Drawing {
 
         public object Clone() => throw new NotImplementedException();
 
-        public Image FromStream(Stream stream) => new Bitmap(stream);
+        public static Image FromStream(Stream stream) => new Bitmap(stream);
 
         public void Save(Stream stream, ImageFormat format) {
             if (stream == null) throw new ArgumentNullException(nameof(stream));
