@@ -23,6 +23,13 @@ namespace System.Runtime.InteropServices {
         }
     }
 
+    [AttributeUsage(AttributeTargets.Parameter, Inherited = false)]
+    [ComVisible(true)]
+    public sealed class InAttribute : Attribute {
+        public InAttribute() {
+        }
+    }
+
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, Inherited = false)]
     public sealed class StructLayoutAttribute : Attribute {
         internal LayoutKind _val;

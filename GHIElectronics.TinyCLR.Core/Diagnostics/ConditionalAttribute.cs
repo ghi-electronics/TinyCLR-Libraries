@@ -1,6 +1,6 @@
 
 namespace System.Diagnostics {
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple = true), Serializable]
+    [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = true), Serializable]
     public sealed class ConditionalAttribute : Attribute {
         public ConditionalAttribute(string conditionString) => this.m_conditionString = conditionString;
 
