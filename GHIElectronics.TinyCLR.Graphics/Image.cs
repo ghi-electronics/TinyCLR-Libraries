@@ -54,6 +54,9 @@ namespace GHIElectronics.TinyCLR.Drawing {
 
             this.data = new Graphics(buffer);
         }
+
+        public void SetPixel(int x, int y, Color color) => this.data.surface.SetPixel(x, y, (uint)color.ToRgb());
+        public Color GetPixel(int x, int y) => Color.FromArgb((int)this.data.surface.GetPixel(x, y));
     }
 
     namespace Imaging {

@@ -148,6 +148,7 @@ namespace GHIElectronics.TinyCLR.Drawing {
         }
 
         public int ToArgb() => unchecked((int)this.value);
+        internal int ToRgb() => unchecked((int)this.value) & 0x00FFFFFF;
 
         public override string ToString() {
             var sb = new StringBuilder(32);
