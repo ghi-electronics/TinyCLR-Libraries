@@ -4,6 +4,8 @@ using System.Runtime.CompilerServices;
 namespace System {
     [Serializable]
     public abstract class Array : ICloneable, IList {
+        internal const int MaxByteArrayLength = 0x7FFFFFC7;
+
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public static extern Array CreateInstance(Type elementType, int length);
 
