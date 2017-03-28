@@ -170,6 +170,16 @@ namespace System {
             return new string(chars);
         }
 
+        public static bool operator ==(Guid a, Guid b) {
+            for (var i = 0; i < a.m_data.Length; i++)
+                if (a.m_data[i] != b.m_data[i])
+                    return false;
+
+            return true;
+        }
+
+        public static bool operator !=(Guid a, Guid b) => !(a == b);
+
         /// <summary>
         /// Overriden. Compares this instance to another Guid and returns whether they are equal or not.
         /// </summary>
