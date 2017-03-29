@@ -6,21 +6,21 @@ namespace System.Drawing {
     public struct Color {
         public static readonly Color Empty = new Color();
 
-        public static Color Transparent => new Color(0x00FFFFFF);
-        public static Color Black => new Color(unchecked((int)0xFF000000));
-        public static Color White => new Color(unchecked((int)0xFFFFFFFF));
-        public static Color Gray => new Color(unchecked((int)0xFF808080));
-        public static Color Red => new Color(unchecked((int)0xFFFF0000));
-        public static Color Green => new Color(unchecked((int)0xFF008000));
-        public static Color Blue => new Color(unchecked((int)0xFF0000FF));
-        public static Color Yellow => new Color(unchecked((int)0xFFFFFF00));
-        public static Color Purple => new Color(unchecked((int)0xFF800080));
-        public static Color Teal => new Color(unchecked((int)0xFF008080));
+        public static Color Transparent { get; } = Color.FromArgb(0x00, 0x00, 0x00, 0x00);
+        public static Color Black { get; } = Color.FromArgb(0xFF, 0x00, 0x00, 0x00);
+        public static Color White { get; } = Color.FromArgb(0xFF, 0xFF, 0xFF, 0xFF);
+        public static Color Gray { get; } = Color.FromArgb(0xFF, 0x80, 0x80, 0x80);
+        public static Color Red { get; } = Color.FromArgb(0xFF, 0xFF, 0x00, 0x00);
+        public static Color Green { get; } = Color.FromArgb(0xFF, 0x00, 0xFF, 0x00);
+        public static Color Blue { get; } = Color.FromArgb(0xFF, 0x00, 0x00, 0xFF);
+        public static Color Yellow { get; } = Color.FromArgb(0xFF, 0xFF, 0xFF, 0x00);
+        public static Color Purple { get; } = Color.FromArgb(0xFF, 0xFF, 0x00, 0xFF);
+        public static Color Teal { get; } = Color.FromArgb(0xFF, 0x00, 0xFF, 0xFF);
 
         private const int ARGBAlphaShift = 24;
-        private const int ARGBRedShift = 16;
+        private const int ARGBRedShift = 0;
         private const int ARGBGreenShift = 8;
-        private const int ARGBBlueShift = 0;
+        private const int ARGBBlueShift = 16;
 
         internal readonly long value;
 
