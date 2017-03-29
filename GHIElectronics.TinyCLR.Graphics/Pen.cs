@@ -1,7 +1,6 @@
-﻿using GHIElectronics.TinyCLR.Drawing.Drawing2D;
-using System;
+﻿using System.Drawing.Drawing2D;
 
-namespace GHIElectronics.TinyCLR.Drawing {
+namespace System.Drawing {
     public sealed class Pen : MarshalByRefObject, ICloneable, IDisposable {
         public float Width { get; set; }
         public Color Color { get; set; }

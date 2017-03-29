@@ -1,8 +1,7 @@
-﻿using GHIElectronics.TinyCLR.Drawing.Imaging;
-using System;
+﻿using System.Drawing.Imaging;
 using System.IO;
 
-namespace GHIElectronics.TinyCLR.Drawing {
+namespace System.Drawing {
     [Serializable]
     public abstract class Image : MarshalByRefObject, ICloneable, IDisposable {
         internal Graphics data;

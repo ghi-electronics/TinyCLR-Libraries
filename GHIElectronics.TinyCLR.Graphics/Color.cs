@@ -1,8 +1,7 @@
-using System;
 using System.Diagnostics;
 using System.Text;
 
-namespace GHIElectronics.TinyCLR.Drawing {
+namespace System.Drawing {
     [Serializable(), DebuggerDisplay("{NameAndARGBValue}")]
     public struct Color {
         public static readonly Color Empty = new Color();

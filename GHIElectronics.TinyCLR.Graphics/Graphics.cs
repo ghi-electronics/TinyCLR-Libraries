@@ -1,8 +1,7 @@
 using GHIElectronics.TinyCLR.Graphics.Display;
-using System;
 using System.Runtime.CompilerServices;
 
-namespace GHIElectronics.TinyCLR.Drawing {
+namespace System.Drawing {
     public sealed class Graphics : MarshalByRefObject, IDisposable {
         private static bool screenCreated;
         private static object screenLock = new object();

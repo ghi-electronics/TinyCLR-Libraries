@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace GHIElectronics.TinyCLR.Drawing {
+﻿namespace System.Drawing {
     public abstract class Brush : MarshalByRefObject, ICloneable, IDisposable {
         public abstract object Clone();
 
