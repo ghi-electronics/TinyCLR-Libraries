@@ -36,12 +36,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Brush.cs" />
-    <Compile Include="Font.cs" />
-    <Compile Include="Graphics.cs" />
     <Compile Include="Color.cs" />
     <Compile Include="DisplayConfiguration.cs" />
+    <Compile Include="Font.cs" />
+    <Compile Include="Graphics.cs" />
     <Compile Include="Image.cs" />
     <Compile Include="Pen.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="GHIElectronics.TinyCLR.Graphics.nuspec" />
