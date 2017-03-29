@@ -42,6 +42,7 @@ namespace System.Drawing {
     }
 
     public sealed class Bitmap : Image {
+        private Bitmap(Internal.Bitmap bmp) => this.data = new Graphics(bmp, false);
         public Bitmap(int width, int height) => this.data = new Graphics(width, height);
 
         public Bitmap(Stream stream) {

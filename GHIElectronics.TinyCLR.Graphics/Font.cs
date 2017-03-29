@@ -1,6 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 
 namespace System.Drawing {
+    //The name and namespace of this must match the definition in c_TypeIndexLookup in TypeSystem.cpp
     public sealed class Font : MarshalByRefObject, ICloneable, IDisposable {
 #pragma warning disable CS0169 // The field is never used
         private object m_font;

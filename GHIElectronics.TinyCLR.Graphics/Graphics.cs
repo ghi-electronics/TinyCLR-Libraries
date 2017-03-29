@@ -13,15 +13,12 @@ namespace System.Drawing {
         private bool forScreen;
         private bool disposed;
 
-        internal Graphics(byte[] buffer) {
-            this.surface = new Internal.Bitmap(buffer, Internal.Bitmap.BitmapImageType.Bmp);
-            this.forScreen = false;
-        }
-
+        internal Graphics(byte[] buffer) : this(new Internal.Bitmap(buffer, Internal.Bitmap.BitmapImageType.Bmp), false) { }
         internal Graphics(int width, int height) : this(width, height, false) { }
+        private Graphics(int width, int height, bool forScreen) : this(new Internal.Bitmap(width, height), forScreen) { }
 
-        private Graphics(int width, int height, bool forScreen) {
-            this.surface = new Internal.Bitmap(width, height);
+        internal Graphics(Internal.Bitmap bmp, bool forScreen) {
+            this.surface = bmp;
             this.forScreen = forScreen;
         }
 
@@ -138,6 +135,7 @@ namespace System.Drawing {
     }
 
     namespace Internal {
+        //The name and namespace of this must match the definition in c_TypeIndexLookup in TypeSystem.cpp and ResourceManager.GetObject
         internal class Bitmap : MarshalByRefObject, IDisposable {
 #pragma warning disable CS0169 // The field is never used
             private object m_bitmap;
