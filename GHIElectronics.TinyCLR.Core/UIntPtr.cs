@@ -6,7 +6,7 @@ namespace System {
     [CLSCompliant(false)]
     [ComVisible(true)]
     public struct UIntPtr {
-        private uint value;
+        private readonly uint value;
 
         public static readonly UIntPtr Zero;
 

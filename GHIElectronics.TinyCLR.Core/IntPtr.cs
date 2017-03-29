@@ -5,7 +5,7 @@ namespace System {
     [Serializable]
     [ComVisible(true)]
     public struct IntPtr {
-        private int value;
+        private readonly int value;
 
         public static readonly IntPtr Zero;
 
