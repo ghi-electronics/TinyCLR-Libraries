@@ -213,6 +213,11 @@ namespace GHIElectronics.TinyCLR.BrainPad {
             public static void TurnOff() => SetRgbColor(0, 0, 0);
 
             /// <summary>
+            /// Turns the light bulb on.
+            /// </summary>
+            public static void TurnOn() => SetRgbColor(100, 100, 100);
+
+            /// <summary>
             /// Turns the light bulb Red.
             /// </summary>
             public static void TurnRed() => SetRgbColor(100, 0, 0);
@@ -232,10 +237,12 @@ namespace GHIElectronics.TinyCLR.BrainPad {
         /// Provides access to the buzzer on the BrainPad.
         /// </summary>
         public static class Buzzer {
-            private static PwmPin buzz = PwmController.FromId(G30.PwmPin.Controller4.Id).OpenPin(G30.PwmPin.Controller4.PB8);
+            private static PwmController controller;
+            private static PwmPin buzz;
 
             static Buzzer() {
-
+                Buzzer.controller = PwmController.FromId(G30.PwmPin.Controller4.Id);
+                Buzzer.buzz = Buzzer.controller.OpenPin(G30.PwmPin.Controller4.PB8);
             }
 
             /// <summary>
@@ -245,7 +252,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
             public static void Start(double frequency) {
                 Stop();
                 if (frequency > 0) {
-                    PwmController.GetDefault().SetDesiredFrequency(frequency);
+                    controller.SetDesiredFrequency(frequency);
                     buzz.Start();
                     buzz.SetActiveDutyCyclePercentage(0.5);
                 }
