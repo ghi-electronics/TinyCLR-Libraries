@@ -3,7 +3,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>GHIElectronics.TinyCLR.BrainPad</id>
-    <version>0.2.0</version>
+    <version>0.3.0</version>
     <authors>GHI Electronics, LLC</authors>
     <owners>GHI Electronics, LLC</owners>
     <projectUrl>https://www.ghielectronics.com/</projectUrl>
@@ -14,9 +14,9 @@
     <copyright>Copyright GHI Electronics, LLC 2017</copyright>
     <tags>TinyCLR TinyCLROS BrainPad education</tags>
     <dependencies>
-      <dependency id="GHIElectronics.TinyCLR.Core" version="[0.2.0, 0.3.0)" />
-      <dependency id="GHIElectronics.TinyCLR.Devices" version="[0.2.0, 0.3.0)" />
-      <dependency id="GHIElectronics.TinyCLR.Pins" version="[0.2.0, 0.3.0)" />
+      <dependency id="GHIElectronics.TinyCLR.Core" version="[0.3.0, 0.4.0)" />
+      <dependency id="GHIElectronics.TinyCLR.Devices" version="[0.3.0, 0.4.0)" />
+      <dependency id="GHIElectronics.TinyCLR.Pins" version="[0.3.0, 0.4.0)" />
     </dependencies>
   </metadata>
   <files>
