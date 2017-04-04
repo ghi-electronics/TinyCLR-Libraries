@@ -1012,11 +1012,26 @@ namespace GHIElectronics.TinyCLR.BrainPad {
             /// <param name="y">The y coordinate to draw at.</param>
             /// <param name="text">The string to draw.</param>
             public static void DrawText(int x, int y, string text, int HScale, int VScale) {
+                var originalX = x;
+
                 if (text == null) throw new ArgumentNullException("data");
 
-                for (var i = 0; i < text.Length; i++)
-                    DrawText(x + i * 6 * HScale, y, text[i], HScale, VScale);
+                for (var i = 0; i < text.Length; i++) {
+                    if (text[i] >= 32) {
+                        DrawText(x, y, text[i], HScale, VScale);
+                        x += (6 * HScale);
+                    }
+                    else {
+                        if (text[i] == '\n') {
+                            y += (9 * VScale);
+                        }
+                        if (text[i] == '\r') {
+                            x = originalX;
+                        }
+                    }
+                }
             }
+
 
 
         }
