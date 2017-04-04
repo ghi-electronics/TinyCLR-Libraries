@@ -1,4 +1,3 @@
-using GHIElectronics.TinyCLR.Graphics.Display;
 using System.Runtime.CompilerServices;
 
 namespace System.Drawing {
@@ -45,10 +44,11 @@ namespace System.Drawing {
         }
 
         public static Graphics FromHdc(IntPtr hdc) {
-            var config = DisplayConfiguration.GetForCurrentDisplay();
+            if (hdc == IntPtr.Zero) throw new ArgumentNullException(nameof(hdc));
 
-            if (config == null || config.Width == 0 || config.Height == 0) throw new InvalidOperationException("No screen configured.");
-            if (hdc != config.Hdc) throw new ArgumentException("Invalid handle.", nameof(hdc));
+            var res = Internal.Bitmap.GetSizeForLcdFromHdc(hdc, out var width, out var height);
+
+            if (!res || width == 0 || height == 0) throw new InvalidOperationException("No screen configured.");
 
             lock (Graphics.screenLock) {
                 if (Graphics.screenCreated)
@@ -56,7 +56,7 @@ namespace System.Drawing {
 
                 Graphics.screenCreated = true;
 
-                return new Graphics((int)config.Width, (int)config.Height, true);
+                return new Graphics(width, height, true);
             }
         }
 
@@ -156,6 +156,9 @@ namespace System.Drawing {
             public extern int Height { [MethodImpl(MethodImplOptions.InternalCall)] get; }
 
             [MethodImpl(MethodImplOptions.InternalCall)]
+            public static extern bool GetSizeForLcdFromHdc(IntPtr hdc, out int width, out int height);
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
             public extern Bitmap(byte[] imageData, BitmapImageType type);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
@@ -184,23 +187,6 @@ namespace System.Drawing {
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void DrawRectangle(uint colorOutline, int thicknessOutline, int x, int y, int width, int height, int xCornerRadius, int yCornerRadius, uint colorGradientStart, int xGradientStart, int yGradientStart, uint colorGradientEnd, int xGradientEnd, int yGradientEnd, ushort opacity);
-
-            public static readonly int MaxWidth;//      = 220;
-            public static readonly int MaxHeight;// = 176;
-            public static readonly int CenterX;// = (MaxWidth - 1) / 2;
-            public static readonly int CenterY;// = (MaxHeight - 1) / 2;
-
-            static Bitmap() {
-                var config = DisplayConfiguration.GetForCurrentDisplay();
-
-                if (config == null || config.Width == 0 || config.Height == 0) return;
-
-                MaxWidth = (int)config.Width;
-                MaxHeight = (int)config.Height;
-
-                CenterX = (MaxWidth - 1) / 2;
-                CenterY = (MaxHeight - 1) / 2;
-            }
 
             public const ushort OpacityOpaque = 0xFF;
             public const ushort OpacityTransparent = 0;

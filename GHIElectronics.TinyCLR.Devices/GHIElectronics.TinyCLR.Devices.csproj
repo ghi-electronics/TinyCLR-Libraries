@@ -42,7 +42,9 @@
     <Compile Include="DacChannel.cs" />
     <Compile Include="DacController.cs" />
     <Compile Include="DacProvider.cs" />
+    <Compile Include="DisplayProvider.cs" />
     <Compile Include="DeviceInformation.cs" />
+    <Compile Include="DisplayController.cs" />
     <Compile Include="GpioController.cs" />
     <Compile Include="GpioEnums.cs" />
     <Compile Include="GpioProvider.cs" />
@@ -50,6 +52,7 @@
     <Compile Include="GpioPinEventListener.cs" />
     <Compile Include="GpioPinValueChangedEventArgs.cs" />
     <Compile Include="I2cConnectionSettings.cs" />
+    <Compile Include="DisplayControllerSettings.cs" />
     <Compile Include="LowLevelDevicesController.cs" />
     <Compile Include="PulseFeedback.cs" />
     <Compile Include="SignalCapture.cs" />

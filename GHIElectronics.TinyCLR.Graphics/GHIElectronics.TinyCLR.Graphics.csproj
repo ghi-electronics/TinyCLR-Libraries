@@ -37,7 +37,6 @@
   <ItemGroup>
     <Compile Include="Brush.cs" />
     <Compile Include="Color.cs" />
-    <Compile Include="DisplayConfiguration.cs" />
     <Compile Include="Font.cs" />
     <Compile Include="Graphics.cs" />
     <Compile Include="Image.cs" />
