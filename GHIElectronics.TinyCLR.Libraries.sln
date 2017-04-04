@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Devi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Pins", "GHIElectronics.TinyCLR.Pins\GHIElectronics.TinyCLR.Pins.csproj", "{2DCEEF58-5455-457C-B968-52D791605D07}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Graphics", "GHIElectronics.TinyCLR.Graphics\GHIElectronics.TinyCLR.Graphics.csproj", "{52A54E94-2FD8-4EEE-822C-C8C7F27AF423}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Drawing", "GHIElectronics.TinyCLR.Drawing\GHIElectronics.TinyCLR.Drawing.csproj", "{52A54E94-2FD8-4EEE-822C-C8C7F27AF423}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.BrainPad", "GHIElectronics.TinyCLR.BrainPad\GHIElectronics.TinyCLR.BrainPad.csproj", "{50B4B973-7625-44B2-8304-369790A68B29}"
 EndProject

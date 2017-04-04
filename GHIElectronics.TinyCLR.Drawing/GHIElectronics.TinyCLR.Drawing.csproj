@@ -7,8 +7,8 @@
     <ProjectGuid>{52A54E94-2FD8-4EEE-822C-C8C7F27AF423}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GHIElectronics.TinyCLR.Graphics</RootNamespace>
-    <AssemblyName>GHIElectronics.TinyCLR.Graphics</AssemblyName>
+    <RootNamespace>System.Drawing</RootNamespace>
+    <AssemblyName>GHIElectronics.TinyCLR.Drawing</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NoStdLib>true</NoStdLib>
@@ -44,7 +44,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="GHIElectronics.TinyCLR.Graphics.nuspec" />
+    <None Include="GHIElectronics.TinyCLR.Drawing.nuspec" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>

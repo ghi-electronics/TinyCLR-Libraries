@@ -1,8 +1,8 @@
 ﻿using System.Reflection;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("GHIElectronics.TinyCLR.Graphics")]
-[assembly: AssemblyDescription("TinyCLR OS graphics library.")]
+[assembly: AssemblyTitle("GHIElectronics.TinyCLR.Drawing")]
+[assembly: AssemblyDescription("TinyCLR OS drawing library.")]
 [assembly: AssemblyCompany("GHI Electronics, LLC")]
 [assembly: AssemblyProduct("TinyCLR OS")]
 [assembly: AssemblyCopyright("Copyright © GHI Electronics, LLC 2017")]

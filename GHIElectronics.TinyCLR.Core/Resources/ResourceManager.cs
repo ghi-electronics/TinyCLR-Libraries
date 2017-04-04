@@ -194,7 +194,7 @@ namespace System.Resources {
                 return obj;
 
             foreach (var assm in AppDomain.CurrentDomain.GetAssemblies())
-                if (assm.GetName().Name == "GHIElectronics.TinyCLR.Graphics")
+                if (assm.GetName().Name == "GHIElectronics.TinyCLR.Drawing")
                     foreach (var t in assm.GetTypes())
                         if (t.FullName == "System.Drawing.Bitmap")
                             return t.GetConstructor(new[] { obj.GetType() }).Invoke(new[] { obj });
