@@ -4,165 +4,165 @@
         /// <summary>GPIO pin definitions.</summary>
         public static class GpioPin {
             /// <summary>GPIO pin.</summary>
-            public const int P0_0 = (0 * 32) + 0;
+            public const int P0_0 = 0;
             /// <summary>GPIO pin.</summary>
-            public const int P0_1 = (0 * 32) + 1;
+            public const int P0_1 = 1;
             /// <summary>GPIO pin.</summary>
-            public const int P0_2 = (0 * 32) + 2;
+            public const int P0_2 = 2;
             /// <summary>GPIO pin.</summary>
-            public const int P0_3 = (0 * 32) + 3;
+            public const int P0_3 = 3;
             /// <summary>GPIO pin.</summary>
-            public const int P0_4 = (0 * 32) + 4;
+            public const int P0_4 = 4;
             /// <summary>GPIO pin.</summary>
-            public const int P0_5 = (0 * 32) + 5;
+            public const int P0_5 = 5;
             /// <summary>GPIO pin.</summary>
-            public const int P0_6 = (0 * 32) + 6;
+            public const int P0_6 = 6;
             /// <summary>GPIO pin.</summary>
-            public const int P0_10 = (0 * 32) + 10;
+            public const int P0_10 = 10;
             /// <summary>GPIO pin.</summary>
-            public const int P0_11 = (0 * 32) + 11;
+            public const int P0_11 = 11;
             /// <summary>GPIO pin.</summary>
-            public const int P0_12 = (0 * 32) + 12;
+            public const int P0_12 = 12;
             /// <summary>GPIO pin.</summary>
-            public const int P0_13 = (0 * 32) + 13;
+            public const int P0_13 = 13;
             /// <summary>GPIO pin.</summary>
-            public const int P0_15 = (0 * 32) + 15;
+            public const int P0_15 = 15;
             /// <summary>GPIO pin.</summary>
-            public const int P0_16 = (0 * 32) + 16;
+            public const int P0_16 = 16;
             /// <summary>GPIO pin.</summary>
-            public const int P0_17 = (0 * 32) + 17;
+            public const int P0_17 = 17;
             /// <summary>GPIO pin.</summary>
-            public const int P0_18 = (0 * 32) + 18;
+            public const int P0_18 = 18;
             /// <summary>GPIO pin.</summary>
-            public const int P0_22 = (0 * 32) + 22;
+            public const int P0_22 = 22;
             /// <summary>GPIO pin.</summary>
-            public const int P0_23 = (0 * 32) + 23;
+            public const int P0_23 = 23;
             /// <summary>GPIO pin.</summary>
-            public const int P0_24 = (0 * 32) + 24;
+            public const int P0_24 = 24;
             /// <summary>GPIO pin.</summary>
-            public const int P0_25 = (0 * 32) + 25;
+            public const int P0_25 = 25;
             /// <summary>GPIO pin.</summary>
-            public const int P0_26 = (0 * 32) + 26;
+            public const int P0_26 = 26;
             /// <summary>GPIO pin.</summary>
-            public const int P0_27 = (0 * 32) + 27;
+            public const int P0_27 = 27;
             /// <summary>GPIO pin.</summary>
-            public const int P0_28 = (0 * 32) + 28;
+            public const int P0_28 = 28;
             /// <summary>GPIO pin.</summary>
-            public const int P1_2 = (1 * 32) + 2;
+            public const int P1_2 = 2 + 32;
             /// <summary>GPIO pin.</summary>
-            public const int P1_3 = (1 * 32) + 3;
+            public const int P1_3 = 3 + 32;
             /// <summary>GPIO pin.</summary>
-            public const int P1_6 = (1 * 32) + 6;
+            public const int P1_6 = 6 + 32;
             /// <summary>GPIO pin.</summary>
-            public const int P1_7 = (1 * 32) + 7;
+            public const int P1_7 = 7 + 32;
             /// <summary>GPIO pin.</summary>
-            public const int P1_11 = (1 * 32) + 11;
+            public const int P1_11 = 11 + 32;
             /// <summary>GPIO pin.</summary>
-            public const int P1_12 = (1 * 32) + 12;
+            public const int P1_12 = 12 + 32;
             /// <summary>GPIO pin.</summary>
-            public const int P1_19 = (1 * 32) + 19;
+            public const int P1_19 = 19 + 32;
             /// <summary>GPIO pin.</summary>
-            public const int P1_20 = (1 * 32) + 20;
+            public const int P1_20 = 20 + 32;
             /// <summary>GPIO pin.</summary>
-            public const int P1_21 = (1 * 32) + 21;
+            public const int P1_21 = 21 + 32;
             /// <summary>GPIO pin.</summary>
-            public const int P1_22 = (1 * 32) + 22;
+            public const int P1_22 = 22 + 32;
             /// <summary>GPIO pin.</summary>
-            public const int P1_23 = (1 * 32) + 23;
+            public const int P1_23 = 23 + 32;
             /// <summary>GPIO pin.</summary>
-            public const int P1_24 = (1 * 32) + 24;
+            public const int P1_24 = 24 + 32;
             /// <summary>GPIO pin.</summary>
-            public const int P1_25 = (1 * 32) + 25;
+            public const int P1_25 = 25 + 32;
             /// <summary>GPIO pin.</summary>
-            public const int P1_26 = (1 * 32) + 26;
+            public const int P1_26 = 26 + 32;
             /// <summary>GPIO pin.</summary>
-            public const int P1_27 = (1 * 32) + 27;
+            public const int P1_27 = 27 + 32;
             /// <summary>GPIO pin.</summary>
-            public const int P1_28 = (1 * 32) + 28;
+            public const int P1_28 = 28 + 32;
             /// <summary>GPIO pin.</summary>
-            public const int P1_29 = (1 * 32) + 29;
+            public const int P1_29 = 29 + 32;
             /// <summary>GPIO pin.</summary>
-            public const int P1_30 = (1 * 32) + 30;
+            public const int P1_30 = 30 + 32;
             /// <summary>GPIO pin.</summary>
-            public const int P1_31 = (1 * 32) + 31;
+            public const int P1_31 = 31 + 32;
             /// <summary>GPIO pin.</summary>
-            public const int P2_0 = (2 * 32) + 0;
+            public const int P2_0 = 0 + 64;
             /// <summary>GPIO pin.</summary>
-            public const int P2_1 = (2 * 32) + 1;
+            public const int P2_1 = 1 + 64;
             /// <summary>GPIO pin.</summary>
-            public const int P2_2 = (2 * 32) + 2;
+            public const int P2_2 = 2 + 64;
             /// <summary>GPIO pin.</summary>
-            public const int P2_3 = (2 * 32) + 3;
+            public const int P2_3 = 3 + 64;
             /// <summary>GPIO pin.</summary>
-            public const int P2_4 = (2 * 32) + 4;
+            public const int P2_4 = 4 + 64;
             /// <summary>GPIO pin.</summary>
-            public const int P2_5 = (2 * 32) + 5;
+            public const int P2_5 = 5 + 64;
             /// <summary>GPIO pin.</summary>
-            public const int P2_6 = (2 * 32) + 6;
+            public const int P2_6 = 6 + 64;
             /// <summary>GPIO pin.</summary>
-            public const int P2_7 = (2 * 32) + 7;
+            public const int P2_7 = 7 + 64;
             /// <summary>GPIO pin.</summary>
-            public const int P2_8 = (2 * 32) + 8;
+            public const int P2_8 = 8 + 64;
             /// <summary>GPIO pin.</summary>
-            public const int P2_9 = (2 * 32) + 9;
+            public const int P2_9 = 9 + 64;
             /// <summary>GPIO pin.</summary>
-            public const int P2_10 = (2 * 32) + 10;
+            public const int P2_10 = 10 + 64;
             /// <summary>GPIO pin.</summary>
-            public const int P2_12 = (2 * 32) + 12;
+            public const int P2_12 = 12 + 64;
             /// <summary>GPIO pin.</summary>
-            public const int P2_13 = (2 * 32) + 13;
+            public const int P2_13 = 13 + 64;
             /// <summary>GPIO pin.</summary>
-            public const int P2_21 = (2 * 32) + 21;
+            public const int P2_21 = 21 + 64;
             /// <summary>GPIO pin.</summary>
-            public const int P2_22 = (2 * 32) + 22;
+            public const int P2_22 = 22 + 64;
             /// <summary>GPIO pin.</summary>
-            public const int P2_23 = (2 * 32) + 23;
+            public const int P2_23 = 23 + 64;
             /// <summary>GPIO pin.</summary>
-            public const int P2_25 = (2 * 32) + 25;
+            public const int P2_25 = 25 + 64;
             /// <summary>GPIO pin.</summary>
-            public const int P2_26 = (2 * 32) + 26;
+            public const int P2_26 = 26 + 64;
             /// <summary>GPIO pin.</summary>
-            public const int P2_27 = (2 * 32) + 27;
+            public const int P2_27 = 27 + 64;
             /// <summary>GPIO pin.</summary>
-            public const int P2_30 = (2 * 32) + 30;
+            public const int P2_30 = 30 + 64;
             /// <summary>GPIO pin.</summary>
-            public const int P2_31 = (2 * 32) + 31;
+            public const int P2_31 = 31 + 64;
             /// <summary>GPIO pin.</summary>
-            public const int P3_16 = (3 * 32) + 16;
+            public const int P3_16 = 16 + 96;
             /// <summary>GPIO pin.</summary>
-            public const int P3_17 = (3 * 32) + 17;
+            public const int P3_17 = 17 + 96;
             /// <summary>GPIO pin.</summary>
-            public const int P3_18 = (3 * 32) + 18;
+            public const int P3_18 = 18 + 96;
             /// <summary>GPIO pin.</summary>
-            public const int P3_19 = (3 * 32) + 19;
+            public const int P3_19 = 19 + 96;
             /// <summary>GPIO pin.</summary>
-            public const int P3_20 = (3 * 32) + 20;
+            public const int P3_20 = 20 + 96;
             /// <summary>GPIO pin.</summary>
-            public const int P3_21 = (3 * 32) + 21;
+            public const int P3_21 = 21 + 96;
             /// <summary>GPIO pin.</summary>
-            public const int P3_22 = (3 * 32) + 22;
+            public const int P3_22 = 22 + 96;
             /// <summary>GPIO pin.</summary>
-            public const int P3_24 = (3 * 32) + 24;
+            public const int P3_24 = 24 + 96;
             /// <summary>GPIO pin.</summary>
-            public const int P3_25 = (3 * 32) + 25;
+            public const int P3_25 = 25 + 96;
             /// <summary>GPIO pin.</summary>
-            public const int P3_26 = (3 * 32) + 26;
+            public const int P3_26 = 26 + 96;
             /// <summary>GPIO pin.</summary>
-            public const int P3_27 = (3 * 32) + 27;
+            public const int P3_27 = 27 + 96;
             /// <summary>GPIO pin.</summary>
-            public const int P3_28 = (3 * 32) + 28;
+            public const int P3_28 = 28 + 96;
             /// <summary>GPIO pin.</summary>
-            public const int P3_29 = (3 * 32) + 29;
+            public const int P3_29 = 29 + 96;
             /// <summary>GPIO pin.</summary>
-            public const int P3_30 = (3 * 32) + 30;
+            public const int P3_30 = 30 + 96;
             /// <summary>GPIO pin.</summary>
-            public const int P3_31 = (3 * 32) + 31;
+            public const int P3_31 = 31 + 96;
             /// <summary>GPIO pin.</summary>
-            public const int P4_28 = (4 * 32) + 28;
+            public const int P4_28 = 28 + 128;
             /// <summary>GPIO pin.</summary>
-            public const int P4_29 = (4 * 32) + 29;
+            public const int P4_29 = 29 + 128;
             /// <summary>GPIO pin.</summary>
-            public const int P4_31 = (4 * 32) + 31;
+            public const int P4_31 = 31 + 128;
         }
 
         /// <summary>ADC channel definitions.</summary>
@@ -193,30 +193,41 @@
 
         /// <summary>PWM pin definitions.</summary>
         public static class PwmPin {
-            /// <summary>PWM pin.</summary>
-            public const int P3_16 = 0;
-            /// <summary>PWM pin.</summary>
-            public const int P3_17 = 1;
-            /// <summary>PWM pin.</summary>
-            public const int P3_18 = 2;
-            /// <summary>PWM pin.</summary>
-            public const int P3_19 = 3;
-            /// <summary>PWM pin.</summary>
-            public const int P3_20 = 4;
-            /// <summary>PWM pin.</summary>
-            public const int P3_21 = 5;
-            /// <summary>PWM pin.</summary>
-            public const int P3_24 = 6;
-            /// <summary>PWM pin.</summary>
-            public const int P3_25 = 7;
-            /// <summary>PWM pin.</summary>
-            public const int P3_26 = 8;
-            /// <summary>PWM pin.</summary>
-            public const int P3_27 = 9;
-            /// <summary>PWM pin.</summary>
-            public const int P3_28 = 10;
-            /// <summary>PWM pin.</summary>
-            public const int P3_29 = 11;
+            /// <summary>PWM controller.</summary>
+            public static class Controller0 {
+                public const string Id = "CON0";
+
+                /// <summary>PWM pin.</summary>
+                public const int P3_16 = 0;
+                /// <summary>PWM pin.</summary>
+                public const int P3_17 = 1;
+                /// <summary>PWM pin.</summary>
+                public const int P3_18 = 2;
+                /// <summary>PWM pin.</summary>
+                public const int P3_19 = 3;
+                /// <summary>PWM pin.</summary>
+                public const int P3_20 = 4;
+                /// <summary>PWM pin.</summary>
+                public const int P3_21 = 5;
+            }
+
+            /// <summary>PWM controller.</summary>
+            public static class Controller1 {
+                public const string Id = "CON1";
+
+                /// <summary>PWM pin.</summary>
+                public const int P3_24 = 0;
+                /// <summary>PWM pin.</summary>
+                public const int P3_25 = 1;
+                /// <summary>PWM pin.</summary>
+                public const int P3_26 = 2;
+                /// <summary>PWM pin.</summary>
+                public const int P3_27 = 3;
+                /// <summary>PWM pin.</summary>
+                public const int P3_28 = 4;
+                /// <summary>PWM pin.</summary>
+                public const int P3_29 = 5;
+            }
         }
 
         /// <summary>Serial port definitions.</summary>

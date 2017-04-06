@@ -3,7 +3,7 @@ namespace System {
     using System.Runtime.CompilerServices;
 
     [Serializable]
-    public struct Double {
+    public struct Double : IFormattable {
 #pragma warning disable CS0649 // Field is never assigned to, and will always have its default value
         internal double m_value;
 #pragma warning restore CS0649 // Field is never assigned to, and will always have its default value
@@ -22,7 +22,7 @@ namespace System {
         // Summary:
         //     Represents the smallest positive System.Double value that is greater than
         //     zero. This field is constant.
-        // 
+        //
         // Note:
         // Real value of Epsilon: 4.9406564584124654e-324 (0x1), but JVC misparses that
         // number, giving 2*Epsilon (0x2).
@@ -35,7 +35,7 @@ namespace System {
         // Summary:
         //     Represents positive infinity. This field is constant.
         public const double PositiveInfinity = (double)1.0 / (double)(0.0);
-        //        
+        //
         // Summary:
         //     Represents a value that is not a number (NaN). This field is constant.
         public const double NaN = 0.0 / 0.0;
@@ -174,7 +174,7 @@ namespace System {
         //     Converts the numeric value of this instance to its equivalent string representation.
         //
         // Returns:
-        //     The string representation of the value of this instance.        
+        //     The string representation of the value of this instance.
         public override string ToString() {
             if (IsPositiveInfinity(this)) {
                 return "Infinity";
@@ -216,6 +216,8 @@ namespace System {
 
             return Number.Format(this.m_value, false, format, NumberFormatInfo.CurrentInfo);
         }
+
+        public string ToString(string format, IFormatProvider provider) => Number.Format(this.m_value, false, format, NumberFormatInfo.GetInstance(provider));
 
         //
         // Summary:

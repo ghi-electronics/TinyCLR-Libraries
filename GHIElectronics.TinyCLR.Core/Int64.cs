@@ -2,7 +2,7 @@ namespace System {
     using System.Globalization;
 
     [Serializable]
-    public struct Int64 {
+    public struct Int64 : IFormattable {
         internal long m_value;
 
         public const long MaxValue = 0x7fffffffffffffffL;
@@ -11,6 +11,7 @@ namespace System {
         public override string ToString() => Number.Format(this.m_value, true, "G", NumberFormatInfo.CurrentInfo);
 
         public string ToString(string format) => Number.Format(this.m_value, true, format, NumberFormatInfo.CurrentInfo);
+        public string ToString(string format, IFormatProvider provider) => Number.Format(this.m_value, true, format, NumberFormatInfo.GetInstance(provider));
 
         public static long Parse(string s) {
             if (s == null) {

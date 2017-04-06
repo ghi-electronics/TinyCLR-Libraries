@@ -211,58 +211,117 @@
 
         /// <summary>PWM pin definitions.</summary>
         public static class PwmPin {
-            /// <summary>PWM pin.</summary>
-            public const int PE9 = 0;
-            /// <summary>PWM pin.</summary>
-            public const int PE11 = 1;
-            /// <summary>PWM pin.</summary>
-            public const int PE13 = 2;
-            /// <summary>PWM pin.</summary>
-            public const int PE14 = 3;
-            /// <summary>PWM pin.</summary>
-            public const int PA15 = 4;
-            /// <summary>PWM pin.</summary>
-            public const int PB3 = 5;
-            /// <summary>PWM pin.</summary>
-            public const int PB10 = 6;
-            /// <summary>PWM pin.</summary>
-            public const int PB11 = 7;
-            /// <summary>PWM pin.</summary>
-            public const int PB4 = 8;
-            /// <summary>PWM pin.</summary>
-            public const int PB5 = 9;
-            /// <summary>PWM pin.</summary>
-            public const int PB0 = 10;
-            /// <summary>PWM pin.</summary>
-            public const int PB1 = 11;
-            /// <summary>PWM pin.</summary>
-            public const int PD12 = 12;
-            /// <summary>PWM pin.</summary>
-            public const int PD13 = 13;
-            /// <summary>PWM pin.</summary>
-            public const int PD14 = 14;
-            /// <summary>PWM pin.</summary>
-            public const int PD15 = 15;
-            /// <summary>PWM pin.</summary>
-            public const int PC6 = 16;
-            /// <summary>PWM pin.</summary>
-            public const int PC7 = 17;
-            /// <summary>PWM pin.</summary>
-            public const int PC8 = 18;
-            /// <summary>PWM pin.</summary>
-            public const int PC9 = 19;
-            /// <summary>PWM pin.</summary>
-            public const int PA2 = 20;
-            /// <summary>PWM pin.</summary>
-            public const int PA3 = 21;
-            /// <summary>PWM pin.</summary>
-            public const int PB8 = 22;
-            /// <summary>PWM pin.</summary>
-            public const int PB9 = 23;
-            /// <summary>PWM pin.</summary>
-            public const int PA6 = 24;
-            /// <summary>PWM pin.</summary>
-            public const int PA7 = 25;
+            /// <summary>PWM controller.</summary>
+            public static class Controller1 {
+                public const string Id = "CON1";
+
+                /// <summary>PWM pin.</summary>
+                public const int PE9 = 0;
+                /// <summary>PWM pin.</summary>
+                public const int PE11 = 1;
+                /// <summary>PWM pin.</summary>
+                public const int PE13 = 2;
+                /// <summary>PWM pin.</summary>
+                public const int PE14 = 3;
+            }
+
+            /// <summary>PWM controller.</summary>
+            public static class Controller2 {
+                public const string Id = "CON2";
+
+                /// <summary>PWM pin.</summary>
+                public const int PA15 = 0;
+                /// <summary>PWM pin.</summary>
+                public const int PB3 = 1;
+                /// <summary>PWM pin.</summary>
+                public const int PB10 = 2;
+                /// <summary>PWM pin.</summary>
+                public const int PB11 = 3;
+            }
+
+            /// <summary>PWM controller.</summary>
+            public static class Controller3 {
+                public const string Id = "CON3";
+
+                /// <summary>PWM pin.</summary>
+                public const int PB4 = 0;
+                /// <summary>PWM pin.</summary>
+                public const int PB5 = 1;
+                /// <summary>PWM pin.</summary>
+                public const int PB0 = 2;
+                /// <summary>PWM pin.</summary>
+                public const int PB1 = 3;
+            }
+
+            /// <summary>PWM controller.</summary>
+            public static class Controller4 {
+                public const string Id = "CON4";
+
+                /// <summary>PWM pin.</summary>
+                public const int PD12 = 0;
+                /// <summary>PWM pin.</summary>
+                public const int PD13 = 1;
+                /// <summary>PWM pin.</summary>
+                public const int PD14 = 2;
+                /// <summary>PWM pin.</summary>
+                public const int PD15 = 3;
+            }
+
+            /// <summary>PWM controller.</summary>
+            public static class Controller8 {
+                public const string Id = "CON8";
+
+                /// <summary>PWM pin.</summary>
+                public const int PC6 = 0;
+                /// <summary>PWM pin.</summary>
+                public const int PC7 = 1;
+                /// <summary>PWM pin.</summary>
+                public const int PC8 = 2;
+                /// <summary>PWM pin.</summary>
+                public const int PC9 = 3;
+            }
+
+            /// <summary>PWM controller.</summary>
+            public static class Controller9 {
+                public const string Id = "CON9";
+
+                /// <summary>PWM pin.</summary>
+                public const int PA2 = 0;
+                /// <summary>PWM pin.</summary>
+                public const int PA3 = 1;
+            }
+
+            /// <summary>PWM controller.</summary>
+            public static class Controller10 {
+                public const string Id = "CON10";
+
+                /// <summary>PWM pin.</summary>
+                public const int PB8 = 0;
+            }
+
+            /// <summary>PWM controller.</summary>
+            public static class Controller11 {
+                public const string Id = "CON11";
+
+                /// <summary>PWM pin.</summary>
+                public const int PB9 = 0;
+            }
+
+            /// <summary>PWM controller.</summary>
+            public static class Controller13 {
+                public const string Id = "CON13";
+
+                /// <summary>PWM pin.</summary>
+                public const int PA6 = 0;
+            }
+
+            /// <summary>PWM controller.</summary>
+            public static class Controller14 {
+                public const string Id = "CON14";
+
+                /// <summary>PWM pin.</summary>
+                public const int PA7 = 0;
+            }
         }
 
         /// <summary>Serial port definitions.</summary>

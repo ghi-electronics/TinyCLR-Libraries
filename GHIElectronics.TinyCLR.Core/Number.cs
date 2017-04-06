@@ -278,8 +278,8 @@ namespace System {
             var result = FormatNative(value, formatCh, precision);
 
             if (isInteger) {
-                if (formatCh == 'N' || formatCh == 'F' || formatCh == 'G') // remove '0' infront, except for formatCh = 'D'
-                {
+                // remove '0' infront, except for formatCh = 'D'
+                if (formatCh == 'N' || formatCh == 'F' || formatCh == 'G' || formatCh == 'g') {
                     if (result != null && result.Length > 1) {
                         var negative = result[0] == '-' ? true : false;
 
@@ -293,8 +293,19 @@ namespace System {
                     }
                 }
 
-                if ((formatCh == 'N' || formatCh == 'F' || formatCh == 'D') && precision == 0 && ((int)value == 0))
-                    return "0";
+                if ((formatCh == 'N' || formatCh == 'F' || formatCh == 'D') && precision == 0) {
+                    var type = value.GetType();
+
+                    if (type == typeof(sbyte) && ((sbyte)value) == 0) return "0";
+                    else if (type == typeof(short) && ((short)value) == 0) return "0";
+                    else if (type == typeof(int) && ((int)value) == 0) return "0";
+                    else if (type == typeof(long) && ((long)value) == 0) return "0";
+                    else if (type == typeof(byte) && ((byte)value) == 0) return "0";
+                    else if (type == typeof(ushort) && ((ushort)value) == 0) return "0";
+                    else if (type == typeof(uint) && ((uint)value) == 0) return "0";
+                    else if (type == typeof(ulong) && ((ulong)value) == 0) return "0";
+                }
+
                 return PostProcessInteger(value, result, formatCh, precision, info);
             }
             else {
@@ -315,9 +326,11 @@ namespace System {
 
             formatCh = format[0];
 
-            // ToUpper, since all the supported format characters are invariant in case
-            if (formatCh >= 'a' && formatCh <= 'z') {
-                formatCh = (char)(formatCh - ('a' - 'A'));
+            if (formatCh != 'g' && formatCh != 'x') {
+                // ToUpper, since all the supported format characters are invariant in case
+                if (formatCh >= 'a' && formatCh <= 'z') {
+                    formatCh = (char)(formatCh - ('a' - 'A'));
+                }
             }
 
             var formatLen = format.Length;
@@ -344,8 +357,10 @@ namespace System {
             // Set default precision, if neccessary + check for valid formatCh
             switch (formatCh) {
                 case 'G':
+                case 'g':
                     break;
                 case 'X':
+                case 'x':
                 case 'F':
                 case 'N':
                 case 'D':
@@ -362,7 +377,8 @@ namespace System {
 
             switch (format) {
                 case 'X':
-                    // truncate negative numbers to 
+                case 'x':
+                    // truncate negative numbers to
                     if (result.Length > precision && (result[0] == 'F' || result[0] == 'f')) {
                         var len = result.Length;
 
@@ -388,6 +404,7 @@ namespace System {
                     result = AppendTrailingZeros(result, precision, info);
                     goto case 'G'; // falls through
                 case 'G':
+                case 'g':
                     result = ReplaceNegativeSign(result, info);
                     break;
             }

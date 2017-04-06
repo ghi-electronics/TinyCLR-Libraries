@@ -7,7 +7,7 @@ namespace System {
      * @version
      */
     [Serializable, CLSCompliant(false)]
-    public struct SByte {
+    public struct SByte : IFormattable {
 #pragma warning disable CS0649 // Field is never assigned to, and will always have its default value
         private sbyte m_value;
 #pragma warning restore CS0649 // Field is never assigned to, and will always have its default value
@@ -25,6 +25,7 @@ namespace System {
         public override string ToString() => Number.Format(this.m_value, true, "G", NumberFormatInfo.CurrentInfo);
 
         public string ToString(string format) => Number.Format(this.m_value, true, format, NumberFormatInfo.CurrentInfo);
+        public string ToString(string format, IFormatProvider provider) => Number.Format(this.m_value, true, format, NumberFormatInfo.GetInstance(provider));
 
         [CLSCompliant(false)]
         public static sbyte Parse(string s) {

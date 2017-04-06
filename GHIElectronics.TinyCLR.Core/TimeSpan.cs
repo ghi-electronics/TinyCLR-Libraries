@@ -18,7 +18,7 @@ namespace System {
     [Serializable]
 #pragma warning disable CS0659 // Type overrides Object.Equals(object o) but does not override Object.GetHashCode()
 #pragma warning disable CS0661 // Type defines operator == or operator != but does not override Object.GetHashCode()
-    public struct TimeSpan
+    public struct TimeSpan : IFormattable
 #pragma warning restore CS0661 // Type defines operator == or operator != but does not override Object.GetHashCode()
 #pragma warning restore CS0659 // Type overrides Object.Equals(object o) but does not override Object.GetHashCode()
     {
@@ -104,6 +104,8 @@ namespace System {
         public TimeSpan Subtract(TimeSpan ts) => new TimeSpan(this.m_ticks - ts.m_ticks);
 
         public static TimeSpan FromTicks(long val) => new TimeSpan(val);
+
+        public string ToString(string format, IFormatProvider formatProvider) => this.ToString();
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         extern public override string ToString();

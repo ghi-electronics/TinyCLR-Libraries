@@ -52,7 +52,7 @@ namespace GHIElectronics.TinyCLR.Devices.Enumeration {
             var foundDevices = new ArrayList();
 
             // Find all I2C buses which contain the given prefix.
-            var i2cBusNames = I2c.I2cDevice.GetValidBusNames();
+            var i2cBusNames = I2c.Provider.DefaultI2cDeviceProvider.GetValidBusNames();
             for (var i = 0; i < i2cBusNames.Length; ++i) {
                 if (i2cBusNames[i].IndexOf(aqsFilter) == 0) {
                     // TODO: Issue #102: Determine whether this bus exists.
@@ -61,7 +61,7 @@ namespace GHIElectronics.TinyCLR.Devices.Enumeration {
             }
 
             // Find all SPI buses which contain the given prefix.
-            var spiBusNames = Spi.SpiDevice.GetValidBusNames();
+            var spiBusNames = Spi.Provider.DefaultSpiDeviceProvider.GetValidBusNames();
             for (var i = 0; i < spiBusNames.Length; ++i) {
                 if (spiBusNames[i].IndexOf(aqsFilter) == 0) {
                     // TODO: Issue #102: Determine whether this bus exists.

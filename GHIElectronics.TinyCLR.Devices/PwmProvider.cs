@@ -1,3 +1,4 @@
+using System;
 using System.Runtime.CompilerServices;
 
 namespace GHIElectronics.TinyCLR.Devices.Pwm.Provider {
@@ -32,11 +33,15 @@ namespace GHIElectronics.TinyCLR.Devices.Pwm.Provider {
     }
 
     internal class DefaultPwmControllerProvider : IPwmControllerProvider {
+        private readonly int controller;
         private double[] dutyCycles;
         private bool[] inverts;
         private bool[] actives;
 
-        public DefaultPwmControllerProvider() {
+        public DefaultPwmControllerProvider(int controller) {
+            if (!DefaultPwmControllerProvider.IsTimerValid(controller)) throw new ArgumentException("Invalid controller.", nameof(controller));
+
+            this.controller = controller;
             this.dutyCycles = new double[this.PinCount];
             this.inverts = new bool[this.PinCount];
             this.actives = new bool[this.PinCount];
@@ -60,50 +65,53 @@ namespace GHIElectronics.TinyCLR.Devices.Pwm.Provider {
         }
 
         public double SetDesiredFrequency(double frequency) {
-            var result = this.SetDesiredFrequencyInternal(frequency);
+            this.ActualFrequency = this.SetDesiredFrequencyInternal(frequency);
 
             for (var i = 0; i < this.PinCount; i++)
                 if (this.actives[i])
                     this.SetPulseParameters(i, this.dutyCycles[i], this.inverts[i]);
 
-            return this.ActualFrequency = result;
+            return this.ActualFrequency;
         }
 
-        public void SetPulseParameters(int pin, double dutyCycle, bool invertPolarity) {
-            this.SetPulseParametersInternal(pin, dutyCycle, invertPolarity);
+        public void SetPulseParameters(int pinNumber, double dutyCycle, bool invertPolarity) {
+            this.SetPulseParametersInternal(pinNumber, dutyCycle, invertPolarity);
 
-            this.dutyCycles[pin] = dutyCycle;
-            this.inverts[pin] = invertPolarity;
+            this.dutyCycles[pinNumber] = dutyCycle;
+            this.inverts[pinNumber] = invertPolarity;
         }
 
-        public void AcquirePin(int pin) {
-            this.AcquirePinInternal(pin);
+        public void AcquirePin(int pinNumber) {
+            this.AcquirePinInternal(pinNumber);
 
-            this.actives[pin] = true;
+            this.actives[pinNumber] = true;
         }
 
-        public void ReleasePin(int pin) {
-            this.ReleasePinInternal(pin);
+        public void ReleasePin(int pinNumber) {
+            this.ReleasePinInternal(pinNumber);
 
-            this.actives[pin] = false;
+            this.actives[pinNumber] = false;
         }
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern void DisablePin(int pin);
+        public extern void DisablePin(int pinNumber);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern void EnablePin(int pin);
+        public extern void EnablePin(int pinNumber);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private extern void AcquirePinInternal(int pin);
+        private extern void AcquirePinInternal(int pinNumber);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private extern void ReleasePinInternal(int pin);
+        private extern void ReleasePinInternal(int pinNumber);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private extern double SetDesiredFrequencyInternal(double frequency);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private extern void SetPulseParametersInternal(int pin, double dutyCycle, bool invertPolarity);
+        private extern void SetPulseParametersInternal(int pinNumber, double dutyCycle, bool invertPolarity);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private extern static bool IsTimerValid(int timer);
     }
 }

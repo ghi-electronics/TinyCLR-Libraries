@@ -42,14 +42,27 @@
     <Compile Include="DacChannel.cs" />
     <Compile Include="DacController.cs" />
     <Compile Include="DacProvider.cs" />
+    <Compile Include="DisplayProvider.cs" />
     <Compile Include="DeviceInformation.cs" />
+    <Compile Include="DisplayController.cs" />
     <Compile Include="GpioController.cs" />
     <Compile Include="GpioEnums.cs" />
+    <Compile Include="GpioProvider.cs" />
     <Compile Include="GpioPin.cs" />
     <Compile Include="GpioPinEventListener.cs" />
     <Compile Include="GpioPinValueChangedEventArgs.cs" />
     <Compile Include="I2cConnectionSettings.cs" />
+    <Compile Include="DisplayControllerSettings.cs" />
+    <Compile Include="LowLevelDevicesController.cs" />
+    <Compile Include="PulseFeedback.cs" />
+    <Compile Include="SignalCapture.cs" />
+    <Compile Include="SignalGenerator.cs" />
+    <Compile Include="SpiSoftwareProvider.cs" />
+    <Compile Include="I2cSoftwareProvider.cs" />
+    <Compile Include="SpiController.cs" />
+    <Compile Include="I2cController.cs" />
     <Compile Include="I2cDevice.cs" />
+    <Compile Include="I2cProvider.cs" />
     <Compile Include="I2cEnums.cs" />
     <Compile Include="Internal.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -62,6 +75,7 @@
     <Compile Include="SpiBusInfo.cs" />
     <Compile Include="SpiConnectionSettings.cs" />
     <Compile Include="SpiDevice.cs" />
+    <Compile Include="SpiProvider.cs" />
     <Compile Include="SpiEnums.cs" />
   </ItemGroup>
   <ItemGroup>

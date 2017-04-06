@@ -187,11 +187,28 @@ namespace System.Resources {
             throw new ArgumentException();
         }
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static object GetObject(System.Resources.ResourceManager rm, Enum id);
+        public static object GetObject(ResourceManager rm, Enum id) {
+            var obj = ResourceManager.NativeGetObject(rm, id);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern static object GetObject(System.Resources.ResourceManager rm, Enum id, int offset, int length);
+            if (obj.GetType().FullName != "System.Drawing.Internal.Bitmap")
+                return obj;
+
+            foreach (var assm in AppDomain.CurrentDomain.GetAssemblies())
+                if (assm.GetName().Name == "GHIElectronics.TinyCLR.Drawing")
+                    foreach (var t in assm.GetTypes())
+                        if (t.FullName == "System.Drawing.Bitmap")
+                            return t.GetConstructor(new[] { obj.GetType() }).Invoke(new[] { obj });
+
+            throw new InvalidOperationException("Can't find Graphics assembly.");
+        }
+
+        public static object GetObject(ResourceManager rm, Enum id, int offset, int length) => ResourceManager.NativeGetObject(rm, id, offset, length);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private extern static object NativeGetObject(ResourceManager rm, Enum id);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private extern static object NativeGetObject(ResourceManager rm, Enum id, int offset, int length);
     }
 }
 

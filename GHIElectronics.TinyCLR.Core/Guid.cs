@@ -1,6 +1,6 @@
 namespace System {
     [Serializable]
-    public struct Guid {
+    public struct Guid : IFormattable {
         internal int[] m_data;
 
 
@@ -123,6 +123,8 @@ namespace System {
             return buffer;
         }
 
+        public string ToString(string format, IFormatProvider formatProvider) => this.ToString();
+
         public override string ToString() {
             // registry format is 08B03E06-01A8-4cd9-9971-ED45E2E84A53
 
@@ -167,6 +169,16 @@ namespace System {
 
             return new string(chars);
         }
+
+        public static bool operator ==(Guid a, Guid b) {
+            for (var i = 0; i < a.m_data.Length; i++)
+                if (a.m_data[i] != b.m_data[i])
+                    return false;
+
+            return true;
+        }
+
+        public static bool operator !=(Guid a, Guid b) => !(a == b);
 
         /// <summary>
         /// Overriden. Compares this instance to another Guid and returns whether they are equal or not.

@@ -5,7 +5,7 @@ namespace System {
      * Wrapper for unsigned 64 bit integers.
      */
     [Serializable, CLSCompliant(false)]
-    public struct UInt64 {
+    public struct UInt64 : IFormattable {
         private ulong m_value;
 
         public const ulong MaxValue = (ulong)0xffffffffffffffffL;
@@ -14,6 +14,7 @@ namespace System {
         public override string ToString() => Number.Format(this.m_value, true, "G", NumberFormatInfo.CurrentInfo);
 
         public string ToString(string format) => Number.Format(this.m_value, true, format, NumberFormatInfo.CurrentInfo);
+        public string ToString(string format, IFormatProvider provider) => Number.Format(this.m_value, true, format, NumberFormatInfo.GetInstance(provider));
 
         [CLSCompliant(false)]
         public static ulong Parse(string s) {

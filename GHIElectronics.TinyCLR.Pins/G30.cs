@@ -139,36 +139,59 @@
 
         /// <summary>PWM pin definitions.</summary>
         public static class PwmPin {
-            /// <summary>PWM pin.</summary>
-            public const int PA8 = 0;
-            /// <summary>PWM pin.</summary>
-            public const int PA9 = 1;
-            /// <summary>PWM pin.</summary>
-            public const int PA10 = 2;
-            /// <summary>PWM pin.</summary>
-            public const int PA0 = 3;
-            /// <summary>PWM pin.</summary>
-            public const int PA1 = 4;
-            /// <summary>PWM pin.</summary>
-            public const int PA2 = 5;
-            /// <summary>PWM pin.</summary>
-            public const int PA3 = 6;
-            /// <summary>PWM pin.</summary>
-            public const int PC6 = 7;
-            /// <summary>PWM pin.</summary>
-            public const int PC7 = 8;
-            /// <summary>PWM pin.</summary>
-            public const int PC8 = 9;
-            /// <summary>PWM pin.</summary>
-            public const int PC9 = 10;
-            /// <summary>PWM pin.</summary>
-            public const int PB6 = 11;
-            /// <summary>PWM pin.</summary>
-            public const int PB7 = 12;
-            /// <summary>PWM pin.</summary>
-            public const int PB8 = 13;
-            /// <summary>PWM pin.</summary>
-            public const int PB9 = 14;
+            /// <summary>PWM controller.</summary>
+            public static class Controller1 {
+                public const string Id = "CON1";
+
+                /// <summary>PWM pin.</summary>
+                public const int PA8 = 0;
+                /// <summary>PWM pin.</summary>
+                public const int PA9 = 1;
+                /// <summary>PWM pin.</summary>
+                public const int PA10 = 2;
+            }
+
+            /// <summary>PWM controller.</summary>
+            public static class Controller2 {
+                public const string Id = "CON2";
+
+                /// <summary>PWM pin.</summary>
+                public const int PA0 = 0;
+                /// <summary>PWM pin.</summary>
+                public const int PA1 = 1;
+                /// <summary>PWM pin.</summary>
+                public const int PA2 = 2;
+                /// <summary>PWM pin.</summary>
+                public const int PA3 = 3;
+            }
+
+            /// <summary>PWM controller.</summary>
+            public static class Controller3 {
+                public const string Id = "CON3";
+
+                /// <summary>PWM pin.</summary>
+                public const int PC6 = 0;
+                /// <summary>PWM pin.</summary>
+                public const int PC7 = 1;
+                /// <summary>PWM pin.</summary>
+                public const int PC8 = 2;
+                /// <summary>PWM pin.</summary>
+                public const int PC9 = 3;
+            }
+
+            /// <summary>PWM controller.</summary>
+            public static class Controller4 {
+                public const string Id = "CON4";
+
+                /// <summary>PWM pin.</summary>
+                public const int PB6 = 0;
+                /// <summary>PWM pin.</summary>
+                public const int PB7 = 1;
+                /// <summary>PWM pin.</summary>
+                public const int PB8 = 2;
+                /// <summary>PWM pin.</summary>
+                public const int PB9 = 3;
+            }
         }
 
         /// <summary>Serial port definitions.</summary>

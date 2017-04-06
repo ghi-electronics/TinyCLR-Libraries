@@ -4,7 +4,6 @@ using System;
 namespace GHIElectronics.TinyCLR.Devices.Adc {
     public sealed class AdcController {
         private IAdcControllerProvider m_provider;
-        private static AdcController instance;
 
         internal AdcController(IAdcControllerProvider provider) => this.m_provider = provider;
 
@@ -33,7 +32,7 @@ namespace GHIElectronics.TinyCLR.Devices.Adc {
             }
         }
 
-        public static AdcController GetDefault() => AdcController.instance ?? (AdcController.instance = new AdcController(new DefaultAdcControllerProvider()));
+        public static AdcController GetDefault() => LowLevelDevicesController.DefaultProvider.AdcControllerProvider != null ? new AdcController(LowLevelDevicesController.DefaultProvider.AdcControllerProvider) : null;
 
         public static AdcController[] GetControllers(IAdcProvider provider) {
             // FUTURE: This should return "Task<IVectorView<AdcController>>"
