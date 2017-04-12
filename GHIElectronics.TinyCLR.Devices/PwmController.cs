@@ -27,7 +27,7 @@ namespace GHIElectronics.TinyCLR.Devices.Pwm {
             return new PwmController(new DefaultPwmControllerProvider(id));
         }
 
-        public static PwmController GetDefault() => LowLevelDevicesController.DefaultProvider.PwmControllerProvider != null ? new PwmController(LowLevelDevicesController.DefaultProvider.PwmControllerProvider) : null;
+        public static PwmController GetDefault() => LowLevelDevicesController.DefaultProvider?.PwmControllerProvider != null ? new PwmController(LowLevelDevicesController.DefaultProvider.PwmControllerProvider) : null;
 
         public static PwmController[] GetControllers(IPwmProvider provider) {
             // FUTURE: This should return "Task<IReadOnlyList<PwmController>>"

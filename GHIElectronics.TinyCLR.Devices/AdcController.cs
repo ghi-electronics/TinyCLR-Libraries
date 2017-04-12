@@ -32,7 +32,7 @@ namespace GHIElectronics.TinyCLR.Devices.Adc {
             }
         }
 
-        public static AdcController GetDefault() => LowLevelDevicesController.DefaultProvider.AdcControllerProvider != null ? new AdcController(LowLevelDevicesController.DefaultProvider.AdcControllerProvider) : null;
+        public static AdcController GetDefault() => LowLevelDevicesController.DefaultProvider?.AdcControllerProvider != null ? new AdcController(LowLevelDevicesController.DefaultProvider.AdcControllerProvider) : null;
 
         public static AdcController[] GetControllers(IAdcProvider provider) {
             // FUTURE: This should return "Task<IVectorView<AdcController>>"
