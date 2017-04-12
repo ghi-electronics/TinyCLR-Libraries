@@ -2,6 +2,8 @@ using System;
 using System.Runtime.CompilerServices;
 
 namespace GHIElectronics.TinyCLR.Devices.Gpio.Provider {
+    public delegate void GpioPinProviderValueChangedEventHandler(IGpioPinProvider sender, GpioPinProviderValueChangedEventArgs e);
+
     public enum ProviderGpioSharingMode {
         Exclusive = 0,
         SharedReadOnly,
@@ -28,6 +30,14 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio.Provider {
         RisingEdge,
     }
 
+    public sealed class GpioPinProviderValueChangedEventArgs {
+        private ProviderGpioPinEdge m_edge;
+
+        internal GpioPinProviderValueChangedEventArgs(ProviderGpioPinEdge edge) => this.m_edge = edge;
+
+        public ProviderGpioPinEdge Edge => this.m_edge;
+    }
+
     public interface IGpioPinProvider : IDisposable {
         TimeSpan DebounceTimeout { get; set; }
         int PinNumber { get; }
@@ -38,7 +48,7 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio.Provider {
         bool IsDriveModeSupported(ProviderGpioPinDriveMode driveMode);
         ProviderGpioPinValue Read();
         void Write(ProviderGpioPinValue value);
-        event GpioPinValueChangedEventHandler ValueChanged;
+        event GpioPinProviderValueChangedEventHandler ValueChanged;
     }
 
     public interface IGpioProvider {
@@ -80,7 +90,7 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio.Provider {
 
         private ProviderGpioPinDriveMode m_driveMode = ProviderGpioPinDriveMode.Input;
         private ProviderGpioPinValue m_lastOutputValue = ProviderGpioPinValue.Low;
-        private GpioPinValueChangedEventHandler m_callbacks = null;
+        private GpioPinProviderValueChangedEventHandler m_callbacks = null;
 
         internal DefaultGpioPinProvider() {
             if (this.m_lastOutputValue == ProviderGpioPinValue.Low) { } // Silence an unused variable warning.
@@ -95,7 +105,7 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio.Provider {
         /// when the pin is configured as an input, or when a value is written to the pin when the pin is configured as
         /// an output.
         /// </summary>
-        public event GpioPinValueChangedEventHandler ValueChanged {
+        public event GpioPinProviderValueChangedEventHandler ValueChanged {
             add {
                 lock (this.m_syncLock) {
                     if (this.m_disposed) {
@@ -103,7 +113,7 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio.Provider {
                     }
 
                     var callbacksOld = this.m_callbacks;
-                    var callbacksNew = (GpioPinValueChangedEventHandler)Delegate.Combine(callbacksOld, value);
+                    var callbacksNew = (GpioPinProviderValueChangedEventHandler)Delegate.Combine(callbacksOld, value);
 
                     try {
                         this.m_callbacks = callbacksNew;
@@ -123,7 +133,7 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio.Provider {
                     }
 
                     var callbacksOld = this.m_callbacks;
-                    var callbacksNew = (GpioPinValueChangedEventHandler)Delegate.Remove(callbacksOld, value);
+                    var callbacksNew = (GpioPinProviderValueChangedEventHandler)Delegate.Remove(callbacksOld, value);
 
                     try {
                         this.m_callbacks = callbacksNew;
@@ -287,7 +297,7 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio.Provider {
         /// </summary>
         /// <param name="edge">The state transition for this event.</param>
         internal void OnPinChangedInternal(ProviderGpioPinEdge edge) {
-            GpioPinValueChangedEventHandler callbacks = null;
+            GpioPinProviderValueChangedEventHandler callbacks = null;
 
             lock (this.m_syncLock) {
                 if (!this.m_disposed) {
@@ -295,7 +305,7 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio.Provider {
                 }
             }
 
-            callbacks?.Invoke(this, new GpioPinValueChangedEventArgs((GpioPinEdge)edge));
+            callbacks?.Invoke(this, new GpioPinProviderValueChangedEventArgs(edge));
         }
 
         /// <summary>
