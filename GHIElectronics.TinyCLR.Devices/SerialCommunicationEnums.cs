@@ -73,33 +73,24 @@ namespace GHIElectronics.TinyCLR.Storage.Streams {
     }
 
     public class Buffer : IBuffer {
-        private uint length;
-        private byte[] data;
+        internal byte[] data;
 
-        public byte[] Data => this.data;
-        public uint Capacity => this.length;
+        private uint length;
+
+        public uint Capacity { get; }
 
         public uint Length {
             get => this.length;
             set {
+                if (value > this.Capacity) throw new ArgumentOutOfRangeException(nameof(value));
+
                 this.length = value;
-
-                var newBuffer = new byte[this.length];
-
-                Array.Copy(this.data, newBuffer, (int)this.length);
-
-                this.data = newBuffer;
             }
-        }
-
-        public Buffer(byte[] data) {
-            this.data = data ?? throw new ArgumentNullException(nameof(data));
-            this.length = (uint)data.Length;
         }
 
         public Buffer(uint capacity) {
             this.data = new byte[capacity];
-            this.length = capacity;
+            this.length = 0;
         }
     }
 }
