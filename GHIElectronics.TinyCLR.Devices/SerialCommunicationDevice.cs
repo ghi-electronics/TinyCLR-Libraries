@@ -8,8 +8,6 @@ namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
     public delegate void PinChangedDelegate(SerialDevice sender, PinChangedEventArgs e);
 
     public class SerialDevice : IDisposable {
-        private delegate void DataReceivedDelegate(SerialDevice sender, EventArgs e);
-
         private readonly Stream stream;
         private bool disposed;
 
@@ -89,13 +87,8 @@ namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
             private uint port;
             private bool opened;
             private NativeEventDispatcher errorReceivedEvent;
-            private NativeEventDispatcher dataReceivedEvent;
-
-            private void ErrorReceivedEventHandler(uint evt, uint data2, DateTime timestamp) => this.ErrorReceived?.Invoke(this.parent, new ErrorReceivedEventArgs((SerialError)evt));
-            private void DataReceivedEventHandler(uint evt, uint data2, DateTime timestamp) => this.DataReceived?.Invoke(this.parent, EventArgs.Empty);
 
             public event ErrorReceivedDelegate ErrorReceived;
-            public event DataReceivedDelegate DataReceived;
 
             public Stream(SerialDevice parent) {
                 this.parent = parent;
@@ -107,11 +100,7 @@ namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
 
             internal void ParentDispose() {
                 if (this.opened) {
-                    this.errorReceivedEvent.OnInterrupt -= this.ErrorReceivedEventHandler;
                     this.errorReceivedEvent.Dispose();
-
-                    this.dataReceivedEvent.OnInterrupt -= this.DataReceivedEventHandler;
-                    this.dataReceivedEvent.Dispose();
 
                     Stream.NativeClose(this.port, (uint)this.parent.Handshake);
                 }
@@ -162,9 +151,7 @@ namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
                 Stream.NativeOpen(this.port, this.parent.BaudRate, (uint)this.parent.Parity, this.parent.DataBits, (uint)this.parent.StopBits, (uint)this.parent.Handshake);
 
                 this.errorReceivedEvent = new NativeEventDispatcher("SerialPortErrorEvent", this.port);
-                this.dataReceivedEvent = new NativeEventDispatcher("SerialPortDataEvent", this.port);
-                this.errorReceivedEvent.OnInterrupt += this.ErrorReceivedEventHandler;
-                this.dataReceivedEvent.OnInterrupt += this.DataReceivedEventHandler;
+                this.errorReceivedEvent.OnInterrupt += (s, evt, ts) => this.ErrorReceived?.Invoke(this.parent, new ErrorReceivedEventArgs((SerialError)evt));
 
                 this.opened = true;
             }
