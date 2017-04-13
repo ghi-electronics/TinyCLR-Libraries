@@ -2,11 +2,11 @@
 
 namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
     public enum SerialError {
-        Frame,
-        BufferOverrun,
-        ReceiveFull,
-        ReceiveParity,
-        TransmitFull
+        Frame = 4,
+        BufferOverrun = 2,
+        ReceiveFull = 1,
+        ReceiveParity = 3,
+        TransmitFull = 0
     }
 
     public enum SerialHandshake {
