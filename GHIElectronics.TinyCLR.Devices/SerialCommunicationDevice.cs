@@ -140,7 +140,7 @@ namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
 
                 this.port = uint.Parse(this.parent.PortName.Substring(3)) - 1;
 
-                Stream.NativeOpen(this.port, (uint)this.parent.BaudRate, (uint)this.parent.Parity, this.parent.DataBits, (uint)this.parent.StopBits, (uint)this.parent.Handshake);
+                Stream.NativeOpen(this.port, this.parent.BaudRate, (uint)this.parent.Parity, this.parent.DataBits, (uint)this.parent.StopBits, (uint)this.parent.Handshake);
 
                 this.opened = true;
             }
@@ -159,6 +159,18 @@ namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             private extern static int NativeWrite(uint port, byte[] buffer, int offset, int count, int timeout);
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            private extern static int NativeBytesToRead(uint port);
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            private extern static int NativeBytesToWrite(uint port);
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            private extern static void NativeDiscardRead(uint port);
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            private extern static void NativeDiscardWrite(uint port);
         }
     }
 }
