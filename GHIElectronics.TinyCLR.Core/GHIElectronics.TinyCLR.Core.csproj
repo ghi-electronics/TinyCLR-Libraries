@@ -84,6 +84,7 @@
     <Compile Include="Diagnostics\TraceListenerCollection.cs" />
     <Compile Include="Double.cs" />
     <Compile Include="Enum.cs" />
+    <Compile Include="EventArgs.cs" />
     <Compile Include="Exception.cs" />
     <Compile Include="FlagsAttribute.cs" />
     <Compile Include="FormatException.cs" />
