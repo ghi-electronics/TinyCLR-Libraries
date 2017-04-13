@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
+﻿namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
     public enum SerialError {
         Frame = 4,
         BufferOverrun = 2,
@@ -48,49 +46,5 @@ namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
         public SerialPinChange PinChange { get; }
 
         internal PinChangedEventArgs(SerialPinChange pinChange) => this.PinChange = pinChange;
-    }
-}
-
-namespace GHIElectronics.TinyCLR.Storage.Streams {
-    public enum InputStreamOptions {
-        None = 0,
-        Partial = 1,
-        ReadAhead = 2
-    }
-
-    public interface IOutputStream : IDisposable {
-        bool Flush();
-        uint Write(IBuffer buffer);
-    }
-
-    public interface IInputStream : IDisposable {
-        uint Read(IBuffer buffer, uint count, InputStreamOptions options);
-    }
-
-    public interface IBuffer {
-        uint Capacity { get; }
-        uint Length { get; set; }
-    }
-
-    public class Buffer : IBuffer {
-        internal byte[] data;
-
-        private uint length;
-
-        public uint Capacity { get; }
-
-        public uint Length {
-            get => this.length;
-            set {
-                if (value > this.Capacity) throw new ArgumentOutOfRangeException(nameof(value));
-
-                this.length = value;
-            }
-        }
-
-        public Buffer(uint capacity) {
-            this.data = new byte[capacity];
-            this.length = 0;
-        }
     }
 }

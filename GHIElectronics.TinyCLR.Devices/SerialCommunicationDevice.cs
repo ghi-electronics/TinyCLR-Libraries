@@ -137,7 +137,7 @@ namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
 
                 this.Open();
 
-                this.parent.BytesReceived = (uint)Stream.NativeRead(this.port, ((Buffer)buffer).data, 0, (int)count, (int)this.parent.ReadTimeout.TotalMilliseconds);
+                this.parent.BytesReceived = (uint)Stream.NativeRead(this.port, ((Buffer)buffer).data, ((Buffer)buffer).offset, (int)count, (int)this.parent.ReadTimeout.TotalMilliseconds);
 
                 buffer.Length = this.parent.BytesReceived;
 
@@ -152,7 +152,7 @@ namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
 
                 this.Open();
 
-                return (uint)Stream.NativeWrite(this.port, ((Buffer)buffer).data, 0, (int)buffer.Length, (int)this.parent.WriteTimeout.TotalMilliseconds);
+                return (uint)Stream.NativeWrite(this.port, ((Buffer)buffer).data, ((Buffer)buffer).offset, (int)buffer.Length, (int)this.parent.WriteTimeout.TotalMilliseconds);
             }
 
             private void Open() {

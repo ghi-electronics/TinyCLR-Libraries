@@ -77,6 +77,8 @@
     <Compile Include="SpiDevice.cs" />
     <Compile Include="SpiProvider.cs" />
     <Compile Include="SpiEnums.cs" />
+    <Compile Include="Streams.cs" />
+    <Compile Include="WindowsRuntimeBufferExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="GHIElectronics.TinyCLR.Devices.nuspec" />
