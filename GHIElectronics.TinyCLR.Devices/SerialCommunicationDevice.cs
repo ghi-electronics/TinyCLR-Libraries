@@ -125,19 +125,23 @@ namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
                 return true;
             }
 
-            public uint Read(IBuffer buffer, uint count, InputStreamOptions options) {
+            public IBuffer Read(IBuffer buffer, uint count, InputStreamOptions options) {
                 if (buffer == null)
                     throw new ArgumentNullException(nameof(buffer));
                 if (count > buffer.Capacity)
                     throw new InvalidOperationException($"{nameof(count)} is more than the capacity of {nameof(buffer)}.");
                 if (this.parent.disposed)
                     throw new ObjectDisposedException();
-                if (options != InputStreamOptions.Partial)
+                if (options == InputStreamOptions.ReadAhead)
                     throw new NotSupportedException($"{nameof(options)} is not supported.");
 
                 this.Open();
 
-                return this.parent.BytesReceived = (uint)Stream.NativeRead(this.port, ((Buffer)buffer).data, 0, (int)buffer.Length, (int)this.parent.ReadTimeout.TotalMilliseconds);
+                this.parent.BytesReceived = (uint)Stream.NativeRead(this.port, ((Buffer)buffer).data, 0, (int)count, (int)this.parent.ReadTimeout.TotalMilliseconds);
+
+                buffer.Length = this.parent.BytesReceived;
+
+                return buffer;
             }
 
             public uint Write(IBuffer buffer) {
