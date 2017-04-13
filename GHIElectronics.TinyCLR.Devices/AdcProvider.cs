@@ -34,6 +34,10 @@ namespace GHIElectronics.TinyCLR.Devices.Adc.Provider {
     }
 
     internal class DefaultAdcControllerProvider : IAdcControllerProvider {
+        public static DefaultAdcControllerProvider Instance { get; } = new DefaultAdcControllerProvider();
+
+        private DefaultAdcControllerProvider() { }
+
         public extern ProviderAdcChannelMode ChannelMode {
             [MethodImpl(MethodImplOptions.InternalCall)]
             get;
