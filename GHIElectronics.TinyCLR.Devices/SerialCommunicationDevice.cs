@@ -132,7 +132,7 @@ namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
                     throw new InvalidOperationException($"{nameof(count)} is more than the capacity of {nameof(buffer)}.");
                 if (this.parent.disposed)
                     throw new ObjectDisposedException();
-                if (options != InputStreamOptions.None)
+                if (options != InputStreamOptions.Partial)
                     throw new NotSupportedException($"{nameof(options)} is not supported.");
 
                 this.Open();
