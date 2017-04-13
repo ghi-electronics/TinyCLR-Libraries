@@ -14,7 +14,6 @@ namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
         private bool disposed;
 
         public bool BreakSignalState { get => throw new NotSupportedException(); set => throw new NotSupportedException(); }
-        public uint BytesReceived => throw new NotSupportedException();
         public bool CarrierDetectState => throw new NotSupportedException();
         public bool ClearToSendState => throw new NotSupportedException();
         public bool DataSetReadyState => throw new NotSupportedException();
@@ -22,6 +21,7 @@ namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
         public bool IsRequestToSendEnabled { get => throw new NotSupportedException(); set => throw new NotSupportedException(); }
         public ushort UsbProductId => throw new NotSupportedException();
         public ushort UsbVendorId => throw new NotSupportedException();
+        public uint BytesReceived { get; private set; }
         public string PortName { get; private set; }
         public uint BaudRate { get; set; }
         public ushort DataBits { get; set; }
@@ -157,7 +157,7 @@ namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
 
                 this.Open();
 
-                return (uint)Stream.NativeRead(this.port, (buffer as Buffer).Data, 0, (int)buffer.Length, (int)this.parent.ReadTimeout.TotalMilliseconds);
+                return this.parent.BytesReceived = (uint)Stream.NativeRead(this.port, (buffer as Buffer).Data, 0, (int)buffer.Length, (int)this.parent.ReadTimeout.TotalMilliseconds);
             }
 
             public uint Write(IBuffer buffer) {
