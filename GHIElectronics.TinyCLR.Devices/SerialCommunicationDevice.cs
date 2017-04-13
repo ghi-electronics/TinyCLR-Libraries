@@ -22,7 +22,7 @@ namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
         public ushort UsbProductId => throw new NotSupportedException();
         public ushort UsbVendorId => throw new NotSupportedException();
         public uint BytesReceived { get; private set; }
-        public string PortName { get; private set; }
+        public string PortName { get; }
         public uint BaudRate { get; set; }
         public ushort DataBits { get; set; }
         public SerialParity Parity { get; set; }
@@ -54,8 +54,7 @@ namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
                 throw new ArgumentException("Invalid COM port.", nameof(deviceId));
             }
 
-            return new SerialDevice {
-                PortName = deviceId,
+            return new SerialDevice(deviceId) {
                 BaudRate = 9600,
                 DataBits = 8,
                 Parity = SerialParity.None,
@@ -63,7 +62,10 @@ namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
             };
         }
 
-        private SerialDevice() => this.stream = new Stream(this);
+        private SerialDevice(string portName) {
+            this.PortName = portName;
+            this.stream = new Stream(this);
+        }
 
         public void Dispose() => this.Dispose(true);
 
