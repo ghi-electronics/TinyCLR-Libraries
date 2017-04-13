@@ -8,7 +8,7 @@ namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
     public delegate void PinChangedDelegate(SerialDevice sender, PinChangedEventArgs e);
 
     public class SerialDevice : IDisposable {
-        private delegate void DataReceivedDelegate(SerialDevice.Stream sender, EventArgs e);
+        private delegate void DataReceivedDelegate(SerialDevice sender, EventArgs e);
 
         private readonly Stream stream;
         private bool disposed;
@@ -91,7 +91,7 @@ namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
             private ErrorReceivedDelegate errorReceivedCallbacks;
 
             private void ErrorReceivedEventHandler(uint evt, uint data2, DateTime timestamp) => this.errorReceivedCallbacks?.Invoke(this.parent, new ErrorReceivedEventArgs((SerialError)evt));
-            private void DataReceivedEventHandler(uint evt, uint data2, DateTime timestamp) => this.DataReceived?.Invoke(this, EventArgs.Empty);
+            private void DataReceivedEventHandler(uint evt, uint data2, DateTime timestamp) => this.DataReceived?.Invoke(this.parent, EventArgs.Empty);
 
             public event ErrorReceivedDelegate ErrorReceived {
                 add {
