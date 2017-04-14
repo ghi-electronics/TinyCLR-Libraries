@@ -126,9 +126,20 @@ namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
 
                 this.Open();
 
-                this.parent.BytesReceived = (uint)Stream.NativeRead(this.port, ((Buffer)buffer).data, ((Buffer)buffer).offset, (int)count, (int)this.parent.ReadTimeout.TotalMilliseconds);
+                var read = 0U;
+                var total = 0U;
+                var end = DateTime.UtcNow.Add(this.parent.ReadTimeout);
 
-                buffer.Length = this.parent.BytesReceived;
+                //TODO UWP on RPI and desktop appear to block indefinitely until exactly count are received regardless of InputStreamOptions or timeout
+                while (total < count) {
+                    read = (uint)Stream.NativeRead(this.port, ((Buffer)buffer).data, (int)(((Buffer)buffer).offset + total), (int)(count - total), (int)((end - DateTime.UtcNow).TotalMilliseconds));
+                    total += read;
+
+                    if (read > 0 && options == InputStreamOptions.Partial || DateTime.UtcNow > end)
+                        break;
+                }
+
+                buffer.Length = this.parent.BytesReceived = read;
 
                 return buffer;
             }
