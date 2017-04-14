@@ -135,11 +135,11 @@ namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
                     read = (uint)Stream.NativeRead(this.port, ((Buffer)buffer).data, (int)(((Buffer)buffer).offset + total), (int)(count - total), (int)((end - DateTime.UtcNow).TotalMilliseconds));
                     total += read;
 
-                    if (read > 0 && options == InputStreamOptions.Partial || DateTime.UtcNow > end)
+                    if ((read > 0 && options == InputStreamOptions.Partial) || DateTime.UtcNow > end)
                         break;
                 }
 
-                buffer.Length = this.parent.BytesReceived = read;
+                buffer.Length = this.parent.BytesReceived = total;
 
                 return buffer;
             }

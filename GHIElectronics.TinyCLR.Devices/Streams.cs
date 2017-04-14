@@ -280,6 +280,8 @@ namespace GHIElectronics.TinyCLR.Storage.Streams {
         }
 
         private Buffer SyncBuffer() {
+            this.buffer = this.buffer ?? new Buffer(this.data, 0, 0, this.data.Length);
+
             this.buffer.data = this.data;
             this.buffer.offset = this.validLength;
             this.buffer.Capacity = (uint)(this.data.Length - this.validLength);
