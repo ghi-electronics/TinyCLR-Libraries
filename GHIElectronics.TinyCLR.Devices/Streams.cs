@@ -189,13 +189,8 @@ namespace GHIElectronics.TinyCLR.Storage.Streams {
         public void WriteUInt64(ulong value) => this.WriteBytes(BitConverter.GetBytes(value));
         public void WriteSingle(float value) => this.WriteBytes(BitConverter.GetBytes(value));
         public void WriteDouble(double value) => this.WriteBytes(BitConverter.GetBytes(value));
-
-        public void WriteDateTime(/* TODO Needs to be DateTimeOffset */ DateTime value) {
-            //Still write the offset too
-        }
-        public void WriteTimeSpan(TimeSpan value) {
-
-        }
+        public void WriteDateTime(/* TODO Needs to be DateTimeOffset */ DateTime value) => this.WriteInt64(value.Ticks - 504911232000000000);
+        public void WriteTimeSpan(TimeSpan value) => this.WriteInt64(value.Ticks);
 
         public uint WriteString(string value) {
             if (value == null) throw new ArgumentNullException(nameof(value));
