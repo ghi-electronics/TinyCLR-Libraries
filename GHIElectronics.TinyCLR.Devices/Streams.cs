@@ -27,7 +27,7 @@ namespace GHIElectronics.TinyCLR.Storage.Streams {
         internal int offset;
         private uint length;
 
-        public uint Capacity { get; }
+        public uint Capacity { get; internal set; }
 
         public uint Length {
             get => this.length;
@@ -247,213 +247,142 @@ namespace GHIElectronics.TinyCLR.Storage.Streams {
             this.data = null;
         }
 
-        public UnicodeEncoding UnicodeEncoding { get => UnicodeEncoding.Utf8; set => throw new NotSupportedException(); }
-        public ByteOrder ByteOrder { get => ByteOrder.LittleEndian; set => throw new NotSupportedException(); }
+        public UnicodeEncoding UnicodeEncoding { get => UnicodeEncoding.Utf8; set { if (value != UnicodeEncoding.Utf8) throw new NotSupportedException(); } }
+        public ByteOrder ByteOrder { get => ByteOrder.LittleEndian; set { if (value != ByteOrder.LittleEndian) throw new NotSupportedException(); } }
         public uint UnstoredBufferLength => this.position;
     }
 
-#if false
     public sealed class DataReader : IDataReader, IDisposable {
-        //
-        // Summary:
-        //     Creates and initializes a new instance of the data reader.
-        //
-        // Parameters:
-        //   inputStream:
-        //     The input stream.
-        public DataReader(IInputStream inputStream);
+        private byte[] data;
+        private Buffer buffer;
+        private int validLength;
+        private int position;
+        private IInputStream stream;
 
-        //
-        // Summary:
-        //     Reads a byte value from the input stream.
-        //
-        // Returns:
-        //     The value.
-        public byte ReadByte();
-        //
-        // Summary:
-        //     Reads an array of byte values from the input stream.
-        //
-        // Parameters:
-        //   value:
-        //     The array that receives the byte values.
-        public void ReadBytes(byte[] value);
-        //
-        // Summary:
-        //     Reads a buffer from the input stream.
-        //
-        // Parameters:
-        //   length:
-        //     The length of the buffer, in bytes.
-        //
-        // Returns:
-        //     The buffer.
-        public IBuffer ReadBuffer(uint length);
-        //
-        // Summary:
-        //     Reads a Boolean value from the input stream.
-        //
-        // Returns:
-        //     The value.
-        public bool ReadBoolean();
-        //
-        // Summary:
-        //     Reads a GUID value from the input stream.
-        //
-        // Returns:
-        //     The value.
-        public Guid ReadGuid();
-        //
-        // Summary:
-        //     Reads a 16-bit integer value from the input stream.
-        //
-        // Returns:
-        //     The value.
-        public short ReadInt16();
-        //
-        // Summary:
-        //     Reads a 32-bit integer value from the input stream.
-        //
-        // Returns:
-        //     The value.
-        public int ReadInt32();
-        //
-        // Summary:
-        //     Reads a 64-bit integer value from the input stream.
-        //
-        // Returns:
-        //     The value.
-        public long ReadInt64();
-        //
-        // Summary:
-        //     Reads a 16-bit unsigned integer from the input stream.
-        //
-        // Returns:
-        //     The value.
-        public ushort ReadUInt16();
-        //
-        // Summary:
-        //     Reads a 32-bit unsigned integer from the input stream.
-        //
-        // Returns:
-        //     The value.
-        public uint ReadUInt32();
-        //
-        // Summary:
-        //     Reads a 64-bit unsigned integer from the input stream.
-        //
-        // Returns:
-        //     The value.
-        public ulong ReadUInt64();
-        //
-        // Summary:
-        //     Reads a floating-point value from the input stream.
-        //
-        // Returns:
-        //     The value.
-        public float ReadSingle();
-        //
-        // Summary:
-        //     Reads a floating-point value from the input stream.
-        //
-        // Returns:
-        //     The value.
-        public double ReadDouble();
-        //
-        // Summary:
-        //     Reads a string value from the input stream.
-        //
-        // Parameters:
-        //   codeUnitCount:
-        //     The length of the string.
-        //
-        // Returns:
-        //     The value.
-        public string ReadString(uint codeUnitCount);
-        //
-        // Summary:
-        //     Reads a date and time value from the input stream.
-        //
-        // Returns:
-        //     The value.
-        public /* TODO Needs to be DateTimeOffset */ DateTime ReadDateTime();
-        //
-        // Summary:
-        //     Reads a time-interval value from the input stream.
-        //
-        // Returns:
-        //     The value.
-        public TimeSpan ReadTimeSpan();
-        //
-        // Summary:
-        //     Loads data from the input stream.
-        //
-        // Parameters:
-        //   count:
-        //     The count of bytes to load into the intermediate buffer.
-        //
-        // Returns:
-        //     The asynchronous load data request.
-        public uint Load(uint count) {
-            //In place of the DataReceived event, we can spin up another thread and block inside Load (when InputStreamOptions is set to Partial) until data is received or timed out
+        public DataReader(IInputStream inputStream) {
+            this.stream = inputStream ?? throw new ArgumentNullException(nameof(inputStream));
+
+            this.ResetData();
         }
-        //
-        // Summary:
-        //     Detaches the buffer that is associated with the data reader.
-        //
-        // Returns:
-        //     The detached buffer.
-        public IBuffer DetachBuffer();
-        //
-        // Summary:
-        //     Detaches the stream that is associated with the data reader.
-        //
-        // Returns:
-        //     The detached stream.
-        public IInputStream DetachStream();
-        public void Dispose();
-        //
-        // Summary:
-        //     Creates a new instance of the data reader with data from the specified buffer.
-        //
-        // Parameters:
-        //   buffer:
-        //     The buffer.
-        //
-        // Returns:
-        //     The data reader.
-        public static DataReader FromBuffer(IBuffer buffer);
 
-        //
-        // Summary:
-        //     Gets or sets the Unicode character encoding for the input stream.
-        //
-        // Returns:
-        //     One of the enumeration values.
-        public UnicodeEncoding UnicodeEncoding { get; set; }
-        //
-        // Summary:
-        //     Gets or sets the read options for the input stream.
-        //
-        // Returns:
-        //     One of the enumeration values.
+        private DataReader(byte[] data, int length) {
+            this.data = data ?? throw new ArgumentNullException(nameof(data));
+            this.validLength = length <= data.Length ? length : throw new ArgumentException(nameof(length));
+            this.position = 0;
+        }
+
+        private void ResetData() {
+            this.data = new byte[128];
+            this.validLength = 0;
+            this.position = 0;
+
+            this.SyncBuffer();
+        }
+
+        private Buffer SyncBuffer() {
+            this.buffer.data = this.data;
+            this.buffer.offset = this.validLength;
+            this.buffer.Capacity = (uint)(this.data.Length - this.validLength);
+            this.buffer.Length = 0;
+
+            return this.buffer;
+        }
+
+        private int Advance(int length) {
+            if (this.UnconsumedBufferLength < length) throw new IndexOutOfRangeException();
+
+            var orig = this.position;
+
+            this.position += length;
+
+            return orig;
+        }
+
+        public Guid ReadGuid() {
+            var data = new byte[16];
+
+            this.ReadBytes(data);
+
+            return new Guid(data);
+        }
+
+        public IBuffer ReadBuffer(uint length) {
+            var data = new byte[length];
+
+            this.ReadBytes(data);
+
+            return new Buffer(data, 0, (int)length, (int)length);
+        }
+
+        public void ReadBytes(byte[] value) { if (value != null) Array.Copy(this.data, this.Advance(value.Length), value, 0, value.Length); else throw new ArgumentNullException(nameof(value)); }
+        public byte ReadByte() => this.data[this.Advance(1)];
+        public bool ReadBoolean() => this.data[this.Advance(1)] != 0;
+        public short ReadInt16() => BitConverter.ToInt16(this.data, this.Advance(2));
+        public int ReadInt32() => BitConverter.ToInt32(this.data, this.Advance(4));
+        public long ReadInt64() => BitConverter.ToInt64(this.data, this.Advance(8));
+        public ushort ReadUInt16() => BitConverter.ToUInt16(this.data, this.Advance(2));
+        public uint ReadUInt32() => BitConverter.ToUInt32(this.data, this.Advance(4));
+        public ulong ReadUInt64() => BitConverter.ToUInt64(this.data, this.Advance(8));
+        public float ReadSingle() => BitConverter.ToSingle(this.data, this.Advance(4));
+        public double ReadDouble() => BitConverter.ToDouble(this.data, this.Advance(8));
+        public /* TODO Needs to be DateTimeOffset */ DateTime ReadDateTime() => new DateTime(this.ReadInt64() + 504911232000000000);
+        public TimeSpan ReadTimeSpan() => new TimeSpan(this.ReadInt64());
+        public string ReadString(uint codeUnitCount) => new string(Encoding.UTF8.GetChars(this.data, this.Advance((int)codeUnitCount), (int)codeUnitCount)); //TODO should this return based on number of chars, not bytes?
+
+        public uint Load(uint count) {
+            if (this.stream == null) throw new InvalidOperationException();
+
+            if (this.data.Length - this.validLength < count) {
+                var newLen = 128;
+
+                while (newLen < count + this.UnconsumedBufferLength)
+                    newLen *= 2;
+
+                var arr = new byte[newLen];
+
+                Array.Copy(this.data, this.position, arr, 0, (int)this.UnconsumedBufferLength);
+
+                this.validLength = (int)this.UnconsumedBufferLength;
+                this.position = 0;
+                this.data = arr;
+            }
+
+            var read = this.stream.Read(this.SyncBuffer(), count, this.InputStreamOptions);
+
+            this.validLength += (int)read.Length;
+
+            return read.Length;
+        }
+
+        public IBuffer DetachBuffer() {
+            var data = new byte[this.UnconsumedBufferLength];
+
+            this.ReadBytes(data);
+            this.ResetData();
+
+            return new Buffer(data, 0, data.Length, data.Length);
+        }
+
+        public IInputStream DetachStream() {
+            var val = this.stream;
+
+            this.stream = null;
+
+            return val;
+        }
+
+        public void Dispose() {
+            this.stream?.Dispose();
+            this.data = null;
+        }
+
+        public static DataReader FromBuffer(IBuffer buffer) => ((Buffer)buffer).offset == 0 ? new DataReader(((Buffer)buffer).data, (int)buffer.Length) : throw new NotSupportedException();
+
+        public UnicodeEncoding UnicodeEncoding { get => UnicodeEncoding.Utf8; set { if (value != UnicodeEncoding.Utf8) throw new NotSupportedException(); } }
+        public ByteOrder ByteOrder { get => ByteOrder.LittleEndian; set { if (value != ByteOrder.LittleEndian) throw new NotSupportedException(); } }
         public InputStreamOptions InputStreamOptions { get; set; }
-        //
-        // Summary:
-        //     Gets or sets the byte order of the data in the input stream.
-        //
-        // Returns:
-        //     One of the enumeration values.
-        public ByteOrder ByteOrder { get; set; }
-        //
-        // Summary:
-        //     Gets the size of the buffer that has not been read.
-        //
-        // Returns:
-        //     The size of the buffer that has not been read, in bytes.
-        public uint UnconsumedBufferLength { get; }
+        public uint UnconsumedBufferLength => (uint)(this.validLength - this.position);
     }
-#endif
 
     public enum ByteOrder {
         LittleEndian = 0,
