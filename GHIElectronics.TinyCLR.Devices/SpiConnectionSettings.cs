@@ -1,3 +1,5 @@
+using GHIElectronics.TinyCLR.Devices.Spi.Provider;
+
 namespace GHIElectronics.TinyCLR.Devices.Spi {
     /// <summary>
     /// Represents the settings for the connection with a device.
@@ -25,6 +27,14 @@ namespace GHIElectronics.TinyCLR.Devices.Spi {
             this.m_clockFrequency = source.m_clockFrequency;
             this.m_mode = source.m_mode;
             this.m_sharingMode = source.m_sharingMode;
+        }
+
+        internal SpiConnectionSettings(ProviderSpiConnectionSettings source) {
+            this.ChipSelectionLine = source.ChipSelectionLine;
+            this.DataBitLength = source.DataBitLength;
+            this.ClockFrequency = source.ClockFrequency;
+            this.Mode = (SpiMode)source.Mode;
+            this.SharingMode = (SpiSharingMode)source.SharingMode;
         }
 
         /// <summary>

@@ -33,14 +33,42 @@ namespace GHIElectronics.TinyCLR.Devices.Pwm.Provider {
     }
 
     internal class DefaultPwmControllerProvider : IPwmControllerProvider {
+        internal static string PwmPrefix => "CON";
+
+        private readonly string deviceId;
         private readonly int controller;
         private double[] dutyCycles;
         private bool[] inverts;
         private bool[] actives;
 
-        public DefaultPwmControllerProvider(int controller) {
-            if (!DefaultPwmControllerProvider.IsTimerValid(controller)) throw new ArgumentException("Invalid controller.", nameof(controller));
+        public static IPwmControllerProvider[] Instances { get; }
 
+        static DefaultPwmControllerProvider() {
+            var deviceIds = DefaultPwmControllerProvider.GetDeviceIds();
+
+            DefaultPwmControllerProvider.Instances = new IPwmControllerProvider[deviceIds.Length];
+
+            for (var i = 0; i < deviceIds.Length; i++)
+                DefaultPwmControllerProvider.Instances[i] = new DefaultPwmControllerProvider("CON" + deviceIds[i].ToString());
+        }
+
+        public static IPwmControllerProvider FindById(string deviceId) {
+            for (var i = 0; i < DefaultPwmControllerProvider.Instances.Length; i++) {
+                var inst = (DefaultPwmControllerProvider)DefaultPwmControllerProvider.Instances[i];
+
+                if (inst.deviceId == deviceId)
+                    return inst;
+            }
+
+            return null;
+        }
+
+        private DefaultPwmControllerProvider(string deviceId) {
+            if (deviceId == null) throw new ArgumentNullException(nameof(deviceId));
+            if (deviceId.Length < 4 || deviceId.IndexOf(DefaultPwmControllerProvider.PwmPrefix) != 0 || !int.TryParse(deviceId.Substring(DefaultPwmControllerProvider.PwmPrefix.Length), out var controller) || controller < 0) throw new ArgumentException("Invalid device ID.", nameof(deviceId));
+            if (!DefaultPwmControllerProvider.IsTimerValid(controller)) throw new ArgumentException("Invalid controller.", nameof(DefaultPwmControllerProvider.controller));
+
+            this.deviceId = deviceId;
             this.controller = controller;
             this.dutyCycles = new double[this.PinCount];
             this.inverts = new bool[this.PinCount];
@@ -113,5 +141,8 @@ namespace GHIElectronics.TinyCLR.Devices.Pwm.Provider {
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private extern static bool IsTimerValid(int timer);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        public static extern int[] GetDeviceIds();
     }
 }

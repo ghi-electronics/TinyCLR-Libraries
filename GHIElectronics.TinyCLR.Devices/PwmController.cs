@@ -3,8 +3,6 @@ using System;
 
 namespace GHIElectronics.TinyCLR.Devices.Pwm {
     public sealed class PwmController {
-        private static string PwmPrefix => "CON";
-
         private IPwmControllerProvider m_provider;
 
         internal PwmController(IPwmControllerProvider provider) => this.m_provider = provider;
@@ -17,15 +15,10 @@ namespace GHIElectronics.TinyCLR.Devices.Pwm {
 
         public double ActualFrequency => this.m_provider.ActualFrequency;
 
-        public static string GetDeviceSelector() => PwmController.PwmPrefix;
+        public static string GetDeviceSelector() => DefaultPwmControllerProvider.PwmPrefix;
         public static string GetDeviceSelector(string friendlyName) => friendlyName;
 
-        public static PwmController FromId(string deviceId) {
-            if (deviceId == null) throw new ArgumentNullException(nameof(deviceId));
-            if (deviceId.Length < 4 || deviceId.IndexOf(PwmController.PwmPrefix) != 0 || !int.TryParse(deviceId.Substring(PwmController.PwmPrefix.Length), out var id) || id < 0) throw new ArgumentException("Invalid device ID.", nameof(deviceId));
-
-            return new PwmController(new DefaultPwmControllerProvider(id));
-        }
+        public static PwmController FromId(string deviceId) => new PwmController(DefaultPwmControllerProvider.FindById(deviceId));
 
         public static PwmController GetDefault() => LowLevelDevicesController.DefaultProvider?.PwmControllerProvider != null ? new PwmController(LowLevelDevicesController.DefaultProvider.PwmControllerProvider) : null;
 
