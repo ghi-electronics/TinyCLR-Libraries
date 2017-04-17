@@ -27,10 +27,10 @@ namespace GHIElectronics.TinyCLR.Devices.Dac.Provider {
         IDacControllerProvider[] GetControllers();
     }
 
-    internal class NativeDacControllerProvider : IDacControllerProvider {
-        public static NativeDacControllerProvider Instance { get; } = new NativeDacControllerProvider();
+    internal class DefaultDacControllerProvider : IDacControllerProvider {
+        public static DefaultDacControllerProvider Instance { get; } = new DefaultDacControllerProvider();
 
-        private NativeDacControllerProvider() { }
+        private DefaultDacControllerProvider() { }
 
         public extern int ChannelCount {
             [MethodImpl(MethodImplOptions.InternalCall)]
