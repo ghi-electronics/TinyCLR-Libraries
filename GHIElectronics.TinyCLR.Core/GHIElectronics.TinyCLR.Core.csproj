@@ -173,6 +173,7 @@
     <Compile Include="Runtime\InteropServices\Attributes.cs" />
     <Compile Include="Runtime\InteropServices\CharSet.cs" />
     <Compile Include="Runtime\InteropServices\LayoutKind.cs" />
+    <Compile Include="Runtime\InteropServices\Marshal.cs" />
     <Compile Include="Runtime\Remoting\RemotingServices.cs" />
     <Compile Include="Runtime\Remoting\__TransparentProxy.cs" />
     <Compile Include="SByte.cs" />
