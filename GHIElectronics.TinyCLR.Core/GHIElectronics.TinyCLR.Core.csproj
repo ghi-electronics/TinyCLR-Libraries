@@ -172,6 +172,7 @@
     <Compile Include="Runtime\CompilerServices\RuntimeHelpers.cs" />
     <Compile Include="Runtime\InteropServices\Attributes.cs" />
     <Compile Include="Runtime\InteropServices\CharSet.cs" />
+    <Compile Include="Runtime\InteropServices\InternalCall.cs" />
     <Compile Include="Runtime\InteropServices\LayoutKind.cs" />
     <Compile Include="Runtime\InteropServices\Marshal.cs" />
     <Compile Include="Runtime\Remoting\RemotingServices.cs" />
