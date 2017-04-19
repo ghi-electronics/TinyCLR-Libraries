@@ -35,6 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using GHIElectronics.TinyCLR.Devices.Adc;
 using GHIElectronics.TinyCLR.Devices.Gpio;
+using GHIElectronics.TinyCLR.Devices.Gpio.Provider;
 using GHIElectronics.TinyCLR.Devices.I2c;
 using GHIElectronics.TinyCLR.Devices.Pwm;
 using GHIElectronics.TinyCLR.Pins;
@@ -131,7 +132,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
                 if (position < 0 || position > 180) throw new ArgumentOutOfRangeException("degrees", "degrees must be between 0 and 180.");
 
 
-                PwmController.GetDefault().SetDesiredFrequency(1 / 0.020);// in case we used the other stuff. remove when we fix PWM controllers
+                //PwmController.GetDefault().SetDesiredFrequency(1 / 0.020);// in case we used the other stuff. remove when we fix PWM controllers
 
                 if (invertServo[(int)servo] == true)
                     position = 180 - position;
@@ -215,7 +216,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
             /// <summary>
             /// Turns the light bulb on.
             /// </summary>
-            public static void TurnOn() => SetRgbColor(100, 100, 100);
+            public static void TurnWhite() => SetRgbColor(100, 100, 100);
 
             /// <summary>
             /// Turns the light bulb Red.
@@ -306,7 +307,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
                 };
                 foreach (var button in buttons) {
                     button.SetDriveMode(GpioPinDriveMode.InputPullUp);
-                    button.ValueChanged += Button_ValueChanged;
+                    //button.ValueChanged += Button_ValueChanged;
                 }
             }
             /// <summary>
@@ -346,7 +347,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
             private static void Button_ValueChanged(object sender, GpioPinValueChangedEventArgs e) {
 
                 for (var i = 0; i < 3; i++) {
-                    if (((GpioPin)sender).PinNumber == buttons[i].PinNumber) {
+                    if (((IGpioPinProvider)sender).PinNumber == buttons[i].PinNumber) {
                         if (e.Edge == GpioPinEdge.FallingEdge)
                             ButtonPressed?.Invoke((Button)i);
                         else
@@ -359,7 +360,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
             /// Is the select button pressed.
             /// </summary>
             /// <returns>Whether or not it is pressed.</returns>
-            public static bool IsUpPressed() => IsPressed(Button.Select);
+            public static bool IsSelectPressed() => IsPressed(Button.Select);
 
             /// <summary>
             /// Is the left button pressed.
@@ -380,7 +381,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
             /// <returns>Whether or not it was pressed.</returns>
             public static bool IsPressed(Button button) => buttons[(int)button].Read() == GpioPinValue.Low;// it is low when it is pressed
         }
-
+#if false
         /// <summary>
         /// Provides access to the traffic light on the BrainPad.
         /// </summary>
@@ -438,7 +439,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
                 //TurnColorOff(Color.Green);
                 green.Write(GpioPinValue.Low);
         }
-
+#endif
         /// <summary>
         /// Provides access to the light sensor on the BrainPad.
         /// </summary>
@@ -500,9 +501,6 @@ namespace GHIElectronics.TinyCLR.BrainPad {
                 };
                 var aqs = I2cDevice.GetDeviceSelector("I2C1");
                 device = I2cDevice.FromId(aqs, settings);
-
-
-                // device.WriteRegister(0x2A, 0x01);
                 WriteRegister(0x2A, 0x01);
             }
             private static void WriteRegister(byte register, byte data) {
@@ -528,16 +526,16 @@ namespace GHIElectronics.TinyCLR.BrainPad {
             }
 
             /// <summary>
-            /// Reads the acceleration on the x axis.
-            /// </summary>
-            /// <returns>The acceleration.</returns>
-            public static double ReadX() => ReadAxis(0x01);
-
-            /// <summary>
             /// Reads the acceleration on the y axis.
             /// </summary>
             /// <returns>The acceleration.</returns>
-            public static double ReadY() => ReadAxis(0x03);
+            public static double ReadY() => ReadAxis(0x01);
+
+            /// <summary>
+            /// Reads the acceleration on the x axis.
+            /// </summary>
+            /// <returns>The acceleration.</returns>
+            public static double ReadX() => ReadAxis(0x03);
 
             /// <summary>
             /// Reads the acceleration on the z axis.
@@ -557,19 +555,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
             }
 
             static Display() {
-                //buffer1 = new byte[1];
-                //buffer2 = new byte[2];
-                //buffer4 = new byte[4];
-                //clearBuffer = new byte[160 * 2 * 16];
-                //characterBuffer1 = new byte[80];
-                //characterBuffer2 = new byte[320];
-                //characterBuffer4 = new byte[1280];
-                /*
-                            controlPin = new OutputPort(Peripherals.Display.Control, false);
-                            resetPin = new OutputPort(Peripherals.Display.Reset, false);
-                            backlightPin = new OutputPort(Peripherals.Display.Backlight, true);
-                            spi = new SPI(new SPI.Configuration(Peripherals.Display.ChipSelect, false, 0, 0, false, true, 12000, Peripherals.Display.SpiModule));
-                            */
+
 
                 var settings = new I2cConnectionSettings(0x3C) {
                     BusSpeed = I2cBusSpeed.FastMode
@@ -662,7 +648,13 @@ namespace GHIElectronics.TinyCLR.BrainPad {
             }
             public static void DrawText(int x, int y, double number) => DrawText(x, y, number.ToString("N2"));
             public static void DrawSmallText(int x, int y, double number) => DrawSmallText(x, y, number.ToString("N2"));
-
+            public static void InvertColors(bool invert)
+            {
+                if(invert)
+                    Ssd1306_command(0xa7);
+                else
+                    Ssd1306_command(0xa6);
+            }
         }
         /// <summary>
         /// Controls the display on the BrainPad.
@@ -687,7 +679,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
             //private static byte[] buffer4;
             public enum Color {
                 Black,
-                White
+                Blue
             }
 
 
@@ -703,14 +695,14 @@ namespace GHIElectronics.TinyCLR.BrainPad {
             /// <param name="x">The x coordinate to draw at.</param>
             /// <param name="y">The y coordinate to draw at.</param>
             /// <param name="color">The color to draw.</param>
-            static void DrawPoint(int x, int y, Color color = Color.White) {
+            static public void DrawPoint(int x, int y, Color color = Color.Blue) {
                 if (x < 0 || x > 127)
                     return;
                 if (y < 0 || y > 63)
                     return;
                 var index = (x + (y / 8) * 128) + 1;
 
-                if (color == Color.White)
+                if (color == Color.Blue)
                     vram[index] |= (byte)(1 << (y % 8));
                 else
                     vram[index] &= (byte)(~(1 << (y % 8)));
@@ -719,39 +711,107 @@ namespace GHIElectronics.TinyCLR.BrainPad {
             /// <summary>
             /// Clears the Display.
             /// </summary>
-            public static void Clear() {
-                Array.Clear(vram, 0, vram.Length);
+            public static void Clear(Color color=Color.Black) {
+                if (color == Color.Black)
+                {
+                    Array.Clear(vram, 0, vram.Length);
+                }else
+                {
+                    for (int i = 0; i < vram.Length; i++)
+                        vram[i] = 0xff;
+                }
                 vram[0] = 0x40;
             }
-
-            /// <summary>
-            /// Draws an image.
-            /// </summary>
-            /// <param name="data">The image as a byte array.</param>
-            /*public static void DrawImage(byte[] data)
+            public static void Clear(int x, int y, int width, int height)
             {
-                if (data == null) throw new ArgumentNullException("data");
-                if (data.Length == 0) throw new ArgumentException("data.Length must not be zero.", "data");
+                if (x == 0 && y == 0 && width == 128 && height == 64) Clear();
+                for (int lx = x; lx < width + x; lx++)
+                    for (int ly = y; ly < height + y; ly++)
+                        DrawPoint(lx, ly, Color.Black);
+            }
+            public class Image
+            {
+                private int _height;
+                private int _width;
+                private byte[] _data;
+                public int Height
+                {
+                    get
+                    {
+                        return _height;
+                    }
+                }
+                public int Width
+                {
+                    get
+                    {
+                        return _width;
+                    }
+                }
+                public byte[] Data
+                {
+                    get
+                    {
+                        return _data;
+                    }
+                }
 
-                WriteCommand(0x2C);
-                WriteData(data);
-            }*/
-
+                public Image(int width, int height, byte[] data)
+                {
+                    if (width * height != data.Length)
+                        throw new Exception("Incorrect image data size");
+                    _height = height;
+                    _width = width;
+                    _data = data;
+                }
+            }
+            public enum Transform
+            {
+                FlipHorizontal,
+                FlipVertical,
+                Rotate90,
+                Rotate180,
+                Rotate270,
+                None
+            }
             /// <summary>
             /// Draws an image at the given location.
             /// </summary>
             /// <param name="x">The x coordinate to draw at.</param>
             /// <param name="y">The y coordinate to draw at.</param>
             /// <param name="image">The image to draw.</param>
-            /*public static void DrawImage(int x, int y, Image image)
+            public static void DrawImage(int x, int y, Image image, Transform mirror = Transform.None)
             {
                 if (image == null) throw new ArgumentNullException("image");
-                if (x < 0) throw new ArgumentOutOfRangeException("x", "x must not be negative.");
-                if (y < 0) throw new ArgumentOutOfRangeException("y", "y must not be negative.");
 
-                SetClip(x, y, image.Width, image.Height);
-                DrawImage(image.Pixels);
-            }*/
+                for (int xd = 0; xd < image.Width; xd++)
+                {
+                    for (int yd = 0; yd < image.Height; yd++)
+                    {
+                        switch (mirror)
+                        {
+                            case Transform.None:
+                                DrawPoint(x + xd, y + yd, image.Data[image.Width * yd + xd] == 1 ? Color.Blue : Color.Black);
+                                break;
+                            case Transform.FlipHorizontal:
+                                DrawPoint(x + image.Width - xd, y + yd, image.Data[image.Width * yd + xd] == 1 ? Color.Blue : Color.Black);
+                                break;
+                            case Transform.FlipVertical:
+                                DrawPoint(x + xd, y + image.Height - yd, image.Data[image.Width * yd + xd] == 1 ? Color.Blue : Color.Black);
+                                break;
+                            case Transform.Rotate90:
+                                DrawPoint(x + image.Width - yd, y + xd, image.Data[image.Width * yd + xd] == 1 ? Color.Blue : Color.Black);
+                                break;
+                            case Transform.Rotate180:
+                                DrawPoint(x + image.Width - xd, y + image.Height - yd, image.Data[image.Width * yd + xd] == 1 ? Color.Blue : Color.Black);
+                                break;
+                            case Transform.Rotate270:
+                                DrawPoint(x + yd, y + image.Height - xd, image.Data[image.Width * yd + xd] == 1 ? Color.Blue : Color.Black);
+                                break;
+                        }
+                    }
+                }
+            }
 
 
             /// <summary>
@@ -762,11 +822,8 @@ namespace GHIElectronics.TinyCLR.BrainPad {
             /// <param name="x1">The ending x coordinate.</param>
             /// <param name="y1">The ending y coordinate.</param>
             /// <param name="color">The color to draw.</param>
-            public static void DrawLine(int x0, int y0, int x1, int y1, Color color = Color.White) {
-                if (x0 < 0) throw new ArgumentOutOfRangeException("x0", "x0 must not be negative.");
-                if (y0 < 0) throw new ArgumentOutOfRangeException("y0", "y0 must not be negative.");
-                if (x1 < 0) throw new ArgumentOutOfRangeException("x1", "x1 must not be negative.");
-                if (y1 < 0) throw new ArgumentOutOfRangeException("y1", "y1 must not be negative.");
+            public static void DrawLine(int x0, int y0, int x1, int y1, Color color = Color.Blue) {
+
 
                 var steep = Math.Abs(y1 - y0) > Math.Abs(x1 - x0);
                 int t, dX, dY, yStep, error;
@@ -826,10 +883,9 @@ namespace GHIElectronics.TinyCLR.BrainPad {
             /// <param name="y">The y coordinate to draw at.</param>
             /// <param name="r">The radius of the circle.</param>
             /// <param name="color">The color to draw.</param>
-            public static void DrawCircle(int x, int y, int r, Color color = Color.White) {
-                //if (x < 0) throw new ArgumentOutOfRangeException("x", "x must not be negative.");
-                //if (y < 0) throw new ArgumentOutOfRangeException("y", "y must not be negative.");
-                if (r <= 0) return;// throw new ArgumentOutOfRangeException("radius", "radius must be positive.");
+            public static void DrawCircle(int x, int y, int r, Color color = Color.Blue) {
+
+                if (r <= 0) return;
 
                 var f = 1 - r;
                 var ddFX = 1;
@@ -873,11 +929,9 @@ namespace GHIElectronics.TinyCLR.BrainPad {
             /// <param name="width">The width of the rectangle.</param>
             /// <param name="height">The height of the rectangle.</param>
             /// <param name="color">The color to use.</param>
-            public static void DrawRectangle(int x, int y, int width, int height, Color color = Color.White) {
-                if (x < 0) throw new ArgumentOutOfRangeException("x", "x must not be negative.");
-                if (y < 0) throw new ArgumentOutOfRangeException("y", "y must not be negative.");
-                if (width < 0) throw new ArgumentOutOfRangeException("width", "width must not be negative.");
-                if (height < 0) throw new ArgumentOutOfRangeException("height", "height must not be negative.");
+            public static void DrawRectangle(int x, int y, int width, int height, Color color = Color.Blue) {
+                if (width < 0) return;
+                if (height < 0) return;
 
                 for (var i = x; i < x + width; i++) {
                     DrawPoint(i, y, color);
@@ -988,38 +1042,56 @@ namespace GHIElectronics.TinyCLR.BrainPad {
             0x08, 0x08, 0x2a, 0x1c, 0x08  /* ~ */
         };
 
-            private static void DrawText(int x, int y, char letter, int HscaleFactor, int VscaleFactor) {
+            private static void DrawText(int x, int y, char letter, int HScale, int VScale, Color color) {
                 var index = 5 * (letter - 32);
 
+               
                 for (var h = 0; h < 5; h++) {
-                    for (var hs = 0; hs < HscaleFactor; hs++) {
+                    for (var hs = 0; hs < HScale; hs++) {
                         for (var v = 0; v < 8; v++) {
                             var show = (font[index + h] & (1 << v)) != 0;
-                            for (var vs = 0; vs < VscaleFactor; vs++) {
-                                DrawPoint(x + (h * HscaleFactor) + hs, y + (v * VscaleFactor) + vs, show ? Color.White : Color.Black);
+                            if (color == Color.Black)
+                                show = !show;
+                            for (var vs = 0; vs < VScale; vs++) {
+                                DrawPoint(x + (h * HScale) + hs, y + (v * VScale) + vs, show ? Color.Blue : Color.Black);
                             }
                         }
-
+                        
                     }
                 }
+               
+                for (var hs = 0; hs < HScale; hs++)
+                {
+                    DrawLine(x + 5 * HScale + hs, y, x + 5 * HScale + hs, y + 8 * VScale, color == Color.Black ? Color.Blue : Color.Black);
+                }
+               
+
 
             }
-
             /// <summary>
             /// Draws text at the given location.
             /// </summary>
             /// <param name="x">The x coordinate to draw at.</param>
             /// <param name="y">The y coordinate to draw at.</param>
             /// <param name="text">The string to draw.</param>
-            public static void DrawText(int x, int y, string text, int HScale, int VScale) {
+            public static void DrawSmallText(int x, int y, string text) => DrawText(x, y, text, 1, 1);
+            public static void DrawText(int x, int y, string text) => DrawText(x, y, text, 2, 2);
+            /// <summary>
+            /// Draws text at the given location.
+            /// </summary>
+            /// <param name="x">The x coordinate to draw at.</param>
+            /// <param name="y">The y coordinate to draw at.</param>
+            /// <param name="text">The string to draw.</param>
+            public static void DrawText(int x, int y, string text, int HScale, int VScale, Color color = Color.Blue) {
                 var originalX = x;
 
                 if (text == null) throw new ArgumentNullException("data");
 
                 for (var i = 0; i < text.Length; i++) {
                     if (text[i] >= 32) {
-                        DrawText(x, y, text[i], HScale, VScale);
+                        DrawText(x, y, text[i], HScale, VScale, color);
                         x += (6 * HScale);
+                        
                     }
                     else {
                         if (text[i] == '\n') {
@@ -1059,6 +1131,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
 
                 Thread.Sleep((int)milliseconds);
             }
+            public static void Minimum() => Seconds(0.02);
         }
 
         /// <summary>
