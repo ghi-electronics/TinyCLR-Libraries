@@ -18,9 +18,10 @@ namespace GHIElectronics.TinyCLR.BrainPad.Internal {
         private double _MaxPulseCalibration = 2.0;
         // invert servos
         private bool[] invertServo;
+        private PwmController controller;
 
         public ServoMotor() {
-            var PWM = PwmController.FromId(G30.PwmPin.Controller2.Id);
+            this.controller = PwmController.FromId(G30.PwmPin.Controller2.Id);
             this.invertServo = new bool[2]
             {
                 false,
@@ -28,10 +29,10 @@ namespace GHIElectronics.TinyCLR.BrainPad.Internal {
             };
             this.servos = new PwmPin[2]
             {
-                PWM.OpenPin(G30.PwmPin.Controller2.PA3),
-                PWM.OpenPin(G30.PwmPin.Controller2.PA0)
+                this.controller.OpenPin(G30.PwmPin.Controller2.PA3),
+                this.controller.OpenPin(G30.PwmPin.Controller2.PA0)
             };
-            PWM.SetDesiredFrequency(1 / 0.020);
+            this.controller.SetDesiredFrequency(1 / 0.020);
             //output = new PWM(Peripherals.ServoMotor, 20000, 1250, PWM.ScaleFactor.Microseconds, false);
             //started = false;
         }
@@ -65,7 +66,7 @@ namespace GHIElectronics.TinyCLR.BrainPad.Internal {
             if (position < 0 || position > 180) throw new ArgumentOutOfRangeException("degrees", "degrees must be between 0 and 180.");
 
 
-            //PwmController.GetDefault().SetDesiredFrequency(1 / 0.020);// in case we used the other stuff. remove when we fix PWM controllers
+            this.controller.SetDesiredFrequency(1 / 0.020);// in case we used the other stuff. remove when we fix PWM controllers
 
             if (this.invertServo[(int)servo] == true)
                 position = 180 - position;
