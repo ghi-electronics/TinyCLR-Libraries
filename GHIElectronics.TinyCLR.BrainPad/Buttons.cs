@@ -1,5 +1,4 @@
 ﻿using GHIElectronics.TinyCLR.Devices.Gpio;
-using GHIElectronics.TinyCLR.Devices.Gpio.Provider;
 using GHIElectronics.TinyCLR.Pins;
 
 namespace GHIElectronics.TinyCLR.BrainPad {
@@ -42,7 +41,7 @@ namespace GHIElectronics.TinyCLR.BrainPad.Internal {
             };
             foreach (var button in this.buttons) {
                 button.SetDriveMode(GpioPinDriveMode.InputPullUp);
-                //button.ValueChanged += Button_ValueChanged;
+                button.ValueChanged += this.Button_ValueChanged;
             }
         }
         /// <summary>
@@ -74,10 +73,10 @@ namespace GHIElectronics.TinyCLR.BrainPad.Internal {
         /// </summary>
         public event ButtonEventHandler ButtonReleased;
         public event ButtonEventHandler ButtonPressed;
-        private void Button_ValueChanged(object sender, GpioPinValueChangedEventArgs e) {
+        private void Button_ValueChanged(GpioPin sender, GpioPinValueChangedEventArgs e) {
 
             for (var i = 0; i < 3; i++) {
-                if (((IGpioPinProvider)sender).PinNumber == this.buttons[i].PinNumber) {
+                if (sender.PinNumber == this.buttons[i].PinNumber) {
                     if (e.Edge == GpioPinEdge.FallingEdge)
                         ButtonPressed?.Invoke((Button)i);
                     else
