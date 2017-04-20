@@ -1,5 +1,6 @@
 ﻿using GHIElectronics.TinyCLR.Devices.Gpio;
 using GHIElectronics.TinyCLR.Pins;
+using System;
 
 namespace GHIElectronics.TinyCLR.BrainPad {
     public class Buttons {
@@ -21,35 +22,27 @@ namespace GHIElectronics.TinyCLR.BrainPad {
 
         public Buttons() {
             var GPIO = GpioController.GetDefault();
-            var PC1 = GpioController.GetDefault().OpenPin(G30.GpioPin.PC1);
-            PC1.SetDriveMode(GpioPinDriveMode.InputPullDown);
-            if (PC1.Read() == GpioPinValue.High) {
-                // new brainpad
-                this.buttons = new GpioPin[]
-                  {
-                        // new BrainPad
+            switch (Board.BoardType) {
+                case BoardType.BP1:
+                    this.buttons = new[] {
                         GPIO.OpenPin(G30.GpioPin.PA15),
                         GPIO.OpenPin(G30.GpioPin.PB10),
                         GPIO.OpenPin(G30.GpioPin.PC13),
                         GPIO.OpenPin(G30.GpioPin.PA5)
+                      };
+                    break;
 
-                  };
-            }
-            else {
-                // old brainpad
-                this.buttons = new GpioPin[]
-                  {
-
-
-                        // old
+                case BoardType.Original:
+                    this.buttons = new[] {
                         GPIO.OpenPin(G30.GpioPin.PB10),
                         GPIO.OpenPin(G30.GpioPin.PC13),
                         GPIO.OpenPin(G30.GpioPin.PA5),
                         GPIO.OpenPin(G30.GpioPin.PA15)
-                  };
+                    };
+                    break;
+
+                default: throw new InvalidOperationException();
             }
-            PC1.Dispose();
-            PC1 = null;
 
 
             foreach (var button in this.buttons) {

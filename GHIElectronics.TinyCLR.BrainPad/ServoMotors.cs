@@ -1,5 +1,4 @@
-﻿using GHIElectronics.TinyCLR.Devices.Gpio;
-using GHIElectronics.TinyCLR.Devices.Pwm;
+﻿using GHIElectronics.TinyCLR.Devices.Pwm;
 using GHIElectronics.TinyCLR.Pins;
 using System;
 
@@ -24,25 +23,26 @@ namespace GHIElectronics.TinyCLR.BrainPad {
             this.minPulseLength = new[] { 1.0, 1.0 };
             this.maxPulseLength = new[] { 2.0, 2.0 };
 
-            var PC1 = GpioController.GetDefault().OpenPin(G30.GpioPin.PC1);
-            PC1.SetDriveMode(GpioPinDriveMode.InputPullDown);
-            if (PC1.Read() == GpioPinValue.High) {
-                // new brainpad
-                this.servos = new PwmPin[2]
-                {
-                    this.controller.OpenPin(G30.PwmPin.Controller2.PA3),
-                    this.controller.OpenPin(G30.PwmPin.Controller2.PA0)
-                };
-            }
-            else {
-                // old brainpad
-                this.servos = new PwmPin[2]
-               {
-                    this.controller.OpenPin(G30.PwmPin.Controller1.PA8),
-                    this.controller.OpenPin(G30.PwmPin.Controller2.PA0)
-               };
-            }
 
+            switch (Board.BoardType) {
+                case BoardType.BP1:
+                    this.servos = new[] {
+                        this.controller.OpenPin(G30.PwmPin.Controller2.PA3),
+                        this.controller.OpenPin(G30.PwmPin.Controller2.PA0)
+                    };
+
+                    break;
+
+                case BoardType.Original:
+                    this.servos = new[] {
+                        this.controller.OpenPin(G30.PwmPin.Controller1.PA8),
+                        this.controller.OpenPin(G30.PwmPin.Controller2.PA0)
+                    };
+
+                    break;
+
+                default: throw new InvalidOperationException();
+            }
 
             this.controller.SetDesiredFrequency(1 / 0.020);
             //output = new PWM(Peripherals.ServoMotor, 20000, 1250, PWM.ScaleFactor.Microseconds, false);
