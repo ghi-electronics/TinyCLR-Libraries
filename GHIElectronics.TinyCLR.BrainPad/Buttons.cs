@@ -7,8 +7,9 @@ namespace GHIElectronics.TinyCLR.BrainPad {
     /// </summary>
     public enum Button {
         Left = 0,
-        Select = 1,
-        Right = 2
+        DownSelect = 1,
+        Right = 2,
+        Up = 3
     }
 
     /// <summary>
@@ -25,47 +26,41 @@ namespace GHIElectronics.TinyCLR.BrainPad.Internal {
 
         public Buttons() {
             var GPIO = GpioController.GetDefault();
-            this.buttons = new GpioPin[]
-            {
-#if true
-                // new BrainPad
-                GPIO.OpenPin(G30.GpioPin.PA15),
-                GPIO.OpenPin(G30.GpioPin.PB10),
-                GPIO.OpenPin(G30.GpioPin.PC13)
-#else
-                // old
-                GPIO.OpenPin(G30.GpioPin.PB10),
-                GPIO.OpenPin(G30.GpioPin.PC13),
-                GPIO.OpenPin(G30.GpioPin.PA5)
-#endif
-            };
+            var PC1 = GpioController.GetDefault().OpenPin(G30.GpioPin.PC1);
+            PC1.SetDriveMode(GpioPinDriveMode.InputPullDown);
+            if (PC1.Read() == GpioPinValue.High) {
+                // new brainpad
+                this.buttons = new GpioPin[]
+                  {
+                        // new BrainPad
+                        GPIO.OpenPin(G30.GpioPin.PA15),
+                        GPIO.OpenPin(G30.GpioPin.PB10),
+                        GPIO.OpenPin(G30.GpioPin.PC13),
+                        GPIO.OpenPin(G30.GpioPin.PA5)
+
+                  };
+            }
+            else {
+                // old brainpad
+                this.buttons = new GpioPin[]
+                  {
+
+
+                        // old
+                        GPIO.OpenPin(G30.GpioPin.PB10),
+                        GPIO.OpenPin(G30.GpioPin.PC13),
+                        GPIO.OpenPin(G30.GpioPin.PA5),
+                        GPIO.OpenPin(G30.GpioPin.PA15)
+                  };
+            }
+            PC1.Dispose();
+            PC1 = null;
+
+
             foreach (var button in this.buttons) {
                 button.SetDriveMode(GpioPinDriveMode.InputPullUp);
                 button.ValueChanged += this.Button_ValueChanged;
             }
-        }
-        /// <summary>
-        /// Returns a friendly name (string) for a specific button.
-        /// </summary>
-        /// <param name="button">The button needed.</param>
-        /// <returns>The name of that button.</returns>
-        public string GetFriendlyName(Button button) {
-            string str;
-            switch (button) {
-                case Button.Left:
-                    str = "Left";
-                    break;
-                case Button.Right:
-                    str = "Right";
-                    break;
-                case Button.Select:
-                    str = "Select";
-                    break;
-                default:
-                    str = "Unknown!";
-                    break;
-            }
-            return str;
         }
 
         /// <summary>
@@ -89,7 +84,13 @@ namespace GHIElectronics.TinyCLR.BrainPad.Internal {
         /// Is the select button pressed.
         /// </summary>
         /// <returns>Whether or not it is pressed.</returns>
-        public bool IsSelectPressed() => IsPressed(Button.Select);
+        public bool IsDownSelectPressed() => IsPressed(Button.DownSelect);
+
+        /// <summary>
+        /// Is the select button pressed.
+        /// </summary>
+        /// <returns>Whether or not it is pressed.</returns>
+        public bool IsUpPressed() => IsPressed(Button.Up);
 
         /// <summary>
         /// Is the left button pressed.

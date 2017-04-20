@@ -43,5 +43,10 @@
             /// <summary>PWM pin.</summary>
             public const int Pwm = G30.PwmPin.Controller1.PA8;
         }
+
+        /// <summary>Serial port definitions.</summary>
+        public static class SerialPort {
+            public const string Id = G30.SerialPort.Com1;
+        }
     }
 }
