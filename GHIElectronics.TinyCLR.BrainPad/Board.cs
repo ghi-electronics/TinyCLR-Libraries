@@ -6,27 +6,22 @@ namespace GHIElectronics.TinyCLR.BrainPad {
     /// </summary>
     public class Board {
         /// <summary>
-        /// A constant value that is always true for endless looping.
+        /// Writes a message to the output window.
         /// </summary>
-        public bool Looping = true;
+        /// <param name="message">The message to write.</param>
+        public void WriteOnComputer(string message) => System.Diagnostics.Debug.WriteLine(message);
 
         /// <summary>
         /// Writes a message to the output window.
         /// </summary>
         /// <param name="message">The message to write.</param>
-        public void WriteDebugMessage(string message) => System.Diagnostics.Debug.WriteLine(message);
+        public void WriteOnComputer(int message) => WriteOnComputer(message.ToString("N0"));
 
         /// <summary>
         /// Writes a message to the output window.
         /// </summary>
         /// <param name="message">The message to write.</param>
-        public void WriteDebugMessage(int message) => WriteDebugMessage(message.ToString());
-
-        /// <summary>
-        /// Writes a message to the output window.
-        /// </summary>
-        /// <param name="message">The message to write.</param>
-        public void WriteDebugMessage(double message) => WriteDebugMessage(message.ToString());
+        public void WriteOnComputer(double message) => WriteOnComputer(message.ToString("N4"));
 
         /// <summary>
         /// Provices access to the accelerometer on the BrainPad.

@@ -24,7 +24,7 @@ namespace GHIElectronics.TinyCLR.BrainPad.Internal {
             this.green.Start();
             this.blue.Start();
 
-            SetRgbColor(0, 0, 0);
+            TurnColor(0, 0, 0);
         }
 
         /// <summary>
@@ -33,7 +33,7 @@ namespace GHIElectronics.TinyCLR.BrainPad.Internal {
         /// <param name="r">The red value of the color between 0 (fully off) and 100 (fully on).</param>
         /// <param name="g">The green value of the color between 0 (fully off) and 100 (fully on).</param>
         /// <param name="blue">The blue value of the color between 0 (fully off) and 100 (fully on).</param>
-        public void SetRgbColor(double r, double g, double b) {
+        public void TurnColor(double r, double g, double b) {
             if (r < 0 || r > 100) throw new ArgumentOutOfRangeException("red", "red must be between zero and one hundred.");
             if (g < 0 || g > 100) throw new ArgumentOutOfRangeException("green", "green must be between zero and one hundred.");
             if (b < 0 || b > 100) throw new ArgumentOutOfRangeException("blue", "blue must be between zero and one hundred.");
@@ -46,26 +46,26 @@ namespace GHIElectronics.TinyCLR.BrainPad.Internal {
         /// <summary>
         /// Turns off the light bulb.
         /// </summary>
-        public void TurnOff() => SetRgbColor(0, 0, 0);
+        public void TurnOff() => TurnColor(0, 0, 0);
 
         /// <summary>
         /// Turns the light bulb on.
         /// </summary>
-        public void TurnWhite() => SetRgbColor(100, 100, 100);
+        public void TurnWhite() => TurnColor(100, 100, 100);
 
         /// <summary>
         /// Turns the light bulb Red.
         /// </summary>
-        public void TurnRed() => SetRgbColor(100, 0, 0);
+        public void TurnRed() => TurnColor(100, 0, 0);
 
         /// <summary>
         /// Turns the light bulb Green.
         /// </summary>
-        public void TurnGreen() => SetRgbColor(0, 100, 0);
+        public void TurnGreen() => TurnColor(0, 100, 0);
 
         /// <summary>
         /// Turns the light bulb Blue.
         /// </summary>
-        public void TurnBlue() => SetRgbColor(0, 0, 100);
+        public void TurnBlue() => TurnColor(0, 0, 100);
     }
 }

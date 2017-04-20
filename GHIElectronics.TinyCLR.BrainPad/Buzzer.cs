@@ -16,8 +16,8 @@ namespace GHIElectronics.TinyCLR.BrainPad.Internal {
         /// Starts a given frequency.
         /// </summary>
         /// <param name="frequency">The frequency to play.</param>
-        public void Start(double frequency) {
-            Stop();
+        public void StartBuzzing(double frequency) {
+            StopBuzzing();
             if (frequency > 0) {
                 this.controller.SetDesiredFrequency(frequency);
                 this.buzz.Start();
@@ -29,14 +29,14 @@ namespace GHIElectronics.TinyCLR.BrainPad.Internal {
         /// Makes a short beep sound.
         /// </summary>
         public void Beep() {
-            Start(2000);
+            StartBuzzing(2000);
             Thread.Sleep(5);
-            Stop();
+            StopBuzzing();
         }
 
         /// <summary>
         /// Stops any note or frequency currently playing.
         /// </summary>
-        public void Stop() => this.buzz.Stop();
+        public void StopBuzzing() => this.buzz.Stop();
     }
 }
