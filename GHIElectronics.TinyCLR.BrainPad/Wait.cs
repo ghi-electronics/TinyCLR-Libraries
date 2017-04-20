@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 
-namespace GHIElectronics.TinyCLR.BrainPad.Internal {
+namespace GHIElectronics.TinyCLR.BrainPad {
     public class Wait {
         /// <summary>
         /// Tells the BrainPad to wait for the given number of seconds.

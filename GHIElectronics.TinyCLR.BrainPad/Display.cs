@@ -36,7 +36,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using GHIElectronics.TinyCLR.Devices.I2c;
 using System;
 
-namespace GHIElectronics.TinyCLR.BrainPad.Internal {
+namespace GHIElectronics.TinyCLR.BrainPad {
     public class Display {
         public class Image {
             public int Height { get; }

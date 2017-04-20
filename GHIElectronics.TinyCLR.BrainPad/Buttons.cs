@@ -1,7 +1,7 @@
 ﻿using GHIElectronics.TinyCLR.Devices.Gpio;
 using GHIElectronics.TinyCLR.Pins;
 
-namespace GHIElectronics.TinyCLR.BrainPad.Internal {
+namespace GHIElectronics.TinyCLR.BrainPad {
     public class Buttons {
         /// <summary>
         /// The signature of all button events.

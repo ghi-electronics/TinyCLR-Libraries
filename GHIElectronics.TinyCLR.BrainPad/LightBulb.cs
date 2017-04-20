@@ -2,7 +2,7 @@
 using GHIElectronics.TinyCLR.Pins;
 using System;
 
-namespace GHIElectronics.TinyCLR.BrainPad.Internal {
+namespace GHIElectronics.TinyCLR.BrainPad {
     public class LightBulb {
         private PwmPin red;
         private PwmPin green;

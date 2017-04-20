@@ -3,7 +3,7 @@ using GHIElectronics.TinyCLR.Devices.Pwm;
 using GHIElectronics.TinyCLR.Pins;
 using System;
 
-namespace GHIElectronics.TinyCLR.BrainPad.Internal {
+namespace GHIElectronics.TinyCLR.BrainPad {
     public class ServoMotors {
         private PwmPin[] servos;
         //private bool started;

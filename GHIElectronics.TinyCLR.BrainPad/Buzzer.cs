@@ -2,7 +2,7 @@
 using GHIElectronics.TinyCLR.Pins;
 using System.Threading;
 
-namespace GHIElectronics.TinyCLR.BrainPad.Internal {
+namespace GHIElectronics.TinyCLR.BrainPad {
     public class Buzzer {
         private PwmController controller;
         private PwmPin buzz;

@@ -1,7 +1,7 @@
 ﻿using GHIElectronics.TinyCLR.Devices.Adc;
 using GHIElectronics.TinyCLR.Pins;
 
-namespace GHIElectronics.TinyCLR.BrainPad.Internal {
+namespace GHIElectronics.TinyCLR.BrainPad {
     public class LightSensor {
         //private AnalogInput input;
         private AdcChannel input = AdcController.GetDefault().OpenChannel(G30.AdcChannel.PB1);

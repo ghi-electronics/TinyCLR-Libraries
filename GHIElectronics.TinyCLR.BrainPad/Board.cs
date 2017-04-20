@@ -1,6 +1,4 @@
-﻿using GHIElectronics.TinyCLR.BrainPad.Internal;
-
-namespace GHIElectronics.TinyCLR.BrainPad {
+﻿namespace GHIElectronics.TinyCLR.BrainPad {
     /// <summary>
     /// The BrainPad class used with GHI Electronics's BrainPad.
     /// </summary>
