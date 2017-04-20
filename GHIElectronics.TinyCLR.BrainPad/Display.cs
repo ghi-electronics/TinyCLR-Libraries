@@ -36,27 +36,23 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using GHIElectronics.TinyCLR.Devices.I2c;
 using System;
 
-namespace GHIElectronics.TinyCLR.BrainPad {
-    public class Image {
-        private int _height;
-        private int _width;
-        private byte[] _data;
-        public int Height => this._height;
-        public int Width => this._width;
-        public byte[] Data => this._data;
-
-        public Image(int width, int height, byte[] data) {
-            if (width * height != data.Length)
-                throw new Exception("Incorrect image data size");
-            this._height = height;
-            this._width = width;
-            this._data = data;
-        }
-    }
-}
-
 namespace GHIElectronics.TinyCLR.BrainPad.Internal {
     public class Display {
+        public class Image {
+            public int Height { get; }
+            public int Width { get; }
+            internal byte[] Data { get; }
+
+            internal Image(int width, int height, byte[] data) {
+                if (width * height != data.Length)
+                    throw new Exception("Incorrect image data size");
+
+                this.Height = height;
+                this.Width = width;
+                this.Data = data;
+            }
+        }
+
         private enum Transform {
             FlipHorizontal,
             FlipVertical,
@@ -67,6 +63,8 @@ namespace GHIElectronics.TinyCLR.BrainPad.Internal {
         }
 
         private I2cDevice i2cDevice = I2cDevice.FromId(I2cDevice.GetDeviceSelector("I2C1"), new I2cConnectionSettings(0x3C) { BusSpeed = I2cBusSpeed.FastMode });
+
+        public Image CreateImage(int width, int height, byte[] data) => data != null ? new Image(width, height, data) : throw new Exception("Incorrect image data size");
 
         private void Ssd1306_command(int cmd) {
 
