@@ -44,6 +44,7 @@
     <Compile Include="G400D.cs" />
     <Compile Include="G400S.cs" />
     <Compile Include="G80.cs" />
+    <Compile Include="BrainPad.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
