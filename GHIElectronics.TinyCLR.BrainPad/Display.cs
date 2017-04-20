@@ -53,18 +53,19 @@ namespace GHIElectronics.TinyCLR.BrainPad {
             this._data = data;
         }
     }
-    public enum Transform {
-        FlipHorizontal,
-        FlipVertical,
-        Rotate90,
-        Rotate180,
-        Rotate270,
-        None
-    }
 }
 
 namespace GHIElectronics.TinyCLR.BrainPad.Internal {
     public class Display {
+        private enum Transform {
+            FlipHorizontal,
+            FlipVertical,
+            Rotate90,
+            Rotate180,
+            Rotate270,
+            None
+        }
+
         private I2cDevice i2cDevice = I2cDevice.FromId(I2cDevice.GetDeviceSelector("I2C1"), new I2cConnectionSettings(0x3C) { BusSpeed = I2cBusSpeed.FastMode });
 
         private void Ssd1306_command(int cmd) {
@@ -79,12 +80,12 @@ namespace GHIElectronics.TinyCLR.BrainPad.Internal {
         /// <summary>
         /// The width of the display in pixels.
         /// </summary>
-        public int Width = 128;
+        public int Width { get; } = 128;
 
         /// <summary>
         /// The height of the display in pixels.
         /// </summary>
-        public int Height = 64;
+        public int Height { get; } = 64;
 
         private byte[] vram = new byte[(128 * 64 / 8) + 1];
 
@@ -151,7 +152,7 @@ namespace GHIElectronics.TinyCLR.BrainPad.Internal {
             Ssd1306_command(7); // Page end address
 
 
-            this.Clear();
+            this.ClearScreen();
             this.ShowOnScreen();
         }
 
@@ -192,14 +193,15 @@ namespace GHIElectronics.TinyCLR.BrainPad.Internal {
         /// <summary>
         /// Clears the Display.
         /// </summary>
-        public void Clear() {
+        public void ClearScreen() {
 
             Array.Clear(this.vram, 0, this.vram.Length);
 
             this.vram[0] = 0x40;
         }
-        public void Clear(int x, int y, int width, int height) {
-            if (x == 0 && y == 0 && width == 128 && height == 64) Clear();
+
+        public void ClearPartOfScreen(int x, int y, int width, int height) {
+            if (x == 0 && y == 0 && width == 128 && height == 64) ClearScreen();
             for (var lx = x; lx < width + x; lx++)
                 for (var ly = y; ly < height + y; ly++)
                     Point(lx, ly, false);
@@ -211,7 +213,14 @@ namespace GHIElectronics.TinyCLR.BrainPad.Internal {
         /// <param name="x">The x coordinate to draw at.</param>
         /// <param name="y">The y coordinate to draw at.</param>
         /// <param name="image">The image to draw.</param>
-        public void DrawImage(int x, int y, Image image, Transform mirror = Transform.None) {
+        public void DrawImage(int x, int y, Image image) => this.DrawRotatedImage(x, y, image, Transform.None);
+        public void DrawImageRotated90Degrees(int x, int y, Image image) => this.DrawRotatedImage(x, y, image, Transform.Rotate90);
+        public void DrawImageRotated180Degrees(int x, int y, Image image) => this.DrawRotatedImage(x, y, image, Transform.Rotate180);
+        public void DrawImageRotated270Degrees(int x, int y, Image image) => this.DrawRotatedImage(x, y, image, Transform.Rotate270);
+        public void DrawImageFlippedHorizontally(int x, int y, Image image) => this.DrawRotatedImage(x, y, image, Transform.FlipHorizontal);
+        public void DrawImageFlippedVertically(int x, int y, Image image) => this.DrawRotatedImage(x, y, image, Transform.FlipVertical);
+
+        private void DrawRotatedImage(int x, int y, Image image, Transform mirror) {
             if (image == null) throw new ArgumentNullException("image");
 
             for (var xd = 0; xd < image.Width; xd++) {
@@ -519,7 +528,7 @@ namespace GHIElectronics.TinyCLR.BrainPad.Internal {
 
                 }
             }
-            Clear(x + 5 * HScale, y, HScale, 8 * VScale);// clear the space between characters
+            ClearPartOfScreen(x + 5 * HScale, y, HScale, 8 * VScale);// clear the space between characters
         }
 
         /// <summary>
@@ -528,7 +537,7 @@ namespace GHIElectronics.TinyCLR.BrainPad.Internal {
         /// <param name="x">The x coordinate to draw at.</param>
         /// <param name="y">The y coordinate to draw at.</param>
         /// <param name="text">The string to draw.</param>
-        public void DrawText(int x, int y, string text) => DrawText(x, y, text, 2, 2);
+        public void DrawText(int x, int y, string text) => DrawScaledText(x, y, text, 2, 2);
 
         /// <summary>
         /// Draws text at the given location.
@@ -536,7 +545,7 @@ namespace GHIElectronics.TinyCLR.BrainPad.Internal {
         /// <param name="x">The x coordinate to draw at.</param>
         /// <param name="y">The y coordinate to draw at.</param>
         /// <param name="text">The string to draw.</param>
-        public void DrawSmallText(int x, int y, string text) => DrawText(x, y, text, 1, 1);
+        public void DrawSmallText(int x, int y, string text) => DrawScaledText(x, y, text, 1, 1);
 
         /// <summary>
         /// Draws text at the given location.
@@ -544,7 +553,7 @@ namespace GHIElectronics.TinyCLR.BrainPad.Internal {
         /// <param name="x">The x coordinate to draw at.</param>
         /// <param name="y">The y coordinate to draw at.</param>
         /// <param name="text">The string to draw.</param>
-        public void DrawText(int x, int y, string text, int HScale, int VScale) {
+        public void DrawScaledText(int x, int y, string text, int HScale, int VScale) {
             var originalX = x;
             if (HScale == 0 || VScale == 0) return;
             if (text == null) throw new ArgumentNullException("data");
@@ -566,10 +575,10 @@ namespace GHIElectronics.TinyCLR.BrainPad.Internal {
             }
         }
 
-        public void DrawText(int x, int y, double number) => DrawText(x, y, number.ToString("N2"));
-        public void DrawSmallText(int x, int y, double number) => DrawSmallText(x, y, number.ToString("N2"));
-        public void DrawText(int x, int y, long number) => DrawText(x, y, number.ToString("N0"));
-        public void DrawSmallText(int x, int y, long number) => DrawSmallText(x, y, number.ToString("N0"));
+        public void DrawNumber(int x, int y, double number) => DrawText(x, y, number.ToString("N2"));
+        public void DrawSmallNumber(int x, int y, double number) => DrawSmallText(x, y, number.ToString("N2"));
+        public void DrawNumber(int x, int y, long number) => DrawText(x, y, number.ToString("N0"));
+        public void DrawSmallNumber(int x, int y, long number) => DrawSmallText(x, y, number.ToString("N0"));
 
         public void InvertColors(bool invert) {
             if (invert)
