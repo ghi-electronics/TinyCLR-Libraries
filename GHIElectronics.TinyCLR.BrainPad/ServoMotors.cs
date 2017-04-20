@@ -3,13 +3,6 @@ using GHIElectronics.TinyCLR.Devices.Pwm;
 using GHIElectronics.TinyCLR.Pins;
 using System;
 
-namespace GHIElectronics.TinyCLR.BrainPad {
-    public enum Servo {
-        One = 0,
-        Two = 1
-    }
-}
-
 namespace GHIElectronics.TinyCLR.BrainPad.Internal {
     public class ServoMotors {
         private PwmPin[] servos;
@@ -73,13 +66,17 @@ namespace GHIElectronics.TinyCLR.BrainPad.Internal {
         /// Inverts a servo's behavior.
         /// </summary>
         /// <param name="servo">The servo to be inverted.</param>
-        public void Invert(Servo servo, bool invert) => this.invertServo[(int)servo] = invert;
+        public void InvertServoOne(bool invert) => this.invertServo[0] = invert;
+        public void InvertServoTwo(bool invert) => this.invertServo[1] = invert;
 
         /// <summary>
         /// Sets the position of a fixed-type Servo Motor.
         /// </summary>
         /// <param name="position">The position of the servo between 0 and 180 degrees.</param>
-        public void FixedSetPosition(Servo servo, double position) {
+        public void FixedSetPositionServoOne(double position) => this.FixedSetPosition(0, position);
+        public void FixedSetPositionServoTwo(double position) => this.FixedSetPosition(1, position);
+
+        private void FixedSetPosition(int servo, double position) {
             if (position < 0 || position > 180) throw new ArgumentOutOfRangeException("degrees", "degrees must be between 0 and 180.");
 
 
@@ -101,7 +98,10 @@ namespace GHIElectronics.TinyCLR.BrainPad.Internal {
         /// Sets the position of a continous-type Servo Motor.
         /// </summary>
         /// <param name="speed">The speed of the servo between -100 and 100 percent.</param>
-        public void ContiniousSetSpeed(Servo servo, int speed) {
+        public void ContiniousSetSpeedServoOne(int speed) => this.ContiniousSetSpeed(0, speed);
+        public void ContiniousSetSpeedServoTwo(int speed) => this.ContiniousSetSpeed(1, speed);
+
+        private void ContiniousSetSpeed(int servo, int speed) {
             if (speed < -100 || speed > 100) throw new ArgumentOutOfRangeException("speed", "degrees must be between -100 and 100.");
 
             speed += 100;
@@ -113,6 +113,7 @@ namespace GHIElectronics.TinyCLR.BrainPad.Internal {
         /// <summary>
         /// Stops the servo motor.
         /// </summary>
-        public void Stop(Servo servo) => this.servos[(int)servo].Stop();
+        public void StopServoOne() => this.servos[0].Stop();
+        public void StopServoTwo() => this.servos[1].Stop();
     }
 }
