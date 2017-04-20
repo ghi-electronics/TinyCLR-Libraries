@@ -1,6 +1,7 @@
 ﻿using GHIElectronics.TinyCLR.Devices.Pwm;
 using GHIElectronics.TinyCLR.Pins;
 using System;
+using System.ComponentModel;
 
 namespace GHIElectronics.TinyCLR.BrainPad {
     public class ServoMotors {
@@ -107,5 +108,14 @@ namespace GHIElectronics.TinyCLR.BrainPad {
         /// </summary>
         public void StopServoOne() => this.servos[0].Stop();
         public void StopServoTwo() => this.servos[1].Stop();
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override bool Equals(object obj) => base.Equals(obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override int GetHashCode() => base.GetHashCode();
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override string ToString() => base.ToString();
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public new Type GetType() => base.GetType();
     }
 }

@@ -35,6 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using GHIElectronics.TinyCLR.Devices.I2c;
 using System;
+using System.ComponentModel;
 
 namespace GHIElectronics.TinyCLR.BrainPad {
     public class Display {
@@ -606,5 +607,14 @@ namespace GHIElectronics.TinyCLR.BrainPad {
             else
                 Ssd1306_command(0xa6);
         }
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override bool Equals(object obj) => base.Equals(obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override int GetHashCode() => base.GetHashCode();
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override string ToString() => base.ToString();
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public new Type GetType() => base.GetType();
     }
 }

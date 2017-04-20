@@ -1,5 +1,7 @@
 ﻿using GHIElectronics.TinyCLR.Devices.Adc;
 using GHIElectronics.TinyCLR.Pins;
+using System;
+using System.ComponentModel;
 
 namespace GHIElectronics.TinyCLR.BrainPad {
     public class TemperatureSensor {
@@ -25,5 +27,14 @@ namespace GHIElectronics.TinyCLR.BrainPad {
 
             return (sum * 3300.0 - 450.0) / 19.5;
         }
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override bool Equals(object obj) => base.Equals(obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override int GetHashCode() => base.GetHashCode();
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override string ToString() => base.ToString();
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public new Type GetType() => base.GetType();
     }
 }

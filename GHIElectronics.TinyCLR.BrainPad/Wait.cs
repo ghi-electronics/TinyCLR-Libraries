@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Threading;
 
 namespace GHIElectronics.TinyCLR.BrainPad {
@@ -22,6 +23,16 @@ namespace GHIElectronics.TinyCLR.BrainPad {
 
             Thread.Sleep((int)milliseconds);
         }
+
         public void Minimum() => Seconds(0.02);
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override bool Equals(object obj) => base.Equals(obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override int GetHashCode() => base.GetHashCode();
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override string ToString() => base.ToString();
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public new Type GetType() => base.GetType();
     }
 }

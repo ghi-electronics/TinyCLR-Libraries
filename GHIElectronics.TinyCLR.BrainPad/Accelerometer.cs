@@ -1,4 +1,6 @@
 ﻿using GHIElectronics.TinyCLR.Devices.I2c;
+using System;
+using System.ComponentModel;
 
 namespace GHIElectronics.TinyCLR.BrainPad {
     public class Accelerometer {
@@ -55,5 +57,14 @@ namespace GHIElectronics.TinyCLR.BrainPad {
         /// </summary>
         /// <returns>The acceleration.</returns>
         public double ReadZ() => ReadAxis(0x05);
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override bool Equals(object obj) => base.Equals(obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override int GetHashCode() => base.GetHashCode();
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override string ToString() => base.ToString();
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public new Type GetType() => base.GetType();
     }
 }

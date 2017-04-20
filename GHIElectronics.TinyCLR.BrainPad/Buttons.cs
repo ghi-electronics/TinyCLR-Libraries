@@ -1,6 +1,7 @@
 ﻿using GHIElectronics.TinyCLR.Devices.Gpio;
 using GHIElectronics.TinyCLR.Pins;
 using System;
+using System.ComponentModel;
 
 namespace GHIElectronics.TinyCLR.BrainPad {
     public class Buttons {
@@ -101,5 +102,14 @@ namespace GHIElectronics.TinyCLR.BrainPad {
         public bool IsRightPressed() => IsPressed(Button.Right);
 
         private bool IsPressed(Button button) => this.buttons[(int)button].Read() == GpioPinValue.Low;// it is low when it is pressed
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override bool Equals(object obj) => base.Equals(obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override int GetHashCode() => base.GetHashCode();
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override string ToString() => base.ToString();
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public new Type GetType() => base.GetType();
     }
 }
