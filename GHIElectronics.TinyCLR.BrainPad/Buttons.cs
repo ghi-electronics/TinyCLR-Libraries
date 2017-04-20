@@ -1,26 +1,21 @@
 ﻿using GHIElectronics.TinyCLR.Devices.Gpio;
 using GHIElectronics.TinyCLR.Pins;
 
-namespace GHIElectronics.TinyCLR.BrainPad {
-    /// <summary>
-    /// The avilable buttons.
-    /// </summary>
-    public enum Button {
-        Left = 0,
-        DownSelect = 1,
-        Right = 2,
-        Up = 3
-    }
-
-    /// <summary>
-    /// The signature of all button events.
-    /// </summary>
-    /// <param name="button">The button in question.</param>
-    public delegate void ButtonEventHandler(Button button);
-}
-
 namespace GHIElectronics.TinyCLR.BrainPad.Internal {
     public class Buttons {
+        /// <summary>
+        /// The signature of all button events.
+        /// </summary>
+        /// <param name="button">The button in question.</param>
+        public delegate void ButtonEventHandler();
+
+        private enum Button {
+            Left = 0,
+            Down = 1,
+            Right = 2,
+            Up = 3
+        }
+
         //private InterruptPort[] ports;
         private GpioPin[] buttons;
 
@@ -63,28 +58,36 @@ namespace GHIElectronics.TinyCLR.BrainPad.Internal {
             }
         }
 
-        /// <summary>
-        /// The event raised when a button is released.
-        /// </summary>
-        public event ButtonEventHandler ButtonReleased;
-        public event ButtonEventHandler ButtonPressed;
+        public event ButtonEventHandler WhenLeftButtonReleased;
+        public event ButtonEventHandler WhenLeftButtonPressed;
+        public event ButtonEventHandler WhenRightButtonReleased;
+        public event ButtonEventHandler WhenRightButtonPressed;
+        public event ButtonEventHandler WhenUpButtonReleased;
+        public event ButtonEventHandler WhenUpButtonPressed;
+        public event ButtonEventHandler WhenDownButtonReleased;
+        public event ButtonEventHandler WhenDownButtonPressed;
+
         private void Button_ValueChanged(GpioPin sender, GpioPinValueChangedEventArgs e) {
 
             for (var i = 0; i < 3; i++) {
                 if (sender.PinNumber == this.buttons[i].PinNumber) {
-                    if (e.Edge == GpioPinEdge.FallingEdge)
-                        ButtonPressed?.Invoke((Button)i);
-                    else
-                        ButtonReleased?.Invoke((Button)i);
+                    var pressed = e.Edge == GpioPinEdge.FallingEdge;
+
+                    switch ((Button)i) {
+                        case Button.Left: (pressed ? this.WhenLeftButtonPressed : this.WhenLeftButtonReleased)?.Invoke(); break;
+                        case Button.Right: (pressed ? this.WhenRightButtonPressed : this.WhenRightButtonReleased)?.Invoke(); break;
+                        case Button.Up: (pressed ? this.WhenUpButtonPressed : this.WhenUpButtonReleased)?.Invoke(); break;
+                        case Button.Down: (pressed ? this.WhenDownButtonPressed : this.WhenDownButtonReleased)?.Invoke(); break;
+                    }
                 }
             }
         }
 
         /// <summary>
-        /// Is the select button pressed.
+        /// Is the down button pressed.
         /// </summary>
         /// <returns>Whether or not it is pressed.</returns>
-        public bool IsDownSelectPressed() => IsPressed(Button.DownSelect);
+        public bool IsDownPressed() => IsPressed(Button.Down);
 
         /// <summary>
         /// Is the select button pressed.
@@ -104,11 +107,6 @@ namespace GHIElectronics.TinyCLR.BrainPad.Internal {
         /// <returns>Whether or not it is pressed.</returns>
         public bool IsRightPressed() => IsPressed(Button.Right);
 
-        /// <summary>
-        /// Checks if a button is pressed.
-        /// </summary>
-        /// <param name="button">The button to check.</param>
-        /// <returns>Whether or not it was pressed.</returns>
-        public bool IsPressed(Button button) => this.buttons[(int)button].Read() == GpioPinValue.Low;// it is low when it is pressed
+        private bool IsPressed(Button button) => this.buttons[(int)button].Read() == GpioPinValue.Low;// it is low when it is pressed
     }
 }
