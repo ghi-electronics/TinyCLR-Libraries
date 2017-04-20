@@ -45,10 +45,6 @@ namespace GHIElectronics.TinyCLR.BrainPad {
         /// </summary>
         public Display Display { get; }
         /// <summary>
-        /// Controls the display on the BrainPad.
-        /// </summary>
-        public ImageBuffer ImageBuffer { get; }
-        /// <summary>
         /// Provides access to the light bulb on the BrainPad.
         /// </summary>
         public LightBulb LightBulb { get; }
@@ -74,7 +70,6 @@ namespace GHIElectronics.TinyCLR.BrainPad {
             this.Buttons = new Buttons();
             this.Buzzer = new Buzzer();
             this.Display = new Display();
-            this.ImageBuffer = this.Display.imageBuffer;
             this.LightBulb = new LightBulb();
             this.LightSensor = new LightSensor();
             this.ServoMotors = new ServoMotors();

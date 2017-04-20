@@ -40,7 +40,6 @@
     <Compile Include="Buttons.cs" />
     <Compile Include="Buzzer.cs" />
     <Compile Include="Display.cs" />
-    <Compile Include="ImageBuffer.cs" />
     <Compile Include="LightBulb.cs" />
     <Compile Include="LightSensor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
