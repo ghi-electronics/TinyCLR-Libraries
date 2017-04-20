@@ -11,7 +11,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
 }
 
 namespace GHIElectronics.TinyCLR.BrainPad.Internal {
-    public class ServoMotor {
+    public class ServoMotors {
         private PwmPin[] servos;
         //private bool started;
         // min and max pulse width in milliseconds
@@ -21,7 +21,7 @@ namespace GHIElectronics.TinyCLR.BrainPad.Internal {
         private bool[] invertServo;
         private PwmController controller;
 
-        public ServoMotor() {
+        public ServoMotors() {
             this.controller = PwmController.FromId(G30.PwmPin.Controller2.Id);
             this.invertServo = new bool[2]
             {

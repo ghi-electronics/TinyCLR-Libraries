@@ -59,7 +59,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
         /// <summary>
         /// Provides access to the servo motor on the BrainPad.
         /// </summary>
-        public ServoMotor ServoMotor { get; }
+        public ServoMotors ServoMotors { get; }
         /// <summary>
         /// Provides access to the temperature sensor on the BrainPad.
         /// </summary>
@@ -77,7 +77,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
             this.ImageBuffer = this.Display.imageBuffer;
             this.LightBulb = new LightBulb();
             this.LightSensor = new LightSensor();
-            this.ServoMotor = new ServoMotor();
+            this.ServoMotors = new ServoMotors();
             this.TemperatureSensor = new TemperatureSensor();
             this.Wait = new Wait();
         }
