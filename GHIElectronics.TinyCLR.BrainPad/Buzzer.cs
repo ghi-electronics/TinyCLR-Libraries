@@ -3,9 +3,6 @@ using GHIElectronics.TinyCLR.Pins;
 using System.Threading;
 
 namespace GHIElectronics.TinyCLR.BrainPad.Internal {
-    /// <summary>
-    /// Provides access to the buzzer on the BrainPad.
-    /// </summary>
     public class Buzzer {
         private PwmController controller;
         private PwmPin buzz;

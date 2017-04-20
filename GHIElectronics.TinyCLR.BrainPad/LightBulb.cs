@@ -3,9 +3,6 @@ using GHIElectronics.TinyCLR.Pins;
 using System;
 
 namespace GHIElectronics.TinyCLR.BrainPad.Internal {
-    /// <summary>
-    /// Provides access to the light bulb on the BrainPad.
-    /// </summary>
     public class LightBulb {
         private PwmPin red;
         private PwmPin green;

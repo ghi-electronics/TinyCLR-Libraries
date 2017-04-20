@@ -1,9 +1,6 @@
 ﻿using GHIElectronics.TinyCLR.Devices.I2c;
 
 namespace GHIElectronics.TinyCLR.BrainPad.Internal {
-    /// <summary>
-    /// Provices access to the accelerometer on the BrainPad.
-    /// </summary>
     public class Accelerometer {
 
 

@@ -2,9 +2,6 @@
 using GHIElectronics.TinyCLR.Pins;
 
 namespace GHIElectronics.TinyCLR.BrainPad.Internal {
-    /// <summary>
-    /// Provides access to the temperature sensor on the BrainPad.
-    /// </summary>
     public class TemperatureSensor {
         //private AnalogInput input;
         private AdcChannel input = AdcController.GetDefault().OpenChannel(G30.AdcChannel.PB0);

@@ -20,9 +20,6 @@ namespace GHIElectronics.TinyCLR.BrainPad {
 }
 
 namespace GHIElectronics.TinyCLR.BrainPad.Internal {
-    /// <summary>
-    /// Provices access to the buttons on the BrainPad.
-    /// </summary>
     public class Buttons {
         //private InterruptPort[] ports;
         private GpioPin[] buttons;

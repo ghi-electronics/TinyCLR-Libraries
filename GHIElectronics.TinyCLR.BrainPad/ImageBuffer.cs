@@ -34,20 +34,17 @@ namespace GHIElectronics.TinyCLR.BrainPad {
 }
 
 namespace GHIElectronics.TinyCLR.BrainPad.Internal {
-    /// <summary>
-    /// Controls the display on the BrainPad.
-    /// </summary>
     public class ImageBuffer {
 
         /// <summary>
         /// The width of the display in pixels.
         /// </summary>
-        public const int Width = 128;
+        public int Width = 128;
 
         /// <summary>
         /// The height of the display in pixels.
         /// </summary>
-        public const int Height = 64;
+        public int Height = 64;
 
         private byte[] vram = new byte[(128 * 64 / 8) + 1];
 

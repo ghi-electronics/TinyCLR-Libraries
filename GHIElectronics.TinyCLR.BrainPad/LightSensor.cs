@@ -2,9 +2,6 @@
 using GHIElectronics.TinyCLR.Pins;
 
 namespace GHIElectronics.TinyCLR.BrainPad.Internal {
-    /// <summary>
-    /// Provides access to the light sensor on the BrainPad.
-    /// </summary>
     public class LightSensor {
         //private AnalogInput input;
         private AdcChannel input = AdcController.GetDefault().OpenChannel(G30.AdcChannel.PB1);

@@ -10,9 +10,6 @@ namespace GHIElectronics.TinyCLR.BrainPad {
 }
 
 namespace GHIElectronics.TinyCLR.BrainPad.Internal {
-    /// <summary>
-    /// Provides access to the servo motor on the BrainPad.
-    /// </summary>
     public class ServoMotor {
         private PwmPin[] servos;
         //private bool started;
