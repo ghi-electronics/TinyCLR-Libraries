@@ -1,14 +1,13 @@
-using GHIElectronics.TinyCLR.Devices.Gpio;
 using System;
 using System.Runtime.CompilerServices;
 using System.Threading;
 
-namespace GHIElectronics.TinyCLR.Devices.Signals {
+namespace GHIElectronics.TinyCLR.Devices.Gpio {
     /// <summary>Captures a pin's digital waveform into a buffer. See https://www.ghielectronics.com/docs/106/ for more information.</summary>
     /// <remarks>
     /// All managed threads are blocked while capturing. When the pin's state changes, the time from the last change until the new change is recorded.
     /// </remarks>
-    public class SignalCapture : IDisposable {
+    public class GpioChangeReader : IDisposable {
         private int timeout;
         private bool disposed;
         private GpioPin port;
@@ -28,7 +27,7 @@ namespace GHIElectronics.TinyCLR.Devices.Signals {
         /// <summary>Constructs a new object using an InputPort on the given pin.</summary>
         /// <param name="pin">The pin on which to create the port.</param>
         /// <param name="driveMode">The resistor mode for the pin.</param>
-        public SignalCapture(int pin, GpioPinDriveMode driveMode) {
+        public GpioChangeReader(int pin, GpioPinDriveMode driveMode) {
             this.timeout = Timeout.Infinite;
             this.disposed = false;
             this.pin = pin;
@@ -45,7 +44,7 @@ namespace GHIElectronics.TinyCLR.Devices.Signals {
         }
 
         /// <summary>The finalizer.</summary>
-        ~SignalCapture() {
+        ~GpioChangeReader() {
             this.Dispose(false);
         }
 
@@ -88,7 +87,7 @@ namespace GHIElectronics.TinyCLR.Devices.Signals {
             if (count < 0) throw new ArgumentOutOfRangeException("count", "count must be non-negative.");
             if (offset + count > buffer.Length) throw new ArgumentOutOfRangeException("buffer", "offset + count must be no more than buffer.Length.");
 
-            return SignalCapture.NativeRead((uint)this.pin, out initialState, buffer, offset, count, this.timeout);
+            return GpioChangeReader.NativeRead((uint)this.pin, out initialState, buffer, offset, count, this.timeout);
         }
 
         /// <summary>Reads the pin's waveform after waiting for an initial state.</summary>
@@ -104,7 +103,7 @@ namespace GHIElectronics.TinyCLR.Devices.Signals {
             if (count < 0) throw new ArgumentOutOfRangeException("count", "count must be non-negative.");
             if (offset + count > buffer.Length) throw new ArgumentOutOfRangeException("buffer", "offset + count must be no more than buffer.Length.");
 
-            return SignalCapture.NativeRead((uint)this.pin, waitForState, buffer, offset, count, this.timeout);
+            return GpioChangeReader.NativeRead((uint)this.pin, waitForState, buffer, offset, count, this.timeout);
         }
 
         /// <summary>Disposes the object.</summary>

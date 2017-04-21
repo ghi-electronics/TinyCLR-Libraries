@@ -1,13 +1,12 @@
-using GHIElectronics.TinyCLR.Devices.Gpio;
 using GHIElectronics.TinyCLR.Devices.Internal;
 using System;
 using System.Runtime.CompilerServices;
 using System.Threading;
 
-namespace GHIElectronics.TinyCLR.Devices.Signals {
+namespace GHIElectronics.TinyCLR.Devices.Gpio {
     /// <summary>Reads a pulse from an external device. See https://www.ghielectronics.com/docs/326/ for more information.</summary>
     /// <remarks>All managed threads are blocked while reading.</remarks>
-    public class PulseFeedback : IDisposable {
+    public class GpioPulseReaderWriter : IDisposable {
         private bool disposed;
         private int timeout;
         private int pulseLength;
@@ -71,7 +70,7 @@ namespace GHIElectronics.TinyCLR.Devices.Signals {
         /// <param name="pulseState">The state of the initial pulse.</param>
         /// <param name="pulseLength">The length in microseconds of the initial pulse.</param>
         /// <param name="pulsePin">The pin on which to send the pulse and read.</param>
-        public PulseFeedback(Mode mode, bool pulseState, int pulseLength, int pulsePin)
+        public GpioPulseReaderWriter(Mode mode, bool pulseState, int pulseLength, int pulsePin)
             : this(mode, pulseState, pulseLength, pulsePin, pulseState, pulsePin) {
 
         }
@@ -83,7 +82,7 @@ namespace GHIElectronics.TinyCLR.Devices.Signals {
         /// <param name="pulsePin">The pin on which to send the pulse.</param>
         /// <param name="echoState">The state of the echo for which to wait.</param>
         /// <param name="echoPin">The pin on which to measure the echo.</param>
-        public PulseFeedback(Mode mode, bool pulseState, int pulseLength, int pulsePin, bool echoState, int echoPin) {
+        public GpioPulseReaderWriter(Mode mode, bool pulseState, int pulseLength, int pulsePin, bool echoState, int echoPin) {
             if (pulseLength <= 0) throw new ArgumentOutOfRangeException("pulseLength", "pulseLength must be positive.");
             if (mode != Mode.DrainDuration && mode != Mode.DurationUntilEcho && mode != Mode.EchoDuration) throw new ArgumentException("You must specify a valid mode.", "mode");
             if (pulsePin != echoPin && mode == Mode.DrainDuration) throw new ArgumentException("DrainDuration mode is not valid with different pulse and echo pins.", "mode");
@@ -119,7 +118,7 @@ namespace GHIElectronics.TinyCLR.Devices.Signals {
         }
 
         /// <summary>The finalizer.</summary>
-        ~PulseFeedback() {
+        ~GpioPulseReaderWriter() {
             this.Dispose(false);
         }
 
