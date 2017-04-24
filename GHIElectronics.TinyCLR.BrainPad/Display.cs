@@ -434,6 +434,14 @@ namespace GHIElectronics.TinyCLR.BrainPad {
             if (this.AutoShowOnScreen) this.ShowOnScreen();
         }
 
+        public void DrawFilledRectangle(int x, int y, int width, int height) {
+            for (var lx = x; lx < width + x; lx++)
+                for (var ly = y; ly < height + y; ly++)
+                    Point(lx, ly, true);
+
+            if (this.AutoShowOnScreen) this.ShowOnScreen();
+        }
+
         byte[] font = new byte[95 * 5] {
             0x00, 0x00, 0x00, 0x00, 0x00, /* Space	0x20 */
             0x00, 0x00, 0x4f, 0x00, 0x00, /* ! */
