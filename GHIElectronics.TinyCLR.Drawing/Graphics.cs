@@ -9,16 +9,16 @@ namespace System.Drawing {
         internal int Height => this.surface.Height;
 
         internal Internal.Bitmap surface;
-        private bool forScreen;
         private bool disposed;
+        private IntPtr hdc;
 
-        internal Graphics(byte[] buffer) : this(new Internal.Bitmap(buffer, Internal.Bitmap.BitmapImageType.Bmp), false) { }
-        internal Graphics(int width, int height) : this(width, height, false) { }
-        private Graphics(int width, int height, bool forScreen) : this(new Internal.Bitmap(width, height), forScreen) { }
+        internal Graphics(byte[] buffer) : this(new Internal.Bitmap(buffer, Internal.Bitmap.BitmapImageType.Bmp), IntPtr.Zero) { }
+        internal Graphics(int width, int height) : this(width, height, IntPtr.Zero) { }
+        private Graphics(int width, int height, IntPtr hdc) : this(new Internal.Bitmap(width, height), hdc) { }
 
-        internal Graphics(Internal.Bitmap bmp, bool forScreen) {
+        internal Graphics(Internal.Bitmap bmp, IntPtr hdc) {
             this.surface = bmp;
-            this.forScreen = forScreen;
+            this.hdc = hdc;
         }
 
         public void Dispose() {
@@ -56,16 +56,16 @@ namespace System.Drawing {
 
                 Graphics.screenCreated = true;
 
-                return new Graphics(width, height, true);
+                return new Graphics(width, height, hdc);
             }
         }
 
         public static Graphics FromImage(Image image) => image.data;
 
         public void Flush() {
-            if (!this.forScreen) throw new InvalidOperationException("Graphics not for screen.");
+            if (this.hdc == IntPtr.Zero) throw new InvalidOperationException("Graphics not for screen.");
 
-            this.surface.Flush();
+            this.surface.Flush(this.hdc);
         }
 
         public void DrawImage(Image image, int x, int y) => this.surface.DrawImage(x, y, image.data.surface, 0, 0, image.Width, image.Height, 0xFF);
@@ -171,7 +171,7 @@ namespace System.Drawing {
             public extern void Dispose(bool disposing);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern void Flush();
+            public extern void Flush(IntPtr hdc);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void DrawText(string text, Font font, uint color, int x, int y);

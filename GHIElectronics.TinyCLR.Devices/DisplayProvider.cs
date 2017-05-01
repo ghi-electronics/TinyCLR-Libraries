@@ -12,10 +12,34 @@ namespace GHIElectronics.TinyCLR.Devices.Display.Provider {
         void ApplySettings(DisplayControllerSettings settings);
     }
 
-    internal class DefaultDisplayControllerProvider : IDisplayControllerProvider {
-        public static DefaultDisplayControllerProvider Instance { get; } = new DefaultDisplayControllerProvider();
+    public class DisplayProvider : IDisplayProvider {
+        private IDisplayControllerProvider[] controllers;
 
-        private DefaultDisplayControllerProvider() { }
+        public string Name { get; }
+
+        public IDisplayControllerProvider[] GetControllers() => this.controllers;
+
+        private DisplayProvider(string name) {
+            this.Name = name;
+            this.controllers = new IDisplayControllerProvider[DefaultDisplayControllerProvider.GetControllerCount(name)];
+
+            for (var i = 0U; i < this.controllers.Length; i++)
+                this.controllers[i] = new DefaultDisplayControllerProvider(name, i);
+        }
+
+        public static IDisplayProvider FromId(string id) => new DisplayProvider(id);
+    }
+
+    internal class DefaultDisplayControllerProvider : IDisplayControllerProvider {
+#pragma warning disable CS0169
+        private IntPtr nativeProvider;
+#pragma warning restore CS0169
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern uint GetControllerCount(string providerName);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal extern DefaultDisplayControllerProvider(string name, uint index);
 
         public IntPtr Hdc { get; private set; }
 

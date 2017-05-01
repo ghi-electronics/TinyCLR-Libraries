@@ -61,10 +61,34 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio.Provider {
         IGpioPinProvider OpenPinProvider(int pin, ProviderGpioSharingMode sharingMode);
     }
 
-    internal sealed class DefaultGpioControllerProvider : IGpioControllerProvider {
-        public static DefaultGpioControllerProvider Instance { get; } = new DefaultGpioControllerProvider();
+    public class GpioProvider : IGpioProvider {
+        private IGpioControllerProvider[] controllers;
 
-        private DefaultGpioControllerProvider() { }
+        public string Name { get; }
+
+        public IGpioControllerProvider[] GetControllers() => this.controllers;
+
+        private GpioProvider(string name) {
+            this.Name = name;
+            this.controllers = new IGpioControllerProvider[DefaultGpioControllerProvider.GetControllerCount(name)];
+
+            for (var i = 0U; i < this.controllers.Length; i++)
+                this.controllers[i] = new DefaultGpioControllerProvider(name, i);
+        }
+
+        public static IGpioProvider FromId(string id) => new GpioProvider(id);
+    }
+
+    internal class DefaultGpioControllerProvider : IGpioControllerProvider {
+#pragma warning disable CS0649
+        private IntPtr nativeProvider;
+#pragma warning restore CS0649
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern uint GetControllerCount(string providerName);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal extern DefaultGpioControllerProvider(string name, uint index);
 
         public extern int PinCount {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
@@ -72,7 +96,7 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio.Provider {
         }
 
         public IGpioPinProvider OpenPinProvider(int pin, ProviderGpioSharingMode sharingMode) {
-            var p = new DefaultGpioPinProvider();
+            var p = new DefaultGpioPinProvider(this.nativeProvider);
             if (!p.Init(pin)) {
                 throw new InvalidOperationException();
             }
@@ -91,9 +115,12 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio.Provider {
         private ProviderGpioPinDriveMode m_driveMode = ProviderGpioPinDriveMode.Input;
         private ProviderGpioPinValue m_lastOutputValue = ProviderGpioPinValue.Low;
         private GpioPinProviderValueChangedEventHandler m_callbacks = null;
+        private readonly IntPtr nativeProvider;
 
-        internal DefaultGpioPinProvider() {
+        internal DefaultGpioPinProvider(IntPtr provider) {
             if (this.m_lastOutputValue == ProviderGpioPinValue.Low) { } // Silence an unused variable warning.
+
+            this.nativeProvider = provider;
         }
 
         ~DefaultGpioPinProvider() {

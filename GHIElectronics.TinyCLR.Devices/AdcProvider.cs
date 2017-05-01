@@ -53,7 +53,9 @@ namespace GHIElectronics.TinyCLR.Devices.Adc.Provider {
     }
 
     internal class DefaultAdcControllerProvider : IAdcControllerProvider {
+#pragma warning disable CS0169
         private IntPtr nativeProvider;
+#pragma warning restore CS0169
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern uint GetControllerCount(string providerName);
