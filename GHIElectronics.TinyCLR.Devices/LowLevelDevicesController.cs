@@ -40,4 +40,11 @@ namespace GHIElectronics.TinyCLR.Devices {
             this.SpiControllerProvider = spi;
         }
     }
+
+    internal static class DefaultDeviceNames {
+        public static string AdcProvider = "TinyCLR.Default.AdcProvider";
+        public static string DacProvider = "TinyCLR.Default.DacProvider";
+        public static string DisplayProvider = "TinyCLR.Default.DisplayProvider";
+        public static string GpioProvider = "TinyCLR.Default.GpioProvider";
+    }
 }
