@@ -11,15 +11,18 @@ namespace GHIElectronics.TinyCLR.Storage.Streams {
         ReadAhead = 2
     }
 
+    [CLSCompliant(false)]
     public interface IOutputStream : IDisposable {
         bool Flush();
         uint Write(IBuffer buffer);
     }
 
+    [CLSCompliant(false)]
     public interface IInputStream : IDisposable {
         IBuffer Read(IBuffer buffer, uint count, InputStreamOptions options);
     }
 
+    [CLSCompliant(false)]
     public interface IBuffer {
         uint Capacity { get; }
         uint Length { get; set; }
@@ -30,8 +33,10 @@ namespace GHIElectronics.TinyCLR.Storage.Streams {
         internal int offset;
         private uint length;
 
+        [CLSCompliant(false)]
         public uint Capacity { get; internal set; }
 
+        [CLSCompliant(false)]
         public uint Length {
             get => this.length;
             set {
@@ -41,6 +46,7 @@ namespace GHIElectronics.TinyCLR.Storage.Streams {
             }
         }
 
+        [CLSCompliant(false)]
         public Buffer(uint capacity) {
             this.data = new byte[capacity];
             this.offset = 0;
