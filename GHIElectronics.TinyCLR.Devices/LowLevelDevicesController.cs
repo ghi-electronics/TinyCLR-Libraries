@@ -9,7 +9,7 @@ using GHIElectronics.TinyCLR.Devices.Spi.Provider;
 namespace GHIElectronics.TinyCLR.Devices {
     public sealed class LowLevelDevicesController {
         public static ILowLevelDevicesAggregateProvider DefaultProvider { get; set; }
-        public static LowLevelDevicesBuiltInProvider BuiltInProvider { get; } = new LowLevelDevicesBuiltInProvider();
+        internal static LowLevelDevicesBuiltInProvider BuiltInProvider { get; } = new LowLevelDevicesBuiltInProvider();
     }
 
     public interface ILowLevelDevicesAggregateProvider {
@@ -42,7 +42,7 @@ namespace GHIElectronics.TinyCLR.Devices {
         }
     }
 
-    public sealed class LowLevelDevicesBuiltInProvider {
+    internal sealed class LowLevelDevicesBuiltInProvider {
         public IAdcProvider AdcProvider { get; } = new BuiltInAdcProvider();
         public IDacProvider DacProvider { get; } = new BuiltInDacProvider();
         public IDisplayProvider DisplayProvider { get; } = new BuiltInDisplayProvider();
