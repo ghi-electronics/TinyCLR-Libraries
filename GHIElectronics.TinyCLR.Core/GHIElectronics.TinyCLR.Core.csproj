@@ -180,6 +180,7 @@
     <Compile Include="SByte.cs" />
     <Compile Include="SerializableAttribute.cs" />
     <Compile Include="Single.cs" />
+    <Compile Include="Streams.cs" />
     <Compile Include="String.cs" />
     <Compile Include="SystemException.cs" />
     <Compile Include="TargetFrameworkAttribute.cs" />

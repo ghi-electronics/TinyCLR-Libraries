@@ -1,5 +1,4 @@
 ﻿using GHIElectronics.TinyCLR.Storage.Streams;
-using System.IO;
 
 namespace System.Runtime.InteropServices.WindowsRuntime {
     public static class WindowsRuntimeBufferExtensions {
@@ -25,12 +24,12 @@ namespace System.Runtime.InteropServices.WindowsRuntime {
             return new Buffer(source, offset, length, capacity);
         }
 
-        public static Stream AsStream(this IBuffer source) {
+        public static IO.Stream AsStream(this IBuffer source) {
             if (source == null) throw new ArgumentNullException(nameof(source));
 
             var casted = (Buffer)source;
 
-            return new MemoryStream(casted.data, casted.offset, (int)casted.Length);
+            return new IO.MemoryStream(casted.data, casted.offset, (int)casted.Length);
         }
 
         public static void CopyTo(this byte[] source, int sourceIndex, IBuffer destination, uint destinationIndex, int count) {
@@ -98,13 +97,13 @@ namespace System.Runtime.InteropServices.WindowsRuntime {
             return ((Buffer)source).data[byteOffset];
         }
 
-        public static IBuffer GetWindowsRuntimeBuffer(this MemoryStream underlyingStream) {
+        public static IBuffer GetWindowsRuntimeBuffer(this IO.MemoryStream underlyingStream) {
             if (underlyingStream == null) throw new ArgumentNullException(nameof(underlyingStream));
 
             return new Buffer(underlyingStream.GetBuffer(), 0, (int)underlyingStream.Length, (int)underlyingStream.Length);
         }
 
-        public static IBuffer GetWindowsRuntimeBuffer(this MemoryStream underlyingStream, int positionInStream, int length) {
+        public static IBuffer GetWindowsRuntimeBuffer(this IO.MemoryStream underlyingStream, int positionInStream, int length) {
             if (underlyingStream == null) throw new ArgumentNullException(nameof(underlyingStream));
             if (positionInStream < 0) throw new ArgumentOutOfRangeException(nameof(positionInStream));
             if (length < 0) throw new ArgumentOutOfRangeException(nameof(length));
