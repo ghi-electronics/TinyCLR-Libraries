@@ -35,13 +35,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define SUPPORT_ORIGINAL_BRAINPAD
 
-using GHIElectronics.TinyCLR.Devices.I2c;
 using GHIElectronics.TinyCLR.Devices.Gpio;
+using GHIElectronics.TinyCLR.Devices.I2c;
 using GHIElectronics.TinyCLR.Devices.Spi;
-using System;
-using System.Threading;
-using System.ComponentModel;
 using GHIElectronics.TinyCLR.Pins;
+using System;
+using System.ComponentModel;
+using System.Threading;
 
 namespace GHIElectronics.TinyCLR.BrainPad {
     public class Display {
@@ -92,33 +92,29 @@ namespace GHIElectronics.TinyCLR.BrainPad {
         private GpioPin controlPin;
         private GpioPin resetPin;
         private GpioPin backlightPin;
-        private  byte[] buffer1 = new byte[1];
+        private byte[] buffer1 = new byte[1];
         private byte[] buffer4 = new byte[4];
         private byte[] buffer16 = new byte[16];
-        private  void WriteData(byte[] data)
-        {
+        private void WriteData(byte[] data) {
             controlPin.Write(GpioPinValue.High);
             spi.Write(data);
             //Thread.Sleep(0);
         }
 
-        private  void WriteCommand(byte command)
-        {
+        private void WriteCommand(byte command) {
             buffer1[0] = command;
             controlPin.Write(GpioPinValue.Low);
             spi.Write(buffer1);
             //Thread.Sleep(0);
         }
 
-        private  void WriteData(byte data)
-        {
+        private void WriteData(byte data) {
             buffer1[0] = data;
             controlPin.Write(GpioPinValue.High);
             spi.Write(buffer1);
             //Thread.Sleep(0);
         }
-        private void SetClip(int x, int y, int width, int height)
-        {
+        private void SetClip(int x, int y, int width, int height) {
             WriteCommand(0x2A);
 
             controlPin.Write(GpioPinValue.High);
@@ -147,15 +143,13 @@ namespace GHIElectronics.TinyCLR.BrainPad {
 
         private byte[] vram;
 
-        public Display()
-        {
+        public Display() {
 
-            switch (Board.BoardType)
-            {
+            switch (Board.BoardType) {
 #if SUPPORT_ORIGINAL_BRAINPAD
                 case BoardType.Original:
 
-                    this.vram = new byte[128 * 64*2];
+                    this.vram = new byte[128 * 64 * 2];
                     GpioController GPIO = GpioController.GetDefault();
                     controlPin = GPIO.OpenPin(G30.GpioPin.PC5);// new OutputPort(Peripherals.Display.Control, false);
                     resetPin = GPIO.OpenPin(G30.GpioPin.PC4); //new OutputPort(Peripherals.Display.Reset, false);
@@ -178,7 +172,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
                     var aqs = SpiDevice.GetDeviceSelector("SPI2");
                     spi = SpiDevice.FromId(aqs, settings);
 
-                    WriteCommand(0x11); //Sleep exit 
+                    WriteCommand(0x11); //Sleep exit
                     Thread.Sleep(200);
 
                     // ST7735R Frame Rate
@@ -190,7 +184,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
                     WriteData(0x01); WriteData(0x2C); WriteData(0x2D);
                     WriteData(0x01); WriteData(0x2C); WriteData(0x2D);
 
-                    WriteCommand(0xB4); // Column inversion 
+                    WriteCommand(0xB4); // Column inversion
                     WriteData(0x07);
 
                     // ST7735R Power Sequence
@@ -204,7 +198,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
                     WriteCommand(0xC4);
                     WriteData(0x8A); WriteData(0xEE);
 
-                    WriteCommand(0xC5); // VCOM 
+                    WriteCommand(0xC5); // VCOM
                     WriteData(0x0E);
 
                     WriteCommand(0x36); // MX, MY, RGB mode
@@ -238,12 +232,12 @@ namespace GHIElectronics.TinyCLR.BrainPad {
                     WriteData(0x00); WriteData(0x00);
                     WriteData(0x00); WriteData(0x9f);
 
-                    WriteCommand(0xF0); //Enable test command  
+                    WriteCommand(0xF0); //Enable test command
                     WriteData(0x01);
-                    WriteCommand(0xF6); //Disable ram power save mode 
+                    WriteCommand(0xF6); //Disable ram power save mode
                     WriteData(0x00);
 
-                    WriteCommand(0x3A); //65k mode 
+                    WriteCommand(0x3A); //65k mode
                     WriteData(0x05);
 
                     // Rotate
@@ -321,14 +315,12 @@ namespace GHIElectronics.TinyCLR.BrainPad {
             }
             this.ClearScreen();
         }
-       
-        public void ShowOnScreen()
-        {
+
+        public void ShowOnScreen() {
 #if SUPPORT_ORIGINAL_BRAINPAD
-            switch (Board.BoardType)
-            {
+            switch (Board.BoardType) {
                 case BoardType.Original:
-                    SetClip((160-128)/2, (128-64)/2, 128, 64);
+                    SetClip((160 - 128) / 2, (128 - 64) / 2, 128, 64);
                     WriteCommand(0x2C);
                     // data
                     controlPin.Write(GpioPinValue.High);
@@ -371,17 +363,14 @@ namespace GHIElectronics.TinyCLR.BrainPad {
             if (y < 0 || y > 63)
                 return;
 
-            switch (Board.BoardType)
-            {
+            switch (Board.BoardType) {
 #if SUPPORT_ORIGINAL_BRAINPAD
                 case BoardType.Original:
-                    if (set)
-                    {
+                    if (set) {
                         this.vram[(x * 2) + (y * 128 * 2)] = 0x0;
                         this.vram[(x * 2) + (y * 128 * 2) + 1] = 0x1F;
                     }
-                    else
-                    {
+                    else {
                         this.vram[x * 2 + y * 128 * 2] = 0;
                         this.vram[x * 2 + y * 128 * 2 + 1] = 0;
                     }
@@ -435,14 +424,16 @@ namespace GHIElectronics.TinyCLR.BrainPad {
             if (this.AutoShowOnScreen) this.ShowOnScreen();
         }
 
-        public void ClearPartOfScreen(int x, int y, int width, int height) {
+        private void ClearPartOfScreen(int x, int y, int width, int height, bool suppressAutoShow) {
             if (x == 0 && y == 0 && width == 128 && height == 64) ClearScreen();
             for (var lx = x; lx < width + x; lx++)
                 for (var ly = y; ly < height + y; ly++)
                     Point(lx, ly, false);
 
-            if (this.AutoShowOnScreen) this.ShowOnScreen();
+            if (!suppressAutoShow && this.AutoShowOnScreen) this.ShowOnScreen();
         }
+
+        public void ClearPartOfScreen(int x, int y, int width, int height) => this.ClearPartOfScreen(x, y, width, height, false);
 
         /// <summary>
         /// Draws an image at the given location.
@@ -781,7 +772,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
 
                 }
             }
-            ClearPartOfScreen(x + 5 * HScale, y, HScale, 8 * VScale);// clear the space between characters
+            ClearPartOfScreen(x + 5 * HScale, y, HScale, 8 * VScale, true);// clear the space between characters
         }
 
         /// <summary>
