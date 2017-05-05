@@ -33,9 +33,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 
+#define SUPPORT_ORIGINAL_BRAINPAD
+
 using GHIElectronics.TinyCLR.Devices.I2c;
+using GHIElectronics.TinyCLR.Devices.Gpio;
+using GHIElectronics.TinyCLR.Devices.Spi;
 using System;
+using System.Threading;
 using System.ComponentModel;
+using GHIElectronics.TinyCLR.Pins;
 
 namespace GHIElectronics.TinyCLR.BrainPad {
     public class Display {
@@ -75,7 +81,58 @@ namespace GHIElectronics.TinyCLR.BrainPad {
 
 
         }
+#if SUPPORT_ORIGINAL_BRAINPAD
+        private const byte ST7735_MADCTL = 0x36;
+        private const byte MADCTL_MY = 0x80;
+        private const byte MADCTL_MX = 0x40;
+        private const byte MADCTL_MV = 0x20;
+        private const byte MADCTL_BGR = 0x08;
 
+        private SpiDevice spi;
+        private GpioPin controlPin;
+        private GpioPin resetPin;
+        private GpioPin backlightPin;
+        private  byte[] buffer1 = new byte[1];
+        private byte[] buffer4 = new byte[4];
+        private byte[] buffer16 = new byte[16];
+        private  void WriteData(byte[] data)
+        {
+            controlPin.Write(GpioPinValue.High);
+            spi.Write(data);
+            //Thread.Sleep(0);
+        }
+
+        private  void WriteCommand(byte command)
+        {
+            buffer1[0] = command;
+            controlPin.Write(GpioPinValue.Low);
+            spi.Write(buffer1);
+            //Thread.Sleep(0);
+        }
+
+        private  void WriteData(byte data)
+        {
+            buffer1[0] = data;
+            controlPin.Write(GpioPinValue.High);
+            spi.Write(buffer1);
+            //Thread.Sleep(0);
+        }
+        private void SetClip(int x, int y, int width, int height)
+        {
+            WriteCommand(0x2A);
+
+            controlPin.Write(GpioPinValue.High);
+            buffer4[1] = (byte)x;
+            buffer4[3] = (byte)(x + width - 1);
+            spi.Write(buffer4);
+
+            WriteCommand(0x2B);
+            controlPin.Write(GpioPinValue.High);
+            buffer4[1] = (byte)y;
+            buffer4[3] = (byte)(y + height - 1);
+            spi.Write(buffer4);
+        }
+#endif
         public bool AutoShowOnScreen { get; set; } = true;
 
         /// <summary>
@@ -88,89 +145,258 @@ namespace GHIElectronics.TinyCLR.BrainPad {
         /// </summary>
         public int Height { get; } = 64;
 
-        private byte[] vram = new byte[(128 * 64 / 8) + 1];
+        private byte[] vram;
 
-        public Display() {
-            // Init sequence
-            Ssd1306_command(0xae);// SSD1306_DISPLAYOFF);                    // 0xAE
-            Ssd1306_command(0xd5);// SSD1306_SETDISPLAYCLOCKDIV);            // 0xD5
-            Ssd1306_command(0x80);                                  // the suggested ratio 0x80
+        public Display()
+        {
 
-            Ssd1306_command(0xa8);// SSD1306_SETMULTIPLEX);                  // 0xA8
-            Ssd1306_command(64 - 1);
+            switch (Board.BoardType)
+            {
+#if SUPPORT_ORIGINAL_BRAINPAD
+                case BoardType.Original:
 
-            Ssd1306_command(0xd3);// SSD1306_SETDISPLAYOFFSET);              // 0xD3
-            Ssd1306_command(0x0);                                   // no offset
-            Ssd1306_command(0x40);// SSD1306_SETSTARTLINE | 0x0);            // line #0
-            Ssd1306_command(0x8d);// SSD1306_CHARGEPUMP);                    // 0x8D
+                    this.vram = new byte[128 * 64*2];
+                    GpioController GPIO = GpioController.GetDefault();
+                    controlPin = GPIO.OpenPin(G30.GpioPin.PC5);// new OutputPort(Peripherals.Display.Control, false);
+                    resetPin = GPIO.OpenPin(G30.GpioPin.PC4); //new OutputPort(Peripherals.Display.Reset, false);
+                    backlightPin = GPIO.OpenPin(G30.GpioPin.PA4); //new OutputPort(Peripherals.Display.Backlight, true);
 
-            //if (false)//vccstate == SSD1306_EXTERNALVCC)
-            //
-            //{ Ssd1306_command(0x10); }
-            //else {
-            Ssd1306_command(0x14);
-            //}
+                    controlPin.SetDriveMode(GpioPinDriveMode.Output);
+                    resetPin.SetDriveMode(GpioPinDriveMode.Output);
+                    backlightPin.SetDriveMode(GpioPinDriveMode.Output);
+                    backlightPin.Write(GpioPinValue.High);
 
-            Ssd1306_command(0x20);// SSD1306_MEMORYMODE);                    // 0x20
-            Ssd1306_command(0x00);                                  // 0x0 act like ks0108
-            Ssd1306_command(0xa1);// SSD1306_SEGREMAP | 0x1);
-            Ssd1306_command(0xc8);// SSD1306_COMSCANDEC);
+                    resetPin.Write(GpioPinValue.Low);
+                    Thread.Sleep(300);
+                    resetPin.Write(GpioPinValue.High);
+                    Thread.Sleep(1000);
+
+                    var settings = new SpiConnectionSettings(G30.GpioPin.PB12);
+                    settings.Mode = SpiMode.Mode3;
+                    settings.ClockFrequency = 12000000;
+                    settings.DataBitLength = 8;
+                    var aqs = SpiDevice.GetDeviceSelector("SPI2");
+                    spi = SpiDevice.FromId(aqs, settings);
+
+                    WriteCommand(0x11); //Sleep exit 
+                    Thread.Sleep(200);
+
+                    // ST7735R Frame Rate
+                    WriteCommand(0xB1);
+                    WriteData(0x01); WriteData(0x2C); WriteData(0x2D);
+                    WriteCommand(0xB2);
+                    WriteData(0x01); WriteData(0x2C); WriteData(0x2D);
+                    WriteCommand(0xB3);
+                    WriteData(0x01); WriteData(0x2C); WriteData(0x2D);
+                    WriteData(0x01); WriteData(0x2C); WriteData(0x2D);
+
+                    WriteCommand(0xB4); // Column inversion 
+                    WriteData(0x07);
+
+                    // ST7735R Power Sequence
+                    WriteCommand(0xC0);
+                    WriteData(0xA2); WriteData(0x02); WriteData(0x84);
+                    WriteCommand(0xC1); WriteData(0xC5);
+                    WriteCommand(0xC2);
+                    WriteData(0x0A); WriteData(0x00);
+                    WriteCommand(0xC3);
+                    WriteData(0x8A); WriteData(0x2A);
+                    WriteCommand(0xC4);
+                    WriteData(0x8A); WriteData(0xEE);
+
+                    WriteCommand(0xC5); // VCOM 
+                    WriteData(0x0E);
+
+                    WriteCommand(0x36); // MX, MY, RGB mode
+                    WriteData(MADCTL_MX | MADCTL_MY | MADCTL_BGR);
+
+                    // ST7735R Gamma Sequence
+                    WriteCommand(0xe0);
+                    WriteData(0x0f); WriteData(0x1a);
+                    WriteData(0x0f); WriteData(0x18);
+                    WriteData(0x2f); WriteData(0x28);
+                    WriteData(0x20); WriteData(0x22);
+                    WriteData(0x1f); WriteData(0x1b);
+                    WriteData(0x23); WriteData(0x37); WriteData(0x00);
+
+                    WriteData(0x07);
+                    WriteData(0x02); WriteData(0x10);
+                    WriteCommand(0xe1);
+                    WriteData(0x0f); WriteData(0x1b);
+                    WriteData(0x0f); WriteData(0x17);
+                    WriteData(0x33); WriteData(0x2c);
+                    WriteData(0x29); WriteData(0x2e);
+                    WriteData(0x30); WriteData(0x30);
+                    WriteData(0x39); WriteData(0x3f);
+                    WriteData(0x00); WriteData(0x07);
+                    WriteData(0x03); WriteData(0x10);
+
+                    WriteCommand(0x2a);
+                    WriteData(0x00); WriteData(0x00);
+                    WriteData(0x00); WriteData(0x7f);
+                    WriteCommand(0x2b);
+                    WriteData(0x00); WriteData(0x00);
+                    WriteData(0x00); WriteData(0x9f);
+
+                    WriteCommand(0xF0); //Enable test command  
+                    WriteData(0x01);
+                    WriteCommand(0xF6); //Disable ram power save mode 
+                    WriteData(0x00);
+
+                    WriteCommand(0x3A); //65k mode 
+                    WriteData(0x05);
+
+                    // Rotate
+                    WriteCommand(ST7735_MADCTL);
+                    WriteData(MADCTL_MV | MADCTL_MY);
+
+                    WriteCommand(0x29); //Display on
+                    Thread.Sleep(50);
+
+                    break;
+#endif
+                case BoardType.BP1:
+                    this.vram = new byte[(128 * 64 / 8) + 1];
+                    // Init sequence
+                    Ssd1306_command(0xae);// SSD1306_DISPLAYOFF);                    // 0xAE
+                    Ssd1306_command(0xd5);// SSD1306_SETDISPLAYCLOCKDIV);            // 0xD5
+                    Ssd1306_command(0x80);                                  // the suggested ratio 0x80
+
+                    Ssd1306_command(0xa8);// SSD1306_SETMULTIPLEX);                  // 0xA8
+                    Ssd1306_command(64 - 1);
+
+                    Ssd1306_command(0xd3);// SSD1306_SETDISPLAYOFFSET);              // 0xD3
+                    Ssd1306_command(0x0);                                   // no offset
+                    Ssd1306_command(0x40);// SSD1306_SETSTARTLINE | 0x0);            // line #0
+                    Ssd1306_command(0x8d);// SSD1306_CHARGEPUMP);                    // 0x8D
+
+                    //if (false)//vccstate == SSD1306_EXTERNALVCC)
+                    //
+                    //{ Ssd1306_command(0x10); }
+                    //else {
+                    Ssd1306_command(0x14);
+                    //}
+
+                    Ssd1306_command(0x20);// SSD1306_MEMORYMODE);                    // 0x20
+                    Ssd1306_command(0x00);                                  // 0x0 act like ks0108
+                    Ssd1306_command(0xa1);// SSD1306_SEGREMAP | 0x1);
+                    Ssd1306_command(0xc8);// SSD1306_COMSCANDEC);
 
 
-            Ssd1306_command(0xda);// SSD1306_SETCOMPINS);                    // 0xDA
-            Ssd1306_command(0x12);
-            Ssd1306_command(0x81);// SSD1306_SETCONTRAST);                   // 0x81
+                    Ssd1306_command(0xda);// SSD1306_SETCOMPINS);                    // 0xDA
+                    Ssd1306_command(0x12);
+                    Ssd1306_command(0x81);// SSD1306_SETCONTRAST);                   // 0x81
 
-            //if (false)//vccstate == SSD1306_EXTERNALVCC)
-            //{ Ssd1306_command(0x9F); }
-            //else {
-            Ssd1306_command(0xCF);
-            //}
+                    //if (false)//vccstate == SSD1306_EXTERNALVCC)
+                    //{ Ssd1306_command(0x9F); }
+                    //else {
+                    Ssd1306_command(0xCF);
+                    //}
 
-            Ssd1306_command(0xd9);// SSD1306_SETPRECHARGE);                  // 0xd9
+                    Ssd1306_command(0xd9);// SSD1306_SETPRECHARGE);                  // 0xd9
 
-            //if (false)//vccstate == SSD1306_EXTERNALVCC)
-            //{ Ssd1306_command(0x22); }
-            //else {
-            Ssd1306_command(0xF1);
-            //}
+                    //if (false)//vccstate == SSD1306_EXTERNALVCC)
+                    //{ Ssd1306_command(0x22); }
+                    //else {
+                    Ssd1306_command(0xF1);
+                    //}
 
-            Ssd1306_command(0xd8);// SSD1306_SETVCOMDETECT);                 // 0xDB
-            Ssd1306_command(0x40);
-            Ssd1306_command(0xa4);//SSD1306_DISPLAYALLON_RESUME);           // 0xA4
-            Ssd1306_command(0xa6);// SSD1306_NORMALDISPLAY);                 // 0xA6
+                    Ssd1306_command(0xd8);// SSD1306_SETVCOMDETECT);                 // 0xDB
+                    Ssd1306_command(0x40);
+                    Ssd1306_command(0xa4);//SSD1306_DISPLAYALLON_RESUME);           // 0xA4
+                    Ssd1306_command(0xa6);// SSD1306_NORMALDISPLAY);                 // 0xA6
 
-            Ssd1306_command(0x2e);// SSD1306_DEACTIVATE_SCROLL);
+                    Ssd1306_command(0x2e);// SSD1306_DEACTIVATE_SCROLL);
 
-            Ssd1306_command(0xaf);// SSD1306_DISPLAYON);//--turn on oled panel
+                    Ssd1306_command(0xaf);// SSD1306_DISPLAYON);//--turn on oled panel
 
 
-            Ssd1306_command(0x21);// SSD1306_COLUMNADDR);
-            Ssd1306_command(0);   // Column start address (0 = reset)
-            Ssd1306_command(128 - 1); // Column end address (127 = reset)
-            Ssd1306_command(0x22);// SSD1306_PAGEADDR);
-            Ssd1306_command(0); // Page start address (0 = reset)
-            Ssd1306_command(7); // Page end address
-
+                    Ssd1306_command(0x21);// SSD1306_COLUMNADDR);
+                    Ssd1306_command(0);   // Column start address (0 = reset)
+                    Ssd1306_command(128 - 1); // Column end address (127 = reset)
+                    Ssd1306_command(0x22);// SSD1306_PAGEADDR);
+                    Ssd1306_command(0); // Page start address (0 = reset)
+                    Ssd1306_command(7); // Page end address
+                    break;
+            }
             this.ClearScreen();
         }
+       
+        public void ShowOnScreen()
+        {
+#if SUPPORT_ORIGINAL_BRAINPAD
+            switch (Board.BoardType)
+            {
+                case BoardType.Original:
+                    SetClip((160-128)/2, (128-64)/2, 128, 64);
+                    WriteCommand(0x2C);
+                    // data
+                    controlPin.Write(GpioPinValue.High);
+                    spi.Write(this.vram);
+                    /*
+                    for (int y = 0; y < 64 / 8; y++)
+                    {
+                        for (int x = 0; x < 128; x++)
+                        {
+                            SetClip(x, y*8, 1, 8);
+                            WriteCommand(0x2C);
+                            // data
+                            controlPin.Write(GpioPinValue.High);
 
-        public void ShowOnScreen() =>
+                            buffer16[0] = buffer16[1] = (byte)(((this.vram[x+y*128 + 1] & 0x01) > 0) ? 0xff : 0x00);
+                            buffer16[2] = buffer16[3] = (byte)(((this.vram[x + y * 128 + 1] & 0x02) > 0) ? 0xff : 0x00);
+                            buffer16[4] = buffer16[5] = (byte)(((this.vram[x + y * 128 + 1] & 0x04) > 0) ? 0xff : 0x00);
+                            buffer16[6] = buffer16[7] = (byte)(((this.vram[x + y * 128 + 1] & 0x08) > 0) ? 0xff : 0x00);
+                            buffer16[8] = buffer16[9] = (byte)(((this.vram[x + y * 128 + 1] & 0x10) > 0) ? 0xff : 0x00);
+                            buffer16[10] = buffer16[11] = (byte)(((this.vram[x + y * 128 + 1] & 0x20) > 0) ? 0xff : 0x00);
+                            buffer16[12] = buffer16[13] = (byte)(((this.vram[x + y * 128 + 1] & 0x40) > 0) ? 0xff : 0x00);
+                            buffer16[14] = buffer16[15] = (byte)(((this.vram[x + y * 128 + 1] & 0x80) > 0) ? 0xff : 0x00);
 
-            //Display.Render(vram);
+                            spi.Write(buffer16);
+                        }
+                    }*/
+                    break;
+                case BoardType.BP1:
+                    this.i2cDevice.Write(this.vram);
+                    break;
+            }
+#else
             this.i2cDevice.Write(this.vram);
+#endif
+        }
 
         private void Point(int x, int y, bool set) {
             if (x < 0 || x > 127)
                 return;
             if (y < 0 || y > 63)
                 return;
-            var index = (x + (y / 8) * 128) + 1;
 
-            if (set)
-                this.vram[index] |= (byte)(1 << (y % 8));
-            else
-                this.vram[index] &= (byte)(~(1 << (y % 8)));
+            switch (Board.BoardType)
+            {
+#if SUPPORT_ORIGINAL_BRAINPAD
+                case BoardType.Original:
+                    if (set)
+                    {
+                        this.vram[(x * 2) + (y * 128 * 2)] = 0x0;
+                        this.vram[(x * 2) + (y * 128 * 2) + 1] = 0x1F;
+                    }
+                    else
+                    {
+                        this.vram[x * 2 + y * 128 * 2] = 0;
+                        this.vram[x * 2 + y * 128 * 2 + 1] = 0;
+                    }
+                    break;
+#endif
+                case BoardType.BP1:
+                    var index = (x + (y / 8) * 128) + 1;
+
+                    if (set)
+                        this.vram[index] |= (byte)(1 << (y % 8));
+                    else
+                        this.vram[index] &= (byte)(~(1 << (y % 8)));
+                    break;
+            }
+
         }
 
         /// <summary>
@@ -203,8 +429,8 @@ namespace GHIElectronics.TinyCLR.BrainPad {
         public void ClearScreen() {
 
             Array.Clear(this.vram, 0, this.vram.Length);
-
-            this.vram[0] = 0x40;
+            if (Board.BoardType == BoardType.BP1)
+                this.vram[0] = 0x40;
 
             if (this.AutoShowOnScreen) this.ShowOnScreen();
         }
