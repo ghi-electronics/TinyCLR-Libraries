@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>System</RootNamespace>
-    <AssemblyName>GHIElectronics.TinyCLR.Core</AssemblyName>
+    <AssemblyName>mscorlib</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NoStdLib>true</NoStdLib>
@@ -218,6 +218,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="GHIElectronics.TinyCLR.Core.nuspec" />
+    <None Include="GHIElectronics.TinyCLR.Core.targets" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
