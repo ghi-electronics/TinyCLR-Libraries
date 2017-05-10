@@ -50,13 +50,23 @@ namespace GHIElectronics.TinyCLR.BrainPad {
             public int Width { get; }
             internal byte[] Data { get; }
 
-            internal Picture(int width, int height, byte[] data) {
-                if (width * height != data.Length)
-                    throw new Exception("Incorrect picture data size");
+            internal Picture(int width, int height, byte[] data, int scale) {
+                if (width * height != data.Length) throw new Exception("Incorrect picture data size");
+                if (scale <= 0) throw new Exception("Scale can't be zero or negative.");
 
-                this.Height = height;
-                this.Width = width;
-                this.Data = data;
+                this.Height = height * scale;
+                this.Width = width * scale;
+
+                if (scale == 1) {
+                    this.Data = data;
+                }
+                else {
+                    this.Data = new byte[this.Width * this.Height];
+
+                    for (var x = 0; x < this.Width; x++)
+                        for (var y = 0; y < this.Height; y++)
+                            this.Data[y * this.Width + x] = data[y / scale * width + x / scale];
+                }
             }
         }
 
@@ -71,7 +81,8 @@ namespace GHIElectronics.TinyCLR.BrainPad {
 
         private I2cDevice i2cDevice = I2cDevice.FromId(I2cDevice.GetDeviceSelector("I2C1"), new I2cConnectionSettings(0x3C) { BusSpeed = I2cBusSpeed.FastMode });
 
-        public Picture CreatePicture(int width, int height, byte[] data) => data != null ? new Picture(width, height, data) : throw new Exception("Incorrect picture data size");
+        public Picture CreatePicture(int width, int height, byte[] data) => this.CreateScaledPicture(width, height, data, 1);
+        public Picture CreateScaledPicture(int width, int height, byte[] data, int scale) => data != null ? new Picture(width, height, data, scale) : throw new Exception("Incorrect picture data size");
 
         private void Ssd1306_command(int cmd) {
 
