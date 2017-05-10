@@ -45,14 +45,14 @@ using System.Threading;
 
 namespace GHIElectronics.TinyCLR.BrainPad {
     public class Display {
-        public class Image {
+        public class Picture {
             public int Height { get; }
             public int Width { get; }
             internal byte[] Data { get; }
 
-            internal Image(int width, int height, byte[] data) {
+            internal Picture(int width, int height, byte[] data) {
                 if (width * height != data.Length)
-                    throw new Exception("Incorrect image data size");
+                    throw new Exception("Incorrect picture data size");
 
                 this.Height = height;
                 this.Width = width;
@@ -71,7 +71,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
 
         private I2cDevice i2cDevice = I2cDevice.FromId(I2cDevice.GetDeviceSelector("I2C1"), new I2cConnectionSettings(0x3C) { BusSpeed = I2cBusSpeed.FastMode });
 
-        public Image CreateImage(int width, int height, byte[] data) => data != null ? new Image(width, height, data) : throw new Exception("Incorrect image data size");
+        public Picture CreatePicture(int width, int height, byte[] data) => data != null ? new Picture(width, height, data) : throw new Exception("Incorrect picture data size");
 
         private void Ssd1306_command(int cmd) {
 
@@ -96,37 +96,37 @@ namespace GHIElectronics.TinyCLR.BrainPad {
         private byte[] buffer4 = new byte[4];
         private byte[] buffer16 = new byte[16];
         private void WriteData(byte[] data) {
-            controlPin.Write(GpioPinValue.High);
-            spi.Write(data);
+            this.controlPin.Write(GpioPinValue.High);
+            this.spi.Write(data);
             //Thread.Sleep(0);
         }
 
         private void WriteCommand(byte command) {
-            buffer1[0] = command;
-            controlPin.Write(GpioPinValue.Low);
-            spi.Write(buffer1);
+            this.buffer1[0] = command;
+            this.controlPin.Write(GpioPinValue.Low);
+            this.spi.Write(this.buffer1);
             //Thread.Sleep(0);
         }
 
         private void WriteData(byte data) {
-            buffer1[0] = data;
-            controlPin.Write(GpioPinValue.High);
-            spi.Write(buffer1);
+            this.buffer1[0] = data;
+            this.controlPin.Write(GpioPinValue.High);
+            this.spi.Write(this.buffer1);
             //Thread.Sleep(0);
         }
         private void SetClip(int x, int y, int width, int height) {
             WriteCommand(0x2A);
 
-            controlPin.Write(GpioPinValue.High);
-            buffer4[1] = (byte)x;
-            buffer4[3] = (byte)(x + width - 1);
-            spi.Write(buffer4);
+            this.controlPin.Write(GpioPinValue.High);
+            this.buffer4[1] = (byte)x;
+            this.buffer4[3] = (byte)(x + width - 1);
+            this.spi.Write(this.buffer4);
 
             WriteCommand(0x2B);
-            controlPin.Write(GpioPinValue.High);
-            buffer4[1] = (byte)y;
-            buffer4[3] = (byte)(y + height - 1);
-            spi.Write(buffer4);
+            this.controlPin.Write(GpioPinValue.High);
+            this.buffer4[1] = (byte)y;
+            this.buffer4[3] = (byte)(y + height - 1);
+            this.spi.Write(this.buffer4);
         }
 #endif
         public bool AutoShowOnScreen { get; set; } = true;
@@ -150,27 +150,28 @@ namespace GHIElectronics.TinyCLR.BrainPad {
                 case BoardType.Original:
 
                     this.vram = new byte[128 * 64 * 2];
-                    GpioController GPIO = GpioController.GetDefault();
-                    controlPin = GPIO.OpenPin(G30.GpioPin.PC5);// new OutputPort(Peripherals.Display.Control, false);
-                    resetPin = GPIO.OpenPin(G30.GpioPin.PC4); //new OutputPort(Peripherals.Display.Reset, false);
-                    backlightPin = GPIO.OpenPin(G30.GpioPin.PA4); //new OutputPort(Peripherals.Display.Backlight, true);
+                    var GPIO = GpioController.GetDefault();
+                    this.controlPin = GPIO.OpenPin(G30.GpioPin.PC5);// new OutputPort(Peripherals.Display.Control, false);
+                    this.resetPin = GPIO.OpenPin(G30.GpioPin.PC4); //new OutputPort(Peripherals.Display.Reset, false);
+                    this.backlightPin = GPIO.OpenPin(G30.GpioPin.PA4); //new OutputPort(Peripherals.Display.Backlight, true);
 
-                    controlPin.SetDriveMode(GpioPinDriveMode.Output);
-                    resetPin.SetDriveMode(GpioPinDriveMode.Output);
-                    backlightPin.SetDriveMode(GpioPinDriveMode.Output);
-                    backlightPin.Write(GpioPinValue.High);
+                    this.controlPin.SetDriveMode(GpioPinDriveMode.Output);
+                    this.resetPin.SetDriveMode(GpioPinDriveMode.Output);
+                    this.backlightPin.SetDriveMode(GpioPinDriveMode.Output);
+                    this.backlightPin.Write(GpioPinValue.High);
 
-                    resetPin.Write(GpioPinValue.Low);
+                    this.resetPin.Write(GpioPinValue.Low);
                     Thread.Sleep(300);
-                    resetPin.Write(GpioPinValue.High);
+                    this.resetPin.Write(GpioPinValue.High);
                     Thread.Sleep(1000);
 
-                    var settings = new SpiConnectionSettings(G30.GpioPin.PB12);
-                    settings.Mode = SpiMode.Mode3;
-                    settings.ClockFrequency = 12000000;
-                    settings.DataBitLength = 8;
+                    var settings = new SpiConnectionSettings(G30.GpioPin.PB12) {
+                        Mode = SpiMode.Mode3,
+                        ClockFrequency = 12000000,
+                        DataBitLength = 8
+                    };
                     var aqs = SpiDevice.GetDeviceSelector("SPI2");
-                    spi = SpiDevice.FromId(aqs, settings);
+                    this.spi = SpiDevice.FromId(aqs, settings);
 
                     WriteCommand(0x11); //Sleep exit
                     Thread.Sleep(200);
@@ -323,8 +324,8 @@ namespace GHIElectronics.TinyCLR.BrainPad {
                     SetClip((160 - 128) / 2, (128 - 64) / 2, 128, 64);
                     WriteCommand(0x2C);
                     // data
-                    controlPin.Write(GpioPinValue.High);
-                    spi.Write(this.vram);
+                    this.controlPin.Write(GpioPinValue.High);
+                    this.spi.Write(this.vram);
                     /*
                     for (int y = 0; y < 64 / 8; y++)
                     {
@@ -436,41 +437,41 @@ namespace GHIElectronics.TinyCLR.BrainPad {
         public void ClearPartOfScreen(int x, int y, int width, int height) => this.ClearPartOfScreen(x, y, width, height, false);
 
         /// <summary>
-        /// Draws an image at the given location.
+        /// Draws an picture at the given location.
         /// </summary>
         /// <param name="x">The x coordinate to draw at.</param>
         /// <param name="y">The y coordinate to draw at.</param>
-        /// <param name="image">The image to draw.</param>
-        public void DrawImage(int x, int y, Image image) => this.DrawRotatedImage(x, y, image, Transform.None);
-        public void DrawImageRotated90Degrees(int x, int y, Image image) => this.DrawRotatedImage(x, y, image, Transform.Rotate90);
-        public void DrawImageRotated180Degrees(int x, int y, Image image) => this.DrawRotatedImage(x, y, image, Transform.Rotate180);
-        public void DrawImageRotated270Degrees(int x, int y, Image image) => this.DrawRotatedImage(x, y, image, Transform.Rotate270);
-        public void DrawImageFlippedHorizontally(int x, int y, Image image) => this.DrawRotatedImage(x, y, image, Transform.FlipHorizontal);
-        public void DrawImageFlippedVertically(int x, int y, Image image) => this.DrawRotatedImage(x, y, image, Transform.FlipVertical);
+        /// <param name="picture">The picture to draw.</param>
+        public void DrawPicture(int x, int y, Picture picture) => this.DrawRotatedPicture(x, y, picture, Transform.None);
+        public void DrawPictureRotated90Degrees(int x, int y, Picture picture) => this.DrawRotatedPicture(x, y, picture, Transform.Rotate90);
+        public void DrawPictureRotated180Degrees(int x, int y, Picture picture) => this.DrawRotatedPicture(x, y, picture, Transform.Rotate180);
+        public void DrawPictureRotated270Degrees(int x, int y, Picture picture) => this.DrawRotatedPicture(x, y, picture, Transform.Rotate270);
+        public void DrawPictureFlippedHorizontally(int x, int y, Picture picture) => this.DrawRotatedPicture(x, y, picture, Transform.FlipHorizontal);
+        public void DrawPictureFlippedVertically(int x, int y, Picture picture) => this.DrawRotatedPicture(x, y, picture, Transform.FlipVertical);
 
-        private void DrawRotatedImage(int x, int y, Image image, Transform mirror) {
-            if (image == null) throw new ArgumentNullException("image");
+        private void DrawRotatedPicture(int x, int y, Picture picture, Transform mirror) {
+            if (picture == null) throw new ArgumentNullException("picture");
 
-            for (var xd = 0; xd < image.Width; xd++) {
-                for (var yd = 0; yd < image.Height; yd++) {
+            for (var xd = 0; xd < picture.Width; xd++) {
+                for (var yd = 0; yd < picture.Height; yd++) {
                     switch (mirror) {
                         case Transform.None:
-                            Point(x + xd, y + yd, image.Data[image.Width * yd + xd] == 1);
+                            Point(x + xd, y + yd, picture.Data[picture.Width * yd + xd] == 1);
                             break;
                         case Transform.FlipHorizontal:
-                            Point(x + image.Width - xd, y + yd, image.Data[image.Width * yd + xd] == 1);
+                            Point(x + picture.Width - xd, y + yd, picture.Data[picture.Width * yd + xd] == 1);
                             break;
                         case Transform.FlipVertical:
-                            Point(x + xd, y + image.Height - yd, image.Data[image.Width * yd + xd] == 1);
+                            Point(x + xd, y + picture.Height - yd, picture.Data[picture.Width * yd + xd] == 1);
                             break;
                         case Transform.Rotate90:
-                            Point(x + image.Width - yd, y + xd, image.Data[image.Width * yd + xd] == 1);
+                            Point(x + picture.Width - yd, y + xd, picture.Data[picture.Width * yd + xd] == 1);
                             break;
                         case Transform.Rotate180:
-                            Point(x + image.Width - xd, y + image.Height - yd, image.Data[image.Width * yd + xd] == 1);
+                            Point(x + picture.Width - xd, y + picture.Height - yd, picture.Data[picture.Width * yd + xd] == 1);
                             break;
                         case Transform.Rotate270:
-                            Point(x + yd, y + image.Height - xd, image.Data[image.Width * yd + xd] == 1);
+                            Point(x + yd, y + picture.Height - xd, picture.Data[picture.Width * yd + xd] == 1);
                             break;
                     }
                 }
