@@ -129,8 +129,6 @@ namespace GHIElectronics.TinyCLR.BrainPad {
             this.spi.Write(this.buffer4);
         }
 #endif
-        public bool AutoShowOnScreen { get; set; } = true;
-
         /// <summary>
         /// The width of the display in pixels.
         /// </summary>
@@ -399,11 +397,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
         /// <param name="x">The x coordinate to draw at.</param>
         /// <param name="y">The y coordinate to draw at.</param>
         /// <param name="color">The color to draw.</param>
-        public void DrawPoint(int x, int y) {
-            Point(x, y, true);
-
-            if (this.AutoShowOnScreen) this.ShowOnScreen();
-        }
+        public void DrawPoint(int x, int y) => this.Point(x, y, true);
 
         /// <summary>
         /// Clears a pixel.
@@ -411,11 +405,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
         /// <param name="x">The x coordinate to draw at.</param>
         /// <param name="y">The y coordinate to draw at.</param>
         /// <param name="color">The color to draw.</param>
-        public void ClearPoint(int x, int y) {
-            Point(x, y, false);
-
-            if (this.AutoShowOnScreen) this.ShowOnScreen();
-        }
+        public void ClearPoint(int x, int y) => this.Point(x, y, false);
 
         /// <summary>
         /// Clears the Display.
@@ -425,20 +415,14 @@ namespace GHIElectronics.TinyCLR.BrainPad {
             Array.Clear(this.vram, 0, this.vram.Length);
             if (Board.BoardType == BoardType.BP1)
                 this.vram[0] = 0x40;
-
-            if (this.AutoShowOnScreen) this.ShowOnScreen();
         }
 
-        private void ClearPartOfScreen(int x, int y, int width, int height, bool suppressAutoShow) {
+        public void ClearPartOfScreen(int x, int y, int width, int height) {
             if (x == 0 && y == 0 && width == 128 && height == 64) ClearScreen();
             for (var lx = x; lx < width + x; lx++)
                 for (var ly = y; ly < height + y; ly++)
                     Point(lx, ly, false);
-
-            if (!suppressAutoShow && this.AutoShowOnScreen) this.ShowOnScreen();
         }
-
-        public void ClearPartOfScreen(int x, int y, int width, int height) => this.ClearPartOfScreen(x, y, width, height, false);
 
         /// <summary>
         /// Draws an picture at the given location.
@@ -480,8 +464,6 @@ namespace GHIElectronics.TinyCLR.BrainPad {
                     }
                 }
             }
-
-            if (this.AutoShowOnScreen) this.ShowOnScreen();
         }
 
 
@@ -529,8 +511,6 @@ namespace GHIElectronics.TinyCLR.BrainPad {
                     Point(x0, y0, true);
                 }
             }
-
-            if (this.AutoShowOnScreen) this.ShowOnScreen();
 
             /*var steep = Math.Abs(y1 - y0) > Math.Abs(x1 - x0);
             int t, dX, dY, yStep, error;
@@ -627,8 +607,6 @@ namespace GHIElectronics.TinyCLR.BrainPad {
                 DrawPoint(x + dY, y - dX);
                 DrawPoint(x - dY, y - dX);
             }
-
-            if (this.AutoShowOnScreen) this.ShowOnScreen();
         }
 
         /// <summary>
@@ -652,16 +630,12 @@ namespace GHIElectronics.TinyCLR.BrainPad {
                 DrawPoint(x, i);
                 DrawPoint(x + width - 1, i);
             }
-
-            if (this.AutoShowOnScreen) this.ShowOnScreen();
         }
 
         public void DrawFilledRectangle(int x, int y, int width, int height) {
             for (var lx = x; lx < width + x; lx++)
                 for (var ly = y; ly < height + y; ly++)
                     Point(lx, ly, true);
-
-            if (this.AutoShowOnScreen) this.ShowOnScreen();
         }
 
         byte[] font = new byte[95 * 5] {
@@ -777,7 +751,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
 
                 }
             }
-            ClearPartOfScreen(x + 5 * HScale, y, HScale, 8 * VScale, true);// clear the space between characters
+            ClearPartOfScreen(x + 5 * HScale, y, HScale, 8 * VScale);// clear the space between characters
         }
 
         /// <summary>
@@ -822,14 +796,26 @@ namespace GHIElectronics.TinyCLR.BrainPad {
                     }
                 }
             }
-
-            if (this.AutoShowOnScreen) this.ShowOnScreen();
         }
 
         public void DrawNumber(int x, int y, double number) => DrawText(x, y, number.ToString("N2"));
         public void DrawSmallNumber(int x, int y, double number) => DrawSmallText(x, y, number.ToString("N2"));
         public void DrawNumber(int x, int y, long number) => DrawText(x, y, number.ToString("N0"));
         public void DrawSmallNumber(int x, int y, long number) => DrawSmallText(x, y, number.ToString("N0"));
+
+        public void DrawTextAndShowOnScreen(int x, int y, string text) => DrawScaledTextAndShowOnScreen(x, y, text, 2, 2);
+        public void DrawSmallTextAndShowOnScreen(int x, int y, string text) => DrawScaledTextAndShowOnScreen(x, y, text, 1, 1);
+
+        public void DrawScaledTextAndShowOnScreen(int x, int y, string text, int HScale, int VScale) {
+            this.DrawScaledText(x, y, text, HScale, VScale);
+
+            this.ShowOnScreen();
+        }
+
+        public void DrawNumberAndShowOnScreen(int x, int y, double number) => DrawTextAndShowOnScreen(x, y, number.ToString("N2"));
+        public void DrawSmallNumberAndShowOnScreen(int x, int y, double number) => DrawSmallTextAndShowOnScreen(x, y, number.ToString("N2"));
+        public void DrawNumberAndShowOnScreen(int x, int y, long number) => DrawTextAndShowOnScreen(x, y, number.ToString("N0"));
+        public void DrawSmallNumberAndShowOnScreen(int x, int y, long number) => DrawSmallTextAndShowOnScreen(x, y, number.ToString("N0"));
 
         public void InvertColors(bool invert) {
             if (invert)
