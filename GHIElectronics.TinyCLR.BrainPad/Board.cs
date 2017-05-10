@@ -43,6 +43,10 @@ namespace GHIElectronics.TinyCLR.BrainPad {
         /// </summary>
         public Display Display { get; }
         /// <summary>
+        /// Expansion pins on the BrainPad.
+        /// </summary>
+        public Expansion Expansion { get; }
+        /// <summary>
         /// Provides access to the light bulb on the BrainPad.
         /// </summary>
         public LightBulb LightBulb { get; }
@@ -68,6 +72,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
             this.Buttons = new Buttons();
             this.Buzzer = new Buzzer();
             this.Display = new Display();
+            this.Expansion = new Expansion();
             this.LightBulb = new LightBulb();
             this.LightSensor = new LightSensor();
             this.ServoMotors = new ServoMotors();
