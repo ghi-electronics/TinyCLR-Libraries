@@ -11,10 +11,31 @@ namespace GHIElectronics.TinyCLR.BrainPad {
         private bool[] invertServo;
         private double[] minPulseLength;
         private double[] maxPulseLength;
-        private PwmController controller;
+        private PwmController[] controllers;
 
         public ServoMotors() {
-            this.controller = PwmController.FromId(G30.PwmPin.Controller2.Id);
+            switch (Board.BoardType) {
+                case BoardType.BP1:
+                    this.controllers = new[] {
+                        PwmController.FromId(G30.PwmPin.Controller2.Id),
+                        null
+                    };
+
+                    this.controllers[1] = this.controllers[0];
+
+                    break;
+
+                case BoardType.Original:
+                    this.controllers = new[] {
+                        PwmController.FromId(G30.PwmPin.Controller1.Id),
+                        PwmController.FromId(G30.PwmPin.Controller2.Id),
+                    };
+
+                    break;
+
+                default: throw new InvalidOperationException();
+            }
+
             this.invertServo = new bool[2]
             {
                 false,
@@ -28,16 +49,16 @@ namespace GHIElectronics.TinyCLR.BrainPad {
             switch (Board.BoardType) {
                 case BoardType.BP1:
                     this.servos = new[] {
-                        this.controller.OpenPin(G30.PwmPin.Controller2.PA3),
-                        this.controller.OpenPin(G30.PwmPin.Controller2.PA0)
+                        this.controllers[0].OpenPin(G30.PwmPin.Controller2.PA3),
+                        this.controllers[1].OpenPin(G30.PwmPin.Controller2.PA0)
                     };
 
                     break;
 
                 case BoardType.Original:
                     this.servos = new[] {
-                        this.controller.OpenPin(G30.PwmPin.Controller1.PA8),
-                        this.controller.OpenPin(G30.PwmPin.Controller2.PA0)
+                        this.controllers[0].OpenPin(G30.PwmPin.Controller1.PA8),
+                        this.controllers[1].OpenPin(G30.PwmPin.Controller2.PA0)
                     };
 
                     break;
@@ -45,7 +66,9 @@ namespace GHIElectronics.TinyCLR.BrainPad {
                 default: throw new InvalidOperationException();
             }
 
-            this.controller.SetDesiredFrequency(1 / 0.020);
+            this.EnsureFrequency(0);
+            this.EnsureFrequency(1);
+
             //output = new PWM(Peripherals.ServoMotor, 20000, 1250, PWM.ScaleFactor.Microseconds, false);
             //started = false;
         }
@@ -72,8 +95,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
         private void FixedSetPosition(int servo, double position) {
             if (position < 0 || position > 180) throw new ArgumentOutOfRangeException("degrees", "degrees must be between 0 and 180.");
 
-
-            this.controller.SetDesiredFrequency(1 / 0.020);// in case we used the other stuff. remove when we fix PWM controllers
+            this.EnsureFrequency(servo);// in case we used the other stuff. remove when we fix PWM controllers
 
             if (this.invertServo[(int)servo] == true)
                 position = 180 - position;
@@ -86,6 +108,8 @@ namespace GHIElectronics.TinyCLR.BrainPad {
             this.servos[(int)servo].SetActiveDutyCyclePercentage(duty);
             this.servos[(int)servo].Start();
         }
+
+        private void EnsureFrequency(int servo) => this.controllers[servo].SetDesiredFrequency(1 / 0.020);
 
         /// <summary>
         /// Sets the position of a continous-type Servo Motor.
