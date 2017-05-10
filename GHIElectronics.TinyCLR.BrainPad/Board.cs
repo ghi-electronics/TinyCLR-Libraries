@@ -12,19 +12,19 @@ namespace GHIElectronics.TinyCLR.BrainPad {
         /// Writes a message to the output window.
         /// </summary>
         /// <param name="message">The message to write.</param>
-        public void WriteOnComputer(string message) => System.Diagnostics.Debug.WriteLine(message);
+        public void WriteToComputer(string message) => System.Diagnostics.Debug.WriteLine(message);
 
         /// <summary>
         /// Writes a message to the output window.
         /// </summary>
         /// <param name="message">The message to write.</param>
-        public void WriteOnComputer(int message) => WriteOnComputer(message.ToString("N0"));
+        public void WriteToComputer(int message) => WriteToComputer(message.ToString("N0"));
 
         /// <summary>
         /// Writes a message to the output window.
         /// </summary>
         /// <param name="message">The message to write.</param>
-        public void WriteOnComputer(double message) => WriteOnComputer(message.ToString("N4"));
+        public void WriteToComputer(double message) => WriteToComputer(message.ToString("N4"));
 
         /// <summary>
         /// Provices access to the accelerometer on the BrainPad.
