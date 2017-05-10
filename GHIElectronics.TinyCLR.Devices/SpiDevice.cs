@@ -76,7 +76,7 @@ namespace GHIElectronics.TinyCLR.Devices.Spi {
                     throw new ArgumentException();
             }
 
-            return new SpiDevice(settings, new DefaultSpiDeviceProvider(busId, settings));
+            return new SpiDevice(settings, DefaultSpiControllerProvider.FindById(busId).GetDeviceProvider(new ProviderSpiConnectionSettings(settings)));
         }
 
     }

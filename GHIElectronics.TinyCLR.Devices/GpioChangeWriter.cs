@@ -2,10 +2,10 @@ using GHIElectronics.TinyCLR.Devices.Internal;
 using System;
 using System.Runtime.CompilerServices;
 
-namespace GHIElectronics.TinyCLR.Devices.Signals {
+namespace GHIElectronics.TinyCLR.Devices.Gpio {
     /// <summary>Allows a high frequency signal to be generated on a given digital pin. See https://www.ghielectronics.com/docs/24/ for more information.</summary>
     /// <remarks>Software generation is used so accuracy may suffer and is platform dependent.</remarks>
-    public class SignalGenerator : IDisposable {
+    public class GpioChangeWriter : IDisposable {
         private uint pin;
         private bool disposed;
 
@@ -34,7 +34,7 @@ namespace GHIElectronics.TinyCLR.Devices.Signals {
         /// <summary>Constructs a new object.</summary>
         /// <param name="pin">The pin on which signals will be generated.</param>
         /// <param name="initialValue">The initial value of the pin.</param>
-        public SignalGenerator(int pin, bool initialValue) {
+        public GpioChangeWriter(int pin, bool initialValue) {
             if (!Port.ReservePin((Cpu.Pin)pin, true)) throw new ArgumentException("pin is already is use.", "pin");
 
             this.pin = (uint)pin;
@@ -45,7 +45,7 @@ namespace GHIElectronics.TinyCLR.Devices.Signals {
         }
 
         /// <summary>The finalizer.</summary>
-        ~SignalGenerator() {
+        ~GpioChangeWriter() {
             this.Dispose(false);
         }
 

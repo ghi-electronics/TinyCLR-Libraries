@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{04B01E7E-5052-4E52-B21B-0BF37B9E0C86}</ProjectGuid>
+    <ProjectGuid>{4EF770FD-F6AC-42F5-8C14-88C5C1B06832}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GHIElectronics.TinyCLR.Devices</RootNamespace>
-    <AssemblyName>GHIElectronics.TinyCLR.Devices</AssemblyName>
+    <RootNamespace>GHIElectronics.TinyCLR.Storage</RootNamespace>
+    <AssemblyName>GHIElectronics.TinyCLR.Storage</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NoStdLib>true</NoStdLib>
@@ -35,51 +35,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="AdcChannel.cs" />
-    <Compile Include="AdcController.cs" />
-    <Compile Include="AdcEnums.cs" />
-    <Compile Include="AdcProvider.cs" />
-    <Compile Include="DacChannel.cs" />
-    <Compile Include="DacController.cs" />
-    <Compile Include="DacProvider.cs" />
-    <Compile Include="DisplayProvider.cs" />
-    <Compile Include="DeviceInformation.cs" />
-    <Compile Include="DisplayController.cs" />
-    <Compile Include="GpioController.cs" />
-    <Compile Include="GpioEnums.cs" />
-    <Compile Include="GpioProvider.cs" />
-    <Compile Include="GpioPin.cs" />
-    <Compile Include="GpioPinEventListener.cs" />
-    <Compile Include="GpioPinValueChangedEventArgs.cs" />
-    <Compile Include="I2cConnectionSettings.cs" />
-    <Compile Include="DisplayControllerSettings.cs" />
-    <Compile Include="LowLevelDevicesController.cs" />
-    <Compile Include="GpioPulseReaderWriter.cs" />
-    <Compile Include="GpioChangeReader.cs" />
-    <Compile Include="GpioChangeWriter.cs" />
-    <Compile Include="SpiSoftwareProvider.cs" />
-    <Compile Include="I2cSoftwareProvider.cs" />
-    <Compile Include="SpiController.cs" />
-    <Compile Include="I2cController.cs" />
-    <Compile Include="I2cDevice.cs" />
-    <Compile Include="I2cProvider.cs" />
-    <Compile Include="I2cEnums.cs" />
-    <Compile Include="Internal.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PwmController.cs" />
-    <Compile Include="PwmEnums.cs" />
-    <Compile Include="PwmPin.cs" />
-    <Compile Include="PwmProvider.cs" />
-    <Compile Include="SerialCommunicationDevice.cs" />
-    <Compile Include="SerialCommunicationEnums.cs" />
-    <Compile Include="SpiBusInfo.cs" />
-    <Compile Include="SpiConnectionSettings.cs" />
-    <Compile Include="SpiDevice.cs" />
-    <Compile Include="SpiProvider.cs" />
-    <Compile Include="SpiEnums.cs" />
+    <Compile Include="Streams.cs" />
+    <Compile Include="WindowsRuntimeBufferExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="GHIElectronics.TinyCLR.Devices.nuspec" />
+    <None Include="GHIElectronics.TinyCLR.Storage.nuspec" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>

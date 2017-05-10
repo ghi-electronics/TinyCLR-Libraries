@@ -2,10 +2,11 @@ using GHIElectronics.TinyCLR.Devices.Gpio.Provider;
 using System;
 
 namespace GHIElectronics.TinyCLR.Devices.Gpio {
-    public delegate void GpioPinValueChangedEventHandler(object sender, GpioPinValueChangedEventArgs e);
+    public delegate void GpioPinValueChangedEventHandler(GpioPin sender, GpioPinValueChangedEventArgs e);
 
     public sealed class GpioPin : IDisposable {
         private readonly IGpioPinProvider provider;
+        private GpioPinValueChangedEventHandler callbacks;
 
         internal GpioPin(IGpioPinProvider provider) => this.provider = provider;
 
@@ -21,8 +22,20 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio {
         public void Write(GpioPinValue value) => this.provider.Write((ProviderGpioPinValue)value);
 
         public event GpioPinValueChangedEventHandler ValueChanged {
-            add => this.provider.ValueChanged += value;
-            remove => this.provider.ValueChanged -= value;
+            add {
+                if (this.callbacks == null)
+                    this.provider.ValueChanged += this.OnValueChanged;
+
+                this.callbacks += value;
+            }
+            remove {
+                this.callbacks -= value;
+
+                if (this.callbacks == null)
+                    this.provider.ValueChanged -= this.OnValueChanged;
+            }
         }
+
+        private void OnValueChanged(IGpioPinProvider sender, GpioPinProviderValueChangedEventArgs e) => this.callbacks?.Invoke(this, new GpioPinValueChangedEventArgs((GpioPinEdge)e.Edge));
     }
 }

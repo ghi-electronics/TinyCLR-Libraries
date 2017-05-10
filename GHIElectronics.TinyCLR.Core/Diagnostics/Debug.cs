@@ -1,4 +1,6 @@
-﻿namespace System.Diagnostics {
+﻿#define DEBUG
+
+namespace System.Diagnostics {
     public static class Debug {
         public static TraceListenerCollection Listeners => Trace.Listeners;
 

@@ -1,12 +1,10 @@
-﻿using System;
-
-namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
+﻿namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
     public enum SerialError {
-        Frame,
-        BufferOverrun,
-        ReceiveFull,
-        ReceiveParity,
-        TransmitFull
+        Frame = 4,
+        BufferOverrun = 2,
+        ReceiveFull = 1,
+        ReceiveParity = 3,
+        TransmitFull = 0
     }
 
     public enum SerialHandshake {
@@ -48,58 +46,5 @@ namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
         public SerialPinChange PinChange { get; }
 
         internal PinChangedEventArgs(SerialPinChange pinChange) => this.PinChange = pinChange;
-    }
-}
-
-namespace GHIElectronics.TinyCLR.Storage.Streams {
-    public enum InputStreamOptions {
-        None = 0,
-        Partial = 1,
-        ReadAhead = 2
-    }
-
-    public interface IOutputStream : IDisposable {
-        bool Flush();
-        uint Write(IBuffer buffer);
-    }
-
-    public interface IInputStream : IDisposable {
-        uint Read(IBuffer buffer, uint count, InputStreamOptions options);
-    }
-
-    public interface IBuffer {
-        uint Capacity { get; }
-        uint Length { get; set; }
-    }
-
-    public class Buffer : IBuffer {
-        private uint length;
-        private byte[] data;
-
-        public byte[] Data => this.data;
-        public uint Capacity => this.length;
-
-        public uint Length {
-            get => this.length;
-            set {
-                this.length = value;
-
-                var newBuffer = new byte[this.length];
-
-                Array.Copy(this.data, newBuffer, (int)this.length);
-
-                this.data = newBuffer;
-            }
-        }
-
-        public Buffer(byte[] data) {
-            this.data = data ?? throw new ArgumentNullException(nameof(data));
-            this.length = (uint)data.Length;
-        }
-
-        public Buffer(uint capacity) {
-            this.data = new byte[capacity];
-            this.length = capacity;
-        }
     }
 }

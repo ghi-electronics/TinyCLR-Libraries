@@ -1,4 +1,6 @@
-﻿namespace System.Diagnostics {
+﻿#define TRACE
+
+namespace System.Diagnostics {
     public static class Trace {
         public static TraceListenerCollection Listeners { get; } = new TraceListenerCollection { new DefaultTraceListener() };
 

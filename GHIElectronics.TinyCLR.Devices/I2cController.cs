@@ -6,7 +6,7 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
 
         internal I2cController(II2cControllerProvider provider) => this.provider = provider;
 
-        public static I2cController GetDefault() => LowLevelDevicesController.DefaultProvider.I2cControllerProvider != null ? new I2cController(LowLevelDevicesController.DefaultProvider.I2cControllerProvider) : null;
+        public static I2cController GetDefault() => LowLevelDevicesController.DefaultProvider?.I2cControllerProvider != null ? new I2cController(LowLevelDevicesController.DefaultProvider.I2cControllerProvider) : null;
 
         public I2cDevice GetDevice(I2cConnectionSettings settings) => new I2cDevice(settings, this.provider.GetDeviceProvider(new ProviderI2cConnectionSettings(settings)));
 

@@ -127,6 +127,9 @@ namespace GHIElectronics.TinyCLR.Devices.Internal {
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         extern private void Initialize();
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        public static extern int[] GetDeviceIds();
     }
 
     internal class Port {

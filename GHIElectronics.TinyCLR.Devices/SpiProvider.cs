@@ -52,6 +52,36 @@ namespace GHIElectronics.TinyCLR.Devices.Spi.Provider {
         void TransferSequential(byte[] writeBuffer, byte[] readBuffer);
     }
 
+    internal class DefaultSpiControllerProvider : ISpiControllerProvider {
+        private readonly string deviceId;
+
+        static DefaultSpiControllerProvider() {
+            var deviceIds = DefaultSpiDeviceProvider.GetDeviceIds();
+
+            DefaultSpiControllerProvider.Instances = new ISpiControllerProvider[deviceIds.Length];
+
+            for (var i = 0; i < deviceIds.Length; i++)
+                DefaultSpiControllerProvider.Instances[i] = new DefaultSpiControllerProvider("SPI" + deviceIds[i].ToString());
+        }
+
+        public static ISpiControllerProvider FindById(string deviceId) {
+            for (var i = 0; i < DefaultSpiControllerProvider.Instances.Length; i++) {
+                var inst = (DefaultSpiControllerProvider)DefaultSpiControllerProvider.Instances[i];
+
+                if (inst.deviceId == deviceId)
+                    return inst;
+            }
+
+            return null;
+        }
+
+        public static ISpiControllerProvider[] Instances { get; }
+
+        private DefaultSpiControllerProvider(string deviceId) => this.deviceId = deviceId;
+
+        public ISpiDeviceProvider GetDeviceProvider(ProviderSpiConnectionSettings settings) => new DefaultSpiDeviceProvider(this.deviceId, settings);
+    }
+
     internal sealed class DefaultSpiDeviceProvider : ISpiDeviceProvider {
         internal static string s_SpiPrefix = "SPI";
 
@@ -69,7 +99,7 @@ namespace GHIElectronics.TinyCLR.Devices.Spi.Provider {
         /// </summary>
         /// <param name="deviceId">The unique name of the device.</param>
         /// <param name="settings">Settings to open the device with.</param>
-        internal DefaultSpiDeviceProvider(string deviceId, SpiConnectionSettings settings) {
+        internal DefaultSpiDeviceProvider(string deviceId, ProviderSpiConnectionSettings settings) {
             // Device ID must match the index in device information.
             // We don't have many buses, so just hard-code the valid ones instead of parsing.
             this.m_spiBus = SpiDevice.GetBusNum(deviceId);
@@ -189,6 +219,9 @@ namespace GHIElectronics.TinyCLR.Devices.Spi.Provider {
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         extern private void TransferInternal(byte[] writeBuffer, byte[] readBuffer, bool fullDuplex);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        public static extern int[] GetDeviceIds();
 
         /// <summary>
         /// Releases internal resources held by the device.

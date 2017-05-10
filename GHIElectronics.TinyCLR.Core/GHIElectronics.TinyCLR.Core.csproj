@@ -84,6 +84,7 @@
     <Compile Include="Diagnostics\TraceListenerCollection.cs" />
     <Compile Include="Double.cs" />
     <Compile Include="Enum.cs" />
+    <Compile Include="EventArgs.cs" />
     <Compile Include="Exception.cs" />
     <Compile Include="FlagsAttribute.cs" />
     <Compile Include="FormatException.cs" />
@@ -171,12 +172,15 @@
     <Compile Include="Runtime\CompilerServices\RuntimeHelpers.cs" />
     <Compile Include="Runtime\InteropServices\Attributes.cs" />
     <Compile Include="Runtime\InteropServices\CharSet.cs" />
+    <Compile Include="Runtime\InteropServices\InternalCall.cs" />
     <Compile Include="Runtime\InteropServices\LayoutKind.cs" />
+    <Compile Include="Runtime\InteropServices\Marshal.cs" />
     <Compile Include="Runtime\Remoting\RemotingServices.cs" />
     <Compile Include="Runtime\Remoting\__TransparentProxy.cs" />
     <Compile Include="SByte.cs" />
     <Compile Include="SerializableAttribute.cs" />
     <Compile Include="Single.cs" />
+    <Compile Include="Streams.cs" />
     <Compile Include="String.cs" />
     <Compile Include="SystemException.cs" />
     <Compile Include="TargetFrameworkAttribute.cs" />

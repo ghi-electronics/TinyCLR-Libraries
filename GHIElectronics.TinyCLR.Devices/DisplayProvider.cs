@@ -13,6 +13,10 @@ namespace GHIElectronics.TinyCLR.Devices.Display.Provider {
     }
 
     internal class DefaultDisplayControllerProvider : IDisplayControllerProvider {
+        public static DefaultDisplayControllerProvider Instance { get; } = new DefaultDisplayControllerProvider();
+
+        private DefaultDisplayControllerProvider() { }
+
         public IntPtr Hdc { get; private set; }
 
         public void ApplySettings(DisplayControllerSettings settings) {

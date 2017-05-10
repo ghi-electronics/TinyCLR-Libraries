@@ -1,4 +1,5 @@
-﻿using GHIElectronics.TinyCLR.Storage.Streams;
+﻿using GHIElectronics.TinyCLR.Devices.Internal;
+using GHIElectronics.TinyCLR.Storage.Streams;
 using System;
 using System.Runtime.CompilerServices;
 
@@ -7,12 +8,19 @@ namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
     public delegate void PinChangedDelegate(SerialDevice sender, PinChangedEventArgs e);
 
     public class SerialDevice : IDisposable {
+        private readonly Stream stream;
         private bool disposed;
 
-        public bool BreakSignalState => throw new NotSupportedException(); public uint BytesReceived => throw new NotSupportedException(); public bool CarrierDetectState => throw new NotSupportedException(); public bool ClearToSendState => throw new NotSupportedException(); public bool DataSetReadyState => throw new NotSupportedException(); public bool IsDataTerminalReadyEnabled { get => throw new NotSupportedException(); set => throw new NotSupportedException(); }
+        public bool BreakSignalState { get => throw new NotSupportedException(); set => throw new NotSupportedException(); }
+        public bool CarrierDetectState => throw new NotSupportedException();
+        public bool ClearToSendState => throw new NotSupportedException();
+        public bool DataSetReadyState => throw new NotSupportedException();
+        public bool IsDataTerminalReadyEnabled { get => throw new NotSupportedException(); set => throw new NotSupportedException(); }
         public bool IsRequestToSendEnabled { get => throw new NotSupportedException(); set => throw new NotSupportedException(); }
-        public ushort UsbProductId => throw new NotSupportedException(); public ushort UsbVendorId => throw new NotSupportedException();
-        public string PortName { get; private set; }
+        public ushort UsbProductId => throw new NotSupportedException();
+        public ushort UsbVendorId => throw new NotSupportedException();
+        public uint BytesReceived { get; private set; }
+        public string PortName { get; }
         public uint BaudRate { get; set; }
         public ushort DataBits { get; set; }
         public SerialParity Parity { get; set; }
@@ -21,15 +29,16 @@ namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
         public TimeSpan ReadTimeout { get; set; }
         public TimeSpan WriteTimeout { get; set; }
 
-        public IInputStream InputStream { get; private set; }
-        public IOutputStream OutputStream { get; private set; }
+        public IInputStream InputStream => this.stream;
+        public IOutputStream OutputStream => this.stream;
 
-        public event ErrorReceivedDelegate ErrorReceived { add { throw new NotSupportedException(); } remove { throw new NotSupportedException(); } }
+        public event ErrorReceivedDelegate ErrorReceived { add => this.stream.ErrorReceived += value; remove => this.stream.ErrorReceived -= value; }
         public event PinChangedDelegate PinChanged { add { throw new NotSupportedException(); } remove { throw new NotSupportedException(); } }
 
         public static string GetDeviceSelector() => string.Empty;
         public static string GetDeviceSelector(string portName) => string.Empty + portName;
         public static string GetDeviceSelectorFromUsbVidPid(ushort vendorId, ushort productId) => throw new NotSupportedException();
+
         public static SerialDevice FromId(string deviceId) {
             if (deviceId == null)
                 throw new ArgumentNullException(nameof(deviceId));
@@ -43,20 +52,17 @@ namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
                 throw new ArgumentException("Invalid COM port.", nameof(deviceId));
             }
 
-            var device = new SerialDevice();
-            var stream = new Stream(device);
+            return new SerialDevice(deviceId) {
+                BaudRate = 9600,
+                DataBits = 8,
+                Parity = SerialParity.None,
+                StopBits = SerialStopBitCount.One,
+            };
+        }
 
-            device.PortName = deviceId;
-            device.BaudRate = 9600;
-            device.DataBits = 8;
-            device.Parity = SerialParity.None;
-            device.StopBits = SerialStopBitCount.One;
-            device.InputStream = stream;
-            device.OutputStream = stream;
-
-            device.disposed = false;
-
-            return device;
+        private SerialDevice(string portName) {
+            this.PortName = portName;
+            this.stream = new Stream(this);
         }
 
         public void Dispose() => this.Dispose(true);
@@ -65,11 +71,8 @@ namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
             if (this.disposed)
                 return;
 
-            if (disposing) {
-                (this.InputStream as Stream)?.ParentDispose();
-                this.InputStream = null;
-                this.OutputStream = null;
-            }
+            if (disposing)
+                this.stream.ParentDispose();
 
             this.disposed = true;
         }
@@ -83,15 +86,25 @@ namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
             private readonly SerialDevice parent;
             private uint port;
             private bool opened;
+            private NativeEventDispatcher errorReceivedEvent;
+
+            public event ErrorReceivedDelegate ErrorReceived;
 
             public Stream(SerialDevice parent) {
                 this.parent = parent;
                 this.opened = false;
+                this.port = uint.Parse(this.parent.PortName.Substring(3)) - 1;
             }
 
             public void Dispose() => this.parent.Dispose();
 
-            internal void ParentDispose() => Stream.NativeClose(this.port, (uint)this.parent.Handshake);
+            internal void ParentDispose() {
+                if (this.opened) {
+                    this.errorReceivedEvent.Dispose();
+
+                    Stream.NativeClose(this.port, (uint)this.parent.Handshake);
+                }
+            }
 
             public bool Flush() {
                 this.Open();
@@ -101,19 +114,34 @@ namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
                 return true;
             }
 
-            public uint Read(IBuffer buffer, uint count, InputStreamOptions options) {
+            public IBuffer Read(IBuffer buffer, uint count, InputStreamOptions options) {
                 if (buffer == null)
                     throw new ArgumentNullException(nameof(buffer));
                 if (count > buffer.Capacity)
                     throw new InvalidOperationException($"{nameof(count)} is more than the capacity of {nameof(buffer)}.");
                 if (this.parent.disposed)
                     throw new ObjectDisposedException();
-                if (options != InputStreamOptions.None)
+                if (options == InputStreamOptions.ReadAhead)
                     throw new NotSupportedException($"{nameof(options)} is not supported.");
 
                 this.Open();
 
-                return (uint)Stream.NativeRead(this.port, (buffer as Buffer).Data, 0, (int)buffer.Length, (int)this.parent.WriteTimeout.TotalMilliseconds);
+                var read = 0U;
+                var total = 0U;
+                var end = DateTime.UtcNow.Add(this.parent.ReadTimeout);
+
+                //TODO UWP on RPI and desktop appear to block indefinitely until exactly count are received regardless of InputStreamOptions or timeout
+                while (total < count) {
+                    read = (uint)Stream.NativeRead(this.port, ((Buffer)buffer).data, (int)(((Buffer)buffer).offset + total), (int)(count - total), (int)((end - DateTime.UtcNow).TotalMilliseconds));
+                    total += read;
+
+                    if ((read > 0 && options == InputStreamOptions.Partial) || DateTime.UtcNow > end)
+                        break;
+                }
+
+                buffer.Length = this.parent.BytesReceived = total;
+
+                return buffer;
             }
 
             public uint Write(IBuffer buffer) {
@@ -124,16 +152,17 @@ namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
 
                 this.Open();
 
-                return (uint)Stream.NativeWrite(this.port, (buffer as Buffer).Data, 0, (int)buffer.Length, (int)this.parent.WriteTimeout.TotalMilliseconds);
+                return (uint)Stream.NativeWrite(this.port, ((Buffer)buffer).data, ((Buffer)buffer).offset, (int)buffer.Length, (int)this.parent.WriteTimeout.TotalMilliseconds);
             }
 
             private void Open() {
                 if (this.opened)
                     return;
 
-                this.port = uint.Parse(this.parent.PortName.Substring(3)) - 1;
+                Stream.NativeOpen(this.port, this.parent.BaudRate, (uint)this.parent.Parity, this.parent.DataBits, (uint)this.parent.StopBits, (uint)this.parent.Handshake);
 
-                Stream.NativeOpen(this.port, (uint)this.parent.BaudRate, (uint)this.parent.Parity, this.parent.DataBits, (uint)this.parent.StopBits, (uint)this.parent.Handshake);
+                this.errorReceivedEvent = new NativeEventDispatcher("SerialPortErrorEvent", this.port);
+                this.errorReceivedEvent.OnInterrupt += (s, evt, ts) => this.ErrorReceived?.Invoke(this.parent, new ErrorReceivedEventArgs((SerialError)evt));
 
                 this.opened = true;
             }
@@ -152,6 +181,18 @@ namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             private extern static int NativeWrite(uint port, byte[] buffer, int offset, int count, int timeout);
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            private extern static int NativeBytesToRead(uint port);
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            private extern static int NativeBytesToWrite(uint port);
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            private extern static void NativeDiscardRead(uint port);
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            private extern static void NativeDiscardWrite(uint port);
         }
     }
 }

@@ -54,6 +54,36 @@ namespace GHIElectronics.TinyCLR.Devices.I2c.Provider {
         ProviderI2cTransferResult WriteReadPartial(byte[] writeBuffer, byte[] readBuffer);
     }
 
+    internal class DefaultI2cControllerProvider : II2cControllerProvider {
+        private readonly string deviceId;
+
+        static DefaultI2cControllerProvider() {
+            var deviceIds = I2CDevice.GetDeviceIds();
+
+            DefaultI2cControllerProvider.Instances = new II2cControllerProvider[deviceIds.Length];
+
+            for (var i = 0; i < deviceIds.Length; i++)
+                DefaultI2cControllerProvider.Instances[i] = new DefaultI2cControllerProvider("I2C" + deviceIds[i].ToString());
+        }
+
+        public static II2cControllerProvider FindById(string deviceId) {
+            for (var i = 0; i < DefaultI2cControllerProvider.Instances.Length; i++) {
+                var inst = (DefaultI2cControllerProvider)DefaultI2cControllerProvider.Instances[i];
+
+                if (inst.deviceId == deviceId)
+                    return inst;
+            }
+
+            return null;
+        }
+
+        public static II2cControllerProvider[] Instances { get; }
+
+        private DefaultI2cControllerProvider(string deviceId) => this.deviceId = deviceId;
+
+        public II2cDeviceProvider GetDeviceProvider(ProviderI2cConnectionSettings settings) => new DefaultI2cDeviceProvider(this.deviceId, settings);
+    }
+
     /// <summary>
     /// Represents a communications channel to a device on an inter-integrated circuit (I²C) bus.
     /// </summary>
@@ -76,13 +106,13 @@ namespace GHIElectronics.TinyCLR.Devices.I2c.Provider {
         /// <param name="slaveAddress">The bus address of the I²C device. Only 7-bit addressing is supported, so the
         ///     range of valid values is from 8 to 119.</param>
         /// <param name="busSpeed"></param>
-        internal DefaultI2cDeviceProvider(string deviceId, I2cConnectionSettings settings) {
+        internal DefaultI2cDeviceProvider(string deviceId, ProviderI2cConnectionSettings settings) {
             this.m_deviceId = deviceId.Substring(0, deviceId.Length);
 
 #pragma warning disable CS0219 // Variable is assigned but its value is never used
             var clockRateKhz = 100;
 #pragma warning restore CS0219 // Variable is assigned but its value is never used
-            if (settings.BusSpeed == I2cBusSpeed.FastMode) {
+            if (settings.BusSpeed == ProviderI2cBusSpeed.FastMode) {
                 clockRateKhz = 400;
             }
 

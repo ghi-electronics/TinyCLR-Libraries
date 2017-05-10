@@ -25,7 +25,7 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
             if (deviceId == null) throw new ArgumentNullException(nameof(deviceId));
             if (deviceId != DefaultI2cDeviceProvider.I2cPrefix + "1") throw new InvalidOperationException();
 
-            return new I2cDevice(settings, new DefaultI2cDeviceProvider(deviceId, settings));
+            return new I2cDevice(settings, DefaultI2cControllerProvider.FindById(deviceId).GetDeviceProvider(new ProviderI2cConnectionSettings(settings)));
         }
 
         public static string GetDeviceSelector() => DefaultI2cDeviceProvider.I2cPrefix;
