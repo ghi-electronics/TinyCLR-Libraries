@@ -143,6 +143,83 @@ namespace GHIElectronics.TinyCLR.BrainPad {
 
         private byte[] vram;
 
+        private void InitN18() {
+            WriteCommand(0x11); //Sleep exit
+            Thread.Sleep(200);
+
+            // ST7735R Frame Rate
+            WriteCommand(0xB1);
+            WriteData(0x01); WriteData(0x2C); WriteData(0x2D);
+            WriteCommand(0xB2);
+            WriteData(0x01); WriteData(0x2C); WriteData(0x2D);
+            WriteCommand(0xB3);
+            WriteData(0x01); WriteData(0x2C); WriteData(0x2D);
+            WriteData(0x01); WriteData(0x2C); WriteData(0x2D);
+
+            WriteCommand(0xB4); // Column inversion
+            WriteData(0x07);
+
+            // ST7735R Power Sequence
+            WriteCommand(0xC0);
+            WriteData(0xA2); WriteData(0x02); WriteData(0x84);
+            WriteCommand(0xC1); WriteData(0xC5);
+            WriteCommand(0xC2);
+            WriteData(0x0A); WriteData(0x00);
+            WriteCommand(0xC3);
+            WriteData(0x8A); WriteData(0x2A);
+            WriteCommand(0xC4);
+            WriteData(0x8A); WriteData(0xEE);
+
+            WriteCommand(0xC5); // VCOM
+            WriteData(0x0E);
+
+            WriteCommand(0x36); // MX, MY, RGB mode
+            WriteData(MADCTL_MX | MADCTL_MY | MADCTL_BGR);
+
+            // ST7735R Gamma Sequence
+            WriteCommand(0xe0);
+            WriteData(0x0f); WriteData(0x1a);
+            WriteData(0x0f); WriteData(0x18);
+            WriteData(0x2f); WriteData(0x28);
+            WriteData(0x20); WriteData(0x22);
+            WriteData(0x1f); WriteData(0x1b);
+            WriteData(0x23); WriteData(0x37); WriteData(0x00);
+
+            WriteData(0x07);
+            WriteData(0x02); WriteData(0x10);
+            WriteCommand(0xe1);
+            WriteData(0x0f); WriteData(0x1b);
+            WriteData(0x0f); WriteData(0x17);
+            WriteData(0x33); WriteData(0x2c);
+            WriteData(0x29); WriteData(0x2e);
+            WriteData(0x30); WriteData(0x30);
+            WriteData(0x39); WriteData(0x3f);
+            WriteData(0x00); WriteData(0x07);
+            WriteData(0x03); WriteData(0x10);
+
+            WriteCommand(0x2a);
+            WriteData(0x00); WriteData(0x00);
+            WriteData(0x00); WriteData(0x7f);
+            WriteCommand(0x2b);
+            WriteData(0x00); WriteData(0x00);
+            WriteData(0x00); WriteData(0x9f);
+
+            WriteCommand(0xF0); //Enable test command
+            WriteData(0x01);
+            WriteCommand(0xF6); //Disable ram power save mode
+            WriteData(0x00);
+
+            WriteCommand(0x3A); //65k mode
+            WriteData(0x05);
+
+            // Rotate
+            WriteCommand(ST7735_MADCTL);
+            WriteData(MADCTL_MV | MADCTL_MY);
+
+            WriteCommand(0x29); //Display on
+            Thread.Sleep(50);
+        }
+
         public Display() {
 
             switch (Board.BoardType) {
@@ -172,81 +249,8 @@ namespace GHIElectronics.TinyCLR.BrainPad {
                     };
                     var aqs = SpiDevice.GetDeviceSelector("SPI2");
                     this.spi = SpiDevice.FromId(aqs, settings);
-
-                    WriteCommand(0x11); //Sleep exit
-                    Thread.Sleep(200);
-
-                    // ST7735R Frame Rate
-                    WriteCommand(0xB1);
-                    WriteData(0x01); WriteData(0x2C); WriteData(0x2D);
-                    WriteCommand(0xB2);
-                    WriteData(0x01); WriteData(0x2C); WriteData(0x2D);
-                    WriteCommand(0xB3);
-                    WriteData(0x01); WriteData(0x2C); WriteData(0x2D);
-                    WriteData(0x01); WriteData(0x2C); WriteData(0x2D);
-
-                    WriteCommand(0xB4); // Column inversion
-                    WriteData(0x07);
-
-                    // ST7735R Power Sequence
-                    WriteCommand(0xC0);
-                    WriteData(0xA2); WriteData(0x02); WriteData(0x84);
-                    WriteCommand(0xC1); WriteData(0xC5);
-                    WriteCommand(0xC2);
-                    WriteData(0x0A); WriteData(0x00);
-                    WriteCommand(0xC3);
-                    WriteData(0x8A); WriteData(0x2A);
-                    WriteCommand(0xC4);
-                    WriteData(0x8A); WriteData(0xEE);
-
-                    WriteCommand(0xC5); // VCOM
-                    WriteData(0x0E);
-
-                    WriteCommand(0x36); // MX, MY, RGB mode
-                    WriteData(MADCTL_MX | MADCTL_MY | MADCTL_BGR);
-
-                    // ST7735R Gamma Sequence
-                    WriteCommand(0xe0);
-                    WriteData(0x0f); WriteData(0x1a);
-                    WriteData(0x0f); WriteData(0x18);
-                    WriteData(0x2f); WriteData(0x28);
-                    WriteData(0x20); WriteData(0x22);
-                    WriteData(0x1f); WriteData(0x1b);
-                    WriteData(0x23); WriteData(0x37); WriteData(0x00);
-
-                    WriteData(0x07);
-                    WriteData(0x02); WriteData(0x10);
-                    WriteCommand(0xe1);
-                    WriteData(0x0f); WriteData(0x1b);
-                    WriteData(0x0f); WriteData(0x17);
-                    WriteData(0x33); WriteData(0x2c);
-                    WriteData(0x29); WriteData(0x2e);
-                    WriteData(0x30); WriteData(0x30);
-                    WriteData(0x39); WriteData(0x3f);
-                    WriteData(0x00); WriteData(0x07);
-                    WriteData(0x03); WriteData(0x10);
-
-                    WriteCommand(0x2a);
-                    WriteData(0x00); WriteData(0x00);
-                    WriteData(0x00); WriteData(0x7f);
-                    WriteCommand(0x2b);
-                    WriteData(0x00); WriteData(0x00);
-                    WriteData(0x00); WriteData(0x9f);
-
-                    WriteCommand(0xF0); //Enable test command
-                    WriteData(0x01);
-                    WriteCommand(0xF6); //Disable ram power save mode
-                    WriteData(0x00);
-
-                    WriteCommand(0x3A); //65k mode
-                    WriteData(0x05);
-
-                    // Rotate
-                    WriteCommand(ST7735_MADCTL);
-                    WriteData(MADCTL_MV | MADCTL_MY);
-
-                    WriteCommand(0x29); //Display on
-                    Thread.Sleep(50);
+                    InitN18();
+                    InitN18();
 
                     break;
 #endif
