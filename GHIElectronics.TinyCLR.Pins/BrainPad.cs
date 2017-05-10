@@ -25,7 +25,7 @@
             public const int Tx = G30.GpioPin.PA9;
         }
 
-        /// <summary>GPIO pin definitions.</summary>
+        /// <summary>ADc channel definitions.</summary>
         public static class AdcChannel {
             /// <summary>ADC channel.</summary>
             public const int An = G30.AdcChannel.PA7;
@@ -37,7 +37,7 @@
             public const int Int = G30.AdcChannel.PA2;
         }
 
-        /// <summary>GPIO pin definitions.</summary>
+        /// <summary>PWM pin definitions.</summary>
         public static class PwmPin {
             public const string Id = G30.PwmPin.Controller1.Id;
             /// <summary>PWM pin.</summary>
