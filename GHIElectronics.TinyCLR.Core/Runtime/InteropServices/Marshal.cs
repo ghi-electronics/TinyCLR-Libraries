@@ -1,7 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 
 namespace System.Runtime.InteropServices {
-    public static partial class Marshal {
+    public static class Marshal {
         public static byte ReadByte(IntPtr ptr, int ofs) => Marshal.ReadByte(ptr + ofs);
         public static short ReadInt16(IntPtr ptr, int ofs) => Marshal.ReadInt16(ptr + ofs);
         public static int ReadInt32(IntPtr ptr, int ofs) => Marshal.ReadInt32(ptr + ofs);
