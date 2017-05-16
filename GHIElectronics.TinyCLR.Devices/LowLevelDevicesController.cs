@@ -41,10 +41,10 @@ namespace GHIElectronics.TinyCLR.Devices {
         }
     }
 
-    internal static class DefaultDeviceNames {
-        public static string AdcProvider = "TinyCLR.Default.AdcProvider";
-        public static string DacProvider = "TinyCLR.Default.DacProvider";
-        public static string DisplayProvider = "TinyCLR.Default.DisplayProvider";
-        public static string GpioProvider = "TinyCLR.Default.GpioProvider";
+    public static class KnownLookupNames {
+        public static string DefaultAdcProvider = "TinyCLR.Default.AdcProvider";
+        public static string DefaultDacProvider = "TinyCLR.Default.DacProvider";
+        public static string DefaultDisplayProvider = "TinyCLR.Default.DisplayProvider";
+        public static string DefaultGpioProvider = "TinyCLR.Default.GpioProvider";
     }
 }
