@@ -40,19 +40,4 @@ namespace GHIElectronics.TinyCLR.Devices {
             this.SpiControllerProvider = spi;
         }
     }
-
-    //These need to match the native lookup.
-    public static class KnownLookupNames {
-        public static string DefaultAdcProvider = "TinyCLR.Default.AdcProvider";
-        public static string DefaultCanProvider = "TinyCLR.Default.CanProvider";
-        public static string DefaultDacProvider = "TinyCLR.Default.DacProvider";
-        public static string DefaultDisplayProvider = "TinyCLR.Default.DisplayProvider";
-        public static string DefaultGpioProvider = "TinyCLR.Default.GpioProvider";
-        public static string DefaultI2cProvider = "TinyCLR.Default.I2cProvider";
-        public static string DefaultPwmProvider = "TinyCLR.Default.PwmProvider";
-        public static string DefaultSpiProvider = "TinyCLR.Default.SpiProvider";
-        public static string DefaultUartProvider = "TinyCLR.Default.UartProvider";
-        public static string DefaultUsbClientProvider = "TinyCLR.Default.UsbClientProvider";
-        public static string DefaultUsbHostProvider = "TinyCLR.Default.UsbHostProvider";
-    }
 }

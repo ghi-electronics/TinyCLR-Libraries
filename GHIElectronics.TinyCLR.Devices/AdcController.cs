@@ -1,4 +1,5 @@
 using GHIElectronics.TinyCLR.Devices.Adc.Provider;
+using GHIElectronics.TinyCLR.Runtime;
 using System;
 
 namespace GHIElectronics.TinyCLR.Devices.Adc {
@@ -32,7 +33,7 @@ namespace GHIElectronics.TinyCLR.Devices.Adc {
             }
         }
 
-        public static AdcController GetDefault() => new AdcController(LowLevelDevicesController.DefaultProvider?.AdcControllerProvider ?? AdcProvider.FromId(KnownLookupNames.DefaultAdcProvider).GetControllers()[0]);
+        public static AdcController GetDefault() => new AdcController(LowLevelDevicesController.DefaultProvider?.AdcControllerProvider ?? AdcProvider.FromId(Api.GetDefaultName(ApiType.AdcProvider)).GetControllers()[0]);
 
         public static AdcController[] GetControllers(IAdcProvider provider) {
             // FUTURE: This should return "Task<IVectorView<AdcController>>"
