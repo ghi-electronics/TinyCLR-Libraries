@@ -76,8 +76,8 @@ namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
 #pragma warning restore CS0169
 
             private readonly SerialDevice parent;
-            private string providerName;
-            private uint port;
+            private string providerId;
+            private uint idx;
             private bool opened;
             private NativeEventDispatcher errorReceivedEvent;
 
@@ -86,8 +86,8 @@ namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
             public Stream(SerialDevice parent, string providerId, uint idx) {
                 this.parent = parent;
                 this.opened = false;
-                this.providerName = providerId;
-                this.port = idx;
+                this.providerId = providerId;
+                this.idx = idx;
             }
 
             public void Dispose() => this.parent.Dispose();
@@ -96,14 +96,14 @@ namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
                 if (this.opened) {
                     this.errorReceivedEvent.Dispose();
 
-                    Stream.NativeClose(this.port, (uint)this.parent.Handshake);
+                    this.NativeClose((uint)this.parent.Handshake);
                 }
             }
 
             public bool Flush() {
                 this.Open();
 
-                Stream.NativeFlush(this.port);
+                this.NativeFlush();
 
                 return true;
             }
@@ -126,7 +126,7 @@ namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
 
                 //TODO UWP on RPI and desktop appear to block indefinitely until exactly count are received regardless of InputStreamOptions or timeout
                 while (total < count) {
-                    read = (uint)Stream.NativeRead(this.port, ((Buffer)buffer).data, (int)(((Buffer)buffer).offset + total), (int)(count - total), (int)((end - DateTime.UtcNow).TotalMilliseconds));
+                    read = (uint)this.NativeRead(((Buffer)buffer).data, (int)(((Buffer)buffer).offset + total), (int)(count - total), (int)((end - DateTime.UtcNow).TotalMilliseconds));
                     total += read;
 
                     if ((read > 0 && options == InputStreamOptions.Partial) || DateTime.UtcNow > end)
@@ -146,47 +146,35 @@ namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
 
                 this.Open();
 
-                return (uint)Stream.NativeWrite(this.port, ((Buffer)buffer).data, ((Buffer)buffer).offset, (int)buffer.Length, (int)this.parent.WriteTimeout.TotalMilliseconds);
+                return (uint)this.NativeWrite(((Buffer)buffer).data, ((Buffer)buffer).offset, (int)buffer.Length, (int)this.parent.WriteTimeout.TotalMilliseconds);
             }
 
             private void Open() {
                 if (this.opened)
                     return;
 
-                Stream.NativeOpen(this.providerName, this.port, this.parent.BaudRate, (uint)this.parent.Parity, this.parent.DataBits, (uint)this.parent.StopBits, (uint)this.parent.Handshake);
+                this.NativeOpen(this.providerId, this.idx, this.parent.BaudRate, (uint)this.parent.Parity, this.parent.DataBits, (uint)this.parent.StopBits, (uint)this.parent.Handshake);
 
-                this.errorReceivedEvent = new NativeEventDispatcher("SerialPortErrorEvent", this.port);
+                this.errorReceivedEvent = new NativeEventDispatcher("SerialPortErrorEvent", this.idx);
                 this.errorReceivedEvent.OnInterrupt += (s, evt, ts) => this.ErrorReceived?.Invoke(this.parent, new ErrorReceivedEventArgs((SerialError)evt));
 
                 this.opened = true;
             }
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            private extern static void NativeOpen(string providerId, uint port, uint baudRate, uint parity, uint dataBits, uint stopBits, uint handshaking);
+            private extern void NativeOpen(string providerId, uint port, uint baudRate, uint parity, uint dataBits, uint stopBits, uint handshaking);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            private extern static void NativeClose(uint port, uint handshaking);
+            private extern void NativeClose(uint handshaking);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            private extern static void NativeFlush(uint port);
+            private extern void NativeFlush();
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            private extern static int NativeRead(uint port, byte[] buffer, int offset, int count, int timeout);
+            private extern int NativeRead(byte[] buffer, int offset, int count, int timeout);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            private extern static int NativeWrite(uint port, byte[] buffer, int offset, int count, int timeout);
-
-            [MethodImpl(MethodImplOptions.InternalCall)]
-            private extern static int NativeBytesToRead(uint port);
-
-            [MethodImpl(MethodImplOptions.InternalCall)]
-            private extern static int NativeBytesToWrite(uint port);
-
-            [MethodImpl(MethodImplOptions.InternalCall)]
-            private extern static void NativeDiscardRead(uint port);
-
-            [MethodImpl(MethodImplOptions.InternalCall)]
-            private extern static void NativeDiscardWrite(uint port);
+            private extern int NativeWrite(byte[] buffer, int offset, int count, int timeout);
         }
     }
 }

@@ -279,13 +279,13 @@
         /// <summary>Serial port definitions.</summary>
         public static class SerialPort {
             /// <summary>Serial port on D1 (TX) and D0 (RX).</summary>
-            public const string Com1 = G80.SerialPort.Com1;
+            public const string Com1 = G80.UartPort.Uart1;
             /// <summary>Serial port on D39 (TX), D37 (RX), D41 (CTS), and D43 (RTS).</summary>
-            public const string Com2 = G80.SerialPort.Com2;
+            public const string Com2 = G80.UartPort.Uart2;
             /// <summary>Serial port on D42 (TX), D40 (RX), D44 (CTS), and D46 (RTS).</summary>
-            public const string Com3 = G80.SerialPort.Com3;
+            public const string Com3 = G80.UartPort.Uart3;
             /// <summary>Serial port on D33 (TX) and D31 (RX).</summary>
-            public const string Com4 = G80.SerialPort.Com4;
+            public const string Com4 = G80.UartPort.Uart4;
         }
 
         /// <summary>I2C bus definitions.</summary>
