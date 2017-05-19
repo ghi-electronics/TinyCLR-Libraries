@@ -95,11 +95,5 @@ namespace GHIElectronics.TinyCLR.Devices.Pwm.Provider {
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         public extern void SetPulseParameters(int pinNumber, double dutyCycle, bool invertPolarity);
-
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        private extern static bool IsTimerValid(int timer);
-
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        public static extern int[] GetDeviceIds();
     }
 }
