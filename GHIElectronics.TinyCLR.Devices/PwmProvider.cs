@@ -32,42 +32,34 @@ namespace GHIElectronics.TinyCLR.Devices.Pwm.Provider {
         IPwmControllerProvider[] GetControllers();
     }
 
+    public class PwmProvider : IPwmProvider {
+        private IPwmControllerProvider[] controllers;
+
+        public string Name { get; }
+
+        public IPwmControllerProvider[] GetControllers() => this.controllers;
+
+        private PwmProvider(string name) {
+            this.Name = name;
+            this.controllers = new IPwmControllerProvider[DefaultPwmControllerProvider.GetControllerCount(name)];
+
+            for (var i = 0U; i < this.controllers.Length; i++)
+                this.controllers[i] = new DefaultPwmControllerProvider(name, i);
+        }
+
+        public static IPwmProvider FromId(string id) => new PwmProvider(id);
+    }
+
     internal class DefaultPwmControllerProvider : IPwmControllerProvider {
-        internal static string PwmPrefix => "CON";
+#pragma warning disable CS0169
+        private IntPtr nativeProvider;
+#pragma warning restore CS0169
 
-        private readonly string deviceId;
-        private readonly int controller;
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern uint GetControllerCount(string providerName);
 
-        public static IPwmControllerProvider[] Instances { get; }
-
-        static DefaultPwmControllerProvider() {
-            var deviceIds = DefaultPwmControllerProvider.GetDeviceIds();
-
-            DefaultPwmControllerProvider.Instances = new IPwmControllerProvider[deviceIds.Length];
-
-            for (var i = 0; i < deviceIds.Length; i++)
-                DefaultPwmControllerProvider.Instances[i] = new DefaultPwmControllerProvider("CON" + deviceIds[i].ToString());
-        }
-
-        public static IPwmControllerProvider FindById(string deviceId) {
-            for (var i = 0; i < DefaultPwmControllerProvider.Instances.Length; i++) {
-                var inst = (DefaultPwmControllerProvider)DefaultPwmControllerProvider.Instances[i];
-
-                if (inst.deviceId == deviceId)
-                    return inst;
-            }
-
-            return null;
-        }
-
-        private DefaultPwmControllerProvider(string deviceId) {
-            if (deviceId == null) throw new ArgumentNullException(nameof(deviceId));
-            if (deviceId.Length < 4 || deviceId.IndexOf(DefaultPwmControllerProvider.PwmPrefix) != 0 || !int.TryParse(deviceId.Substring(DefaultPwmControllerProvider.PwmPrefix.Length), out var controller) || controller < 0) throw new ArgumentException("Invalid device ID.", nameof(deviceId));
-            if (!DefaultPwmControllerProvider.IsTimerValid(controller)) throw new ArgumentException("Invalid controller.", nameof(DefaultPwmControllerProvider.controller));
-
-            this.deviceId = deviceId;
-            this.controller = controller;
-        }
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal extern DefaultPwmControllerProvider(string name, uint index);
 
         public double ActualFrequency { get; private set; }
 

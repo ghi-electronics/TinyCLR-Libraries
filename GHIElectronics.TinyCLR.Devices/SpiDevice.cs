@@ -1,4 +1,5 @@
 ﻿using GHIElectronics.TinyCLR.Devices.Spi.Provider;
+using GHIElectronics.TinyCLR.Runtime;
 using System;
 
 namespace GHIElectronics.TinyCLR.Devices.Spi {
@@ -76,7 +77,7 @@ namespace GHIElectronics.TinyCLR.Devices.Spi {
                     throw new ArgumentException();
             }
 
-            return new SpiDevice(settings, DefaultSpiControllerProvider.FindById(busId).GetDeviceProvider(new ProviderSpiConnectionSettings(settings)));
+            return Api.ParseIdAndIndex(busId, out var providerId, out var idx) ? new SpiDevice(settings, SpiProvider.FromId(providerId).GetControllers()[idx].GetDeviceProvider(new ProviderSpiConnectionSettings(settings))) : null;
         }
 
     }

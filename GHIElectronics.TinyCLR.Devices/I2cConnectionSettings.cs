@@ -1,3 +1,5 @@
+using GHIElectronics.TinyCLR.Devices.I2c.Provider;
+
 namespace GHIElectronics.TinyCLR.Devices.I2c {
     /// <summary>
     /// Represents the connection settings you want to use for an inter-integrated circuit (I²C) device.
@@ -14,6 +16,12 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
         /// </summary>
         /// <param name="slaveAddress">Initial address of the device.</param>
         public I2cConnectionSettings(int slaveAddress) => this.m_slaveAddress = slaveAddress;
+
+        internal I2cConnectionSettings(ProviderI2cConnectionSettings settings) {
+            this.BusSpeed = (I2cBusSpeed)settings.BusSpeed;
+            this.SharingMode = (I2cSharingMode)settings.SharingMode;
+            this.SlaveAddress = settings.SlaveAddress;
+        }
 
         /// <summary>
         /// Construct a copy of an I2cConnectionSettings object.

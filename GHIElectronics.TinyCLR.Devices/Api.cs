@@ -23,5 +23,23 @@ namespace GHIElectronics.TinyCLR.Runtime {
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         public static extern void SetDefaultName(ApiType type, string name);
+
+        internal static bool ParseIdAndIndex(string id, out string providerId, out uint controllerIndex) {
+            providerId = null;
+            controllerIndex = uint.MaxValue;
+
+            if (id == null) return false;
+
+            var parts = id.Split('\\');
+
+            if (parts.Length != 2) return false;
+
+            var res = uint.TryParse(parts[1], out controllerIndex);
+
+            if (res)
+                providerId = parts[0];
+
+            return res;
+        }
     }
 }

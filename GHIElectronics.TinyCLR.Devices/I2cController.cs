@@ -1,4 +1,5 @@
 ﻿using GHIElectronics.TinyCLR.Devices.I2c.Provider;
+using GHIElectronics.TinyCLR.Runtime;
 
 namespace GHIElectronics.TinyCLR.Devices.I2c {
     public sealed class I2cController {
@@ -6,7 +7,7 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
 
         internal I2cController(II2cControllerProvider provider) => this.provider = provider;
 
-        public static I2cController GetDefault() => LowLevelDevicesController.DefaultProvider?.I2cControllerProvider != null ? new I2cController(LowLevelDevicesController.DefaultProvider.I2cControllerProvider) : null;
+        public static I2cController GetDefault() => new I2cController(LowLevelDevicesController.DefaultProvider?.I2cControllerProvider ?? I2cProvider.FromId(Api.GetDefaultName(ApiType.I2cProvider)).GetControllers()[0]);
 
         public I2cDevice GetDevice(I2cConnectionSettings settings) => new I2cDevice(settings, this.provider.GetDeviceProvider(new ProviderI2cConnectionSettings(settings)));
 

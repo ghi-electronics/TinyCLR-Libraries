@@ -1,5 +1,5 @@
-using GHIElectronics.TinyCLR.Devices.Internal;
 using System;
+using System.Runtime.CompilerServices;
 
 namespace GHIElectronics.TinyCLR.Devices.I2c.Provider {
     public sealed class ProviderI2cConnectionSettings {
@@ -54,248 +54,118 @@ namespace GHIElectronics.TinyCLR.Devices.I2c.Provider {
         ProviderI2cTransferResult WriteReadPartial(byte[] writeBuffer, byte[] readBuffer);
     }
 
-    internal class DefaultI2cControllerProvider : II2cControllerProvider {
-        private readonly string deviceId;
+    public class I2cProvider : II2cProvider {
+        private II2cControllerProvider[] controllers;
 
-        static DefaultI2cControllerProvider() {
-            var deviceIds = I2CDevice.GetDeviceIds();
+        public string Name { get; }
 
-            DefaultI2cControllerProvider.Instances = new II2cControllerProvider[deviceIds.Length];
+        public II2cControllerProvider[] GetControllers() => this.controllers;
 
-            for (var i = 0; i < deviceIds.Length; i++)
-                DefaultI2cControllerProvider.Instances[i] = new DefaultI2cControllerProvider("I2C" + deviceIds[i].ToString());
+        private I2cProvider(string name) {
+            this.Name = name;
+            this.controllers = new II2cControllerProvider[DefaultI2cControllerProvider.GetControllerCount(name)];
+
+            for (var i = 0U; i < this.controllers.Length; i++)
+                this.controllers[i] = new DefaultI2cControllerProvider(name, i);
         }
 
-        public static II2cControllerProvider FindById(string deviceId) {
-            for (var i = 0; i < DefaultI2cControllerProvider.Instances.Length; i++) {
-                var inst = (DefaultI2cControllerProvider)DefaultI2cControllerProvider.Instances[i];
-
-                if (inst.deviceId == deviceId)
-                    return inst;
-            }
-
-            return null;
-        }
-
-        public static II2cControllerProvider[] Instances { get; }
-
-        private DefaultI2cControllerProvider(string deviceId) => this.deviceId = deviceId;
-
-        public II2cDeviceProvider GetDeviceProvider(ProviderI2cConnectionSettings settings) => new DefaultI2cDeviceProvider(this.deviceId, settings);
+        public static II2cProvider FromId(string id) => new I2cProvider(id);
     }
 
-    /// <summary>
-    /// Represents a communications channel to a device on an inter-integrated circuit (I²C) bus.
-    /// </summary>
+    internal class DefaultI2cControllerProvider : II2cControllerProvider {
+#pragma warning disable CS0169
+#pragma warning disable CS0649
+        private IntPtr nativeProvider;
+#pragma warning restore CS0649
+#pragma warning restore CS0169
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern uint GetControllerCount(string providerName);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal extern DefaultI2cControllerProvider(string name, uint index);
+
+        public II2cDeviceProvider GetDeviceProvider(ProviderI2cConnectionSettings settings) => new DefaultI2cDeviceProvider(this.nativeProvider, settings);
+    }
+
     internal sealed class DefaultI2cDeviceProvider : II2cDeviceProvider {
-        // We need to share a single device between all instances, since it reserves the pins.
-        private static object s_deviceLock = new object();
-        private static int s_deviceRefs = 0;
-        private static I2CDevice s_device = null;
-        internal static string I2cPrefix => "I2C";
+#pragma warning disable CS0169
+        private IntPtr nativeProvider;
+#pragma warning restore CS0169
 
-        private readonly string m_deviceId;
-
-        private object m_syncLock = new object();
         private bool m_disposed = false;
-        private I2CDevice.Configuration m_configuration;
+        private I2cConnectionSettings m_settings;
 
-        /// <summary>
-        /// Constructs a new I2cDevice object.
-        /// </summary>
-        /// <param name="slaveAddress">The bus address of the I²C device. Only 7-bit addressing is supported, so the
-        ///     range of valid values is from 8 to 119.</param>
-        /// <param name="busSpeed"></param>
-        internal DefaultI2cDeviceProvider(string deviceId, ProviderI2cConnectionSettings settings) {
-            this.m_deviceId = deviceId.Substring(0, deviceId.Length);
+        public string DeviceId => "";
 
-#pragma warning disable CS0219 // Variable is assigned but its value is never used
-            var clockRateKhz = 100;
-#pragma warning restore CS0219 // Variable is assigned but its value is never used
-            if (settings.BusSpeed == ProviderI2cBusSpeed.FastMode) {
-                clockRateKhz = 400;
-            }
+        internal DefaultI2cDeviceProvider(IntPtr nativeProvider, ProviderI2cConnectionSettings settings) {
+            this.nativeProvider = nativeProvider;
+            this.m_settings = new I2cConnectionSettings(settings);
 
-            this.m_configuration = new I2CDevice.Configuration((ushort)settings.SlaveAddress, clockRateKhz);
-
-            lock (s_deviceLock) {
-                if (s_device == null) {
-                    s_device = new I2CDevice(this.m_configuration);
-                }
-
-                ++s_deviceRefs;
-            }
+            InitNative();
         }
 
         ~DefaultI2cDeviceProvider() {
             Dispose(false);
         }
 
-        /// <summary>
-        /// Gets the plug and play device identifier of the inter-integrated circuit (I2C) bus controller for the device.
-        /// </summary>
-        /// <value>The plug and play device identifier of the inter-integrated circuit (I²C) bus controller for the
-        ///     device.</value>
-        public string DeviceId => this.m_deviceId.Substring(0, this.m_deviceId.Length);
-
-        /// <summary>
-        /// Writes data to the inter-integrated circuit (I²C) bus on which the device is connected, based on the bus
-        /// address specified in the I2cConnectionSettings object that you used to create the I2cDevice object.
-        /// </summary>
-        /// <param name="writeBuffer">A buffer that contains the data that you want to write to the I²C device. This
-        ///     data should not include the bus address.</param>
-        public void Write(byte[] writeBuffer) => WritePartial(writeBuffer);
-
-        /// <summary>
-        /// Writes data to the inter-integrated circuit (I²C) bus on which the device is connected, and returns
-        /// information about the success of the operation that you can use for error handling.
-        /// </summary>
-        /// <param name="buffer">A buffer that contains the data that you want to write to the I²C device. This data
-        ///     should not include the bus address.</param>
-        /// <returns>A structure that contains information about the success of the write operation and the actual
-        ///     number of bytes that the operation wrote into the buffer.</returns>
-        public ProviderI2cTransferResult WritePartial(byte[] buffer) {
-            lock (this.m_syncLock) {
-                if (this.m_disposed) {
-                    throw new ObjectDisposedException();
-                }
-
-                var transactions = new I2CDevice.I2CTransaction[] { I2CDevice.CreateWriteTransaction(buffer) };
-                return ExecuteTransactions(transactions);
-            }
-        }
-
-        /// <summary>
-        /// Reads data from the inter-integrated circuit (I²C) bus on which the device is connected into the specified
-        /// buffer.
-        /// </summary>
-        /// <param name="readBuffer">The buffer to which you want to read the data from the I²C bus. The length of the
-        ///     buffer determines how much data to request from the device.</param>
-        public void Read(byte[] readBuffer) => ReadPartial(readBuffer);
-
-        /// <summary>
-        /// Reads data from the inter-integrated circuit (I²C) bus on which the device is connected into the specified
-        /// buffer, and returns information about the success of the operation that you can use for error handling.
-        /// </summary>
-        /// <param name="buffer">The buffer to which you want to read the data from the I²C bus. The length of the
-        ///     buffer determines how much data to request from the device.</param>
-        /// <returns>A structure that contains information about the success of the read operation and the actual number
-        ///     of bytes that the operation read into the buffer.</returns>
-        public ProviderI2cTransferResult ReadPartial(byte[] buffer) {
-            lock (this.m_syncLock) {
-                if (this.m_disposed) {
-                    throw new ObjectDisposedException();
-                }
-
-                var transactions = new I2CDevice.I2CTransaction[] { I2CDevice.CreateReadTransaction(buffer) };
-                return ExecuteTransactions(transactions);
-            }
-        }
-
-        /// <summary>
-        /// Performs an atomic operation to write data to and then read data from the inter-integrated circuit (I²C) bus
-        /// on which the device is connected, and sends a restart condition between the write and read operations.
-        /// </summary>
-        /// <param name="writeBuffer">A buffer that contains the data that you want to write to the I²C device. This
-        ///     data should not include the bus address.</param>
-        /// <param name="readBuffer">The buffer to which you want to read the data from the I²C bus. The length of the
-        ///     buffer determines how much data to request from the device.</param>
-        public void WriteRead(byte[] writeBuffer, byte[] readBuffer) => WriteReadPartial(writeBuffer, readBuffer);
-
-        /// <summary>
-        /// Performs an atomic operation to write data to and then read data from the inter-integrated circuit (I²C) bus
-        /// on which the device is connected, and returns information about the success of the operation that you can
-        /// use for error handling.
-        /// </summary>
-        /// <param name="writeBuffer">A buffer that contains the data that you want to write to the I²C device. This
-        ///     data should not include the bus address.</param>
-        /// <param name="readBuffer">The buffer to which you want to read the data from the I²C bus. The length of the
-        ///     buffer determines how much data to request from the device.</param>
-        /// <returns>A structure that contains information about whether both the read and write parts of the operation
-        ///     succeeded and the sum of the actual number of bytes that the operation wrote and the actual number of
-        ///     bytes that the operation read.</returns>
-        public ProviderI2cTransferResult WriteReadPartial(byte[] writeBuffer, byte[] readBuffer) {
-            lock (this.m_syncLock) {
-                if (this.m_disposed) {
-                    throw new ObjectDisposedException();
-                }
-
-                var transactions = new I2CDevice.I2CTransaction[] {
-                I2CDevice.CreateWriteTransaction(writeBuffer),
-                I2CDevice.CreateReadTransaction(readBuffer) };
-                return ExecuteTransactions(transactions);
-            }
-        }
-
-        /// <summary>
-        /// Closes the connection to the inter-integrated circuit (I2C) device.
-        /// </summary>
         public void Dispose() {
-            lock (this.m_syncLock) {
-                if (!this.m_disposed) {
-                    Dispose(true);
-                    GC.SuppressFinalize(this);
-                    this.m_disposed = true;
-                }
+            if (!this.m_disposed) {
+                Dispose(true);
+                GC.SuppressFinalize(this);
+                this.m_disposed = true;
             }
         }
 
-        internal static string[] GetValidBusNames() => new string[] {
-                DefaultI2cDeviceProvider.I2cPrefix + "1",
-            };
-
-        /// <summary>
-        /// Executes an arbitrary transaction against the wrapped Microsoft.SPOT.Hardware.I2CDevice.
-        /// </summary>
-        /// <param name="transactions">List of transactions to execute. These may be any combination of read and write.</param>
-        /// <returns>A structure that contains information about whether both the read and write parts of the operation
-        ///     succeeded and the sum of the actual number of bytes that the operation wrote and the actual number of
-        ///     bytes that the operation read.</returns>
-        private ProviderI2cTransferResult ExecuteTransactions(I2CDevice.I2CTransaction[] transactions) {
-            // FUTURE: Investigate how short we can make this timeout. UWP APIs should take no
-            // longer than 15ms, but this is insufficient for micro-devices.
-
-            const int transactionTimeoutMs = 1000;
-
-            uint bytesRequested = 0;
-            foreach (var transaction in transactions) {
-                bytesRequested += (uint)transaction.Buffer.Length;
-            }
-
-            ProviderI2cTransferResult result;
-
-            lock (s_deviceLock) {
-                s_device.Config = this.m_configuration;
-                result.BytesTransferred = (uint)s_device.Execute(transactions, transactionTimeoutMs);
-            }
-
-            if (result.BytesTransferred == bytesRequested) {
-                result.Status = ProviderI2cTransferStatus.FullTransfer;
-            }
-            else if (result.BytesTransferred == 0) {
-                result.Status = ProviderI2cTransferStatus.SlaveAddressNotAcknowledged;
-            }
-            else {
-                result.Status = ProviderI2cTransferStatus.PartialTransfer;
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        /// Releases internal resources held by the device.
-        /// </summary>
-        /// <param name="disposing">True if called from Dispose, false if called from the finalizer.</param>
         private void Dispose(bool disposing) {
             if (disposing) {
-                lock (s_deviceLock) {
-                    --s_deviceRefs;
-                    if ((s_deviceRefs == 0) && (s_device != null)) {
-                        s_device.Dispose();
-                        s_device = null;
-                    }
-                }
+                DisposeNative();
             }
         }
+
+
+        public void Read(byte[] buffer) => this.ReadPartial(buffer);
+        public void Write(byte[] buffer) => this.WritePartial(buffer);
+        public void WriteRead(byte[] writeBuffer, byte[] readBuffer) => this.WriteReadPartial(writeBuffer, readBuffer);
+
+        public ProviderI2cTransferResult ReadPartial(byte[] buffer) {
+            if (buffer == null) throw new ArgumentNullException(nameof(buffer));
+
+            this.ReadInternal(buffer, out var transferred, out var status);
+
+            return new ProviderI2cTransferResult { BytesTransferred = transferred, Status = status };
+        }
+
+        public ProviderI2cTransferResult WritePartial(byte[] buffer) {
+            if (buffer == null) throw new ArgumentNullException(nameof(buffer));
+
+            this.WriteInternal(buffer, out var transferred, out var status);
+
+            return new ProviderI2cTransferResult { BytesTransferred = transferred, Status = status };
+        }
+
+        public ProviderI2cTransferResult WriteReadPartial(byte[] writeBuffer, byte[] readBuffer) {
+            if (writeBuffer == null) throw new ArgumentNullException(nameof(writeBuffer));
+            if (readBuffer == null) throw new ArgumentNullException(nameof(readBuffer));
+
+            this.WriteReadInternal(writeBuffer, readBuffer, out var transferred, out var status);
+
+            return new ProviderI2cTransferResult { BytesTransferred = transferred, Status = status };
+        }
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        extern private void InitNative();
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        extern private void DisposeNative();
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private extern void ReadInternal(byte[] buffer, out uint transferred, out ProviderI2cTransferStatus status);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private extern void WriteInternal(byte[] buffer, out uint transferred, out ProviderI2cTransferStatus status);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private extern void WriteReadInternal(byte[] writeBuffer, byte[] readBuffer, out uint transferred, out ProviderI2cTransferStatus status);
     }
 }

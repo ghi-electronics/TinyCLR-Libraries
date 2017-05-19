@@ -1,4 +1,5 @@
 using GHIElectronics.TinyCLR.Devices.Pwm.Provider;
+using GHIElectronics.TinyCLR.Runtime;
 using System;
 
 namespace GHIElectronics.TinyCLR.Devices.Pwm {
@@ -15,12 +16,12 @@ namespace GHIElectronics.TinyCLR.Devices.Pwm {
 
         public double ActualFrequency => this.m_provider.ActualFrequency;
 
-        public static string GetDeviceSelector() => DefaultPwmControllerProvider.PwmPrefix;
+        public static string GetDeviceSelector() => "";
         public static string GetDeviceSelector(string friendlyName) => friendlyName;
 
-        public static PwmController FromId(string deviceId) => new PwmController(DefaultPwmControllerProvider.FindById(deviceId));
+        public static PwmController FromId(string deviceId) => Api.ParseIdAndIndex(deviceId, out var providerId, out var idx) ? new PwmController(PwmProvider.FromId(providerId).GetControllers()[idx]) : null;
 
-        public static PwmController GetDefault() => LowLevelDevicesController.DefaultProvider?.PwmControllerProvider != null ? new PwmController(LowLevelDevicesController.DefaultProvider.PwmControllerProvider) : null;
+        public static PwmController GetDefault() => new PwmController(LowLevelDevicesController.DefaultProvider?.PwmControllerProvider ?? PwmProvider.FromId(Api.GetDefaultName(ApiType.PwmProvider)).GetControllers()[0]);
 
         public static PwmController[] GetControllers(IPwmProvider provider) {
             // FUTURE: This should return "Task<IReadOnlyList<PwmController>>"

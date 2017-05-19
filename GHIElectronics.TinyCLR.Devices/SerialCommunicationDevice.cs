@@ -1,4 +1,5 @@
 ﻿using GHIElectronics.TinyCLR.Devices.Internal;
+using GHIElectronics.TinyCLR.Runtime;
 using GHIElectronics.TinyCLR.Storage.Streams;
 using System;
 using System.Runtime.CompilerServices;
@@ -39,30 +40,17 @@ namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
         public static string GetDeviceSelector(string portName) => string.Empty + portName;
         public static string GetDeviceSelectorFromUsbVidPid(ushort vendorId, ushort productId) => throw new NotSupportedException();
 
-        public static SerialDevice FromId(string deviceId) {
-            if (deviceId == null)
-                throw new ArgumentNullException(nameof(deviceId));
-            if (deviceId.Length < 4 || deviceId.ToUpper().IndexOf("COM") != 0 || deviceId[3] == '0')
-                throw new ArgumentException("Invalid COM port.", nameof(deviceId));
-
-            try {
-                uint.Parse(deviceId.Substring(3));
-            }
-            catch {
-                throw new ArgumentException("Invalid COM port.", nameof(deviceId));
-            }
-
-            return new SerialDevice(deviceId) {
+        public static SerialDevice FromId(string deviceId) => Api.ParseIdAndIndex(deviceId, out var providerId, out var index) ?
+            new SerialDevice(deviceId, providerId, index) {
                 BaudRate = 9600,
                 DataBits = 8,
                 Parity = SerialParity.None,
                 StopBits = SerialStopBitCount.One,
-            };
-        }
+            } : null;
 
-        private SerialDevice(string portName) {
-            this.PortName = portName;
-            this.stream = new Stream(this);
+        private SerialDevice(string deviceId, string providerId, uint idx) {
+            this.PortName = deviceId;
+            this.stream = new Stream(this, providerId, idx);
         }
 
         public void Dispose() => this.Dispose(true);
@@ -83,17 +71,23 @@ namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
         }
 
         private class Stream : IInputStream, IOutputStream, IDisposable {
+#pragma warning disable CS0169
+            private IntPtr nativeProvider;
+#pragma warning restore CS0169
+
             private readonly SerialDevice parent;
+            private string providerName;
             private uint port;
             private bool opened;
             private NativeEventDispatcher errorReceivedEvent;
 
             public event ErrorReceivedDelegate ErrorReceived;
 
-            public Stream(SerialDevice parent) {
+            public Stream(SerialDevice parent, string providerId, uint idx) {
                 this.parent = parent;
                 this.opened = false;
-                this.port = uint.Parse(this.parent.PortName.Substring(3)) - 1;
+                this.providerName = providerId;
+                this.port = idx;
             }
 
             public void Dispose() => this.parent.Dispose();
@@ -159,7 +153,7 @@ namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
                 if (this.opened)
                     return;
 
-                Stream.NativeOpen(this.port, this.parent.BaudRate, (uint)this.parent.Parity, this.parent.DataBits, (uint)this.parent.StopBits, (uint)this.parent.Handshake);
+                Stream.NativeOpen(this.providerName, this.port, this.parent.BaudRate, (uint)this.parent.Parity, this.parent.DataBits, (uint)this.parent.StopBits, (uint)this.parent.Handshake);
 
                 this.errorReceivedEvent = new NativeEventDispatcher("SerialPortErrorEvent", this.port);
                 this.errorReceivedEvent.OnInterrupt += (s, evt, ts) => this.ErrorReceived?.Invoke(this.parent, new ErrorReceivedEventArgs((SerialError)evt));
@@ -168,7 +162,7 @@ namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
             }
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            private extern static void NativeOpen(uint port, uint baudRate, uint parity, uint dataBits, uint stopBits, uint handshaking);
+            private extern static void NativeOpen(string providerId, uint port, uint baudRate, uint parity, uint dataBits, uint stopBits, uint handshaking);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             private extern static void NativeClose(uint port, uint handshaking);
