@@ -24,7 +24,7 @@ namespace GHIElectronics.TinyCLR.Runtime {
         [MethodImpl(MethodImplOptions.InternalCall)]
         public static extern void SetDefaultName(ApiType type, string name);
 
-        internal static bool ParseIdAndIndex(string id, out string providerId, out uint controllerIndex) {
+        public static bool ParseIdAndIndex(string id, out string providerId, out uint controllerIndex) {
             providerId = null;
             controllerIndex = uint.MaxValue;
 
