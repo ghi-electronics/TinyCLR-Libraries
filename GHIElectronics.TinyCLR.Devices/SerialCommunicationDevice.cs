@@ -96,8 +96,6 @@ namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
 
             internal void ParentDispose() {
                 if (this.opened) {
-                    this.errorReceivedEvent.Dispose();
-
                     this.NativeClose((uint)this.parent.Handshake);
                 }
             }
