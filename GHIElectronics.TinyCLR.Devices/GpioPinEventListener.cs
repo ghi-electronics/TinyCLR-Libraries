@@ -1,11 +1,11 @@
-using GHIElectronics.TinyCLR.Devices.Internal;
 using System.Collections;
+using System.Runtime.InteropServices;
 
 namespace GHIElectronics.TinyCLR.Devices.Gpio.Provider {
     internal class GpioPinEventListener : NativeEventDispatcher {
         private IDictionary pinMap = new Hashtable();
 
-        public GpioPinEventListener() : base("GHIElectronics.TinyCLR.NativeEventNames.Gpio.ValueChanged", 0) => this.OnInterrupt += (e1, e2, ts) => {
+        public GpioPinEventListener() : base("GHIElectronics.TinyCLR.NativeEventNames.Gpio.ValueChanged") => this.OnInterrupt += (e1, e2, ts) => {
             var pin = default(DefaultGpioPinProvider);
             var num = (int)e1;
             var edge = e2 != 0 ? ProviderGpioPinEdge.RisingEdge : ProviderGpioPinEdge.FallingEdge;

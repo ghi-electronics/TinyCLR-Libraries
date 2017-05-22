@@ -113,6 +113,7 @@
     <Compile Include="Int16.cs" />
     <Compile Include="Int32.cs" />
     <Compile Include="Int64.cs" />
+    <Compile Include="Runtime\InteropServices\NativeEventDispatcher.cs" />
     <Compile Include="IntPtr.cs" />
     <Compile Include="InvalidCastException.cs" />
     <Compile Include="InvalidOperationException.cs" />
