@@ -8,10 +8,10 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio.Provider {
 
         public GpioPinEventListener() {
             this.dispatcher = NativeEventDispatcher.GetDispatcher("GHIElectronics.TinyCLR.NativeEventNames.Gpio.ValueChanged");
-            this.dispatcher.OnInterrupt += (e1, e2, ts) => {
+            this.dispatcher.OnInterrupt += (pn, ci, d0, d1, d2, ts) => {
                 var pin = default(DefaultGpioPinProvider);
-                var num = (int)e1;
-                var edge = e2 != 0 ? ProviderGpioPinEdge.RisingEdge : ProviderGpioPinEdge.FallingEdge;
+                var num = (int)d0;
+                var edge = d1 != 0 ? ProviderGpioPinEdge.RisingEdge : ProviderGpioPinEdge.FallingEdge;
 
                 lock (this.pinMap)
                     if (this.pinMap.Contains(num))

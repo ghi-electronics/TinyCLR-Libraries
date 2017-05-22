@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace System.Runtime.InteropServices {
     [CLSCompliant(false)]
-    public delegate void NativeEventHandler(uint data0, uint data1, DateTime timestamp);
+    public delegate void NativeEventHandler(string providerName, uint controllerIndex, ulong data0, ulong data1, IntPtr data2, DateTime timestamp);
 
     public sealed class NativeEventDispatcher : IDisposable {
         private static Hashtable instances = new Hashtable();
@@ -117,6 +117,6 @@ namespace System.Runtime.InteropServices {
             }
         }
 
-        private void MultiCastCase(uint port, uint state, DateTime time) => this.m_callbacks?.Invoke(port, state, time);
+        private void MultiCastCase(string providerName, uint controllerIndex, ulong data0, ulong data1, IntPtr data2, DateTime timestamp) => this.m_callbacks?.Invoke(providerName, controllerIndex, data0, data1, data2, timestamp);
     }
 }
