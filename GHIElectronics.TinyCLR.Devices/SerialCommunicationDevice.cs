@@ -34,7 +34,7 @@ namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
         public IOutputStream OutputStream => this.stream;
 
         public event ErrorReceivedDelegate ErrorReceived { add => this.stream.ErrorReceived += value; remove => this.stream.ErrorReceived -= value; }
-        public event PinChangedDelegate PinChanged { add { throw new NotSupportedException(); } remove { throw new NotSupportedException(); } }
+        public event PinChangedDelegate PinChanged { add => this.stream.PinChanged += value; remove => this.stream.PinChanged -= value; }
 
         public static string GetDeviceSelector() => string.Empty;
         public static string GetDeviceSelector(string portName) => string.Empty + portName;
@@ -80,8 +80,10 @@ namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
             private uint idx;
             private bool opened;
             private NativeEventDispatcher errorReceivedEvent;
+            private NativeEventDispatcher pinChangedEvent;
 
             public event ErrorReceivedDelegate ErrorReceived;
+            public event PinChangedDelegate PinChanged;
 
             public Stream(SerialDevice parent, string providerId, uint idx) {
                 this.parent = parent;
@@ -155,8 +157,11 @@ namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
 
                 this.NativeOpen(this.providerId, this.idx, this.parent.BaudRate, (uint)this.parent.Parity, this.parent.DataBits, (uint)this.parent.StopBits, (uint)this.parent.Handshake);
 
-                this.errorReceivedEvent = new NativeEventDispatcher("SerialPortErrorEvent", this.idx);
-                this.errorReceivedEvent.OnInterrupt += (s, evt, ts) => this.ErrorReceived?.Invoke(this.parent, new ErrorReceivedEventArgs((SerialError)evt));
+                this.errorReceivedEvent = new NativeEventDispatcher("GHIElectronics.TinyCLR.NativeEventNames.Uart.ErrorReceived", this.idx);
+                this.errorReceivedEvent.OnInterrupt += (d0, d1, ts) => { if (d0 == this.idx) this.ErrorReceived?.Invoke(this.parent, new ErrorReceivedEventArgs((SerialError)d1)); };
+
+                this.pinChangedEvent = new NativeEventDispatcher("GHIElectronics.TinyCLR.NativeEventNames.Uart.PinChanged", this.idx);
+                this.pinChangedEvent.OnInterrupt += (d0, d1, ts) => { if (d0 == this.idx) this.PinChanged?.Invoke(this.parent, new PinChangedEventArgs((SerialPinChange)d1)); };
 
                 this.opened = true;
             }
