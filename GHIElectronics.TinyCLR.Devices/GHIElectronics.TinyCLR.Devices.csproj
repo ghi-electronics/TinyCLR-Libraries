@@ -39,7 +39,6 @@
     <Compile Include="AdcController.cs" />
     <Compile Include="AdcEnums.cs" />
     <Compile Include="AdcProvider.cs" />
-    <Compile Include="Api.cs" />
     <Compile Include="DacChannel.cs" />
     <Compile Include="DacController.cs" />
     <Compile Include="DacProvider.cs" />

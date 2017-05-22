@@ -1,6 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 
-namespace GHIElectronics.TinyCLR.Runtime {
+namespace System.Runtime.InteropServices {
     //Keep in sync with native
     public enum ApiType {
         Custom = 0,
@@ -17,13 +17,23 @@ namespace GHIElectronics.TinyCLR.Runtime {
         UsbHostProvider = 11,
     }
 
-    public class Api {
+    public sealed class Api {
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        public static extern void Add(IntPtr address);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        public static extern void Remove(IntPtr address);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        public static extern IntPtr Find(string name, ApiType type);
+
         [MethodImpl(MethodImplOptions.InternalCall)]
         public static extern string GetDefaultName(ApiType type);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         public static extern void SetDefaultName(ApiType type, string name);
 
+        [CLSCompliant(false)]
         public static bool ParseIdAndIndex(string id, out string providerId, out uint controllerIndex) {
             providerId = null;
             controllerIndex = uint.MaxValue;

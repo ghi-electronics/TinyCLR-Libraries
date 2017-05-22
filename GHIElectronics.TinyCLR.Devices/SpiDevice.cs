@@ -1,6 +1,6 @@
 ﻿using GHIElectronics.TinyCLR.Devices.Spi.Provider;
-using GHIElectronics.TinyCLR.Runtime;
 using System;
+using System.Runtime.InteropServices;
 
 namespace GHIElectronics.TinyCLR.Devices.Spi {
     public sealed class SpiDevice : IDisposable {

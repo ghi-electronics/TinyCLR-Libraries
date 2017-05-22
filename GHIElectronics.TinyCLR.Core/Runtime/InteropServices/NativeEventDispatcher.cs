@@ -11,7 +11,9 @@ namespace System.Runtime.InteropServices {
         private NativeEventHandler m_threadSpawn = null;
         private NativeEventHandler m_callbacks = null;
         private bool m_disposed = false;
+#pragma warning disable CS0169
         private object m_NativeEventDispatcher;
+#pragma warning restore CS0169
         private string name;
 
         [MethodImpl(MethodImplOptions.InternalCall)]

@@ -1,6 +1,6 @@
 using GHIElectronics.TinyCLR.Devices.Pwm.Provider;
-using GHIElectronics.TinyCLR.Runtime;
 using System;
+using System.Runtime.InteropServices;
 
 namespace GHIElectronics.TinyCLR.Devices.Pwm {
     public sealed class PwmController {

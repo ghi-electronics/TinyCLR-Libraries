@@ -1,6 +1,6 @@
 using GHIElectronics.TinyCLR.Devices.Dac.Provider;
-using GHIElectronics.TinyCLR.Runtime;
 using System;
+using System.Runtime.InteropServices;
 
 namespace GHIElectronics.TinyCLR.Devices.Dac {
     public sealed class DacController {

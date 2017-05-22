@@ -1,6 +1,6 @@
 using GHIElectronics.TinyCLR.Devices.Display.Provider;
-using GHIElectronics.TinyCLR.Runtime;
 using System;
+using System.Runtime.InteropServices;
 
 namespace GHIElectronics.TinyCLR.Devices.Display {
     public sealed class DisplayController {
