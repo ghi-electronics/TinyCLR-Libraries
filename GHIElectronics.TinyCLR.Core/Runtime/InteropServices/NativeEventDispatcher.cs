@@ -1,40 +1,59 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Collections;
+using System.Runtime.CompilerServices;
 
 namespace System.Runtime.InteropServices {
     [CLSCompliant(false)]
     public delegate void NativeEventHandler(uint data0, uint data1, DateTime timestamp);
 
-    public class NativeEventDispatcher : IDisposable {
+    public sealed class NativeEventDispatcher : IDisposable {
+        private static Hashtable instances = new Hashtable();
+
         private NativeEventHandler m_threadSpawn = null;
         private NativeEventHandler m_callbacks = null;
         private bool m_disposed = false;
         private object m_NativeEventDispatcher;
+        private string name;
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        extern public NativeEventDispatcher(string name);
+        extern private NativeEventDispatcher(string name);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        extern public virtual void EnableInterrupt();
+        extern public void EnableInterrupt();
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        extern public virtual void DisableInterrupt();
+        extern public void DisableInterrupt();
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        extern protected virtual void Dispose(bool disposing);
+        extern private void Dispose(bool disposing);
 
         ~NativeEventDispatcher() {
             Dispose(false);
         }
 
         [MethodImpl(MethodImplOptions.Synchronized)]
-        public virtual void Dispose() {
+        public void Dispose() {
             if (!this.m_disposed) {
+                NativeEventDispatcher.instances.Remove(this.name);
+
                 Dispose(true);
 
                 GC.SuppressFinalize(this);
 
                 this.m_disposed = true;
             }
+        }
+
+        public static NativeEventDispatcher GetDispatcher(string name) {
+            if (name == null) throw new ArgumentNullException(nameof(name));
+
+            if (NativeEventDispatcher.instances.Contains(name))
+                return (NativeEventDispatcher)NativeEventDispatcher.instances[name];
+
+            var inst = new NativeEventDispatcher(name) { name = name };
+
+            NativeEventDispatcher.instances[name] = inst;
+
+            return inst;
         }
 
         [CLSCompliant(false)]

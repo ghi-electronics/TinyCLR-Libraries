@@ -157,10 +157,10 @@ namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
 
                 this.NativeOpen(this.providerId, this.idx, this.parent.BaudRate, (uint)this.parent.Parity, this.parent.DataBits, (uint)this.parent.StopBits, (uint)this.parent.Handshake);
 
-                this.errorReceivedEvent = new NativeEventDispatcher("GHIElectronics.TinyCLR.NativeEventNames.Uart.ErrorReceived");
+                this.errorReceivedEvent = NativeEventDispatcher.GetDispatcher("GHIElectronics.TinyCLR.NativeEventNames.Uart.ErrorReceived");
                 this.errorReceivedEvent.OnInterrupt += (d0, d1, ts) => { if (d0 == this.idx) this.ErrorReceived?.Invoke(this.parent, new ErrorReceivedEventArgs((SerialError)d1)); };
 
-                this.pinChangedEvent = new NativeEventDispatcher("GHIElectronics.TinyCLR.NativeEventNames.Uart.PinChanged");
+                this.pinChangedEvent = NativeEventDispatcher.GetDispatcher("GHIElectronics.TinyCLR.NativeEventNames.Uart.PinChanged");
                 this.pinChangedEvent.OnInterrupt += (d0, d1, ts) => { if (d0 == this.idx) this.PinChanged?.Invoke(this.parent, new PinChangedEventArgs((SerialPinChange)d1)); };
 
                 this.opened = true;
