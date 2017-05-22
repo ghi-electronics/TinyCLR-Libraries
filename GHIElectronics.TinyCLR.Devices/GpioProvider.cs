@@ -84,11 +84,21 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio.Provider {
         private IntPtr nativeProvider;
 #pragma warning restore CS0649
 
+        public readonly string Name;
+        public readonly uint Index;
+
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern uint GetControllerCount(string providerName);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        internal extern DefaultGpioControllerProvider(string name, uint index);
+        private extern void Init(string name, uint index);
+
+        internal DefaultGpioControllerProvider(string name, uint index) {
+            this.Name = name;
+            this.Index = index;
+
+            this.Init(name, index);
+        }
 
         public extern int PinCount {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
@@ -96,7 +106,7 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio.Provider {
         }
 
         public IGpioPinProvider OpenPinProvider(int pin, ProviderGpioSharingMode sharingMode) {
-            var p = new DefaultGpioPinProvider(this.nativeProvider);
+            var p = new DefaultGpioPinProvider(this, this.nativeProvider);
             if (!p.Init(pin)) {
                 throw new InvalidOperationException();
             }
@@ -116,10 +126,12 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio.Provider {
         private ProviderGpioPinValue m_lastOutputValue = ProviderGpioPinValue.Low;
         private GpioPinProviderValueChangedEventHandler m_callbacks = null;
         private readonly IntPtr nativeProvider;
+        private readonly DefaultGpioControllerProvider parent;
 
-        internal DefaultGpioPinProvider(IntPtr provider) {
+        internal DefaultGpioPinProvider(DefaultGpioControllerProvider parent, IntPtr provider) {
             if (this.m_lastOutputValue == ProviderGpioPinValue.Low) { } // Silence an unused variable warning.
 
+            this.parent = parent;
             this.nativeProvider = provider;
         }
 
@@ -313,7 +325,7 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio.Provider {
         internal bool Init(int pinNumber) {
             var foundPin = InitNative(pinNumber);
             if (foundPin) {
-                s_eventListener.AddPin(pinNumber, this);
+                s_eventListener.AddPin(this.parent.Name, this.parent.Index, this);
             }
 
             return foundPin;
@@ -362,8 +374,8 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio.Provider {
         /// <param name="disposing">True if called from Dispose, false if called from the finalizer.</param>
         private void Dispose(bool disposing) {
             if (disposing) {
+                s_eventListener.RemovePin(this.parent.Name, this.parent.Index, this);
                 DisposeNative();
-                s_eventListener.RemovePin(this.m_pinNumber);
             }
         }
     }
