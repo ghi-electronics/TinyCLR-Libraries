@@ -1,7 +1,18 @@
 ﻿using System.Runtime.CompilerServices;
 
 namespace System.Runtime.InteropServices {
+    public delegate void FunctionPointerDelegate(ref IntPtr ptr);
+
     public static class Marshal {
+        private class InvokeHelper {
+            public IntPtr Target;
+
+            public void Invoke(ref IntPtr para) => InvokeHelper.InvokeIntPtr(this.Target, ref para);
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            private static extern void InvokeIntPtr(IntPtr target, ref IntPtr para);
+        }
+
         public static byte ReadByte(IntPtr ptr, int ofs) => Marshal.ReadByte(ptr + ofs);
         public static short ReadInt16(IntPtr ptr, int ofs) => Marshal.ReadInt16(ptr + ofs);
         public static int ReadInt32(IntPtr ptr, int ofs) => Marshal.ReadInt32(ptr + ofs);
@@ -19,6 +30,12 @@ namespace System.Runtime.InteropServices {
         public static void WriteIntPtr(IntPtr ptr, int ofs, IntPtr val) => Marshal.WriteInt32(ptr, ofs, (int)val);
 
         public static IntPtr AllocHGlobal(int cb) => AllocHGlobal((IntPtr)cb);
+
+        public static Delegate GetDelegateForFunctionPointer(IntPtr ptr, Type t) {
+            if (t != typeof(FunctionPointerDelegate)) throw new NotSupportedException($"Only {nameof(FunctionPointerDelegate)} is supported as the delegate type.");
+
+            return new FunctionPointerDelegate(new InvokeHelper { Target = ptr }.Invoke);
+        }
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         public static extern byte ReadByte(IntPtr ptr);
