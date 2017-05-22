@@ -1,4 +1,3 @@
-using GHIElectronics.TinyCLR.Devices.Internal;
 using System;
 using System.Runtime.CompilerServices;
 
@@ -35,13 +34,9 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio {
         /// <param name="pin">The pin on which signals will be generated.</param>
         /// <param name="initialValue">The initial value of the pin.</param>
         public GpioChangeWriter(int pin, bool initialValue) {
-            if (!Port.ReservePin((Cpu.Pin)pin, true)) throw new ArgumentException("pin is already is use.", "pin");
-
             this.pin = (uint)pin;
 
-            if (!this.NativeConstructor(initialValue)) {
-                Port.ReservePin((Cpu.Pin)pin, false);
-            }
+            if (!this.NativeConstructor(initialValue)) throw new ArgumentException();
         }
 
         /// <summary>The finalizer.</summary>
@@ -177,10 +172,6 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio {
         protected virtual void Dispose(bool disposing) {
             if (this.disposed)
                 return;
-
-            if (disposing) {
-                Port.ReservePin((Cpu.Pin)this.pin, false);
-            }
 
             this.NativeDispose();
 
