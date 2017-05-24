@@ -15,6 +15,7 @@
     <AddAdditionalExplicitAssemblyReferences>false</AddAdditionalExplicitAssemblyReferences>
     <ProjectTypeGuids>{A1948822-69DD-4150-919B-F3F42EFB71CC};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <RuntimeMetadataVersion>v4.0.30319</RuntimeMetadataVersion>
+    <NuGetPackerNuSpecFile>$(ProjectDir)GHIElectronics.TinyCLR.Core.nuspec</NuGetPackerNuSpecFile>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
   </PropertyGroup>
@@ -220,7 +221,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="GHIElectronics.TinyCLR.Core.nuspec" />
-    <None Include="GHIElectronics.TinyCLR.Core.targets" />
+    <None Include="GHIElectronics.TinyCLR.Core.targets">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

@@ -84,9 +84,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\GHIElectronics.TinyCLR.Core\GHIElectronics.TinyCLR.Core.csproj">
+    <ProjectReference Include="..\mscorlib\mscorlib.csproj">
       <Project>{AA751E21-9220-42CE-8180-516BB59E4555}</Project>
-      <Name>GHIElectronics.TinyCLR.Core</Name>
+      <Name>mscorlib</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
