@@ -55,10 +55,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\mscorlib\mscorlib.csproj">
-      <Project>{AA751E21-9220-42CE-8180-516BB59E4555}</Project>
-      <Name>mscorlib</Name>
-    </ProjectReference>
     <ProjectReference Include="..\GHIElectronics.TinyCLR.Devices\GHIElectronics.TinyCLR.Devices.csproj">
       <Project>{04B01E7E-5052-4E52-B21B-0BF37B9E0C86}</Project>
       <Name>GHIElectronics.TinyCLR.Devices</Name>
@@ -68,6 +64,7 @@
       <Name>GHIElectronics.TinyCLR.Pins</Name>
     </ProjectReference>
   </ItemGroup>
+  <Import Project="..\mscorlib.targets" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
