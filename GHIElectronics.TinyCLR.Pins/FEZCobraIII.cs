@@ -3,6 +3,8 @@ namespace GHIElectronics.TinyCLR.Pins {
     public static class FEZCobraIII {
         /// <summary>GPIO pin definitions.</summary>
         public static class GpioPin {
+            public const string Id = G120.GpioPin.Id;
+
             /// <summary>GPIO pin for LED1.</summary>
             public const int Led1 = G120.GpioPin.P1_14;
             /// <summary>GPIO pin for LED2.</summary>
@@ -139,6 +141,8 @@ namespace GHIElectronics.TinyCLR.Pins {
 
         /// <summary>ADC channel definitions.</summary>
         public static class AdcChannel {
+            public const string Id = G120.AdcChannel.Id;
+
             /// <summary>ADC channel.</summary>
             public const int D18 = G120.AdcChannel.P0_12;
             /// <summary>ADC channel.</summary>
@@ -159,6 +163,8 @@ namespace GHIElectronics.TinyCLR.Pins {
 
         /// <summary>DAC channel definitions.</summary>
         public static class DacChannel {
+            public const string Id = G120.DacChannel.Id;
+
             /// <summary>DAC channel.</summary>
             public const int D17 = G120.DacChannel.P0_26;
         }

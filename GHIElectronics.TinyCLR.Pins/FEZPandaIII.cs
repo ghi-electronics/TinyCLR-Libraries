@@ -3,6 +3,8 @@
     public static class FEZPandaIII {
         /// <summary>GPIO pin definitions.</summary>
         public static class GpioPin {
+            public const string Id = G80.GpioPin.Id;
+
             /// <summary>GPIO pin for LED1.</summary>
             public const int Led1 = G80.GpioPin.PE14;
             /// <summary>GPIO pin for LED2.</summary>
@@ -129,6 +131,8 @@
 
         /// <summary>ADC channel definitions.</summary>
         public static class AdcChannel {
+            public const string Id = G80.AdcChannel.Id;
+
             /// <summary>ADC channel.</summary>
             public const int D33 = G80.AdcChannel.PA0;
             /// <summary>ADC channel.</summary>
@@ -165,6 +169,8 @@
 
         /// <summary>DAC channel definitions.</summary>
         public static class DacChannel {
+            public const string Id = G80.DacChannel.Id;
+
             /// <summary>DAC channel.</summary>
             public const int A2 = G80.DacChannel.PA4;
             /// <summary>DAC channel.</summary>

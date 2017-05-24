@@ -3,6 +3,8 @@
     public static class G120E {
         /// <summary>GPIO pin definitions.</summary>
         public static class GpioPin {
+            public const string Id = "GHIElectronics.TinyCLR.NativeApis.G120.GpioProvider\\0";
+
             /// <summary>GPIO pin.</summary>
             public const int P0_0 = 0;
             /// <summary>GPIO pin.</summary>
@@ -167,6 +169,8 @@
 
         /// <summary>ADC channel definitions.</summary>
         public static class AdcChannel {
+            public const string Id = "GHIElectronics.TinyCLR.NativeApis.G120.AdcProvider\\0";
+
             /// <summary>ADC channel.</summary>
             public const int P0_23 = 0;
             /// <summary>ADC channel.</summary>
@@ -187,6 +191,8 @@
 
         /// <summary>DAC channel definitions.</summary>
         public static class DacChannel {
+            public const string Id = "GHIElectronics.TinyCLR.NativeApis.G120.DacProvider\\0";
+
             /// <summary>DAC channel channel.</summary>
             public const int P0_26 = 0;
         }
@@ -195,7 +201,7 @@
         public static class PwmPin {
             /// <summary>PWM controller.</summary>
             public static class Controller0 {
-                public const string Id = "CON0";
+                public const string Id = "GHIElectronics.TinyCLR.NativeApis.G120.PwmProvider\\0";
 
                 /// <summary>PWM pin.</summary>
                 public const int P3_16 = 0;
@@ -213,7 +219,7 @@
 
             /// <summary>PWM controller.</summary>
             public static class Controller1 {
-                public const string Id = "CON1";
+                public const string Id = "GHIElectronics.TinyCLR.NativeApis.G120.PwmProvider\\1";
 
                 /// <summary>PWM pin.</summary>
                 public const int P3_24 = 0;
@@ -233,37 +239,37 @@
         /// <summary>Serial port definitions.</summary>
         public static class SerialPort {
             /// <summary>Serial port on P0.2 (TX) and P0.3 (RX).</summary>
-            public const string Com1 = "COM1";
+            public const string Com1 = "GHIElectronics.TinyCLR.NativeApis.G120.UartProvider\\0";
             /// <summary>Serial port on P2.0 (TX), P0.16 (RX), P3.18 (CTS), and P0.6 (RTS).</summary>
-            public const string Com2 = "COM2";
+            public const string Com2 = "GHIElectronics.TinyCLR.NativeApis.G120.UartProvider\\1";
             /// <summary>Serial port on P0.10 (TX) and P0.11 (RX).</summary>
-            public const string Com3 = "COM3";
+            public const string Com3 = "GHIElectronics.TinyCLR.NativeApis.G120.UartProvider\\2";
             /// <summary>Serial port on P0.25 (TX) and P0.26 (RX).</summary>
-            public const string Com4 = "COM4";
+            public const string Com4 = "GHIElectronics.TinyCLR.NativeApis.G120.UartProvider\\3";
             /// <summary>Serial port on P1.29 (TX) and P2.9 (RX).</summary>
-            public const string Com5 = "COM5";
+            public const string Com5 = "GHIElectronics.TinyCLR.NativeApis.G120.UartProvider\\4";
         }
 
         /// <summary>I2C bus definitions.</summary>
         public static class I2cBus {
             /// <summary>I2C bus on P0.27 (SDA) and P0.28 (SCL).</summary>
-            public const string I2c1 = "I2C1";
+            public const string I2c1 = "GHIElectronics.TinyCLR.NativeApis.G120.I2cProvider\\0";
         }
 
         /// <summary>SPI bus definitions.</summary>
         public static class SpiBus {
             /// <summary>SPI bus on P0.18 (MOSI), P0.17 (MISO), and P0.15 (SCK).</summary>
-            public const string Spi1 = "SPI1";
+            public const string Spi1 = "GHIElectronics.TinyCLR.NativeApis.G120.SpiProvider\\0";
             /// <summary>SPI bus.</summary>
-            public const string Spi2 = "SPI2";
+            public const string Spi2 = "GHIElectronics.TinyCLR.NativeApis.G120.SpiProvider\\1";
         }
 
         /// <summary>CAN bus definitions.</summary>
         public static class CanBus {
             /// <summary>CAN bus on P0.1 (TX) and P0.0 (RX).</summary>
-            public const string Can1 = "CAN1";
+            public const string Can1 = "GHIElectronics.TinyCLR.NativeApis.G120.CanProvider\\0";
             /// <summary>CAN bus on P0.5 (TX) and P0.4 (RX).</summary>
-            public const string Can2 = "CAN2";
+            public const string Can2 = "GHIElectronics.TinyCLR.NativeApis.G120.CanProvider\\1";
         }
     }
 }
