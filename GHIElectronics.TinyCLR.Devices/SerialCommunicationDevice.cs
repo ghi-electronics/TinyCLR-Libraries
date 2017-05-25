@@ -39,7 +39,7 @@ namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
         public static string GetDeviceSelector(string portName) => string.Empty + portName;
         public static string GetDeviceSelectorFromUsbVidPid(ushort vendorId, ushort productId) => throw new NotSupportedException();
 
-        public static SerialDevice FromId(string deviceId) => Api.ParseIdAndIndex(deviceId, out var providerId, out var index) ?
+        public static SerialDevice FromId(string deviceId) => Api.ParseSelector(deviceId, out var providerId, out var index) ?
             new SerialDevice(deviceId, providerId, index) {
                 BaudRate = 9600,
                 DataBits = 8,

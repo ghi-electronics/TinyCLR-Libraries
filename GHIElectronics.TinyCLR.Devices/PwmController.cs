@@ -19,9 +19,9 @@ namespace GHIElectronics.TinyCLR.Devices.Pwm {
         public static string GetDeviceSelector() => "";
         public static string GetDeviceSelector(string friendlyName) => friendlyName;
 
-        public static PwmController FromId(string deviceId) => Api.ParseIdAndIndex(deviceId, out var providerId, out var idx) ? new PwmController(PwmProvider.FromId(providerId).GetControllers()[idx]) : null;
+        public static PwmController FromId(string deviceId) => Api.ParseSelector(deviceId, out var providerId, out var idx) ? new PwmController(PwmProvider.FromId(providerId).GetControllers()[idx]) : null;
 
-        public static PwmController GetDefault() => new PwmController(LowLevelDevicesController.DefaultProvider?.PwmControllerProvider ?? PwmProvider.FromId(Api.GetDefaultName(ApiType.PwmProvider)).GetControllers()[0]);
+        public static PwmController GetDefault() => LowLevelDevicesController.DefaultProvider?.PwmControllerProvider != null ? new PwmController(LowLevelDevicesController.DefaultProvider?.PwmControllerProvider) : PwmController.FromId(Api.GetDefaultSelector(ApiType.PwmProvider));
 
         public static PwmController[] GetControllers(IPwmProvider provider) {
             // FUTURE: This should return "Task<IReadOnlyList<PwmController>>"

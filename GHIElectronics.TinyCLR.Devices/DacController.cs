@@ -13,7 +13,7 @@ namespace GHIElectronics.TinyCLR.Devices.Dac {
         public int MinValue => this.provider.MinValue;
         public int MaxValue => this.provider.MaxValue;
 
-        public static DacController GetDefault() => new DacController(LowLevelDevicesController.DefaultProvider?.DacControllerProvider ?? DacProvider.FromId(Api.GetDefaultName(ApiType.DacProvider)).GetControllers()[0]);
+        public static DacController GetDefault() => new DacController(LowLevelDevicesController.DefaultProvider?.DacControllerProvider ?? (Api.ParseSelector(Api.GetDefaultSelector(ApiType.DacProvider), out var providerId, out var idx) ? DacProvider.FromId(providerId).GetControllers()[idx] : null));
 
         public static DacController[] GetControllers(IDacProvider provider) {
             var providers = provider.GetControllers();

@@ -77,7 +77,7 @@ namespace GHIElectronics.TinyCLR.Devices.Spi {
                     throw new ArgumentException();
             }
 
-            return Api.ParseIdAndIndex(busId, out var providerId, out var idx) ? new SpiDevice(settings, SpiProvider.FromId(providerId).GetControllers()[idx].GetDeviceProvider(new ProviderSpiConnectionSettings(settings))) : null;
+            return Api.ParseSelector(busId, out var providerId, out var idx) ? new SpiDevice(settings, SpiProvider.FromId(providerId).GetControllers()[idx].GetDeviceProvider(new ProviderSpiConnectionSettings(settings))) : null;
         }
 
     }

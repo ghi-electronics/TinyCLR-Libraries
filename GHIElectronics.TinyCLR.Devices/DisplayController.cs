@@ -8,7 +8,7 @@ namespace GHIElectronics.TinyCLR.Devices.Display {
 
         internal DisplayController(IDisplayControllerProvider provider) => this.provider = provider;
 
-        public static DisplayController GetDefault() => new DisplayController(LowLevelDevicesController.DefaultProvider?.DisplayControllerProvider ?? DisplayProvider.FromId(Api.GetDefaultName(ApiType.DisplayProvider)).GetControllers()[0]);
+        public static DisplayController GetDefault() => new DisplayController(LowLevelDevicesController.DefaultProvider?.DisplayControllerProvider ?? (Api.ParseSelector(Api.GetDefaultSelector(ApiType.DisplayProvider), out var providerId, out var idx) ? DisplayProvider.FromId(providerId).GetControllers()[idx] : null));
 
         public static DisplayController[] GetControllers(IDisplayProvider provider) {
             var providers = provider.GetControllers();
