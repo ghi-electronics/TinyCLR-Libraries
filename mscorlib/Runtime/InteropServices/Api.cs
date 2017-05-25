@@ -37,6 +37,8 @@ namespace System.Runtime.InteropServices {
         [MethodImpl(MethodImplOptions.InternalCall)]
         public static extern void SetDefaultSelector(ApiType type, string selector);
 
+        public static bool ParseSelector(string selector, out string providerId) => Api.ParseSelector(selector, out providerId, out _);
+
         [CLSCompliant(false)]
         public static bool ParseSelector(string selector, out string providerId, out uint controllerIndex) {
             providerId = null;
@@ -58,5 +60,10 @@ namespace System.Runtime.InteropServices {
 
             return res;
         }
+
+        public static string CreateSelector(string providerId) => providerId ?? throw new ArgumentNullException(nameof(providerId));
+
+        [CLSCompliant(false)]
+        public static string CreateSelector(string providerId, uint controllerIndex) => $"{Api.CreateSelector(providerId)}\\{controllerIndex}";
     }
 }
