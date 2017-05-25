@@ -1,10 +1,10 @@
 ﻿namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
     public enum SerialError {
-        TransmitFull = 0,
-        ReceiveFull = 1,
-        BufferOverrun = 2,
+        Frame = 0,
+        BufferOverrun = 1,
+        ReceiveFull = 2,
         ReceiveParity = 3,
-        Frame = 4,
+        TransmitFull = 4,
     }
 
     public enum SerialHandshake {
@@ -19,7 +19,7 @@
         Odd = 1,
         Even = 2,
         Mark = 3,
-        Space = 4
+        Space = 4,
     }
 
     public enum SerialPinChange {

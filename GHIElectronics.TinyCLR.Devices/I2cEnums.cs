@@ -66,5 +66,8 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
         ///     returns of the method is 0.</para>
         /// </summary>
         SlaveAddressNotAcknowledged,
+
+        ClockStretchTimeout = 3,
+        UnknownError = 4,
     }
 }

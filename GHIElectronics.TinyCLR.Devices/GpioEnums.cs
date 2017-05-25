@@ -33,6 +33,9 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio {
         /// The pin is currently open in an incompatible sharing mode.
         /// </summary>
         SharingViolation,
+
+        MuxingConflict = 3,
+        UnknownError = 4
     }
 
     /// <summary>
