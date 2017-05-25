@@ -19,7 +19,17 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio {
         public GpioPinDriveMode GetDriveMode() => (GpioPinDriveMode)this.provider.GetDriveMode();
         public void SetDriveMode(GpioPinDriveMode value) => this.provider.SetDriveMode((ProviderGpioPinDriveMode)value);
         public GpioPinValue Read() => (GpioPinValue)this.provider.Read();
-        public void Write(GpioPinValue value) => this.provider.Write((ProviderGpioPinValue)value);
+
+        public void Write(GpioPinValue value) {
+            var init = this.Read();
+
+            this.provider.Write((ProviderGpioPinValue)value);
+
+            var same = init == value;
+
+            if (!same)
+                this.OnValueChanged(this.provider, new GpioPinProviderValueChangedEventArgs(value == GpioPinValue.High ? ProviderGpioPinEdge.RisingEdge : ProviderGpioPinEdge.FallingEdge));
+        }
 
         public event GpioPinValueChangedEventHandler ValueChanged {
             add {
