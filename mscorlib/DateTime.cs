@@ -89,17 +89,27 @@ namespace System {
         private const ulong TickMask = 0x7FFFFFFFFFFFFFFFL;
         private const ulong UTCMask = 0x8000000000000000L;
 
-        public static readonly DateTime MinValue = new DateTime(MinTicks);
-        public static readonly DateTime MaxValue = new DateTime(MaxTicks);
+        public static readonly DateTime MinValue = new DateTime(MinTicks, true);
+        public static readonly DateTime MaxValue = new DateTime(MaxTicks, true);
 
         private ulong m_ticks;
 
-        public DateTime(long ticks) {
-            if (((ticks & (long)TickMask) < MinTicks) || ((ticks & (long)TickMask) > MaxTicks)) {
-                throw new ArgumentOutOfRangeException("ticks", "Ticks must be between DateTime.MinValue.Ticks and DateTime.MaxValue.Ticks.");
-            }
+        private DateTime(long ticks, bool scale) {
+            if (!scale) {
+                ticks -= DateTime.ticksAtOrigin;
 
-            this.m_ticks = (ulong)ticks;
+                if (((ticks & (long)TickMask) < MinTicks) || ((ticks & (long)TickMask) > MaxTicks)) {
+                    throw new ArgumentOutOfRangeException("ticks", "Ticks must be between DateTime.MinValue.Ticks and DateTime.MaxValue.Ticks.");
+                }
+
+                this.m_ticks = (ulong)ticks;
+            }
+            else {
+                this.m_ticks = (ulong)ticks;
+            }
+        }
+
+        public DateTime(long ticks) : this(ticks, false) {
         }
 
         public DateTime(long ticks, DateTimeKind kind)
@@ -123,9 +133,9 @@ namespace System {
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public extern DateTime(int year, int month, int day, int hour, int minute, int second, int millisecond);
 
-        public DateTime Add(TimeSpan val) => new DateTime((long)this.m_ticks + val.Ticks);
+        public DateTime Add(TimeSpan val) => new DateTime((long)this.m_ticks + val.Ticks, true);
 
-        private DateTime Add(double val, int scale) => new DateTime((long)((long)this.m_ticks + (long)(val * scale * TicksPerMillisecond + (val >= 0 ? 0.5 : -0.5))));
+        private DateTime Add(double val, int scale) => new DateTime((long)((long)this.m_ticks + (long)(val * scale * TicksPerMillisecond + (val >= 0 ? 0.5 : -0.5))), true);
 
         public DateTime AddDays(double val) => Add(val, MillisPerDay);
 
@@ -137,7 +147,7 @@ namespace System {
 
         public DateTime AddSeconds(double val) => Add(val, MillisPerSecond);
 
-        public DateTime AddTicks(long val) => new DateTime((long)this.m_ticks + val);
+        public DateTime AddTicks(long val) => new DateTime((long)this.m_ticks + val, true);
 
         public static int Compare(DateTime t1, DateTime t2) {
             // Get ticks, clear UTC mask
@@ -187,10 +197,10 @@ namespace System {
             get {
                 // Need to remove UTC mask before arithmetic operations. Then set it back.
                 if ((this.m_ticks & UTCMask) != 0) {
-                    return new DateTime((long)(((this.m_ticks & TickMask) - (this.m_ticks & TickMask) % TicksPerDay) | UTCMask));
+                    return new DateTime((long)(((this.m_ticks & TickMask) - (this.m_ticks & TickMask) % TicksPerDay) | UTCMask), true);
                 }
                 else {
-                    return new DateTime((long)(this.m_ticks - this.m_ticks % TicksPerDay));
+                    return new DateTime((long)(this.m_ticks - this.m_ticks % TicksPerDay), true);
                 }
             }
         }
@@ -221,7 +231,7 @@ namespace System {
                 (this.m_ticks & UTCMask) != 0 ? DateTimeKind.Utc : DateTimeKind.Local;
 
         public static DateTime SpecifyKind(DateTime value, DateTimeKind kind) {
-            var retVal = new DateTime((long)value.m_ticks);
+            var retVal = new DateTime((long)value.m_ticks, true);
 
             if (kind == DateTimeKind.Utc) {
                 // Set UTC mask
@@ -269,8 +279,7 @@ namespace System {
         /// There are 504911232000000000 ticks between them which we are subtracting.
         /// See DeviceCode\PAL\time_decl.h for explanation of why we are taking
         /// year 1601 as origin for our HAL, PAL, and CLR.
-        // static Int64 ticksAtOrigin = 504911232000000000;
-        static long ticksAtOrigin = 0;
+        static long ticksAtOrigin = 504911232000000000;
         public long Ticks => (long)(this.m_ticks & TickMask) + ticksAtOrigin;
 
         public TimeSpan TimeOfDay => new TimeSpan((long)((this.m_ticks & TickMask) % TicksPerDay));
@@ -287,7 +296,7 @@ namespace System {
 
         public TimeSpan Subtract(DateTime val) => new TimeSpan((long)(this.m_ticks & TickMask) - (long)(val.m_ticks & TickMask));
 
-        public DateTime Subtract(TimeSpan val) => new DateTime((long)(this.m_ticks - (ulong)val.m_ticks));
+        public DateTime Subtract(TimeSpan val) => new DateTime((long)(this.m_ticks - (ulong)val.m_ticks), true);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public extern DateTime ToLocalTime();
@@ -300,9 +309,9 @@ namespace System {
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public extern DateTime ToUniversalTime();
 
-        public static DateTime operator +(DateTime d, TimeSpan t) => new DateTime((long)(d.m_ticks + (ulong)t.m_ticks));
+        public static DateTime operator +(DateTime d, TimeSpan t) => new DateTime((long)(d.m_ticks + (ulong)t.m_ticks), true);
 
-        public static DateTime operator -(DateTime d, TimeSpan t) => new DateTime((long)(d.m_ticks - (ulong)t.m_ticks));
+        public static DateTime operator -(DateTime d, TimeSpan t) => new DateTime((long)(d.m_ticks - (ulong)t.m_ticks), true);
 
         public static TimeSpan operator -(DateTime d1, DateTime d2) => d1.Subtract(d2);
 
