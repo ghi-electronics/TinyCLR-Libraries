@@ -26,19 +26,9 @@ namespace GHIElectronics.TinyCLR.Devices.Spi {
         /// <summary>
         /// Retrieves the info about a certain bus.
         /// </summary>
-        /// <param name="busId">The id of the bus.</param>
+        /// <param name="selector">The id of the bus.</param>
         /// <returns>The bus info requested.</returns>
-        public static SpiBusInfo GetBusInfo(string busId) {
-            var busNum = GetBusNum(busId);
-            return new SpiBusInfo(busNum);
-        }
-
-        internal static int GetBusNum(string deviceId) {
-            if (deviceId == null) throw new ArgumentNullException(nameof(deviceId));
-            if (deviceId.Length < 4 || deviceId.IndexOf("SPI") != 0 || !int.TryParse(deviceId.Substring(3), out var id) || id <= 0) throw new ArgumentException("Invalid SPI bus", nameof(deviceId));
-
-            return id - 1;
-        }
+        public static SpiBusInfo GetBusInfo(string selector) => Api.ParseSelector(selector, out var providerId, out var controllerIndex) ? new SpiBusInfo(providerId, controllerIndex) : throw new ArgumentException();
 
         /// <summary>
         /// Opens a device with the connection settings provided.
