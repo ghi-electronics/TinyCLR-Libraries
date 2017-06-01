@@ -63,7 +63,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
 
         private void Button_ValueChanged(GpioPin sender, GpioPinValueChangedEventArgs e) {
 
-            for (var i = 0; i < 3; i++) {
+            for (var i = 0; i < 4; i++) {
                 if (sender.PinNumber == this.buttons[i].PinNumber) {
                     var pressed = e.Edge == GpioPinEdge.FallingEdge;
 
