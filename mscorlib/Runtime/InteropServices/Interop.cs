@@ -11,7 +11,5 @@ namespace System.Runtime.InteropServices {
         [MethodImpl(MethodImplOptions.InternalCall)]
         [CLSCompliant(false)]
         public static extern void RaiseEvent(string eventDispatcherName, string providerName, uint controllerIndex, ulong data0, ulong data1, IntPtr data2);
-
-        public static extern IntPtr RuntimeStructureAddress { [MethodImpl(MethodImplOptions.InternalCall)] get; }
     }
 }
