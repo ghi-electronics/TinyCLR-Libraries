@@ -2,23 +2,29 @@
 
 namespace System.Runtime.InteropServices {
     //Keep in sync with native
-    public enum ApiType {
-        Custom = 0,
+    [CLSCompliant(false)]
+    public enum ApiType : uint {
+        ApiProvider = 0,
         DeploymentProvider = 1,
-        InterruptProvider = 2,
-        PowerProvider = 3,
-        TimeProvider = 4,
-        AdcProvider = 5,
-        CanProvider = 6,
-        DacProvider = 7,
-        DisplayProvider = 8,
-        GpioProvider = 9,
-        I2cProvider = 10,
-        PwmProvider = 11,
-        SpiProvider = 12,
-        UartProvider = 13,
-        UsbClientProvider = 14,
-        UsbHostProvider = 15,
+        ErrorHandlerProvider = 2,
+        InteropProvider = 3,
+        InterruptProvider = 4,
+        MemoryProvider = 5,
+        PowerProvider = 6,
+        TaskProvider = 7,
+        TimeProvider = 8,
+        AdcProvider = 9,
+        CanProvider = 10,
+        DacProvider = 11,
+        DisplayProvider = 12,
+        GpioProvider = 13,
+        I2cProvider = 14,
+        PwmProvider = 15,
+        SpiProvider = 16,
+        UartProvider = 17,
+        UsbClientProvider = 18,
+        UsbHostProvider = 19,
+        Custom = 0x80000000,
     }
 
     public sealed class Api {
