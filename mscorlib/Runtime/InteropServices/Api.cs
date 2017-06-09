@@ -28,6 +28,8 @@ namespace System.Runtime.InteropServices {
     }
 
     public sealed class Api {
+        private Api() { }
+
         [MethodImpl(MethodImplOptions.InternalCall)]
         public static extern void Add(IntPtr address);
 
@@ -35,13 +37,16 @@ namespace System.Runtime.InteropServices {
         public static extern void Remove(IntPtr address);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public static extern IntPtr Find(string name, ApiType type);
+        public static extern Api Find(string name, ApiType type);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         public static extern string GetDefaultSelector(ApiType type);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         public static extern void SetDefaultSelector(ApiType type, string selector);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        public static extern Api[] FindAll();
 
         public static bool ParseSelector(string selector, out string providerId) => Api.ParseSelector(selector, out providerId, out _);
 
@@ -71,5 +76,15 @@ namespace System.Runtime.InteropServices {
 
         [CLSCompliant(false)]
         public static string CreateSelector(string providerId, uint controllerIndex) => $"{Api.CreateSelector(providerId)}\\{controllerIndex}";
+
+        public string Author { get; }
+        public string Name { get; }
+        [CLSCompliant(false)]
+        public ulong Version { get; }
+        [CLSCompliant(false)]
+        public ApiType Type { get; }
+        [CLSCompliant(false)]
+        public uint Count { get; }
+        public IntPtr[] Implementation { get; }
     }
 }
