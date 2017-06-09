@@ -48,7 +48,7 @@ namespace System.Runtime.InteropServices {
         [CLSCompliant(false)]
         public static bool ParseSelector(string selector, out string providerId, out uint controllerIndex) {
             providerId = null;
-            controllerIndex = uint.MaxValue;
+            controllerIndex = 0;
 
             if (selector == null) return false;
 
