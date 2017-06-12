@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace GHIElectronics.TinyCLR.Devices.I2c.Provider {
     public sealed class ProviderI2cConnectionSettings {
@@ -62,11 +63,13 @@ namespace GHIElectronics.TinyCLR.Devices.I2c.Provider {
         public II2cControllerProvider[] GetControllers() => this.controllers;
 
         private I2cProvider(string name) {
+            var api = Api.Find(name, ApiType.I2cProvider);
+
             this.Name = name;
-            this.controllers = new II2cControllerProvider[DefaultI2cControllerProvider.GetControllerCount(name)];
+            this.controllers = new II2cControllerProvider[api.Count];
 
             for (var i = 0U; i < this.controllers.Length; i++)
-                this.controllers[i] = new DefaultI2cControllerProvider(name, i);
+                this.controllers[i] = new DefaultI2cControllerProvider(api.Implementation[i]);
         }
 
         public static II2cProvider FromId(string id) => new I2cProvider(id);
@@ -74,16 +77,10 @@ namespace GHIElectronics.TinyCLR.Devices.I2c.Provider {
 
     internal class DefaultI2cControllerProvider : II2cControllerProvider {
 #pragma warning disable CS0169
-#pragma warning disable CS0649
-        private IntPtr nativeProvider;
-#pragma warning restore CS0649
+        private readonly IntPtr nativeProvider;
 #pragma warning restore CS0169
 
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        internal static extern uint GetControllerCount(string providerName);
-
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        internal extern DefaultI2cControllerProvider(string name, uint index);
+        internal DefaultI2cControllerProvider(IntPtr nativeProvider) => this.nativeProvider = nativeProvider;
 
         public II2cDeviceProvider GetDeviceProvider(ProviderI2cConnectionSettings settings) => new DefaultI2cDeviceProvider(this.nativeProvider, settings);
     }

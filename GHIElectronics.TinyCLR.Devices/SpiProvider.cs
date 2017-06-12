@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace GHIElectronics.TinyCLR.Devices.Spi.Provider {
     // warning CS0414: The field 'Windows.Devices.Spi.SpiDevice.xxx' is assigned but its value is never used
@@ -60,11 +61,13 @@ namespace GHIElectronics.TinyCLR.Devices.Spi.Provider {
         public ISpiControllerProvider[] GetControllers() => this.controllers;
 
         private SpiProvider(string name) {
+            var api = Api.Find(name, ApiType.SpiProvider);
+
             this.Name = name;
-            this.controllers = new ISpiControllerProvider[DefaultSpiControllerProvider.GetControllerCount(name)];
+            this.controllers = new ISpiControllerProvider[api.Count];
 
             for (var i = 0U; i < this.controllers.Length; i++)
-                this.controllers[i] = new DefaultSpiControllerProvider(name, i);
+                this.controllers[i] = new DefaultSpiControllerProvider(api.Implementation[i]);
         }
 
         public static ISpiProvider FromId(string id) => new SpiProvider(id);
@@ -72,16 +75,10 @@ namespace GHIElectronics.TinyCLR.Devices.Spi.Provider {
 
     internal class DefaultSpiControllerProvider : ISpiControllerProvider {
 #pragma warning disable CS0169
-#pragma warning disable CS0649
-        private IntPtr nativeProvider;
-#pragma warning restore CS0649
+        private readonly IntPtr nativeProvider;
 #pragma warning restore CS0169
 
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        internal static extern uint GetControllerCount(string providerName);
-
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        internal extern DefaultSpiControllerProvider(string name, uint index);
+        internal DefaultSpiControllerProvider(IntPtr nativeProvider) => this.nativeProvider = nativeProvider;
 
         public ISpiDeviceProvider GetDeviceProvider(ProviderSpiConnectionSettings settings) => new DefaultSpiDeviceProvider(this.nativeProvider, settings);
     }

@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace GHIElectronics.TinyCLR.Devices.Pwm.Provider {
     public interface IPwmControllerProvider {
@@ -40,11 +41,13 @@ namespace GHIElectronics.TinyCLR.Devices.Pwm.Provider {
         public IPwmControllerProvider[] GetControllers() => this.controllers;
 
         private PwmProvider(string name) {
+            var api = Api.Find(name, ApiType.PwmProvider);
+
             this.Name = name;
-            this.controllers = new IPwmControllerProvider[DefaultPwmControllerProvider.GetControllerCount(name)];
+            this.controllers = new IPwmControllerProvider[api.Count];
 
             for (var i = 0U; i < this.controllers.Length; i++)
-                this.controllers[i] = new DefaultPwmControllerProvider(name, i);
+                this.controllers[i] = new DefaultPwmControllerProvider(api.Implementation[i]);
         }
 
         public static IPwmProvider FromId(string id) => new PwmProvider(id);
@@ -52,14 +55,10 @@ namespace GHIElectronics.TinyCLR.Devices.Pwm.Provider {
 
     internal class DefaultPwmControllerProvider : IPwmControllerProvider {
 #pragma warning disable CS0169
-        private IntPtr nativeProvider;
+        private readonly IntPtr nativeProvider;
 #pragma warning restore CS0169
 
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        internal static extern uint GetControllerCount(string providerName);
-
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        internal extern DefaultPwmControllerProvider(string name, uint index);
+        internal DefaultPwmControllerProvider(IntPtr nativeProvider) => this.nativeProvider = nativeProvider;
 
         public double ActualFrequency { get; private set; }
 

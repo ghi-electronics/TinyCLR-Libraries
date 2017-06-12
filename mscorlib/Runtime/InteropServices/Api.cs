@@ -37,12 +37,15 @@ namespace System.Runtime.InteropServices {
         public static extern void Remove(IntPtr address);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
+        [CLSCompliant(false)]
         public static extern Api Find(string name, ApiType type);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
+        [CLSCompliant(false)]
         public static extern string GetDefaultSelector(ApiType type);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
+        [CLSCompliant(false)]
         public static extern void SetDefaultSelector(ApiType type, string selector);
 
         [MethodImpl(MethodImplOptions.InternalCall)]

@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace GHIElectronics.TinyCLR.Devices.Gpio.Provider {
     public delegate void GpioPinProviderValueChangedEventHandler(IGpioPinProvider sender, GpioPinProviderValueChangedEventArgs e);
@@ -69,11 +70,13 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio.Provider {
         public IGpioControllerProvider[] GetControllers() => this.controllers;
 
         private GpioProvider(string name) {
+            var api = Api.Find(name, ApiType.GpioProvider);
+
             this.Name = name;
-            this.controllers = new IGpioControllerProvider[DefaultGpioControllerProvider.GetControllerCount(name)];
+            this.controllers = new IGpioControllerProvider[api.Count];
 
             for (var i = 0U; i < this.controllers.Length; i++)
-                this.controllers[i] = new DefaultGpioControllerProvider(name, i);
+                this.controllers[i] = new DefaultGpioControllerProvider(name, i, api);
         }
 
         public static IGpioProvider FromId(string id) => new GpioProvider(id);
@@ -87,17 +90,11 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio.Provider {
         public readonly string Name;
         public readonly uint Index;
 
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        internal static extern uint GetControllerCount(string providerName);
-
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        private extern void Init(string name, uint index);
-
-        internal DefaultGpioControllerProvider(string name, uint index) {
+        internal DefaultGpioControllerProvider(string name, uint index, Api api) {
             this.Name = name;
             this.Index = index;
 
-            this.Init(name, index);
+            this.nativeProvider = api.Implementation[index];
         }
 
         public extern int PinCount {

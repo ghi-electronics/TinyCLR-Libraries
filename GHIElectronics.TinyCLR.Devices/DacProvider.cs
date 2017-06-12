@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace GHIElectronics.TinyCLR.Devices.Dac.Provider {
     public interface IDacControllerProvider {
@@ -36,11 +37,13 @@ namespace GHIElectronics.TinyCLR.Devices.Dac.Provider {
         public IDacControllerProvider[] GetControllers() => this.controllers;
 
         private DacProvider(string name) {
+            var api = Api.Find(name, ApiType.DacProvider);
+
             this.Name = name;
-            this.controllers = new IDacControllerProvider[DefaultDacControllerProvider.GetControllerCount(name)];
+            this.controllers = new IDacControllerProvider[api.Count];
 
             for (var i = 0U; i < this.controllers.Length; i++)
-                this.controllers[i] = new DefaultDacControllerProvider(name, i);
+                this.controllers[i] = new DefaultDacControllerProvider(api.Implementation[i]);
         }
 
         public static IDacProvider FromId(string id) => new DacProvider(id);
@@ -48,14 +51,10 @@ namespace GHIElectronics.TinyCLR.Devices.Dac.Provider {
 
     internal class DefaultDacControllerProvider : IDacControllerProvider {
 #pragma warning disable CS0169
-        private IntPtr nativeProvider;
+        private readonly IntPtr nativeProvider;
 #pragma warning restore CS0169
 
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        internal static extern uint GetControllerCount(string providerName);
-
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        internal extern DefaultDacControllerProvider(string name, uint index);
+        internal DefaultDacControllerProvider(IntPtr nativeProvider) => this.nativeProvider = nativeProvider;
 
         public extern int ChannelCount {
             [MethodImpl(MethodImplOptions.InternalCall)]

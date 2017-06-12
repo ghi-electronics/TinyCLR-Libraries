@@ -89,6 +89,13 @@ namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
                 this.opened = false;
                 this.providerId = providerId;
                 this.idx = idx;
+
+
+                var api = Api.Find(this.providerId, ApiType.UartProvider);
+
+                if (api == null || api.Count >= this.idx) throw new ArgumentException("Invalid id.", nameof(providerId));
+
+                this.nativeProvider = api.Implementation[this.idx];
             }
 
             public void Dispose() => this.parent.Dispose();
@@ -152,7 +159,7 @@ namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
                 if (this.opened)
                     return;
 
-                this.NativeOpen(this.providerId, this.idx, this.parent.BaudRate, (uint)this.parent.Parity, this.parent.DataBits, (uint)this.parent.StopBits, (uint)this.parent.Handshake);
+                this.NativeOpen(this.parent.BaudRate, (uint)this.parent.Parity, this.parent.DataBits, (uint)this.parent.StopBits, (uint)this.parent.Handshake);
 
                 this.errorReceivedEvent = NativeEventDispatcher.GetDispatcher("GHIElectronics.TinyCLR.NativeEventNames.Uart.ErrorReceived");
                 this.errorReceivedEvent.OnInterrupt += (pn, ci, d0, d1, d2, ts) => { if (this.providerId == pn && this.idx == ci) this.ErrorReceived?.Invoke(this.parent, new ErrorReceivedEventArgs((SerialError)d0)); };
@@ -164,7 +171,7 @@ namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
             }
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            private extern void NativeOpen(string providerId, uint port, uint baudRate, uint parity, uint dataBits, uint stopBits, uint handshaking);
+            private extern void NativeOpen(uint baudRate, uint parity, uint dataBits, uint stopBits, uint handshaking);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             private extern void NativeClose(uint handshaking);

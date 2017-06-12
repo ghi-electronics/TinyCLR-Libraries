@@ -1,3 +1,4 @@
+using System;
 using System.Runtime.CompilerServices;
 
 namespace GHIElectronics.TinyCLR.Devices.Spi {
@@ -6,7 +7,7 @@ namespace GHIElectronics.TinyCLR.Devices.Spi {
     /// </summary>
     public sealed class SpiBusInfo {
         [MethodImpl(MethodImplOptions.InternalCall)]
-        extern internal SpiBusInfo(string providerId, uint idx);
+        public extern SpiBusInfo(IntPtr nativeProvider);
 
         /// <summary>
         /// Gets the number of chip select lines available on the bus.
