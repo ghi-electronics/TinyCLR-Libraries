@@ -93,7 +93,7 @@ namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
 
                 var api = Api.Find(this.providerId, ApiType.UartProvider);
 
-                if (api == null || api.Count >= this.idx) throw new ArgumentException("Invalid id.", nameof(providerId));
+                if (api == null || api.Count <= this.idx) throw new ArgumentException("Invalid id.", nameof(providerId));
 
                 this.nativeProvider = api.Implementation[this.idx];
             }
