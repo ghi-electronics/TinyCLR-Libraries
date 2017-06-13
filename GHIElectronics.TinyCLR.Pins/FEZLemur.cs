@@ -3,6 +3,8 @@
     public static class FEZLemur {
         /// <summary>GPIO pin definitions.</summary>
         public static class GpioPin {
+            public const string Id = G30.GpioPin.Id;
+
             /// <summary>GPIO pin for LED1.</summary>
             public const int Led1 = G30.GpioPin.PB9;
             /// <summary>GPIO pin for LED2.</summary>
@@ -87,6 +89,8 @@
 
         /// <summary>ADC channel definitions.</summary>
         public static class AdcChannel {
+            public const string Id = G30.AdcChannel.Id;
+
             /// <summary>ADC channel.</summary>
             public const int D6 = G30.AdcChannel.PA0;
             /// <summary>ADC channel.</summary>

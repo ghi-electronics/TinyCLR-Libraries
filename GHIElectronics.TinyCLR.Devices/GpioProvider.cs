@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace GHIElectronics.TinyCLR.Devices.Gpio.Provider {
     public delegate void GpioPinProviderValueChangedEventHandler(IGpioPinProvider sender, GpioPinProviderValueChangedEventArgs e);
@@ -61,10 +62,40 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio.Provider {
         IGpioPinProvider OpenPinProvider(int pin, ProviderGpioSharingMode sharingMode);
     }
 
-    internal sealed class DefaultGpioControllerProvider : IGpioControllerProvider {
-        public static DefaultGpioControllerProvider Instance { get; } = new DefaultGpioControllerProvider();
+    public class GpioProvider : IGpioProvider {
+        private IGpioControllerProvider[] controllers;
 
-        private DefaultGpioControllerProvider() { }
+        public string Name { get; }
+
+        public IGpioControllerProvider[] GetControllers() => this.controllers;
+
+        private GpioProvider(string name) {
+            var api = Api.Find(name, ApiType.GpioProvider);
+
+            this.Name = name;
+            this.controllers = new IGpioControllerProvider[api.Count];
+
+            for (var i = 0U; i < this.controllers.Length; i++)
+                this.controllers[i] = new DefaultGpioControllerProvider(name, i, api);
+        }
+
+        public static IGpioProvider FromId(string id) => new GpioProvider(id);
+    }
+
+    internal class DefaultGpioControllerProvider : IGpioControllerProvider {
+#pragma warning disable CS0649
+        private IntPtr nativeProvider;
+#pragma warning restore CS0649
+
+        public readonly string Name;
+        public readonly uint Index;
+
+        internal DefaultGpioControllerProvider(string name, uint index, Api api) {
+            this.Name = name;
+            this.Index = index;
+
+            this.nativeProvider = api.Implementation[index];
+        }
 
         public extern int PinCount {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
@@ -72,7 +103,7 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio.Provider {
         }
 
         public IGpioPinProvider OpenPinProvider(int pin, ProviderGpioSharingMode sharingMode) {
-            var p = new DefaultGpioPinProvider();
+            var p = new DefaultGpioPinProvider(this, this.nativeProvider);
             if (!p.Init(pin)) {
                 throw new InvalidOperationException();
             }
@@ -91,9 +122,14 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio.Provider {
         private ProviderGpioPinDriveMode m_driveMode = ProviderGpioPinDriveMode.Input;
         private ProviderGpioPinValue m_lastOutputValue = ProviderGpioPinValue.Low;
         private GpioPinProviderValueChangedEventHandler m_callbacks = null;
+        private readonly IntPtr nativeProvider;
+        private readonly DefaultGpioControllerProvider parent;
 
-        internal DefaultGpioPinProvider() {
+        internal DefaultGpioPinProvider(DefaultGpioControllerProvider parent, IntPtr provider) {
             if (this.m_lastOutputValue == ProviderGpioPinValue.Low) { } // Silence an unused variable warning.
+
+            this.parent = parent;
+            this.nativeProvider = provider;
         }
 
         ~DefaultGpioPinProvider() {
@@ -286,7 +322,7 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio.Provider {
         internal bool Init(int pinNumber) {
             var foundPin = InitNative(pinNumber);
             if (foundPin) {
-                s_eventListener.AddPin(pinNumber, this);
+                s_eventListener.AddPin(this.parent.Name, this.parent.Index, this);
             }
 
             return foundPin;
@@ -335,8 +371,8 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio.Provider {
         /// <param name="disposing">True if called from Dispose, false if called from the finalizer.</param>
         private void Dispose(bool disposing) {
             if (disposing) {
+                s_eventListener.RemovePin(this.parent.Name, this.parent.Index, this);
                 DisposeNative();
-                s_eventListener.RemovePin(this.m_pinNumber);
             }
         }
     }

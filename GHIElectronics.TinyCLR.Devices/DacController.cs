@@ -1,5 +1,6 @@
 using GHIElectronics.TinyCLR.Devices.Dac.Provider;
 using System;
+using System.Runtime.InteropServices;
 
 namespace GHIElectronics.TinyCLR.Devices.Dac {
     public sealed class DacController {
@@ -12,7 +13,7 @@ namespace GHIElectronics.TinyCLR.Devices.Dac {
         public int MinValue => this.provider.MinValue;
         public int MaxValue => this.provider.MaxValue;
 
-        public static DacController GetDefault() => new DacController(LowLevelDevicesController.DefaultProvider?.DacControllerProvider ?? DefaultDacControllerProvider.Instance);
+        public static DacController GetDefault() => new DacController(LowLevelDevicesController.DefaultProvider?.DacControllerProvider ?? (Api.ParseSelector(Api.GetDefaultSelector(ApiType.DacProvider), out var providerId, out var idx) ? DacProvider.FromId(providerId).GetControllers()[idx] : null));
 
         public static DacController[] GetControllers(IDacProvider provider) {
             var providers = provider.GetControllers();

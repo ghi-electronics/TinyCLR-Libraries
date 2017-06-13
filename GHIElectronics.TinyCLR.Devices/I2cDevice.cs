@@ -1,5 +1,6 @@
 ﻿using GHIElectronics.TinyCLR.Devices.I2c.Provider;
 using System;
+using System.Runtime.InteropServices;
 
 namespace GHIElectronics.TinyCLR.Devices.I2c {
     public struct I2cTransferResult {
@@ -23,12 +24,11 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
         public static I2cDevice FromId(string deviceId, I2cConnectionSettings settings) {
             if (settings.SlaveAddress < 0 || settings.SlaveAddress > 127) throw new ArgumentOutOfRangeException();
             if (deviceId == null) throw new ArgumentNullException(nameof(deviceId));
-            if (deviceId != DefaultI2cDeviceProvider.I2cPrefix + "1") throw new InvalidOperationException();
 
-            return new I2cDevice(settings, DefaultI2cControllerProvider.FindById(deviceId).GetDeviceProvider(new ProviderI2cConnectionSettings(settings)));
+            return Api.ParseSelector(deviceId, out var providerId, out var idx) ? new I2cDevice(settings, I2cProvider.FromId(providerId).GetControllers()[idx].GetDeviceProvider(new ProviderI2cConnectionSettings(settings))) : null;
         }
 
-        public static string GetDeviceSelector() => DefaultI2cDeviceProvider.I2cPrefix;
+        public static string GetDeviceSelector() => "";
         public static string GetDeviceSelector(string friendlyName) => friendlyName;
 
         public string DeviceId => this.provider.DeviceId;

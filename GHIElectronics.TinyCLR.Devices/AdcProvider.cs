@@ -1,4 +1,6 @@
+using System;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace GHIElectronics.TinyCLR.Devices.Adc.Provider {
     public interface IAdcControllerProvider {
@@ -33,10 +35,32 @@ namespace GHIElectronics.TinyCLR.Devices.Adc.Provider {
         IAdcControllerProvider[] GetControllers();
     }
 
-    internal class DefaultAdcControllerProvider : IAdcControllerProvider {
-        public static DefaultAdcControllerProvider Instance { get; } = new DefaultAdcControllerProvider();
+    public class AdcProvider : IAdcProvider {
+        private IAdcControllerProvider[] controllers;
 
-        private DefaultAdcControllerProvider() { }
+        public string Name { get; }
+
+        public IAdcControllerProvider[] GetControllers() => this.controllers;
+
+        private AdcProvider(string name) {
+            var api = Api.Find(name, ApiType.AdcProvider);
+
+            this.Name = name;
+            this.controllers = new IAdcControllerProvider[api.Count];
+
+            for (var i = 0U; i < this.controllers.Length; i++)
+                this.controllers[i] = new DefaultAdcControllerProvider(api.Implementation[i]);
+        }
+
+        public static IAdcProvider FromId(string id) => new AdcProvider(id);
+    }
+
+    internal class DefaultAdcControllerProvider : IAdcControllerProvider {
+#pragma warning disable CS0169
+        private readonly IntPtr nativeProvider;
+#pragma warning restore CS0169
+
+        internal DefaultAdcControllerProvider(IntPtr nativeProvider) => this.nativeProvider = nativeProvider;
 
         public extern ProviderAdcChannelMode ChannelMode {
             [MethodImpl(MethodImplOptions.InternalCall)]

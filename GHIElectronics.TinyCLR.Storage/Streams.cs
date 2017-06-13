@@ -132,7 +132,7 @@ namespace GHIElectronics.TinyCLR.Storage.Streams {
         public void WriteUInt64(ulong value) => this.WriteBytes(BitConverter.GetBytes(value));
         public void WriteSingle(float value) => this.WriteBytes(BitConverter.GetBytes(value));
         public void WriteDouble(double value) => this.WriteBytes(BitConverter.GetBytes(value));
-        public void WriteDateTime(/* TODO Needs to be DateTimeOffset */ DateTime value) => this.WriteInt64(value.Ticks - 504911232000000000);
+        public void WriteDateTime(/* TODO Needs to be DateTimeOffset */ DateTime value) => this.WriteInt64(value.Ticks);
         public void WriteTimeSpan(TimeSpan value) => this.WriteInt64(value.Ticks);
 
         public uint WriteString(string value) {
@@ -270,7 +270,7 @@ namespace GHIElectronics.TinyCLR.Storage.Streams {
         public ulong ReadUInt64() => BitConverter.ToUInt64(this.data, this.Advance(8));
         public float ReadSingle() => BitConverter.ToSingle(this.data, this.Advance(4));
         public double ReadDouble() => BitConverter.ToDouble(this.data, this.Advance(8));
-        public /* TODO Needs to be DateTimeOffset */ DateTime ReadDateTime() => new DateTime(this.ReadInt64() + 504911232000000000);
+        public /* TODO Needs to be DateTimeOffset */ DateTime ReadDateTime() => new DateTime(this.ReadInt64());
         public TimeSpan ReadTimeSpan() => new TimeSpan(this.ReadInt64());
         public string ReadString(uint codeUnitCount) => new string(Encoding.UTF8.GetChars(this.data, this.Advance((int)codeUnitCount), (int)codeUnitCount)); //TODO should this return based on number of chars, not bytes?
 

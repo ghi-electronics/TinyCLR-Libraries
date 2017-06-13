@@ -1,10 +1,9 @@
 ﻿using GHIElectronics.TinyCLR.Devices.Gpio;
+using GHIElectronics.TinyCLR.Devices.Gpio.Provider;
 using GHIElectronics.TinyCLR.Devices.I2c.Provider;
-using GHIElectronics.TinyCLR.Devices.Internal;
 using System;
 using System.Runtime.CompilerServices;
 using System.Threading;
-using GHIElectronics.TinyCLR.Devices.Gpio.Provider;
 
 namespace GHIElectronics.TinyCLR.Devices.I2c {
     public class I2cSoftwareProvider : II2cProvider {
@@ -307,20 +306,6 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
             this.scl = scl;
             this.useSoftwarePullups = useSoftwarePullups;
             this.disposed = false;
-
-            var clock = Port.ReservePin((Cpu.Pin)this.sda, true);
-            var data = Port.ReservePin((Cpu.Pin)this.scl, true);
-
-            if (clock && data)
-                return;
-
-            if (data)
-                Port.ReservePin((Cpu.Pin)this.scl, false);
-
-            if (clock)
-                Port.ReservePin((Cpu.Pin)this.sda, false);
-
-            throw new InvalidOperationException("The given pins are in use.");
         }
 
         public string DeviceId => $"I2C-SWN-{this.sda}-{this.scl}";
@@ -358,8 +343,6 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
 
         public void Dispose() {
             if (!this.disposed) {
-                Port.ReservePin((Cpu.Pin)this.sda, false);
-                Port.ReservePin((Cpu.Pin)this.scl, false);
                 this.disposed = true;
             }
 

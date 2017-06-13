@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace GHIElectronics.TinyCLR.Devices.Pwm.Provider {
     public interface IPwmControllerProvider {
@@ -32,42 +33,32 @@ namespace GHIElectronics.TinyCLR.Devices.Pwm.Provider {
         IPwmControllerProvider[] GetControllers();
     }
 
+    public class PwmProvider : IPwmProvider {
+        private IPwmControllerProvider[] controllers;
+
+        public string Name { get; }
+
+        public IPwmControllerProvider[] GetControllers() => this.controllers;
+
+        private PwmProvider(string name) {
+            var api = Api.Find(name, ApiType.PwmProvider);
+
+            this.Name = name;
+            this.controllers = new IPwmControllerProvider[api.Count];
+
+            for (var i = 0U; i < this.controllers.Length; i++)
+                this.controllers[i] = new DefaultPwmControllerProvider(api.Implementation[i]);
+        }
+
+        public static IPwmProvider FromId(string id) => new PwmProvider(id);
+    }
+
     internal class DefaultPwmControllerProvider : IPwmControllerProvider {
-        internal static string PwmPrefix => "CON";
+#pragma warning disable CS0169
+        private readonly IntPtr nativeProvider;
+#pragma warning restore CS0169
 
-        private readonly string deviceId;
-        private readonly int controller;
-
-        public static IPwmControllerProvider[] Instances { get; }
-
-        static DefaultPwmControllerProvider() {
-            var deviceIds = DefaultPwmControllerProvider.GetDeviceIds();
-
-            DefaultPwmControllerProvider.Instances = new IPwmControllerProvider[deviceIds.Length];
-
-            for (var i = 0; i < deviceIds.Length; i++)
-                DefaultPwmControllerProvider.Instances[i] = new DefaultPwmControllerProvider("CON" + deviceIds[i].ToString());
-        }
-
-        public static IPwmControllerProvider FindById(string deviceId) {
-            for (var i = 0; i < DefaultPwmControllerProvider.Instances.Length; i++) {
-                var inst = (DefaultPwmControllerProvider)DefaultPwmControllerProvider.Instances[i];
-
-                if (inst.deviceId == deviceId)
-                    return inst;
-            }
-
-            return null;
-        }
-
-        private DefaultPwmControllerProvider(string deviceId) {
-            if (deviceId == null) throw new ArgumentNullException(nameof(deviceId));
-            if (deviceId.Length < 4 || deviceId.IndexOf(DefaultPwmControllerProvider.PwmPrefix) != 0 || !int.TryParse(deviceId.Substring(DefaultPwmControllerProvider.PwmPrefix.Length), out var controller) || controller < 0) throw new ArgumentException("Invalid device ID.", nameof(deviceId));
-            if (!DefaultPwmControllerProvider.IsTimerValid(controller)) throw new ArgumentException("Invalid controller.", nameof(DefaultPwmControllerProvider.controller));
-
-            this.deviceId = deviceId;
-            this.controller = controller;
-        }
+        internal DefaultPwmControllerProvider(IntPtr nativeProvider) => this.nativeProvider = nativeProvider;
 
         public double ActualFrequency { get; private set; }
 
@@ -103,11 +94,5 @@ namespace GHIElectronics.TinyCLR.Devices.Pwm.Provider {
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         public extern void SetPulseParameters(int pinNumber, double dutyCycle, bool invertPolarity);
-
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        private extern static bool IsTimerValid(int timer);
-
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        public static extern int[] GetDeviceIds();
     }
 }

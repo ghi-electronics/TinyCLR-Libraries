@@ -1,39 +1,39 @@
 ﻿namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
     public enum SerialError {
-        Frame = 4,
-        BufferOverrun = 2,
-        ReceiveFull = 1,
+        Frame = 0,
+        BufferOverrun = 1,
+        ReceiveFull = 2,
         ReceiveParity = 3,
-        TransmitFull = 0
+        TransmitFull = 4,
     }
 
     public enum SerialHandshake {
-        None,
-        RequestToSend = 0x06,
-        XOnXOff = 0x18,
-        RequestToSendXOnXOff = RequestToSend | XOnXOff
+        None = 0,
+        RequestToSend = 1,
+        XOnXOff = 2,
+        RequestToSendXOnXOff = 3,
     }
 
     public enum SerialParity {
-        None,
-        Odd,
-        Even,
-        Mark,
-        Space
+        None = 0,
+        Odd = 1,
+        Even = 2,
+        Mark = 3,
+        Space = 4,
     }
 
     public enum SerialPinChange {
-        BreakSignal,
-        CarrierDetect,
-        ClearToSend,
-        DataSetReady,
-        RingIndicator
+        BreakSignal = 0,
+        CarrierDetect = 1,
+        ClearToSend = 2,
+        DataSetReady = 3,
+        RingIndicator = 4,
     }
 
     public enum SerialStopBitCount {
-        One = 1,
-        OnePointFive = 3,
-        Two = 2
+        One = 0,
+        OnePointFive = 1,
+        Two = 2,
     }
 
     public class ErrorReceivedEventArgs {

@@ -1,5 +1,6 @@
 ﻿using GHIElectronics.TinyCLR.Devices.Spi.Provider;
 using System;
+using System.Runtime.InteropServices;
 
 namespace GHIElectronics.TinyCLR.Devices.Spi {
     public sealed class SpiDevice : IDisposable {
@@ -25,18 +26,16 @@ namespace GHIElectronics.TinyCLR.Devices.Spi {
         /// <summary>
         /// Retrieves the info about a certain bus.
         /// </summary>
-        /// <param name="busId">The id of the bus.</param>
+        /// <param name="selector">The id of the bus.</param>
         /// <returns>The bus info requested.</returns>
-        public static SpiBusInfo GetBusInfo(string busId) {
-            var busNum = GetBusNum(busId);
-            return new SpiBusInfo(busNum);
-        }
+        public static SpiBusInfo GetBusInfo(string selector) {
+            if (Api.ParseSelector(selector, out var providerId, out var controllerIndex)) {
+                var api = Api.Find(providerId, ApiType.SpiProvider);
 
-        internal static int GetBusNum(string deviceId) {
-            if (deviceId == null) throw new ArgumentNullException(nameof(deviceId));
-            if (deviceId.Length < 4 || deviceId.IndexOf("SPI") != 0 || !int.TryParse(deviceId.Substring(3), out var id) || id <= 0) throw new ArgumentException("Invalid SPI bus", nameof(deviceId));
+                return new SpiBusInfo(api.Implementation[controllerIndex]);
+            }
 
-            return id - 1;
+            throw new ArgumentException();
         }
 
         /// <summary>
@@ -76,7 +75,7 @@ namespace GHIElectronics.TinyCLR.Devices.Spi {
                     throw new ArgumentException();
             }
 
-            return new SpiDevice(settings, DefaultSpiControllerProvider.FindById(busId).GetDeviceProvider(new ProviderSpiConnectionSettings(settings)));
+            return Api.ParseSelector(busId, out var providerId, out var idx) ? new SpiDevice(settings, SpiProvider.FromId(providerId).GetControllers()[idx].GetDeviceProvider(new ProviderSpiConnectionSettings(settings))) : null;
         }
 
     }

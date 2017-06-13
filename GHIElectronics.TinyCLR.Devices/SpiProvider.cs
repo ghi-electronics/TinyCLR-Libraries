@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace GHIElectronics.TinyCLR.Devices.Spi.Provider {
     // warning CS0414: The field 'Windows.Devices.Spi.SpiDevice.xxx' is assigned but its value is never used
@@ -52,40 +53,43 @@ namespace GHIElectronics.TinyCLR.Devices.Spi.Provider {
         void TransferSequential(byte[] writeBuffer, byte[] readBuffer);
     }
 
+    public class SpiProvider : ISpiProvider {
+        private ISpiControllerProvider[] controllers;
+
+        public string Name { get; }
+
+        public ISpiControllerProvider[] GetControllers() => this.controllers;
+
+        private SpiProvider(string name) {
+            var api = Api.Find(name, ApiType.SpiProvider);
+
+            this.Name = name;
+            this.controllers = new ISpiControllerProvider[api.Count];
+
+            for (var i = 0U; i < this.controllers.Length; i++)
+                this.controllers[i] = new DefaultSpiControllerProvider(api.Implementation[i]);
+        }
+
+        public static ISpiProvider FromId(string id) => new SpiProvider(id);
+    }
+
     internal class DefaultSpiControllerProvider : ISpiControllerProvider {
-        private readonly string deviceId;
+#pragma warning disable CS0169
+        private readonly IntPtr nativeProvider;
+#pragma warning restore CS0169
 
-        static DefaultSpiControllerProvider() {
-            var deviceIds = DefaultSpiDeviceProvider.GetDeviceIds();
+        internal DefaultSpiControllerProvider(IntPtr nativeProvider) => this.nativeProvider = nativeProvider;
 
-            DefaultSpiControllerProvider.Instances = new ISpiControllerProvider[deviceIds.Length];
-
-            for (var i = 0; i < deviceIds.Length; i++)
-                DefaultSpiControllerProvider.Instances[i] = new DefaultSpiControllerProvider("SPI" + deviceIds[i].ToString());
-        }
-
-        public static ISpiControllerProvider FindById(string deviceId) {
-            for (var i = 0; i < DefaultSpiControllerProvider.Instances.Length; i++) {
-                var inst = (DefaultSpiControllerProvider)DefaultSpiControllerProvider.Instances[i];
-
-                if (inst.deviceId == deviceId)
-                    return inst;
-            }
-
-            return null;
-        }
-
-        public static ISpiControllerProvider[] Instances { get; }
-
-        private DefaultSpiControllerProvider(string deviceId) => this.deviceId = deviceId;
-
-        public ISpiDeviceProvider GetDeviceProvider(ProviderSpiConnectionSettings settings) => new DefaultSpiDeviceProvider(this.deviceId, settings);
+        public ISpiDeviceProvider GetDeviceProvider(ProviderSpiConnectionSettings settings) => new DefaultSpiDeviceProvider(this.nativeProvider, settings);
     }
 
     internal sealed class DefaultSpiDeviceProvider : ISpiDeviceProvider {
+#pragma warning disable CS0169
+        private IntPtr nativeProvider;
+#pragma warning restore CS0169
+
         internal static string s_SpiPrefix = "SPI";
 
-        private readonly string m_deviceId;
         private readonly SpiConnectionSettings m_settings;
 
         private bool m_disposed = false;
@@ -99,11 +103,10 @@ namespace GHIElectronics.TinyCLR.Devices.Spi.Provider {
         /// </summary>
         /// <param name="deviceId">The unique name of the device.</param>
         /// <param name="settings">Settings to open the device with.</param>
-        internal DefaultSpiDeviceProvider(string deviceId, ProviderSpiConnectionSettings settings) {
+        internal DefaultSpiDeviceProvider(IntPtr nativeProvider, ProviderSpiConnectionSettings settings) {
             // Device ID must match the index in device information.
             // We don't have many buses, so just hard-code the valid ones instead of parsing.
-            this.m_spiBus = SpiDevice.GetBusNum(deviceId);
-            this.m_deviceId = deviceId.Substring(0);
+            this.nativeProvider = nativeProvider;
             this.m_settings = new SpiConnectionSettings(settings);
 
             InitNative();
@@ -123,7 +126,7 @@ namespace GHIElectronics.TinyCLR.Devices.Spi.Provider {
                     throw new ObjectDisposedException();
                 }
 
-                return this.m_deviceId.Substring(0);
+                return "";
             }
         }
 
@@ -151,7 +154,7 @@ namespace GHIElectronics.TinyCLR.Devices.Spi.Provider {
                 throw new ArgumentException();
             }
 
-            TransferInternal(buffer, null, false);
+            WriteInternal(buffer);
         }
 
         /// <summary>
@@ -163,7 +166,7 @@ namespace GHIElectronics.TinyCLR.Devices.Spi.Provider {
                 throw new ArgumentException();
             }
 
-            TransferInternal(null, buffer, false);
+            ReadInternal(buffer);
         }
 
         /// <summary>
@@ -176,7 +179,7 @@ namespace GHIElectronics.TinyCLR.Devices.Spi.Provider {
                 throw new ArgumentException();
             }
 
-            TransferInternal(writeBuffer, readBuffer, false);
+            TransferSequentialInternal(writeBuffer, readBuffer);
         }
 
         /// <summary>
@@ -190,7 +193,7 @@ namespace GHIElectronics.TinyCLR.Devices.Spi.Provider {
                 throw new ArgumentException();
             }
 
-            TransferInternal(writeBuffer, readBuffer, true);
+            TransferFullDuplexInternal(writeBuffer, readBuffer);
         }
 
         /// <summary>
@@ -218,10 +221,16 @@ namespace GHIElectronics.TinyCLR.Devices.Spi.Provider {
         extern private void DisposeNative();
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        extern private void TransferInternal(byte[] writeBuffer, byte[] readBuffer, bool fullDuplex);
+        extern private void TransferFullDuplexInternal(byte[] writeBuffer, byte[] readBuffer);
 
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        public static extern int[] GetDeviceIds();
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        extern private void TransferSequentialInternal(byte[] writeBuffer, byte[] readBuffer);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        extern private void WriteInternal(byte[] buffer);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        extern private void ReadInternal(byte[] buffer);
 
         /// <summary>
         /// Releases internal resources held by the device.

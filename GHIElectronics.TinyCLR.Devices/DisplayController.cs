@@ -1,5 +1,6 @@
 using GHIElectronics.TinyCLR.Devices.Display.Provider;
 using System;
+using System.Runtime.InteropServices;
 
 namespace GHIElectronics.TinyCLR.Devices.Display {
     public sealed class DisplayController {
@@ -7,7 +8,7 @@ namespace GHIElectronics.TinyCLR.Devices.Display {
 
         internal DisplayController(IDisplayControllerProvider provider) => this.provider = provider;
 
-        public static DisplayController GetDefault() => new DisplayController(LowLevelDevicesController.DefaultProvider?.DisplayControllerProvider ?? DefaultDisplayControllerProvider.Instance);
+        public static DisplayController GetDefault() => new DisplayController(LowLevelDevicesController.DefaultProvider?.DisplayControllerProvider ?? (Api.ParseSelector(Api.GetDefaultSelector(ApiType.DisplayProvider), out var providerId, out var idx) ? DisplayProvider.FromId(providerId).GetControllers()[idx] : null));
 
         public static DisplayController[] GetControllers(IDisplayProvider provider) {
             var providers = provider.GetControllers();

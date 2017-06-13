@@ -1,4 +1,3 @@
-using GHIElectronics.TinyCLR.Devices.Internal;
 using System;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -97,11 +96,6 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio {
 
             this.ReadTimeout = 100;
             this.DriveMode = GpioPinDriveMode.Input;
-
-            if (!Port.ReservePin((Cpu.Pin)pulsePin, true)) throw new ArgumentException("pulsePin is in use.", "pulsePin");
-
-            if (pulsePin != echoPin)
-                if (!Port.ReservePin((Cpu.Pin)echoPin, true)) throw new ArgumentException("echoPin is in use.", "echoPin");
         }
 
         /// <summary>Performs a read operation based on the mode.</summary>
@@ -135,11 +129,6 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio {
                 return;
 
             this.NativeFinalize();
-
-            Port.ReservePin((Cpu.Pin)this.pulsePin, false);
-
-            if (this.pulsePin != this.echoPin)
-                Port.ReservePin((Cpu.Pin)this.echoPin, false);
 
             this.disposed = true;
         }
