@@ -328,6 +328,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
                     break;
             }
             this.ClearScreen();
+            this.ShowOnScreen();
         }
 
         public void ShowOnScreen() {
