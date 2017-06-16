@@ -818,6 +818,8 @@ namespace GHIElectronics.TinyCLR.BrainPad {
         public void DrawSmallTextAndShowOnScreen(int x, int y, string text) => DrawScaledTextAndShowOnScreen(x, y, text, 1, 1);
 
         public void DrawScaledTextAndShowOnScreen(int x, int y, string text, int HScale, int VScale) {
+            this.ClearScreen();
+
             this.DrawScaledText(x, y, text, HScale, VScale);
 
             this.ShowOnScreen();
