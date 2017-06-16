@@ -3,7 +3,7 @@
     public static class G80 {
         /// <summary>GPIO pin definitions.</summary>
         public static class GpioPin {
-            public const string Id = "GHIElectronics.TinyCLR.NativeApis.G80.GpioProvider\\0";
+            public const string Id = "GHIElectronics.TinyCLR.NativeApis.STM32F4.GpioProvider\\0";
 
             /// <summary>GPIO pin.</summary>
             public const int PA0 = 0;
@@ -169,7 +169,7 @@
 
         /// <summary>ADC channel definitions.</summary>
         public static class AdcChannel {
-            public const string Id = "GHIElectronics.TinyCLR.NativeApis.G80.AdcProvider\\0";
+            public const string Id = "GHIElectronics.TinyCLR.NativeApis.STM32F4.AdcProvider\\0";
 
             /// <summary>ADC channel.</summary>
             public const int PA0 = 0;
@@ -207,7 +207,7 @@
 
         /// <summary>DAC channel definitions.</summary>
         public static class DacChannel {
-            public const string Id = "GHIElectronics.TinyCLR.NativeApis.G80.DacProvider\\0";
+            public const string Id = "GHIElectronics.TinyCLR.NativeApis.STM32F4.DacProvider\\0";
 
             /// <summary>DAC channel.</summary>
             public const int PA4 = 0;
@@ -219,7 +219,7 @@
         public static class PwmPin {
             /// <summary>PWM controller.</summary>
             public static class Controller1 {
-                public const string Id = "GHIElectronics.TinyCLR.NativeApis.G80.PwmProvider\\0";
+                public const string Id = "GHIElectronics.TinyCLR.NativeApis.STM32F4.PwmProvider\\0";
 
                 /// <summary>PWM pin.</summary>
                 public const int PE9 = 0;
@@ -233,7 +233,7 @@
 
             /// <summary>PWM controller.</summary>
             public static class Controller2 {
-                public const string Id = "GHIElectronics.TinyCLR.NativeApis.G80.PwmProvider\\1";
+                public const string Id = "GHIElectronics.TinyCLR.NativeApis.STM32F4.PwmProvider\\1";
 
                 /// <summary>PWM pin.</summary>
                 public const int PA15 = 0;
@@ -247,7 +247,7 @@
 
             /// <summary>PWM controller.</summary>
             public static class Controller3 {
-                public const string Id = "GHIElectronics.TinyCLR.NativeApis.G80.PwmProvider\\2";
+                public const string Id = "GHIElectronics.TinyCLR.NativeApis.STM32F4.PwmProvider\\2";
 
                 /// <summary>PWM pin.</summary>
                 public const int PB4 = 0;
@@ -261,7 +261,7 @@
 
             /// <summary>PWM controller.</summary>
             public static class Controller4 {
-                public const string Id = "GHIElectronics.TinyCLR.NativeApis.G80.PwmProvider\\3";
+                public const string Id = "GHIElectronics.TinyCLR.NativeApis.STM32F4.PwmProvider\\3";
 
                 /// <summary>PWM pin.</summary>
                 public const int PD12 = 0;
@@ -275,7 +275,7 @@
 
             /// <summary>PWM controller.</summary>
             public static class Controller8 {
-                public const string Id = "GHIElectronics.TinyCLR.NativeApis.G80.PwmProvider\\4";
+                public const string Id = "GHIElectronics.TinyCLR.NativeApis.STM32F4.PwmProvider\\4";
 
                 /// <summary>PWM pin.</summary>
                 public const int PC6 = 0;
@@ -289,7 +289,7 @@
 
             /// <summary>PWM controller.</summary>
             public static class Controller9 {
-                public const string Id = "GHIElectronics.TinyCLR.NativeApis.G80.PwmProvider\\5";
+                public const string Id = "GHIElectronics.TinyCLR.NativeApis.STM32F4.PwmProvider\\5";
 
                 /// <summary>PWM pin.</summary>
                 public const int PA2 = 0;
@@ -299,7 +299,7 @@
 
             /// <summary>PWM controller.</summary>
             public static class Controller10 {
-                public const string Id = "GHIElectronics.TinyCLR.NativeApis.G80.PwmProvider\\6";
+                public const string Id = "GHIElectronics.TinyCLR.NativeApis.STM32F4.PwmProvider\\6";
 
                 /// <summary>PWM pin.</summary>
                 public const int PB8 = 0;
@@ -307,7 +307,7 @@
 
             /// <summary>PWM controller.</summary>
             public static class Controller11 {
-                public const string Id = "GHIElectronics.TinyCLR.NativeApis.G80.PwmProvider\\7";
+                public const string Id = "GHIElectronics.TinyCLR.NativeApis.STM32F4.PwmProvider\\7";
 
                 /// <summary>PWM pin.</summary>
                 public const int PB9 = 0;
@@ -315,7 +315,7 @@
 
             /// <summary>PWM controller.</summary>
             public static class Controller13 {
-                public const string Id = "GHIElectronics.TinyCLR.NativeApis.G80.PwmProvider\\8";
+                public const string Id = "GHIElectronics.TinyCLR.NativeApis.STM32F4.PwmProvider\\8";
 
                 /// <summary>PWM pin.</summary>
                 public const int PA6 = 0;
@@ -323,7 +323,7 @@
 
             /// <summary>PWM controller.</summary>
             public static class Controller14 {
-                public const string Id = "GHIElectronics.TinyCLR.NativeApis.G80.PwmProvider\\9";
+                public const string Id = "GHIElectronics.TinyCLR.NativeApis.STM32F4.PwmProvider\\9";
 
                 /// <summary>PWM pin.</summary>
                 public const int PA7 = 0;
@@ -333,35 +333,35 @@
         /// <summary>UART port definitions.</summary>
         public static class UartPort {
             /// <summary>UART on PA9 (TX) and PA10 (RX).</summary>
-            public const string Uart1 = "GHIElectronics.TinyCLR.NativeApis.G80.UartProvider\\0";
+            public const string Uart1 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.UartProvider\\0";
             /// <summary>UART on PD5 (TX), PD6 (RX), PD3 (CTS), and PD4 (RTS).</summary>
-            public const string Uart2 = "GHIElectronics.TinyCLR.NativeApis.G80.UartProvider\\1";
+            public const string Uart2 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.UartProvider\\1";
             /// <summary>UART on PD8 (TX), PD9 (RX), PD11 (CTS), and PD12 (RTS).</summary>
-            public const string Uart3 = "GHIElectronics.TinyCLR.NativeApis.G80.UartProvider\\2";
+            public const string Uart3 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.UartProvider\\2";
             /// <summary>UART on PA0 (TX) and PA1 (RX).</summary>
-            public const string Uart4 = "GHIElectronics.TinyCLR.NativeApis.G80.UartProvider\\3";
+            public const string Uart4 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.UartProvider\\3";
         }
 
         /// <summary>SPI bus definitions.</summary>
         public static class SpiBus {
             /// <summary>SPI bus on PB5 (MOSI), PB4 (MISO), and PB3 (SCK).</summary>
-            public const string Spi1 = "GHIElectronics.TinyCLR.NativeApis.G80.SpiProvider\\0";
+            public const string Spi1 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.SpiProvider\\0";
             /// <summary>SPI bus on PC3 (MOSI), PC2 (MISO), and PB10 (SCK).</summary>
-            public const string Spi2 = "GHIElectronics.TinyCLR.NativeApis.G80.SpiProvider\\1";
+            public const string Spi2 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.SpiProvider\\1";
         }
 
         /// <summary>I2C bus definitions.</summary>
         public static class I2cBus {
             /// <summary>I2C bus on PB7 (SDA) and PB6 (SCL).</summary>
-            public const string I2c1 = "GHIElectronics.TinyCLR.NativeApis.G80.I2cProvider\\0";
+            public const string I2c1 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.I2cProvider\\0";
         }
 
         /// <summary>CAN bus definitions.</summary>
         public static class CanBus {
             /// <summary>CAN bus on PD1 (TX) and PD0 (RX).</summary>
-            public const string Can1 = "GHIElectronics.TinyCLR.NativeApis.G80.CanProvider\\0";
+            public const string Can1 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.CanProvider\\0";
             /// <summary>CAN bus on PB13 (TX) and PB12 (RX).</summary>
-            public const string Can2 = "GHIElectronics.TinyCLR.NativeApis.G80.CanProvider\\1";
+            public const string Can2 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.CanProvider\\1";
         }
     }
 }

@@ -7,7 +7,7 @@ namespace GHIElectronics.TinyCLR.Pins {
     internal static class FEZChip {
         /// <summary>GPIO pin definitions.</summary>
         public static class GpioPin {
-            public const string Id = "GHIElectronics.TinyCLR.NativeApis.FEZ.GpioProvider\\0";
+            public const string Id = "GHIElectronics.TinyCLR.NativeApis.STM32F4.GpioProvider\\0";
 
             /// <summary>GPIO pin.</summary>
             public const int PA0 = 0;
@@ -109,7 +109,7 @@ namespace GHIElectronics.TinyCLR.Pins {
 
         /// <summary>ADC channel definitions.</summary>
         public static class AdcChannel {
-            public const string Id = "GHIElectronics.TinyCLR.NativeApis.FEZ.AdcProvider\\0";
+            public const string Id = "GHIElectronics.TinyCLR.NativeApis.STM32F4.AdcProvider\\0";
 
             /// <summary>ADC channel.</summary>
             public const int PA0 = 0;
@@ -149,7 +149,7 @@ namespace GHIElectronics.TinyCLR.Pins {
         public static class PwmPin {
             /// <summary>PWM controller.</summary>
             public static class Controller1 {
-                public const string Id = "GHIElectronics.TinyCLR.NativeApis.FEZ.PwmProvider\\0";
+                public const string Id = "GHIElectronics.TinyCLR.NativeApis.STM32F4.PwmProvider\\0";
 
                 /// <summary>PWM pin.</summary>
                 public const int PA8 = 0;
@@ -161,7 +161,7 @@ namespace GHIElectronics.TinyCLR.Pins {
 
             /// <summary>PWM controller.</summary>
             public static class Controller2 {
-                public const string Id = "GHIElectronics.TinyCLR.NativeApis.FEZ.PwmProvider\\1";
+                public const string Id = "GHIElectronics.TinyCLR.NativeApis.STM32F4.PwmProvider\\1";
 
                 /// <summary>PWM pin.</summary>
                 public const int PA0 = 0;
@@ -175,7 +175,7 @@ namespace GHIElectronics.TinyCLR.Pins {
 
             /// <summary>PWM controller.</summary>
             public static class Controller3 {
-                public const string Id = "GHIElectronics.TinyCLR.NativeApis.FEZ.PwmProvider\\2";
+                public const string Id = "GHIElectronics.TinyCLR.NativeApis.STM32F4.PwmProvider\\2";
 
                 /// <summary>PWM pin.</summary>
                 public const int PC6 = 0;
@@ -189,7 +189,7 @@ namespace GHIElectronics.TinyCLR.Pins {
 
             /// <summary>PWM controller.</summary>
             public static class Controller4 {
-                public const string Id = "GHIElectronics.TinyCLR.NativeApis.FEZ.PwmProvider\\3";
+                public const string Id = "GHIElectronics.TinyCLR.NativeApis.STM32F4.PwmProvider\\3";
 
                 /// <summary>PWM pin.</summary>
                 public const int PB6 = 0;
@@ -205,23 +205,23 @@ namespace GHIElectronics.TinyCLR.Pins {
         /// <summary>Serial port definitions.</summary>
         public static class SerialPort {
             /// <summary>Serial port on PA9 (TX) and PA10 (RX).</summary>
-            public const string Com1 = "GHIElectronics.TinyCLR.NativeApis.FEZ.UartProvider\\0";
+            public const string Com1 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.UartProvider\\0";
             /// <summary>Serial port on PA2 (TX), PA3 (RX), PA0 (CTS), and PA1 (RTS).</summary>
-            public const string Com2 = "GHIElectronics.TinyCLR.NativeApis.FEZ.UartProvider\\1";
+            public const string Com2 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.UartProvider\\1";
         }
 
         /// <summary>I2C bus definitions.</summary>
         public static class I2cBus {
             /// <summary>I2C bus on PB7 (SDA) and PB6 (SCL).</summary>
-            public const string I2c1 = "GHIElectronics.TinyCLR.NativeApis.FEZ.I2cProvider\\0";
+            public const string I2c1 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.I2cProvider\\0";
         }
 
         /// <summary>SPI bus definitions.</summary>
         public static class SpiBus {
             /// <summary>SPI bus on PB5 (MOSI), PB4 (MISO), and PB3 (SCK).</summary>
-            public const string Spi1 = "GHIElectronics.TinyCLR.NativeApis.FEZ.SpiProvider\\0";
+            public const string Spi1 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.SpiProvider\\0";
             /// <summary>SPI bus on PB15 (MOSI), PB14 (MISO), and PB13 (SCK).</summary>
-            public const string Spi2 = "GHIElectronics.TinyCLR.NativeApis.FEZ.SpiProvider\\1";
+            public const string Spi2 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.SpiProvider\\1";
         }
     }
 }
