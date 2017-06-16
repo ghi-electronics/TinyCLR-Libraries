@@ -66,7 +66,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
             }
 
             public void ConfigurePulseParameters(double minimumPulseWidth, double maximumPulseWidth) {
-                if (maximumPulseWidth > 1.5 || maximumPulseWidth < 0.1) throw new ArgumentOutOfRangeException("Must be between 0.1 and 1.5 ms");
+                if (minimumPulseWidth > 1.5 || minimumPulseWidth < 0.1) throw new ArgumentOutOfRangeException("Must be between 0.1 and 1.5 ms");
                 if (maximumPulseWidth > 3 || maximumPulseWidth < 1.6) throw new ArgumentOutOfRangeException("Must be between 1.6 and 3 ms");
 
                 this.minPulseLength = minimumPulseWidth;
