@@ -44,7 +44,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
         /// Reads the acceleration on the y axis.
         /// </summary>
         /// <returns>The acceleration.</returns>
-        public double ReadY() => ReadAxis(0x01);
+        public double ReadY() => -1 * ReadAxis(0x01);
 
         /// <summary>
         /// Reads the acceleration on the x axis.
@@ -56,7 +56,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
         /// Reads the acceleration on the z axis.
         /// </summary>
         /// <returns>The acceleration.</returns>
-        public double ReadZ() => ReadAxis(0x05);
+        public double ReadZ() => -1 * ReadAxis(0x05);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => base.Equals(obj);
