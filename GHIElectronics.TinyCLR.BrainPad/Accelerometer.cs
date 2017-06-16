@@ -37,7 +37,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
             if (value > 511.0)
                 value -= 1024.0;
 
-            return value / 256.0 * 100;
+            return value / 256.0;
         }
 
         /// <summary>
