@@ -1,4 +1,5 @@
 ﻿using GHIElectronics.TinyCLR.Devices.I2c;
+using GHIElectronics.TinyCLR.Pins;
 using System;
 using System.ComponentModel;
 
@@ -14,8 +15,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
             var settings = new I2cConnectionSettings(0x1C) {
                 BusSpeed = I2cBusSpeed.FastMode
             };
-            var aqs = I2cDevice.GetDeviceSelector("I2C1");
-            this.device = I2cDevice.FromId(aqs, settings);
+            this.device = I2cDevice.FromId(Board.BoardType == BoardType.BP1 ? FEZChip.I2cBus.I2c1 : G30.I2cBus.I2c1, settings);
             WriteRegister(0x2A, 0x01);
         }
         private void WriteRegister(byte register, byte data) {
