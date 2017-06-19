@@ -57,6 +57,8 @@
             public const int Sda = FEZChip.GpioPin.PB7;
             /// <summary>GPIO pin.</summary>
             public const int Scl = FEZChip.GpioPin.PB6;
+            /// <summary>GPIO pin.</summary>
+            public const int WiFiReset = FEZChip.GpioPin.PC2;
         }
 
         /// <summary>ADC channel definitions.</summary>
@@ -129,6 +131,10 @@
                 public const int Scl = 0;
                 /// <summary>PWM pin.</summary>
                 public const int Sda = 1;
+                /// <summary>PWM pin.</summary>
+                public const int Led2 = 2;
+                /// <summary>PWM pin.</summary>
+                public const int Led1 = 3;
             }
         }
 
@@ -136,6 +142,8 @@
         public static class SerialPort {
             /// <summary>Serial port on D1 (TX) and D0 (RX).</summary>
             public const string Com1 = FEZChip.SerialPort.Com1;
+            /// <summary>Serial port on WiFi TX (TX) and WiFi RX (RX).</summary>
+            public const string Com2 = FEZChip.SerialPort.Com2;
         }
 
         /// <summary>I2C bus definitions.</summary>
