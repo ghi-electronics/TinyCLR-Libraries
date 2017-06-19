@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("GHIElectronics.TinyCLR.Pins")]
+[assembly: AssemblyTitle("GHIElectronics.TinyCLR.BrainPad")]
 [assembly: AssemblyDescription("TinyCLR OS BrainPad library.")]
 [assembly: AssemblyCompany("GHI Electronics, LLC")]
 [assembly: AssemblyProduct("BrainPad")]
