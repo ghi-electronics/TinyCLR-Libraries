@@ -6,7 +6,7 @@ using System.ComponentModel;
 namespace GHIElectronics.TinyCLR.BrainPad {
     public class TemperatureSensor {
         //private AnalogInput input;
-        private AdcChannel input = AdcController.GetDefault().OpenChannel(Board.BoardType == BoardType.BP1 ? FEZChip.AdcChannel.PB0 : G30.AdcChannel.PB0);
+        private AdcChannel input = AdcController.GetDefault().OpenChannel(Board.BoardType == BoardType.BP2 ? FEZChip.AdcChannel.PB0 : G30.AdcChannel.PB0);
 
         public TemperatureSensor() {
             //input = new AnalogInput(Peripherals.TemperatureSensor);

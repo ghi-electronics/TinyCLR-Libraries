@@ -79,7 +79,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
             None
         }
 
-        private I2cDevice i2cDevice = I2cDevice.FromId(Board.BoardType == BoardType.BP1 ? FEZChip.I2cBus.I2c1 : G30.I2cBus.I2c1, new I2cConnectionSettings(0x3C) { BusSpeed = I2cBusSpeed.FastMode });
+        private I2cDevice i2cDevice = I2cDevice.FromId(Board.BoardType == BoardType.BP2 ? FEZChip.I2cBus.I2c1 : G30.I2cBus.I2c1, new I2cConnectionSettings(0x3C) { BusSpeed = I2cBusSpeed.FastMode });
 
         public Picture CreatePicture(int width, int height, byte[] data) => this.CreateScaledPicture(width, height, data, 1);
         public Picture CreateScaledPicture(int width, int height, byte[] data, int scale) => data != null ? new Picture(width, height, data, scale) : throw new Exception("Incorrect picture data size");
@@ -263,7 +263,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
 
                     break;
 #endif
-                case BoardType.BP1:
+                case BoardType.BP2:
                     this.vram = new byte[(128 * 64 / 8) + 1];
                     // Init sequence
                     Ssd1306_command(0xae);// SSD1306_DISPLAYOFF);                    // 0xAE
@@ -363,7 +363,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
                         }
                     }*/
                     break;
-                case BoardType.BP1:
+                case BoardType.BP2:
                     this.i2cDevice.Write(this.vram);
                     break;
             }
@@ -391,7 +391,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
                     }
                     break;
 #endif
-                case BoardType.BP1:
+                case BoardType.BP2:
                     var index = (x + (y / 8) * 128) + 1;
 
                     if (set)
@@ -425,7 +425,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
         public void ClearScreen() {
 
             Array.Clear(this.vram, 0, this.vram.Length);
-            if (Board.BoardType == BoardType.BP1)
+            if (Board.BoardType == BoardType.BP2)
                 this.vram[0] = 0x40;
         }
 

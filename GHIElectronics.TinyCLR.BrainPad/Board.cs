@@ -12,7 +12,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
                     using (var detectPin = GpioController.GetDefault().OpenPin(G30.GpioPin.PC1)) {
                         detectPin.SetDriveMode(GpioPinDriveMode.InputPullDown);
 
-                        Board.boardType = detectPin.Read() == GpioPinValue.High ? BoardType.BP1 : BoardType.Original;
+                        Board.boardType = detectPin.Read() == GpioPinValue.High ? BoardType.BP2 : BoardType.Original;
                     }
 
                     Board.typeSet = true;
@@ -25,6 +25,6 @@ namespace GHIElectronics.TinyCLR.BrainPad {
 
     internal enum BoardType {
         Original,
-        BP1
+        BP2
     }
 }

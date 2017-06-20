@@ -24,7 +24,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
         public Buttons() {
             var GPIO = GpioController.GetDefault();
             switch (Board.BoardType) {
-                case BoardType.BP1:
+                case BoardType.BP2:
                     this.buttons = new[] {
                         GPIO.OpenPin(FEZChip.GpioPin.PA15),
                         GPIO.OpenPin(FEZChip.GpioPin.PB10),
