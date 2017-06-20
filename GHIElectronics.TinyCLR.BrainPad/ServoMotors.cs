@@ -128,7 +128,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
 
         public ServoMotors() {
             this.ServoOne = new Servo(0);
-            this.ServoOne = new Servo(1);
+            this.ServoTwo = new Servo(1);
         }
 
         [EditorBrowsable(EditorBrowsableState.Never)]
