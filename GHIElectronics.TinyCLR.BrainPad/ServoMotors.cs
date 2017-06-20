@@ -73,11 +73,11 @@ namespace GHIElectronics.TinyCLR.BrainPad {
                 this.maxPulseLength = maximumPulseWidth;
             }
 
-            public void Set(double position) {
+            public void Set(double value) {
                 if (this.type == ServoType.Positional)
-                    this.FixedSetPosition(position);
+                    this.FixedSetPosition(value);
                 else
-                    this.ContiniousSetSpeed(position);
+                    this.ContiniousSetSpeed(value);
             }
 
             private void FixedSetPosition(double position) {
