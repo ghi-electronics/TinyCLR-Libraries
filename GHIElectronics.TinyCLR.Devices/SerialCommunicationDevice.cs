@@ -35,8 +35,8 @@ namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
         public event ErrorReceivedDelegate ErrorReceived { add => this.stream.ErrorReceived += value; remove => this.stream.ErrorReceived -= value; }
         public event PinChangedDelegate PinChanged { add => this.stream.PinChanged += value; remove => this.stream.PinChanged -= value; }
 
-        public static string GetDeviceSelector() => string.Empty;
-        public static string GetDeviceSelector(string portName) => string.Empty + portName;
+        public static string GetDeviceSelector() => throw new NotSupportedException();
+        public static string GetDeviceSelector(string friendlyName) => throw new NotSupportedException();
         public static string GetDeviceSelectorFromUsbVidPid(ushort vendorId, ushort productId) => throw new NotSupportedException();
 
         public static SerialDevice FromId(string deviceId) => Api.ParseSelector(deviceId, out var providerId, out var index) ?

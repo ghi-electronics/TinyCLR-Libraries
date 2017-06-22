@@ -20,8 +20,8 @@ namespace GHIElectronics.TinyCLR.Devices.Spi {
         public void TransferFullDuplex(byte[] writeBuffer, byte[] readBuffer) => this.provider.TransferFullDuplex(writeBuffer, readBuffer);
         public void TransferSequential(byte[] writeBuffer, byte[] readBuffer) => this.provider.TransferSequential(writeBuffer, readBuffer);
 
-        public static string GetDeviceSelector() => DefaultSpiDeviceProvider.s_SpiPrefix;
-        public static string GetDeviceSelector(string friendlyName) => friendlyName;
+        public static string GetDeviceSelector() => throw new NotSupportedException();
+        public static string GetDeviceSelector(string friendlyName) => throw new NotSupportedException();
 
         /// <summary>
         /// Retrieves the info about a certain bus.

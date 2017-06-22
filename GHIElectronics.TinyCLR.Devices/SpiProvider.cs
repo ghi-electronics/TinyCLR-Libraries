@@ -88,8 +88,6 @@ namespace GHIElectronics.TinyCLR.Devices.Spi.Provider {
         private IntPtr nativeProvider;
 #pragma warning restore CS0169
 
-        internal static string s_SpiPrefix = "SPI";
-
         private readonly SpiConnectionSettings m_settings;
 
         private bool m_disposed = false;
@@ -206,13 +204,6 @@ namespace GHIElectronics.TinyCLR.Devices.Spi.Provider {
                 this.m_disposed = true;
             }
         }
-
-        internal static string[] GetValidBusNames() => new string[] {
-                s_SpiPrefix + "1",
-                s_SpiPrefix + "2",
-                s_SpiPrefix + "3",
-                s_SpiPrefix + "4",
-            };
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         extern private void InitNative();

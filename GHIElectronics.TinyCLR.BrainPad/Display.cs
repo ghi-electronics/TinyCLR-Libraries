@@ -234,7 +234,6 @@ namespace GHIElectronics.TinyCLR.BrainPad {
             switch (Board.BoardType) {
 #if SUPPORT_ORIGINAL_BRAINPAD
                 case BoardType.Original:
-
                     this.vram = new byte[128 * 64 * 2];
                     var GPIO = GpioController.GetDefault();
                     this.controlPin = GPIO.OpenPin(G30.GpioPin.PC5);// new OutputPort(Peripherals.Display.Control, false);

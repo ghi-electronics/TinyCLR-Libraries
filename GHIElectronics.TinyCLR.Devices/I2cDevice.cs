@@ -28,8 +28,8 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
             return Api.ParseSelector(deviceId, out var providerId, out var idx) ? new I2cDevice(settings, I2cProvider.FromId(providerId).GetControllers()[idx].GetDeviceProvider(new ProviderI2cConnectionSettings(settings))) : null;
         }
 
-        public static string GetDeviceSelector() => "";
-        public static string GetDeviceSelector(string friendlyName) => friendlyName;
+        public static string GetDeviceSelector() => throw new NotSupportedException();
+        public static string GetDeviceSelector(string friendlyName) => throw new NotSupportedException();
 
         public string DeviceId => this.provider.DeviceId;
         public I2cConnectionSettings ConnectionSettings { get; }

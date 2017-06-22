@@ -16,8 +16,8 @@ namespace GHIElectronics.TinyCLR.Devices.Pwm {
 
         public double ActualFrequency => this.m_provider.ActualFrequency;
 
-        public static string GetDeviceSelector() => "";
-        public static string GetDeviceSelector(string friendlyName) => friendlyName;
+        public static string GetDeviceSelector() => throw new NotSupportedException();
+        public static string GetDeviceSelector(string friendlyName) => throw new NotSupportedException();
 
         public static PwmController FromId(string deviceId) => Api.ParseSelector(deviceId, out var providerId, out var idx) ? new PwmController(PwmProvider.FromId(providerId).GetControllers()[idx]) : null;
 
