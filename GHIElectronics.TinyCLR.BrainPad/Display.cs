@@ -256,8 +256,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
                         ClockFrequency = 12000000,
                         DataBitLength = 8
                     };
-                    var aqs = SpiDevice.GetDeviceSelector("SPI2");
-                    this.spi = SpiDevice.FromId(aqs, settings);
+                    this.spi = SpiDevice.FromId(G30.SpiBus.Spi2, settings);
                     InitN18();
                     InitN18();
 
