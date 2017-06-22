@@ -132,7 +132,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
         }
 
         public class SerialPortDef {
-            public string Com1 { get; } = Pins.BrainPad.SerialPort.Com1;
+            public string Id { get; } = Pins.BrainPad.SerialPort.Com1;
 
             [EditorBrowsable(EditorBrowsableState.Never)]
             public override bool Equals(object obj) => base.Equals(obj);
@@ -145,7 +145,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
         }
 
         public class I2cBusDef {
-            public string I2c1 { get; } = Pins.BrainPad.I2cBus.I2c1;
+            public string Id { get; } = Pins.BrainPad.I2cBus.I2c1;
 
             [EditorBrowsable(EditorBrowsableState.Never)]
             public override bool Equals(object obj) => base.Equals(obj);
@@ -158,7 +158,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
         }
 
         public class SpiBusDef {
-            public string Spi1 { get; } = Pins.BrainPad.SpiBus.Spi1;
+            public string Id { get; } = Pins.BrainPad.SpiBus.Spi1;
 
             [EditorBrowsable(EditorBrowsableState.Never)]
             public override bool Equals(object obj) => base.Equals(obj);
