@@ -24,10 +24,6 @@ namespace GHIElectronics.TinyCLR.BrainPad {
             public int Rx { get; } = Pins.BrainPad.GpioPin.Rx;
             /// <summary>GPIO pin.</summary>
             public int Tx { get; } = Pins.BrainPad.GpioPin.Tx;
-            /// <summary>GPIO pin.</summary>
-            public int Scl { get; } = Pins.BrainPad.GpioPin.Scl;
-            /// <summary>GPIO pin.</summary>
-            public int Sda { get; } = Pins.BrainPad.GpioPin.Sda;
 
             [EditorBrowsable(EditorBrowsableState.Never)]
             public override bool Equals(object obj) => base.Equals(obj);
@@ -64,8 +60,6 @@ namespace GHIElectronics.TinyCLR.BrainPad {
             public Controller1Def Controller1 { get; } = new Controller1Def();
             /// <summary>PWM controller.</summary>
             public Controller2Def Controller2 { get; } = new Controller2Def();
-            /// <summary>PWM controller.</summary>
-            public Controller4Def Controller4 { get; } = new Controller4Def();
 
             [EditorBrowsable(EditorBrowsableState.Never)]
             public override bool Equals(object obj) => base.Equals(obj);
@@ -101,24 +95,6 @@ namespace GHIElectronics.TinyCLR.BrainPad {
 
                 /// <summary>PWM pin.</summary>
                 public int Int { get; } = Pins.BrainPad.PwmPin.Controller2.Int;
-
-                [EditorBrowsable(EditorBrowsableState.Never)]
-                public override bool Equals(object obj) => base.Equals(obj);
-                [EditorBrowsable(EditorBrowsableState.Never)]
-                public override int GetHashCode() => base.GetHashCode();
-                [EditorBrowsable(EditorBrowsableState.Never)]
-                public override string ToString() => base.ToString();
-                [EditorBrowsable(EditorBrowsableState.Never)]
-                public new Type GetType() => base.GetType();
-            }
-
-            public class Controller4Def {
-                public string Id { get; } = Pins.BrainPad.PwmPin.Controller4.Id;
-
-                /// <summary>PWM pin.</summary>
-                public int Scl { get; } = Pins.BrainPad.PwmPin.Controller4.Scl;
-                /// <summary>PWM pin.</summary>
-                public int Sda { get; } = Pins.BrainPad.PwmPin.Controller4.Sda;
 
                 [EditorBrowsable(EditorBrowsableState.Never)]
                 public override bool Equals(object obj) => base.Equals(obj);

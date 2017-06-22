@@ -25,10 +25,6 @@
             public const int Rx = FEZChip.GpioPin.PA10;
             /// <summary>GPIO pin.</summary>
             public const int Tx = FEZChip.GpioPin.PA9;
-            /// <summary>GPIO pin.</summary>
-            public const int Scl = FEZChip.GpioPin.PB6;
-            /// <summary>GPIO pin.</summary>
-            public const int Sda = FEZChip.GpioPin.PB7;
         }
 
         /// <summary>ADc channel definitions.</summary>
@@ -65,16 +61,6 @@
 
                 /// <summary>PWM pin.</summary>
                 public const int Int = FEZChip.PwmPin.Controller2.PA2;
-            }
-
-            /// <summary>PWM controller.</summary>
-            public static class Controller4 {
-                public const string Id = FEZChip.PwmPin.Controller4.Id;
-
-                /// <summary>PWM pin.</summary>
-                public const int Scl = FEZChip.PwmPin.Controller4.PB6;
-                /// <summary>PWM pin.</summary>
-                public const int Sda = FEZChip.PwmPin.Controller4.PB7;
             }
         }
 
