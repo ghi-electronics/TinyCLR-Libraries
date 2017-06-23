@@ -258,6 +258,11 @@ namespace GHIElectronics.TinyCLR.BrainPad {
                     this.spi = SpiDevice.FromId(G30.SpiBus.Spi2, settings);
                     InitN18();
                     InitN18();
+                    SetClip(0, 0, 160, 128);
+                    WriteCommand(0x2C);
+                    this.controlPin.Write(GpioPinValue.High);
+                    for (var i = 0; i < 3; i++)
+                        this.spi.Write(this.vram);
 
                     break;
 #endif
