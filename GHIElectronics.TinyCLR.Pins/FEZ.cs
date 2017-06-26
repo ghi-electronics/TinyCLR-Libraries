@@ -143,7 +143,7 @@
             /// <summary>Serial port on D1 (TX) and D0 (RX).</summary>
             public const string Com1 = FEZChip.SerialPort.Com1;
             /// <summary>Serial port on WiFi TX (TX) and WiFi RX (RX).</summary>
-            public const string Com2 = FEZChip.SerialPort.Com2;
+            public const string WiFi = FEZChip.SerialPort.Com2;
         }
 
         /// <summary>I2C bus definitions.</summary>
