@@ -10,9 +10,9 @@
             /// <summary>GPIO pin for LED2.</summary>
             public const int Led2 = FEZChip.GpioPin.PB8;
             /// <summary>GPIO pin for BTN1.</summary>
-            public const int Btn1 = FEZChip.GpioPin.PC13;
+            public const int Btn1 = FEZChip.GpioPin.PA15;
             /// <summary>GPIO pin for BTN2.</summary>
-            public const int Btn2 = FEZChip.GpioPin.PA15;
+            public const int Btn2 = FEZChip.GpioPin.PC13;
             /// <summary>GPIO pin.</summary>
             public const int A0 = FEZChip.GpioPin.PA4;
             /// <summary>GPIO pin.</summary>
