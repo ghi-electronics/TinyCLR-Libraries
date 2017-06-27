@@ -8,7 +8,7 @@
             /// <summary>GPIO pin for LED1.</summary>
             public const int Led1 = FEZChip.GpioPin.PB9;
             /// <summary>GPIO pin for LED2.</summary>
-            public const int Led2 = FEZChip.GpioPin.PB8;
+            public const int Led2 = FEZChip.GpioPin.PC10;
             /// <summary>GPIO pin for BTN1.</summary>
             public const int Btn1 = FEZChip.GpioPin.PA15;
             /// <summary>GPIO pin for BTN2.</summary>
@@ -36,9 +36,9 @@
             /// <summary>GPIO pin.</summary>
             public const int D4 = FEZChip.GpioPin.PC15;
             /// <summary>GPIO pin.</summary>
-            public const int D5 = FEZChip.GpioPin.PA1;
+            public const int D5 = FEZChip.GpioPin.PB8;
             /// <summary>GPIO pin.</summary>
-            public const int D6 = FEZChip.GpioPin.PA0;
+            public const int D6 = FEZChip.GpioPin.PC6;
             /// <summary>GPIO pin.</summary>
             public const int D7 = FEZChip.GpioPin.PC14;
             /// <summary>GPIO pin.</summary>
@@ -80,10 +80,6 @@
             /// <summary>ADC channel.</summary>
             public const int D2 = FEZChip.AdcChannel.PC1;
             /// <summary>ADC channel.</summary>
-            public const int D5 = FEZChip.AdcChannel.PA1;
-            /// <summary>ADC channel.</summary>
-            public const int D6 = FEZChip.AdcChannel.PA0;
-            /// <summary>ADC channel.</summary>
             public const int D8 = FEZChip.AdcChannel.PC0;
         }
 
@@ -102,19 +98,11 @@
             }
 
             /// <summary>PWM controller.</summary>
-            public static class Controller2 {
-                public const string Id = FEZChip.PwmPin.Controller2.Id;
-
-                /// <summary>PWM pin.</summary>
-                public const int D6 = 0;
-                /// <summary>PWM pin.</summary>
-                public const int D5 = 1;
-            }
-
-            /// <summary>PWM controller.</summary>
             public static class Controller3 {
                 public const string Id = FEZChip.PwmPin.Controller3.Id;
 
+                /// <summary>PWM pin.</summary>
+                public const int D6 = 0;
                 /// <summary>PWM pin.</summary>
                 public const int D11 = 1;
                 /// <summary>PWM pin.</summary>
@@ -132,7 +120,7 @@
                 /// <summary>PWM pin.</summary>
                 public const int Sda = 1;
                 /// <summary>PWM pin.</summary>
-                public const int Led2 = 2;
+                public const int D5 = 2;
                 /// <summary>PWM pin.</summary>
                 public const int Led1 = 3;
             }
@@ -142,7 +130,7 @@
         public static class SerialPort {
             /// <summary>Serial port on D1 (TX) and D0 (RX).</summary>
             public const string Com1 = FEZChip.SerialPort.Com1;
-            /// <summary>Serial port on WiFi TX (TX) and WiFi RX (RX).</summary>
+            /// <summary>Serial port on WiFi TX (TX), WiFi RX (RX), WiFi CTS (CTS), and WiFi RTS (RTS).</summary>
             public const string WiFi = FEZChip.SerialPort.Com2;
         }
 
