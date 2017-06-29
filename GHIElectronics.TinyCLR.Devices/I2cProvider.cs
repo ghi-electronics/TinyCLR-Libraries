@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -57,6 +58,7 @@ namespace GHIElectronics.TinyCLR.Devices.I2c.Provider {
 
     public class I2cProvider : II2cProvider {
         private II2cControllerProvider[] controllers;
+        private static Hashtable providers = new Hashtable();
 
         public string Name { get; }
 
@@ -72,17 +74,27 @@ namespace GHIElectronics.TinyCLR.Devices.I2c.Provider {
                 this.controllers[i] = new DefaultI2cControllerProvider(api.Implementation[i]);
         }
 
-        public static II2cProvider FromId(string id) => new I2cProvider(id);
+        public static II2cProvider FromId(string id) {
+            if (I2cProvider.providers.Contains(id))
+                return (II2cProvider)I2cProvider.providers[id];
+
+            var res = new I2cProvider(id);
+
+            I2cProvider.providers[id] = res;
+
+            return res;
+        }
     }
 
     internal class DefaultI2cControllerProvider : II2cControllerProvider {
 #pragma warning disable CS0169
         private readonly IntPtr nativeProvider;
 #pragma warning restore CS0169
+        private bool first = true;
 
         internal DefaultI2cControllerProvider(IntPtr nativeProvider) => this.nativeProvider = nativeProvider;
 
-        public II2cDeviceProvider GetDeviceProvider(ProviderI2cConnectionSettings settings) => new DefaultI2cDeviceProvider(this.nativeProvider, settings);
+        public II2cDeviceProvider GetDeviceProvider(ProviderI2cConnectionSettings settings) { var res = new DefaultI2cDeviceProvider(this.first, this.nativeProvider, settings); this.first = false; return res; }
     }
 
     internal sealed class DefaultI2cDeviceProvider : II2cDeviceProvider {
@@ -95,11 +107,12 @@ namespace GHIElectronics.TinyCLR.Devices.I2c.Provider {
 
         public string DeviceId => "";
 
-        internal DefaultI2cDeviceProvider(IntPtr nativeProvider, ProviderI2cConnectionSettings settings) {
+        internal DefaultI2cDeviceProvider(bool first, IntPtr nativeProvider, ProviderI2cConnectionSettings settings) {
             this.nativeProvider = nativeProvider;
             this.m_settings = new I2cConnectionSettings(settings);
 
-            InitNative();
+            if (first)
+                InitNative();
         }
 
         ~DefaultI2cDeviceProvider() {
