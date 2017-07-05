@@ -31,8 +31,8 @@ namespace GHIElectronics.TinyCLR.BrainPad {
         /// Makes a short beep sound.
         /// </summary>
         public void Beep() {
-            StartBuzzing(2000);
-            Thread.Sleep(5);
+            StartBuzzing(2500);
+            Thread.Sleep(20);
             StopBuzzing();
         }
 
