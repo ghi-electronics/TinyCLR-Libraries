@@ -60,6 +60,8 @@
             /// <summary>GPIO pin.</summary>
             public const int PB10 = 10 + 16;
             /// <summary>GPIO pin.</summary>
+            public const int PB11 = 11 + 16;
+            /// <summary>GPIO pin.</summary>
             public const int PB12 = 12 + 16;
             /// <summary>GPIO pin.</summary>
             public const int PB13 = 13 + 16;
@@ -99,7 +101,6 @@
             public const int PC14 = 14 + 32;
             /// <summary>GPIO pin.</summary>
             public const int PC15 = 15 + 32;
-
             /// <summary>GPIO pin.</summary>
             public const int PD0 = 0 + 48;
             /// <summary>GPIO pin.</summary>
@@ -132,7 +133,6 @@
             public const int PD14 = 14 + 48;
             /// <summary>GPIO pin.</summary>
             public const int PD15 = 15 + 48;
-
             /// <summary>GPIO pin.</summary>
             public const int PE0 = 0 + 64;
             /// <summary>GPIO pin.</summary>
@@ -165,7 +165,6 @@
             public const int PE14 = 14 + 64;
             /// <summary>GPIO pin.</summary>
             public const int PE15 = 15 + 64;
-
             /// <summary>GPIO pin.</summary>
             public const int PF0 = 0 + 80;
             /// <summary>GPIO pin.</summary>
@@ -198,7 +197,6 @@
             public const int PF14 = 14 + 80;
             /// <summary>GPIO pin.</summary>
             public const int PF15 = 15 + 80;
-
             /// <summary>GPIO pin.</summary>
             public const int PG0 = 0 + 96;
             /// <summary>GPIO pin.</summary>
@@ -231,7 +229,6 @@
             public const int PG14 = 14 + 96;
             /// <summary>GPIO pin.</summary>
             public const int PG15 = 15 + 96;
-
             /// <summary>GPIO pin.</summary>
             public const int PH0 = 0 + 112;
             /// <summary>GPIO pin.</summary>
@@ -264,7 +261,6 @@
             public const int PH14 = 14 + 112;
             /// <summary>GPIO pin.</summary>
             public const int PH15 = 15 + 112;
-
             /// <summary>GPIO pin.</summary>
             public const int PI0 = 0 + 128;
             /// <summary>GPIO pin.</summary>
@@ -297,7 +293,6 @@
             public const int PI14 = 14 + 128;
             /// <summary>GPIO pin.</summary>
             public const int PI15 = 15 + 128;
-
             /// <summary>GPIO pin.</summary>
             public const int PJ0 = 0 + 144;
             /// <summary>GPIO pin.</summary>
@@ -330,7 +325,6 @@
             public const int PJ14 = 14 + 144;
             /// <summary>GPIO pin.</summary>
             public const int PJ15 = 15 + 144;
-
             /// <summary>GPIO pin.</summary>
             public const int PK0 = 0 + 160;
             /// <summary>GPIO pin.</summary>
