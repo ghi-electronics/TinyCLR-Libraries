@@ -3,91 +3,91 @@
     public static class FEZ {
         /// <summary>GPIO pin definitions.</summary>
         public static class GpioPin {
-            public const string Id = FEZChip.GpioPin.Id;
+            public const string Id = FEZFirmware.GpioPin.Id;
 
             /// <summary>GPIO pin for LED1.</summary>
-            public const int Led1 = FEZChip.GpioPin.PB9;
+            public const int Led1 = FEZFirmware.GpioPin.PB9;
             /// <summary>GPIO pin for LED2.</summary>
-            public const int Led2 = FEZChip.GpioPin.PC10;
+            public const int Led2 = FEZFirmware.GpioPin.PC10;
             /// <summary>GPIO pin for BTN1.</summary>
-            public const int Btn1 = FEZChip.GpioPin.PA15;
+            public const int Btn1 = FEZFirmware.GpioPin.PA15;
             /// <summary>GPIO pin for BTN2.</summary>
-            public const int Btn2 = FEZChip.GpioPin.PC13;
+            public const int Btn2 = FEZFirmware.GpioPin.PC13;
             /// <summary>GPIO pin.</summary>
-            public const int A0 = FEZChip.GpioPin.PA4;
+            public const int A0 = FEZFirmware.GpioPin.PA4;
             /// <summary>GPIO pin.</summary>
-            public const int A1 = FEZChip.GpioPin.PA5;
+            public const int A1 = FEZFirmware.GpioPin.PA5;
             /// <summary>GPIO pin.</summary>
-            public const int A2 = FEZChip.GpioPin.PA6;
+            public const int A2 = FEZFirmware.GpioPin.PA6;
             /// <summary>GPIO pin.</summary>
-            public const int A3 = FEZChip.GpioPin.PA7;
+            public const int A3 = FEZFirmware.GpioPin.PA7;
             /// <summary>GPIO pin.</summary>
-            public const int A4 = FEZChip.GpioPin.PB0;
+            public const int A4 = FEZFirmware.GpioPin.PB0;
             /// <summary>GPIO pin.</summary>
-            public const int A5 = FEZChip.GpioPin.PB1;
+            public const int A5 = FEZFirmware.GpioPin.PB1;
             /// <summary>GPIO pin.</summary>
-            public const int D0 = FEZChip.GpioPin.PA10;
+            public const int D0 = FEZFirmware.GpioPin.PA10;
             /// <summary>GPIO pin.</summary>
-            public const int D1 = FEZChip.GpioPin.PA9;
+            public const int D1 = FEZFirmware.GpioPin.PA9;
             /// <summary>GPIO pin.</summary>
-            public const int D2 = FEZChip.GpioPin.PC1;
+            public const int D2 = FEZFirmware.GpioPin.PC1;
             /// <summary>GPIO pin.</summary>
-            public const int D3 = FEZChip.GpioPin.PA8;
+            public const int D3 = FEZFirmware.GpioPin.PA8;
             /// <summary>GPIO pin.</summary>
-            public const int D4 = FEZChip.GpioPin.PC15;
+            public const int D4 = FEZFirmware.GpioPin.PC15;
             /// <summary>GPIO pin.</summary>
-            public const int D5 = FEZChip.GpioPin.PB8;
+            public const int D5 = FEZFirmware.GpioPin.PB8;
             /// <summary>GPIO pin.</summary>
-            public const int D6 = FEZChip.GpioPin.PC6;
+            public const int D6 = FEZFirmware.GpioPin.PC6;
             /// <summary>GPIO pin.</summary>
-            public const int D7 = FEZChip.GpioPin.PC14;
+            public const int D7 = FEZFirmware.GpioPin.PC14;
             /// <summary>GPIO pin.</summary>
-            public const int D8 = FEZChip.GpioPin.PC0;
+            public const int D8 = FEZFirmware.GpioPin.PC0;
             /// <summary>GPIO pin.</summary>
-            public const int D9 = FEZChip.GpioPin.PC9;
+            public const int D9 = FEZFirmware.GpioPin.PC9;
             /// <summary>GPIO pin.</summary>
-            public const int D10 = FEZChip.GpioPin.PC8;
+            public const int D10 = FEZFirmware.GpioPin.PC8;
             /// <summary>GPIO pin.</summary>
-            public const int D11 = FEZChip.GpioPin.PB5;
+            public const int D11 = FEZFirmware.GpioPin.PB5;
             /// <summary>GPIO pin.</summary>
-            public const int D12 = FEZChip.GpioPin.PB4;
+            public const int D12 = FEZFirmware.GpioPin.PB4;
             /// <summary>GPIO pin.</summary>
-            public const int D13 = FEZChip.GpioPin.PB3;
+            public const int D13 = FEZFirmware.GpioPin.PB3;
             /// <summary>GPIO pin.</summary>
-            public const int Sda = FEZChip.GpioPin.PB7;
+            public const int Sda = FEZFirmware.GpioPin.PB7;
             /// <summary>GPIO pin.</summary>
-            public const int Scl = FEZChip.GpioPin.PB6;
+            public const int Scl = FEZFirmware.GpioPin.PB6;
             /// <summary>GPIO pin.</summary>
-            public const int WiFiReset = FEZChip.GpioPin.PC2;
+            public const int WiFiReset = FEZFirmware.GpioPin.PC2;
         }
 
         /// <summary>ADC channel definitions.</summary>
         public static class AdcChannel {
-            public const string Id = FEZChip.AdcChannel.Id;
+            public const string Id = FEZFirmware.AdcChannel.Id;
 
             /// <summary>ADC channel.</summary>
-            public const int A0 = FEZChip.AdcChannel.PA4;
+            public const int A0 = FEZFirmware.AdcChannel.PA4;
             /// <summary>ADC channel.</summary>
-            public const int A1 = FEZChip.AdcChannel.PA5;
+            public const int A1 = FEZFirmware.AdcChannel.PA5;
             /// <summary>ADC channel.</summary>
-            public const int A2 = FEZChip.AdcChannel.PA6;
+            public const int A2 = FEZFirmware.AdcChannel.PA6;
             /// <summary>ADC channel.</summary>
-            public const int A3 = FEZChip.AdcChannel.PA7;
+            public const int A3 = FEZFirmware.AdcChannel.PA7;
             /// <summary>ADC channel.</summary>
-            public const int A4 = FEZChip.AdcChannel.PB0;
+            public const int A4 = FEZFirmware.AdcChannel.PB0;
             /// <summary>ADC channel.</summary>
-            public const int A5 = FEZChip.AdcChannel.PB1;
+            public const int A5 = FEZFirmware.AdcChannel.PB1;
             /// <summary>ADC channel.</summary>
-            public const int D2 = FEZChip.AdcChannel.PC1;
+            public const int D2 = FEZFirmware.AdcChannel.PC1;
             /// <summary>ADC channel.</summary>
-            public const int D8 = FEZChip.AdcChannel.PC0;
+            public const int D8 = FEZFirmware.AdcChannel.PC0;
         }
 
         /// <summary>PWM pin definitions.</summary>
         public static class PwmPin {
             /// <summary>PWM controller.</summary>
             public static class Controller1 {
-                public const string Id = FEZChip.PwmPin.Controller1.Id;
+                public const string Id = FEZFirmware.PwmPin.Controller1.Id;
 
                 /// <summary>PWM pin.</summary>
                 public const int D3 = 0;
@@ -99,7 +99,7 @@
 
             /// <summary>PWM controller.</summary>
             public static class Controller3 {
-                public const string Id = FEZChip.PwmPin.Controller3.Id;
+                public const string Id = FEZFirmware.PwmPin.Controller3.Id;
 
                 /// <summary>PWM pin.</summary>
                 public const int D6 = 0;
@@ -113,7 +113,7 @@
 
             /// <summary>PWM controller.</summary>
             public static class Controller4 {
-                public const string Id = FEZChip.PwmPin.Controller4.Id;
+                public const string Id = FEZFirmware.PwmPin.Controller4.Id;
 
                 /// <summary>PWM pin.</summary>
                 public const int Scl = 0;
@@ -129,21 +129,21 @@
         /// <summary>Serial port definitions.</summary>
         public static class SerialPort {
             /// <summary>Serial port on D1 (TX) and D0 (RX).</summary>
-            public const string Com1 = FEZChip.SerialPort.Com1;
+            public const string Com1 = FEZFirmware.SerialPort.Com1;
             /// <summary>Serial port on WiFi TX (TX), WiFi RX (RX), WiFi CTS (CTS), and WiFi RTS (RTS).</summary>
-            public const string WiFi = FEZChip.SerialPort.Com2;
+            public const string WiFi = FEZFirmware.SerialPort.Com2;
         }
 
         /// <summary>I2C bus definitions.</summary>
         public static class I2cBus {
             /// <summary>I2C bus on SDA (SDA) and SCL (SCL).</summary>
-            public const string I2c1 = FEZChip.I2cBus.I2c1;
+            public const string I2c1 = FEZFirmware.I2cBus.I2c1;
         }
 
         /// <summary>SPI bus definitions.</summary>
         public static class SpiBus {
             /// <summary>SPI bus on D11 (MOSI), D12 (MISO), and D13 (SCK).</summary>
-            public const string Spi1 = FEZChip.SpiBus.Spi1;
+            public const string Spi1 = FEZFirmware.SpiBus.Spi1;
         }
     }
 }

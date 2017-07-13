@@ -10,8 +10,8 @@ namespace GHIElectronics.TinyCLR.BrainPad {
         private PwmPin buzz;
 
         public Buzzer() {
-            this.controller = PwmController.FromId(Board.BoardType == BoardType.BP2 ? FEZChip.PwmPin.Controller4.Id : G30.PwmPin.Controller4.Id);
-            this.buzz = this.controller.OpenPin(Board.BoardType == BoardType.BP2 ? FEZChip.PwmPin.Controller4.PB8 : G30.PwmPin.Controller4.PB8);
+            this.controller = PwmController.FromId(Board.BoardType == BoardType.BP2 ? FEZFirmware.PwmPin.Controller4.Id : G30.PwmPin.Controller4.Id);
+            this.buzz = this.controller.OpenPin(Board.BoardType == BoardType.BP2 ? FEZFirmware.PwmPin.Controller4.PB8 : G30.PwmPin.Controller4.PB8);
         }
 
         /// <summary>

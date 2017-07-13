@@ -1,10 +1,6 @@
-﻿using System.Runtime.CompilerServices;
-
-[assembly: InternalsVisibleTo("GHIElectronics.TinyCLR.BrainPad")]
-
-namespace GHIElectronics.TinyCLR.Pins {
-    /// <summary>Board definition for the FEZ.</summary>
-    internal static class FEZChip {
+﻿namespace GHIElectronics.TinyCLR.Pins {
+    /// <summary>Board definition for the FEZ firmware.</summary>
+    public static class FEZFirmware {
         /// <summary>GPIO pin definitions.</summary>
         public static class GpioPin {
             public const string Id = "GHIElectronics.TinyCLR.NativeApis.STM32F4.GpioProvider\\0";
