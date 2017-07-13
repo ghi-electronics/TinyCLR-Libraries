@@ -198,18 +198,18 @@ namespace GHIElectronics.TinyCLR.Pins {
             }
         }
 
-        /// <summary>Serial port definitions.</summary>
-        public static class SerialPort {
-            /// <summary>Serial port on D1 (TX) and D0 (RX).</summary>
-            public const string Com1 = G120.SerialPort.Com1;
-            /// <summary>Serial port on D29 (TX), D28 (RX), D12 (CTS), and D60 (RTS).</summary>
-            public const string Com2 = G120.SerialPort.Com2;
-            /// <summary>Serial port on D21 (TX) and D20 (RX).</summary>
-            public const string Com3 = G120.SerialPort.Com3;
-            /// <summary>Serial port on D59 (TX) and D61 (RX).</summary>
-            public const string Com4 = G120.SerialPort.Com4;
-            /// <summary>Serial port on D49 (TX) and D37 (RX).</summary>
-            public const string Com5 = G120.SerialPort.Com5;
+        /// <summary>UART port definitions.</summary>
+        public static class UartPort {
+            /// <summary>Uart port on D1 (TX) and D0 (RX).</summary>
+            public const string Uart1 = G120.UartPort.Uart1;
+            /// <summary>Uart port on D29 (TX), D28 (RX), D12 (CTS), and D60 (RTS).</summary>
+            public const string Uart2 = G120.UartPort.Uart2;
+            /// <summary>Uart port on D21 (TX) and D20 (RX).</summary>
+            public const string Uart3 = G120.UartPort.Uart3;
+            /// <summary>Uart port on D59 (TX) and D61 (RX).</summary>
+            public const string Uart4 = G120.UartPort.Uart4;
+            /// <summary>Uart port on D49 (TX) and D37 (RX).</summary>
+            public const string Uart5 = G120.UartPort.Uart5;
         }
 
         /// <summary>SPI bus definitions.</summary>

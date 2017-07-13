@@ -454,24 +454,24 @@
             public const int Channel3 = 3;
         }
 
-        /// <summary>Serial port definitions.</summary>
-        public static class SerialPort {
-            /// <summary>Serial port.</summary>
-            public const string Com1 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.UartProvider\\0";
-            /// <summary>Serial port.</summary>
-            public const string Com2 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.UartProvider\\1";
-            /// <summary>Serial port.</summary>
-            public const string Com3 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.UartProvider\\2";
-            /// <summary>Serial port.</summary>
-            public const string Com4 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.UartProvider\\3";
-            /// <summary>Serial port.</summary>
-            public const string Com5 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.UartProvider\\4";
-            /// <summary>Serial port.</summary>
-            public const string Com6 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.UartProvider\\5";
-            /// <summary>Serial port.</summary>
-            public const string Com7 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.UartProvider\\6";
-            /// <summary>Serial port.</summary>
-            public const string Com8 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.UartProvider\\7";
+        /// <summary>UART port definitions.</summary>
+        public static class UartPort {
+            /// <summary>Uart port.</summary>
+            public const string Uart1 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.UartProvider\\0";
+            /// <summary>Uart port.</summary>
+            public const string Uart2 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.UartProvider\\1";
+            /// <summary>Uart port.</summary>
+            public const string Uart3 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.UartProvider\\2";
+            /// <summary>Uart port.</summary>
+            public const string Uart4 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.UartProvider\\3";
+            /// <summary>Uart port.</summary>
+            public const string Uart5 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.UartProvider\\4";
+            /// <summary>Uart port.</summary>
+            public const string Uart6 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.UartProvider\\5";
+            /// <summary>Uart port.</summary>
+            public const string Uart7 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.UartProvider\\6";
+            /// <summary>Uart port.</summary>
+            public const string Uart8 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.UartProvider\\7";
         }
 
         /// <summary>I2C bus definitions.</summary>

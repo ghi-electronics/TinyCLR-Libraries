@@ -198,12 +198,12 @@
             }
         }
 
-        /// <summary>Serial port definitions.</summary>
-        public static class SerialPort {
-            /// <summary>Serial port on PA9 (TX) and PA10 (RX).</summary>
-            public const string Com1 = STM32F4.SerialPort.Com1;
-            /// <summary>Serial port on PA2 (TX), PA3 (RX), PA0 (CTS), and PA1 (RTS).</summary>
-            public const string Com2 = STM32F4.SerialPort.Com2;
+        /// <summary>UART port definitions.</summary>
+        public static class UartPort {
+            /// <summary>Uart port on PA9 (TX) and PA10 (RX).</summary>
+            public const string Uart1 = STM32F4.UartPort.Uart1;
+            /// <summary>Uart port on PA2 (TX), PA3 (RX), PA0 (CTS), and PA1 (RTS).</summary>
+            public const string Uart2 = STM32F4.UartPort.Uart2;
         }
 
         /// <summary>I2C bus definitions.</summary>

@@ -220,18 +220,18 @@
             }
         }
 
-        /// <summary>Serial port definitions.</summary>
-        public static class SerialPort {
-            /// <summary>Serial port on P0.2 (TX) and P0.3 (RX).</summary>
-            public const string Com1 = "GHIElectronics.TinyCLR.NativeApis.LPC178.UartProvider\\0";
-            /// <summary>Serial port on P2.0 (TX), P0.16 (RX), P0.17 (CTS), and P0.6 (RTS).</summary>
-            public const string Com2 = "GHIElectronics.TinyCLR.NativeApis.LPC178.UartProvider\\1";
-            /// <summary>Serial port on P0.10 (TX) and P0.11 (RX).</summary>
-            public const string Com3 = "GHIElectronics.TinyCLR.NativeApis.LPC178.UartProvider\\2";
-            /// <summary>Serial port on P4.28 (TX) and P4.29 (RX).</summary>
-            public const string Com4 = "GHIElectronics.TinyCLR.NativeApis.LPC178.UartProvider\\3";
-            /// <summary>Serial port on P1.29 (TX) and P2.9 (RX).</summary>
-            public const string Com5 = "GHIElectronics.TinyCLR.NativeApis.LPC178.UartProvider\\4";
+        /// <summary>UART port definitions.</summary>
+        public static class UartPort {
+            /// <summary>Uart port on P0.2 (TX) and P0.3 (RX).</summary>
+            public const string Uart1 = "GHIElectronics.TinyCLR.NativeApis.LPC178.UartProvider\\0";
+            /// <summary>Uart port on P2.0 (TX), P0.16 (RX), P0.17 (CTS), and P0.6 (RTS).</summary>
+            public const string Uart2 = "GHIElectronics.TinyCLR.NativeApis.LPC178.UartProvider\\1";
+            /// <summary>Uart port on P0.10 (TX) and P0.11 (RX).</summary>
+            public const string Uart3 = "GHIElectronics.TinyCLR.NativeApis.LPC178.UartProvider\\2";
+            /// <summary>Uart port on P4.28 (TX) and P4.29 (RX).</summary>
+            public const string Uart4 = "GHIElectronics.TinyCLR.NativeApis.LPC178.UartProvider\\3";
+            /// <summary>Uart port on P1.29 (TX) and P2.9 (RX).</summary>
+            public const string Uart5 = "GHIElectronics.TinyCLR.NativeApis.LPC178.UartProvider\\4";
         }
 
         /// <summary>I2C bus definitions.</summary>

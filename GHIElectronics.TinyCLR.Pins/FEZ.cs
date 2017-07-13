@@ -126,12 +126,12 @@
             }
         }
 
-        /// <summary>Serial port definitions.</summary>
-        public static class SerialPort {
-            /// <summary>Serial port on D1 (TX) and D0 (RX).</summary>
-            public const string Com1 = FEZFirmware.SerialPort.Com1;
-            /// <summary>Serial port on WiFi TX (TX), WiFi RX (RX), WiFi CTS (CTS), and WiFi RTS (RTS).</summary>
-            public const string WiFi = FEZFirmware.SerialPort.Com2;
+        /// <summary>UART port definitions.</summary>
+        public static class UartPort {
+            /// <summary>Uart port on D1 (TX) and D0 (RX).</summary>
+            public const string Uart1 = FEZFirmware.UartPort.Uart1;
+            /// <summary>Uart port on WiFi TX (TX), WiFi RX (RX), WiFi CTS (CTS), and WiFi RTS (RTS).</summary>
+            public const string WiFi = FEZFirmware.UartPort.Uart2;
         }
 
         /// <summary>I2C bus definitions.</summary>

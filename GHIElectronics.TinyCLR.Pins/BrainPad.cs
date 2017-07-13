@@ -64,10 +64,10 @@
             }
         }
 
-        /// <summary>Serial port definitions.</summary>
-        public static class SerialPort {
-            /// <summary>Serial port on TX (TX) and RX (RX).</summary>
-            public const string Com1 = FEZFirmware.SerialPort.Com1;
+        /// <summary>UART port definitions.</summary>
+        public static class UartPort {
+            /// <summary>Uart port on TX (TX) and RX (RX).</summary>
+            public const string Uart1 = FEZFirmware.UartPort.Uart1;
         }
 
         /// <summary>I2C bus definitions.</summary>
