@@ -16,7 +16,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
         /// Reads the temperature.
         /// </summary>
         /// <returns>The temperature in celsius.</returns>
-        public double ReadTemperature() {
+        public double ReadTemperatureInCelsius() {
             double sum = 0;
 
             //average over 10
@@ -27,6 +27,8 @@ namespace GHIElectronics.TinyCLR.BrainPad {
 
             return (sum * 3300.0 - 450.0) / 19.5;
         }
+
+        public double ReadTemperatureInFahrenheit() => (9.0 / 5.0) * this.ReadTemperatureInCelsius() + 32.0;
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => base.Equals(obj);
