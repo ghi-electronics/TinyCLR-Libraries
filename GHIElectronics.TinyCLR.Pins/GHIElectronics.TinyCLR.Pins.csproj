@@ -38,19 +38,19 @@
     <Compile Include="Boards\FEZCobraIII.cs" />
     <Compile Include="Boards\FEZLemur.cs" />
     <Compile Include="Boards\FEZPandaIII.cs" />
-    <Compile Include="Ports\LPC178.cs" />
-    <Compile Include="Ports\AT91.cs" />
-    <Compile Include="SoMs\G120.cs" />
-    <Compile Include="SoMs\G120E.cs" />
+    <Compile Include="Processors\LPC178.cs" />
+    <Compile Include="Processors\AT91.cs" />
+    <Compile Include="Firmwares\G120.cs" />
+    <Compile Include="Firmwares\G120E.cs" />
     <Compile Include="Boards\FEZ.cs" />
-    <Compile Include="SoMs\FEZCLR.cs" />
-    <Compile Include="SoMs\G30.cs" />
-    <Compile Include="SoMs\G400D.cs" />
-    <Compile Include="SoMs\G400S.cs" />
-    <Compile Include="SoMs\G80.cs" />
+    <Compile Include="Firmwares\FEZCLR.cs" />
+    <Compile Include="Firmwares\G30.cs" />
+    <Compile Include="Firmwares\G400D.cs" />
+    <Compile Include="Firmwares\G400S.cs" />
+    <Compile Include="Firmwares\G80.cs" />
     <Compile Include="Boards\BrainPad.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Ports\STM32F4.cs" />
+    <Compile Include="Processors\STM32F4.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="GHIElectronics.TinyCLR.Pins.nuspec" />
