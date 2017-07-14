@@ -44,7 +44,7 @@ namespace GHIElectronics.TinyCLR.Devices.Display.Provider {
 
         public void ApplySettings(DisplayControllerSettings settings) {
             if (settings is LcdControllerSettings config) {
-                if (DefaultDisplayControllerProvider.NativeSetLcdConfiguration(config.Width, config.Height, config.OutputEnableIsFixed, config.OutputEnablePolarity, config.PixelPolarity, config.PixelClockRate, config.HorizontalSyncPolarity, config.HorizontalSyncPulseWidth, config.HorizontalFrontPorch, config.HorizontalBackPorch, config.VerticalSyncPolarity, config.VerticalSyncPulseWidth, config.VerticalFrontPorch, config.VerticalBackPorch, out var hdc)) {
+                if (NativeSetLcdConfiguration(config.Width, config.Height, config.OutputEnableIsFixed, config.OutputEnablePolarity, config.PixelPolarity, config.PixelClockRate, config.HorizontalSyncPolarity, config.HorizontalSyncPulseWidth, config.HorizontalFrontPorch, config.HorizontalBackPorch, config.VerticalSyncPolarity, config.VerticalSyncPulseWidth, config.VerticalFrontPorch, config.VerticalBackPorch, out var hdc)) {
                     this.Hdc = hdc;
                 }
                 else {
@@ -57,6 +57,6 @@ namespace GHIElectronics.TinyCLR.Devices.Display.Provider {
         }
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private extern static bool NativeSetLcdConfiguration(uint width, uint height, bool outputEnableIsFixed, bool outputEnablePolarity, bool pixelPolarity, uint pixelClockRate, bool horizontalSyncPolarity, uint horizontalSyncPulseWidth, uint horizontalFrontPorch, uint horizontalBackPorch, bool verticalSyncPolarity, uint verticalSyncPulseWidth, uint verticalFrontPorch, uint verticalBackPorch, out IntPtr hdc);
+        private extern bool NativeSetLcdConfiguration(uint width, uint height, bool outputEnableIsFixed, bool outputEnablePolarity, bool pixelPolarity, uint pixelClockRate, bool horizontalSyncPolarity, uint horizontalSyncPulseWidth, uint horizontalFrontPorch, uint horizontalBackPorch, bool verticalSyncPolarity, uint verticalSyncPulseWidth, uint verticalFrontPorch, uint verticalBackPorch, out IntPtr hdc);
     }
 }
