@@ -3,6 +3,7 @@
     public static class G30 {
         /// <summary>GPIO pin definitions.</summary>
         public static class GpioPin {
+            /// <summary>API id.</summary>
             public const string Id = STM32F4.GpioPin.Id;
 
             /// <summary>GPIO pin.</summary>
@@ -105,6 +106,7 @@
 
         /// <summary>ADC channel definitions.</summary>
         public static class AdcChannel {
+            /// <summary>API id.</summary>
             public const string Id = STM32F4.AdcChannel.Id;
 
             /// <summary>ADC channel.</summary>

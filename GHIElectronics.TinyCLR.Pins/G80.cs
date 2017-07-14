@@ -3,6 +3,7 @@
     public static class G80 {
         /// <summary>GPIO pin definitions.</summary>
         public static class GpioPin {
+            /// <summary>API id.</summary>
             public const string Id = STM32F4.GpioPin.Id;
 
             /// <summary>GPIO pin.</summary>
@@ -169,6 +170,7 @@
 
         /// <summary>ADC channel definitions.</summary>
         public static class AdcChannel {
+            /// <summary>API id.</summary>
             public const string Id = STM32F4.AdcChannel.Id;
 
             /// <summary>ADC channel.</summary>
@@ -207,6 +209,7 @@
 
         /// <summary>DAC channel definitions.</summary>
         public static class DacChannel {
+            /// <summary>API id.</summary>
             public const string Id = STM32F4.DacChannel.Id;
 
             /// <summary>DAC channel.</summary>

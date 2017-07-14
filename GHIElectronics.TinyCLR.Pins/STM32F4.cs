@@ -3,6 +3,7 @@
     public static class STM32F4 {
         /// <summary>GPIO pin definitions.</summary>
         public static class GpioPin {
+            /// <summary>API id.</summary>
             public const string Id = "GHIElectronics.TinyCLR.NativeApis.STM32F4.GpioProvider\\0";
 
             /// <summary>GPIO pin.</summary>
@@ -361,6 +362,7 @@
 
         /// <summary>ADC channel definitions.</summary>
         public static class AdcChannel {
+            /// <summary>API id.</summary>
             public const string Id = "GHIElectronics.TinyCLR.NativeApis.STM32F4.AdcProvider\\0";
 
             /// <summary>ADC channel.</summary>
@@ -405,6 +407,7 @@
 
         /// <summary>DAC channel definitions.</summary>
         public static class DacChannel {
+            /// <summary>API id.</summary>
             public const string Id = "GHIElectronics.TinyCLR.NativeApis.STM32F4.DacProvider\\0";
 
             /// <summary>ADC channel.</summary>
@@ -506,6 +509,12 @@
             public const string Can1 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.CanProvider\\0";
             /// <summary>I2C bus.</summary>
             public const string Can2 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.CanProvider\\1";
+        }
+
+        /// <summary>Display definitions.</summary>
+        public static class Display {
+            /// <summary>API id.</summary>
+            public const string Id = "GHIElectronics.TinyCLR.NativeApis.STM32F4.DisplayProvider\\0";
         }
     }
 }
