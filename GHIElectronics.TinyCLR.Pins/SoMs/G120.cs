@@ -262,5 +262,11 @@
             /// <summary>CAN bus on P0.5 (TX) and P0.4 (RX).</summary>
             public const string Can2 = "GHIElectronics.TinyCLR.NativeApis.LPC178.CanProvider\\1";
         }
+
+        /// <summary>Display definitions.</summary>
+        public static class Display {
+            /// <summary>API id.</summary>
+            public const string Id = "GHIElectronics.TinyCLR.NativeApis.LPC178.DisplayProvider\\0";
+        }
     }
 }

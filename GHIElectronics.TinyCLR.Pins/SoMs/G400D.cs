@@ -281,5 +281,11 @@
             /// <summary>CAN channel on PA5 (TX) and PA6 (RX).</summary>
             public const string Can2 = "GHIElectronics.TinyCLR.NativeApis.AT91.CanProvider\\1";
         }
+
+        /// <summary>Display definitions.</summary>
+        public static class Display {
+            /// <summary>API id.</summary>
+            public const string Id = "GHIElectronics.TinyCLR.NativeApis.AT91.DisplayProvider\\0";
+        }
     }
 }
