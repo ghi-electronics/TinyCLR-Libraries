@@ -3,6 +3,7 @@
     public static class G120 {
         /// <summary>GPIO pin definitions.</summary>
         public static class GpioPin {
+            /// <summary>API id.</summary>
             public const string Id = "GHIElectronics.TinyCLR.NativeApis.LPC178.GpioProvider\\0";
 
             /// <summary>GPIO pin.</summary>
@@ -153,6 +154,7 @@
 
         /// <summary>ADC channel definitions.</summary>
         public static class AdcChannel {
+            /// <summary>API id.</summary>
             public const string Id = "GHIElectronics.TinyCLR.NativeApis.LPC178.AdcProvider\\0";
 
             /// <summary>ADC channel.</summary>
@@ -175,6 +177,7 @@
 
         /// <summary>DAC channel definitions.</summary>
         public static class DacChannel {
+            /// <summary>API id.</summary>
             public const string Id = "GHIElectronics.TinyCLR.NativeApis.LPC178.DacProvider\\0";
 
             /// <summary>DAC channel channel.</summary>
@@ -185,6 +188,7 @@
         public static class PwmPin {
             /// <summary>PWM controller.</summary>
             public static class Controller0 {
+                /// <summary>API id.</summary>
                 public const string Id = "GHIElectronics.TinyCLR.NativeApis.LPC178.PwmProvider\\0";
 
                 /// <summary>PWM pin.</summary>
@@ -203,6 +207,7 @@
 
             /// <summary>PWM controller.</summary>
             public static class Controller1 {
+                /// <summary>API id.</summary>
                 public const string Id = "GHIElectronics.TinyCLR.NativeApis.LPC178.PwmProvider\\1";
 
                 /// <summary>PWM pin.</summary>

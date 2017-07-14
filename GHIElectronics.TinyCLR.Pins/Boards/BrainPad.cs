@@ -3,6 +3,7 @@
     public static class BrainPad {
         /// <summary>GPIO pin definitions.</summary>
         public static class GpioPin {
+            /// <summary>API id.</summary>
             public const string Id = FEZFirmware.GpioPin.Id;
 
             /// <summary>GPIO pin.</summary>
@@ -29,6 +30,7 @@
 
         /// <summary>ADc channel definitions.</summary>
         public static class AdcChannel {
+            /// <summary>API id.</summary>
             public const string Id = FEZFirmware.AdcChannel.Id;
 
             /// <summary>ADC channel.</summary>
@@ -45,6 +47,7 @@
         public static class PwmPin {
             /// <summary>PWM controller.</summary>
             public static class Controller1 {
+                /// <summary>API id.</summary>
                 public const string Id = FEZFirmware.PwmPin.Controller1.Id;
 
                 /// <summary>PWM pin.</summary>
@@ -57,6 +60,7 @@
 
             /// <summary>PWM controller.</summary>
             public static class Controller2 {
+                /// <summary>API id.</summary>
                 public const string Id = FEZFirmware.PwmPin.Controller2.Id;
 
                 /// <summary>PWM pin.</summary>

@@ -416,7 +416,7 @@
             public const int Channel2 = 1;
         }
 
-        /// <summary>PWM pin definitions.</summary>
+        /// <summary>Timer definitions.</summary>
         public static class Timer {
             /// <summary>Timer.</summary>
             public const string Tim1 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.PwmProvider\\0";

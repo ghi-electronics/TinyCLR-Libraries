@@ -222,6 +222,7 @@
         public static class PwmPin {
             /// <summary>PWM controller.</summary>
             public static class Controller1 {
+                /// <summary>API id.</summary>
                 public const string Id = STM32F4.Timer.Tim1;
 
                 /// <summary>PWM pin.</summary>
@@ -236,6 +237,7 @@
 
             /// <summary>PWM controller.</summary>
             public static class Controller2 {
+                /// <summary>API id.</summary>
                 public const string Id = STM32F4.Timer.Tim2;
 
                 /// <summary>PWM pin.</summary>
@@ -250,6 +252,7 @@
 
             /// <summary>PWM controller.</summary>
             public static class Controller3 {
+                /// <summary>API id.</summary>
                 public const string Id = STM32F4.Timer.Tim3;
 
                 /// <summary>PWM pin.</summary>
@@ -264,6 +267,7 @@
 
             /// <summary>PWM controller.</summary>
             public static class Controller4 {
+                /// <summary>API id.</summary>
                 public const string Id = STM32F4.Timer.Tim4;
 
                 /// <summary>PWM pin.</summary>
@@ -278,6 +282,7 @@
 
             /// <summary>PWM controller.</summary>
             public static class Controller8 {
+                /// <summary>API id.</summary>
                 public const string Id = STM32F4.Timer.Tim8;
 
                 /// <summary>PWM pin.</summary>
@@ -292,6 +297,7 @@
 
             /// <summary>PWM controller.</summary>
             public static class Controller9 {
+                /// <summary>API id.</summary>
                 public const string Id = STM32F4.Timer.Tim9;
 
                 /// <summary>PWM pin.</summary>
@@ -302,6 +308,7 @@
 
             /// <summary>PWM controller.</summary>
             public static class Controller10 {
+                /// <summary>API id.</summary>
                 public const string Id = STM32F4.Timer.Tim10;
 
                 /// <summary>PWM pin.</summary>
@@ -310,6 +317,7 @@
 
             /// <summary>PWM controller.</summary>
             public static class Controller11 {
+                /// <summary>API id.</summary>
                 public const string Id = STM32F4.Timer.Tim11;
 
                 /// <summary>PWM pin.</summary>
@@ -318,6 +326,7 @@
 
             /// <summary>PWM controller.</summary>
             public static class Controller13 {
+                /// <summary>API id.</summary>
                 public const string Id = STM32F4.Timer.Tim13;
 
                 /// <summary>PWM pin.</summary>
@@ -326,6 +335,7 @@
 
             /// <summary>PWM controller.</summary>
             public static class Controller14 {
+                /// <summary>API id.</summary>
                 public const string Id = STM32F4.Timer.Tim14;
 
                 /// <summary>PWM pin.</summary>

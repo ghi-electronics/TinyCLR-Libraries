@@ -3,6 +3,7 @@
     public static class FEZPandaIII {
         /// <summary>GPIO pin definitions.</summary>
         public static class GpioPin {
+            /// <summary>API id.</summary>
             public const string Id = G80.GpioPin.Id;
 
             /// <summary>GPIO pin for LED1.</summary>
@@ -131,6 +132,7 @@
 
         /// <summary>ADC channel definitions.</summary>
         public static class AdcChannel {
+            /// <summary>API id.</summary>
             public const string Id = G80.AdcChannel.Id;
 
             /// <summary>ADC channel.</summary>
@@ -169,6 +171,7 @@
 
         /// <summary>DAC channel definitions.</summary>
         public static class DacChannel {
+            /// <summary>API id.</summary>
             public const string Id = G80.DacChannel.Id;
 
             /// <summary>DAC channel.</summary>
@@ -181,6 +184,7 @@
         public static class PwmPin {
             /// <summary>PWM controller.</summary>
             public static class Controller1 {
+                /// <summary>API id.</summary>
                 public const string Id = G80.PwmPin.Controller1.Id;
 
                 /// <summary>PWM pin.</summary>
@@ -195,6 +199,7 @@
 
             /// <summary>PWM controller.</summary>
             public static class Controller2 {
+                /// <summary>API id.</summary>
                 public const string Id = G80.PwmPin.Controller2.Id;
 
                 /// <summary>PWM pin.</summary>
@@ -209,6 +214,7 @@
 
             /// <summary>PWM controller.</summary>
             public static class Controller3 {
+                /// <summary>API id.</summary>
                 public const string Id = G80.PwmPin.Controller3.Id;
 
                 /// <summary>PWM pin.</summary>
@@ -223,6 +229,7 @@
 
             /// <summary>PWM controller.</summary>
             public static class Controller4 {
+                /// <summary>API id.</summary>
                 public const string Id = G80.PwmPin.Controller4.Id;
 
                 /// <summary>PWM pin.</summary>
@@ -231,6 +238,7 @@
 
             /// <summary>PWM controller.</summary>
             public static class Controller8 {
+                /// <summary>API id.</summary>
                 public const string Id = G80.PwmPin.Controller8.Id;
 
                 /// <summary>PWM pin.</summary>
@@ -241,6 +249,7 @@
 
             /// <summary>PWM controller.</summary>
             public static class Controller9 {
+                /// <summary>API id.</summary>
                 public const string Id = G80.PwmPin.Controller9.Id;
 
                 /// <summary>PWM pin.</summary>
@@ -251,6 +260,7 @@
 
             /// <summary>PWM controller.</summary>
             public static class Controller10 {
+                /// <summary>API id.</summary>
                 public const string Id = G80.PwmPin.Controller10.Id;
 
                 /// <summary>PWM pin.</summary>
@@ -259,6 +269,7 @@
 
             /// <summary>PWM controller.</summary>
             public static class Controller11 {
+                /// <summary>API id.</summary>
                 public const string Id = G80.PwmPin.Controller11.Id;
 
                 /// <summary>PWM pin.</summary>
@@ -267,6 +278,7 @@
 
             /// <summary>PWM controller.</summary>
             public static class Controller13 {
+                /// <summary>API id.</summary>
                 public const string Id = G80.PwmPin.Controller13.Id;
 
                 /// <summary>PWM pin.</summary>
@@ -275,6 +287,7 @@
 
             /// <summary>PWM controller.</summary>
             public static class Controller14 {
+                /// <summary>API id.</summary>
                 public const string Id = G80.PwmPin.Controller14.Id;
 
                 /// <summary>PWM pin.</summary>

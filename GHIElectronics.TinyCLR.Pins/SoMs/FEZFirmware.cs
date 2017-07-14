@@ -3,6 +3,7 @@
     public static class FEZFirmware {
         /// <summary>GPIO pin definitions.</summary>
         public static class GpioPin {
+            /// <summary>API id.</summary>
             public const string Id = STM32F4.GpioPin.Id;
 
             /// <summary>GPIO pin.</summary>
@@ -105,6 +106,7 @@
 
         /// <summary>ADC channel definitions.</summary>
         public static class AdcChannel {
+            /// <summary>API id.</summary>
             public const string Id = STM32F4.AdcChannel.Id;
 
             /// <summary>ADC channel.</summary>
@@ -145,6 +147,7 @@
         public static class PwmPin {
             /// <summary>PWM controller.</summary>
             public static class Controller1 {
+                /// <summary>API id.</summary>
                 public const string Id = STM32F4.Timer.Tim1;
 
                 /// <summary>PWM pin.</summary>
@@ -157,6 +160,7 @@
 
             /// <summary>PWM controller.</summary>
             public static class Controller2 {
+                /// <summary>API id.</summary>
                 public const string Id = STM32F4.Timer.Tim2;
 
                 /// <summary>PWM pin.</summary>
@@ -171,6 +175,7 @@
 
             /// <summary>PWM controller.</summary>
             public static class Controller3 {
+                /// <summary>API id.</summary>
                 public const string Id = STM32F4.Timer.Tim3;
 
                 /// <summary>PWM pin.</summary>
@@ -185,6 +190,7 @@
 
             /// <summary>PWM controller.</summary>
             public static class Controller4 {
+                /// <summary>API id.</summary>
                 public const string Id = STM32F4.Timer.Tim4;
 
                 /// <summary>PWM pin.</summary>

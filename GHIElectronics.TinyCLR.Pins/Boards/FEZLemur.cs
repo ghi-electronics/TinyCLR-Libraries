@@ -3,6 +3,7 @@
     public static class FEZLemur {
         /// <summary>GPIO pin definitions.</summary>
         public static class GpioPin {
+            /// <summary>API id.</summary>
             public const string Id = G30.GpioPin.Id;
 
             /// <summary>GPIO pin for LED1.</summary>
@@ -89,6 +90,7 @@
 
         /// <summary>ADC channel definitions.</summary>
         public static class AdcChannel {
+            /// <summary>API id.</summary>
             public const string Id = G30.AdcChannel.Id;
 
             /// <summary>ADC channel.</summary>
@@ -129,6 +131,7 @@
         public static class PwmPin {
             /// <summary>PWM controller.</summary>
             public static class Controller1 {
+                /// <summary>API id.</summary>
                 public const string Id = G30.PwmPin.Controller1.Id;
 
                 /// <summary>PWM pin.</summary>
@@ -141,6 +144,7 @@
 
             /// <summary>PWM controller.</summary>
             public static class Controller2 {
+                /// <summary>API id.</summary>
                 public const string Id = G30.PwmPin.Controller2.Id;
 
                 /// <summary>PWM pin.</summary>
@@ -155,6 +159,7 @@
 
             /// <summary>PWM controller.</summary>
             public static class Controller3 {
+                /// <summary>API id.</summary>
                 public const string Id = G30.PwmPin.Controller3.Id;
 
                 /// <summary>PWM pin.</summary>
@@ -165,6 +170,7 @@
 
             /// <summary>PWM controller.</summary>
             public static class Controller4 {
+                /// <summary>API id.</summary>
                 public const string Id = G30.PwmPin.Controller4.Id;
 
                 /// <summary>PWM pin.</summary>
