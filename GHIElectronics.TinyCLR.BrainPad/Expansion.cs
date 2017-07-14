@@ -108,7 +108,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
         }
 
         public class SerialPortDef {
-            public string Id { get; } = Pins.BrainPad.UartPort.Uart1;
+            public string Id { get; } = Pins.BrainPad.UartPort.Usart1;
 
             [EditorBrowsable(EditorBrowsableState.Never)]
             public override bool Equals(object obj) => base.Equals(obj);

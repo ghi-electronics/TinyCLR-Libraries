@@ -459,21 +459,21 @@
 
         /// <summary>UART port definitions.</summary>
         public static class UartPort {
-            /// <summary>Uart port.</summary>
-            public const string Uart1 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.UartProvider\\0";
-            /// <summary>Uart port.</summary>
-            public const string Uart2 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.UartProvider\\1";
-            /// <summary>Uart port.</summary>
-            public const string Uart3 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.UartProvider\\2";
-            /// <summary>Uart port.</summary>
+            /// <summary>UART port.</summary>
+            public const string Usart1 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.UartProvider\\0";
+            /// <summary>UART port.</summary>
+            public const string Usart2 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.UartProvider\\1";
+            /// <summary>UART port.</summary>
+            public const string Usart3 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.UartProvider\\2";
+            /// <summary>UART port.</summary>
             public const string Uart4 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.UartProvider\\3";
-            /// <summary>Uart port.</summary>
+            /// <summary>UART port.</summary>
             public const string Uart5 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.UartProvider\\4";
-            /// <summary>Uart port.</summary>
+            /// <summary>UART port.</summary>
             public const string Uart6 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.UartProvider\\5";
-            /// <summary>Uart port.</summary>
+            /// <summary>UART port.</summary>
             public const string Uart7 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.UartProvider\\6";
-            /// <summary>Uart port.</summary>
+            /// <summary>UART port.</summary>
             public const string Uart8 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.UartProvider\\7";
         }
 
@@ -514,7 +514,7 @@
         /// <summary>Display definitions.</summary>
         public static class Display {
             /// <summary>API id.</summary>
-            public const string Id = "GHIElectronics.TinyCLR.NativeApis.STM32F4.DisplayProvider\\0";
+            public const string Lcd = "GHIElectronics.TinyCLR.NativeApis.STM32F4.DisplayProvider\\0";
         }
     }
 }

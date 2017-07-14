@@ -297,14 +297,14 @@
 
         /// <summary>UART port definitions.</summary>
         public static class UartPort {
-            /// <summary>Uart port on D1 (TX) and D0 (RX).</summary>
-            public const string Uart1 = G80.UartPort.Uart1;
-            /// <summary>Uart port on D39 (TX), D37 (RX), D41 (CTS), and D43 (RTS).</summary>
-            public const string Uart2 = G80.UartPort.Uart2;
-            /// <summary>Uart port on D42 (TX), D40 (RX), D44 (CTS), and D46 (RTS).</summary>
-            public const string Uart3 = G80.UartPort.Uart3;
-            /// <summary>Uart port on D33 (TX) and D31 (RX).</summary>
-            public const string Uart4 = G80.UartPort.Uart4;
+            /// <summary>UART port on D1 (TX) and D0 (RX).</summary>
+            public const string Usart1 = G80.UartPort.Usart1;
+            /// <summary>UART port on D39 (TX), D37 (RX), D41 (CTS), and D43 (RTS).</summary>
+            public const string Usart2 = G80.UartPort.Usart2;
+            /// <summary>UART port on D42 (TX), D40 (RX), D44 (CTS), and D46 (RTS).</summary>
+            public const string Usart3 = G80.UartPort.Usart3;
+            /// <summary>UART port on D33 (TX) and D31 (RX).</summary>
+            public const string Usart4 = G80.UartPort.Uart4;
         }
 
         /// <summary>I2C bus definitions.</summary>

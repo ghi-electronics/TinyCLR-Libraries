@@ -206,10 +206,10 @@
 
         /// <summary>UART port definitions.</summary>
         public static class UartPort {
-            /// <summary>Uart port on PA9 (TX) and PA10 (RX).</summary>
-            public const string Uart1 = STM32F4.UartPort.Uart1;
-            /// <summary>Uart port on PA2 (TX), PA3 (RX), PA0 (CTS), and PA1 (RTS).</summary>
-            public const string Uart2 = STM32F4.UartPort.Uart2;
+            /// <summary>UART port on PA9 (TX) and PA10 (RX).</summary>
+            public const string Usart1 = STM32F4.UartPort.Usart1;
+            /// <summary>UART port on PA2 (TX), PA3 (RX), PA0 (CTS), and PA1 (RTS).</summary>
+            public const string Usart2 = STM32F4.UartPort.Usart2;
         }
 
         /// <summary>I2C bus definitions.</summary>

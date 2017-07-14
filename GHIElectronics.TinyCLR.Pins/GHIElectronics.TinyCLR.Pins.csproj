@@ -43,7 +43,7 @@
     <Compile Include="SoMs\G120.cs" />
     <Compile Include="SoMs\G120E.cs" />
     <Compile Include="Boards\FEZ.cs" />
-    <Compile Include="SoMs\FEZFirmware.cs" />
+    <Compile Include="SoMs\FEZCLR.cs" />
     <Compile Include="SoMs\G30.cs" />
     <Compile Include="SoMs\G400D.cs" />
     <Compile Include="SoMs\G400S.cs" />

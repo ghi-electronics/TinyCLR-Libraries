@@ -205,32 +205,32 @@ namespace GHIElectronics.TinyCLR.Pins {
 
         /// <summary>UART port definitions.</summary>
         public static class UartPort {
-            /// <summary>Uart port on D1 (TX) and D0 (RX).</summary>
+            /// <summary>UART port on D1 (TX) and D0 (RX).</summary>
+            public const string Uart0 = G120.UartPort.Uart0;
+            /// <summary>UART port on D29 (TX), D28 (RX), D12 (CTS), and D60 (RTS).</summary>
             public const string Uart1 = G120.UartPort.Uart1;
-            /// <summary>Uart port on D29 (TX), D28 (RX), D12 (CTS), and D60 (RTS).</summary>
+            /// <summary>UART port on D21 (TX) and D20 (RX).</summary>
             public const string Uart2 = G120.UartPort.Uart2;
-            /// <summary>Uart port on D21 (TX) and D20 (RX).</summary>
+            /// <summary>UART port on D59 (TX) and D61 (RX).</summary>
             public const string Uart3 = G120.UartPort.Uart3;
-            /// <summary>Uart port on D59 (TX) and D61 (RX).</summary>
-            public const string Uart4 = G120.UartPort.Uart4;
-            /// <summary>Uart port on D49 (TX) and D37 (RX).</summary>
-            public const string Uart5 = G120.UartPort.Uart5;
+            /// <summary>UART port on D49 (TX) and D37 (RX).</summary>
+            public const string Usart4 = G120.UartPort.Usart4;
         }
 
         /// <summary>SPI bus definitions.</summary>
         public static class SpiBus {
             /// <summary>SPI bus on D11 (MOSI), D12 (MISO), and D13 (SCK).</summary>
-            public const string Spi1 = G120.SpiBus.Spi1;
+            public const string Spi0 = G120.SpiBus.Spi0;
             /// <summary>SPI bus on D57 (MOSI), D55 (MISO), and D53 (SCK).</summary>
-            public const string Spi2 = G120.SpiBus.Spi2;
+            public const string Spi1 = G120.SpiBus.Spi1;
             /// <summary>SPI bus on D27 (MOSI), D26 (MISO), and D25 (SCK).</summary>
-            public const string Spi3 = G120.SpiBus.Spi3;
+            public const string Spi2 = G120.SpiBus.Spi2;
         }
 
         /// <summary>I2C bus definitions.</summary>
         public static class I2cBus {
             /// <summary>I2C bus on D2 (SDA) and D3 (SCL).</summary>
-            public const string I2c1 = G120.I2cBus.I2c1;
+            public const string I2c0 = G120.I2cBus.I2c0;
         }
 
         /// <summary>CAN bus definitions.</summary>

@@ -186,10 +186,10 @@
 
         /// <summary>UART port definitions.</summary>
         public static class UartPort {
-            /// <summary>Uart port on D1 (TX) and D0 (RX).</summary>
-            public const string Uart1 = G30.UartPort.Uart1;
-            /// <summary>Uart port on D9 (TX), D10 (RX), D6 (CTS), and D5 (RTS).</summary>
-            public const string Uart2 = G30.UartPort.Uart2;
+            /// <summary>UART port on D1 (TX) and D0 (RX).</summary>
+            public const string Usart1 = G30.UartPort.Usart1;
+            /// <summary>UART port on D9 (TX), D10 (RX), D6 (CTS), and D5 (RTS).</summary>
+            public const string Usart2 = G30.UartPort.Usart2;
         }
 
         /// <summary>I2C bus definitions.</summary>
