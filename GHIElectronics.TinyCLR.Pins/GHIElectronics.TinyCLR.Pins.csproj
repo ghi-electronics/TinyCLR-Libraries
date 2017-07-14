@@ -38,6 +38,8 @@
     <Compile Include="Boards\FEZCobraIII.cs" />
     <Compile Include="Boards\FEZLemur.cs" />
     <Compile Include="Boards\FEZPandaIII.cs" />
+    <Compile Include="Ports\LPC178.cs" />
+    <Compile Include="Ports\AT91.cs" />
     <Compile Include="SoMs\G120.cs" />
     <Compile Include="SoMs\G120E.cs" />
     <Compile Include="Boards\FEZ.cs" />
