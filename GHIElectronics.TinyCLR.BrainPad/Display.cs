@@ -151,7 +151,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
         public int Height { get; } = 64;
 
         private byte[] vram;
-
+#if SUPPORT_ORIGINAL_BRAINPAD
         private void InitN18() {
             WriteCommand(0x11); //Sleep exit
             Thread.Sleep(200);
@@ -228,17 +228,19 @@ namespace GHIElectronics.TinyCLR.BrainPad {
             WriteCommand(0x29); //Display on
             Thread.Sleep(50);
         }
-
+#endif
         public Display() {
 
             switch (Board.BoardType) {
 #if SUPPORT_ORIGINAL_BRAINPAD
                 case BoardType.Original:
-                    this.vram = new byte[128 * 64 * 2];
+                    // we will not allocate memory unless the display is used
+                    //this.vram= new byte[128 * 64 * 2];
+
                     var GPIO = GpioController.GetDefault();
-                    this.controlPin = GPIO.OpenPin(G30.GpioPin.PC5);// new OutputPort(Peripherals.Display.Control, false);
-                    this.resetPin = GPIO.OpenPin(G30.GpioPin.PC4); //new OutputPort(Peripherals.Display.Reset, false);
-                    this.backlightPin = GPIO.OpenPin(G30.GpioPin.PA4); //new OutputPort(Peripherals.Display.Backlight, true);
+                    this.controlPin = GPIO.OpenPin(G30.GpioPin.PC5);
+                    this.resetPin = GPIO.OpenPin(G30.GpioPin.PC4);
+                    this.backlightPin = GPIO.OpenPin(G30.GpioPin.PA4);
 
                     this.controlPin.SetDriveMode(GpioPinDriveMode.Output);
                     this.resetPin.SetDriveMode(GpioPinDriveMode.Output);
@@ -246,9 +248,9 @@ namespace GHIElectronics.TinyCLR.BrainPad {
                     this.backlightPin.Write(GpioPinValue.High);
 
                     this.resetPin.Write(GpioPinValue.Low);
-                    Thread.Sleep(300);
+                    Thread.Sleep(30);
                     this.resetPin.Write(GpioPinValue.High);
-                    Thread.Sleep(1000);
+                    Thread.Sleep(100);
 
                     var settings = new SpiConnectionSettings(G30.GpioPin.PB12) {
                         Mode = SpiMode.Mode3,
@@ -258,11 +260,12 @@ namespace GHIElectronics.TinyCLR.BrainPad {
                     this.spi = SpiDevice.FromId(G30.SpiBus.Spi2, settings);
                     InitN18();
                     InitN18();
+                    // clear the entire screen
                     SetClip(0, 0, 160, 128);
                     WriteCommand(0x2C);
                     this.controlPin.Write(GpioPinValue.High);
-                    for (var i = 0; i < 3; i++)
-                        this.spi.Write(this.vram);
+                    for (var i = 0; i < 160 * 128 * 2 / 16; i++)
+                        this.spi.Write(buffer16);
 
                     break;
 #endif
@@ -335,44 +338,22 @@ namespace GHIElectronics.TinyCLR.BrainPad {
         }
 
         public void ShowOnScreen() {
-#if SUPPORT_ORIGINAL_BRAINPAD
+
             switch (Board.BoardType) {
+#if SUPPORT_ORIGINAL_BRAINPAD
                 case BoardType.Original:
+                    if (this.vram == null)
+                        return;
                     SetClip((160 - 128) / 2, (128 - 64) / 2, 128, 64);
                     WriteCommand(0x2C);
-                    // data
                     this.controlPin.Write(GpioPinValue.High);
                     this.spi.Write(this.vram);
-                    /*
-                    for (int y = 0; y < 64 / 8; y++)
-                    {
-                        for (int x = 0; x < 128; x++)
-                        {
-                            SetClip(x, y*8, 1, 8);
-                            WriteCommand(0x2C);
-                            // data
-                            controlPin.Write(GpioPinValue.High);
-
-                            buffer16[0] = buffer16[1] = (byte)(((this.vram[x+y*128 + 1] & 0x01) > 0) ? 0xff : 0x00);
-                            buffer16[2] = buffer16[3] = (byte)(((this.vram[x + y * 128 + 1] & 0x02) > 0) ? 0xff : 0x00);
-                            buffer16[4] = buffer16[5] = (byte)(((this.vram[x + y * 128 + 1] & 0x04) > 0) ? 0xff : 0x00);
-                            buffer16[6] = buffer16[7] = (byte)(((this.vram[x + y * 128 + 1] & 0x08) > 0) ? 0xff : 0x00);
-                            buffer16[8] = buffer16[9] = (byte)(((this.vram[x + y * 128 + 1] & 0x10) > 0) ? 0xff : 0x00);
-                            buffer16[10] = buffer16[11] = (byte)(((this.vram[x + y * 128 + 1] & 0x20) > 0) ? 0xff : 0x00);
-                            buffer16[12] = buffer16[13] = (byte)(((this.vram[x + y * 128 + 1] & 0x40) > 0) ? 0xff : 0x00);
-                            buffer16[14] = buffer16[15] = (byte)(((this.vram[x + y * 128 + 1] & 0x80) > 0) ? 0xff : 0x00);
-
-                            spi.Write(buffer16);
-                        }
-                    }*/
                     break;
+#endif
                 case BoardType.BP2:
                     this.i2cDevice.Write(this.vram);
                     break;
             }
-#else
-            this.i2cDevice.Write(this.vram);
-#endif
         }
 
         private void Point(int x, int y, bool set) {
@@ -384,6 +365,9 @@ namespace GHIElectronics.TinyCLR.BrainPad {
             switch (Board.BoardType) {
 #if SUPPORT_ORIGINAL_BRAINPAD
                 case BoardType.Original:
+                    if (this.vram == null)
+                        this.vram = new byte[128 * 64 * 2];
+
                     if (set) {
                         this.vram[(x * 2) + (y * 128 * 2)] = 0x0;
                         this.vram[(x * 2) + (y * 128 * 2) + 1] = 0x1F;
@@ -426,7 +410,8 @@ namespace GHIElectronics.TinyCLR.BrainPad {
         /// Clears the Display.
         /// </summary>
         public void ClearScreen() {
-
+            if (this.vram == null)
+                return;
             Array.Clear(this.vram, 0, this.vram.Length);
             if (Board.BoardType == BoardType.BP2)
                 this.vram[0] = 0x40;
