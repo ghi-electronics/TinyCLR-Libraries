@@ -44,32 +44,32 @@ using System.ComponentModel;
 using System.Threading;
 
 namespace GHIElectronics.TinyCLR.BrainPad {
-    public class Display {
-        public class Picture {
-            public int Height { get; }
-            public int Width { get; }
-            internal byte[] Data { get; }
+    public class Picture {
+        public int Height { get; }
+        public int Width { get; }
+        internal byte[] Data { get; }
 
-            internal Picture(int width, int height, byte[] data, int scale) {
-                if (width * height != data.Length) throw new Exception("Incorrect picture data size");
-                if (scale <= 0) throw new Exception("Scale can't be zero or negative.");
+        internal Picture(int width, int height, byte[] data, int scale) {
+            if (width * height != data.Length) throw new Exception("Incorrect picture data size");
+            if (scale <= 0) throw new Exception("Scale can't be zero or negative.");
 
-                this.Height = height * scale;
-                this.Width = width * scale;
+            this.Height = height * scale;
+            this.Width = width * scale;
 
-                if (scale == 1) {
-                    this.Data = data;
-                }
-                else {
-                    this.Data = new byte[this.Width * this.Height];
+            if (scale == 1) {
+                this.Data = data;
+            }
+            else {
+                this.Data = new byte[this.Width * this.Height];
 
-                    for (var x = 0; x < this.Width; x++)
-                        for (var y = 0; y < this.Height; y++)
-                            this.Data[y * this.Width + x] = data[y / scale * width + x / scale];
-                }
+                for (var x = 0; x < this.Width; x++)
+                    for (var y = 0; y < this.Height; y++)
+                        this.Data[y * this.Width + x] = data[y / scale * width + x / scale];
             }
         }
+    }
 
+    public class Display {
         private enum Transform {
             FlipHorizontal,
             FlipVertical,
