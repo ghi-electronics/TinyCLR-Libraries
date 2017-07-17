@@ -35,22 +35,22 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Boards\FEZCobraIII.cs" />
-    <Compile Include="Boards\FEZLemur.cs" />
-    <Compile Include="Boards\FEZPandaIII.cs" />
-    <Compile Include="Processors\LPC178.cs" />
-    <Compile Include="Processors\AT91.cs" />
-    <Compile Include="Firmwares\G120.cs" />
-    <Compile Include="Firmwares\G120E.cs" />
-    <Compile Include="Boards\FEZ.cs" />
-    <Compile Include="Firmwares\FEZCLR.cs" />
-    <Compile Include="Firmwares\G30.cs" />
-    <Compile Include="Firmwares\G400D.cs" />
-    <Compile Include="Firmwares\G400S.cs" />
-    <Compile Include="Firmwares\G80.cs" />
-    <Compile Include="Boards\BrainPad.cs" />
+    <Compile Include="FEZCobraIII.cs" />
+    <Compile Include="FEZLemur.cs" />
+    <Compile Include="FEZPandaIII.cs" />
+    <Compile Include="LPC178.cs" />
+    <Compile Include="AT91.cs" />
+    <Compile Include="G120.cs" />
+    <Compile Include="G120E.cs" />
+    <Compile Include="FEZ.cs" />
+    <Compile Include="FEZCLR.cs" />
+    <Compile Include="G30.cs" />
+    <Compile Include="G400D.cs" />
+    <Compile Include="G400S.cs" />
+    <Compile Include="G80.cs" />
+    <Compile Include="BrainPad.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Processors\STM32F4.cs" />
+    <Compile Include="STM32F4.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="GHIElectronics.TinyCLR.Pins.nuspec" />
