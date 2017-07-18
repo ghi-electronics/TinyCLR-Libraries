@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -55,6 +56,7 @@ namespace GHIElectronics.TinyCLR.Devices.Spi.Provider {
 
     public class SpiProvider : ISpiProvider {
         private ISpiControllerProvider[] controllers;
+        private static Hashtable providers = new Hashtable();
 
         public string Name { get; }
 
@@ -70,17 +72,27 @@ namespace GHIElectronics.TinyCLR.Devices.Spi.Provider {
                 this.controllers[i] = new DefaultSpiControllerProvider(api.Implementation[i]);
         }
 
-        public static ISpiProvider FromId(string id) => new SpiProvider(id);
+        public static ISpiProvider FromId(string id) {
+            if (SpiProvider.providers.Contains(id))
+                return (ISpiProvider)SpiProvider.providers[id];
+
+            var res = new SpiProvider(id);
+
+            SpiProvider.providers[id] = res;
+
+            return res;
+        }
     }
 
     internal class DefaultSpiControllerProvider : ISpiControllerProvider {
 #pragma warning disable CS0169
         private readonly IntPtr nativeProvider;
 #pragma warning restore CS0169
+        private bool first = true;
 
         internal DefaultSpiControllerProvider(IntPtr nativeProvider) => this.nativeProvider = nativeProvider;
 
-        public ISpiDeviceProvider GetDeviceProvider(ProviderSpiConnectionSettings settings) => new DefaultSpiDeviceProvider(this.nativeProvider, settings);
+        public ISpiDeviceProvider GetDeviceProvider(ProviderSpiConnectionSettings settings) { var res = new DefaultSpiDeviceProvider(this.first, this.nativeProvider, settings); this.first = false; return res; }
     }
 
     internal sealed class DefaultSpiDeviceProvider : ISpiDeviceProvider {
@@ -101,13 +113,14 @@ namespace GHIElectronics.TinyCLR.Devices.Spi.Provider {
         /// </summary>
         /// <param name="deviceId">The unique name of the device.</param>
         /// <param name="settings">Settings to open the device with.</param>
-        internal DefaultSpiDeviceProvider(IntPtr nativeProvider, ProviderSpiConnectionSettings settings) {
+        internal DefaultSpiDeviceProvider(bool first, IntPtr nativeProvider, ProviderSpiConnectionSettings settings) {
             // Device ID must match the index in device information.
             // We don't have many buses, so just hard-code the valid ones instead of parsing.
             this.nativeProvider = nativeProvider;
             this.m_settings = new SpiConnectionSettings(settings);
 
-            InitNative();
+            if (first)
+                InitNative();
         }
 
         ~DefaultSpiDeviceProvider() {
