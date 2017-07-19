@@ -38,6 +38,7 @@
     <Compile Include="FEZCobraIII.cs" />
     <Compile Include="FEZLemur.cs" />
     <Compile Include="FEZPandaIII.cs" />
+    <Compile Include="FEZSpiderII.cs" />
     <Compile Include="LPC178.cs" />
     <Compile Include="AT91.cs" />
     <Compile Include="G120.cs" />
