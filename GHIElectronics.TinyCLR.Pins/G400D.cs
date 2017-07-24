@@ -260,9 +260,9 @@
             public const string Uart1 = AT91.UartPort.Uart1;
         }
 
-        /// <summary>TWi bus definitions.</summary>
+        /// <summary>TWI bus definitions.</summary>
         public static class TwiBus {
-            /// <summary>TWi bus on PA30 (SDA) and PA31 (SCL).</summary>
+            /// <summary>TWI bus on PA30 (SDA) and PA31 (SCL).</summary>
             public const string Twi0 = AT91.TwiBus.Twi0;
         }
 
