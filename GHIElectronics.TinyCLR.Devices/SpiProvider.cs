@@ -85,20 +85,43 @@ namespace GHIElectronics.TinyCLR.Devices.Spi.Provider {
     }
 
     internal class DefaultSpiControllerProvider : ISpiControllerProvider {
-#pragma warning disable CS0169
         private readonly IntPtr nativeProvider;
-#pragma warning restore CS0169
-        private bool first = true;
+        private int created;
+        private bool isExclusive;
 
-        internal DefaultSpiControllerProvider(IntPtr nativeProvider) => this.nativeProvider = nativeProvider;
+        internal DefaultSpiControllerProvider(IntPtr nativeProvider) {
+            this.nativeProvider = nativeProvider;
+            this.created = 0;
+            this.isExclusive = false;
+        }
 
-        public ISpiDeviceProvider GetDeviceProvider(ProviderSpiConnectionSettings settings) { var res = new DefaultSpiDeviceProvider(this.first, this.nativeProvider, settings); this.first = false; return res; }
+        public void Release(DefaultSpiDeviceProvider provider) {
+            if (--this.created == 0)
+                this.ReleaseNative();
+        }
+
+        public ISpiDeviceProvider GetDeviceProvider(ProviderSpiConnectionSettings settings) {
+            if (settings.SharingMode == ProviderSpiSharingMode.Exclusive && this.created > 0) throw new InvalidOperationException("Sharing conflict.");
+            if (settings.SharingMode == ProviderSpiSharingMode.Shared && this.isExclusive) throw new InvalidOperationException("Sharing conflict.");
+
+            this.isExclusive = settings.SharingMode == ProviderSpiSharingMode.Exclusive;
+
+            if (this.created++ == 0)
+                this.AcquireNative();
+
+            return new DefaultSpiDeviceProvider(this, this.nativeProvider, settings);
+        }
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        extern private void AcquireNative();
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        extern private void ReleaseNative();
     }
 
     internal sealed class DefaultSpiDeviceProvider : ISpiDeviceProvider {
-#pragma warning disable CS0169
-        private IntPtr nativeProvider;
-#pragma warning restore CS0169
+        private readonly IntPtr nativeProvider;
+        private readonly DefaultSpiControllerProvider parent;
 
         private readonly SpiConnectionSettings m_settings;
 
@@ -113,14 +136,10 @@ namespace GHIElectronics.TinyCLR.Devices.Spi.Provider {
         /// </summary>
         /// <param name="deviceId">The unique name of the device.</param>
         /// <param name="settings">Settings to open the device with.</param>
-        internal DefaultSpiDeviceProvider(bool first, IntPtr nativeProvider, ProviderSpiConnectionSettings settings) {
-            // Device ID must match the index in device information.
-            // We don't have many buses, so just hard-code the valid ones instead of parsing.
+        internal DefaultSpiDeviceProvider(DefaultSpiControllerProvider parent, IntPtr nativeProvider, ProviderSpiConnectionSettings settings) {
             this.nativeProvider = nativeProvider;
+            this.parent = parent;
             this.m_settings = new SpiConnectionSettings(settings);
-
-            if (first)
-                InitNative();
         }
 
         ~DefaultSpiDeviceProvider() {
@@ -219,12 +238,6 @@ namespace GHIElectronics.TinyCLR.Devices.Spi.Provider {
         }
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        extern private void InitNative();
-
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        extern private void DisposeNative();
-
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
         extern private void TransferFullDuplexInternal(byte[] writeBuffer, byte[] readBuffer);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
@@ -242,7 +255,7 @@ namespace GHIElectronics.TinyCLR.Devices.Spi.Provider {
         /// <param name="disposing">True if called from Dispose, false if called from the finalizer.</param>
         private void Dispose(bool disposing) {
             if (disposing) {
-                DisposeNative();
+                this.parent.Release(this);
             }
         }
     }

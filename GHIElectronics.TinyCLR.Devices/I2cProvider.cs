@@ -87,32 +87,53 @@ namespace GHIElectronics.TinyCLR.Devices.I2c.Provider {
     }
 
     internal class DefaultI2cControllerProvider : II2cControllerProvider {
-#pragma warning disable CS0169
         private readonly IntPtr nativeProvider;
-#pragma warning restore CS0169
-        private bool first = true;
+        private int created;
+        private bool isExclusive;
 
-        internal DefaultI2cControllerProvider(IntPtr nativeProvider) => this.nativeProvider = nativeProvider;
+        internal DefaultI2cControllerProvider(IntPtr nativeProvider) {
+            this.nativeProvider = nativeProvider;
+            this.created = 0;
+            this.isExclusive = false;
+        }
 
-        public II2cDeviceProvider GetDeviceProvider(ProviderI2cConnectionSettings settings) { var res = new DefaultI2cDeviceProvider(this.first, this.nativeProvider, settings); this.first = false; return res; }
+        public void Release(DefaultI2cDeviceProvider provider) {
+            if (--this.created == 0)
+                this.ReleaseNative();
+        }
+
+        public II2cDeviceProvider GetDeviceProvider(ProviderI2cConnectionSettings settings) {
+            if (settings.SharingMode == ProviderI2cSharingMode.Exclusive && this.created > 0) throw new InvalidOperationException("Sharing conflict.");
+            if (settings.SharingMode == ProviderI2cSharingMode.Shared && this.isExclusive) throw new InvalidOperationException("Sharing conflict.");
+
+            this.isExclusive = settings.SharingMode == ProviderI2cSharingMode.Exclusive;
+
+            if (this.created++ == 0)
+                this.AcquireNative();
+
+            return new DefaultI2cDeviceProvider(this, this.nativeProvider, settings);
+        }
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        extern private void AcquireNative();
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        extern private void ReleaseNative();
     }
 
     internal sealed class DefaultI2cDeviceProvider : II2cDeviceProvider {
-#pragma warning disable CS0169
-        private IntPtr nativeProvider;
-#pragma warning restore CS0169
+        private readonly IntPtr nativeProvider;
+        private readonly DefaultI2cControllerProvider parent;
 
         private bool m_disposed = false;
         private I2cConnectionSettings m_settings;
 
         public string DeviceId => "";
 
-        internal DefaultI2cDeviceProvider(bool first, IntPtr nativeProvider, ProviderI2cConnectionSettings settings) {
+        internal DefaultI2cDeviceProvider(DefaultI2cControllerProvider parent, IntPtr nativeProvider, ProviderI2cConnectionSettings settings) {
             this.nativeProvider = nativeProvider;
+            this.parent = parent;
             this.m_settings = new I2cConnectionSettings(settings);
-
-            if (first)
-                InitNative();
         }
 
         ~DefaultI2cDeviceProvider() {
@@ -129,10 +150,9 @@ namespace GHIElectronics.TinyCLR.Devices.I2c.Provider {
 
         private void Dispose(bool disposing) {
             if (disposing) {
-                DisposeNative();
+                this.parent.Release(this);
             }
         }
-
 
         public void Read(byte[] buffer) => this.ReadPartial(buffer);
         public void Write(byte[] buffer) => this.WritePartial(buffer);
@@ -162,12 +182,6 @@ namespace GHIElectronics.TinyCLR.Devices.I2c.Provider {
 
             return new ProviderI2cTransferResult { BytesTransferred = transferred, Status = status };
         }
-
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        extern private void InitNative();
-
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        extern private void DisposeNative();
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private extern void ReadInternal(byte[] buffer, out uint transferred, out ProviderI2cTransferStatus status);
