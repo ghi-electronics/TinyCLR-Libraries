@@ -13,7 +13,8 @@ namespace GHIElectronics.TinyCLR.BrainPad {
         private byte[] buffer2 = new byte[2];
         public Accelerometer() {
             var settings = new I2cConnectionSettings(0x1C) {
-                BusSpeed = I2cBusSpeed.FastMode
+                BusSpeed = I2cBusSpeed.FastMode,
+                SharingMode = I2cSharingMode.Shared
             };
             this.device = I2cDevice.FromId(Board.BoardType == BoardType.BP2 ? FEZCLR.I2cBus.I2c1 : G30.I2cBus.I2c1, settings);
             WriteRegister(0x2A, 0x01);
