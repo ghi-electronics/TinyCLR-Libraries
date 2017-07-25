@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -64,6 +65,7 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio.Provider {
 
     public class GpioProvider : IGpioProvider {
         private IGpioControllerProvider[] controllers;
+        private static Hashtable providers = new Hashtable();
 
         public string Name { get; }
 
@@ -76,25 +78,35 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio.Provider {
             this.controllers = new IGpioControllerProvider[api.Count];
 
             for (var i = 0U; i < this.controllers.Length; i++)
-                this.controllers[i] = new DefaultGpioControllerProvider(name, i, api);
+                this.controllers[i] = new DefaultGpioControllerProvider(name, i, api.Implementation[i]);
         }
 
-        public static IGpioProvider FromId(string id) => new GpioProvider(id);
+        public static IGpioProvider FromId(string id) {
+            if (GpioProvider.providers.Contains(id))
+                return (IGpioProvider)GpioProvider.providers[id];
+
+            var res = new GpioProvider(id);
+
+            GpioProvider.providers[id] = res;
+
+            return res;
+        }
     }
 
     internal class DefaultGpioControllerProvider : IGpioControllerProvider {
-#pragma warning disable CS0649
-        private IntPtr nativeProvider;
-#pragma warning restore CS0649
-
+        private readonly IntPtr nativeProvider;
+        private readonly ArrayList exclusivePins;
+        private readonly Hashtable acquiredPins;
         public readonly string Name;
         public readonly uint Index;
 
-        internal DefaultGpioControllerProvider(string name, uint index, Api api) {
+        internal DefaultGpioControllerProvider(string name, uint index, IntPtr nativeProvider) {
+            this.exclusivePins = new ArrayList();
+            this.acquiredPins = new Hashtable();
             this.Name = name;
             this.Index = index;
 
-            this.nativeProvider = api.Implementation[index];
+            this.nativeProvider = nativeProvider;
         }
 
         public extern int PinCount {
@@ -103,13 +115,43 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio.Provider {
         }
 
         public IGpioPinProvider OpenPinProvider(int pin, ProviderGpioSharingMode sharingMode) {
-            var p = new DefaultGpioPinProvider(this, this.nativeProvider);
-            if (!p.Init(pin)) {
-                throw new InvalidOperationException();
+            if (sharingMode == ProviderGpioSharingMode.Exclusive) {
+                if (this.exclusivePins.Contains(pin)) throw new InvalidOperationException("Sharing conflict.");
+
+                this.exclusivePins.Add(pin);
             }
 
-            return p;
+            if (this.acquiredPins.Contains(pin)) {
+                this.acquiredPins[pin] = ((int)this.acquiredPins[pin]) + 1;
+            }
+            else {
+                this.AcquireNative(pin);
+                this.acquiredPins[pin] = 1;
+            }
+
+            return new DefaultGpioPinProvider(this, pin, this.nativeProvider, sharingMode);
         }
+
+        public void Release(DefaultGpioPinProvider provider) {
+            if (provider.SharingMode == ProviderGpioSharingMode.Exclusive)
+                this.exclusivePins.Remove(provider.PinNumber);
+
+            var cur = (int)this.acquiredPins[provider.PinNumber];
+
+            if (--cur == 0) {
+                this.ReleaseNative(provider.PinNumber);
+                this.acquiredPins.Remove(provider.PinNumber);
+            }
+            else {
+                this.acquiredPins[provider.PinNumber] = cur;
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private extern void AcquireNative(int pinNumber);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private extern void ReleaseNative(int pinNumber);
     }
 
     internal sealed class DefaultGpioPinProvider : IGpioPinProvider {
@@ -125,11 +167,16 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio.Provider {
         private readonly IntPtr nativeProvider;
         private readonly DefaultGpioControllerProvider parent;
 
-        internal DefaultGpioPinProvider(DefaultGpioControllerProvider parent, IntPtr provider) {
+        internal DefaultGpioPinProvider(DefaultGpioControllerProvider parent, int pinNumber, IntPtr provider, ProviderGpioSharingMode sharingMode) {
             if (this.m_lastOutputValue == ProviderGpioPinValue.Low) { } // Silence an unused variable warning.
 
             this.parent = parent;
             this.nativeProvider = provider;
+            this.m_pinNumber = pinNumber;
+
+            this.SharingMode = sharingMode;
+
+            s_eventListener.AddPin(this.parent.Name, this.parent.Index, this);
         }
 
         ~DefaultGpioPinProvider() {
@@ -218,7 +265,7 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio.Provider {
         /// Gets the sharing mode in which the general-purpose I/O (GPIO) pin is open.
         /// </summary>
         /// <value>The sharing mode in which the GPIO pin is open.</value>
-        public ProviderGpioSharingMode SharingMode => ProviderGpioSharingMode.Exclusive;
+        public ProviderGpioSharingMode SharingMode { get; }
 
         /// <summary>
         /// Reads the current value of the general-purpose I/O (GPIO) pin.
@@ -314,21 +361,6 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio.Provider {
         }
 
         /// <summary>
-        /// Binds the pin to a given pin number.
-        /// </summary>
-        /// <param name="pinNumber">Number of the pin to bind this object to.</param>
-        /// <returns>True if the pin was found and reserved; otherwise false.</returns>
-        /// <remarks>If this method throws or returns false, there is no need to dispose the pin. </remarks>
-        internal bool Init(int pinNumber) {
-            var foundPin = InitNative(pinNumber);
-            if (foundPin) {
-                s_eventListener.AddPin(this.parent.Name, this.parent.Index, this);
-            }
-
-            return foundPin;
-        }
-
-        /// <summary>
         /// Handles internal events and re-dispatches them to the publicly subsribed delegates.
         /// </summary>
         /// <param name="edge">The state transition for this event.</param>
@@ -345,20 +377,6 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio.Provider {
         }
 
         /// <summary>
-        /// Initialize the interop components of the pin.
-        /// </summary>
-        /// <param name="pinNumber">The pin number to bind this object to.</param>
-        /// <returns>True if the pin was found and reserved; otherwise false.</returns>
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        extern private bool InitNative(int pinNumber);
-
-        /// <summary>
-        /// Release the interop components of the pin.
-        /// </summary>
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        extern private void DisposeNative();
-
-        /// <summary>
         /// Interop method to set the pin drive mode in hardware.
         /// </summary>
         /// <param name="driveMode">Drive mode to set.</param>
@@ -372,7 +390,7 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio.Provider {
         private void Dispose(bool disposing) {
             if (disposing) {
                 s_eventListener.RemovePin(this.parent.Name, this.parent.Index, this);
-                DisposeNative();
+                this.parent.Release(this);
             }
         }
     }
