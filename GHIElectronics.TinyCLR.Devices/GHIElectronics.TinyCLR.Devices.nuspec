@@ -6,7 +6,7 @@
     <version>0.5.0</version>
     <authors>GHI Electronics, LLC</authors>
     <owners>GHI Electronics, LLC</owners>
-    <projectUrl>https://www.ghielectronics.com/</projectUrl>
+    <projectUrl>http://tinyclr.com/</projectUrl>
     <iconUrl>http://files.ghielectronics.com/downloads/Logos/GHIElectronicsNuGet.png</iconUrl>
     <licenseUrl>http://files.ghielectronics.com/downloads/TinyCLR/License.txt</licenseUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
