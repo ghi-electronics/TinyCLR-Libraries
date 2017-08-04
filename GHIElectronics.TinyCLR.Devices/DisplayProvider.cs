@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -15,6 +16,7 @@ namespace GHIElectronics.TinyCLR.Devices.Display.Provider {
 
     public class DisplayProvider : IDisplayProvider {
         private IDisplayControllerProvider[] controllers;
+        private static Hashtable providers = new Hashtable();
 
         public string Name { get; }
 
@@ -30,7 +32,16 @@ namespace GHIElectronics.TinyCLR.Devices.Display.Provider {
                 this.controllers[i] = new DefaultDisplayControllerProvider(api.Implementation[i]);
         }
 
-        public static IDisplayProvider FromId(string id) => new DisplayProvider(id);
+        public static IDisplayProvider FromId(string id) {
+            if (DisplayProvider.providers.Contains(id))
+                return (IDisplayProvider)DisplayProvider.providers[id];
+
+            var res = new DisplayProvider(id);
+
+            DisplayProvider.providers[id] = res;
+
+            return res;
+        }
     }
 
     internal class DefaultDisplayControllerProvider : IDisplayControllerProvider {
