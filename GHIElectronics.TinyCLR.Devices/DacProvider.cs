@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -31,6 +32,7 @@ namespace GHIElectronics.TinyCLR.Devices.Dac.Provider {
 
     public class DacProvider : IDacProvider {
         private IDacControllerProvider[] controllers;
+        private readonly static Hashtable providers = new Hashtable();
 
         public string Name { get; }
 
@@ -46,7 +48,16 @@ namespace GHIElectronics.TinyCLR.Devices.Dac.Provider {
                 this.controllers[i] = new DefaultDacControllerProvider(api.Implementation[i]);
         }
 
-        public static IDacProvider FromId(string id) => new DacProvider(id);
+        public static IDacProvider FromId(string id) {
+            if (DacProvider.providers.Contains(id))
+                return (IDacProvider)DacProvider.providers[id];
+
+            var res = new DacProvider(id);
+
+            DacProvider.providers[id] = res;
+
+            return res;
+        }
     }
 
     internal class DefaultDacControllerProvider : IDacControllerProvider {
@@ -54,7 +65,13 @@ namespace GHIElectronics.TinyCLR.Devices.Dac.Provider {
         private readonly IntPtr nativeProvider;
 #pragma warning restore CS0169
 
-        internal DefaultDacControllerProvider(IntPtr nativeProvider) => this.nativeProvider = nativeProvider;
+        internal DefaultDacControllerProvider(IntPtr nativeProvider) {
+            this.nativeProvider = nativeProvider;
+
+            this.AcquireNative();
+        }
+
+        ~DefaultDacControllerProvider() => this.ReleaseNative();
 
         public extern int ChannelCount {
             [MethodImpl(MethodImplOptions.InternalCall)]
@@ -84,5 +101,11 @@ namespace GHIElectronics.TinyCLR.Devices.Dac.Provider {
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         public extern void WriteValue(int channel, int value);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        extern private void AcquireNative();
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        extern private void ReleaseNative();
     }
 }

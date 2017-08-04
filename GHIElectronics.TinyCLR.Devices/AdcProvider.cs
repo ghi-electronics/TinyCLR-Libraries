@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -37,6 +38,7 @@ namespace GHIElectronics.TinyCLR.Devices.Adc.Provider {
 
     public class AdcProvider : IAdcProvider {
         private IAdcControllerProvider[] controllers;
+        private readonly static Hashtable providers = new Hashtable();
 
         public string Name { get; }
 
@@ -52,7 +54,16 @@ namespace GHIElectronics.TinyCLR.Devices.Adc.Provider {
                 this.controllers[i] = new DefaultAdcControllerProvider(api.Implementation[i]);
         }
 
-        public static IAdcProvider FromId(string id) => new AdcProvider(id);
+        public static IAdcProvider FromId(string id) {
+            if (AdcProvider.providers.Contains(id))
+                return (IAdcProvider)AdcProvider.providers[id];
+
+            var res = new AdcProvider(id);
+
+            AdcProvider.providers[id] = res;
+
+            return res;
+        }
     }
 
     internal class DefaultAdcControllerProvider : IAdcControllerProvider {
@@ -60,7 +71,13 @@ namespace GHIElectronics.TinyCLR.Devices.Adc.Provider {
         private readonly IntPtr nativeProvider;
 #pragma warning restore CS0169
 
-        internal DefaultAdcControllerProvider(IntPtr nativeProvider) => this.nativeProvider = nativeProvider;
+        internal DefaultAdcControllerProvider(IntPtr nativeProvider) {
+            this.nativeProvider = nativeProvider;
+
+            this.AcquireNative();
+        }
+
+        ~DefaultAdcControllerProvider() => this.ReleaseNative();
 
         public extern ProviderAdcChannelMode ChannelMode {
             [MethodImpl(MethodImplOptions.InternalCall)]
@@ -100,5 +117,11 @@ namespace GHIElectronics.TinyCLR.Devices.Adc.Provider {
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         public extern int ReadValue(int channelNumber);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        extern private void AcquireNative();
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        extern private void ReleaseNative();
     }
 }

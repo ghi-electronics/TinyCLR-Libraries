@@ -65,7 +65,7 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio.Provider {
 
     public class GpioProvider : IGpioProvider {
         private IGpioControllerProvider[] controllers;
-        private static Hashtable providers = new Hashtable();
+        private readonly static Hashtable providers = new Hashtable();
 
         public string Name { get; }
 
@@ -107,7 +107,11 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio.Provider {
             this.Index = index;
 
             this.nativeProvider = nativeProvider;
+
+            this.AcquireNative();
         }
+
+        ~DefaultGpioControllerProvider() => this.ReleaseNative();
 
         public extern int PinCount {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
@@ -146,6 +150,12 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio.Provider {
                 this.acquiredPins[provider.PinNumber] = cur;
             }
         }
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        extern private void AcquireNative();
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        extern private void ReleaseNative();
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private extern void AcquireNative(int pinNumber);

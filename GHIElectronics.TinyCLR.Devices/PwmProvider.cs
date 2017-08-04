@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -35,6 +36,7 @@ namespace GHIElectronics.TinyCLR.Devices.Pwm.Provider {
 
     public class PwmProvider : IPwmProvider {
         private IPwmControllerProvider[] controllers;
+        private readonly static Hashtable providers = new Hashtable();
 
         public string Name { get; }
 
@@ -50,7 +52,16 @@ namespace GHIElectronics.TinyCLR.Devices.Pwm.Provider {
                 this.controllers[i] = new DefaultPwmControllerProvider(api.Implementation[i]);
         }
 
-        public static IPwmProvider FromId(string id) => new PwmProvider(id);
+        public static IPwmProvider FromId(string id) {
+            if (PwmProvider.providers.Contains(id))
+                return (IPwmProvider)PwmProvider.providers[id];
+
+            var res = new PwmProvider(id);
+
+            PwmProvider.providers[id] = res;
+
+            return res;
+        }
     }
 
     internal class DefaultPwmControllerProvider : IPwmControllerProvider {
@@ -58,7 +69,13 @@ namespace GHIElectronics.TinyCLR.Devices.Pwm.Provider {
         private readonly IntPtr nativeProvider;
 #pragma warning restore CS0169
 
-        internal DefaultPwmControllerProvider(IntPtr nativeProvider) => this.nativeProvider = nativeProvider;
+        internal DefaultPwmControllerProvider(IntPtr nativeProvider) {
+            this.nativeProvider = nativeProvider;
+
+            this.AcquireNative();
+        }
+
+        ~DefaultPwmControllerProvider() => this.ReleaseNative();
 
         public double ActualFrequency { get; private set; }
 
@@ -76,6 +93,12 @@ namespace GHIElectronics.TinyCLR.Devices.Pwm.Provider {
             [MethodImpl(MethodImplOptions.InternalCall)]
             get;
         }
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        extern private void AcquireNative();
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        extern private void ReleaseNative();
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         public extern void DisablePin(int pinNumber);
