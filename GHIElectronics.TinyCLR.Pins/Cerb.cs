@@ -61,6 +61,8 @@
             /// <summary>GPIO pin.</summary>
             public const int PB10 = STM32F4.GpioPin.PB10;
             /// <summary>GPIO pin.</summary>
+            public const int PB11 = STM32F4.GpioPin.PB11;
+            /// <summary>GPIO pin.</summary>
             public const int PB12 = STM32F4.GpioPin.PB12;
             /// <summary>GPIO pin.</summary>
             public const int PB13 = STM32F4.GpioPin.PB13;
