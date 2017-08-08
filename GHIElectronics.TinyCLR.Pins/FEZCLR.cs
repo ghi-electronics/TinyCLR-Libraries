@@ -1,5 +1,5 @@
 ﻿namespace GHIElectronics.TinyCLR.Pins {
-    /// <summary>Board definition for the FEZ CLR firmware.</summary>
+    /// <summary>Board definition for the FEZCLR firmware.</summary>
     public static class FEZCLR {
         /// <summary>GPIO pin definitions.</summary>
         public static class GpioPin {
