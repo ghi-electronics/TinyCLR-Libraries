@@ -254,5 +254,13 @@
             /// <summary>SPI bus on PB5 (MOSI), PB4 (MISO), and PB3 (SCK).</summary>
             public const string Spi1 = STM32F4.SpiBus.Spi1;
         }
+
+        /// <summary>CAN bus definitions.</summary>
+        public static class CanBus {
+            /// <summary>CAN bus on PB9 (TX) and PB8 (RX).</summary>
+            public const string Can1 = STM32F4.CanBus.Can1;
+            /// <summary>CAN bus on PB6 (TX) and PB5 (RX).</summary>
+            public const string Can2 = STM32F4.CanBus.Can2;
+        }
     }
 }
