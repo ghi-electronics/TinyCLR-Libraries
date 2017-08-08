@@ -4,184 +4,184 @@
         /// <summary>GPIO pin definitions.</summary>
         public static class GpioPin {
             /// <summary>API id.</summary>
-            public const string Id = LPC178.GpioPin.Id;
+            public const string Id = LPC17.GpioPin.Id;
 
             /// <summary>GPIO pin.</summary>
-            public const int P0_0 = LPC178.GpioPin.P0_0;
+            public const int P0_0 = LPC17.GpioPin.P0_0;
             /// <summary>GPIO pin.</summary>
-            public const int P0_1 = LPC178.GpioPin.P0_1;
+            public const int P0_1 = LPC17.GpioPin.P0_1;
             /// <summary>GPIO pin.</summary>
-            public const int P0_2 = LPC178.GpioPin.P0_2;
+            public const int P0_2 = LPC17.GpioPin.P0_2;
             /// <summary>GPIO pin.</summary>
-            public const int P0_3 = LPC178.GpioPin.P0_3;
+            public const int P0_3 = LPC17.GpioPin.P0_3;
             /// <summary>GPIO pin.</summary>
-            public const int P0_4 = LPC178.GpioPin.P0_4;
+            public const int P0_4 = LPC17.GpioPin.P0_4;
             /// <summary>GPIO pin.</summary>
-            public const int P0_5 = LPC178.GpioPin.P0_5;
+            public const int P0_5 = LPC17.GpioPin.P0_5;
             /// <summary>GPIO pin.</summary>
-            public const int P0_6 = LPC178.GpioPin.P0_6;
+            public const int P0_6 = LPC17.GpioPin.P0_6;
             /// <summary>GPIO pin.</summary>
-            public const int P0_10 = LPC178.GpioPin.P0_10;
+            public const int P0_10 = LPC17.GpioPin.P0_10;
             /// <summary>GPIO pin.</summary>
-            public const int P0_11 = LPC178.GpioPin.P0_11;
+            public const int P0_11 = LPC17.GpioPin.P0_11;
             /// <summary>GPIO pin.</summary>
-            public const int P0_12 = LPC178.GpioPin.P0_12;
+            public const int P0_12 = LPC17.GpioPin.P0_12;
             /// <summary>GPIO pin.</summary>
-            public const int P0_13 = LPC178.GpioPin.P0_13;
+            public const int P0_13 = LPC17.GpioPin.P0_13;
             /// <summary>GPIO pin.</summary>
-            public const int P0_15 = LPC178.GpioPin.P0_15;
+            public const int P0_15 = LPC17.GpioPin.P0_15;
             /// <summary>GPIO pin.</summary>
-            public const int P0_16 = LPC178.GpioPin.P0_16;
+            public const int P0_16 = LPC17.GpioPin.P0_16;
             /// <summary>GPIO pin.</summary>
-            public const int P0_17 = LPC178.GpioPin.P0_17;
+            public const int P0_17 = LPC17.GpioPin.P0_17;
             /// <summary>GPIO pin.</summary>
-            public const int P0_18 = LPC178.GpioPin.P0_18;
+            public const int P0_18 = LPC17.GpioPin.P0_18;
             /// <summary>GPIO pin.</summary>
-            public const int P0_22 = LPC178.GpioPin.P0_22;
+            public const int P0_22 = LPC17.GpioPin.P0_22;
             /// <summary>GPIO pin.</summary>
-            public const int P0_23 = LPC178.GpioPin.P0_23;
+            public const int P0_23 = LPC17.GpioPin.P0_23;
             /// <summary>GPIO pin.</summary>
-            public const int P0_24 = LPC178.GpioPin.P0_24;
+            public const int P0_24 = LPC17.GpioPin.P0_24;
             /// <summary>GPIO pin.</summary>
-            public const int P0_25 = LPC178.GpioPin.P0_25;
+            public const int P0_25 = LPC17.GpioPin.P0_25;
             /// <summary>GPIO pin.</summary>
-            public const int P0_26 = LPC178.GpioPin.P0_26;
+            public const int P0_26 = LPC17.GpioPin.P0_26;
             /// <summary>GPIO pin.</summary>
-            public const int P0_27 = LPC178.GpioPin.P0_27;
+            public const int P0_27 = LPC17.GpioPin.P0_27;
             /// <summary>GPIO pin.</summary>
-            public const int P0_28 = LPC178.GpioPin.P0_28;
+            public const int P0_28 = LPC17.GpioPin.P0_28;
             /// <summary>GPIO pin.</summary>
-            public const int P1_0 = LPC178.GpioPin.P1_0;
+            public const int P1_0 = LPC17.GpioPin.P1_0;
             /// <summary>GPIO pin.</summary>
-            public const int P1_1 = LPC178.GpioPin.P1_1;
+            public const int P1_1 = LPC17.GpioPin.P1_1;
             /// <summary>GPIO pin.</summary>
-            public const int P1_2 = LPC178.GpioPin.P1_2;
+            public const int P1_2 = LPC17.GpioPin.P1_2;
             /// <summary>GPIO pin.</summary>
-            public const int P1_3 = LPC178.GpioPin.P1_3;
+            public const int P1_3 = LPC17.GpioPin.P1_3;
             /// <summary>GPIO pin.</summary>
-            public const int P1_4 = LPC178.GpioPin.P1_4;
+            public const int P1_4 = LPC17.GpioPin.P1_4;
             /// <summary>GPIO pin.</summary>
-            public const int P1_5 = LPC178.GpioPin.P1_5;
+            public const int P1_5 = LPC17.GpioPin.P1_5;
             /// <summary>GPIO pin.</summary>
-            public const int P1_6 = LPC178.GpioPin.P1_6;
+            public const int P1_6 = LPC17.GpioPin.P1_6;
             /// <summary>GPIO pin.</summary>
-            public const int P1_7 = LPC178.GpioPin.P1_7;
+            public const int P1_7 = LPC17.GpioPin.P1_7;
             /// <summary>GPIO pin.</summary>
-            public const int P1_8 = LPC178.GpioPin.P1_8;
+            public const int P1_8 = LPC17.GpioPin.P1_8;
             /// <summary>GPIO pin.</summary>
-            public const int P1_9 = LPC178.GpioPin.P1_9;
+            public const int P1_9 = LPC17.GpioPin.P1_9;
             /// <summary>GPIO pin.</summary>
-            public const int P1_10 = LPC178.GpioPin.P1_10;
+            public const int P1_10 = LPC17.GpioPin.P1_10;
             /// <summary>GPIO pin.</summary>
-            public const int P1_11 = LPC178.GpioPin.P1_11;
+            public const int P1_11 = LPC17.GpioPin.P1_11;
             /// <summary>GPIO pin.</summary>
-            public const int P1_12 = LPC178.GpioPin.P1_12;
+            public const int P1_12 = LPC17.GpioPin.P1_12;
             /// <summary>GPIO pin.</summary>
-            public const int P1_14 = LPC178.GpioPin.P1_14;
+            public const int P1_14 = LPC17.GpioPin.P1_14;
             /// <summary>GPIO pin.</summary>
-            public const int P1_15 = LPC178.GpioPin.P1_15;
+            public const int P1_15 = LPC17.GpioPin.P1_15;
             /// <summary>GPIO pin.</summary>
-            public const int P1_16 = LPC178.GpioPin.P1_16;
+            public const int P1_16 = LPC17.GpioPin.P1_16;
             /// <summary>GPIO pin.</summary>
-            public const int P1_17 = LPC178.GpioPin.P1_17;
+            public const int P1_17 = LPC17.GpioPin.P1_17;
             /// <summary>GPIO pin.</summary>
-            public const int P1_19 = LPC178.GpioPin.P1_19;
+            public const int P1_19 = LPC17.GpioPin.P1_19;
             /// <summary>GPIO pin.</summary>
-            public const int P1_20 = LPC178.GpioPin.P1_20;
+            public const int P1_20 = LPC17.GpioPin.P1_20;
             /// <summary>GPIO pin.</summary>
-            public const int P1_21 = LPC178.GpioPin.P1_21;
+            public const int P1_21 = LPC17.GpioPin.P1_21;
             /// <summary>GPIO pin.</summary>
-            public const int P1_22 = LPC178.GpioPin.P1_22;
+            public const int P1_22 = LPC17.GpioPin.P1_22;
             /// <summary>GPIO pin.</summary>
-            public const int P1_23 = LPC178.GpioPin.P1_23;
+            public const int P1_23 = LPC17.GpioPin.P1_23;
             /// <summary>GPIO pin.</summary>
-            public const int P1_24 = LPC178.GpioPin.P1_24;
+            public const int P1_24 = LPC17.GpioPin.P1_24;
             /// <summary>GPIO pin.</summary>
-            public const int P1_25 = LPC178.GpioPin.P1_25;
+            public const int P1_25 = LPC17.GpioPin.P1_25;
             /// <summary>GPIO pin.</summary>
-            public const int P1_26 = LPC178.GpioPin.P1_26;
+            public const int P1_26 = LPC17.GpioPin.P1_26;
             /// <summary>GPIO pin.</summary>
-            public const int P1_27 = LPC178.GpioPin.P1_27;
+            public const int P1_27 = LPC17.GpioPin.P1_27;
             /// <summary>GPIO pin.</summary>
-            public const int P1_28 = LPC178.GpioPin.P1_28;
+            public const int P1_28 = LPC17.GpioPin.P1_28;
             /// <summary>GPIO pin.</summary>
-            public const int P1_29 = LPC178.GpioPin.P1_29;
+            public const int P1_29 = LPC17.GpioPin.P1_29;
             /// <summary>GPIO pin.</summary>
-            public const int P1_30 = LPC178.GpioPin.P1_30;
+            public const int P1_30 = LPC17.GpioPin.P1_30;
             /// <summary>GPIO pin.</summary>
-            public const int P1_31 = LPC178.GpioPin.P1_31;
+            public const int P1_31 = LPC17.GpioPin.P1_31;
             /// <summary>GPIO pin.</summary>
-            public const int P2_0 = LPC178.GpioPin.P2_0;
+            public const int P2_0 = LPC17.GpioPin.P2_0;
             /// <summary>GPIO pin.</summary>
-            public const int P2_1 = LPC178.GpioPin.P2_1;
+            public const int P2_1 = LPC17.GpioPin.P2_1;
             /// <summary>GPIO pin.</summary>
-            public const int P2_2 = LPC178.GpioPin.P2_2;
+            public const int P2_2 = LPC17.GpioPin.P2_2;
             /// <summary>GPIO pin.</summary>
-            public const int P2_3 = LPC178.GpioPin.P2_3;
+            public const int P2_3 = LPC17.GpioPin.P2_3;
             /// <summary>GPIO pin.</summary>
-            public const int P2_4 = LPC178.GpioPin.P2_4;
+            public const int P2_4 = LPC17.GpioPin.P2_4;
             /// <summary>GPIO pin.</summary>
-            public const int P2_5 = LPC178.GpioPin.P2_5;
+            public const int P2_5 = LPC17.GpioPin.P2_5;
             /// <summary>GPIO pin.</summary>
-            public const int P2_6 = LPC178.GpioPin.P2_6;
+            public const int P2_6 = LPC17.GpioPin.P2_6;
             /// <summary>GPIO pin.</summary>
-            public const int P2_7 = LPC178.GpioPin.P2_7;
+            public const int P2_7 = LPC17.GpioPin.P2_7;
             /// <summary>GPIO pin.</summary>
-            public const int P2_8 = LPC178.GpioPin.P2_8;
+            public const int P2_8 = LPC17.GpioPin.P2_8;
             /// <summary>GPIO pin.</summary>
-            public const int P2_9 = LPC178.GpioPin.P2_9;
+            public const int P2_9 = LPC17.GpioPin.P2_9;
             /// <summary>GPIO pin.</summary>
-            public const int P2_10 = LPC178.GpioPin.P2_10;
+            public const int P2_10 = LPC17.GpioPin.P2_10;
             /// <summary>GPIO pin.</summary>
-            public const int P2_11 = LPC178.GpioPin.P2_11;
+            public const int P2_11 = LPC17.GpioPin.P2_11;
             /// <summary>GPIO pin.</summary>
-            public const int P2_12 = LPC178.GpioPin.P2_12;
+            public const int P2_12 = LPC17.GpioPin.P2_12;
             /// <summary>GPIO pin.</summary>
-            public const int P2_13 = LPC178.GpioPin.P2_13;
+            public const int P2_13 = LPC17.GpioPin.P2_13;
             /// <summary>GPIO pin.</summary>
-            public const int P2_21 = LPC178.GpioPin.P2_21;
+            public const int P2_21 = LPC17.GpioPin.P2_21;
             /// <summary>GPIO pin.</summary>
-            public const int P3_24 = LPC178.GpioPin.P3_24;
+            public const int P3_24 = LPC17.GpioPin.P3_24;
             /// <summary>GPIO pin.</summary>
-            public const int P3_25 = LPC178.GpioPin.P3_25;
+            public const int P3_25 = LPC17.GpioPin.P3_25;
             /// <summary>GPIO pin.</summary>
-            public const int P3_26 = LPC178.GpioPin.P3_26;
+            public const int P3_26 = LPC17.GpioPin.P3_26;
             /// <summary>GPIO pin.</summary>
-            public const int P4_28 = LPC178.GpioPin.P4_28;
+            public const int P4_28 = LPC17.GpioPin.P4_28;
             /// <summary>GPIO pin.</summary>
-            public const int P4_29 = LPC178.GpioPin.P4_29;
+            public const int P4_29 = LPC17.GpioPin.P4_29;
         }
 
         /// <summary>ADC channel definitions.</summary>
         public static class AdcChannel {
             /// <summary>API id.</summary>
-            public const string Id = LPC178.DacChannel.Id;
+            public const string Id = LPC17.DacChannel.Id;
 
             /// <summary>ADC channel.</summary>
-            public const int P0_23 = LPC178.AdcChannel.Channel0;
+            public const int P0_23 = LPC17.AdcChannel.Channel0;
             /// <summary>ADC channel.</summary>
-            public const int P0_24 = LPC178.AdcChannel.Channel1;
+            public const int P0_24 = LPC17.AdcChannel.Channel1;
             /// <summary>ADC channel.</summary>
-            public const int P0_25 = LPC178.AdcChannel.Channel2;
+            public const int P0_25 = LPC17.AdcChannel.Channel2;
             /// <summary>ADC channel.</summary>
-            public const int P0_26 = LPC178.AdcChannel.Channel3;
+            public const int P0_26 = LPC17.AdcChannel.Channel3;
             /// <summary>ADC channel.</summary>
-            public const int P1_30 = LPC178.AdcChannel.Channel4;
+            public const int P1_30 = LPC17.AdcChannel.Channel4;
             /// <summary>ADC channel.</summary>
-            public const int P1_31 = LPC178.AdcChannel.Channel5;
+            public const int P1_31 = LPC17.AdcChannel.Channel5;
             /// <summary>ADC channel.</summary>
-            public const int P0_12 = LPC178.AdcChannel.Channel6;
+            public const int P0_12 = LPC17.AdcChannel.Channel6;
             /// <summary>ADC channel.</summary>
-            public const int P0_13 = LPC178.AdcChannel.Channel7;
+            public const int P0_13 = LPC17.AdcChannel.Channel7;
         }
 
         /// <summary>DAC channel definitions.</summary>
         public static class DacChannel {
             /// <summary>API id.</summary>
-            public const string Id = LPC178.DacChannel.Id;
+            public const string Id = LPC17.DacChannel.Id;
 
             /// <summary>DAC channel channel.</summary>
-            public const int P0_26 = LPC178.DacChannel.Channel0;
+            public const int P0_26 = LPC17.DacChannel.Channel0;
         }
 
         /// <summary>PWM pin definitions.</summary>
@@ -189,84 +189,84 @@
             /// <summary>PWM controller.</summary>
             public static class Controller0 {
                 /// <summary>API id.</summary>
-                public const string Id = LPC178.PwmChannel.Pwm0;
+                public const string Id = LPC17.PwmChannel.Pwm0;
 
                 /// <summary>PWM channel.</summary>
-                public const int P1_2 = LPC178.PwmChannel.Channel1;
+                public const int P1_2 = LPC17.PwmChannel.Channel1;
                 /// <summary>PWM channel.</summary>
-                public const int P1_3 = LPC178.PwmChannel.Channel2;
+                public const int P1_3 = LPC17.PwmChannel.Channel2;
                 /// <summary>PWM channel.</summary>
-                public const int P1_5 = LPC178.PwmChannel.Channel3;
+                public const int P1_5 = LPC17.PwmChannel.Channel3;
                 /// <summary>PWM channel.</summary>
-                public const int P1_6 = LPC178.PwmChannel.Channel4;
+                public const int P1_6 = LPC17.PwmChannel.Channel4;
                 /// <summary>PWM channel.</summary>
-                public const int P1_7 = LPC178.PwmChannel.Channel5;
+                public const int P1_7 = LPC17.PwmChannel.Channel5;
                 /// <summary>PWM channel.</summary>
-                public const int P1_11 = LPC178.PwmChannel.Channel6;
+                public const int P1_11 = LPC17.PwmChannel.Channel6;
             }
 
             /// <summary>PWM controller.</summary>
             public static class Controller1 {
                 /// <summary>API id.</summary>
-                public const string Id = LPC178.PwmChannel.Pwm1;
+                public const string Id = LPC17.PwmChannel.Pwm1;
 
                 /// <summary>PWM channel.</summary>
-                public const int P3_24 = LPC178.PwmChannel.Channel1;
+                public const int P3_24 = LPC17.PwmChannel.Channel1;
                 /// <summary>PWM channel.</summary>
-                public const int P3_25 = LPC178.PwmChannel.Channel2;
+                public const int P3_25 = LPC17.PwmChannel.Channel2;
                 /// <summary>PWM channel.</summary>
-                public const int P3_26 = LPC178.PwmChannel.Channel3;
+                public const int P3_26 = LPC17.PwmChannel.Channel3;
                 /// <summary>PWM channel.</summary>
-                public const int P2_3 = LPC178.PwmChannel.Channel4;
+                public const int P2_3 = LPC17.PwmChannel.Channel4;
                 /// <summary>PWM channel.</summary>
-                public const int P2_4 = LPC178.PwmChannel.Channel5;
+                public const int P2_4 = LPC17.PwmChannel.Channel5;
                 /// <summary>PWM channel.</summary>
-                public const int P2_5 = LPC178.PwmChannel.Channel6;
+                public const int P2_5 = LPC17.PwmChannel.Channel6;
             }
         }
 
         /// <summary>UART port definitions.</summary>
         public static class UartPort {
             /// <summary>UART port on P0.2 (TX) and P0.3 (RX).</summary>
-            public const string Uart0 = LPC178.UartPort.Uart0;
+            public const string Uart0 = LPC17.UartPort.Uart0;
             /// <summary>UART port on P2.0 (TX), P0.16 (RX), P0.17 (CTS), and P0.6 (RTS).</summary>
-            public const string Uart1 = LPC178.UartPort.Uart1;
+            public const string Uart1 = LPC17.UartPort.Uart1;
             /// <summary>UART port on P0.10 (TX) and P0.11 (RX).</summary>
-            public const string Uart2 = LPC178.UartPort.Uart2;
+            public const string Uart2 = LPC17.UartPort.Uart2;
             /// <summary>UART port on P4.28 (TX) and P4.29 (RX).</summary>
-            public const string Uart3 = LPC178.UartPort.Uart3;
+            public const string Uart3 = LPC17.UartPort.Uart3;
             /// <summary>UART port on P1.29 (TX) and P2.9 (RX).</summary>
-            public const string Usart4 = LPC178.UartPort.Usart4;
+            public const string Usart4 = LPC17.UartPort.Usart4;
         }
 
         /// <summary>I2C bus definitions.</summary>
         public static class I2cBus {
             /// <summary>I2C bus on P0.27 (SDA) and P0.28 (SCL).</summary>
-            public const string I2c0 = LPC178.I2cBus.I2c0;
+            public const string I2c0 = LPC17.I2cBus.I2c0;
         }
 
         /// <summary>SPI bus definitions.</summary>
         public static class SpiBus {
             /// <summary>SPI bus on P0.18 (MOSI), P0.17 (MISO), and P0.15 (SCK).</summary>
-            public const string Spi0 = LPC178.SpiBus.Spi0;
+            public const string Spi0 = LPC17.SpiBus.Spi0;
             /// <summary>SPI bus.</summary>
-            public const string Spi1 = LPC178.SpiBus.Spi1;
+            public const string Spi1 = LPC17.SpiBus.Spi1;
             /// <summary>SPI bus on P1.1 (MOSI), P1.4 (MISO), and P1.0 (SCK).</summary>
-            public const string Spi2 = LPC178.SpiBus.Spi2;
+            public const string Spi2 = LPC17.SpiBus.Spi2;
         }
 
         /// <summary>CAN bus definitions.</summary>
         public static class CanBus {
             /// <summary>CAN bus on P0.1 (TX) and P0.0 (RX).</summary>
-            public const string Can1 = LPC178.CanBus.Can1;
+            public const string Can1 = LPC17.CanBus.Can1;
             /// <summary>CAN bus on P0.5 (TX) and P0.4 (RX).</summary>
-            public const string Can2 = LPC178.CanBus.Can2;
+            public const string Can2 = LPC17.CanBus.Can2;
         }
 
         /// <summary>Display definitions.</summary>
         public static class Display {
             /// <summary>API id.</summary>
-            public const string Lcd = LPC178.Display.Lcd;
+            public const string Lcd = LPC17.Display.Lcd;
         }
     }
 }
