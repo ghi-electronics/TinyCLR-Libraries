@@ -183,6 +183,8 @@
             /// <summary>GPIO pin.</summary>
             public const int PC24 = 24 + 64;
             /// <summary>GPIO pin.</summary>
+            public const int PC25 = 25 + 64;
+            /// <summary>GPIO pin.</summary>
             public const int PC26 = 26 + 64;
             /// <summary>GPIO pin.</summary>
             public const int PC27 = 27 + 64;
