@@ -470,7 +470,7 @@
             /// <summary>UART port.</summary>
             public const string Uart5 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.UartProvider\\4";
             /// <summary>UART port.</summary>
-            public const string Uart6 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.UartProvider\\5";
+            public const string Usart6 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.UartProvider\\5";
             /// <summary>UART port.</summary>
             public const string Uart7 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.UartProvider\\6";
             /// <summary>UART port.</summary>
