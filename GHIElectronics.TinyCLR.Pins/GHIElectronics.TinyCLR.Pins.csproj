@@ -36,9 +36,25 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Cerb.cs" />
+    <Compile Include="EMX.cs" />
+    <Compile Include="FEZCerb40.cs" />
+    <Compile Include="FEZCerberus.cs" />
+    <Compile Include="FEZCerbot.cs" />
+    <Compile Include="FEZCerbuinoBee.cs" />
+    <Compile Include="FEZCerbuinoNet.cs" />
+    <Compile Include="FEZCobraII.cs" />
+    <Compile Include="FEZCobraIIExtender.cs" />
     <Compile Include="FEZCobraIII.cs" />
+    <Compile Include="FEZDomino.cs" />
     <Compile Include="FEZLemur.cs" />
+    <Compile Include="FEZMini.cs" />
+    <Compile Include="FEZPanda.cs" />
+    <Compile Include="FEZPandaII.cs" />
     <Compile Include="FEZPandaIII.cs" />
+    <Compile Include="FEZRaptor.cs" />
+    <Compile Include="FEZReaper.cs" />
+    <Compile Include="FEZRhino.cs" />
+    <Compile Include="FEZSpider.cs" />
     <Compile Include="FEZSpiderII.cs" />
     <Compile Include="LPC17.cs" />
     <Compile Include="AT91.cs" />
@@ -51,9 +67,12 @@
     <Compile Include="G400S.cs" />
     <Compile Include="G80.cs" />
     <Compile Include="BrainPad.cs" />
+    <Compile Include="LPC23.cs" />
     <Compile Include="LPC24.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="STM32F4.cs" />
+    <Compile Include="USBizi100.cs" />
+    <Compile Include="USBizi144.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="GHIElectronics.TinyCLR.Pins.nuspec" />
