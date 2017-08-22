@@ -6,8 +6,8 @@
             /// <summary>API id.</summary>
             public const string Id = USBizi100.GpioPin.Id;
 
-            /// <summary>Debug LED definition</summary>
-            public const int DebugLed = USBizi100.GpioPin.P0_16;
+            /// <summary>GPIO pin.</summary>
+            public const int Led = USBizi100.GpioPin.P0_16;
             /// <summary>GPIO pin.</summary>
             public const int A0 = USBizi100.GpioPin.P0_23;
             /// <summary>GPIO pin.</summary>

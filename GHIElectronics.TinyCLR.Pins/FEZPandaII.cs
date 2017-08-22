@@ -6,10 +6,10 @@
             /// <summary>API id.</summary>
             public const string Id = USBizi100.GpioPin.Id;
 
-            /// <summary>GPIO pin for SD card detect.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int SdCardDetect = USBizi100.GpioPin.P0_16;
-            /// <summary>Debug LED definition</summary>
-            public const int DebugLed = USBizi100.GpioPin.P3_26;
+            /// <summary>GPIO pin.</summary>
+            public const int Led = USBizi100.GpioPin.P3_26;
             /// <summary>GPIO pin.</summary>
             public const int A0 = USBizi100.GpioPin.P0_23;
             /// <summary>GPIO pin.</summary>
