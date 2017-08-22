@@ -1,7 +1,7 @@
 ﻿namespace GHIElectronics.TinyCLR.Pins {
     /// <summary>Board definition for the FEZ Spider II.</summary>
     public static class FEZSpiderII {
-        /// <summary>Gpio Pin definition.</summary>
+        /// <summary>GPIO pin definitions.</summary>
         public static class GpioPin {
             /// <summary>Debug LED definition</summary>
             public const int DebugLed = G120E.GpioPin.P1_31;
@@ -19,6 +19,7 @@
                 /// <summary>Pin definition.</summary>
                 public const int Pin9 = G120E.GpioPin.P0_28;
             }
+
             /// <summary>Socket definition.</summary>
             public static class Socket3 {
                 /// <summary>Pin definition.</summary>
@@ -30,6 +31,7 @@
                 /// <summary>Pin definition.</summary>
                 public const int Pin9 = G120E.GpioPin.P0_28;
             }
+
             /// <summary>Socket definition.</summary>
             public static class Socket4 {
                 /// <summary>Pin definition.</summary>
@@ -47,6 +49,7 @@
                 /// <summary>Pin definition.</summary>
                 public const int Pin9 = G120E.GpioPin.P0_28;
             }
+
             /// <summary>Socket definition.</summary>
             public static class Socket5 {
                 /// <summary>Pin definition.</summary>
@@ -64,6 +67,7 @@
                 /// <summary>Pin definition.</summary>
                 public const int Pin9 = G120E.GpioPin.P1_2;
             }
+
             /// <summary>Socket definition.</summary>
             public static class Socket6 {
                 /// <summary>Pin definition.</summary>
@@ -75,6 +79,7 @@
                 /// <summary>Pin definition.</summary>
                 public const int Pin6 = G120E.GpioPin.P4_28;
             }
+
             /// <summary>Socket definition.</summary>
             public static class Socket8 {
                 /// <summary>Pin definition.</summary>
@@ -92,6 +97,7 @@
                 /// <summary>Pin definition.</summary>
                 public const int Pin9 = G120E.GpioPin.P3_26;
             }
+
             /// <summary>Socket definition.</summary>
             public static class Socket9 {
                 /// <summary>Pin definition.</summary>
@@ -109,6 +115,7 @@
                 /// <summary>Pin definition.</summary>
                 public const int Pin9 = G120E.GpioPin.P0_15;
             }
+
             /// <summary>Socket definition.</summary>
             public static class Socket10 {
                 /// <summary>Pin definition.</summary>
@@ -126,6 +133,7 @@
                 /// <summary>Pin definition.</summary>
                 public const int Pin9 = G120E.GpioPin.P0_28;
             }
+
             /// <summary>Socket definition.</summary>
             public static class Socket11 {
                 /// <summary>Pin definition.</summary>
@@ -143,6 +151,7 @@
                 /// <summary>Pin definition.</summary>
                 public const int Pin9 = G120E.GpioPin.P3_17;
             }
+
             /// <summary>Socket definition.</summary>
             public static class Socket12 {
                 /// <summary>Pin definition.</summary>
@@ -160,6 +169,7 @@
                 /// <summary>Pin definition.</summary>
                 public const int Pin9 = G120E.GpioPin.P2_2;
             }
+
             /// <summary>Socket definition.</summary>
             public static class Socket13 {
                 /// <summary>Pin definition.</summary>
@@ -177,6 +187,7 @@
                 /// <summary>Pin definition.</summary>
                 public const int Pin9 = G120E.GpioPin.P2_21;
             }
+
             /// <summary>Socket definition.</summary>
             public static class Socket14 {
                 /// <summary>Pin definition.</summary>
@@ -195,7 +206,8 @@
                 public const int Pin9 = G120E.GpioPin.P2_5;
             }
         }
-        /// <summary>Analog channel definition.</summary>
+
+        /// <summary>ADC channel definitions.</summary>
         public static class AdcChannel {
             /// <summary>Socket definition.</summary>
             public static class Socket9 {
@@ -206,6 +218,7 @@
                 /// <summary>Pin definition.</summary>
                 public const int Pin5 = G120E.AdcChannel.P0_26;
             }
+
             /// <summary>Socket definition.</summary>
             public static class Socket10 {
                 /// <summary>Pin definition.</summary>
@@ -216,7 +229,8 @@
                 public const int Pin5 = G120E.AdcChannel.P0_23;
             }
         }
-        /// <summary>Analog output definition.</summary>
+
+        /// <summary>DAC channel definitions.</summary>
         public static class DacChannel {
             /// <summary>Socket definition.</summary>
             public static class Socket9 {
@@ -224,10 +238,26 @@
                 public const int Pin5 = G120E.DacChannel.P0_26;
             }
         }
-        /// <summary>PWM channel definition.</summary>
+
+        /// <summary>PWM pin definitions.</summary>
         public static class PwmPin {
-            /// <summary>Controller 1 definition.</summary>
+            /// <summary>PWM controller.</summary>
+            public static class Controller0 {
+                /// <summary>API id.</summary>
+                public const string Id = G120E.PwmPin.Controller0.Id;
+
+                /// <summary>Socket definition.</summary>
+                public static class Socket11 {
+                    /// <summary>Pin definition.</summary>
+                    public const int Pin8 = G120E.PwmPin.Controller0.P3_16;
+                    /// <summary>Pin definition.</summary>
+                    public const int Pin9 = G120E.PwmPin.Controller0.P3_17;
+                }
+            }
+
+            /// <summary>PWM controller.</summary>
             public static class Controller1 {
+                /// <summary>API id.</summary>
                 public const string Id = G120E.PwmPin.Controller1.Id;
 
                 /// <summary>Socket definition.</summary>
@@ -239,26 +269,16 @@
                     /// <summary>Pin definition.</summary>
                     public const int Pin9 = G120E.PwmPin.Controller1.P3_26;
                 }
+
                 /// <summary>Socket definition.</summary>
                 public static class Socket11 {
                     /// <summary>Pin definition.</summary>
                     public const int Pin7 = G120E.PwmPin.Controller1.P3_24;
                 }
             }
-            /// <summary>Controller 0 definition.</summary>
-            public static class Controller0 {
-                public const string Id = G120E.PwmPin.Controller0.Id;
-
-                /// <summary>Socket definition.</summary>
-                public static class Socket11 {
-                    /// <summary>Pin definition.</summary>
-                    public const int Pin8 = G120E.PwmPin.Controller0.P3_16;
-                    /// <summary>Pin definition.</summary>
-                    public const int Pin9 = G120E.PwmPin.Controller0.P3_17;
-                }
-            }
         }
-        /// <summary>Uart port definition.</summary>
+
+        /// <summary>UART port definitions.</summary>
         public static class UartPort {
             /// <summary>Socket definition.</summary>
             public const string Socket4 = G120E.UartPort.Uart1;
@@ -269,7 +289,8 @@
             /// <summary>Socket definition.</summary>
             public const string Socket11 = G120E.UartPort.Uart0;
         }
-        /// <summary>I2c Bus definition.</summary>
+
+        /// <summary>I2C bus definitions.</summary>
         public static class I2cBus {
             /// <summary>Socket definition.</summary>
             public const string Socket1 = G120E.I2cBus.I2c0;
@@ -280,19 +301,22 @@
             /// <summary>Socket definition.</summary>
             public const string Socket10 = G120E.I2cBus.I2c0;
         }
-        /// <summary>SPI Bus definition.</summary>
+
+        /// <summary>SPI bus definitions.</summary>
         public static class SpiBus {
             /// <summary>Socket definition.</summary>
             public const string Socket6 = G120E.SpiBus.Spi1;
             /// <summary>Socket definition.</summary>
             public const string Socket9 = G120E.SpiBus.Spi0;
         }
-        /// <summary>CAN Bus definition.</summary>
+
+        /// <summary>CAN bus definitions.</summary>
         public static class CanBus {
             /// <summary>Socket definition.</summary>
             public const string Socket6 = G120E.CanBus.Can1;
         }
-        /// <summary>Display definition.</summary>
+
+        /// <summary>Display definitions.</summary>
         public static class Display {
             /// <summary>LCD definition.</summary>
             public const string Lcd = G120E.Display.Lcd;

@@ -368,17 +368,17 @@
             public const string Pwm1 = "GHIElectronics.TinyCLR.NativeApis.LPC24.PwmProvider\\1";
 
             /// <summary>PWM channel.</summary>
-            public const int Channel1 = 0;
+            public const int Output1 = 0;
             /// <summary>PWM channel.</summary>
-            public const int Channel2 = 1;
+            public const int Output2 = 1;
             /// <summary>PWM channel.</summary>
-            public const int Channel3 = 2;
+            public const int Output3 = 2;
             /// <summary>PWM channel.</summary>
-            public const int Channel4 = 3;
+            public const int Output4 = 3;
             /// <summary>PWM channel.</summary>
-            public const int Channel5 = 4;
+            public const int Output5 = 4;
             /// <summary>PWM channel.</summary>
-            public const int Channel6 = 5;
+            public const int Output6 = 5;
         }
 
         /// <summary>UART port definitions.</summary>

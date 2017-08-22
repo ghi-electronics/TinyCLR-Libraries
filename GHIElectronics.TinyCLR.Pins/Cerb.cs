@@ -235,12 +235,14 @@
 
         /// <summary>UART port definitions.</summary>
         public static class UartPort {
-            /// <summary>UART port on PC6 (TX) and PC7 (RX).</summary>
+            /// <summary>UART port on PB6 (TX) and PB7 (RX).</summary>
             public const string Usart1 = STM32F4.UartPort.Usart1;
             /// <summary>UART port on PA2 (TX), PA3 (RX), PA0 (CTS), and PA1 (RTS).</summary>
             public const string Usart2 = STM32F4.UartPort.Usart2;
             /// <summary>UART port on PB10 (TX), PB11 (RX), PB13 (CTS), and PB14 (RTS).</summary>
             public const string Usart3 = STM32F4.UartPort.Usart3;
+            /// <summary>UART port on PC6 (TX) and PC7 (RX).</summary>
+            public const string Usart6 = STM32F4.UartPort.Usart6;
         }
 
         /// <summary>I2C bus definitions.</summary>

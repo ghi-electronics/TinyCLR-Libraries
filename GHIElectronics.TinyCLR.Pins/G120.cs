@@ -192,17 +192,17 @@
                 public const string Id = LPC17.PwmChannel.Pwm0;
 
                 /// <summary>PWM channel.</summary>
-                public const int P1_2 = LPC17.PwmChannel.Channel1;
+                public const int P1_2 = LPC17.PwmChannel.Output1;
                 /// <summary>PWM channel.</summary>
-                public const int P1_3 = LPC17.PwmChannel.Channel2;
+                public const int P1_3 = LPC17.PwmChannel.Output2;
                 /// <summary>PWM channel.</summary>
-                public const int P1_5 = LPC17.PwmChannel.Channel3;
+                public const int P1_5 = LPC17.PwmChannel.Output3;
                 /// <summary>PWM channel.</summary>
-                public const int P1_6 = LPC17.PwmChannel.Channel4;
+                public const int P1_6 = LPC17.PwmChannel.Output4;
                 /// <summary>PWM channel.</summary>
-                public const int P1_7 = LPC17.PwmChannel.Channel5;
+                public const int P1_7 = LPC17.PwmChannel.Output5;
                 /// <summary>PWM channel.</summary>
-                public const int P1_11 = LPC17.PwmChannel.Channel6;
+                public const int P1_11 = LPC17.PwmChannel.Output6;
             }
 
             /// <summary>PWM controller.</summary>
@@ -211,17 +211,17 @@
                 public const string Id = LPC17.PwmChannel.Pwm1;
 
                 /// <summary>PWM channel.</summary>
-                public const int P3_24 = LPC17.PwmChannel.Channel1;
+                public const int P3_24 = LPC17.PwmChannel.Output1;
                 /// <summary>PWM channel.</summary>
-                public const int P3_25 = LPC17.PwmChannel.Channel2;
+                public const int P3_25 = LPC17.PwmChannel.Output2;
                 /// <summary>PWM channel.</summary>
-                public const int P3_26 = LPC17.PwmChannel.Channel3;
+                public const int P3_26 = LPC17.PwmChannel.Output3;
                 /// <summary>PWM channel.</summary>
-                public const int P2_3 = LPC17.PwmChannel.Channel4;
+                public const int P2_3 = LPC17.PwmChannel.Output4;
                 /// <summary>PWM channel.</summary>
-                public const int P2_4 = LPC17.PwmChannel.Channel5;
+                public const int P2_4 = LPC17.PwmChannel.Output5;
                 /// <summary>PWM channel.</summary>
-                public const int P2_5 = LPC17.PwmChannel.Channel6;
+                public const int P2_5 = LPC17.PwmChannel.Output6;
             }
         }
 
