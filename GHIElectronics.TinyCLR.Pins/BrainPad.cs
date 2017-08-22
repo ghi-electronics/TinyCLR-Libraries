@@ -1,6 +1,68 @@
 ﻿namespace GHIElectronics.TinyCLR.Pins {
     /// <summary>Board definition for the BrainPad.</summary>
     public static class BrainPad {
+        /// <summary>GPIO pin definitions.</summary>
+        public static class GpioPin {
+            /// <summary>API id.</summary>
+            public const string Id = FEZCLR.GpioPin.Id;
+
+            /// <summary>GPIO pin for Button Left.</summary>
+            public const int ButtonLeft = FEZCLR.GpioPin.PA15;
+            /// <summary>GPIO pin for Button Right.</summary>
+            public const int ButtonRight = FEZCLR.GpioPin.PC13;
+            /// <summary>GPIO pin for Button Up.</summary>
+            public const int ButtonUp = FEZCLR.GpioPin.PA5;
+            /// <summary>GPIO pin for Button Down.</summary>
+            public const int ButtonDown = FEZCLR.GpioPin.PB10;
+            /// <summary>GPIO pin for LightBulb Red.</summary>
+            public const int LightBulbRed = FEZCLR.GpioPin.PC9;
+            /// <summary>GPIO pin for LightBulb Green.</summary>
+            public const int LightBulbGreen = FEZCLR.GpioPin.PC8;
+            /// <summary>GPIO pin for LightBulb Blue.</summary>
+            public const int LightBulbBlue = FEZCLR.GpioPin.PC6;
+        }
+
+        /// <summary>ADC channel definitions.</summary>
+        public static class AdcChannel {
+            /// <summary>ADC channel for Temperature Sensor.</summary>
+            public const int TemperatureSensor = FEZCLR.AdcChannel.PB0;
+            /// <summary>ADC channel for Light Sensor.</summary>
+            public const int LightSensor = FEZCLR.AdcChannel.PB1;
+        }
+
+        /// <summary>PWM pin definitions.</summary>
+        public static class PwmPin {
+            /// <summary>Controller 3 definitions.</summary>
+            public static class Controller3 {
+                /// <summary>API id.</summary>
+                public const string Id = FEZCLR.PwmPin.Controller3.Id;
+
+                /// <summary>PWM pin for LightBulb Red.</summary>
+                public const int LightBulbRed = FEZCLR.PwmPin.Controller3.PC9;
+                /// <summary>PWM pin for LightBulb Green.</summary>
+                public const int LightBulbGreen = FEZCLR.PwmPin.Controller3.PC8;
+                /// <summary>PWM pin for LightBulb Blue.</summary>
+                public const int LightBulbBlue = FEZCLR.PwmPin.Controller3.PC6;
+            }
+
+            /// <summary>Controller 4 definitions.</summary>
+            public static class Controller4 {
+                /// <summary>API id.</summary>
+                public const string Id = FEZCLR.PwmPin.Controller4.Id;
+
+                /// <summary>PWM pin for Buzzer.</summary>
+                public const int Buzzer = FEZCLR.PwmPin.Controller4.PB8;
+            }
+        }
+
+        /// <summary>I2C bus pin definitions.</summary>
+        public static class I2cBus {
+            /// <summary>I2C bus for Temperature Sensor.</summary>
+            public const string Accelerometer = FEZCLR.I2cBus.I2c1;
+            /// <summary>I2C bus for Light Sensor.</summary>
+            public const string Display = FEZCLR.I2cBus.I2c1;
+        }
+
         /// <summary>Expansion definitions.</summary>
         public static class Expansion {
             /// <summary>GPIO pin definitions.</summary>
@@ -30,7 +92,7 @@
                 public const int Tx = FEZCLR.GpioPin.PA9;
             }
 
-            /// <summary>ADc channel definitions.</summary>
+            /// <summary>ADC channel definitions.</summary>
             public static class AdcChannel {
                 /// <summary>API id.</summary>
                 public const string Id = FEZCLR.AdcChannel.Id;
