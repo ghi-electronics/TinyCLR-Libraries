@@ -3,7 +3,7 @@
     public static class FEZMini {
         /// <summary>GPIO pin definitions.</summary>
         public static class GpioPin {
-            /// <summary>API Id.</summary>
+            /// <summary>API id.</summary>
             public const string Id = USBizi100.GpioPin.Id;
 
             /// <summary>GPIO pin.</summary>
@@ -40,7 +40,7 @@
 
         /// <summary>ADC channel definitions.</summary>
         public static class AdcChannel {
-            /// <summary>API Id.</summary>
+            /// <summary>API id.</summary>
             public const string Id = USBizi100.AdcChannel.Id;
 
             /// <summary>ADC pin.</summary>
@@ -54,8 +54,7 @@
             /// <summary>GPIO pin.</summary>
             public const int An6 = USBizi100.AdcChannel.P1_30;
             /// <summary>GPIO pin.</summary>
-            public const int A7 = USBizi100.AdcChannel.P1_31;
-            /// <summary>GPIO pin.</summary>
+            public const int An7 = USBizi100.AdcChannel.P1_31;
         }
 
         /// <summary>DAC channel definitions.</summary>
@@ -67,22 +66,22 @@
             public const int An3 = USBizi100.DacChannel.P0_26;
         }
 
-        /// <summary>PWM channel definition.</summary>
+        /// <summary>PWM pin definitions.</summary>
         public static class PwmPin {
-            /// <summary>Controller 1 definition.</summary>
+            /// <summary>PWM controller.</summary>
             public static class Controller1 {
-                /// <summary>API Id.</summary>
+                /// <summary>API id.</summary>
                 public const string Id = USBizi100.PwmPin.Controller1.Id;
 
-                /// <summary>Debug LightBulb Red definition</summary>
+                /// <summary>PWM pin.</summary>
                 public const int Di3 = USBizi100.PwmPin.Controller1.P1_18;
-                /// <summary>Debug LightBulb Green definition</summary>
+                /// <summary>PWM pin.</summary>
                 public const int Di5 = USBizi100.PwmPin.Controller1.P1_20;
-                /// <summary>Debug LightBulb Green definition</summary>
+                /// <summary>PWM pin.</summary>
                 public const int Di6 = USBizi100.PwmPin.Controller1.P1_21;
-                /// <summary>Debug LightBulb Green definition</summary>
+                /// <summary>PWM pin.</summary>
                 public const int Di9 = USBizi100.PwmPin.Controller1.P2_4;
-                /// <summary>Debug LightBulb Green definition</summary>
+                /// <summary>PWM pin.</summary>
                 public const int Di10 = USBizi100.PwmPin.Controller1.P2_5;
             }
         }
@@ -95,18 +94,20 @@
 
         /// <summary>I2C bus definitions.</summary>
         public static class I2cBus {
-            /// <summary>I2C bus on An4(SDA) and An5(SCL).</summary>
+            /// <summary>I2C bus on An4 (SDA) and An5 (SCL).</summary>
             public const string I2c1 = USBizi100.I2cBus.I2c1;
         }
-        /// <summary>CAN bus definitions.</summary>
-        public static class CanBus {
-            /// <summary>CAN channel on D7 (TX) and D4 (RX).</summary>
-            public const string Can1 = USBizi100.CanBus.Can1;
-        }
+
         /// <summary>SPI bus definitions.</summary>
         public static class SpiBus {
             /// <summary>SPI bus on D11 (MOSI), D12 (MISO), and D13 (SCK).</summary>
             public const string Spi1 = USBizi100.SpiBus.Spi1;
+        }
+
+        /// <summary>CAN bus definitions.</summary>
+        public static class CanBus {
+            /// <summary>CAN bus on D7 (TX) and D4 (RX).</summary>
+            public const string Can1 = USBizi100.CanBus.Can1;
         }
     }
 }

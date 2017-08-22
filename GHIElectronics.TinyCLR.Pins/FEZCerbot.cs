@@ -1,9 +1,9 @@
 ﻿namespace GHIElectronics.TinyCLR.Pins {
     /// <summary>Board definition for the FEZ Cerbot.</summary>
     public static class FEZCerbot {
-        /// <summary>GPIO pin definitions.</summary>    
+        /// <summary>GPIO pin definitions.</summary>
         public static class GpioPin {
-            /// <summary>API Id.</summary>
+            /// <summary>API id.</summary>
             public const string Id = Cerb.GpioPin.Id;
 
             /// <summary>Debug LED definition</summary>
@@ -94,7 +94,7 @@
             }
         }
 
-        /// <summary>Analog channel definition.</summary>
+        /// <summary>ADC channel definitions.</summary>
         public static class AdcChannel {
             /// <summary>ReflectiveSensor1  definition</summary>
             public const int ReflectiveSensor1 = Cerb.GpioPin.PA5;
@@ -112,9 +112,8 @@
             }
         }
 
-        /// <summary>PWM channel definition.</summary>
+        /// <summary>PWM pin definitions.</summary>
         public static class PwmPin {
-
             /// <summary>PWM controller.</summary>
             public static class Controller1 {
                 /// <summary>API id.</summary>
@@ -148,19 +147,18 @@
                 /// <summary>Debug LightBulb Green definition</summary>
                 public const int MotorPwmB = Cerb.PwmPin.Controller3.PB1;
             }
-        }
 
-        /// <summary>PWM controller.</summary>
-        public static class Controller4 {
-            /// <summary>API id.</summary>
-            public const string Id = Cerb.PwmPin.Controller1.Id;
+            /// <summary>PWM controller.</summary>
+            public static class Controller4 {
+                /// <summary>API id.</summary>
+                public const string Id = Cerb.PwmPin.Controller1.Id;
 
-            /// <summary>Socket definition.</summary>
-            public static class Socket6 {
-                /// <summary>PWM pin.</summary>
-                public const int Pin8 = Cerb.PwmPin.Controller4.PB9;
+                /// <summary>Socket definition.</summary>
+                public static class Socket6 {
+                    /// <summary>PWM pin.</summary>
+                    public const int Pin8 = Cerb.PwmPin.Controller4.PB9;
+                }
             }
         }
     }
 }
-

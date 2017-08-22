@@ -3,7 +3,7 @@
     public static class FEZPandaII {
         /// <summary>GPIO pin definitions.</summary>
         public static class GpioPin {
-            /// <summary>API Id.</summary>
+            /// <summary>API id.</summary>
             public const string Id = USBizi100.GpioPin.Id;
 
             /// <summary>GPIO pin for SD card detect.</summary>
@@ -22,7 +22,7 @@
             public const int A4 = USBizi100.GpioPin.P1_30;
             /// <summary>GPIO pin.</summary>
             public const int A5 = USBizi100.GpioPin.P1_31;
-            /// <summary>GPIO pin.</summary>           
+            /// <summary>GPIO pin.</summary>
             public const int D0 = USBizi100.GpioPin.P0_3;
             /// <summary>GPIO pin.</summary>
             public const int D1 = USBizi100.GpioPin.P0_2;
@@ -50,7 +50,6 @@
             public const int D12 = USBizi100.GpioPin.P0_17;
             /// <summary>GPIO pin.</summary>
             public const int D13 = USBizi100.GpioPin.P0_15;
-
             /// <summary>GPIO pin.</summary>
             public const int D20 = USBizi100.GpioPin.P1_0;
             /// <summary>GPIO pin.</summary>
@@ -136,7 +135,6 @@
             public const int A4 = USBizi100.GpioPin.P1_30;
             /// <summary>GPIO pin.</summary>
             public const int A5 = USBizi100.GpioPin.P1_31;
-            /// <summary>GPIO pin.</summary>
         }
 
         /// <summary>DAC channel definitions.</summary>
@@ -148,11 +146,11 @@
             public const int A5 = USBizi100.DacChannel.P0_26;
         }
 
-        /// <summary>PWM channel definition.</summary>
+        /// <summary>PWM pin definitions.</summary>
         public static class PwmPin {
-            /// <summary>Controller 3 definition.</summary>
+            /// <summary>Controller 3 definitions.</summary>
             public static class Controller1 {
-                /// <summary>API Id.</summary>
+                /// <summary>API id.</summary>
                 public const string Id = USBizi100.PwmPin.Controller1.Id;
 
                 /// <summary>Pin definition.</summary>
@@ -168,40 +166,40 @@
                 /// <summary>Pin definition.</summary>
                 public const int Mod = USBizi100.PwmPin.Controller1.P2_3;
             }
+        }
 
-            /// <summary>UART port definitions.</summary>
-            public static class UartPort {
-                /// <summary>UART port on D1 (TX) and D0 (RX).</summary>
-                public const string Uart0 = USBizi100.UartPort.Uart0;
-                /// <summary>UART port on D39 (TX) and D37 (RX) and D43(RTS) and D41(CTS).</summary>
-                public const string Uart1 = USBizi100.UartPort.Uart1;
-                /// <summary>UART port on D42 (TX) and D40 (RX).</summary>
-                public const string Uart2 = USBizi100.UartPort.Uart2;
-                /// <summary>UART port on D33 (TX) and D31 (RX).</summary>
-                public const string Uart3 = USBizi100.UartPort.Uart3;
-            }
+        /// <summary>UART port definitions.</summary>
+        public static class UartPort {
+            /// <summary>UART port on D1 (TX) and D0 (RX).</summary>
+            public const string Uart0 = USBizi100.UartPort.Uart0;
+            /// <summary>UART port on D39 (TX), D37 (RX), D43 (RTS) and D41 (CTS).</summary>
+            public const string Uart1 = USBizi100.UartPort.Uart1;
+            /// <summary>UART port on D42 (TX), D40 (RX).</summary>
+            public const string Uart2 = USBizi100.UartPort.Uart2;
+            /// <summary>UART port on D33 (TX) and D31 (RX).</summary>
+            public const string Uart3 = USBizi100.UartPort.Uart3;
+        }
 
-            /// <summary>I2C bus definitions.</summary>
-            public static class I2cBus {
-                /// <summary>I2C bus on D2(SDA) and D3(SCL).</summary>
-                public const string I2c1 = USBizi100.I2cBus.I2c1;
-            }
+        /// <summary>I2C bus definitions.</summary>
+        public static class I2cBus {
+            /// <summary>I2C bus on D2 (SDA) and D3 (SCL).</summary>
+            public const string I2c1 = USBizi100.I2cBus.I2c1;
+        }
 
-            /// <summary>SPI bus definitions.</summary>
-            public static class SpiBus {
-                /// <summary>SPI bus on D11 (MOSI), D12 (MISO), and D13 (SCK).</summary>
-                public const string Spi1 = USBizi100.SpiBus.Spi1;
-                /// <summary>SPI bus on D38 (MOSI), D36 (MISO), and D35 (SCK).</summary>
-                public const string Spi2 = USBizi100.SpiBus.Spi2;
-            }
+        /// <summary>SPI bus definitions.</summary>
+        public static class SpiBus {
+            /// <summary>SPI bus on D11 (MOSI), D12 (MISO), and D13 (SCK).</summary>
+            public const string Spi1 = USBizi100.SpiBus.Spi1;
+            /// <summary>SPI bus on D38 (MOSI), D36 (MISO), and D35 (SCK).</summary>
+            public const string Spi2 = USBizi100.SpiBus.Spi2;
+        }
 
-            /// <summary>CAN bus definitions.</summary>
-            public static class CanBus {
-                /// <summary>CAN channel on D7 (TX) and D4 (RX).</summary>
-                public const string Can1 = USBizi100.CanBus.Can1;
-                /// <summary>CAN channel on D32 (TX) and D30 (RX).</summary>
-                public const string Can2 = USBizi100.CanBus.Can2;
-            }
+        /// <summary>CAN bus definitions.</summary>
+        public static class CanBus {
+            /// <summary>CAN bus on D7 (TX) and D4 (RX).</summary>
+            public const string Can1 = USBizi100.CanBus.Can1;
+            /// <summary>CAN bus on D32 (TX) and D30 (RX).</summary>
+            public const string Can2 = USBizi100.CanBus.Can2;
         }
     }
 }

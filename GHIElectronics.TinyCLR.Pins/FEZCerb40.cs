@@ -1,84 +1,84 @@
 ﻿namespace GHIElectronics.TinyCLR.Pins {
     /// <summary>Board definition for the FEZCerb40.</summary>
     public static class FEZCerb40 {
-        /// <summary>GPIO Pin definitions.</summary>
+        /// <summary>GPIO pin definitions.</summary>
         public static class GpioPin {
-            /// <summary>API Id.</summary>
+            /// <summary>API id.</summary>
             public const string Id = Cerb.GpioPin.Id;
 
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int PA0 = Cerb.GpioPin.PA0;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int PA1 = Cerb.GpioPin.PA1;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int PA2 = Cerb.GpioPin.PA2;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int PA3 = Cerb.GpioPin.PA3;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int PA4 = Cerb.GpioPin.PA4;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int PA5 = Cerb.GpioPin.PA5;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int PA6 = Cerb.GpioPin.PA6;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int PA7 = Cerb.GpioPin.PA7;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int PA8 = Cerb.GpioPin.PA8;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int PA13 = Cerb.GpioPin.PA13;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int PA14 = Cerb.GpioPin.PA14;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int PB3 = Cerb.GpioPin.PB3;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int PB4 = Cerb.GpioPin.PB4;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int PB5 = Cerb.GpioPin.PB5;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int PB6 = Cerb.GpioPin.PB6;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int PB7 = Cerb.GpioPin.PB7;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int PB8 = Cerb.GpioPin.PB5;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int PB9 = Cerb.GpioPin.PB9;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int PB10 = Cerb.GpioPin.PB10;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int PB11 = Cerb.GpioPin.PB11;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int PB14 = Cerb.GpioPin.PB10;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int PB15 = Cerb.GpioPin.PB15;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int PC0 = Cerb.GpioPin.PC0;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int PC1 = Cerb.GpioPin.PC1;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int PC2 = Cerb.GpioPin.PC2;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int PC3 = Cerb.GpioPin.PC3;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int PC6 = Cerb.GpioPin.PC6;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int PC7 = Cerb.GpioPin.PC7;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int PC8 = Cerb.GpioPin.PC8;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int PC9 = Cerb.GpioPin.PC9;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int PC10 = Cerb.GpioPin.PC10;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int PC11 = Cerb.GpioPin.PC11;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int PC12 = Cerb.GpioPin.PC12;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int PD2 = Cerb.GpioPin.PD2;
         }
 
         /// <summary>ADC channel definitions.</summary>
         public static class AdcChannel {
-            /// <summary>API Id.</summary>
+            /// <summary>API id.</summary>
             public const string Id = G120.AdcChannel.Id;
 
             /// <summary>ADC channel.</summary>
@@ -103,7 +103,7 @@
 
         /// <summary>DAC channel definitions.</summary>
         public static class DacChannel {
-            /// <summary>API Id.</summary>
+            /// <summary>API id.</summary>
             public const string Id = Cerb.DacChannel.Id;
 
             /// <summary>DAC channel.</summary>
@@ -112,77 +112,81 @@
             public const int PA5 = Cerb.DacChannel.PA4;
         }
 
-        /// <summary>PWM Pin definitions.</summary>
+        /// <summary>PWM pin definitions.</summary>
         public static class PwmPin {
             /// <summary>PWM controller.</summary>
             public static class Controller1 {
-                /// <summary>API Id.</summary>
+                /// <summary>API id.</summary>
                 public const string Id = Cerb.PwmPin.Controller1.Id;
 
-                /// <summary>PWM Pin.</summary>
+                /// <summary>PWM pin.</summary>
                 public const int PA8 = Cerb.PwmPin.Controller1.PA8;
             }
+
             public static class Controller2 {
-                /// <summary>API Id.</summary>
+                /// <summary>API id.</summary>
                 public const string Id = Cerb.PwmPin.Controller2.Id;
 
-                /// <summary>PWM Pin.</summary>
+                /// <summary>PWM pin.</summary>
                 public const int PB3 = Cerb.PwmPin.Controller2.PB3;
             }
+
             public static class Controller3 {
-                /// <summary>API Id.</summary>
+                /// <summary>API id.</summary>
                 public const string Id = Cerb.PwmPin.Controller3.Id;
 
-                /// <summary>PWM Pin.</summary>
+                /// <summary>PWM pin.</summary>
                 public const int PB5 = Cerb.PwmPin.Controller3.PB5;
-                /// <summary>PWM Pin.</summary>
+                /// <summary>PWM pin.</summary>
                 public const int PB4 = Cerb.PwmPin.Controller3.PB4;
             }
+
             public static class Controller8 {
-                /// <summary>API Id.</summary>
+                /// <summary>API id.</summary>
                 public const string Id = Cerb.PwmPin.Controller8.Id;
 
-                /// <summary>PWM Pin.</summary>
+                /// <summary>PWM pin.</summary>
                 public const int PC6 = Cerb.PwmPin.Controller8.PC6;
-                /// <summary>PWM Pin.</summary>
+                /// <summary>PWM pin.</summary>
                 public const int PC7 = Cerb.PwmPin.Controller8.PC7;
             }
+
             public static class Controller14 {
-                /// <summary>API Id.</summary>
+                /// <summary>API id.</summary>
                 public const string Id = Cerb.PwmPin.Controller14.Id;
 
-                /// <summary>PWM Pin.</summary>
+                /// <summary>PWM pin.</summary>
                 public const int PA7 = Cerb.PwmPin.Controller14.PA7;
             }
+        }
 
-            /// <summary>UART port definitions.</summary>
-            public static class UartPort {
-                /// <summary>Serial port on PC6 (TX) and PC7 (RX).</summary>
-                public const string Usart1 = Cerb.UartPort.Usart1;
-                /// <summary>Serial port on PA2 (TX), PA3 (RX), PA0 (CTS), and PA1 (RTS)</summary>
-                public const string Usart2 = Cerb.UartPort.Usart2;
-                /// <summary>Serial port on PB10 (TX) and PB11 (RX).</summary>
-                public const string Usart3 = Cerb.UartPort.Usart3;
-            }
+        /// <summary>UART port definitions.</summary>
+        public static class UartPort {
+            /// <summary>Serial port on PC6 (TX) and PC7 (RX).</summary>
+            public const string Usart1 = Cerb.UartPort.Usart1;
+            /// <summary>Serial port on PA2 (TX), PA3 (RX), PA0 (CTS), and PA1 (RTS)</summary>
+            public const string Usart2 = Cerb.UartPort.Usart2;
+            /// <summary>Serial port on PB10 (TX) and PB11 (RX).</summary>
+            public const string Usart3 = Cerb.UartPort.Usart3;
+        }
 
-            /// <summary>I2C bus definitions.</summary>
-            public static class I2cBus {
-                /// <summary>I2C bus on PB7 (SDA) and PB6 (SCL).</summary>
-                public const string I2c1 = Cerb.I2cBus.I2c1;
-            }
+        /// <summary>I2C bus definitions.</summary>
+        public static class I2cBus {
+            /// <summary>I2C bus on PB7 (SDA) and PB6 (SCL).</summary>
+            public const string I2c1 = Cerb.I2cBus.I2c1;
+        }
 
-            /// <summary>SPI bus definitions.</summary>
-            public static class SpiBus {
-                public const string Socket1 = Cerb.SpiBus.Spi1;
-                /// <summary>SPI bus on PB5 (MOSI), PB4 (MISO), and PB3 (SCK).</summary>
-                public const string Spi1 = Cerb.SpiBus.Spi1;
-            }
+        /// <summary>SPI bus definitions.</summary>
+        public static class SpiBus {
+            public const string Socket1 = Cerb.SpiBus.Spi1;
+            /// <summary>SPI bus on PB5 (MOSI), PB4 (MISO), and PB3 (SCK).</summary>
+            public const string Spi1 = Cerb.SpiBus.Spi1;
+        }
 
-            /// <summary>CAN bus definitions.</summary>
-            public static class CanBus {
-                /// <summary>CAN channel on PB9 (TX) and PB8 (RX).</summary>
-                public const string Can1 = Cerb.CanBus.Can1;
-            }
+        /// <summary>CAN bus definitions.</summary>
+        public static class CanBus {
+            /// <summary>CAN bus on PB9 (TX) and PB8 (RX).</summary>
+            public const string Can1 = Cerb.CanBus.Can1;
         }
     }
 }

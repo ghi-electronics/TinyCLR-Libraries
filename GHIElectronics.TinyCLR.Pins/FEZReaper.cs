@@ -1,7 +1,7 @@
-﻿ namespace GHIElectronics.TinyCLR.Pins {
+﻿namespace GHIElectronics.TinyCLR.Pins {
     /// <summary>Board definition for the FEZ Reaper.</summary>
     public static class FEZReaper {
-        /// <summary>Gpio Pin definition.</summary>
+        /// <summary>GPIO pin definitions.</summary>
         public static class GpioPin {
             /// <summary>Debug LED definition</summary>
             public const int DebugLed = G80.GpioPin.PB2;
@@ -37,6 +37,7 @@
                 /// <summary>Pin definition.</summary>
                 public const int Pin6 = G80.GpioPin.PD12;
             }
+
             /// <summary>Socket definition.</summary>
             public static class Socket4 {
                 /// <summary>Pin definition.</summary>
@@ -188,9 +189,8 @@
             }
         }
 
-        /// <summary>Analog channel definition.</summary>
+        /// <summary>ADC channel definitions.</summary>
         public static class AdcChannel {
-
             /// <summary>Socket definition.</summary>
             public static class Socket5 {
                 /// <summary>Pin definition.</summary>
@@ -232,19 +232,14 @@
             }
         }
 
-        /// <summary>Analog output 1 channel definition.</summary>
-        public static class DacChannel1 {
-           
+        /// <summary>DAC channel definitions.</summary>
+        public static class DacChannel {
             /// <summary>Socket definition.</summary>
             public static class Socket8 {
                 /// <summary>Pin definition.</summary>
                 public const int Pin5 = G80.DacChannel.PA4;
             }
-        }
 
-        /// <summary>Analog output 2 channel definition.</summary>
-        public static class DacChannel2 {
-           
             /// <summary>Socket definition.</summary>
             public static class Socket9 {
                 /// <summary>Pin definition.</summary>
@@ -252,11 +247,11 @@
             }
         }
 
-        /// <summary>PWM channel definition.</summary>
+        /// <summary>PWM pin definitions.</summary>
         public static class PwmPin {
-            /// <summary>Controller 1 definition.</summary>
+            /// <summary>PWM controller.</summary>
             public static class Controller1 {
-                /// <summary>API Id.</summary>
+                /// <summary>API id.</summary>
                 public const string Id = G80.PwmPin.Controller1.Id;
 
                 /// <summary>Socket definition.</summary>
@@ -269,11 +264,12 @@
                     public const int Pin9 = G80.PwmPin.Controller1.PE14;
                 }
             }
-            /// <summary>Controller 2 definition.</summary>
+
+            /// <summary>PWM controller.</summary>
             public static class Controller2 {
                 public const string Id = G80.PwmPin.Controller2.Id;
-                
-                /// <summary>Socket definition.</summary>               
+
+                /// <summary>Socket definition.</summary>
                 public static class Socket4 {
                     /// <summary>Pin definition.</summary>
                     public const int Pin6 = G80.PwmPin.Controller2.PA15;
@@ -292,7 +288,7 @@
                 }
             }
 
-            /// <summary>Controller 3 definition.</summary>
+            /// <summary>PWM controller.</summary>
             public static class Controller3 {
                 public const string Id = G80.PwmPin.Controller3.Id;
 
@@ -304,7 +300,8 @@
                     public const int Pin8 = G80.PwmPin.Controller3.PB4;
                 }
             }
-            /// <summary>Controller 4 definition.</summary>
+
+            /// <summary>PWM controller.</summary>
             public static class Controller4 {
                 public const string Id = G80.PwmPin.Controller4.Id;
 
@@ -318,7 +315,8 @@
                     public const int Pin9 = G80.PwmPin.Controller4.PD15;
                 }
             }
-            /// <summary>Controller 10 definition.</summary>
+
+            /// <summary>PWM controller.</summary>
             public static class Controller10 {
                 public const string Id = G80.PwmPin.Controller10.Id;
 
@@ -328,7 +326,8 @@
                     public const int Pin7 = G80.PwmPin.Controller10.PB8;
                 }
             }
-            /// <summary>Controller 11 definition.</summary>
+
+            /// <summary>PWM controller.</summary>
             public static class Controller11 {
                 public const string Id = G80.PwmPin.Controller11.Id;
 
@@ -338,42 +337,46 @@
                     public const int Pin7 = G80.PwmPin.Controller11.PB9;
                 }
             }
-            /// <summary>Uart port definition.</summary>
-            public static class UartPort {
-                /// <summary>Socket definition.</summary>
-                public const string Socket3 = G80.UartPort.Usart1;
-                /// <summary>Socket definition.</summary>
-                public const string Socket6 = G80.UartPort.Usart2;
-                /// <summary>Socket definition.</summary>
-                public const string Socket7 = G80.UartPort.Usart3;
-                /// <summary>Socket definition.</summary>
-                public const string Socket10 = G80.UartPort.Uart4;
-            }
-            /// <summary>I2c Bus definition.</summary>
-            public static class I2cBus {
-                /// <summary>Socket definition.</summary>
-                public const string Socket3 = G80.I2cBus.I2c1;
-                /// <summary>Socket definition.</summary>
-                public const string Socket5 = G80.I2cBus.I2c1;
-                /// <summary>Socket definition.</summary>
-                public const string Socket6 = G80.I2cBus.I2c1;
-                /// <summary>Socket definition.</summary>
-                public const string Socket10 = G80.I2cBus.I2c1;
-            }
-            /// <summary>SPI Bus definition.</summary>
-            public static class SpiBus {
-                /// <summary>Socket definition.</summary>
-                public const string Socket8 = G80.SpiBus.Spi1;
-                /// <summary>Socket definition.</summary>
-                public const string Socket9 = G80.SpiBus.Spi2;
-            }
-            /// <summary>CAN Bus definition.</summary>
-            public static class CanBus {
-                /// <summary>Socket definition.</summary>
-                public const string Socket4 = G80.CanBus.Can2;
-                /// <summary>Socket definition.</summary>
-                public const string Socket12 = G80.CanBus.Can1;
-            }
+        }
+
+        /// <summary>UART port definitions.</summary>
+        public static class UartPort {
+            /// <summary>Socket definition.</summary>
+            public const string Socket3 = G80.UartPort.Usart1;
+            /// <summary>Socket definition.</summary>
+            public const string Socket6 = G80.UartPort.Usart2;
+            /// <summary>Socket definition.</summary>
+            public const string Socket7 = G80.UartPort.Usart3;
+            /// <summary>Socket definition.</summary>
+            public const string Socket10 = G80.UartPort.Uart4;
+        }
+
+        /// <summary>I2C bus definitions.</summary>
+        public static class I2cBus {
+            /// <summary>Socket definition.</summary>
+            public const string Socket3 = G80.I2cBus.I2c1;
+            /// <summary>Socket definition.</summary>
+            public const string Socket5 = G80.I2cBus.I2c1;
+            /// <summary>Socket definition.</summary>
+            public const string Socket6 = G80.I2cBus.I2c1;
+            /// <summary>Socket definition.</summary>
+            public const string Socket10 = G80.I2cBus.I2c1;
+        }
+
+        /// <summary>SPI bus definitions.</summary>
+        public static class SpiBus {
+            /// <summary>Socket definition.</summary>
+            public const string Socket8 = G80.SpiBus.Spi1;
+            /// <summary>Socket definition.</summary>
+            public const string Socket9 = G80.SpiBus.Spi2;
+        }
+
+        /// <summary>CAN bus definitions.</summary>
+        public static class CanBus {
+            /// <summary>Socket definition.</summary>
+            public const string Socket4 = G80.CanBus.Can2;
+            /// <summary>Socket definition.</summary>
+            public const string Socket12 = G80.CanBus.Can1;
         }
     }
 }

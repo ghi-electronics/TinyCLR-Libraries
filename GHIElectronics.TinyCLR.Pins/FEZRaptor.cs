@@ -1,7 +1,7 @@
 ﻿namespace GHIElectronics.TinyCLR.Pins {
     /// <summary>Board definition for the FEZ Raptor.</summary>
     public static class FEZRaptor {
-        /// <summary>Gpio Pin definition.</summary>
+        /// <summary>GPIO pin definitions.</summary>
         public static class GpioPin {
             /// <summary>Debug LED definition</summary>
             public const int DebugLed = G400S.GpioPin.PD3;
@@ -167,9 +167,8 @@
             }
         }
 
-        /// <summary>Analog channel definition.</summary>
+        /// <summary>ADC channel definitions.</summary>
         public static class AdcChannel {
-
             /// <summary>Socket definition.</summary>
             public static class Socket2 {
                 /// <summary>Pin definition.</summary>
@@ -211,35 +210,37 @@
             }
         }
 
-        /// <summary>PWM channel definition.</summary>
+        /// <summary>PWM pin definitions.</summary>
         public static class PwmPin {
-            /// <summary>Controller 0 definition.</summary>
+            /// <summary>PWM controller.</summary>
             public static class Controller0 {
-                /// <summary>API Id.</summary>
+                /// <summary>API id.</summary>
                 public const string Id = G400S.PwmPin.Controller0.Id;
-               
+
                 /// <summary>Socket definition.</summary>
                 public static class Socket18 {
                     /// <summary>Pin definition.</summary>
                     public const int Pin7 = G400S.PwmPin.Controller0.PC18;
                 }
             }
-            /// <summary>Controller 1 definition.</summary>
+
+            /// <summary>PWM controller.</summary>
             public static class Controller1 {
-                /// <summary>API Id.</summary>
+                /// <summary>API id.</summary>
                 public const string Id = G400S.PwmPin.Controller1.Id;
-                
+
                 /// <summary>Socket definition.</summary>
                 public static class Socket18 {
                     /// <summary>Pin definition.</summary>
                     public const int Pin8 = G400S.PwmPin.Controller1.PC19;
                 }
             }
-            /// <summary>Controller 2 definition.</summary>
+
+            /// <summary>PWM controller.</summary>
             public static class Controller2 {
-                /// <summary>API Id.</summary>
+                /// <summary>API id.</summary>
                 public const string Id = G400S.PwmPin.Controller2.Id;
-                
+
                 /// <summary>Socket definition.</summary>
                 public static class Socket18 {
                     /// <summary>Pin definition.</summary>
@@ -247,8 +248,8 @@
                 }
             }
         }
-        
-        /// <summary>Uart port definition.</summary>
+
+        /// <summary>UART port definitions.</summary>
         public static class UartPort {
             /// <summary>Socket definition.</summary>
             public const string Socket1 = G400S.UartPort.Uart0;
@@ -261,8 +262,8 @@
             /// <summary>Socket definition.</summary>
             public const string Socket12 = G400S.UartPort.Usart2;
         }
-        
-        /// <summary>I2c Bus definition.</summary>
+
+        /// <summary>I2C bus definitions.</summary>
         public static class I2cBus {
             /// <summary>Socket definition.</summary>
             public const string Socket2 = G400S.TwiBus.Twi0;
@@ -283,8 +284,8 @@
             /// <summary>Socket definition.</summary>
             public const string Socket14 = G400S.TwiBus.Twi0;
         }
-        
-        /// <summary>SPI Bus definition.</summary>
+
+        /// <summary>SPI bus definitions.</summary>
         public static class SpiBus {
             /// <summary>Socket definition.</summary>
             public const string Socket1 = G400S.SpiBus.Spi1;
@@ -293,22 +294,19 @@
             /// <summary>Socket definition.</summary>
             public const string Socket11 = G400S.SpiBus.Spi0;
         }
-        
-        /// <summary>CAN Bus definition.</summary>
+
+        /// <summary>CAN bus definitions.</summary>
         public static class CanBus {
             /// <summary>Socket definition.</summary>
             public const string Socket10 = G400S.CanBus.Can0;
             /// <summary>Socket definition.</summary>
             public const string Socket11 = G400S.CanBus.Can1;
         }
-        
-        /// <summary>Display definition.</summary>
+
+        /// <summary>Display definitions.</summary>
         public static class Display {
             /// <summary>LCD definition.</summary>
             public const string Lcd = G400S.Display.Lcd;
         }
     }
 }
-
-
-

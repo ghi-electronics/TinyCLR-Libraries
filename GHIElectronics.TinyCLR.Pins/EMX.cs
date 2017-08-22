@@ -1,184 +1,184 @@
 ﻿namespace GHIElectronics.TinyCLR.Pins {
     /// <summary>Board definition for the EMX.</summary>
     public static class EMX {
-        /// <summary>GPIO Pin definitions.</summary>
+        /// <summary>GPIO pin definitions.</summary>
         public static class GpioPin {
-            /// <summary>API Id.</summary>
+            /// <summary>API id.</summary>
             public const string Id = LPC24.GpioPin.Id;
 
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P0_0 = LPC24.GpioPin.P0_0;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P0_1 = LPC24.GpioPin.P0_1;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P0_2 = LPC24.GpioPin.P0_2;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P0_3 = LPC24.GpioPin.P0_3;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P0_4 = LPC24.GpioPin.P0_4;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P0_5 = LPC24.GpioPin.P0_5;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P0_6 = LPC24.GpioPin.P0_6;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P0_8 = LPC24.GpioPin.P0_8;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P0_9 = LPC24.GpioPin.P0_9;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P0_10 = LPC24.GpioPin.P0_10;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P0_11 = LPC24.GpioPin.P0_11;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P0_12 = LPC24.GpioPin.P0_12;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P0_13 = LPC24.GpioPin.P0_13;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P0_15 = LPC24.GpioPin.P0_15;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P0_16 = LPC24.GpioPin.P0_16;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P0_17 = LPC24.GpioPin.P0_17;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P0_18 = LPC24.GpioPin.P0_18;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P0_22 = LPC24.GpioPin.P0_22;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P0_23 = LPC24.GpioPin.P0_23;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P0_24 = LPC24.GpioPin.P0_24;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P0_25 = LPC24.GpioPin.P0_25;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P0_26 = LPC24.GpioPin.P0_26;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P0_27 = LPC24.GpioPin.P0_27;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P0_28 = LPC24.GpioPin.P0_28;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P1_0 = LPC24.GpioPin.P1_0;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P1_1 = LPC24.GpioPin.P1_1;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P1_2 = LPC24.GpioPin.P1_2;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P1_3 = LPC24.GpioPin.P1_3;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P1_4 = LPC24.GpioPin.P1_4;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P1_5 = LPC24.GpioPin.P1_5;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P1_6 = LPC24.GpioPin.P1_6;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P1_7 = LPC24.GpioPin.P1_7;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P1_8 = LPC24.GpioPin.P1_8;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P1_9 = LPC24.GpioPin.P1_9;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P1_10 = LPC24.GpioPin.P1_10;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P1_11 = LPC24.GpioPin.P1_11;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P1_12 = LPC24.GpioPin.P1_12;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P1_14 = LPC24.GpioPin.P1_14;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P1_15 = LPC24.GpioPin.P1_15;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P1_16 = LPC24.GpioPin.P1_16;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P1_17 = LPC24.GpioPin.P1_17;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P1_19 = LPC24.GpioPin.P1_19;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P1_20 = LPC24.GpioPin.P1_20;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P1_21 = LPC24.GpioPin.P1_21;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P1_22 = LPC24.GpioPin.P1_22;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P1_23 = LPC24.GpioPin.P1_23;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P1_24 = LPC24.GpioPin.P1_24;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P1_25 = LPC24.GpioPin.P1_25;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P1_26 = LPC24.GpioPin.P1_26;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P1_27 = LPC24.GpioPin.P1_27;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P1_28 = LPC24.GpioPin.P1_28;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P1_29 = LPC24.GpioPin.P1_29;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P1_30 = LPC24.GpioPin.P1_30;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P1_31 = LPC24.GpioPin.P1_31;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P2_0 = LPC24.GpioPin.P2_0;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P2_1 = LPC24.GpioPin.P2_1;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P2_2 = LPC24.GpioPin.P2_2;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P2_3 = LPC24.GpioPin.P2_3;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P2_4 = LPC24.GpioPin.P2_4;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P2_5 = LPC24.GpioPin.P2_5;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P2_6 = LPC24.GpioPin.P2_6;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P2_7 = LPC24.GpioPin.P2_7;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P2_8 = LPC24.GpioPin.P2_8;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P2_9 = LPC24.GpioPin.P2_9;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P2_10 = LPC24.GpioPin.P2_10;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P2_11 = LPC24.GpioPin.P2_11;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P2_12 = LPC24.GpioPin.P2_12;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P2_13 = LPC24.GpioPin.P2_13;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P2_21 = LPC24.GpioPin.P2_21;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P2_22 = LPC24.GpioPin.P2_22;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P3_24 = LPC24.GpioPin.P3_24;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P3_16 = LPC24.GpioPin.P3_16;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P3_17 = LPC24.GpioPin.P3_17;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P3_25 = LPC24.GpioPin.P3_25;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P3_26 = LPC24.GpioPin.P3_26;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P3_27 = LPC24.GpioPin.P3_27;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P3_29 = LPC24.GpioPin.P3_29;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P3_30 = LPC24.GpioPin.P3_30;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P3_31 = LPC24.GpioPin.P3_31;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P4_22 = LPC24.GpioPin.P4_22;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P4_23 = LPC24.GpioPin.P4_23;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P4_28 = LPC24.GpioPin.P4_28;
-            /// <summary>GPIO Pin.</summary>
+            /// <summary>GPIO pin.</summary>
             public const int P4_29 = LPC24.GpioPin.P4_29;
-            /// <summary>GPIO Pin.</summary>
-            public const int P4_31 = LPC24.GpioPin.P4_31;          
+            /// <summary>GPIO pin.</summary>
+            public const int P4_31 = LPC24.GpioPin.P4_31;
         }
 
         /// <summary>ADC channel definitions.</summary>
         public static class AdcChannel {
-            /// <summary>API Id.</summary>
+            /// <summary>API id.</summary>
             public const string Id = LPC24.DacChannel.Id;
 
             /// <summary>ADC channel.</summary>
@@ -201,37 +201,38 @@
 
         /// <summary>DAC channel definitions.</summary>
         public static class DacChannel {
-            /// <summary>API Id.</summary>
+            /// <summary>API id.</summary>
             public const string Id = LPC24.DacChannel.Id;
 
             /// <summary>DAC channel.</summary>
             public const int P0_26 = LPC24.DacChannel.Channel0;
         }
-       
-        /// <summary>PWM Pin definitions.</summary>
+
+        /// <summary>PWM pin definitions.</summary>
         public static class PwmPin {
             /// <summary>PWM controller.</summary>
             public static class Controller0 {
-                /// <summary>API Id.</summary>
+                /// <summary>API id.</summary>
                 public const string Id = LPC24.PwmChannel.Pwm0;
 
-                /// <summary>PWM Pin.</summary>
+                /// <summary>PWM pin.</summary>
                 public const int P3_16 = LPC24.PwmChannel.Output1;
-                /// <summary>PWM Pin.</summary>
-                public const int P3_17 = LPC24.PwmChannel.Output2;             
+                /// <summary>PWM pin.</summary>
+                public const int P3_17 = LPC24.PwmChannel.Output2;
             }
+
             /// <summary>PWM controller.</summary>
             public static class Controller1 {
-                /// <summary>API Id.</summary>
+                /// <summary>API id.</summary>
                 public const string Id = LPC24.PwmChannel.Pwm1;
 
-                /// <summary>PWM Pin.</summary>
+                /// <summary>PWM pin.</summary>
                 public const int P3_24 = LPC24.PwmChannel.Output1;
-                /// <summary>PWM Pin.</summary>
+                /// <summary>PWM pin.</summary>
                 public const int P3_26 = LPC24.PwmChannel.Output3;
-                /// <summary>PWM Pin.</summary>
+                /// <summary>PWM pin.</summary>
                 public const int P3_27 = LPC24.PwmChannel.Output4;
-                /// <summary>PWM Pin.</summary>
+                /// <summary>PWM pin.</summary>
                 public const int P3_29 = LPC24.PwmChannel.Output6;
             }
         }
@@ -276,7 +277,7 @@
 
         /// <summary>Display definitions.</summary>
         public static class Display {
-            /// <summary>API Id.</summary>
+            /// <summary>API id.</summary>
             public const string Lcd = LPC24.Display.Lcd;
         }
     }

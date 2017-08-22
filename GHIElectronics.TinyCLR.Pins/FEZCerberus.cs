@@ -1,7 +1,7 @@
 ﻿namespace GHIElectronics.TinyCLR.Pins {
     /// <summary>Board definition for the FEZ Cerberus.</summary>
     public static class FEZCerberus {
-        /// <summary>Gpio Pin definition.</summary>
+        /// <summary>GPIO pin definitions.</summary>
         public static class GpioPin {
             /// <summary>Debug LED definition</summary>
             public const int DebugLed = Cerb.GpioPin.PC4;
@@ -121,9 +121,8 @@
             }
         }
 
-        /// <summary>Analog channel definition.</summary>
+        /// <summary>ADC channel definitions.</summary>
         public static class AdcChannel {
-
             /// <summary>Socket definition.</summary>
             public static class Socket2 {
                 /// <summary>Pin definition.</summary>
@@ -155,9 +154,8 @@
             }
         }
 
-        /// <summary>Analog output definition.</summary>
+        /// <summary>DAC channel definitions.</summary>
         public static class DacChannel {
-
             /// <summary>Socket definition.</summary>
             public static class Socket3 {
                 /// <summary>Pin definition.</summary>
@@ -165,9 +163,8 @@
             }
         }
 
-        /// <summary>PWM channel definition.</summary>
+        /// <summary>PWM pin definitions.</summary>
         public static class PwmPin {
-
             /// <summary>PWM controller.</summary>
             public static class Controller1 {
                 /// <summary>API id.</summary>
@@ -241,7 +238,7 @@
             }
         }
 
-        /// <summary>Uart port definition.</summary>
+        /// <summary>UART port definitions.</summary>
         public static class UartPort {
             /// <summary>Socket definition.</summary>
             public const string Socket2 = Cerb.UartPort.Usart2;
@@ -249,13 +246,13 @@
             public const string Socket6 = Cerb.UartPort.Usart3;
         }
 
-        /// <summary>I2c Bus definition.</summary>
+        /// <summary>I2C bus definitions.</summary>
         public static class I2cBus {
             /// <summary>Socket definition.</summary>
             public const string Socket2 = Cerb.I2cBus.I2c1;
         }
 
-        /// <summary>SPI Bus definition.</summary>
+        /// <summary>SPI bus definitions.</summary>
         public static class SpiBus {
             /// <summary>Socket definition.</summary>
             public const string Socket5 = Cerb.SpiBus.Spi1;
@@ -263,14 +260,10 @@
             public const string Socket6 = Cerb.SpiBus.Spi1;
         }
 
-        /// <summary>CAN Bus definition.</summary>
+        /// <summary>CAN bus definitions.</summary>
         public static class CanBus {
             /// <summary>Socket definition.</summary>
             public const string Socket5 = Cerb.CanBus.Can1;
         }
     }
 }
-
-
-
-

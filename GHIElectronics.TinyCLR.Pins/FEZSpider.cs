@@ -1,13 +1,14 @@
 ﻿namespace GHIElectronics.TinyCLR.Pins {
     /// <summary>Board definition for the FEZ Spider.</summary>
     public static class FEZSpider {
-        /// <summary>Gpio Pin definition.</summary>
+        /// <summary>GPIO pin definitions.</summary>
         public static class GpioPin {
-            /// <summary>API Id.</summary>
+            /// <summary>API id.</summary>
             public const string Id = EMX.GpioPin.Id;
+
             /// <summary>Debug LED definition</summary>
             public const int DebugLed = EMX.GpioPin.P1_31;
-           
+
             /// <summary>Socket definition.</summary>
             public static class Socket1 {
                 /// <summary>Pin definition.</summary>
@@ -15,8 +16,9 @@
                 /// <summary>Pin definition.</summary>
                 public const int Pin6 = EMX.GpioPin.P2_22;
                 /// <summary>Pin definition.</summary>
-                public const int Pin7 = EMX.GpioPin.P4_31;               
+                public const int Pin7 = EMX.GpioPin.P4_31;
             }
+
             /// <summary>Socket definition.</summary>
             public static class Socket3 {
                 /// <summary>Pin definition.</summary>
@@ -24,6 +26,7 @@
                 /// <summary>Pin definition.</summary>
                 public const int Pin6 = EMX.GpioPin.P0_4;
             }
+
             /// <summary>Socket definition.</summary>
             public static class Socket4 {
                 /// <summary>Pin definition.</summary>
@@ -35,6 +38,7 @@
                 /// <summary>Pin definition.</summary>
                 public const int Pin6 = EMX.GpioPin.P3_30;
             }
+
             /// <summary>Socket definition.</summary>
             public static class Socket5 {
                 /// <summary>Pin definition.</summary>
@@ -52,6 +56,7 @@
                 /// <summary>Pin definition.</summary>
                 public const int Pin9 = EMX.GpioPin.P1_2;
             }
+
             /// <summary>Socket definition.</summary>
             public static class Socket6 {
                 /// <summary>Pin definition.</summary>
@@ -69,6 +74,7 @@
                 /// <summary>Pin definition.</summary>
                 public const int Pin9 = EMX.GpioPin.P1_2;
             }
+
             /// <summary>Socket definition.</summary>
             public static class Socket8 {
                 /// <summary>Pin definition.</summary>
@@ -86,6 +92,7 @@
                 /// <summary>Pin definition.</summary>
                 public const int Pin9 = EMX.GpioPin.P3_26;
             }
+
             /// <summary>Socket definition.</summary>
             public static class Socket9 {
                 /// <summary>Pin definition.</summary>
@@ -103,6 +110,7 @@
                 /// <summary>Pin definition.</summary>
                 public const int Pin9 = EMX.GpioPin.P0_15;
             }
+
             /// <summary>Socket definition.</summary>
             public static class Socket10 {
                 /// <summary>Pin definition.</summary>
@@ -114,6 +122,7 @@
                 /// <summary>Pin definition.</summary>
                 public const int Pin6 = EMX.GpioPin.P3_31;
             }
+
             /// <summary>Socket definition.</summary>
             public static class Socket11 {
                 /// <summary>Pin definition.</summary>
@@ -131,6 +140,7 @@
                 /// <summary>Pin definition.</summary>
                 public const int Pin9 = EMX.GpioPin.P3_17;
             }
+
             /// <summary>Socket definition.</summary>
             public static class Socket12 {
                 /// <summary>Pin definition.</summary>
@@ -148,6 +158,7 @@
                 /// <summary>Pin definition.</summary>
                 public const int Pin9 = EMX.GpioPin.P2_2;
             }
+
             /// <summary>Socket definition.</summary>
             public static class Socket13 {
                 /// <summary>Pin definition.</summary>
@@ -165,6 +176,7 @@
                 /// <summary>Pin definition.</summary>
                 public const int Pin9 = G120E.GpioPin.P2_21;
             }
+
             /// <summary>Socket definition.</summary>
             public static class Socket14 {
                 /// <summary>Pin definition.</summary>
@@ -184,9 +196,8 @@
             }
         }
 
-        /// <summary>Analog channel definition.</summary>
+        /// <summary>ADC channel definitions.</summary>
         public static class AdcChannel {
-
             /// <summary>Socket definition.</summary>
             public static class Socket9 {
                 /// <summary>Pin definition.</summary>
@@ -196,6 +207,7 @@
                 /// <summary>Pin definition.</summary>
                 public const int Pin5 = EMX.AdcChannel.P0_26;
             }
+
             /// <summary>Socket definition.</summary>
             public static class Socket10 {
                 /// <summary>Pin definition.</summary>
@@ -207,46 +219,55 @@
             }
         }
 
-        /// <summary>Analog output definition.</summary>
+        /// <summary>DAC channel definitions.</summary>
         public static class DacChannel {
-
             /// <summary>Socket definition.</summary>
             public static class Socket9 {
                 /// <summary>Pin definition.</summary>
                 public const int Pin5 = EMX.DacChannel.P0_26;
             }
         }
-        
-        /// <summary>PWM channel definition.</summary>
-        public static class PwmPin {
-            /// <summary>Controller 1 definition.</summary>
-            public static class Controller1 {
-                public const string Id = EMX.PwmPin.Controller1.Id;
 
-                /// <summary>Socket definition.</summary>
-                public static class Socket8 {
-                    public const int Pin7 = EMX.PwmPin.Controller1.P3_24;
-                    public const int Pin8 = EMX.PwmPin.Controller1.P3_27;
-                    public const int Pin9 = EMX.PwmPin.Controller1.P3_26;
-                }
-                /// <summary>Socket definition.</summary>
-                public static class Socket11 {
-                    public const int Pin7 = EMX.PwmPin.Controller1.P3_24;                
-                }
-            }
-            /// <summary>Controller 0 definition.</summary>
+        /// <summary>PWM pin definitions.</summary>
+        public static class PwmPin {
+            /// <summary>PWM controller.</summary>
             public static class Controller0 {
+                /// <summary>API id.</summary>
                 public const string Id = EMX.PwmPin.Controller0.Id;
 
                 /// <summary>Socket definition.</summary>
                 public static class Socket11 {
+                    /// <summary>Pin definition.</summary>
                     public const int Pin8 = EMX.PwmPin.Controller0.P3_16;
+                    /// <summary>Pin definition.</summary>
                     public const int Pin9 = EMX.PwmPin.Controller0.P3_17;
+                }
+            }
+
+            /// <summary>PWM controller.</summary>
+            public static class Controller1 {
+                /// <summary>API id.</summary>
+                public const string Id = EMX.PwmPin.Controller1.Id;
+
+                /// <summary>Socket definition.</summary>
+                public static class Socket8 {
+                    /// <summary>Pin definition.</summary>
+                    public const int Pin7 = EMX.PwmPin.Controller1.P3_24;
+                    /// <summary>Pin definition.</summary>
+                    public const int Pin8 = EMX.PwmPin.Controller1.P3_27;
+                    /// <summary>Pin definition.</summary>
+                    public const int Pin9 = EMX.PwmPin.Controller1.P3_26;
+                }
+
+                /// <summary>Socket definition.</summary>
+                public static class Socket11 {
+                    /// <summary>Pin definition.</summary>
+                    public const int Pin7 = EMX.PwmPin.Controller1.P3_24;
                 }
             }
         }
 
-        /// <summary>Uart port definition.</summary>
+        /// <summary>UART port definitions.</summary>
         public static class UartPort {
             /// <summary>Socket definition.</summary>
             public const string Socket4 = EMX.UartPort.Uart1;
@@ -258,7 +279,7 @@
             public const string Socket11 = EMX.UartPort.Uart0;
         }
 
-        /// <summary>I2c Bus definition.</summary>
+        /// <summary>I2C bus definitions.</summary>
         public static class I2cBus {
             /// <summary>Socket definition.</summary>
             public const string Socket1 = EMX.I2cBus.I2c0;
@@ -270,7 +291,7 @@
             public const string Socket10 = EMX.I2cBus.I2c0;
         }
 
-        /// <summary>SPI Bus definition.</summary>
+        /// <summary>SPI bus definitions.</summary>
         public static class SpiBus {
             /// <summary>Socket definition.</summary>
             public const string Socket6 = EMX.SpiBus.Spi1;
@@ -278,18 +299,16 @@
             public const string Socket9 = EMX.SpiBus.Spi0;
         }
 
-        /// <summary>CAN Bus definition.</summary>
+        /// <summary>CAN bus definitions.</summary>
         public static class CanBus {
             /// <summary>Socket definition.</summary>
             public const string Socket6 = EMX.CanBus.Can1;
         }
 
-        /// <summary>Display definition.</summary>
+        /// <summary>Display definitions.</summary>
         public static class Display {
             /// <summary>LCD definition.</summary>
             public const string Lcd = EMX.Display.Lcd;
         }
     }
 }
-
-

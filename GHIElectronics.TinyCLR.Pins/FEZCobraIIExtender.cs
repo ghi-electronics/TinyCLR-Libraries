@@ -1,7 +1,7 @@
 ﻿namespace GHIElectronics.TinyCLR.Pins {
-    /// <summary>Board definition for the FEZ CobraII Extender.</summary>
+    /// <summary>Board definition for the FEZ Cobra II Extender.</summary>
     public static class FEZCobraIIExtender {
-        /// <summary>Gpio Pin definition.</summary>
+        /// <summary>GPIO pin definitions.</summary>
         public static class GpioPin {
             /// <summary>API id.</summary>
             public const string Id = G120.GpioPin.Id;
@@ -61,9 +61,9 @@
             }
         }
 
-        /// <summary>Analog channel definition.</summary>
+        /// <summary>ADC channel definitions.</summary>
         public static class AdcChannel {
-            /// <summary>API Id.</summary>
+            /// <summary>API id.</summary>
             public const string Id = G120.AdcChannel.Id;
 
             /// <summary>Socket definition.</summary>
@@ -77,9 +77,9 @@
             }
         }
 
-        /// <summary>Analog output definition.</summary>
+        /// <summary>DAC channel definitions.</summary>
         public static class DacChannel {
-            /// <summary>API Id.</summary>
+            /// <summary>API id.</summary>
             public const string Id = G120.DacChannel.Id;
 
             /// <summary>Socket definition.</summary>
@@ -89,7 +89,7 @@
             }
         }
 
-        /// <summary>Uart port definition.</summary>
+        /// <summary>UART port definitions.</summary>
         public static class UartPort {
             /// <summary>Socket definition.</summary>
             public const string Socket7 = G120.UartPort.Usart4;
@@ -97,23 +97,21 @@
             public const string Socket8 = G120.UartPort.Uart2;
         }
 
-        /// <summary>I2c Bus definition.</summary>
+        /// <summary>I2C bus definitions.</summary>
         public static class I2cBus {
-            /// <summary>I2C bus on Pin18 (SDA) and Pin20 (SCL).</summary>
-            public const string I2c0 = G120.I2cBus.I2c0;
             /// <summary>Socket definition.</summary>
             public const string Socket8 = G120.I2cBus.I2c0;
             /// <summary>Socket definition.</summary>
             public const string Socket10 = G120.I2cBus.I2c0;
         }
 
-        /// <summary>SPI Bus definition.</summary>
+        /// <summary>SPI bus definitions.</summary>
         public static class SpiBus {
             /// <summary>Socket definition.</summary>
             public const string Socket9 = G120.SpiBus.Spi0;
         }
 
-        /// <summary>CAN Bus definition.</summary>
+        /// <summary>CAN bus definitions.</summary>
         public static class CanBus {
             /// <summary>Socket definition.</summary>
             public const string Socket10 = G120.CanBus.Can1;
