@@ -98,6 +98,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
         private const byte MADCTL_MX = 0x40;
         private const byte MADCTL_MV = 0x20;
         private const byte MADCTL_BGR = 0x08;
+        private const int ORIGINAL_VRAMS = 12;
 
         private SpiDevice spi;
         private GpioPin controlPin;
@@ -150,6 +151,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
         /// </summary>
         public int Height { get; } = 64;
 
+        private byte[][] vrams;
         private byte[] vram;
 #if SUPPORT_ORIGINAL_BRAINPAD
         private void InitN18() {
@@ -219,7 +221,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
             WriteData(0x00);
 
             WriteCommand(0x3A); //65k mode
-            WriteData(0x05);
+            WriteData(0x03);
 
             // Rotate
             WriteCommand(ST7735_MADCTL);
@@ -343,12 +345,16 @@ namespace GHIElectronics.TinyCLR.BrainPad {
             switch (Board.BoardType) {
 #if SUPPORT_ORIGINAL_BRAINPAD
                 case BoardType.Original:
-                    if (this.vram == null)
+                    if (this.vrams == null)
                         return;
-                    SetClip((160 - 128) / 2, (128 - 64) / 2, 128, 64);
+
+                    SetClip((160 - this.Width) / 2, (128 - this.Height) / 2, this.Width, this.Height);
                     WriteCommand(0x2C);
                     this.controlPin.Write(GpioPinValue.High);
-                    this.spi.Write(this.vram);
+
+                    for (var i = 0; i < this.vrams.Length; i++)
+                        this.spi.Write(this.vrams[i]);
+
                     break;
 #endif
                 case BoardType.BP2:
@@ -366,16 +372,39 @@ namespace GHIElectronics.TinyCLR.BrainPad {
             switch (Board.BoardType) {
 #if SUPPORT_ORIGINAL_BRAINPAD
                 case BoardType.Original:
-                    if (this.vram == null)
-                        this.vram = new byte[128 * 64 * 2];
+                    var total = (int)(this.Width * this.Height * 1.5);
+                    var each = total / Display.ORIGINAL_VRAMS;
 
-                    if (set) {
-                        this.vram[(x * 2) + (y * 128 * 2)] = 0x0;
-                        this.vram[(x * 2) + (y * 128 * 2) + 1] = 0x1F;
+                    if (this.vrams == null) {
+                        //We have many small arrays to reduce chance of our of memory because of fragmentation. Make sure total is evenly divisible by vrams count
+                        this.vrams = new byte[Display.ORIGINAL_VRAMS][];
+
+                        for (var i = 0; i < this.vrams.Length; i++)
+                            this.vrams[i] = new byte[each];
+                    }
+
+                    var pixel = y * this.Width + x;
+                    var addr = 0;
+                    var mask = 0;
+
+                    if ((pixel % 2) == 0) {
+                        addr = (int)(pixel * 1.5 + 1);
+                        mask = 0xF0;
                     }
                     else {
-                        this.vram[x * 2 + y * 128 * 2] = 0;
-                        this.vram[x * 2 + y * 128 * 2 + 1] = 0;
+                        addr = (int)((pixel - 1) * 1.5 + 2);
+                        mask = 0x0F;
+                    }
+
+                    var arr = addr / each;
+
+                    addr %= each;
+
+                    if (set) {
+                        this.vrams[arr][addr] |= (byte)mask;
+                    }
+                    else {
+                        this.vrams[arr][addr] &= (byte)~mask;
                     }
                     break;
 #endif
@@ -411,11 +440,25 @@ namespace GHIElectronics.TinyCLR.BrainPad {
         /// Clears the Display.
         /// </summary>
         public void ClearScreen() {
-            if (this.vram == null)
-                return;
-            Array.Clear(this.vram, 0, this.vram.Length);
-            if (Board.BoardType == BoardType.BP2)
-                this.vram[0] = 0x40;
+            switch (Board.BoardType) {
+#if SUPPORT_ORIGINAL_BRAINPAD
+                case BoardType.Original:
+                    if (this.vrams == null)
+                        return;
+
+                    for (var i = 0; i < this.vrams.Length; i++)
+                        Array.Clear(this.vrams[i], 0, this.vrams[i].Length);
+
+                    break;
+#endif
+                case BoardType.BP2:
+                    if (this.vram == null)
+                        return;
+                    Array.Clear(this.vram, 0, this.vram.Length);
+                    if (Board.BoardType == BoardType.BP2)
+                        this.vram[0] = 0x40;
+                    break;
+            }
         }
 
         public void ClearPartOfScreen(int x, int y, int width, int height) {
