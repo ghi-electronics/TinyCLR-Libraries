@@ -377,6 +377,8 @@ namespace GHIElectronics.TinyCLR.BrainPad {
 
                     if (this.vrams == null) {
                         //We have many small arrays to reduce chance of our of memory because of fragmentation. Make sure total is evenly divisible by vrams count
+                        GC.Collect();
+
                         this.vrams = new byte[Display.ORIGINAL_VRAMS][];
 
                         for (var i = 0; i < this.vrams.Length; i++)
