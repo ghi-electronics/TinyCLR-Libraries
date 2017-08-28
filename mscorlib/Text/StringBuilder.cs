@@ -16,7 +16,7 @@ namespace System.Text {
         #region Properties
 
         /// <summary>
-        /// Gets the maximum capacity of this instance. 
+        /// Gets the maximum capacity of this instance.
         /// </summary>
         public int MaxCapacity => this.m_MaxCapacity;
 
@@ -64,7 +64,7 @@ namespace System.Text {
         }
 
         /// <summary>
-        /// Gets or sets the maximum number of characters that can be contained in the memory allocated by the current instance. 
+        /// Gets or sets the maximum number of characters that can be contained in the memory allocated by the current instance.
         /// </summary>
         public int Capacity {
             get => (this.m_ChunkChars.Length + this.m_ChunkOffset);
@@ -88,7 +88,7 @@ namespace System.Text {
         }
 
         /// <summary>
-        /// Gets or sets the length of the current StringBuilder object. 
+        /// Gets or sets the length of the current StringBuilder object.
         /// </summary>
         public int Length {
             get => (this.m_ChunkOffset + this.m_ChunkLength);
@@ -131,7 +131,7 @@ namespace System.Text {
         #region Constructor
 
         /// <summary>
-        /// Initializes a new instance of the StringBuilder class from the specified substring and capacity. 
+        /// Initializes a new instance of the StringBuilder class from the specified substring and capacity.
         /// </summary>
         /// <param name="value"></param>
         /// <param name="startIndex"></param>
@@ -180,7 +180,7 @@ namespace System.Text {
         }
 
         /// <summary>
-        /// Initializes a new instance of the StringBuilder class using the specified string and capacity. 
+        /// Initializes a new instance of the StringBuilder class using the specified string and capacity.
         /// </summary>
         /// <param name="value"></param>
         /// <param name="capacity"></param>
@@ -188,7 +188,7 @@ namespace System.Text {
             : this(value, 0, (value != null) ? value.Length : 0, capacity) { }
 
         /// <summary>
-        /// Initializes a new instance of the StringBuilder class that starts with a specified capacity and can grow to a specified maximum. 
+        /// Initializes a new instance of the StringBuilder class that starts with a specified capacity and can grow to a specified maximum.
         /// </summary>
         /// <param name="capacity"></param>
         /// <param name="maxCapacity"></param>
@@ -218,21 +218,21 @@ namespace System.Text {
         }
 
         /// <summary>
-        /// Initializes a new instance of the StringBuilder class using the specified capacity. 
+        /// Initializes a new instance of the StringBuilder class using the specified capacity.
         /// </summary>
         /// <param name="capacity"></param>
         public StringBuilder(int capacity)
             : this(string.Empty, capacity) { }
 
         /// <summary>
-        /// Initializes a new instance of the StringBuilder class using the specified string. 
+        /// Initializes a new instance of the StringBuilder class using the specified string.
         /// </summary>
         /// <param name="value"></param>
         public StringBuilder(string value)
             : this(value, 0x10) { }
 
         /// <summary>
-        /// Initializes a new instance of the StringBuilder class. 
+        /// Initializes a new instance of the StringBuilder class.
         /// </summary>
         public StringBuilder()
             : this(0x10) { }
@@ -242,7 +242,7 @@ namespace System.Text {
         #region Methods
 
         /// <summary>
-        /// Removes all characters from the current StringBuilder instance. 
+        /// Removes all characters from the current StringBuilder instance.
         /// </summary>
         /// <returns></returns>
         public StringBuilder Clear() {
@@ -251,21 +251,21 @@ namespace System.Text {
         }
 
         /// <summary>
-        /// Appends the string representation of a specified Boolean value to this instance. 
+        /// Appends the string representation of a specified Boolean value to this instance.
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
         public StringBuilder Append(bool value) => this.Append(value.ToString());
 
         /// <summary>
-        /// Appends the string representation of a specified 8-bit unsigned integer to this instance. 
+        /// Appends the string representation of a specified 8-bit unsigned integer to this instance.
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
         public StringBuilder Append(byte value) => this.Append(value.ToString());
 
         /// <summary>
-        /// Appends the string representation of a specified Unicode character to this instance. 
+        /// Appends the string representation of a specified Unicode character to this instance.
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
@@ -288,21 +288,21 @@ namespace System.Text {
         */
 
         /// <summary>
-        /// Appends the string representation of a specified double-precision floating-point number to this instance. 
+        /// Appends the string representation of a specified double-precision floating-point number to this instance.
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
         public StringBuilder Append(double value) => this.Append(value.ToString());
 
         /// <summary>
-        /// Appends the string representation of a specified 16-bit signed integer to this instance. 
+        /// Appends the string representation of a specified 16-bit signed integer to this instance.
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
         public StringBuilder Append(short value) => this.Append(value.ToString());
 
         /// <summary>
-        /// Appends the string representation of the Unicode characters in a specified array to this instance. 
+        /// Appends the string representation of the Unicode characters in a specified array to this instance.
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
@@ -314,21 +314,21 @@ namespace System.Text {
         }
 
         /// <summary>
-        /// Appends the string representation of a specified 32-bit signed integer to this instance. 
+        /// Appends the string representation of a specified 32-bit signed integer to this instance.
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
         public StringBuilder Append(int value) => this.Append(value.ToString());
 
         /// <summary>
-        /// Appends the string representation of a specified 64-bit unsigned integer to this instance. 
+        /// Appends the string representation of a specified 64-bit unsigned integer to this instance.
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
         public StringBuilder Append(long value) => this.Append(value.ToString());
 
         /// <summary>
-        /// Appends the string representation of a specified object to this instance. 
+        /// Appends the string representation of a specified object to this instance.
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
@@ -365,7 +365,7 @@ namespace System.Text {
         }
 
         /// <summary>
-        /// Appends the string representation of a specified 8-bit signed integer to this instance. 
+        /// Appends the string representation of a specified 8-bit signed integer to this instance.
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
@@ -373,14 +373,14 @@ namespace System.Text {
         public StringBuilder Append(sbyte value) => this.Append(value.ToString());
 
         /// <summary>
-        /// Appends the string representation of a specified double-precision floating-point number to this instance. 
+        /// Appends the string representation of a specified double-precision floating-point number to this instance.
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
         public StringBuilder Append(float value) => this.Append(value.ToString());
 
         /// <summary>
-        /// Appends the string representation of a specified 16-bit unsigned integer to this instance. 
+        /// Appends the string representation of a specified 16-bit unsigned integer to this instance.
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
@@ -388,7 +388,7 @@ namespace System.Text {
         public StringBuilder Append(ushort value) => this.Append(value.ToString());
 
         /// <summary>
-        /// Appends the string representation of a specified 32-bit unsigned integer to this instance. 
+        /// Appends the string representation of a specified 32-bit unsigned integer to this instance.
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
@@ -396,7 +396,7 @@ namespace System.Text {
         public StringBuilder Append(uint value) => this.Append(value.ToString());
 
         /// <summary>
-        /// Appends the string representation of a specified 64-bit unsigned integer to this instance. 
+        /// Appends the string representation of a specified 64-bit unsigned integer to this instance.
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
@@ -404,7 +404,7 @@ namespace System.Text {
         public StringBuilder Append(ulong value) => this.Append(value.ToString());
 
         /// <summary>
-        /// Appends a copy of a specified substring to this instance. 
+        /// Appends a copy of a specified substring to this instance.
         /// </summary>
         /// <param name="value"></param>
         /// <param name="startIndex"></param>
@@ -464,7 +464,7 @@ namespace System.Text {
         }
 
         /// <summary>
-        /// Appends a specified number of copies of the string representation of a Unicode character to this instance. 
+        /// Appends a specified number of copies of the string representation of a Unicode character to this instance.
         /// </summary>
         /// <param name="value"></param>
         /// <param name="repeatCount"></param>
@@ -492,7 +492,7 @@ namespace System.Text {
         }
 
         /// <summary>
-        /// Removes the specified range of characters from this instance. 
+        /// Removes the specified range of characters from this instance.
         /// </summary>
         /// <param name="startIndex"></param>
         /// <param name="length"></param>
@@ -538,7 +538,7 @@ namespace System.Text {
         }
 
         /// <summary>
-        /// Converts the value of a substring of this instance to a String. 
+        /// Converts the value of a substring of this instance to a String.
         /// </summary>
         /// <param name="startIndex"></param>
         /// <param name="length"></param>
@@ -589,7 +589,7 @@ namespace System.Text {
         }
 
         /// <summary>
-        /// Inserts one or more copies of a specified string into this instance at the specified character position. 
+        /// Inserts one or more copies of a specified string into this instance at the specified character position.
         /// </summary>
         /// <param name="index"></param>
         /// <param name="value"></param>
@@ -621,7 +621,7 @@ namespace System.Text {
         }
 
         /// <summary>
-        /// Inserts the string representation of a specified subarray of Unicode characters into this instance at the specified character position. 
+        /// Inserts the string representation of a specified subarray of Unicode characters into this instance at the specified character position.
         /// </summary>
         /// <param name="index"></param>
         /// <param name="value"></param>
@@ -655,7 +655,7 @@ namespace System.Text {
         }
 
         /// <summary>
-        /// Replaces, within a substring of this instance, all occurrences of a specified character with another specified character. 
+        /// Replaces, within a substring of this instance, all occurrences of a specified character with another specified character.
         /// </summary>
         /// <param name="oldChar"></param>
         /// <param name="newChar"></param>
@@ -694,7 +694,7 @@ namespace System.Text {
         }
 
         /// <summary>
-        /// Replaces all occurrences of a specified character in this instance with another specified character. 
+        /// Replaces all occurrences of a specified character in this instance with another specified character.
         /// </summary>
         /// <param name="oldChar"></param>
         /// <param name="newChar"></param>
@@ -702,7 +702,7 @@ namespace System.Text {
         public StringBuilder Replace(char oldChar, char newChar) => this.Replace(oldChar, newChar, 0, this.Length);
 
         /// <summary>
-        /// Replaces, within a substring of this instance, all occurrences of a specified string with another specified string. 
+        /// Replaces, within a substring of this instance, all occurrences of a specified string with another specified string.
         /// </summary>
         /// <param name="oldValue"></param>
         /// <param name="newValue"></param>
@@ -782,7 +782,7 @@ namespace System.Text {
         }
 
         /// <summary>
-        /// Replaces all occurrences of a specified string in this instance with another specified string. 
+        /// Replaces all occurrences of a specified string in this instance with another specified string.
         /// </summary>
         /// <param name="oldValue"></param>
         /// <param name="newValue"></param>
@@ -801,7 +801,7 @@ namespace System.Text {
         /// <summary>
         /// Appends a NewLine onto the String
         /// </summary>
-        public StringBuilder AppendLine() => this.Append("\r\n");
+        public StringBuilder AppendLine() => this.Append(Environment.NewLine);
 
         #endregion
 
@@ -855,13 +855,13 @@ namespace System.Text {
                 var replacementIndex = 0;
                 var chars = value.ToCharArray();
                 ReplaceValue:
-                //Replace the value                 
+                //Replace the value
                 this.ReplaceInPlaceAtChunk(ref chunk, ref indexInChunk, chars, ref replacementIndex, value.Length);
                 if (replacementIndex == value.Length) {
                     replacementIndex = 0;
                 }
 
-                //Determine the next replacement 
+                //Determine the next replacement
                 var valueIndex = replacements[index] + removeCount;
                 //Move the pointer of the working replacement
                 ++index;
@@ -1043,7 +1043,7 @@ namespace System.Text {
             return;
         }
 
-        #endregion        
+        #endregion
     }
 }
 
