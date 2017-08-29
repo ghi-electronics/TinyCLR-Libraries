@@ -36,12 +36,16 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Cerb.cs" />
+    <Compile Include="EmbeddedMaster.cs" />
+    <Compile Include="EmbeddedMasterNonTFT.cs" />
     <Compile Include="EMX.cs" />
     <Compile Include="FEZCerb40.cs" />
+    <Compile Include="FEZCerb40II.cs" />
     <Compile Include="FEZCerberus.cs" />
     <Compile Include="FEZCerbot.cs" />
     <Compile Include="FEZCerbuinoBee.cs" />
     <Compile Include="FEZCerbuinoNet.cs" />
+    <Compile Include="FEZCobra.cs" />
     <Compile Include="FEZCobraII.cs" />
     <Compile Include="FEZCobraIIExtender.cs" />
     <Compile Include="FEZCobraIII.cs" />
