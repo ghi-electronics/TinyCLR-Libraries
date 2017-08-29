@@ -173,7 +173,7 @@
         /// <summary>ADC channel definitions.</summary>
         public static class AdcChannel {
             /// <summary>API id.</summary>
-            public const string Id = LPC24.DacChannel.Id;
+            public const string Id = LPC24.AdcChannel.Id;
 
             /// <summary>ADC channel.</summary>
             public const int P0_23 = LPC24.AdcChannel.Channel0;
