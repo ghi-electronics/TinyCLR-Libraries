@@ -153,6 +153,8 @@
             /// <summary>GPIO pin.</summary>
             public const int P3_17 = LPC24.GpioPin.P3_17;
             /// <summary>GPIO pin.</summary>
+            public const int P3_23 = LPC24.GpioPin.P3_25;
+            /// <summary>GPIO pin.</summary>
             public const int P3_25 = LPC24.GpioPin.P3_25;
             /// <summary>GPIO pin.</summary>
             public const int P3_26 = LPC24.GpioPin.P3_26;
@@ -243,9 +245,9 @@
             public const string Uart0 = LPC24.UartPort.Uart0;
             /// <summary>UART port on P2.0 (TX), P0.16 (RX), P0.17 (CTS), and P0.6 (RTS).</summary>
             public const string Uart1 = LPC24.UartPort.Uart1;
-            /// <summary>UART port on P0.10 (TX) and P0.11 (RX).</summary>
+            /// <summary>UART port on P4.22 (TX) and P4.23 (RX).</summary>
             public const string Uart2 = LPC24.UartPort.Uart2;
-            /// <summary>UART port on P4.28 (TX) and P4.29 (RX).</summary>
+            /// <summary>UART port on P0.25 (TX) and P0.26 (RX).</summary>
             public const string Uart3 = LPC24.UartPort.Uart3;
             /// <summary>UART port on P1.29 (TX) and P2.9 (RX).</summary>
             public const string Usart4 = LPC24.UartPort.Usart4;
