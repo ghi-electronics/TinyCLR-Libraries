@@ -112,6 +112,15 @@
             }
         }
 
+        /// <summary>DAC channel definitions.</summary>
+        public static class DacChannel {
+            /// <summary>Socket definition.</summary>
+            public static class Socket4 {
+                /// <summary>Pin definition.</summary>
+                public const int Pin5 = Cerb.DacChannel.PA4;
+            }
+        }
+
         /// <summary>PWM pin definitions.</summary>
         public static class PwmPin {
             /// <summary>PWM controller.</summary>
@@ -151,7 +160,7 @@
             /// <summary>PWM controller.</summary>
             public static class Controller4 {
                 /// <summary>API id.</summary>
-                public const string Id = Cerb.PwmPin.Controller1.Id;
+                public const string Id = Cerb.PwmPin.Controller4.Id;
 
                 /// <summary>Socket definition.</summary>
                 public static class Socket6 {
@@ -159,6 +168,39 @@
                     public const int Pin8 = Cerb.PwmPin.Controller4.PB9;
                 }
             }
+
+            /// <summary>PWM controller.</summary>
+            public static class Controller8 {
+                /// <summary>API id.</summary>
+                public const string Id = Cerb.PwmPin.Controller8.Id;
+
+                /// <summary>PWM pin.</summary>
+                public const int Buzzer = Cerb.PwmPin.Controller8.PC6;
+            }
+        }
+
+        /// <summary>Uart port definition.</summary>
+        public static class UartPort {
+            /// <summary>Socket definition.</summary>
+            public const string Socket3 = Cerb.UartPort.Usart3;
+            /// <summary>Socket definition.</summary>
+            public const string Socket5 = Cerb.UartPort.Usart2;
+        }
+
+        /// <summary>I2c Bus definition.</summary>
+        public static class I2cBus {
+            /// <summary>Socket definition.</summary>
+            public const string Socket2 = Cerb.I2cBus.I2c1;
+            /// <summary>Socket definition.</summary>
+            public const string Socket4 = Cerb.I2cBus.I2c1;
+            /// <summary>Socket definition.</summary>
+            public const string Socket5 = Cerb.I2cBus.I2c1;
+        }
+
+        /// <summary>SPI Bus definition.</summary>
+        public static class SpiBus {
+            /// <summary>Socket definition.</summary>
+            public const string Socket3 = Cerb.SpiBus.Spi1;
         }
     }
 }

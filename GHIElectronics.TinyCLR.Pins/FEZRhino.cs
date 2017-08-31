@@ -7,7 +7,7 @@
             public const string Id = USBizi144.GpioPin.Id;
 
             /// <summary>GPIO pin.</summary>
-            public const int Led = G120E.GpioPin.P1_26;
+            public const int Led = USBizi144.GpioPin.P1_26;
             /// <summary>GPIO pin.</summary>
             public const int Pin1 = USBizi144.GpioPin.P1_23;
             /// <summary>GPIO pin.</summary>

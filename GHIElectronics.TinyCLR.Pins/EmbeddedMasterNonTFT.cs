@@ -1,6 +1,6 @@
 ﻿namespace GHIElectronics.TinyCLR.Pins {
-    /// <summary>Board definition for the USBizi144.</summary>
-    public static class USBizi144 {
+    /// <summary>Board definition for the Embedded Master non-TFT.</summary>
+    public static class EmbeddedMasterNonTFT {
         /// <summary>GPIO pin definitions.</summary>
         public static class GpioPin {
             /// <summary>API id.</summary>
@@ -21,8 +21,6 @@
             /// <summary>GPIO pin.</summary>
             public const int P0_6 = LPC24.GpioPin.P0_6;
             /// <summary>GPIO pin.</summary>
-            public const int P0_7 = LPC24.GpioPin.P0_7;
-            /// <summary>GPIO pin.</summary>
             public const int P0_8 = LPC24.GpioPin.P0_8;
             /// <summary>GPIO pin.</summary>
             public const int P0_9 = LPC24.GpioPin.P0_9;
@@ -31,12 +29,6 @@
             /// <summary>GPIO pin.</summary>
             public const int P0_11 = LPC24.GpioPin.P0_11;
             /// <summary>GPIO pin.</summary>
-            public const int P0_12 = LPC24.GpioPin.P0_12;
-            /// <summary>GPIO pin.</summary>
-            public const int P0_13 = LPC24.GpioPin.P0_13;
-            /// <summary>GPIO pin.</summary>
-            public const int P0_14 = LPC24.GpioPin.P0_14;
-            /// <summary>GPIO pin.</summary>
             public const int P0_15 = LPC24.GpioPin.P0_15;
             /// <summary>GPIO pin.</summary>
             public const int P0_16 = LPC24.GpioPin.P0_16;
@@ -44,12 +36,6 @@
             public const int P0_17 = LPC24.GpioPin.P0_17;
             /// <summary>GPIO pin.</summary>
             public const int P0_18 = LPC24.GpioPin.P0_18;
-            /// <summary>GPIO pin.</summary>
-            public const int P0_19 = LPC24.GpioPin.P0_19;
-            /// <summary>GPIO pin.</summary>
-            public const int P0_20 = LPC24.GpioPin.P0_20;
-            /// <summary>GPIO pin.</summary>
-            public const int P0_21 = LPC24.GpioPin.P0_21;
             /// <summary>GPIO pin.</summary>
             public const int P0_22 = LPC24.GpioPin.P0_22;
             /// <summary>GPIO pin.</summary>
@@ -95,8 +81,6 @@
             /// <summary>GPIO pin.</summary>
             public const int P1_12 = LPC24.GpioPin.P1_12;
             /// <summary>GPIO pin.</summary>
-            public const int P1_13 = LPC24.GpioPin.P1_13;
-            /// <summary>GPIO pin.</summary>
             public const int P1_14 = LPC24.GpioPin.P1_14;
             /// <summary>GPIO pin.</summary>
             public const int P1_15 = LPC24.GpioPin.P1_15;
@@ -104,8 +88,6 @@
             public const int P1_16 = LPC24.GpioPin.P1_16;
             /// <summary>GPIO pin.</summary>
             public const int P1_17 = LPC24.GpioPin.P1_17;
-            /// <summary>GPIO pin.</summary>
-            public const int P1_18 = LPC24.GpioPin.P1_18;
             /// <summary>GPIO pin.</summary>
             public const int P1_19 = LPC24.GpioPin.P1_19;
             /// <summary>GPIO pin.</summary>
@@ -161,19 +143,55 @@
             /// <summary>GPIO pin.</summary>
             public const int P2_13 = LPC24.GpioPin.P2_13;
             /// <summary>GPIO pin.</summary>
+            public const int P2_21 = LPC24.GpioPin.P2_21;
+            /// <summary>GPIO pin.</summary>
+            public const int P2_22 = LPC24.GpioPin.P2_22;
+            /// <summary>GPIO pin.</summary>
+            public const int P2_23 = LPC24.GpioPin.P2_23;
+            /// <summary>GPIO pin.</summary>
+            public const int P2_24 = LPC24.GpioPin.P2_24;
+            /// <summary>GPIO pin.</summary>
+            public const int P2_25 = LPC24.GpioPin.P2_25;
+            /// <summary>GPIO pin.</summary>
+            public const int P2_26 = LPC24.GpioPin.P2_26;
+            /// <summary>GPIO pin.</summary>
+            public const int P2_27 = LPC24.GpioPin.P2_27;
+            /// <summary>GPIO pin.</summary>
+            public const int P2_28 = LPC24.GpioPin.P2_28;
+            /// <summary>GPIO pin.</summary>
+            public const int P2_29 = LPC24.GpioPin.P2_29;
+            /// <summary>GPIO pin.</summary>
+            public const int P2_30 = LPC24.GpioPin.P2_30;
+            /// <summary>GPIO pin.</summary>
+            public const int P2_31 = LPC24.GpioPin.P2_30;
+            /// <summary>GPIO pin.</summary>
+            public const int P3_24 = LPC24.GpioPin.P3_24;
+            /// <summary>GPIO pin.</summary>
+            public const int P3_16 = LPC24.GpioPin.P3_16;
+            /// <summary>GPIO pin.</summary>
             public const int P3_25 = LPC24.GpioPin.P3_25;
             /// <summary>GPIO pin.</summary>
-            public const int P3_26 = LPC24.GpioPin.P3_26;
+            public const int P3_29 = LPC24.GpioPin.P3_29;
+            /// <summary>GPIO pin.</summary>
+            public const int P3_30 = LPC24.GpioPin.P3_30;
+            /// <summary>GPIO pin.</summary>
+            public const int P3_31 = LPC24.GpioPin.P3_31;
+            /// <summary>GPIO pin.</summary>
+            public const int P4_22 = LPC24.GpioPin.P4_22;
+            /// <summary>GPIO pin.</summary>
+            public const int P4_23 = LPC24.GpioPin.P4_23;
             /// <summary>GPIO pin.</summary>
             public const int P4_28 = LPC24.GpioPin.P4_28;
             /// <summary>GPIO pin.</summary>
             public const int P4_29 = LPC24.GpioPin.P4_29;
+            /// <summary>GPIO pin.</summary>
+            public const int P4_31 = LPC24.GpioPin.P4_31;
         }
 
         /// <summary>ADC channel definitions.</summary>
         public static class AdcChannel {
             /// <summary>API id.</summary>
-            public const string Id = LPC24.AdcChannel.Id;
+            public const string Id = LPC24.DacChannel.Id;
 
             /// <summary>ADC channel.</summary>
             public const int P0_23 = LPC24.AdcChannel.Channel0;
@@ -185,12 +203,6 @@
             public const int P0_26 = LPC24.AdcChannel.Channel3;
             /// <summary>ADC channel.</summary>
             public const int P1_30 = LPC24.AdcChannel.Channel4;
-            /// <summary>ADC channel.</summary>
-            public const int P1_31 = LPC24.AdcChannel.Channel5;
-            /// <summary>ADC channel.</summary>
-            public const int P0_12 = LPC24.AdcChannel.Channel6;
-            /// <summary>ADC channel.</summary>
-            public const int P0_13 = LPC24.AdcChannel.Channel7;
         }
 
         /// <summary>DAC channel definitions.</summary>
@@ -205,58 +217,59 @@
         /// <summary>PWM pin definitions.</summary>
         public static class PwmPin {
             /// <summary>PWM controller.</summary>
-            public static class Controller1 {
+            public static class Controller0 {
                 /// <summary>API id.</summary>
                 public const string Id = LPC24.PwmChannel.Pwm0;
 
                 /// <summary>PWM pin.</summary>
-                public const int P1_18 = LPC24.PwmChannel.Output1;
+                public const int P3_16 = LPC24.PwmChannel.Output1;
                 /// <summary>PWM pin.</summary>
-                public const int P1_20 = LPC24.PwmChannel.Output2;
-                /// <summary>PWM pin.</summary>
-                public const int P1_21 = LPC24.PwmChannel.Output3;
-                /// <summary>PWM pin.</summary>
-                public const int P2_3 = LPC24.PwmChannel.Output4;
-                /// <summary>PWM pin.</summary>
-                public const int P2_4 = LPC24.PwmChannel.Output5;
-                /// <summary>PWM pin.</summary>
-                public const int P2_5 = LPC24.PwmChannel.Output6;
+                public const int P3_17 = LPC24.PwmChannel.Output2;
             }
         }
 
         /// <summary>UART port definitions.</summary>
         public static class UartPort {
-            /// <summary>UART port on P0_2 (TX), P0_3 (RX)</summary>
+            /// <summary>UART port on P0.2 (TX) and P0.3 (RX).</summary>
             public const string Uart0 = LPC24.UartPort.Uart0;
-            /// <summary>UART port on P0_2 (TX), P0_3 (RX), P0_11 (CTS), and P0_11 (RTS).</summary>
+            /// <summary>UART port on P2.0 (TX), P0.16 (RX), P0.17 (CTS), and P0.6 (RTS).</summary>
             public const string Uart1 = LPC24.UartPort.Uart1;
-            /// <summary>UART port on P0_10 (TX), P0_11 (RX).</summary>
+            /// <summary>UART port on P0.10 (TX) and P0.11 (RX).</summary>
             public const string Uart2 = LPC24.UartPort.Uart2;
-            /// <summary>UART port on P4_28 (TX), P4_29 (RX).</summary>
+            /// <summary>UART port on P4.28 (TX) and P4.29 (RX).</summary>
             public const string Uart3 = LPC24.UartPort.Uart3;
+            /// <summary>UART port on P1.29 (TX) and P2.9 (RX).</summary>
+            public const string Usart4 = LPC24.UartPort.Usart4;
         }
 
         /// <summary>I2C bus definitions.</summary>
         public static class I2cBus {
-            /// <summary>I2C bus on P0_27 (SDA) and P0_28 (SCL).</summary>
-            public const string I2c1 = LPC24.I2cBus.I2c1;
+            /// <summary>I2C bus on P0.27 (SDA) and P0.28 (SCL).</summary>
+            public const string I2c0 = LPC24.I2cBus.I2c0;
         }
 
         /// <summary>SPI bus definitions.</summary>
         public static class SpiBus {
-            /// <summary>SPI bus on P0_18 (MOSI), P0_17 (MISO), and P0_15 (SCK).</summary>
+            /// <summary>SPI bus on P0.18 (MOSI), P0.17 (MISO), and P0.15 (SCK).</summary>
+            public const string Spi0 = LPC24.SpiBus.Spi0;
+            /// <summary>SPI bus.</summary>
             public const string Spi1 = LPC24.SpiBus.Spi1;
-            /// <summary>SPI bus on P0_9 (MOSI), P0_8 (MISO), and P0_7 (SCK).</summary>
+            /// <summary>SPI bus on P1.1 (MOSI), P1.4 (MISO), and P1.0 (SCK).</summary>
             public const string Spi2 = LPC24.SpiBus.Spi2;
         }
 
         /// <summary>CAN bus definitions.</summary>
         public static class CanBus {
-            /// <summary>CAN bus on P0_1 (TX) and P0_0 (RX).</summary>
+            /// <summary>CAN bus on P0.1 (TX) and P0.0 (RX).</summary>
             public const string Can1 = LPC24.CanBus.Can1;
-            /// <summary>CAN bus on P0_5 (TX) and P0_4 (RX).</summary>
+            /// <summary>CAN bus on P0.5 (TX) and P0.4 (RX).</summary>
             public const string Can2 = LPC24.CanBus.Can2;
+        }
+
+        /// <summary>Display definitions.</summary>
+        public static class Display {
+            /// <summary>API id.</summary>
+            public const string Lcd = LPC24.Display.Lcd;
         }
     }
 }
-
