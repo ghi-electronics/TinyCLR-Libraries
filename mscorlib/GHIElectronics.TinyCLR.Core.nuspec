@@ -7,7 +7,7 @@
     <authors>GHI Electronics, LLC</authors>
     <owners>GHI Electronics, LLC</owners>
     <projectUrl>http://tinyclr.com/</projectUrl>
-    <iconUrl>http://files.ghielectronics.com/downloads/Logos/GHIElectronicsNuGet.png</iconUrl>
+    <iconUrl>http://files.ghielectronics.com/downloads/Logos/GHIElectronicsTinyCLRNuGet.png</iconUrl>
     <licenseUrl>http://files.ghielectronics.com/downloads/TinyCLR/License.txt</licenseUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>The mscorlib library for TinyCLR OS.</description>
