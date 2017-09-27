@@ -32,6 +32,17 @@
 
         /// <summary>PWM pin definitions.</summary>
         public static class PwmPin {
+            /// <summary>Controller 2 definitions.</summary>
+            public static class Controller2 {
+                /// <summary>API id.</summary>
+                public const string Id = FEZCLR.PwmPin.Controller2.Id;
+
+                /// <summary>PWM pin for Servo one.</summary>
+                public const int ServoOne = FEZCLR.PwmPin.Controller2.PA3;
+                /// <summary>PWM pin for Servo two.</summary>
+                public const int ServoTwo = FEZCLR.PwmPin.Controller2.PA0;
+            }
+
             /// <summary>Controller 3 definitions.</summary>
             public static class Controller3 {
                 /// <summary>API id.</summary>
