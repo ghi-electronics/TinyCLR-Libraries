@@ -77,7 +77,14 @@ namespace GHIElectronics.TinyCLR.Storage.Streams {
 
         private void EnsureSpace(uint count) {
             if (count > this.data.Length - this.position) {
-                var newArr = new byte[this.data.Length * 2];
+                count += this.position;
+
+                var newLen = this.data.Length;
+
+                while (newLen < count)
+                    newLen *= 2;
+
+                var newArr = new byte[newLen];
 
                 Array.Copy(this.data, newArr, this.data.Length);
 
