@@ -16,13 +16,10 @@ namespace System.Resources {
         private ResourceManager m_rmFallback;
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        extern static private int FindResource(string baseName, Assembly assembly);
+        extern static private int NativeFindResource(string baseName, Assembly assembly);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        extern private object GetObjectInternal(short id);
-
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        extern private object GetObjectInternal(short id, int offset, int length);
+        extern private object NativeGetObject(short id, int offset, int length);
 
         public ResourceManager(string baseName, Assembly assembly)
             : this(baseName, assembly, CultureInfo.CurrentUICulture.Name, true) {
@@ -115,7 +112,7 @@ namespace System.Resources {
 
                 resourceName = resourceName + s_fileExtension;
 
-                var iResourceFileId = FindResource(resourceName, assemblyResource);
+                var iResourceFileId = NativeFindResource(resourceName, assemblyResource);
 
                 if (iResourceFileId >= 0) {
                     //found resource
@@ -137,14 +134,26 @@ namespace System.Resources {
             return this.IsValid;
         }
 
-        private object GetObjectFromId(short id) {
+        public object GetObject(short id) => this.GetObject(id, 0, -1);
+
+        public object GetObject(short id, int offset, int length) {
             var rm = this;
 
             while (rm != null) {
-                var obj = rm.GetObjectInternal(id);
+                var obj = rm.NativeGetObject(id, offset, length);
 
-                if (obj != null)
-                    return obj;
+                if (obj != null) {
+                    if (obj.GetType().FullName != "System.Drawing.Internal.Bitmap")
+                        return obj;
+
+                    foreach (var assm in AppDomain.CurrentDomain.GetAssemblies())
+                        if (assm.GetName().Name == "GHIElectronics.TinyCLR.Drawing")
+                            foreach (var t in assm.GetTypes())
+                                if (t.FullName == "System.Drawing.Bitmap")
+                                    return t.GetConstructor(new[] { obj.GetType() }).Invoke(new[] { obj });
+
+                    throw new InvalidOperationException("Can't find Graphics assembly.");
+                }
 
                 if (rm.m_rmFallback == null) {
                     if (rm.m_cultureName != "") {
@@ -161,54 +170,6 @@ namespace System.Resources {
 
             throw new ArgumentException();
         }
-
-        private object GetObjectChunkFromId(short id, int offset, int length) {
-            var rm = this;
-
-            while (rm != null) {
-                var obj = rm.GetObjectInternal(id, offset, length);
-
-                if (obj != null)
-                    return obj;
-
-                if (rm.m_rmFallback == null) {
-                    if (rm.m_cultureName != "") {
-                        var cultureNameParent = GetParentCultureName(rm.m_cultureName);
-                        var rmFallback = new ResourceManager(this.m_baseName, this.m_baseAssembly, cultureNameParent, false);
-
-                        if (rmFallback.IsValid)
-                            rm.m_rmFallback = rmFallback;
-                    }
-                }
-
-                rm = rm.m_rmFallback;
-            }
-
-            throw new ArgumentException();
-        }
-
-        public static object GetObject(ResourceManager rm, Enum id) {
-            var obj = ResourceManager.NativeGetObject(rm, id);
-
-            if (obj.GetType().FullName != "System.Drawing.Internal.Bitmap")
-                return obj;
-
-            foreach (var assm in AppDomain.CurrentDomain.GetAssemblies())
-                if (assm.GetName().Name == "GHIElectronics.TinyCLR.Drawing")
-                    foreach (var t in assm.GetTypes())
-                        if (t.FullName == "System.Drawing.Bitmap")
-                            return t.GetConstructor(new[] { obj.GetType() }).Invoke(new[] { obj });
-
-            throw new InvalidOperationException("Can't find Graphics assembly.");
-        }
-
-        public static object GetObject(ResourceManager rm, Enum id, int offset, int length) => ResourceManager.NativeGetObject(rm, id, offset, length);
-
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        private extern static object NativeGetObject(ResourceManager rm, Enum id);
-
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        private extern static object NativeGetObject(ResourceManager rm, Enum id, int offset, int length);
     }
 }
 
