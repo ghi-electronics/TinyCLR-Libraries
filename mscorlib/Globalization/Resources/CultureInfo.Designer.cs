@@ -29,7 +29,7 @@ namespace System.Globalization.Resources
 
         internal static string GetString(CultureInfo.StringResources id)
         {
-            return ((string)(System.Resources.ResourceManager.GetObject(ResourceManager, id)));
+            return ((string)(ResourceManager.GetObject((short)id)));
         }
 
         [System.SerializableAttribute()]

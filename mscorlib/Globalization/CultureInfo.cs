@@ -14,7 +14,7 @@ namespace System.Globalization {
         const string c_ResourceBase = "System.Globalization.Resources.CultureInfo";
         internal string EnsureStringResource(ref string str, System.Globalization.Resources.CultureInfo.StringResources id) {
             if (str == null) {
-                str = (string)ResourceManager.GetObject(this.m_rm, id);
+                str = (string)this.m_rm.GetObject((short)id);
             }
 
             return str;
@@ -22,7 +22,7 @@ namespace System.Globalization {
 
         internal string[] EnsureStringArrayResource(ref string[] strArray, System.Globalization.Resources.CultureInfo.StringResources id) {
             if (strArray == null) {
-                var str = (string)ResourceManager.GetObject(this.m_rm, id);
+                var str = (string)this.m_rm.GetObject((short)id);
                 strArray = str.Split('|');
             }
 
