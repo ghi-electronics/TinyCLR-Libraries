@@ -19,13 +19,7 @@ namespace System {
 
         public override int GetHashCode() => this.value;
 
-        //C# compiler crashes when using pattern matching
-        public override bool Equals(object obj) {
-            if (obj is IntPtr)
-                return this.value == ((IntPtr)obj).value;
-
-            return false;
-        }
+        public override bool Equals(object obj) => obj is IntPtr o && this.value == o.value;
 
         public int ToInt32() => this.value;
         public long ToInt64() => this.value;

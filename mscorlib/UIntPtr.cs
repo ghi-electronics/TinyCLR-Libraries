@@ -20,13 +20,7 @@ namespace System {
 
         public override int GetHashCode() => unchecked((int)this.value) & 0x7FFFFFFF;
 
-        //C# compiler crashes when using pattern matching
-        public override bool Equals(object obj) {
-            if (obj is UIntPtr)
-                return this.value == ((UIntPtr)obj).value;
-
-            return false;
-        }
+        public override bool Equals(object obj) => obj is UIntPtr o && this.value == o.value;
 
         public uint ToUInt32() => this.value;
         public ulong ToUInt64() => this.value;
