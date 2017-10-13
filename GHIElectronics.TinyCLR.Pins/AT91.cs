@@ -121,6 +121,8 @@
             /// <summary>GPIO pin.</summary>
             public const int PB24 = 24 + 32;
             /// <summary>GPIO pin.</summary>
+            public const int PB25 = 25 + 32;
+            /// <summary>GPIO pin.</summary>
             public const int PB26 = 26 + 32;
             /// <summary>GPIO pin.</summary>
             public const int PB27 = 27 + 32;
