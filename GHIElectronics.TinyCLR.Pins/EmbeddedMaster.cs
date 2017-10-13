@@ -244,6 +244,19 @@
                 /// <summary>PWM pin.</summary>
                 public const int P3_17 = LPC24.PwmChannel.Output2;
             }
+
+            /// <summary>PWM controller.</summary>
+            public static class Controller1 {
+                /// <summary>API id.</summary>
+                public const string Id = LPC24.PwmChannel.Pwm1;
+
+                /// <summary>PWM pin.</summary>
+                public const int P3_24 = LPC24.PwmChannel.Output1;
+                /// <summary>PWM pin.</summary>
+                public const int P3_26 = LPC24.PwmChannel.Output3;
+                /// <summary>PWM pin.</summary>
+                public const int P3_27 = LPC24.PwmChannel.Output4;
+            }
         }
 
         /// <summary>UART port definitions.</summary>
