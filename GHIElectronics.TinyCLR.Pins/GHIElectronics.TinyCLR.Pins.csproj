@@ -35,7 +35,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="CANxtra.cs" />
     <Compile Include="Cerb.cs" />
+    <Compile Include="ChipworkX.cs" />
     <Compile Include="EmbeddedMaster.cs" />
     <Compile Include="EmbeddedMasterNonTFT.cs" />
     <Compile Include="EMX.cs" />
@@ -49,7 +51,11 @@
     <Compile Include="FEZCobraII.cs" />
     <Compile Include="FEZCobraIIExtender.cs" />
     <Compile Include="FEZCobraIII.cs" />
+    <Compile Include="FEZCobraIINet.cs" />
+    <Compile Include="FEZCobraIIWifi.cs" />
     <Compile Include="FEZDomino.cs" />
+    <Compile Include="FEZGameO.cs" />
+    <Compile Include="FEZHydra.cs" />
     <Compile Include="FEZLemur.cs" />
     <Compile Include="FEZMini.cs" />
     <Compile Include="FEZPanda.cs" />
