@@ -251,13 +251,6 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
             Thread.Sleep(100);
 
             WiFiReset.Write(GpioPinValue.High);
-
-            var m = typeof(DataWriter).GetMethod("EnsureSpace", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-            m.Invoke(this.serWriter, new object[] { 1536U });
-            m.Invoke(this.serWriter, new object[] { 1536U });
-            m.Invoke(this.serWriter, new object[] { 1536U });
-            m.Invoke(this.serWriter, new object[] { 1536U });
-
         }
 
         public void Write(string command) {
@@ -517,7 +510,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
             var zero = 0;
             while (true) {
                 Thread.Sleep(10);
-                var i = this.serReader.Load(512);
+                var i = this.serReader.Load(64);
                 if (i == 0) continue;
                 var response = this.serReader.ReadString(i);
                 response.ToString();
