@@ -9,9 +9,6 @@ using GHIElectronics.TinyCLR.Storage.Streams;
 namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
     public class SPWF01SxInterface {
 
-        private DataWriter serWriter;
-        public DataReader serReader;
-        private SerialDevice serial;
         private string passtype;
         private string radio;
         private string smode;
@@ -85,7 +82,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
             public static readonly string FWUpdate = "AT+S.HTTPDFSUPDATE=";
             public static readonly string ScanNetworks = "AT+S.SCAN";
             public static readonly string ServerSocket = "AT+S.SOCKD=";
-            public static readonly string Reset = "at+cfun=1";
+            public static readonly string Reset = "AT+cfun=1";
 
         }
 
@@ -146,9 +143,9 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
             SetRadioMode(this.radio);
             SetSecurityMode(this.smode);
             Password(this.passtype, password);
-            Write("AT+S.SCFG=blink_led,1");
+            SendATCommand("AT+S.SCFG=blink_led,1");
 
-            Write(Command.SaveConfig);
+            SendATCommand(Command.SaveConfig);
             Reset();
             Thread.Sleep(100);
 
@@ -202,12 +199,12 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
 
 
             ChooseNetwork(network);
-            Write(Command.SetValue + "wifi_wep_keys[0]," + ToHex(password));
-            Write(Command.SetValue + "wifi_wep_key_lens," + this.passtype);
-            Write("AT+S.SCFG=wifi_auth_type,0");
+            SendATCommand(Command.SetValue + "wifi_wep_keys[0]," + ToHex(password));
+            SendATCommand(Command.SetValue + "wifi_wep_key_lens," + this.passtype);
+            SendATCommand("AT+S.SCFG=wifi_auth_type,0");
             SetRadioMode("3");  // set MiniAP
             SetSecurityMode(this.smode);
-            Write(Command.SaveConfig);
+            SendATCommand(Command.SaveConfig);
             Reset();
 
             Thread.Sleep(100);
@@ -232,102 +229,20 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
             return builder.ToString();
         }
 
-        public void InitWiFi(string serialId, int resetPin) {
-            //Create a serial port connection
-            var WiFiReset = GpioController.GetDefault().OpenPin(resetPin);
-            WiFiReset.SetDriveMode(GpioPinDriveMode.Output);
-            WiFiReset.Write(GpioPinValue.Low);
+        public void WiFiOn() => SendATCommand("AT+S.WIFI=1");
 
-            this.serial = SerialDevice.FromId(serialId);
-            this.serial.BaudRate = 115200;
-            this.serial.ReadTimeout = TimeSpan.Zero;
+        public void WiFiOff() => SendATCommand("AT+S.WIFI=0");
 
-            this.serReader = new DataReader(this.serial.InputStream);
-            this.serWriter = new DataWriter(this.serial.OutputStream);
-            Thread.Sleep(100);
-
-            var reader = new Thread(this.Read);
-            reader.Start();
-            Thread.Sleep(100);
-
-            WiFiReset.Write(GpioPinValue.High);
-        }
-
-        public void Write(string command) {
-            if (command == null) {
-                throw new ArgumentNullException("command");
-            }
-
-            if (command.Length > 127 + 2) //2 for AT prefix
-            {
-                //AT + 127 chars according to the documentation
-                throw new ArgumentException("Maximum command length is 127 chars!", "command");
-            }
-
-            this.serWriter.WriteString(command + "\r");
-            this.serWriter.Store();
-            Debug.WriteLine("Sent: " + command);
-        }
-
-        public void WriteData(string command, byte[] data) {
-            if (command == null) {
-                throw new ArgumentNullException("command");
-            }
-
-            if (command.Length > 127 + 2) //2 for AT prefix
-            {
-                //AT + 127 chars according to the documentation
-                throw new ArgumentException("Maximum command length is 127 chars!", "command");
-            }
+        public void Test() => SendATCommand(Command.Test);
 
 
-            this.serWriter.WriteString(command + "\r");
-            this.serWriter.WriteBytes(data);
+        public void CLoseServerSocket() => SendATCommand(Command.ServerSocket + "0");
 
-            var written = 0U;
+        public void Statistics() => SendATCommand(Command.Status);
 
-            while (this.serWriter.UnstoredBufferLength > 0)
-                written = this.serWriter.Store();
+        public void ScanNetworks() => SendATCommand(Command.ScanNetworks);
 
-            Debug.WriteLine("Sent: " + command);
-        }
-
-        public void WriteData(string command, string data) {
-            if (command == null) throw new ArgumentNullException("command");
-
-
-            if (command.Length > 127 + 2) //2 for AT prefix
-            {
-                //AT + 127 chars according to the documentation
-                throw new ArgumentException("Maximum command length is 127 chars!", "command");
-            }
-
-
-            this.serWriter.WriteString(command + "\r");
-            this.serWriter.WriteString(data);
-
-            var written = 0U;
-
-            while (this.serWriter.UnstoredBufferLength > 0)
-                written = this.serWriter.Store();
-
-            Debug.WriteLine("Sent: " + command);
-        }
-
-        public void WiFiOn() => Write("AT+S.WIFI=1");
-
-        public void WiFiOff() => Write("AT+S.WIFI=0");
-
-        public void Test() => Write(Command.Test);
-
-
-        public void CLoseServerSocket() => Write(Command.ServerSocket + "0");
-
-        public void Statistics() => Write(Command.Status);
-
-        public void ScanNetworks() => Write(Command.ScanNetworks);
-
-        public void FWUpdate(string IP, string filepath, string port) => Write(Command.FWUpdate + IP + "," + filepath + "," + port);
+        public void FWUpdate(string IP, string filepath, string port) => SendATCommand(Command.FWUpdate + IP + "," + filepath + "," + port);
 
 
         public void WriteToSocket(string id, string message) {
@@ -335,13 +250,13 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
 
 
             while (this.connected == true) {
-                Write("AT+S.SOCKQ=" + id);
+                SendATCommand("AT+S.SOCKQ=" + id);
                 Thread.Sleep(3000);
 
                 Debug.WriteLine(this.readline);
 
 
-                Write("AT+S.SOCKR=" + id + "," + this.readline);
+                SendATCommand("AT+S.SOCKR=" + id + "," + this.readline);
 
                 Thread.Sleep(5000);
 
@@ -367,16 +282,16 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
 
 
         public void TLSAnonymous(string time, string domain, int socket) {
-            Write(Command.Clean);
+            SendATCommand(Command.Clean);
             Thread.Sleep(100);
 
-            Write(Command.SETTIME + "=" + time);
+            SendATCommand(Command.SETTIME + "=" + time);
             Thread.Sleep(100);
 
-            Write(Command.SETTIME);
+            SendATCommand(Command.SETTIME);
             Thread.Sleep(100);
 
-            Write(Command.OpenSocket + domain + "," + socket.ToString() + ",s");
+            SendATCommand(Command.OpenSocket + domain + "," + socket.ToString() + ",s");
             Thread.Sleep(100);
         }
 
@@ -386,25 +301,25 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
                 throw new ArgumentException("Use certificate according RSA-2048 authentication");
             }
 
-            Write(Command.Clean);
+            SendATCommand(Command.Clean);
             Thread.Sleep(100);
 
-            Write(Command.SETTIME + "=" + time);
+            SendATCommand(Command.SETTIME + "=" + time);
             Thread.Sleep(100);
 
-            Write(Command.SETTIME);
+            SendATCommand(Command.SETTIME);
             Thread.Sleep(100);
 
             WriteData(Command.CertCA + cert.Length.ToString(), cert);
             Thread.Sleep(100);
 
-            Write(Command.SetDomain + domain);
+            SendATCommand(Command.SetDomain + domain);
             Thread.Sleep(100);
 
-            Write(Command.CheckCerts);
+            SendATCommand(Command.CheckCerts);
             Thread.Sleep(100);
 
-            Write(Command.OpenSocket + hostname + "," + socket.ToString() + ",s,ind");
+            SendATCommand(Command.OpenSocket + hostname + "," + socket.ToString() + ",s,ind");
             Thread.Sleep(100);
 
         }
@@ -412,13 +327,13 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
         public void TLSMutualAuth(string time, byte[] cert, byte[] client, byte[] key, string domain, string hostname, int socket) {
 
 
-            Write(Command.Clean);
+            SendATCommand(Command.Clean);
             Thread.Sleep(100);
 
-            Write(Command.SETTIME + "=" + time);
+            SendATCommand(Command.SETTIME + "=" + time);
             Thread.Sleep(100);
 
-            Write(Command.SETTIME);
+            SendATCommand(Command.SETTIME);
             Thread.Sleep(100);
 
             WriteData(Command.CertCA + cert.Length.ToString(), cert);
@@ -430,50 +345,48 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
             WriteData(Command.ClientKey + key.Length.ToString(), key);
             Thread.Sleep(100);
 
-            Write(Command.SetDomain + domain);
+            SendATCommand(Command.SetDomain + domain);
             Thread.Sleep(100);
 
-            Write(Command.CheckCerts);
+            SendATCommand(Command.CheckCerts);
             Thread.Sleep(100);
 
-            Write(Command.OpenSocket + hostname + "," + socket.ToString() + ",s,ind");
+            SendATCommand(Command.OpenSocket + hostname + "," + socket.ToString() + ",s,ind");
             Thread.Sleep(1000);
 
         }
 
-        public void SetSecurityMode(string mode) => Write(Command.SetValue + "wifi_priv_mode," + mode);
+        public void SetSecurityMode(string mode) => SendATCommand(Command.SetValue + "wifi_priv_mode," + mode);
 
-        public void SetRadioMode(string radio) => Write(Command.SetValue + "wifi_mode," + radio);
+        public void SetRadioMode(string radio) => SendATCommand(Command.SetValue + "wifi_mode," + radio);
 
-        public void ChooseNetwork(string network) => Write(Command.SSID + network);
+        public void ChooseNetwork(string network) => SendATCommand(Command.SSID + network);
 
-        public void Password(string passtype, string password) => Write(Command.SetValue + passtype + password);
+        public void Password(string passtype, string password) => SendATCommand(Command.SetValue + passtype + password);
 
-        public void HTTPGet(string host, string path) => Write(Command.HttpGet + host + ",/" + path);
+        public void HTTPPOST(string host, string form) => SendATCommand(Command.HttpPost + host + ",/" + form);
 
-        public void HTTPPOST(string host, string form) => Write(Command.HttpPost + host + ",/" + form);
+        public void Ping(string host) => SendATCommand(Command.Ping + host);
 
-        public void Ping(string host) => Write(Command.Ping + host);
-
-        public void ReadSocket(string id, string length) => Write(Command.ReadSocket + id + "," + length);
+        public void ReadSocket(string id, string length) => SendATCommand(Command.ReadSocket + id + "," + length);
 
         public void CloseSocket(string id) {
 
-            Write("AT+S.SOCKQ=" + id);
+            SendATCommand("AT+S.SOCKQ=" + id);
             Thread.Sleep(3000);
 
-            Write("AT+S.SOCKR=" + id + "," + this.readline.ToString());
+            SendATCommand("AT+S.SOCKR=" + id + "," + this.readline.ToString());
             Thread.Sleep(5000);
 
-            Write(Command.CloseSocket + id);
+            SendATCommand(Command.CloseSocket + id);
 
         }
 
-        public void Erase() => Write(Command.Erase);
+        public void Erase() => SendATCommand(Command.Erase);
 
-        public void Reset() => Write(Command.Reset);
+        public void Reset() => SendATCommand(Command.Reset);
 
-        public void ServerSocket(int number) => Write(Command.Socket + number);
+        public void ServerSocket(int number) => SendATCommand(Command.Socket + number);
 
         public void OpenSocket(string host, int port, SocketType sock) {
             if (sock == SocketType.Secure) {
@@ -489,82 +402,233 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
                 this.socket = "u";
             }
 
-            Write(Command.OpenSocket + host + "," + port + "," + this.socket);
+            SendATCommand(Command.OpenSocket + host + "," + port + "," + this.socket);
         }
 
 
 
-        public void Help() => Write("AT+S.HELP");
+        public void Help() => SendATCommand("AT+S.HELP");
 
-        public void Config() => Write("AT&V");
+        public void Config() => SendATCommand("AT&V");
 
-        public void FileList() => Write("AT+S.FSL");
+        public void FileList() => SendATCommand("AT+S.FSL");
 
-        public void FileContent(string filepath) => Write("AT+S.FSP=" + filepath);
+        public void FileContent(string filepath) => SendATCommand("AT+S.FSP=" + filepath);
+
+        public void WriteData(string command, byte[] data) {
+            this.SendATCommand(command);
+            this.serWriter.WriteBytes(data);
+            this.Flush();
+        }
+
+        public void WriteData(string command, string data) {
+            this.SendATCommand(command);
+            this.serWriter.WriteString(data);
+            this.Flush();
+        }
 
 
-        public void Read() {
-            this.connected = true;
-            this.wait = 0;
-            this.error = false;
-            var zero = 0;
-            while (true) {
-                Thread.Sleep(10);
-                var i = this.serReader.Load(64);
-                if (i == 0) continue;
-                var response = this.serReader.ReadString(i);
-                response.ToString();
-                Debug.WriteLine(response);
+        private void StopWorker() {
+            if (this.worker == null) throw new InvalidOperationException("Already stopped.");
 
-                if (response.IndexOf("200 OK") != -1) {
-                    this.connected = false;
-                }
+            this.running = false;
+            this.worker.Join();
+            this.worker = null;
+        }
 
-                if (response.IndexOf("+WIND:55:") != -1) {
-                    this.wait++;
-                }
+        private void StartWorker() {
+            if (this.worker != null) throw new InvalidOperationException("Already started.");
 
-                if (response.IndexOf("DATALEN: ") != -1) {
-                    this.readline = response.Substring(12);
-                    if (this.readline.IndexOf("ALEN: ") != -1) {
-                        this.readline = zero.ToString();
+            this.worker = new Thread(this.DoWork);
+            this.worker.Start();
+        }
+
+        public void HttpGet(string host, string path) {
+            //TODO There's a race condition here. The device manual says async indications are only withheld once the first 'A' character of an AT command is received. We could potentially receive one after stopping the work and before sending the command. See page 5 of UM1695, Rev 7.
+
+            this.StopWorker();
+
+            this.SendATCommand($"AT+S.HTTPGET={host},{path}");
+
+            this.StartWorker();
+        }
+
+        public class AsynchronousIndicationEventArgs : EventArgs {
+            public int Code { get; }
+            public string Description { get; }
+
+            public AsynchronousIndicationEventArgs(int code, string description) {
+                this.Code = code;
+                this.Description = description;
+            }
+        }
+
+        public delegate void StringEventHandler(SPWF01SxInterface sender, string e);
+        public delegate void AsynchronousIndicationEventHandler(SPWF01SxInterface sender, AsynchronousIndicationEventArgs e);
+
+        public event StringEventHandler LineSent;
+        public event StringEventHandler LineReceived;
+        public event StringEventHandler HttpDataReceived;
+        public event AsynchronousIndicationEventHandler AsynchronousIndicationReceived;
+
+        private Thread worker;
+        private char[] buffer;
+        private string responseBuffer;
+        private AutoResetEvent atExpectedEvent;
+        private string atExpectedResponse;
+        private bool running;
+        private DataWriter serWriter;
+        private DataReader serReader;
+        private SerialDevice serial;
+        private GpioPin resetPin;
+
+        public SPWF01SxInterface(string serialId, int resetPin) {
+            this.atExpectedEvent = new AutoResetEvent(false);
+            this.atExpectedResponse = string.Empty;
+            this.responseBuffer = string.Empty;
+            this.buffer = new char[1024];
+            this.running = true;
+
+            this.resetPin = GpioController.GetDefault().OpenPin(resetPin);
+            this.resetPin.SetDriveMode(GpioPinDriveMode.Output);
+            this.resetPin.Write(GpioPinValue.Low);
+
+            this.serial = SerialDevice.FromId(serialId);
+            this.serial.BaudRate = 115200;
+            this.serial.ReadTimeout = TimeSpan.FromMilliseconds(100);
+
+            this.serReader = new DataReader(this.serial.InputStream);
+            this.serWriter = new DataWriter(this.serial.OutputStream);
+        }
+
+        public void TurnOn() {
+            this.StartWorker();
+
+            this.resetPin.Write(GpioPinValue.High);
+        }
+
+        public void SendATCommand(string atCommand) {
+            if (atCommand.IndexOf("AT") == -1) throw new ArgumentException("atCommand", "The command must begin with AT.");
+
+            if (atCommand.IndexOf("\r") < 0)
+                atCommand += "\r";
+
+            this.Write(atCommand);
+
+            Thread.Sleep(100);
+        }
+
+        public void SendATCommand(string atCommand, string expectedResponse) => this.SendATCommand(atCommand, expectedResponse, Timeout.Infinite);
+
+        public bool SendATCommand(string atCommand, string expectedResponse, int timeout) {
+            if (atCommand.IndexOf("AT") == -1) throw new ArgumentException("atCommand", "The command must begin with AT.");
+            if (timeout == 0) throw new ArgumentException("timeout", "timeout cannot be 0.");
+
+            if (atCommand.IndexOf("\r") < 0)
+                atCommand += "\r";
+
+            this.atExpectedEvent.Reset();
+            this.atExpectedResponse = expectedResponse;
+
+            this.Write(atCommand);
+
+            if (!this.atExpectedEvent.WaitOne(timeout, false))
+                return false;
+
+            this.atExpectedResponse = string.Empty;
+
+            return true;
+        }
+
+        private void DoWork() {
+            while (this.running) {
+                while (this.ExtractLine(out var response)) {
+                    if (this.atExpectedResponse != string.Empty && response.IndexOf(this.atExpectedResponse) == 0)
+                        this.atExpectedEvent.Set();
+
+                    if (response[0] == '+' && response.IndexOf(":") != -1) {
+                        this.ParseIndication(response, out var code, out var desc);
+
+                        this.AsynchronousIndicationReceived?.Invoke(this, new AsynchronousIndicationEventArgs(code, desc));
                     }
-                    Debug.WriteLine(this.readline);
+                    else {
+
+                    }
                 }
 
-
-                if (response.IndexOf("+WIND:8:") != -1 || response.IndexOf("IND:8:") != -1 || response.IndexOf(":Hard Fault:") != -1) {
-                    this.error = true;
-                }
+                Thread.Sleep(250);
             }
         }
 
+        private void ReadIn() {
+            var asdf = this.serReader.Load(1024);
 
-        public void ReadBytes() {
+            var avail = (int)this.serReader.UnconsumedBufferLength;
 
-            var builder = new StringBuilder();
-            const int length = 512;
+            while (avail > 0) {
+                for (var i = 0; i < avail && i < this.buffer.Length; i++)
+                    this.buffer[i] = (char)this.serReader.ReadByte(); //TODO This should read an actual char, need to figure out how the device transmits higher code points
 
-            var buffer = new byte[length];
+                var idx = 0;
 
-            var i = this.serReader.Load(length);
+                while (this.buffer[idx] == 0 && idx < avail)
+                    idx++;
 
-            for (var j = 0; j < i; j++) {
+                var str = new string(this.buffer, idx, avail - idx);
 
-                buffer[j] = this.serReader.ReadByte();
-                if (buffer[j] != 0) {
-                    var result = (char)buffer[j];
-                    builder.Append(result);
-                    Array.Clear(buffer, 0, j);
-                }
+                this.responseBuffer += str;
 
+                avail -= idx + str.Length;
             }
-
-            Debug.WriteLine(builder.ToString());
         }
 
+        private void Write(string line) {
+            this.serWriter.WriteString(line);
 
+            this.Flush();
 
+            this.LineSent?.Invoke(this, line);
+        }
 
+        private void Flush() {
+            while (this.serWriter.UnstoredBufferLength > 0) {
+                this.serWriter.Store();
+
+                Thread.Sleep(10);
+            }
+        }
+
+        private bool ExtractLine(out string line) {
+            line = null;
+
+            var index = this.responseBuffer.IndexOf("\r\n");
+
+            if (index == -1) {
+                do {
+                    this.ReadIn();
+
+                    Thread.Sleep(10);
+                } while ((index = this.responseBuffer.IndexOf("\r\n")) == -1);
+            }
+
+            line = this.responseBuffer.Substring(0, index);
+
+            this.responseBuffer = this.responseBuffer.Substring(index + 2);
+
+            if (line == "\r\n" || line == "")
+                return this.ExtractLine(out line);
+
+            this.LineReceived?.Invoke(this, line);
+
+            return true;
+        }
+
+        private void ParseIndication(string indication, out int code, out string description) {
+            var first = indication.IndexOf(":") + 1;
+            var second = indication.IndexOf(":", first);
+
+            code = int.Parse(indication.Substring(first, second - first));
+            description = indication.Substring(second + 1);
+        }
     }
 }
