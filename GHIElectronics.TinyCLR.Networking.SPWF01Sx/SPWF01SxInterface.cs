@@ -13,7 +13,6 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
         private string radio;
         private string smode;
         private string socket;
-        private string serialBuffer;
         private bool connected;
         private bool error;
         private int wait;
@@ -405,8 +404,6 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
             SendATCommand(Command.OpenSocket + host + "," + port + "," + this.socket);
         }
 
-
-
         public void Help() => SendATCommand("AT+S.HELP");
 
         public void Config() => SendATCommand("AT&V");
@@ -428,29 +425,73 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
         }
 
 
+
+
         private void StopWorker() {
             if (this.worker == null) throw new InvalidOperationException("Already stopped.");
 
+            this.stopping = true;
             this.running = false;
             this.worker.Join();
+            this.stopping = false;
             this.worker = null;
         }
 
         private void StartWorker() {
             if (this.worker != null) throw new InvalidOperationException("Already started.");
 
+            this.running = true;
             this.worker = new Thread(this.DoWork);
             this.worker.Start();
         }
 
-        public void HttpGet(string host, string path) {
+        public bool HttpGet(string host, string path) {
             //TODO There's a race condition here. The device manual says async indications are only withheld once the first 'A' character of an AT command is received. We could potentially receive one after stopping the work and before sending the command. See page 5 of UM1695, Rev 7.
+            //Can possibly fix with a method like 'SendATCommandAndTakeOver' that will send the first 'A' character, pump the serial reader until empty, then continue on.
+            //HTTP post has the same issue
+
+            //TODO GET, POST, and Custom end with <CR><LF><SUB><SUB><SUB><CR><LF><CR><LF>OK<CR><LF>, not just <CR><LF>OK<CR><LF> as the manual implies for GET and POST. Custom does mention the <SUB>.
 
             this.StopWorker();
 
             this.SendATCommand($"AT+S.HTTPGET={host},{path}");
 
+            var line = string.Empty;
+            while (line == null || (line != "OK" && line.IndexOf("ERROR:") != 0))
+                while (this.ExtractLine(out line) && line != "OK" && line.IndexOf("ERROR:") != 0)
+                    this.HttpDataReceived?.Invoke(this, line + "\r\n");
+
             this.StartWorker();
+
+            return line == "OK";
+        }
+
+        public bool HttpPost(string host, string path, string[][] formData) {
+            var form = "";
+            var combined = new string[formData.Length];
+            var i = 0;
+
+            for (i = 0; i < formData.Length; i++)
+                combined[i] = formData[i][0] + "=" + formData[i][1];
+
+            for (i = 0; i < formData.Length - 1; i++)
+                form += combined[i] + "&";
+
+            if (i < formData.Length)
+                form += combined[i];
+
+            this.StopWorker();
+
+            this.SendATCommand($"AT+S.HTTPPOST={host},{path},{form}");
+
+            var line = string.Empty;
+            while (line == null || (line != "OK" && line.IndexOf("ERROR:") != 0))
+                while (this.ExtractLine(out line) && line != "OK" && line.IndexOf("ERROR:") != 0)
+                    this.HttpDataReceived?.Invoke(this, line + "\r\n");
+
+            this.StartWorker();
+
+            return line == "OK";
         }
 
         public class AsynchronousIndicationEventArgs : EventArgs {
@@ -477,6 +518,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
         private AutoResetEvent atExpectedEvent;
         private string atExpectedResponse;
         private bool running;
+        private bool stopping;
         private DataWriter serWriter;
         private DataReader serReader;
         private SerialDevice serial;
@@ -487,7 +529,8 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
             this.atExpectedResponse = string.Empty;
             this.responseBuffer = string.Empty;
             this.buffer = new char[1024];
-            this.running = true;
+            this.running = false;
+            this.stopping = false;
 
             this.resetPin = GpioController.GetDefault().OpenPin(resetPin);
             this.resetPin.SetDriveMode(GpioPinDriveMode.Output);
@@ -507,16 +550,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
             this.resetPin.Write(GpioPinValue.High);
         }
 
-        public void SendATCommand(string atCommand) {
-            if (atCommand.IndexOf("AT") == -1) throw new ArgumentException("atCommand", "The command must begin with AT.");
-
-            if (atCommand.IndexOf("\r") < 0)
-                atCommand += "\r";
-
-            this.Write(atCommand);
-
-            Thread.Sleep(100);
-        }
+        public void SendATCommand(string atCommand) => this.SendATCommand(atCommand, string.Empty);
 
         public void SendATCommand(string atCommand, string expectedResponse) => this.SendATCommand(atCommand, expectedResponse, Timeout.Infinite);
 
@@ -532,7 +566,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
 
             this.Write(atCommand);
 
-            if (!this.atExpectedEvent.WaitOne(timeout, false))
+            if (expectedResponse != string.Empty && !this.atExpectedEvent.WaitOne(timeout, false))
                 return false;
 
             this.atExpectedResponse = string.Empty;
@@ -608,6 +642,9 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
                     this.ReadIn();
 
                     Thread.Sleep(10);
+
+                    if (this.stopping)
+                        return false;
                 } while ((index = this.responseBuffer.IndexOf("\r\n")) == -1);
             }
 
@@ -615,7 +652,8 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
 
             this.responseBuffer = this.responseBuffer.Substring(index + 2);
 
-            if (line == "\r\n" || line == "")
+            //If taken over above in things like HTTP get, don't swallow these
+            if (this.running && (line == "\r\n" || line == ""))
                 return this.ExtractLine(out line);
 
             this.LineReceived?.Invoke(this, line);
