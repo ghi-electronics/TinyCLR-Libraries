@@ -9,9 +9,6 @@ using GHIElectronics.TinyCLR.Storage.Streams;
 namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
     public class SPWF01SxInterface {
 
-        private string passtype;
-        private string radio;
-        private string smode;
         private string socket;
         private bool connected;
         private bool error;
@@ -81,91 +78,62 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
             public static readonly string FWUpdate = "AT+S.HTTPDFSUPDATE=";
             public static readonly string ScanNetworks = "AT+S.SCAN";
             public static readonly string ServerSocket = "AT+S.SOCKD=";
-            public static readonly string Reset = "AT+cfun=1";
+            public static readonly string Reset = "AT+CFUN=1";
 
         }
 
 
-        public void ConnectWiFi(string network, PasswordType ptype, string password, RadioMode mode, SecurityMode mode1) {
+        public void ConnectWiFi(string network, string password, PasswordType passwordType, RadioMode radioMode, SecurityMode securityMode) {
+            string passtype, smode, radio;
 
-            // set Password Type
-            if (ptype == PasswordType.WEP64) {
-
-                this.passtype = "AT+S.SCFG=wifi_wep_key_lens,05";
+            switch (passwordType) {
+                case PasswordType.WEP64: passtype = "wifi_wep_key_lens,05"; break;
+                case PasswordType.WEP128: passtype = "wifi_wep_key_lens,0D"; break;
+                case PasswordType.WPA2: passtype = "wifi_wpa_psk_raw,"; break;
+                case PasswordType.WPA_TEXT: passtype = "wifi_wpa_psk_text,"; break;
+                default: throw new Exception();
             }
 
-            else if (ptype == PasswordType.WEP128) {
-                this.passtype = "AT+S.SCFG=wifi_wep_key_lens,0D";
+            switch (securityMode) {
+                case SecurityMode.none: smode = "0"; break;
+                case SecurityMode.WEP: smode = "1"; break;
+                case SecurityMode.WPA2Personal: smode = "2"; break;
+                default: throw new Exception();
             }
 
-            else if (ptype == PasswordType.WPA2) {
-                this.passtype = "wifi_wpa_psk_raw,";
-            }
-
-            else if (ptype == PasswordType.WPA_TEXT) {
-                this.passtype = "wifi_wpa_psk_text,";
-            }
-
-            // set Security Mode
-            if (mode1 == SecurityMode.none) {
-                this.smode = "0";
-            }
-
-            else if (mode1 == SecurityMode.WEP) {
-                this.smode = "1";
-            }
-
-            else if (mode1 == SecurityMode.WPA2Personal) {
-                this.smode = "2";
-            }
-
-            // set Radio mode
-
-            if (mode == RadioMode.IDLE) {
-                this.radio = "0";
-            }
-
-            else if (mode == RadioMode.STA) {
-                this.radio = "1";
-            }
-
-            else if (mode == RadioMode.IBSS) {
-                this.radio = "2";
-            }
-
-            else if (mode == RadioMode.MiniAP) {
-                this.radio = "3";
+            switch (radioMode) {
+                case RadioMode.IDLE: radio = "0"; break;
+                case RadioMode.STA: radio = "1"; break;
+                case RadioMode.IBSS: radio = "2"; break;
+                case RadioMode.MiniAP: radio = "3"; break;
+                default: throw new Exception();
             }
 
             Erase();
-            ChooseNetwork(network);
-            SetRadioMode(this.radio);
-            SetSecurityMode(this.smode);
-            Password(this.passtype, password);
-            SendATCommand("AT+S.SCFG=blink_led,1");
-
+            SendATCommand(Command.SSID + network);
+            SendATCommand(Command.SetValue + "wifi_mode," + radio);
+            SendATCommand(Command.SetValue + "wifi_priv_mode," + smode);
+            SendATCommand(Command.SetValue + passtype + password);
             SendATCommand(Command.SaveConfig);
             Reset();
-            Thread.Sleep(100);
-
-
         }
 
         public void ConnectMiniAP(string network, PasswordType ptype, string password, SecurityMode mode1) {
+            string passtype, smode;
 
             Erase();
             Thread.Sleep(100);
             // set Password Type
             if (ptype == PasswordType.WEP64) {
-                this.passtype = "05";
+                passtype = "05";
             }
 
             else if (ptype == PasswordType.WEP128) {
-                this.passtype = "0D";
+                passtype = "0D";
             }
 
             else if (ptype == PasswordType.OPEN) {
-                this.passtype = "";
+                passtype = "";
             }
 
             else if (ptype == PasswordType.WPA2) {
@@ -175,20 +143,26 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
             else if (ptype == PasswordType.WPA_TEXT) {
                 throw new ArgumentException("Only WEP64 and WEP128 are supported", "command");
             }
+            else {
+                throw new Exception();
+            }
 
             // set Security Mode
             if (mode1 == SecurityMode.none) {
-                this.smode = "0";
+                smode = "0";
                 password = "";
             }
 
             else if (mode1 == SecurityMode.WEP) {
-                this.smode = "1";
+                smode = "1";
 
             }
 
             else if (mode1 == SecurityMode.WPA2Personal) {
                 throw new ArgumentException("Only OPEN or WEP are supported", "command");
+            }
+            else {
+                throw new Exception();
             }
 
             if (ptype == PasswordType.WEP64 && password.Length > 5 || ptype == PasswordType.WEP128 && password.Length > 13) {
@@ -197,12 +171,12 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
 
 
 
-            ChooseNetwork(network);
+            SendATCommand(Command.SSID + network);
             SendATCommand(Command.SetValue + "wifi_wep_keys[0]," + ToHex(password));
-            SendATCommand(Command.SetValue + "wifi_wep_key_lens," + this.passtype);
+            SendATCommand(Command.SetValue + "wifi_wep_key_lens," + passtype);
             SendATCommand("AT+S.SCFG=wifi_auth_type,0");
-            SetRadioMode("3");  // set MiniAP
-            SetSecurityMode(this.smode);
+            SendATCommand(Command.SetValue + "wifi_mode,3");
+            SendATCommand(Command.SetValue + "wifi_priv_mode," + smode);
             SendATCommand(Command.SaveConfig);
             Reset();
 
@@ -354,16 +328,6 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
             Thread.Sleep(1000);
 
         }
-
-        public void SetSecurityMode(string mode) => SendATCommand(Command.SetValue + "wifi_priv_mode," + mode);
-
-        public void SetRadioMode(string radio) => SendATCommand(Command.SetValue + "wifi_mode," + radio);
-
-        public void ChooseNetwork(string network) => SendATCommand(Command.SSID + network);
-
-        public void Password(string passtype, string password) => SendATCommand(Command.SetValue + passtype + password);
-
-        public void HTTPPOST(string host, string form) => SendATCommand(Command.HttpPost + host + ",/" + form);
 
         public void Ping(string host) => SendATCommand(Command.Ping + host);
 
@@ -598,6 +562,12 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
                         this.ParseIndication(response, out var code, out var desc);
 
                         this.AsynchronousIndicationReceived?.Invoke(this, new AsynchronousIndicationEventArgs(code, desc));
+
+                        if (code == 2) {
+                            this.resetPin.Write(GpioPinValue.Low);
+                            Thread.Sleep(100);
+                            this.resetPin.Write(GpioPinValue.High);
+                        }
                     }
                     else {
 
