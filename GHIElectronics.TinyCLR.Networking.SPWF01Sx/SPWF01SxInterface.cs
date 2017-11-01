@@ -445,28 +445,13 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
             this.worker.Start();
         }
 
-        public bool HttpGet(string host, string path) {
-            //TODO There's a race condition here. The device manual says async indications are only withheld once the first 'A' character of an AT command is received. We could potentially receive one after stopping the work and before sending the command. See page 5 of UM1695, Rev 7.
-            //Can possibly fix with a method like 'SendATCommandAndTakeOver' that will send the first 'A' character, pump the serial reader until empty, then continue on.
-            //HTTP post has the same issue
+        private const string HttpEnd = "\u001A\u001A\u001A";
 
-            //TODO GET, POST, and Custom end with <CR><LF><SUB><SUB><SUB><CR><LF><CR><LF>OK<CR><LF>, not just <CR><LF>OK<CR><LF> as the manual implies for GET and POST. Custom does mention the <SUB>.
+        public bool HttpGet(string host, string path) => this.ReadHttpBody($"AT+S.HTTPGET={host},{path}");
 
-            this.StopWorker();
+        public bool HttpPost(string host, string path, string[][] formData) => this.ReadHttpBody($"AT+S.HTTPPOST={host},{path},{SPWF01SxInterface.HttpFormEncode(formData)}");
 
-            this.SendATCommand($"AT+S.HTTPGET={host},{path}");
-
-            var line = string.Empty;
-            while (line == null || (line != "OK" && line.IndexOf("ERROR:") != 0))
-                while (this.ExtractLine(out line) && line != "OK" && line.IndexOf("ERROR:") != 0)
-                    this.HttpDataReceived?.Invoke(this, line + "\r\n");
-
-            this.StartWorker();
-
-            return line == "OK";
-        }
-
-        public bool HttpPost(string host, string path, string[][] formData) {
+        private static string HttpFormEncode(string[][] formData) {
             var form = "";
             var combined = new string[formData.Length];
             var i = 0;
@@ -480,18 +465,46 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
             if (i < formData.Length)
                 form += combined[i];
 
+            return form;
+        }
+
+        private bool ReadHttpBody(string request) {
+            //TODO There's a race condition here. The device manual says async indications are only withheld once the first 'A' character of an AT command is received. We could potentially receive one after stopping the work and before sending the command. See page 5 of UM1695, Rev 7.
+            //Can possibly fix with a method like 'SendATCommandAndTakeOver' that will send the first 'A' character, pump the serial reader until empty, then continue on.
+            //HTTP post has the same issue
+
+            //TODO GET, POST, and Custom end with <CR><LF><SUB><SUB><SUB><CR><LF><CR><LF>OK<CR><LF>, not just <CR><LF>OK<CR><LF> as the manual implies for GET and POST. Custom does mention the <SUB>.
+
             this.StopWorker();
 
-            this.SendATCommand($"AT+S.HTTPPOST={host},{path},{form}");
+            this.SendATCommand(request);
 
-            var line = string.Empty;
-            while (line == null || (line != "OK" && line.IndexOf("ERROR:") != 0))
-                while (this.ExtractLine(out line) && line != "OK" && line.IndexOf("ERROR:") != 0)
-                    this.HttpDataReceived?.Invoke(this, line + "\r\n");
+            var a = string.Empty;
+            var b = string.Empty;
+
+            this.ExtractLine(out a);
+
+            while (true) {
+                this.ExtractLine(out b);
+
+                if (b != SPWF01SxInterface.HttpEnd) {
+                    this.HttpDataReceived?.Invoke(this, a + "\r\n");
+
+                    a = b;
+                }
+                else {
+                    this.HttpDataReceived?.Invoke(this, a);
+
+                    break;
+                }
+            }
+
+            this.ExtractLine(out _);
+            this.ExtractLine(out var statusLine);
 
             this.StartWorker();
 
-            return line == "OK";
+            return statusLine == "OK";
         }
 
         public class AsynchronousIndicationEventArgs : EventArgs {
