@@ -471,7 +471,8 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
         private bool ReadHttpBody(string request) {
             //TODO There's a race condition here. The device manual says async indications are only withheld once the first 'A' character of an AT command is received. We could potentially receive one after stopping the work and before sending the command. See page 5 of UM1695, Rev 7.
             //Can possibly fix with a method like 'SendATCommandAndTakeOver' that will send the first 'A' character, pump the serial reader until empty, then continue on.
-            //HTTP post has the same issue
+
+            //TODO Since this is based around ExtractLine, we may run out of memory or miss data if the line is particularly long. This is usually not an issue for the headers which are short (except cookies?), but the body, if it doesn't have any CRLF in it, we'll try to read the entire body in one line which may fail.
 
             //TODO GET, POST, and Custom end with <CR><LF><SUB><SUB><SUB><CR><LF><CR><LF>OK<CR><LF>, not just <CR><LF>OK<CR><LF> as the manual implies for GET and POST. Custom does mention the <SUB>.
 
