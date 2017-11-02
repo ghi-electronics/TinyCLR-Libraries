@@ -390,6 +390,29 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
 
 
 
+
+
+        public void ConfigureTls(int time, string domain, byte[] certificate) {
+            this.StopWorker();
+
+            SendATCommand($"AT+S.SETTIME={time}");
+            SendATCommand("AT+S.TLSCERT2=clean,all");
+            SendATCommand($"AT+S.TLSDOMAIN=f_domain,{domain}");
+            SendATCommand($"AT+S.TLSCERT=f_ca,{certificate.Length}");
+            this.Write(certificate);
+
+            this.ExtractLine(out var status1);
+            this.ExtractLine(out var status2);
+            this.ExtractLine(out var status3);
+            this.ExtractLine(out var status4);
+            this.ExtractLine(out var status5);
+            this.ExtractLine(out var status6);
+            this.ExtractLine(out var status7);
+            this.ExtractLine(out var status8);
+
+            this.StartWorker();
+        }
+
         public string OpenSocket(string host, int port, char type) {
             this.StopWorker();
 
