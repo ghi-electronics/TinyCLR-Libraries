@@ -411,9 +411,11 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
 
         private const string HttpEnd = "\u001A\u001A\u001A";
 
-        public bool HttpGet(string host, string path) => this.ReadHttpBody($"AT+S.HTTPGET={host},{path}");
+        public bool HttpGet(string host, string path) => this.DoHttp($"AT+S.HTTPGET={host},{path}", null);
 
-        public bool HttpPost(string host, string path, string[][] formData) => this.ReadHttpBody($"AT+S.HTTPPOST={host},{path},{SPWF01SxInterface.HttpFormEncode(formData)}");
+        public bool HttpPost(string host, string path, string[][] formData) => this.DoHttp($"AT+S.HTTPPOST={host},{path},{SPWF01SxInterface.HttpFormEncode(formData)}", null);
+
+        public bool HttpCustom(string host, int port, string data) => this.DoHttp($"AT+S.HTTPREQ={host},{port},{data.Length}", data);
 
         private static string HttpFormEncode(string[][] formData) {
             var form = "";
@@ -432,7 +434,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
             return form;
         }
 
-        private bool ReadHttpBody(string request) {
+        private bool DoHttp(string request, string body) {
             //TODO There's a race condition here. The device manual says async indications are only withheld once the first 'A' character of an AT command is received. We could potentially receive one after stopping the work and before sending the command. See page 5 of UM1695, Rev 7.
             //Can possibly fix with a method like 'SendATCommandAndTakeOver' that will send the first 'A' character, pump the serial reader until empty, then continue on.
 
@@ -443,6 +445,8 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
             this.StopWorker();
 
             this.SendATCommand(request);
+
+            this.Write(Encoding.UTF8.GetBytes(body));
 
             var a = string.Empty;
             var b = string.Empty;
@@ -598,6 +602,12 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
 
                 avail -= idx + str.Length;
             }
+        }
+
+        private void Write(byte[] data) {
+            this.serWriter.WriteBytes(data);
+
+            this.Flush();
         }
 
         private void Write(string line) {
