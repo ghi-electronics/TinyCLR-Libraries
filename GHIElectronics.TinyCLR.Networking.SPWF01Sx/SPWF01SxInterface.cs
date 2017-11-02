@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Diagnostics;
 using System.Text;
 using System.Threading;
@@ -390,8 +391,6 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
 
 
 
-
-
         public void ConfigureTls(int time, string domain, byte[] certificate) {
             this.StopWorker();
 
@@ -533,7 +532,8 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
 
         public bool HttpPost(string host, string path, string[][] formData) => this.DoHttp($"AT+S.HTTPPOST={host},{path},{SPWF01SxInterface.HttpFormEncode(formData)}", null);
 
-        public bool HttpCustom(string host, int port, string data) => this.DoHttp($"AT+S.HTTPREQ={host},{port},{data.Length}", data);
+        public bool HttpCustom(string host, int port, string data) => this.HttpCustom(host, port, data, false);
+        public bool HttpCustom(string host, int port, string data, bool useHttps) => !useHttps ? this.DoHttp($"AT+S.HTTPREQ={host},{port},{data.Length}", data) : this.DoHttpSsl(host, port, data);
 
         private static string HttpFormEncode(string[][] formData) {
             var form = "";
@@ -593,6 +593,43 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
             this.StartWorker();
 
             return status == "OK";
+        }
+
+        private bool DoHttpSsl(string host, int port, string data) {
+            var s = this.OpenSocket(host, port, 's');
+
+            this.WriteSocket(s, Encoding.UTF8.GetBytes(data));
+
+            while (this.AvailableSocket(s) == 0)
+                ;
+
+            var lst = new ArrayList();
+            var len = 0;
+            while ((len = this.AvailableSocket(s)) != 0) {
+                var d = this.ReadSocket(s, len);
+
+                lst.Add(d);
+            }
+
+            this.CloseSocket(s);
+
+            len = 0;
+            foreach (byte[] l in lst)
+                len += l.Length;
+
+            var res = new char[len];
+            var i = 0;
+
+            foreach (byte[] l in lst) {
+                for (var j = 0; j < l.Length; j++)
+                    res[j + i] = (char)l[j];
+
+                i += l.Length;
+            }
+
+            this.HttpDataReceived?.Invoke(this, new string(res));
+
+            return true;
         }
 
         public class AsynchronousIndicationEventArgs : EventArgs {
