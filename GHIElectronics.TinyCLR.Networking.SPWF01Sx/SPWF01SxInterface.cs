@@ -532,8 +532,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
 
         public bool HttpPost(string host, string path, string[][] formData) => this.DoHttp($"AT+S.HTTPPOST={host},{path},{SPWF01SxInterface.HttpFormEncode(formData)}", null);
 
-        public bool HttpCustom(string host, int port, string data) => this.HttpCustom(host, port, data, false);
-        public bool HttpCustom(string host, int port, string data, bool useHttps) => !useHttps ? this.DoHttp($"AT+S.HTTPREQ={host},{port},{data.Length}", data) : this.DoHttpSsl(host, port, data);
+        public bool HttpCustom(string host, int port, string data) => this.DoHttp($"AT+S.HTTPREQ={host},{port},{data.Length}", data);
 
         private static string HttpFormEncode(string[][] formData) {
             var form = "";
@@ -595,7 +594,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
             return status == "OK";
         }
 
-        private bool DoHttpSsl(string host, int port, string data) {
+        public string HttpCustomSsl(string host, int port, string data) {
             var s = this.OpenSocket(host, port, 's');
 
             this.WriteSocket(s, Encoding.UTF8.GetBytes(data));
@@ -627,9 +626,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
                 i += l.Length;
             }
 
-            this.HttpDataReceived?.Invoke(this, new string(res));
-
-            return true;
+            return new string(res);
         }
 
         public class AsynchronousIndicationEventArgs : EventArgs {
