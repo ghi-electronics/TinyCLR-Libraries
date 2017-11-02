@@ -331,19 +331,19 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
 
         public void Ping(string host) => SendATCommand(Command.Ping + host);
 
-        public void ReadSocket(string id, string length) => SendATCommand(Command.ReadSocket + id + "," + length);
+        //public void ReadSocket(string id, string length) => SendATCommand(Command.ReadSocket + id + "," + length);
 
-        public void CloseSocket(string id) {
-
-            SendATCommand("AT+S.SOCKQ=" + id);
-            Thread.Sleep(3000);
-
-            SendATCommand("AT+S.SOCKR=" + id + "," + this.readline.ToString());
-            Thread.Sleep(5000);
-
-            SendATCommand(Command.CloseSocket + id);
-
-        }
+        //public void CloseSocket(string id) {
+        //
+        //    SendATCommand("AT+S.SOCKQ=" + id);
+        //    Thread.Sleep(3000);
+        //
+        //    SendATCommand("AT+S.SOCKR=" + id + "," + this.readline.ToString());
+        //    Thread.Sleep(5000);
+        //
+        //    SendATCommand(Command.CloseSocket + id);
+        //
+        //}
 
         public void Erase() => SendATCommand(Command.Erase);
 
@@ -390,6 +390,101 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
 
 
 
+        public string OpenSocket(string host, int port, char type) {
+            this.StopWorker();
+
+            this.SendATCommand($"AT+S.SOCKON={host},{port},{type}");
+
+            this.ExtractLine(out _);
+            this.ExtractLine(out var id);
+            this.ExtractLine(out _);
+            this.ExtractLine(out var status);
+
+            this.StartWorker();
+
+            if (status != "OK")
+                throw new Exception("Couldn't open socket.");
+
+            return id.Substring(4);
+        }
+
+        public int AvailableSocket(string socket) {
+            this.StopWorker();
+
+            this.SendATCommand($"AT+S.SOCKQ={socket}");
+
+            this.ExtractLine(out _);
+            this.ExtractLine(out var length);
+            this.ExtractLine(out _);
+            this.ExtractLine(out var status);
+
+            this.StartWorker();
+
+            if (status != "OK")
+                throw new Exception("Couldn't open socket.");
+
+            return int.Parse(length.Substring(9));
+        }
+
+        public bool WriteSocket(string socket, byte[] data) {
+            this.StopWorker();
+
+            this.SendATCommand($"AT+S.SOCKW={socket},{data.Length}");
+
+            this.Write(data);
+
+            this.ExtractLine(out _);
+            this.ExtractLine(out var status);
+
+            this.StartWorker();
+
+            return status == "OK";
+        }
+
+        public byte[] ReadSocket(string socket, int length) {
+            this.StopWorker();
+
+            this.SendATCommand($"AT+S.SOCKR={socket},{length}");
+
+            var data = new byte[length];
+            var read = 0;
+            var loaded = 0U;
+
+            do {
+                if (loaded < length)
+                    loaded += this.serReader.Load((uint)(length - loaded));
+
+                var avail = (int)this.serReader.UnconsumedBufferLength;
+
+                for (var i = 0; i < avail; i++)
+                    data[i + read] = this.serReader.ReadByte();
+
+                read += avail;
+            } while (read < length);
+
+            this.ExtractLine(out _);
+            this.ExtractLine(out var status);
+
+            this.StartWorker();
+
+            if (status != "OK")
+                throw new Exception("Couldn't open socket.");
+
+            return data;
+        }
+
+        public bool CloseSocket(string socket) {
+            this.StopWorker();
+
+            this.SendATCommand($"AT+S.SOCKC={socket}");
+
+            this.ExtractLine(out _);
+            this.ExtractLine(out var status);
+
+            this.StartWorker();
+
+            return status == "OK";
+        }
 
         private void StopWorker() {
             if (this.worker == null) throw new InvalidOperationException("Already stopped.");
@@ -446,7 +541,8 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
 
             this.SendATCommand(request);
 
-            this.Write(Encoding.UTF8.GetBytes(body));
+            if (body != null)
+                this.Write(Encoding.UTF8.GetBytes(body));
 
             var a = string.Empty;
             var b = string.Empty;
@@ -469,11 +565,11 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
             }
 
             this.ExtractLine(out _);
-            this.ExtractLine(out var statusLine);
+            this.ExtractLine(out var status);
 
             this.StartWorker();
 
-            return statusLine == "OK";
+            return status == "OK";
         }
 
         public class AsynchronousIndicationEventArgs : EventArgs {
@@ -583,8 +679,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
         }
 
         private void ReadIn() {
-            var asdf = this.serReader.Load(1024);
-
+            var loaded = this.serReader.Load(1024);
             var avail = (int)this.serReader.UnconsumedBufferLength;
 
             while (avail > 0) {
