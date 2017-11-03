@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Diagnostics;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Threading;
 using GHIElectronics.TinyCLR.Devices.Gpio;
@@ -482,6 +483,21 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
             return status == "OK";
         }
 
+        public bool WriteSocket(string socket, byte[] data, int index, int length) {
+            this.StopWorker();
+
+            this.SendATCommand($"AT+S.SOCKW={socket},{length}");
+
+            this.Write(data, index, length);
+
+            this.ExtractLine(out _);
+            this.ExtractLine(out var status);
+
+            this.StartWorker();
+
+            return status == "OK";
+        }
+
         public byte[] ReadSocket(string socket, int length) {
             this.StopWorker();
 
@@ -512,6 +528,37 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
                 throw new Exception("Couldn't open socket.");
 
             return data;
+        }
+
+        public int ReadSocket(string socket, int length, byte[] buffer, int index) {
+            this.StopWorker();
+
+            this.SendATCommand($"AT+S.SOCKR={socket},{length}");
+
+            var read = 0;
+            var loaded = 0U;
+
+            do {
+                if (loaded < length)
+                    loaded += this.serReader.Load((uint)(length - loaded));
+
+                var avail = (int)this.serReader.UnconsumedBufferLength;
+
+                for (var i = 0; i < avail; i++)
+                    buffer[i + read + index] = this.serReader.ReadByte();
+
+                read += avail;
+            } while (read < length);
+
+            this.ExtractLine(out _);
+            this.ExtractLine(out var status);
+
+            this.StartWorker();
+
+            if (status != "OK")
+                throw new Exception("Couldn't open socket.");
+
+            return length;
         }
 
         public bool CloseSocket(string socket) {
@@ -646,6 +693,30 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
             }
 
             return new string(res);
+        }
+
+        public string HttpCustomSsl(string host, int port, string data, byte[] bytes, char[] chars) {
+            var s = this.OpenSocket(host, port, 's');
+
+            var len = Encoding.UTF8.GetBytes(data, 0, data.Length, bytes, 0);
+
+            this.WriteSocket(s, bytes, 0, len);
+
+            while (this.AvailableSocket(s) == 0)
+                ;
+
+            len = 0;
+
+            var i = 0;
+            while ((len = this.AvailableSocket(s)) != 0)
+                i += this.ReadSocket(s, len, bytes, i);
+
+            this.CloseSocket(s);
+
+            for (var j = 0; j < i; j++)
+                chars[j] = (char)bytes[j];
+
+            return new string(chars, 0, i);
         }
 
         public class AsynchronousIndicationEventArgs : EventArgs {
@@ -787,6 +858,12 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
 
         private void Write(byte[] data) {
             this.serWriter.WriteBytes(data);
+
+            this.Flush();
+        }
+
+        private void Write(byte[] data, int index, int length) {
+            this.serWriter.WriteBuffer(data.AsBuffer(index, length));
 
             this.Flush();
         }
