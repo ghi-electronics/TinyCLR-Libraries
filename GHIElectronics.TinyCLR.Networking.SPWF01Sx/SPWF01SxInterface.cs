@@ -110,6 +110,8 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
                 default: throw new Exception();
             }
 
+            StopWorker();
+
             Erase();
             SendATCommand(Command.SSID + network);
             SendATCommand(Command.SetValue + "wifi_mode," + radio);
@@ -117,6 +119,23 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
             SendATCommand(Command.SetValue + passtype + password);
             SendATCommand(Command.SaveConfig);
             Reset();
+
+            this.ExtractLine(out var status1);
+            this.ExtractLine(out var status2);
+            this.ExtractLine(out var status3);
+            this.ExtractLine(out var status4);
+            this.ExtractLine(out var status5);
+            this.ExtractLine(out var status6);
+            this.ExtractLine(out var status7);
+            this.ExtractLine(out var status8);
+            this.ExtractLine(out var status9);
+            this.ExtractLine(out var status10);
+            this.ExtractLine(out var status11);
+            this.ExtractLine(out var status12);
+            this.ExtractLine(out var status13);
+            this.ExtractLine(out var status14);
+
+            StartWorker();
         }
 
         public void ConnectMiniAP(string network, PasswordType ptype, string password, SecurityMode mode1) {
