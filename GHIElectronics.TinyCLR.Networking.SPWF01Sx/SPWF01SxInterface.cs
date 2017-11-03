@@ -446,7 +446,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
             if (status != "OK")
                 throw new Exception("Couldn't open socket.");
 
-            return id.Substring(4);
+            return id.Substring(5);
         }
 
         public int AvailableSocket(string socket) {
@@ -528,21 +528,21 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
         }
 
         private void StopWorker() {
-            if (this.worker == null) throw new InvalidOperationException("Already stopped.");
+            if (this.paused) throw new InvalidOperationException("Already stopped.");
 
             this.stopping = true;
-            this.running = false;
-            this.worker.Join();
-            this.stopping = false;
-            this.worker = null;
+
+            while (this.stopping)
+                Thread.Sleep(10);
+
+            this.paused = true;
         }
 
         private void StartWorker() {
-            if (this.worker != null) throw new InvalidOperationException("Already started.");
+            if (!this.paused) throw new InvalidOperationException("Already started.");
 
-            this.running = true;
-            this.worker = new Thread(this.DoWork);
-            this.worker.Start();
+            this.paused = false;
+            this.workerWait.Set();
         }
 
         private const string HttpEnd = "\u001A\u001A\u001A";
@@ -670,9 +670,11 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
         private char[] buffer;
         private string responseBuffer;
         private AutoResetEvent atExpectedEvent;
+        private AutoResetEvent workerWait;
         private string atExpectedResponse;
         private bool running;
         private bool stopping;
+        private bool paused;
         private DataWriter serWriter;
         private DataReader serReader;
         private SerialDevice serial;
@@ -680,11 +682,13 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
 
         public SPWF01SxInterface(string serialId, int resetPin) {
             this.atExpectedEvent = new AutoResetEvent(false);
+            this.workerWait = new AutoResetEvent(false);
             this.atExpectedResponse = string.Empty;
             this.responseBuffer = string.Empty;
             this.buffer = new char[1024];
-            this.running = false;
+            this.running = true;
             this.stopping = false;
+            this.paused = true;
 
             this.resetPin = GpioController.GetDefault().OpenPin(resetPin);
             this.resetPin.SetDriveMode(GpioPinDriveMode.Output);
@@ -696,6 +700,9 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
 
             this.serReader = new DataReader(this.serial.InputStream);
             this.serWriter = new DataWriter(this.serial.OutputStream);
+
+            this.worker = new Thread(this.DoWork);
+            this.worker.Start();
         }
 
         public void TurnOn() {
@@ -730,6 +737,9 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
 
         private void DoWork() {
             while (this.running) {
+                this.stopping = false;
+                this.workerWait.WaitOne();
+
                 while (this.ExtractLine(out var response)) {
                     if (this.atExpectedResponse != string.Empty && response.IndexOf(this.atExpectedResponse) == 0)
                         this.atExpectedEvent.Set();
@@ -818,7 +828,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
             this.responseBuffer = this.responseBuffer.Substring(index + 2);
 
             //If taken over above in things like HTTP get, don't swallow these
-            if (this.running && (line == "\r\n" || line == ""))
+            if (!this.paused && (line == "\r\n" || line == ""))
                 return this.ExtractLine(out line);
 
             this.LineReceived?.Invoke(this, line);
