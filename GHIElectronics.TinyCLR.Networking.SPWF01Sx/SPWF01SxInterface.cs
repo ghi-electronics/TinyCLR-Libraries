@@ -414,10 +414,10 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
         public void ConfigureTls(int time, string domain, byte[] certificate) {
             this.StopWorker();
 
-            SendATCommand($"AT+S.SETTIME={time}");
+            SendATCommand($"AT+S.SETTIME=" + time);
             SendATCommand("AT+S.TLSCERT2=clean,all");
-            SendATCommand($"AT+S.TLSDOMAIN=f_domain,{domain}");
-            SendATCommand($"AT+S.TLSCERT=f_ca,{certificate.Length}");
+            SendATCommand($"AT+S.TLSDOMAIN=f_domain," + domain);
+            SendATCommand($"AT+S.TLSCERT=f_ca," + certificate.Length);
             this.Write(certificate);
 
             this.ExtractLine(out var status1);
@@ -435,7 +435,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
         public string OpenSocket(string host, int port, char type) {
             this.StopWorker();
 
-            this.SendATCommand($"AT+S.SOCKON={host},{port},{type}");
+            this.SendATCommand($"AT+S.SOCKON=" + host + "," + port + "," + type);
 
             this.ExtractLine(out _);
             this.ExtractLine(out var id);
@@ -453,7 +453,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
         public int AvailableSocket(string socket) {
             this.StopWorker();
 
-            this.SendATCommand($"AT+S.SOCKQ={socket}");
+            this.SendATCommand($"AT+S.SOCKQ=" + socket);
 
             this.ExtractLine(out _);
             this.ExtractLine(out var length);
@@ -471,7 +471,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
         public bool WriteSocket(string socket, byte[] data) {
             this.StopWorker();
 
-            this.SendATCommand($"AT+S.SOCKW={socket},{data.Length}");
+            this.SendATCommand($"AT+S.SOCKW=" + socket + "," + data.Length);
 
             this.Write(data);
 
@@ -486,7 +486,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
         public bool WriteSocket(string socket, byte[] data, int index, int length) {
             this.StopWorker();
 
-            this.SendATCommand($"AT+S.SOCKW={socket},{length}");
+            this.SendATCommand($"AT+S.SOCKW=" + socket + "," + length);
 
             this.Write(data, index, length);
 
@@ -501,7 +501,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
         public byte[] ReadSocket(string socket, int length) {
             this.StopWorker();
 
-            this.SendATCommand($"AT+S.SOCKR={socket},{length}");
+            this.SendATCommand($"AT+S.SOCKR=" + socket + "," + length);
 
             var data = new byte[length];
             var read = 0;
@@ -533,7 +533,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
         public int ReadSocket(string socket, int length, byte[] buffer, int index) {
             this.StopWorker();
 
-            this.SendATCommand($"AT+S.SOCKR={socket},{length}");
+            this.SendATCommand($"AT+S.SOCKR=" + socket + "," + length);
 
             var read = 0;
             var loaded = 0U;
@@ -564,7 +564,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
         public bool CloseSocket(string socket) {
             this.StopWorker();
 
-            this.SendATCommand($"AT+S.SOCKC={socket}");
+            this.SendATCommand($"AT+S.SOCKC=" + socket);
 
             this.ExtractLine(out _);
             this.ExtractLine(out var status);
@@ -594,11 +594,11 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
 
         private const string HttpEnd = "\u001A\u001A\u001A";
 
-        public bool HttpGet(string host, string path) => this.DoHttp($"AT+S.HTTPGET={host},{path}", null);
+        public bool HttpGet(string host, string path) => this.DoHttp($"AT+S.HTTPGET=" + host + "," + path, null);
 
-        public bool HttpPost(string host, string path, string[][] formData) => this.DoHttp($"AT+S.HTTPPOST={host},{path},{SPWF01SxInterface.HttpFormEncode(formData)}", null);
+        public bool HttpPost(string host, string path, string[][] formData) => this.DoHttp($"AT+S.HTTPPOST=" + host + "," + path + "," + "SPWF01SxInterface.HttpFormEncode(formData)}", null);
 
-        public bool HttpCustom(string host, int port, string data) => this.DoHttp($"AT+S.HTTPREQ={host},{port},{data.Length}", data);
+        public bool HttpCustom(string host, int port, string data) => this.DoHttp($"AT+S.HTTPREQ=" + host + "," + port + "," + data.Length, data);
 
         private static string HttpFormEncode(string[][] formData) {
             var form = "";
