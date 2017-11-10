@@ -596,7 +596,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
 
         public bool HttpGet(string host, string path) => this.DoHttp($"AT+S.HTTPGET=" + host + "," + path, null);
 
-        public bool HttpPost(string host, string path, string[][] formData) => this.DoHttp($"AT+S.HTTPPOST=" + host + "," + path + "," + "SPWF01SxInterface.HttpFormEncode(formData)}", null);
+        public bool HttpPost(string host, string path, string[][] formData) => this.DoHttp($"AT+S.HTTPPOST=" + host + "," + path + "," + SPWF01SxInterface.HttpFormEncode(formData), null);
 
         public bool HttpCustom(string host, int port, string data) => this.DoHttp($"AT+S.HTTPREQ=" + host + "," + port + "," + data.Length, data);
 
