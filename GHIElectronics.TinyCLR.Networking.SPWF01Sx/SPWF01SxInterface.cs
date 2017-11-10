@@ -768,6 +768,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
             this.serial = SerialDevice.FromId(serialId);
             this.serial.BaudRate = 115200;
             this.serial.ReadTimeout = TimeSpan.FromMilliseconds(100);
+            this.serial.Handshake = SerialHandshake.RequestToSend;
 
             this.serReader = new DataReader(this.serial.InputStream);
             this.serWriter = new DataWriter(this.serial.OutputStream);
@@ -780,6 +781,24 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
             this.StartWorker();
 
             this.resetPin.Write(GpioPinValue.High);
+        }
+
+        public void EnableHandshaking() {
+            this.StopWorker();
+
+            this.SendATCommand("AT+S.SCFG=console1_hwfc,1");
+            this.SendATCommand(Command.SaveConfig);
+
+            this.Reset();
+
+            this.ExtractLine(out var status1);
+            this.ExtractLine(out var status2);
+            this.ExtractLine(out var status3);
+            this.ExtractLine(out var status4);
+            this.ExtractLine(out var status5);
+            this.ExtractLine(out var status6);
+
+            this.StartWorker();
         }
 
         public void SendATCommand(string atCommand) => this.SendATCommand(atCommand, string.Empty);
