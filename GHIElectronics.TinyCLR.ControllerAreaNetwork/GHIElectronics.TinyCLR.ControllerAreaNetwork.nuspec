@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>GHIElectronics.TinyCLR.ControllerAreaNetwork</id>
+    <version>0.6.0</version>
+    <authors>GHI Electronics, LLC</authors>
+    <owners>GHI Electronics, LLC</owners>
+    <projectUrl>http://tinyclr.com/</projectUrl>
+    <iconUrl>http://files.ghielectronics.com/downloads/Logos/GHIElectronicsTinyCLRNuGet.png</iconUrl>
+    <licenseUrl>http://files.ghielectronics.com/downloads/TinyCLR/License.txt</licenseUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>The Controller Area Network library for TinyCLR OS.</description>
+    <copyright>Copyright GHI Electronics, LLC 2017</copyright>
+    <tags>TinyCLR TinyCLROS</tags>
+    <dependencies>
+      <dependency id="GHIElectronics.TinyCLR.Core" version="[0.6.0, 0.7.0)" />
+      <dependency id="GHIElectronics.TinyCLR.Devices" version="[0.6.0, 0.7.0)" />      
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="$TargetDir$GHIElectronics.TinyCLR.ControllerAreaNetwork.dll" target="lib\net452" />
+  </files>
+</package>
