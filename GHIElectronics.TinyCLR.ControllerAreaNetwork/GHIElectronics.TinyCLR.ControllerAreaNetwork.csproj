@@ -36,7 +36,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="CanController.cs" />
-    <Compile Include="ControllerAreaNetwork.cs" />
+    <Compile Include="CanProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
