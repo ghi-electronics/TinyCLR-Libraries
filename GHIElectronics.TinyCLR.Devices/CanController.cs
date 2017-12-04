@@ -25,19 +25,48 @@
             return controllers;
         }
 
-
-        public void SetTiming(CanTimings timing) {
+        public void ApplySettings(CanTimings timing, int receivingBufferSize) {
             this.provider.Acquire();
+            this.ReceiveBufferSize = receivingBufferSize;
             this.provider.SetTiming(timing);
         }
+
+        public void ApplySettings(CanTimings timing) => ApplySettings(timing, this.receiveBufferSize);
 
         public bool Reset() => this.provider.Reset();
 
         public int ReadMessages(CanMessage[] messages, int offset, int count) => this.provider.ReadMessages(messages, offset, count);
 
+        public CanMessage ReadMessage() {
+            if (this.ReceivedMessageCount != 0) {
+
+                var message = new CanMessage[1] { new CanMessage() };
+
+                ReadMessages(message, 0, 1);
+
+                return message[0];
+            }
+
+            return null;
+        }
+
         public int SendMessages(CanMessage[] messages, int offset, int count) => this.provider.SendMessages(messages, offset, count);
 
-        public int ReceivedMessageCount() => this.provider.ReceivedMessageCount();
+        public bool SendMessage(CanMessage message) {
+            if (this.CanSend) {
+                var messages = new CanMessage[1];
+
+                messages[0] = message;
+
+                this.provider.SendMessages(messages, 0, 1);
+
+                return true;
+            }
+
+            return false;
+        }
+
+        public int ReceivedMessageCount => this.provider.ReceivedMessageCount();
 
         public void SetExplicitFilters(uint[] filters) => this.provider.SetExplicitFilters(filters);
 
@@ -45,13 +74,13 @@
 
         public void DiscardIncomingMessages() => this.provider.DiscardIncomingMessages();
 
-        public bool CanSend() => this.provider.CanSend();
+        public bool CanSend => this.provider.CanSend();
 
-        public int ReceiveErrorCount() => this.provider.ReceiveErrorCount();
+        public int ReceiveErrorCount => this.provider.ReceiveErrorCount();
 
-        public int TransmitErrorCount() => this.provider.TransmitErrorCount();
+        public int TransmitErrorCount => this.provider.TransmitErrorCount();
 
-        public uint GetSourceClock() => this.provider.GetSourceClock();
+        public uint GetSourceClock => this.provider.GetSourceClock();
 
         public int ReceiveBufferSize {
             get => this.receiveBufferSize;
