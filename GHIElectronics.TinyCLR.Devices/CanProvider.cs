@@ -31,6 +31,14 @@ namespace GHIElectronics.TinyCLR.Devices {
 
         bool CanSend();
 
+        int ReceiveErrorCount();
+
+        int TransmitErrorCount();
+
+        uint GetSourceClock();
+
+        void SetReceiveBufferSize(int receiveBufferSize);
+
     }
 
     public class CanProvider : ICanProvider {
@@ -89,6 +97,15 @@ namespace GHIElectronics.TinyCLR.Devices {
 
         public bool CanSend() => NativeTransmissionAllowed();
 
+        public int ReceiveErrorCount() => NativeReceiveErrorCount();
+
+        public int TransmitErrorCount() => NativeTransmitErrorCount();
+
+        public uint GetSourceClock() => NativeGetSourceClock();
+
+        public void SetReceiveBufferSize(int receiveBufferSize) => NativeSetReceiveBufferSize(receiveBufferSize);
+
+
         [MethodImpl(MethodImplOptions.InternalCall)]
         extern private void NativeAcquire();
 
@@ -119,6 +136,17 @@ namespace GHIElectronics.TinyCLR.Devices {
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         extern private bool NativeTransmissionAllowed();
 
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        extern private int NativeReceiveErrorCount();
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        extern private int NativeTransmitErrorCount();
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        extern private uint NativeGetSourceClock();
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        extern private void NativeSetReceiveBufferSize(int receiveBufferSize);
     }
 
     /// <summary>A CAN message.</summary>

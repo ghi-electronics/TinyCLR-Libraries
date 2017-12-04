@@ -7,6 +7,8 @@
 
         private CanEventListener canEventListener;
 
+        int receiveBufferSize = 128;
+
         internal CanController(ICanControllerProvider provider) => this.provider = provider;
 
         public static CanController[] GetControllers(ICanProvider provider) {
@@ -37,13 +39,27 @@
 
         public int ReceivedMessageCount() => this.provider.ReceivedMessageCount();
 
-        void SetExplicitFilters(uint[] filters) => this.provider.SetExplicitFilters(filters);
+        public void SetExplicitFilters(uint[] filters) => this.provider.SetExplicitFilters(filters);
 
-        void SetGroupFilters(uint[] lowerBounds, uint[] upperBounds) => this.provider.SetGroupFilters(lowerBounds, upperBounds);
+        public void SetGroupFilters(uint[] lowerBounds, uint[] upperBounds) => this.provider.SetGroupFilters(lowerBounds, upperBounds);
 
-        void DiscardIncomingMessages() => this.provider.DiscardIncomingMessages();
+        public void DiscardIncomingMessages() => this.provider.DiscardIncomingMessages();
 
-        bool CanSend() => this.provider.CanSend();
+        public bool CanSend() => this.provider.CanSend();
+
+        public int ReceiveErrorCount() => this.provider.ReceiveErrorCount();
+
+        public int TransmitErrorCount() => this.provider.TransmitErrorCount();
+
+        public uint GetSourceClock() => this.provider.GetSourceClock();
+
+        public int ReceiveBufferSize {
+            get => this.receiveBufferSize;
+            set {
+                this.receiveBufferSize = value;
+                this.provider.SetReceiveBufferSize(this.receiveBufferSize);
+            }
+        }
 
         public event MessageReceivedEventHandler MessageAvailable;
         public event ErrorReceivedEventHandler ErrorReceived;
