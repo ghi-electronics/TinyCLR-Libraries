@@ -3,7 +3,7 @@ using System.Collections;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace GHIElectronics.TinyCLR.ControllerAreaNetwork {
+namespace GHIElectronics.TinyCLR.Devices {
 
     public interface ICanProvider {
         ICanControllerProvider[] GetControllers();
@@ -11,23 +11,32 @@ namespace GHIElectronics.TinyCLR.ControllerAreaNetwork {
 
     public interface ICanControllerProvider {
 
-        void Enable();
+        void Acquire();
 
-        void SetSpeed(int propagation, int phase1, int phase2, int brp, int synchronizationJumpWidth, int useMultiBitSampling);
+        void SetTiming(CanTimings timing);
 
         bool Reset();
 
-        int ReadMessages(Message[] messages, int offset, int count);
+        int ReadMessages(CanMessage[] messages, int offset, int count);
 
-        int SendMessages(Message[] messages, int offset, int count);
+        int SendMessages(CanMessage[] messages, int offset, int count);
 
-        int ReceivedMessageCount();        
+        int ReceivedMessageCount();
+
+        void SetExplicitFilters(uint[] filters);
+
+        void SetGroupFilters(uint[] lowerBounds, uint[] upperBounds);
+
+        void DiscardIncomingMessages();
+
+        bool CanSend();
+
     }
 
     public class CanProvider : ICanProvider {
         private ICanControllerProvider[] controllers;
         private static Hashtable providers = new Hashtable();
-       
+
         public string Name { get; }
 
         public ICanControllerProvider[] GetControllers() => this.controllers;
@@ -60,29 +69,37 @@ namespace GHIElectronics.TinyCLR.ControllerAreaNetwork {
 
         internal DefaultCanControllerProvider(IntPtr nativeProvider) => this.nativeProvider = nativeProvider;
 
-        public void Enable() => NativeEnable();
+        public void Acquire() => NativeAcquire();
 
-        public void SetSpeed(int propagation, int phase1, int phase2, int brp, int synchronizationJumpWidth, int useMultiBitSampling) => NativeSetSpeed(propagation, phase1, phase2, brp, synchronizationJumpWidth, useMultiBitSampling);
+        public void SetTiming(CanTimings timing) => NativeSetTiming(timing.Propagation, timing.Phase1, timing.Phase2, timing.Brp, timing.SynchronizationJumpWidth, timing.UseMultiBitSampling);
 
         public bool Reset() => NativeReset();
 
-        public int ReadMessages(Message[] messages, int offset, int count) => NativeReadMessages(messages, offset, count);
+        public int ReadMessages(CanMessage[] messages, int offset, int count) => NativeReadMessages(messages, offset, count);
 
-        public int SendMessages(Message[] messages, int offset, int count) => NativeSendMessages(messages, offset, count);
+        public int SendMessages(CanMessage[] messages, int offset, int count) => NativeSendMessages(messages, offset, count);
 
         public int ReceivedMessageCount() => NativeReceivedMessageCount();
 
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        extern private void NativeEnable();
+        public void SetExplicitFilters(uint[] filters) => NativeSetExplicitFilters(filters);
+
+        public void SetGroupFilters(uint[] lowerBounds, uint[] upperBounds) => NativeSetGroupFilters(lowerBounds, upperBounds);
+
+        public void DiscardIncomingMessages() => NativeDiscardIncomingMessages();
+
+        public bool CanSend() => NativeTransmissionAllowed();
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        extern private void NativeSetSpeed(int propagation, int phase1, int phase2, int brp, int synchronizationJumpWidth, int useMultiBitSampling);
+        extern private void NativeAcquire();
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        extern private void NativeSetTiming(int propagation, int phase1, int phase2, int brp, int synchronizationJumpWidth, bool useMultiBitSampling);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        extern private int NativeReadMessages(Message[] messages, int offset, int count);
+        extern private int NativeReadMessages(CanMessage[] messages, int offset, int count);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        extern private int NativeSendMessages(Message[] messages, int offset, int count);
+        extern private int NativeSendMessages(CanMessage[] messages, int offset, int count);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         extern private int NativeReceivedMessageCount();
@@ -90,10 +107,22 @@ namespace GHIElectronics.TinyCLR.ControllerAreaNetwork {
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         extern private bool NativeReset();
 
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        extern private void NativeSetExplicitFilters(uint[] filters);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        extern private void NativeSetGroupFilters(uint[] lowerBounds, uint[] upperBounds);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        extern private void NativeDiscardIncomingMessages();
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        extern private bool NativeTransmissionAllowed();
+
     }
 
     /// <summary>A CAN message.</summary>
-    public class Message {
+    public class CanMessage {
         private byte[] data;
         private uint arbitrationId;
         private int length;
@@ -129,7 +158,7 @@ namespace GHIElectronics.TinyCLR.ControllerAreaNetwork {
         }
 
         /// <summary>Constructs a new message.</summary>
-        public Message() {
+        public CanMessage() {
             this.data = new byte[8];
             this.arbitrationId = 0;
             this.length = 0;
@@ -140,14 +169,14 @@ namespace GHIElectronics.TinyCLR.ControllerAreaNetwork {
 
         /// <summary>Constructs a new message with no data.</summary>
         /// <param name="arbitrationId">The arbitration id.</param>
-        public Message(uint arbitrationId)
+        public CanMessage(uint arbitrationId)
             : this(arbitrationId, null, 0, 0) {
         }
 
         /// <summary>Constructs a new message.</summary>
         /// <param name="arbitrationId">The arbitration id.</param>
         /// <param name="data">The message data.</param>
-        public Message(uint arbitrationId, byte[] data)
+        public CanMessage(uint arbitrationId, byte[] data)
             : this(arbitrationId, data, 0, data != null ? data.Length : 0) {
         }
 
@@ -156,7 +185,7 @@ namespace GHIElectronics.TinyCLR.ControllerAreaNetwork {
         /// <param name="data">The message data.</param>
         /// <param name="offset">The offset into the buffer from which to create the message.</param>
         /// <param name="count">The number of bytes in the message.</param>
-        public Message(uint arbitrationId, byte[] data, int offset, int count)
+        public CanMessage(uint arbitrationId, byte[] data, int offset, int count)
             : this(arbitrationId, data, offset, count, false, false) {
         }
 
@@ -167,7 +196,7 @@ namespace GHIElectronics.TinyCLR.ControllerAreaNetwork {
         /// <param name="count">The number of bytes in the message.</param>
         /// <param name="isRTR">If the message is a remote transmission request.</param>
         /// <param name="isEID">If the id is an extended id.</param>
-        public Message(uint arbitrationId, byte[] data, int offset, int count, bool isRTR, bool isEID) {
+        public CanMessage(uint arbitrationId, byte[] data, int offset, int count, bool isRTR, bool isEID) {
             if (count < 0 || count > 8) throw new ArgumentOutOfRangeException("count", "count must be between zero and eight.");
             if (data == null && count != 0) throw new ArgumentOutOfRangeException("count", "count must be zero when data is null.");
             if (count != 0 && offset + count > data.Length) throw new ArgumentOutOfRangeException("data", "data.Length must be at least offset + count.");
@@ -186,7 +215,7 @@ namespace GHIElectronics.TinyCLR.ControllerAreaNetwork {
         }
     }
     /// <summary>Possible CAN errors.</summary>
-    public enum Error : byte {
+    public enum CanError : byte {
         /// <summary>A CAN message was lost because the hardware was not able to receive the message in time.</summary>
         Overrun,
         /// <summary>
@@ -197,6 +226,65 @@ namespace GHIElectronics.TinyCLR.ControllerAreaNetwork {
         BusOff,
         /// <summary>An error passive condition was encountered.</summary>
         ErrorPassive,
+    }
+
+    /// <summary>Represents CAN bus timings.</summary>
+    public class CanTimings {
+        private int propagation;
+        private int phase1;
+        private int phase2;
+        private int brp;
+        private int synchronizationJumpWidth;
+        private bool useMultiBitSampling;
+
+        /// <summary>The propagation value.</summary>
+        public int Propagation { get => this.propagation; set => this.propagation = value; }
+
+        /// <summary>The phase one length in time-quanta.</summary>
+        public int Phase1 { get => this.phase1; set => this.phase1 = value; }
+
+        /// <summary>The phase two length in time-quanta.</summary>
+        public int Phase2 { get => this.phase2; set => this.phase2 = value; }
+
+        /// <summary>The baudrate prescaler value.</summary>
+        public int Brp { get => this.brp; set => this.brp = value; }
+
+        /// <summary>The synchronization jump width time-quanta.</summary>
+        public int SynchronizationJumpWidth { get => this.synchronizationJumpWidth; set => this.synchronizationJumpWidth = value; }
+
+        /// <summary>Whether or not to use multiple bit samples.</summary>
+        public bool UseMultiBitSampling { get => this.useMultiBitSampling; set => this.useMultiBitSampling = value; }
+
+        /// <summary>Creates a new instance with the timings set to zero.</summary>
+        public CanTimings()
+            : this(0, 0, 0, 0, 0, false) {
+        }
+
+        /// <summary>Creates a new instance with the given timings.</summary>
+        /// <param name="propagation">The propogation length in time-quanta.</param>
+        /// <param name="phase1">The phase one length in time-quanta.</param>
+        /// <param name="phase2">The phase two length in time-quanta.</param>
+        /// <param name="brp">The baudrate prescaler value.</param>
+        /// <param name="synchronizationJumpWidth">The synchronization jump width time-quanta.</param>
+        public CanTimings(int propagation, int phase1, int phase2, int brp, int synchronizationJumpWidth)
+            : this(propagation, phase1, phase2, brp, synchronizationJumpWidth, false) {
+        }
+
+        /// <summary>Creates a new instance with the given timings.</summary>
+        /// <param name="propagation">The propogation length in time-quanta.</param>
+        /// <param name="phase1">The phase one length in time-quanta.</param>
+        /// <param name="phase2">The phase two length in time-quanta.</param>
+        /// <param name="brp">The baudrate prescaler value.</param>
+        /// <param name="synchronizationJumpWidth">The synchronization jump width time-quanta.</param>
+        /// <param name="useMultiBitSampling">Whether or not to use multiple bit samples.</param>
+        public CanTimings(int propagation, int phase1, int phase2, int brp, int synchronizationJumpWidth, bool useMultiBitSampling) {
+            this.propagation = propagation;
+            this.phase1 = phase1;
+            this.phase2 = phase2;
+            this.brp = brp;
+            this.synchronizationJumpWidth = synchronizationJumpWidth;
+            this.useMultiBitSampling = useMultiBitSampling;
+        }
     }
 
 }

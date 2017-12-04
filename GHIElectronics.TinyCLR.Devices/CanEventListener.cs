@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace GHIElectronics.TinyCLR.ControllerAreaNetwork {
+namespace GHIElectronics.TinyCLR.Devices {
     public class CanEventListener {
         private NativeEventDispatcher dispatcherMessageReceived;
         private NativeEventDispatcher dispatcherErrorReceived;
@@ -16,8 +16,8 @@ namespace GHIElectronics.TinyCLR.ControllerAreaNetwork {
             this.dispatcherErrorReceived.OnInterrupt += this.Dispatcher_OnErrorReceivedInterrupt;
         }
 
-        private void Dispatcher_OnMessageReceivedInterrupt(string apiName, uint implementationIndex, ulong data0, ulong data1, IntPtr data2, DateTime timestamp) => this.controller.MessageReceived((int)data0);
-        private void Dispatcher_OnErrorReceivedInterrupt(string apiName, uint implementationIndex, ulong data0, ulong data1, IntPtr data2, DateTime timestamp) => this.controller.ErrorReceived((Error)data0);
+        private void Dispatcher_OnMessageReceivedInterrupt(string apiName, uint implementationIndex, ulong data0, ulong data1, IntPtr data2, DateTime timestamp) => this.controller.OnMessageReceived((int)data0);
+        private void Dispatcher_OnErrorReceivedInterrupt(string apiName, uint implementationIndex, ulong data0, ulong data1, IntPtr data2, DateTime timestamp) => this.controller.OnErrorReceived((CanError)data0);
 
     }
 }

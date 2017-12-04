@@ -20,8 +20,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Stor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Networking.SPWF01Sx", "GHIElectronics.TinyCLR.Networking.SPWF01Sx\GHIElectronics.TinyCLR.Networking.SPWF01Sx.csproj", "{365C4668-89FB-429C-B90B-D80AF6CF9B9D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.ControllerAreaNetwork", "GHIElectronics.TinyCLR.ControllerAreaNetwork\GHIElectronics.TinyCLR.ControllerAreaNetwork.csproj", "{95B406DD-FDDD-407B-9D99-90B581446589}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -56,10 +54,6 @@ Global
 		{365C4668-89FB-429C-B90B-D80AF6CF9B9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{365C4668-89FB-429C-B90B-D80AF6CF9B9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{365C4668-89FB-429C-B90B-D80AF6CF9B9D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{95B406DD-FDDD-407B-9D99-90B581446589}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{95B406DD-FDDD-407B-9D99-90B581446589}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{95B406DD-FDDD-407B-9D99-90B581446589}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{95B406DD-FDDD-407B-9D99-90B581446589}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

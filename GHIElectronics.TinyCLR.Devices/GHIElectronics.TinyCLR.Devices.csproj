@@ -39,6 +39,9 @@
     <Compile Include="AdcController.cs" />
     <Compile Include="AdcEnums.cs" />
     <Compile Include="AdcProvider.cs" />
+    <Compile Include="CanController.cs" />
+    <Compile Include="CanEventListener.cs" />
+    <Compile Include="CanProvider.cs" />
     <Compile Include="DacChannel.cs" />
     <Compile Include="DacController.cs" />
     <Compile Include="DacProvider.cs" />
