@@ -1,13 +1,20 @@
-﻿namespace GHIElectronics.TinyCLR.Devices {
+﻿using System.Runtime.InteropServices;
+
+namespace GHIElectronics.TinyCLR.Devices {
     public sealed class CanController {
         private ICanControllerProvider provider;
 
         public delegate void MessageReceivedEventHandler(CanController sender, int count);
         public delegate void ErrorReceivedEventHandler(CanController sender, CanError error);
 
-        private CanEventListener canEventListener;
+        private NativeEventDispatcher nativeMessageAvailableEvent;
+        private NativeEventDispatcher nativeErrorEvent;
 
-        int receiveBufferSize = 128;
+        internal int receiveBufferSize = 128;
+
+        internal int controllerId;
+
+        internal bool enable = false;
 
         internal CanController(ICanControllerProvider provider) => this.provider = provider;
 
@@ -17,21 +24,31 @@
 
             for (var i = 0; i < providers.Length; i++) {
                 controllers[i] = new CanController(providers[i]) {
-                    canEventListener = new CanEventListener()
+                    controllerId = i
                 };
-                controllers[i].canEventListener.controller = controllers[i];
+
             }
 
             return controllers;
         }
 
-        public void ApplySettings(CanTimings timing, int receivingBufferSize) {
-            this.provider.Acquire();
-            this.ReceiveBufferSize = receivingBufferSize;
-            this.provider.SetTiming(timing);
-        }
+        public void ApplySettings(CanTimings timing) {
+            if (!this.enable) {
+                this.provider.Acquire();
+                this.nativeMessageAvailableEvent = NativeEventDispatcher.GetDispatcher("GHIElectronics.TinyCLR.NativeEventNames.Can.MessageReceived");
+                this.nativeErrorEvent = NativeEventDispatcher.GetDispatcher("GHIElectronics.TinyCLR.NativeEventNames.Can.ErrorReceived");
 
-        public void ApplySettings(CanTimings timing) => ApplySettings(timing, this.receiveBufferSize);
+                this.nativeMessageAvailableEvent.OnInterrupt += (pn, ci, d0, d1, d2, ts) => { if (this.controllerId == ci) MessageAvailable?.Invoke(this, (int)d0); };
+                this.nativeErrorEvent.OnInterrupt += (pn, ci, d0, d1, d2, ts) => { if (this.controllerId == ci) ErrorReceived?.Invoke(this, (CanError)d0); };
+
+                this.enable = true;
+            }
+
+            this.provider.SetTiming(timing);
+
+
+
+        }
 
         public bool Reset() => this.provider.Reset();
 
@@ -92,9 +109,5 @@
 
         public event MessageReceivedEventHandler MessageAvailable;
         public event ErrorReceivedEventHandler ErrorReceived;
-
-        internal void OnMessageReceived(int count) => MessageAvailable?.Invoke(this, count);
-        internal void OnErrorReceived(CanError error) => ErrorReceived?.Invoke(this, error);
-
     }
 }
