@@ -410,9 +410,9 @@
             /// <summary>API id.</summary>
             public const string Id = "GHIElectronics.TinyCLR.NativeApis.STM32F4.DacProvider\\0";
 
-            /// <summary>ADC channel.</summary>
+            /// <summary>DAC channel.</summary>
             public const int Channel1 = 0;
-            /// <summary>ADC channel.</summary>
+            /// <summary>DAC channel.</summary>
             public const int Channel2 = 1;
         }
 

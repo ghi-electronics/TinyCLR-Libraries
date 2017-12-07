@@ -68,9 +68,9 @@
 
         /// <summary>I2C bus pin definitions.</summary>
         public static class I2cBus {
-            /// <summary>I2C bus for Temperature Sensor.</summary>
+            /// <summary>I2C bus for the Accelerometer.</summary>
             public const string Accelerometer = FEZCLR.I2cBus.I2c1;
-            /// <summary>I2C bus for Light Sensor.</summary>
+            /// <summary>I2C bus for the Display.</summary>
             public const string Display = FEZCLR.I2cBus.I2c1;
         }
 

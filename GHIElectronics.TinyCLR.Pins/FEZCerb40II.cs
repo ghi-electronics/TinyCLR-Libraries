@@ -79,7 +79,7 @@
         /// <summary>ADC channel definitions.</summary>
         public static class AdcChannel {
             /// <summary>API id.</summary>
-            public const string Id = G120.AdcChannel.Id;
+            public const string Id = Cerb.AdcChannel.Id;
 
             /// <summary>ADC channel.</summary>
             public const int PA6 = Cerb.AdcChannel.PA6;
