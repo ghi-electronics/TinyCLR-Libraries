@@ -13,7 +13,7 @@ namespace GHIElectronics.TinyCLR.Devices {
 
         void Acquire();
 
-        void SetTiming(CanTimings timing);
+        void SetTimings(CanTimings timings);
 
         bool Reset();
 
@@ -38,7 +38,6 @@ namespace GHIElectronics.TinyCLR.Devices {
         uint GetSourceClock();
 
         void SetReceiveBufferSize(int receiveBufferSize);
-
     }
 
     public class CanProvider : ICanProvider {
@@ -79,7 +78,7 @@ namespace GHIElectronics.TinyCLR.Devices {
 
         public void Acquire() => NativeAcquire();
 
-        public void SetTiming(CanTimings timing) => NativeSetTiming(timing.Propagation, timing.Phase1, timing.Phase2, timing.Brp, timing.SynchronizationJumpWidth, timing.UseMultiBitSampling);
+        public void SetTimings(CanTimings timings) => NativeSetTimings(timings.Propagation, timings.Phase1, timings.Phase2, timings.Brp, timings.SynchronizationJumpWidth, timings.UseMultiBitSampling);
 
         public bool Reset() => NativeReset();
 
@@ -105,48 +104,47 @@ namespace GHIElectronics.TinyCLR.Devices {
 
         public void SetReceiveBufferSize(int receiveBufferSize) => NativeSetReceiveBufferSize(receiveBufferSize);
 
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private extern void NativeAcquire();
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        extern private void NativeAcquire();
-
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        extern private void NativeSetTiming(int propagation, int phase1, int phase2, int brp, int synchronizationJumpWidth, bool useMultiBitSampling);
+        private extern void NativeSetTimings(int propagation, int phase1, int phase2, int brp, int synchronizationJumpWidth, bool useMultiBitSampling);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        extern private int NativeReadMessages(CanMessage[] messages, int offset, int count);
+        private extern int NativeReadMessages(CanMessage[] messages, int offset, int count);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        extern private int NativeSendMessages(CanMessage[] messages, int offset, int count);
+        private extern int NativeSendMessages(CanMessage[] messages, int offset, int count);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        extern private int NativeReceivedMessageCount();
+        private extern int NativeReceivedMessageCount();
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        extern private bool NativeReset();
+        private extern bool NativeReset();
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        extern private void NativeSetExplicitFilters(uint[] filters);
+        private extern void NativeSetExplicitFilters(uint[] filters);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        extern private void NativeSetGroupFilters(uint[] lowerBounds, uint[] upperBounds);
+        private extern void NativeSetGroupFilters(uint[] lowerBounds, uint[] upperBounds);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        extern private void NativeDiscardIncomingMessages();
+        private extern void NativeDiscardIncomingMessages();
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        extern private bool NativeTransmissionAllowed();
+        private extern bool NativeTransmissionAllowed();
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        extern private int NativeReceiveErrorCount();
+        private extern int NativeReceiveErrorCount();
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        extern private int NativeTransmitErrorCount();
+        private extern int NativeTransmitErrorCount();
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        extern private uint NativeGetSourceClock();
+        private extern uint NativeGetSourceClock();
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        extern private void NativeSetReceiveBufferSize(int receiveBufferSize);
+        private extern void NativeSetReceiveBufferSize(int receiveBufferSize);
     }
 
     /// <summary>A CAN message.</summary>

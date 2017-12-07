@@ -10,11 +10,17 @@ namespace GHIElectronics.TinyCLR.Devices {
         private NativeEventDispatcher nativeMessageAvailableEvent;
         private NativeEventDispatcher nativeErrorEvent;
 
-        internal int receiveBufferSize = 128;
+        public int ReceiveBufferSize {
+            get => this.ReceiveBufferSize;
+            set {
+                this.ReceiveBufferSize = value;
+                this.provider.SetReceiveBufferSize(value);
+            }
+        }
 
-        internal int controllerId;
+        private int controllerId;
 
-        internal bool enable = false;
+        private bool enable = false;
 
         internal CanController(ICanControllerProvider provider) => this.provider = provider;
 
@@ -32,7 +38,7 @@ namespace GHIElectronics.TinyCLR.Devices {
             return controllers;
         }
 
-        public void ApplySettings(CanTimings timing) {
+        public void SetTimings(CanTimings timing) {
             if (!this.enable) {
                 this.provider.Acquire();
                 this.nativeMessageAvailableEvent = NativeEventDispatcher.GetDispatcher("GHIElectronics.TinyCLR.NativeEventNames.Can.MessageReceived");
@@ -44,10 +50,7 @@ namespace GHIElectronics.TinyCLR.Devices {
                 this.enable = true;
             }
 
-            this.provider.SetTiming(timing);
-
-
-
+            this.provider.SetTimings(timing);
         }
 
         public bool Reset() => this.provider.Reset();
@@ -98,14 +101,6 @@ namespace GHIElectronics.TinyCLR.Devices {
         public int TransmitErrorCount => this.provider.TransmitErrorCount();
 
         public uint GetSourceClock => this.provider.GetSourceClock();
-
-        public int ReceiveBufferSize {
-            get => this.receiveBufferSize;
-            set {
-                this.receiveBufferSize = value;
-                this.provider.SetReceiveBufferSize(this.receiveBufferSize);
-            }
-        }
 
         public event MessageReceivedEventHandler MessageAvailable;
         public event ErrorReceivedEventHandler ErrorReceived;
