@@ -116,7 +116,7 @@
         public static class UartPort {
             /// <summary>UART port on DB25 pin 17 / P0.2 (TX) and DB25 pin 16 / P0.3 (RX).</summary>
             public const string Uart0 = EmbeddedMasterNonTFT.UartPort.Uart0;
-            /// <summary>UART port on DB25 pin 2 / P2.0 (TX), DB25 pin 3 / P2.1 (RX) DB25 pin 5 / P2.2 (CTS) and DB25 pin 4 / P2.7 (RTS).</summary>
+            /// <summary>UART port on DB25 pin 2 / P2.0 (TX), DB25 pin 3 / P2.1 (RX), DB25 pin 5 / P2.2 (CTS), and DB25 pin 4 / P2.7 (RTS).</summary>
             public const string Uart1 = EmbeddedMasterNonTFT.UartPort.Uart1;
             /// <summary>UART port for LIN on P2.8 (TX) and P2.9 (RX).</summary>
             public const string Uart2 = EmbeddedMasterNonTFT.UartPort.Uart2;

@@ -162,19 +162,19 @@
             /// <summary>Socket definition.</summary>
             public static class Socket13 {
                 /// <summary>Pin definition.</summary>
-                public const int Pin3 = G120E.GpioPin.P1_20;
+                public const int Pin3 = EMX.GpioPin.P1_20;
                 /// <summary>Pin definition.</summary>
-                public const int Pin4 = G120E.GpioPin.P1_21;
+                public const int Pin4 = EMX.GpioPin.P1_21;
                 /// <summary>Pin definition.</summary>
-                public const int Pin5 = G120E.GpioPin.P1_22;
+                public const int Pin5 = EMX.GpioPin.P1_22;
                 /// <summary>Pin definition.</summary>
-                public const int Pin6 = G120E.GpioPin.P1_23;
+                public const int Pin6 = EMX.GpioPin.P1_23;
                 /// <summary>Pin definition.</summary>
-                public const int Pin7 = G120E.GpioPin.P1_24;
+                public const int Pin7 = EMX.GpioPin.P1_24;
                 /// <summary>Pin definition.</summary>
-                public const int Pin8 = G120E.GpioPin.P1_25;
+                public const int Pin8 = EMX.GpioPin.P1_25;
                 /// <summary>Pin definition.</summary>
-                public const int Pin9 = G120E.GpioPin.P2_21;
+                public const int Pin9 = EMX.GpioPin.P2_21;
             }
 
             /// <summary>Socket definition.</summary>
