@@ -121,5 +121,11 @@
             /// <summary>CAN bus on D7 (TX) and D4 (RX).</summary>
             public const string Can1 = USBizi100.CanBus.Can1;
         }
+
+        /// <summary>USB client port definitions.</summary>
+        public static class UsbClientPort {
+            /// <summary>USB client port on D- (D-), D+ (D+), and VBUS (VBUS)</summary>
+            public const string UsbDevice = USBizi100.UsbClientPort.UsbDevice;
+        }
     }
 }

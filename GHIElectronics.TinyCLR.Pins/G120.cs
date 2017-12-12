@@ -263,6 +263,18 @@
             public const string Can2 = LPC17.CanBus.Can2;
         }
 
+        /// <summary>USB client port definitions.</summary>
+        public static class UsbClientPort {
+            /// <summary>USB client port on USBC D- (D-) and USBC D+ (D+).</summary>
+            public const string UsbDevice = LPC17.UsbClientPort.UsbDevice;
+        }
+
+        /// <summmary>USB host port definitions.</summmary>
+        public static class UsbHostPort {
+            /// <summary>USB host port on USBH D- (D-) and USBH D+ (D+).</summary>
+            public const string UsbHost1 = LPC17.UsbHostPort.UsbHost1;
+        }
+
         /// <summary>Display definitions.</summary>
         public static class Display {
             /// <summary>API id.</summary>

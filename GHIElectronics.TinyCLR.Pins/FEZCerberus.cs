@@ -265,5 +265,17 @@
             /// <summary>Socket definition.</summary>
             public const string Socket5 = Cerb.CanBus.Can1;
         }
+
+        /// <summary>USB client port definitions.</summary>
+        public static class UsbClientPort {
+            /// <summary>Socket definition.</summary>
+            public const string Socket8 = Cerb.UsbClientPort.UsbOtg;
+        }
+
+        /// <summary>USB host port definitions.</summary>
+        public static class UsbHostPort {
+            /// <summary>Socket definition.</summary>
+            public const string Socket1 = Cerb.UsbHostPort.UsbOtg;
+        }
     }
 }

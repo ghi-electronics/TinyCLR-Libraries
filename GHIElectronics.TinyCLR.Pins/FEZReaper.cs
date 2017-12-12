@@ -378,5 +378,17 @@
             /// <summary>Socket definition.</summary>
             public const string Socket12 = G80.CanBus.Can1;
         }
+
+        /// <summary>USB client port definitions.</summary>
+        public static class UsbClientPort {
+            /// <summary>Socket definition.</summary>
+            public const string Socket1 = G80.USBClientPort.UsbOtg;
+        }
+
+        /// <summary>USB host port definitions.</summary>
+        public static class UsbHostPort {
+            /// <summary>Socket definition.</summary>
+            public const string Socket2 = G80.UsbHostPort.UsbOtg;
+        }
     }
 }

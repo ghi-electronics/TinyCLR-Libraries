@@ -266,23 +266,23 @@
         /// <summary>I2C bus definitions.</summary>
         public static class I2cBus {
             /// <summary>Socket definition.</summary>
-            public const string Socket2 = G400S.TwiBus.Twi0;
+            public const string Socket2 = G400S.I2cBus.Twi0;
             /// <summary>Socket definition.</summary>
-            public const string Socket4 = G400S.TwiBus.Twi0;
+            public const string Socket4 = G400S.I2cBus.Twi0;
             /// <summary>Socket definition.</summary>
-            public const string Socket6 = G400S.TwiBus.Twi0;
+            public const string Socket6 = G400S.I2cBus.Twi0;
             /// <summary>Socket definition.</summary>
-            public const string Socket7 = G400S.TwiBus.Twi0;
+            public const string Socket7 = G400S.I2cBus.Twi0;
             /// <summary>Socket definition.</summary>
-            public const string Socket8 = G400S.TwiBus.Twi0;
+            public const string Socket8 = G400S.I2cBus.Twi0;
             /// <summary>Socket definition.</summary>
-            public const string Socket10 = G400S.TwiBus.Twi0;
+            public const string Socket10 = G400S.I2cBus.Twi0;
             /// <summary>Socket definition.</summary>
-            public const string Socket12 = G400S.TwiBus.Twi0;
+            public const string Socket12 = G400S.I2cBus.Twi0;
             /// <summary>Socket definition.</summary>
-            public const string Socket13 = G400S.TwiBus.Twi0;
+            public const string Socket13 = G400S.I2cBus.Twi0;
             /// <summary>Socket definition.</summary>
-            public const string Socket14 = G400S.TwiBus.Twi0;
+            public const string Socket14 = G400S.I2cBus.Twi0;
         }
 
         /// <summary>SPI bus definitions.</summary>
@@ -301,6 +301,20 @@
             public const string Socket10 = G400S.CanBus.Can0;
             /// <summary>Socket definition.</summary>
             public const string Socket11 = G400S.CanBus.Can1;
+        }
+
+        /// <summary>USB client port definitions.</summary>
+        public static class UsbClientPort {
+            /// <summary>Socket definition.</summary>
+            public const string Socket8 = G400S.UsbClientPort.UsbClient;
+        }
+
+        /// <summary>USB host port definitions.</summary>
+        public static class UsbHostPort {
+            /// <summary>Socket definition.</summary>
+            public const string Socket6 = G400S.UsbHostPort.UsbHost1;
+            /// <summary>Socket definition.</summary>
+            public const string Socket7 = G400S.UsbHostPort.UsbHost0;
         }
 
         /// <summary>Display definitions.</summary>

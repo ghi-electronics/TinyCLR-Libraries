@@ -316,6 +316,18 @@
             public const string Socket6 = G120E.CanBus.Can1;
         }
 
+        /// <summary>USB client port definition.</summary>
+        public static class UsbClientPort {
+            /// <summary>Socket definition.</summary>
+            public const string Socket1 = G120E.UsbClientPort.UsbDevice;
+        }
+
+        /// <summary>USB host port definition.</summary>
+        public static class UsbHostPort {
+            /// <summary>Socket definition.</summary>
+            public const string Socket3 = G120E.UsbHostPort.UsbHost1;
+        }
+
         /// <summary>Display definitions.</summary>
         public static class Display {
             /// <summary>LCD definition.</summary>

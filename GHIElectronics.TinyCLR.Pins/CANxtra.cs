@@ -142,6 +142,18 @@
             public const string Can1 = EmbeddedMasterNonTFT.CanBus.Can1;
         }
 
+        /// <summary>USB client port definitions.</summary>
+        public static class UsbClientPort {
+            /// <summary>USB client port on USB Device D- / UD_DM (D-), USB Device D+ / UD_DP (D+), and USB Device VBUS / UD_VBUS (VBUS).</summary>
+            public const string UsbDevice = EmbeddedMasterNonTFT.UsbClientPort.UsbDevice;
+        }
+
+        /// <summary>USB host port definitions.</summary>
+        public static class UsbHostPort {
+            /// <summary>USB host port on USB Host D- / UH_DM (D-) and USB Host D + / UH_DP (D+)</summary>
+            public const string UsbHost1 = EmbeddedMasterNonTFT.UsbHostPort.UsbHost1;
+        }
+
         /// <summary>Display definitions.</summary>
         public static class Display {
             /// <summary>LCD definition.</summary>

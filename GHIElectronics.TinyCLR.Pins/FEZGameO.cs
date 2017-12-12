@@ -66,5 +66,11 @@
             /// <summary>I2C bus for accelerometer.</summary>
             public const string Accelerometer = Cerb.I2cBus.I2c1;
         }
+
+        /// <summary>USB client port definitions.</summary>
+        public static class UsbClientPort {
+            /// <summary>USB client port on J1 pin 2 (DM), J1 pin 3 (DP), and J1 pin 1 (VBUS).</summary>
+            public const string UsbOtg = Cerb.UsbClientPort.UsbOtg;
+        }
     }
 }

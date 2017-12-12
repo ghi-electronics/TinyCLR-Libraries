@@ -423,6 +423,20 @@
             public const string Can2 = "GHIElectronics.TinyCLR.NativeApis.LPC24.CanProvider\\1";
         }
 
+        /// <summary>USB client port definitions.</summary>
+        public static class UsbClientPort {
+            /// <summary>USB client port.</summary>
+            public const string UsbDevice = "GHIElectronics.TinyCLR.NativeApis.LPC24.UsbClientProvider\\0";
+        }
+
+        /// <summary>USB host port definitions.</summary>
+        public static class UsbHostPort {
+            /// <summary>USB host port.</summary>
+            public const string UsbHost1 = "GHIElectronics.TinyCLR.NativeApis.LPC24.UsbHostProvider\\0";
+            /// <summary>USB host port.</summary>
+            public const string UsbHost2 = "GHIElectronics.TinyCLR.NativeApis.LPC24.UsbHostProvider\\1";
+        }
+
         /// <summary>Display definitions.</summary>
         public static class Display {
             /// <summary>API id.</summary>

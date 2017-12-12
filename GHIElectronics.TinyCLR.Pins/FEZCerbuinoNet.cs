@@ -245,5 +245,17 @@
             /// <summary>Socket definition.</summary>
             public const string Socket3 = Cerb.CanBus.Can1;
         }
+
+        /// <summary>USB client port definitions.</summary>
+        public static class UsbClientPort {
+            /// <summary>USB client port on D- (DM), D+ (DP), and VBUS (VBUS).</summary>
+            public const string UsbOtg = Cerb.UsbClientPort.UsbOtg;
+        }
+
+        /// <summary>USB host port definitions.</summary>
+        public static class UsbHostPort {
+            /// <summary>USB host port on connector 5 pin 2 (DM) and connector 5 pin 3 (DP).</summary>
+            public const string UsbOtg = Cerb.UsbHostPort.UsbOtg;
+        }
     }
 }

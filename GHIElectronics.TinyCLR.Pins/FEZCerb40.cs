@@ -188,5 +188,17 @@
             /// <summary>CAN bus on PB9 (TX) and PB8 (RX).</summary>
             public const string Can1 = Cerb.CanBus.Can1;
         }
+
+        /// <summary>USB client port definitions.</summary>
+        public static class UsbClientPort {
+            /// <summary>USB client port on D- (DM), D+ (DP), and VBUS (VBUS).</summary>
+            public const string UsbOtg = Cerb.UsbClientPort.UsbOtg;
+        }
+
+        /// <summary>USB host port definitions.</summary>
+        public static class UsbHostPort {
+            /// <summary>USB host port on PB14 (DM) and PB15 (DP).</summary>
+            public const string UsbOtg = Cerb.UsbHostPort.UsbOtg;
+        }
     }
 }

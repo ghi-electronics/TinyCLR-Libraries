@@ -88,26 +88,36 @@
 
         /// <summary>UART port definitions.</summary>
         public static class UartPort {
-            /// <summary>UART port on Di7 (TX) and Di8 (RX).</summary>
-            public const string Usart1 = USBizi100.UartPort.Uart0;
+            /// <summary>UART port on OUT (TX) and IN (RX).</summary>
+            public const string Uart0 = USBizi100.UartPort.Uart0;
+            /// <summary>UART port on UEXT TXD (TX), UEXT RXD (RX), UEXT CTS (CTS), and UEXT RTS (RTS).</summary>
+            public const string Uart1 = USBizi100.Uartport.Uart1;
+            /// <summary>UART port on Di8 (TX) and Di7 (RX).</summary>
+            public const string Uart2 = USBizi100.UartPort.Uart2;
         }
 
         /// <summary>I2C bus definitions.</summary>
         public static class I2cBus {
-            /// <summary>I2C bus on An4 (SDA) and An5 (SCL).</summary>
+            /// <summary>I2C bus on SDA (SDA) and SCL (SCL).</summary>
             public const string I2c1 = USBizi100.I2cBus.I2c1;
         }
 
         /// <summary>SPI bus definitions.</summary>
         public static class SpiBus {
-            /// <summary>SPI bus on D11 (MOSI), D12 (MISO), and D13 (SCK).</summary>
+            /// <summary>SPI bus on UEXT MOSI (MOSI), UEXT MISO (MISO), and UEXT SCK (SCK).</summary>
             public const string Spi1 = USBizi100.SpiBus.Spi1;
         }
 
         /// <summary>CAN bus definitions.</summary>
         public static class CanBus {
-            /// <summary>CAN bus on D7 (TX) and D4 (RX).</summary>
+            /// <summary>CAN bus on Di4 (TX) and Di2 (RX).</summary>
             public const string Can1 = USBizi100.CanBus.Can1;
+        }
+
+        /// <summry>USB client port definitions.</summry>
+        public static class UsbClientPort {
+            /// <summary>> USB client port on D- (D-), D+ (D+), and VBUS (VBUS).</summary>
+            public const string UsbDevice = USBizi100.UsbClientPort.UsbDevice;
         }
     }
 }

@@ -176,10 +176,10 @@
             public const string Usart1 = AT91.UartPort.Usart1;
         }
 
-        /// <summary>TWI bus definitions.</summary>
-        public static class TwiBus {
+        /// <summary>I2C bus definitions.</summary>
+        public static class I2cBus {
             /// <summary>TWI bus on PA7 (SDA) and PA8 (SCL).</summary>
-            public const string Twi0 = AT91.TwiBus.Twi0;
+            public const string Twi0 = AT91.I2cBus.Twi0;
         }
 
         /// <summary>SPI bus definitions.</summary>
@@ -188,6 +188,20 @@
             public const string Spi0 = AT91.SpiBus.Spi0;
             /// <summary>SPI bus on PB31 (MOSI), PB30 (MISO), and PB29 (SCK).</summary>
             public const string Spi1 = AT91.SpiBus.Spi1;
+        }
+
+        /// <summary>USB client port definitions.</summary>
+        public static class UsbClientPort {
+            /// <summary>USB client port on UD_DM (DM), UD_DP (DP), and UD_VBUS (VBUS).</summary>
+            public const string Udphs = AT91.USBClientPort.Udphs;
+        }
+
+        /// <summary>USB host port definitions.</summary>
+        public static class UsbHostPort {
+            /// <summary>USB host port on HDDA- (DM) and HDDA+ (DP).</summary>
+            public const string UhphsB = AT91.UsbHostPort.UhphsB;
+            /// <summary>USB host port on HDDB- (DM) and HDDB+ (DP).</summary>
+            public const string UhphsC = AT91.UsbHostPort.UhphsC;
         }
 
         /// <summary>Display definitions.</summary>

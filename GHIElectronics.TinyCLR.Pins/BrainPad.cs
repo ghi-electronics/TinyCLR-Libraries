@@ -68,9 +68,9 @@
 
         /// <summary>I2C bus pin definitions.</summary>
         public static class I2cBus {
-            /// <summary>I2C bus for the Accelerometer.</summary>
+            /// <summary>I2C bus for Accelerometer.</summary>
             public const string Accelerometer = FEZCLR.I2cBus.I2c1;
-            /// <summary>I2C bus for the Display.</summary>
+            /// <summary>I2C bus for Display.</summary>
             public const string Display = FEZCLR.I2cBus.I2c1;
         }
 
@@ -159,6 +159,12 @@
             public static class SpiBus {
                 /// <summary>SPI bus on MOSI (MOSI), MISO (MISO), and SCK (SCK).</summary>
                 public const string Spi1 = FEZCLR.SpiBus.Spi1;
+            }
+
+            /// <summary>USB client port definitions.</summary>
+            public static class UsbClientPort {
+                /// <summary>USB client port on D- (DM), D+ (DP), and VBUS (VBUS).</summary>
+                public const string UsbOtg = FEZCLR.UsbClientPort.UsbOtg;
             }
         }
     }

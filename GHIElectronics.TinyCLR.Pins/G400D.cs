@@ -260,10 +260,10 @@
             public const string Uart1 = AT91.UartPort.Uart1;
         }
 
-        /// <summary>TWI bus definitions.</summary>
-        public static class TwiBus {
+        /// <summary>I2C bus definitions.</summary>
+        public static class I2cBus {
             /// <summary>TWI bus on PA30 (SDA) and PA31 (SCL).</summary>
-            public const string Twi0 = AT91.TwiBus.Twi0;
+            public const string Twi0 = AT91.I2cBus.Twi0;
         }
 
         /// <summary>SPI bus definitions.</summary>
@@ -280,6 +280,22 @@
             public const string Can0 = AT91.CanBus.Can0;
             /// <summary>CAN bus on PA5 (TX) and PA6 (RX).</summary>
             public const string Can1 = AT91.CanBus.Can1;
+        }
+
+        /// <summary>USB client port definitions.</summary>
+        public static class UsbClientPort {
+            /// <summary>USB client port on USBC D- (DM) and USBC D+ (DP).</summary>
+            public const string Udphs = AT91.UsbClientPort.Udphs;
+        }
+
+        /// <summary>USB host port definitions.</summary>
+        public static class UsbHostPort {
+            /// <summary>USB host port on USBC D- (DM) and USBC D+ (DP).</summary>
+            public const string UhphsA = AT91.UsbHostPort.UhphsA;
+            /// <summary>USB host port on USBH0 D- (DM) and USBH0 D+ (DP).</summary>
+            public const string UhphsB = AT91.UsbHostPort.UhphsB;
+            /// <summary>USB host port on USBH1 D- (DM) and USBH1 D+ (DP).</summary>
+            public const string UhphsC = AT91.UsbHostPort.UhphsC;
         }
 
         /// <summary>Display definitions.</summary>
