@@ -8,6 +8,7 @@
     </Reference>
   </ItemGroup>
   <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
     <NoStdLib>true</NoStdLib>
     <AddAdditionalExplicitAssemblyReferences>false</AddAdditionalExplicitAssemblyReferences>
     <DisableHandlePackageFileConflicts>true</DisableHandlePackageFileConflicts>
