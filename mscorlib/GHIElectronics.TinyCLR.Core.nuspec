@@ -16,6 +16,6 @@
   </metadata>
   <files>
     <file src="$TargetDir$mscorlib.dll" target="lib\net452" />
-    <file src="$ProjectDir$GHIElectronics.TinyCLR.Core.targets" target="build\net452" />
+    <file src="$ProjectDir$GHIElectronics.TinyCLR.Core.props" target="build\net452" />
   </files>
 </package>

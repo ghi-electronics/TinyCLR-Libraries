@@ -223,7 +223,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="GHIElectronics.TinyCLR.Core.nuspec" />
-    <None Include="GHIElectronics.TinyCLR.Core.targets">
+    <None Include="GHIElectronics.TinyCLR.Core.props">
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
