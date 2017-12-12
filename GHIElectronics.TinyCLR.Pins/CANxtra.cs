@@ -150,7 +150,7 @@
 
         /// <summary>USB host port definitions.</summary>
         public static class UsbHostPort {
-            /// <summary>USB host port on USB Host D- / UH_DM (D-) and USB Host D + / UH_DP (D+)</summary>
+            /// <summary>USB host port on USB Host D- / UH_DM (D-) and USB Host D + / UH_DP (D+).</summary>
             public const string UsbHost1 = EmbeddedMasterNonTFT.UsbHostPort.UsbHost1;
         }
 

@@ -3,7 +3,7 @@
     public static class FEZRaptor {
         /// <summary>GPIO pin definitions.</summary>
         public static class GpioPin {
-            /// <summary>Debug LED definition</summary>
+            /// <summary>Debug LED definition.</summary>
             public const int DebugLed = G400S.GpioPin.PD3;
             /// <summary>The Cpu.Pin for the LDR0 button.</summary>
             public const int Ldr0 = G400S.GpioPin.PA24;
@@ -306,15 +306,15 @@
         /// <summary>USB client port definitions.</summary>
         public static class UsbClientPort {
             /// <summary>Socket definition.</summary>
-            public const string Socket8 = G400S.UsbClientPort.UsbClient;
+            public const string Socket8 = G400S.UsbClientPort.Udphs;
         }
 
         /// <summary>USB host port definitions.</summary>
         public static class UsbHostPort {
             /// <summary>Socket definition.</summary>
-            public const string Socket6 = G400S.UsbHostPort.UsbHost1;
+            public const string Socket6 = G400S.UsbHostPort.UhphsB;
             /// <summary>Socket definition.</summary>
-            public const string Socket7 = G400S.UsbHostPort.UsbHost0;
+            public const string Socket7 = G400S.UsbHostPort.UhphsA;
         }
 
         /// <summary>Display definitions.</summary>

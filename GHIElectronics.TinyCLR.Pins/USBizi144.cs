@@ -226,7 +226,7 @@
 
         /// <summary>UART port definitions.</summary>
         public static class UartPort {
-            /// <summary>UART port on P0_2 (TX), P0_3 (RX)</summary>
+            /// <summary>UART port on P0_2 (TX), P0_3 (RX).</summary>
             public const string Uart0 = LPC24.UartPort.Uart0;
             /// <summary>UART port on P0_2 (TX), P0_3 (RX), P0_11 (CTS), and P0_11 (RTS).</summary>
             public const string Uart1 = LPC24.UartPort.Uart1;

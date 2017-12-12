@@ -407,11 +407,11 @@
 
         /// <summary>SPI bus definitions.</summary>
         public static class SpiBus {
-            /// <summary>SPI bus</summary>
+            /// <summary>SPI bus.</summary>
             public const string Spi0 = "GHIElectronics.TinyCLR.NativeApis.LPC17.SpiProvider\\0";
-            /// <summary>SPI bus</summary>
+            /// <summary>SPI bus.</summary>
             public const string Spi1 = "GHIElectronics.TinyCLR.NativeApis.LPC17.SpiProvider\\1";
-            /// <summary>SPI bus</summary>
+            /// <summary>SPI bus.</summary>
             public const string Spi2 = "GHIElectronics.TinyCLR.NativeApis.LPC17.SpiProvider\\2";
         }
 

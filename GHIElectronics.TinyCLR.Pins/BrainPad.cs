@@ -24,9 +24,9 @@
 
         /// <summary>ADC channel definitions.</summary>
         public static class AdcChannel {
-            /// <summary>ADC channel for Temperature Sensor.</summary>
+            /// <summary>ADC channel for the Temperature Sensor.</summary>
             public const int TemperatureSensor = FEZCLR.AdcChannel.PB0;
-            /// <summary>ADC channel for Light Sensor.</summary>
+            /// <summary>ADC channel for the Light Sensor.</summary>
             public const int LightSensor = FEZCLR.AdcChannel.PB1;
         }
 

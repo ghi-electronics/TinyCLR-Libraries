@@ -109,17 +109,17 @@
             /// <summary>API id.</summary>
             public const string Id = USBizi144.AdcChannel.Id;
 
-            /// <summary>ADC pin.</summary>
+            /// <summary>ADC channel.</summary>
             public const int Pin4 = USBizi144.AdcChannel.P0_23;
-            /// <summary>ADC pin.</summary>
+            /// <summary>ADC channel.</summary>
             public const int Pin6 = USBizi144.AdcChannel.P0_24;
-            /// <summary>ADC pin.</summary>
+            /// <summary>ADC channel.</summary>
             public const int Pin18 = USBizi144.AdcChannel.P1_30;
-            /// <summary>ADC pin.</summary>
+            /// <summary>ADC channel.</summary>
             public const int Pin12 = USBizi144.AdcChannel.P1_31;
-            /// <summary>ADC pin.</summary>
+            /// <summary>ADC channel.</summary>
             public const int X4 = USBizi144.AdcChannel.P0_26;
-            /// <summary>ADC pin.</summary>
+            /// <summary>ADC channel.</summary>
             public const int X5 = USBizi144.AdcChannel.P0_25;
         }
         /// <summary>DAC channel definitions.</summary>

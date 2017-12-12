@@ -6,13 +6,13 @@
             /// <summary>API id.</summary>
             public const string Id = Cerb.GpioPin.Id;
 
-            /// <summary>Debug LED definition</summary>
+            /// <summary>Debug LED definition.</summary>
             public const int DebugLed = Cerb.GpioPin.PB2;
-            /// <summary>SD Card Dectect definition</summary>
+            /// <summary>SD card detect definition.</summary>
             public const int SdCardDetect = Cerb.GpioPin.PC2;
-            /// <summary>Xbee Reset definition</summary>
+            /// <summary>Xbee Reset definition.</summary>
             public const int XbeeReset = Cerb.GpioPin.PB0;
-            /// <summary>Xbee Sleep definition</summary>
+            /// <summary>Xbee Sleep definition.</summary>
             public const int XbeeSleep = Cerb.GpioPin.PC13;
             /// <summary>GPIO pin.</summary>
             public const int D0 = Cerb.GpioPin.PB11;

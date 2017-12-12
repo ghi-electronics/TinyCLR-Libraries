@@ -123,7 +123,7 @@
             /// <summary>API id.</summary>
             public const string Id = USBizi100.AdcChannel.Id;
 
-            /// <summary>ADC pin.</summary>
+            /// <summary>ADC channel.</summary>
             public const int A0 = USBizi100.GpioPin.P0_23;
             /// <summary>GPIO pin.</summary>
             public const int A1 = USBizi100.GpioPin.P0_24;
@@ -204,7 +204,7 @@
 
         /// <summary>USB client port definitions.</summary>
         public static class UsbClientPort {
-            /// <summary>USB client port on D- (D-), D+ (D+), and VBUS (VBUS)</summary>
+            /// <summary>USB client port on D- (D-), D+ (D+), and VBUS (VBUS).</summary>
             public const string UsbDevice = USBizi100.UsbClientPort.UsbDevice;
         }
     }

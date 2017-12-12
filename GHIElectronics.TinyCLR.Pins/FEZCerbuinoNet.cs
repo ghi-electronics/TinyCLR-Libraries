@@ -6,17 +6,17 @@
             /// <summary>API id.</summary>
             public const string Id = Cerb.GpioPin.Id;
 
-            /// <summary>Debug LED definition</summary>
+            /// <summary>Debug LED definition.</summary>
             public const int DebugLed = Cerb.GpioPin.PB2;
-            /// <summary>SD Card Dectect definition</summary>
+            /// <summary>SD card detect definition.</summary>
             public const int SdCardDetect = Cerb.GpioPin.PC2;
-            /// <summary>Ethernet Reset definition</summary>
+            /// <summary>Ethernet Reset definition.</summary>
             public const int EthernetRst = Cerb.GpioPin.PB10;
-            /// <summary>Ethernet INT definition</summary>
+            /// <summary>Ethernet INT definition.</summary>
             public const int EthernetInt = Cerb.GpioPin.PA14;
-            /// <summary>Ethernet CS definition</summary>
+            /// <summary>Ethernet CS definition.</summary>
             public const int EthernetCs = Cerb.GpioPin.PA13;
-            /// <summary>Ethernet WOL definition</summary>
+            /// <summary>Ethernet WOL definition.</summary>
             public const int EthernetWol = Cerb.GpioPin.PB11;
             /// <summary>GPIO pin.</summary>
             public const int D0 = Cerb.GpioPin.PB11;

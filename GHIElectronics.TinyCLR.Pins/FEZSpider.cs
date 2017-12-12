@@ -6,7 +6,7 @@
             /// <summary>API id.</summary>
             public const string Id = EMX.GpioPin.Id;
 
-            /// <summary>Debug LED definition</summary>
+            /// <summary>Debug LED definition.</summary>
             public const int DebugLed = EMX.GpioPin.P1_31;
 
             /// <summary>Socket definition.</summary>

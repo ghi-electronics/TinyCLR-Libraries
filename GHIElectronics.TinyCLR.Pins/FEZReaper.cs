@@ -3,7 +3,7 @@
     public static class FEZReaper {
         /// <summary>GPIO pin definitions.</summary>
         public static class GpioPin {
-            /// <summary>Debug LED definition</summary>
+            /// <summary>Debug LED definition.</summary>
             public const int DebugLed = G80.GpioPin.PB2;
             /// <summary>The Cpu.Pin for the LDR0 button.</summary>
             public const int Ldr0 = G80.GpioPin.PE3;
@@ -382,7 +382,7 @@
         /// <summary>USB client port definitions.</summary>
         public static class UsbClientPort {
             /// <summary>Socket definition.</summary>
-            public const string Socket1 = G80.USBClientPort.UsbOtg;
+            public const string Socket1 = G80.UsbClientPort.UsbOtg;
         }
 
         /// <summary>USB host port definitions.</summary>

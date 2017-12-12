@@ -222,13 +222,13 @@
 
         /// <summary>UART port definitions.</summary>
         public static class UartPort {
-            /// <summary>UART port COM1 on P0_2 (TX) and P0_3 (RX)</summary>
+            /// <summary>UART port on P0_2 (TX) and P0_3 (RX).</summary>
             public const string Uart0 = LPC24.UartPort.Uart0;
-            /// <summary>UART port COM2 on P2_0 (TX), P2_1 (RX), P2_2 (CTS), and P2_7 (RTS).</summary>
+            /// <summary>UART port on P2_0 (TX), P2_1 (RX), P2_2 (CTS), and P2_7 (RTS).</summary>
             public const string Uart1 = LPC24.UartPort.Uart1;
-            /// <summary>UART port COM3 on P0_10 (TX) and P0_11 (RX).</summary>
+            /// <summary>UART port on P0_10 (TX) and P0_11 (RX).</summary>
             public const string Uart2 = LPC24.UartPort.Uart2;
-            /// <summary>UART port COM4 on P4_28 (TX) and P4_29 (RX).</summary>
+            /// <summary>UART port on P4_28 (TX) and P4_29 (RX).</summary>
             public const string Uart3 = LPC24.UartPort.Uart3;
         }
 

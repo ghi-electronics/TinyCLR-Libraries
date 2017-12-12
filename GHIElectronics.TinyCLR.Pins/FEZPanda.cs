@@ -124,7 +124,7 @@
 
         /// <summary>USB client port definitions.</summary>
         public static class UsbClientPort {
-            /// <summary>USB client port on D- (D-), D+ (D+), and VBUS (VBUS)</summary>
+            /// <summary>USB client port on D- (D-), D+ (D+), and VBUS (VBUS).</summary>
             public const string UsbDevice = USBizi100.UsbClientPort.UsbDevice;
         }
     }

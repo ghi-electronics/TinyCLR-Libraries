@@ -262,7 +262,7 @@
 
         /// <summary>I2C bus definitions.</summary>
         public static class I2cBus {
-            /// <summary>TWI bus on PA30 (SDA) and PA31 (SCL).</summary>
+            /// <summary>I2C bus on PA30 (SDA) and PA31 (SCL).</summary>
             public const string Twi0 = AT91.I2cBus.Twi0;
         }
 

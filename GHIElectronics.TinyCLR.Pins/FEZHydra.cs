@@ -3,7 +3,7 @@ namespace GHIElectronics.TinyCLR.Pins {
     public static class FEZHydra {
         /// <summary>GPIO pin definitions.</summary>
         public static class GpioPin {
-            /// <summary>API.id</summary>
+            /// <summary>API id.</summary>
             public const string Id = AT91.GpioPin.Id;
 
             /// <summary>Debug LED definition.</summary>

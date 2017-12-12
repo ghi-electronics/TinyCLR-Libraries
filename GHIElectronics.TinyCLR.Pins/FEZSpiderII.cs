@@ -3,7 +3,7 @@
     public static class FEZSpiderII {
         /// <summary>GPIO pin definitions.</summary>
         public static class GpioPin {
-            /// <summary>Debug LED definition</summary>
+            /// <summary>Debug LED definition.</summary>
             public const int DebugLed = G120E.GpioPin.P1_31;
 
             /// <summary>Socket definition.</summary>

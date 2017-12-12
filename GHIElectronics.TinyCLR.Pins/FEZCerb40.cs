@@ -164,7 +164,7 @@
         public static class UartPort {
             /// <summary>Serial port on PC6 (TX) and PC7 (RX).</summary>
             public const string Usart1 = Cerb.UartPort.Usart1;
-            /// <summary>Serial port on PA2 (TX), PA3 (RX), PA0 (CTS), and PA1 (RTS)</summary>
+            /// <summary>Serial port on PA2 (TX), PA3 (RX), PA0 (CTS), and PA1 (RTS).</summary>
             public const string Usart2 = Cerb.UartPort.Usart2;
             /// <summary>Serial port on PB10 (TX) and PB11 (RX).</summary>
             public const string Usart3 = Cerb.UartPort.Usart3;

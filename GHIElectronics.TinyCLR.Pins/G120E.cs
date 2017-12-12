@@ -196,7 +196,7 @@
             /// <summary>API id.</summary>
             public const string Id = LPC17.DacChannel.Id;
 
-            /// <summary>DAC channel channel.</summary>
+            /// <summary>DAC channel.</summary>
             public const int P0_26 = LPC17.DacChannel.Channel0;
         }
 

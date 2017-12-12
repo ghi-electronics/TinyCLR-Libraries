@@ -43,7 +43,7 @@
             /// <summary>API id.</summary>
             public const string Id = USBizi100.AdcChannel.Id;
 
-            /// <summary>ADC pin.</summary>
+            /// <summary>ADC channel.</summary>
             public const int An0 = USBizi100.AdcChannel.P0_23;
             /// <summary>GPIO pin.</summary>
             public const int An1 = USBizi100.AdcChannel.P0_24;
@@ -91,7 +91,7 @@
             /// <summary>UART port on OUT (TX) and IN (RX).</summary>
             public const string Uart0 = USBizi100.UartPort.Uart0;
             /// <summary>UART port on UEXT TXD (TX), UEXT RXD (RX), UEXT CTS (CTS), and UEXT RTS (RTS).</summary>
-            public const string Uart1 = USBizi100.Uartport.Uart1;
+            public const string Uart1 = USBizi100.UartPort.Uart1;
             /// <summary>UART port on Di8 (TX) and Di7 (RX).</summary>
             public const string Uart2 = USBizi100.UartPort.Uart2;
         }
@@ -116,7 +116,7 @@
 
         /// <summry>USB client port definitions.</summry>
         public static class UsbClientPort {
-            /// <summary>> USB client port on D- (D-), D+ (D+), and VBUS (VBUS).</summary>
+            /// <summary> USB client port on D- (D-), D+ (D+), and VBUS (VBUS).</summary>
             public const string UsbDevice = USBizi100.UsbClientPort.UsbDevice;
         }
     }

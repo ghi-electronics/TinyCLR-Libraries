@@ -3,7 +3,7 @@
     public static class FEZCerberus {
         /// <summary>GPIO pin definitions.</summary>
         public static class GpioPin {
-            /// <summary>Debug LED definition</summary>
+            /// <summary>Debug LED definition.</summary>
             public const int DebugLed = Cerb.GpioPin.PC4;
 
             /// <summary>Socket definition.</summary>

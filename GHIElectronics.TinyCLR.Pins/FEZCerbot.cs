@@ -6,15 +6,15 @@
             /// <summary>API id.</summary>
             public const string Id = Cerb.GpioPin.Id;
 
-            /// <summary>Debug LED definition</summary>
+            /// <summary>Debug LED definition.</summary>
             public const int DebugLed = Cerb.GpioPin.PA14;
-            /// <summary>ReflectiveSensor1  definition</summary>
+            /// <summary>ReflectiveSensor1 definition.</summary>
             public const int ReflectiveSensor1 = Cerb.GpioPin.PB13;
-            /// <summary>ReflectiveSensor2 definition</summary>
+            /// <summary>ReflectiveSensor2 definition.</summary>
             public const int ReflectiveSensor2 = Cerb.GpioPin.PB14;
-            /// <summary>LedArrayLatch definition</summary>
+            /// <summary>LedArrayLatch definition.</summary>
             public const int LedArrayLatch = Cerb.GpioPin.PB2;
-            /// <summary>LedArrayEnable definition</summary>
+            /// <summary>LedArrayEnable definition.</summary>
             public const int LedArrayEnable = Cerb.GpioPin.PA15;
 
             /// <summary>Socket definition.</summary>
@@ -96,9 +96,9 @@
 
         /// <summary>ADC channel definitions.</summary>
         public static class AdcChannel {
-            /// <summary>ReflectiveSensor1  definition</summary>
+            /// <summary>ReflectiveSensor1 definition.</summary>
             public const int ReflectiveSensor1 = Cerb.GpioPin.PA5;
-            /// <summary>ReflectiveSensor2 definition</summary>
+            /// <summary>ReflectiveSensor2 definition.</summary>
             public const int ReflectiveSensor2 = Cerb.GpioPin.PC2;
 
             /// <summary>Socket definition.</summary>
@@ -151,9 +151,9 @@
                 /// <summary>API id.</summary>
                 public const string Id = Cerb.PwmPin.Controller3.Id;
 
-                /// <summary>Debug LightBulb Red definition</summary>
+                /// <summary>PWM pin.</summary>
                 public const int MotorPwmA = Cerb.PwmPin.Controller3.PB0;
-                /// <summary>Debug LightBulb Green definition</summary>
+                /// <summary>PWM pin.</summary>
                 public const int MotorPwmB = Cerb.PwmPin.Controller3.PB1;
             }
 
@@ -179,7 +179,7 @@
             }
         }
 
-        /// <summary>Uart port definition.</summary>
+        /// <summary>UART port definition.</summary>
         public static class UartPort {
             /// <summary>Socket definition.</summary>
             public const string Socket3 = Cerb.UartPort.Usart3;
@@ -187,7 +187,7 @@
             public const string Socket5 = Cerb.UartPort.Usart2;
         }
 
-        /// <summary>I2c Bus definition.</summary>
+        /// <summary>I2C Bus definition.</summary>
         public static class I2cBus {
             /// <summary>Socket definition.</summary>
             public const string Socket2 = Cerb.I2cBus.I2c1;

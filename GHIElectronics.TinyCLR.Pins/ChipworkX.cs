@@ -178,7 +178,7 @@
 
         /// <summary>I2C bus definitions.</summary>
         public static class I2cBus {
-            /// <summary>TWI bus on PA7 (SDA) and PA8 (SCL).</summary>
+            /// <summary>I2C bus on PA7 (SDA) and PA8 (SCL).</summary>
             public const string Twi0 = AT91.I2cBus.Twi0;
         }
 
@@ -193,7 +193,7 @@
         /// <summary>USB client port definitions.</summary>
         public static class UsbClientPort {
             /// <summary>USB client port on UD_DM (DM), UD_DP (DP), and UD_VBUS (VBUS).</summary>
-            public const string Udphs = AT91.USBClientPort.Udphs;
+            public const string Udphs = AT91.UsbClientPort.Udphs;
         }
 
         /// <summary>USB host port definitions.</summary>
