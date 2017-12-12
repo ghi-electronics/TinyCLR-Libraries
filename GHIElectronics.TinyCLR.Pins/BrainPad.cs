@@ -24,9 +24,9 @@
 
         /// <summary>ADC channel definitions.</summary>
         public static class AdcChannel {
-            /// <summary>ADC channel for Temperature Sensor.</summary>
+            /// <summary>ADC channel for the Temperature Sensor.</summary>
             public const int TemperatureSensor = FEZCLR.AdcChannel.PB0;
-            /// <summary>ADC channel for Light Sensor.</summary>
+            /// <summary>ADC channel for the Light Sensor.</summary>
             public const int LightSensor = FEZCLR.AdcChannel.PB1;
         }
 
@@ -68,9 +68,9 @@
 
         /// <summary>I2C bus pin definitions.</summary>
         public static class I2cBus {
-            /// <summary>I2C bus for the Accelerometer.</summary>
+            /// <summary>I2C bus for Accelerometer.</summary>
             public const string Accelerometer = FEZCLR.I2cBus.I2c1;
-            /// <summary>I2C bus for the Display.</summary>
+            /// <summary>I2C bus for Display.</summary>
             public const string Display = FEZCLR.I2cBus.I2c1;
         }
 
@@ -159,6 +159,12 @@
             public static class SpiBus {
                 /// <summary>SPI bus on MOSI (MOSI), MISO (MISO), and SCK (SCK).</summary>
                 public const string Spi1 = FEZCLR.SpiBus.Spi1;
+            }
+
+            /// <summary>USB client port definitions.</summary>
+            public static class UsbClientPort {
+                /// <summary>USB client port on D- (DM), D+ (DP), and VBUS (VBUS).</summary>
+                public const string UsbOtg = FEZCLR.UsbClientPort.UsbOtg;
             }
         }
     }

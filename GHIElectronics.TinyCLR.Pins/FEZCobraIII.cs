@@ -217,6 +217,12 @@ namespace GHIElectronics.TinyCLR.Pins {
             public const string Usart4 = G120.UartPort.Usart4;
         }
 
+        /// <summary>I2C bus definitions.</summary>
+        public static class I2cBus {
+            /// <summary>I2C bus on D2 (SDA) and D3 (SCL).</summary>
+            public const string I2c0 = G120.I2cBus.I2c0;
+        }
+
         /// <summary>SPI bus definitions.</summary>
         public static class SpiBus {
             /// <summary>SPI bus on D11 (MOSI), D12 (MISO), and D13 (SCK).</summary>
@@ -227,18 +233,24 @@ namespace GHIElectronics.TinyCLR.Pins {
             public const string Spi2 = G120.SpiBus.Spi2;
         }
 
-        /// <summary>I2C bus definitions.</summary>
-        public static class I2cBus {
-            /// <summary>I2C bus on D2 (SDA) and D3 (SCL).</summary>
-            public const string I2c0 = G120.I2cBus.I2c0;
-        }
-
         /// <summary>CAN bus definitions.</summary>
         public static class CanBus {
             /// <summary>CAN bus on D7 (TX) and D4 (RX).</summary>
             public const string Can1 = G120.CanBus.Can1;
             /// <summary>CAN bus on D51 (TX) and D50 (RX).</summary>
             public const string Can2 = G120.CanBus.Can2;
+        }
+
+        /// <summary>USB client port definitions.</summary>
+        public static class UsbClientPort {
+            /// <summary>USB client port on UD_DM (D-), UD_DP (D+), and UD_VBUS (VBUS).</summary>
+            public const string UsbDevice = G120.UsbClientPort.UsbDevice;
+        }
+
+        /// <summmary>USB host port definitions.</summmary>
+        public static class UsbHostPort {
+            /// <summary>USB host port on UH_DM (D-) and UH_DP (D+).</summary>
+            public const string UsbHost1 = G120.UsbHostPort.UsbHost1;
         }
     }
 }

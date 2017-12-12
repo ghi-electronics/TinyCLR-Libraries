@@ -164,7 +164,7 @@
         public static class UartPort {
             /// <summary>Serial port on PC6 (TX) and PC7 (RX).</summary>
             public const string Usart1 = Cerb.UartPort.Usart1;
-            /// <summary>Serial port on PA2 (TX), PA3 (RX), PA0 (CTS), and PA1 (RTS)</summary>
+            /// <summary>Serial port on PA2 (TX), PA3 (RX), PA0 (CTS), and PA1 (RTS).</summary>
             public const string Usart2 = Cerb.UartPort.Usart2;
             /// <summary>Serial port on PB10 (TX) and PB11 (RX).</summary>
             public const string Usart3 = Cerb.UartPort.Usart3;
@@ -187,6 +187,18 @@
         public static class CanBus {
             /// <summary>CAN bus on PB9 (TX) and PB8 (RX).</summary>
             public const string Can1 = Cerb.CanBus.Can1;
+        }
+
+        /// <summary>USB client port definitions.</summary>
+        public static class UsbClientPort {
+            /// <summary>USB client port on D- (DM), D+ (DP), and VBUS (VBUS).</summary>
+            public const string UsbOtg = Cerb.UsbClientPort.UsbOtg;
+        }
+
+        /// <summary>USB host port definitions.</summary>
+        public static class UsbHostPort {
+            /// <summary>USB host port on PB14 (DM) and PB15 (DP).</summary>
+            public const string UsbOtg = Cerb.UsbHostPort.UsbOtg;
         }
     }
 }

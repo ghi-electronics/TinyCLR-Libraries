@@ -6,7 +6,7 @@
             /// <summary>API id.</summary>
             public const string Id = EMX.GpioPin.Id;
 
-            /// <summary>Debug LED definition</summary>
+            /// <summary>Debug LED definition.</summary>
             public const int DebugLed = EMX.GpioPin.P1_31;
 
             /// <summary>Socket definition.</summary>
@@ -303,6 +303,18 @@
         public static class CanBus {
             /// <summary>Socket definition.</summary>
             public const string Socket6 = EMX.CanBus.Can1;
+        }
+
+        /// <summary>USB client port definitions.</summary>
+        public static class UsbClientPort {
+            /// <summary>Socket definition.</summary>
+            public const string Socket1 = EMX.UsbClientPort.UsbDevice;
+        }
+
+        /// <summary>USB host port definitions.</summary>
+        public static class UsbHostPort {
+            /// <summary>Socket definition.</summary>
+            public const string Socket3 = EMX.UsbHostPort.UsbHost1;
         }
 
         /// <summary>Display definitions.</summary>

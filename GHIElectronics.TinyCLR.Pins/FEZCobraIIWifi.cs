@@ -277,6 +277,18 @@
             public const string Can2 = G120.CanBus.Can2;
         }
 
+        /// <summary>USB client port definitions.</summary>
+        public static class UsbClientPort {
+            /// <summary>USB client port on UD_DM (D-), UD_DP (D+), and UD_VBUS (VBUS).</summary>
+            public const string UsbDevice = G120.UsbClientPort.UsbDevice;
+        }
+
+        /// <summmary>USB host port definitions.</summmary>
+        public static class UsbHostPort {
+            /// <summary>USB host port on UH_DM (D-) and UH_DP (D+).</summary>
+            public const string UsbHost1 = G120.UsbHostPort.UsbHost1;
+        }
+
         /// <summary>Display definitions.</summary>
         public static class Display {
             /// <summary>LCD definition.</summary>

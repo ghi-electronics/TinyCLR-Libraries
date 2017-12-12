@@ -324,13 +324,13 @@
             public const string Uart1 = "GHIElectronics.TinyCLR.NativeApis.AT91.UartProvider\\5";
         }
 
-        /// <summary>TWI bus definitions.</summary>
-        public static class TwiBus {
-            /// <summary>TWI bus.</summary>
+        /// <summary>I2C bus definitions.</summary>
+        public static class I2cBus {
+            /// <summary>I2C bus.</summary>
             public const string Twi0 = "GHIElectronics.TinyCLR.NativeApis.AT91.I2cProvider\\0";
-            /// <summary>TWI bus.</summary>
+            /// <summary>I2C bus.</summary>
             public const string Twi1 = "GHIElectronics.TinyCLR.NativeApis.AT91.I2cProvider\\1";
-            /// <summary>TWI bus.</summary>
+            /// <summary>I2C bus.</summary>
             public const string Twi2 = "GHIElectronics.TinyCLR.NativeApis.AT91.I2cProvider\\2";
         }
 
@@ -348,6 +348,22 @@
             public const string Can0 = "GHIElectronics.TinyCLR.NativeApis.AT91.CanProvider\\0";
             /// <summary>CAN bus.</summary>
             public const string Can1 = "GHIElectronics.TinyCLR.NativeApis.AT91.CanProvider\\1";
+        }
+
+        /// <summary>USB client port definitions.</summary>
+        public static class UsbClientPort {
+            /// <summary>USB client port.</summary>
+            public const string Udphs = "GHIElectronics.TinyCLR.NativeApis.AT91.UsbClientProvider\\0";
+        }
+
+        /// <summary>USB host port definitions.</summary>
+        public static class UsbHostPort {
+            /// <summary>USB host port.</summary>
+            public const string UhphsA = "GHIElectronics.TinyCLR.NativeApis.AT91.UsbHostProvider\\0";
+            /// <summary>USB host port.</summary>
+            public const string UhphsB = "GHIElectronics.TinyCLR.NativeApis.AT91.UsbHostProvider\\1";
+            /// <summary>USB host port.</summary>
+            public const string UhphsC = "GHIElectronics.TinyCLR.NativeApis.AT91.UsbHostProvider\\2";
         }
 
         /// <summary>Display definitions.</summary>

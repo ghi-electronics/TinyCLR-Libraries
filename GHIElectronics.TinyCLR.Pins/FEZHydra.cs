@@ -3,7 +3,7 @@ namespace GHIElectronics.TinyCLR.Pins {
     public static class FEZHydra {
         /// <summary>GPIO pin definitions.</summary>
         public static class GpioPin {
-            /// <summary>API.id</summary>
+            /// <summary>API id.</summary>
             public const string Id = AT91.GpioPin.Id;
 
             /// <summary>Debug LED definition.</summary>
@@ -311,12 +311,12 @@ namespace GHIElectronics.TinyCLR.Pins {
             public const string Socket7 = AT91.UartPort.Usart0;
         }
 
-        /// <summary>TWI bus definitions.</summary>
-        public static class TwiBus {
+        /// <summary>I2C bus definitions.</summary>
+        public static class I2cBus {
             /// <summary>Socket definition.</summary>
-            public const string Socket5 = AT91.TwiBus.Twi0;
+            public const string Socket5 = AT91.I2cBus.Twi0;
             /// <summary>SocketDefinition.</summary>
-            public const string Socket6 = AT91.TwiBus.Twi0;
+            public const string Socket6 = AT91.I2cBus.Twi0;
         }
 
         /// <summary>SPI bus definitions.</summary>
@@ -325,6 +325,12 @@ namespace GHIElectronics.TinyCLR.Pins {
             public const string Socket3 = AT91.SpiBus.Spi0;
             /// <summary>Socket definition.</summary>
             public const string Socket4 = AT91.SpiBus.Spi0;
+        }
+
+        /// <summary>USB client port definitions.</summary>
+        public static class UsbClientPort {
+            /// <summary>Socket definition.</summary>
+            public const string Socket2 = AT91.UsbClientPort.Udphs;
         }
     }
 }
