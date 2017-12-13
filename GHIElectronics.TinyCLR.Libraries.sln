@@ -6,16 +6,34 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mscorlib", "mscorlib\mscorlib.csproj", "{AA751E21-9220-42CE-8180-516BB59E4555}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Devices", "GHIElectronics.TinyCLR.Devices\GHIElectronics.TinyCLR.Devices.csproj", "{04B01E7E-5052-4E52-B21B-0BF37B9E0C86}"
+	ProjectSection(ProjectDependencies) = postProject
+		{AA751E21-9220-42CE-8180-516BB59E4555} = {AA751E21-9220-42CE-8180-516BB59E4555}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Pins", "GHIElectronics.TinyCLR.Pins\GHIElectronics.TinyCLR.Pins.csproj", "{2DCEEF58-5455-457C-B968-52D791605D07}"
+	ProjectSection(ProjectDependencies) = postProject
+		{AA751E21-9220-42CE-8180-516BB59E4555} = {AA751E21-9220-42CE-8180-516BB59E4555}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Drawing", "GHIElectronics.TinyCLR.Drawing\GHIElectronics.TinyCLR.Drawing.csproj", "{52A54E94-2FD8-4EEE-822C-C8C7F27AF423}"
+	ProjectSection(ProjectDependencies) = postProject
+		{AA751E21-9220-42CE-8180-516BB59E4555} = {AA751E21-9220-42CE-8180-516BB59E4555}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.BrainPad", "GHIElectronics.TinyCLR.BrainPad\GHIElectronics.TinyCLR.BrainPad.csproj", "{50B4B973-7625-44B2-8304-369790A68B29}"
+	ProjectSection(ProjectDependencies) = postProject
+		{AA751E21-9220-42CE-8180-516BB59E4555} = {AA751E21-9220-42CE-8180-516BB59E4555}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Storage", "GHIElectronics.TinyCLR.Storage\GHIElectronics.TinyCLR.Storage.csproj", "{4EF770FD-F6AC-42F5-8C14-88C5C1B06832}"
+	ProjectSection(ProjectDependencies) = postProject
+		{AA751E21-9220-42CE-8180-516BB59E4555} = {AA751E21-9220-42CE-8180-516BB59E4555}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Networking.SPWF01Sx", "GHIElectronics.TinyCLR.Networking.SPWF01Sx\GHIElectronics.TinyCLR.Networking.SPWF01Sx.csproj", "{365C4668-89FB-429C-B90B-D80AF6CF9B9D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{AA751E21-9220-42CE-8180-516BB59E4555} = {AA751E21-9220-42CE-8180-516BB59E4555}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
