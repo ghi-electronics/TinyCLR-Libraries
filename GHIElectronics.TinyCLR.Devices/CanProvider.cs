@@ -102,7 +102,7 @@ namespace GHIElectronics.TinyCLR.Devices {
 
         public uint GetSourceClock() => NativeGetSourceClock();
 
-        public void SetReceiveBufferSize(int receiveBufferSize) => NativeSetReceiveBufferSize(receiveBufferSize);
+        public void SetReceiveBufferSize(int receiveBufferSize) => NativeSetReadBufferSize(receiveBufferSize);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private extern void NativeAcquire();
@@ -144,7 +144,7 @@ namespace GHIElectronics.TinyCLR.Devices {
         private extern uint NativeGetSourceClock();
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        private extern void NativeSetReceiveBufferSize(int receiveBufferSize);
+        private extern void NativeSetReadBufferSize(int receiveBufferSize);
     }
 
     /// <summary>A CAN message.</summary>
