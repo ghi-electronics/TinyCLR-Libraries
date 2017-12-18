@@ -10,11 +10,11 @@ namespace GHIElectronics.TinyCLR.Devices {
         private NativeEventDispatcher nativeMessageAvailableEvent;
         private NativeEventDispatcher nativeErrorEvent;
 
-        public int ReceiveBufferSize {
-            get => this.ReceiveBufferSize;
+        public int ReadBufferSize {
+            get => this.ReadBufferSize;
             set {
-                this.ReceiveBufferSize = value;
-                this.provider.SetReceiveBufferSize(value);
+                this.ReadBufferSize = value;
+                this.provider.SetReadBufferSize(value);
             }
         }
 
@@ -58,7 +58,7 @@ namespace GHIElectronics.TinyCLR.Devices {
         public int ReadMessages(CanMessage[] messages, int offset, int count) => this.provider.ReadMessages(messages, offset, count);
 
         public CanMessage ReadMessage() {
-            if (this.ReceivedMessageCount != 0) {
+            if (this.GetUnreadMessageCount != 0) {
 
                 var message = new CanMessage[1] { new CanMessage() };
 
@@ -70,15 +70,15 @@ namespace GHIElectronics.TinyCLR.Devices {
             return null;
         }
 
-        public int SendMessages(CanMessage[] messages, int offset, int count) => this.provider.SendMessages(messages, offset, count);
+        public int WriteMessages(CanMessage[] messages, int offset, int count) => this.provider.WriteMessages(messages, offset, count);
 
-        public bool SendMessage(CanMessage message) {
-            if (this.CanSend) {
+        public bool WriteMessage(CanMessage message) {
+            if (this.IsSendingAllowed) {
                 var messages = new CanMessage[1];
 
                 messages[0] = message;
 
-                this.provider.SendMessages(messages, 0, 1);
+                this.provider.WriteMessages(messages, 0, 1);
 
                 return true;
             }
@@ -86,19 +86,19 @@ namespace GHIElectronics.TinyCLR.Devices {
             return false;
         }
 
-        public int ReceivedMessageCount => this.provider.ReceivedMessageCount();
+        public int GetUnreadMessageCount => this.provider.GetUnreadMessageCount();
 
         public void SetExplicitFilters(uint[] filters) => this.provider.SetExplicitFilters(filters);
 
         public void SetGroupFilters(uint[] lowerBounds, uint[] upperBounds) => this.provider.SetGroupFilters(lowerBounds, upperBounds);
 
-        public void DiscardIncomingMessages() => this.provider.DiscardIncomingMessages();
+        public void DiscardUnreadMessages() => this.provider.DiscardUnreadMessages();
 
-        public bool CanSend => this.provider.CanSend();
+        public bool IsSendingAllowed => this.provider.IsSendingAllowed();
 
-        public int ReceiveErrorCount => this.provider.ReceiveErrorCount();
+        public int GetReadErrorCount => this.provider.GetReadErrorCount();
 
-        public int TransmitErrorCount => this.provider.TransmitErrorCount();
+        public int GetWriteErrorCount => this.provider.GetWriteErrorCount();
 
         public uint GetSourceClock => this.provider.GetSourceClock();
 

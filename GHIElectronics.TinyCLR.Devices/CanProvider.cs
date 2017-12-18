@@ -19,25 +19,25 @@ namespace GHIElectronics.TinyCLR.Devices {
 
         int ReadMessages(CanMessage[] messages, int offset, int count);
 
-        int SendMessages(CanMessage[] messages, int offset, int count);
+        int WriteMessages(CanMessage[] messages, int offset, int count);
 
-        int ReceivedMessageCount();
+        int GetUnreadMessageCount();
 
         void SetExplicitFilters(uint[] filters);
 
         void SetGroupFilters(uint[] lowerBounds, uint[] upperBounds);
 
-        void DiscardIncomingMessages();
+        void DiscardUnreadMessages();
 
-        bool CanSend();
+        bool IsSendingAllowed();
 
-        int ReceiveErrorCount();
+        int GetReadErrorCount();
 
-        int TransmitErrorCount();
+        int GetWriteErrorCount();
 
         uint GetSourceClock();
 
-        void SetReceiveBufferSize(int receiveBufferSize);
+        void SetReadBufferSize(int receiveBufferSize);
     }
 
     public class CanProvider : ICanProvider {
@@ -84,25 +84,25 @@ namespace GHIElectronics.TinyCLR.Devices {
 
         public int ReadMessages(CanMessage[] messages, int offset, int count) => NativeReadMessages(messages, offset, count);
 
-        public int SendMessages(CanMessage[] messages, int offset, int count) => NativeSendMessages(messages, offset, count);
+        public int WriteMessages(CanMessage[] messages, int offset, int count) => NativeWriteMessages(messages, offset, count);
 
-        public int ReceivedMessageCount() => NativeReceivedMessageCount();
+        public int GetUnreadMessageCount() => NativeGetUnreadMessageCount();
 
         public void SetExplicitFilters(uint[] filters) => NativeSetExplicitFilters(filters);
 
         public void SetGroupFilters(uint[] lowerBounds, uint[] upperBounds) => NativeSetGroupFilters(lowerBounds, upperBounds);
 
-        public void DiscardIncomingMessages() => NativeDiscardIncomingMessages();
+        public void DiscardUnreadMessages() => NativeDiscardUnreadMessages();
 
-        public bool CanSend() => NativeIsSendingAllowed();
+        public bool IsSendingAllowed() => NativeIsSendingAllowed();
 
-        public int ReceiveErrorCount() => NativeReceiveErrorCount();
+        public int GetReadErrorCount() => NativeGetReadErrorCount();
 
-        public int TransmitErrorCount() => NativeTransmitErrorCount();
+        public int GetWriteErrorCount() => NativeGetWriteErrorCount();
 
         public uint GetSourceClock() => NativeGetSourceClock();
 
-        public void SetReceiveBufferSize(int receiveBufferSize) => NativeSetReadBufferSize(receiveBufferSize);
+        public void SetReadBufferSize(int receiveBufferSize) => NativeSetReadBufferSize(receiveBufferSize);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private extern void NativeAcquire();
@@ -114,10 +114,10 @@ namespace GHIElectronics.TinyCLR.Devices {
         private extern int NativeReadMessages(CanMessage[] messages, int offset, int count);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        private extern int NativeSendMessages(CanMessage[] messages, int offset, int count);
+        private extern int NativeWriteMessages(CanMessage[] messages, int offset, int count);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        private extern int NativeReceivedMessageCount();
+        private extern int NativeGetUnreadMessageCount();
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         private extern bool NativeReset();
@@ -129,16 +129,16 @@ namespace GHIElectronics.TinyCLR.Devices {
         private extern void NativeSetGroupFilters(uint[] lowerBounds, uint[] upperBounds);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        private extern void NativeDiscardIncomingMessages();
+        private extern void NativeDiscardUnreadMessages();
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         private extern bool NativeIsSendingAllowed();
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        private extern int NativeReceiveErrorCount();
+        private extern int NativeGetReadErrorCount();
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        private extern int NativeTransmitErrorCount();
+        private extern int NativeGetWriteErrorCount();
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         private extern uint NativeGetSourceClock();
