@@ -94,7 +94,7 @@ namespace GHIElectronics.TinyCLR.Devices {
 
         public void DiscardIncomingMessages() => NativeDiscardIncomingMessages();
 
-        public bool CanSend() => NativeTransmissionAllowed();
+        public bool CanSend() => NativeIsSendingAllowed();
 
         public int ReceiveErrorCount() => NativeReceiveErrorCount();
 
@@ -132,7 +132,7 @@ namespace GHIElectronics.TinyCLR.Devices {
         private extern void NativeDiscardIncomingMessages();
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        private extern bool NativeTransmissionAllowed();
+        private extern bool NativeIsSendingAllowed();
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         private extern int NativeReceiveErrorCount();
