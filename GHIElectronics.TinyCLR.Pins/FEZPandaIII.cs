@@ -328,5 +328,17 @@
             /// <summary>CAN bus on D32 (TX) and D30 (RX).</summary>
             public const string Can2 = G80.CanBus.Can2;
         }
+
+        /// <summary>USB client port definitions.</summary>
+        public static class UsbClientPort {
+            /// <summary>USB client port on USB client D- (D-), USB client D+ (D+), and USB client VBUS (PD7).</summary>
+            public const string UsbOtg = G80.UsbClientPort.UsbOtg;
+        }
+
+        /// <summary>USB host port definitions.</summary>
+        public static class UsbHostPort {
+            /// <summary>USB host port on USB host D- (D-) and USB host D+ (D+).</summary>
+            public const string UsbOtg = G80.UsbHostPort.UsbOtg;
+        }
     }
 }

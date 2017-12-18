@@ -6,13 +6,13 @@
             /// <summary>API id.</summary>
             public const string Id = Cerb.GpioPin.Id;
 
-            /// <summary>Debug LED definition</summary>
+            /// <summary>Debug LED definition.</summary>
             public const int DebugLed = Cerb.GpioPin.PB2;
-            /// <summary>SD Card Dectect definition</summary>
+            /// <summary>SD card detect definition.</summary>
             public const int SdCardDetect = Cerb.GpioPin.PC2;
-            /// <summary>Xbee Reset definition</summary>
+            /// <summary>Xbee Reset definition.</summary>
             public const int XbeeReset = Cerb.GpioPin.PB0;
-            /// <summary>Xbee Sleep definition</summary>
+            /// <summary>Xbee Sleep definition.</summary>
             public const int XbeeSleep = Cerb.GpioPin.PC13;
             /// <summary>GPIO pin.</summary>
             public const int D0 = Cerb.GpioPin.PB11;
@@ -240,6 +240,18 @@
             public const string Can2 = Cerb.CanBus.Can2;
             /// <summary>Socket definition.</summary>
             public const string Socket3 = Cerb.CanBus.Can1;
+        }
+
+        /// <summary>USB client port definitions.</summary>
+        public static class UsbClientPort {
+            /// <summary>USB client port on D- (DM), D+ (DP), and VBUS (VBUS).</summary>
+            public const string UsbOtg = Cerb.UsbClientPort.UsbOtg;
+        }
+
+        /// <summary>USB host port definitions.</summary>
+        public static class UsbHostPort {
+            /// <summary>USB host port on connector 5 pin 2 (DM) and connector 5 pin 3 (DP).</summary>
+            public const string UsbOtg = Cerb.UsbHostPort.UsbOtg;
         }
     }
 }

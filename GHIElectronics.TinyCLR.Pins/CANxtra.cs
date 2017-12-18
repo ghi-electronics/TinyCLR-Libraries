@@ -116,7 +116,7 @@
         public static class UartPort {
             /// <summary>UART port on DB25 pin 17 / P0.2 (TX) and DB25 pin 16 / P0.3 (RX).</summary>
             public const string Uart0 = EmbeddedMasterNonTFT.UartPort.Uart0;
-            /// <summary>UART port on DB25 pin 2 / P2.0 (TX), DB25 pin 3 / P2.1 (RX) DB25 pin 5 / P2.2 (CTS) and DB25 pin 4 / P2.7 (RTS).</summary>
+            /// <summary>UART port on DB25 pin 2 / P2.0 (TX), DB25 pin 3 / P2.1 (RX), DB25 pin 5 / P2.2 (CTS), and DB25 pin 4 / P2.7 (RTS).</summary>
             public const string Uart1 = EmbeddedMasterNonTFT.UartPort.Uart1;
             /// <summary>UART port for LIN on P2.8 (TX) and P2.9 (RX).</summary>
             public const string Uart2 = EmbeddedMasterNonTFT.UartPort.Uart2;
@@ -140,6 +140,18 @@
         public static class CanBus {
             /// <summary>CAN bus on P0.1 (TX) and P0.0 (RX).</summary>
             public const string Can1 = EmbeddedMasterNonTFT.CanBus.Can1;
+        }
+
+        /// <summary>USB client port definitions.</summary>
+        public static class UsbClientPort {
+            /// <summary>USB client port on USB Device D- / UD_DM (D-), USB Device D+ / UD_DP (D+), and USB Device VBUS / UD_VBUS (VBUS).</summary>
+            public const string UsbDevice = EmbeddedMasterNonTFT.UsbClientPort.UsbDevice;
+        }
+
+        /// <summary>USB host port definitions.</summary>
+        public static class UsbHostPort {
+            /// <summary>USB host port on USB Host D- / UH_DM (D-) and USB Host D + / UH_DP (D+).</summary>
+            public const string UsbHost1 = EmbeddedMasterNonTFT.UsbHostPort.UsbHost1;
         }
 
         /// <summary>Display definitions.</summary>

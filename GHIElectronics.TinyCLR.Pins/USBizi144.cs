@@ -226,7 +226,7 @@
 
         /// <summary>UART port definitions.</summary>
         public static class UartPort {
-            /// <summary>UART port on P0_2 (TX), P0_3 (RX)</summary>
+            /// <summary>UART port on P0_2 (TX), P0_3 (RX).</summary>
             public const string Uart0 = LPC24.UartPort.Uart0;
             /// <summary>UART port on P0_2 (TX), P0_3 (RX), P0_11 (CTS), and P0_11 (RTS).</summary>
             public const string Uart1 = LPC24.UartPort.Uart1;
@@ -257,6 +257,17 @@
             /// <summary>CAN bus on P0_5 (TX) and P0_4 (RX).</summary>
             public const string Can2 = LPC24.CanBus.Can2;
         }
+
+        /// <summary>USB client port definitions.</summary>
+        public static class UsbClientPort {
+            /// <summary>USB client port on USBD-2 (D-), P0_31 (D+) and P3_24 (VBUS).</summary>
+            public const string UsbDevice = LPC24.UsbClientPort.UsbDevice;
+        }
+
+        /// <summmary>USB host port definitions.</summmary>
+        public static class UsbHostPort {
+            /// <summary>USB host port on P0_30 (D-) and P0_29 (D+).</summary>
+            public const string UsbHost1 = LPC24.UsbHostPort.UsbHost1;
+        }
     }
 }
-

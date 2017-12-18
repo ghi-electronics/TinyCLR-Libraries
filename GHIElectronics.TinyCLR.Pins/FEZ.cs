@@ -150,5 +150,11 @@
             /// <summary>SPI bus on D11 (MOSI), D12 (MISO), and D13 (SCK).</summary>
             public const string Spi1 = FEZCLR.SpiBus.Spi1;
         }
+
+        /// <summary>USB client port definitions.</summary>
+        public static class UsbClientPort {
+            /// <summary>USB client port on PA11 (DM), PA12 (DP), and VBUS (VBUS).</summary>
+            public const string UsbOtg = FEZCLR.UsbClientPort.UsbOtg;
+        }
     }
 }

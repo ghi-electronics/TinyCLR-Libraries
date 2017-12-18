@@ -133,5 +133,17 @@
             /// <summary>CAN bus on IO0 (TX) and IO1 (RX).</summary>
             public const string Can2 = EMX.CanBus.Can2;
         }
+
+        /// <summary>USB client port definitions.</summary>
+        public static class UsbClientPort {
+            /// <summary>USB client port on UD_D- (D-), UD_D+ (D+), and UD_VBUS (VBUS).</summary>
+            public const string UsbDevice = EMX.UsbClientPort.UsbDevice;
+        }
+
+        /// <summmary>USB host port definitions.</summmary>
+        public static class UsbHostPort {
+            /// <summary>USB host port on UH_D- (D-) and UH_D+ (D+).</summary>
+            public const string UsbHost1 = EMX.UsbHostPort.UsbHost1;
+        }
     }
 }

@@ -410,14 +410,14 @@
             /// <summary>API id.</summary>
             public const string Id = "GHIElectronics.TinyCLR.NativeApis.STM32F4.DacProvider\\0";
 
-            /// <summary>ADC channel.</summary>
+            /// <summary>DAC channel.</summary>
             public const int Channel1 = 0;
-            /// <summary>ADC channel.</summary>
+            /// <summary>DAC channel.</summary>
             public const int Channel2 = 1;
         }
 
-        /// <summary>Timer definitions.</summary>
-        public static class Timer {
+        /// <summary>PWM channel definitions.</summary>
+        public static class PwmChannel {
             /// <summary>Timer.</summary>
             public const string Tim1 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.PwmProvider\\0";
             /// <summary>Timer.</summary>
@@ -447,13 +447,13 @@
             /// <summary>Timer.</summary>
             public const string Tim14 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.PwmProvider\\13";
 
-            /// <summary>Timer channel.</summary>
+            /// <summary>PWM channel.</summary>
             public const int Channel0 = 0;
-            /// <summary>Timer channel.</summary>
+            /// <summary>PWM channel.</summary>
             public const int Channel1 = 1;
-            /// <summary>Timer channel.</summary>
+            /// <summary>PWM channel.</summary>
             public const int Channel2 = 2;
-            /// <summary>Timer channel.</summary>
+            /// <summary>PWM channel.</summary>
             public const int Channel3 = 3;
         }
 
@@ -509,6 +509,18 @@
             public const string Can1 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.CanProvider\\0";
             /// <summary>I2C bus.</summary>
             public const string Can2 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.CanProvider\\1";
+        }
+
+        /// <summary>USB client port definitions.</summary>
+        public static class UsbClientPort {
+            /// <summary>USB client port.</summary>
+            public const string UsbOtg = "GHIElectronics.TinyCLR.NativeApis.STM32F4.UsbClientProvider\\0";
+        }
+
+        /// <summary>USB host port definitions.</summary>
+        public static class UsbHostPort {
+            /// <summary>USB host port.</summary>
+            public const string UsbOtg = "GHIElectronics.TinyCLR.NativeApis.STM32F4.UsbHostProvider\\0";
         }
 
         /// <summary>Display definitions.</summary>

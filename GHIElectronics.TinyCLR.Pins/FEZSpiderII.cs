@@ -3,7 +3,7 @@
     public static class FEZSpiderII {
         /// <summary>GPIO pin definitions.</summary>
         public static class GpioPin {
-            /// <summary>Debug LED definition</summary>
+            /// <summary>Debug LED definition.</summary>
             public const int DebugLed = G120E.GpioPin.P1_31;
 
             /// <summary>Socket definition.</summary>
@@ -314,6 +314,18 @@
         public static class CanBus {
             /// <summary>Socket definition.</summary>
             public const string Socket6 = G120E.CanBus.Can1;
+        }
+
+        /// <summary>USB client port definition.</summary>
+        public static class UsbClientPort {
+            /// <summary>Socket definition.</summary>
+            public const string Socket1 = G120E.UsbClientPort.UsbDevice;
+        }
+
+        /// <summary>USB host port definition.</summary>
+        public static class UsbHostPort {
+            /// <summary>Socket definition.</summary>
+            public const string Socket3 = G120E.UsbHostPort.UsbHost1;
         }
 
         /// <summary>Display definitions.</summary>

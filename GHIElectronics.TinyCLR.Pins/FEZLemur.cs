@@ -205,5 +205,11 @@
             /// <summary>SPI bus on D28 (MOSI), D27 (MISO), and D26 (SCK).</summary>
             public const string Spi2 = G30.SpiBus.Spi2;
         }
+
+        /// <summary>USB client port definitions.</summary>
+        public static class UsbClientPort {
+            /// <summary>USB client port on D- (DM), D+ (DP), and VBUS (VBUS).</summary>
+            public const string UsbOtg = G30.UsbClientPort.UsbOtg;
+        }
     }
 }

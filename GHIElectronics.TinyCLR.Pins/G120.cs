@@ -180,7 +180,7 @@
             /// <summary>API id.</summary>
             public const string Id = LPC17.DacChannel.Id;
 
-            /// <summary>DAC channel channel.</summary>
+            /// <summary>DAC channel.</summary>
             public const int P0_26 = LPC17.DacChannel.Channel0;
         }
 
@@ -261,6 +261,18 @@
             public const string Can1 = LPC17.CanBus.Can1;
             /// <summary>CAN bus on P0.5 (TX) and P0.4 (RX).</summary>
             public const string Can2 = LPC17.CanBus.Can2;
+        }
+
+        /// <summary>USB client port definitions.</summary>
+        public static class UsbClientPort {
+            /// <summary>USB client port on USBC D- (D-) and USBC D+ (D+).</summary>
+            public const string UsbDevice = LPC17.UsbClientPort.UsbDevice;
+        }
+
+        /// <summmary>USB host port definitions.</summmary>
+        public static class UsbHostPort {
+            /// <summary>USB host port on USBH D- (D-) and USBH D+ (D+).</summary>
+            public const string UsbHost1 = LPC17.UsbHostPort.UsbHost1;
         }
 
         /// <summary>Display definitions.</summary>

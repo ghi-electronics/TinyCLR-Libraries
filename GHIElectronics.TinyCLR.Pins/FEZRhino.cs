@@ -109,17 +109,17 @@
             /// <summary>API id.</summary>
             public const string Id = USBizi144.AdcChannel.Id;
 
-            /// <summary>ADC pin.</summary>
+            /// <summary>ADC channel.</summary>
             public const int Pin4 = USBizi144.AdcChannel.P0_23;
-            /// <summary>ADC pin.</summary>
+            /// <summary>ADC channel.</summary>
             public const int Pin6 = USBizi144.AdcChannel.P0_24;
-            /// <summary>ADC pin.</summary>
+            /// <summary>ADC channel.</summary>
             public const int Pin18 = USBizi144.AdcChannel.P1_30;
-            /// <summary>ADC pin.</summary>
+            /// <summary>ADC channel.</summary>
             public const int Pin12 = USBizi144.AdcChannel.P1_31;
-            /// <summary>ADC pin.</summary>
+            /// <summary>ADC channel.</summary>
             public const int X4 = USBizi144.AdcChannel.P0_26;
-            /// <summary>ADC pin.</summary>
+            /// <summary>ADC channel.</summary>
             public const int X5 = USBizi144.AdcChannel.P0_25;
         }
         /// <summary>DAC channel definitions.</summary>
@@ -177,6 +177,18 @@
             public const string Can1 = USBizi144.CanBus.Can1;
             /// <summary>CAN bus on Pin39 (TX) and Pin37 (RX).</summary>
             public const string Can2 = USBizi144.CanBus.Can2;
+        }
+
+        /// <summary>USB client port definitions.</summary>
+        public static class UsbClientPort {
+            /// <summary>USB client port on D- (D-), D+ (D+), and VBUS (VBUS).</summary>
+            public const string UsbDevice = USBizi144.UsbClientPort.UsbDevice;
+        }
+
+        /// <summmary>USB host port definitions.</summmary>
+        public static class UsbHostPort {
+            /// <summary>USB host port on USB host connector X1.</summary>
+            public const string UsbHost1 = USBizi144.UsbHostPort.UsbHost1;
         }
     }
 }

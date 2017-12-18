@@ -235,9 +235,9 @@
 
         /// <summary>SPI bus definitions.</summary>
         public static class SpiBus {
-            /// <summary>SPI bus</summary>
+            /// <summary>SPI bus.</summary>
             public const string Spi0 = "GHIElectronics.TinyCLR.NativeApis.LPC23.SpiProvider\\0";
-            /// <summary>SPI bus</summary>
+            /// <summary>SPI bus.</summary>
             public const string Spi1 = "GHIElectronics.TinyCLR.NativeApis.LPC23.SpiProvider\\1";
         }
 
@@ -247,6 +247,20 @@
             public const string Can1 = "GHIElectronics.TinyCLR.NativeApis.LPC23.CanProvider\\0";
             /// <summary>CAN bus.</summary>
             public const string Can2 = "GHIElectronics.TinyCLR.NativeApis.LPC23.CanProvider\\1";
+        }
+
+        /// <summary>USB client port definitions.</summary>
+        public static class UsbClientPort {
+            /// <summary>USB client port.</summary>
+            public const string UsbDevice = "GHIElectronics.TinyCLR.NativeApis.LPC23.UsbClientProvider\\0";
+        }
+
+        /// <summary>USB host port definitions.</summary>
+        public static class UsbHostPort {
+            /// <summary>USB host port.</summary>
+            public const string UsbHost1 = "GHIElectronics.TinyCLR.NativeApis.LPC23.UsbHostProvider\\0";
+            /// <summary>USB host port.</summary>
+            public const string UsbHost2 = "GHIElectronics.TinyCLR.NativeApis.LPC23.UsbHostProvider\\1";
         }
 
         /// <summary>Display definitions.</summary>
