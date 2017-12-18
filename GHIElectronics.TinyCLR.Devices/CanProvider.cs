@@ -243,15 +243,15 @@ namespace GHIElectronics.TinyCLR.Devices {
     /// <summary>Possible CAN errors.</summary>
     public enum CanError : byte {
         /// <summary>A CAN message was lost because the hardware was not able to receive the message in time.</summary>
-        Overrun,
+        ReadBufferOverrun,
         /// <summary>
         /// A CAN message was lost because the receive buffer is full. Try increasing the receive message buffer in the CAN constructor and use CAN filters.
         /// </summary>
-        RXOver,
+        ReadBufferFull,
         /// <summary>A CAN bus off condition was encountered. The controller is disabled in this case. Use Reset() to re-enable it.</summary>
         BusOff,
         /// <summary>An error passive condition was encountered.</summary>
-        ErrorPassive,
+        Passive,
     }
 
     /// <summary>Represents CAN bus timings.</summary>
