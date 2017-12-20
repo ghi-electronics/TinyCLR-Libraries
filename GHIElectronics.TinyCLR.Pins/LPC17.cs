@@ -360,24 +360,24 @@
             public const int Channel0 = 0;
         }
 
-        /// <summary>PWM channel definitions.</summary>
-        public static class PwmChannel {
-            /// <summary>PWM port.</summary>
+        /// <summary>PWM pin definitions.</summary>
+        public static class PwmPin {
+            /// <summary>API id.</summary>
             public const string Pwm0 = "GHIElectronics.TinyCLR.NativeApis.LPC17.PwmProvider\\0";
-            /// <summary>PWM port.</summary>
+            /// <summary>API id.</summary>
             public const string Pwm1 = "GHIElectronics.TinyCLR.NativeApis.LPC17.PwmProvider\\1";
 
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int Output1 = 0;
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int Output2 = 1;
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int Output3 = 2;
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int Output4 = 3;
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int Output5 = 4;
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int Output6 = 5;
         }
 

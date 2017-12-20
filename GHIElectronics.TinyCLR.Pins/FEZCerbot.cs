@@ -6,117 +6,123 @@
             /// <summary>API id.</summary>
             public const string Id = Cerb.GpioPin.Id;
 
-            /// <summary>Debug LED definition.</summary>
+            /// <summary>GPIO pin for debug LED.</summary>
             public const int DebugLed = Cerb.GpioPin.PA14;
-            /// <summary>ReflectiveSensor1 definition.</summary>
+            /// <summary>GPIO pin for reflectiveSensor1.</summary>
             public const int ReflectiveSensor1 = Cerb.GpioPin.PB13;
-            /// <summary>ReflectiveSensor2 definition.</summary>
+            /// <summary>GPIO pin for reflectiveSensor2.</summary>
             public const int ReflectiveSensor2 = Cerb.GpioPin.PB14;
-            /// <summary>LedArrayLatch definition.</summary>
+            /// <summary>GPIO pin for LedArrayLatch.</summary>
             public const int LedArrayLatch = Cerb.GpioPin.PB2;
-            /// <summary>LedArrayEnable definition.</summary>
+            /// <summary>GPIO pin for LedArrayEnable.</summary>
             public const int LedArrayEnable = Cerb.GpioPin.PA15;
 
             /// <summary>Socket definition.</summary>
             public static class Socket1 {
-                /// <summary>Pin definition.</summary>
+                /// <summary>GPIO pin.</summary>
                 public const int Pin3 = Cerb.GpioPin.PB15;
-                /// <summary>Pin definition.</summary>
+                /// <summary>GPIO pin.</summary>
                 public const int Pin4 = Cerb.GpioPin.PC8;
-                /// <summary>Pin definition.</summary>
+                /// <summary>GPIO pin.</summary>
                 public const int Pin5 = Cerb.GpioPin.PC9;
-                /// <summary>Pin definition.</summary>
+                /// <summary>GPIO pin.</summary>
                 public const int Pin6 = Cerb.GpioPin.PD2;
-                /// <summary>Pin definition.</summary>
+                /// <summary>GPIO pin.</summary>
                 public const int Pin7 = Cerb.GpioPin.PC10;
-                /// <summary>Pin definition.</summary>
+                /// <summary>GPIO pin.</summary>
                 public const int Pin8 = Cerb.GpioPin.PC11;
-                /// <summary>Pin definition.</summary>
+                /// <summary>GPIO pin.</summary>
                 public const int Pin9 = Cerb.GpioPin.PC12;
             }
 
             /// <summary>Socket definition.</summary>
             public static class Socket2 {
-                /// <summary>Pin definition.</summary>
+                /// <summary>GPIO pin.</summary>
                 public const int Pin3 = Cerb.GpioPin.PC5;
-                /// <summary>Pin definition.</summary>
+                /// <summary>GPIO pin.</summary>
                 public const int Pin4 = Cerb.GpioPin.PA10;
-                /// <summary>Pin definition.</summary>
+                /// <summary>GPIO pin.</summary>
                 public const int Pin5 = Cerb.GpioPin.PB12;
-                /// <summary>Pin definition.</summary>
+                /// <summary>GPIO pin.</summary>
                 public const int Pin6 = Cerb.GpioPin.PC7;
             }
 
             /// <summary>Socket definition.</summary>
             public static class Socket3 {
-                /// <summary>Pin definition.</summary>
+                /// <summary>GPIO pin.</summary>
                 public const int Pin3 = Cerb.GpioPin.PB8;
-                /// <summary>Pin definition.</summary>
+                /// <summary>GPIO pin.</summary>
                 public const int Pin4 = Cerb.GpioPin.PB10;
-                /// <summary>Pin definition.</summary>
+                /// <summary>GPIO pin.</summary>
                 public const int Pin5 = Cerb.GpioPin.PB11;
-                /// <summary>Pin definition.</summary>
+                /// <summary>GPIO pin.</summary>
                 public const int Pin6 = Cerb.GpioPin.PA0;
-                /// <summary>Pin definition.</summary>
+                /// <summary>GPIO pin.</summary>
                 public const int Pin7 = Cerb.GpioPin.PB5;
-                /// <summary>Pin definition.</summary>
+                /// <summary>GPIO pin.</summary>
                 public const int Pin8 = Cerb.GpioPin.PB4;
-                /// <summary>Pin definition.</summary>
+                /// <summary>GPIO pin.</summary>
                 public const int Pin9 = Cerb.GpioPin.PB3;
             }
 
             /// <summary>Socket definition.</summary>
             public static class Socket4 {
-                /// <summary>Pin definition.</summary>
+                /// <summary>GPIO pin.</summary>
                 public const int Pin3 = Cerb.GpioPin.PC0;
-                /// <summary>Pin definition.</summary>
+                /// <summary>GPIO pin.</summary>
                 public const int Pin4 = Cerb.GpioPin.PC1;
-                /// <summary>Pin definition.</summary>
+                /// <summary>GPIO pin.</summary>
                 public const int Pin5 = Cerb.GpioPin.PA4;
-                /// <summary>Pin definition.</summary>
+                /// <summary>GPIO pin.</summary>
                 public const int Pin6 = Cerb.GpioPin.PA1;
             }
 
             /// <summary>Socket definition.</summary>
             public static class Socket5 {
-                /// <summary>Pin definition.</summary>
+                /// <summary>GPIO pin.</summary>
                 public const int Pin3 = Cerb.GpioPin.PC14;
-                /// <summary>Pin definition.</summary>
+                /// <summary>GPIO pin.</summary>
                 public const int Pin6 = Cerb.GpioPin.PC15;
             }
 
             /// <summary>Socket definition.</summary>
             public static class Socket6 {
-                /// <summary>Pin definition.</summary>
+                /// <summary>GPIO pin.</summary>
                 public const int Pin3 = Cerb.GpioPin.PC13;
-                /// <summary>Pin definition.</summary>
+                /// <summary>GPIO pin.</summary>
                 public const int Pin6 = Cerb.GpioPin.PC3;
             }
         }
 
         /// <summary>ADC channel definitions.</summary>
         public static class AdcChannel {
-            /// <summary>ReflectiveSensor1 definition.</summary>
+            /// <summary>API id.</summary>
+            public const string Id = Cerb.AdcChannel.Id;
+
+            /// <summary>ADC channel.</summary>
             public const int ReflectiveSensor1 = Cerb.GpioPin.PA5;
-            /// <summary>ReflectiveSensor2 definition.</summary>
+            /// <summary>ADC channel.</summary>
             public const int ReflectiveSensor2 = Cerb.GpioPin.PC2;
 
             /// <summary>Socket definition.</summary>
             public static class Socket4 {
-                /// <summary>Pin definition.</summary>
+                /// <summary>ADC channel.</summary>
                 public const int Pin3 = Cerb.AdcChannel.PC0;
-                /// <summary>Pin definition.</summary>
+                /// <summary>ADC channel.</summary>
                 public const int Pin4 = Cerb.AdcChannel.PC1;
-                /// <summary>Pin definition.</summary>
+                /// <summary>ADC channel.</summary>
                 public const int Pin5 = Cerb.AdcChannel.PA4;
             }
         }
 
         /// <summary>DAC channel definitions.</summary>
         public static class DacChannel {
+            /// <summary>API Id.</summary>
+            public const string Id = Cerb.DacChannel.Id;
+
             /// <summary>Socket definition.</summary>
             public static class Socket4 {
-                /// <summary>Pin definition.</summary>
+                /// <summary>DAC channel.</summary>
                 public const int Pin5 = Cerb.DacChannel.PA4;
             }
         }
@@ -181,25 +187,25 @@
 
         /// <summary>UART port definition.</summary>
         public static class UartPort {
-            /// <summary>Socket definition.</summary>
+            /// <summary>UART port.</summary>
             public const string Socket3 = Cerb.UartPort.Usart3;
-            /// <summary>Socket definition.</summary>
+            /// <summary>UART port.</summary>
             public const string Socket5 = Cerb.UartPort.Usart2;
         }
 
         /// <summary>I2C Bus definition.</summary>
         public static class I2cBus {
-            /// <summary>Socket definition.</summary>
+            /// <summary>I2C bus.</summary>
             public const string Socket2 = Cerb.I2cBus.I2c1;
-            /// <summary>Socket definition.</summary>
+            /// <summary>I2C bus.</summary>
             public const string Socket4 = Cerb.I2cBus.I2c1;
-            /// <summary>Socket definition.</summary>
+            /// <summary>I2C bus.</summary>
             public const string Socket5 = Cerb.I2cBus.I2c1;
         }
 
         /// <summary>SPI Bus definition.</summary>
         public static class SpiBus {
-            /// <summary>Socket definition.</summary>
+            /// <summary>SPI bus.</summary>
             public const string Socket3 = Cerb.SpiBus.Spi1;
         }
 

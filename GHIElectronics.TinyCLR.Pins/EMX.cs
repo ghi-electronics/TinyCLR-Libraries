@@ -263,10 +263,8 @@
         public static class SpiBus {
             /// <summary>SPI bus on P0.18 (MOSI), P0.17 (MISO), and P0.15 (SCK).</summary>
             public const string Spi0 = LPC24.SpiBus.Spi0;
-            /// <summary>SPI bus.</summary>
+            /// <summary>SPI bus on P0.9 (MOSI), P0.8 (MISO), and P0.7 (SCK).</summary>
             public const string Spi1 = LPC24.SpiBus.Spi1;
-            /// <summary>SPI bus on P1.1 (MOSI), P1.4 (MISO), and P1.0 (SCK).</summary>
-            public const string Spi2 = LPC24.SpiBus.Spi2;
         }
 
         /// <summary>CAN bus definitions.</summary>

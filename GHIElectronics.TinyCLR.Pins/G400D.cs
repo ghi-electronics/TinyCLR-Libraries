@@ -268,7 +268,7 @@
 
         /// <summary>SPI bus definitions.</summary>
         public static class SpiBus {
-            /// <summary>SPI bus.</summary>
+            /// <summary>SPI bus on PA12 (MOSI), PA11 (MISO), and PA13 (SCK).</summary>
             public const string Spi0 = AT91.SpiBus.Spi0;
             /// <summary>SPI bus on PA22 (MOSI), PA21 (MISO), and PA23 (SCK).</summary>
             public const string Spi1 = AT91.SpiBus.Spi1;

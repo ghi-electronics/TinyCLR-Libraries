@@ -24,15 +24,18 @@
 
         /// <summary>ADC channel definitions.</summary>
         public static class AdcChannel {
-            /// <summary>ADC channel for the Temperature Sensor.</summary>
+            /// <summary>API id.</summary>\
+            public const string Id = FEZCLR.AdcChannel.Id;
+
+            /// <summary>ADC channel for Temperature Sensor.</summary>
             public const int TemperatureSensor = FEZCLR.AdcChannel.PB0;
-            /// <summary>ADC channel for the Light Sensor.</summary>
+            /// <summary>ADC channel for Light Sensor.</summary>
             public const int LightSensor = FEZCLR.AdcChannel.PB1;
         }
 
         /// <summary>PWM pin definitions.</summary>
         public static class PwmPin {
-            /// <summary>Controller 2 definitions.</summary>
+            /// <summary>PWM controller definitions.</summary>
             public static class Controller2 {
                 /// <summary>API id.</summary>
                 public const string Id = FEZCLR.PwmPin.Controller2.Id;
@@ -43,7 +46,7 @@
                 public const int ServoTwo = FEZCLR.PwmPin.Controller2.PA0;
             }
 
-            /// <summary>Controller 3 definitions.</summary>
+            /// <summary>PWM controller definitions.</summary>
             public static class Controller3 {
                 /// <summary>API id.</summary>
                 public const string Id = FEZCLR.PwmPin.Controller3.Id;
@@ -56,7 +59,7 @@
                 public const int LightBulbBlue = FEZCLR.PwmPin.Controller3.PC6;
             }
 
-            /// <summary>Controller 4 definitions.</summary>
+            /// <summary>PWM controller definitions.</summary>
             public static class Controller4 {
                 /// <summary>API id.</summary>
                 public const string Id = FEZCLR.PwmPin.Controller4.Id;

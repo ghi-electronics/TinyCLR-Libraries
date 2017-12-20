@@ -122,6 +122,7 @@
             /// <summary>ADC channel.</summary>
             public const int X5 = USBizi144.AdcChannel.P0_25;
         }
+
         /// <summary>DAC channel definitions.</summary>
         public static class DacChannel {
             /// <summary>API id.</summary>
@@ -131,19 +132,20 @@
             public const int X4 = USBizi144.DacChannel.P0_26;
         }
 
+        /// <summary>PWM pin definitions.</summary>
         public static class PwmPin {
             /// <summary>PWM controller.</summary>
             public static class Controller1 {
                 /// <summary>API id.</summary>
                 public const string Id = USBizi144.PwmPin.Controller1.Id;
 
-                /// <summary>PWM channel.</summary>
+                /// <summary>PWM pin.</summary>
                 public const int Pin24 = USBizi144.PwmPin.Controller1.P1_21;
-                /// <summary>PWM channel.</summary>
+                /// <summary>PWM pin.</summary>
                 public const int Pin36 = USBizi144.PwmPin.Controller1.P2_3;
-                /// <summary>PWM channel.</summary>
+                /// <summary>PWM pin.</summary>
                 public const int Pin35 = USBizi144.PwmPin.Controller1.P2_4;
-                /// <summary>PWM channel.</summary>
+                /// <summary>PWM pin.</summary>
                 public const int Pin38 = USBizi144.PwmPin.Controller1.P2_5;
             }
         }

@@ -293,18 +293,18 @@
             public const int Channel11 = 11;
         }
 
-        /// <summary>PWM channel definitions.</summary>
-        public static class PwmChannel {
-            /// <summary>PWM id.</summary>
+        /// <summary>PWM pin definitions.</summary>
+        public static class PwmPin {
+            /// <summary>API id.</summary>
             public const string Pwm0 = "GHIElectronics.TinyCLR.NativeApis.AT91.PwmProvider\\0";
-            /// <summary>PWM id.</summary>
+            /// <summary>API id.</summary>
             public const string Pwm1 = "GHIElectronics.TinyCLR.NativeApis.AT91.PwmProvider\\1";
-            /// <summary>PWM id.</summary>
+            /// <summary>API id.</summary>
             public const string Pwm2 = "GHIElectronics.TinyCLR.NativeApis.AT91.PwmProvider\\2";
-            /// <summary>PWM id.</summary>
+            /// <summary>API id.</summary>
             public const string Pwm3 = "GHIElectronics.TinyCLR.NativeApis.AT91.PwmProvider\\3";
 
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int Channel0 = 0;
         }
 

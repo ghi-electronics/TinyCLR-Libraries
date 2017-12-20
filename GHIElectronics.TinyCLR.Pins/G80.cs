@@ -345,13 +345,13 @@
 
         /// <summary>UART port definitions.</summary>
         public static class UartPort {
-            /// <summary>UART on PA9 (TX) and PA10 (RX).</summary>
+            /// <summary>UART port on PA9 (TX) and PA10 (RX).</summary>
             public const string Usart1 = STM32F4.UartPort.Usart1;
-            /// <summary>UART on PD5 (TX), PD6 (RX), PD3 (CTS), and PD4 (RTS).</summary>
+            /// <summary>UART port on PD5 (TX), PD6 (RX), PD3 (CTS), and PD4 (RTS).</summary>
             public const string Usart2 = STM32F4.UartPort.Usart2;
-            /// <summary>UART on PD8 (TX), PD9 (RX), PD11 (CTS), and PD12 (RTS).</summary>
+            /// <summary>UART port on PD8 (TX), PD9 (RX), PD11 (CTS), and PD12 (RTS).</summary>
             public const string Usart3 = STM32F4.UartPort.Usart3;
-            /// <summary>UART on PA0 (TX) and PA1 (RX).</summary>
+            /// <summary>UART port on PA0 (TX) and PA1 (RX).</summary>
             public const string Uart4 = STM32F4.UartPort.Uart4;
         }
 

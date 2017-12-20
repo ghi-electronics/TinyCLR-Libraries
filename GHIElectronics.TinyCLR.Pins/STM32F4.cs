@@ -416,44 +416,44 @@
             public const int Channel2 = 1;
         }
 
-        /// <summary>PWM channel definitions.</summary>
-        public static class PwmChannel {
-            /// <summary>Timer.</summary>
+        /// <summary>PWM pin definitions.</summary>
+        public static class PwmPin {
+            /// <summary>API id.</summary>
             public const string Tim1 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.PwmProvider\\0";
-            /// <summary>Timer.</summary>
+            /// <summary>API id.</summary>
             public const string Tim2 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.PwmProvider\\1";
-            /// <summary>Timer.</summary>
+            /// <summary>API id.</summary>
             public const string Tim3 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.PwmProvider\\2";
-            /// <summary>Timer.</summary>
+            /// <summary>API id.</summary>
             public const string Tim4 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.PwmProvider\\3";
-            /// <summary>Timer.</summary>
+            /// <summary>API id.</summary>
             public const string Tim5 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.PwmProvider\\4";
-            /// <summary>Timer.</summary>
+            /// <summary>API id.</summary>
             public const string Tim6 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.PwmProvider\\5";
-            /// <summary>Timer.</summary>
+            /// <summary>API id.</summary>
             public const string Tim7 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.PwmProvider\\6";
-            /// <summary>Timer.</summary>
+            /// <summary>API id.</summary>
             public const string Tim8 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.PwmProvider\\7";
-            /// <summary>Timer.</summary>
+            /// <summary>API id.</summary>
             public const string Tim9 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.PwmProvider\\8";
-            /// <summary>Timer.</summary>
+            /// <summary>API id.</summary>
             public const string Tim10 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.PwmProvider\\9";
-            /// <summary>Timer.</summary>
+            /// <summary>API id.</summary>
             public const string Tim11 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.PwmProvider\\10";
-            /// <summary>Timer.</summary>
+            /// <summary>API id.</summary>
             public const string Tim12 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.PwmProvider\\11";
-            /// <summary>Timer.</summary>
+            /// <summary>API id.</summary>
             public const string Tim13 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.PwmProvider\\12";
-            /// <summary>Timer.</summary>
+            /// <summary>API id.</summary>
             public const string Tim14 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.PwmProvider\\13";
 
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int Channel0 = 0;
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int Channel1 = 1;
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int Channel2 = 2;
-            /// <summary>PWM channel.</summary>
+            /// <summary>PWM pin.</summary>
             public const int Channel3 = 3;
         }
 
@@ -505,9 +505,9 @@
 
         /// <summary>CAN bus definitions.</summary>
         public static class CanBus {
-            /// <summary>I2C bus.</summary>
+            /// <summary>CAN bus.</summary>
             public const string Can1 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.CanProvider\\0";
-            /// <summary>I2C bus.</summary>
+            /// <summary>CAN bus.</summary>
             public const string Can2 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.CanProvider\\1";
         }
 

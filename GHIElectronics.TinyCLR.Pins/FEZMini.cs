@@ -45,15 +45,15 @@
 
             /// <summary>ADC channel.</summary>
             public const int An0 = USBizi100.AdcChannel.P0_23;
-            /// <summary>GPIO pin.</summary>
+            /// <summary>ADC channel.</summary>
             public const int An1 = USBizi100.AdcChannel.P0_24;
-            /// <summary>GPIO pin.</summary>
+            /// <summary>ADC channel.</summary>
             public const int An2 = USBizi100.AdcChannel.P0_25;
-            /// <summary>GPIO pin.</summary>
+            /// <summary>ADC channel.</summary>
             public const int An3 = USBizi100.AdcChannel.P0_26;
-            /// <summary>GPIO pin.</summary>
+            /// <summary>ADC channel.</summary>
             public const int An6 = USBizi100.AdcChannel.P1_30;
-            /// <summary>GPIO pin.</summary>
+            /// <summary>ADC channel.</summary>
             public const int An7 = USBizi100.AdcChannel.P1_31;
         }
 
@@ -116,7 +116,7 @@
 
         /// <summry>USB client port definitions.</summry>
         public static class UsbClientPort {
-            /// <summary> USB client port on D- (D-), D+ (D+), and VBUS (VBUS).</summary>
+            /// <summary>USB client port on D- (D-), D+ (D+), and VBUS (VBUS).</summary>
             public const string UsbDevice = USBizi100.UsbClientPort.UsbDevice;
         }
     }

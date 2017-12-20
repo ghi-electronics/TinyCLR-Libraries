@@ -6,13 +6,13 @@
             /// <summary>API id.</summary>
             public const string Id = Cerb.GpioPin.Id;
 
-            /// <summary>Debug LED definition.</summary>
+            /// <summary>GPIO pin for debug LED.</summary>
             public const int DebugLed = Cerb.GpioPin.PB2;
-            /// <summary>SD card detect definition.</summary>
+            /// <summary>GPIO pin for SD card detect.</summary>
             public const int SdCardDetect = Cerb.GpioPin.PC2;
-            /// <summary>Xbee Reset definition.</summary>
+            /// <summary>GPIO pin for Xbee Reset.</summary>
             public const int XbeeReset = Cerb.GpioPin.PB0;
-            /// <summary>Xbee Sleep definition.</summary>
+            /// <summary>GPIO pin for Xbee Sleep.</summary>
             public const int XbeeSleep = Cerb.GpioPin.PC13;
             /// <summary>GPIO pin.</summary>
             public const int D0 = Cerb.GpioPin.PB11;
@@ -112,50 +112,56 @@
 
         /// <summary>ADC channel definitions.</summary>
         public static class AdcChannel {
-            /// <summary>Pin definition.</summary>
+            /// <summary>API id.</summary>
+            public const string Id = Cerb.AdcChannel.Id;
+
+            /// <summary>ADC channel.</summary>
             public const int D7 = Cerb.AdcChannel.PC4;
-            /// <summary>Pin definition.</summary>
+            /// <summary>ADC channel.</summary>
             public const int A0 = Cerb.AdcChannel.PB1;
-            /// <summary>Pin definition.</summary>
+            /// <summary>ADC channel.</summary>
             public const int A1 = Cerb.AdcChannel.PA5;
-            /// <summary>Pin definition.</summary>
+            /// <summary>ADC channel.</summary>
             public const int A2 = Cerb.AdcChannel.PB0;
-            /// <summary>Pin definition.</summary>
+            /// <summary>ADC channel.</summary>
             public const int A3 = Cerb.AdcChannel.PC3;
-            /// <summary>Pin definition.</summary>
+            /// <summary>ADC channel.</summary>
             public const int A4 = Cerb.AdcChannel.PC1;
-            /// <summary>Pin definition.</summary>
+            /// <summary>ADC channel.</summary>
             public const int A5 = Cerb.AdcChannel.PA4;
 
             /// <summary>Socket definition.</summary>
             public static class Socket2 {
-                /// <summary>Pin definition.</summary>
+                /// <summary>ADC channel.</summary>
                 public const int Pin3 = Cerb.AdcChannel.PA6;
-                /// <summary>Pin definition.</summary>
+                /// <summary>ADC channel.</summary>
                 public const int Pin4 = Cerb.AdcChannel.PA2;
-                /// <summary>Pin definition.</summary>
+                /// <summary>ADC channel.</summary>
                 public const int Pin5 = Cerb.AdcChannel.PA3;
             }
 
             /// <summary>Socket definition.</summary>
             public static class Socket3 {
-                /// <summary>Pin definition.</summary>
+                /// <summary>ADC channel.</summary>
                 public const int Pin3 = Cerb.AdcChannel.PC0;
-                /// <summary>Pin definition.</summary>
+                /// <summary>ADC channel.</summary>
                 public const int Pin4 = Cerb.AdcChannel.PA4;
-                /// <summary>Pin definition.</summary>
+                /// <summary>ADC channel.</summary>
                 public const int Pin5 = Cerb.AdcChannel.PC5;
             }
         }
 
-        /// <summary>Analog output channel definitions.</summary>
+        /// <summary>DAC channel definitions.</summary>
         public static class DacChannel {
-            /// <summary>Pin definition.</summary>
+            /// <summary>API id.</summary>
+            public const string Id = Cerb.DacChannel.Id;
+
+            /// <summary>DAC channel.</summary>
             public const int A1 = Cerb.DacChannel.PA5;
 
             /// <summary>Socket definition.</summary>
             public static class Socket3 {
-                /// <summary>Pin definition.</summary>
+                /// <summary>DAC channel.</summary>
                 public const int Pin5 = Cerb.DacChannel.PA4;
             }
         }
@@ -167,9 +173,9 @@
                 /// <summary>API id.</summary>
                 public const string Id = Cerb.PwmPin.Controller1.Id;
 
-                /// <summary>Pin definition.</summary>
+                /// <summary>PWM pin.</summary>
                 public const int D5 = Cerb.PwmPin.Controller1.PA8;
-                /// <summary>Pin definition.</summary>
+                /// <summary>PWM pin.</summary>
                 public const int D6 = Cerb.PwmPin.Controller1.PA10;
             }
 
@@ -178,14 +184,14 @@
                 /// <summary>API id.</summary>
                 public const string Id = Cerb.PwmPin.Controller2.Id;
 
-                /// <summary>Pin definition.</summary>
+                /// <summary>PWM pin.</summary>
                 public const int D10 = Cerb.PwmPin.Controller2.PA15;
-                /// <summary>Pin definition.</summary>
+                /// <summary>PWM pin.</summary>
                 public const int D13 = Cerb.PwmPin.Controller2.PB3;
 
                 /// <summary>Socket definition.</summary>
                 public static class Socket1 {
-                    /// <summary>Pin definition.</summary>
+                    /// <summary>PWM pin.</summary>
                     public const int Pin9 = Cerb.PwmPin.Controller2.PB3;
                 }
             }
@@ -195,14 +201,14 @@
                 /// <summary>API id.</summary>
                 public const string Id = Cerb.PwmPin.Controller3.Id;
 
-                /// <summary>Pin definition.</summary>
+                /// <summary>PWM pin.</summary>
                 public const int D12 = Cerb.PwmPin.Controller3.PB4;
 
                 /// <summary>Socket definition.</summary>
                 public static class Socket1 {
-                    /// <summary>Pin definition.</summary>
+                    /// <summary>PWM pin.</summary>
                     public const int Pin7 = Cerb.PwmPin.Controller3.PB5;
-                    /// <summary>Pin definition.</summary>
+                    /// <summary>PWM pin.</summary>
                     public const int Pin8 = Cerb.PwmPin.Controller3.PB4;
                 }
             }
@@ -210,25 +216,25 @@
 
         /// <summary>UART port definitions.</summary>
         public static class UartPort {
-            /// <summary>Socket definition.</summary>
+            /// <summary>UART port.</summary>
             public const string Socket1 = Cerb.UartPort.Usart6;
-            /// <summary>Socket definition.</summary>
+            /// <summary>UART port.</summary>
             public const string Socket2 = Cerb.UartPort.Usart2;
-            /// <summary>Xbee definitions.</summary>
+            /// <summary>UART port for Xbee.</summary>
             public const string Xbee = Cerb.UartPort.Usart6;
-            /// <summary>UART D0 (RX) and D1 (TX).</summary>
+            /// <summary>UART port on D0 (RX) and D1 (TX).</summary>
             public const string Usart3 = Cerb.UartPort.Usart3;
         }
 
         /// <summary>I2C bus definitions.</summary>
         public static class I2cBus {
-            /// <summary>Socket definition.</summary>
+            /// <summary>I2C bus.</summary>
             public const string Socket2 = Cerb.I2cBus.I2c1;
         }
 
         /// <summary>SPI bus definitions.</summary>
         public static class SpiBus {
-            /// <summary>Socket definition.</summary>
+            /// <summary>SPI bus.</summary>
             public const string Socket1 = Cerb.SpiBus.Spi1;
             /// <summary>SPI bus on D11 (MOSI), D12 (MISO), and D13 (SCK).</summary>
             public const string Spi1 = Cerb.SpiBus.Spi1;
@@ -238,7 +244,7 @@
         public static class CanBus {
             /// <summary>CAN bus on PB13 (TX) and PB12 (RX).</summary>
             public const string Can2 = Cerb.CanBus.Can2;
-            /// <summary>Socket definition.</summary>
+            /// <summary>CAN bus.</summary>
             public const string Socket3 = Cerb.CanBus.Can1;
         }
 

@@ -155,7 +155,7 @@
         /// <summary>ADC channel definitions.</summary>
         public static class AdcChannel {
             /// <summary>API id.</summary>
-            public const string Id = LPC17.DacChannel.Id;
+            public const string Id = LPC17.AdcChannel.Id;
 
             /// <summary>ADC channel.</summary>
             public const int P0_23 = LPC17.AdcChannel.Channel0;
@@ -191,17 +191,17 @@
                 /// <summary>API id.</summary>
                 public const string Id = LPC17.PwmChannel.Pwm0;
 
-                /// <summary>PWM channel.</summary>
+                /// <summary>PWM pin.</summary>
                 public const int P1_2 = LPC17.PwmChannel.Output1;
-                /// <summary>PWM channel.</summary>
+                /// <summary>PWM pin.</summary>
                 public const int P1_3 = LPC17.PwmChannel.Output2;
-                /// <summary>PWM channel.</summary>
+                /// <summary>PWM pin.</summary>
                 public const int P1_5 = LPC17.PwmChannel.Output3;
-                /// <summary>PWM channel.</summary>
+                /// <summary>PWM pin.</summary>
                 public const int P1_6 = LPC17.PwmChannel.Output4;
-                /// <summary>PWM channel.</summary>
+                /// <summary>PWM pin.</summary>
                 public const int P1_7 = LPC17.PwmChannel.Output5;
-                /// <summary>PWM channel.</summary>
+                /// <summary>PWM pin.</summary>
                 public const int P1_11 = LPC17.PwmChannel.Output6;
             }
 
@@ -210,17 +210,17 @@
                 /// <summary>API id.</summary>
                 public const string Id = LPC17.PwmChannel.Pwm1;
 
-                /// <summary>PWM channel.</summary>
+                /// <summary>PWM pin.</summary>
                 public const int P3_24 = LPC17.PwmChannel.Output1;
-                /// <summary>PWM channel.</summary>
+                /// <summary>PWM pin.</summary>
                 public const int P3_25 = LPC17.PwmChannel.Output2;
-                /// <summary>PWM channel.</summary>
+                /// <summary>PWM pin.</summary>
                 public const int P3_26 = LPC17.PwmChannel.Output3;
-                /// <summary>PWM channel.</summary>
+                /// <summary>PWM pin.</summary>
                 public const int P2_3 = LPC17.PwmChannel.Output4;
-                /// <summary>PWM channel.</summary>
+                /// <summary>PWM pin.</summary>
                 public const int P2_4 = LPC17.PwmChannel.Output5;
-                /// <summary>PWM channel.</summary>
+                /// <summary>PWM pin.</summary>
                 public const int P2_5 = LPC17.PwmChannel.Output6;
             }
         }
@@ -249,7 +249,7 @@
         public static class SpiBus {
             /// <summary>SPI bus on P0.18 (MOSI), P0.17 (MISO), and P0.15 (SCK).</summary>
             public const string Spi0 = LPC17.SpiBus.Spi0;
-            /// <summary>SPI bus.</summary>
+            /// <summary>SPI bus on P0.9 (MOSI), P0.8 (MISO), and P0.7 (SCK).</summary>
             public const string Spi1 = LPC17.SpiBus.Spi1;
             /// <summary>SPI bus on P1.1 (MOSI), P1.4 (MISO), and P1.0 (SCK).</summary>
             public const string Spi2 = LPC17.SpiBus.Spi2;

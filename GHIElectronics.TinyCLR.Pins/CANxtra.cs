@@ -26,38 +26,34 @@
             public const int ButtonColumn1 = EmbeddedMasterNonTFT.GpioPin.P0_23;
             /// <summary>GPIO pin for button column 2 ('3', '6', '9', 'Cancel').</summary>
             public const int ButtonColumn2 = EmbeddedMasterNonTFT.GpioPin.P2_5;
-
-            /// <summary>DB25 connector definition.</summary>
-            public static class Db25 {
-                /// <summary>Pin definition.</summary>
-                public const int Pin8 = EmbeddedMasterNonTFT.GpioPin.P0_27;
-                /// <summary>Pin definition.</summary>
-                public const int Pin9 = EmbeddedMasterNonTFT.GpioPin.P0_28;
-                /// <summary>Pin definition.</summary>
-                public const int Pin10 = EmbeddedMasterNonTFT.GpioPin.P0_15;
-                /// <summary>Pin definition.</summary>
-                public const int Pin11 = EmbeddedMasterNonTFT.GpioPin.P0_16;
-                /// <summary>Pin definition.</summary>
-                public const int Pin12 = EmbeddedMasterNonTFT.GpioPin.P0_17;
-                /// <summary>Pin definition.</summary>
-                public const int Pin13 = EmbeddedMasterNonTFT.GpioPin.P0_18;
-                /// <summary>Pin definition.</summary>
-                public const int Pin14 = EmbeddedMasterNonTFT.GpioPin.P0_4;
-                /// <summary>Pin definition.</summary>
-                public const int Pin15 = EmbeddedMasterNonTFT.GpioPin.P0_5;
-                /// <summary>Pin definition.</summary>
-                public const int Pin16 = EmbeddedMasterNonTFT.GpioPin.P0_3;
-                /// <summary>Pin definition.</summary>
-                public const int Pin17 = EmbeddedMasterNonTFT.GpioPin.P0_2;
-                /// <summary>Pin definition.</summary>
-                public const int Pin18 = EmbeddedMasterNonTFT.GpioPin.P0_24;
-                /// <summary>Pin definition.</summary>
-                public const int Pin19 = EmbeddedMasterNonTFT.GpioPin.P0_25;
-                /// <summary>Pin definition.</summary>
-                public const int Pin21 = EmbeddedMasterNonTFT.GpioPin.P0_26;
-                /// <summary>Pin definition.</summary>
-                public const int Pin22 = EmbeddedMasterNonTFT.GpioPin.P3_24;
-            }
+            /// <summary>GPIO pin for DB25 pin 8.</summary>
+            public const int Db25Pin8 = EmbeddedMasterNonTFT.GpioPin.P0_27;
+            /// <summary>GPIO pin for DB25 pin 9.</summary>
+            public const int Db25Pin9 = EmbeddedMasterNonTFT.GpioPin.P0_28;
+            /// <summary>GPIO pin for DB25 pin 10.</summary>
+            public const int Db25Pin10 = EmbeddedMasterNonTFT.GpioPin.P0_15;
+            /// <summary>GPIO pin for DB25 pin 11.</summary>
+            public const int Db25Pin11 = EmbeddedMasterNonTFT.GpioPin.P0_16;
+            /// <summary>GPIO pin for DB25 pin 12.</summary>
+            public const int Db25Pin12 = EmbeddedMasterNonTFT.GpioPin.P0_17;
+            /// <summary>GPIO pin for DB25 pin 13.</summary>
+            public const int Db25Pin13 = EmbeddedMasterNonTFT.GpioPin.P0_18;
+            /// <summary>GPIO pin for DB25 pin 14.</summary>
+            public const int Db25Pin14 = EmbeddedMasterNonTFT.GpioPin.P0_4;
+            /// <summary>GPIO pin for DB25 pin 15.</summary>
+            public const int Db25Pin15 = EmbeddedMasterNonTFT.GpioPin.P0_5;
+            /// <summary>GPIO pin for DB25 pin 16.</summary>
+            public const int Db25Pin16 = EmbeddedMasterNonTFT.GpioPin.P0_3;
+            /// <summary>GPIO pin for DB25 pin 17.</summary>
+            public const int Db25Pin17 = EmbeddedMasterNonTFT.GpioPin.P0_2;
+            /// <summary>GPIO pin for DB25 pin 18.</summary>
+            public const int Db25Pin18 = EmbeddedMasterNonTFT.GpioPin.P0_24;
+            /// <summary>GPIO pin for DB25 pin 19.</summary>
+            public const int Db25Pin19 = EmbeddedMasterNonTFT.GpioPin.P0_25;
+            /// <summary>GPIO pin for DB25 pin 21.</summary>
+            public const int Db25Pin21 = EmbeddedMasterNonTFT.GpioPin.P0_26;
+            /// <summary>GPIO pin for DB25 pin 22.</summary>
+            public const int Db25Pin22 = EmbeddedMasterNonTFT.GpioPin.P3_24;
         }
 
         /// <summary>ADC channel definitions.</summary>
@@ -65,15 +61,12 @@
             /// <summary>API id.</summary>
             public const string Id = EmbeddedMasterNonTFT.AdcChannel.Id;
 
-            /// <summary>DB25 connector definition.</summary>
-            public static class Db25 {
-                /// <summary>Pin definition.</summary>
-                public const int Pin18 = EmbeddedMasterNonTFT.AdcChannel.P0_24;
-                /// <summary>Pin definition.</summary>
-                public const int Pin19 = EmbeddedMasterNonTFT.AdcChannel.P0_25;
-                /// <summary>Pin definition.</summary>
-                public const int Pin21 = EmbeddedMasterNonTFT.AdcChannel.P0_26;
-            }
+            /// <summary>ADC channel.</summary>
+            public const int Db25Pin18 = EmbeddedMasterNonTFT.AdcChannel.P0_24;
+            /// <summary>ADC channel.</summary>
+            public const int Db25Pin19 = EmbeddedMasterNonTFT.AdcChannel.P0_25;
+            /// <summary>ADC channel.</summary>
+            public const int Db25Pin21 = EmbeddedMasterNonTFT.AdcChannel.P0_26;
         }
 
         /// <summary>DAC channel definitions.</summary>
@@ -81,11 +74,8 @@
             /// <summary>API id.</summary>
             public const string Id = EmbeddedMasterNonTFT.DacChannel.Id;
 
-            /// <summary>DB25 connector definition.</summary>
-            public static class Db25 {
-                /// <summary>Pin definition.</summary>
-                public const int Pin21 = EmbeddedMasterNonTFT.DacChannel.P0_26;
-            }
+            /// <summary>DAC channel.</summary>
+            public const int Db25Pin21 = EmbeddedMasterNonTFT.DacChannel.P0_26;
         }
 
         /// <summary>PWM pin definitions.</summary>
@@ -95,7 +85,7 @@
                 /// <summary>API id.</summary>
                 public const string Id = EmbeddedMasterNonTFT.PwmPin.Controller0.Id;
 
-                /// <summary>Pin definition.</summary>
+                /// <summary>PWM pin.</summary>
                 public const int GreenLed = EmbeddedMasterNonTFT.PwmPin.Controller0.P3_16;
             }
 
@@ -104,11 +94,8 @@
                 /// <summary>API id.</summary>
                 public const string Id = EmbeddedMasterNonTFT.PwmPin.Controller1.Id;
 
-                /// <summary>DB25 connector definition.</summary>
-                public static class Db25 {
-                    /// <summary>Pin definition.</summary>
-                    public const int Pin22 = EmbeddedMasterNonTFT.PwmPin.Controller1.P3_24;
-                }
+                /// <summary>PWM pin.</summary>
+                public const int Db25Pin22 = EmbeddedMasterNonTFT.PwmPin.Controller1.P3_24;
             }
         }
 
@@ -156,7 +143,7 @@
 
         /// <summary>Display definitions.</summary>
         public static class Display {
-            /// <summary>LCD definition.</summary>
+            /// <summary>API id.</summary>
             public const string Lcd = EmbeddedMasterNonTFT.Display.Lcd;
         }
     }

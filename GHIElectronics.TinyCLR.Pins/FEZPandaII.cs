@@ -125,15 +125,15 @@
 
             /// <summary>ADC channel.</summary>
             public const int A0 = USBizi100.GpioPin.P0_23;
-            /// <summary>GPIO pin.</summary>
+            /// <summary>ADC channel.</summary>
             public const int A1 = USBizi100.GpioPin.P0_24;
-            /// <summary>GPIO pin.</summary>
+            /// <summary>ADC channel.</summary>
             public const int A2 = USBizi100.GpioPin.P0_25;
-            /// <summary>GPIO pin.</summary>
+            /// <summary>ADC channel.</summary>
             public const int A3 = USBizi100.GpioPin.P0_26;
-            /// <summary>GPIO pin.</summary>
+            /// <summary>ADC channel.</summary>
             public const int A4 = USBizi100.GpioPin.P1_30;
-            /// <summary>GPIO pin.</summary>
+            /// <summary>ADC channel.</summary>
             public const int A5 = USBizi100.GpioPin.P1_31;
         }
 
@@ -148,22 +148,22 @@
 
         /// <summary>PWM pin definitions.</summary>
         public static class PwmPin {
-            /// <summary>Controller 3 definitions.</summary>
+            /// <summary>PWM controller.</summary>
             public static class Controller1 {
                 /// <summary>API id.</summary>
                 public const string Id = USBizi100.PwmPin.Controller1.Id;
 
-                /// <summary>Pin definition.</summary>
+                /// <summary>PWM pin.</summary>
                 public const int D10 = USBizi100.PwmPin.Controller1.P1_18;
-                /// <summary>Pin definition.</summary>
+                /// <summary>PWM pin.</summary>
                 public const int D9 = USBizi100.PwmPin.Controller1.P1_20;
-                /// <summary>Pin definition.</summary>
+                /// <summary>PWM pin.</summary>
                 public const int D8 = USBizi100.PwmPin.Controller1.P1_21;
-                /// <summary>Pin definition.</summary>
+                /// <summary>PWM pin.</summary>
                 public const int D6 = USBizi100.PwmPin.Controller1.P2_4;
-                /// <summary>Pin definition.</summary>
+                /// <summary>PWM pin.</summary>
                 public const int D5 = USBizi100.PwmPin.Controller1.P2_5;
-                /// <summary>Pin definition.</summary>
+                /// <summary>PWM pin.</summary>
                 public const int Mod = USBizi100.PwmPin.Controller1.P2_3;
             }
         }

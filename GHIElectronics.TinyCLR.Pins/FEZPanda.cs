@@ -85,15 +85,15 @@
                 /// <summary>API id.</summary>
                 public const string Id = USBizi100.PwmPin.Controller1.Id;
 
-                /// <summary>PWM channel.</summary>
+                /// <summary>PWM pin.</summary>
                 public const int D10 = USBizi100.PwmPin.Controller1.P1_18;
-                /// <summary>PWM channel.</summary>
+                /// <summary>PWM pin.</summary>
                 public const int D9 = USBizi100.PwmPin.Controller1.P1_20;
-                /// <summary>PWM channel.</summary>
+                /// <summary>PWM pin.</summary>
                 public const int D8 = USBizi100.PwmPin.Controller1.P1_21;
-                /// <summary>PWM channel.</summary>
+                /// <summary>PWM pin.</summary>
                 public const int D6 = USBizi100.PwmPin.Controller1.P2_4;
-                /// <summary>PWM channel.</summary>
+                /// <summary>PWM pin.</summary>
                 public const int D5 = USBizi100.PwmPin.Controller1.P2_5;
             }
         }
