@@ -187,14 +187,14 @@
             public const int P0_12 = G120.AdcChannel.P0_12;
             /// <summary>ADC channel.</summary>
             public const int P0_13 = G120.AdcChannel.P0_13;
-            /// <summary>ADC channel.</summary>
+            /// <summary>ADC channel. Shared with Socket4.</summary>
             public const int P0_25 = G120.AdcChannel.P0_25;
             /// <summary>ADC channel.</summary>
             public const int P0_26 = G120.AdcChannel.P0_26;
 
             /// <summary>Socket definition.</summary>
             public static class Socket4 {
-                /// <summary>ADC channel.</summary>
+                /// <summary>ADC channel. Shared with P0_25.</summary>
                 public const int Pin3 = G120.AdcChannel.P0_25;
                 /// <summary>ADC channel.</summary>
                 public const int Pin4 = G120.AdcChannel.P0_24;
@@ -239,23 +239,23 @@
 
         /// <summary>UART port definitions.</summary>
         public static class UartPort {
-            /// <summary>UART port on P0.2 (TX) and P0.3 (RX).</summary>
+            /// <summary>UART port on P0.2 (TX) and P0.3 (RX). Shared with Socket5.</summary>
             public const string Uart0 = G120.UartPort.Uart0;
-            /// <summary>UART port on P2.0 (TX) and P0.16 (RX).</summary>
+            /// <summary>UART port on P2.0 (TX), P0.16 (RX), P0.17 (CTS), and P0.6 (RTS).</summary>
             public const string Uart1 = G120.UartPort.Uart1;
             /// <summary>UART port on P0.10 (TX) and P0.11 (RX).</summary>
             public const string Uart2 = G120.UartPort.Uart2;
             /// <summary>UART port on P4.28 (TX) and P4.29 (RX).</summary>
             public const string Uart3 = G120.UartPort.Uart3;
-            /// <summary>UART port.</summary>
+            /// <summary>UART port on P0.2 (TX) and P0.3 (RX). Shared with Uart0.</summary>
             public const string Socket5 = G120.UartPort.Uart0;
         }
 
         /// <summary>I2C bus definitions.</summary>
         public static class I2cBus {
-            /// <summary>I2C bus on P0.27 (SDA) and P0.28 (SCL).</summary>
+            /// <summary>I2C bus on P0.27 (SDA) and P0.28 (SCL). Shared with Socket4.</summary>
             public const string I2c0 = G120.I2cBus.I2c0;
-            /// <summary>I2C bus.</summary>
+            /// <summary>I2C bus. Shared with I2c0.</summary>
             public const string Socket4 = G120.I2cBus.I2c0;
         }
 
@@ -263,9 +263,9 @@
         public static class SpiBus {
             /// <summary>SPI bus on P0.18 (MOSI), P0.17 (MISO), and P0.15 (SCK).</summary>
             public const string Spi0 = G120.SpiBus.Spi0;
-            /// <summary>SPI bus on WiFi MOSI (MOSI), WiFi MISO (MISO), and WiFi SCK (SCK).</summary>
+            /// <summary>SPI bus on WiFi MOSI (MOSI), WiFi MISO (MISO), and WiFi SCK (SCK). Shared with Socket 6.</summary>
             public const string Wifi = G120.SpiBus.Spi1;
-            /// <summary>SPI bus.</summary>
+            /// <summary>SPI bus. Shared with Wifi.</summary>
             public const string Socket6 = G120.SpiBus.Spi1;
         }
 
