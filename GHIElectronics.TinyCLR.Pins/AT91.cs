@@ -302,7 +302,7 @@
             /// <summary>API id.</summary>
             public const string Pwm2 = "GHIElectronics.TinyCLR.NativeApis.AT91.PwmProvider\\2";
             /// <summary>API id.</summary>
-            public const string Pwm3 = "GHIElectronics.TinyCLR.NativeApis.AT91.PwmProvider\\3";
+            public const string Pwm3 = "GHIElectronics.TinyCLR.NHowativeApis.AT91.PwmProvider\\3";
 
             /// <summary>PWM pin.</summary>
             public const int Channel0 = 0;

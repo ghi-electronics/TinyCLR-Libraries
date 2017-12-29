@@ -121,9 +121,9 @@
         /// <summary>SPI bus definitions.</summary>
         public static class SpiBus {
             /// <summary>SPI bus on IO24 (MOSI), IO25 (MISO), and IO27 (SCK).</summary>
-            public const string Spi1 = EMX.SpiBus.Spi1;
+            public const string Spi0 = EMX.SpiBus.Spi0;
             /// <summary>SPI bus on IO38 (MOSI), IO36 (MISO), and IO35 (SCK).</summary>
-            public const string Spi2 = EMX.SpiBus.Spi2;
+            public const string Spi1 = EMX.SpiBus.Spi1;
         }
 
         /// <summary>CAN bus definitions.</summary>
