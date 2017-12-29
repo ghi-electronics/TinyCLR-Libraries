@@ -159,10 +159,10 @@
             /// <summary>PWM controller.</summary>
             public static class Controller0 {
                 /// <summary>API id.</summary>
-                public const string Id = AT91.PwmChannel.Pwm0;
+                public const string Id = AT91.PwmPin.Pwm0;
 
                 /// <summary>PWM pin.</summary>
-                public const int PB4 = AT91.PwmChannel.Channel0;
+                public const int PB4 = AT91.PwmPin.Channel0;
             }
         }
 

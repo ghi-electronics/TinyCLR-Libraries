@@ -207,20 +207,20 @@
             /// <summary>PWM controller.</summary>
             public static class Controller1 {
                 /// <summary>API id.</summary>
-                public const string Id = LPC24.PwmChannel.Pwm0;
+                public const string Id = LPC24.PwmPin.Pwm0;
 
                 /// <summary>PWM pin.</summary>
-                public const int P1_18 = LPC24.PwmChannel.Output1;
+                public const int P1_18 = LPC24.PwmPin.Output1;
                 /// <summary>PWM pin.</summary>
-                public const int P1_20 = LPC24.PwmChannel.Output2;
+                public const int P1_20 = LPC24.PwmPin.Output2;
                 /// <summary>PWM pin.</summary>
-                public const int P1_21 = LPC24.PwmChannel.Output3;
+                public const int P1_21 = LPC24.PwmPin.Output3;
                 /// <summary>PWM pin.</summary>
-                public const int P2_3 = LPC24.PwmChannel.Output4;
+                public const int P2_3 = LPC24.PwmPin.Output4;
                 /// <summary>PWM pin.</summary>
-                public const int P2_4 = LPC24.PwmChannel.Output5;
+                public const int P2_4 = LPC24.PwmPin.Output5;
                 /// <summary>PWM pin.</summary>
-                public const int P2_5 = LPC24.PwmChannel.Output6;
+                public const int P2_5 = LPC24.PwmPin.Output6;
             }
         }
 

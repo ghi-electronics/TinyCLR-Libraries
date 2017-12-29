@@ -210,37 +210,37 @@
             /// <summary>PWM controller.</summary>
             public static class Controller0 {
                 /// <summary>API id.</summary>
-                public const string Id = AT91.PwmChannel.Pwm0;
+                public const string Id = AT91.PwmPin.Pwm0;
 
                 /// <summary>PWM pin.</summary>
-                public const int PC18 = AT91.PwmChannel.Channel0;
+                public const int PC18 = AT91.PwmPin.Channel0;
             }
 
             /// <summary>PWM controller.</summary>
             public static class Controller1 {
                 /// <summary>API id.</summary>
-                public const string Id = AT91.PwmChannel.Pwm1;
+                public const string Id = AT91.PwmPin.Pwm1;
 
                 /// <summary>PWM pin.</summary>
-                public const int PC19 = AT91.PwmChannel.Channel0;
+                public const int PC19 = AT91.PwmPin.Channel0;
             }
 
             /// <summary>PWM controller.</summary>
             public static class Controller2 {
                 /// <summary>API id.</summary>
-                public const string Id = AT91.PwmChannel.Pwm2;
+                public const string Id = AT91.PwmPin.Pwm2;
 
                 /// <summary>PWM pin.</summary>
-                public const int PC20 = AT91.PwmChannel.Channel0;
+                public const int PC20 = AT91.PwmPin.Channel0;
             }
 
             /// <summary>PWM controller.</summary>
             public static class Controller3 {
                 /// <summary>API id.</summary>
-                public const string Id = AT91.PwmChannel.Pwm3;
+                public const string Id = AT91.PwmPin.Pwm3;
 
                 /// <summary>PWM pin.</summary>
-                public const int PC21 = AT91.PwmChannel.Channel0;
+                public const int PC21 = AT91.PwmPin.Channel0;
             }
         }
 
