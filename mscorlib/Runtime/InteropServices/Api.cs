@@ -88,5 +88,6 @@ namespace System.Runtime.InteropServices {
         [CLSCompliant(false)]
         public uint Count { get; }
         public IntPtr[] Implementation { get; }
+        public IntPtr State { get; }
     }
 }
