@@ -1,4 +1,5 @@
 ﻿using GHIElectronics.TinyCLR.Devices.Adc.Provider;
+using GHIElectronics.TinyCLR.Devices.Can.Provider;
 using GHIElectronics.TinyCLR.Devices.Dac.Provider;
 using GHIElectronics.TinyCLR.Devices.Display.Provider;
 using GHIElectronics.TinyCLR.Devices.Gpio.Provider;
@@ -13,6 +14,7 @@ namespace GHIElectronics.TinyCLR.Devices {
 
     public interface ILowLevelDevicesAggregateProvider {
         IAdcControllerProvider AdcControllerProvider { get; }
+        ICanControllerProvider CanControllerProvider { get; }
         IDacControllerProvider DacControllerProvider { get; }
         IDisplayControllerProvider DisplayControllerProvider { get; }
         IGpioControllerProvider GpioControllerProvider { get; }
@@ -23,6 +25,7 @@ namespace GHIElectronics.TinyCLR.Devices {
 
     public sealed class LowLevelDevicesAggregateProvider : ILowLevelDevicesAggregateProvider {
         public IAdcControllerProvider AdcControllerProvider { get; }
+        public ICanControllerProvider CanControllerProvider { get; }
         public IDacControllerProvider DacControllerProvider { get; }
         public IDisplayControllerProvider DisplayControllerProvider { get; }
         public IGpioControllerProvider GpioControllerProvider { get; }
@@ -30,8 +33,9 @@ namespace GHIElectronics.TinyCLR.Devices {
         public IPwmControllerProvider PwmControllerProvider { get; }
         public ISpiControllerProvider SpiControllerProvider { get; }
 
-        public LowLevelDevicesAggregateProvider(IAdcControllerProvider adc, IDacControllerProvider dac, IDisplayControllerProvider display, IPwmControllerProvider pwm, IGpioControllerProvider gpio, II2cControllerProvider i2c, ISpiControllerProvider spi) {
+        public LowLevelDevicesAggregateProvider(IAdcControllerProvider adc, ICanControllerProvider can, IDacControllerProvider dac, IDisplayControllerProvider display, IPwmControllerProvider pwm, IGpioControllerProvider gpio, II2cControllerProvider i2c, ISpiControllerProvider spi) {
             this.AdcControllerProvider = adc;
+            this.CanControllerProvider = can;
             this.DacControllerProvider = dac;
             this.DisplayControllerProvider = display;
             this.PwmControllerProvider = pwm;
