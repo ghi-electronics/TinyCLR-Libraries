@@ -178,7 +178,6 @@
 
         /// <summary>SPI bus definitions.</summary>
         public static class SpiBus {
-            public const string Socket1 = Cerb.SpiBus.Spi1;
             /// <summary>SPI bus on PB5 (MOSI), PB4 (MISO), and PB3 (SCK).</summary>
             public const string Spi1 = Cerb.SpiBus.Spi1;
         }
