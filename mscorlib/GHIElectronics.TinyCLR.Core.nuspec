@@ -3,7 +3,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>GHIElectronics.TinyCLR.Core</id>
-    <version>0.6.0</version>
+    <version>0.7.0</version>
     <authors>GHI Electronics, LLC</authors>
     <owners>GHI Electronics, LLC</owners>
     <projectUrl>http://tinyclr.com/</projectUrl>
@@ -11,7 +11,7 @@
     <licenseUrl>http://files.ghielectronics.com/downloads/TinyCLR/License.txt</licenseUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>The mscorlib library for TinyCLR OS.</description>
-    <copyright>Copyright GHI Electronics, LLC 2017</copyright>
+    <copyright>Copyright GHI Electronics, LLC 2018</copyright>
     <tags>TinyCLR TinyCLROS</tags>
   </metadata>
   <files>
