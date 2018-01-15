@@ -69,7 +69,7 @@ namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
             this.Dispose(false);
         }
 
-        private class Stream : IInputStream, IOutputStream, IDisposable {
+        internal class Stream : IInputStream, IOutputStream, IDisposable {
 #pragma warning disable CS0169
             private IntPtr nativeProvider;
 #pragma warning restore CS0169
@@ -153,6 +153,20 @@ namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
                 this.Open();
 
                 return (uint)this.NativeWrite(((Buffer)buffer).data, ((Buffer)buffer).offset, (int)buffer.Length, (int)this.parent.WriteTimeout.TotalMilliseconds);
+            }
+
+            public extern uint ReadBufferSize {
+                [MethodImpl(MethodImplOptions.InternalCall)]
+                get;
+                [MethodImpl(MethodImplOptions.InternalCall)]
+                set;
+            }
+
+            public extern uint WriteBufferSize {
+                [MethodImpl(MethodImplOptions.InternalCall)]
+                get;
+                [MethodImpl(MethodImplOptions.InternalCall)]
+                set;
             }
 
             private void Open() {

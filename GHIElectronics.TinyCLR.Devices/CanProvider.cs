@@ -16,7 +16,6 @@ namespace GHIElectronics.TinyCLR.Devices.Can.Provider {
         void SetExplicitFilters(uint[] filters);
         void SetGroupFilters(uint[] lowerBounds, uint[] upperBounds);
         void ClearReadBuffer();
-        void SetReadBufferSize(int readBufferSize);
 
         int UnreadMessageCount { get; }
         bool IsWritingAllowed { get; }
@@ -104,9 +103,6 @@ namespace GHIElectronics.TinyCLR.Devices.Can.Provider {
         [MethodImpl(MethodImplOptions.InternalCall)]
         public extern void ClearReadBuffer();
 
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern void SetReadBufferSize(int readBufferSize);
-
         public extern int UnreadMessageCount {
             [MethodImpl(MethodImplOptions.InternalCall)]
             get;
@@ -130,6 +126,20 @@ namespace GHIElectronics.TinyCLR.Devices.Can.Provider {
         public extern uint SourceClock {
             [MethodImpl(MethodImplOptions.InternalCall)]
             get;
+        }
+
+        public extern uint ReadBufferSize {
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            get;
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            set;
+        }
+
+        public extern uint WriteBufferSize {
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            get;
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            set;
         }
     }
 }

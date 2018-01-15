@@ -65,7 +65,6 @@ namespace GHIElectronics.TinyCLR.Devices.Can {
         public void SetExplicitFilters(uint[] filters) => this.provider.SetExplicitFilters(filters);
         public void SetGroupFilters(uint[] lowerBounds, uint[] upperBounds) => this.provider.SetGroupFilters(lowerBounds, upperBounds);
         public void ClearReadBuffer() => this.provider.ClearReadBuffer();
-        public void SetReadBufferSize(int readBufferSize) => this.provider.SetReadBufferSize(readBufferSize);
 
         public int UnreadMessageCount => this.provider.UnreadMessageCount;
         public bool IsWritingAllowed => this.provider.IsWritingAllowed;
