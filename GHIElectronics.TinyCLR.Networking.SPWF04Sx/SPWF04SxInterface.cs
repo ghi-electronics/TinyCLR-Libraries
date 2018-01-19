@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections;
 using System.Diagnostics;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Threading;
 using GHIElectronics.TinyCLR.Devices.Gpio;
 using GHIElectronics.TinyCLR.Devices.SerialCommunication;
-using GHIElectronics.TinyCLR.Storage.Streams;
 
 namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
     public class SPWF04SxInterface {
