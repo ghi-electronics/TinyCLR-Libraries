@@ -42,7 +42,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF01Sx {
         public void ConfigureTls(byte[] certificate) {
             this.StopWorker();
 
-            this.SendATCommand("AT+S.TLSCERT=content,1");
+            this.SendATCommand("AT+S.TLSCERT=content,2");
             this.SendATCommand($"AT+S.TLSCERT=ca," + certificate.Length);
             this.Write(certificate);
 
