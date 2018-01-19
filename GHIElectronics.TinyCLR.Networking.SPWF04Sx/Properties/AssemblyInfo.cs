@@ -1,8 +1,8 @@
 ﻿using System.Reflection;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("GHIElectronics.TinyCLR.Networking.SPWF01Sx")]
-[assembly: AssemblyDescription("TinyCLR OS SPWF01Sx networking library.")]
+[assembly: AssemblyTitle("GHIElectronics.TinyCLR.Networking.SPWF04Sx")]
+[assembly: AssemblyDescription("TinyCLR OS SPWF04Sx networking library.")]
 [assembly: AssemblyCompany("GHI Electronics, LLC")]
 [assembly: AssemblyProduct("TinyCLR OS")]
 [assembly: AssemblyCopyright("Copyright © GHI Electronics, LLC 2018")]

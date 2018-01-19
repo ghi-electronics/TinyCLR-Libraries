@@ -30,7 +30,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Stor
 		{AA751E21-9220-42CE-8180-516BB59E4555} = {AA751E21-9220-42CE-8180-516BB59E4555}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Networking.SPWF01Sx", "GHIElectronics.TinyCLR.Networking.SPWF01Sx\GHIElectronics.TinyCLR.Networking.SPWF01Sx.csproj", "{365C4668-89FB-429C-B90B-D80AF6CF9B9D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Networking.SPWF04Sx", "GHIElectronics.TinyCLR.Networking.SPWF04Sx\GHIElectronics.TinyCLR.Networking.SPWF04Sx.csproj", "{365C4668-89FB-429C-B90B-D80AF6CF9B9D}"
 	ProjectSection(ProjectDependencies) = postProject
 		{AA751E21-9220-42CE-8180-516BB59E4555} = {AA751E21-9220-42CE-8180-516BB59E4555}
 	EndProjectSection
