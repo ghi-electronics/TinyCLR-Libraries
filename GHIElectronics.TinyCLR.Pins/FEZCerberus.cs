@@ -258,6 +258,8 @@
         /// <summary>I2C bus definitions.</summary>
         public static class I2cBus {
             /// <summary>I2C bus.</summary>
+            public const string Socket1 = Cerb.I2cBus.I2c1;
+            /// <summary>I2C bus.</summary>
             public const string Socket2 = Cerb.I2cBus.I2c1;
         }
 
