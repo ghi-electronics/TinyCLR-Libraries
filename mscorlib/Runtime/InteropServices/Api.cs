@@ -5,9 +5,10 @@ namespace System.Runtime.InteropServices {
     [CLSCompliant(false)]
     public enum ApiType : uint {
         ApiProvider = 0,
-        InteropProvider = 1,
-        MemoryProvider = 2,
-        TaskProvider = 3,
+        DebuggerProvider = 1,
+        InteropProvider = 2,
+        MemoryProvider = 3,
+        TaskProvider = 4,
         DeploymentProvider = 0 | 0x20000000,
         InterruptProvider = 1 | 0x20000000,
         PowerProvider = 2 | 0x20000000,
