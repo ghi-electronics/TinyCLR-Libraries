@@ -14,6 +14,12 @@
             public const int Btn1 = FEZCLR.GpioPin.PA15;
             /// <summary>GPIO pin for BTN2.</summary>
             public const int Btn2 = FEZCLR.GpioPin.PC13;
+            /// <summary>GPIO pin for Wi-Fi Reset.</summary>
+            public const int WiFiReset = FEZCLR.GpioPin.PC2;
+            /// <summary>GPIO pin for Wi-Fi interrupt.</summary>
+            public const int WiFiInterrupt = FEZCLR.GpioPin.PA1;
+            /// <summary>GPIO pin for Wi-Fi chip select.</summary>
+            public const int WiFiChipSelect = FEZCLR.GpioPin.PB12;
             /// <summary>GPIO pin.</summary>
             public const int A0 = FEZCLR.GpioPin.PA4;
             /// <summary>GPIO pin.</summary>
@@ -58,8 +64,6 @@
             public const int Sda = FEZCLR.GpioPin.PB7;
             /// <summary>GPIO pin.</summary>
             public const int Scl = FEZCLR.GpioPin.PB6;
-            /// <summary>GPIO pin.</summary>
-            public const int WiFiReset = FEZCLR.GpioPin.PC2;
         }
 
         /// <summary>ADC channel definitions.</summary>
@@ -149,6 +153,8 @@
         public static class SpiBus {
             /// <summary>SPI bus on D11 (MOSI), D12 (MISO), and D13 (SCK).</summary>
             public const string Spi1 = FEZCLR.SpiBus.Spi1;
+            /// <summary>SPI bus on W-Fi MOSI (MOSI), W-Fi MISO (MISO), and W-Fi SCK (SCK).</summary>
+            public const string WiFi = FEZCLR.SpiBus.Spi2;
         }
 
         /// <summary>USB client port definitions.</summary>
