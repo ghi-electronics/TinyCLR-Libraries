@@ -41,5 +41,12 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
         public I2cTransferResult WritePartial(byte[] buffer) => new I2cTransferResult(this.provider.WritePartial(buffer));
         public void WriteRead(byte[] writeBuffer, byte[] readBuffer) => this.provider.WriteRead(writeBuffer, readBuffer);
         public I2cTransferResult WriteReadPartial(byte[] writeBuffer, byte[] readBuffer) => new I2cTransferResult(this.provider.WriteReadPartial(writeBuffer, readBuffer));
+
+        public void Read(byte[] buffer, int offset, int length) => this.provider.Read(buffer, offset, length);
+        public I2cTransferResult ReadPartial(byte[] buffer, int offset, int length) => new I2cTransferResult(this.provider.ReadPartial(buffer, offset, length));
+        public void Write(byte[] buffer, int offset, int length) => this.provider.Write(buffer, offset, length);
+        public I2cTransferResult WritePartial(byte[] buffer, int offset, int length) => new I2cTransferResult(this.provider.WritePartial(buffer, offset, length));
+        public void WriteRead(byte[] writeBuffer, int writeOffset, int writeLength, byte[] readBuffer, int readOffset, int readLength) => this.provider.WriteRead(writeBuffer, writeOffset, writeLength, readBuffer, readOffset, readLength);
+        public I2cTransferResult WriteReadPartial(byte[] writeBuffer, int writeOffset, int writeLength, byte[] readBuffer, int readOffset, int readLength) => new I2cTransferResult(this.provider.WriteReadPartial(writeBuffer, writeOffset, writeLength, readBuffer, readOffset, readLength));
     }
 }

@@ -80,14 +80,24 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
 
         public string DeviceId => $"I2C-SWM-{this.sda.PinNumber}-{this.scl.PinNumber}";
 
-        public void Read(byte[] buffer) => this.ReadPartial(buffer);
-        public void Write(byte[] buffer) => this.WritePartial(buffer);
-        public void WriteRead(byte[] writeBuffer, byte[] readBuffer) => this.WriteReadPartial(writeBuffer, readBuffer);
+        public void Read(byte[] buffer) => this.Read(buffer, 0, buffer != null ? buffer.Length : 0);
+        public ProviderI2cTransferResult ReadPartial(byte[] buffer) => this.ReadPartial(buffer, 0, buffer != null ? buffer.Length : 0);
+        public void Write(byte[] buffer) => this.Write(buffer, 0, buffer != null ? buffer.Length : 0);
+        public ProviderI2cTransferResult WritePartial(byte[] buffer) => this.WritePartial(buffer, 0, buffer != null ? buffer.Length : 0);
+        public void WriteRead(byte[] writeBuffer, byte[] readBuffer) => this.WriteRead(writeBuffer, 0, writeBuffer != null ? writeBuffer.Length : 0, readBuffer, 0, readBuffer != null ? readBuffer.Length : 0);
+        public ProviderI2cTransferResult WriteReadPartial(byte[] writeBuffer, byte[] readBuffer) => this.WriteReadPartial(writeBuffer, 0, writeBuffer != null ? writeBuffer.Length : 0, readBuffer, 0, readBuffer != null ? readBuffer.Length : 0);
 
-        public ProviderI2cTransferResult ReadPartial(byte[] buffer) {
-            if (buffer == null) throw new ArgumentNullException(nameof(buffer));
+        public void Read(byte[] buffer, int offset, int length) => this.ReadPartial(buffer, offset, length);
+        public void Write(byte[] buffer, int offset, int length) => this.WritePartial(buffer, offset, length);
+        public void WriteRead(byte[] writeBuffer, int writeOffset, int writeLength, byte[] readBuffer, int readOffset, int readLength) => this.WriteReadPartial(writeBuffer, writeOffset, writeLength, readBuffer, readOffset, readLength);
 
-            var res = this.Read(buffer, true, true);
+        public ProviderI2cTransferResult ReadPartial(byte[] buffer, int offset, int length) {
+            if (buffer == null) throw new ArgumentOutOfRangeException(nameof(buffer));
+            if (offset < 0) throw new ArgumentOutOfRangeException(nameof(offset));
+            if (length < 0) throw new ArgumentOutOfRangeException(nameof(length));
+            if (buffer.Length < offset + length) throw new ArgumentException(nameof(buffer));
+
+            var res = this.Read(buffer, offset, length, true, true);
 
             this.ReleaseScl();
             this.ReleaseSda();
@@ -95,10 +105,13 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
             return res;
         }
 
-        public ProviderI2cTransferResult WritePartial(byte[] buffer) {
-            if (buffer == null) throw new ArgumentNullException(nameof(buffer));
+        public ProviderI2cTransferResult WritePartial(byte[] buffer, int offset, int length) {
+            if (buffer == null) throw new ArgumentOutOfRangeException(nameof(buffer));
+            if (offset < 0) throw new ArgumentOutOfRangeException(nameof(offset));
+            if (length < 0) throw new ArgumentOutOfRangeException(nameof(length));
+            if (buffer.Length < offset + length) throw new ArgumentException(nameof(buffer));
 
-            var res = this.Write(buffer, true, true);
+            var res = this.Write(buffer, offset, length, true, true);
 
             this.ReleaseScl();
             this.ReleaseSda();
@@ -106,16 +119,23 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
             return res;
         }
 
-        public ProviderI2cTransferResult WriteReadPartial(byte[] writeBuffer, byte[] readBuffer) {
-            if (readBuffer == null) throw new ArgumentNullException(nameof(readBuffer));
-            if (writeBuffer == null) throw new ArgumentNullException(nameof(writeBuffer));
+        public ProviderI2cTransferResult WriteReadPartial(byte[] writeBuffer, int writeOffset, int writeLength, byte[] readBuffer, int readOffset, int readLength) {
+            if (writeBuffer == null) throw new ArgumentOutOfRangeException(nameof(writeBuffer));
+            if (writeOffset < 0) throw new ArgumentOutOfRangeException(nameof(writeOffset));
+            if (writeLength < 0) throw new ArgumentOutOfRangeException(nameof(writeLength));
+            if (writeBuffer.Length < writeOffset + writeLength) throw new ArgumentException(nameof(writeBuffer));
 
-            var res = this.Write(writeBuffer, true, false);
+            if (readBuffer == null) throw new ArgumentOutOfRangeException(nameof(readBuffer));
+            if (readOffset < 0) throw new ArgumentOutOfRangeException(nameof(readOffset));
+            if (readLength < 0) throw new ArgumentOutOfRangeException(nameof(readLength));
+            if (readBuffer.Length < readOffset + readLength) throw new ArgumentException(nameof(readBuffer));
+
+            var res = this.Write(writeBuffer, writeOffset, writeLength, true, false);
 
             if (res.Status == ProviderI2cTransferStatus.FullTransfer) {
                 var soFar = res.BytesTransferred;
 
-                res = this.Read(readBuffer, true, true);
+                res = this.Read(readBuffer, readOffset, readLength, true, true);
 
                 this.ReleaseScl();
                 this.ReleaseSda();
@@ -254,26 +274,26 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
             return (sendStop ? this.SendStop() : true) && res;
         }
 
-        private ProviderI2cTransferResult Write(byte[] buffer, bool sendStart, bool sendStop) {
-            if (!this.Transmit(sendStart, buffer.Length == 0, this.writeAddress))
+        private ProviderI2cTransferResult Write(byte[] buffer, int offset, int length, bool sendStart, bool sendStop) {
+            if (!this.Transmit(sendStart, length == 0, this.writeAddress))
                 return new ProviderI2cTransferResult { BytesTransferred = 0, Status = ProviderI2cTransferStatus.SlaveAddressNotAcknowledged };
 
-            for (var i = 0U; i < buffer.Length; i++)
-                if (!this.Transmit(false, i == buffer.Length - 1 ? sendStop : false, buffer[i]))
-                    return new ProviderI2cTransferResult { BytesTransferred = i, Status = ProviderI2cTransferStatus.PartialTransfer };
+            for (var i = 0; i < length; i++)
+                if (!this.Transmit(false, i == length - 1 ? sendStop : false, buffer[i + offset]))
+                    return new ProviderI2cTransferResult { BytesTransferred = (uint)i, Status = ProviderI2cTransferStatus.PartialTransfer };
 
-            return new ProviderI2cTransferResult { BytesTransferred = (uint)buffer.Length, Status = ProviderI2cTransferStatus.FullTransfer };
+            return new ProviderI2cTransferResult { BytesTransferred = (uint)length, Status = ProviderI2cTransferStatus.FullTransfer };
         }
 
-        private ProviderI2cTransferResult Read(byte[] buffer, bool sendStart, bool sendStop) {
-            if (!this.Transmit(sendStart, buffer.Length == 0, this.readAddress))
+        private ProviderI2cTransferResult Read(byte[] buffer, int offset, int length, bool sendStart, bool sendStop) {
+            if (!this.Transmit(sendStart, length == 0, this.readAddress))
                 return new ProviderI2cTransferResult { BytesTransferred = 0, Status = ProviderI2cTransferStatus.SlaveAddressNotAcknowledged };
 
-            for (var i = 0U; i < buffer.Length; i++)
-                if (!this.Receive(i < buffer.Length - 1, i == buffer.Length - 1 ? sendStop : false, out buffer[i]))
-                    return new ProviderI2cTransferResult { BytesTransferred = i, Status = ProviderI2cTransferStatus.PartialTransfer };
+            for (var i = 0; i < length; i++)
+                if (!this.Receive(i < length - 1, i == length - 1 ? sendStop : false, out buffer[i + offset]))
+                    return new ProviderI2cTransferResult { BytesTransferred = (uint)i, Status = ProviderI2cTransferStatus.PartialTransfer };
 
-            return new ProviderI2cTransferResult { BytesTransferred = (uint)buffer.Length, Status = ProviderI2cTransferStatus.FullTransfer };
+            return new ProviderI2cTransferResult { BytesTransferred = (uint)length, Status = ProviderI2cTransferStatus.FullTransfer };
         }
 
         public void Dispose() {
@@ -310,35 +330,55 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
 
         public string DeviceId => $"I2C-SWN-{this.sda}-{this.scl}";
 
-        public void Read(byte[] buffer) => this.ReadPartial(buffer);
-        public void Write(byte[] buffer) => this.WritePartial(buffer);
-        public void WriteRead(byte[] writeBuffer, byte[] readBuffer) => this.WriteReadPartial(writeBuffer, readBuffer);
-
         private ProviderI2cTransferResult GetResult(uint total, int expected) => new ProviderI2cTransferResult { BytesTransferred = total, Status = total == expected ? ProviderI2cTransferStatus.FullTransfer : (total == 0 ? ProviderI2cTransferStatus.SlaveAddressNotAcknowledged : ProviderI2cTransferStatus.PartialTransfer) };
 
-        public ProviderI2cTransferResult ReadPartial(byte[] buffer) {
-            if (buffer == null) throw new ArgumentNullException(nameof(buffer));
+        public void Read(byte[] buffer) => this.Read(buffer, 0, buffer != null ? buffer.Length : 0);
+        public ProviderI2cTransferResult ReadPartial(byte[] buffer) => this.ReadPartial(buffer, 0, buffer != null ? buffer.Length : 0);
+        public void Write(byte[] buffer) => this.Write(buffer, 0, buffer != null ? buffer.Length : 0);
+        public ProviderI2cTransferResult WritePartial(byte[] buffer) => this.WritePartial(buffer, 0, buffer != null ? buffer.Length : 0);
+        public void WriteRead(byte[] writeBuffer, byte[] readBuffer) => this.WriteRead(writeBuffer, 0, writeBuffer != null ? writeBuffer.Length : 0, readBuffer, 0, readBuffer != null ? readBuffer.Length : 0);
+        public ProviderI2cTransferResult WriteReadPartial(byte[] writeBuffer, byte[] readBuffer) => this.WriteReadPartial(writeBuffer, 0, writeBuffer != null ? writeBuffer.Length : 0, readBuffer, 0, readBuffer != null ? readBuffer.Length : 0);
 
-            I2cNativeSoftwareDeviceProvider.NativeWriteRead(this.scl, this.sda, this.address, this.useSoftwarePullups, null, buffer, out _, out var total);
+        public void Read(byte[] buffer, int offset, int length) => this.ReadPartial(buffer, offset, length);
+        public void Write(byte[] buffer, int offset, int length) => this.WritePartial(buffer, offset, length);
+        public void WriteRead(byte[] writeBuffer, int writeOffset, int writeLength, byte[] readBuffer, int readOffset, int readLength) => this.WriteReadPartial(writeBuffer, writeOffset, writeLength, readBuffer, readOffset, readLength);
 
-            return this.GetResult(total, buffer.Length);
+        public ProviderI2cTransferResult ReadPartial(byte[] buffer, int offset, int length) {
+            if (buffer == null) throw new ArgumentOutOfRangeException(nameof(buffer));
+            if (offset < 0) throw new ArgumentOutOfRangeException(nameof(offset));
+            if (length < 0) throw new ArgumentOutOfRangeException(nameof(length));
+            if (buffer.Length < offset + length) throw new ArgumentException(nameof(buffer));
+
+            I2cNativeSoftwareDeviceProvider.NativeWriteRead(this.scl, this.sda, this.address, this.useSoftwarePullups, null, 0, 0, buffer, offset, length, out _, out var total);
+
+            return this.GetResult(total, length);
         }
 
-        public ProviderI2cTransferResult WritePartial(byte[] buffer) {
-            if (buffer == null) throw new ArgumentNullException(nameof(buffer));
+        public ProviderI2cTransferResult WritePartial(byte[] buffer, int offset, int length) {
+            if (buffer == null) throw new ArgumentOutOfRangeException(nameof(buffer));
+            if (offset < 0) throw new ArgumentOutOfRangeException(nameof(offset));
+            if (length < 0) throw new ArgumentOutOfRangeException(nameof(length));
+            if (buffer.Length < offset + length) throw new ArgumentException(nameof(buffer));
 
-            I2cNativeSoftwareDeviceProvider.NativeWriteRead(this.scl, this.sda, this.address, this.useSoftwarePullups, buffer, null, out var total, out _);
+            I2cNativeSoftwareDeviceProvider.NativeWriteRead(this.scl, this.sda, this.address, this.useSoftwarePullups, buffer, offset, length, null, 0, 0, out var total, out _);
 
-            return this.GetResult(total, buffer.Length);
+            return this.GetResult(total, length);
         }
 
-        public ProviderI2cTransferResult WriteReadPartial(byte[] writeBuffer, byte[] readBuffer) {
-            if (readBuffer == null) throw new ArgumentNullException(nameof(readBuffer));
-            if (writeBuffer == null) throw new ArgumentNullException(nameof(writeBuffer));
+        public ProviderI2cTransferResult WriteReadPartial(byte[] writeBuffer, int writeOffset, int writeLength, byte[] readBuffer, int readOffset, int readLength) {
+            if (writeBuffer == null) throw new ArgumentOutOfRangeException(nameof(writeBuffer));
+            if (writeOffset < 0) throw new ArgumentOutOfRangeException(nameof(writeOffset));
+            if (writeLength < 0) throw new ArgumentOutOfRangeException(nameof(writeLength));
+            if (writeBuffer.Length < writeOffset + writeLength) throw new ArgumentException(nameof(writeBuffer));
 
-            I2cNativeSoftwareDeviceProvider.NativeWriteRead(this.scl, this.sda, this.address, this.useSoftwarePullups, writeBuffer, readBuffer, out var written, out var read);
+            if (readBuffer == null) throw new ArgumentOutOfRangeException(nameof(readBuffer));
+            if (readOffset < 0) throw new ArgumentOutOfRangeException(nameof(readOffset));
+            if (readLength < 0) throw new ArgumentOutOfRangeException(nameof(readLength));
+            if (readBuffer.Length < readOffset + readLength) throw new ArgumentException(nameof(readBuffer));
 
-            return this.GetResult(written + read, writeBuffer.Length + readBuffer.Length);
+            I2cNativeSoftwareDeviceProvider.NativeWriteRead(this.scl, this.sda, this.address, this.useSoftwarePullups, writeBuffer, writeOffset, writeLength, readBuffer, readOffset, readLength, out var written, out var read);
+
+            return this.GetResult(written + read, writeLength + readLength);
         }
 
         public void Dispose() {
@@ -352,6 +392,6 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
         ~I2cNativeSoftwareDeviceProvider() => this.Dispose();
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private extern static bool NativeWriteRead(int scl, int sda, byte address, bool useSoftwarePullups, byte[] writeBuffer, byte[] readBuffer, out uint written, out uint read);
+        private extern static bool NativeWriteRead(int scl, int sda, byte address, bool useSoftwarePullups, byte[] writeBuffer, int writeOffset, int writeLength, byte[] readBuffer, int readOffset, int readLength, out uint written, out uint read);
     }
 }

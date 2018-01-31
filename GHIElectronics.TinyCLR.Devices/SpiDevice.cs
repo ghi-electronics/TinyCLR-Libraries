@@ -20,6 +20,11 @@ namespace GHIElectronics.TinyCLR.Devices.Spi {
         public void TransferFullDuplex(byte[] writeBuffer, byte[] readBuffer) => this.provider.TransferFullDuplex(writeBuffer, readBuffer);
         public void TransferSequential(byte[] writeBuffer, byte[] readBuffer) => this.provider.TransferSequential(writeBuffer, readBuffer);
 
+        public void Read(byte[] buffer, int offset, int length) => this.provider.Read(buffer, offset, length);
+        public void Write(byte[] buffer, int offset, int length) => this.provider.Write(buffer, offset, length);
+        public void TransferFullDuplex(byte[] writeBuffer, int writeOffset, byte[] readBuffer, int readOffset, int length) => this.provider.TransferFullDuplex(writeBuffer, writeOffset, readBuffer, readOffset, length);
+        public void TransferSequential(byte[] writeBuffer, int writeOffset, int writeLength, byte[] readBuffer, int readOffset, int readLength) => this.provider.TransferSequential(writeBuffer, writeOffset, writeLength, readBuffer, readOffset, readLength);
+
         public static string GetDeviceSelector() => throw new NotSupportedException();
         public static string GetDeviceSelector(string friendlyName) => throw new NotSupportedException();
 

@@ -89,37 +89,59 @@ namespace GHIElectronics.TinyCLR.Devices.Spi {
         public ProviderSpiConnectionSettings ConnectionSettings { get; }
         public string DeviceId => $"SPI-SWM-{this.miso.PinNumber}-{this.mosi.PinNumber}-{this.sck.PinNumber}";
 
-        public void Write(byte[] buffer) {
-            if (buffer == null) throw new ArgumentNullException(nameof(buffer));
+        public void Read(byte[] buffer) => this.Read(buffer, 0, buffer != null ? buffer.Length : 0);
+        public void Write(byte[] buffer) => this.Write(buffer, 0, buffer != null ? buffer.Length : 0);
+        public void TransferFullDuplex(byte[] writeBuffer, byte[] readBuffer) => this.TransferFullDuplex(writeBuffer, 0, readBuffer, 0, writeBuffer != null ? writeBuffer.Length : 0);
+        public void TransferSequential(byte[] writeBuffer, byte[] readBuffer) => this.TransferSequential(writeBuffer, 0, writeBuffer != null ? writeBuffer.Length : 0, readBuffer, 0, readBuffer != null ? readBuffer.Length : 0);
 
-            this.WriteRead(buffer, null, true);
+        public void Write(byte[] buffer, int offset, int length) {
+            if (buffer == null) throw new ArgumentOutOfRangeException(nameof(buffer));
+            if (offset < 0) throw new ArgumentOutOfRangeException(nameof(offset));
+            if (length < 0) throw new ArgumentOutOfRangeException(nameof(length));
+            if (buffer.Length < offset + length) throw new ArgumentException(nameof(buffer));
+
+            this.WriteRead(buffer, 0, buffer.Length, null, 0, 0, true);
         }
 
-        public void Read(byte[] buffer) {
-            if (buffer == null) throw new ArgumentNullException(nameof(buffer));
+        public void Read(byte[] buffer, int offset, int length) {
+            if (buffer == null) throw new ArgumentOutOfRangeException(nameof(buffer));
+            if (offset < 0) throw new ArgumentOutOfRangeException(nameof(offset));
+            if (length < 0) throw new ArgumentOutOfRangeException(nameof(length));
+            if (buffer.Length < offset + length) throw new ArgumentException(nameof(buffer));
 
-            this.WriteRead(null, buffer, true);
+            this.WriteRead(null, 0, 0, buffer, 0, buffer.Length, true);
         }
 
-        public void TransferSequential(byte[] writeBuffer, byte[] readBuffer) {
-            if (readBuffer == null) throw new ArgumentNullException(nameof(readBuffer));
-            if (writeBuffer == null) throw new ArgumentNullException(nameof(writeBuffer));
+        public void TransferFullDuplex(byte[] writeBuffer, int writeOffset, byte[] readBuffer, int readOffset, int length) {
+            if (length < 0) throw new ArgumentOutOfRangeException(nameof(length));
 
-            this.WriteRead(writeBuffer, null, false);
-            this.WriteRead(null, readBuffer, true);
+            if (writeBuffer == null) throw new ArgumentOutOfRangeException(nameof(writeBuffer));
+            if (writeOffset < 0) throw new ArgumentOutOfRangeException(nameof(writeOffset));
+            if (writeBuffer.Length < writeOffset + length) throw new ArgumentException(nameof(writeBuffer));
+
+            if (readBuffer == null) throw new ArgumentOutOfRangeException(nameof(readBuffer));
+            if (readOffset < 0) throw new ArgumentOutOfRangeException(nameof(writeOffset));
+            if (readBuffer.Length < readOffset + length) throw new ArgumentException(nameof(readBuffer));
+
+            this.WriteRead(writeBuffer, writeOffset, length, null, 0, 0, false);
+            this.WriteRead(null, 0, 0, readBuffer, readOffset, length, true);
         }
 
-        public void TransferFullDuplex(byte[] writeBuffer, byte[] readBuffer) {
-            if (readBuffer == null) throw new ArgumentNullException(nameof(readBuffer));
-            if (writeBuffer == null) throw new ArgumentNullException(nameof(writeBuffer));
+        public void TransferSequential(byte[] writeBuffer, int writeOffset, int writeLength, byte[] readBuffer, int readOffset, int readLength) {
+            if (writeBuffer == null) throw new ArgumentOutOfRangeException(nameof(writeBuffer));
+            if (writeOffset < 0) throw new ArgumentOutOfRangeException(nameof(writeOffset));
+            if (writeLength < 0) throw new ArgumentOutOfRangeException(nameof(writeLength));
+            if (writeBuffer.Length < writeOffset + writeLength) throw new ArgumentException(nameof(writeBuffer));
 
-            this.WriteRead(writeBuffer, readBuffer, true);
+            if (readBuffer == null) throw new ArgumentOutOfRangeException(nameof(readBuffer));
+            if (readOffset < 0) throw new ArgumentOutOfRangeException(nameof(readOffset));
+            if (readLength < 0) throw new ArgumentOutOfRangeException(nameof(readLength));
+            if (readBuffer.Length < readOffset + readLength) throw new ArgumentException(nameof(readBuffer));
+
+            this.WriteRead(writeBuffer, writeOffset, writeLength, readBuffer, readOffset, readLength, true);
         }
 
-        private void WriteRead(byte[] writeBuffer, byte[] readBuffer, bool deselectAfter) {
-            var writeLength = writeBuffer != null ? writeBuffer.Length : 0;
-            var readLength = readBuffer != null ? readBuffer.Length : 0;
-
+        private void WriteRead(byte[] writeBuffer, int writeOffset, int writeLength, byte[] readBuffer, int readOffset, int readLength, bool deselectAfter) {
             if (readBuffer != null)
                 Array.Clear(readBuffer, 0, readLength);
 
@@ -128,7 +150,7 @@ namespace GHIElectronics.TinyCLR.Devices.Spi {
 
             for (var i = 0; i < Math.Max(readLength, writeLength); i++) {
                 byte mask = 0x80;
-                var w = i < writeLength && writeBuffer != null ? writeBuffer[i] : (byte)0;
+                var w = i < writeLength && writeBuffer != null ? writeBuffer[i + writeOffset] : (byte)0;
                 var r = false;
 
                 for (var j = 0; j < 8; j++) {
@@ -150,7 +172,7 @@ namespace GHIElectronics.TinyCLR.Devices.Spi {
                     }
 
                     if (i < readLength && readBuffer != null && r)
-                        readBuffer[i] |= mask;
+                        readBuffer[i + readOffset] |= mask;
 
                     mask >>= 1;
                 }

@@ -52,6 +52,11 @@ namespace GHIElectronics.TinyCLR.Devices.Spi.Provider {
         void Write(byte[] buffer);
         void TransferFullDuplex(byte[] writeBuffer, byte[] readBuffer);
         void TransferSequential(byte[] writeBuffer, byte[] readBuffer);
+
+        void Read(byte[] buffer, int offset, int length);
+        void Write(byte[] buffer, int offset, int length);
+        void TransferFullDuplex(byte[] writeBuffer, int writeOffset, byte[] readBuffer, int readOffset, int length);
+        void TransferSequential(byte[] writeBuffer, int writeOffset, int writeLength, byte[] readBuffer, int readOffset, int readLength);
     }
 
     public class SpiProvider : ISpiProvider {
@@ -175,60 +180,6 @@ namespace GHIElectronics.TinyCLR.Devices.Spi.Provider {
             }
         }
 
-        /// <summary>
-        /// Writes to the connected device.
-        /// </summary>
-        /// <param name="buffer">Array containing the data to write to the device.</param>
-        public void Write(byte[] buffer) {
-            if (buffer == null) {
-                throw new ArgumentException();
-            }
-
-            WriteInternal(buffer);
-        }
-
-        /// <summary>
-        /// Reads from the connected device.
-        /// </summary>
-        /// <param name="readBuffer">Array containing data read from the device.</param>
-        public void Read(byte[] buffer) {
-            if (buffer == null) {
-                throw new ArgumentException();
-            }
-
-            ReadInternal(buffer);
-        }
-
-        /// <summary>
-        /// Transfer data sequentially to the device.
-        /// </summary>
-        /// <param name="writeBuffer">Array containing data to write to the device.</param>
-        /// <param name="readBuffer">Array containing data read from the device.</param>
-        public void TransferSequential(byte[] writeBuffer, byte[] readBuffer) {
-            if ((writeBuffer == null) || (readBuffer == null)) {
-                throw new ArgumentException();
-            }
-
-            TransferSequentialInternal(writeBuffer, readBuffer);
-        }
-
-        /// <summary>
-        /// Transfer data using a full duplex communication system. Full duplex allows both the master and the slave to
-        /// communicate simultaneously.
-        /// </summary>
-        /// <param name="writeBuffer">Array containing data to write to the device.</param>
-        /// <param name="readBuffer">Array containing data read from the device.</param>
-        public void TransferFullDuplex(byte[] writeBuffer, byte[] readBuffer) {
-            if ((writeBuffer == null) || (readBuffer == null)) {
-                throw new ArgumentException();
-            }
-
-            TransferFullDuplexInternal(writeBuffer, readBuffer);
-        }
-
-        /// <summary>
-        /// Closes the connection to the device.
-        /// </summary>
         public void Dispose() {
             if (!this.m_disposed) {
                 Dispose(true);
@@ -237,26 +188,71 @@ namespace GHIElectronics.TinyCLR.Devices.Spi.Provider {
             }
         }
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        extern private void TransferFullDuplexInternal(byte[] writeBuffer, byte[] readBuffer);
-
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        extern private void TransferSequentialInternal(byte[] writeBuffer, byte[] readBuffer);
-
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        extern private void WriteInternal(byte[] buffer);
-
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        extern private void ReadInternal(byte[] buffer);
-
-        /// <summary>
-        /// Releases internal resources held by the device.
-        /// </summary>
-        /// <param name="disposing">True if called from Dispose, false if called from the finalizer.</param>
         private void Dispose(bool disposing) {
             if (disposing) {
                 this.parent.Release(this);
             }
         }
+
+        public void Read(byte[] buffer) => this.Read(buffer, 0, buffer != null ? buffer.Length : 0);
+        public void Write(byte[] buffer) => this.Write(buffer, 0, buffer != null ? buffer.Length : 0);
+        public void TransferFullDuplex(byte[] writeBuffer, byte[] readBuffer) => this.TransferFullDuplex(writeBuffer, 0, readBuffer, 0, writeBuffer != null ? writeBuffer.Length : 0);
+        public void TransferSequential(byte[] writeBuffer, byte[] readBuffer) => this.TransferSequential(writeBuffer, 0, writeBuffer != null ? writeBuffer.Length : 0, readBuffer, 0, readBuffer != null ? readBuffer.Length : 0);
+
+        public void Read(byte[] buffer, int offset, int length) {
+            if (buffer == null) throw new ArgumentOutOfRangeException(nameof(buffer));
+            if (offset < 0) throw new ArgumentOutOfRangeException(nameof(offset));
+            if (length < 0) throw new ArgumentOutOfRangeException(nameof(length));
+            if (buffer.Length < offset + length) throw new ArgumentException(nameof(buffer));
+
+            this.ReadInternal(buffer, offset, length);
+        }
+
+        public void Write(byte[] buffer, int offset, int length) {
+            if (buffer == null) throw new ArgumentOutOfRangeException(nameof(buffer));
+            if (offset < 0) throw new ArgumentOutOfRangeException(nameof(offset));
+            if (length < 0) throw new ArgumentOutOfRangeException(nameof(length));
+            if (buffer.Length < offset + length) throw new ArgumentException(nameof(buffer));
+
+            this.WriteInternal(buffer, offset, length);
+        }
+
+        public void TransferFullDuplex(byte[] writeBuffer, int writeOffset, byte[] readBuffer, int readOffset, int length) {
+            if (length < 0) throw new ArgumentOutOfRangeException(nameof(length));
+
+            if (writeBuffer == null) throw new ArgumentOutOfRangeException(nameof(writeBuffer));
+            if (writeOffset < 0) throw new ArgumentOutOfRangeException(nameof(writeOffset));
+            if (writeBuffer.Length < writeOffset + length) throw new ArgumentException(nameof(writeBuffer));
+
+            if (readBuffer == null) throw new ArgumentOutOfRangeException(nameof(readBuffer));
+            if (readOffset < 0) throw new ArgumentOutOfRangeException(nameof(writeOffset));
+            if (readBuffer.Length < readOffset + length) throw new ArgumentException(nameof(readBuffer));
+
+            this.TransferFullDuplexInternal(writeBuffer, writeOffset, readBuffer, readOffset, length);
+        }
+
+        public void TransferSequential(byte[] writeBuffer, int writeOffset, int writeLength, byte[] readBuffer, int readOffset, int readLength) {
+            if (writeBuffer == null) throw new ArgumentOutOfRangeException(nameof(writeBuffer));
+            if (writeOffset < 0) throw new ArgumentOutOfRangeException(nameof(writeOffset));
+            if (writeLength < 0) throw new ArgumentOutOfRangeException(nameof(writeLength));
+            if (writeBuffer.Length < writeOffset + writeLength) throw new ArgumentException(nameof(writeBuffer));
+
+            if (readBuffer == null) throw new ArgumentOutOfRangeException(nameof(readBuffer));
+            if (readOffset < 0) throw new ArgumentOutOfRangeException(nameof(readOffset));
+            if (readLength < 0) throw new ArgumentOutOfRangeException(nameof(readLength));
+            if (readBuffer.Length < readOffset + readLength) throw new ArgumentException(nameof(readBuffer));
+
+            this.TransferSequentialInternal(writeBuffer, writeOffset, writeLength, readBuffer, readOffset, readLength);
+        }
+
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        private extern void ReadInternal(byte[] buffer, int offset, int length);
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        private extern void WriteInternal(byte[] buffer, int offset, int length);
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        private extern void TransferFullDuplexInternal(byte[] writeBuffer, int writeOffset, byte[] readBuffer, int readOffset, int length);
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        private extern void TransferSequentialInternal(byte[] writeBuffer, int writeOffset, int writeLength, byte[] readBuffer, int readOffset, int readLength);
     }
 }

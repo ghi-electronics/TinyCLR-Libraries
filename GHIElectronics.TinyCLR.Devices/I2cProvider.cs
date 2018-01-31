@@ -54,6 +54,13 @@ namespace GHIElectronics.TinyCLR.Devices.I2c.Provider {
         ProviderI2cTransferResult WritePartial(byte[] buffer);
         void WriteRead(byte[] writeBuffer, byte[] readBuffer);
         ProviderI2cTransferResult WriteReadPartial(byte[] writeBuffer, byte[] readBuffer);
+
+        void Read(byte[] buffer, int offset, int length);
+        ProviderI2cTransferResult ReadPartial(byte[] buffer, int offset, int length);
+        void Write(byte[] buffer, int offset, int length);
+        ProviderI2cTransferResult WritePartial(byte[] buffer, int offset, int length);
+        void WriteRead(byte[] writeBuffer, int writeOffset, int writeLength, byte[] readBuffer, int readOffset, int readLength);
+        ProviderI2cTransferResult WriteReadPartial(byte[] writeBuffer, int writeOffset, int writeLength, byte[] readBuffer, int readOffset, int readLength);
     }
 
     public class I2cProvider : II2cProvider {
@@ -154,42 +161,62 @@ namespace GHIElectronics.TinyCLR.Devices.I2c.Provider {
             }
         }
 
-        public void Read(byte[] buffer) => this.ReadPartial(buffer);
-        public void Write(byte[] buffer) => this.WritePartial(buffer);
-        public void WriteRead(byte[] writeBuffer, byte[] readBuffer) => this.WriteReadPartial(writeBuffer, readBuffer);
+        public void Read(byte[] buffer) => this.Read(buffer, 0, buffer != null ? buffer.Length : 0);
+        public ProviderI2cTransferResult ReadPartial(byte[] buffer) => this.ReadPartial(buffer, 0, buffer != null ? buffer.Length : 0);
+        public void Write(byte[] buffer) => this.Write(buffer, 0, buffer != null ? buffer.Length : 0);
+        public ProviderI2cTransferResult WritePartial(byte[] buffer) => this.WritePartial(buffer, 0, buffer != null ? buffer.Length : 0);
+        public void WriteRead(byte[] writeBuffer, byte[] readBuffer) => this.WriteRead(writeBuffer, 0, writeBuffer != null ? writeBuffer.Length : 0, readBuffer, 0, readBuffer != null ? readBuffer.Length : 0);
+        public ProviderI2cTransferResult WriteReadPartial(byte[] writeBuffer, byte[] readBuffer) => this.WriteReadPartial(writeBuffer, 0, writeBuffer != null ? writeBuffer.Length : 0, readBuffer, 0, readBuffer != null ? readBuffer.Length : 0);
 
-        public ProviderI2cTransferResult ReadPartial(byte[] buffer) {
-            if (buffer == null) throw new ArgumentNullException(nameof(buffer));
+        public void Read(byte[] buffer, int offset, int length) => this.ReadPartial(buffer, offset, length);
+        public void Write(byte[] buffer, int offset, int length) => this.WritePartial(buffer, offset, length);
+        public void WriteRead(byte[] writeBuffer, int writeOffset, int writeLength, byte[] readBuffer, int readOffset, int readLength) => this.WriteReadPartial(writeBuffer, writeOffset, writeLength, readBuffer, readOffset, readLength);
 
-            this.ReadInternal(buffer, out var transferred, out var status);
+        public ProviderI2cTransferResult ReadPartial(byte[] buffer, int offset, int length) {
+            if (buffer == null) throw new ArgumentOutOfRangeException(nameof(buffer));
+            if (offset < 0) throw new ArgumentOutOfRangeException(nameof(offset));
+            if (length < 0) throw new ArgumentOutOfRangeException(nameof(length));
+            if (buffer.Length < offset + length) throw new ArgumentException(nameof(buffer));
+
+            this.ReadInternal(buffer, offset, length, out var transferred, out var status);
 
             return new ProviderI2cTransferResult { BytesTransferred = transferred, Status = status };
         }
 
-        public ProviderI2cTransferResult WritePartial(byte[] buffer) {
-            if (buffer == null) throw new ArgumentNullException(nameof(buffer));
+        public ProviderI2cTransferResult WritePartial(byte[] buffer, int offset, int length) {
+            if (buffer == null) throw new ArgumentOutOfRangeException(nameof(buffer));
+            if (offset < 0) throw new ArgumentOutOfRangeException(nameof(offset));
+            if (length < 0) throw new ArgumentOutOfRangeException(nameof(length));
+            if (buffer.Length < offset + length) throw new ArgumentException(nameof(buffer));
 
-            this.WriteInternal(buffer, out var transferred, out var status);
+            this.WriteInternal(buffer, offset, length, out var transferred, out var status);
 
             return new ProviderI2cTransferResult { BytesTransferred = transferred, Status = status };
         }
 
-        public ProviderI2cTransferResult WriteReadPartial(byte[] writeBuffer, byte[] readBuffer) {
-            if (writeBuffer == null) throw new ArgumentNullException(nameof(writeBuffer));
-            if (readBuffer == null) throw new ArgumentNullException(nameof(readBuffer));
+        public ProviderI2cTransferResult WriteReadPartial(byte[] writeBuffer, int writeOffset, int writeLength, byte[] readBuffer, int readOffset, int readLength) {
+            if (writeBuffer == null) throw new ArgumentOutOfRangeException(nameof(writeBuffer));
+            if (writeOffset < 0) throw new ArgumentOutOfRangeException(nameof(writeOffset));
+            if (writeLength < 0) throw new ArgumentOutOfRangeException(nameof(writeLength));
+            if (writeBuffer.Length < writeOffset + writeLength) throw new ArgumentException(nameof(writeBuffer));
 
-            this.WriteReadInternal(writeBuffer, readBuffer, out var transferred, out var status);
+            if (readBuffer == null) throw new ArgumentOutOfRangeException(nameof(readBuffer));
+            if (readOffset < 0) throw new ArgumentOutOfRangeException(nameof(readOffset));
+            if (readLength < 0) throw new ArgumentOutOfRangeException(nameof(readLength));
+            if (readBuffer.Length < readOffset + readLength) throw new ArgumentException(nameof(readBuffer));
+
+            this.WriteReadInternal(writeBuffer, writeOffset, writeLength, readBuffer, readOffset, readLength, out var transferred, out var status);
 
             return new ProviderI2cTransferResult { BytesTransferred = transferred, Status = status };
         }
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private extern void ReadInternal(byte[] buffer, out uint transferred, out ProviderI2cTransferStatus status);
+        private extern void ReadInternal(byte[] buffer, int offset, int length, out uint transferred, out ProviderI2cTransferStatus status);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private extern void WriteInternal(byte[] buffer, out uint transferred, out ProviderI2cTransferStatus status);
+        private extern void WriteInternal(byte[] buffer, int offset, int length, out uint transferred, out ProviderI2cTransferStatus status);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private extern void WriteReadInternal(byte[] writeBuffer, byte[] readBuffer, out uint transferred, out ProviderI2cTransferStatus status);
+        private extern void WriteReadInternal(byte[] writeBuffer, int writeOffset, int writeLength, byte[] readBuffer, int readOffset, int readLength, out uint transferred, out ProviderI2cTransferStatus status);
     }
 }
