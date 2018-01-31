@@ -52,6 +52,9 @@ namespace System.Text {
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public extern override char[] GetChars(byte[] bytes, int byteIndex, int byteCount);
 
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public extern override string GetString(byte[] bytes, int index, int count);
+
         public override Decoder GetDecoder() => new UTF8Decoder();
     }
 }

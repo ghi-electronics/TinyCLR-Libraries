@@ -72,6 +72,10 @@ namespace System.Text {
 
         public virtual char[] GetChars(byte[] bytes, int byteIndex, int byteCount) => throw new NotImplementedException();
 
+        public virtual string GetString(byte[] bytes) => this.GetString(bytes, 0, bytes != null ? bytes.Length : 0);
+
+        public virtual string GetString(byte[] bytes, int index, int count) => throw new NotImplementedException();
+
         public abstract Decoder GetDecoder();
         public static Encoding UTF8 => new UTF8Encoding();
     }
