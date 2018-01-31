@@ -445,6 +445,6 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
             }
         }
 
-        private string PayloadToString(int start, int length) => new string(Encoding.UTF8.GetChars(this.readPayloadBuffer, start, length));
+        private string PayloadToString(int start, int length) => Encoding.UTF8.GetString(this.readPayloadBuffer, start, length);
     }
 }
