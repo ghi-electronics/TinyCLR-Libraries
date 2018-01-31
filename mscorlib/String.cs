@@ -32,6 +32,8 @@ namespace System {
             return false;
         }
 
+        public static bool IsNullOrEmpty(string value) => value == null || value.Length == 0;
+
         public static string Format(string format, params object[] args) => string.Format(null, format, args);
 
         public static string Format(IFormatProvider provider, string format, params object[] args) {
