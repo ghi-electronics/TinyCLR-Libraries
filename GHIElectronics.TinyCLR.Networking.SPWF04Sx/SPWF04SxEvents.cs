@@ -1,8 +1,8 @@
 ﻿using System;
 
 namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
-    public delegate void SPWF04SxIndicationReceivedEventHandler(SPWF04Sx sender, SPWF04SxIndicationReceivedEventArgs e);
-    public delegate void SPWF04SxErrorReceivedEventHandler(SPWF04Sx sender, SPWF04SxErrorReceivedEventArgs e);
+    public delegate void SPWF04SxIndicationReceivedEventHandler(SPWF04SxInterface sender, SPWF04SxIndicationReceivedEventArgs e);
+    public delegate void SPWF04SxErrorReceivedEventHandler(SPWF04SxInterface sender, SPWF04SxErrorReceivedEventArgs e);
 
     public class SPWF04SxIndicationReceivedEventArgs : EventArgs {
         public SPWF04SxIndication Indication { get; }

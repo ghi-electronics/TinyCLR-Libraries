@@ -6,7 +6,7 @@ using GHIElectronics.TinyCLR.Devices.Gpio;
 using GHIElectronics.TinyCLR.Devices.Spi;
 
 namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
-    public class SPWF04Sx : IDisposable {
+    public class SPWF04SxInterface : IDisposable {
         private readonly Queue pendingReads;
         private readonly Queue pendingEvents;
         private readonly byte[] writeCommandBuffer;
@@ -37,7 +37,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
             DataBitLength = 8
         };
 
-        public SPWF04Sx(SpiDevice spi, GpioPin irq, GpioPin reset) {
+        public SPWF04SxInterface(SpiDevice spi, GpioPin irq, GpioPin reset) {
             this.pendingReads = new Queue();
             this.pendingEvents = new Queue();
             this.writeCommandBuffer = new byte[512];
@@ -54,7 +54,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
             this.irq.SetDriveMode(GpioPinDriveMode.Input);
         }
 
-        ~SPWF04Sx() => this.Dispose(false);
+        ~SPWF04SxInterface() => this.Dispose(false);
 
         public void Dispose() {
             this.Dispose(true);
