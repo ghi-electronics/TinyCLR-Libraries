@@ -1,8 +1,11 @@
-namespace GHIElectronics.TinyCLR.Pins {
+namespace GHIElectronics.TinyCLR.Pins
+{
     /// <summary>Board definition for the FEZ Hydra.</summary>
-    public static class FEZHydra {
+    public static class FEZHydra
+    {
         /// <summary>GPIO pin definitions.</summary>
-        public static class GpioPin {
+        public static class GpioPin
+        {
             /// <summary>API id.</summary>
             public const string Id = AT91.GpioPin.Id;
 
@@ -10,7 +13,8 @@ namespace GHIElectronics.TinyCLR.Pins {
             public const int DebugLed = AT91.GpioPin.PD18;
 
             /// <summary>Socket definition.</summary>
-            public static class Socket2 {
+            public static class Socket2
+            {
                 /// <summary>GPIO pin.</summary>
                 public const int Pin3 = AT91.GpioPin.PB19;
                 /// <summary>GPIO pin.</summary>
@@ -20,7 +24,8 @@ namespace GHIElectronics.TinyCLR.Pins {
             }
 
             /// <summary>Socket definition.</summary>
-            public static class Socket3 {
+            public static class Socket3
+            {
                 /// <summary>GPIO pin.</summary>
                 public const int Pin3 = AT91.GpioPin.PB8;
                 /// <summary>GPIO pin.</summary>
@@ -38,7 +43,8 @@ namespace GHIElectronics.TinyCLR.Pins {
             }
 
             /// <summary>Socket definition.</summary>
-            public static class Socket4 {
+            public static class Socket4
+            {
                 /// <summary>GPIO pin.</summary>
                 public const int Pin3 = AT91.GpioPin.PB2;
                 /// <summary>GPIO pin.</summary>
@@ -56,7 +62,8 @@ namespace GHIElectronics.TinyCLR.Pins {
             }
 
             /// <summary>Socket definition.</summary>
-            public static class Socket5 {
+            public static class Socket5
+            {
                 /// <summary>GPIO pin.</summary>
                 public const int Pin3 = AT91.GpioPin.PA9;
                 /// <summary>GPIO pin.</summary>
@@ -72,7 +79,8 @@ namespace GHIElectronics.TinyCLR.Pins {
             }
 
             /// <summary>Socket definition.</summary>
-            public static class Socket6 {
+            public static class Socket6
+            {
                 /// <summary>GPIO pin.</summary>
                 public const int Pin3 = AT91.GpioPin.PD17;
                 /// <summary>GPIO pin.</summary>
@@ -90,7 +98,8 @@ namespace GHIElectronics.TinyCLR.Pins {
             }
 
             /// <summary>Socket definition.</summary>
-            public static class Socket7 {
+            public static class Socket7
+            {
                 /// <summary>GPIO pin.</summary>
                 public const int Pin3 = AT91.GpioPin.PD19;
                 /// <summary>GPIO pin.</summary>
@@ -108,7 +117,8 @@ namespace GHIElectronics.TinyCLR.Pins {
             }
 
             /// <summary>Socket definition.</summary>
-            public static class Socket8 {
+            public static class Socket8
+            {
                 /// <summary>GPIO pin.</summary>
                 public const int Pin3 = AT91.GpioPin.PD11;
                 /// <summary>GPIO pin.</summary>
@@ -126,7 +136,8 @@ namespace GHIElectronics.TinyCLR.Pins {
             }
 
             /// <summary>Socket definition.</summary>
-            public static class Socket9 {
+            public static class Socket9
+            {
                 /// <summary>GPIO pin.</summary>
                 public const int Pin3 = AT91.GpioPin.PD9;
                 /// <summary>GPIO pin.</summary>
@@ -144,7 +155,8 @@ namespace GHIElectronics.TinyCLR.Pins {
             }
 
             /// <summary>Socket definition.</summary>
-            public static class Socket10 {
+            public static class Socket10
+            {
                 /// <summary>GPIO pin.</summary>
                 public const int Pin3 = AT91.GpioPin.PC22;
                 /// <summary>GPIO pin.</summary>
@@ -162,7 +174,8 @@ namespace GHIElectronics.TinyCLR.Pins {
             }
 
             /// <summary>Socket definition.</summary>
-            public static class Socket11 {
+            public static class Socket11
+            {
                 /// <summary>GPIO pin.</summary>
                 public const int Pin3 = AT91.GpioPin.PC15;
                 /// <summary>GPIO pin.</summary>
@@ -180,7 +193,8 @@ namespace GHIElectronics.TinyCLR.Pins {
             }
 
             /// <summary>Socket definition.</summary>
-            public static class Socket12 {
+            public static class Socket12
+            {
                 /// <summary>GPIO pin.</summary>
                 public const int Pin3 = AT91.GpioPin.PC9;
                 /// <summary>GPIO pin.</summary>
@@ -198,7 +212,8 @@ namespace GHIElectronics.TinyCLR.Pins {
             }
 
             /// <summary>Socket definition.</summary>
-            public static class Socket13 {
+            public static class Socket13
+            {
                 /// <summary>GPIO pin.</summary>
                 public const int Pin3 = AT91.GpioPin.PD6;
                 /// <summary>GPIO pin.</summary>
@@ -216,7 +231,8 @@ namespace GHIElectronics.TinyCLR.Pins {
             }
 
             /// <summary>Socket definition.</summary>
-            public static class Socket14 {
+            public static class Socket14
+            {
                 /// <summary>GPIO pin.</summary>
                 public const int Pin3 = AT91.GpioPin.PD7;
                 /// <summary>GPIO pin.</summary>
@@ -235,12 +251,14 @@ namespace GHIElectronics.TinyCLR.Pins {
         }
 
         /// <summary>ADC channel definitions.</summary>
-        public static class AdcChannel {
+        public static class AdcChannel
+        {
             /// <summary>API id.</summary>
             public const string Id = AT91.AdcChannel.Id;
 
             /// <summary>Socket definition.</summary>
-            public static class Socket13 {
+            public static class Socket13
+            {
                 /// <summary>ADC channel.</summary>
                 public const int Pin3 = AT91.AdcChannel.Channel4;
                 /// <summary>ADC channel.</summary>
@@ -250,7 +268,8 @@ namespace GHIElectronics.TinyCLR.Pins {
             }
 
             /// <summary>Socket definition.</summary>
-            public static class Socket14 {
+            public static class Socket14
+            {
                 /// <summary>ADC channel.</summary>
                 public const int Pin3 = AT91.AdcChannel.Channel5;
                 /// <summary>ADC channel.</summary>
@@ -261,46 +280,64 @@ namespace GHIElectronics.TinyCLR.Pins {
         }
 
         /// <summary>PWM channel definitions.</summary>
-        public static class PwmPin {
+        public static class PwmPin
+        {
             /// <summary>Controller definition.</summary>
-            public static class Pwm0 {
+            public static class Pwm0
+            {
                 /// <summary>API id.</summary
                 public const string Id = AT91.PwmPin.Pwm0;
 
                 /// <summary>Socket definition.</summary>
-                public static class Socket7 {
+                public static class Socket7
+                {
                     /// <summary>PWM pin.</summary
                     public const int Pin7 = AT91.PwmPin.Channel0;
                 }
             }
 
             /// <summary>Controller definition.</summary>
-            public static class Pwm1 {
+            public static class Pwm1
+            {
                 /// <summary>API id.</summary
                 public const string Id = AT91.PwmPin.Pwm1;
 
                 /// <summary>Socket definition.</summary>
-                public static class Socket7 {
+                public static class Socket7
+                {
                     /// <summary>PWM pin.</summary
                     public const int Pin8 = AT91.PwmPin.Channel0;
                 }
             }
 
             /// <summary>Controller definition.</summary>
-            public static class Pwm2 {
+            public static class Pwm2
+            {
                 /// <summary>API id.</summary
                 public const string Id = AT91.PwmPin.Pwm2;
 
                 /// <summary>Socket definition.</summary>
-                public static class Socket7 {
+                public static class Socket7
+                {
                     /// <summary>PWM pin.</summary
                     public const int Pin9 = AT91.PwmPin.Channel0;
                 }
             }
+
+            /// <summary>Controller definition.</summary>
+            public static class Pwm3
+            {
+                /// <summary>API id.</summary
+                public const string Id = AT91.PwmPin.Pwm3;
+
+                /// <summary>PWM pin.</summary
+                public const int Led = AT91.PwmPin.Channel0;
+            }
         }
 
         /// <summary>UART port definitions.</summary>
-        public static class UartPort {
+        public static class UartPort
+        {
             /// <summary>UART port.</summary>
             public const string Socket4 = AT91.UartPort.Usart1;
             /// <summary>UART port.</summary>
@@ -312,7 +349,8 @@ namespace GHIElectronics.TinyCLR.Pins {
         }
 
         /// <summary>I2C bus definitions.</summary>
-        public static class I2cBus {
+        public static class I2cBus
+        {
             /// <summary>I2C bus.</summary>
             public const string Socket5 = AT91.I2cBus.Twi0;
             /// <summary>I2C bus.</summary>
@@ -320,7 +358,8 @@ namespace GHIElectronics.TinyCLR.Pins {
         }
 
         /// <summary>SPI bus definitions.</summary>
-        public static class SpiBus {
+        public static class SpiBus
+        {
             /// <summary>SPI bus.</summary>
             public const string Socket3 = AT91.SpiBus.Spi0;
             /// <summary>SPI bus.</summary>
@@ -328,7 +367,8 @@ namespace GHIElectronics.TinyCLR.Pins {
         }
 
         /// <summary>USB client port definitions.</summary>
-        public static class UsbClientPort {
+        public static class UsbClientPort
+        {
             /// <summary>USB client port.</summary>
             public const string Socket2 = AT91.UsbClientPort.Udphs;
         }
