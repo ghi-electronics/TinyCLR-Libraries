@@ -34,7 +34,31 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="DNS.cs" />
+    <Compile Include="EndPoint.cs" />
+    <Compile Include="IPAddress.cs" />
+    <Compile Include="IPEndPoint.cs" />
+    <Compile Include="IPHostEntry.cs" />
+    <Compile Include="NetworkChange.cs" />
+    <Compile Include="NetworkInterface.cs" />
+    <Compile Include="NetworkSecurity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Security\SslStream.cs" />
+    <Compile Include="SocketAddress.cs" />
+    <Compile Include="SocketException.cs" />
+    <Compile Include="Sockets.cs" />
+    <Compile Include="Sockets\AddressFamily.cs" />
+    <Compile Include="Sockets\NetworkStream.cs" />
+    <Compile Include="Sockets\ProtocolFamily.cs" />
+    <Compile Include="Sockets\ProtocolType.cs" />
+    <Compile Include="Sockets\SelectMode.cs" />
+    <Compile Include="Sockets\Socket.cs" />
+    <Compile Include="Sockets\SocketErrors.cs" />
+    <Compile Include="Sockets\SocketFlags.cs" />
+    <Compile Include="Sockets\SocketOptionLevel.cs" />
+    <Compile Include="Sockets\SocketOptionName.cs" />
+    <Compile Include="Sockets\SocketType.cs" />
+    <Compile Include="Wireless.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="GHIElectronics.TinyCLR.Networking.nuspec" />

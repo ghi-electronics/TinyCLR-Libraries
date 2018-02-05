@@ -35,6 +35,33 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="System.Net.AuthenticationType.cs" />
+    <Compile Include="System.Net.HttpListener.cs" />
+    <Compile Include="System.Net.HttpListenerContext.cs" />
+    <Compile Include="System.Net.HttpListenerRequest.cs" />
+    <Compile Include="System.Net.HttpListenerResponse.cs" />
+    <Compile Include="System.Net.HttpStatusCode.cs" />
+    <Compile Include="System.Net.HttpVersion.cs" />
+    <Compile Include="System.Net.HttpWebRequest.cs" />
+    <Compile Include="System.Net.HttpWebResponse.cs" />
+    <Compile Include="System.Net.Internal.cs" />
+    <Compile Include="System.Net.iwebproxy.cs" />
+    <Compile Include="System.Net.IWebRequestCreate.cs" />
+    <Compile Include="System.Net.NetworkCredential.cs" />
+    <Compile Include="System.Net.ProtocolViolationException.cs" />
+    <Compile Include="System.Net.WebException.cs" />
+    <Compile Include="System.Net.WebHeaders.cs" />
+    <Compile Include="System.Net.webproxy.cs" />
+    <Compile Include="System.Net.WebRequest.cs" />
+    <Compile Include="System.Net.WebResponse.cs" />
+    <Compile Include="System.Net.WebStatus.cs" />
+    <Compile Include="System.Net._HeaderInfo.cs" />
+    <Compile Include="System.Net._HeaderInfoTable.cs" />
+    <Compile Include="System.Net._HttpDateParse.cs" />
+    <Compile Include="System.Net._InputNetworkStreamWrapper.cs" />
+    <Compile Include="System.Net._OutputNetworkStreamWrapper.cs" />
+    <Compile Include="System.Net._ValidationHelper.cs" />
+    <Compile Include="System.Uri.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="GHIElectronics.TinyCLR.Networking.Http.nuspec" />
