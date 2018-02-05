@@ -9,12 +9,13 @@ namespace System.Net
     using System.IO;
     using System.Text;
     using System.Threading;
-    
+    using System.Diagnostics;
+
     /// <summary>
     /// The InputNetworkStreamWrapper is used to re-implement calls to  NetworkStream.Read
     /// It has internal buffer and during initial read operation it places available data from socket into buffer.
     /// Later it releases data to Stream.Read calls.
-    /// It also provides direct access to bufferet data for internal code. 
+    /// It also provides direct access to bufferet data for internal code.
     /// It provides possibility to "unread" or probe data - meaning user can read byte of data and then return it back to stream.
     /// </summary>
     internal class InputNetworkStreamWrapper : Stream
@@ -32,14 +33,14 @@ namespace System.Net
         /// Last time this stream was used ( used to timeout idle connections ).
         /// </summary>
         internal DateTime m_lastUsed;
-        
+
         /// <summary>
-        /// This is a socket connected to client. 
+        /// This is a socket connected to client.
         /// InputNetworkStreamWrapper owns the socket, not NetworkStream.
-        /// If connection is persistent, then the m_Socket is transferred to the list of 
+        /// If connection is persistent, then the m_Socket is transferred to the list of
         /// </summary>
         internal Socket m_Socket;
-        
+
         /// <summary>
         /// Determines is the NetworkStream owns the socket
         /// </summary>
@@ -64,24 +65,24 @@ namespace System.Net
         /// Internal buffer size for read caching
         /// </summary>
         private const int read_buffer_size = 256;
-        
+
         /// <summary>
         /// Internal buffer for read caching
         /// </summary>
         internal byte[] m_readBuffer;
-        
+
         /// <summary>
         /// End of valid data in internal buffer.
         /// </summary>
         internal int m_dataEnd;
-        
+
         /// <summary>
         /// Start of valid data in internal buffer.
         /// </summary>
         internal int m_dataStart;
 
         /// <summary>
-        /// Indicates that the stream has chunking encoding. 
+        /// Indicates that the stream has chunking encoding.
         /// We remove chunk markers and stop reading after end of last chunk.
         /// </summary>
         internal bool m_EnableChunkedDecoding;
@@ -98,7 +99,7 @@ namespace System.Net
 
         /// <summary>
         /// Http web responses can contain the Content-Length of the response.  In these cases, we would like the stream to return an EOF indication
-        /// if the caller tries to read past the content length. 
+        /// if the caller tries to read past the content length.
         /// </summary>
         internal long m_BytesLeftInResponse;
 
@@ -111,10 +112,10 @@ namespace System.Net
 #if DEBUG
             if (this.m_dataStart != this.m_dataEnd)
             {
-                Microsoft.SPOT.Debug.Print("Internal ERROR in InputNetworkStreamWrapper");
+                Debug.WriteLine("Internal ERROR in InputNetworkStreamWrapper");
                 this.m_dataStart = this.m_dataEnd = 0;
             }
-#endif 
+#endif
             //  m_dataStart should be equal to m_dataEnd. Purge buffered data.
             this.m_dataStart = this.m_dataEnd = 0;
             // Read up to read_buffer_size, but less data can be read.
@@ -126,7 +127,7 @@ namespace System.Net
             }
             else if (readCount == 0)
             {
-                readCount = 1; 
+                readCount = 1;
             }
 
             this.m_dataEnd = this.m_Stream.Read(this.m_readBuffer, 0, readCount);
@@ -146,7 +147,7 @@ namespace System.Net
 
         /// <summary>
         /// Passes socket parameter to the base.
-        /// Base Network stream never owns the stream. 
+        /// Base Network stream never owns the stream.
         /// Socket is directly closed by class that contains InputNetworkStreamWrapper or transferred to
         /// list of idle sockets.
         /// </summary>
@@ -187,13 +188,13 @@ namespace System.Net
             // 1. We are at the beginning of chunk. Then we read chunk header and fill m_chunk.
             // 2. We are in the middle of chunk. Then it is kind of normal read, but no more than chunk length.
             // 3. We are close to the end of chunk. Then we read maximum of data in the chunk and set m_chunk to null.
-            // 4. We already read last chunk of zero size. Return with zero bytes read. 
+            // 4. We already read last chunk of zero size. Return with zero bytes read.
             if (this.m_chunk == null)
             {
-                // We are in the beginnig of the chunk. Create new chunk and continue. This is case 1. 
+                // We are in the beginnig of the chunk. Create new chunk and continue. This is case 1.
                 this.m_chunk = GetChunk();
             }
-            
+
             // First validate that chunk is more than zero in size. The last chunk is zero size and it indicates end of data.
             if (this.m_chunk.m_Size == 0)
             {
@@ -207,20 +208,20 @@ namespace System.Net
                 // We set size to the maximum data remaining the the chunk. This is the case 3.
                 size = (int)(this.m_chunk.m_Size - this.m_chunk.m_OffsetIntoChunk);
             }
-           
-            // Ok, we know that we are in process of reading chunk data. This is case 2. 
+
+            // Ok, we know that we are in process of reading chunk data. This is case 2.
             // size is already adjusted to the maximum data remaining in the chunk.
             var retVal = ReadInternal(buffer, offset, size);
 
             // Adjust offset into chunk by amount of data read. retVal could be less than size.
             this.m_chunk.m_OffsetIntoChunk += (uint)retVal;
-            
+
             // If we reached end of chunk, then set m_chunk to null. This indicates that chunk was completed.
             if (this.m_chunk.m_OffsetIntoChunk == this.m_chunk.m_Size)
             {
-                this.m_chunk = null; 
+                this.m_chunk = null;
             }
-            
+
             return retVal;
         }
 
@@ -310,14 +311,14 @@ namespace System.Net
             //
             // Now we check if more data is needed.
             // if m_BytesLeftInResponse == -1      , then we don't known the content length of the response
-            // if m_BytesLeftInResponse is > retVal, then the data in the internal buffer (above) was less than the 
+            // if m_BytesLeftInResponse is > retVal, then the data in the internal buffer (above) was less than the
             //                                                         the total content length of the response stream
             // In either case, we need to read more data to fullfill the read request
             //
             if (size > 0 && (this.m_BytesLeftInResponse == -1 || this.m_BytesLeftInResponse > retVal))
             {
                 // If buffering desired and requested data is less than internal buffer size
-                // then we read into internal buffer. 
+                // then we read into internal buffer.
                 if (size < read_buffer_size)
                 {
                     if(0 == RefillInternalBuffer()) return 0;
@@ -342,7 +343,7 @@ namespace System.Net
                 }
             }
 
-            // update the bytes left in response 
+            // update the bytes left in response
             if(this.m_BytesLeftInResponse > 0)
             {
                 this.m_BytesLeftInResponse -= retVal;
@@ -350,13 +351,13 @@ namespace System.Net
                 // in case there were more bytes in the buffer than we expected make sure the next call returns 0
                 if(this.m_BytesLeftInResponse < 0) this.m_BytesLeftInResponse = 0;
             }
-            
+
             return retVal;
         }
 
         /// <summary>
-        /// Impletments Write for the stream. 
-        /// Since we do not have write buffering, all we do is delegate to the m_Stream. 
+        /// Impletments Write for the stream.
+        /// Since we do not have write buffering, all we do is delegate to the m_Stream.
         /// </summary>
         /// <param name="buffer">Buffer to write</param>
         /// <param name="offset">Start offset to write data</param>
@@ -391,7 +392,7 @@ namespace System.Net
         /// <summary>
         /// Gets the length of the data available on the stream.
         /// </summary>
-        /// <returns>The length of the data available on the stream. 
+        /// <returns>The length of the data available on the stream.
         /// Add data cached in the stream buffer to available on socket</returns>
         public override long Length => this.m_EnableChunkedDecoding && this.m_chunk != null ? this.m_chunk.m_Size : this.m_Stream.Length + this.m_dataEnd - this.m_dataStart;
 
@@ -418,7 +419,7 @@ namespace System.Net
         public override void SetLength(long value) => throw new NotSupportedException();
 
         /// <summary>
-        /// Timeout for read operations. 
+        /// Timeout for read operations.
         /// </summary>
         public override int ReadTimeout {
             get => this.m_Stream.ReadTimeout;
@@ -457,7 +458,7 @@ namespace System.Net
                     this.m_Socket.Close();
                 }
             }
-            
+
             base.Dispose(disposing);
         }
 
@@ -479,7 +480,7 @@ namespace System.Net
                 maxCurSize = maxCurSize < maxLineLength ? maxCurSize : maxLineLength;
                 while (curPos < maxCurSize)
                 {
-                    // If data available, Reads one byte of data. 
+                    // If data available, Reads one byte of data.
                     if (this.m_dataEnd - this.m_dataStart > 0)
                     {   // Very special code for reading of one character.
                         this.m_lineBuf[curPos] = this.m_readBuffer[this.m_dataStart]; ++curPos; ++this.m_dataStart;
@@ -501,7 +502,7 @@ namespace System.Net
                         // Next character should be '\n' if previous was '\r'
                         if (this.m_lineBuf[curPos - 1] == '\r')
                         {
-                            // If data available, Reads one byte of data. 
+                            // If data available, Reads one byte of data.
                             if (this.m_dataEnd - this.m_dataStart > 0)
                             {   // Very special code for reading of one character.
                                 this.m_lineBuf[curPos] = this.m_readBuffer[this.m_dataStart]; ++curPos; ++this.m_dataStart;
@@ -527,7 +528,7 @@ namespace System.Net
                     throw new WebException("Line too long", WebExceptionStatus.ServerProtocolViolation);
                 }
 
-                // There was no place in the m_lineBuf or end of line reached. 
+                // There was no place in the m_lineBuf or end of line reached.
                 if (!readLineComplete)
                 {
                     // Need to allocate larger m_lineBuf and copy existing line there.
@@ -548,7 +549,7 @@ namespace System.Net
             else if(curPos == 0)
             {
                 throw new SocketException(SocketError.ConnectionAborted);
-            }               
+            }
 
             return "";
         }
@@ -566,7 +567,7 @@ namespace System.Net
             }
             return this.m_readBuffer[this.m_dataStart];
         }
-        
+
         /// <summary>
         /// Returns the byte in the input stream and removes it.
         /// </summary>
@@ -629,7 +630,7 @@ namespace System.Net
         }
 
         /// <summary>
-        /// Retrieve information of the chunk. 
+        /// Retrieve information of the chunk.
         /// </summary>
         /// <returns></returns>
         private Chunk GetChunk()
@@ -654,7 +655,7 @@ namespace System.Net
                         Array.Copy(buffer, data, dataByte);
                         switch (state)
                         {
-                            case ChunkState.Size: 
+                            case ChunkState.Size:
                                 nextChunk.m_Size = (uint)Convert.ToInt32(new string(UTF8Encoding.GetChars(data)), 16);
                                 dataByte = 0;
                                 break;
@@ -662,7 +663,7 @@ namespace System.Net
                                 dataByte = 0;
                                 break;
                             default:
-                                throw new ProtocolViolationException("Wrong state for CR");      
+                                throw new ProtocolViolationException("Wrong state for CR");
                         }
                         state = ChunkState.LF;
                         break;

@@ -4,19 +4,10 @@
 
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("System.Net.Security")]
 
-namespace System.Net.Sockets
-{
-    using System.Collections;
-    using System.Diagnostics;
-    using System.Globalization;
-    using System.IO;
+namespace System.Net.Sockets {
     using System.Net;
-    using System.Runtime.InteropServices;
     using System.Runtime.CompilerServices;
     using System.Threading;
-    using Microsoft.SPOT;
-    using Microsoft.SPOT.Net;
-    using Microsoft.SPOT.Hardware;
 
     using NativeSocket = Microsoft.SPOT.Net.SocketNative;
 
@@ -26,7 +17,6 @@ namespace System.Net.Sockets
          * The m_Handle field MUST be the first field in the Socket class; it is expected by
          * the SPOT.NET.SocketNative class.
          */
-        [FieldNoReflection]
         internal int m_Handle = -1;
 
         private bool m_fBlocking = true;

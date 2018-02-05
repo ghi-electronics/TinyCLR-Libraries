@@ -226,7 +226,7 @@ namespace System.Net
         {
             try
             {
-                // This is a blocking call waiting for more data. 
+                // This is a blocking call waiting for more data.
                 outputStream.m_Socket.Poll(DefaultKeepAliveMilliseconds * 1000, SelectMode.SelectRead);
 
                 if (outputStream.m_Socket.Available > 0)
@@ -272,7 +272,7 @@ namespace System.Net
             {
                 // First we shut down the service.
                 Close();
-                
+
                 // Now we need to go through list of all client sockets and close all of them.
                 // This will cause exceptions on read/write operations on these sockets.
                 foreach (OutputNetworkStreamWrapper netStream in this.m_ClientStreams)
@@ -399,7 +399,7 @@ namespace System.Net
 
                     this.m_RequestArrived.Set();
 
-                    // try again 
+                    // try again
                     continue;
                 }
 
@@ -428,7 +428,7 @@ namespace System.Net
             lock (this)
             {
                 if (this.m_Closed) throw new ObjectDisposedException();
-                
+
                 // If service was already started, the call has no effect.
                 if (this.m_ServiceRunning)
                 {
@@ -451,16 +451,7 @@ namespace System.Net
                 }
                 catch {}
 
-                IPAddress addr;
-
-                if(Microsoft.SPOT.Hardware.SystemInfo.IsEmulator)
-                {
-                    addr = IPAddress.Any;
-                }
-                else
-                {
-                    addr = IPAddress.GetDefaultLocalAddress();
-                }
+                var addr = IPAddress.GetDefaultLocalAddress();
 
                 var endPoint = new IPEndPoint(addr, this.m_Port);
                 this.m_listener.Bind(endPoint);
@@ -514,7 +505,7 @@ namespace System.Net
         /// </para>
         /// </remarks>
         public void Stop()
-        {   
+        {
             // Need to lock access to object, because Stop can be called from a
             // different thread.
             lock (this)
@@ -522,7 +513,7 @@ namespace System.Net
                 if (this.m_Closed) throw new ObjectDisposedException();
 
                 this.m_ServiceRunning = false;
-                
+
                 // We close the server socket that listen for incoming connection.
                 // Connections that already accepted are processed.
                 // Connections that has been in queue for server socket, but not accepted, are lost.
@@ -569,7 +560,7 @@ namespace System.Net
             lock (this)
             {
                 if (this.m_Closed) throw new ObjectDisposedException();
-            
+
                 if (!this.m_ServiceRunning) throw new InvalidOperationException();
             }
 
@@ -581,9 +572,7 @@ namespace System.Net
                 {
                     if (this.m_InputStreamsQueue.Count > 0)
                     {
-                        var outputStreamWrap = this.m_InputStreamsQueue.Dequeue() as OutputNetworkStreamWrapper;
-                        if (outputStreamWrap != null)
-                        {
+                        if (this.m_InputStreamsQueue.Dequeue() is OutputNetworkStreamWrapper outputStreamWrap) {
                             return new HttpListenerContext(outputStreamWrap, this);
                         }
                     }

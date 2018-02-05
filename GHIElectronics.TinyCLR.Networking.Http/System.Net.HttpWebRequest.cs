@@ -14,6 +14,7 @@ namespace System.Net
     using Microsoft.SPOT;
     using Microsoft.SPOT.Net.Security;
     using System.Security.Cryptography.X509Certificates;
+    using System.Diagnostics;
 
     /// <summary>
     /// This is the class that we use to create HTTP and requests.
@@ -88,7 +89,7 @@ namespace System.Net
                         if (timePassed.Milliseconds > HttpListener.DefaultKeepAliveMilliseconds)
                         {
                             m_ConnectedStreams.RemoveAt(i);
-                            
+
                             // Closes the socket to release resources.
                             streamWrapper.Dispose();
                         }
@@ -139,7 +140,7 @@ namespace System.Net
 
             base.Dispose(disposing);
         }
-        
+
 
         /// <summary>
         /// The length in KB of the default maximum for response headers
@@ -156,7 +157,7 @@ namespace System.Net
         private const int DefaultReadWriteTimeout = 5 * 60 * 1000; // 5 minutes
 
         /// <summary>
-        ///  maximum length of the line in reponse line 
+        ///  maximum length of the line in reponse line
         /// </summary>
         internal const int maxHTTPLineLength = 4000;
 
@@ -626,10 +627,7 @@ namespace System.Net
             set {
                 if (this.m_requestSent)
                     throw new InvalidOperationException("Cannot change proxy after request submitted");
-                if (value == null)
-                    throw new ArgumentNullException();
-
-                this.m_proxy = value;
+                this.m_proxy = value ?? throw new ArgumentNullException();
             }
         }
 
@@ -689,7 +687,7 @@ namespace System.Net
         /// </summary>
         /// <param name="HeaderName">The name of the HTTP header.</param>
         /// <param name="value">The value of the HTTP header.</param>
-        private void SetSpecialHeaders(String HeaderName, String value)
+        private void SetSpecialHeaders(string HeaderName, string value)
         {
             value = WebHeaderCollection.CheckBadChars(value, true);
 
@@ -709,7 +707,7 @@ namespace System.Net
         /// <remarks>
         /// Setting to <b>null</b> clears the content-type.
         /// </remarks>
-        public override String ContentType {
+        public override string ContentType {
             get => this.m_httpRequestHeaders[HttpKnownHeaderNames.ContentType];
 
             set => SetSpecialHeaders(HttpKnownHeaderNames.ContentType, value);
@@ -724,7 +722,7 @@ namespace System.Net
         /// <b>null</b> clears the transfer encoding except for the
         /// <b>Chunked</b> setting.
         /// </remarks>
-        public String TransferEncoding {
+        public string TransferEncoding {
             get => this.m_httpRequestHeaders[HttpKnownHeaderNames.TransferEncoding];
 
             set {
@@ -765,7 +763,7 @@ namespace System.Net
         /// </summary>
         /// <value>The value of the <b>Accept</b> HTTP header.  The default
         /// value is <b>null</b>.</value>
-        public String Accept {
+        public string Accept {
             get => this.m_httpRequestHeaders[HttpKnownHeaderNames.Accept];
             set => SetSpecialHeaders(HttpKnownHeaderNames.Accept, value);
         }
@@ -776,7 +774,7 @@ namespace System.Net
         /// <value>The value of the <b>Referer</b> HTTP header.  The default
         /// value is <b>null</b>.</value>
         /// <remarks>This header value is misspelled intentionally.</remarks>
-        public String Referer {
+        public string Referer {
             get => this.m_httpRequestHeaders[HttpKnownHeaderNames.Referer];
             set => SetSpecialHeaders(HttpKnownHeaderNames.Referer, value);
         }
@@ -786,7 +784,7 @@ namespace System.Net
         /// </summary>
         /// <value>The value of the <b>User-agent</b> HTTP header.  The default
         /// value is <b>null</b>.</value>
-        public String UserAgent {
+        public string UserAgent {
             get => this.m_httpRequestHeaders[HttpKnownHeaderNames.UserAgent];
             set => SetSpecialHeaders(HttpKnownHeaderNames.UserAgent, value);
         }
@@ -798,7 +796,7 @@ namespace System.Net
         /// value is <b>null</b>.</value>
         /// <remarks>When setting this property, <b>null</b> clears the
         /// <b>Expect</b> (except for the 100-continue value).</remarks>
-        public String Expect {
+        public string Expect {
             get => this.m_httpRequestHeaders[HttpKnownHeaderNames.Expect];
             set {
                 // on blank string, remove current header
@@ -989,7 +987,7 @@ namespace System.Net
             }
             else
             {
-                if (String.Compare(curRange.Substring(0, curRange.IndexOf('=')), rangeSpecifier) != 0)
+                if (string.Compare(curRange.Substring(0, curRange.IndexOf('=')), rangeSpecifier) != 0)
                 {
                     return false;
                 }
@@ -1174,7 +1172,7 @@ namespace System.Net
                             {
                                 // No exception, good we can condtinue and re-use connected stream.
 
-                                // Control flow returning here means persistent connection actually works. 
+                                // Control flow returning here means persistent connection actually works.
                                 inputStream.m_InUse = true;
                                 inputStream.m_lastUsed = DateTime.Now;
 
@@ -1369,7 +1367,7 @@ namespace System.Net
             var charBuf = new char[dataToSend.Length];
             UTF8decoder.Convert(dataToSend, 0, dataToSend.Length, charBuf, 0, charBuf.Length, true, out var byteUsed, out var charUsed, out var completed);
             var strSend = new string(charBuf);
-            Debug.Print(strSend);
+            Debug.WriteLine(strSend);
 #endif
             // Writes this data to the network stream.
             this.m_requestStream.Write(dataToSend, 0, dataToSend.Length);
@@ -1539,8 +1537,8 @@ namespace System.Net
         }
 
         /// <summary>
-        /// Returns a response from an Internet resource.  Overrides the 
-        /// <itemref>WebRequest</itemref>.<see cref="System.Net.WebRequest.GetResponse"/> 
+        /// Returns a response from an Internet resource.  Overrides the
+        /// <itemref>WebRequest</itemref>.<see cref="System.Net.WebRequest.GetResponse"/>
         /// method.
         /// </summary>
         /// <returns>The response from the Internet resource.</returns>
@@ -1550,7 +1548,7 @@ namespace System.Net
 
             try
             {
-                // If response was not sent, Submit the request. 
+                // If response was not sent, Submit the request.
                 if (!this.m_requestSent)
                 {
                     SubmitRequest();
@@ -1561,7 +1559,7 @@ namespace System.Net
                 // reset the total response bytes for the new request.
                 this.m_requestStream.m_BytesLeftInResponse = -1;
 
-                // create the request timeout timer.  This will kill the operation if it takes longer than specified by the Timeout property.  
+                // create the request timeout timer.  This will kill the operation if it takes longer than specified by the Timeout property.
                 // The underlying socket will be closed to end the web request
                 using (var tmr = new Timer(new TimerCallback(this.OnRequestTimeout), null, this.m_timeout, System.Threading.Timeout.Infinite))
                 {
@@ -1581,9 +1579,9 @@ namespace System.Net
                         }
                     }
                 }
-                
+
                 response = new HttpWebResponse(this.m_method, this.m_originalUrl, respData, this);
-                
+
                 // Now we look if response has chunked encoding. If it is chunked, we need to set flag in m_requestStream we return.
                 if (respData.m_chunked)
                 {
@@ -1645,7 +1643,7 @@ namespace System.Net
                 }
                 throw;
             }
-            
+
             // Return the stream
             return this.m_requestStream.CloneStream();
         }
@@ -1792,7 +1790,7 @@ namespace System.Net
         /// <param name="bytes">Output array.</param>
         /// <param name="offset">Offset to start placing data in array.</param>
         /// <returns>Count of bytes copied</returns>
-        private static int copyString(String src, byte[] bytes, int offset)
+        private static int copyString(string src, byte[] bytes, int offset)
         {
             int i;
             for (i = 0; i < src.Length; ++i)

@@ -2,15 +2,9 @@
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-namespace System.Net
-{
-
-    using System;
-    using System.Runtime.InteropServices;
+namespace System.Net {
+    using System.Diagnostics;
     using System.Net.Sockets;
-    using System.Text;
-    using System.Globalization;
-    using Microsoft.SPOT.Hardware;
 
     public class SocketAddress
     {
@@ -24,7 +18,7 @@ namespace System.Net
 
         public SocketAddress(AddressFamily family, int size)
         {
-            Microsoft.SPOT.Debug.Assert(size > 2);
+            Debug.Assert(size > 2);
 
             this.m_Buffer = new byte[size]; //(size / IntPtr.Size + 2) * IntPtr.Size];//sizeof DWORD
 

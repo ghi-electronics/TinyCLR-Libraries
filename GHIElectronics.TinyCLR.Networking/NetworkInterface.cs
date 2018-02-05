@@ -4,14 +4,10 @@
 
 using System;
 using System.Collections;
-using System.Reflection;
-using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Threading;
-using Microsoft.SPOT.Hardware;
 
-namespace Microsoft.SPOT.Net.NetworkInformation
-{
+namespace Microsoft.SPOT.Net.NetworkInformation {
     public enum NetworkInterfaceType
     {
         Unknown = 1,
@@ -31,7 +27,6 @@ namespace Microsoft.SPOT.Net.NetworkInformation
         private const uint FLAGS_DHCP = 0x1;
         private const uint FLAGS_DYNAMIC_DNS = 0x2;
 
-        [FieldNoReflection]
         private readonly int _interfaceIndex;
 
         private uint _flags;

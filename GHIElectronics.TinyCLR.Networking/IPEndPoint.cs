@@ -8,6 +8,7 @@ namespace System.Net
     using System.Globalization;
 
     using Microsoft.SPOT;
+    using System.Diagnostics;
 
     [Serializable]
     public class IPEndPoint : EndPoint

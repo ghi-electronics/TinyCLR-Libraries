@@ -39,7 +39,6 @@
     <Compile Include="IPAddress.cs" />
     <Compile Include="IPEndPoint.cs" />
     <Compile Include="IPHostEntry.cs" />
-    <Compile Include="NetworkChange.cs" />
     <Compile Include="NetworkInterface.cs" />
     <Compile Include="NetworkSecurity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -60,6 +59,7 @@
     <Compile Include="Sockets\SocketType.cs" />
     <Compile Include="SystemInfo.cs" />
     <Compile Include="Wireless.cs" />
+    <Compile Include="X509Certificate.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="GHIElectronics.TinyCLR.Networking.nuspec" />
