@@ -9,9 +9,22 @@ using System.Net.Sockets;
 using Microsoft.SPOT.Net.Security;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
+using System.Security.Authentication;
 
-namespace Microsoft.SPOT.Net.Security
-{
+namespace System.Security.Authentication {
+    [Flags]
+    public enum SslProtocols {
+        None = 0,
+        Ssl2 = 1,
+        Ssl3 = 2,
+        Tls = 4,
+        Tls11 = 8,
+        Tls12 = 16,
+        Default = Ssl3 | Tls
+    }
+}
+
+namespace System.Net.Security {
     public class SslStream : NetworkStream
     {
         // Internal flags
@@ -32,15 +45,15 @@ namespace Microsoft.SPOT.Net.Security
             this._isServer = false;
         }
 
-        public void AuthenticateAsClient(string targetHost, params SslProtocols[] sslProtocols) => AuthenticateAsClient(targetHost, null, null, SslVerification.NoVerification, sslProtocols);
+        public void AuthenticateAsClient(string targetHost, params SslProtocols[] sslProtocols) => AuthenticateAsClient(targetHost, null, null, sslProtocols);
 
-        public void AuthenticateAsClient(string targetHost, X509Certificate cert, SslVerification verify, params SslProtocols[] sslProtocols) => AuthenticateAsClient(targetHost, cert, null, verify, sslProtocols);
+        public void AuthenticateAsClient(string targetHost, X509Certificate cert, params SslProtocols[] sslProtocols) => AuthenticateAsClient(targetHost, cert, null, sslProtocols);
 
-        public void AuthenticateAsClient(string targetHost, X509Certificate cert, X509Certificate[] ca, SslVerification verify, params SslProtocols[] sslProtocols) => Authenticate(false, targetHost, cert, ca, verify, sslProtocols);
+        public void AuthenticateAsClient(string targetHost, X509Certificate cert, X509Certificate[] ca, params SslProtocols[] sslProtocols) => Authenticate(false, targetHost, cert, ca, sslProtocols);
 
-        public void AuthenticateAsServer(X509Certificate cert, SslVerification verify, params SslProtocols[] sslProtocols) => AuthenticateAsServer(cert, null, verify, sslProtocols);
+        public void AuthenticateAsServer(X509Certificate cert, params SslProtocols[] sslProtocols) => AuthenticateAsServer(cert, null, sslProtocols);
 
-        public void AuthenticateAsServer(X509Certificate cert, X509Certificate[] ca, SslVerification verify, params SslProtocols[] sslProtocols) => Authenticate(true, "", cert, ca, verify, sslProtocols);
+        public void AuthenticateAsServer(X509Certificate cert, X509Certificate[] ca, params SslProtocols[] sslProtocols) => Authenticate(true, "", cert, ca, sslProtocols);
 
         public void UpdateCertificates(X509Certificate cert, X509Certificate[] ca)
         {
@@ -49,7 +62,7 @@ namespace Microsoft.SPOT.Net.Security
             SslNative.UpdateCertificates(this._sslContext, cert, ca);
         }
 
-        internal void Authenticate(bool isServer, string targetHost, X509Certificate certificate, X509Certificate[] ca, SslVerification verify, params SslProtocols[] sslProtocols)
+        internal void Authenticate(bool isServer, string targetHost, X509Certificate certificate, X509Certificate[] ca, params SslProtocols[] sslProtocols)
         {
             var vers = (SslProtocols)0;
 
@@ -66,12 +79,12 @@ namespace Microsoft.SPOT.Net.Security
             {
                 if (isServer)
                 {
-                    this._sslContext = SslNative.SecureServerInit((int)vers, (int)verify, certificate, ca);
+                    this._sslContext = SslNative.SecureServerInit((int)vers, certificate, ca);
                     SslNative.SecureAccept(this._sslContext, this._socket);
                 }
                 else
                 {
-                    this._sslContext = SslNative.SecureClientInit((int)vers, (int)verify, certificate, ca);
+                    this._sslContext = SslNative.SecureClientInit((int)vers, certificate, ca);
                     SslNative.SecureConnect(this._sslContext, targetHost, this._socket);
                 }
             }

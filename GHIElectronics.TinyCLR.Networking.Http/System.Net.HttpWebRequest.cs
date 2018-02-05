@@ -15,6 +15,8 @@ namespace System.Net
     using Microsoft.SPOT.Net.Security;
     using System.Security.Cryptography.X509Certificates;
     using System.Diagnostics;
+    using System.Net.Security;
+    using System.Security.Authentication;
 
     /// <summary>
     /// This is the class that we use to create HTTP and requests.
@@ -1298,7 +1300,7 @@ namespace System.Net
                     var sslStream = new SslStream(retStream.m_Socket);
 
                     // Throws exception is fails.
-                    sslStream.AuthenticateAsClient(this.m_originalUrl.Host, null, this.m_caCerts, SslVerification.CertificateRequired, SslProtocols.Default);
+                    sslStream.AuthenticateAsClient(this.m_originalUrl.Host, null, this.m_caCerts, SslProtocols.Default);
 
                     // Changes the stream to SSL stream.
                     retStream.m_Stream = sslStream;

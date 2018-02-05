@@ -9,6 +9,8 @@ namespace System.Net
     using System.Threading;
     using Microsoft.SPOT.Net.Security;
     using System.Security.Cryptography.X509Certificates;
+    using System.Net.Security;
+    using System.Security.Authentication;
 
     /// <summary>
     /// Provides a simple, programmatically controlled HTTP protocol listener.
@@ -381,7 +383,7 @@ namespace System.Net
                         var sslProtocols = new SslProtocols[] { SslProtocols.Default };
 
                         // Throws exception if fails.
-                        ((SslStream)netStream).AuthenticateAsServer(this.m_httpsCert, SslVerification.NoVerification, sslProtocols);
+                        ((SslStream)netStream).AuthenticateAsServer(this.m_httpsCert, sslProtocols);
 
                         netStream.ReadTimeout = 10000;
                     }
