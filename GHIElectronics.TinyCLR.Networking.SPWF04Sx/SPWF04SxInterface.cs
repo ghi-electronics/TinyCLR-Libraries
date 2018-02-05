@@ -30,14 +30,12 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
         private int pendingRawDataLength;
         private int nextSocketId;
 
-        public bool ForceSocketsTls { get; set; } = false;
-        public string ForceSocketsTlsCommonName { get; set; } = null;
-
-
         public event SPWF04SxIndicationReceivedEventHandler IndicationReceived;
         public event SPWF04SxErrorReceivedEventHandler ErrorReceived;
 
         public SPWF04SxWiFiState State { get; private set; }
+        public bool ForceSocketsTls { get; set; }
+        public string ForceSocketsTlsCommonName { get; set; }
 
         public static SpiConnectionSettings GetConnectionSettings(int chipSelectLine) => new SpiConnectionSettings(chipSelectLine) {
             ClockFrequency = 4000000,
