@@ -82,10 +82,7 @@ namespace System.Net
         /// <param name="message">The message string for the exception.</param>
         /// <param name="status">The network status of the exception.</param>
         public WebException(string message, WebExceptionStatus status)
-            : base(message)
-        {
-            m_Status = status;
-        }
+            : base(message) => this.m_Status = status;
 
         /// <summary>
         /// Constructs a <itemref>WebException</itemref> based on the specified
@@ -105,21 +102,15 @@ namespace System.Net
                             WebResponse response)
             : base(message, inner)
         {
-            m_Status = status;
-            m_Response = response;
+            this.m_Status = status;
+            this.m_Response = response;
         }
 
         /// <summary>
         /// Gets the <itemref>WebExceptionStatus</itemref> code.
         /// </summary>
         /// <value>One of the <b>WebExceptionStatus</b> values.</value>
-        public WebExceptionStatus Status
-        {
-            get
-            {
-                return m_Status;
-            }
-        }
+        public WebExceptionStatus Status => this.m_Status;
 
         /// <summary>
         /// Gets the response that the remote host returned.
@@ -128,13 +119,7 @@ namespace System.Net
         /// <itemref>WebResponse</itemref> instance that contains the error
         /// response from an Internet resource; otherwise,
         /// <itemref>null</itemref>.</value>
-        public WebResponse Response
-        {
-            get
-            {
-                return m_Response;
-            }
-        }
+        public WebResponse Response => this.m_Response;
 
     }; // class WebException
 

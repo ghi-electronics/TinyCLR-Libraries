@@ -97,7 +97,7 @@ namespace System.Net
         /// </summary>
         private void ThrowIfResponseSent()
         {
-            if (m_WasResponseSent)
+            if (this.m_WasResponseSent)
             {
                 throw new InvalidOperationException();
             }
@@ -111,11 +111,11 @@ namespace System.Net
         internal HttpListenerResponse(OutputNetworkStreamWrapper clientStream, HttpListener httpListener)
         {
             // Sets the delegate, so SendHeaders will be called on first write.
-            clientStream.HeadersDelegate = new OutputNetworkStreamWrapper.SendHeadersDelegate(SendHeaders);
+            clientStream.HeadersDelegate = new OutputNetworkStreamWrapper.SendHeadersDelegate(this.SendHeaders);
             // Saves network stream as member.
-            m_clientStream = clientStream;
+            this.m_clientStream = clientStream;
             // Saves list of client streams. m_clientStream is removed from clientStreamsList during Close().
-            m_Listener = httpListener;
+            this.m_Listener = httpListener;
         }
 
         /// <summary>
@@ -126,25 +126,25 @@ namespace System.Net
         private void PrepareHeaders()
         {
             // Adds content length if it was present.
-            if (m_ContentLength != -1)
+            if (this.m_ContentLength != -1)
             {
-                m_httpResponseHeaders.ChangeInternal(HttpKnownHeaderNames.ContentLength, m_ContentLength.ToString());
+                this.m_httpResponseHeaders.ChangeInternal(HttpKnownHeaderNames.ContentLength, this.m_ContentLength.ToString());
             }
 
             // Since we do not support persistent connection, send close always.
-            string connection = m_KeepAlive ? "Keep-Alive" : "Close";
-            m_httpResponseHeaders.ChangeInternal(HttpKnownHeaderNames.Connection, connection);
+            var connection = this.m_KeepAlive ? "Keep-Alive" : "Close";
+            this.m_httpResponseHeaders.ChangeInternal(HttpKnownHeaderNames.Connection, connection);
 
             // Adds content type if user set it:
-            if (m_contentType != null)
+            if (this.m_contentType != null)
             {
-                m_httpResponseHeaders.AddWithoutValidate(HttpKnownHeaderNames.ContentType, m_contentType);
+                this.m_httpResponseHeaders.AddWithoutValidate(HttpKnownHeaderNames.ContentType, this.m_contentType);
             }
 
-            if (m_redirectLocation != null)
+            if (this.m_redirectLocation != null)
             {
-                m_httpResponseHeaders.AddWithoutValidate(HttpKnownHeaderNames.Location, m_redirectLocation);
-                m_ResponseStatusCode = (int)HttpStatusCode.Redirect;
+                this.m_httpResponseHeaders.AddWithoutValidate(HttpKnownHeaderNames.Location, this.m_redirectLocation);
+                this.m_ResponseStatusCode = (int)HttpStatusCode.Redirect;
             }
         }
 
@@ -155,19 +155,19 @@ namespace System.Net
         private string ComposeHTTPResponse()
         {
             // Starts with HTTP
-            string resp = "HTTP/";
+            var resp = "HTTP/";
             // Adds version of HTTP
-            resp += m_version.ToString();
+            resp += this.m_version.ToString();
             // Add status code.
-            resp += " " + m_ResponseStatusCode;
+            resp += " " + this.m_ResponseStatusCode;
             // Adds description
-            if (m_statusDescription == null)
+            if (this.m_statusDescription == null)
             {
-                resp += " " + GetStatusDescription(m_ResponseStatusCode);
+                resp += " " + GetStatusDescription(this.m_ResponseStatusCode);
             }
             else // User provided description is present.
             {
-                resp += " " + m_statusDescription;
+                resp += " " + this.m_statusDescription;
             }
 
             // Add line termindation.
@@ -182,24 +182,24 @@ namespace System.Net
         {
             // As first step we disable the callback to SendHeaders, so m_clientStream.Write would not call
             // SendHeaders() again.
-            m_clientStream.HeadersDelegate = null;
+            this.m_clientStream.HeadersDelegate = null;
 
             // Creates encoder, generates headers and sends the data.
-            Encoding encoder = Encoding.UTF8;
+            var encoder = Encoding.UTF8;
 
-            byte[] statusLine = encoder.GetBytes(ComposeHTTPResponse());
-            m_clientStream.Write(statusLine, 0, statusLine.Length);
+            var statusLine = encoder.GetBytes(ComposeHTTPResponse());
+            this.m_clientStream.Write(statusLine, 0, statusLine.Length);
 
             // Prepares/Updates WEB header collection.
             PrepareHeaders();
 
             // Serialise WEB header collection to byte array.
-            byte[] pHeaders = m_httpResponseHeaders.ToByteArray();
+            var pHeaders = this.m_httpResponseHeaders.ToByteArray();
 
             // Sends the headers
-            m_clientStream.Write(pHeaders, 0, pHeaders.Length);
+            this.m_clientStream.Write(pHeaders, 0, pHeaders.Length);
 
-            m_WasResponseSent = true;
+            this.m_WasResponseSent = true;
         }
 
         /// <summary>
@@ -210,13 +210,11 @@ namespace System.Net
         /// The default is <itemref>OK</itemref>, indicating that the server
         /// successfully processed the client's request and included the
         /// requested resource in the response body.</value>
-        public int StatusCode
-        {
-            get { return m_ResponseStatusCode; }
-            set
-            {
+        public int StatusCode {
+            get => this.m_ResponseStatusCode;
+            set {
                 ThrowIfResponseSent();
-                m_ResponseStatusCode = value;
+                this.m_ResponseStatusCode = value;
             }
         }
 
@@ -226,14 +224,12 @@ namespace System.Net
         /// </summary>
         /// <value>The value of the response's <itemref>Content-Length</itemref>
         /// header.</value>
-        public long ContentLength64
-        {
-            get { return m_ContentLength; }
+        public long ContentLength64 {
+            get => this.m_ContentLength;
 
-            set
-            {
+            set {
                 ThrowIfResponseSent();
-                m_ContentLength = value;
+                this.m_ContentLength = value;
             }
         }
 
@@ -244,13 +240,11 @@ namespace System.Net
         /// <value>A <itemref>WebHeaderCollection</itemref> instance that
         /// contains all the explicitly set HTTP headers to be included in the
         /// response.</value>
-        public WebHeaderCollection Headers
-        {
-            get { return m_httpResponseHeaders; }
-            set
-            {
+        public WebHeaderCollection Headers {
+            get => this.m_httpResponseHeaders;
+            set {
                 ThrowIfResponseSent();
-                m_httpResponseHeaders = value;
+                this.m_httpResponseHeaders = value;
             }
         }
 
@@ -260,11 +254,10 @@ namespace System.Net
         /// <value><itemref>true</itemref> if the server requests a persistent
         /// connection; otherwise, <itemref>false</itemref>.  The default is
         /// <itemref>true</itemref>.</value>
-        public bool KeepAlive
-        {
-            get { return m_KeepAlive; }
+        public bool KeepAlive {
+            get => this.m_KeepAlive;
 
-            set { m_KeepAlive = value; }
+            set => this.m_KeepAlive = value;
         }
 
         /// <summary>
@@ -280,12 +273,12 @@ namespace System.Net
         {
             get
             {
-                if (m_IsResponseClosed)
+                if (this.m_IsResponseClosed)
                 {
                     throw new ObjectDisposedException("Response has been sent");
                 }
 
-                return m_clientStream;
+                return this.m_clientStream;
             }
         }
 
@@ -295,13 +288,11 @@ namespace System.Net
         /// <value>A <itemref>Version</itemref> object indicating the version of
         /// HTTP used when responding to the client.  This property is obsolete.
         /// </value>
-        public Version ProtocolVersion
-        {
-            get { return m_version; }
-            set
-            {
+        public Version ProtocolVersion {
+            get => this.m_version;
+            set {
                 ThrowIfResponseSent();
-                m_version = value;
+                this.m_version = value;
             }
         }
 
@@ -312,13 +303,11 @@ namespace System.Net
         /// <value>A <itemref>String</itemref> that contains the absolute URL to
         /// be sent to the client in the <itemref>Location</itemref> header.
         /// </value>
-        public string RedirectLocation
-        {
-            get { return m_redirectLocation; }
-            set
-            {
+        public string RedirectLocation {
+            get => this.m_redirectLocation;
+            set {
                 ThrowIfResponseSent();
-                m_redirectLocation = value;
+                this.m_redirectLocation = value;
             }
         }
 
@@ -328,13 +317,11 @@ namespace System.Net
         /// <value><itemref>true</itemref> if the response is set to use chunked
         /// transfer encoding; otherwise, <itemref>false</itemref>.  The default
         /// is <itemref>false</itemref>.</value>
-        public bool SendChunked
-        {
-            get { return m_sendChunked; }
-            set
-            {
+        public bool SendChunked {
+            get => this.m_sendChunked;
+            set {
                 ThrowIfResponseSent();
-                m_sendChunked = value;
+                this.m_sendChunked = value;
             }
         }
 
@@ -350,13 +337,11 @@ namespace System.Net
         /// <remarks>
         /// Only UTF8 encoding is supported.
         /// </remarks>
-        public Encoding ContentEncoding
-        {
-            get { return m_Encoding; }
-            set
-            {
+        public Encoding ContentEncoding {
+            get => this.m_Encoding;
+            set {
                 ThrowIfResponseSent();
-                m_Encoding = value;
+                this.m_Encoding = value;
             }
         }
 
@@ -365,13 +350,11 @@ namespace System.Net
         /// </summary>
         /// <value>A <itemref>String</itemref> instance that contains the text
         /// of the response's <itemref>Content-Type</itemref> header.</value>
-        public string ContentType
-        {
-            get { return m_contentType; }
-            set
-            {
+        public string ContentType {
+            get => this.m_contentType;
+            set {
                 ThrowIfResponseSent();
-                m_contentType = value;
+                this.m_contentType = value;
             }
         }
 
@@ -381,26 +364,24 @@ namespace System.Net
         /// </summary>
         /// <value>The text description of the HTTP status code returned to the
         /// client.</value>
-        public string StatusDescription
-        {
-            get { return m_statusDescription; }
-            set
-            {
+        public string StatusDescription {
+            get => this.m_statusDescription;
+            set {
                 ThrowIfResponseSent();
-                m_statusDescription = value;
+                this.m_statusDescription = value;
             }
         }
 
         public void Detach()
         {
-            if (!m_IsResponseClosed)
+            if (!this.m_IsResponseClosed)
             {
-                if (!m_WasResponseSent)
+                if (!this.m_WasResponseSent)
                 {
                     SendHeaders();
                 }
 
-                m_IsResponseClosed = true;
+                this.m_IsResponseClosed = true;
             }
         }
 
@@ -414,11 +395,11 @@ namespace System.Net
         /// </remarks>
         public void Close()
         {
-            if (!m_IsResponseClosed)
+            if (!this.m_IsResponseClosed)
             {
                 try
                 {
-                    if (!m_WasResponseSent)
+                    if (!this.m_WasResponseSent)
                     {
                         SendHeaders();
                     }
@@ -437,28 +418,28 @@ namespace System.Net
         /// </summary>
         void IDisposable.Dispose()
         {
-            if (!m_IsResponseClosed)
+            if (!this.m_IsResponseClosed)
             {
                 try
                 {
                     // Iterates over list of client connections and remove its stream from it.
-                    m_Listener.RemoveClientStream(m_clientStream);
+                    this.m_Listener.RemoveClientStream(this.m_clientStream);
 
-                    m_clientStream.Flush();
+                    this.m_clientStream.Flush();
 
                     // If KeepAlive is true,
-                    if (m_KeepAlive)
+                    if (this.m_KeepAlive)
                     {   // Then socket is tramsferred to the list of waiting for new data.
-                        m_Listener.AddToWaitingConnections(m_clientStream);
+                        this.m_Listener.AddToWaitingConnections(this.m_clientStream);
                     }
                     else  // If not KeepAlive then close
                     {
-                        m_clientStream.Dispose();
+                        this.m_clientStream.Dispose();
                     }
                 }
                 catch{}
 
-                m_IsResponseClosed = true;
+                this.m_IsResponseClosed = true;
             }
 
             GC.SuppressFinalize(this);

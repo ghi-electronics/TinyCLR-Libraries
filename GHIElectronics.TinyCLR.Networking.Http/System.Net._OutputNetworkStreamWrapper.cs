@@ -46,74 +46,65 @@ namespace System.Net
         /// <param name="stream"></param>
         public OutputNetworkStreamWrapper(Socket socket, NetworkStream stream)
         {
-            m_Socket = socket;
-            m_Stream = stream;
+            this.m_Socket = socket;
+            this.m_Stream = stream;
         }
 
         /// <summary>
         /// Sets the delegate for sending of headers.
         /// </summary>
-        internal SendHeadersDelegate HeadersDelegate { set { m_headersSend = value; } }
+        internal SendHeadersDelegate HeadersDelegate { set => this.m_headersSend = value; }
 
         /// <summary>
         /// Return true if stream support reading.
         /// </summary>
-        public override bool CanRead { get { return false; } }
+        public override bool CanRead => false;
 
         /// <summary>
         /// Return true if stream supports seeking
         /// </summary>
-        public override bool CanSeek { get { return false; } }
+        public override bool CanSeek => false;
 
         /// <summary>
         /// Return true if timeout is applicable to the stream
         /// </summary>
-        public override bool CanTimeout { get { return m_Stream.CanTimeout; } }
+        public override bool CanTimeout => this.m_Stream.CanTimeout;
 
         /// <summary>
         /// Return true if stream support writing. It should be true, as this is output stream.
         /// </summary>
-        public override bool CanWrite { get { return true; } }
+        public override bool CanWrite => true;
 
         /// <summary>
         /// Gets the length of the data available on the stream.
         /// Since this is output stream reading is not allowed and length does not have meaning.
         /// </summary>
         /// <returns>The length of the data available on the stream.</returns>
-        public override long Length { get { throw new NotSupportedException(); } }
+        public override long Length => throw new NotSupportedException();
 
         /// <summary>
         /// Position is not supported for NetworkStream
         /// </summary>
-        public override long Position
-        {
-            get
-            {
-                throw new NotSupportedException();
-            }
+        public override long Position {
+            get => throw new NotSupportedException();
 
-            set
-            {
-                throw new NotSupportedException();
-            }
+            set => throw new NotSupportedException();
         }
 
         /// <summary>
         /// Timeout for read operations.
         /// </summary>
-        public override int ReadTimeout
-        {
-            get { return m_Stream.ReadTimeout; }
-            set { m_Stream.ReadTimeout = value; }
+        public override int ReadTimeout {
+            get => this.m_Stream.ReadTimeout;
+            set => this.m_Stream.ReadTimeout = value;
         }
 
         /// <summary>
         /// Timeout for write operations.
         /// </summary>
-        public override int WriteTimeout
-        {
-            get { return m_Stream.WriteTimeout; }
-            set { m_Stream.WriteTimeout = value; }
+        public override int WriteTimeout {
+            get => this.m_Stream.WriteTimeout;
+            set => this.m_Stream.WriteTimeout = value;
         }
 
         /// <summary>
@@ -121,15 +112,15 @@ namespace System.Net
         /// </summary>
         public override void Close()
         {
-            if (m_headersSend != null)
+            if (this.m_headersSend != null)
             {
                 // Calls HttpListenerResponse.SendHeaders. HttpListenerResponse.SendHeaders sets m_headersSend to null.
-                m_headersSend();
+                this.m_headersSend();
             }
 
-            m_Stream.Close();
-            m_Stream = null;
-            m_Socket = null;
+            this.m_Stream.Close();
+            this.m_Stream = null;
+            this.m_Socket = null;
         }
 
         /// <summary>
@@ -137,32 +128,26 @@ namespace System.Net
         /// </summary>
         public override void Flush()
         {
-            if (m_headersSend != null)
+            if (this.m_headersSend != null)
             {
                 // Calls HttpListenerResponse.SendHeaders. HttpListenerResponse.SendHeaders sets m_headersSend to null.
-                m_headersSend();
+                this.m_headersSend();
             }
 
-            m_Stream.Flush();
+            this.m_Stream.Flush();
         }
 
         /// <summary>
         /// This putput stream, so read is not supported.
         /// </summary>
         /// <returns></returns>
-        public override int Read(byte[] buffer, int offset, int count)
-        {
-            throw new NotSupportedException();
-        }
+        public override int Read(byte[] buffer, int offset, int count) => throw new NotSupportedException();
 
         /// <summary>
         /// This putput stream, so read is not supported.
         /// </summary>
         /// <returns></returns>
-        public override int ReadByte()
-        {
-            throw new NotSupportedException();
-        }
+        public override int ReadByte() => throw new NotSupportedException();
 
         /// <summary>
         /// Seeking is not suported on network streams
@@ -170,29 +155,20 @@ namespace System.Net
         /// <param name="offset">Offset to seek</param>
         /// <param name="origin">Relative origin of the seek</param>
         /// <returns></returns>
-        public override long Seek(long offset, SeekOrigin origin)
-        {
-            throw new NotSupportedException();
-        }
+        public override long Seek(long offset, SeekOrigin origin) => throw new NotSupportedException();
 
         /// <summary>
         /// Setting length is not suported on network streams
         /// </summary>
         /// <param name="value">Length to set</param>
         /// <returns></returns>
-        public override void SetLength(long value)
-        {
-            throw new NotSupportedException();
-        }
+        public override void SetLength(long value) => throw new NotSupportedException();
 
         /// <summary>
         /// Writes single byte to the stream.
         /// </summary>
         /// <param name="value">Byte value to write.</param>
-        public override void WriteByte(byte value)
-        {
-            m_Stream.WriteByte(value);
-        }
+        public override void WriteByte(byte value) => this.m_Stream.WriteByte(value);
 
         /// <summary>
         /// Re-implements writing of data to network stream.
@@ -204,13 +180,13 @@ namespace System.Net
         /// <param name="size">Count of bytes to write.</param>
         public override void Write(byte[] buffer, int offset, int size)
         {
-            if (m_headersSend != null)
+            if (this.m_headersSend != null)
             {
                 // Calls HttpListenerResponse.SendHeaders. HttpListenerResponse.SendHeaders sets m_headersSend to null.
-                m_headersSend();
+                this.m_headersSend();
             }
 
-            m_Stream.Write(buffer, offset, size);
+            this.m_Stream.Write(buffer, offset, size);
         }
     }
 }

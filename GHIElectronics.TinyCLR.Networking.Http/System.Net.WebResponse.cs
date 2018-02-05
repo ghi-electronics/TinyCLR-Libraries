@@ -38,17 +38,10 @@ namespace System.Net
         /// </summary>
         /// <value>The number of bytes returned from the Internet
         /// resource.</value>
-        public virtual long ContentLength
-        {
-            get
-            {
-                throw new NotSupportedException();
-            }
+        public virtual long ContentLength {
+            get => throw new NotSupportedException();
 
-            set
-            {
-                throw new NotSupportedException();
-            }
+            set => throw new NotSupportedException();
         }
 
         /// <summary>
@@ -57,17 +50,10 @@ namespace System.Net
         /// </summary>
         /// <value>A string that contains the content type of the
         /// response.</value>
-        public virtual string ContentType
-        {
-            get
-            {
-                throw new NotSupportedException();
-            }
+        public virtual string ContentType {
+            get => throw new NotSupportedException();
 
-            set
-            {
-                throw new NotSupportedException();
-            }
+            set => throw new NotSupportedException();
         }
 
         /// <summary>
@@ -76,10 +62,7 @@ namespace System.Net
         /// </summary>
         /// <returns>An instance of the <see cref="System.IO.Stream"/> class for
         /// reading data from the Internet resource.</returns>
-        public virtual Stream GetResponseStream()
-        {
-            throw new NotSupportedException();
-        }
+        public virtual Stream GetResponseStream() => throw new NotSupportedException();
 
         /// <summary>
         /// When overridden in a derived class, gets the URI of the Internet
@@ -92,13 +75,7 @@ namespace System.Net
         /// This property gets the final Response URI, that includes any changes
         /// that may have transpired from the orginal request.
         /// </remarks>
-        public virtual Uri ResponseUri
-        {                           // read-only
-            get
-            {
-                throw new NotSupportedException();
-            }
-        }
+        public virtual Uri ResponseUri => throw new NotSupportedException();
 
         /// <summary>
         /// When overridden in a derived class, gets a collection of header
@@ -107,13 +84,7 @@ namespace System.Net
         /// <returns>An instance of the
         /// <see cref="System.Net.WebHeaderCollection"/> class that contains
         /// header values associated with this response.</returns>
-        public virtual WebHeaderCollection Headers
-        {
-            get
-            {
-                throw new NotSupportedException();
-            }
-        }
+        public virtual WebHeaderCollection Headers => throw new NotSupportedException();
 
         ~WebResponse()
         {
@@ -129,10 +100,7 @@ namespace System.Net
             GC.SuppressFinalize(this);
         }
 
-        public void Dispose()
-        {
-            Close();
-        }
+        public void Dispose() => Close();
 
         protected virtual void Dispose(bool disposing)
         {

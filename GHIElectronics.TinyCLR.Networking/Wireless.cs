@@ -46,20 +46,20 @@ namespace Microsoft.SPOT.Net.NetworkInformation
         private Wireless80211(int interfaceIndex)
             : base(interfaceIndex)
         {
-            NetworkKey = null;
-            ReKeyInternal = null;
-            Id = 0xFFFFFFFF;
+            this.NetworkKey = null;
+            this.ReKeyInternal = null;
+            this.Id = 0xFFFFFFFF;
         }
 
         public static void SaveConfiguration(Wireless80211[] wirelessConfigurations, bool useEncryption)
         {
             /// Before we update validate whether settings conform to right characteristics.
-            for (int i = 0; i < wirelessConfigurations.Length; i++)
+            for (var i = 0; i < wirelessConfigurations.Length; i++)
             {
                 ValidateConfiguration(wirelessConfigurations[i]);
             }
 
-            for (int i = 0; i < wirelessConfigurations.Length; i++)
+            for (var i = 0; i < wirelessConfigurations.Length; i++)
             {
                 UpdateConfiguration(wirelessConfigurations[i], useEncryption);
             }
@@ -69,27 +69,27 @@ namespace Microsoft.SPOT.Net.NetworkInformation
 
         public static void ValidateConfiguration(Wireless80211 wirelessConfiguration)
         {
-            if ((wirelessConfiguration.Authentication < AuthenticationType.None  ) || 
+            if ((wirelessConfiguration.Authentication < AuthenticationType.None  ) ||
                 (wirelessConfiguration.Authentication > AuthenticationType.Shared) ||
-                 (wirelessConfiguration.Encryption < EncryptionType.None         ) || 
+                 (wirelessConfiguration.Encryption < EncryptionType.None         ) ||
                  (wirelessConfiguration.Encryption > EncryptionType.Certificate  ) ||
-                 (wirelessConfiguration.Radio < RadioType.a                      ) || 
+                 (wirelessConfiguration.Radio < RadioType.a                      ) ||
                  (wirelessConfiguration.Radio > (RadioType.n | RadioType.g | RadioType.b | RadioType.a)))
             {
                 throw new ArgumentOutOfRangeException();
             }
 
-            if ((wirelessConfiguration.PassPhrase    == null) || 
-                (wirelessConfiguration.NetworkKey    == null) || 
-                (wirelessConfiguration.ReKeyInternal == null) || 
+            if ((wirelessConfiguration.PassPhrase    == null) ||
+                (wirelessConfiguration.NetworkKey    == null) ||
+                (wirelessConfiguration.ReKeyInternal == null) ||
                 (wirelessConfiguration.Ssid          == null))
             {
                 throw new ArgumentNullException();
             }
 
-            if ((wirelessConfiguration.PassPhrase.Length    >= MaxPassPhraseLength) || 
-                (wirelessConfiguration.NetworkKey.Length    >  NetworkKeyLength   ) || 
-                (wirelessConfiguration.ReKeyInternal.Length >  ReKeyInternalLength) || 
+            if ((wirelessConfiguration.PassPhrase.Length    >= MaxPassPhraseLength) ||
+                (wirelessConfiguration.NetworkKey.Length    >  NetworkKeyLength   ) ||
+                (wirelessConfiguration.ReKeyInternal.Length >  ReKeyInternalLength) ||
                 (wirelessConfiguration.Ssid.Length          >= SsidLength         ))
             {
                 throw new ArgumentOutOfRangeException();

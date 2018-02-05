@@ -121,11 +121,11 @@ namespace System.Diagnostics {
                 this.target = value;
             }
 
-            get => target;
+            get => this.target;
         }
 
         public string TargetTypeName {
-            get => targetName; set => targetName = value;
+            get => this.targetName; set => this.targetName = value;
         }
     }
 
@@ -160,11 +160,11 @@ namespace System.Diagnostics {
 
         public string Value => this.value;
         public string Name {
-            get => name; set => name = value;
+            get => this.name; set => this.name = value;
         }
 
         public string Type {
-            get => type; set => type = value;
+            get => this.type; set => this.type = value;
         }
 
         public Type Target {
@@ -177,11 +177,11 @@ namespace System.Diagnostics {
                 this.target = value;
             }
 
-            get => target;
+            get => this.target;
         }
 
         public string TargetTypeName {
-            get => targetName; set => targetName = value;
+            get => this.targetName; set => this.targetName = value;
         }
     }
 }

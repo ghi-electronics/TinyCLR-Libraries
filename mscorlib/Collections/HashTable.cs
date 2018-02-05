@@ -21,14 +21,14 @@ namespace System.Collections {
         public Hashtable() => InitializeHashTable(_defaultCapacity, _defaultLoadFactor);
 
         /// <summary>
-        /// Initializes a new, empty instance of the Hashtable class using the specified initial capacity, 
+        /// Initializes a new, empty instance of the Hashtable class using the specified initial capacity,
         /// and the default load factor.
         /// </summary>
         /// <param name="capacity">The initial capacity of the HashTable</param>
         public Hashtable(int capacity) => InitializeHashTable(capacity, _defaultLoadFactor);
 
         /// <summary>
-        /// Initializes a new, empty instance of the Hashtable class using the specified initial capacity, 
+        /// Initializes a new, empty instance of the Hashtable class using the specified initial capacity,
         /// load factor.
         /// </summary>
         /// <param name="capacity">The initial capacity of the HashTable</param>
@@ -47,10 +47,10 @@ namespace System.Collections {
         /// MaxLoadFactor Property is the value used to trigger a rehash.
         /// Default value is 2.
         /// A higher number can decrease lookup performance for large collections.
-        /// While a value of 1 maintains a constant time complexity at the cost of increased memory requirements.   
+        /// While a value of 1 maintains a constant time complexity at the cost of increased memory requirements.
         /// </summary>
         public int MaxLoadFactor {
-            get => _maxLoadFactor; set => _maxLoadFactor = value;
+            get => this._maxLoadFactor; set => this._maxLoadFactor = value;
         }
 
         /// <summary>
@@ -58,7 +58,7 @@ namespace System.Collections {
         /// Default value is 2.
         /// </summary>
         public double GrowthFactor {
-            get => _growthFactor; set => _growthFactor = value;
+            get => this._growthFactor; set => this._growthFactor = value;
         }
 
         //adding for internal purposes
@@ -328,7 +328,7 @@ namespace System.Collections {
 
         // EnumeratorType - Enum that describes which object the Enumerator's Current property will return.
         private enum EnumeratorType {
-            // DictionaryEntry object. 
+            // DictionaryEntry object.
             DE,
 
             // Key object.

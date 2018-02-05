@@ -46,13 +46,13 @@ namespace Microsoft.SPOT.Net.NetworkInformation
         protected NetworkInterface(int interfaceIndex)
         {
             this._interfaceIndex = interfaceIndex;
-            _networkInterfaceType = NetworkInterfaceType.Unknown;
+            this._networkInterfaceType = NetworkInterfaceType.Unknown;
         }
 
         public static NetworkInterface[] GetAllNetworkInterfaces()
         {
-            int count = GetNetworkInterfaceCount();
-            NetworkInterface[] ifaces = new NetworkInterface[count];
+            var count = GetNetworkInterfaceCount();
+            var ifaces = new NetworkInterface[count];
 
             for (uint i = 0; i < count; i++)
             {
@@ -109,10 +109,10 @@ namespace Microsoft.SPOT.Net.NetworkInformation
         {
             try
             {
-                _ipAddress = IPAddressFromString(ipAddress);
-                _subnetMask = IPAddressFromString(subnetMask);
-                _gatewayAddress = IPAddressFromString(gatewayAddress);
-                _flags &= ~FLAGS_DHCP;
+                this._ipAddress = IPAddressFromString(ipAddress);
+                this._subnetMask = IPAddressFromString(subnetMask);
+                this._gatewayAddress = IPAddressFromString(gatewayAddress);
+                this._flags &= ~FLAGS_DHCP;
 
                 UpdateConfiguration(UPDATE_FLAGS_DHCP);
             }
@@ -126,7 +126,7 @@ namespace Microsoft.SPOT.Net.NetworkInformation
         {
             try
             {
-                _flags |= FLAGS_DHCP;
+                this._flags |= FLAGS_DHCP;
                 UpdateConfiguration(UPDATE_FLAGS_DHCP);
             }
             finally
@@ -142,12 +142,12 @@ namespace Microsoft.SPOT.Net.NetworkInformation
                 throw new ArgumentException();
             }
 
-            uint[] addresses = new uint[2];
+            var addresses = new uint[2];
 
-            int iAddress = 0;
-            for (int i = 0; i < dnsAddresses.Length; i++)
+            var iAddress = 0;
+            for (var i = 0; i < dnsAddresses.Length; i++)
             {
-                uint address = IPAddressFromString(dnsAddresses[i]);
+                var address = IPAddressFromString(dnsAddresses[i]);
 
                 addresses[iAddress] = address;
 
@@ -159,10 +159,10 @@ namespace Microsoft.SPOT.Net.NetworkInformation
 
             try
             {
-                _dnsAddress1 = addresses[0];
-                _dnsAddress2 = addresses[1];
+                this._dnsAddress1 = addresses[0];
+                this._dnsAddress2 = addresses[1];
 
-                _flags &= ~FLAGS_DYNAMIC_DNS;
+                this._flags &= ~FLAGS_DYNAMIC_DNS;
 
                 UpdateConfiguration(UPDATE_FLAGS_DNS);
             }
@@ -176,7 +176,7 @@ namespace Microsoft.SPOT.Net.NetworkInformation
         {
             try
             {
-                _flags |= FLAGS_DYNAMIC_DNS;
+                this._flags |= FLAGS_DYNAMIC_DNS;
 
                 UpdateConfiguration(UPDATE_FLAGS_DNS);
             }
@@ -186,48 +186,30 @@ namespace Microsoft.SPOT.Net.NetworkInformation
             }
         }
 
-        public string IPAddress
-        {
-            get { return IPAddressToString(_ipAddress); }
-        }
+        public string IPAddress => IPAddressToString(this._ipAddress);
 
-        public string GatewayAddress
-        {
-            get { return IPAddressToString(_gatewayAddress); }
-        }
+        public string GatewayAddress => IPAddressToString(this._gatewayAddress);
 
-        public string SubnetMask
-        {
-            get { return IPAddressToString(_subnetMask); }
-        }
+        public string SubnetMask => IPAddressToString(this._subnetMask);
 
-        public bool IsDhcpEnabled
-        {
-            get { return (_flags & FLAGS_DHCP) != 0; }
-        }
+        public bool IsDhcpEnabled => (this._flags & FLAGS_DHCP) != 0;
 
-        public bool IsDynamicDnsEnabled
-        {
-            get
-            {
-                return (_flags & FLAGS_DYNAMIC_DNS) != 0;
-            }
-        }
+        public bool IsDynamicDnsEnabled => (this._flags & FLAGS_DYNAMIC_DNS) != 0;
 
         public string[] DnsAddresses
         {
             get
             {
-                ArrayList list = new ArrayList();
+                var list = new ArrayList();
 
-                if (_dnsAddress1 != 0)
+                if (this._dnsAddress1 != 0)
                 {
-                    list.Add(IPAddressToString(_dnsAddress1));
+                    list.Add(IPAddressToString(this._dnsAddress1));
                 }
 
-                if (_dnsAddress2 != 0)
+                if (this._dnsAddress2 != 0)
                 {
-                    list.Add(IPAddressToString(_dnsAddress2));
+                    list.Add(IPAddressToString(this._dnsAddress2));
                 }
 
                 return (string[])list.ToArray(typeof(string));
@@ -264,27 +246,20 @@ namespace Microsoft.SPOT.Net.NetworkInformation
             }
         }
 
-        public byte[] PhysicalAddress
-        {
-            get { return _macAddress; }
-            set
-            {
-                try
-                {
-                    _macAddress = value;
+        public byte[] PhysicalAddress {
+            get => this._macAddress;
+            set {
+                try {
+                    this._macAddress = value;
                     UpdateConfiguration(UPDATE_FLAGS_MAC);
                 }
-                finally
-                {
+                finally {
                     ReloadSettings();
                 }
             }
         }
 
-        public NetworkInterfaceType NetworkInterfaceType
-        {
-            get { return _networkInterfaceType; }
-        }
+        public NetworkInterfaceType NetworkInterfaceType => this._networkInterfaceType;
     }
 }
 

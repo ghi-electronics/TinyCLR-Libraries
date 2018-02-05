@@ -10,21 +10,9 @@ namespace System.Net
         internal string hostName;
         internal IPAddress[] addressList;
 
-        public string HostName
-        {
-            get
-            {
-                return hostName;
-            }
-        }
+        public string HostName => this.hostName;
 
-        public IPAddress[] AddressList
-        {
-            get
-            {
-                return addressList;
-            }
-        }
+        public IPAddress[] AddressList => this.addressList;
     } // class IPHostEntry
 } // namespace System.Net
 

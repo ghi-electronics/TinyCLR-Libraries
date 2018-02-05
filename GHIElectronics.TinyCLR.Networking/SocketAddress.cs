@@ -18,38 +18,25 @@ namespace System.Net
 
         internal byte[] m_Buffer;
 
-        public AddressFamily Family
-        {
-            get
-            {
-                return (AddressFamily)(m_Buffer[0] | (m_Buffer[1] << 8));
-            }
-        }
+        public AddressFamily Family => (AddressFamily)(this.m_Buffer[0] | (this.m_Buffer[1] << 8));
 
-        internal SocketAddress(byte[] address)
-        {
-            m_Buffer = address;
-        }
+        internal SocketAddress(byte[] address) => this.m_Buffer = address;
 
         public SocketAddress(AddressFamily family, int size)
         {
             Microsoft.SPOT.Debug.Assert(size > 2);
 
-            m_Buffer = new byte[size]; //(size / IntPtr.Size + 2) * IntPtr.Size];//sizeof DWORD
+            this.m_Buffer = new byte[size]; //(size / IntPtr.Size + 2) * IntPtr.Size];//sizeof DWORD
 
-            m_Buffer[0] = unchecked((byte)((int)family     ));
-            m_Buffer[1] = unchecked((byte)((int)family >> 8));
+            this.m_Buffer[0] = unchecked((byte)((int)family     ));
+            this.m_Buffer[1] = unchecked((byte)((int)family >> 8));
         }
 
-        public int Size
-        {
-            get { return m_Buffer.Length; }
-        }
+        public int Size => this.m_Buffer.Length;
 
-        public byte this[int offset]
-        {
-            get { return m_Buffer[offset]; }
-            set { m_Buffer[offset] = value; }
+        public byte this[int offset] {
+            get => this.m_Buffer[offset];
+            set => this.m_Buffer[offset] = value;
         }
 
     } // class SocketAddress

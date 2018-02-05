@@ -109,17 +109,17 @@ namespace System.Net
         private int RefillInternalBuffer()
         {
 #if DEBUG
-            if (m_dataStart != m_dataEnd)
+            if (this.m_dataStart != this.m_dataEnd)
             {
                 Microsoft.SPOT.Debug.Print("Internal ERROR in InputNetworkStreamWrapper");
-                m_dataStart = m_dataEnd = 0;
+                this.m_dataStart = this.m_dataEnd = 0;
             }
 #endif 
             //  m_dataStart should be equal to m_dataEnd. Purge buffered data.
-            m_dataStart = m_dataEnd = 0;
+            this.m_dataStart = this.m_dataEnd = 0;
             // Read up to read_buffer_size, but less data can be read.
             // This function does not try to block, so it reads available data or 1 byte at least.
-            int readCount = (int)m_Stream.Length;
+            var readCount = (int)this.m_Stream.Length;
             if ( readCount > read_buffer_size )
             {
                 readCount = read_buffer_size;
@@ -129,9 +129,9 @@ namespace System.Net
                 readCount = 1; 
             }
 
-            m_dataEnd = m_Stream.Read(m_readBuffer, 0, readCount);
+            this.m_dataEnd = this.m_Stream.Read(this.m_readBuffer, 0, readCount);
 
-            return m_dataEnd;
+            return this.m_dataEnd;
         }
 
         /// <summary>
@@ -139,9 +139,9 @@ namespace System.Net
         /// </summary>
         internal void ResetState()
         {
-            m_dataStart = m_dataEnd = 0;
-            m_EnableChunkedDecoding = false;
-            m_chunk = null;
+            this.m_dataStart = this.m_dataEnd = 0;
+            this.m_EnableChunkedDecoding = false;
+            this.m_chunk = null;
         }
 
         /// <summary>
@@ -156,17 +156,17 @@ namespace System.Net
         /// <param name="rmAddrAndPort">TBD</param>
         internal InputNetworkStreamWrapper( NetworkStream stream, Socket socket, bool ownsSocket, string rmAddrAndPort)
         {
-            m_Stream = stream;
-            m_Socket = socket;
-            m_OwnsSocket = ownsSocket;
-            m_rmAddrAndPort = rmAddrAndPort;
-            m_InUse = true;
+            this.m_Stream = stream;
+            this.m_Socket = socket;
+            this.m_OwnsSocket = ownsSocket;
+            this.m_rmAddrAndPort = rmAddrAndPort;
+            this.m_InUse = true;
             // negative value indicates no length is set, in which case we will continue to read upon the callers request
-            m_BytesLeftInResponse = -1;
-            
+            this.m_BytesLeftInResponse = -1;
+
             // Start with 80 (0x50) byte buffer for string. If string longer, we double it each time.
-            m_lineBuf = new byte[0x50];
-            m_readBuffer = new byte[read_buffer_size];
+            this.m_lineBuf = new byte[0x50];
+            this.m_readBuffer = new byte[read_buffer_size];
         }
 
         /// <summary>
@@ -178,7 +178,7 @@ namespace System.Net
         public override int Read(byte[] buffer, int offset, int size)
         {
             // If chunking decoding is not needed - perform normal read.
-            if (!m_EnableChunkedDecoding)
+            if (!this.m_EnableChunkedDecoding)
             {
                 return ReadInternal(buffer, offset, size);
             }
@@ -188,37 +188,37 @@ namespace System.Net
             // 2. We are in the middle of chunk. Then it is kind of normal read, but no more than chunk length.
             // 3. We are close to the end of chunk. Then we read maximum of data in the chunk and set m_chunk to null.
             // 4. We already read last chunk of zero size. Return with zero bytes read. 
-            if (m_chunk == null)
+            if (this.m_chunk == null)
             {
                 // We are in the beginnig of the chunk. Create new chunk and continue. This is case 1. 
-                m_chunk = GetChunk();
+                this.m_chunk = GetChunk();
             }
             
             // First validate that chunk is more than zero in size. The last chunk is zero size and it indicates end of data.
-            if (m_chunk.m_Size == 0)
+            if (this.m_chunk.m_Size == 0)
             {
                 // Nothing to read and actually it is the end of the message body. It is "case 4".
                 return 0;
             }
 
             // Check if request to read is larger than remaining data in the chunk.
-            if (size > m_chunk.m_Size - m_chunk.m_OffsetIntoChunk)
+            if (size > this.m_chunk.m_Size - this.m_chunk.m_OffsetIntoChunk)
             {
                 // We set size to the maximum data remaining the the chunk. This is the case 3.
-                size = (int)(m_chunk.m_Size - m_chunk.m_OffsetIntoChunk);
+                size = (int)(this.m_chunk.m_Size - this.m_chunk.m_OffsetIntoChunk);
             }
            
             // Ok, we know that we are in process of reading chunk data. This is case 2. 
             // size is already adjusted to the maximum data remaining in the chunk.
-            int retVal = ReadInternal(buffer, offset, size);
+            var retVal = ReadInternal(buffer, offset, size);
 
             // Adjust offset into chunk by amount of data read. retVal could be less than size.
-            m_chunk.m_OffsetIntoChunk += (uint)retVal;
+            this.m_chunk.m_OffsetIntoChunk += (uint)retVal;
             
             // If we reached end of chunk, then set m_chunk to null. This indicates that chunk was completed.
-            if (m_chunk.m_OffsetIntoChunk == m_chunk.m_Size)
+            if (this.m_chunk.m_OffsetIntoChunk == this.m_chunk.m_Size)
             {
-                m_chunk = null; 
+                this.m_chunk = null; 
             }
             
             return retVal;
@@ -229,27 +229,27 @@ namespace System.Net
         /// </summary>
         public void FlushReadBuffer()
         {
-            byte[] buffer = new byte[1024];
+            var buffer = new byte[1024];
 
-            int waitTimeUs = m_BytesLeftInResponse == 0 ? 500000 : 1000000;
+            var waitTimeUs = this.m_BytesLeftInResponse == 0 ? 500000 : 1000000;
 
             try
             {
-                while (m_Socket.Poll(waitTimeUs, SelectMode.SelectRead))
+                while (this.m_Socket.Poll(waitTimeUs, SelectMode.SelectRead))
                 {
-                    int avail = m_Socket.Available;
+                    var avail = this.m_Socket.Available;
 
                     if(avail == 0) break;
 
                     while (avail > 0)
                     {
-                        int bytes = m_Stream.Read(buffer, 0, avail > buffer.Length ? buffer.Length : avail);
+                        var bytes = this.m_Stream.Read(buffer, 0, avail > buffer.Length ? buffer.Length : avail);
 
                         if (bytes <= 0) break;
 
                         avail -= bytes;
 
-                        if (m_BytesLeftInResponse > 0) m_BytesLeftInResponse -= bytes;
+                        if (this.m_BytesLeftInResponse > 0) this.m_BytesLeftInResponse -= bytes;
                     }
                 }
             }
@@ -257,18 +257,18 @@ namespace System.Net
             {
             }
 
-            m_dataEnd = m_dataStart = 0;
-            m_BytesLeftInResponse = -1;
+            this.m_dataEnd = this.m_dataStart = 0;
+            this.m_BytesLeftInResponse = -1;
         }
 
         private void ReleaseThread()
         {
             FlushReadBuffer();
-            
-            m_lastUsed = DateTime.Now;
+
+            this.m_lastUsed = DateTime.Now;
             ResetState();
-            
-            m_InUse = false;
+
+            this.m_InUse = false;
         }
 
         ///
@@ -277,7 +277,7 @@ namespace System.Net
         ///
         public void ReleaseStream()
         {
-            Thread th = new Thread(new ThreadStart(ReleaseThread));
+            var th = new Thread(new ThreadStart(this.ReleaseThread));
             th.Start();
         }
 
@@ -290,18 +290,18 @@ namespace System.Net
         public int ReadInternal(byte[] buffer, int offset, int size)
         {
             // Need to init return value to zero explicitly, otherwise warning generated.
-            int retVal = 0;
+            var retVal = 0;
 
             // As first step we copy the buffered data if present
-            int dataBuffered = m_dataEnd - m_dataStart;
+            var dataBuffered = this.m_dataEnd - this.m_dataStart;
             if (dataBuffered > 0)
             {
-                int dataToCopy = size < dataBuffered ? size : dataBuffered;
-                for (int i = 0; i < dataToCopy; i++)
+                var dataToCopy = size < dataBuffered ? size : dataBuffered;
+                for (var i = 0; i < dataToCopy; i++)
                 {
-                    buffer[offset + i] = m_readBuffer[m_dataStart + i];
+                    buffer[offset + i] = this.m_readBuffer[this.m_dataStart + i];
                 }
-                m_dataStart += dataToCopy;
+                this.m_dataStart += dataToCopy;
                 offset += dataToCopy;
                 size -= dataToCopy;
                 retVal += dataToCopy;
@@ -314,7 +314,7 @@ namespace System.Net
             //                                                         the total content length of the response stream
             // In either case, we need to read more data to fullfill the read request
             //
-            if (size > 0 && (m_BytesLeftInResponse == -1 || m_BytesLeftInResponse > retVal))
+            if (size > 0 && (this.m_BytesLeftInResponse == -1 || this.m_BytesLeftInResponse > retVal))
             {
                 // If buffering desired and requested data is less than internal buffer size
                 // then we read into internal buffer. 
@@ -322,15 +322,15 @@ namespace System.Net
                 {
                     if(0 == RefillInternalBuffer()) return 0;
 
-                    dataBuffered = m_dataEnd - m_dataStart;
+                    dataBuffered = this.m_dataEnd - this.m_dataStart;
                     if (dataBuffered > 0)
                     {
-                        int dataToCopy = size < dataBuffered ? size : dataBuffered;
-                        for (int i = 0; i < dataToCopy; i++)
+                        var dataToCopy = size < dataBuffered ? size : dataBuffered;
+                        for (var i = 0; i < dataToCopy; i++)
                         {
-                            buffer[offset + i] = m_readBuffer[m_dataStart + i];
+                            buffer[offset + i] = this.m_readBuffer[this.m_dataStart + i];
                         }
-                        m_dataStart += dataToCopy;
+                        this.m_dataStart += dataToCopy;
                         offset += dataToCopy;
                         size -= dataToCopy;
                         retVal += dataToCopy;
@@ -338,17 +338,17 @@ namespace System.Net
                 }
                 else // Do not replentish internal buffer. Read rest of data directly
                 {
-                    retVal += m_Stream.Read(buffer, offset, size);
+                    retVal += this.m_Stream.Read(buffer, offset, size);
                 }
             }
 
             // update the bytes left in response 
-            if(m_BytesLeftInResponse > 0)
+            if(this.m_BytesLeftInResponse > 0)
             {
-                m_BytesLeftInResponse -= retVal;
+                this.m_BytesLeftInResponse -= retVal;
 
                 // in case there were more bytes in the buffer than we expected make sure the next call returns 0
-                if(m_BytesLeftInResponse < 0) m_BytesLeftInResponse = 0;
+                if(this.m_BytesLeftInResponse < 0) this.m_BytesLeftInResponse = 0;
             }
             
             return retVal;
@@ -361,59 +361,46 @@ namespace System.Net
         /// <param name="buffer">Buffer to write</param>
         /// <param name="offset">Start offset to write data</param>
         /// <param name="count">Count of bytes to write</param>
-        public override void Write(byte[] buffer, int offset, int count)
-        {
-            m_Stream.Write(buffer, offset, count);
-        }
+        public override void Write(byte[] buffer, int offset, int count) => this.m_Stream.Write(buffer, offset, count);
 
         /// <summary>
         /// Since we do not have write buffering, all we do is delegate to the m_Stream.
         /// </summary>
-        public override void Flush()
-        {
-            m_Stream.Flush();
-        }
+        public override void Flush() => this.m_Stream.Flush();
 
         /// <summary>
         /// Return true if stream support reading.
         /// </summary>
-        public override bool CanRead { get { return m_Stream.CanRead; } }
+        public override bool CanRead => this.m_Stream.CanRead;
 
         /// <summary>
         /// Return true if stream supports seeking
         /// </summary>
-        public override bool CanSeek { get { return m_Stream.CanSeek; } }
-        
+        public override bool CanSeek => this.m_Stream.CanSeek;
+
         /// <summary>
         /// Return true if timeout is applicable to the stream
         /// </summary>
-        public override bool CanTimeout { get { return m_Stream.CanTimeout; } }
+        public override bool CanTimeout => this.m_Stream.CanTimeout;
 
         /// <summary>
         /// Return true if stream support writing.
         /// </summary>
-        public override bool CanWrite { get { return m_Stream.CanWrite; } }
+        public override bool CanWrite => this.m_Stream.CanWrite;
 
         /// <summary>
         /// Gets the length of the data available on the stream.
         /// </summary>
         /// <returns>The length of the data available on the stream. 
         /// Add data cached in the stream buffer to available on socket</returns>
-        public override long Length { get { return m_EnableChunkedDecoding && m_chunk != null ? m_chunk.m_Size : m_Stream.Length + m_dataEnd - m_dataStart; } }
+        public override long Length => this.m_EnableChunkedDecoding && this.m_chunk != null ? this.m_chunk.m_Size : this.m_Stream.Length + this.m_dataEnd - this.m_dataStart;
 
         /// <summary>
         /// Position is not supported for NetworkStream
         /// </summary>
-        public override long Position
-        {
-            get
-            {
-                throw new NotSupportedException();
-            }
-            set
-            {
-                throw new NotSupportedException();
-            }
+        public override long Position {
+            get => throw new NotSupportedException();
+            set => throw new NotSupportedException();
         }
 
         /// <summary>
@@ -422,41 +409,33 @@ namespace System.Net
         /// <param name="offset">Offset to seek</param>
         /// <param name="origin">Relative origin of the seek</param>
         /// <returns></returns>
-        public override long Seek(long offset, SeekOrigin origin)
-        {
-            throw new NotSupportedException();
-        }
+        public override long Seek(long offset, SeekOrigin origin) => throw new NotSupportedException();
 
         /// <summary>
         /// Setting of length is not supported
         /// </summary>
         /// <param name="value">Length to set</param>
-        public override void SetLength(long value)
-        {
-            throw new NotSupportedException();
-        }
+        public override void SetLength(long value) => throw new NotSupportedException();
 
         /// <summary>
         /// Timeout for read operations. 
         /// </summary>
-        public override int ReadTimeout 
-        { 
-            get { return m_Stream.ReadTimeout; }
-            set { m_Stream.ReadTimeout = value; } 
+        public override int ReadTimeout {
+            get => this.m_Stream.ReadTimeout;
+            set => this.m_Stream.ReadTimeout = value;
         }
-        
+
         /// <summary>
         /// Timeout for write operations.
         /// </summary>
-        public override int WriteTimeout 
-        {
-            get { return m_Stream.WriteTimeout;  }
-            set { m_Stream.WriteTimeout = value; }
+        public override int WriteTimeout {
+            get => this.m_Stream.WriteTimeout;
+            set => this.m_Stream.WriteTimeout = value;
         }
 
         public Stream CloneStream()
         {
-            InputNetworkStreamWrapper clone = this.MemberwiseClone() as InputNetworkStreamWrapper;
+            var clone = this.MemberwiseClone() as InputNetworkStreamWrapper;
             clone.m_isClone = true;
 
             return clone;
@@ -467,15 +446,15 @@ namespace System.Net
         /// </summary>
         protected override void Dispose(bool disposing)
         {
-            m_InUse = false;
+            this.m_InUse = false;
 
-            if (!m_isClone)
+            if (!this.m_isClone)
             {
-                m_Stream.Close();
+                this.m_Stream.Close();
 
-                if(m_OwnsSocket)
+                if(this.m_OwnsSocket)
                 {
-                    m_Socket.Close();
+                    this.m_Socket.Close();
                 }
             }
             
@@ -489,21 +468,21 @@ namespace System.Net
         /// <returns>String that represents the line, not including \r\n or by \n</returns>
         internal string Read_HTTP_Line( int maxLineLength )
         {
-            int curPos = 0;
-            bool readLineComplete = false;
+            var curPos = 0;
+            var readLineComplete = false;
 
             while (!readLineComplete)
             {
                 // We need to read character by character. For efficiency we need stream that implements internal bufferting.
                 // We cannot read more than one character at a time, since this one could be the last.
-                int maxCurSize = m_lineBuf.Length - 1;
+                var maxCurSize = this.m_lineBuf.Length - 1;
                 maxCurSize = maxCurSize < maxLineLength ? maxCurSize : maxLineLength;
                 while (curPos < maxCurSize)
                 {
                     // If data available, Reads one byte of data. 
-                    if (m_dataEnd - m_dataStart > 0)
+                    if (this.m_dataEnd - this.m_dataStart > 0)
                     {   // Very special code for reading of one character.
-                        m_lineBuf[curPos] = m_readBuffer[m_dataStart]; ++curPos; ++m_dataStart;
+                        this.m_lineBuf[curPos] = this.m_readBuffer[this.m_dataStart]; ++curPos; ++this.m_dataStart;
                     }
                     else
                     {   // Refill internal buffer and read one character.
@@ -512,20 +491,20 @@ namespace System.Net
                             readLineComplete = true;
                             break;
                         }
-                        m_lineBuf[curPos] = m_readBuffer[m_dataStart]; ++curPos; ++m_dataStart;
+                        this.m_lineBuf[curPos] = this.m_readBuffer[this.m_dataStart]; ++curPos; ++this.m_dataStart;
                     }
 
                     // Accoring to HTTP spec HTTP headers lines should be separated by "\r\n"
                     // Still spec requires for testing of "\n" only. So we test both
-                    if (m_lineBuf[curPos - 1] == '\r' || m_lineBuf[curPos - 1] == '\n')
+                    if (this.m_lineBuf[curPos - 1] == '\r' || this.m_lineBuf[curPos - 1] == '\n')
                     {
                         // Next character should be '\n' if previous was '\r'
-                        if (m_lineBuf[curPos - 1] == '\r')
+                        if (this.m_lineBuf[curPos - 1] == '\r')
                         {
                             // If data available, Reads one byte of data. 
-                            if (m_dataEnd - m_dataStart > 0)
+                            if (this.m_dataEnd - this.m_dataStart > 0)
                             {   // Very special code for reading of one character.
-                                m_lineBuf[curPos] = m_readBuffer[m_dataStart]; ++curPos; ++m_dataStart;
+                                this.m_lineBuf[curPos] = this.m_readBuffer[this.m_dataStart]; ++curPos; ++this.m_dataStart;
                             }
                             else
                             {   // Refill internal buffer and read one character.
@@ -534,7 +513,7 @@ namespace System.Net
                                     readLineComplete = true;
                                     break;
                                 }
-                                m_lineBuf[curPos] = m_readBuffer[m_dataStart]; ++curPos; ++m_dataStart;
+                                this.m_lineBuf[curPos] = this.m_readBuffer[this.m_dataStart]; ++curPos; ++this.m_dataStart;
                             }
                         }
                         readLineComplete = true;
@@ -552,20 +531,18 @@ namespace System.Net
                 if (!readLineComplete)
                 {
                     // Need to allocate larger m_lineBuf and copy existing line there.
-                    byte[] newLineBuf = new byte[m_lineBuf.Length * 2];
+                    var newLineBuf = new byte[this.m_lineBuf.Length * 2];
                     // Copy data to new array
-                    m_lineBuf.CopyTo(newLineBuf, 0);
+                    this.m_lineBuf.CopyTo(newLineBuf, 0);
                     // Re-assign. Now m_lineBuf is twice as long and keeps the same data.
-                    m_lineBuf = newLineBuf;
+                    this.m_lineBuf = newLineBuf;
                 }
             }
             // Now we need to convert from byte array to string.
             if (curPos - 2 > 0)
             {
-                int byteUsed, charUsed;
-                bool completed = false;
-                char[] charBuf = new char[curPos - 2];
-                UTF8decoder.Convert(m_lineBuf, 0, curPos - 2, charBuf, 0, charBuf.Length, true, out byteUsed, out charUsed, out completed);
+                var charBuf = new char[curPos - 2];
+                UTF8decoder.Convert(this.m_lineBuf, 0, curPos - 2, charBuf, 0, charBuf.Length, true, out var byteUsed, out var charUsed, out var completed);
                 return new string(charBuf);
             }
             else if(curPos == 0)
@@ -583,11 +560,11 @@ namespace System.Net
         private byte PeekByte()
         {
             // Refills internal buffer if there is no more data
-            if (m_dataEnd == m_dataStart)
+            if (this.m_dataEnd == this.m_dataStart)
             {
                 if(0 == RefillInternalBuffer()) throw new SocketException(SocketError.ConnectionAborted);
             }
-            return m_readBuffer[m_dataStart];
+            return this.m_readBuffer[this.m_dataStart];
         }
         
         /// <summary>
@@ -597,22 +574,19 @@ namespace System.Net
         public override int ReadByte()
         {
             // Refills internal buffer if there is no more data
-            if (m_dataEnd == m_dataStart)
+            if (this.m_dataEnd == this.m_dataStart)
             {
                 if(0 == RefillInternalBuffer()) throw new SocketException(SocketError.ConnectionAborted);
             }
             // Very similar to Peek, but moves current position to next byte.
-            return m_readBuffer[m_dataStart++];
+            return this.m_readBuffer[this.m_dataStart++];
         }
 
         /// <summary>
         /// Writes single byte to stream
         /// </summary>
         /// <param name="value"></param>
-        public override void WriteByte(byte value)
-        {
-            m_Stream.WriteByte(value);
-        }
+        public override void WriteByte(byte value) => this.m_Stream.WriteByte(value);
 
         /// <summary>
         /// Reads HTTP header from input stream.
@@ -624,8 +598,8 @@ namespace System.Net
         /// <returns></returns>
         internal string Read_HTTP_Header(int maxLineLength)
         {
-            string strHeader = Read_HTTP_Line(maxLineLength);
-            int headLineLen = strHeader.Length;
+            var strHeader = Read_HTTP_Line(maxLineLength);
+            var headLineLen = strHeader.Length;
 
             // If line is empty - means the last one. Just return it.
             if (headLineLen == 0)
@@ -637,14 +611,14 @@ namespace System.Net
             // Check next byte in the stream. If it is ' ' or '\t' - next line is continuation of existing header.
             while (maxLineLength > 0 )
             {
-                byte nextByte = PeekByte();
+                var nextByte = PeekByte();
                 // If next byte is not white space or tab, then we are done.
                 if (!(nextByte == ' ' || nextByte == '\t'))
                 {
                     return strHeader;
                 }
                 // If we got here - means next line starts by white space or tab. Need to read it and append it.
-                string strLine = Read_HTTP_Line(maxLineLength);
+                var strLine = Read_HTTP_Line(maxLineLength);
                 // Decrease by amount of data read
                 maxLineLength -= strLine.Length;
                 // Adds it to the header.
@@ -660,16 +634,16 @@ namespace System.Net
         /// <returns></returns>
         private Chunk GetChunk()
         {
-            Chunk nextChunk = new Chunk();
-            bool parsing = true;
-            ChunkState state = ChunkState.InitialLF;
-            byte[] buffer = new byte[1024];
+            var nextChunk = new Chunk();
+            var parsing = true;
+            var state = ChunkState.InitialLF;
+            var buffer = new byte[1024];
             byte[] data;
-            int dataByte = 0;
+            var dataByte = 0;
 
             while (parsing)
             {
-                int readByte = ReadByte();
+                var readByte = ReadByte();
                 switch (readByte)
                 {
                     case 13: //CR

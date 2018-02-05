@@ -200,10 +200,7 @@ namespace System
         /// <p>-or-</p><p>The MS-DOS path specified in
         /// <paramref name="uriString"/> must start with c:\\.</p>
         /// </exception>
-        public Uri(string uriString)
-        {
-            ConstructAbsoluteUri(uriString);
-        }
+        public Uri(string uriString) => ConstructAbsoluteUri(uriString);
 
         /// <summary>
         /// Constructs an absolute Uri from a URI string.
@@ -217,7 +214,7 @@ namespace System
             // ParseUriString provides full validation including testing for
             // null.
             ParseUriString(uriString);
-            m_OriginalUriString = uriString;
+            this.m_OriginalUriString = uriString;
         }
 
         /// <summary>
@@ -238,12 +235,12 @@ namespace System
                     {
                         // Validates the relative Uri.
                         ValidateUriPart(uriString, 0);
-                        m_OriginalUriString = uriString;
+                        this.m_OriginalUriString = uriString;
                         break;
                     }
             }
 
-            m_OriginalUriString = uriString;
+            this.m_OriginalUriString = uriString;
         }
 
         /// <summary>
@@ -254,18 +251,18 @@ namespace System
         protected void ValidateUriPart(string uriString, int startIndex)
         {
             // Check for valid alpha numeric characters
-            int pathLength = uriString.Length - startIndex;
+            var pathLength = uriString.Length - startIndex;
 
             // This is unknown scheme. We do validate following rules:
             // 1. All character values are less than 128. For characters it means they are more than zero.
             // 2. All charaters are >= 32. Lower values are control characters.
             // 3. If there is %, then there should be 2 hex digits which are 0-10 and A-F or a-f.
 
-            for (int i = startIndex; i < pathLength; ++i)
+            for (var i = startIndex; i < pathLength; ++i)
             {
                 //if (!(IsAlphaNumeric(uriString[i]) || uriString[i] == '+' || uriString[i] == '-' || uriString[i] == '.'))
                 // If character is upper ( in signed more than 127, then value is negative ).
-                char value = uriString[i];
+                var value = uriString[i];
                 if (value < 32)
                 {
                     throw new ArgumentException("Invalid char: " + value);
@@ -280,9 +277,9 @@ namespace System
                     }
 
                     // There are at least 2 characters. Check their values
-                    for (int j = 1; j < 3; j++)
+                    for (var j = 1; j < 3; j++)
                     {
-                        char nextVal = uriString[i + j];
+                        var nextVal = uriString[i + j];
                         if (!((nextVal >= '0' && nextVal <= '9') ||
                                 (nextVal >= 'A' && nextVal <= 'F') ||
                                 (nextVal >= 'a' && nextVal <= 'f')
@@ -311,8 +308,8 @@ namespace System
         /// </exception>
         protected void ParseUriString(string uriString)
         {
-            int startIndex = 0;
-            int endIndex = 0;
+            var startIndex = 0;
+            var endIndex = 0;
 
             // Check for null or empty string.
             if (uriString == null || uriString.Length == 0)
@@ -327,7 +324,7 @@ namespace System
                 throw new ArgumentException();
             }
 
-            string uriStringLower = uriString.ToLower();
+            var uriStringLower = uriString.ToLower();
 
             // If this is a urn parse and return
             if (uriStringLower.IndexOf("urn:", startIndex) == 0)
@@ -345,15 +342,15 @@ namespace System
 
             // Validate Scheme
             endIndex = uriString.IndexOf(':');
-            m_scheme = uriString.Substring(0, endIndex);
-            if (!IsAlpha(m_scheme[0]))
+            this.m_scheme = uriString.Substring(0, endIndex);
+            if (!IsAlpha(this.m_scheme[0]))
             {
                 throw new ArgumentException();
             }
 
-            for (int i = 1; i < m_scheme.Length; ++i)
+            for (var i = 1; i < this.m_scheme.Length; ++i)
             {
-                if (!(IsAlphaNumeric(m_scheme[i]) || m_scheme[i] == '+' || m_scheme[i] == '-' || m_scheme[i] == '.'))
+                if (!(IsAlphaNumeric(this.m_scheme[i]) || this.m_scheme[i] == '+' || this.m_scheme[i] == '-' || this.m_scheme[i] == '.'))
                 {
                     throw new ArgumentException();
                 }
@@ -367,53 +364,53 @@ namespace System
             }
 
             // Get host, port and absolute path
-            bool bRooted = ParseSchemeSpecificPart(uriString, startIndex);
+            var bRooted = ParseSchemeSpecificPart(uriString, startIndex);
 
-            if ((m_scheme == "file" || m_scheme == "mailto") && m_host.Length == 0)
+            if ((this.m_scheme == "file" || this.m_scheme == "mailto") && this.m_host.Length == 0)
             {
-                m_hostNameType = UriHostNameType.Basic;
+                this.m_hostNameType = UriHostNameType.Basic;
             }
-            else if (m_host.Length == 0)
+            else if (this.m_host.Length == 0)
             {
-                m_hostNameType = UriHostNameType.Unknown;
+                this.m_hostNameType = UriHostNameType.Unknown;
             }
-            else if (m_host[0] == '[')
+            else if (this.m_host[0] == '[')
             {
-                if (!IsIPv6(m_host))
+                if (!IsIPv6(this.m_host))
                 {
                     throw new ArgumentException();
                 }
 
-                m_hostNameType = UriHostNameType.IPv6;
+                this.m_hostNameType = UriHostNameType.IPv6;
             }
-            else if (IsIPv4(m_host))
+            else if (IsIPv4(this.m_host))
             {
-                m_hostNameType = UriHostNameType.IPv4;
+                this.m_hostNameType = UriHostNameType.IPv4;
             }
             else
             {
-                m_hostNameType = UriHostNameType.Dns;
+                this.m_hostNameType = UriHostNameType.Dns;
             }
 
-            if (m_host != null)
+            if (this.m_host != null)
             {
-                if (m_host == "localhost" ||
-                    m_host == "loopback" ||
-                    (m_scheme == "file" || m_scheme == "mailto") && m_host.Length == 0)
+                if (this.m_host == "localhost" ||
+                    this.m_host == "loopback" ||
+                    (this.m_scheme == "file" || this.m_scheme == "mailto") && this.m_host.Length == 0)
                 {
-                    m_Flags |= m_Flags | (int)Flags.LoopbackHost;
+                    this.m_Flags |= this.m_Flags | (int)Flags.LoopbackHost;
                 }
             }
 
-            m_absoluteUri = m_scheme + ":" +
+            this.m_absoluteUri = this.m_scheme + ":" +
                 (bRooted ? "//" : string.Empty) +
-                m_host +
-                ((DefaultPort(m_scheme) == m_port) ? string.Empty : ":" + m_port.ToString()) +
-                (m_scheme == "file" && m_AbsolutePath.Length >= 2 && IsAlpha(m_AbsolutePath[0]) && m_AbsolutePath[1] == ':' ? "/" : string.Empty) +
-                m_AbsolutePath;
+                this.m_host +
+                ((DefaultPort(this.m_scheme) == this.m_port) ? string.Empty : ":" + this.m_port.ToString()) +
+                (this.m_scheme == "file" && this.m_AbsolutePath.Length >= 2 && IsAlpha(this.m_AbsolutePath[0]) && this.m_AbsolutePath[1] == ':' ? "/" : string.Empty) +
+                this.m_AbsolutePath;
 
-            m_isAbsoluteUri = true;
-            m_isUnc = m_scheme == "file" && m_host.Length > 0;
+            this.m_isAbsoluteUri = true;
+            this.m_isUnc = this.m_scheme == "file" && this.m_host.Length > 0;
         }
 
         /// <summary>
@@ -439,11 +436,11 @@ namespace System
         /// <param name="sInput">Scheme-specific part of uri</param>
         protected bool ParseSchemeSpecificPart(string sUri, int iStart)
         {
-            bool bRooted = sUri.Length >= iStart + 2 && sUri.Substring(iStart, 2) == "//";
+            var bRooted = sUri.Length >= iStart + 2 && sUri.Substring(iStart, 2) == "//";
             bool bAbsoluteUriRooted;
 
             string sAuthority;
-            switch (m_scheme)
+            switch (this.m_scheme)
             {
                 case "http":
                 case "https":
@@ -460,7 +457,7 @@ namespace System
                     }
 
                     bAbsoluteUriRooted = bRooted;
-                    Split(sUri, iStart + 2, out sAuthority, out m_AbsolutePath, true);
+                    Split(sUri, iStart + 2, out sAuthority, out this.m_AbsolutePath, true);
                     break;
 
                 case "file":
@@ -473,7 +470,7 @@ namespace System
                     if (sUri.Length > 0)
                     {
                         var array = sUri.ToCharArray();
-                        for (int i = 0; i < array.Length; i++)
+                        for (var i = 0; i < array.Length; i++)
                         {
                             if (array[i] == '\\')
                             {
@@ -483,7 +480,7 @@ namespace System
                         sUri = new string(array);
                     }
 
-                    string sTrimmed = sUri.TrimStart('/');
+                    var sTrimmed = sUri.TrimStart('/');
 
                     if (sTrimmed.Length >= 2 && IsAlpha(sTrimmed[0]) && sTrimmed[1] == ':')
                     {
@@ -494,7 +491,7 @@ namespace System
                         }
 
                         sAuthority = string.Empty;
-                        m_AbsolutePath = sTrimmed;
+                        this.m_AbsolutePath = sTrimmed;
                     }
                     else
                     {
@@ -502,11 +499,11 @@ namespace System
                         if (sUri.Length - sTrimmed.Length == 1 || sTrimmed.Length == 0)
                         {
                             sAuthority = string.Empty;
-                            m_AbsolutePath = sUri.Length > 0 ? sUri : "/";
+                            this.m_AbsolutePath = sUri.Length > 0 ? sUri : "/";
                         }
                         else
                         {
-                            Split(sTrimmed, 0, out sAuthority, out m_AbsolutePath, true);
+                            Split(sTrimmed, 0, out sAuthority, out this.m_AbsolutePath, true);
                         }
                     }
 
@@ -516,7 +513,7 @@ namespace System
                 case "news":
                 case "uuid":
                     sAuthority = string.Empty;
-                    m_AbsolutePath = sUri.Substring(iStart);
+                    this.m_AbsolutePath = sUri.Substring(iStart);
                     bAbsoluteUriRooted = false;
                     break;
 
@@ -524,11 +521,11 @@ namespace System
                     if (bRooted)
                     {
                         sAuthority = string.Empty;
-                        m_AbsolutePath = sUri.Substring(iStart);
+                        this.m_AbsolutePath = sUri.Substring(iStart);
                     }
                     else
                     {
-                        Split(sUri, iStart, out sAuthority, out m_AbsolutePath, false);
+                        Split(sUri, iStart, out sAuthority, out this.m_AbsolutePath, false);
                     }
                     bAbsoluteUriRooted = false;
                     break;
@@ -536,27 +533,27 @@ namespace System
                 default:
                     if (bRooted)
                     {
-                        Split(sUri, iStart + 2, out sAuthority, out m_AbsolutePath, true);
+                        Split(sUri, iStart + 2, out sAuthority, out this.m_AbsolutePath, true);
                     }
                     else
                     {
                         sAuthority = string.Empty;
-                        m_AbsolutePath = sUri.Substring(iStart);
+                        this.m_AbsolutePath = sUri.Substring(iStart);
                     }
                     bAbsoluteUriRooted = bRooted;
                     break;
             }
 
-            int iPortSplitter = sAuthority.LastIndexOf(':');
+            var iPortSplitter = sAuthority.LastIndexOf(':');
             if (iPortSplitter < 0 || sAuthority.LastIndexOf(']') > iPortSplitter)
             {
-                m_host = sAuthority;
-                m_port = DefaultPort(m_scheme);
+                this.m_host = sAuthority;
+                this.m_port = DefaultPort(this.m_scheme);
             }
             else
             {
-                m_host = sAuthority.Substring(0, iPortSplitter);
-                m_port = Convert.ToInt32(sAuthority.Substring(iPortSplitter + 1));
+                this.m_host = sAuthority.Substring(0, iPortSplitter);
+                this.m_port = Convert.ToInt32(sAuthority.Substring(iPortSplitter + 1));
             }
 
             return bAbsoluteUriRooted;
@@ -564,7 +561,7 @@ namespace System
 
         protected void Split(string sUri, int iStart, out string sAuthority, out string sPath, bool bReplaceEmptyPath)
         {
-            int iSplitter = sUri.IndexOf('/', iStart);
+            var iSplitter = sUri.IndexOf('/', iStart);
             if (iSplitter < 0)
             {
                 sAuthority = sUri.Substring(iStart);
@@ -589,14 +586,14 @@ namespace System
         /// <returns>True if name is string with IPv4 address</returns>
         protected bool IsIPv4(String host)
         {
-            int dots = 0;
-            int number = 0;
-            bool haveNumber = false;
-            int length = host.Length;
+            var dots = 0;
+            var number = 0;
+            var haveNumber = false;
+            var length = host.Length;
 
-            for (int i = 0; i < length; i++)
+            for (var i = 0; i < length; i++)
             {
-                char ch = host[i];
+                var ch = host[i];
 
                 if (ch <= '9' && ch >= '0')
                 {
@@ -627,10 +624,7 @@ namespace System
             return (dots == 3) && haveNumber;
         }
 
-        protected bool IsIPv6(string host)
-        {
-            return host[0] == '[' && host[host.Length - 1] == ']';
-        }
+        protected bool IsIPv6(string host) => host[0] == '[' && host[host.Length - 1] == ']';
 
         /// <summary>
         /// Parses urn string into Uri variables.
@@ -645,16 +639,16 @@ namespace System
         /// </exception>
         protected void ValidateUrn(string uri)
         {
-            bool invalidUrn = false;
+            var invalidUrn = false;
 
             // If this is a urn:uuid validate the uuid
             if (uri.ToLower().IndexOf("urn:uuid:", 0) == 0)
             {
-                char[] tempUUID = uri.Substring(9).ToLower().ToCharArray();
-                int length = tempUUID.Length;
-                int uuidSegmentCount = 0;
+                var tempUUID = uri.Substring(9).ToLower().ToCharArray();
+                var length = tempUUID.Length;
+                var uuidSegmentCount = 0;
                 int[] delimiterIndexes = { 8, 13, 18, 23 };
-                for (int i = 0; i < length; ++i)
+                for (var i = 0; i < length; ++i)
                 {
                     // Make sure these are valid hex numbers numbers
                     if (!IsHex(tempUUID[i]) && tempUUID[i] != '-')
@@ -684,20 +678,20 @@ namespace System
                     }
                 }
 
-                m_AbsolutePath = uri.Substring(4);
+                this.m_AbsolutePath = uri.Substring(4);
             }
 
             // Else validate against RFC2141
             else
             {
-                string lowerUrn = uri.Substring(4).ToLower();
-                char[] tempUrn = lowerUrn.ToCharArray();
+                var lowerUrn = uri.Substring(4).ToLower();
+                var tempUrn = lowerUrn.ToCharArray();
 
                 // Validate the NamespaceID (NID)
-                int index = lowerUrn.IndexOf(':');
+                var index = lowerUrn.IndexOf(':');
                 if (index == -1)
                     throw new ArgumentException();
-                int i = 0;
+                var i = 0;
                 for (i = 0; i < index; ++i)
                 {
                     // Make sure these are valid hex numbers numbers
@@ -710,10 +704,10 @@ namespace System
 
                 // Validate the Namespace String
                 tempUrn = lowerUrn.Substring(index + 1).ToCharArray();
-                int urnLength = tempUrn.Length;
+                var urnLength = tempUrn.Length;
                 if (!invalidUrn && urnLength != 0)
                 {
-                    string otherChars = "()+,-.:=@;$_!*'";
+                    var otherChars = "()+,-.:=@;$_!*'";
                     for (i = 0; i < urnLength; ++i)
                     {
                         if (!IsAlphaNumeric(tempUrn[i]) && !IsHex(tempUrn[i]) && tempUrn[i] != '%' && otherChars.IndexOf(tempUrn[i]) == -1)
@@ -723,7 +717,7 @@ namespace System
                         }
                     }
 
-                    m_AbsolutePath = uri.Substring(4);
+                    this.m_AbsolutePath = uri.Substring(4);
                 }
             }
 
@@ -731,13 +725,13 @@ namespace System
                 throw new ArgumentNullException();
 
             // Set Uri properties
-            m_host = "";
-            m_isAbsoluteUri = true;
-            m_isUnc = false;
-            m_hostNameType = UriHostNameType.Unknown;
-            m_port = UnknownPort;
-            m_scheme = "urn";
-            m_absoluteUri = uri;
+            this.m_host = "";
+            this.m_isAbsoluteUri = true;
+            this.m_isUnc = false;
+            this.m_hostNameType = UriHostNameType.Unknown;
+            this.m_port = UnknownPort;
+            this.m_scheme = "urn";
+            this.m_absoluteUri = uri;
 
             return;
         }
@@ -762,27 +756,21 @@ namespace System
                 throw new ArgumentException();
 
             // Check for alphnumeric and special characters
-            for (int i = 1; i < uri.Length; ++i)
+            for (var i = 1; i < uri.Length; ++i)
                 if (!IsAlphaNumeric(uri[i]) && ("()+,-.:=@;$_!*'").IndexOf(uri[i]) == -1)
                     throw new ArgumentException();
 
-            m_AbsolutePath = uri.Substring(1);
-            m_host = "";
-            m_isAbsoluteUri = false;
-            m_isUnc = false;
-            m_hostNameType = UriHostNameType.Unknown;
-            m_port = UnknownPort;
+            this.m_AbsolutePath = uri.Substring(1);
+            this.m_host = "";
+            this.m_isAbsoluteUri = false;
+            this.m_isUnc = false;
+            this.m_hostNameType = UriHostNameType.Unknown;
+            this.m_port = UnknownPort;
         }
 
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
-        }
+        public override int GetHashCode() => base.GetHashCode();
 
-        public override bool Equals(object o)
-        {
-            return this == (Uri)o;
-        }
+        public override bool Equals(object o) => this == (Uri)o;
 
         public static bool operator ==(Uri lhs, Uri rhs)
         {
@@ -840,10 +828,7 @@ namespace System
         /// <param name="testChar">The character to evaluate.</param>
         /// <returns><itemref>true</itemref> if the character is Alpha;
         /// otherwise, <itemref>false</itemref>.</returns>
-        protected bool IsAlpha(char testChar)
-        {
-            return (testChar >= 'A' && testChar <= 'Z') || (testChar >= 'a' && testChar <= 'z');
-        }
+        protected bool IsAlpha(char testChar) => (testChar >= 'A' && testChar <= 'Z') || (testChar >= 'a' && testChar <= 'z');
 
         /// <summary>
         /// Checks to see if the character value is an alpha or numeric.
@@ -851,10 +836,7 @@ namespace System
         /// <param name="testChar">The character to evaluate.</param>
         /// <returns><itemref>true</itemref> if the character is Alpha or
         /// numeric; otherwise, <itemref>false</itemref>.</returns>
-        protected bool IsAlphaNumeric(char testChar)
-        {
-            return (testChar >= 'A' && testChar <= 'Z') || (testChar >= 'a' && testChar <= 'z') || (testChar >= '0' && testChar <= '9');
-        }
+        protected bool IsAlphaNumeric(char testChar) => (testChar >= 'A' && testChar <= 'Z') || (testChar >= 'a' && testChar <= 'z') || (testChar >= '0' && testChar <= '9');
 
         /// <summary>
         /// Checks to see if the character value is Hex.
@@ -862,17 +844,14 @@ namespace System
         /// <param name="testChar">The character to evaluate.</param>
         /// <returns><itemref>true</itemref> if the character is a valid Hex
         /// character; otherwise, <itemref>false</itemref>.</returns>
-        protected bool IsHex(char testChar)
-        {
-            return (testChar >= 'A' && testChar <= 'F') || (testChar >= 'a' && testChar <= 'f') || (testChar >= '0' && testChar <= '9');
-        }
+        protected bool IsHex(char testChar) => (testChar >= 'A' && testChar <= 'F') || (testChar >= 'a' && testChar <= 'f') || (testChar >= '0' && testChar <= '9');
 
         /// <summary>
         /// Gets the type of the host name specified in the URI.
         /// </summary>
         /// <value>A member of the <see cref="System.UriHostNameType"/>
         /// enumeration.</value>
-        public UriHostNameType HostNameType { get { return m_hostNameType; } }
+        public UriHostNameType HostNameType => this.m_hostNameType;
 
         /// <summary>
         /// Gets the port number of this URI.
@@ -887,9 +866,9 @@ namespace System
         {
             get
             {
-                if (m_isAbsoluteUri == false)
+                if (this.m_isAbsoluteUri == false)
                     throw new InvalidOperationException();
-                return m_port;
+                return this.m_port;
             }
         }
 
@@ -898,7 +877,7 @@ namespace System
         /// </summary>
         /// <value><itemref>true</itemref> if the <itemref>Uri</itemref>
         /// instance is absolute; otherwise, <itemref>false</itemref>.</value>
-        public bool IsAbsoluteUri { get { return m_isAbsoluteUri; } }
+        public bool IsAbsoluteUri => this.m_isAbsoluteUri;
 
         /// <summary>
         /// Gets whether the specified <see cref="System.Uri"/> is a universal
@@ -914,9 +893,9 @@ namespace System
         {
             get
             {
-                if (m_isAbsoluteUri == false)
+                if (this.m_isAbsoluteUri == false)
                     throw new InvalidOperationException();
-                return m_isUnc;
+                return this.m_isUnc;
             }
         }
 
@@ -933,23 +912,18 @@ namespace System
         {
             get
             {
-                if (m_isAbsoluteUri == false)
+                if (this.m_isAbsoluteUri == false)
                     throw new InvalidOperationException();
-                return m_AbsolutePath;
+                return this.m_AbsolutePath;
             }
         }
 
         /// <summary>
         /// Gets the original URI string that was passed to the Uri constructor.
         /// </summary>
-        public string OriginalString
-        {
-            get
-            {
+        public string OriginalString =>
                 // The original string was saved in m_OriginalUriString.
-                return m_OriginalUriString;
-            }
-        }
+                this.m_OriginalUriString;
 
         /// <summary>
         /// Gets a string containing the absolute uri or entire uri of this instance.
@@ -960,9 +934,9 @@ namespace System
         {
             get
             {
-                if (m_isAbsoluteUri == false)
+                if (this.m_isAbsoluteUri == false)
                     throw new InvalidOperationException();
-                return m_absoluteUri;
+                return this.m_absoluteUri;
             }
         }
 
@@ -979,9 +953,9 @@ namespace System
         {
             get
             {
-                if (m_isAbsoluteUri == false)
+                if (this.m_isAbsoluteUri == false)
                     throw new InvalidOperationException();
-                return m_scheme;
+                return this.m_scheme;
             }
         }
 
@@ -990,7 +964,7 @@ namespace System
         /// </summary>
         /// <value>A <itemref>String</itemref> containing the host name.  This
         /// is usually the DNS host name or IP address of the server.</value>
-        public string Host { get { return m_host; } }
+        public string Host => this.m_host;
 
         /// <summary>
         /// Gets whether the specified <see cref="System.Uri"/> refers to the
@@ -998,13 +972,7 @@ namespace System
         /// </summary>
         /// <value><itemref>true</itemref> if the host specified in the Uri is
         /// the local computer; otherwise, <itemref>false</itemref>.</value>
-        public bool IsLoopback
-        {
-            get
-            {
-                return (m_Flags & (int)Flags.LoopbackHost) != 0;
-            }
-        }
+        public bool IsLoopback => (this.m_Flags & (int)Flags.LoopbackHost) != 0;
 
         /// <summary>
         /// Indicates whether the string is well-formed by attempting to
@@ -1025,7 +993,7 @@ namespace System
                 {
                     case UriKind.Absolute:
                         {
-                            Uri testUri = new Uri(uriString);
+                            var testUri = new Uri(uriString);
 
                             if (testUri.IsAbsoluteUri)
                             {
@@ -1037,7 +1005,7 @@ namespace System
 
                     case UriKind.Relative:
                         {
-                            Uri testUri = new Uri(uriString, UriKind.Relative);
+                            var testUri = new Uri(uriString, UriKind.Relative);
                             if (!testUri.IsAbsoluteUri)
                             {
                                 return true;

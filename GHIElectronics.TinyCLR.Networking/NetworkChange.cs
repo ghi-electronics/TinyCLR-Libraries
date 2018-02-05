@@ -15,22 +15,13 @@ namespace Microsoft.SPOT.Net.NetworkInformation
     {
         private bool _isAvailable;
 
-        internal NetworkAvailabilityEventArgs(bool isAvailable)
-        {
-            _isAvailable = isAvailable;
-        }
+        internal NetworkAvailabilityEventArgs(bool isAvailable) => this._isAvailable = isAvailable;
 
-        public bool IsAvailable
-        {
-            get
-            {
-                return _isAvailable;
-            }
-        }
+        public bool IsAvailable => this._isAvailable;
     }
 
-    public delegate void NetworkAvailabilityChangedEventHandler(Object sender, NetworkAvailabilityEventArgs e);
-    public delegate void NetworkAddressChangedEventHandler(Object sender, EventArgs e);
+    public delegate void NetworkAvailabilityChangedEventHandler(object sender, NetworkAvailabilityEventArgs e);
+    public delegate void NetworkAddressChangedEventHandler(object sender, EventArgs e);
 
     public static class NetworkChange
     {
@@ -63,10 +54,11 @@ namespace Microsoft.SPOT.Net.NetworkInformation
 
             public BaseEvent ProcessEvent(uint data1, uint data2, DateTime time)
             {
-                NetworkEvent networkEvent = new NetworkEvent();
-                networkEvent.EventType = (NetworkEventType)(data1 & 0xFF);
-                networkEvent.Flags = (byte)((data1 >> 16) & 0xFF);
-                networkEvent.Time = time;
+                var networkEvent = new NetworkEvent {
+                    EventType = (NetworkEventType)(data1 & 0xFF),
+                    Flags = (byte)((data1 >> 16) & 0xFF),
+                    Time = time
+                };
 
                 return networkEvent;
             }
@@ -88,7 +80,7 @@ namespace Microsoft.SPOT.Net.NetworkInformation
 
         static NetworkChange()
         {
-            NetworkChangeListener networkChangeListener = new NetworkChangeListener();
+            var networkChangeListener = new NetworkChangeListener();
             Microsoft.SPOT.EventSink.AddEventProcessor(EventCategory.Network, networkChangeListener);
             Microsoft.SPOT.EventSink.AddEventListener(EventCategory.Network, networkChangeListener);
         }
@@ -101,8 +93,8 @@ namespace Microsoft.SPOT.Net.NetworkInformation
                     {
                         if (NetworkAvailabilityChanged != null)
                         {
-                            bool isAvailable = ((networkEvent.Flags & (byte)NetworkEventFlags.NetworkAvailable) != 0);
-                            NetworkAvailabilityEventArgs args = new NetworkAvailabilityEventArgs(isAvailable);
+                            var isAvailable = ((networkEvent.Flags & (byte)NetworkEventFlags.NetworkAvailable) != 0);
+                            var args = new NetworkAvailabilityEventArgs(isAvailable);
 
                             NetworkAvailabilityChanged(null, args);
                         }
@@ -112,7 +104,7 @@ namespace Microsoft.SPOT.Net.NetworkInformation
                     {
                         if (NetworkAddressChanged != null)
                         {
-                            EventArgs args = new EventArgs();
+                            var args = new EventArgs();
                             NetworkAddressChanged(null, args);
                         }
 

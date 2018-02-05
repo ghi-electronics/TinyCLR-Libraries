@@ -23,7 +23,7 @@ namespace System.Runtime.Versioning {
         // Use the FrameworkName class to interpret target framework monikers.
         public string FrameworkName => this._frameworkName;
         public string FrameworkDisplayName {
-            get => _frameworkDisplayName; set => _frameworkDisplayName = value;
+            get => this._frameworkDisplayName; set => this._frameworkDisplayName = value;
         }
     }
 }

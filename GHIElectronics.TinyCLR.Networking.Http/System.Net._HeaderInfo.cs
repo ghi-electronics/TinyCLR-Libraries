@@ -26,10 +26,10 @@ namespace System.Net
 
         internal HeaderInfo(string name, bool restricted, bool multi, HeaderParser p)
         {
-            HeaderName = name;
-            IsRestricted = restricted;
-            Parser = p;
-            AllowMultiValues = multi;
+            this.HeaderName = name;
+            this.IsRestricted = restricted;
+            this.Parser = p;
+            this.AllowMultiValues = multi;
         }
     }
 } // namespace System.Net

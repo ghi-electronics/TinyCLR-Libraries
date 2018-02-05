@@ -19,21 +19,17 @@ namespace System.Net
         public static IPHostEntry GetHostEntry(string hostNameOrAddress)
         {
 
-            //Do we need to try to pase this as an Address????
-            string canonicalName;
-            byte[][] addresses;
+            NativeSocket.getaddrinfo(hostNameOrAddress, out var canonicalName, out var addresses);
 
-            NativeSocket.getaddrinfo(hostNameOrAddress, out canonicalName, out addresses);
+            var cAddresses = addresses.Length;
+            var ipAddresses = new IPAddress[cAddresses];
+            var ipHostEntry = new IPHostEntry();
 
-            int cAddresses = addresses.Length;
-            IPAddress[] ipAddresses = new IPAddress[cAddresses];
-            IPHostEntry ipHostEntry = new IPHostEntry();
-
-            for (int i = 0; i < cAddresses; i++)
+            for (var i = 0; i < cAddresses; i++)
             {
-                byte[] address = addresses[i];
+                var address = addresses[i];
 
-                SocketAddress sockAddress = new SocketAddress(address);
+                var sockAddress = new SocketAddress(address);
 
                 AddressFamily family;
 
@@ -51,7 +47,7 @@ namespace System.Net
                 {
                     //This only works with IPv4 addresses
 
-                    uint ipAddr = (uint)((address[7] << 24) | (address[6] << 16) | (address[5] << 8) | (address[4]));
+                    var ipAddr = (uint)((address[7] << 24) | (address[6] << 16) | (address[5] << 8) | (address[4]));
 
                     ipAddresses[i] = new IPAddress((long)ipAddr);
                 }

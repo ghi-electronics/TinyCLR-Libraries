@@ -64,31 +64,31 @@ namespace System.Net
         internal HttpListenerContext(OutputNetworkStreamWrapper clientStream, HttpListener httpListener)
         {
             // Saves the stream.
-            m_clientOutputStream = clientStream;
+            this.m_clientOutputStream = clientStream;
 
             // Input stream does not own socket.
-            m_clientInputStream = new InputNetworkStreamWrapper(clientStream.m_Stream, clientStream.m_Socket, false, null);
+            this.m_clientInputStream = new InputNetworkStreamWrapper(clientStream.m_Stream, clientStream.m_Socket, false, null);
 
             // Constructs request and response classes.
-            m_ClientRequest = new HttpListenerRequest(m_clientInputStream, httpListener.m_maxResponseHeadersLen);
+            this.m_ClientRequest = new HttpListenerRequest(this.m_clientInputStream, httpListener.m_maxResponseHeadersLen);
 
             // Closing reponse to client causes removal from clientSocketsList.
             // Thus we need to pass clientSocketsList to client response.
-            m_ResponseToClient = new HttpListenerResponse(m_clientOutputStream, httpListener);
+            this.m_ResponseToClient = new HttpListenerResponse(this.m_clientOutputStream, httpListener);
 
             // There is incoming connection HTTP connection. Add new Socket to the list of connected sockets
             // The socket is removed from this array after correponding HttpListenerResponse is closed.
-            httpListener.AddClientStream(m_clientOutputStream);
+            httpListener.AddClientStream(this.m_clientOutputStream);
 
             // Set flag that HTTP request was not parsed yet.
             // It will be parsed on first access to m_ClientRequest or m_ResponseToClient
-            m_IsHTTPRequestParsed = false;
+            this.m_IsHTTPRequestParsed = false;
         }
 
         public void Reset()
         {
-            m_IsHTTPRequestParsed = false;
-            m_ClientRequest.Reset();
+            this.m_IsHTTPRequestParsed = false;
+            this.m_ClientRequest.Reset();
         }
 
         /// <summary>
@@ -101,21 +101,21 @@ namespace System.Net
         {
             get
             {
-                if (!m_IsHTTPRequestParsed)
+                if (!this.m_IsHTTPRequestParsed)
                 {
-                    m_ClientRequest.ParseHTTPRequest();
+                    this.m_ClientRequest.ParseHTTPRequest();
                     // After request parsed check for "transfer-ecoding" header. If it is chunked, change stream property.
                     // If m_EnableChunkedDecoding is set to true, then readig from stream automatically processing chunks.
-                    string chunkedVal = m_ClientRequest.Headers[HttpKnownHeaderNames.TransferEncoding];
+                    var chunkedVal = this.m_ClientRequest.Headers[HttpKnownHeaderNames.TransferEncoding];
                     if (chunkedVal != null && chunkedVal.ToLower() == "chunked")
                     {
-                        m_clientInputStream.m_EnableChunkedDecoding = true;
+                        this.m_clientInputStream.m_EnableChunkedDecoding = true;
                     }
 
-                    m_IsHTTPRequestParsed = true;
+                    this.m_IsHTTPRequestParsed = true;
                 }
 
-                return m_ClientRequest;
+                return this.m_ClientRequest;
             }
         }
 
@@ -129,20 +129,17 @@ namespace System.Net
         {
             get
             {
-                if (!m_IsHTTPRequestParsed)
+                if (!this.m_IsHTTPRequestParsed)
                 {
-                    m_ClientRequest.ParseHTTPRequest();
-                    m_IsHTTPRequestParsed = true;
+                    this.m_ClientRequest.ParseHTTPRequest();
+                    this.m_IsHTTPRequestParsed = true;
                 }
 
-                return m_ResponseToClient;
+                return this.m_ResponseToClient;
             }
         }
 
-        public void Close()
-        {
-            Close(-2);
-        }
+        public void Close() => Close(-2);
 
         /// <summary>
         /// Closes the stream attached to this listener context. 
@@ -151,35 +148,35 @@ namespace System.Net
         {
             try
             {  
-                if (m_clientOutputStream != null)
+                if (this.m_clientOutputStream != null)
                 {
                     try
                     {
-                        if(m_clientOutputStream.m_Socket != null)
+                        if(this.m_clientOutputStream.m_Socket != null)
                         {
-                            m_clientOutputStream.m_Socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.Linger, lingerValue);
+                            this.m_clientOutputStream.m_Socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.Linger, lingerValue);
                         }
                     }
                     catch{}
                 }
                 
-                if (m_ResponseToClient != null)
+                if (this.m_ResponseToClient != null)
                 {
-                    m_ResponseToClient.Close();
-                    m_ResponseToClient = null;
+                    this.m_ResponseToClient.Close();
+                    this.m_ResponseToClient = null;
                 }
                 
                 // Close the underlying stream
-                if (m_clientOutputStream != null)
+                if (this.m_clientOutputStream != null)
                 {
-                    m_clientOutputStream.Dispose();
-                    m_clientOutputStream = null;
+                    this.m_clientOutputStream.Dispose();
+                    this.m_clientOutputStream = null;
                 }
                 
-                if (m_clientInputStream != null)
+                if (this.m_clientInputStream != null)
                 {
-                    m_clientInputStream.Dispose();
-                    m_clientInputStream = null;
+                    this.m_clientInputStream.Dispose();
+                    this.m_clientInputStream = null;
                 }
             }
             catch

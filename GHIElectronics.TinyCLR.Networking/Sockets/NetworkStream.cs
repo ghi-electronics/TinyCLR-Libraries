@@ -73,25 +73,25 @@ namespace System.Net.Sockets
         public NetworkStream(Socket socket, bool ownsSocket)
         {
             if (socket == null) throw new ArgumentNullException();
-            
+
             // This should throw a SocketException if not connected
             try
             {
-                _remoteEndPoint = socket.RemoteEndPoint;
+                this._remoteEndPoint = socket.RemoteEndPoint;
             }
             catch (Exception e)
             {
-                int errCode = (int)socket.GetSocketOption(SocketOptionLevel.Socket, SocketOptionName.Error);
+                var errCode = (int)socket.GetSocketOption(SocketOptionLevel.Socket, SocketOptionName.Error);
 
                 throw new IOException(errCode.ToString(), e);
             }
-            
+
             // Set the internal socket
-            _socket = socket;
+            this._socket = socket;
 
-            _socketType = (int)_socket.GetSocketOption(SocketOptionLevel.Socket, SocketOptionName.Type);
+            this._socketType = (int)this._socket.GetSocketOption(SocketOptionLevel.Socket, SocketOptionName.Type);
 
-            _ownsSocket = ownsSocket;
+            this._ownsSocket = ownsSocket;
         }
 
         // Summary:
@@ -101,7 +101,7 @@ namespace System.Net.Sockets
         // Returns:
         //     true if data can be read from the stream; otherwise, false. The default value
         //     is true.
-        public override bool CanRead { get { return true; } }
+        public override bool CanRead => true;
 
         //
         // Summary:
@@ -111,7 +111,7 @@ namespace System.Net.Sockets
         // Returns:
         //     false in all cases to indicate that System.Net.Sockets.NetworkStream cannot
         //     seek a specific location in the stream.
-        public override bool CanSeek { get { return false; } }
+        public override bool CanSeek => false;
 
         //
         // Summary:
@@ -119,7 +119,7 @@ namespace System.Net.Sockets
         //
         // Returns:
         //     true in all cases.
-        public override bool CanTimeout { get { return true; } }
+        public override bool CanTimeout => true;
 
         //
         // Summary:
@@ -129,27 +129,23 @@ namespace System.Net.Sockets
         // Returns:
         //     true if data can be written to the System.Net.Sockets.NetworkStream; otherwise,
         //     false. The default value is true.
-        public override bool CanWrite { get { return true; } }
+        public override bool CanWrite => true;
 
-        public override int ReadTimeout
-        {
-            get { return _socket.ReceiveTimeout; }
-            set
-            {   
+        public override int ReadTimeout {
+            get => this._socket.ReceiveTimeout;
+            set {
                 if (value == 0 || value < System.Threading.Timeout.Infinite) throw new ArgumentOutOfRangeException();
 
-                _socket.ReceiveTimeout = value;
+                this._socket.ReceiveTimeout = value;
             }
         }
 
-        public override int WriteTimeout
-        {
-            get { return _socket.SendTimeout; }
-            set
-            {
+        public override int WriteTimeout {
+            get => this._socket.SendTimeout;
+            set {
                 if (value == 0 || value < System.Threading.Timeout.Infinite) throw new ArgumentOutOfRangeException();
 
-                _socket.SendTimeout = value;
+                this._socket.SendTimeout = value;
             }
         }
 
@@ -166,10 +162,10 @@ namespace System.Net.Sockets
         {
             get
             {
-                if (_disposed == true) throw new ObjectDisposedException();                
-                if (_socket.m_Handle == -1) throw new IOException();
+                if (this._disposed == true) throw new ObjectDisposedException();
+                if (this._socket.m_Handle == -1) throw new IOException();
 
-                return _socket.Available;
+                return this._socket.Available;
             }
         }
 
@@ -184,27 +180,20 @@ namespace System.Net.Sockets
         // Exceptions:
         //   System.NotSupportedException:
         //     Any use of this property.
-        public override long Position
-        {
-            get
-            {
-                throw new NotSupportedException();
-            }
+        public override long Position {
+            get => throw new NotSupportedException();
 
-            set
-            {
-                throw new NotSupportedException();
-            }
+            set => throw new NotSupportedException();
         }
 
         public virtual bool DataAvailable
         {
             get
             {
-                if (_disposed == true) throw new ObjectDisposedException();     
-                if (_socket.m_Handle == -1) throw new IOException();
+                if (this._disposed == true) throw new ObjectDisposedException();
+                if (this._socket.m_Handle == -1) throw new IOException();
 
-                return (_socket.Available > 0);
+                return (this._socket.Available > 0);
             }
         }
 
@@ -242,19 +231,19 @@ namespace System.Net.Sockets
         //     unmanaged resources.
         protected override void Dispose(bool disposing)
         {
-            if (!_disposed)
+            if (!this._disposed)
             {
                 try
                 {
                     if (disposing)
                     {
-                        if (_ownsSocket == true)
-                            _socket.Close();
+                        if (this._ownsSocket == true)
+                            this._socket.Close();
                     }
                 }
                 finally
                 {
-                    _disposed = true;
+                    this._disposed = true;
                 }
             }
         }
@@ -302,13 +291,13 @@ namespace System.Net.Sockets
         //     socket. See the Remarks section for more information.
         public override int Read(byte[] buffer, int offset, int count)
         {
-            if (_disposed) throw new ObjectDisposedException();            
-            if (_socket.m_Handle == -1) throw new IOException();
+            if (this._disposed) throw new ObjectDisposedException();
+            if (this._socket.m_Handle == -1) throw new IOException();
             if (buffer == null) throw new ArgumentNullException();
             if (offset < 0 || offset > buffer.Length) throw new ArgumentOutOfRangeException();
             if (count < 0 || count > buffer.Length - offset) throw new ArgumentOutOfRangeException();
 
-            int available = _socket.Available;
+            var available = this._socket.Available;
 
             // we will need to read using thr timeout specified
             // if there is data available we can return with that data only
@@ -318,13 +307,13 @@ namespace System.Net.Sockets
                 count = available;
             }
 
-            if (_socketType == (int)SocketType.Stream)
+            if (this._socketType == (int)SocketType.Stream)
             {
-                return _socket.Receive(buffer, offset, count, SocketFlags.None);
+                return this._socket.Receive(buffer, offset, count, SocketFlags.None);
             }
-            else if (_socketType == (int)SocketType.Dgram)
+            else if (this._socketType == (int)SocketType.Dgram)
             {
-                return _socket.ReceiveFrom(buffer, offset, count, SocketFlags.None, ref _remoteEndPoint);
+                return this._socket.ReceiveFrom(buffer, offset, count, SocketFlags.None, ref this._remoteEndPoint);
             }
             else
             {
@@ -350,10 +339,7 @@ namespace System.Net.Sockets
         // Exceptions:
         //   System.NotSupportedException:
         //     Any use of this property.
-        public override long Seek(long offset, SeekOrigin origin)
-        {
-            throw new NotSupportedException();
-        }
+        public override long Seek(long offset, SeekOrigin origin) => throw new NotSupportedException();
 
         //
         // Summary:
@@ -366,10 +352,7 @@ namespace System.Net.Sockets
         // Exceptions:
         //   System.NotSupportedException:
         //     Any use of this property.
-        public override void SetLength(long value)
-        {
-            throw new NotSupportedException();
-        }
+        public override void SetLength(long value) => throw new NotSupportedException();
 
         //
         // Summary:
@@ -403,21 +386,21 @@ namespace System.Net.Sockets
         //     buffer is null.
         public override void Write(byte[] buffer, int offset, int count)
         {
-            if (_disposed) throw new ObjectDisposedException();            
-            if (_socket.m_Handle == -1) throw new IOException();
+            if (this._disposed) throw new ObjectDisposedException();
+            if (this._socket.m_Handle == -1) throw new IOException();
             if (buffer == null) throw new ArgumentNullException();
             if (offset < 0 || offset > buffer.Length) throw new ArgumentOutOfRangeException();
             if (count < 0 || count > buffer.Length - offset) throw new ArgumentOutOfRangeException();
 
-            int bytesSent = 0;
+            var bytesSent = 0;
 
-            if (_socketType == (int)SocketType.Stream)
+            if (this._socketType == (int)SocketType.Stream)
             {
-                bytesSent = _socket.Send(buffer, offset, count, SocketFlags.None);
+                bytesSent = this._socket.Send(buffer, offset, count, SocketFlags.None);
             }
-            else if (_socketType == (int)SocketType.Dgram)
+            else if (this._socketType == (int)SocketType.Dgram)
             {
-                bytesSent = _socket.SendTo(buffer, offset, count, SocketFlags.None, _socket.RemoteEndPoint);
+                bytesSent = this._socket.SendTo(buffer, offset, count, SocketFlags.None, this._socket.RemoteEndPoint);
             }
             else
             {

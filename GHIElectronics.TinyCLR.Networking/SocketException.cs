@@ -12,15 +12,9 @@ namespace System.Net.Sockets
     {
         private int _errorCode;
 
-        public SocketException(SocketError errorCode)
-        {
-            _errorCode = (int)errorCode;
-        }
+        public SocketException(SocketError errorCode) => this._errorCode = (int)errorCode;
 
-        public int ErrorCode
-        {
-            get { return _errorCode; }
-        }
+        public int ErrorCode => this._errorCode;
 
     }; // class SocketException
 

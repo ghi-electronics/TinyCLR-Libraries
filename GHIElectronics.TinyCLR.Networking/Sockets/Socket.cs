@@ -36,21 +36,15 @@ namespace System.Net.Sockets
         private int m_recvTimeout = System.Threading.Timeout.Infinite;
         private int m_sendTimeout = System.Threading.Timeout.Infinite;
 
-        public Socket(AddressFamily addressFamily, SocketType socketType, ProtocolType protocolType)
-        {
-            m_Handle = NativeSocket.socket((int)addressFamily, (int)socketType, (int)protocolType);
-        }
+        public Socket(AddressFamily addressFamily, SocketType socketType, ProtocolType protocolType) => this.m_Handle = NativeSocket.socket((int)addressFamily, (int)socketType, (int)protocolType);
 
-        private Socket(int handle)
-        {
-            m_Handle = handle;
-        }
+        private Socket(int handle) => this.m_Handle = handle;
 
         public int Available
         {
             get
             {
-                if (m_Handle == -1)
+                if (this.m_Handle == -1)
                 {
                     throw new ObjectDisposedException();
                 }
@@ -65,16 +59,16 @@ namespace System.Net.Sockets
 
         private EndPoint GetEndPoint(bool fLocal)
         {
-            if (m_Handle == -1)
+            if (this.m_Handle == -1)
             {
                 throw new ObjectDisposedException();
             }
 
             EndPoint ep = null;
 
-            if (m_localEndPoint == null)
+            if (this.m_localEndPoint == null)
             {
-                m_localEndPoint = new IPEndPoint(IPAddress.Any, 0);
+                this.m_localEndPoint = new IPEndPoint(IPAddress.Any, 0);
             }
 
             byte[] address = null;
@@ -88,100 +82,75 @@ namespace System.Net.Sockets
                 NativeSocket.getpeername(this, out address);
             }
 
-            SocketAddress socketAddress = new SocketAddress(address);
-            ep = m_localEndPoint.Create(socketAddress);
+            var socketAddress = new SocketAddress(address);
+            ep = this.m_localEndPoint.Create(socketAddress);
 
             if (fLocal)
             {
-                m_localEndPoint = ep;
+                this.m_localEndPoint = ep;
             }
 
             return ep;
         }
 
-        public EndPoint LocalEndPoint
-        {
-            get
-            {
-                return GetEndPoint(true);
-            }
-        }
+        public EndPoint LocalEndPoint => GetEndPoint(true);
 
-        public EndPoint RemoteEndPoint
-        {
-            get
-            {
-                return GetEndPoint(false);
-            }
-        }
+        public EndPoint RemoteEndPoint => GetEndPoint(false);
 
-        public int ReceiveTimeout
-        {
-            get
-            {
-                return m_recvTimeout;
-            }
+        public int ReceiveTimeout {
+            get => this.m_recvTimeout;
 
-            set
-            {
+            set {
                 if (value < Timeout.Infinite) throw new ArgumentOutOfRangeException();
 
                 // desktop implementation treats 0 as infinite
-                m_recvTimeout = ((value == 0) ? Timeout.Infinite : value);
+                this.m_recvTimeout = ((value == 0) ? Timeout.Infinite : value);
             }
         }
 
-        public int SendTimeout
-        {
-            get
-            {
-                return m_sendTimeout;
-            }
+        public int SendTimeout {
+            get => this.m_sendTimeout;
 
-            set
-            {
+            set {
                 if (value < Timeout.Infinite) throw new ArgumentOutOfRangeException();
 
                 // desktop implementation treats 0 as infinite
-                m_sendTimeout = ((value == 0) ? Timeout.Infinite : value);
+                this.m_sendTimeout = ((value == 0) ? Timeout.Infinite : value);
             }
         }
 
         public void Bind(EndPoint localEP)
         {
-            if (m_Handle == -1)
+            if (this.m_Handle == -1)
             {
                 throw new ObjectDisposedException();
             }
 
             NativeSocket.bind(this, localEP.Serialize().m_Buffer);
 
-            m_localEndPoint = localEP;
+            this.m_localEndPoint = localEP;
         }
 
         public void Connect(EndPoint remoteEP)
         {
-            if (m_Handle == -1)
+            if (this.m_Handle == -1)
             {
                 throw new ObjectDisposedException();
             }
 
-            NativeSocket.connect(this, remoteEP.Serialize().m_Buffer, !m_fBlocking);
+            NativeSocket.connect(this, remoteEP.Serialize().m_Buffer, !this.m_fBlocking);
 
-            if (m_fBlocking)
+            if (this.m_fBlocking)
             {
                 Poll(-1, SelectMode.SelectWrite);
             }
         }
 
-        public void Close()
-        {
-            ((IDisposable)this).Dispose();
-        }
+        public void Close() => ((IDisposable)this).Dispose();
 
         public void Listen(int backlog)
         {
-            if (m_Handle == -1)
+            if (this.m_Handle == -1)
             {
                 throw new ObjectDisposedException();
             }
@@ -191,140 +160,104 @@ namespace System.Net.Sockets
 
         public Socket Accept()
         {
-            if (m_Handle == -1)
+            if (this.m_Handle == -1)
             {
                 throw new ObjectDisposedException();
             }
 
             int socketHandle;
 
-            if (m_fBlocking)
+            if (this.m_fBlocking)
             {
                 Poll(-1, SelectMode.SelectRead);
             }
 
             socketHandle = NativeSocket.accept(this);
 
-            Socket socket = new Socket(socketHandle);
-
-            socket.m_localEndPoint = this.m_localEndPoint;
+            var socket = new Socket(socketHandle) {
+                m_localEndPoint = this.m_localEndPoint
+            };
 
             return socket;
         }
 
-        public int Send(byte[] buffer, int size, SocketFlags socketFlags)
-        {
-            return Send(buffer, 0, size, socketFlags);
-        }
+        public int Send(byte[] buffer, int size, SocketFlags socketFlags) => Send(buffer, 0, size, socketFlags);
 
-        public int Send(byte[] buffer, SocketFlags socketFlags)
-        {
-            return Send(buffer, 0, buffer != null ? buffer.Length : 0, socketFlags);
-        }
+        public int Send(byte[] buffer, SocketFlags socketFlags) => Send(buffer, 0, buffer != null ? buffer.Length : 0, socketFlags);
 
-        public int Send(byte[] buffer)
-        {
-            return Send(buffer, 0, buffer != null ? buffer.Length : 0, SocketFlags.None);
-        }
+        public int Send(byte[] buffer) => Send(buffer, 0, buffer != null ? buffer.Length : 0, SocketFlags.None);
 
         public int Send(byte[] buffer, int offset, int size, SocketFlags socketFlags)
         {
-            if (m_Handle == -1)
+            if (this.m_Handle == -1)
             {
                 throw new ObjectDisposedException();
             }
 
-            return NativeSocket.send(this, buffer, offset, size, (int)socketFlags, m_sendTimeout);
+            return NativeSocket.send(this, buffer, offset, size, (int)socketFlags, this.m_sendTimeout);
         }
 
         public int SendTo(byte[] buffer, int offset, int size, SocketFlags socketFlags, EndPoint remoteEP)
         {
-            if (m_Handle == -1)
+            if (this.m_Handle == -1)
             {
                 throw new ObjectDisposedException();
             }
 
-            byte[] address = remoteEP.Serialize().m_Buffer;
+            var address = remoteEP.Serialize().m_Buffer;
 
-            return NativeSocket.sendto(this, buffer, offset, size, (int)socketFlags, m_sendTimeout, address);
+            return NativeSocket.sendto(this, buffer, offset, size, (int)socketFlags, this.m_sendTimeout, address);
         }
 
-        public int SendTo(byte[] buffer, int size, SocketFlags socketFlags, EndPoint remoteEP)
-        {
-            return SendTo(buffer, 0, size, socketFlags, remoteEP);
-        }
+        public int SendTo(byte[] buffer, int size, SocketFlags socketFlags, EndPoint remoteEP) => SendTo(buffer, 0, size, socketFlags, remoteEP);
 
-        public int SendTo(byte[] buffer, SocketFlags socketFlags, EndPoint remoteEP)
-        {
-            return SendTo(buffer, 0, buffer != null ? buffer.Length : 0, socketFlags, remoteEP);
-        }
+        public int SendTo(byte[] buffer, SocketFlags socketFlags, EndPoint remoteEP) => SendTo(buffer, 0, buffer != null ? buffer.Length : 0, socketFlags, remoteEP);
 
-        public int SendTo(byte[] buffer, EndPoint remoteEP)
-        {
-            return SendTo(buffer, 0, buffer != null ? buffer.Length : 0, SocketFlags.None, remoteEP);
-        }
+        public int SendTo(byte[] buffer, EndPoint remoteEP) => SendTo(buffer, 0, buffer != null ? buffer.Length : 0, SocketFlags.None, remoteEP);
 
-        public int Receive(byte[] buffer, int size, SocketFlags socketFlags)
-        {
-            return Receive(buffer, 0, size, socketFlags);
-        }
+        public int Receive(byte[] buffer, int size, SocketFlags socketFlags) => Receive(buffer, 0, size, socketFlags);
 
-        public int Receive(byte[] buffer, SocketFlags socketFlags)
-        {
-            return Receive(buffer, 0, buffer != null ? buffer.Length : 0, socketFlags);
-        }
+        public int Receive(byte[] buffer, SocketFlags socketFlags) => Receive(buffer, 0, buffer != null ? buffer.Length : 0, socketFlags);
 
-        public int Receive(byte[] buffer)
-        {
-            return Receive(buffer, 0, buffer != null ? buffer.Length : 0, SocketFlags.None);
-        }
+        public int Receive(byte[] buffer) => Receive(buffer, 0, buffer != null ? buffer.Length : 0, SocketFlags.None);
 
         public int Receive(byte[] buffer, int offset, int size, SocketFlags socketFlags)
         {
-            if (m_Handle == -1)
+            if (this.m_Handle == -1)
             {
                 throw new ObjectDisposedException();
             }
 
-            return NativeSocket.recv(this, buffer, offset, size, (int)socketFlags, m_recvTimeout);
+            return NativeSocket.recv(this, buffer, offset, size, (int)socketFlags, this.m_recvTimeout);
         }
 
         public int ReceiveFrom(byte[] buffer, int offset, int size, SocketFlags socketFlags, ref EndPoint remoteEP)
         {
-            if (m_Handle == -1)
+            if (this.m_Handle == -1)
             {
                 throw new ObjectDisposedException();
             }
 
-            byte[] address = remoteEP.Serialize().m_Buffer;
-            int len = 0;
+            var address = remoteEP.Serialize().m_Buffer;
+            var len = 0;
 
-            len = NativeSocket.recvfrom(this, buffer, offset, size, (int)socketFlags, m_recvTimeout, ref address);
+            len = NativeSocket.recvfrom(this, buffer, offset, size, (int)socketFlags, this.m_recvTimeout, ref address);
 
-            SocketAddress socketAddress = new SocketAddress(address);
+            var socketAddress = new SocketAddress(address);
             remoteEP = remoteEP.Create(socketAddress);
 
             return len;
         }
 
-        public int ReceiveFrom(byte[] buffer, int size, SocketFlags socketFlags, ref EndPoint remoteEP)
-        {
-            return ReceiveFrom(buffer, 0, size, socketFlags, ref remoteEP);
-        }
+        public int ReceiveFrom(byte[] buffer, int size, SocketFlags socketFlags, ref EndPoint remoteEP) => ReceiveFrom(buffer, 0, size, socketFlags, ref remoteEP);
 
-        public int ReceiveFrom(byte[] buffer, SocketFlags socketFlags, ref EndPoint remoteEP)
-        {
-            return ReceiveFrom(buffer, 0, buffer != null ? buffer.Length : 0, socketFlags, ref remoteEP);
-        }
+        public int ReceiveFrom(byte[] buffer, SocketFlags socketFlags, ref EndPoint remoteEP) => ReceiveFrom(buffer, 0, buffer != null ? buffer.Length : 0, socketFlags, ref remoteEP);
 
-        public int ReceiveFrom(byte[] buffer, ref EndPoint remoteEP)
-        {
-            return ReceiveFrom(buffer, 0, buffer != null ? buffer.Length : 0, SocketFlags.None, ref remoteEP);
-        }
+        public int ReceiveFrom(byte[] buffer, ref EndPoint remoteEP) => ReceiveFrom(buffer, 0, buffer != null ? buffer.Length : 0, SocketFlags.None, ref remoteEP);
 
         public void SetSocketOption(SocketOptionLevel optionLevel, SocketOptionName optionName, int optionValue)
         {
-            if (m_Handle == -1)
+            if (this.m_Handle == -1)
             {
                 throw new ObjectDisposedException();
             }
@@ -339,24 +272,21 @@ namespace System.Net.Sockets
             switch (optionName)
             {
                 case SocketOptionName.SendTimeout:
-                    m_sendTimeout = optionValue;
+                    this.m_sendTimeout = optionValue;
                     break;
                 case SocketOptionName.ReceiveTimeout:
-                    m_recvTimeout = optionValue;
+                    this.m_recvTimeout = optionValue;
                     break;
             }
 
             NativeSocket.setsockopt(this, (int)optionLevel, (int)optionName, val);
         }
 
-        public void SetSocketOption(SocketOptionLevel optionLevel, SocketOptionName optionName, bool optionValue)
-        {
-            SetSocketOption(optionLevel, optionName, (optionValue ? 1 : 0));
-        }
+        public void SetSocketOption(SocketOptionLevel optionLevel, SocketOptionName optionName, bool optionValue) => SetSocketOption(optionLevel, optionName, (optionValue ? 1 : 0));
 
         public void SetSocketOption(SocketOptionLevel optionLevel, SocketOptionName optionName, byte[] optionValue)
         {
-            if (m_Handle == -1)
+            if (this.m_Handle == -1)
             {
                 throw new ObjectDisposedException();
             }
@@ -374,7 +304,7 @@ namespace System.Net.Sockets
                 throw new NotSupportedException();
             }
 
-            byte[] val = new byte[4];
+            var val = new byte[4];
 
             GetSocketOption(optionLevel, optionName, val);
 
@@ -387,13 +317,13 @@ namespace System.Net.Sockets
             else
                 iVal = (val[0] << 0 | val[1] << 8 | val[2] << 16 | val[3] << 24);
 
-            
+
             return (object)iVal;
         }
 
         public void GetSocketOption(SocketOptionLevel optionLevel, SocketOptionName optionName, byte[] val)
         {
-            if (m_Handle == -1)
+            if (this.m_Handle == -1)
             {
                 throw new ObjectDisposedException();
             }
@@ -403,7 +333,7 @@ namespace System.Net.Sockets
 
         public bool Poll(int microSeconds, SelectMode mode)
         {
-            if (m_Handle == -1)
+            if (this.m_Handle == -1)
             {
                 throw new ObjectDisposedException();
             }
@@ -414,10 +344,10 @@ namespace System.Net.Sockets
         [MethodImplAttribute(MethodImplOptions.Synchronized)]
         protected virtual void Dispose(bool disposing)
         {
-            if (m_Handle != -1)
+            if (this.m_Handle != -1)
             {
                 NativeSocket.close(this);
-                m_Handle = -1;
+                this.m_Handle = -1;
             }
         }
 

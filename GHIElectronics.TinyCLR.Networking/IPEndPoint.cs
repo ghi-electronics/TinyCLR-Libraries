@@ -20,38 +20,26 @@ namespace System.Net
 
         public IPEndPoint(long address, int port)
         {
-            m_Port = port;
-            m_Address = new IPAddress(address);
+            this.m_Port = port;
+            this.m_Address = new IPAddress(address);
         }
 
         public IPEndPoint(IPAddress address, int port)
         {
-            m_Port = port;
-            m_Address = address;
+            this.m_Port = port;
+            this.m_Address = address;
         }
 
-        public IPAddress Address
-        {
-            get
-            {
-                return m_Address;
-            }
-        }
+        public IPAddress Address => this.m_Address;
 
-        public int Port
-        {
-            get
-            {
-                return m_Port;
-            }
-        }
+        public int Port => this.m_Port;
 
         public override SocketAddress Serialize()
         {
             // create a new SocketAddress
             //
-            SocketAddress socketAddress = new SocketAddress(AddressFamily.InterNetwork, SocketAddress.IPv4AddressSize);
-            byte[] buffer = socketAddress.m_Buffer;
+            var socketAddress = new SocketAddress(AddressFamily.InterNetwork, SocketAddress.IPv4AddressSize);
+            var buffer = socketAddress.m_Buffer;
             //
             // populate it
             //
@@ -71,41 +59,38 @@ namespace System.Net
             // strip out of SocketAddress information on the EndPoint
             //
 
-            byte[] buf = socketAddress.m_Buffer;
+            var buf = socketAddress.m_Buffer;
 
             Debug.Assert(socketAddress.Family == AddressFamily.InterNetwork);
 
-            int port = (int)(
+            var port = (int)(
                     (buf[2] << 8 & 0xFF00) |
                     (buf[3])
                     );
 
-            long address = (long)(
+            var address = (long)(
                     (buf[4] & 0x000000FF) |
                     (buf[5] << 8 & 0x0000FF00) |
                     (buf[6] << 16 & 0x00FF0000) |
                     (buf[7] << 24)
                     ) & 0x00000000FFFFFFFF;
 
-            IPEndPoint created = new IPEndPoint(address, port);
+            var created = new IPEndPoint(address, port);
 
             return created;
         }
 
-        public override string ToString()
-        {
-            return m_Address.ToString() + ":" + m_Port.ToString();
-        }
+        public override string ToString() => this.m_Address.ToString() + ":" + this.m_Port.ToString();
 
         public override bool Equals(object obj)
         {
-            IPEndPoint ep = obj as IPEndPoint;
+            var ep = obj as IPEndPoint;
             if (ep == null)
             {
                 return false;
             }
 
-            return ep.m_Address.Equals(m_Address) && ep.m_Port == m_Port;
+            return ep.m_Address.Equals(this.m_Address) && ep.m_Port == this.m_Port;
         }
 
     } // class IPEndPoint

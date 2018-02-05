@@ -40,55 +40,34 @@ namespace System.Net
         /// <param name="authenticationType">Type of the authentication.</param>
         public NetworkCredential(string userName, string password, AuthenticationType authenticationType)
         {
-            UserName = userName;
-            Password = password;
-            AuthenticationType = authenticationType;
+            this.UserName = userName;
+            this.Password = password;
+            this.AuthenticationType = authenticationType;
         }
 
         /// <summary>
         /// Set or get user name.
         /// </summary>
-        public string UserName
-        {
-            get
-            {
-                return m_userName;
-            }
-            set
-            {
-                m_userName = value;
-            }
+        public string UserName {
+            get => this.m_userName;
+            set => this.m_userName = value;
         }
 
         /// <summary>
         /// Set or get password.
         /// </summary>
-        public string Password
-        {
-            get
-            {
-                return m_password;
-            }
-            set
-            {
-                m_password = value;
-            }
+        public string Password {
+            get => this.m_password;
+            set => this.m_password = value;
         }
 
         /// <summary>
         /// Gets or sets the type of the authentication.
         /// </summary>
         /// <value>The type of the authentication.</value>
-        public AuthenticationType AuthenticationType
-        {
-            get
-            {
-                return m_authenticationType;
-            }
-            set
-            {
-                m_authenticationType = value;
-            }
+        public AuthenticationType AuthenticationType {
+            get => this.m_authenticationType;
+            set => this.m_authenticationType = value;
         }
 
     } // class NetworkCredential

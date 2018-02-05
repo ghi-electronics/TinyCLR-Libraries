@@ -71,17 +71,10 @@ namespace System.Net
         /// POST for HTTP.
         /// </remarks>
         /// <value>The protocol method to use in this request.</value>
-        public virtual string Method
-        {
-            get
-            {
-                throw new NotSupportedException();
-            }
+        public virtual string Method {
+            get => throw new NotSupportedException();
 
-            set
-            {
-                throw new NotSupportedException();
-            }
+            set => throw new NotSupportedException();
         }
 
         /// <summary>
@@ -95,13 +88,7 @@ namespace System.Net
         /// <value>A <itemref>Uri</itemref> representing the resource associated
         /// with the request.
         /// </value>
-        public virtual Uri RequestUri
-        {                            // read-only
-            get
-            {
-                throw new NotSupportedException();
-            }
-        }
+        public virtual Uri RequestUri => throw new NotSupportedException();
 
         /// <summary>
         /// When overridden in a descendant class, gets or sets the name of the
@@ -111,17 +98,10 @@ namespace System.Net
         /// This property serves as a way of grouping connections.
         /// </remarks>
         /// <value>The name of the connection group for the request.</value>
-        public virtual string ConnectionGroupName
-        {
-            get
-            {
-                throw new NotSupportedException();
-            }
+        public virtual string ConnectionGroupName {
+            get => throw new NotSupportedException();
 
-            set
-            {
-                throw new NotSupportedException();
-            }
+            set => throw new NotSupportedException();
         }
 
         /// <summary>
@@ -130,18 +110,11 @@ namespace System.Net
         /// </summary>
         /// <value>A <itemref>WebHeaderCollection</itemref> containing the
         /// header name/value pairs associated with this request.</value>
-        public virtual WebHeaderCollection Headers
-        {
+        public virtual WebHeaderCollection Headers {
             // read-only
-            get
-            {
-                throw new NotSupportedException();
-            }
+            get => throw new NotSupportedException();
 
-            set
-            {
-                throw new NotSupportedException();
-            }
+            set => throw new NotSupportedException();
         }
 
         /// <summary>
@@ -154,17 +127,10 @@ namespace System.Net
         /// as POST; it is not used for the GET verb.
         /// </remarks>
         /// <value>The number of bytes of request data being sent.</value>
-        public virtual long ContentLength
-        {
-            get
-            {
-                throw new NotSupportedException();
-            }
+        public virtual long ContentLength {
+            get => throw new NotSupportedException();
 
-            set
-            {
-                throw new NotSupportedException();
-            }
+            set => throw new NotSupportedException();
         }
 
         /// <summary>
@@ -177,17 +143,10 @@ namespace System.Net
         /// as POST; it is not used for the GET verb.
         /// </remarks>
         /// <value>The content type of the request data.</value>
-        public virtual string ContentType
-        {
-            get
-            {
-                throw new NotSupportedException();
-            }
+        public virtual string ContentType {
+            get => throw new NotSupportedException();
 
-            set
-            {
-                throw new NotSupportedException();
-            }
+            set => throw new NotSupportedException();
         }
 
         /// <summary>
@@ -198,17 +157,10 @@ namespace System.Net
         /// out, or the value Timeout.Infinite to indicate that the request does
         /// not time out. The default value is defined by the descendant
         /// class.</value>
-        public virtual int Timeout
-        {
-            get
-            {
-                throw new NotSupportedException();
-            }
+        public virtual int Timeout {
+            get => throw new NotSupportedException();
 
-            set
-            {
-                throw new NotSupportedException();
-            }
+            set => throw new NotSupportedException();
         }
 
         /// <summary>
@@ -217,17 +169,10 @@ namespace System.Net
         /// supports proxies and no proxy is set explicitly using the Proxy property. Proxies are currently supported 
         /// by HttpWebRequest.
         /// </summary>
-        public static IWebProxy DefaultWebProxy 
-        {
-            get
-            {
-                return s_defaultProxy;
-            }
+        public static IWebProxy DefaultWebProxy {
+            get => s_defaultProxy;
 
-            set
-            {
-                s_defaultProxy = value;
-            }
+            set => s_defaultProxy = value;
         }
 
         /// <summary>
@@ -236,17 +181,10 @@ namespace System.Net
         /// </summary>
         /// <value>The <itemref>IWebProxy</itemref> to use to access the
         /// Internet resource.</value>
-        public virtual IWebProxy Proxy
-        {
-            get
-            {
-                throw new NotSupportedException();
-            }
+        public virtual IWebProxy Proxy {
+            get => throw new NotSupportedException();
 
-            set
-            {
-                throw new NotSupportedException();
-            }
+            set => throw new NotSupportedException();
         }
 
         /// <summary>
@@ -255,8 +193,7 @@ namespace System.Net
         /// </summary>
         /// <returns>A <itemref>Stream</itemref> for writing data to the
         /// Internet resource.</returns>
-        public virtual Stream GetRequestStream()
-        {
+        public virtual Stream GetRequestStream() =>
             // DataStream may need to be extended to URLDataStream or somesuch.
             // We might need to be able to get the data available. This should
             // be a method of the stream, not of the net classes. Also, we need
@@ -264,7 +201,6 @@ namespace System.Net
             // and via socket with Content-Length are seekable.
 
             throw new NotSupportedException();
-        }
 
         /// <summary>
         /// When overridden in a descendant class, returns a response to an
@@ -272,10 +208,7 @@ namespace System.Net
         /// </summary>
         /// <returns>A <itemref>WebResponse</itemref> containing the response to
         /// the Internet request.</returns>
-        public virtual WebResponse GetResponse()
-        {
-            throw new NotSupportedException();
-        }
+        public virtual WebResponse GetResponse() => throw new NotSupportedException();
 
         /// <summary>
         /// Initializes a new <itemref>WebRequest</itemref> instance for the
@@ -291,10 +224,7 @@ namespace System.Net
         /// in the prefix match table, and the appropriate handler is invoked to
         /// create the object.
         /// </remarks>
-        public static WebRequest Create(string requestUriString)
-        {
-            return CreateInternal(new Uri(requestUriString));
-        }
+        public static WebRequest Create(string requestUriString) => CreateInternal(new Uri(requestUriString));
 
         /// <summary>
         /// Creates a <itemref>WebRequest</itemref>.
@@ -308,10 +238,7 @@ namespace System.Net
         /// in the prefix match table, and the appropriate handler is invoked to
         /// create the object.
         /// </remarks>
-        public static WebRequest Create(Uri requestUri)
-        {
-            return CreateInternal(requestUri);
-        }
+        public static WebRequest Create(Uri requestUri) => CreateInternal(requestUri);
 
         /// <summary>
         /// Registers a <itemref>WebRequest</itemref> descendant for the
@@ -334,7 +261,7 @@ namespace System.Net
             {
                 // Iterate over list of prefixes and checks if this one is
                 // already present.
-                for (int i = 0; i < s_PrefixList.Count; i++)
+                for (var i = 0; i < s_PrefixList.Count; i++)
                 {
                     if (((WebRequestPrefixElement)s_PrefixList[i]).Prefix == prefix)
                     {
@@ -351,7 +278,7 @@ namespace System.Net
 
         private static int ComparePrefixString(string Url, string prefix, int prefixLen)
         {
-            for (int i = 0; i < prefixLen; i++)
+            for (var i = 0; i < prefixLen; i++)
             {
                 if (Url[i] != prefix[i])
                 {
@@ -369,17 +296,17 @@ namespace System.Net
 
             // Makes LookupUri lowercase since we need case-insensitive compare
             // with prefix
-            string lookupUri = requestUri.AbsoluteUri.ToLower();
-            int lookupUriLent = lookupUri.Length;
+            var lookupUri = requestUri.AbsoluteUri.ToLower();
+            var lookupUriLent = lookupUri.Length;
 
             // Walk down the list of prefixes.
-            int prefixListCount = s_PrefixList.Count;
-            for (int i = 0; i < prefixListCount; i++)
+            var prefixListCount = s_PrefixList.Count;
+            for (var i = 0; i < prefixListCount; i++)
             {
-                WebRequestPrefixElement Current = (WebRequestPrefixElement)s_PrefixList[i];
+                var Current = (WebRequestPrefixElement)s_PrefixList[i];
 
                 // See if this prefix is short enough.
-                int prefixLen = Current.Prefix.Length;
+                var prefixLen = Current.Prefix.Length;
                 if (lookupUriLent >= prefixLen)
                 {
                     // It is. See if these match.

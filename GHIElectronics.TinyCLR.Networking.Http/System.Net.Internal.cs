@@ -19,8 +19,8 @@ namespace System.Net
 
         public WebRequestPrefixElement(string P, IWebRequestCreate C)
         {
-            Prefix = P;
-            Creator = C;
+            this.Prefix = P;
+            this.Creator = C;
         }
 
     } // class PrefixListElement
@@ -251,11 +251,11 @@ namespace System.Net
             internal HttpVerb(string name, bool RequireContentBody, bool ContentBodyNotAllowed, bool ConnectRequest, bool ExpectNoContentResponse)
             {
 
-                m_name = name;
-                m_RequireContentBody = RequireContentBody;
-                m_ContentBodyNotAllowed = ContentBodyNotAllowed;
-                m_ConnectRequest = ConnectRequest;
-                m_ExpectNoContentResponse = ExpectNoContentResponse;
+                this.m_name = name;
+                this.m_RequireContentBody = RequireContentBody;
+                this.m_ContentBodyNotAllowed = ContentBodyNotAllowed;
+                this.m_ConnectRequest = ConnectRequest;
+                this.m_ExpectNoContentResponse = ExpectNoContentResponse;
             }
         }
 
@@ -285,9 +285,9 @@ namespace System.Net
 
         internal static HttpVerb GetHttpVerbType(String name)
         {
-            for (int i = 0; i < m_knownVerbs.Length; ++i)
+            for (var i = 0; i < m_knownVerbs.Length; ++i)
             {
-                HttpVerb v = m_knownVerbs[i];
+                var v = m_knownVerbs[i];
                 if (0 == string.Compare(v.m_name, name))
                     return v;
             }
@@ -313,16 +313,13 @@ namespace System.Net
         internal static DateTime
         string2date(String S)
         {
-            DateTime dtOut;
 
             if (HttpDateParse.ParseHttpDate(
                                            S,
-                                           out dtOut))
-            {
+                                           out var dtOut)) {
                 return dtOut;
             }
-            else
-            {
+            else {
                 throw new Exception("Invalid Date in HTTP header");
             }
 

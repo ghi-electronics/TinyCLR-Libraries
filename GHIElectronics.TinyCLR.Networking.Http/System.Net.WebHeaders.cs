@@ -19,8 +19,8 @@ namespace System.Net
     {
         public HeaderValuePair(string hd, string val)
         {
-            headerAsKey = hd;
-            value = val;
+            this.headerAsKey = hd;
+            this.value = val;
         }
 
         // Pair of value and header.
@@ -47,8 +47,8 @@ namespace System.Net
         /// </remarks>
         public HeaderValuePair GetValuePair(string header)
         {
-            string lowerHeader = header.ToLower();
-            for (int i = 0; i < this.Count; i++)
+            var lowerHeader = header.ToLower();
+            for (var i = 0; i < this.Count; i++)
             {
                 if (((HeaderValuePair)this[i]).headerAsKey.ToLower() == lowerHeader)
                 {
@@ -71,7 +71,7 @@ namespace System.Net
         public void Add(string header, string value)
         {
             // Checks is we already have the header.
-            HeaderValuePair pair = GetValuePair(header);
+            var pair = GetValuePair(header);
             // If found, adds valus to existing valies.
             if (pair != null)
             {
@@ -104,9 +104,9 @@ namespace System.Net
         /// <returns></returns>
         public bool RemoveHeader(string header)
         {
-            int totalElemCount = Count;
-            string lowerHeader = header.ToLower();
-            for (int i = 0; i < totalElemCount; i++)
+            var totalElemCount = this.Count;
+            var lowerHeader = header.ToLower();
+            for (var i = 0; i < totalElemCount; i++)
             { // If name matches - remove this header.
                 if (((HeaderValuePair)this[i]).headerAsKey.ToLower() == lowerHeader)
                 {
@@ -161,7 +161,7 @@ namespace System.Net
             headerName = CheckBadChars(headerName, false);
             headerValue = CheckBadChars(headerValue, true);
 
-            head_val_coll.Add(headerName, headerValue);
+            this.head_val_coll.Add(headerName, headerValue);
         }
 
         /// <summary>
@@ -175,11 +175,11 @@ namespace System.Net
         {
             if (HInfo[name].AllowMultiValues)
             {
-                head_val_coll.Add(name, value);
+                this.head_val_coll.Add(name, value);
             }
             else
             {
-                head_val_coll.Set(name, value);
+                this.head_val_coll.Set(name, value);
             }
         }
 
@@ -191,29 +191,20 @@ namespace System.Net
         /// </summary>
         /// <param name="headerName"></param>
         /// <param name="headerValue"></param>
-        internal void AddInternal(string headerName, string headerValue)
-        {
-            head_val_coll.Add(headerName, headerValue);
-        }
+        internal void AddInternal(string headerName, string headerValue) => this.head_val_coll.Add(headerName, headerValue);
 
         /// <summary>
         /// Internal fast channge
         /// </summary>
         /// <param name="name"></param>
         /// <param name="value"></param>
-        internal void ChangeInternal(string name, string value)
-        {
-            head_val_coll.Set(name, value);
-        }
+        internal void ChangeInternal(string name, string value) => this.head_val_coll.Set(name, value);
 
         /// <summary>
         /// Internal remove of header.
         /// </summary>
         /// <param name="name"></param>
-        internal void RemoveInternal(string name)
-        {
-            head_val_coll.RemoveHeader(name);
-        }
+        internal void RemoveInternal(string name) => this.head_val_coll.RemoveHeader(name);
 
         /// <summary>
         /// Changes to new value. Check for illegal characters first.
@@ -258,10 +249,10 @@ namespace System.Net
 
                 // First, check for correctly formed multi-line value
                 // Second, check for absence of CTL characters
-                bool crlf = false;
-                for (int i = 0; i < name.Length; ++i)
+                var crlf = false;
+                for (var i = 0; i < name.Length; ++i)
                 {
-                    char c = name[i];
+                    var c = name[i];
                     if (c == 127 || (c < ' ' && !(c == '\t' || c == '\r' || c == '\n')))
                     {
                         throw new ArgumentException();
@@ -304,16 +295,13 @@ namespace System.Net
             return name;
         }
 
-        internal static bool IsValidToken(string token)
-        {
-            return (token.Length > 0)
+        internal static bool IsValidToken(string token) => (token.Length > 0)
                 && (token.IndexOfAny(ValidationHelper.InvalidParamChars) == -1)
                 && !ContainsNonAsciiChars(token);
-        }
 
         internal static bool ContainsNonAsciiChars(string token)
         {
-            for (int i = 0; i < token.Length; ++i)
+            for (var i = 0; i < token.Length; ++i)
             {
                 if ((token[i] < 0x20) || (token[i] > 0x7e))
                 {
@@ -331,7 +319,7 @@ namespace System.Net
         /// <param name="headerName"></param>
         internal void ThrowOnRestrictedHeader(string headerName)
         {
-            if (m_IsHttpWebHeaderObject && HInfo[headerName].IsRestricted)
+            if (this.m_IsHttpWebHeaderObject && HInfo[headerName].IsRestricted)
             {
                 throw new ArgumentException("Cannot update restricted header: " + headerName);
             }
@@ -380,7 +368,7 @@ namespace System.Net
             ThrowOnRestrictedHeader(name);
             value = CheckBadChars(value, true);
 
-            head_val_coll.Add(name, value);
+            this.head_val_coll.Add(name, value);
         }
 
         /// <summary>
@@ -409,7 +397,7 @@ namespace System.Net
                 throw new ArgumentNullException();
             }
 
-            int colpos = header.IndexOf(':');
+            var colpos = header.IndexOf(':');
 
             // check for badly formed header passed in
             if (colpos < 0)
@@ -417,14 +405,14 @@ namespace System.Net
                 throw new ArgumentException();
             }
 
-            string name = header.Substring(0, colpos);
-            string value = header.Substring(colpos + 1);
+            var name = header.Substring(0, colpos);
+            var value = header.Substring(colpos + 1);
 
             name = CheckBadChars(name, false);
             ThrowOnRestrictedHeader(name);
             value = CheckBadChars(value, true);
 
-            head_val_coll.Add(name, value);
+            this.head_val_coll.Add(name, value);
         }
 
         /// <summary>
@@ -450,7 +438,7 @@ namespace System.Net
             ThrowOnRestrictedHeader(name);
             value = CheckBadChars(value, true);
 
-            head_val_coll.Set(name, value);
+            this.head_val_coll.Set(name, value);
         }
 
         /// <summary>
@@ -473,7 +461,7 @@ namespace System.Net
             ThrowOnRestrictedHeader(name);
             name = CheckBadChars(name, false);
 
-            head_val_coll.RemoveHeader(name);
+            this.head_val_coll.RemoveHeader(name);
         }
 
         /// <summary>
@@ -494,8 +482,8 @@ namespace System.Net
         public string[] GetValues(string header)
         {
             // Get the value pair for the header.
-            HeaderInfo Info = HInfo[header];
-            HeaderValuePair pair = head_val_coll.GetValuePair(header);
+            var Info = HInfo[header];
+            var pair = this.head_val_coll.GetValuePair(header);
 
             // If header not present or value string not present or empty -
             // return null.
@@ -508,7 +496,7 @@ namespace System.Net
             // string.
             if (Info == null || !Info.AllowMultiValues)
             {
-                string[] retVal = new string[1];
+                var retVal = new string[1];
                 retVal[0] = pair.value;
                 return retVal;
             }
@@ -536,12 +524,12 @@ namespace System.Net
         {
             // Iterates on all headers and add them line by line in form:
             // header: value
-            string retString = "";
-            for (int i = 0; i < head_val_coll.Count; i++)
+            var retString = "";
+            for (var i = 0; i < this.head_val_coll.Count; i++)
             {
                 // Try to be most efficient by calling Concat.
                 // There is no Concat with 5 arguments.
-                retString = String.Concat(retString, ((HeaderValuePair)head_val_coll[i]).headerAsKey, ": ", ((HeaderValuePair)head_val_coll[i]).value);
+                retString = String.Concat(retString, ((HeaderValuePair)this.head_val_coll[i]).headerAsKey, ": ", ((HeaderValuePair)this.head_val_coll[i]).value);
                 retString = String.Concat(retString, "\r\n");
             }
 
@@ -577,11 +565,11 @@ namespace System.Net
 
             // Make sure the buffer is big enough.
 
-            string tempStr = ToString();
+            var tempStr = ToString();
 
             // Use the String of headers, convert to Char Array, then convert to
             // Bytes, serializing finally into the buffer, along the way.
-            byte[] buffer = Encoding.UTF8.GetBytes(tempStr);
+            var buffer = Encoding.UTF8.GetBytes(tempStr);
 
             return buffer;
         }
@@ -618,10 +606,7 @@ namespace System.Net
         /// </summary>
         /// <param name="internalCreate">Whether this is an HTTP headers
         /// object.</param>
-        internal WebHeaderCollection(bool internalCreate)
-        {
-            m_IsHttpWebHeaderObject = internalCreate;
-        }
+        internal WebHeaderCollection(bool internalCreate) => this.m_IsHttpWebHeaderObject = internalCreate;
 
         /// <summary>
         /// Calculates the number of bytes needed to store the headers.
@@ -629,14 +614,14 @@ namespace System.Net
         /// <returns></returns>
         internal int byteLength()
         {
-            int ret = 0;
+            var ret = 0;
             // Runs for all collection and adds length of header and value
             // strings
-            for (int i = 0; i < head_val_coll.Count; i++)
+            for (var i = 0; i < this.head_val_coll.Count; i++)
             {
-                ret += ((HeaderValuePair)head_val_coll[i]).headerAsKey.Length;
+                ret += ((HeaderValuePair)this.head_val_coll[i]).headerAsKey.Length;
                 ret += 2; //for the ": "
-                ret += ((HeaderValuePair)head_val_coll[i]).value.Length;
+                ret += ((HeaderValuePair)this.head_val_coll[i]).value.Length;
                 ret += 2; //for the "\r\n"
             }
 
@@ -655,7 +640,7 @@ namespace System.Net
         {
             get
             {
-                HeaderValuePair pair = head_val_coll.GetValuePair(header);
+                var pair = this.head_val_coll.GetValuePair(header);
                 // If header is not present, then pair is null. Return null
                 // string
                 if (pair == null)
@@ -673,13 +658,7 @@ namespace System.Net
         /// </summary>
         /// <value>An <b>Int32</b> indicating the number of headers in a
         /// request.</value>
-        public int Count
-        {
-            get
-            {
-                return head_val_coll.Count;
-            }
-        }
+        public int Count => this.head_val_coll.Count;
 
         /// <summary>
         /// Gets all header names (keys) in the collection.
@@ -690,13 +669,13 @@ namespace System.Net
         {
             get
             {
-                ArrayList tempCollection = new ArrayList();
-                for (int i = 0; i < head_val_coll.Count; i++)
+                var tempCollection = new ArrayList();
+                for (var i = 0; i < this.head_val_coll.Count; i++)
                 {
-                    tempCollection.Add(((HeaderValuePair)head_val_coll[i]).headerAsKey);
+                    tempCollection.Add(((HeaderValuePair)this.head_val_coll[i]).headerAsKey);
                 }
 
-                string[] stringArray = new string[tempCollection.Count];
+                var stringArray = new string[tempCollection.Count];
                 return (string[])tempCollection.ToArray(typeof(string));
             }
         }
@@ -713,7 +692,7 @@ namespace System.Net
         internal int copyTo(byte[] bytes, int offset)
         {
             // Create array representing the headers
-            byte[] headersBytes = ToByteArray();
+            var headersBytes = ToByteArray();
             // Copy to destination
             headersBytes.CopyTo(bytes, offset);
             // Return count of bytes copied.

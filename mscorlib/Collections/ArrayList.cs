@@ -14,7 +14,7 @@ namespace System.Collections {
         public ArrayList() => this._items = new object[_defaultCapacity];
 
         public virtual int Capacity {
-            get => _items.Length; set => SetCapacity(value);
+            get => this._items.Length; set => SetCapacity(value);
         }
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]

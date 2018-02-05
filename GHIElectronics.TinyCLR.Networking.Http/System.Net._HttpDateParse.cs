@@ -265,12 +265,12 @@ namespace System.Net
                      out DateTime dtOut
                      )
         {
-            int index = 0;
+            var index = 0;
             int i = 0, iLastLettered = -1;
-            bool fIsANSIDateFormat = false;
-            int[] rgdwDateParseResults = new int[MAX_FIELD_DATE_ENTRIES];
-            bool fRet = true;
-            char[] lpInputBuffer = DateString.ToCharArray();
+            var fIsANSIDateFormat = false;
+            var rgdwDateParseResults = new int[MAX_FIELD_DATE_ENTRIES];
+            var fRet = true;
+            var lpInputBuffer = DateString.ToCharArray();
 
             dtOut = new DateTime(0);
 

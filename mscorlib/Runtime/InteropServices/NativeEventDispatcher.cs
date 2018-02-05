@@ -67,7 +67,7 @@ namespace System.Runtime.InteropServices {
                 }
 
                 NativeEventHandler callbacksOld = this.m_callbacks;
-                NativeEventHandler callbacksNew = (NativeEventHandler)Delegate.Combine(callbacksOld, value);
+                var callbacksNew = (NativeEventHandler)Delegate.Combine(callbacksOld, value);
 
                 try {
                     this.m_callbacks = callbacksNew;
@@ -102,7 +102,7 @@ namespace System.Runtime.InteropServices {
                 }
 
                 NativeEventHandler callbacksOld = this.m_callbacks;
-                NativeEventHandler callbacksNew = (NativeEventHandler)Delegate.Remove(callbacksOld, value);
+                var callbacksNew = (NativeEventHandler)Delegate.Remove(callbacksOld, value);
 
                 try {
                     this.m_callbacks = (NativeEventHandler)callbacksNew;

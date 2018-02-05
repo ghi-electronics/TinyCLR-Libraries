@@ -56,8 +56,8 @@ namespace System.Net
         /// on local network addresses.</param>
         public WebProxy(Uri Address, bool BypassOnLocal)
         {
-            _ProxyAddress = Address;
-            _BypassOnLocal = BypassOnLocal;
+            this._ProxyAddress = Address;
+            this._BypassOnLocal = BypassOnLocal;
         }
 
         /// <summary>
@@ -108,17 +108,10 @@ namespace System.Net
         /// </summary>
         /// <value>A <see cref="System.Uri"/> instance that contains the address
         /// of the proxy server.</value>
-        public Uri Address
-        {
-            get
-            {
-                return _ProxyAddress;
-            }
+        public Uri Address {
+            get => this._ProxyAddress;
 
-            set
-            {
-                _ProxyAddress = value;
-            }
+            set => this._ProxyAddress = value;
         }
 
         /// <summary>
@@ -126,17 +119,10 @@ namespace System.Net
         /// addresses.</summary>
         /// <value><itemref>true</itemref> to bypass the proxy server for local
         /// addresses; otherwise, <itemref>false</itemref>.</value>
-        public bool BypassProxyOnLocal
-        {
-            get
-            {
-                return _BypassOnLocal;
-            }
+        public bool BypassProxyOnLocal {
+            get => this._BypassOnLocal;
 
-            set
-            {
-                _BypassOnLocal = value;
-            }
+            set => this._BypassOnLocal = value;
         }
 
         /// <summary>
@@ -155,7 +141,7 @@ namespace System.Net
                 return destination;
             }
 
-            Uri proxy = _ProxyAddress;
+            var proxy = this._ProxyAddress;
             if (proxy != null)
             {
                 return proxy;
@@ -194,8 +180,8 @@ namespace System.Net
         /// <itemref>false</itemref>.</returns>
         private bool IsLocal(Uri host)
         {
-            string hostString = host.Host;
-            int dot = hostString.IndexOf('.');
+            var hostString = host.Host;
+            var dot = hostString.IndexOf('.');
 
             if (dot == -1)
             {
@@ -220,8 +206,8 @@ namespace System.Net
                 return true; // bypass localhost from using a proxy.
             }
 
-            if ((_ProxyAddress == null) ||
-                (_BypassOnLocal && IsLocal(host)))
+            if ((this._ProxyAddress == null) ||
+                (this._BypassOnLocal && IsLocal(host)))
             {
                 return true; // bypass when non .'s and no proxy on local
             }

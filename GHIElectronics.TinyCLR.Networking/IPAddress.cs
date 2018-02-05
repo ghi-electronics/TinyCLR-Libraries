@@ -26,7 +26,7 @@ namespace System.Net
                 throw new ArgumentOutOfRangeException();
             }
 
-            m_Address = newAddress;
+            this.m_Address = newAddress;
         }
 
         public IPAddress(byte[] newAddressBytes)
@@ -36,23 +36,20 @@ namespace System.Net
 
         public override bool Equals(object obj)
         {
-            IPAddress addr = obj as IPAddress;
+            var addr = obj as IPAddress;
 
             if (obj == null) return false;
 
             return this.m_Address == addr.m_Address;
         }
 
-        public byte[] GetAddressBytes()
-        {
-            return new byte[]
+        public byte[] GetAddressBytes() => new byte[]
             {
-                (byte)(m_Address),
-                (byte)(m_Address >> 8),
-                (byte)(m_Address >> 16),
-                (byte)(m_Address >> 24)
+                (byte)(this.m_Address),
+                (byte)(this.m_Address >> 8),
+                (byte)(this.m_Address >> 16),
+                (byte)(this.m_Address >> 24)
             };
-        }
 
         public static IPAddress Parse(string ipString)
         {
@@ -60,13 +57,13 @@ namespace System.Net
                 throw new ArgumentNullException();
 
             ulong ipAddress = 0L;
-            int lastIndex = 0;
-            int shiftIndex = 0;
+            var lastIndex = 0;
+            var shiftIndex = 0;
             ulong mask = 0x00000000000000FF;
             ulong octet = 0L;
-            int length = ipString.Length;
+            var length = ipString.Length;
 
-            for (int i = 0; i < length; ++i)
+            for (var i = 0; i < length; ++i)
             {
                 // Parse to '.' or end of IP address
                 if (ipString[i] == '.' || i == length - 1)
@@ -90,16 +87,13 @@ namespace System.Net
             return new IPAddress((long)ipAddress);
         }
 
-        public override string ToString()
-        {
-            return ((byte)(m_Address)).ToString() +
+        public override string ToString() => ((byte)(this.m_Address)).ToString() +
                     "." +
-                    ((byte)(m_Address >> 8)).ToString() +
+                    ((byte)(this.m_Address >> 8)).ToString() +
                     "." +
-                    ((byte)(m_Address >> 16)).ToString() +
+                    ((byte)(this.m_Address >> 16)).ToString() +
                     "." +
-                    ((byte)(m_Address >> 24)).ToString();
-        }
+                    ((byte)(this.m_Address >> 24)).ToString();
 
         //--//
         ////////////////////////////////////////////////////////////////////////////////////////
@@ -129,11 +123,11 @@ namespace System.Net
         /// </exception>
         private static int ConvertStringToInt32(string value)
         {
-            char[] num = value.ToCharArray();
-            int result = 0;
+            var num = value.ToCharArray();
+            var result = 0;
 
-            bool isNegative = false;
-            int signIndex = 0;
+            var isNegative = false;
+            var signIndex = 0;
 
             if (num[0] == '-')
             {
@@ -145,8 +139,8 @@ namespace System.Net
                 signIndex = 1;
             }
 
-            int exp = 1;
-            for (int i = num.Length - 1; i >= signIndex; i--)
+            var exp = 1;
+            for (var i = num.Length - 1; i >= signIndex; i--)
             {
                 if (num[i] < '0' || num[i] > '9')
                 {
@@ -172,12 +166,12 @@ namespace System.Net
             // On the device and Windows NetworkInterface works and is preferred.
             try
             {
-                NetworkInterface[] interfaces = NetworkInterface.GetAllNetworkInterfaces();
+                var interfaces = NetworkInterface.GetAllNetworkInterfaces();
 
-                int cnt = interfaces.Length;
-                for (int i = 0; i < cnt; i++)
+                var cnt = interfaces.Length;
+                for (var i = 0; i < cnt; i++)
                 {
-                    NetworkInterface ni = interfaces[i];
+                    var ni = interfaces[i];
 
                     if (ni.IPAddress != "0.0.0.0" && ni.SubnetMask != "0.0.0.0")
                     {
@@ -192,10 +186,10 @@ namespace System.Net
             try
             {
                 IPAddress localAddress = null;
-                IPHostEntry hostEntry = Dns.GetHostEntry("");
+                var hostEntry = Dns.GetHostEntry("");
 
-                int cnt = hostEntry.AddressList.Length;
-                for (int i = 0; i < cnt; ++i)
+                var cnt = hostEntry.AddressList.Length;
+                for (var i = 0; i < cnt; ++i)
                 {
                     if ((localAddress = hostEntry.AddressList[i]) != null)
                     {
@@ -212,8 +206,8 @@ namespace System.Net
 
             return IPAddress.Any;
         }
-        
-        
+
+
     } // class IPAddress
 } // namespace System.Net
 

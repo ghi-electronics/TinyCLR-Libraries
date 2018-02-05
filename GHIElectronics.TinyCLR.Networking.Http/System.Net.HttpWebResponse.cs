@@ -77,13 +77,7 @@ namespace System.Net
         /// </summary>
         /// <value>A <b>WebHeaderCollection</b> that contains the header
         /// information returned with the response.</value>
-        public override WebHeaderCollection Headers
-        {
-            get
-            {
-                return m_httpResponseHeaders;
-            }
-        }
+        public override WebHeaderCollection Headers => this.m_httpResponseHeaders;
 
         /// <summary>
         /// Gets the length of the content returned by the request.
@@ -95,15 +89,13 @@ namespace System.Net
         /// </remarks>
         /// <value>The number of bytes returned by the request.  Content length
         /// does not include header information.</value>
-        public override long ContentLength
-        { get { return m_contentLength; } }
+        public override long ContentLength => this.m_contentLength;
 
         /// <summary>
         /// TBD
         /// </summary>
         /// <value>TBD</value>
-        internal long InternalContentLength
-        { set { m_contentLength = value; } }
+        internal long InternalContentLength { set => this.m_contentLength = value; }
 
         /// <summary>
         /// Gets the method that is used to encode the body of the response.
@@ -115,13 +107,7 @@ namespace System.Net
         /// </remarks>
         /// <value>A string that describes the method that is used to encode the
         /// body of the response.</value>
-        public String ContentEncoding
-        {
-            get
-            {
-                return GetResponseHeader(HttpKnownHeaderNames.ContentEncoding);
-            }
-        }
+        public String ContentEncoding => GetResponseHeader(HttpKnownHeaderNames.ContentEncoding);
 
         /// <summary>
         /// Gets the content type of the response.
@@ -132,26 +118,14 @@ namespace System.Net
         /// This property contains the value of the <b>Content-Type</b> header
         /// returned with the response.
         /// </remarks>
-        public override string ContentType
-        {
-            get
-            {
-                return GetResponseHeader(HttpKnownHeaderNames.ContentType);
-            }
-        }
+        public override string ContentType => GetResponseHeader(HttpKnownHeaderNames.ContentType);
 
         /// <summary>
         /// Gets the name of the server that sent the response.
         /// </summary>
         /// <value>A string that contains the name of the server that sent the
         /// response.</value>
-        public string Server
-        {
-            get
-            {
-                return GetResponseHeader(HttpKnownHeaderNames.Server);
-            }
-        }
+        public string Server => GetResponseHeader(HttpKnownHeaderNames.Server);
 
         /// <summary>
         /// Gets the value of the Last-Modified header, which indicates the last
@@ -164,8 +138,8 @@ namespace System.Net
             get
             {
 
-                string lastmodHeaderValue =
-                    m_httpResponseHeaders[HttpKnownHeaderNames.LastModified];
+                var lastmodHeaderValue =
+                    this.m_httpResponseHeaders[HttpKnownHeaderNames.LastModified];
                 if (lastmodHeaderValue == null)
                 {
                     return DateTime.Now;
@@ -182,33 +156,23 @@ namespace System.Net
         /// For status code values, see <see cref="System.Net.HttpStatusCode"/>.
         /// </remarks>
         /// <value>One of the <b>HttpStatusCode</b> values.</value>
-        public HttpStatusCode StatusCode
-        {
-            get { return (HttpStatusCode)m_statusCode; }
-        }
+        public HttpStatusCode StatusCode => (HttpStatusCode)this.m_statusCode;
 
         /// <summary>
         /// Gets the status description returned with the response.
         /// </summary>
         /// <value>A string that describes the status of the response.</value>
-        public string StatusDescription
-        {
-            get
-            {
-                return m_statusDescription;
-            }
-        }
+        public string StatusDescription => this.m_statusDescription;
 
         /// <summary>
         /// Gets the version of the HTTP protocol that is used in the response.
         /// </summary>
         /// <value>A <b>Version</b> that contains the HTTP protocol version of
         /// the response.</value>
-        public Version ProtocolVersion
-        {
-            get { return m_version; }
+        public Version ProtocolVersion {
+            get => this.m_version;
 #if DEBUG
-            set { m_version = value; }
+            set => this.m_version = value;
 #endif
         }
 
@@ -219,9 +183,9 @@ namespace System.Net
         /// <returns>A network stream to read body of the message.</returns>
         public override Stream GetResponseStream()
         {
-            Stream retVal = m_responseStream.CloneStream();
+            var retVal = this.m_responseStream.CloneStream();
 
-            m_responseStream.m_dataStart = m_responseStream.m_dataEnd = 0;
+            this.m_responseStream.m_dataStart = this.m_responseStream.m_dataEnd = 0;
             
             return retVal;
         }
@@ -233,10 +197,7 @@ namespace System.Net
         /// <remarks>
         /// Used internally during creation of HttpWebResponse.
         /// </remarks>
-        internal void SetResponseStream(InputNetworkStreamWrapper stream)
-        {
-            m_responseStream = stream;
-        }
+        internal void SetResponseStream(InputNetworkStreamWrapper stream) => this.m_responseStream = stream;
 
         /// <summary>
         /// Creates WEB response based on information known just after parsing the status line.
@@ -248,16 +209,16 @@ namespace System.Net
         internal HttpWebResponse(string method, Uri responseUrl,
                                   CoreResponseData data, HttpWebRequest httpWebReq)
         {
-            m_httpWebRequest = httpWebReq;
-            m_method = method;
-            m_url = responseUrl;
-            m_version = data.m_version;
-            m_statusCode = data.m_statusCode;
-            m_statusDescription = data.m_statusDescription;
+            this.m_httpWebRequest = httpWebReq;
+            this.m_method = method;
+            this.m_url = responseUrl;
+            this.m_version = data.m_version;
+            this.m_statusCode = data.m_statusCode;
+            this.m_statusDescription = data.m_statusDescription;
 
-            m_httpResponseHeaders = data.m_headers;
+            this.m_httpResponseHeaders = data.m_headers;
 
-            m_contentLength = data.m_contentLength;
+            this.m_contentLength = data.m_contentLength;
         }
 
         /// <summary>
@@ -268,7 +229,7 @@ namespace System.Net
         ///
         public string GetResponseHeader(string headerName)
         {
-            string headerValue = m_httpResponseHeaders[headerName];
+            var headerValue = this.m_httpResponseHeaders[headerName];
             return ((headerValue == null) ? String.Empty : headerValue);
         }
 
@@ -278,14 +239,14 @@ namespace System.Net
         /// </summary>
         /// <value>A <b>Uri</b> that contains the URI of the Internet resource
         /// that responded to the request.</value>
-        public override Uri ResponseUri { get { return m_url; } }
+        public override Uri ResponseUri => this.m_url;
 
         /// <summary>
         /// Gets the method that is used to return the response.
         /// </summary>
         /// <value>A string that contains the HTTP method that is used to return
         /// the response.</value>
-        public string Method { get { return m_method; } }
+        public string Method => this.m_method;
 
         /// <summary>
         /// Closes a response stream, if present.
@@ -293,15 +254,15 @@ namespace System.Net
         /// <param name="disposing">Not used.</param>
         protected override void Dispose(bool disposing)
         {
-            if (m_responseStream != null)
+            if (this.m_responseStream != null)
             {
-                bool closeConnection = true;
-                if (m_httpWebRequest.KeepAlive)
+                var closeConnection = true;
+                if (this.m_httpWebRequest.KeepAlive)
                 {
                     string connValue = null;
 
                     // Check if server have sent use "Connection:Close"
-                    if (m_httpResponseHeaders != null) connValue = m_httpResponseHeaders[HttpKnownHeaderNames.Connection];
+                    if (this.m_httpResponseHeaders != null) connValue = this.m_httpResponseHeaders[HttpKnownHeaderNames.Connection];
 
                     // If server had not send this header or value is not "close", then we keep connection.
                     closeConnection = connValue == null || connValue.ToLower() == HttpKnownHeaderValues.close;
@@ -314,18 +275,18 @@ namespace System.Net
                     // Save connected socket and Destination IP End Point, so it can be used next time.
                     // But first we need to validate that this socket is already not in the list. We do not want same socket to be twice in the list.
 
-                    HttpWebRequest.RemoveStreamFromPool(m_responseStream);
+                    HttpWebRequest.RemoveStreamFromPool(this.m_responseStream);
 
                     // Closing connection socket.
-                    m_responseStream.Dispose();
+                    this.m_responseStream.Dispose();
                 }
                 else
                 {
-                    m_responseStream.ReleaseStream();
+                    this.m_responseStream.ReleaseStream();
                 }
-                
+
                 // Set flag that we already completed work on this stream.
-                m_responseStream = null;
+                this.m_responseStream = null;
             }
 
             base.Dispose(disposing);

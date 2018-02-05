@@ -14,11 +14,11 @@ namespace System {
         //Properties
         public AttributeTargets ValidOn => this.m_attributeTarget;
         public bool AllowMultiple {
-            get => m_allowMultiple; set => m_allowMultiple = value;
+            get => this.m_allowMultiple; set => this.m_allowMultiple = value;
         }
 
         public bool Inherited {
-            get => m_inherited; set => m_inherited = value;
+            get => this.m_inherited; set => this.m_inherited = value;
         }
     }
 }

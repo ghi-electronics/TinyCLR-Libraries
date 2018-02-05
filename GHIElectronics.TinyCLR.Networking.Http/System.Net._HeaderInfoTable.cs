@@ -19,10 +19,7 @@ namespace System.Net
         private static HeaderParser SingleParser = new HeaderParser(ParseSingleValue);
         private static HeaderParser MultiParser = new HeaderParser(ParseMultiValue);
 
-        private static string[] ParseSingleValue(string value)
-        {
-            return new string[1] { value };
-        }
+        private static string[] ParseSingleValue(string value) => new string[1] { value };
 
         /// <summary>
         /// Parses single HTTP header and separates values delimited by comma.
@@ -32,14 +29,14 @@ namespace System.Net
         /// <returns>Array of strings with single value in each. </returns>
         private static string[] ParseMultiValue(string value)
         {
-            ArrayList tempCollection = new ArrayList();
+            var tempCollection = new ArrayList();
 
-            bool inquote = false;
-            int chIndex = 0;
-            char[] vp = new char[value.Length];
+            var inquote = false;
+            var chIndex = 0;
+            var vp = new char[value.Length];
             string singleValue;
 
-            for (int i = 0; i < value.Length; i++)
+            for (var i = 0; i < value.Length; i++)
             {
                 if (value[i] == '\"')
                 {
@@ -150,8 +147,8 @@ namespace System.Net
         {
             get
             {   // Return headerInfo with the same name
-                string lowerCaseName = name.ToLower();
-                for (int i = 0; i < HeaderTable.Length; i++)
+                var lowerCaseName = name.ToLower();
+                for (var i = 0; i < HeaderTable.Length; i++)
                 {
                     if (HeaderTable[i].HeaderName.ToLower() == lowerCaseName)
                     {
