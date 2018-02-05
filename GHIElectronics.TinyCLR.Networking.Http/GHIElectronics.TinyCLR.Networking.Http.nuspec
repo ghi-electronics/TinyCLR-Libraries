@@ -2,7 +2,7 @@
 
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
-    <id>GHIElectronics.TinyCLR.Networking.SPWF04Sx</id>
+    <id>GHIElectronics.TinyCLR.Networking.Http</id>
     <version>0.8.0</version>
     <authors>GHI Electronics, LLC</authors>
     <owners>GHI Electronics, LLC</owners>
@@ -10,16 +10,15 @@
     <iconUrl>http://files.ghielectronics.com/downloads/Logos/GHIElectronicsTinyCLRNuGet.png</iconUrl>
     <licenseUrl>http://files.ghielectronics.com/downloads/TinyCLR/License.txt</licenseUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
-    <description>The SPWF04Sx networking library for TinyCLR OS.</description>
+    <description>The HTTP library for TinyCLR OS.</description>
     <copyright>Copyright GHI Electronics, LLC 2018</copyright>
     <tags>TinyCLR TinyCLROS</tags>
     <dependencies>
       <dependency id="GHIElectronics.TinyCLR.Core" version="[0.8.0, 0.9.0)" />
-      <dependency id="GHIElectronics.TinyCLR.Devices" version="[0.8.0, 0.9.0)" />
       <dependency id="GHIElectronics.TinyCLR.Networking" version="[0.8.0, 0.9.0)" />
     </dependencies>
   </metadata>
   <files>
-    <file src="$TargetDir$GHIElectronics.TinyCLR.Networking.SPWF04Sx.dll" target="lib\net452" />
+    <file src="$TargetDir$GHIElectronics.TinyCLR.Networking.Http.dll" target="lib\net452" />
   </files>
 </package>

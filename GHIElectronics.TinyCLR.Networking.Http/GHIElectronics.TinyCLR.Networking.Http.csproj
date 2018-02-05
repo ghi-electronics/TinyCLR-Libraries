@@ -5,11 +5,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{365C4668-89FB-429C-B90B-D80AF6CF9B9D}</ProjectGuid>
+    <ProjectGuid>{D89B51CA-0A2C-4A50-8312-D3B3F57F1096}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GHIElectronics.TinyCLR.Networking.SPWF04Sx</RootNamespace>
-    <AssemblyName>GHIElectronics.TinyCLR.Networking.SPWF04Sx</AssemblyName>
+    <RootNamespace>GHIElectronics.TinyCLR.Networking.Http</RootNamespace>
+    <AssemblyName>GHIElectronics.TinyCLR.Networking.Http</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A1948822-69DD-4150-919B-F3F42EFB71CC};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -34,21 +34,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="SPWF04SxEnums.cs" />
-    <Compile Include="SPWF04SxEvents.cs" />
-    <Compile Include="SPWF04SxExceptions.cs" />
-    <Compile Include="SPWF04SxInterface.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="GHIElectronics.TinyCLR.Networking.SPWF04Sx.nuspec" />
+    <None Include="GHIElectronics.TinyCLR.Networking.Http.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\GHIElectronics.TinyCLR.Devices\GHIElectronics.TinyCLR.Devices.csproj">
-      <Project>{04B01E7E-5052-4E52-B21B-0BF37B9E0C86}</Project>
-      <Name>GHIElectronics.TinyCLR.Devices</Name>
-    </ProjectReference>
     <ProjectReference Include="..\GHIElectronics.TinyCLR.Networking\GHIElectronics.TinyCLR.Networking.csproj">
       <Project>{1AFA3955-B36D-4A8A-8B7F-86F39FC2FDE3}</Project>
       <Name>GHIElectronics.TinyCLR.Networking</Name>
