@@ -58,7 +58,6 @@
     <Compile Include="Sockets\SocketOptionName.cs" />
     <Compile Include="Sockets\SocketType.cs" />
     <Compile Include="SystemInfo.cs" />
-    <Compile Include="Wireless.cs" />
     <Compile Include="X509Certificate.cs" />
   </ItemGroup>
   <ItemGroup>
