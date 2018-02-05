@@ -4,10 +4,7 @@
 
 namespace System.Net {
     using System.Collections;
-    using System.Net.Security;
     using System.Net.Sockets;
-    using System.Security.Authentication;
-    using System.Security.Cryptography.X509Certificates;
     using System.Threading;
 
     /// <summary>
@@ -29,7 +26,7 @@ namespace System.Net {
         /// <summary>
         /// The certificate to send during https authentication.
         /// </summary>
-        X509Certificate m_httpsCert;
+        //X509Certificate m_httpsCert;
 
         /// <summary>
         /// This value is the number of connections that can be ready but are
@@ -367,24 +364,24 @@ namespace System.Net {
 
                 try
                 {
-                    if (!this.m_IsHttpsConnection)
-                    {
+                    //if (!this.m_IsHttpsConnection)
+                    //{
                         // This is case of normal HTTP. Create network stream.
                         netStream = new NetworkStream(clientSock, true);
-                    }
-                    else
-                    {
-                        // This is the case of https.
-                        // Once connection estiblished need to create secure stream and authenticate server.
-                        netStream = new SslStream(clientSock);
-
-                        var sslProtocols = new SslProtocols[] { SslProtocols.Default };
-
-                        // Throws exception if fails.
-                        ((SslStream)netStream).AuthenticateAsServer(this.m_httpsCert, sslProtocols);
-
-                        netStream.ReadTimeout = 10000;
-                    }
+                    //}
+                    //else
+                    //{
+                    //    // This is the case of https.
+                    //    // Once connection estiblished need to create secure stream and authenticate server.
+                    //    netStream = new SslStream(clientSock);
+                    //
+                    //    var sslProtocols = new SslProtocols[] { SslProtocols.Default };
+                    //
+                    //    // Throws exception if fails.
+                    //    ((SslStream)netStream).AuthenticateAsServer(this.m_httpsCert, sslProtocols);
+                    //
+                    //    netStream.ReadTimeout = 10000;
+                    //}
                 }
                 catch(SocketException)
                 {
@@ -451,9 +448,7 @@ namespace System.Net {
                 }
                 catch {}
 
-                var addr = IPAddress.GetDefaultLocalAddress();
-
-                var endPoint = new IPEndPoint(addr, this.m_Port);
+                var endPoint = new IPEndPoint(IPAddress.Any, this.m_Port);
                 this.m_listener.Bind(endPoint);
 
                 // Starts to listen to maximum of 10 connections.
@@ -622,10 +617,10 @@ namespace System.Net {
         /// The certificate used if <b>HttpListener</b> implements an https
         /// server.
         /// </summary>
-        public X509Certificate HttpsCert {
-            get => this.m_httpsCert;
-            set => this.m_httpsCert = value;
-        }
+        //public X509Certificate HttpsCert {
+        //    get => this.m_httpsCert;
+        //    set => this.m_httpsCert = value;
+        //}
     }
 }
 

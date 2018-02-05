@@ -1,23 +1,20 @@
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Copyright (c) Microsoft Corporation.  All rights reserved.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("System.Net.Security")]
+using NI = System.Net.NetworkInterface.NetworkInterface;
 
 namespace System.Net.Sockets {
     using System.Net;
+    using System.Net.NetworkInterface;
     using System.Runtime.CompilerServices;
     using System.Threading;
-    using GHIElectronics.TinyCLR.Networking;
 
     public class Socket : IDisposable
     {
         /* WARNING!!!!
-         * The m_Handle field MUST be the first field in the Socket class; it is expected by
-         * the SPOT.NET.SocketNative class.
-         */
+* The m_Handle field MUST be the first field in the Socket class; it is expected by
+* the SPOT.NET.this.ni class.
+*/
         internal int m_Handle = -1;
 
+        internal readonly ISocket ni;
         private bool m_fBlocking = true;
         private EndPoint m_localEndPoint = null;
 
@@ -25,7 +22,11 @@ namespace System.Net.Sockets {
         private int m_recvTimeout = System.Threading.Timeout.Infinite;
         private int m_sendTimeout = System.Threading.Timeout.Infinite;
 
-        public Socket(AddressFamily addressFamily, SocketType socketType, ProtocolType protocolType) => this.m_Handle = SocketNative.socket((int)addressFamily, (int)socketType, (int)protocolType);
+        public Socket(AddressFamily addressFamily, SocketType socketType, ProtocolType protocolType) {
+            this.ni = NI.GetActiveForSocket();
+
+            this.m_Handle = this.ni.Create(addressFamily, socketType, protocolType);
+        }
 
         private Socket(int handle) => this.m_Handle = handle;
 
@@ -40,7 +41,7 @@ namespace System.Net.Sockets {
 
                 uint cBytes = 0;
 
-                SocketNative.ioctl(this, SocketNative.FIONREAD, ref cBytes);
+                this.ni.Available(this.m_Handle);
 
                 return (int)cBytes;
             }
@@ -60,18 +61,17 @@ namespace System.Net.Sockets {
                 this.m_localEndPoint = new IPEndPoint(IPAddress.Any, 0);
             }
 
-            byte[] address = null;
+            SocketAddress socketAddress;
 
             if (fLocal)
             {
-                SocketNative.getsockname(this, out address);
+                this.ni.GetLocalAddress(this.m_Handle, out socketAddress);
             }
             else
             {
-                SocketNative.getpeername(this, out address);
+                this.ni.GetRemoteAddress(this.m_Handle, out socketAddress);
             }
 
-            var socketAddress = new SocketAddress(address);
             ep = this.m_localEndPoint.Create(socketAddress);
 
             if (fLocal)
@@ -115,7 +115,7 @@ namespace System.Net.Sockets {
                 throw new ObjectDisposedException();
             }
 
-            SocketNative.bind(this, localEP.Serialize().m_Buffer);
+            this.ni.Bind(this.m_Handle, localEP.Serialize());
 
             this.m_localEndPoint = localEP;
         }
@@ -127,7 +127,7 @@ namespace System.Net.Sockets {
                 throw new ObjectDisposedException();
             }
 
-            SocketNative.connect(this, remoteEP.Serialize().m_Buffer, !this.m_fBlocking);
+            this.ni.Connect(this.m_Handle, remoteEP.Serialize());
 
             if (this.m_fBlocking)
             {
@@ -144,7 +144,7 @@ namespace System.Net.Sockets {
                 throw new ObjectDisposedException();
             }
 
-            SocketNative.listen(this, backlog);
+            this.ni.Listen(this.m_Handle, backlog);
         }
 
         public Socket Accept()
@@ -161,7 +161,7 @@ namespace System.Net.Sockets {
                 Poll(-1, SelectMode.SelectRead);
             }
 
-            socketHandle = SocketNative.accept(this);
+            socketHandle = this.ni.Accept(this.m_Handle);
 
             var socket = new Socket(socketHandle) {
                 m_localEndPoint = this.m_localEndPoint
@@ -183,7 +183,7 @@ namespace System.Net.Sockets {
                 throw new ObjectDisposedException();
             }
 
-            return SocketNative.send(this, buffer, offset, size, (int)socketFlags, this.m_sendTimeout);
+            return this.ni.Send(this.m_Handle, buffer, offset, size, socketFlags, this.m_sendTimeout);
         }
 
         public int SendTo(byte[] buffer, int offset, int size, SocketFlags socketFlags, EndPoint remoteEP)
@@ -193,9 +193,9 @@ namespace System.Net.Sockets {
                 throw new ObjectDisposedException();
             }
 
-            var address = remoteEP.Serialize().m_Buffer;
+            var address = remoteEP.Serialize();
 
-            return SocketNative.sendto(this, buffer, offset, size, (int)socketFlags, this.m_sendTimeout, address);
+            return this.ni.SendTo(this.m_Handle, buffer, offset, size, socketFlags, this.m_sendTimeout, address);
         }
 
         public int SendTo(byte[] buffer, int size, SocketFlags socketFlags, EndPoint remoteEP) => SendTo(buffer, 0, size, socketFlags, remoteEP);
@@ -217,7 +217,7 @@ namespace System.Net.Sockets {
                 throw new ObjectDisposedException();
             }
 
-            return SocketNative.recv(this, buffer, offset, size, (int)socketFlags, this.m_recvTimeout);
+            return this.ni.Receive(this.m_Handle, buffer, offset, size, socketFlags, this.m_recvTimeout);
         }
 
         public int ReceiveFrom(byte[] buffer, int offset, int size, SocketFlags socketFlags, ref EndPoint remoteEP)
@@ -227,13 +227,12 @@ namespace System.Net.Sockets {
                 throw new ObjectDisposedException();
             }
 
-            var address = remoteEP.Serialize().m_Buffer;
+            var address = remoteEP.Serialize();
             var len = 0;
 
-            len = SocketNative.recvfrom(this, buffer, offset, size, (int)socketFlags, this.m_recvTimeout, ref address);
+            len = this.ni.ReceiveFrom(this.m_Handle, buffer, offset, size, socketFlags, this.m_recvTimeout, ref address);
 
-            var socketAddress = new SocketAddress(address);
-            remoteEP = remoteEP.Create(socketAddress);
+            remoteEP = remoteEP.Create(address);
 
             return len;
         }
@@ -268,7 +267,7 @@ namespace System.Net.Sockets {
                     break;
             }
 
-            SocketNative.setsockopt(this, (int)optionLevel, (int)optionName, val);
+            this.ni.SetOption(this.m_Handle, optionLevel, optionName, val);
         }
 
         public void SetSocketOption(SocketOptionLevel optionLevel, SocketOptionName optionName, bool optionValue) => SetSocketOption(optionLevel, optionName, (optionValue ? 1 : 0));
@@ -280,7 +279,7 @@ namespace System.Net.Sockets {
                 throw new ObjectDisposedException();
             }
 
-            SocketNative.setsockopt(this, (int)optionLevel, (int)optionName, optionValue);
+            this.ni.SetOption(this.m_Handle, optionLevel, optionName, optionValue);
         }
 
         public object GetSocketOption(SocketOptionLevel optionLevel, SocketOptionName optionName)
@@ -317,7 +316,7 @@ namespace System.Net.Sockets {
                 throw new ObjectDisposedException();
             }
 
-            SocketNative.getsockopt(this, (int)optionLevel, (int)optionName, val);
+            this.ni.GetOption(this.m_Handle, optionLevel, optionName, val);
         }
 
         public bool Poll(int microSeconds, SelectMode mode)
@@ -327,7 +326,7 @@ namespace System.Net.Sockets {
                 throw new ObjectDisposedException();
             }
 
-            return SocketNative.poll(this, (int)mode, microSeconds);
+            return this.ni.Poll(this.m_Handle, microSeconds, mode);
         }
 
         [MethodImplAttribute(MethodImplOptions.Synchronized)]
@@ -335,7 +334,7 @@ namespace System.Net.Sockets {
         {
             if (this.m_Handle != -1)
             {
-                SocketNative.close(this);
+                this.ni.Close(this.m_Handle);
                 this.m_Handle = -1;
             }
         }

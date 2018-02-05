@@ -7,10 +7,7 @@ namespace System.Net {
     using System.Collections;
     using System.Diagnostics;
     using System.IO;
-    using System.Net.Security;
     using System.Net.Sockets;
-    using System.Security.Authentication;
-    using System.Security.Cryptography.X509Certificates;
     using System.Text;
     using System.Threading;
 
@@ -218,7 +215,7 @@ namespace System.Net {
         /// <b>HttpWebRequest</b>.  When the server certificate is received, it
         /// is validated with certificates in this array.
         /// </remarks>
-        X509Certificate[] m_caCerts;
+        //X509Certificate[] m_caCerts;
 
         /// <summary>
         /// The number of people using the connection.  Must reference-count this
@@ -343,10 +340,10 @@ namespace System.Net {
         /// servers.  These certificates are used only for https connections;
         /// http connections do not require them.
         /// </summary>
-        public X509Certificate[] HttpsAuthentCerts {
-            get => this.m_caCerts;
-            set => this.m_caCerts = value;
-        }
+        //public X509Certificate[] HttpsAuthentCerts {
+        //    get => this.m_caCerts;
+        //    set => this.m_caCerts = value;
+        //}
 
         /// <summary>
         /// Gets or sets a timeout in milliseconds when writing to or reading
@@ -1274,36 +1271,36 @@ namespace System.Net {
                 retStream = new InputNetworkStreamWrapper(new NetworkStream(socket), socket, !isHttps, proxyServer.Host + ":" + proxyServer.Port);
 
                 // For https proxy works differenly from http.
-                if (isHttps)
-                {
-                    // If proxy is set, then for https we need to send "CONNECT" command to proxy.
-                    // Once this command is send, the socket from proxy works as if it is the socket to the destination server.
-                    if (proxyServer != targetServer)
-                    {
-                        var request = "CONNECT " + remoteServer + " HTTP/" + this.ProtocolVersion + "\r\n\r\n";
-                        var bytesToSend = Encoding.UTF8.GetBytes(request);
-                        retStream.Write(bytesToSend, 0, bytesToSend.Length);
-
-                        // Now proxy should respond with the connected status. If it is successul, then we are good to go.
-                        var respData = ParseHTTPResponse(retStream, this.m_keepAlive);
-                        if (respData.m_statusCode != (int)HttpStatusCode.OK)
-                        {
-                            throw new WebException("Proxy returned " + respData.m_statusCode, WebExceptionStatus.ConnectFailure);
-                        }
-                    }
-
-                    // Once connection estiblished need to create secure stream and authenticate server.
-                    var sslStream = new SslStream(retStream.m_Socket);
-
-                    // Throws exception is fails.
-                    sslStream.AuthenticateAsClient(this.m_originalUrl.Host, null, this.m_caCerts, SslProtocols.Default);
-
-                    // Changes the stream to SSL stream.
-                    retStream.m_Stream = sslStream;
-
-                    // Changes the address. Originally socket was connected to proxy, now as if it connected to m_originalUrl.Host on m_originalUrl.Port
-                    retStream.m_rmAddrAndPort = this.m_originalUrl.Host + ":" + this.m_originalUrl.Port;
-                }
+                //if (isHttps)
+                //{
+                //    // If proxy is set, then for https we need to send "CONNECT" command to proxy.
+                //    // Once this command is send, the socket from proxy works as if it is the socket to the destination server.
+                //    if (proxyServer != targetServer)
+                //    {
+                //        var request = "CONNECT " + remoteServer + " HTTP/" + this.ProtocolVersion + "\r\n\r\n";
+                //        var bytesToSend = Encoding.UTF8.GetBytes(request);
+                //        retStream.Write(bytesToSend, 0, bytesToSend.Length);
+                //
+                //        // Now proxy should respond with the connected status. If it is successul, then we are good to go.
+                //        var respData = ParseHTTPResponse(retStream, this.m_keepAlive);
+                //        if (respData.m_statusCode != (int)HttpStatusCode.OK)
+                //        {
+                //            throw new WebException("Proxy returned " + respData.m_statusCode, WebExceptionStatus.ConnectFailure);
+                //        }
+                //    }
+                //
+                //    // Once connection estiblished need to create secure stream and authenticate server.
+                //    var sslStream = new SslStream(retStream.m_Socket);
+                //
+                //    // Throws exception is fails.
+                //    sslStream.AuthenticateAsClient(this.m_originalUrl.Host, null, this.m_caCerts, SslProtocols.Default);
+                //
+                //    // Changes the stream to SSL stream.
+                //    retStream.m_Stream = sslStream;
+                //
+                //    // Changes the address. Originally socket was connected to proxy, now as if it connected to m_originalUrl.Host on m_originalUrl.Port
+                //    retStream.m_rmAddrAndPort = this.m_originalUrl.Host + ":" + this.m_originalUrl.Port;
+                //}
 
                 lock (m_ConnectedStreams)
                 {

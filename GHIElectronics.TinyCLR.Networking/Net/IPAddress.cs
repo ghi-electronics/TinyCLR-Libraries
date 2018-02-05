@@ -2,8 +2,6 @@
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-using GHIElectronics.TinyCLR.Networking;
-
 namespace System.Net {
     /// <devdoc>
     ///    <para>Provides an internet protocol (IP) address.</para>
@@ -150,61 +148,6 @@ namespace System.Net {
 
             return (isNegative) ? (-1 * result) : result;
         }
-
-        // this method ToInt32 is part of teh Convert class which we will bring over later
-        ////////////////////////////////////////////////////////////////////////////////////////
-
-
-        public static IPAddress GetDefaultLocalAddress()
-        {
-            // Special conditions are implemented here because of a ptoblem with GetHostEntry
-            // on the digi device and NetworkInterface from the emulator.
-            // In the emulator we must use GetHostEntry.
-            // On the device and Windows NetworkInterface works and is preferred.
-            try
-            {
-                var interfaces = NetworkInterface.GetAllNetworkInterfaces();
-
-                var cnt = interfaces.Length;
-                for (var i = 0; i < cnt; i++)
-                {
-                    var ni = interfaces[i];
-
-                    if (ni.IPAddress != "0.0.0.0" && ni.SubnetMask != "0.0.0.0")
-                    {
-                        return IPAddress.Parse(ni.IPAddress);
-                    }
-                }
-            }
-            catch
-            {
-            }
-
-            try
-            {
-                IPAddress localAddress = null;
-                var hostEntry = Dns.GetHostEntry("");
-
-                var cnt = hostEntry.AddressList.Length;
-                for (var i = 0; i < cnt; ++i)
-                {
-                    if ((localAddress = hostEntry.AddressList[i]) != null)
-                    {
-                        if(localAddress.m_Address != 0)
-                        {
-                            return localAddress;
-                        }
-                    }
-                }
-            }
-            catch
-            {
-            }
-
-            return IPAddress.Any;
-        }
-
-
     } // class IPAddress
 } // namespace System.Net
 
