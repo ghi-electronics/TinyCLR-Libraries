@@ -24,8 +24,6 @@ namespace System.Net {
             {
                 var address = addresses[i];
 
-                var sockAddress = new SocketAddress(address);
-
                 AddressFamily family;
 
                 if(SystemInfo.IsBigEndian)

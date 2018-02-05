@@ -27,6 +27,6 @@ namespace System.Net.NetworkInterface {
     }
 
     public interface IDns {
-        void GetHostByName(string name, out string canonicalName, out byte[][] addresses);
+        void GetHostByName(string name, out string canonicalName, out SocketAddress[] addresses);
     }
 }

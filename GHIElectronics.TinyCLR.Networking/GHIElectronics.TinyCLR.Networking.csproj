@@ -39,11 +39,11 @@
     <Compile Include="Net\IPAddress.cs" />
     <Compile Include="Net\IPEndPoint.cs" />
     <Compile Include="Net\IPHostEntry.cs" />
-    <Compile Include="NetworkInterface.cs" />
+    <Compile Include="NetworkInterface\NetworkInterface.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Net\SocketAddress.cs" />
     <Compile Include="Sockets\SocketException.cs" />
-    <Compile Include="ISocket.cs" />
+    <Compile Include="NetworkInterface\ISocket.cs" />
     <Compile Include="Sockets\AddressFamily.cs" />
     <Compile Include="Sockets\NetworkStream.cs" />
     <Compile Include="Sockets\ProtocolFamily.cs" />
