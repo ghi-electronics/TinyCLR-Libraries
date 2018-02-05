@@ -2,21 +2,17 @@
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-namespace System.Net
-{
+namespace System.Net {
     using System;
     using System.Collections;
+    using System.Diagnostics;
     using System.IO;
-    using System.Net;
+    using System.Net.Security;
     using System.Net.Sockets;
+    using System.Security.Authentication;
+    using System.Security.Cryptography.X509Certificates;
     using System.Text;
     using System.Threading;
-    using Microsoft.SPOT;
-    using Microsoft.SPOT.Net.Security;
-    using System.Security.Cryptography.X509Certificates;
-    using System.Diagnostics;
-    using System.Net.Security;
-    using System.Security.Authentication;
 
     /// <summary>
     /// This is the class that we use to create HTTP and requests.

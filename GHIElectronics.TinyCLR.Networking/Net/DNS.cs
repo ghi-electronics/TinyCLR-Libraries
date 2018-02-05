@@ -5,15 +5,14 @@
 
 namespace System.Net {
     using System.Net.Sockets;
-
-    using NativeSocket = Microsoft.SPOT.Net.SocketNative;
+    using GHIElectronics.TinyCLR.Networking;
 
     public static class Dns
     {
         public static IPHostEntry GetHostEntry(string hostNameOrAddress)
         {
 
-            NativeSocket.getaddrinfo(hostNameOrAddress, out var canonicalName, out var addresses);
+            SocketNative.getaddrinfo(hostNameOrAddress, out var canonicalName, out var addresses);
 
             var cAddresses = addresses.Length;
             var ipAddresses = new IPAddress[cAddresses];

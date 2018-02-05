@@ -2,15 +2,13 @@
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-namespace System.Net
-{
-    using System.Net.Sockets;
+namespace System.Net {
     using System.Collections;
-    using System.Threading;
-    using Microsoft.SPOT.Net.Security;
-    using System.Security.Cryptography.X509Certificates;
     using System.Net.Security;
+    using System.Net.Sockets;
     using System.Security.Authentication;
+    using System.Security.Cryptography.X509Certificates;
+    using System.Threading;
 
     /// <summary>
     /// Provides a simple, programmatically controlled HTTP protocol listener.

@@ -8,8 +8,7 @@ namespace System.Net.Sockets {
     using System.Net;
     using System.Runtime.CompilerServices;
     using System.Threading;
-
-    using NativeSocket = Microsoft.SPOT.Net.SocketNative;
+    using GHIElectronics.TinyCLR.Networking;
 
     public class Socket : IDisposable
     {
@@ -26,7 +25,7 @@ namespace System.Net.Sockets {
         private int m_recvTimeout = System.Threading.Timeout.Infinite;
         private int m_sendTimeout = System.Threading.Timeout.Infinite;
 
-        public Socket(AddressFamily addressFamily, SocketType socketType, ProtocolType protocolType) => this.m_Handle = NativeSocket.socket((int)addressFamily, (int)socketType, (int)protocolType);
+        public Socket(AddressFamily addressFamily, SocketType socketType, ProtocolType protocolType) => this.m_Handle = SocketNative.socket((int)addressFamily, (int)socketType, (int)protocolType);
 
         private Socket(int handle) => this.m_Handle = handle;
 
@@ -41,7 +40,7 @@ namespace System.Net.Sockets {
 
                 uint cBytes = 0;
 
-                NativeSocket.ioctl(this, NativeSocket.FIONREAD, ref cBytes);
+                SocketNative.ioctl(this, SocketNative.FIONREAD, ref cBytes);
 
                 return (int)cBytes;
             }
@@ -65,11 +64,11 @@ namespace System.Net.Sockets {
 
             if (fLocal)
             {
-                NativeSocket.getsockname(this, out address);
+                SocketNative.getsockname(this, out address);
             }
             else
             {
-                NativeSocket.getpeername(this, out address);
+                SocketNative.getpeername(this, out address);
             }
 
             var socketAddress = new SocketAddress(address);
@@ -116,7 +115,7 @@ namespace System.Net.Sockets {
                 throw new ObjectDisposedException();
             }
 
-            NativeSocket.bind(this, localEP.Serialize().m_Buffer);
+            SocketNative.bind(this, localEP.Serialize().m_Buffer);
 
             this.m_localEndPoint = localEP;
         }
@@ -128,7 +127,7 @@ namespace System.Net.Sockets {
                 throw new ObjectDisposedException();
             }
 
-            NativeSocket.connect(this, remoteEP.Serialize().m_Buffer, !this.m_fBlocking);
+            SocketNative.connect(this, remoteEP.Serialize().m_Buffer, !this.m_fBlocking);
 
             if (this.m_fBlocking)
             {
@@ -145,7 +144,7 @@ namespace System.Net.Sockets {
                 throw new ObjectDisposedException();
             }
 
-            NativeSocket.listen(this, backlog);
+            SocketNative.listen(this, backlog);
         }
 
         public Socket Accept()
@@ -162,7 +161,7 @@ namespace System.Net.Sockets {
                 Poll(-1, SelectMode.SelectRead);
             }
 
-            socketHandle = NativeSocket.accept(this);
+            socketHandle = SocketNative.accept(this);
 
             var socket = new Socket(socketHandle) {
                 m_localEndPoint = this.m_localEndPoint
@@ -184,7 +183,7 @@ namespace System.Net.Sockets {
                 throw new ObjectDisposedException();
             }
 
-            return NativeSocket.send(this, buffer, offset, size, (int)socketFlags, this.m_sendTimeout);
+            return SocketNative.send(this, buffer, offset, size, (int)socketFlags, this.m_sendTimeout);
         }
 
         public int SendTo(byte[] buffer, int offset, int size, SocketFlags socketFlags, EndPoint remoteEP)
@@ -196,7 +195,7 @@ namespace System.Net.Sockets {
 
             var address = remoteEP.Serialize().m_Buffer;
 
-            return NativeSocket.sendto(this, buffer, offset, size, (int)socketFlags, this.m_sendTimeout, address);
+            return SocketNative.sendto(this, buffer, offset, size, (int)socketFlags, this.m_sendTimeout, address);
         }
 
         public int SendTo(byte[] buffer, int size, SocketFlags socketFlags, EndPoint remoteEP) => SendTo(buffer, 0, size, socketFlags, remoteEP);
@@ -218,7 +217,7 @@ namespace System.Net.Sockets {
                 throw new ObjectDisposedException();
             }
 
-            return NativeSocket.recv(this, buffer, offset, size, (int)socketFlags, this.m_recvTimeout);
+            return SocketNative.recv(this, buffer, offset, size, (int)socketFlags, this.m_recvTimeout);
         }
 
         public int ReceiveFrom(byte[] buffer, int offset, int size, SocketFlags socketFlags, ref EndPoint remoteEP)
@@ -231,7 +230,7 @@ namespace System.Net.Sockets {
             var address = remoteEP.Serialize().m_Buffer;
             var len = 0;
 
-            len = NativeSocket.recvfrom(this, buffer, offset, size, (int)socketFlags, this.m_recvTimeout, ref address);
+            len = SocketNative.recvfrom(this, buffer, offset, size, (int)socketFlags, this.m_recvTimeout, ref address);
 
             var socketAddress = new SocketAddress(address);
             remoteEP = remoteEP.Create(socketAddress);
@@ -269,7 +268,7 @@ namespace System.Net.Sockets {
                     break;
             }
 
-            NativeSocket.setsockopt(this, (int)optionLevel, (int)optionName, val);
+            SocketNative.setsockopt(this, (int)optionLevel, (int)optionName, val);
         }
 
         public void SetSocketOption(SocketOptionLevel optionLevel, SocketOptionName optionName, bool optionValue) => SetSocketOption(optionLevel, optionName, (optionValue ? 1 : 0));
@@ -281,7 +280,7 @@ namespace System.Net.Sockets {
                 throw new ObjectDisposedException();
             }
 
-            NativeSocket.setsockopt(this, (int)optionLevel, (int)optionName, optionValue);
+            SocketNative.setsockopt(this, (int)optionLevel, (int)optionName, optionValue);
         }
 
         public object GetSocketOption(SocketOptionLevel optionLevel, SocketOptionName optionName)
@@ -318,7 +317,7 @@ namespace System.Net.Sockets {
                 throw new ObjectDisposedException();
             }
 
-            NativeSocket.getsockopt(this, (int)optionLevel, (int)optionName, val);
+            SocketNative.getsockopt(this, (int)optionLevel, (int)optionName, val);
         }
 
         public bool Poll(int microSeconds, SelectMode mode)
@@ -328,7 +327,7 @@ namespace System.Net.Sockets {
                 throw new ObjectDisposedException();
             }
 
-            return NativeSocket.poll(this, (int)mode, microSeconds);
+            return SocketNative.poll(this, (int)mode, microSeconds);
         }
 
         [MethodImplAttribute(MethodImplOptions.Synchronized)]
@@ -336,7 +335,7 @@ namespace System.Net.Sockets {
         {
             if (this.m_Handle != -1)
             {
-                NativeSocket.close(this);
+                SocketNative.close(this);
                 this.m_Handle = -1;
             }
         }

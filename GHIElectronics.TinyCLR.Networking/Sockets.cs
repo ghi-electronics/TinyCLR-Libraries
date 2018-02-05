@@ -1,19 +1,7 @@
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Copyright (c) Microsoft Corporation.  All rights reserved.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-using System;
-using System.Collections;
-using System.Reflection;
-using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
-[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("System")]
-
-namespace Microsoft.SPOT.Net
-{
-    internal static class SocketNative
-    {
+namespace GHIElectronics.TinyCLR.Networking {
+    public static class SocketNative {
         public const int FIONREAD = 0x4004667F;
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
@@ -40,7 +28,6 @@ namespace Microsoft.SPOT.Net
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public static extern int accept(object socket);
 
-        //No standard non-blocking api
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public static extern void getaddrinfo(string name, out string canonicalName, out byte[][] addresses);
 
@@ -72,5 +59,3 @@ namespace Microsoft.SPOT.Net
         public static extern void ioctl(object socket, uint cmd, ref uint arg);
     }
 }
-
-

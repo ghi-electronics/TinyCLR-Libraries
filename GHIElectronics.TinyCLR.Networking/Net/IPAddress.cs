@@ -2,12 +2,9 @@
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-namespace System.Net
-{
-    using System.Net.Sockets;
-    using System.Globalization;
-    using System.Text;
-    using Microsoft.SPOT.Net.NetworkInformation;
+using GHIElectronics.TinyCLR.Networking;
+
+namespace System.Net {
     /// <devdoc>
     ///    <para>Provides an internet protocol (IP) address.</para>
     /// </devdoc>
