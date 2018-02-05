@@ -297,6 +297,15 @@ namespace GHIElectronics.TinyCLR.Pins {
                     public const int Pin9 = AT91.PwmPin.Channel0;
                 }
             }
+
+            /// <summary>Controller definition.</summary>
+            public static class Pwm3 {
+                /// <summary>API id.</summary
+                public const string Id = AT91.PwmPin.Pwm3;
+
+                /// <summary>PWM pin.</summary
+                public const int DebugLed = AT91.PwmPin.Channel0;
+            }
         }
 
         /// <summary>UART port definitions.</summary>
