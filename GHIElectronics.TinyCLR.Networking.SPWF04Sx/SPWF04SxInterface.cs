@@ -485,10 +485,10 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
             port |= (byte)(address[3] << 0);
 
             host = "";
-            host += (address[4] << 00) + ".";
-            host += (address[5] << 08) + ".";
-            host += (address[6] << 16) + ".";
-            host += (address[7] << 24);
+            host += address[4] + ".";
+            host += address[5] + ".";
+            host += address[6] + ".";
+            host += address[7];
         }
 
         int ISocket.Create(AddressFamily addressFamily, SocketType socketType, ProtocolType protocolType) {
