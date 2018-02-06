@@ -9,9 +9,46 @@ using GHIElectronics.TinyCLR.Devices.Gpio;
 using GHIElectronics.TinyCLR.Devices.Spi;
 
 namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
+    public delegate object PoolObjectCreator();
+
+    public class Pool {
+        private readonly ArrayList all = new ArrayList();
+        private readonly Stack available = new Stack();
+        private readonly PoolObjectCreator creator;
+
+        public Pool(PoolObjectCreator creator) => this.creator = creator;
+
+        public object Acquire() {
+            lock (this.available) {
+                if (this.available.Count == 0) {
+                    var op = this.creator();
+
+                    this.all.Add(op);
+
+                    return op;
+                }
+
+                return this.available.Pop();
+            }
+        }
+
+        public void Release(object op) {
+            if (!this.all.Contains(op)) throw new ArgumentException();
+
+            lock (this.available)
+                this.available.Push(op);
+        }
+
+        public void ResetAll() {
+            this.available.Clear();
+
+            foreach (var op in this.all)
+                this.available.Push(op);
+        }
+    }
+
     public class Operation {
-        private static ArrayList all = new ArrayList();
-        private static Stack pool = new Stack();
+        private static Pool pool = new Pool(() => new Operation());
 
         public string[] Parameters = new string[16];
         public int ParamentCount;
@@ -114,33 +151,14 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
             }
         }
 
-        public static Operation Get() {
-            lock (Operation.pool) {
-                if (Operation.pool.Count == 0) {
-                    var op = new Operation();
-                    Operation.all.Add(op);
-                    return op;
-                }
-
-                return (Operation)Operation.pool.Pop();
-            }
-        }
-
-        public static void Release(Operation op) {
+        public static Operation Acquire() {
+            var op = (Operation)Operation.pool.Acquire();
             op.Reset();
-
-            lock (Operation.pool)
-                Operation.pool.Push(op);
+            return op;
         }
 
-        public static void ResetAll() {
-            Operation.pool.Clear();
-
-            foreach (Operation op in Operation.all) {
-                op.Reset();
-                Operation.pool.Push(op);
-            }
-        }
+        public static void Release(Operation op) => Operation.pool.Release(op);
+        public static void ResetAll() => Operation.pool.ResetAll();
 
         public Operation AddParameter(string parameter) {
             this.Parameters[this.ParamentCount++] = parameter;
@@ -302,7 +320,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
             Operation.ResetAll();
         }
 
-        protected Operation GetOperation() => Operation.Get();
+        protected Operation GetOperation() => Operation.Acquire();
 
         protected void EnqueueOperation(Operation op) {
             lock (this.pendingOperations) {
