@@ -106,10 +106,9 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
                             if (len <= count) {
                                 Array.Copy(this.ReadPayload, this.nextRead, buffer, offset, len);
 
-                                if (this.partialRead != 0) {
-                                    this.partialRead = 0;
-                                    this.PendingReads.Dequeue();
-                                }
+                                this.partialRead = 0;
+
+                                this.PendingReads.Dequeue();
                             }
                             else {
                                 len = count;
@@ -233,6 +232,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
         private readonly GpioPin irq;
         private readonly GpioPin reset;
         private Operation activeOperation;
+        private Operation activeHttpOperation;
         private Thread worker;
         private bool running;
         private int nextSocketId;
@@ -316,6 +316,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
             this.sockets.Clear();
             this.nextSocketId = 0;
             this.activeOperation = null;
+            this.activeHttpOperation = null;
 
             Operation.ResetAll();
         }
@@ -375,8 +376,10 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
             return result.Substring(result.IndexOf(':') + 1);
         }
 
-        public int HttpGet(string host, string path, int port, SPWF04SxConnectionSecurityType connectionSecurity, byte[] buffer, int offset, int count, out int responseCode) {
-            var op = this.GetOperation()
+        public int SendHttpGet(string host, string path, int port, SPWF04SxConnectionSecurityType connectionSecurity) {
+            if (this.activeHttpOperation != null) throw new InvalidOperationException();
+
+            this.activeHttpOperation = this.GetOperation()
                 .AddParameter(host)
                 .AddParameter(path)
                 .AddParameter(port.ToString())
@@ -387,33 +390,24 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
                 .AddParameter(null)
                 .SetCommand(SPWF04SxCommandIds.HTTPGET);
 
-            this.EnqueueOperation(op);
+            this.EnqueueOperation(this.activeHttpOperation);
 
             if (connectionSecurity == SPWF04SxConnectionSecurityType.Tls) {
-                op.ReadBuffer();
-                op.ReadBuffer();
+                this.activeHttpOperation.ReadBuffer();
+                this.activeHttpOperation.ReadBuffer();
             }
 
-            var result = op.ReadString();
+            var result = this.activeHttpOperation.ReadString();
             var parts = result.Split(':');
-            var current = 0;
-            var read = 0;
 
-            do {
-                current = op.ReadBuffer(buffer, offset + read, count - read);
-                read += current;
-            } while (current != 0);
-
-            this.FinishOperation(op);
-
-            responseCode = parts[0] == "Http Server Status Code" ? int.Parse(parts[1]) : throw new Exception($"Request failed: {result}");
-
-            return read;
+            return parts[0] == "Http Server Status Code" ? int.Parse(parts[1]) : throw new Exception($"Request failed: {result}");
         }
 
         //TODO Need to test on an actual server
-        public int HttpPost(string host, string path, int port, SPWF04SxConnectionSecurityType connectionSecurity, byte[] buffer, int offset, int count, out int responseCode) {
-            var op = this.GetOperation()
+        public int SendHttpPost(string host, string path, int port, SPWF04SxConnectionSecurityType connectionSecurity) {
+            if (this.activeHttpOperation != null) throw new InvalidOperationException();
+
+            this.activeHttpOperation = this.GetOperation()
                 .AddParameter(host)
                 .AddParameter(path)
                 .AddParameter(port.ToString())
@@ -424,26 +418,26 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
                 .AddParameter(null)
                 .SetCommand(SPWF04SxCommandIds.HTTPPOST);
 
-            this.EnqueueOperation(op);
+            this.EnqueueOperation(this.activeHttpOperation);
 
             if (connectionSecurity == SPWF04SxConnectionSecurityType.Tls) {
-                op.ReadBuffer();
-                op.ReadBuffer();
+                this.activeHttpOperation.ReadBuffer();
+                this.activeHttpOperation.ReadBuffer();
             }
 
-            var result = op.ReadString();
+            var result = this.activeHttpOperation.ReadString();
             var parts = result.Split(':');
-            var current = 0;
-            var read = 0;
 
-            do {
-                current = op.ReadBuffer(buffer, offset + read, count - read);
-                read += current;
-            } while (current != 0);
+            return parts[0] == "Http Server Status Code" ? int.Parse(parts[1]) : throw new Exception($"Request failed: {result}");
+        }
 
-            this.FinishOperation(op);
+        public int ReadHttpResponse(byte[] buffer, int offset, int count) {
+            var read = this.activeHttpOperation.ReadBuffer(buffer, offset, count);
 
-            responseCode = parts[0] == "Http Server Status Code" ? int.Parse(parts[1]) : throw new Exception($"Request failed: {result}");
+            if (read == 0) {
+                this.FinishOperation(this.activeHttpOperation);
+                this.activeHttpOperation = null;
+            }
 
             return read;
         }
