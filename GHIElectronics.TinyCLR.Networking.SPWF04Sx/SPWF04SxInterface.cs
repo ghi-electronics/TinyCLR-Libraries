@@ -530,7 +530,17 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
             return this.ReadSocket(this.GetInternalSocketId(socket), buffer, offset, count);
         }
 
-        bool ISocket.Poll(int socket, int microSeconds, SelectMode mode) => throw new NotImplementedException();
+        bool ISocket.Poll(int socket, int microSeconds, SelectMode mode) {
+            switch (mode) {
+                default: throw new ArgumentException();
+                case SelectMode.SelectError: return false;
+                case SelectMode.SelectWrite: return this.pendingWriteLength == 0;
+                case SelectMode.SelectRead:
+                    lock (this.pendingReads)
+                        return this.pendingReads.Count != 0;
+            }
+        }
+
         void ISocket.Bind(int socket, SocketAddress address) => throw new NotImplementedException();
         void ISocket.Listen(int socket, int backlog) => throw new NotImplementedException();
         int ISocket.Accept(int socket) => throw new NotImplementedException();
