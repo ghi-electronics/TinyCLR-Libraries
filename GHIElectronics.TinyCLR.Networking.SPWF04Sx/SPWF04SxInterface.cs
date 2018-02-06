@@ -92,6 +92,18 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
             }
         }
 
+        public int Peek() {
+            while (true) {
+                lock (this.PendingReads) {
+                    if (this.PendingReads.Count != 0) {
+                        return (int)this.PendingReads.Peek();
+                    }
+                }
+
+                Thread.Sleep(10);
+            }
+        }
+
         public int ReadBuffer() => this.ReadBuffer(null, 0, 0);
 
         public int ReadBuffer(byte[] buffer, int offset, int count) {
@@ -452,18 +464,17 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
 
             this.EnqueueOperation(op);
 
-            if (connectionSecurity == SPWF04SxConnectionSecurityType.Tls) {
-                op.ReadBuffer();
-                op.ReadBuffer();
+            var a = op.ReadString();
+            var b = op.ReadString();
+
+            if (connectionSecurity == SPWF04SxConnectionSecurityType.Tls && b.IndexOf("Loading:") == 0) {
+                a = op.ReadString();
+                b = op.ReadString();
             }
-
-            var result = op.ReadString().Split(':');
-
-            op.ReadBuffer();
 
             this.FinishOperation(op);
 
-            return result[0] == "On" ? int.Parse(result[2]) : throw new Exception("Request failed");
+            return a.Split(':') is var result && result[0] == "On" ? int.Parse(result[2]) : throw new Exception("Request failed");
         }
 
         public void CloseSocket(int socket) {
@@ -508,14 +519,16 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
 
             op.ReadBuffer();
 
-            var res = op.ReadBuffer(buffer, offset, count);
-
-            op.ReadBuffer();
-            op.ReadBuffer();
+            var current = 0;
+            var total = 0;
+            do {
+                current = op.ReadBuffer(buffer, offset + total, count - total);
+                total += current;
+            } while (current != 0);
 
             this.FinishOperation(op);
 
-            return res;
+            return total;
         }
 
         public int QuerySocket(int socket) {
@@ -532,6 +545,23 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
             this.FinishOperation(op);
 
             return result[0] == "Query" ? int.Parse(result[1]) : throw new Exception("Request failed");
+        }
+
+        public string ListSocket() {
+            var op = this.GetOperation()
+                .SetCommand(SPWF04SxCommandIds.SOCKL);
+
+            this.EnqueueOperation(op);
+
+            var str = string.Empty;
+            while (op.Peek() != 0)
+                str += op.ReadString() + Environment.NewLine;
+
+            op.ReadBuffer();
+
+            this.FinishOperation(op);
+
+            return str;
         }
 
         public void EnableRadio() {
