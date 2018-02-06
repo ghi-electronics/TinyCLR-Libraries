@@ -47,6 +47,45 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
         }
     }
 
+    public class Buffer {
+        public byte[] Data = new byte[1500 + 512];
+
+        public int AvailableWrite { get { lock (this) return this.Data.Length - this.nextWrite; } }
+        public int AvailableRead { get { lock (this) return this.nextWrite - this.nextRead; } }
+
+        public int WriteOffset => this.nextWrite;
+        public int ReadOffset => this.nextRead;
+
+        private int nextRead;
+        private int nextWrite;
+
+        public void TryCompress() {
+            lock (this) {
+                if (this.nextRead != 0) {
+                    Array.Copy(this.Data, this.nextRead, this.Data, 0, this.nextWrite - this.nextRead);
+
+                    this.nextWrite -= this.nextRead;
+                    this.nextRead = 0;
+                }
+            }
+        }
+
+        public void Write(int count) {
+            lock (this)
+                this.nextWrite += count;
+        }
+
+        public void Read(int count) {
+            lock (this)
+                this.nextRead += count;
+        }
+
+        public void Reset() {
+            this.nextWrite = 0;
+            this.nextRead = 0;
+        }
+    }
+
     public class Operation {
         private static Pool pool = new Pool(() => new Operation());
 
@@ -58,31 +97,23 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
         public int WritePayloadOffset;
         public int WritePayloadLength;
 
-        public byte[] ReadPayload = new byte[1500 + 512];
-
         public bool Written;
 
         public Queue PendingReads = new Queue();
 
-        public int AvailableWrite { get { lock (this.PendingReads) return this.ReadPayload.Length - this.nextWrite; } }
-        public int AvailableRead { get { lock (this.PendingReads) return this.nextWrite - this.nextRead; } }
+        public Buffer Buffer = new Buffer();
 
-        public int WriteOffset => this.nextWrite;
-        public int ReadOffset => this.nextRead;
-
-        private int nextRead;
-        private int nextWrite;
         private int partialRead;
 
         public string ReadString() {
             while (true) {
                 lock (this.PendingReads) {
                     if (this.PendingReads.Count != 0) {
-                        var start = this.nextRead;
+                        var start = this.Buffer.ReadOffset;
                         var len = (int)this.PendingReads.Dequeue();
-                        var res = Encoding.UTF8.GetString(this.ReadPayload, start, len);
+                        var res = Encoding.UTF8.GetString(this.Buffer.Data, start, len);
 
-                        this.nextRead += len;
+                        this.Buffer.Read(len);
 
                         return res;
                     }
@@ -116,7 +147,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
                             len = (int)this.PendingReads.Peek() - this.partialRead;
 
                             if (len <= count) {
-                                Array.Copy(this.ReadPayload, this.nextRead, buffer, offset, len);
+                                Array.Copy(this.Buffer.Data, this.Buffer.ReadOffset, buffer, offset, len);
 
                                 this.partialRead = 0;
 
@@ -125,7 +156,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
                             else {
                                 len = count;
 
-                                Array.Copy(this.ReadPayload, this.nextRead, buffer, offset, count);
+                                Array.Copy(this.Buffer.Data, this.Buffer.ReadOffset, buffer, offset, count);
 
                                 this.partialRead += count;
                             }
@@ -134,7 +165,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
                             len = (int)this.PendingReads.Dequeue();
                         }
 
-                        this.nextRead += len;
+                        this.Buffer.Read(len);
 
                         return len;
                     }
@@ -146,19 +177,8 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
 
         public void MarkWritten(int count) {
             lock (this.PendingReads) {
-                this.nextWrite += count;
+                this.Buffer.Write(count);
                 this.PendingReads.Enqueue(count);
-            }
-        }
-
-        public void TryCompress() {
-            lock (this.PendingReads) {
-                if (this.nextRead != 0) {
-                    Array.Copy(this.ReadPayload, this.nextRead, this.ReadPayload, 0, this.nextWrite - this.nextRead);
-
-                    this.nextWrite -= this.nextRead;
-                    this.nextRead = 0;
-                }
             }
         }
 
@@ -183,9 +203,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
             this.WritePayloadOffset = 0;
             this.WritePayloadLength = 0;
 
-            this.nextRead = 0;
-            this.nextWrite = 0;
-            this.partialRead = 0;
+            this.Buffer.Reset();
 
             this.PendingReads.Clear();
         }
@@ -680,15 +698,15 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
 
                         if (payloadLength > 0) {
                             while (payloadLength > 0) {
-                                while (this.activeOperation.AvailableWrite == 0) {
-                                    this.activeOperation.TryCompress();
+                                while (this.activeOperation.Buffer.AvailableWrite == 0) {
+                                    this.activeOperation.Buffer.TryCompress();
 
                                     Thread.Sleep(100);
                                 }
 
-                                var toRead = Math.Min(payloadLength, this.activeOperation.AvailableWrite);
+                                var toRead = Math.Min(payloadLength, this.activeOperation.Buffer.AvailableWrite);
 
-                                this.spi.Read(this.activeOperation.ReadPayload, this.activeOperation.ReadOffset, toRead);
+                                this.spi.Read(this.activeOperation.Buffer.Data, this.activeOperation.Buffer.ReadOffset, toRead);
 
                                 payloadLength -= toRead;
 
