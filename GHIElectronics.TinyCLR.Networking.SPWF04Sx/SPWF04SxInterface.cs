@@ -24,6 +24,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
         private bool running;
         private int validParameters;
         private int nextRead;
+        private int nextWrite;
         private int pendingWriteLength;
         private byte[] pendingRawData;
         private int pendingRawDataOffset;
@@ -113,6 +114,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
             this.pendingReads.Clear();
             this.pendingEvents.Clear();
             this.nextRead = 0;
+            this.nextWrite = 0;
 
             this.pendingWriteLength = 0;
             this.pendingRawData = null;
@@ -360,12 +362,16 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
             while (true) {
                 lock (this.pendingReads) {
                     if (this.pendingReads.Count != 0) {
-                        var start = (int)this.pendingReads.Dequeue();
-                        var end = (int)this.pendingReads.Dequeue();
-                        var res = this.PayloadToString(start, end - start);
+                        var start = this.nextRead;
+                        var len = (int)this.pendingReads.Dequeue();
+                        var res = this.PayloadToString(start, len);
 
-                        if (this.pendingReads.Count == 0)
+                        this.nextRead += len;
+
+                        if (this.pendingReads.Count == 0) {
                             this.nextRead = 0;
+                            this.nextWrite = 0;
+                        }
 
                         return res;
                     }
@@ -381,17 +387,25 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
             while (true) {
                 lock (this.pendingReads) {
                     if (this.pendingReads.Count != 0) {
-                        var start = (int)this.pendingReads.Dequeue();
-                        var len = (int)this.pendingReads.Dequeue() - start;
-
-                        if (this.pendingReads.Count == 0)
-                            this.nextRead = 0;
+                        var len = 0;
 
                         if (buffer != null) {
+                            len = (int)this.pendingReads.Dequeue();
+
                             if (len > count)
                                 throw new SPWF04SxBufferOverflowException("Read buffer too small for response.");
 
-                            Array.Copy(this.readPayloadBuffer, start, buffer, offset, len);
+                            Array.Copy(this.readPayloadBuffer, this.nextRead, buffer, offset, len);
+                        }
+                        else {
+                            len = (int)this.pendingReads.Dequeue();
+                        }
+
+                        this.nextRead += len;
+
+                        if (this.pendingReads.Count == 0) {
+                            this.nextRead = 0;
+                            this.nextWrite = 0;
                         }
 
                         return len;
@@ -435,27 +449,26 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
                     var payloadLength = (this.readHeaderBuffer[3] << 8) | this.readHeaderBuffer[2];
 
                     lock (this.pendingReads) {
-                        if (payloadLength > this.readPayloadBuffer.Length - this.nextRead)
+                        if (payloadLength > this.readPayloadBuffer.Length - this.nextWrite)
                             throw new SPWF04SxBufferOverflowException("Internal read buffer overflowed.");
 
                         if (payloadLength > 0)
-                            this.spi.Read(this.readPayloadBuffer, this.nextRead, payloadLength);
+                            this.spi.Read(this.readPayloadBuffer, this.nextWrite, payloadLength);
 
                         this.State = (SPWF04SxWiFiState)(status & 0b0000_1111);
 
                         switch ((status & 0b1111_0000) >> 4) {
                             case 0x01:
-                                this.pendingEvents.Enqueue(new SPWF04SxIndicationReceivedEventArgs((SPWF04SxIndication)ind, this.PayloadToString(this.nextRead, payloadLength)));
+                                this.pendingEvents.Enqueue(new SPWF04SxIndicationReceivedEventArgs((SPWF04SxIndication)ind, this.PayloadToString(this.nextWrite, payloadLength)));
                                 break;
 
                             case 0x02:
-                                this.pendingEvents.Enqueue(new SPWF04SxErrorReceivedEventArgs(ind, this.PayloadToString(this.nextRead, payloadLength)));
+                                this.pendingEvents.Enqueue(new SPWF04SxErrorReceivedEventArgs(ind, this.PayloadToString(this.nextWrite, payloadLength)));
                                 break;
 
                             case 0x03:
-                                this.pendingReads.Enqueue(this.nextRead);
-                                this.nextRead += payloadLength;
-                                this.pendingReads.Enqueue(this.nextRead);
+                                this.pendingReads.Enqueue(payloadLength);
+                                this.nextWrite += payloadLength;
                                 break;
 
                             default:
