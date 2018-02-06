@@ -56,10 +56,14 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
             this.irq = irq;
             this.reset = reset;
 
+            this.State = SPWF04SxWiFiState.RadioTerminatedByUser;
+
             this.reset.SetDriveMode(GpioPinDriveMode.Output);
             this.reset.Write(GpioPinValue.Low);
 
             this.irq.SetDriveMode(GpioPinDriveMode.Input);
+
+            NetworkInterface.RegisterNetworkInterface(this);
         }
 
         ~SPWF04SxInterface() => this.Dispose(false);
@@ -76,6 +80,8 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
                 this.spi.Dispose();
                 this.irq.Dispose();
                 this.reset.Dispose();
+
+                NetworkInterface.DeregisterNetworkInterface(this);
             }
         }
 

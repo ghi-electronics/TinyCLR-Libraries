@@ -54,12 +54,21 @@ namespace System.Net.NetworkInterface {
 
         public static void RegisterNetworkInterface(NetworkInterface ni) => NetworkInterface.interfaces.Add(ni ?? throw new ArgumentNullException());
 
+        public static void DeregisterNetworkInterface(NetworkInterface ni) {
+            if (ni == null) throw new ArgumentNullException();
+
+            if (NetworkInterface.ActiveNetworkInterface == ni)
+                NetworkInterface.ActiveNetworkInterface = null;
+
+            NetworkInterface.interfaces.Remove(ni);
+        }
+
         internal static ISocket GetActiveForSocket() => (NetworkInterface.ActiveNetworkInterface ?? throw new InvalidOperationException("No active interface")) is ISocket t ? t : throw new InvalidOperationException("Active interface does not support sockets.");
         internal static IDns GetActiveForDns() => (NetworkInterface.ActiveNetworkInterface ?? throw new InvalidOperationException("No active interface")) is IDns t ? t : throw new InvalidOperationException("Active interface does not support DNS.");
 
         public static NetworkInterface ActiveNetworkInterface {
             get => NetworkInterface.active;
-            set => NetworkInterface.active = Array.IndexOf(NetworkInterface.GetAllNetworkInterfaces(), value) != -1 ? value : throw new InvalidOperationException();
+            set => NetworkInterface.active = value == null || Array.IndexOf(NetworkInterface.GetAllNetworkInterfaces(), value) != -1 ? value : throw new InvalidOperationException();
         }
 
         public static NetworkInterface[] GetAllNetworkInterfaces() => (NetworkInterface[])NetworkInterface.interfaces.ToArray(typeof(NetworkInterface));
