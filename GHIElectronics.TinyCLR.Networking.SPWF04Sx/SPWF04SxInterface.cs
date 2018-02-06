@@ -239,7 +239,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
         private readonly Queue pendingOperations;
         private readonly Queue pendingEvents;
         private readonly byte[] readHeaderBuffer;
-        private readonly byte[] readPayloadBuffer;
+        private readonly byte[] windPayloadBuffer;
         private readonly SpiDevice spi;
         private readonly GpioPin irq;
         private readonly GpioPin reset;
@@ -268,7 +268,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
             this.pendingOperations = new Queue();
             this.pendingEvents = new Queue();
             this.readHeaderBuffer = new byte[4];
-            this.readPayloadBuffer = new byte[1500 + 500]; //Longest payload, set by the socket heap variable, plus overhead for other result codes and WINDs
+            this.windPayloadBuffer = new byte[1500 + 500]; //Longest payload, set by the socket heap variable, plus overhead for other result codes and WINDs
             this.spi = spi;
             this.irq = irq;
             this.reset = reset;
@@ -664,13 +664,13 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
                     this.State = (SPWF04SxWiFiState)(status & 0b0000_1111);
 
                     if (type == 0x01 || type == 0x02) {
-                        if (payloadLength > this.readPayloadBuffer.Length)
+                        if (payloadLength > this.windPayloadBuffer.Length)
                             throw new InvalidOperationException("Unexpected WIND size.");
 
                         if (payloadLength > 0)
-                            this.spi.Read(this.readPayloadBuffer, 0, payloadLength);
+                            this.spi.Read(this.windPayloadBuffer, 0, payloadLength);
 
-                        var str = Encoding.UTF8.GetString(this.readPayloadBuffer, 0, payloadLength);
+                        var str = Encoding.UTF8.GetString(this.windPayloadBuffer, 0, payloadLength);
 
                         this.pendingEvents.Enqueue(type == 0x01 ? new SPWF04SxIndicationReceivedEventArgs((SPWF04SxIndication)ind, str) : (object)new SPWF04SxErrorReceivedEventArgs(ind, str));
                     }
