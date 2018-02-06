@@ -501,8 +501,13 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
             return id;
         }
 
-        void ISocket.Close(int socket) => this.CloseSocket(this.GetInternalSocketId(socket));
         int ISocket.Available(int socket) => this.QuerySocket(this.GetInternalSocketId(socket));
+
+        void ISocket.Close(int socket) {
+            this.CloseSocket(this.GetInternalSocketId(socket));
+
+            this.sockets.Remove(socket);
+        }
 
         void ISocket.Connect(int socket, SocketAddress address) {
             if (!this.sockets.Contains(socket)) throw new ArgumentException();
@@ -512,7 +517,6 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
 
             this.sockets[socket] = this.OpenSocket(host, port, SPWF04SxConnectionyType.Tcp, this.ForceSocketsTls ? SPWF04SxConnectionSecurityType.Tls : SPWF04SxConnectionSecurityType.None, this.ForceSocketsTls ? this.ForceSocketsTlsCommonName : null);
         }
-
 
         int ISocket.Send(int socket, byte[] buffer, int offset, int count, SocketFlags flags, int timeout) {
             if (flags != SocketFlags.None) throw new ArgumentException();
