@@ -276,7 +276,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
 
     public class SPWF04SxInterface : NetworkInterface, ISocket, IDns, IDisposable {
         private readonly OperationPool operationPool;
-        private readonly Hashtable sockets;
+        private readonly Hashtable netifSockets;
         private readonly Queue pendingOperations;
         private readonly Queue pendingEvents;
         private readonly byte[] readHeaderBuffer;
@@ -306,7 +306,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
 
         public SPWF04SxInterface(SpiDevice spi, GpioPin irq, GpioPin reset) {
             this.operationPool = new OperationPool();
-            this.sockets = new Hashtable();
+            this.netifSockets = new Hashtable();
             this.pendingOperations = new Queue();
             this.pendingEvents = new Queue();
             this.readHeaderBuffer = new byte[4];
@@ -367,7 +367,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
             this.pendingOperations.Clear();
             this.pendingEvents.Clear();
 
-            this.sockets.Clear();
+            this.netifSockets.Clear();
             this.nextSocketId = 0;
             this.activeOperation = null;
             this.activeHttpOperation = null;
@@ -754,7 +754,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
             }
         }
 
-        private int GetInternalSocketId(int socket) => this.sockets.Contains(socket) ? (int)this.sockets[socket] : throw new ArgumentException();
+        private int GetInternalSocketId(int socket) => this.netifSockets.Contains(socket) ? (int)this.netifSockets[socket] : throw new ArgumentException();
 
         private void GetAddress(SocketAddress address, out string host, out int port) {
             port = 0;
@@ -773,7 +773,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
 
             var id = this.nextSocketId++;
 
-            this.sockets.Add(id, 0);
+            this.netifSockets.Add(id, 0);
 
             return id;
         }
@@ -783,16 +783,16 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
         void ISocket.Close(int socket) {
             this.CloseSocket(this.GetInternalSocketId(socket));
 
-            this.sockets.Remove(socket);
+            this.netifSockets.Remove(socket);
         }
 
         void ISocket.Connect(int socket, SocketAddress address) {
-            if (!this.sockets.Contains(socket)) throw new ArgumentException();
+            if (!this.netifSockets.Contains(socket)) throw new ArgumentException();
             if (address.Family != AddressFamily.InterNetwork) throw new ArgumentException();
 
             this.GetAddress(address, out var host, out var port);
 
-            this.sockets[socket] = this.OpenSocket(host, port, SPWF04SxConnectionyType.Tcp, this.ForceSocketsTls ? SPWF04SxConnectionSecurityType.Tls : SPWF04SxConnectionSecurityType.None, this.ForceSocketsTls ? this.ForceSocketsTlsCommonName : null);
+            this.netifSockets[socket] = this.OpenSocket(host, port, SPWF04SxConnectionyType.Tcp, this.ForceSocketsTls ? SPWF04SxConnectionSecurityType.Tls : SPWF04SxConnectionSecurityType.None, this.ForceSocketsTls ? this.ForceSocketsTlsCommonName : null);
         }
 
         int ISocket.Send(int socket, byte[] buffer, int offset, int count, SocketFlags flags, int timeout) {
