@@ -275,7 +275,13 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
     }
 
     public class SPWF04SxInterface : NetworkInterface, ISocket, IDns, IDisposable {
+        private class Socket {
+            public int RawId;
+            public Buffer Buffer;
+        }
+
         private readonly OperationPool operationPool;
+        private readonly Pool netifSocketBufferPool;
         private readonly Hashtable netifSockets;
         private readonly Queue pendingOperations;
         private readonly Queue pendingEvents;
@@ -306,6 +312,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
 
         public SPWF04SxInterface(SpiDevice spi, GpioPin irq, GpioPin reset) {
             this.operationPool = new OperationPool();
+            this.netifSocketBufferPool = new Pool(() => new byte[2048]);
             this.netifSockets = new Hashtable();
             this.pendingOperations = new Queue();
             this.pendingEvents = new Queue();
@@ -373,6 +380,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
             this.activeHttpOperation = null;
 
             this.operationPool.ResetAll();
+            this.netifSocketBufferPool.ResetAll();
         }
 
         protected Operation GetOperation() => this.operationPool.Acquire();
@@ -754,12 +762,12 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
             }
         }
 
-        private int GetInternalSocketId(int socket) => this.netifSockets.Contains(socket) ? (int)this.netifSockets[socket] : throw new ArgumentException();
+        private int GetInternalSocketId(int socket) => this.netifSockets.Contains(socket) ? ((Socket)this.netifSockets[socket]).RawId : throw new ArgumentException();
 
         private void GetAddress(SocketAddress address, out string host, out int port) {
             port = 0;
-            port |= (byte)(address[2] << 8);
-            port |= (byte)(address[3] << 0);
+            port |= address[2] << 8;
+            port |= address[3] << 0;
 
             host = "";
             host += address[4] + ".";
@@ -773,7 +781,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
 
             var id = this.nextSocketId++;
 
-            this.netifSockets.Add(id, 0);
+            this.netifSockets.Add(id, new Socket { RawId = 0, Buffer = (Buffer)this.netifSocketBufferPool.Acquire() });
 
             return id;
         }
@@ -782,6 +790,10 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
 
         void ISocket.Close(int socket) {
             this.CloseSocket(this.GetInternalSocketId(socket));
+
+            var sock = (Socket)this.netifSockets[socket];
+
+            this.netifSocketBufferPool.Release(sock.Buffer);
 
             this.netifSockets.Remove(socket);
         }
@@ -792,7 +804,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
 
             this.GetAddress(address, out var host, out var port);
 
-            this.netifSockets[socket] = this.OpenSocket(host, port, SPWF04SxConnectionyType.Tcp, this.ForceSocketsTls ? SPWF04SxConnectionSecurityType.Tls : SPWF04SxConnectionSecurityType.None, this.ForceSocketsTls ? this.ForceSocketsTlsCommonName : null);
+            ((Socket)this.netifSockets[socket]).RawId = this.OpenSocket(host, port, SPWF04SxConnectionyType.Tcp, this.ForceSocketsTls ? SPWF04SxConnectionSecurityType.Tls : SPWF04SxConnectionSecurityType.None, this.ForceSocketsTls ? this.ForceSocketsTlsCommonName : null);
         }
 
         int ISocket.Send(int socket, byte[] buffer, int offset, int count, SocketFlags flags, int timeout) {
