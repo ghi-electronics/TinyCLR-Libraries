@@ -693,7 +693,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
 
                 while (this.irq.Read() == GpioPinValue.Low) {
                     do {
-                        Thread.Sleep(10);
+                        Thread.Sleep(0);
 
                         this.spi.Read(this.readHeaderBuffer, 0, 1);
                     } while (this.readHeaderBuffer[0] != 0x02);
@@ -727,7 +727,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
                                 while (this.activeOperation.Buffer.AvailableWrite == 0) {
                                     this.activeOperation.Buffer.TryCompress();
 
-                                    Thread.Sleep(100);
+                                    Thread.Sleep(20);
                                 }
 
                                 var toRead = Math.Min(payloadLength, this.activeOperation.Buffer.AvailableWrite);
