@@ -448,15 +448,15 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
 
             this.EnqueueOperation(this.activeHttpOperation);
 
-            if (connectionSecurity == SPWF04SxConnectionSecurityType.Tls) {
-                this.activeHttpOperation.ReadBuffer();
-                this.activeHttpOperation.ReadBuffer();
+            var result = this.activeHttpOperation.ReadString();
+            if (connectionSecurity == SPWF04SxConnectionSecurityType.Tls && result == string.Empty) {
+                result = this.activeHttpOperation.ReadString();
+
+                if (result.IndexOf("Loading:") == 0)
+                    result = this.activeHttpOperation.ReadString();
             }
 
-            var result = this.activeHttpOperation.ReadString();
-            var parts = result.Split(':');
-
-            return parts[0] == "Http Server Status Code" ? int.Parse(parts[1]) : throw new Exception($"Request failed: {result}");
+            return result.Split(':') is var parts && parts[0] == "Http Server Status Code" ? int.Parse(parts[1]) : throw new Exception($"Request failed: {result}");
         }
 
         //TODO Need to test on an actual server
@@ -476,15 +476,15 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
 
             this.EnqueueOperation(this.activeHttpOperation);
 
-            if (connectionSecurity == SPWF04SxConnectionSecurityType.Tls) {
-                this.activeHttpOperation.ReadBuffer();
-                this.activeHttpOperation.ReadBuffer();
+            var result = this.activeHttpOperation.ReadString();
+            if (connectionSecurity == SPWF04SxConnectionSecurityType.Tls && result == string.Empty) {
+                result = this.activeHttpOperation.ReadString();
+
+                if (result.IndexOf("Loading:") == 0)
+                    result = this.activeHttpOperation.ReadString();
             }
 
-            var result = this.activeHttpOperation.ReadString();
-            var parts = result.Split(':');
-
-            return parts[0] == "Http Server Status Code" ? int.Parse(parts[1]) : throw new Exception($"Request failed: {result}");
+            return result.Split(':') is var parts && parts[0] == "Http Server Status Code" ? int.Parse(parts[1]) : throw new Exception($"Request failed: {result}");
         }
 
         public int ReadHttpResponse(byte[] buffer, int offset, int count) {
@@ -730,13 +730,13 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
                                     Thread.Sleep(20);
                                 }
 
-                                var toRead = Math.Min(payloadLength, this.activeOperation.Buffer.AvailableWrite);
+                                var min = Math.Min(payloadLength, this.activeOperation.Buffer.AvailableWrite);
 
-                                this.spi.Read(this.activeOperation.Buffer.Data, this.activeOperation.Buffer.ReadOffset, toRead);
+                                this.spi.Read(this.activeOperation.Buffer.Data, this.activeOperation.Buffer.WriteOffset, min);
 
-                                payloadLength -= toRead;
+                                payloadLength -= min;
 
-                                this.activeOperation.MarkWritten(toRead);
+                                this.activeOperation.MarkWritten(min);
                             }
                         }
                         else {
