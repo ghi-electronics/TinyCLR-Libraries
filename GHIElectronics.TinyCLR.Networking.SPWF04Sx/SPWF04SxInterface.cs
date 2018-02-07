@@ -818,9 +818,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
                 default: throw new ArgumentException();
                 case SelectMode.SelectError: return false;
                 case SelectMode.SelectWrite: return true;
-                case SelectMode.SelectRead:
-                    //TODO
-                    return true;
+                case SelectMode.SelectRead: return this.QuerySocket(this.GetInternalSocketId(socket)) != 0;
             }
         }
 
