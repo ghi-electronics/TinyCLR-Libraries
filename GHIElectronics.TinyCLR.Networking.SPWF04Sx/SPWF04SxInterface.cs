@@ -307,7 +307,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
             this.netifSockets = new Hashtable();
             this.pendingOperations = new Queue();
             this.readHeaderBuffer = new byte[4];
-            this.windPayloadBuffer = new byte[1500 + 500]; //Longest payload, set by the socket heap variable, plus overhead for other result codes and WINDs
+            this.windPayloadBuffer = new byte[1500 + 512]; //Longest payload, set by the socket heap variable, plus overhead for other result codes and WINDs
             this.syncRead = new byte[1];
             this.syncWrite = new byte[1];
             this.spi = spi;
@@ -801,7 +801,6 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
 
         int ISocket.Send(int socket, byte[] buffer, int offset, int count, SocketFlags flags, int timeout) {
             if (flags != SocketFlags.None) throw new ArgumentException();
-            if (timeout != Timeout.Infinite) throw new ArgumentException();
 
             this.WriteSocket(this.GetInternalSocketId(socket), buffer, offset, count);
 
@@ -844,10 +843,18 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
         int ISocket.Accept(int socket) => throw new NotImplementedException();
         int ISocket.SendTo(int socket, byte[] buffer, int offset, int count, SocketFlags flags, int timeout, SocketAddress address) => throw new NotImplementedException();
         int ISocket.ReceiveFrom(int socket, byte[] buffer, int offset, int count, SocketFlags flags, int timeout, ref SocketAddress address) => throw new NotImplementedException();
-        void ISocket.GetRemoteAddress(int socket, out SocketAddress address) => throw new NotImplementedException();
-        void ISocket.GetLocalAddress(int socket, out SocketAddress address) => throw new NotImplementedException();
-        void ISocket.GetOption(int socket, SocketOptionLevel optionLevel, SocketOptionName optionName, byte[] optionValue) => throw new NotImplementedException();
-        void ISocket.SetOption(int socket, SocketOptionLevel optionLevel, SocketOptionName optionName, byte[] optionValue) => throw new NotImplementedException();
+
+        void ISocket.GetRemoteAddress(int socket, out SocketAddress address) => address = new SocketAddress(AddressFamily.InterNetwork, 16);
+        void ISocket.GetLocalAddress(int socket, out SocketAddress address) => address = new SocketAddress(AddressFamily.InterNetwork, 16);
+
+        void ISocket.GetOption(int socket, SocketOptionLevel optionLevel, SocketOptionName optionName, byte[] optionValue) {
+            if (optionLevel == SocketOptionLevel.Socket && optionName == SocketOptionName.Type)
+                Array.Copy(BitConverter.GetBytes((int)SocketType.Stream), optionValue, 4);
+        }
+
+        void ISocket.SetOption(int socket, SocketOptionLevel optionLevel, SocketOptionName optionName, byte[] optionValue) {
+
+        }
 
         void IDns.GetHostByName(string name, out string canonicalName, out SocketAddress[] addresses) {
             var op = this.GetOperation()
