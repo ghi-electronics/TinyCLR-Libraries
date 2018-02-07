@@ -808,9 +808,24 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
 
         int ISocket.Receive(int socket, byte[] buffer, int offset, int count, SocketFlags flags, int timeout) {
             if (flags != SocketFlags.None) throw new ArgumentException();
-            if (timeout != Timeout.Infinite) throw new ArgumentException();
+            if (timeout != Timeout.Infinite && timeout < 0) throw new ArgumentException();
 
-            return this.ReadSocket(this.GetInternalSocketId(socket), buffer, offset, count);
+            var end = (timeout != Timeout.Infinite ? DateTime.UtcNow.AddMilliseconds(timeout) : DateTime.MaxValue).Ticks;
+            var sock = this.GetInternalSocketId(socket);
+            var read = 0;
+
+            while (read < count && DateTime.UtcNow.Ticks < end) {
+                var avail = this.QuerySocket(sock);
+
+                if (avail > 0) {
+                    read += this.ReadSocket(sock, buffer, offset + read, Math.Min(avail, count - read));
+                }
+                else {
+                    Thread.Sleep(1);
+                }
+            }
+
+            return read;
         }
 
         bool ISocket.Poll(int socket, int microSeconds, SelectMode mode) {
