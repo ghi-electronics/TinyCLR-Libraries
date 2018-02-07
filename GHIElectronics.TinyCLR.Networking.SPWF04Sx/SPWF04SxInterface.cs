@@ -262,8 +262,6 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
             this.WriteHeader[0] = (byte)((len >> 8) & 0xFF);
             this.WriteHeader[1] = (byte)((len >> 0) & 0xFF);
 
-            this.ParamentCount = 0;
-
             this.WritePayload = rawData;
             this.WritePayloadOffset = rawDataOffset;
             this.WritePayloadLength = rawDataCount;
@@ -700,7 +698,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
 
                         this.activeOperation.Written = true;
                     }
-                    else if (hasIrq && this.syncRead[0] == 0x02) {
+                    else if (this.syncRead[0] == 0x02) {
                         this.spi.Read(this.readHeaderBuffer);
 
                         var status = this.readHeaderBuffer[0];
