@@ -242,7 +242,6 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
 
             var idx = 0;
 
-            this.WriteHeader[idx++] = 0x02;
             this.WriteHeader[idx++] = 0x00;
             this.WriteHeader[idx++] = 0x00;
 
@@ -261,9 +260,9 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
                 idx += pLen;
             }
 
-            var len = idx + rawDataCount - 3;
-            this.WriteHeader[1] = (byte)((len >> 8) & 0xFF);
-            this.WriteHeader[2] = (byte)((len >> 0) & 0xFF);
+            var len = idx + rawDataCount - 2;
+            this.WriteHeader[0] = (byte)((len >> 8) & 0xFF);
+            this.WriteHeader[1] = (byte)((len >> 0) & 0xFF);
 
             this.ParamentCount = 0;
 
@@ -280,9 +279,10 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
         private readonly OperationPool operationPool;
         private readonly Hashtable netifSockets;
         private readonly Queue pendingOperations;
-        private readonly Queue pendingEvents;
         private readonly byte[] readHeaderBuffer;
         private readonly byte[] windPayloadBuffer;
+        private readonly byte[] syncRead;
+        private readonly byte[] syncWrite;
         private readonly SpiDevice spi;
         private readonly GpioPin irq;
         private readonly GpioPin reset;
@@ -310,9 +310,10 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
             this.operationPool = new OperationPool();
             this.netifSockets = new Hashtable();
             this.pendingOperations = new Queue();
-            this.pendingEvents = new Queue();
             this.readHeaderBuffer = new byte[4];
             this.windPayloadBuffer = new byte[1500 + 500]; //Longest payload, set by the socket heap variable, plus overhead for other result codes and WINDs
+            this.syncRead = new byte[1];
+            this.syncWrite = new byte[1];
             this.spi = spi;
             this.irq = irq;
             this.reset = reset;
@@ -367,7 +368,6 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
             this.worker = null;
 
             this.pendingOperations.Clear();
-            this.pendingEvents.Clear();
 
             this.netifSockets.Clear();
             this.nextSocketId = 0;
@@ -676,79 +676,85 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
         }
 
         private void Process() {
+            var pendingEvents = new Queue();
+
             while (this.running) {
-                //TODO Should we write just 0x02 and check irq to make sure we can write?
-                if (this.irq.Read() == GpioPinValue.High && this.activeOperation != null && !this.activeOperation.Written) {
-                    this.spi.Write(this.activeOperation.WriteHeader, 0, this.activeOperation.WriteHeaderLength);
+                var hasWrite = this.activeOperation != null && !this.activeOperation.Written;
+                var hasIrq = this.irq.Read() == GpioPinValue.Low;
 
-                    if (this.activeOperation.WritePayloadLength > 0) {
-                        while (this.irq.Read() == GpioPinValue.High)
-                            Thread.Sleep(1);
+                if (hasIrq || hasWrite) {
+                    this.syncWrite[0] = (byte)(!hasIrq && hasWrite ? 0x02 : 0x00);
 
-                        this.spi.Write(this.activeOperation.WritePayload, this.activeOperation.WritePayloadOffset, this.activeOperation.WritePayloadLength);
+                    this.spi.TransferFullDuplex(this.syncWrite, this.syncRead);
+
+                    if (!hasIrq && hasWrite && this.syncRead[0] != 0x02) {
+                        this.spi.Write(this.activeOperation.WriteHeader, 0, this.activeOperation.WriteHeaderLength);
+
+                        if (this.activeOperation.WritePayloadLength > 0) {
+                            while (this.irq.Read() == GpioPinValue.High)
+                                Thread.Sleep(0);
+
+                            this.spi.Write(this.activeOperation.WritePayload, this.activeOperation.WritePayloadOffset, this.activeOperation.WritePayloadLength);
+
+                            while (this.irq.Read() == GpioPinValue.Low)
+                                Thread.Sleep(0);
+                        }
+
+                        this.activeOperation.Written = true;
                     }
+                    else if (hasIrq && this.syncRead[0] == 0x02) {
+                        this.spi.Read(this.readHeaderBuffer);
 
-                    this.activeOperation.Written = true;
-                }
+                        var status = this.readHeaderBuffer[0];
+                        var ind = this.readHeaderBuffer[1];
+                        var payloadLength = (this.readHeaderBuffer[3] << 8) | this.readHeaderBuffer[2];
+                        var type = (status & 0b1111_0000) >> 4;
 
-                while (this.irq.Read() == GpioPinValue.Low) {
-                    do {
-                        Thread.Sleep(0);
+                        this.State = (SPWF04SxWiFiState)(status & 0b0000_1111);
 
-                        this.spi.Read(this.readHeaderBuffer, 0, 1);
-                    } while (this.readHeaderBuffer[0] != 0x02);
+                        if (type == 0x01 || type == 0x02) {
+                            if (payloadLength > this.windPayloadBuffer.Length)
+                                throw new InvalidOperationException("Unexpected WIND size.");
 
-                    this.spi.Read(this.readHeaderBuffer);
+                            if (payloadLength > 0)
+                                this.spi.Read(this.windPayloadBuffer, 0, payloadLength);
 
-                    var status = this.readHeaderBuffer[0];
-                    var ind = this.readHeaderBuffer[1];
-                    var payloadLength = (this.readHeaderBuffer[3] << 8) | this.readHeaderBuffer[2];
-                    var type = (status & 0b1111_0000) >> 4;
+                            var str = Encoding.UTF8.GetString(this.windPayloadBuffer, 0, payloadLength);
 
-                    this.State = (SPWF04SxWiFiState)(status & 0b0000_1111);
-
-                    if (type == 0x01 || type == 0x02) {
-                        if (payloadLength > this.windPayloadBuffer.Length)
-                            throw new InvalidOperationException("Unexpected WIND size.");
-
-                        if (payloadLength > 0)
-                            this.spi.Read(this.windPayloadBuffer, 0, payloadLength);
-
-                        var str = Encoding.UTF8.GetString(this.windPayloadBuffer, 0, payloadLength);
-
-                        this.pendingEvents.Enqueue(type == 0x01 ? new SPWF04SxIndicationReceivedEventArgs((SPWF04SxIndication)ind, str) : (object)new SPWF04SxErrorReceivedEventArgs(ind, str));
-                    }
-
-                    else {
-                        if (this.activeOperation == null || !this.activeOperation.Written) throw new InvalidOperationException("Unexpected payload.");
-
-                        if (payloadLength > 0) {
-                            while (payloadLength > 0) {
-                                while (this.activeOperation.Buffer.AvailableWrite == 0) {
-                                    this.activeOperation.Buffer.TryCompress();
-
-                                    Thread.Sleep(20);
-                                }
-
-                                var min = Math.Min(payloadLength, this.activeOperation.Buffer.AvailableWrite);
-
-                                this.spi.Read(this.activeOperation.Buffer.Data, this.activeOperation.Buffer.WriteOffset, min);
-
-                                payloadLength -= min;
-
-                                this.activeOperation.MarkWritten(min);
-                            }
+                            pendingEvents.Enqueue(type == 0x01 ? new SPWF04SxIndicationReceivedEventArgs((SPWF04SxIndication)ind, str) : (object)new SPWF04SxErrorReceivedEventArgs(ind, str));
                         }
                         else {
-                            this.activeOperation.MarkWritten(0);
+                            if (this.activeOperation == null || !this.activeOperation.Written) throw new InvalidOperationException("Unexpected payload.");
+
+                            if (payloadLength > 0) {
+                                while (payloadLength > 0) {
+                                    while (this.activeOperation.Buffer.AvailableWrite == 0) {
+                                        this.activeOperation.Buffer.TryCompress();
+
+                                        Thread.Sleep(20);
+                                    }
+
+                                    var min = Math.Min(payloadLength, this.activeOperation.Buffer.AvailableWrite);
+
+                                    this.spi.Read(this.activeOperation.Buffer.Data, this.activeOperation.Buffer.WriteOffset, min);
+
+                                    payloadLength -= min;
+
+                                    this.activeOperation.MarkWritten(min);
+                                }
+                            }
+                            else {
+                                this.activeOperation.MarkWritten(0);
+                            }
                         }
                     }
                 }
-
-                while (this.pendingEvents.Count != 0) {
-                    switch (this.pendingEvents.Dequeue()) {
-                        case SPWF04SxIndicationReceivedEventArgs e: this.IndicationReceived?.Invoke(this, e); break;
-                        case SPWF04SxErrorReceivedEventArgs e: this.ErrorReceived?.Invoke(this, e); break;
+                else {
+                    while (pendingEvents.Count != 0) {
+                        switch (pendingEvents.Dequeue()) {
+                            case SPWF04SxIndicationReceivedEventArgs e: this.IndicationReceived?.Invoke(this, e); break;
+                            case SPWF04SxErrorReceivedEventArgs e: this.ErrorReceived?.Invoke(this, e); break;
+                        }
                     }
                 }
 
