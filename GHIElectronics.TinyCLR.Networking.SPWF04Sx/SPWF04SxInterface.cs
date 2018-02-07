@@ -48,7 +48,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
     }
 
     public class Buffer {
-        public byte[] Data = new byte[1500 + 512];
+        public byte[] Data;
 
         public int AvailableWrite { get { lock (this) return this.Data.Length - this.nextWrite; } }
         public int AvailableRead { get { lock (this) return this.nextWrite - this.nextRead; } }
@@ -58,6 +58,8 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
 
         private int nextRead;
         private int nextWrite;
+
+        public Buffer(int size) => this.Data = new byte[size];
 
         public void TryCompress() {
             lock (this) {
@@ -87,7 +89,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
     }
 
     public class OperationPool : Pool {
-        private readonly Pool buffers = new Pool(() => new Buffer());
+        private readonly Pool buffers = new Pool(() => new Buffer(1500 + 512));
 
         public OperationPool() : base(() => new Operation()) { }
 
@@ -132,7 +134,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
 
         public Queue PendingReads = new Queue();
 
-        public Buffer Buffer = new Buffer();
+        public Buffer Buffer;
 
         private int partialRead;
 
@@ -758,8 +760,8 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
 
         private void GetAddress(SocketAddress address, out string host, out int port) {
             port = 0;
-            port |= (byte)(address[2] << 8);
-            port |= (byte)(address[3] << 0);
+            port |= address[2] << 8;
+            port |= address[3] << 0;
 
             host = "";
             host += address[4] + ".";
