@@ -93,23 +93,16 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
 
         public OperationPool() : base(() => new Operation()) { }
 
-        public new Operation Acquire() => this.Acquire((Buffer)this.buffers.Acquire(), true);
-
-        public Operation Acquire(Buffer buffer) => this.Acquire(buffer, false);
-
-        private Operation Acquire(Buffer buffer, bool pooled) {
+        public new Operation Acquire() {
             var op = (Operation)base.Acquire();
-            op.Buffer = buffer;
-            op.PooledBuffer = pooled;
+            op.Buffer = (Buffer)this.buffers.Acquire();
             return op;
         }
 
         public override void Release(object obj) {
             var op = (Operation)obj;
-            if (op.PooledBuffer) {
-                op.Buffer.Reset();
-                this.buffers.Release(op.Buffer);
-            }
+            op.Buffer.Reset();
+            this.buffers.Release(op.Buffer);
             op.Reset();
             base.Release(op);
         }
@@ -130,7 +123,6 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
         public int WritePayloadLength;
 
         public bool Written;
-        public bool PooledBuffer;
 
         public Queue PendingReads = new Queue();
 
