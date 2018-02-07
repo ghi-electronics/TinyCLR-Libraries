@@ -48,7 +48,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
     }
 
     public class Buffer {
-        public byte[] Data = new byte[1500 + 512];
+        public byte[] Data;
 
         public int AvailableWrite { get { lock (this) return this.Data.Length - this.nextWrite; } }
         public int AvailableRead { get { lock (this) return this.nextWrite - this.nextRead; } }
@@ -58,6 +58,8 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
 
         private int nextRead;
         private int nextWrite;
+
+        public Buffer(int size) => this.Data = new byte[size];
 
         public void TryCompress() {
             lock (this) {
@@ -87,7 +89,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
     }
 
     public class OperationPool : Pool {
-        private readonly Pool buffers = new Pool(() => new Buffer());
+        private readonly Pool buffers = new Pool(() => new Buffer(1500 + 512));
 
         public OperationPool() : base(() => new Operation()) { }
 
@@ -132,7 +134,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
 
         public Queue PendingReads = new Queue();
 
-        public Buffer Buffer = new Buffer();
+        public Buffer Buffer;
 
         private int partialRead;
 
@@ -312,7 +314,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
 
         public SPWF04SxInterface(SpiDevice spi, GpioPin irq, GpioPin reset) {
             this.operationPool = new OperationPool();
-            this.netifSocketBufferPool = new Pool(() => new byte[2048]);
+            this.netifSocketBufferPool = new Pool(() => new Buffer(1024));
             this.netifSockets = new Hashtable();
             this.pendingOperations = new Queue();
             this.pendingEvents = new Queue();
@@ -818,9 +820,44 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
 
         int ISocket.Receive(int socket, byte[] buffer, int offset, int count, SocketFlags flags, int timeout) {
             if (flags != SocketFlags.None) throw new ArgumentException();
-            if (timeout != Timeout.Infinite) throw new ArgumentException();
+            if (timeout != Timeout.Infinite && timeout < 0) throw new ArgumentException();
 
-            return this.ReadSocket(this.GetInternalSocketId(socket), buffer, offset, count);
+            var end = (timeout != Timeout.Infinite ? DateTime.UtcNow.AddMilliseconds(timeout) : DateTime.MaxValue).Ticks;
+            var sock = (Socket)this.netifSockets[socket];
+            var buf = sock.Buffer;
+            var read = 0;
+
+            while (count > 0 && DateTime.UtcNow.Ticks < end) {
+                if (buf.AvailableRead > 0) {
+                    var toRead = Math.Min(buf.AvailableRead, count);
+
+                    Array.Copy(buf.Data, buf.ReadOffset, buffer, offset, toRead);
+
+                    read += toRead;
+                    offset += toRead;
+                    count -= toRead;
+
+                    buf.Read(toRead);
+                }
+                else {
+                    //TODO Move to a separate thread triggered by WIND
+                    var avail = this.QuerySocket(sock.RawId);
+
+                    if (avail > 0) {
+                        buf.TryCompress();
+
+                        var toWrite = Math.Min(buf.AvailableWrite, avail);
+                        var actual = this.ReadSocket(sock.RawId, buf.Data, buf.WriteOffset, toWrite);
+
+                        buf.Write(actual);
+                    }
+                    else {
+                        Thread.Sleep(1);
+                    }
+                }
+            }
+
+            return read;
         }
 
         bool ISocket.Poll(int socket, int microSeconds, SelectMode mode) {
