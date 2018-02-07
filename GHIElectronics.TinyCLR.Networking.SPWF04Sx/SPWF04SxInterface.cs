@@ -132,6 +132,9 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
 
         public string ReadString() {
             while (true) {
+                while (!this.Written)
+                    Thread.Sleep(1);
+
                 lock (this.PendingReads) {
                     if (this.PendingReads.Count != 0) {
                         var start = this.Buffer.ReadOffset;
@@ -164,6 +167,9 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
 
         public int ReadBuffer(byte[] buffer, int offset, int count) {
             while (true) {
+                while (!this.Written)
+                    Thread.Sleep(1);
+
                 lock (this.PendingReads) {
                     if (this.PendingReads.Count != 0) {
                         var len = 0;
