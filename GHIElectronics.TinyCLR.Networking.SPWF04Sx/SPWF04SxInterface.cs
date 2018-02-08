@@ -33,17 +33,20 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
         }
 
         public void Release(object obj) {
-            if (!this.all.Contains(obj)) throw new ArgumentException();
+            lock (this.available) {
+                if (!this.all.Contains(obj)) throw new ArgumentException();
 
-            lock (this.available)
                 this.available.Push(obj);
+            }
         }
 
         public void ResetAll() {
-            this.available.Clear();
+            lock (this.available) {
+                this.available.Clear();
 
-            foreach (var obj in this.all)
-                this.available.Push(obj);
+                foreach (var obj in this.all)
+                    this.available.Push(obj);
+            }
         }
     }
 
@@ -353,7 +356,6 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
         private readonly Pool commandPool;
         private readonly Hashtable netifSockets;
         private readonly Queue pendingCommands;
-        private readonly GrowableBuffer windPayloadBuffer;
         private readonly ReadWriteBuffer readPayloadBuffer;
         private readonly byte[] readHeaderBuffer;
         private readonly byte[] syncRead;
@@ -385,7 +387,6 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
             this.commandPool = new Pool(() => new SPWF04SxCommand());
             this.netifSockets = new Hashtable();
             this.pendingCommands = new Queue();
-            this.windPayloadBuffer = new GrowableBuffer(32, 1500 + 512);
             this.readPayloadBuffer = new ReadWriteBuffer(32, 1500 + 512);
             this.readHeaderBuffer = new byte[4];
             this.syncRead = new byte[1];
@@ -769,6 +770,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
 
         private void Process() {
             var pendingEvents = new Queue();
+            var windPayloadBuffer = new GrowableBuffer(32, 1500 + 512);
 
             while (this.running) {
                 var hasWrite = this.activeCommand != null && !this.activeCommand.Sent;
@@ -806,11 +808,12 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
 
                         if (type == 0x01 || type == 0x02) {
                             if (payloadLength > 0) {
-                                this.windPayloadBuffer.EnsureSize(payloadLength, false);
-                                this.spi.Read(this.windPayloadBuffer.Data, 0, payloadLength);
+                                windPayloadBuffer.EnsureSize(payloadLength, false);
+
+                                this.spi.Read(windPayloadBuffer.Data, 0, payloadLength);
                             }
 
-                            var str = Encoding.UTF8.GetString(this.windPayloadBuffer.Data, 0, payloadLength);
+                            var str = Encoding.UTF8.GetString(windPayloadBuffer.Data, 0, payloadLength);
 
                             pendingEvents.Enqueue(type == 0x01 ? new SPWF04SxIndicationReceivedEventArgs((SPWF04SxIndication)ind, str) : (object)new SPWF04SxErrorReceivedEventArgs(ind, str));
                         }
