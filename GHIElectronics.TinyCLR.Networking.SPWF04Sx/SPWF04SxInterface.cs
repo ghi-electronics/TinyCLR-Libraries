@@ -103,17 +103,24 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
 
         public ReadWriteBuffer(int size, int maxSize) => this.buffer = new GrowableBuffer(size, maxSize);
 
-        public void TryEnsureWriteSpace(int size) {
-            lock (this) {
-                if (this.AvailableWrite < size && this.nextRead != 0) {
-                    Array.Copy(this.buffer.Data, this.nextRead, this.buffer.Data, 0, this.nextWrite - this.nextRead);
+        public void WaitForWriteSpace(int desired) {
+            while (true) {
+                lock (this) {
+                    if (this.AvailableWrite < desired)
+                        this.buffer.TryGrow(this.nextRead != 0 || this.nextWrite != 0, desired + this.nextWrite);
 
-                    this.nextWrite -= this.nextRead;
-                    this.nextRead = 0;
+                    if (this.AvailableWrite != 0)
+                        return;
+
+                    if (this.nextRead != 0) {
+                        Array.Copy(this.buffer.Data, this.nextRead, this.buffer.Data, 0, this.nextWrite - this.nextRead);
+
+                        this.nextWrite -= this.nextRead;
+                        this.nextRead = 0;
+                    }
                 }
 
-                if (this.AvailableWrite < size)
-                    this.buffer.TryGrow(this.nextRead != 0 || this.nextWrite != 0, size + this.nextWrite);
+                Thread.Sleep(10);
             }
         }
 
@@ -175,7 +182,6 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
         public int WritePayloadOffset;
         public int WritePayloadLength;
 
-        public ManualResetEvent SentWaiter = new ManualResetEvent(false);
         public bool Sent;
 
         public byte[] WriteHeader => this.writeHeader.Data;
@@ -187,8 +193,6 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
         private int partialRead;
 
         public string ReadString() {
-            this.SentWaiter.WaitOne();
-
             this.pendingReadsSemaphore.WaitOne();
 
             lock (this.pendingReads) {
@@ -205,8 +209,6 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
         public int ReadBuffer() => this.ReadBuffer(null, 0, 0);
 
         public int ReadBuffer(byte[] buffer, int offset, int count) {
-            this.SentWaiter.WaitOne();
-
             this.pendingReadsSemaphore.WaitOne();
 
             lock (this.pendingReads) {
@@ -244,11 +246,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
             var remaining = count;
 
             while (remaining > 0) {
-                while (this.readPayload.AvailableWrite == 0) {
-                    this.readPayload.TryEnsureWriteSpace(remaining);
-
-                    Thread.Sleep(1);
-                }
+                this.readPayload.WaitForWriteSpace(remaining);
 
                 var actual = Math.Min(remaining, this.readPayload.AvailableWrite);
 
@@ -271,7 +269,10 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
         }
 
         public void Reset() {
-            this.SentWaiter.Reset();
+            lock (this.pendingReads)
+                if (!this.Sent || this.pendingReads.Count != 0)
+                    throw new Exception("Not complete");
+
             this.Sent = false;
             this.ParamentCount = 0;
             this.WriteHeaderLength = 0;
@@ -456,7 +457,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
         }
 
         protected void FinishCommand(Command cmd) {
-            if (this.activeCommand != cmd || !this.activeCommand.Sent) throw new ArgumentException();
+            if (this.activeCommand != cmd) throw new ArgumentException();
 
             lock (this.pendingCommands) {
                 cmd.Reset();
@@ -784,7 +785,6 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
                         }
 
                         this.activeCommand.Sent = true;
-                        this.activeCommand.SentWaiter.Set();
                     }
                     else if (this.syncRead[0] == 0x02) {
                         this.spi.Read(this.readHeaderBuffer);
