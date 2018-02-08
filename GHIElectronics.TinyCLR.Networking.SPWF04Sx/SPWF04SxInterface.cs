@@ -9,16 +9,16 @@ using GHIElectronics.TinyCLR.Devices.Gpio;
 using GHIElectronics.TinyCLR.Devices.Spi;
 
 namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
-    public delegate object PoolObjectCreator();
+    internal delegate object PoolObjectCreator();
 
-    public class Pool {
+    internal class Pool {
         private readonly ArrayList all = new ArrayList();
         private readonly Stack available = new Stack();
         private readonly PoolObjectCreator creator;
 
         public Pool(PoolObjectCreator creator) => this.creator = creator;
 
-        public virtual object Acquire() {
+        public object Acquire() {
             lock (this.available) {
                 if (this.available.Count == 0) {
                     var obj = this.creator();
@@ -32,14 +32,14 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
             }
         }
 
-        public virtual void Release(object obj) {
+        public void Release(object obj) {
             if (!this.all.Contains(obj)) throw new ArgumentException();
 
             lock (this.available)
                 this.available.Push(obj);
         }
 
-        public virtual void ResetAll() {
+        public void ResetAll() {
             this.available.Clear();
 
             foreach (var obj in this.all)
@@ -47,7 +47,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
         }
     }
 
-    public class GrowableBuffer {
+    internal class GrowableBuffer {
         private byte[] buffer;
 
         public byte[] Data => this.buffer;
@@ -86,9 +86,11 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
         }
     }
 
-    public class ReadWriteBuffer {
+    internal class ReadWriteBuffer {
         private readonly ManualResetEvent writeWaiter = new ManualResetEvent(false);
-        private GrowableBuffer buffer;
+        private readonly GrowableBuffer buffer;
+        private int nextRead;
+        private int nextWrite;
 
         public byte[] Data => this.buffer.Data;
 
@@ -97,9 +99,6 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
 
         public int WriteOffset => this.nextWrite;
         public int ReadOffset => this.nextRead;
-
-        private int nextRead;
-        private int nextWrite;
 
         public ReadWriteBuffer(int size, int maxSize) => this.buffer = new GrowableBuffer(size, maxSize);
 
@@ -148,7 +147,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
         }
     }
 
-    public class Semaphore : WaitHandle {
+    internal class Semaphore : WaitHandle {
         private readonly object lck = new object();
         private readonly ManualResetEvent evt = new ManualResetEvent(false);
         private int count;
@@ -181,7 +180,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
         }
     }
 
-    public class SPWF04SxCommand {
+    public sealed class SPWF04SxCommand {
         private readonly string[] parameters = new string[16];
         private readonly Queue pendingReads = new Queue();
         private readonly Semaphore pendingReadsSemaphore = new Semaphore();
@@ -194,9 +193,9 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
         private int writePayloadOffset;
         private int writePayloadLength;
 
-        internal SPWF04SxCommand() { }
-
         internal delegate void DataReaderWriter(byte[] buffer, int offset, int count);
+
+        internal SPWF04SxCommand() { }
 
         internal bool Sent { get; set; }
         internal bool HasWritePayload => this.writePayloadLength > 0;
