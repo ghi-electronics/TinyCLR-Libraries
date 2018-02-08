@@ -133,6 +133,39 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
         }
     }
 
+    public class Semaphore : WaitHandle {
+        private readonly object lck = new object();
+        private readonly ManualResetEvent evt = new ManualResetEvent(false);
+        private int count;
+
+        public override bool WaitOne() {
+            while (true) {
+                this.evt.WaitOne();
+
+                lock (this.lck) {
+                    if (this.count > 0) {
+                        if (--this.count == 0)
+                            this.evt.Reset();
+
+                        return true;
+                    }
+                }
+            }
+        }
+
+        public int Release() {
+            lock (this.lck) {
+                var cnt = this.count;
+
+                this.count++;
+
+                this.evt.Set();
+
+                return cnt;
+            }
+        }
+    }
+
     //TODO Switch to semaphore/mutex/whatever instead of spin waiting, possibly timeout too. Check all Thread.Sleep and while loops.
     public class Command {
         public string[] Parameters = new string[16];
@@ -147,8 +180,8 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
 
         public byte[] WriteHeader => this.writeHeader.Data;
 
-        public Queue PendingReads = new Queue();
-
+        private Queue pendingReads = new Queue();
+        private Semaphore pendingReadsSemaphore = new Semaphore();
         private GrowableBuffer writeHeader = new GrowableBuffer(4, 512);
         private ReadWriteBuffer readPayload;
         private int partialRead;
@@ -156,12 +189,11 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
         public string ReadString() {
             this.SentWaiter.WaitOne();
 
-            while (!this.DataAvailable)
-                Thread.Sleep(1);
+            this.pendingReadsSemaphore.WaitOne();
 
-            lock (this.PendingReads) {
+            lock (this.pendingReads) {
                 var start = this.readPayload.ReadOffset;
-                var len = (int)this.PendingReads.Dequeue();
+                var len = (int)this.pendingReads.Dequeue();
                 var res = Encoding.UTF8.GetString(this.readPayload.Data, start, len);
 
                 this.readPayload.Read(len);
@@ -175,21 +207,20 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
         public int ReadBuffer(byte[] buffer, int offset, int count) {
             this.SentWaiter.WaitOne();
 
-            while (!this.DataAvailable)
-                Thread.Sleep(1);
+            this.pendingReadsSemaphore.WaitOne();
 
-            lock (this.PendingReads) {
+            lock (this.pendingReads) {
                 var len = 0;
 
                 if (buffer != null) {
-                    len = (int)this.PendingReads.Peek() - this.partialRead;
+                    len = (int)this.pendingReads.Peek() - this.partialRead;
 
                     if (len <= count) {
                         Array.Copy(this.readPayload.Data, this.readPayload.ReadOffset, buffer, offset, len);
 
                         this.partialRead = 0;
 
-                        this.PendingReads.Dequeue();
+                        this.pendingReads.Dequeue();
                     }
                     else {
                         len = count;
@@ -200,26 +231,12 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
                     }
                 }
                 else {
-                    len = (int)this.PendingReads.Dequeue();
+                    len = (int)this.pendingReads.Dequeue();
                 }
 
                 this.readPayload.Read(len);
 
                 return len;
-            }
-        }
-
-        public int Peek() {
-            while (!this.DataAvailable)
-                Thread.Sleep(10);
-
-            return (int)this.PendingReads.Peek();
-        }
-
-        private bool DataAvailable {
-            get {
-                lock (this.PendingReads)
-                    return this.PendingReads.Count != 0;
             }
         }
 
@@ -242,8 +259,10 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
                 remaining -= actual;
             }
 
-            lock (this.PendingReads)
-                this.PendingReads.Enqueue(count);
+            lock (this.pendingReads) {
+                this.pendingReads.Enqueue(count);
+                this.pendingReadsSemaphore.Release();
+            }
         }
 
         public Command AddParameter(string parameter) {
@@ -259,10 +278,12 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
             this.WritePayloadOffset = 0;
             this.WritePayloadLength = 0;
 
-            this.PendingReads.Clear();
-
             this.readPayload.Reset();
             this.readPayload = null;
+
+            lock (this.pendingReads)
+                if (this.pendingReads.Count != 0)
+                    throw new Exception("Unread data");
         }
 
         public void SetActive(ReadWriteBuffer buffer) => this.readPayload = buffer;
@@ -660,8 +681,8 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
             this.EnqueueCommand(cmd);
 
             var str = string.Empty;
-            while (cmd.Peek() != 0)
-                str += cmd.ReadString() + Environment.NewLine;
+            while (cmd.ReadString() is var s && s != string.Empty)
+                str += s + Environment.NewLine;
 
             cmd.ReadBuffer();
 
