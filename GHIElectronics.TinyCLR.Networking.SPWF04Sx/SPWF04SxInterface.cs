@@ -48,7 +48,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
         }
     }
 
-    public class Buffer {
+    public class ReadWriteBuffer {
         public byte[] Data;
 
         public int AvailableWrite { get { lock (this) return this.Data.Length - this.nextWrite; } }
@@ -60,7 +60,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
         private int nextRead;
         private int nextWrite;
 
-        public Buffer(int size) => this.Data = new byte[size];
+        public ReadWriteBuffer(int size) => this.Data = new byte[size];
 
         public void TryCompress() {
             lock (this) {
@@ -115,7 +115,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
 
         public Queue PendingReads = new Queue();
 
-        private Buffer Buffer;
+        private ReadWriteBuffer Buffer;
         private int partialRead;
 
         public string ReadString() {
@@ -226,7 +226,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
             this.Buffer = null;
         }
 
-        public void SetActive(Buffer buffer) => this.Buffer = buffer;
+        public void SetActive(ReadWriteBuffer buffer) => this.Buffer = buffer;
 
         public Operation SetCommand(SPWF04SxCommandIds cmdId) => this.SetCommand(cmdId, null, 0, 0);
 
@@ -288,7 +288,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
         private readonly OperationPool operationPool;
         private readonly Hashtable netifSockets;
         private readonly Queue pendingOperations;
-        private readonly Buffer readPayloadBuffer;
+        private readonly ReadWriteBuffer readPayloadBuffer;
         private readonly byte[] readHeaderBuffer;
         private readonly byte[] windPayloadBuffer;
         private readonly byte[] syncRead;
@@ -320,7 +320,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
             this.operationPool = new OperationPool();
             this.netifSockets = new Hashtable();
             this.pendingOperations = new Queue();
-            this.readPayloadBuffer = new Buffer(1500 + 512);
+            this.readPayloadBuffer = new ReadWriteBuffer(1500 + 512);
             this.readHeaderBuffer = new byte[4];
             this.windPayloadBuffer = new byte[1500 + 512]; //Longest payload, set by the socket heap variable, plus overhead for other result codes and WINDs
             this.syncRead = new byte[1];
