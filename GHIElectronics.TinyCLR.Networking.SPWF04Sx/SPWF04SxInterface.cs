@@ -93,23 +93,16 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
 
         public OperationPool() : base(() => new Operation()) { }
 
-        public new Operation Acquire() => this.Acquire((Buffer)this.buffers.Acquire(), true);
-
-        public Operation Acquire(Buffer buffer) => this.Acquire(buffer, false);
-
-        private Operation Acquire(Buffer buffer, bool pooled) {
+        public new Operation Acquire() {
             var op = (Operation)base.Acquire();
-            op.Buffer = buffer;
-            op.PooledBuffer = pooled;
+            op.Buffer = (Buffer)this.buffers.Acquire();
             return op;
         }
 
         public override void Release(object obj) {
             var op = (Operation)obj;
-            if (op.PooledBuffer) {
-                op.Buffer.Reset();
-                this.buffers.Release(op.Buffer);
-            }
+            op.Buffer.Reset();
+            this.buffers.Release(op.Buffer);
             op.Reset();
             base.Release(op);
         }
@@ -123,23 +116,26 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
     public class Operation {
         public string[] Parameters = new string[16];
         public int ParamentCount;
-        public byte[] WriteHeader = new byte[512];
+        public byte[] WriteHeader = new byte[512]; //TODO See what the max size is for this and if we can trim it
         public int WriteHeaderLength;
         public byte[] WritePayload;
         public int WritePayloadOffset;
         public int WritePayloadLength;
 
         public bool Written;
-        public bool PooledBuffer;
 
         public Queue PendingReads = new Queue();
 
+        //TODO Since requests can only ever be done sequentially, assign this buffer when making an op active. Can probably reuse the WIND buffer
         public Buffer Buffer;
 
         private int partialRead;
 
         public string ReadString() {
             while (true) {
+                while (!this.Written)
+                    Thread.Sleep(1);
+
                 lock (this.PendingReads) {
                     if (this.PendingReads.Count != 0) {
                         var start = this.Buffer.ReadOffset;
@@ -172,6 +168,9 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
 
         public int ReadBuffer(byte[] buffer, int offset, int count) {
             while (true) {
+                while (!this.Written)
+                    Thread.Sleep(1);
+
                 lock (this.PendingReads) {
                     if (this.PendingReads.Count != 0) {
                         var len = 0;
@@ -242,7 +241,6 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
 
             var idx = 0;
 
-            this.WriteHeader[idx++] = 0x02;
             this.WriteHeader[idx++] = 0x00;
             this.WriteHeader[idx++] = 0x00;
 
@@ -261,11 +259,9 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
                 idx += pLen;
             }
 
-            var len = idx + rawDataCount - 3;
-            this.WriteHeader[1] = (byte)((len >> 8) & 0xFF);
-            this.WriteHeader[2] = (byte)((len >> 0) & 0xFF);
-
-            this.ParamentCount = 0;
+            var len = idx + rawDataCount - 2;
+            this.WriteHeader[0] = (byte)((len >> 8) & 0xFF);
+            this.WriteHeader[1] = (byte)((len >> 0) & 0xFF);
 
             this.WritePayload = rawData;
             this.WritePayloadOffset = rawDataOffset;
@@ -277,28 +273,19 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
     }
 
     public class SPWF04SxInterface : NetworkInterface, ISocket, IDns, IDisposable {
-        private class Socket {
-            public int RawId;
-            public int Pending;
-            public Buffer Buffer;
-        }
-
         private readonly OperationPool operationPool;
-        private readonly Pool netifSocketBufferPool;
         private readonly Hashtable netifSockets;
-        private readonly Hashtable rawToHandle; //TODO Remove, maybe make the returned handle half inc'd id, half raw id
         private readonly Queue pendingOperations;
-        private readonly Queue pendingEvents;
-        private readonly Queue pendingData;
         private readonly byte[] readHeaderBuffer;
         private readonly byte[] windPayloadBuffer;
+        private readonly byte[] syncRead;
+        private readonly byte[] syncWrite;
         private readonly SpiDevice spi;
         private readonly GpioPin irq;
         private readonly GpioPin reset;
         private Operation activeOperation;
         private Operation activeHttpOperation;
         private Thread worker;
-        private Thread socketWorker;
         private bool running;
         private int nextSocketId;
 
@@ -318,14 +305,12 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
 
         public SPWF04SxInterface(SpiDevice spi, GpioPin irq, GpioPin reset) {
             this.operationPool = new OperationPool();
-            this.netifSocketBufferPool = new Pool(() => new Buffer(1024));
             this.netifSockets = new Hashtable();
-            this.rawToHandle = new Hashtable();
             this.pendingOperations = new Queue();
-            this.pendingEvents = new Queue();
-            this.pendingData = new Queue();
             this.readHeaderBuffer = new byte[4];
-            this.windPayloadBuffer = new byte[1500 + 500]; //Longest payload, set by the socket heap variable, plus overhead for other result codes and WINDs
+            this.windPayloadBuffer = new byte[1500 + 512]; //Longest payload, set by the socket heap variable, plus overhead for other result codes and WINDs
+            this.syncRead = new byte[1];
+            this.syncWrite = new byte[1];
             this.spi = spi;
             this.irq = irq;
             this.reset = reset;
@@ -365,8 +350,6 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
             this.running = true;
             this.worker = new Thread(this.Process);
             this.worker.Start();
-            this.socketWorker = new Thread(this.FillSockets);
-            this.socketWorker.Start();
 
             this.reset.SetDriveMode(GpioPinDriveMode.Input);
         }
@@ -380,21 +363,15 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
             this.running = false;
             this.worker.Join();
             this.worker = null;
-            this.socketWorker.Join();
-            this.socketWorker = null;
 
             this.pendingOperations.Clear();
-            this.pendingEvents.Clear();
-            this.pendingData.Clear();
 
-            this.rawToHandle.Clear();
             this.netifSockets.Clear();
             this.nextSocketId = 0;
             this.activeOperation = null;
             this.activeHttpOperation = null;
 
             this.operationPool.ResetAll();
-            this.netifSocketBufferPool.ResetAll();
         }
 
         protected Operation GetOperation() => this.operationPool.Acquire();
@@ -468,15 +445,15 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
 
             this.EnqueueOperation(this.activeHttpOperation);
 
-            if (connectionSecurity == SPWF04SxConnectionSecurityType.Tls) {
-                this.activeHttpOperation.ReadBuffer();
-                this.activeHttpOperation.ReadBuffer();
+            var result = this.activeHttpOperation.ReadString();
+            if (connectionSecurity == SPWF04SxConnectionSecurityType.Tls && result == string.Empty) {
+                result = this.activeHttpOperation.ReadString();
+
+                if (result.IndexOf("Loading:") == 0)
+                    result = this.activeHttpOperation.ReadString();
             }
 
-            var result = this.activeHttpOperation.ReadString();
-            var parts = result.Split(':');
-
-            return parts[0] == "Http Server Status Code" ? int.Parse(parts[1]) : throw new Exception($"Request failed: {result}");
+            return result.Split(':') is var parts && parts[0] == "Http Server Status Code" ? int.Parse(parts[1]) : throw new Exception($"Request failed: {result}");
         }
 
         //TODO Need to test on an actual server
@@ -496,15 +473,15 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
 
             this.EnqueueOperation(this.activeHttpOperation);
 
-            if (connectionSecurity == SPWF04SxConnectionSecurityType.Tls) {
-                this.activeHttpOperation.ReadBuffer();
-                this.activeHttpOperation.ReadBuffer();
+            var result = this.activeHttpOperation.ReadString();
+            if (connectionSecurity == SPWF04SxConnectionSecurityType.Tls && result == string.Empty) {
+                result = this.activeHttpOperation.ReadString();
+
+                if (result.IndexOf("Loading:") == 0)
+                    result = this.activeHttpOperation.ReadString();
             }
 
-            var result = this.activeHttpOperation.ReadString();
-            var parts = result.Split(':');
-
-            return parts[0] == "Http Server Status Code" ? int.Parse(parts[1]) : throw new Exception($"Request failed: {result}");
+            return result.Split(':') is var parts && parts[0] == "Http Server Status Code" ? int.Parse(parts[1]) : throw new Exception($"Request failed: {result}");
         }
 
         public int ReadHttpResponse(byte[] buffer, int offset, int count) {
@@ -696,91 +673,85 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
         }
 
         private void Process() {
+            var pendingEvents = new Queue();
+
             while (this.running) {
-                //TODO Should we write just 0x02 and check irq to make sure we can write?
-                if (this.irq.Read() == GpioPinValue.High && this.activeOperation != null && !this.activeOperation.Written) {
-                    this.spi.Write(this.activeOperation.WriteHeader, 0, this.activeOperation.WriteHeaderLength);
+                var hasWrite = this.activeOperation != null && !this.activeOperation.Written;
+                var hasIrq = this.irq.Read() == GpioPinValue.Low;
 
-                    if (this.activeOperation.WritePayloadLength > 0) {
-                        while (this.irq.Read() == GpioPinValue.High)
-                            Thread.Sleep(1);
+                if (hasIrq || hasWrite) {
+                    this.syncWrite[0] = (byte)(!hasIrq && hasWrite ? 0x02 : 0x00);
 
-                        this.spi.Write(this.activeOperation.WritePayload, this.activeOperation.WritePayloadOffset, this.activeOperation.WritePayloadLength);
+                    this.spi.TransferFullDuplex(this.syncWrite, this.syncRead);
+
+                    if (!hasIrq && hasWrite && this.syncRead[0] != 0x02) {
+                        this.spi.Write(this.activeOperation.WriteHeader, 0, this.activeOperation.WriteHeaderLength);
+
+                        if (this.activeOperation.WritePayloadLength > 0) {
+                            while (this.irq.Read() == GpioPinValue.High)
+                                Thread.Sleep(0);
+
+                            this.spi.Write(this.activeOperation.WritePayload, this.activeOperation.WritePayloadOffset, this.activeOperation.WritePayloadLength);
+
+                            while (this.irq.Read() == GpioPinValue.Low)
+                                Thread.Sleep(0);
+                        }
+
+                        this.activeOperation.Written = true;
                     }
+                    else if (this.syncRead[0] == 0x02) {
+                        this.spi.Read(this.readHeaderBuffer);
 
-                    this.activeOperation.Written = true;
-                }
+                        var status = this.readHeaderBuffer[0];
+                        var ind = this.readHeaderBuffer[1];
+                        var payloadLength = (this.readHeaderBuffer[3] << 8) | this.readHeaderBuffer[2];
+                        var type = (status & 0b1111_0000) >> 4;
 
-                while (this.irq.Read() == GpioPinValue.Low) {
-                    do {
-                        Thread.Sleep(10);
+                        this.State = (SPWF04SxWiFiState)(status & 0b0000_1111);
 
-                        this.spi.Read(this.readHeaderBuffer, 0, 1);
-                    } while (this.readHeaderBuffer[0] != 0x02);
+                        if (type == 0x01 || type == 0x02) {
+                            if (payloadLength > this.windPayloadBuffer.Length)
+                                throw new InvalidOperationException("Unexpected WIND size.");
 
-                    this.spi.Read(this.readHeaderBuffer);
+                            if (payloadLength > 0)
+                                this.spi.Read(this.windPayloadBuffer, 0, payloadLength);
 
-                    var status = this.readHeaderBuffer[0];
-                    var ind = this.readHeaderBuffer[1];
-                    var payloadLength = (this.readHeaderBuffer[3] << 8) | this.readHeaderBuffer[2];
-                    var type = (status & 0b1111_0000) >> 4;
+                            var str = Encoding.UTF8.GetString(this.windPayloadBuffer, 0, payloadLength);
 
-                    this.State = (SPWF04SxWiFiState)(status & 0b0000_1111);
-
-                    if (type == 0x01 || type == 0x02) {
-                        if (payloadLength > this.windPayloadBuffer.Length)
-                            throw new InvalidOperationException("Unexpected WIND size.");
-
-                        if (payloadLength > 0)
-                            this.spi.Read(this.windPayloadBuffer, 0, payloadLength);
-
-                        var str = Encoding.UTF8.GetString(this.windPayloadBuffer, 0, payloadLength);
-
-                        this.pendingEvents.Enqueue(type == 0x01 ? new SPWF04SxIndicationReceivedEventArgs((SPWF04SxIndication)ind, str) : (object)new SPWF04SxErrorReceivedEventArgs(ind, str));
-                    }
-
-                    else {
-                        if (this.activeOperation == null || !this.activeOperation.Written) throw new InvalidOperationException("Unexpected payload.");
-
-                        if (payloadLength > 0) {
-                            while (payloadLength > 0) {
-                                while (this.activeOperation.Buffer.AvailableWrite == 0) {
-                                    this.activeOperation.Buffer.TryCompress();
-
-                                    Thread.Sleep(100);
-                                }
-
-                                var toRead = Math.Min(payloadLength, this.activeOperation.Buffer.AvailableWrite);
-
-                                this.spi.Read(this.activeOperation.Buffer.Data, this.activeOperation.Buffer.ReadOffset, toRead);
-
-                                payloadLength -= toRead;
-
-                                this.activeOperation.MarkWritten(toRead);
-                            }
+                            pendingEvents.Enqueue(type == 0x01 ? new SPWF04SxIndicationReceivedEventArgs((SPWF04SxIndication)ind, str) : (object)new SPWF04SxErrorReceivedEventArgs(ind, str));
                         }
                         else {
-                            this.activeOperation.MarkWritten(0);
+                            if (this.activeOperation == null || !this.activeOperation.Written) throw new InvalidOperationException("Unexpected payload.");
+
+                            if (payloadLength > 0) {
+                                while (payloadLength > 0) {
+                                    while (this.activeOperation.Buffer.AvailableWrite == 0) {
+                                        this.activeOperation.Buffer.TryCompress();
+
+                                        Thread.Sleep(20);
+                                    }
+
+                                    var min = Math.Min(payloadLength, this.activeOperation.Buffer.AvailableWrite);
+
+                                    this.spi.Read(this.activeOperation.Buffer.Data, this.activeOperation.Buffer.WriteOffset, min);
+
+                                    payloadLength -= min;
+
+                                    this.activeOperation.MarkWritten(min);
+                                }
+                            }
+                            else {
+                                this.activeOperation.MarkWritten(0);
+                            }
                         }
                     }
                 }
-
-                while (this.pendingEvents.Count != 0) {
-                    switch (this.pendingEvents.Dequeue()) {
-                        case SPWF04SxErrorReceivedEventArgs e: this.ErrorReceived?.Invoke(this, e); break;
-                        case SPWF04SxIndicationReceivedEventArgs e:
-                            if (e.Indication == SPWF04SxIndication.PendingData) {
-                                var parts = e.Message.Split(':');
-                                var id = int.Parse(parts[1]);
-                                var avail = int.Parse(parts[3]);
-                                var sock = (Socket)this.netifSockets[this.rawToHandle[id]];
-
-                                lock (sock)
-                                    sock.Pending = avail;
-                            }
-
-                            this.IndicationReceived?.Invoke(this, e);
-                            break;
+                else {
+                    while (pendingEvents.Count != 0) {
+                        switch (pendingEvents.Dequeue()) {
+                            case SPWF04SxIndicationReceivedEventArgs e: this.IndicationReceived?.Invoke(this, e); break;
+                            case SPWF04SxErrorReceivedEventArgs e: this.ErrorReceived?.Invoke(this, e); break;
+                        }
                     }
                 }
 
@@ -788,38 +759,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
             }
         }
 
-        private void FillSockets() {
-            while (this.running) {
-                Thread.Sleep(10);
-
-                foreach (DictionaryEntry e in this.netifSockets) {
-                    var sock = (Socket)e.Value;
-                    var buf = sock.Buffer;
-                    var avail = 0;
-
-                    lock (sock) {
-                        if (sock.Pending == 0)
-                            continue;
-
-                        if (buf.AvailableWrite == 0)
-                            buf.TryCompress();
-
-                        if (buf.AvailableWrite == 0)
-                            continue;
-
-                        avail = sock.Pending;
-                        sock.Pending = 0;
-                    }
-
-                    var toWrite = Math.Min(buf.AvailableWrite, avail);
-                    var actual = this.ReadSocket(sock.RawId, buf.Data, buf.WriteOffset, toWrite);
-
-                    buf.Write(actual);
-                }
-            }
-        }
-
-        private int GetInternalSocketId(int socket) => this.netifSockets.Contains(socket) ? ((Socket)this.netifSockets[socket]).RawId : throw new ArgumentException();
+        private int GetInternalSocketId(int socket) => this.netifSockets.Contains(socket) ? (int)this.netifSockets[socket] : throw new ArgumentException();
 
         private void GetAddress(SocketAddress address, out string host, out int port) {
             port = 0;
@@ -838,7 +778,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
 
             var id = this.nextSocketId++;
 
-            this.netifSockets.Add(id, new Socket { RawId = 0, Buffer = (Buffer)this.netifSocketBufferPool.Acquire() });
+            this.netifSockets.Add(id, 0);
 
             return id;
         }
@@ -846,14 +786,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
         int ISocket.Available(int socket) => this.QuerySocket(this.GetInternalSocketId(socket));
 
         void ISocket.Close(int socket) {
-            var sock = (Socket)this.netifSockets[socket];
-
-            this.CloseSocket(sock.RawId);
-
-            this.netifSocketBufferPool.Release(sock.Buffer);
-
-            if (this.rawToHandle.Contains(sock.RawId))
-                this.rawToHandle.Remove(sock.RawId);
+            this.CloseSocket(this.GetInternalSocketId(socket));
 
             this.netifSockets.Remove(socket);
         }
@@ -864,16 +797,11 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
 
             this.GetAddress(address, out var host, out var port);
 
-            var id = this.OpenSocket(host, port, SPWF04SxConnectionyType.Tcp, this.ForceSocketsTls ? SPWF04SxConnectionSecurityType.Tls : SPWF04SxConnectionSecurityType.None, this.ForceSocketsTls ? this.ForceSocketsTlsCommonName : null);
-
-            ((Socket)this.netifSockets[socket]).RawId = id;
-
-            this.rawToHandle.Add(id, socket);
+            this.netifSockets[socket] = this.OpenSocket(host, port, SPWF04SxConnectionyType.Tcp, this.ForceSocketsTls ? SPWF04SxConnectionSecurityType.Tls : SPWF04SxConnectionSecurityType.None, this.ForceSocketsTls ? this.ForceSocketsTlsCommonName : null);
         }
 
         int ISocket.Send(int socket, byte[] buffer, int offset, int count, SocketFlags flags, int timeout) {
             if (flags != SocketFlags.None) throw new ArgumentException();
-            if (timeout != Timeout.Infinite) throw new ArgumentException();
 
             this.WriteSocket(this.GetInternalSocketId(socket), buffer, offset, count);
 
@@ -885,32 +813,17 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
             if (timeout != Timeout.Infinite && timeout < 0) throw new ArgumentException();
 
             var end = (timeout != Timeout.Infinite ? DateTime.UtcNow.AddMilliseconds(timeout) : DateTime.MaxValue).Ticks;
-            var sock = (Socket)this.netifSockets[socket];
-            var buf = sock.Buffer;
+            var sock = this.GetInternalSocketId(socket);
             var read = 0;
 
-            while (count > 0 && DateTime.UtcNow.Ticks < end) {
-                if (buf.AvailableRead > 0) {
-                    var toRead = Math.Min(buf.AvailableRead, count);
+            while (read < count && DateTime.UtcNow.Ticks < end) {
+                var avail = this.QuerySocket(sock);
 
-                    Array.Copy(buf.Data, buf.ReadOffset, buffer, offset, toRead);
-
-                    read += toRead;
-                    offset += toRead;
-                    count -= toRead;
-
-                    buf.Read(toRead);
+                if (avail > 0) {
+                    read += this.ReadSocket(sock, buffer, offset + read, Math.Min(avail, count - read));
                 }
                 else {
-                    var avail = this.QuerySocket(sock.RawId);
-
-                    if (avail > 0) {
-                        lock (sock)
-                            sock.Pending = avail;
-                    }
-                    else {
-                        Thread.Sleep(1);
-                    }
+                    Thread.Sleep(1);
                 }
             }
 
@@ -922,7 +835,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
                 default: throw new ArgumentException();
                 case SelectMode.SelectError: return false;
                 case SelectMode.SelectWrite: return true;
-                case SelectMode.SelectRead: return ((Socket)this.netifSockets[socket]).Buffer.AvailableRead > 0;
+                case SelectMode.SelectRead: return this.QuerySocket(this.GetInternalSocketId(socket)) != 0;
             }
         }
 
@@ -931,10 +844,18 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
         int ISocket.Accept(int socket) => throw new NotImplementedException();
         int ISocket.SendTo(int socket, byte[] buffer, int offset, int count, SocketFlags flags, int timeout, SocketAddress address) => throw new NotImplementedException();
         int ISocket.ReceiveFrom(int socket, byte[] buffer, int offset, int count, SocketFlags flags, int timeout, ref SocketAddress address) => throw new NotImplementedException();
-        void ISocket.GetRemoteAddress(int socket, out SocketAddress address) => throw new NotImplementedException();
-        void ISocket.GetLocalAddress(int socket, out SocketAddress address) => throw new NotImplementedException();
-        void ISocket.GetOption(int socket, SocketOptionLevel optionLevel, SocketOptionName optionName, byte[] optionValue) => throw new NotImplementedException();
-        void ISocket.SetOption(int socket, SocketOptionLevel optionLevel, SocketOptionName optionName, byte[] optionValue) => throw new NotImplementedException();
+
+        void ISocket.GetRemoteAddress(int socket, out SocketAddress address) => address = new SocketAddress(AddressFamily.InterNetwork, 16);
+        void ISocket.GetLocalAddress(int socket, out SocketAddress address) => address = new SocketAddress(AddressFamily.InterNetwork, 16);
+
+        void ISocket.GetOption(int socket, SocketOptionLevel optionLevel, SocketOptionName optionName, byte[] optionValue) {
+            if (optionLevel == SocketOptionLevel.Socket && optionName == SocketOptionName.Type)
+                Array.Copy(BitConverter.GetBytes((int)SocketType.Stream), optionValue, 4);
+        }
+
+        void ISocket.SetOption(int socket, SocketOptionLevel optionLevel, SocketOptionName optionName, byte[] optionValue) {
+
+        }
 
         void IDns.GetHostByName(string name, out string canonicalName, out SocketAddress[] addresses) {
             var op = this.GetOperation()
