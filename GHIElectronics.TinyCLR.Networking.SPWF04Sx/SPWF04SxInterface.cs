@@ -10,6 +10,7 @@ using GHIElectronics.TinyCLR.Devices.Spi;
 
 namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
     public delegate object PoolObjectCreator();
+    public delegate void BufferWriter(byte[] buffer, int offset, int count);
 
     public class Pool {
         private readonly ArrayList all = new ArrayList();
@@ -89,31 +90,18 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
     }
 
     public class OperationPool : Pool {
-        private readonly Pool buffers = new Pool(() => new Buffer(1500 + 512));
-
         public OperationPool() : base(() => new Operation()) { }
 
-        public new Operation Acquire() {
-            var op = (Operation)base.Acquire();
-            op.Buffer = (Buffer)this.buffers.Acquire();
-            return op;
-        }
+        public new Operation Acquire() => (Operation)base.Acquire();
 
         public override void Release(object obj) {
-            var op = (Operation)obj;
-            op.Buffer.Reset();
-            this.buffers.Release(op.Buffer);
-            op.Reset();
-            base.Release(op);
-        }
-
-        public override void ResetAll() {
-            this.buffers.ResetAll();
-            base.ResetAll();
+            ((Operation)obj).Reset();
+            base.Release(obj);
         }
     }
 
-    //TODO Switch to semaphore/mutex/whatever instead of spin waiting, possibly timeout too.
+    //TODO Switch to semaphore/mutex/whatever instead of spin waiting, possibly timeout too. Check all Thread.Sleep and while loops.
+    //TODO Switch all buffers to a new growable buffer abstraction, including WriteHeader. Have a max size field to throw when exceeded.
     public class Operation {
         public string[] Parameters = new string[16];
         public int ParamentCount;
@@ -127,9 +115,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
 
         public Queue PendingReads = new Queue();
 
-        //TODO Since requests can only ever be done sequentially, assign this buffer when making an op active. Can probably reuse the WIND buffer. See about customizing the size and its effects.
-        public Buffer Buffer;
-
+        private Buffer Buffer;
         private int partialRead;
 
         public string ReadString() {
@@ -204,11 +190,23 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
             }
         }
 
-        public void MarkWritten(int count) {
-            lock (this.PendingReads) {
-                this.Buffer.Write(count);
-                this.PendingReads.Enqueue(count);
+        public int Write(BufferWriter reader, int desired) {
+            while (this.Buffer.AvailableWrite == 0) {
+                this.Buffer.TryCompress();
+
+                Thread.Sleep(1);
             }
+
+            var actual = Math.Min(desired, this.Buffer.AvailableWrite);
+
+            reader?.Invoke(this.Buffer.Data, this.Buffer.WriteOffset, actual);
+
+            lock (this.PendingReads) {
+                this.Buffer.Write(actual);
+                this.PendingReads.Enqueue(actual);
+            }
+
+            return actual;
         }
 
         public Operation AddParameter(string parameter) {
@@ -227,6 +225,8 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
 
             this.Buffer = null;
         }
+
+        public void SetActive(Buffer buffer) => this.Buffer = buffer;
 
         public Operation SetCommand(SPWF04SxCommandIds cmdId) => this.SetCommand(cmdId, null, 0, 0);
 
@@ -288,6 +288,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
         private readonly OperationPool operationPool;
         private readonly Hashtable netifSockets;
         private readonly Queue pendingOperations;
+        private readonly Buffer readPayloadBuffer;
         private readonly byte[] readHeaderBuffer;
         private readonly byte[] windPayloadBuffer;
         private readonly byte[] syncRead;
@@ -319,6 +320,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
             this.operationPool = new OperationPool();
             this.netifSockets = new Hashtable();
             this.pendingOperations = new Queue();
+            this.readPayloadBuffer = new Buffer(1500 + 512);
             this.readHeaderBuffer = new byte[4];
             this.windPayloadBuffer = new byte[1500 + 512]; //Longest payload, set by the socket heap variable, plus overhead for other result codes and WINDs
             this.syncRead = new byte[1];
@@ -377,6 +379,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
             this.worker = null;
 
             this.pendingOperations.Clear();
+            this.readPayloadBuffer.Reset();
 
             this.netifSockets.Clear();
             this.nextSocketId = 0;
@@ -390,12 +393,9 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
 
         protected void EnqueueOperation(Operation op) {
             lock (this.pendingOperations) {
-                if (this.activeOperation != null) {
-                    this.pendingOperations.Enqueue(op);
-                }
-                else {
-                    this.activeOperation = op;
-                }
+                this.pendingOperations.Enqueue(op);
+
+                this.EnsureNextOperation();
             }
         }
 
@@ -405,7 +405,19 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
             lock (this.pendingOperations) {
                 this.operationPool.Release(op);
 
-                this.activeOperation = this.pendingOperations.Count != 0 ? (Operation)this.pendingOperations.Dequeue() : null;
+                this.EnsureNextOperation();
+            }
+        }
+
+        private void EnsureNextOperation() {
+            lock (this.pendingOperations) {
+                if (this.pendingOperations.Count != 0) {
+                    this.activeOperation = (Operation)this.pendingOperations.Dequeue();
+                    this.activeOperation.SetActive(this.readPayloadBuffer);
+                }
+                else {
+                    this.activeOperation = null;
+                }
             }
         }
 
@@ -743,23 +755,11 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
 
                             if (payloadLength > 0) {
                                 while (payloadLength > 0) {
-                                    while (this.activeOperation.Buffer.AvailableWrite == 0) {
-                                        this.activeOperation.Buffer.TryCompress();
-
-                                        Thread.Sleep(20);
-                                    }
-
-                                    var min = Math.Min(payloadLength, this.activeOperation.Buffer.AvailableWrite);
-
-                                    this.spi.Read(this.activeOperation.Buffer.Data, this.activeOperation.Buffer.WriteOffset, min);
-
-                                    payloadLength -= min;
-
-                                    this.activeOperation.MarkWritten(min);
+                                    payloadLength -= this.activeOperation.Write(this.spi.Read, payloadLength);
                                 }
                             }
                             else {
-                                this.activeOperation.MarkWritten(0);
+                                this.activeOperation.Write(null, 0);
                             }
                         }
                     }
