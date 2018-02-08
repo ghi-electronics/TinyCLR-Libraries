@@ -817,20 +817,15 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
 
             var end = (timeout != Timeout.Infinite ? DateTime.UtcNow.AddMilliseconds(timeout) : DateTime.MaxValue).Ticks;
             var sock = this.GetInternalSocketId(socket);
-            var read = 0;
+            var avail = 0;
 
-            while (read < count && DateTime.UtcNow.Ticks < end) {
-                var avail = this.QuerySocket(sock);
+            do {
+                avail = this.QuerySocket(sock);
 
-                if (avail > 0) {
-                    read += this.ReadSocket(sock, buffer, offset + read, Math.Min(avail, count - read));
-                }
-                else {
-                    Thread.Sleep(1);
-                }
-            }
+                Thread.Sleep(1);
+            } while (avail == 0 && DateTime.UtcNow.Ticks < end);
 
-            return read;
+            return avail > 0 ? this.ReadSocket(sock, buffer, offset, Math.Min(avail, count)) : 0;
         }
 
         bool ISocket.Poll(int socket, int microSeconds, SelectMode mode) {
