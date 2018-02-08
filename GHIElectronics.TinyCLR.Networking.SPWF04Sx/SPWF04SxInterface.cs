@@ -90,6 +90,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
     }
 
     internal class ReadWriteBuffer {
+        private readonly object lck = new object();
         private readonly ManualResetEvent writeWaiter = new ManualResetEvent(false);
         private readonly GrowableBuffer buffer;
         private int nextRead;
@@ -97,8 +98,8 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
 
         public byte[] Data => this.buffer.Data;
 
-        public int AvailableWrite { get { lock (this) return this.buffer.CurrentSize - this.nextWrite; } }
-        public int AvailableRead { get { lock (this) return this.nextWrite - this.nextRead; } }
+        public int AvailableWrite { get { lock (this.lck) return this.buffer.CurrentSize - this.nextWrite; } }
+        public int AvailableRead { get { lock (this.lck) return this.nextWrite - this.nextRead; } }
 
         public int WriteOffset => this.nextWrite;
         public int ReadOffset => this.nextRead;
@@ -107,7 +108,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
 
         public void WaitForWriteSpace(int desired) {
             while (true) {
-                lock (this) {
+                lock (this.lck) {
                     if (this.AvailableWrite < desired)
                         this.buffer.TryGrow(this.nextRead != 0 || this.nextWrite != 0, desired + this.nextWrite);
 
@@ -132,21 +133,23 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
         }
 
         public void Write(int count) {
-            lock (this)
+            lock (this.lck)
                 this.nextWrite += count;
         }
 
         public void Read(int count) {
-            lock (this) {
+            lock (this.lck) {
                 this.nextRead += count;
                 this.writeWaiter.Set();
             }
         }
 
         public void Reset() {
-            this.writeWaiter.Reset();
-            this.nextWrite = 0;
-            this.nextRead = 0;
+            lock (this.lck) {
+                this.writeWaiter.Reset();
+                this.nextWrite = 0;
+                this.nextRead = 0;
+            }
         }
     }
 
