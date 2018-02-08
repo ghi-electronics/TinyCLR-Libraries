@@ -281,10 +281,6 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
 
             this.readPayload.Reset();
             this.readPayload = null;
-
-            lock (this.pendingReads)
-                if (this.pendingReads.Count != 0)
-                    throw new Exception("Unread data");
         }
 
         public void SetActive(ReadWriteBuffer buffer) => this.readPayload = buffer;
