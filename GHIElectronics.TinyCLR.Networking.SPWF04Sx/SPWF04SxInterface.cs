@@ -113,6 +113,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
         }
     }
 
+    //TODO Switch to semaphore/mutex/whatever instead of spin waiting, possibly timeout too.
     public class Operation {
         public string[] Parameters = new string[16];
         public int ParamentCount;
@@ -126,84 +127,80 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
 
         public Queue PendingReads = new Queue();
 
-        //TODO Since requests can only ever be done sequentially, assign this buffer when making an op active. Can probably reuse the WIND buffer
+        //TODO Since requests can only ever be done sequentially, assign this buffer when making an op active. Can probably reuse the WIND buffer. See about customizing the size and its effects.
         public Buffer Buffer;
 
         private int partialRead;
 
         public string ReadString() {
-            while (true) {
-                while (!this.Written)
-                    Thread.Sleep(1);
+            while (!this.Written)
+                Thread.Sleep(1);
 
-                lock (this.PendingReads) {
-                    if (this.PendingReads.Count != 0) {
-                        var start = this.Buffer.ReadOffset;
-                        var len = (int)this.PendingReads.Dequeue();
-                        var res = Encoding.UTF8.GetString(this.Buffer.Data, start, len);
+            while (!this.DataAvailable)
+                Thread.Sleep(1);
 
-                        this.Buffer.Read(len);
+            lock (this.PendingReads) {
+                var start = this.Buffer.ReadOffset;
+                var len = (int)this.PendingReads.Dequeue();
+                var res = Encoding.UTF8.GetString(this.Buffer.Data, start, len);
 
-                        return res;
-                    }
-                }
+                this.Buffer.Read(len);
 
-                Thread.Sleep(10);
-            }
-        }
-
-        public int Peek() {
-            while (true) {
-                lock (this.PendingReads) {
-                    if (this.PendingReads.Count != 0) {
-                        return (int)this.PendingReads.Peek();
-                    }
-                }
-
-                Thread.Sleep(10);
+                return res;
             }
         }
 
         public int ReadBuffer() => this.ReadBuffer(null, 0, 0);
 
         public int ReadBuffer(byte[] buffer, int offset, int count) {
-            while (true) {
-                while (!this.Written)
-                    Thread.Sleep(1);
+            while (!this.Written)
+                Thread.Sleep(1);
 
-                lock (this.PendingReads) {
-                    if (this.PendingReads.Count != 0) {
-                        var len = 0;
+            while (!this.DataAvailable)
+                Thread.Sleep(1);
 
-                        if (buffer != null) {
-                            len = (int)this.PendingReads.Peek() - this.partialRead;
+            lock (this.PendingReads) {
+                var len = 0;
 
-                            if (len <= count) {
-                                Array.Copy(this.Buffer.Data, this.Buffer.ReadOffset, buffer, offset, len);
+                if (buffer != null) {
+                    len = (int)this.PendingReads.Peek() - this.partialRead;
 
-                                this.partialRead = 0;
+                    if (len <= count) {
+                        Array.Copy(this.Buffer.Data, this.Buffer.ReadOffset, buffer, offset, len);
 
-                                this.PendingReads.Dequeue();
-                            }
-                            else {
-                                len = count;
+                        this.partialRead = 0;
 
-                                Array.Copy(this.Buffer.Data, this.Buffer.ReadOffset, buffer, offset, count);
+                        this.PendingReads.Dequeue();
+                    }
+                    else {
+                        len = count;
 
-                                this.partialRead += count;
-                            }
-                        }
-                        else {
-                            len = (int)this.PendingReads.Dequeue();
-                        }
+                        Array.Copy(this.Buffer.Data, this.Buffer.ReadOffset, buffer, offset, count);
 
-                        this.Buffer.Read(len);
-
-                        return len;
+                        this.partialRead += count;
                     }
                 }
+                else {
+                    len = (int)this.PendingReads.Dequeue();
+                }
 
+                this.Buffer.Read(len);
+
+                return len;
+            }
+        }
+
+        public int Peek() {
+            while (!this.DataAvailable)
                 Thread.Sleep(10);
+
+            return (int)this.PendingReads.Peek();
+        }
+
+        public bool DataAvailable {
+            get {
+                lock (this.PendingReads)
+                    return this.PendingReads.Count != 0;
             }
         }
 
@@ -484,14 +481,21 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
             return result.Split(':') is var parts && parts[0] == "Http Server Status Code" ? int.Parse(parts[1]) : throw new Exception($"Request failed: {result}");
         }
 
-        public int ReadHttpResponse(byte[] buffer, int offset, int count) => this.activeHttpOperation != null ? this.activeHttpOperation.ReadBuffer(buffer, offset, count) : throw new InvalidOperationException();
-
-        public void FinishHttp() {
+        public int ReadHttpResponse(byte[] buffer, int offset, int count) {
             if (this.activeHttpOperation == null) throw new InvalidOperationException();
 
-            this.FinishOperation(this.activeHttpOperation);
+            while (!this.activeHttpOperation.DataAvailable)
+                Thread.Sleep(1);
 
-            this.activeHttpOperation = null;
+            var len = this.activeHttpOperation.ReadBuffer(buffer, offset, count);
+
+            if (len == 0) {
+                this.FinishOperation(this.activeHttpOperation);
+
+                this.activeHttpOperation = null;
+            }
+
+            return len;
         }
 
         public int OpenSocket(string host, int port, SPWF04SxConnectionyType connectionType, SPWF04SxConnectionSecurityType connectionSecurity, string commonName = null) {
