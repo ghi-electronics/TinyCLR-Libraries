@@ -117,7 +117,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
     public class Operation {
         public string[] Parameters = new string[16];
         public int ParamentCount;
-        public byte[] WriteHeader = new byte[512]; //TODO See what the max size is for this and if we can trim it
+        public byte[] WriteHeader = new byte[4];
         public int WriteHeaderLength;
         public byte[] WritePayload;
         public int WritePayloadOffset;
@@ -236,6 +236,8 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
             if (rawDataCount < 0) throw new ArgumentOutOfRangeException();
             if (rawData != null && rawDataOffset + rawDataCount > rawData.Length) throw new ArgumentOutOfRangeException();
 
+            this.EnsureWriteHeaderSize();
+
             var idx = 0;
 
             this.WriteHeader[idx++] = 0x00;
@@ -266,6 +268,19 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
             this.WriteHeaderLength = idx;
 
             return this;
+        }
+
+        private void EnsureWriteHeaderSize() {
+            var required = 4;
+
+            for (var i = 0; i < this.ParamentCount; i++) {
+                var p = this.Parameters[i];
+
+                required += p != null ? p.Length : 0;
+            }
+
+            if (required > this.WriteHeader.Length)
+                this.WriteHeader = new byte[(int)Math.Pow(2, Math.Ceiling(Math.Log(required) / 0.69314718055994529))]; //~0.69 = ln(2), for change of base from e to 2.
         }
     }
 
