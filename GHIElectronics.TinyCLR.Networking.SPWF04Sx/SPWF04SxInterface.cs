@@ -116,7 +116,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
     public class Operation {
         public string[] Parameters = new string[16];
         public int ParamentCount;
-        public byte[] WriteHeader = new byte[512];
+        public byte[] WriteHeader = new byte[512]; //TODO See what the max size is for this and if we can trim it
         public int WriteHeaderLength;
         public byte[] WritePayload;
         public int WritePayloadOffset;
@@ -126,6 +126,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
 
         public Queue PendingReads = new Queue();
 
+        //TODO Since requests can only ever be done sequentially, assign this buffer when making an op active. Can probably reuse the WIND buffer
         public Buffer Buffer;
 
         private int partialRead;
