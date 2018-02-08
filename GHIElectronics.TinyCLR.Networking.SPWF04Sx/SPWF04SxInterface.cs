@@ -11,7 +11,7 @@ using GHIElectronics.TinyCLR.Networking.SPWF04Sx.Helpers;
 
 namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
     public class SPWF04SxInterface : NetworkInterface, ISocket, IDns, IDisposable {
-        private readonly Pool commandPool;
+        private readonly ObjectPool commandPool;
         private readonly Hashtable netifSockets;
         private readonly Queue pendingCommands;
         private readonly ReadWriteBuffer readPayloadBuffer;
@@ -39,7 +39,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
         };
 
         public SPWF04SxInterface(SpiDevice spi, GpioPin irq, GpioPin reset) {
-            this.commandPool = new Pool(() => new SPWF04SxCommand());
+            this.commandPool = new ObjectPool(() => new SPWF04SxCommand());
             this.netifSockets = new Hashtable();
             this.pendingCommands = new Queue();
             this.readPayloadBuffer = new ReadWriteBuffer(32, 1500 + 512);

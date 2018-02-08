@@ -5,12 +5,12 @@ using System.Threading;
 namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx.Helpers {
     internal delegate object PoolObjectCreator();
 
-    internal class Pool {
+    internal class ObjectPool {
         private readonly ArrayList all = new ArrayList();
         private readonly Stack available = new Stack();
         private readonly PoolObjectCreator creator;
 
-        public Pool(PoolObjectCreator creator) => this.creator = creator;
+        public ObjectPool(PoolObjectCreator creator) => this.creator = creator;
 
         public object Acquire() {
             lock (this.available) {
