@@ -153,6 +153,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
         public int WritePayloadOffset;
         public int WritePayloadLength;
 
+        public ManualResetEvent WriteWait;
         public bool Written;
 
         public byte[] WriteHeader => this.writeHeader.Data;
@@ -164,8 +165,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
         private int partialRead;
 
         public string ReadString() {
-            while (!this.Written)
-                Thread.Sleep(1);
+            this.WriteWait.WaitOne();
 
             while (!this.DataAvailable)
                 Thread.Sleep(1);
@@ -184,8 +184,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
         public int ReadBuffer() => this.ReadBuffer(null, 0, 0);
 
         public int ReadBuffer(byte[] buffer, int offset, int count) {
-            while (!this.Written)
-                Thread.Sleep(1);
+            this.WriteWait.WaitOne();
 
             while (!this.DataAvailable)
                 Thread.Sleep(1);
@@ -264,6 +263,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
         }
 
         public void Reset() {
+            this.WriteWait.Reset();
             this.Written = false;
             this.ParamentCount = 0;
             this.WriteHeaderLength = 0;
