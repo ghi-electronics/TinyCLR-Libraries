@@ -10,7 +10,6 @@ using GHIElectronics.TinyCLR.Devices.Spi;
 
 namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
     public delegate object PoolObjectCreator();
-    public delegate void BufferWriter(byte[] buffer, int offset, int count);
 
     public class Pool {
         private readonly ArrayList all = new ArrayList();
@@ -182,23 +181,82 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
         }
     }
 
-    public class Command {
-        public string[] Parameters = new string[16];
-        public int ParamentCount;
-        public int WriteHeaderLength;
-        public byte[] WritePayload;
-        public int WritePayloadOffset;
-        public int WritePayloadLength;
-
-        public bool Sent;
-
-        public byte[] WriteHeader => this.writeHeader.Data;
-
-        private Queue pendingReads = new Queue();
-        private Semaphore pendingReadsSemaphore = new Semaphore();
-        private GrowableBuffer writeHeader = new GrowableBuffer(4, 512);
+    public class SPWF04SxCommand {
+        private readonly string[] parameters = new string[16];
+        private readonly Queue pendingReads = new Queue();
+        private readonly Semaphore pendingReadsSemaphore = new Semaphore();
+        private readonly GrowableBuffer writeHeader = new GrowableBuffer(4, 512);
         private ReadWriteBuffer readPayload;
+        private int parameterCount;
         private int partialRead;
+        private int writeHeaderLength;
+        private byte[] writePayload;
+        private int writePayloadOffset;
+        private int writePayloadLength;
+
+        internal SPWF04SxCommand() { }
+
+        internal delegate void DataReaderWriter(byte[] buffer, int offset, int count);
+
+        internal bool Sent { get; set; }
+        internal bool HasWritePayload => this.writePayloadLength > 0;
+
+        public SPWF04SxCommand AddParameter(string parameter) {
+            this.parameters[this.parameterCount++] = parameter;
+
+            return this;
+        }
+
+        public SPWF04SxCommand Finalize(SPWF04SxCommandIds cmdId) => this.Finalize(cmdId, null, 0, 0);
+
+        public SPWF04SxCommand Finalize(SPWF04SxCommandIds cmdId, byte[] rawData, int rawDataOffset, int rawDataCount) {
+            if (rawData == null && rawDataCount != 0) throw new ArgumentException();
+            if (rawDataOffset < 0) throw new ArgumentOutOfRangeException();
+            if (rawDataCount < 0) throw new ArgumentOutOfRangeException();
+            if (rawData != null && rawDataOffset + rawDataCount > rawData.Length) throw new ArgumentOutOfRangeException();
+
+            var required = 4 + this.parameterCount;
+
+            for (var i = 0; i < this.parameterCount; i++) {
+                var p = this.parameters[i];
+
+                required += p != null ? p.Length : 0;
+            }
+
+            this.writeHeader.EnsureSize(required, false);
+
+            var idx = 0;
+            var buf = this.writeHeader.Data;
+
+            buf[idx++] = 0x00;
+            buf[idx++] = 0x00;
+
+            buf[idx++] = (byte)cmdId;
+            buf[idx++] = (byte)this.parameterCount;
+
+            for (var i = 0; i < this.parameterCount; i++) {
+                var p = this.parameters[i];
+                var pLen = p != null ? p.Length : 0;
+
+                buf[idx++] = (byte)pLen;
+
+                if (!string.IsNullOrEmpty(p))
+                    Encoding.UTF8.GetBytes(p, 0, pLen, buf, idx);
+
+                idx += pLen;
+            }
+
+            var len = idx + rawDataCount - 2;
+            buf[0] = (byte)((len >> 8) & 0xFF);
+            buf[1] = (byte)((len >> 0) & 0xFF);
+
+            this.writePayload = rawData;
+            this.writePayloadOffset = rawDataOffset;
+            this.writePayloadLength = rawDataCount;
+            this.writeHeaderLength = idx;
+
+            return this;
+        }
 
         public string ReadString() {
             this.pendingReadsSemaphore.WaitOne();
@@ -250,7 +308,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
             }
         }
 
-        public void Write(BufferWriter writer, int count) {
+        internal void ReadPayload(DataReaderWriter reader, int count) {
             var remaining = count;
 
             while (remaining > 0) {
@@ -258,7 +316,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
 
                 var actual = Math.Min(remaining, this.readPayload.AvailableWrite);
 
-                writer(this.readPayload.Data, this.readPayload.WriteOffset, actual);
+                reader(this.readPayload.Data, this.readPayload.WriteOffset, actual);
 
                 this.readPayload.Write(actual);
 
@@ -271,78 +329,25 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
             }
         }
 
-        public Command AddParameter(string parameter) {
-            this.Parameters[this.ParamentCount++] = parameter;
-            return this;
-        }
+        internal void WriteHeader(DataReaderWriter reader) => reader(this.writeHeader.Data, 0, this.writeHeaderLength);
+        internal void WritePayload(DataReaderWriter reader) => reader(this.writePayload, this.writePayloadOffset, this.writePayloadLength);
 
-        public void Reset() {
+        internal void Reset() {
             lock (this.pendingReads)
                 if (!this.Sent || this.pendingReads.Count != 0)
                     throw new Exception("Not complete");
 
             this.Sent = false;
-            this.ParamentCount = 0;
-            this.WriteHeaderLength = 0;
-            this.WritePayloadOffset = 0;
-            this.WritePayloadLength = 0;
+            this.parameterCount = 0;
+            this.writeHeaderLength = 0;
+            this.writePayloadOffset = 0;
+            this.writePayloadLength = 0;
 
             this.readPayload.Reset();
             this.readPayload = null;
         }
 
-        public void SetActive(ReadWriteBuffer buffer) => this.readPayload = buffer;
-
-        public Command Finalize(SPWF04SxCommandIds cmdId) => this.Finalize(cmdId, null, 0, 0);
-
-        public Command Finalize(SPWF04SxCommandIds cmdId, byte[] rawData, int rawDataOffset, int rawDataCount) {
-            if (rawData == null && rawDataCount != 0) throw new ArgumentException();
-            if (rawDataOffset < 0) throw new ArgumentOutOfRangeException();
-            if (rawDataCount < 0) throw new ArgumentOutOfRangeException();
-            if (rawData != null && rawDataOffset + rawDataCount > rawData.Length) throw new ArgumentOutOfRangeException();
-
-            var required = 4 + this.ParamentCount;
-
-            for (var i = 0; i < this.ParamentCount; i++) {
-                var p = this.Parameters[i];
-
-                required += p != null ? p.Length : 0;
-            }
-
-            this.writeHeader.EnsureSize(required, false);
-
-            var idx = 0;
-            var buf = this.writeHeader.Data;
-
-            buf[idx++] = 0x00;
-            buf[idx++] = 0x00;
-
-            buf[idx++] = (byte)cmdId;
-            buf[idx++] = (byte)this.ParamentCount;
-
-            for (var i = 0; i < this.ParamentCount; i++) {
-                var p = this.Parameters[i];
-                var pLen = p != null ? p.Length : 0;
-
-                buf[idx++] = (byte)pLen;
-
-                if (!string.IsNullOrEmpty(p))
-                    Encoding.UTF8.GetBytes(p, 0, pLen, buf, idx);
-
-                idx += pLen;
-            }
-
-            var len = idx + rawDataCount - 2;
-            buf[0] = (byte)((len >> 8) & 0xFF);
-            buf[1] = (byte)((len >> 0) & 0xFF);
-
-            this.WritePayload = rawData;
-            this.WritePayloadOffset = rawDataOffset;
-            this.WritePayloadLength = rawDataCount;
-            this.WriteHeaderLength = idx;
-
-            return this;
-        }
+        internal void SetPayloadBuffer(ReadWriteBuffer buffer) => this.readPayload = buffer;
     }
 
     public class SPWF04SxInterface : NetworkInterface, ISocket, IDns, IDisposable {
@@ -357,8 +362,8 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
         private readonly SpiDevice spi;
         private readonly GpioPin irq;
         private readonly GpioPin reset;
-        private Command activeCommand;
-        private Command activeHttpCommand;
+        private SPWF04SxCommand activeCommand;
+        private SPWF04SxCommand activeHttpCommand;
         private Thread worker;
         private bool running;
         private int nextSocketId;
@@ -378,7 +383,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
         };
 
         public SPWF04SxInterface(SpiDevice spi, GpioPin irq, GpioPin reset) {
-            this.commandPool = new Pool(() => new Command());
+            this.commandPool = new Pool(() => new SPWF04SxCommand());
             this.netifSockets = new Hashtable();
             this.pendingCommands = new Queue();
             this.windPayloadBuffer = new GrowableBuffer(32, 1500 + 512);
@@ -450,9 +455,9 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
             this.commandPool.ResetAll();
         }
 
-        protected Command GetCommand() => (Command)this.commandPool.Acquire();
+        protected SPWF04SxCommand GetCommand() => (SPWF04SxCommand)this.commandPool.Acquire();
 
-        protected void EnqueueCommand(Command cmd) {
+        protected void EnqueueCommand(SPWF04SxCommand cmd) {
             lock (this.pendingCommands) {
                 this.pendingCommands.Enqueue(cmd);
 
@@ -460,7 +465,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
             }
         }
 
-        protected void FinishCommand(Command cmd) {
+        protected void FinishCommand(SPWF04SxCommand cmd) {
             if (this.activeCommand != cmd) throw new ArgumentException();
 
             lock (this.pendingCommands) {
@@ -475,8 +480,8 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
         private void ReadyNextCommand() {
             lock (this.pendingCommands) {
                 if (this.pendingCommands.Count != 0) {
-                    var cmd = (Command)this.pendingCommands.Dequeue();
-                    cmd.SetActive(this.readPayloadBuffer);
+                    var cmd = (SPWF04SxCommand)this.pendingCommands.Dequeue();
+                    cmd.SetPayloadBuffer(this.readPayloadBuffer);
                     this.activeCommand = cmd;
                 }
                 else {
@@ -776,13 +781,13 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
                     this.spi.TransferFullDuplex(this.syncWrite, this.syncRead);
 
                     if (!hasIrq && hasWrite && this.syncRead[0] != 0x02) {
-                        this.spi.Write(this.activeCommand.WriteHeader, 0, this.activeCommand.WriteHeaderLength);
+                        this.activeCommand.WriteHeader(this.spi.Write);
 
-                        if (this.activeCommand.WritePayloadLength > 0) {
+                        if (this.activeCommand.HasWritePayload) {
                             while (this.irq.Read() == GpioPinValue.High)
                                 Thread.Sleep(0);
 
-                            this.spi.Write(this.activeCommand.WritePayload, this.activeCommand.WritePayloadOffset, this.activeCommand.WritePayloadLength);
+                            this.activeCommand.WritePayload(this.spi.Write);
 
                             while (this.irq.Read() == GpioPinValue.Low)
                                 Thread.Sleep(0);
@@ -813,7 +818,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
                         else {
                             if (this.activeCommand == null || !this.activeCommand.Sent) throw new InvalidOperationException("Unexpected payload.");
 
-                            this.activeCommand.Write(this.spi.Read, payloadLength);
+                            this.activeCommand.ReadPayload(this.spi.Read, payloadLength);
                         }
                     }
                 }
