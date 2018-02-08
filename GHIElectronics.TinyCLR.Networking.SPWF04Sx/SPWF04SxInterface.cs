@@ -216,7 +216,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
             return (int)this.PendingReads.Peek();
         }
 
-        public bool DataAvailable {
+        private bool DataAvailable {
             get {
                 lock (this.PendingReads)
                     return this.PendingReads.Count != 0;
@@ -548,9 +548,6 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
 
         public int ReadHttpResponse(byte[] buffer, int offset, int count) {
             if (this.activeHttpCommand == null) throw new InvalidOperationException();
-
-            while (!this.activeHttpCommand.DataAvailable)
-                Thread.Sleep(1);
 
             var len = this.activeHttpCommand.ReadBuffer(buffer, offset, count);
 
