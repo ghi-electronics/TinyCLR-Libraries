@@ -133,17 +133,6 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
         }
     }
 
-    public class OperationPool : Pool {
-        public OperationPool() : base(() => new Command()) { }
-
-        public new Command Acquire() => (Command)base.Acquire();
-
-        public override void Release(object obj) {
-            ((Command)obj).Reset();
-            base.Release(obj);
-        }
-    }
-
     //TODO Switch to semaphore/mutex/whatever instead of spin waiting, possibly timeout too. Check all Thread.Sleep and while loops.
     public class Command {
         public string[] Parameters = new string[16];
@@ -331,7 +320,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
     }
 
     public class SPWF04SxInterface : NetworkInterface, ISocket, IDns, IDisposable {
-        private readonly OperationPool operationPool;
+        private readonly Pool commandPool;
         private readonly Hashtable netifSockets;
         private readonly Queue pendingCommands;
         private readonly GrowableBuffer windPayloadBuffer;
@@ -363,7 +352,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
         };
 
         public SPWF04SxInterface(SpiDevice spi, GpioPin irq, GpioPin reset) {
-            this.operationPool = new OperationPool();
+            this.commandPool = new Pool(() => new Command());
             this.netifSockets = new Hashtable();
             this.pendingCommands = new Queue();
             this.windPayloadBuffer = new GrowableBuffer(32, 1500 + 512);
@@ -432,10 +421,10 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
             this.activeCommand = null;
             this.activeHttpCommand = null;
 
-            this.operationPool.ResetAll();
+            this.commandPool.ResetAll();
         }
 
-        protected Command GetCommand() => this.operationPool.Acquire();
+        protected Command GetCommand() => (Command)this.commandPool.Acquire();
 
         protected void EnqueueCommand(Command cmd) {
             lock (this.pendingCommands) {
@@ -449,7 +438,9 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
             if (this.activeCommand != cmd || !this.activeCommand.Sent) throw new ArgumentException();
 
             lock (this.pendingCommands) {
-                this.operationPool.Release(cmd);
+                cmd.Reset();
+
+                this.commandPool.Release(cmd);
 
                 this.ReadyNextCommand();
             }
