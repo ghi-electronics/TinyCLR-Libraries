@@ -484,15 +484,14 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
             return result.Split(':') is var parts && parts[0] == "Http Server Status Code" ? int.Parse(parts[1]) : throw new Exception($"Request failed: {result}");
         }
 
-        public int ReadHttpResponse(byte[] buffer, int offset, int count) {
-            var read = this.activeHttpOperation.ReadBuffer(buffer, offset, count);
+        public int ReadHttpResponse(byte[] buffer, int offset, int count) => this.activeHttpOperation != null ? this.activeHttpOperation.ReadBuffer(buffer, offset, count) : throw new InvalidOperationException();
 
-            if (read == 0) {
-                this.FinishOperation(this.activeHttpOperation);
-                this.activeHttpOperation = null;
-            }
+        public void FinishHttp() {
+            if (this.activeHttpOperation == null) throw new InvalidOperationException();
 
-            return read;
+            this.FinishOperation(this.activeHttpOperation);
+
+            this.activeHttpOperation = null;
         }
 
         public int OpenSocket(string host, int port, SPWF04SxConnectionyType connectionType, SPWF04SxConnectionSecurityType connectionSecurity, string commonName = null) {
