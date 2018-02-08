@@ -88,6 +88,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
     }
 
     public class ReadWriteBuffer {
+        private readonly ManualResetEvent writeWaiter = new ManualResetEvent(false);
         private GrowableBuffer buffer;
 
         public byte[] Data => this.buffer.Data;
@@ -109,18 +110,23 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
                     if (this.AvailableWrite < desired)
                         this.buffer.TryGrow(this.nextRead != 0 || this.nextWrite != 0, desired + this.nextWrite);
 
-                    if (this.AvailableWrite != 0)
+                    if (this.AvailableWrite != 0) {
+                        this.writeWaiter.Reset();
+
                         return;
+                    }
 
                     if (this.nextRead != 0) {
                         Array.Copy(this.buffer.Data, this.nextRead, this.buffer.Data, 0, this.nextWrite - this.nextRead);
 
                         this.nextWrite -= this.nextRead;
                         this.nextRead = 0;
+
+                        continue;
                     }
                 }
 
-                Thread.Sleep(10);
+                this.writeWaiter.WaitOne();
             }
         }
 
@@ -130,11 +136,14 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
         }
 
         public void Read(int count) {
-            lock (this)
+            lock (this) {
                 this.nextRead += count;
+                this.writeWaiter.Set();
+            }
         }
 
         public void Reset() {
+            this.writeWaiter.Reset();
             this.nextWrite = 0;
             this.nextRead = 0;
         }
@@ -173,7 +182,6 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
         }
     }
 
-    //TODO Switch to semaphore/mutex/whatever instead of spin waiting, possibly timeout too. Check all Thread.Sleep and while loops.
     public class Command {
         public string[] Parameters = new string[16];
         public int ParamentCount;
@@ -818,7 +826,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
                     }
                 }
 
-                Thread.Sleep(1);
+                Thread.Sleep(0);
             }
         }
 
