@@ -357,9 +357,6 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
         private readonly Hashtable netifSockets;
         private readonly Queue pendingCommands;
         private readonly ReadWriteBuffer readPayloadBuffer;
-        private readonly byte[] readHeaderBuffer;
-        private readonly byte[] syncRead;
-        private readonly byte[] syncWrite;
         private readonly SpiDevice spi;
         private readonly GpioPin irq;
         private readonly GpioPin reset;
@@ -388,9 +385,6 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
             this.netifSockets = new Hashtable();
             this.pendingCommands = new Queue();
             this.readPayloadBuffer = new ReadWriteBuffer(32, 1500 + 512);
-            this.readHeaderBuffer = new byte[4];
-            this.syncRead = new byte[1];
-            this.syncWrite = new byte[1];
             this.spi = spi;
             this.irq = irq;
             this.reset = reset;
@@ -771,17 +765,20 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
         private void Process() {
             var pendingEvents = new Queue();
             var windPayloadBuffer = new GrowableBuffer(32, 1500 + 512);
+            var readHeaderBuffer = new byte[4];
+            var syncRead = new byte[1];
+            var syncWrite = new byte[1];
 
             while (this.running) {
                 var hasWrite = this.activeCommand != null && !this.activeCommand.Sent;
                 var hasIrq = this.irq.Read() == GpioPinValue.Low;
 
                 if (hasIrq || hasWrite) {
-                    this.syncWrite[0] = (byte)(!hasIrq && hasWrite ? 0x02 : 0x00);
+                    syncWrite[0] = (byte)(!hasIrq && hasWrite ? 0x02 : 0x00);
 
-                    this.spi.TransferFullDuplex(this.syncWrite, this.syncRead);
+                    this.spi.TransferFullDuplex(syncWrite, syncRead);
 
-                    if (!hasIrq && hasWrite && this.syncRead[0] != 0x02) {
+                    if (!hasIrq && hasWrite && syncRead[0] != 0x02) {
                         this.activeCommand.WriteHeader(this.spi.Write);
 
                         if (this.activeCommand.HasWritePayload) {
@@ -796,12 +793,12 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
 
                         this.activeCommand.Sent = true;
                     }
-                    else if (this.syncRead[0] == 0x02) {
-                        this.spi.Read(this.readHeaderBuffer);
+                    else if (syncRead[0] == 0x02) {
+                        this.spi.Read(readHeaderBuffer);
 
-                        var status = this.readHeaderBuffer[0];
-                        var ind = this.readHeaderBuffer[1];
-                        var payloadLength = (this.readHeaderBuffer[3] << 8) | this.readHeaderBuffer[2];
+                        var status = readHeaderBuffer[0];
+                        var ind = readHeaderBuffer[1];
+                        var payloadLength = (readHeaderBuffer[3] << 8) | readHeaderBuffer[2];
                         var type = (status & 0b1111_0000) >> 4;
 
                         this.State = (SPWF04SxWiFiState)(status & 0b0000_1111);
