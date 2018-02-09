@@ -1,10 +1,14 @@
 ﻿namespace GHIElectronics.TinyCLR.Devices.Display {
+    public enum DisplayType {
+        Parallel = 0,
+    }
+
     public class DisplayControllerSettings {
         public uint Width { get; set; }
         public uint Height { get; set; }
     }
 
-    public class LcdControllerSettings : DisplayControllerSettings {
+    public class ParallelDisplayControllerSettings : DisplayControllerSettings {
         public bool OutputEnableIsFixed { get; set; }
         public bool OutputEnablePolarity { get; set; }
         public bool PixelPolarity { get; set; }

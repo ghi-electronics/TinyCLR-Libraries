@@ -10,6 +10,7 @@ namespace GHIElectronics.TinyCLR.Devices.Display.Provider {
 
     public interface IDisplayControllerProvider {
         IntPtr Hdc { get; }
+        DisplayType Type { get; }
 
         void ApplySettings(DisplayControllerSettings settings);
     }
@@ -51,23 +52,24 @@ namespace GHIElectronics.TinyCLR.Devices.Display.Provider {
 
         internal DefaultDisplayControllerProvider(IntPtr nativeProvider) => this.nativeProvider = nativeProvider;
 
-        public IntPtr Hdc { get; private set; }
+        public IntPtr Hdc => this.nativeProvider;
+
+        public extern DisplayType Type {
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            get;
+        }
 
         public void ApplySettings(DisplayControllerSettings settings) {
-            if (settings is LcdControllerSettings config) {
-                if (this.NativeSetLcdConfiguration(config.Width, config.Height, config.OutputEnableIsFixed, config.OutputEnablePolarity, config.PixelPolarity, config.PixelClockRate, config.HorizontalSyncPolarity, config.HorizontalSyncPulseWidth, config.HorizontalFrontPorch, config.HorizontalBackPorch, config.VerticalSyncPolarity, config.VerticalSyncPulseWidth, config.VerticalFrontPorch, config.VerticalBackPorch, out var hdc)) {
-                    this.Hdc = hdc;
-                }
-                else {
+            if (settings is ParallelDisplayControllerSettings config) {
+                if (!this.NativeSetParallelConfiguration(config.Width, config.Height, config.OutputEnableIsFixed, config.OutputEnablePolarity, config.PixelPolarity, config.PixelClockRate, config.HorizontalSyncPolarity, config.HorizontalSyncPulseWidth, config.HorizontalFrontPorch, config.HorizontalBackPorch, config.VerticalSyncPolarity, config.VerticalSyncPulseWidth, config.VerticalFrontPorch, config.VerticalBackPorch))
                     throw new InvalidOperationException("Invalid settings passed.");
-                }
             }
             else {
-                throw new ArgumentException($"Must pass an instance of {nameof(LcdControllerSettings)}.");
+                throw new ArgumentException($"Must pass an instance of {nameof(ParallelDisplayControllerSettings)}.");
             }
         }
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private extern bool NativeSetLcdConfiguration(uint width, uint height, bool outputEnableIsFixed, bool outputEnablePolarity, bool pixelPolarity, uint pixelClockRate, bool horizontalSyncPolarity, uint horizontalSyncPulseWidth, uint horizontalFrontPorch, uint horizontalBackPorch, bool verticalSyncPolarity, uint verticalSyncPulseWidth, uint verticalFrontPorch, uint verticalBackPorch, out IntPtr hdc);
+        private extern bool NativeSetParallelConfiguration(uint width, uint height, bool outputEnableIsFixed, bool outputEnablePolarity, bool pixelPolarity, uint pixelClockRate, bool horizontalSyncPolarity, uint horizontalSyncPulseWidth, uint horizontalFrontPorch, uint horizontalBackPorch, bool verticalSyncPolarity, uint verticalSyncPulseWidth, uint verticalFrontPorch, uint verticalBackPorch);
     }
 }

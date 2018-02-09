@@ -23,5 +23,6 @@ namespace GHIElectronics.TinyCLR.Devices.Display {
         public void ApplySettings(DisplayControllerSettings settings) => this.provider.ApplySettings(settings);
 
         public IntPtr Hdc => this.provider.Hdc;
+        public DisplayType Type => this.provider.Type;
     }
 }
