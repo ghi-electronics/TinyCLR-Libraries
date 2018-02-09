@@ -2,9 +2,6 @@ using System.Runtime.CompilerServices;
 
 namespace System.Drawing {
     public sealed class Graphics : MarshalByRefObject, IDisposable {
-        private static bool screenCreated;
-        private static object screenLock = new object();
-
         internal int Width => this.surface.Width;
         internal int Height => this.surface.Height;
 
@@ -50,14 +47,7 @@ namespace System.Drawing {
 
             if (!res || width == 0 || height == 0) throw new InvalidOperationException("No screen configured.");
 
-            lock (Graphics.screenLock) {
-                if (Graphics.screenCreated)
-                    throw new InvalidOperationException("Graphics already created for screen.");
-
-                Graphics.screenCreated = true;
-
-                return new Graphics(width, height, hdc);
-            }
+            return new Graphics(width, height, hdc);
         }
 
         public static Graphics FromImage(Image image) => image.data;
