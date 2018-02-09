@@ -13,6 +13,7 @@ namespace GHIElectronics.TinyCLR.Devices.Display.Provider {
         DisplayType Type { get; }
 
         void ApplySettings(DisplayControllerSettings settings);
+        void WriteString(string str);
     }
 
     public class DisplayProvider : IDisplayProvider {
@@ -68,6 +69,9 @@ namespace GHIElectronics.TinyCLR.Devices.Display.Provider {
                 throw new ArgumentException($"Must pass an instance of {nameof(ParallelDisplayControllerSettings)}.");
             }
         }
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        public extern void WriteString(string str);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private extern bool NativeSetParallelConfiguration(uint width, uint height, bool outputEnableIsFixed, bool outputEnablePolarity, bool pixelPolarity, uint pixelClockRate, bool horizontalSyncPolarity, uint horizontalSyncPulseWidth, uint horizontalFrontPorch, uint horizontalBackPorch, bool verticalSyncPolarity, uint verticalSyncPulseWidth, uint verticalFrontPorch, uint verticalBackPorch);
