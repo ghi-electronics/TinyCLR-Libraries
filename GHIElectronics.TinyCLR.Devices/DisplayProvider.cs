@@ -10,7 +10,8 @@ namespace GHIElectronics.TinyCLR.Devices.Display.Provider {
 
     public interface IDisplayControllerProvider {
         IntPtr Hdc { get; }
-        DisplayType Type { get; }
+        DisplayInterface Interface { get; }
+        DisplayDataFormat[] SupportedDataFormats { get; }
 
         void ApplySettings(DisplayControllerSettings settings);
         void WriteString(string str);
@@ -55,14 +56,19 @@ namespace GHIElectronics.TinyCLR.Devices.Display.Provider {
 
         public IntPtr Hdc => this.nativeProvider;
 
-        public extern DisplayType Type {
+        public extern DisplayInterface Interface {
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            get;
+        }
+
+        public extern DisplayDataFormat[] SupportedDataFormats {
             [MethodImpl(MethodImplOptions.InternalCall)]
             get;
         }
 
         public void ApplySettings(DisplayControllerSettings settings) {
             if (settings is ParallelDisplayControllerSettings config) {
-                if (!this.NativeSetParallelConfiguration(config.Width, config.Height, config.OutputEnableIsFixed, config.OutputEnablePolarity, config.PixelPolarity, config.PixelClockRate, config.HorizontalSyncPolarity, config.HorizontalSyncPulseWidth, config.HorizontalFrontPorch, config.HorizontalBackPorch, config.VerticalSyncPolarity, config.VerticalSyncPulseWidth, config.VerticalFrontPorch, config.VerticalBackPorch))
+                if (!this.NativeSetParallelConfiguration(config.Width, config.Height, config.DataFormat, config.OutputEnableIsFixed, config.OutputEnablePolarity, config.PixelPolarity, config.PixelClockRate, config.HorizontalSyncPolarity, config.HorizontalSyncPulseWidth, config.HorizontalFrontPorch, config.HorizontalBackPorch, config.VerticalSyncPolarity, config.VerticalSyncPulseWidth, config.VerticalFrontPorch, config.VerticalBackPorch))
                     throw new InvalidOperationException("Invalid settings passed.");
             }
             else {
@@ -74,6 +80,6 @@ namespace GHIElectronics.TinyCLR.Devices.Display.Provider {
         public extern void WriteString(string str);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private extern bool NativeSetParallelConfiguration(uint width, uint height, bool outputEnableIsFixed, bool outputEnablePolarity, bool pixelPolarity, uint pixelClockRate, bool horizontalSyncPolarity, uint horizontalSyncPulseWidth, uint horizontalFrontPorch, uint horizontalBackPorch, bool verticalSyncPolarity, uint verticalSyncPulseWidth, uint verticalFrontPorch, uint verticalBackPorch);
+        private extern bool NativeSetParallelConfiguration(uint width, uint height, DisplayDataFormat dataFormat, bool outputEnableIsFixed, bool outputEnablePolarity, bool pixelPolarity, uint pixelClockRate, bool horizontalSyncPolarity, uint horizontalSyncPulseWidth, uint horizontalFrontPorch, uint horizontalBackPorch, bool verticalSyncPolarity, uint verticalSyncPulseWidth, uint verticalFrontPorch, uint verticalBackPorch);
     }
 }

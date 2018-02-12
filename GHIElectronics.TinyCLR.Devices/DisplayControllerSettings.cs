@@ -1,11 +1,16 @@
 ﻿namespace GHIElectronics.TinyCLR.Devices.Display {
-    public enum DisplayType {
+    public enum DisplayInterface {
         Parallel = 0,
+    }
+
+    public enum DisplayDataFormat {
+        Rgb565 = 0,
     }
 
     public class DisplayControllerSettings {
         public uint Width { get; set; }
         public uint Height { get; set; }
+        public DisplayDataFormat DataFormat { get; set; }
     }
 
     public class ParallelDisplayControllerSettings : DisplayControllerSettings {

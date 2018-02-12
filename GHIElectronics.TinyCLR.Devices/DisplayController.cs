@@ -24,6 +24,7 @@ namespace GHIElectronics.TinyCLR.Devices.Display {
         public void WriteString(string str) => this.provider.WriteString(str);
 
         public IntPtr Hdc => this.provider.Hdc;
-        public DisplayType Type => this.provider.Type;
+        public DisplayInterface Interface => this.provider.Interface;
+        public DisplayDataFormat[] SupportedDataFormats => this.provider.SupportedDataFormats;
     }
 }
