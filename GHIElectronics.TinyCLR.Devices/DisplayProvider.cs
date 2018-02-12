@@ -67,12 +67,16 @@ namespace GHIElectronics.TinyCLR.Devices.Display.Provider {
         }
 
         public void ApplySettings(DisplayControllerSettings settings) {
-            if (settings is ParallelDisplayControllerSettings config) {
-                if (!this.NativeSetParallelConfiguration(config.Width, config.Height, config.DataFormat, config.OutputEnableIsFixed, config.OutputEnablePolarity, config.PixelPolarity, config.PixelClockRate, config.HorizontalSyncPolarity, config.HorizontalSyncPulseWidth, config.HorizontalFrontPorch, config.HorizontalBackPorch, config.VerticalSyncPolarity, config.VerticalSyncPulseWidth, config.VerticalFrontPorch, config.VerticalBackPorch))
+            if (this.Interface == DisplayInterface.Parallel && settings is ParallelDisplayControllerSettings pcfg) {
+                if (!this.SetParallelConfiguration(pcfg.Width, pcfg.Height, pcfg.DataFormat, pcfg.OutputEnableIsFixed, pcfg.OutputEnablePolarity, pcfg.PixelPolarity, pcfg.PixelClockRate, pcfg.HorizontalSyncPolarity, pcfg.HorizontalSyncPulseWidth, pcfg.HorizontalFrontPorch, pcfg.HorizontalBackPorch, pcfg.VerticalSyncPolarity, pcfg.VerticalSyncPulseWidth, pcfg.VerticalFrontPorch, pcfg.VerticalBackPorch))
+                    throw new InvalidOperationException("Invalid settings passed.");
+            }
+            else if (this.Interface == DisplayInterface.Spi && settings is SpiDisplayControllerSettings scfg) {
+                if (!this.SetSpiConfiguration(scfg.Width, scfg.Height, scfg.DataFormat, scfg.SpiSelector))
                     throw new InvalidOperationException("Invalid settings passed.");
             }
             else {
-                throw new ArgumentException($"Must pass an instance of {nameof(ParallelDisplayControllerSettings)}.");
+                throw new ArgumentException($"Must pass an instance whose type matches the interface type.");
             }
         }
 
@@ -80,6 +84,9 @@ namespace GHIElectronics.TinyCLR.Devices.Display.Provider {
         public extern void WriteString(string str);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private extern bool NativeSetParallelConfiguration(uint width, uint height, DisplayDataFormat dataFormat, bool outputEnableIsFixed, bool outputEnablePolarity, bool pixelPolarity, uint pixelClockRate, bool horizontalSyncPolarity, uint horizontalSyncPulseWidth, uint horizontalFrontPorch, uint horizontalBackPorch, bool verticalSyncPolarity, uint verticalSyncPulseWidth, uint verticalFrontPorch, uint verticalBackPorch);
+        private extern bool SetParallelConfiguration(uint width, uint height, DisplayDataFormat dataFormat, bool outputEnableIsFixed, bool outputEnablePolarity, bool pixelPolarity, uint pixelClockRate, bool horizontalSyncPolarity, uint horizontalSyncPulseWidth, uint horizontalFrontPorch, uint horizontalBackPorch, bool verticalSyncPolarity, uint verticalSyncPulseWidth, uint verticalFrontPorch, uint verticalBackPorch);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private extern bool SetSpiConfiguration(uint width, uint height, DisplayDataFormat dataFormat, string spiSelector);
     }
 }

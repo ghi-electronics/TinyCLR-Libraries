@@ -1,6 +1,7 @@
 ﻿namespace GHIElectronics.TinyCLR.Devices.Display {
     public enum DisplayInterface {
         Parallel = 0,
+        Spi = 1,
     }
 
     public enum DisplayDataFormat {
@@ -26,5 +27,9 @@
         public uint VerticalSyncPulseWidth { get; set; }
         public uint VerticalFrontPorch { get; set; }
         public uint VerticalBackPorch { get; set; }
+    }
+
+    public class SpiDisplayControllerSettings : DisplayControllerSettings {
+        public string SpiSelector { get; set; }
     }
 }
