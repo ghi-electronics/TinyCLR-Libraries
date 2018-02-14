@@ -47,6 +47,9 @@ namespace System.Reflection {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
             get;
         }
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        public extern ParameterInfo[] GetParameters();
     }
 }
 

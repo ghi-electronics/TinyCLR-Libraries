@@ -115,6 +115,7 @@
     <Compile Include="Int16.cs" />
     <Compile Include="Int32.cs" />
     <Compile Include="Int64.cs" />
+    <Compile Include="Reflection\ParameterInfo.cs" />
     <Compile Include="Runtime\InteropServices\Api.cs" />
     <Compile Include="Runtime\InteropServices\DeviceInformation.cs" />
     <Compile Include="Runtime\InteropServices\NativeEventDispatcher.cs" />
