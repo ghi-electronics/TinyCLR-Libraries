@@ -72,16 +72,16 @@ namespace System.IO
          * @see #getExtension
          * @see #hasExtension
          */
-        public static String ChangeExtension(String path, String extension)
+        public static string ChangeExtension(string path, string extension)
         {
             if (path != null)
             {
                 CheckInvalidPathChars(path);
 
-                String s = path;
-                for (int i = path.Length; --i >= 0; )
+                var s = path;
+                for (var i = path.Length; --i >= 0; )
                 {
-                    char ch = path[i];
+                    var ch = path[i];
                     if (ch == '.')
                     {
                         s = path.Substring(0, i);
@@ -124,15 +124,15 @@ namespace System.IO
        * @see #GetRoot
        * @see #IsRooted
        */
-        public static String GetDirectoryName(String path)
+        public static string GetDirectoryName(string path)
         {
             if (path != null)
             {
                 NormalizePath(path, false);
 
-                int root = GetRootLength(path);
+                var root = GetRootLength(path);
 
-                int i = path.Length;
+                var i = path.Length;
                 if (i > root)
                 {
                     i = path.Length;
@@ -151,12 +151,12 @@ namespace System.IO
          *
          * @internalonly
          */
-        internal static int GetRootLength(String path)
+        internal static int GetRootLength(string path)
         {
             CheckInvalidPathChars(path);
 
-            int i = 0;
-            int length = path.Length;
+            var i = 0;
+            var length = path.Length;
             if (length >= 1 && (IsDirectorySeparator(path[0])))
             {
                 // handles UNC names and directories off current drive's root.
@@ -164,7 +164,7 @@ namespace System.IO
                 if (length >= 2 && (IsDirectorySeparator(path[1])))
                 {
                     i = 2;
-                    int n = 2;
+                    var n = 2;
                     while (i < length && ((path[i] != DirectorySeparatorChar || --n > 0))) i++;
                 }
             }
@@ -172,23 +172,17 @@ namespace System.IO
             return i;
         }
 
-        internal static bool IsDirectorySeparator(char c)
-        {
-            return c == DirectorySeparatorChar;
-        }
+        internal static bool IsDirectorySeparator(char c) => c == DirectorySeparatorChar;
 
-        public static char[] GetInvalidPathChars()
-        {
-            return (char[])InvalidPathChars.Clone();
-        }
+        public static char[] GetInvalidPathChars() => (char[])InvalidPathChars.Clone();
 
-        public static String GetFullPath(String path)
+        public static string GetFullPath(string path)
         {
             ValidateNullOrEmpty(path);
 
             if (!Path.IsPathRooted(path))
             {
-                string currDir = Directory.GetCurrentDirectory();
+                var currDir = Directory.GetCurrentDirectory();
                 path = Path.Combine(currDir, path);
             }
 
@@ -211,16 +205,16 @@ namespace System.IO
          * @see #GetRoot
          * @see #HasExtension
          */
-        public static String GetExtension(String path)
+        public static string GetExtension(string path)
         {
             if (path == null)
                 return null;
 
             CheckInvalidPathChars(path);
-            int length = path.Length;
-            for (int i = length; --i >= 0; )
+            var length = path.Length;
+            for (var i = length; --i >= 0; )
             {
-                char ch = path[i];
+                var ch = path[i];
                 if (ch == '.')
                 {
                     if (i != length - 1)
@@ -251,16 +245,16 @@ namespace System.IO
          * @see #GetExtension
          * @see #GetRoot
          */
-        public static String GetFileName(String path)
+        public static string GetFileName(string path)
         {
             if (path != null)
             {
                 CheckInvalidPathChars(path);
 
-                int length = path.Length;
-                for (int i = length; --i >= 0; )
+                var length = path.Length;
+                for (var i = length; --i >= 0; )
                 {
-                    char ch = path[i];
+                    var ch = path[i];
                     if (ch == DirectorySeparatorChar)
                         return path.Substring(i + 1, length - i - 1);
 
@@ -270,7 +264,7 @@ namespace System.IO
             return path;
         }
 
-        public static String GetFileNameWithoutExtension(String path)
+        public static string GetFileNameWithoutExtension(string path)
         {
             path = GetFileName(path);
             if (path != null)
@@ -303,7 +297,7 @@ namespace System.IO
          * @see #GetName
          * @see #IsRooted
          */
-        public static String GetPathRoot(String path)
+        public static string GetPathRoot(string path)
         {
             if (path == null) return null;
             return path.Substring(0, GetRootLength(path));
@@ -321,15 +315,15 @@ namespace System.IO
         * @see #ChangeExtension
         * @see #GetExtension
         */
-        public static bool HasExtension(String path)
+        public static bool HasExtension(string path)
         {
             if (path != null)
             {
                 CheckInvalidPathChars(path);
 
-                for (int i = path.Length; --i >= 0; )
+                for (var i = path.Length; --i >= 0; )
                 {
-                    char ch = path[i];
+                    var ch = path[i];
                     if (ch == '.')
                     {
                         if (i != path.Length - 1)
@@ -354,13 +348,13 @@ namespace System.IO
          * @exception ArgumentException if <var>path</var> contains invalid characters.
          * @see #GetRoot
          */
-        public static bool IsPathRooted(String path)
+        public static bool IsPathRooted(string path)
         {
             if (path != null)
             {
                 CheckInvalidPathChars(path);
 
-                int length = path.Length;
+                var length = path.Length;
                 if (length >= 1 && (path[0] == DirectorySeparatorChar))
                     return true;
             }
@@ -368,7 +362,7 @@ namespace System.IO
             return false;
         }
 
-        public static String Combine(String path1, String path2)
+        public static string Combine(string path1, string path2)
         {
             if (path1 == null || path2 == null)
                 throw new ArgumentNullException(/*(path1==null) ? "path1" : "path2"*/);
@@ -384,7 +378,7 @@ namespace System.IO
             if (IsPathRooted(path2))
                 return path2;
 
-            char ch = path1[path1.Length - 1];
+            var ch = path1[path1.Length - 1];
             if (ch != DirectorySeparatorChar)
                 return path1 + DirectorySeparatorChar + path2;
             return path1 + path2;
@@ -392,7 +386,7 @@ namespace System.IO
 
         //--//
 
-        internal static void CheckInvalidPathChars(String path)
+        internal static void CheckInvalidPathChars(string path)
         {
             if (-1 != path.IndexOfAny(InvalidPathChars))
                 throw new ArgumentException(/*Environment.GetResourceString("Argument_InvalidPathChars")*/);
@@ -416,17 +410,17 @@ namespace System.IO
         {
             ValidateNullOrEmpty(path);
 
-            int pathLength = path.Length;
+            var pathLength = path.Length;
 
-            int i = 0;
+            var i = 0;
             for (i = 0; i < pathLength; i++)
             {
                 if (path[i] != '\\')
                     break;
             }
 
-            bool rootedPath = false;
-            bool serverPath = false;
+            var rootedPath = false;
+            var serverPath = false;
             /// Handle some of the special cases.
             /// 1. Root (\)
             /// 2. Server (\\server).
@@ -446,7 +440,7 @@ namespace System.IO
 
             if (rootedPath)
             {
-                int limit = i + NativeIO.FSNameMaxLength;
+                var limit = i + NativeIO.FSNameMaxLength;
                 for (; i < limit && i < pathLength; i++)
                 {
                     if (path[i] == '\\')
@@ -472,13 +466,13 @@ namespace System.IO
                 }
             }
 
-            string[] pathParts = path.Split(DirectorySeparatorChar);
+            var pathParts = path.Split(DirectorySeparatorChar);
             if (pattern && (pathParts.Length > 1))
                 throw new ArgumentException();
 
-            ArrayList finalPathSegments = new ArrayList();
+            var finalPathSegments = new ArrayList();
             int pathPartLen;
-            for (int e = 0; e < pathParts.Length; e++)
+            for (var e = 0; e < pathParts.Length; e++)
             {
                 pathPartLen = pathParts[e].Length;
                 if (pathPartLen == 0)
@@ -503,8 +497,8 @@ namespace System.IO
                 /// verify whether pathParts[e] is all '.'s. If it is
                 /// we have some special cases. Also path with both dots
                 /// and spaces only are invalid.
-                int length = pathParts[e].Length;
-                bool spaceFound = false;
+                var length = pathParts[e].Length;
+                var spaceFound = false;
 
                 for (i = 0; i < length; i++)
                 {
@@ -548,7 +542,7 @@ namespace System.IO
                 }
                 else
                 {
-                    int trim = length - 1;
+                    var trim = length - 1;
                     while (pathParts[e][trim] == ' ' || pathParts[e][trim] == '.')
                     {
                         trim--;
@@ -558,7 +552,7 @@ namespace System.IO
                 }
             }
 
-            string normalizedPath = "";
+            var normalizedPath = "";
 
             if (rootedPath)
             {
@@ -573,8 +567,8 @@ namespace System.IO
                     throw new ArgumentException();
             }
 
-            bool firstSegment = true;
-            for (int e = 0; e < finalPathSegments.Count; e++)
+            var firstSegment = true;
+            for (var e = 0; e < finalPathSegments.Count; e++)
             {
                 if (!firstSegment)
                 {

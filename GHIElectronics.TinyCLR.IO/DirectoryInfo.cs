@@ -17,22 +17,16 @@ namespace System.IO
         {
             // path validation in Path.GetFullPath()
 
-            m_fullPath = Path.GetFullPath(path);
+            this.m_fullPath = Path.GetFullPath(path);
         }
 
-        public override string Name
-        {
-            get
-            {
-                return Path.GetFileName(m_fullPath);
-            }
-        }
+        public override string Name => Path.GetFileName(this.m_fullPath);
 
         public DirectoryInfo Parent
         {
             get
             {
-                string parentDirPath = Path.GetDirectoryName(m_fullPath);
+                var parentDirPath = Path.GetDirectoryName(this.m_fullPath);
                 if (parentDirPath == null)
                     return null;
 
@@ -44,7 +38,7 @@ namespace System.IO
         {
             // path validatation in Path.Combine()
 
-            string subDirPath = Path.Combine(m_fullPath, path);
+            var subDirPath = Path.Combine(this.m_fullPath, path);
 
             /// This will also ensure "path" is valid.
             subDirPath = Path.GetFullPath(subDirPath);
@@ -52,26 +46,17 @@ namespace System.IO
             return Directory.CreateDirectory(subDirPath);
         }
 
-        public void Create()
-        {
-            Directory.CreateDirectory(m_fullPath);
-        }
+        public void Create() => Directory.CreateDirectory(this.m_fullPath);
 
-        public override bool Exists
-        {
-            get
-            {
-                return Directory.Exists(m_fullPath);
-            }
-        }
+        public override bool Exists => Directory.Exists(this.m_fullPath);
 
         public FileInfo[] GetFiles()
         {
-            string[] fileNames = Directory.GetFiles(m_fullPath);
+            var fileNames = Directory.GetFiles(this.m_fullPath);
 
-            FileInfo[] files = new FileInfo[fileNames.Length];
+            var files = new FileInfo[fileNames.Length];
 
-            for (int i = 0; i < fileNames.Length; i++)
+            for (var i = 0; i < fileNames.Length; i++)
             {
                 files[i] = new FileInfo(fileNames[i]);
             }
@@ -83,11 +68,11 @@ namespace System.IO
         {
             // searchPattern validation in Directory.GetDirectories()
 
-            string[] dirNames = Directory.GetDirectories(m_fullPath);
+            var dirNames = Directory.GetDirectories(this.m_fullPath);
 
-            DirectoryInfo[] dirs = new DirectoryInfo[dirNames.Length];
+            var dirs = new DirectoryInfo[dirNames.Length];
 
-            for (int i = 0; i < dirNames.Length; i++)
+            for (var i = 0; i < dirNames.Length; i++)
             {
                 dirs[i] = new DirectoryInfo(dirNames[i]);
             }
@@ -95,35 +80,18 @@ namespace System.IO
             return dirs;
         }
 
-        public DirectoryInfo Root
-        {
-            get
-            {
-                return new DirectoryInfo(Path.GetPathRoot(m_fullPath));
-            }
-        }
+        public DirectoryInfo Root => new DirectoryInfo(Path.GetPathRoot(this.m_fullPath));
 
-        public void MoveTo(string destDirName)
-        {
+        public void MoveTo(string destDirName) =>
             // destDirName validation in Directory.Move()
 
-            Directory.Move(m_fullPath, destDirName);
-        }
+            Directory.Move(this.m_fullPath, destDirName);
 
-        public override void Delete()
-        {
-            Directory.Delete(m_fullPath);
-        }
+        public override void Delete() => Directory.Delete(this.m_fullPath);
 
-        public void Delete(bool recursive)
-        {
-            Directory.Delete(m_fullPath, recursive);
-        }
+        public void Delete(bool recursive) => Directory.Delete(this.m_fullPath, recursive);
 
-        public override string ToString()
-        {
-            return m_fullPath;
-        }
+        public override string ToString() => this.m_fullPath;
     }
 }
 

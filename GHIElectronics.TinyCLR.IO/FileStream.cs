@@ -14,7 +14,7 @@ namespace System.IO
 
         private NativeFileStream _nativeFileStream;
         private FileSystemManager.FileRecord _fileRecord;
-        private String _fileName;
+        private string _fileName;
         private bool _canRead;
         private bool _canWrite;
         private bool _canSeek;
@@ -25,25 +25,25 @@ namespace System.IO
 
         //--//
 
-        public FileStream(String path, FileMode mode)
+        public FileStream(string path, FileMode mode)
             : this(path, mode, (mode == FileMode.Append ? FileAccess.Write : FileAccess.ReadWrite), FileShare.Read, NativeFileStream.BufferSizeDefault)
         {
         }
 
-        public FileStream(String path, FileMode mode, FileAccess access)
+        public FileStream(string path, FileMode mode, FileAccess access)
             : this(path, mode, access, FileShare.Read, NativeFileStream.BufferSizeDefault)
         {
         }
 
-        public FileStream(String path, FileMode mode, FileAccess access, FileShare share)
+        public FileStream(string path, FileMode mode, FileAccess access, FileShare share)
             : this(path, mode, access, share, NativeFileStream.BufferSizeDefault)
         {
         }
 
-        public FileStream(String path, FileMode mode, FileAccess access, FileShare share, int bufferSize)
+        public FileStream(string path, FileMode mode, FileAccess access, FileShare share, int bufferSize)
         {
             // This will perform validation on path
-            _fileName = Path.GetFullPath(path);
+            this._fileName = Path.GetFullPath(path);
 
             // make sure mode, access, and share are within range
             if (mode < FileMode.CreateNew || mode > FileMode.Append ||
@@ -54,8 +54,8 @@ namespace System.IO
             }
 
             // Get wantsRead and wantsWrite from access, note that they cannot both be false
-            bool wantsRead = (access & FileAccess.Read) == FileAccess.Read;
-            bool wantsWrite = (access & FileAccess.Write) == FileAccess.Write;
+            var wantsRead = (access & FileAccess.Read) == FileAccess.Read;
+            var wantsWrite = (access & FileAccess.Write) == FileAccess.Write;
 
             // You can't open for readonly access (wantsWrite == false) when
             // mode is CreateNew, Create, Truncate or Append (when it's not Open or OpenOrCreate)
@@ -66,13 +66,13 @@ namespace System.IO
 
             // We need to register the share information prior to the actual file open call (the NativeFileStream ctor)
             // so subsequent file operation on the same file will behave correctly
-            _fileRecord = FileSystemManager.AddToOpenList(_fileName, (int)access, (int)share);
+            this._fileRecord = FileSystemManager.AddToOpenList(this._fileName, (int)access, (int)share);
 
             try
             {
-                uint attributes = NativeIO.GetAttributes(_fileName);
-                bool exists = (attributes != 0xFFFFFFFF);
-                bool isReadOnly = (exists) ? (((FileAttributes)attributes) & FileAttributes.ReadOnly) == FileAttributes.ReadOnly : false;
+                var attributes = NativeIO.GetAttributes(this._fileName);
+                var exists = (attributes != 0xFFFFFFFF);
+                var isReadOnly = (exists) ? (((FileAttributes)attributes) & FileAttributes.ReadOnly) == FileAttributes.ReadOnly : false;
 
                 // If the path specified is an existing directory, fail
                 if (exists && ((((FileAttributes)attributes) & FileAttributes.Directory) == FileAttributes.Directory))
@@ -81,40 +81,40 @@ namespace System.IO
                 }
 
                 // The seek limit is 0 (the beginning of the file) for all modes except Append
-                _seekLimit = 0;
+                this._seekLimit = 0;
 
                 switch (mode)
                 {
                     case FileMode.CreateNew: // if the file exists, IOException is thrown
                         if (exists) throw new IOException("", (int)IOException.IOExceptionErrorCode.PathAlreadyExists);
-                        _nativeFileStream = new NativeFileStream(_fileName, bufferSize);
+                        this._nativeFileStream = new NativeFileStream(this._fileName, bufferSize);
                         break;
 
                     case FileMode.Create: // if the file exists, it should be overwritten
-                        _nativeFileStream = new NativeFileStream(_fileName, bufferSize);
-                        if (exists) _nativeFileStream.SetLength(0);
+                        this._nativeFileStream = new NativeFileStream(this._fileName, bufferSize);
+                        if (exists) this._nativeFileStream.SetLength(0);
                         break;
 
                     case FileMode.Open: // if the file does not exist, IOException/FileNotFound is thrown
                         if (!exists) throw new IOException("", (int)IOException.IOExceptionErrorCode.FileNotFound);
-                        _nativeFileStream = new NativeFileStream(_fileName, bufferSize);
+                        this._nativeFileStream = new NativeFileStream(this._fileName, bufferSize);
                         break;
 
                     case FileMode.OpenOrCreate: // if the file does not exist, it is created
-                        _nativeFileStream = new NativeFileStream(_fileName, bufferSize);
+                        this._nativeFileStream = new NativeFileStream(this._fileName, bufferSize);
                         break;
 
                     case FileMode.Truncate: // the file would be overwritten. if the file does not exist, IOException/FileNotFound is thrown
                         if (!exists) throw new IOException("", (int)IOException.IOExceptionErrorCode.FileNotFound);
-                        _nativeFileStream = new NativeFileStream(_fileName, bufferSize);
-                        _nativeFileStream.SetLength(0);
+                        this._nativeFileStream = new NativeFileStream(this._fileName, bufferSize);
+                        this._nativeFileStream.SetLength(0);
                         break;
 
                     case FileMode.Append: // Opens the file if it exists and seeks to the end of the file. Append can only be used in conjunction with FileAccess.Write
                         // Attempting to seek to a position before the end of the file will throw an IOException and any attempt to read fails and throws an NotSupportedException
                         if (access != FileAccess.Write) throw new ArgumentException();
-                        _nativeFileStream = new NativeFileStream(_fileName, bufferSize);
-                        _seekLimit = _nativeFileStream.Seek(0, (uint)SeekOrigin.End);
+                        this._nativeFileStream = new NativeFileStream(this._fileName, bufferSize);
+                        this._seekLimit = this._nativeFileStream.Seek(0, (uint)SeekOrigin.End);
                         break;
 
                     // We've already checked the mode value previously, so no need for default
@@ -124,19 +124,19 @@ namespace System.IO
 
                 // Now that we have a valid NativeFileStream, we add it to the FileRecord, so it could gets clean up
                 // in case an eject or force format
-                _fileRecord.NativeFileStream = _nativeFileStream;
+                this._fileRecord.NativeFileStream = this._nativeFileStream;
 
                 // Retrive the filesystem capabilities
-                _nativeFileStream.GetStreamProperties(out _canRead, out _canWrite, out _canSeek);
+                this._nativeFileStream.GetStreamProperties(out this._canRead, out this._canWrite, out this._canSeek);
 
                 // If the file is readonly, regardless of the filesystem capability, we'll turn off write
                 if (isReadOnly)
                 {
-                    _canWrite = false;
+                    this._canWrite = false;
                 }
 
                 // Make sure the requests (wantsRead / wantsWrite) matches the filesystem capabilities (canRead / canWrite)
-                if ((wantsRead && !_canRead) || (wantsWrite && !_canWrite))
+                if ((wantsRead && !this._canRead) || (wantsWrite && !this._canWrite))
                 {
                     throw new IOException("", (int)IOException.IOExceptionErrorCode.UnauthorizedAccess);
                 }
@@ -144,22 +144,22 @@ namespace System.IO
                 // finally, adjust the _canRead / _canWrite to match the requests
                 if (!wantsWrite)
                 {
-                    _canWrite = false;
+                    this._canWrite = false;
                 }
                 else if (!wantsRead)
                 {
-                    _canRead = false;
+                    this._canRead = false;
                 }
             }
             catch
             {
                 // something went wrong, clean up and re-throw the exception
-                if (_nativeFileStream != null)
+                if (this._nativeFileStream != null)
                 {
-                    _nativeFileStream.Close();
+                    this._nativeFileStream.Close();
                 }
 
-                FileSystemManager.RemoveFromOpenList(_fileRecord);
+                FileSystemManager.RemoveFromOpenList(this._fileRecord);
 
                 throw;
             }
@@ -167,32 +167,32 @@ namespace System.IO
 
         protected override void Dispose(bool disposing)
         {
-            if (!_disposed)
+            if (!this._disposed)
             {
                 try
                 {
                     if (disposing)
                     {
-                        _canRead = false;
-                        _canWrite = false;
-                        _canSeek = false;
+                        this._canRead = false;
+                        this._canWrite = false;
+                        this._canSeek = false;
                     }
 
-                    if (_nativeFileStream != null)
+                    if (this._nativeFileStream != null)
                     {
-                        _nativeFileStream.Close();
+                        this._nativeFileStream.Close();
                     }
                 }
                 finally
                 {
-                    if (_fileRecord != null)
+                    if (this._fileRecord != null)
                     {
-                        FileSystemManager.RemoveFromOpenList(_fileRecord);
-                        _fileRecord = null;
+                        FileSystemManager.RemoveFromOpenList(this._fileRecord);
+                        this._fileRecord = null;
                     }
 
-                    _nativeFileStream = null;
-                    _disposed = true;
+                    this._nativeFileStream = null;
+                    this._disposed = true;
                 }
             }
         }
@@ -205,49 +205,49 @@ namespace System.IO
         // This is for internal use to support proper atomic CopyAndDelete
         internal void DisposeAndDelete()
         {
-            _nativeFileStream.Close();
-            _nativeFileStream = null; // so Dispose(true) won't close the stream again
-            NativeIO.Delete(_fileName);
+            this._nativeFileStream.Close();
+            this._nativeFileStream = null; // so Dispose(true) won't close the stream again
+            NativeIO.Delete(this._fileName);
 
             Dispose(true);
         }
 
         public override void Flush()
         {
-            if (_disposed) throw new ObjectDisposedException();
-            _nativeFileStream.Flush();
+            if (this._disposed) throw new ObjectDisposedException();
+            this._nativeFileStream.Flush();
         }
 
         public override void SetLength(long value)
         {
-            if (_disposed) throw new ObjectDisposedException();
-            if (!_canWrite || !_canSeek) throw new NotSupportedException();
+            if (this._disposed) throw new ObjectDisposedException();
+            if (!this._canWrite || !this._canSeek) throw new NotSupportedException();
 
             // argument validation in interop layer
-            _nativeFileStream.SetLength(value);
+            this._nativeFileStream.SetLength(value);
         }
 
         public override int Read(byte[] buffer, int offset, int count)
         {
-            if (_disposed) throw new ObjectDisposedException();
-            if (!_canRead) throw new NotSupportedException();
+            if (this._disposed) throw new ObjectDisposedException();
+            if (!this._canRead) throw new NotSupportedException();
 
-            lock (_nativeFileStream)
+            lock (this._nativeFileStream)
             {
                 // argument validation in interop layer
-                return _nativeFileStream.Read(buffer, offset, count, NativeFileStream.TimeoutDefault);
+                return this._nativeFileStream.Read(buffer, offset, count, NativeFileStream.TimeoutDefault);
             }
         }
 
         public override long Seek(long offset, SeekOrigin origin)
         {
-            if (_disposed) throw new ObjectDisposedException();
-            if (!_canSeek) throw new NotSupportedException();
+            if (this._disposed) throw new ObjectDisposedException();
+            if (!this._canSeek) throw new NotSupportedException();
 
-            long oldPosition = this.Position;
-            long newPosition = _nativeFileStream.Seek(offset, (uint)origin);
+            var oldPosition = this.Position;
+            var newPosition = this._nativeFileStream.Seek(offset, (uint)origin);
 
-            if (newPosition < _seekLimit)
+            if (newPosition < this._seekLimit)
             {
                 this.Position = oldPosition;
                 throw new IOException();
@@ -258,19 +258,19 @@ namespace System.IO
 
         public override void Write(byte[] buffer, int offset, int count)
         {
-            if (_disposed) throw new ObjectDisposedException();
-            if (!_canWrite) throw new NotSupportedException();
+            if (this._disposed) throw new ObjectDisposedException();
+            if (!this._canWrite) throw new NotSupportedException();
 
             // argument validation in interop layer
             int bytesWritten;
 
-            lock (_nativeFileStream)
+            lock (this._nativeFileStream)
             {
                 // we check for count being != 0 because we want to handle negative cases
                 // as well in the interop layer
                 while (count != 0)
                 {
-                    bytesWritten = _nativeFileStream.Write(buffer, offset, count, NativeFileStream.TimeoutDefault);
+                    bytesWritten = this._nativeFileStream.Write(buffer, offset, count, NativeFileStream.TimeoutDefault);
 
                     if (bytesWritten == 0) throw new IOException();
 
@@ -280,61 +280,46 @@ namespace System.IO
             }
         }
 
-        public override bool CanRead
-        {
-            get { return _canRead; }
-        }
+        public override bool CanRead => this._canRead;
 
-        public override bool CanWrite
-        {
-            get { return _canWrite; }
-        }
+        public override bool CanWrite => this._canWrite;
 
-        public override bool CanSeek
-        {
-            get { return _canSeek; }
-        }
+        public override bool CanSeek => this._canSeek;
 
-        public virtual bool IsAsync
-        {
-            get { return false; }
-        }
+        public virtual bool IsAsync => false;
 
         public override long Length
         {
             get
             {
-                if (_disposed) throw new ObjectDisposedException();
-                if (!_canSeek) throw new NotSupportedException();
+                if (this._disposed) throw new ObjectDisposedException();
+                if (!this._canSeek) throw new NotSupportedException();
 
-                return _nativeFileStream.GetLength();
+                return this._nativeFileStream.GetLength();
             }
         }
 
-        public String Name
-        {
-            get { return _fileName; }
-        }
+        public string Name => this._fileName;
 
         public override long Position
         {
             get
             {
-                if (_disposed) throw new ObjectDisposedException();
-                if (!_canSeek) throw new NotSupportedException();
+                if (this._disposed) throw new ObjectDisposedException();
+                if (!this._canSeek) throw new NotSupportedException();
 
                 // argument validation in interop layer
-                return _nativeFileStream.Seek(0, (uint)SeekOrigin.Current);
+                return this._nativeFileStream.Seek(0, (uint)SeekOrigin.Current);
             }
 
             set
             {
-                if (_disposed) throw new ObjectDisposedException();
-                if (!_canSeek) throw new NotSupportedException();
-                if (value < _seekLimit) throw new IOException();
+                if (this._disposed) throw new ObjectDisposedException();
+                if (!this._canSeek) throw new NotSupportedException();
+                if (value < this._seekLimit) throw new IOException();
 
                 // argument validation in interop layer
-                _nativeFileStream.Seek(value, (uint)SeekOrigin.Begin);
+                this._nativeFileStream.Seek(value, (uint)SeekOrigin.Begin);
             }
         }
     }

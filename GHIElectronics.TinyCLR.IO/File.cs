@@ -23,10 +23,7 @@ namespace System.IO
         // Read permission to sourceFileName and Create
         // and Write permissions to destFileName.
         //
-        public static void Copy(String sourceFileName, String destFileName)
-        {
-            Copy(sourceFileName, destFileName, false, false);
-        }
+        public static void Copy(string sourceFileName, string destFileName) => Copy(sourceFileName, destFileName, false, false);
 
         // Copies an existing file to a new file. If overwrite is
         // false, then an IOException is thrown if the destination file
@@ -37,35 +34,32 @@ namespace System.IO
         // Read permission to sourceFileName
         // and Write permissions to destFileName.
         //
-        public static void Copy(String sourceFileName, String destFileName, bool overwrite)
-        {
-            Copy(sourceFileName, destFileName, overwrite, false);
-        }
+        public static void Copy(string sourceFileName, string destFileName, bool overwrite) => Copy(sourceFileName, destFileName, overwrite, false);
 
         private const int _defaultCopyBufferSize = 2048; /// Experiment on desktop shows 2k-4k is ideal size perfwise.
 
-        internal static void Copy(String sourceFileName, String destFileName, bool overwrite, bool deleteOriginal)
+        internal static void Copy(string sourceFileName, string destFileName, bool overwrite, bool deleteOriginal)
         {
             // sourceFileName and destFileName validation in Path.GetFullPath()
 
             sourceFileName = Path.GetFullPath(sourceFileName);
             destFileName = Path.GetFullPath(destFileName);
 
-            FileMode writerMode = (overwrite) ? FileMode.Create : FileMode.CreateNew;
+            var writerMode = (overwrite) ? FileMode.Create : FileMode.CreateNew;
 
-            FileStream reader = new FileStream(sourceFileName, FileMode.Open, FileAccess.Read, FileShare.Read, NativeFileStream.BufferSizeDefault);
+            var reader = new FileStream(sourceFileName, FileMode.Open, FileAccess.Read, FileShare.Read, NativeFileStream.BufferSizeDefault);
 
             try
             {
-                using (FileStream writer = new FileStream(destFileName, writerMode, FileAccess.Write, FileShare.None, NativeFileStream.BufferSizeDefault))
+                using (var writer = new FileStream(destFileName, writerMode, FileAccess.Write, FileShare.None, NativeFileStream.BufferSizeDefault))
                 {
-                    long fileLength = reader.Length;
+                    var fileLength = reader.Length;
                     writer.SetLength(fileLength);
 
-                    byte[] buffer = new byte[_defaultCopyBufferSize];
+                    var buffer = new byte[_defaultCopyBufferSize];
                     for (; ; )
                     {
-                        int readSize = reader.Read(buffer, 0, _defaultCopyBufferSize);
+                        var readSize = reader.Read(buffer, 0, _defaultCopyBufferSize);
                         if (readSize <= 0)
                             break;
 
@@ -97,10 +91,7 @@ namespace System.IO
         // Your application must have Create, Read, and Write permissions to
         // the file.
         //
-        public static FileStream Create(String path)
-        {
-            return new FileStream(path, FileMode.Create, FileAccess.ReadWrite, FileShare.None, NativeFileStream.BufferSizeDefault);
-        }
+        public static FileStream Create(string path) => new FileStream(path, FileMode.Create, FileAccess.ReadWrite, FileShare.None, NativeFileStream.BufferSizeDefault);
 
         // Creates a file in a particular path.  If the file exists, it is replaced.
         // The file is opened with ReadWrite access and cannot be opened by another
@@ -110,10 +101,7 @@ namespace System.IO
         // Your application must have Create, Read, and Write permissions to
         // the file.
         //
-        public static FileStream Create(String path, int bufferSize)
-        {
-            return new FileStream(path, FileMode.Create, FileAccess.ReadWrite, FileShare.None, bufferSize);
-        }
+        public static FileStream Create(string path, int bufferSize) => new FileStream(path, FileMode.Create, FileAccess.ReadWrite, FileShare.None, bufferSize);
 
         // Deletes a file. The file specified by the designated path is deleted.
         // If the file does not exist, Delete succeeds without throwing
@@ -125,19 +113,19 @@ namespace System.IO
         //
         // Your application must have Delete permission to the target file.
         //
-        public static void Delete(String path)
+        public static void Delete(string path)
         {
             // path validation in Path.GetFullPath()
 
             path = Path.GetFullPath(path);
-            string folderPath = Path.GetDirectoryName(path);
+            var folderPath = Path.GetDirectoryName(path);
 
             // We have to make sure no one else has the file opened, and no one else can modify it when we're deleting
             Object record = FileSystemManager.AddToOpenList(path);
 
             try
             {
-                uint attributes = NativeIO.GetAttributes(folderPath);
+                var attributes = NativeIO.GetAttributes(folderPath);
                 /// If the folder does not exist or invalid we throw DirNotFound Exception (same as desktop).
                 if (attributes == 0xFFFFFFFF)
                 {
@@ -174,7 +162,7 @@ namespace System.IO
         //
         // Your application must have Read permission for the target directory.
         //
-        public static bool Exists(String path)
+        public static bool Exists(string path)
         {
             try
             {
@@ -184,14 +172,14 @@ namespace System.IO
                 path = Path.GetFullPath(path);
 
                 /// Is this the absolute root? this is not a file.
-                string root = Path.GetPathRoot(path);
+                var root = Path.GetPathRoot(path);
                 if (String.Equals(root, path))
                 {
                     return false;
                 }
                 else
                 {
-                    uint attributes = NativeIO.GetAttributes(path);
+                    var attributes = NativeIO.GetAttributes(path);
 
                     /// This is essentially file not found.
                     if (attributes == 0xFFFFFFFF)
@@ -214,28 +202,19 @@ namespace System.IO
             return false;
         }
 
-        public static FileStream Open(String path, FileMode mode)
-        {
-            return new FileStream(path, mode, (mode == FileMode.Append ? FileAccess.Write : FileAccess.ReadWrite), FileShare.None, NativeFileStream.BufferSizeDefault);
-        }
+        public static FileStream Open(string path, FileMode mode) => new FileStream(path, mode, (mode == FileMode.Append ? FileAccess.Write : FileAccess.ReadWrite), FileShare.None, NativeFileStream.BufferSizeDefault);
 
-        public static FileStream Open(String path, FileMode mode, FileAccess access)
-        {
-            return new FileStream(path, mode, access, FileShare.None, NativeFileStream.BufferSizeDefault);
-        }
+        public static FileStream Open(string path, FileMode mode, FileAccess access) => new FileStream(path, mode, access, FileShare.None, NativeFileStream.BufferSizeDefault);
 
-        public static FileStream Open(String path, FileMode mode, FileAccess access, FileShare share)
-        {
-            return new FileStream(path, mode, access, share, NativeFileStream.BufferSizeDefault);
-        }
+        public static FileStream Open(string path, FileMode mode, FileAccess access, FileShare share) => new FileStream(path, mode, access, share, NativeFileStream.BufferSizeDefault);
 
-        public static FileAttributes GetAttributes(String path)
+        public static FileAttributes GetAttributes(string path)
         {
             // path validation in Path.GetFullPath()
 
-            String fullPath = Path.GetFullPath(path);
+            var fullPath = Path.GetFullPath(path);
 
-            uint attributes = NativeIO.GetAttributes(fullPath);
+            var attributes = NativeIO.GetAttributes(fullPath);
             if (attributes == 0xFFFFFFFF)
                 throw new IOException("", (int)IOException.IOExceptionErrorCode.FileNotFound);
             else if (attributes == 0x0)
@@ -244,40 +223,34 @@ namespace System.IO
                 return (FileAttributes)attributes;
         }
 
-        public static void SetAttributes(String path, FileAttributes fileAttributes)
+        public static void SetAttributes(string path, FileAttributes fileAttributes)
         {
             // path validation in Path.GetFullPath()
 
-            String fullPath = Path.GetFullPath(path);
+            var fullPath = Path.GetFullPath(path);
 
             NativeIO.SetAttributes(fullPath, (uint)fileAttributes);
         }
 
-        public static FileStream OpenRead(String path)
-        {
-            return new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read, NativeFileStream.BufferSizeDefault);
-        }
+        public static FileStream OpenRead(string path) => new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read, NativeFileStream.BufferSizeDefault);
 
-        public static FileStream OpenWrite(String path)
-        {
-            return new FileStream(path, FileMode.OpenOrCreate, FileAccess.Write, FileShare.None, NativeFileStream.BufferSizeDefault);
-        }
+        public static FileStream OpenWrite(string path) => new FileStream(path, FileMode.OpenOrCreate, FileAccess.Write, FileShare.None, NativeFileStream.BufferSizeDefault);
 
-        public static byte[] ReadAllBytes(String path)
+        public static byte[] ReadAllBytes(string path)
         {
             byte[] bytes;
-            using (FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read, NativeFileStream.BufferSizeDefault))
+            using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read, NativeFileStream.BufferSizeDefault))
             {
                 // Do a blocking read
-                int index = 0;
-                long fileLength = fs.Length;
+                var index = 0;
+                var fileLength = fs.Length;
                 if (fileLength > Int32.MaxValue)
                     throw new IOException();
-                int count = (int)fileLength;
+                var count = (int)fileLength;
                 bytes = new byte[count];
                 while (count > 0)
                 {
-                    int n = fs.Read(bytes, index, count);
+                    var n = fs.Read(bytes, index, count);
                     index += n;
                     count -= n;
                 }
@@ -286,12 +259,12 @@ namespace System.IO
             return bytes;
         }
 
-        public static void WriteAllBytes(String path, byte[] bytes)
+        public static void WriteAllBytes(string path, byte[] bytes)
         {
             if (bytes == null)
                 throw new ArgumentNullException("bytes");
 
-            using (FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.Read, NativeFileStream.BufferSizeDefault))
+            using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.Read, NativeFileStream.BufferSizeDefault))
                 fs.Write(bytes, 0, bytes.Length);
         }
 
@@ -303,14 +276,14 @@ namespace System.IO
         // sourceFileName and Write
         // permissions to destFileName.
         //
-        public static void Move(String sourceFileName, String destFileName)
+        public static void Move(string sourceFileName, string destFileName)
         {
             // sourceFileName and destFileName validation in Path.GetFullPath()
 
             sourceFileName = Path.GetFullPath(sourceFileName);
             destFileName = Path.GetFullPath(destFileName);
 
-            bool tryCopyAndDelete = false;
+            var tryCopyAndDelete = false;
 
             // We only need to lock the source, not the dest because if dest is taken
             // Move() will failed at the driver's level anyway. (there will be no conflict even if

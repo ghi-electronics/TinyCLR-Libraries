@@ -32,36 +32,33 @@ namespace System.IO
                 throw new ArgumentException();
             }
 
-            m_stream = stream;
-            m_buffer = new byte[c_BufferSize];
-            m_curBufPos = 0;
-            m_disposed = false;
+            this.m_stream = stream;
+            this.m_buffer = new byte[c_BufferSize];
+            this.m_curBufPos = 0;
+            this.m_disposed = false;
         }
 
-        public StreamWriter(String path)
+        public StreamWriter(string path)
             : this(path, false)
         {
         }
 
-        public StreamWriter(String path, bool append)
+        public StreamWriter(string path, bool append)
             : this(new FileStream(path, append ? FileMode.Append : FileMode.Create, FileAccess.Write, FileShare.Read))
         {
         }
 
-        public override void Close()
-        {
-            Dispose();
-        }
+        public override void Close() => Dispose();
 
         protected override void Dispose(bool disposing)
         {
-            if (m_stream != null)
+            if (this.m_stream != null)
             {
                 if (disposing)
                 {
                     try
                     {
-                        if (m_stream.CanWrite)
+                        if (this.m_stream.CanWrite)
                         {
                             Flush();
                         }
@@ -70,90 +67,81 @@ namespace System.IO
 
                     try
                     {
-                        m_stream.Close();
+                        this.m_stream.Close();
                     }
                     catch {}
                 }
 
-                m_stream = null;
-                m_buffer = null;
-                m_curBufPos = 0;
+                this.m_stream = null;
+                this.m_buffer = null;
+                this.m_curBufPos = 0;
             }
 
-            m_disposed = true;
+            this.m_disposed = true;
         }
 
         public override void Flush()
         {
-            if (m_disposed) throw new ObjectDisposedException();
+            if (this.m_disposed) throw new ObjectDisposedException();
 
-            if (m_curBufPos > 0)
+            if (this.m_curBufPos > 0)
             {
                 try
                 {
-                    m_stream.Write(m_buffer, 0, m_curBufPos);
+                    this.m_stream.Write(this.m_buffer, 0, this.m_curBufPos);
                 }
                 catch (Exception e)
                 {
                     throw new IOException("StreamWriter Flush. ", e);
                 }
 
-                m_curBufPos = 0;
+                this.m_curBufPos = 0;
             }
         }
 
         public override void Write(char value)
         {
-            byte[] buffer = this.Encoding.GetBytes(value.ToString());
+            var buffer = this.Encoding.GetBytes(value.ToString());
 
             WriteBytes(buffer, 0, buffer.Length);
         }
 
         public override void WriteLine()
         {
-            byte[] tempBuf = this.Encoding.GetBytes(c_NewLine);
+            var tempBuf = this.Encoding.GetBytes(c_NewLine);
             WriteBytes(tempBuf, 0, tempBuf.Length);
             return;
         }
 
         public override void WriteLine(string value)
         {
-            byte[] tempBuf = this.Encoding.GetBytes(value + c_NewLine);
+            var tempBuf = this.Encoding.GetBytes(value + c_NewLine);
             WriteBytes(tempBuf, 0, tempBuf.Length);
             return;
         }
 
-        public virtual Stream BaseStream
-        {
-            get
-            {
-                return m_stream;
-            }
-        }
+        public virtual Stream BaseStream => this.m_stream;
 
-        public override Encoding Encoding
-        {
-            get { return System.Text.Encoding.UTF8; }
-        }
+        public override Encoding Encoding => System.Text.Encoding.UTF8;
 
         //--//
 
         internal void WriteBytes(byte[] buffer, int index, int count)
         {
-            if (m_disposed) throw new ObjectDisposedException();
+            if (this.m_disposed) throw new ObjectDisposedException();
 
             // If this write will overrun the buffer flush the current buffer to stream and
             // write remaining bytes directly to stream.
-            if (m_curBufPos + count >= c_BufferSize)
+            if (this.m_curBufPos + count >= c_BufferSize)
             {
                 // Flush the current buffer to the stream and write new bytes
                 // directly to stream.
                 try
                 {
-                    m_stream.Write(m_buffer, 0, m_curBufPos);
-                    m_curBufPos = 0;
+                    this.m_stream.Write(this.m_buffer, 0, this.m_curBufPos);
+                    this.m_curBufPos = 0;
 
-                    m_stream.Write(buffer, index, count);
+                    this.m_stream.Write(buffer, index, count);
                     return;
                 }
                 catch (Exception e)
@@ -163,9 +151,9 @@ namespace System.IO
             }
 
             // Else add bytes to the internal buffer
-            Array.Copy(buffer, index, m_buffer, m_curBufPos, count);
+            Array.Copy(buffer, index, this.m_buffer, this.m_curBufPos, count);
 
-            m_curBufPos += count;
+            this.m_curBufPos += count;
 
             return;
         }

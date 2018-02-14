@@ -12,16 +12,13 @@ namespace System.IO
     [Serializable]
     public abstract class TextWriter : MarshalByRefObject, IDisposable
     {
-        private const String InitialNewLine = "\r\n";
+        private const string InitialNewLine = "\r\n";
 
         //--//
 
         protected char[] CoreNewLine = new char[] { '\r', '\n' };
 
-        public virtual void Close()
-        {
-            Dispose();
-        }
+        public virtual void Close() => Dispose();
 
         public void Dispose()
         {
@@ -42,14 +39,14 @@ namespace System.IO
             get;
         }
 
-        public virtual String NewLine
+        public virtual string NewLine
         {
-            get { return new String(CoreNewLine); }
+            get { return new string(this.CoreNewLine); }
             set
             {
                 if (value == null)
                     value = InitialNewLine;
-                CoreNewLine = value.ToCharArray();
+                this.CoreNewLine = value.ToCharArray();
             }
         }
 
@@ -73,45 +70,24 @@ namespace System.IO
             if (buffer.Length - index < count)
                 throw new ArgumentException();
 
-            for (int i = 0; i < count; i++) Write(buffer[index + i]);
+            for (var i = 0; i < count; i++) Write(buffer[index + i]);
         }
 
-        public virtual void Write(bool value)
-        {
-            Write(value);
-        }
+        public virtual void Write(bool value) => Write(value);
 
-        public virtual void Write(int value)
-        {
-            Write(value.ToString());
-        }
+        public virtual void Write(int value) => Write(value.ToString());
 
-        public virtual void Write(uint value)
-        {
-            Write(value.ToString());
-        }
+        public virtual void Write(uint value) => Write(value.ToString());
 
-        public virtual void Write(long value)
-        {
-            Write(value.ToString());
-        }
+        public virtual void Write(long value) => Write(value.ToString());
 
-        public virtual void Write(ulong value)
-        {
-            Write(value.ToString());
-        }
+        public virtual void Write(ulong value) => Write(value.ToString());
 
-        public virtual void Write(float value)
-        {
-            Write(value.ToString());
-        }
+        public virtual void Write(float value) => Write(value.ToString());
 
-        public virtual void Write(double value)
-        {
-            Write(value.ToString());
-        }
+        public virtual void Write(double value) => Write(value.ToString());
 
-        public virtual void Write(String value)
+        public virtual void Write(string value)
         {
             if (value != null) Write(value.ToCharArray());
         }
@@ -124,10 +100,7 @@ namespace System.IO
             }
         }
 
-        public virtual void WriteLine()
-        {
-            Write(CoreNewLine);
-        }
+        public virtual void WriteLine() => Write(this.CoreNewLine);
 
         public virtual void WriteLine(char value)
         {
@@ -189,7 +162,7 @@ namespace System.IO
             WriteLine();
         }
 
-        public virtual void WriteLine(String value)
+        public virtual void WriteLine(string value)
         {
             Write(value);
             WriteLine();

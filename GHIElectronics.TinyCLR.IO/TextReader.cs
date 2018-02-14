@@ -12,10 +12,7 @@ namespace System.IO
     {
         protected TextReader() { }
 
-        public virtual void Close()
-        {
-            Dispose();
-        }
+        public virtual void Close() => Dispose();
 
         public void Dispose()
         {
@@ -27,20 +24,11 @@ namespace System.IO
         {
         }
 
-        public virtual int Peek()
-        {
-            return -1;
-        }
+        public virtual int Peek() => -1;
 
-        public virtual int Read()
-        {
-            return -1;
-        }
+        public virtual int Read() => -1;
 
-        public virtual int Read(char[] buffer, int index, int count)
-        {
-            return -1;
-        }
+        public virtual int Read(char[] buffer, int index, int count) => -1;
 
         public virtual int ReadBlock(char[] buffer, int index, int count)
         {
@@ -52,15 +40,9 @@ namespace System.IO
             return n;
         }
 
-        public virtual String ReadToEnd()
-        {
-            return null;
-        }
+        public virtual string ReadToEnd() => null;
 
-        public virtual String ReadLine()
-        {
-            return null;
-        }
+        public virtual string ReadLine() => null;
 
     }
 }

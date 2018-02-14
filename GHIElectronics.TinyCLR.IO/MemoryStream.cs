@@ -16,70 +16,61 @@ namespace System.IO
 
         public MemoryStream()
         {
-            _buffer = new byte[256];
-            _capacity = 256;
-            _expandable = true;
-            _origin = 0;      // Must be 0 for byte[]'s created by MemoryStream
-            _isOpen = true;
+            this._buffer = new byte[256];
+            this._capacity = 256;
+            this._expandable = true;
+            this._origin = 0;      // Must be 0 for byte[]'s created by MemoryStream
+            this._isOpen = true;
         }
 
         public MemoryStream(byte[] buffer)
         {
             if (buffer == null) throw new ArgumentNullException(/*"buffer", Environment.GetResourceString("ArgumentNull_Buffer")*/);
-            _buffer = buffer;
-            _length = _capacity = buffer.Length;
-            _expandable = false;
-            _origin = 0;
-            _isOpen = true;
+            this._buffer = buffer;
+            this._length = this._capacity = buffer.Length;
+            this._expandable = false;
+            this._origin = 0;
+            this._isOpen = true;
         }
 
-        public override bool CanRead
-        {
-            get { return _isOpen; }
-        }
+        public override bool CanRead => this._isOpen;
 
-        public override bool CanSeek
-        {
-            get { return _isOpen; }
-        }
+        public override bool CanSeek => this._isOpen;
 
-        public override bool CanWrite
-        {
-            get { return _isOpen; }
-        }
+        public override bool CanWrite => this._isOpen;
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                _isOpen = false;
+                this._isOpen = false;
             }
         }
 
         // returns a bool saying whether we allocated a new array.
         private bool EnsureCapacity(int value)
         {
-            if (value > _capacity)
+            if (value > this._capacity)
             {
-                int newCapacity = value;
+                var newCapacity = value;
                 if (newCapacity < 256)
                     newCapacity = 256;
-                if (newCapacity < _capacity * 2)
-                    newCapacity = _capacity * 2;
+                if (newCapacity < this._capacity * 2)
+                    newCapacity = this._capacity * 2;
 
-                if (!_expandable && newCapacity > _capacity) throw new NotSupportedException();
+                if (!this._expandable && newCapacity > this._capacity) throw new NotSupportedException();
                 if (newCapacity > 0)
                 {
-                    byte[] newBuffer = new byte[newCapacity];
-                    if (_length > 0) Array.Copy(_buffer, 0, newBuffer, 0, _length);
-                    _buffer = newBuffer;
+                    var newBuffer = new byte[newCapacity];
+                    if (this._length > 0) Array.Copy(this._buffer, 0, newBuffer, 0, this._length);
+                    this._buffer = newBuffer;
                 }
                 else
                 {
-                    _buffer = null;
+                    this._buffer = null;
                 }
 
-                _capacity = newCapacity;
+                this._capacity = newCapacity;
 
                 return true;
             }
@@ -95,8 +86,8 @@ namespace System.IO
         {
             get
             {
-                if (!_isOpen) throw new ObjectDisposedException();
-                return _length - _origin;
+                if (!this._isOpen) throw new ObjectDisposedException();
+                return this._length - this._origin;
             }
         }
 
@@ -104,22 +95,22 @@ namespace System.IO
         {
             get
             {
-                if (!_isOpen) throw new ObjectDisposedException();
-                return _position - _origin;
+                if (!this._isOpen) throw new ObjectDisposedException();
+                return this._position - this._origin;
             }
 
             set
             {
-                if (!_isOpen) throw new ObjectDisposedException();
+                if (!this._isOpen) throw new ObjectDisposedException();
                 if (value < 0 || value > MemStreamMaxLength)
                     throw new ArgumentOutOfRangeException(/*"value", Environment.GetResourceString("ArgumentOutOfRange_NeedNonNegNum")*/);
-                _position = _origin + (int)value;
+                this._position = this._origin + (int)value;
             }
         }
 
         public override int Read(byte[] buffer, int offset, int count)
         {
-            if (!_isOpen) throw new ObjectDisposedException();
+            if (!this._isOpen) throw new ObjectDisposedException();
 
             if (buffer == null)
                 throw new ArgumentNullException(/*"buffer", Environment.GetResourceString("ArgumentNull_Buffer")*/);
@@ -128,27 +119,27 @@ namespace System.IO
             if (buffer.Length - offset < count)
                 throw new ArgumentException(/*Environment.GetResourceString("Argument_InvalidOffLen")*/);
 
-            int n = _length - _position;
+            var n = this._length - this._position;
             if (n > count) n = count;
             if (n <= 0)
                 return 0;
 
-            Array.Copy(_buffer, _position, buffer, offset, n);
-            _position += n;
+            Array.Copy(this._buffer, this._position, buffer, offset, n);
+            this._position += n;
             return n;
         }
 
         public override int ReadByte()
         {
-            if (!_isOpen) throw new ObjectDisposedException();
+            if (!this._isOpen) throw new ObjectDisposedException();
 
-            if (_position >= _length) return -1;
-            return _buffer[_position++];
+            if (this._position >= this._length) return -1;
+            return this._buffer[this._position++];
         }
 
         public override long Seek(long offset, SeekOrigin origin)
         {
-            if (!_isOpen) throw new ObjectDisposedException();
+            if (!this._isOpen) throw new ObjectDisposedException();
 
             if (offset > MemStreamMaxLength)
                 throw new ArgumentOutOfRangeException(/*"offset", Environment.GetResourceString("ArgumentOutOfRange_MemStreamLength")*/);
@@ -157,26 +148,26 @@ namespace System.IO
                 case SeekOrigin.Begin:
                     if (offset < 0)
                         throw new IOException(/*Environment.GetResourceString("IO.IO_SeekBeforeBegin")*/);
-                    _position = _origin + (int)offset;
+                    this._position = this._origin + (int)offset;
                     break;
 
                 case SeekOrigin.Current:
-                    if (offset + _position < _origin)
+                    if (offset + this._position < this._origin)
                         throw new IOException(/*Environment.GetResourceString("IO.IO_SeekBeforeBegin")*/);
-                    _position += (int)offset;
+                    this._position += (int)offset;
                     break;
 
                 case SeekOrigin.End:
-                    if (_length + offset < _origin)
+                    if (this._length + offset < this._origin)
                         throw new IOException(/*Environment.GetResourceString("IO.IO_SeekBeforeBegin")*/);
-                    _position = _length + (int)offset;
+                    this._position = this._length + (int)offset;
                     break;
 
                 default:
                     throw new ArgumentException(/*Environment.GetResourceString("Argument_InvalidSeekOrigin")*/);
             }
 
-            return _position;
+            return this._position;
         }
 
         /*
@@ -196,29 +187,29 @@ namespace System.IO
          */
         public override void SetLength(long value)
         {
-            if (!_isOpen) throw new ObjectDisposedException();
+            if (!this._isOpen) throw new ObjectDisposedException();
 
             if (value > MemStreamMaxLength || value < 0)
                 throw new ArgumentOutOfRangeException(/*"value", Environment.GetResourceString("ArgumentOutOfRange_MemStreamLength")*/);
 
-            int newLength = _origin + (int)value;
-            bool allocatedNewArray = EnsureCapacity(newLength);
-            if (!allocatedNewArray && newLength > _length)
-                Array.Clear(_buffer, _length, newLength - _length);
-            _length = newLength;
-            if (_position > newLength) _position = newLength;
+            var newLength = this._origin + (int)value;
+            var allocatedNewArray = EnsureCapacity(newLength);
+            if (!allocatedNewArray && newLength > this._length)
+                Array.Clear(this._buffer, this._length, newLength - this._length);
+            this._length = newLength;
+            if (this._position > newLength) this._position = newLength;
         }
 
         public virtual byte[] ToArray()
         {
-            byte[] copy = new byte[_length - _origin];
-            Array.Copy(_buffer, _origin, copy, 0, _length - _origin);
+            var copy = new byte[this._length - this._origin];
+            Array.Copy(this._buffer, this._origin, copy, 0, this._length - this._origin);
             return copy;
         }
 
         public override void Write(byte[] buffer, int offset, int count)
         {
-            if (!_isOpen) throw new ObjectDisposedException();
+            if (!this._isOpen) throw new ObjectDisposedException();
 
             if (buffer == null)
                 throw new ArgumentNullException(/*"buffer", Environment.GetResourceString("ArgumentNull_Buffer")*/);
@@ -227,34 +218,34 @@ namespace System.IO
             if (buffer.Length - offset < count)
                 throw new ArgumentException(/*Environment.GetResourceString("Argument_InvalidOffLen")*/);
 
-            int i = _position + count;
+            var i = this._position + count;
             // Check for overflow
 
-            if (i > _length)
+            if (i > this._length)
             {
-                if (i > _capacity) EnsureCapacity(i);
-                _length = i;
+                if (i > this._capacity) EnsureCapacity(i);
+                this._length = i;
             }
 
-            Array.Copy(buffer, offset, _buffer, _position, count);
-            _position = i;
+            Array.Copy(buffer, offset, this._buffer, this._position, count);
+            this._position = i;
             return;
         }
 
         public override void WriteByte(byte value)
         {
-            if (!_isOpen) throw new ObjectDisposedException();
+            if (!this._isOpen) throw new ObjectDisposedException();
 
-            if (_position >= _capacity)
+            if (this._position >= this._capacity)
             {
-                EnsureCapacity(_position + 1);
+                EnsureCapacity(this._position + 1);
             }
 
-            _buffer[_position++] = value;
+            this._buffer[this._position++] = value;
 
-            if (_position > _length)
+            if (this._position > this._length)
             {
-                _length = _position;
+                this._length = this._position;
             }
         }
 
@@ -265,11 +256,11 @@ namespace System.IO
          */
         public virtual void WriteTo(Stream stream)
         {
-            if (!_isOpen) throw new ObjectDisposedException();
+            if (!this._isOpen) throw new ObjectDisposedException();
 
             if (stream == null)
                 throw new ArgumentNullException(/*"stream", Environment.GetResourceString("ArgumentNull_Stream")*/);
-            stream.Write(_buffer, _origin, _length - _origin);
+            stream.Write(this._buffer, this._origin, this._length - this._origin);
         }
     }
 }

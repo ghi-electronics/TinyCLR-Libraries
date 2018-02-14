@@ -44,72 +44,69 @@ namespace System.IO
                 throw new ArgumentException();
             }
 
-            m_singleCharBuff = new char[1];
-            m_buffer = new byte[c_BufferSize];
-            m_curBufPos = 0;
-            m_curBufLen = 0;
-            m_stream = stream;
-            m_decoder = this.CurrentEncoding.GetDecoder();
-            m_disposed = false;
+            this.m_singleCharBuff = new char[1];
+            this.m_buffer = new byte[c_BufferSize];
+            this.m_curBufPos = 0;
+            this.m_curBufLen = 0;
+            this.m_stream = stream;
+            this.m_decoder = this.CurrentEncoding.GetDecoder();
+            this.m_disposed = false;
         }
 
-        public StreamReader(String path)
+        public StreamReader(string path)
             : this(new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
         {
         }
 
-        public override void Close()
-        {
-            Dispose();
-        }      
-    
+        public override void Close() => Dispose();
+
         protected override void Dispose(bool disposing)
         {
-            if (m_stream != null)
+            if (this.m_stream != null)
             {
                 if (disposing)
                 {
-                    m_stream.Close();
+                    this.m_stream.Close();
                 }
 
-                m_stream = null;
-                m_buffer = null;
-                m_curBufPos = 0;
-                m_curBufLen = 0;
+                this.m_stream = null;
+                this.m_buffer = null;
+                this.m_curBufPos = 0;
+                this.m_curBufLen = 0;
             }
 
-            m_disposed = true;
+            this.m_disposed = true;
         }
 
         public override int Peek()
         {
-            int tempPos = m_curBufPos;
+            var tempPos = this.m_curBufPos;
             int nextChar;
 
             // If buffer need refresh take into account max UTF8 bytes if the next character is UTF8 encoded
             // Note: In some occasions, m_curBufPos may go beyond m_curBufLen-1 (for example, when trying to peek after reading the last character of the buffer), so we need to refresh the buffer in these cases too
-            if ((m_curBufPos                       >= (m_curBufLen-1)) || 
-               ((m_buffer[m_curBufPos + 1] & 0x80) !=  0 && 
-                (m_curBufPos + 3                   >=  m_curBufLen)))
+            if ((this.m_curBufPos                       >= (this.m_curBufLen -1)) || 
+               ((this.m_buffer[this.m_curBufPos + 1] & 0x80) !=  0 && 
+                (this.m_curBufPos + 3                   >= this.m_curBufLen)))
             {
                 // Move any bytes read for this character to front of new buffer
                 int totRead;
-                for (totRead = 0; totRead < m_curBufLen - m_curBufPos; ++totRead)
+                for (totRead = 0; totRead < this.m_curBufLen - this.m_curBufPos; ++totRead)
                 {
-                    m_buffer[totRead] = m_buffer[m_curBufPos + totRead];
+                    this.m_buffer[totRead] = this.m_buffer[this.m_curBufPos + totRead];
                 }
 
                 // Get the new buffer
                 try
                 {
                     // Retry read until response timeout expires
-                    while (m_stream.Length > 0 && totRead < m_buffer.Length)
+                    while (this.m_stream.Length > 0 && totRead < this.m_buffer.Length)
                     {
-                        int len = (int)(m_buffer.Length - totRead);
+                        var len = (int)(this.m_buffer.Length - totRead);
 
-                        if(len > m_stream.Length) len = (int)m_stream.Length;
+                        if(len > this.m_stream.Length) len = (int)this.m_stream.Length;
 
-                        len = m_stream.Read(m_buffer, totRead, len);
+                        len = this.m_stream.Read(this.m_buffer, totRead, len);
 
                         if(len <= 0) break;
 
@@ -122,13 +119,13 @@ namespace System.IO
                 }
 
                 tempPos = 0;
-                m_curBufPos = 0;
-                m_curBufLen = totRead;
+                this.m_curBufPos = 0;
+                this.m_curBufLen = totRead;
             }
 
             // Get the next character and reset m_curBufPos
             nextChar = Read();
-            m_curBufPos = tempPos;
+            this.m_curBufPos = tempPos;
             return nextChar;
         }
 
@@ -136,13 +133,13 @@ namespace System.IO
         {
 
             int byteUsed, charUsed;
-            bool completed = false;
+            var completed = false;
             
             while (true)
             {
-                m_decoder.Convert(m_buffer, m_curBufPos, m_curBufLen - m_curBufPos, m_singleCharBuff, 0, 1, false, out byteUsed, out charUsed, out completed);
+                this.m_decoder.Convert(this.m_buffer, this.m_curBufPos, this.m_curBufLen - this.m_curBufPos, this.m_singleCharBuff, 0, 1, false, out byteUsed, out charUsed, out completed);
 
-                m_curBufPos += byteUsed;
+                this.m_curBufPos += byteUsed;
 
                 if (charUsed == 1) // done
                 {
@@ -153,9 +150,9 @@ namespace System.IO
                     // get more data to feed the decider and try again.
                     // Try to fill the m_buffer.
                     // FillBufferAndReset purges processed data in front of buffer. Thus we can use up to full m_buffer.Length
-                    int readCount = m_buffer.Length;
+                    var readCount = this.m_buffer.Length;
                     // Put it to the maximum of available data and readCount
-                    readCount = readCount > (int)m_stream.Length ? (int)m_stream.Length : readCount;
+                    readCount = readCount > (int)this.m_stream.Length ? (int)this.m_stream.Length : readCount;
                     if (readCount == 0)
                     {
                         readCount = 1;
@@ -169,7 +166,7 @@ namespace System.IO
                 }
             }
 
-            return (int)m_singleCharBuff[0];
+            return (int)this.m_singleCharBuff[0];
         }
 
         public override int Read(char[] buffer, int index, int count)
@@ -182,22 +179,22 @@ namespace System.IO
                 throw new ArgumentOutOfRangeException();
             if (buffer.Length - index < count)
                 throw new ArgumentException();
-            if (m_disposed == true)
+            if (this.m_disposed == true)
                 throw new ObjectDisposedException();
 
             int byteUsed, charUsed = 0;
-            bool completed = false;
+            var completed = false;
 
-            if (m_curBufLen == 0) FillBufferAndReset(count);
+            if (this.m_curBufLen == 0) FillBufferAndReset(count);
 
-            int offset = 0;
+            var offset = 0;
 
             while (true)
             {
-                m_decoder.Convert(m_buffer, m_curBufPos, m_curBufLen - m_curBufPos, buffer, offset, count, false, out byteUsed, out charUsed, out completed);
+                this.m_decoder.Convert(this.m_buffer, this.m_curBufPos, this.m_curBufLen - this.m_curBufPos, buffer, offset, count, false, out byteUsed, out charUsed, out completed);
 
                 count -= charUsed;
-                m_curBufPos += byteUsed;
+                this.m_curBufPos += byteUsed;
                 offset += charUsed;
 
                 if (count == 0 || (FillBufferAndReset(count) == 0))
@@ -212,12 +209,12 @@ namespace System.IO
         public override string ReadLine()
         {
 
-            int bufLen = c_BufferSize;
-            char[] readLineBuff = new char[bufLen];
-            int growSize = c_BufferSize;
-            int curPos = 0;
+            var bufLen = c_BufferSize;
+            var readLineBuff = new char[bufLen];
+            var growSize = c_BufferSize;
+            var curPos = 0;
             int newChar;
-            int startPos = m_curBufPos;
+            var startPos = this.m_curBufPos;
 
             // Look for \r\n
             while ((newChar = Read()) != -1)
@@ -228,7 +225,7 @@ namespace System.IO
                     if (bufLen + growSize > c_MaxReadLineLen)
                         throw new Exception();
 
-                    char[] tempBuf = new char[bufLen + growSize];
+                    var tempBuf = new char[bufLen + growSize];
                     Array.Copy(readLineBuff, 0, tempBuf, 0, bufLen);
                     readLineBuff = tempBuf;
                     bufLen += growSize;
@@ -262,11 +259,11 @@ namespace System.IO
             return new string(readLineBuff, 0, curPos);
         }
 
-        public override String ReadToEnd()
+        public override string ReadToEnd()
         {
             char[] result = null;
 
-            if (m_stream.CanSeek)
+            if (this.m_stream.CanSeek)
             {
                 result = ReadSeekableStream();
             }
@@ -280,26 +277,26 @@ namespace System.IO
 
         private char[] ReadSeekableStream()
         {
-            char[] chars = new char[(int)m_stream.Length];
+            var chars = new char[(int)this.m_stream.Length];
 
-            int read = Read(chars, 0, chars.Length);
+            var read = Read(chars, 0, chars.Length);
 
             return chars;
         }
 
         private char[] ReadNonSeekableStream()
         {
-            ArrayList buffers = new ArrayList();
+            var buffers = new ArrayList();
 
             int read;
-            int totalRead = 0;
+            var totalRead = 0;
 
             char[] lastBuffer = null;
-            bool done = false;
+            var done = false;
 
             do
             {
-                char[] chars = new char[c_BufferSize];
+                var chars = new char[c_BufferSize];
 
                 read = Read(chars, 0, chars.Length);
 
@@ -309,7 +306,7 @@ namespace System.IO
                 {
                     if (read > 0) // copy last scraps
                     {
-                        char[] newChars = new char[read];
+                        var newChars = new char[read];
 
                         Array.Copy(chars, newChars, read);
 
@@ -330,12 +327,12 @@ namespace System.IO
 
             if (buffers.Count > 1)
             {
-                char[] text = new char[totalRead];
+                var text = new char[totalRead];
 
-                int len = 0;
-                for (int i = 0; i < buffers.Count; ++i)
+                var len = 0;
+                for (var i = 0; i < buffers.Count; ++i)
                 {
-                    char[] buffer = (char[])buffers[i];
+                    var buffer = (char[])buffers[i];
 
                     buffer.CopyTo(text, len);
 
@@ -352,50 +349,32 @@ namespace System.IO
 
         //--//
 
-        public virtual Stream BaseStream
-        {
-            get
-            {
-                return m_stream;
-            }
-        }
+        public virtual Stream BaseStream => this.m_stream;
 
-        public virtual Encoding CurrentEncoding
-        {
-            get
-            {
-                return System.Text.Encoding.UTF8;
-            }
-        }
+        public virtual Encoding CurrentEncoding => System.Text.Encoding.UTF8;
 
-        public bool EndOfStream
-        {
-            get
-            {
-                return m_curBufLen == m_curBufPos;
-            }
-        }
+        public bool EndOfStream => this.m_curBufLen == this.m_curBufPos;
 
         private int FillBufferAndReset(int count)
         {
-            if (m_curBufPos != 0) Reset();
+            if (this.m_curBufPos != 0) Reset();
 
-            int totalRead = 0;
+            var totalRead = 0;
 
             try
             {
-                while (count > 0 && m_curBufLen < m_buffer.Length)
+                while (count > 0 && this.m_curBufLen < this.m_buffer.Length)
                 {
-                    int spaceLeft = m_buffer.Length - m_curBufLen;
+                    var spaceLeft = this.m_buffer.Length - this.m_curBufLen;
 
                     if (count > spaceLeft) count = spaceLeft;
 
-                    int read = m_stream.Read(m_buffer, m_curBufLen, count);
+                    var read = this.m_stream.Read(this.m_buffer, this.m_curBufLen, count);
 
                     if (read == 0) break;
 
                     totalRead += read;
-                    m_curBufLen += read;
+                    this.m_curBufLen += read;
 
                     count -= read;
                 }
@@ -410,13 +389,13 @@ namespace System.IO
 
         private void Reset()
         {
-            int bytesAvailable = m_curBufLen - m_curBufPos;
+            var bytesAvailable = this.m_curBufLen - this.m_curBufPos;
 
             // here we trust that the copy in place doe not overwrites data
-            Array.Copy(m_buffer, m_curBufPos, m_buffer, 0, bytesAvailable);
+            Array.Copy(this.m_buffer, this.m_curBufPos, this.m_buffer, 0, bytesAvailable);
 
-            m_curBufPos = 0;
-            m_curBufLen = bytesAvailable;
+            this.m_curBufPos = 0;
+            this.m_curBufLen = bytesAvailable;
         }
     }
 }

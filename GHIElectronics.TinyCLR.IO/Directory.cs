@@ -45,7 +45,7 @@ namespace System.IO
             {
                 try
                 {
-                    uint attributes = NativeIO.GetAttributes(path);
+                    var attributes = NativeIO.GetAttributes(path);
 
                     /// This is essentially file not found.
                     if (attributes == 0xFFFFFFFF)
@@ -88,20 +88,11 @@ namespace System.IO
             return new FileEnumerator(path, FileEnumFlags.FilesAndDirectories);
         }
 
-        public static string[] GetFiles(string path)
-        {
-            return GetChildren(path, "*", false);
-        }
+        public static string[] GetFiles(string path) => GetChildren(path, "*", false);
 
-        public static string[] GetDirectories(string path)
-        {
-            return GetChildren(path, "*", true);
-        }
+        public static string[] GetDirectories(string path) => GetChildren(path, "*", true);
 
-        public static string GetCurrentDirectory()
-        {
-            return FileSystemManager.CurrentDirectory;
-        }
+        public static string GetCurrentDirectory() => FileSystemManager.CurrentDirectory;
 
         public static void SetCurrentDirectory(string path)
         {
@@ -136,7 +127,7 @@ namespace System.IO
             sourceDirName = Path.GetFullPath(sourceDirName);
             destDirName = Path.GetFullPath(destDirName);
 
-            bool tryCopyAndDelete = false;
+            var tryCopyAndDelete = false;
             Object srcRecord = FileSystemManager.AddToOpenList(sourceDirName);
 
             try
@@ -161,11 +152,11 @@ namespace System.IO
             }
         }
 
-        private static void RecursiveCopyAndDelete(String sourceDirName, String destDirName)
+        private static void RecursiveCopyAndDelete(string sourceDirName, string destDirName)
         {
-            String[] files;
+            string[] files;
             int filesCount, i;
-            int relativePathIndex = sourceDirName.Length + 1; // relative path starts after the sourceDirName and a path seperator
+            var relativePathIndex = sourceDirName.Length + 1; // relative path starts after the sourceDirName and a path seperator
             // We have to make sure no one else can modify it (for example, delete the directory and
             // create a file of the same name) while we're moving
             Object recordSrc = FileSystemManager.AddToOpenList(sourceDirName);
@@ -210,10 +201,7 @@ namespace System.IO
             }
         }
 
-        public static void Delete(string path)
-        {
-            Delete(path, false);
-        }
+        public static void Delete(string path) => Delete(path, false);
 
         public static void Delete(string path, bool recursive)
         {
@@ -223,7 +211,7 @@ namespace System.IO
 
             try
             {
-                uint attributes = NativeIO.GetAttributes(path);
+                var attributes = NativeIO.GetAttributes(path);
 
                 if (attributes == 0xFFFFFFFF)
                 {
@@ -244,7 +232,7 @@ namespace System.IO
 
                 if (!recursive)
                 {
-                    NativeFindFile ff = new NativeFindFile(path, "*");
+                    var ff = new NativeFindFile(path, "*");
 
                     try
                     {
@@ -278,9 +266,9 @@ namespace System.IO
 
             Path.NormalizePath(searchPattern, true);
 
-            ArrayList fileNames = new ArrayList();
+            var fileNames = new ArrayList();
 
-            string root = Path.GetPathRoot(path);
+            var root = Path.GetPathRoot(path);
             if (String.Equals(root, path))
             {
                 /// This is special case. Return all the volumes.
@@ -289,8 +277,8 @@ namespace System.IO
                 if (isDirectory)
                 {
                     VolumeInfo[] volumes = VolumeInfo.GetVolumes();
-                    int count = volumes.Length;
-                    for (int i = 0; i < count; i++)
+                    var count = volumes.Length;
+                    for (var i = 0; i < count; i++)
                     {
                         fileNames.Add(volumes[i].RootDirectory);
                     }
@@ -304,9 +292,9 @@ namespace System.IO
                 {
                     ff = new NativeFindFile(path, searchPattern);
 
-                    uint targetAttribute = (isDirectory ? (uint)FileAttributes.Directory : 0);
+                    var targetAttribute = (isDirectory ? (uint)FileAttributes.Directory : 0);
 
-                    NativeFileInfo fileinfo = ff.GetNext();
+                    var fileinfo = ff.GetNext();
 
                     while (fileinfo != null)
                     {
@@ -325,7 +313,7 @@ namespace System.IO
                 }
             }
 
-            return (String[])fileNames.ToArray(typeof(String));
+            return (string[])fileNames.ToArray(typeof(string));
         }
     }
 }

@@ -48,7 +48,7 @@ namespace Microsoft.SPOT.IO
         public long LastAccessTime;
         public long LastWriteTime;
         public long Size;
-        public String FileName;
+        public string FileName;
     }
 
     internal class NativeFindFile
@@ -65,7 +65,7 @@ namespace Microsoft.SPOT.IO
         public extern void Close();
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public static extern NativeFileInfo GetFileInfo(String path);
+        public static extern NativeFileInfo GetFileInfo(string path);
     }
 
     internal static class NativeIO
@@ -76,7 +76,7 @@ namespace Microsoft.SPOT.IO
         internal const int FSNameMaxLength = 7 + 1;   // From FS_decl.h
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal static extern void Format(String nameSpace, String fileSystem, String volumeLabel, uint parameter);
+        internal static extern void Format(string nameSpace, string fileSystem, string volumeLabel, uint parameter);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         internal static extern void Delete(string path);

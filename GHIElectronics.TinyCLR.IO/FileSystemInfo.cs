@@ -8,27 +8,15 @@ namespace System.IO
 {
     public abstract class FileSystemInfo : MarshalByRefObject
     {
-        protected String m_fullPath;  // fully qualified path of the directory
+        protected string m_fullPath;  // fully qualified path of the directory
 
         //--//
 
-        public virtual String FullName
-        {
-            get
-            {
-                return m_fullPath;
-            }
-        }
+        public virtual string FullName => this.m_fullPath;
 
-        public String Extension
-        {
-            get
-            {
-                return Path.GetExtension(FullName);
-            }
-        }
+        public string Extension => Path.GetExtension(this.FullName);
 
-        public abstract String Name
+        public abstract string Name
         {
             get;
         }
@@ -45,72 +33,54 @@ namespace System.IO
             get
             {
                 RefreshIfNull();
-                return (FileAttributes)_nativeFileInfo.Attributes;
+                return (FileAttributes)this._nativeFileInfo.Attributes;
             }
         }
 
-        public DateTime CreationTime
-        {
-            get
-            {
-                return CreationTimeUtc.ToLocalTime();
-            }
-        }
+        public DateTime CreationTime => this.CreationTimeUtc.ToLocalTime();
 
         public DateTime CreationTimeUtc
         {
             get
             {
                 RefreshIfNull();
-                return new DateTime(_nativeFileInfo.CreationTime);
+                return new DateTime(this._nativeFileInfo.CreationTime);
             }
         }
 
-        public DateTime LastAccessTime
-        {
-            get
-            {
-                return LastAccessTimeUtc.ToLocalTime();
-            }
-        }
+        public DateTime LastAccessTime => this.LastAccessTimeUtc.ToLocalTime();
 
         public DateTime LastAccessTimeUtc
         {
             get
             {
                 RefreshIfNull();
-                return new DateTime(_nativeFileInfo.LastAccessTime);
+                return new DateTime(this._nativeFileInfo.LastAccessTime);
             }
         }
 
-        public DateTime LastWriteTime
-        {
-            get
-            {
-                return LastWriteTimeUtc.ToLocalTime();
-            }
-        }
+        public DateTime LastWriteTime => this.LastWriteTimeUtc.ToLocalTime();
 
         public DateTime LastWriteTimeUtc
         {
             get
             {
                 RefreshIfNull();
-                return new DateTime(_nativeFileInfo.LastWriteTime);
+                return new DateTime(this._nativeFileInfo.LastWriteTime);
             }
         }
 
         public void Refresh()
         {
-            Object record = FileSystemManager.AddToOpenListForRead(m_fullPath);
+            Object record = FileSystemManager.AddToOpenListForRead(this.m_fullPath);
 
             try
             {
-                _nativeFileInfo = NativeFindFile.GetFileInfo(m_fullPath);
+                this._nativeFileInfo = NativeFindFile.GetFileInfo(this.m_fullPath);
 
-                if (_nativeFileInfo == null)
+                if (this._nativeFileInfo == null)
                 {
-                    IOException.IOExceptionErrorCode errorCode = (this is FileInfo) ? IOException.IOExceptionErrorCode.FileNotFound : IOException.IOExceptionErrorCode.DirectoryNotFound;
+                    var errorCode = (this is FileInfo) ? IOException.IOExceptionErrorCode.FileNotFound : IOException.IOExceptionErrorCode.DirectoryNotFound;
                     throw new IOException("", (int)errorCode);
                 }
             }
@@ -122,7 +92,7 @@ namespace System.IO
 
         protected void RefreshIfNull()
         {
-            if (_nativeFileInfo == null)
+            if (this._nativeFileInfo == null)
             {
                 Refresh();
             }
