@@ -11,12 +11,10 @@ namespace System.IO
     [Serializable]
     public sealed class FileInfo : FileSystemInfo
     {
-        public FileInfo(string fileName)
-        {
+        public FileInfo(string fileName) =>
             // path validation in Path.GetFullPath()
 
             this.m_fullPath = Path.GetFullPath(fileName);
-        }
 
         public override string Name => Path.GetFileName(this.m_fullPath);
 

@@ -39,11 +39,9 @@ namespace System.IO
             get;
         }
 
-        public virtual string NewLine
-        {
-            get { return new string(this.CoreNewLine); }
-            set
-            {
+        public virtual string NewLine {
+            get => new string(this.CoreNewLine);
+            set {
                 if (value == null)
                     value = InitialNewLine;
                 this.CoreNewLine = value.ToCharArray();
@@ -92,7 +90,7 @@ namespace System.IO
             if (value != null) Write(value.ToCharArray());
         }
 
-        public virtual void Write(Object value)
+        public virtual void Write(object value)
         {
             if (value != null)
             {
@@ -168,7 +166,7 @@ namespace System.IO
             WriteLine();
         }
 
-        public virtual void WriteLine(Object value)
+        public virtual void WriteLine(object value)
         {
             if (value == null)
             {

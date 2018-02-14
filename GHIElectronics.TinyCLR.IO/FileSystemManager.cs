@@ -21,14 +21,14 @@ namespace System.IO
 
         internal class FileRecord
         {
-            public String FullName;
+            public string FullName;
             public NativeFileStream NativeFileStream;
             public int Share;
 
-            public FileRecord(String fullName, int share)
+            public FileRecord(string fullName, int share)
             {
-                FullName = fullName;
-                Share = share;
+                this.FullName = fullName;
+                this.Share = share;
             }
         }
 
@@ -39,28 +39,22 @@ namespace System.IO
 
         //--//
 
-        public static Object AddToOpenList(String fullName)
-        {
-            return AddToOpenList(fullName, FileAccessReadWrite, FileShareNone);
-        }
+        public static object AddToOpenList(string fullName) => AddToOpenList(fullName, FileAccessReadWrite, FileShareNone);
 
-        public static Object AddToOpenListForRead(String fullName)
-        {
-            return AddToOpenList(fullName, FileAccessRead, FileShareReadWrite);
-        }
+        public static object AddToOpenListForRead(string fullName) => AddToOpenList(fullName, FileAccessRead, FileShareReadWrite);
 
-        public static FileRecord AddToOpenList(String fullName, int access, int share)
+        public static FileRecord AddToOpenList(string fullName, int access, int share)
         {
             fullName = fullName.ToUpper();
 
-            FileRecord record = new FileRecord(fullName, share);
+            var record = new FileRecord(fullName, share);
             lock (m_openFiles)
             {
-                int count = m_lockedDirs.Count;
+                var count = m_lockedDirs.Count;
 
-                for (int i = 0; i < count; i++)
+                for (var i = 0; i < count; i++)
                 {
-                    if (IsInDirectory(fullName, (String)m_lockedDirs[i]))
+                    if (IsInDirectory(fullName, (string)m_lockedDirs[i]))
                     {
                         throw new IOException("", (int)IOException.IOExceptionErrorCode.UnauthorizedAccess);
                     }
@@ -69,7 +63,7 @@ namespace System.IO
                 FileRecord current;
                 count = m_openFiles.Count;
 
-                for (int i = 0; i < count; ++i)
+                for (var i = 0; i < count; ++i)
                 {
                     current = (FileRecord)m_openFiles[i];
                     if (current.FullName == fullName)
@@ -103,7 +97,7 @@ namespace System.IO
             return record;
         }
 
-        public static void RemoveFromOpenList(Object record)
+        public static void RemoveFromOpenList(object record)
         {
             lock (m_openFiles)
             {
@@ -111,14 +105,14 @@ namespace System.IO
             }
         }
 
-        public static Object LockDirectory(String directory)
+        public static object LockDirectory(string directory)
         {
             directory = directory.ToUpper();
 
             lock (m_openFiles)
             {
-                int count = m_openFiles.Count;
-                for (int i = 0; i < count; i++)
+                var count = m_openFiles.Count;
+                for (var i = 0; i < count; i++)
                 {
                     if (IsInDirectory(((FileRecord)m_openFiles[i]).FullName, directory))
                     {
@@ -127,9 +121,9 @@ namespace System.IO
                 }
 
                 count = m_lockedDirs.Count;
-                for (int i = 0; i < count; i++)
+                for (var i = 0; i < count; i++)
                 {
-                    if (((String)m_lockedDirs[i]) == directory)
+                    if (((string)m_lockedDirs[i]) == directory)
                     {
                         throw new IOException("", (int)IOException.IOExceptionErrorCode.UnauthorizedAccess);
                     }
@@ -138,10 +132,10 @@ namespace System.IO
                 m_lockedDirs.Add(directory);
             }
 
-            return (Object)directory;
+            return (object)directory;
         }
 
-        public static void UnlockDirectory(Object record)
+        public static void UnlockDirectory(object record)
         {
             lock (m_openFiles)
             {
@@ -149,16 +143,16 @@ namespace System.IO
             }
         }
 
-        public static void UnlockDirectory(String directory)
+        public static void UnlockDirectory(string directory)
         {
             directory = directory.ToUpper();
 
             lock (m_openFiles)
             {
-                int count = m_lockedDirs.Count;
-                for (int i = 0; i < count; i++)
+                var count = m_lockedDirs.Count;
+                for (var i = 0; i < count; i++)
                 {
-                    if (((String)m_lockedDirs[i]) == directory)
+                    if (((string)m_lockedDirs[i]) == directory)
                     {
                         m_lockedDirs.RemoveAt(i);
                         break;
@@ -167,15 +161,15 @@ namespace System.IO
             }
         }
 
-        public static void ForceRemoveNameSpace(String nameSpace)
+        public static void ForceRemoveNameSpace(string nameSpace)
         {
-            String root = "\\" + nameSpace.ToUpper();
+            var root = "\\" + nameSpace.ToUpper();
 
             FileRecord record;
             lock (m_openFiles)
             {
-                int count = m_openFiles.Count;
-                for (int i = 0; i < count; i++)
+                var count = m_openFiles.Count;
+                for (var i = 0; i < count; i++)
                 {
                     record = (FileRecord)m_openFiles[i];
                     if (IsInDirectory(record.FullName, root))
@@ -191,11 +185,11 @@ namespace System.IO
             }
         }
 
-        public static bool IsInDirectory(String path, String directory)
+        public static bool IsInDirectory(string path, string directory)
         {
             if (path.IndexOf(directory) == 0)
             {
-                int directoryLength = directory.Length;
+                var directoryLength = directory.Length;
 
                 if (path.Length > directoryLength)
                 {
@@ -212,12 +206,12 @@ namespace System.IO
 
         //--//
 
-        public static String CurrentDirectory = NativeIO.FSRoot;
-        private static Object m_currentDirectoryRecord = null;
+        public static string CurrentDirectory = NativeIO.FSRoot;
+        private static object m_currentDirectoryRecord = null;
 
         //--//
 
-        internal static void SetCurrentDirectory(String path)
+        internal static void SetCurrentDirectory(string path)
         {
             if (m_currentDirectoryRecord != null) // implies that CurrentDirectory != NativeIO.FSRoot
             {

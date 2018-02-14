@@ -25,8 +25,7 @@ namespace System.IO
 
         public MemoryStream(byte[] buffer)
         {
-            if (buffer == null) throw new ArgumentNullException(/*"buffer", Environment.GetResourceString("ArgumentNull_Buffer")*/);
-            this._buffer = buffer;
+            this._buffer = buffer ?? throw new ArgumentNullException(/*"buffer", Environment.GetResourceString("ArgumentNull_Buffer")*/);
             this._length = this._capacity = buffer.Length;
             this._expandable = false;
             this._origin = 0;

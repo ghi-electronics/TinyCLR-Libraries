@@ -72,7 +72,7 @@ namespace System.IO
 
         public void Refresh()
         {
-            Object record = FileSystemManager.AddToOpenListForRead(this.m_fullPath);
+            var record = FileSystemManager.AddToOpenListForRead(this.m_fullPath);
 
             try
             {

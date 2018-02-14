@@ -13,12 +13,10 @@ namespace System.IO
         {
         }
 
-        public DirectoryInfo(string path)
-        {
+        public DirectoryInfo(string path) =>
             // path validation in Path.GetFullPath()
 
             this.m_fullPath = Path.GetFullPath(path);
-        }
 
         public override string Name => Path.GetFileName(this.m_fullPath);
 

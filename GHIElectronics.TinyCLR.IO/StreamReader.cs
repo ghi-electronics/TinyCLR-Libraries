@@ -85,8 +85,8 @@ namespace System.IO
 
             // If buffer need refresh take into account max UTF8 bytes if the next character is UTF8 encoded
             // Note: In some occasions, m_curBufPos may go beyond m_curBufLen-1 (for example, when trying to peek after reading the last character of the buffer), so we need to refresh the buffer in these cases too
-            if ((this.m_curBufPos                       >= (this.m_curBufLen -1)) || 
-               ((this.m_buffer[this.m_curBufPos + 1] & 0x80) !=  0 && 
+            if ((this.m_curBufPos                       >= (this.m_curBufLen -1)) ||
+               ((this.m_buffer[this.m_curBufPos + 1] & 0x80) !=  0 &&
                 (this.m_curBufPos + 3                   >= this.m_curBufLen)))
             {
                 // Move any bytes read for this character to front of new buffer
@@ -131,13 +131,11 @@ namespace System.IO
 
         public override int Read()
         {
-
-            int byteUsed, charUsed;
             var completed = false;
-            
+
             while (true)
             {
-                this.m_decoder.Convert(this.m_buffer, this.m_curBufPos, this.m_curBufLen - this.m_curBufPos, this.m_singleCharBuff, 0, 1, false, out byteUsed, out charUsed, out completed);
+                this.m_decoder.Convert(this.m_buffer, this.m_curBufPos, this.m_curBufLen - this.m_curBufPos, this.m_singleCharBuff, 0, 1, false, out var byteUsed, out var charUsed, out completed);
 
                 this.m_curBufPos += byteUsed;
 
@@ -182,7 +180,7 @@ namespace System.IO
             if (this.m_disposed == true)
                 throw new ObjectDisposedException();
 
-            int byteUsed, charUsed = 0;
+            var charUsed = 0;
             var completed = false;
 
             if (this.m_curBufLen == 0) FillBufferAndReset(count);
@@ -191,7 +189,7 @@ namespace System.IO
 
             while (true)
             {
-                this.m_decoder.Convert(this.m_buffer, this.m_curBufPos, this.m_curBufLen - this.m_curBufPos, buffer, offset, count, false, out byteUsed, out charUsed, out completed);
+                this.m_decoder.Convert(this.m_buffer, this.m_curBufPos, this.m_curBufLen - this.m_curBufPos, buffer, offset, count, false, out var byteUsed, out charUsed, out completed);
 
                 count -= charUsed;
                 this.m_curBufPos += byteUsed;
@@ -255,7 +253,7 @@ namespace System.IO
 
             // Reached end of stream. Send line upto EOS
             if(curPos == 0) return null;
-            
+
             return new string(readLineBuff, 0, curPos);
         }
 

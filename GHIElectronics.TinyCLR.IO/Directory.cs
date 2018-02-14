@@ -101,7 +101,7 @@ namespace System.IO
             path = Path.GetFullPath(path);
 
             // We lock the directory for read-access first, to ensure path won't get deleted
-            Object record = FileSystemManager.AddToOpenListForRead(path);
+            var record = FileSystemManager.AddToOpenListForRead(path);
 
             try
             {
@@ -128,7 +128,7 @@ namespace System.IO
             destDirName = Path.GetFullPath(destDirName);
 
             var tryCopyAndDelete = false;
-            Object srcRecord = FileSystemManager.AddToOpenList(sourceDirName);
+            var srcRecord = FileSystemManager.AddToOpenList(sourceDirName);
 
             try
             {
@@ -159,7 +159,7 @@ namespace System.IO
             var relativePathIndex = sourceDirName.Length + 1; // relative path starts after the sourceDirName and a path seperator
             // We have to make sure no one else can modify it (for example, delete the directory and
             // create a file of the same name) while we're moving
-            Object recordSrc = FileSystemManager.AddToOpenList(sourceDirName);
+            var recordSrc = FileSystemManager.AddToOpenList(sourceDirName);
 
             try
             {
@@ -207,7 +207,7 @@ namespace System.IO
         {
             path = Path.GetFullPath(path);
 
-            Object record = FileSystemManager.LockDirectory(path);
+            var record = FileSystemManager.LockDirectory(path);
 
             try
             {
@@ -269,7 +269,7 @@ namespace System.IO
             var fileNames = new ArrayList();
 
             var root = Path.GetPathRoot(path);
-            if (String.Equals(root, path))
+            if (string.Equals(root, path))
             {
                 /// This is special case. Return all the volumes.
                 /// Note this will not work, once we start having \\server\share like paths.
@@ -286,7 +286,7 @@ namespace System.IO
             }
             else
             {
-                Object record = FileSystemManager.AddToOpenListForRead(path);
+                var record = FileSystemManager.AddToOpenListForRead(path);
                 NativeFindFile ff = null;
                 try
                 {

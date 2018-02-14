@@ -121,7 +121,7 @@ namespace System.IO
             var folderPath = Path.GetDirectoryName(path);
 
             // We have to make sure no one else has the file opened, and no one else can modify it when we're deleting
-            Object record = FileSystemManager.AddToOpenList(path);
+            var record = FileSystemManager.AddToOpenList(path);
 
             try
             {
@@ -173,7 +173,7 @@ namespace System.IO
 
                 /// Is this the absolute root? this is not a file.
                 var root = Path.GetPathRoot(path);
-                if (String.Equals(root, path))
+                if (string.Equals(root, path))
                 {
                     return false;
                 }
@@ -244,7 +244,7 @@ namespace System.IO
                 // Do a blocking read
                 var index = 0;
                 var fileLength = fs.Length;
-                if (fileLength > Int32.MaxValue)
+                if (fileLength > int.MaxValue)
                     throw new IOException();
                 var count = (int)fileLength;
                 bytes = new byte[count];
@@ -289,7 +289,7 @@ namespace System.IO
             // Move() will failed at the driver's level anyway. (there will be no conflict even if
             // another thread is creating dest, as only one of the operations will succeed --
             // the native calls are atomic)
-            Object srcRecord = FileSystemManager.AddToOpenList(sourceFileName);
+            var srcRecord = FileSystemManager.AddToOpenList(sourceFileName);
 
             try
             {
