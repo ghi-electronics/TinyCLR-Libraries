@@ -34,7 +34,25 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Directory.cs" />
+    <Compile Include="DirectoryInfo.cs" />
+    <Compile Include="File.cs" />
+    <Compile Include="FileAccess.cs" />
+    <Compile Include="FileAttributes.cs" />
+    <Compile Include="FileEnum.cs" />
+    <Compile Include="FileInfo.cs" />
+    <Compile Include="FileMode.cs" />
+    <Compile Include="FileShare.cs" />
+    <Compile Include="FileStream.cs" />
+    <Compile Include="FileSystemInfo.cs" />
+    <Compile Include="IFileSystem.cs" />
+    <Compile Include="MemoryStream.cs" />
+    <Compile Include="Path.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StreamReader.cs" />
+    <Compile Include="StreamWriter.cs" />
+    <Compile Include="TextReader.cs" />
+    <Compile Include="TextWriter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="GHIElectronics.TinyCLR.IO.nuspec" />
