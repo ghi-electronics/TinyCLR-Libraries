@@ -45,6 +45,7 @@
     <Compile Include="FileShare.cs" />
     <Compile Include="FileStream.cs" />
     <Compile Include="FileSystemInfo.cs" />
+    <Compile Include="FileSystemManager.cs" />
     <Compile Include="IFileSystem.cs" />
     <Compile Include="MemoryStream.cs" />
     <Compile Include="Path.cs" />
