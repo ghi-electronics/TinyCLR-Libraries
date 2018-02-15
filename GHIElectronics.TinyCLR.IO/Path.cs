@@ -47,7 +47,7 @@ namespace System.IO
          *
          * Make this platform specific when we port.
          */
-        public static readonly char[] InvalidPathChars = { '/', '\"', '<', '>', '|', ':', '\0', (char)1, (char)2, (char)3, (char)4, (char)5, (char)6, (char)7, (char)8, (char)9, (char)10, (char)11, (char)12, (char)13, (char)14, (char)15, (char)16, (char)17, (char)18, (char)19, (char)20, (char)21, (char)22, (char)23, (char)24, (char)25, (char)26, (char)27, (char)28, (char)29, (char)30, (char)31 };
+        public static readonly char[] InvalidPathChars = { '/', '\"', '<', '>', '|', '\0', (char)1, (char)2, (char)3, (char)4, (char)5, (char)6, (char)7, (char)8, (char)9, (char)10, (char)11, (char)12, (char)13, (char)14, (char)15, (char)16, (char)17, (char)18, (char)19, (char)20, (char)21, (char)22, (char)23, (char)24, (char)25, (char)26, (char)27, (char)28, (char)29, (char)30, (char)31 };
 
         /*
          * Changes the extension of a file path. The <code>path</code> parameter
@@ -153,21 +153,7 @@ namespace System.IO
         {
             CheckInvalidPathChars(path);
 
-            var i = 0;
-            var length = path.Length;
-            if (length >= 1 && (IsDirectorySeparator(path[0])))
-            {
-                // handles UNC names and directories off current drive's root.
-                i = 1;
-                if (length >= 2 && (IsDirectorySeparator(path[1])))
-                {
-                    i = 2;
-                    var n = 2;
-                    while (i < length && ((path[i] != DirectorySeparatorChar || --n > 0))) i++;
-                }
-            }
-
-            return i;
+            return path.IndexOf('\\') is var i && i != -1 ? i + 1 : 0;
         }
 
         internal static bool IsDirectorySeparator(char c) => c == DirectorySeparatorChar;
@@ -353,7 +339,7 @@ namespace System.IO
                 CheckInvalidPathChars(path);
 
                 var length = path.Length;
-                if (length >= 1 && (path[0] == DirectorySeparatorChar))
+                if (length >= 3 && path[0] >= 'A' && path[0] <= 'Z' && path[1] == ':' && (path[2] == DirectorySeparatorChar))
                     return true;
             }
 
@@ -412,32 +398,8 @@ namespace System.IO
             ValidateNullOrEmpty(path);
 
             var pathLength = path.Length;
-
-            var i = 0;
-            for (i = 0; i < pathLength; i++)
-            {
-                if (path[i] != '\\')
-                    break;
-            }
-
-            var rootedPath = false;
-            var serverPath = false;
-            /// Handle some of the special cases.
-            /// 1. Root (\)
-            /// 2. Server (\\server).
-            /// 3. InvalidPath (\\\, \\\\, etc).
-            if (i == 1)
-            {
-                rootedPath = true;
-            }
-            else if ((i == 2) && (pathLength > 2))
-            {
-                serverPath = true;
-            }
-            else if (i > 2)
-            {
-                throw new ArgumentException();
-            }
+            var rootedPath = Path.IsPathRooted(path);
+            var i = 3;
 
             if (rootedPath)
             {
@@ -554,20 +516,6 @@ namespace System.IO
             }
 
             var normalizedPath = "";
-
-            if (rootedPath)
-            {
-                normalizedPath += @"\";
-            }
-            else if (serverPath)
-            {
-                normalizedPath += @"\\";
-
-                /// btw, server path must specify server name.
-                if (finalPathSegments.Count == 0)
-                    throw new ArgumentException();
-            }
-
             var firstSegment = true;
             for (var e = 0; e < finalPathSegments.Count; e++)
             {
