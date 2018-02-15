@@ -1,6 +1,7 @@
+using System.Net;
 using System.Net.Sockets;
 
-namespace System.Net.NetworkInterface {
+namespace GHIElectronics.TinyCLR.Net.NetworkInterface {
     public interface ISocketProvider {
         int Create(AddressFamily addressFamily, SocketType socketType, ProtocolType protocolType);
         void Close(int socket);

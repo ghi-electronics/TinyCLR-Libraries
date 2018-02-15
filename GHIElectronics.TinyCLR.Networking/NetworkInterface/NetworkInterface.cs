@@ -1,4 +1,5 @@
 using System.Collections;
+using GHIElectronics.TinyCLR.Net.NetworkInterface;
 
 namespace System.Net.NetworkInterface {
     public enum NetworkInterfaceType {

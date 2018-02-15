@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using GHIElectronics.TinyCLR.Devices.Gpio;
 using GHIElectronics.TinyCLR.Devices.Spi;
+using GHIElectronics.TinyCLR.Net.NetworkInterface;
 using GHIElectronics.TinyCLR.Networking.SPWF04Sx.Helpers;
 
 namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {

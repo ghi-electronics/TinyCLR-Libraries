@@ -5,6 +5,7 @@ namespace System.Net.Sockets {
     using System.Net.NetworkInterface;
     using System.Runtime.CompilerServices;
     using System.Threading;
+    using GHIElectronics.TinyCLR.Net.NetworkInterface;
 
     public class Socket : IDisposable
     {
