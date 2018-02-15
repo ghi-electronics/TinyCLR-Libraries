@@ -8,6 +8,10 @@ namespace System.Resources {
         internal const string s_fileExtension = ".tinyresources";
         internal const string s_resourcesExtension = ".resources";
 
+        private readonly string origBaseName;
+        private readonly Assembly origAssembly;
+        private string currentUICultureName;
+
         private int m_resourceFileId;
         private Assembly m_assembly;
         private Assembly m_baseAssembly;
@@ -31,6 +35,11 @@ namespace System.Resources {
                     throw new ArgumentException();
                 }
             }
+            else {
+                this.origBaseName = baseName;
+                this.origAssembly = assembly;
+                this.currentUICultureName = cultureName;
+            }
         }
 
         internal ResourceManager(string baseName, string cultureName, int iResourceFileId, Assembly assemblyBase, Assembly assemblyResource) {
@@ -40,6 +49,10 @@ namespace System.Resources {
             this.m_baseName = baseName;
             this.m_cultureName = cultureName;
             this.m_resourceFileId = iResourceFileId;
+
+            this.origBaseName = baseName;
+            this.origAssembly = assemblyBase;
+            this.currentUICultureName = cultureName;
         }
 
         private bool IsValid => this.m_resourceFileId >= 0;
@@ -57,7 +70,12 @@ namespace System.Resources {
             var cultureNameSav = cultureName;
             var assemblySav = assembly;
 
-            this.m_resourceFileId = -1;  //set to invalid state
+            this.m_resourceFileId = -1;
+            this.m_assembly = null;
+            this.m_baseAssembly = null;
+            this.m_baseName = null;
+            this.m_cultureName = null;
+            this.m_rmFallback = null;
 
             var fTryBaseAssembly = false;
 
@@ -137,6 +155,13 @@ namespace System.Resources {
         public object GetObject(short id) => this.GetObject(id, 0, -1);
 
         public object GetObject(short id, int offset, int length) {
+            if (this.currentUICultureName != CultureInfo.CurrentUICulture.Name) {
+                if (!this.Initialize(this.origBaseName, this.origAssembly, CultureInfo.CurrentUICulture.Name))
+                    throw new ArgumentException();
+
+                this.currentUICultureName = CultureInfo.CurrentUICulture.Name;
+            }
+
             var rm = this;
 
             while (rm != null) {
