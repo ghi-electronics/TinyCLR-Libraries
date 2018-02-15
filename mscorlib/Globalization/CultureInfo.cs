@@ -98,7 +98,7 @@ namespace System.Globalization {
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
             for (var iAssembly = 0; iAssembly < assemblies.Length; iAssembly++) {
                 var assembly = assemblies[iAssembly];
-                var mscorlib = "GHIElectronics.TinyCLR.Core";
+                var mscorlib = "mscorlib";
                 var fullName = assembly.FullName;
                 // consider adding startswith ?
                 if ((mscorlib.Length <= fullName.Length) && (fullName.Substring(0, mscorlib.Length) == mscorlib)) {
