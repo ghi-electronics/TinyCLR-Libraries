@@ -1,11 +1,9 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-using System;
-using Microsoft.SPOT.IO;
+using GHIElectronics.TinyCLR.IO;
 
-namespace System.IO
-{
+namespace System.IO {
     public abstract class FileSystemInfo : MarshalByRefObject
     {
         protected string m_fullPath;  // fully qualified path of the directory
@@ -44,7 +42,7 @@ namespace System.IO
             get
             {
                 RefreshIfNull();
-                return new DateTime(this._nativeFileInfo.CreationTime);
+                return this._nativeFileInfo.CreationTime;
             }
         }
 
@@ -55,7 +53,7 @@ namespace System.IO
             get
             {
                 RefreshIfNull();
-                return new DateTime(this._nativeFileInfo.LastAccessTime);
+                return this._nativeFileInfo.LastAccessTime;
             }
         }
 
@@ -66,7 +64,7 @@ namespace System.IO
             get
             {
                 RefreshIfNull();
-                return new DateTime(this._nativeFileInfo.LastWriteTime);
+                return this._nativeFileInfo.LastWriteTime;
             }
         }
 
@@ -76,7 +74,7 @@ namespace System.IO
 
             try
             {
-                this._nativeFileInfo = NativeFindFile.GetFileInfo(this.m_fullPath);
+                this._nativeFileInfo = DriveInfo.GetForPath(this.m_fullPath).GetFileSystemEntry(this.m_fullPath);
 
                 if (this._nativeFileInfo == null)
                 {
@@ -98,7 +96,7 @@ namespace System.IO
             }
         }
 
-        internal NativeFileInfo _nativeFileInfo;
+        internal FileSystemEntry _nativeFileInfo;
     }
 }
 

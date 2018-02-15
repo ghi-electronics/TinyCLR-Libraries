@@ -3,8 +3,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 using System;
 using System.Collections;
-using Microsoft.SPOT.IO;
-using NativeIO = Microsoft.SPOT.IO.NativeIO;
+using GHIElectronics.TinyCLR.IO;
 
 namespace System.IO
 {
@@ -17,6 +16,8 @@ namespace System.IO
 
         //--//
 
+        public static string[] GetLogicalDrives() => DriveInfo.GetLogicalDrives();
+
         public static DirectoryInfo CreateDirectory(string path)
         {
             // path validation in Path.GetFullPath()
@@ -25,7 +26,7 @@ namespace System.IO
 
             /// According to MSDN, Directory.CreateDirectory on an existing
             /// directory is no-op.
-            NativeIO.CreateDirectory(path);
+            DriveInfo.GetForPath(path).CreateDirectory(path);
 
             return new DirectoryInfo(path);
         }
@@ -37,7 +38,7 @@ namespace System.IO
             path = Path.GetFullPath(path);
 
             /// Is this the absolute root? this always exists.
-            if (path == NativeIO.FSRoot)
+            if (path == FileSystemManager.FSRoot)
             {
                 return true;
             }
@@ -45,10 +46,10 @@ namespace System.IO
             {
                 try
                 {
-                    var attributes = NativeIO.GetAttributes(path);
+                    var attributes = DriveInfo.GetForPath(path).GetAttributes(path);
 
                     /// This is essentially file not found.
-                    if (attributes == 0xFFFFFFFF)
+                    if ((uint)attributes == 0xFFFFFFFF)
                         return false;
 
                     /// Need to make sure these are not FAT16 or FAT32 specific.
@@ -122,6 +123,8 @@ namespace System.IO
 
         public static void Move(string sourceDirName, string destDirName)
         {
+            if (Path.GetPathRoot(sourceDirName) != Path.GetPathRoot(destDirName)) throw new ArgumentException();
+
             // sourceDirName and destDirName validation in Path.GetFullPath()
 
             sourceDirName = Path.GetFullPath(sourceDirName);
@@ -139,7 +142,7 @@ namespace System.IO
                 }
 
                 // If Move() returns false, we'll try doing copy and delete to accomplish the move
-                tryCopyAndDelete = !NativeIO.Move(sourceDirName, destDirName);
+                tryCopyAndDelete = !DriveInfo.GetForPath(sourceDirName).Move(sourceDirName, destDirName);
             }
             finally
             {
@@ -175,7 +178,7 @@ namespace System.IO
                     throw new IOException("", (int)IOException.IOExceptionErrorCode.PathAlreadyExists);
                 }
 
-                NativeIO.CreateDirectory(destDirName);
+                DriveInfo.GetForPath(destDirName).CreateDirectory(destDirName);
 
                 files = Directory.GetFiles(sourceDirName);
                 filesCount = files.Length;
@@ -193,7 +196,7 @@ namespace System.IO
                     RecursiveCopyAndDelete(files[i], Path.Combine(destDirName, files[i].Substring(relativePathIndex)));
                 }
 
-                NativeIO.Delete(sourceDirName);
+                DriveInfo.GetForPath(sourceDirName).Delete(sourceDirName);
             }
             finally
             {
@@ -208,18 +211,19 @@ namespace System.IO
             path = Path.GetFullPath(path);
 
             var record = FileSystemManager.LockDirectory(path);
+            var drive = DriveInfo.GetForPath(path);
 
             try
             {
-                var attributes = NativeIO.GetAttributes(path);
+                var attributes = drive.GetAttributes(path);
 
-                if (attributes == 0xFFFFFFFF)
+                if ((uint)attributes == 0xFFFFFFFF)
                 {
                     throw new IOException("", (int)IOException.IOExceptionErrorCode.DirectoryNotFound);
                 }
 
-                if (((attributes & (uint)(FileAttributes.Directory)) == 0) ||
-                    ((attributes & (uint)(FileAttributes.ReadOnly)) != 0))
+                if (((attributes & (FileAttributes.Directory)) == 0) ||
+                    ((attributes & (FileAttributes.ReadOnly)) != 0))
                 {
                     /// it's readonly or not a directory
                     throw new IOException("", (int)IOException.IOExceptionErrorCode.UnauthorizedAccess);
@@ -232,7 +236,7 @@ namespace System.IO
 
                 if (!recursive)
                 {
-                    var ff = new NativeFindFile(path, "*");
+                    var ff = drive.Find(path, "*");
 
                     try
                     {
@@ -247,7 +251,7 @@ namespace System.IO
                     }
                 }
 
-                NativeIO.Delete(path);
+                drive.Delete(path);
             }
             finally
             {
@@ -276,29 +280,29 @@ namespace System.IO
 
                 if (isDirectory)
                 {
-                    var volumes = VolumeInfo.GetVolumes();
+                    var volumes = DriveInfo.GetDrives();
                     var count = volumes.Length;
                     for (var i = 0; i < count; i++)
                     {
-                        fileNames.Add(volumes[i].RootDirectory);
+                        fileNames.Add(volumes[i].RootDirectory.Name);
                     }
                 }
             }
             else
             {
                 var record = FileSystemManager.AddToOpenListForRead(path);
-                NativeFindFile ff = null;
+                IFileSystemEntryfinder ff = null;
                 try
                 {
-                    ff = new NativeFindFile(path, searchPattern);
+                    ff = DriveInfo.GetForPath(path).Find(path, searchPattern);
 
-                    var targetAttribute = (isDirectory ? (uint)FileAttributes.Directory : 0);
+                    var targetAttribute = (isDirectory ? FileAttributes.Directory : 0);
 
                     var fileinfo = ff.GetNext();
 
                     while (fileinfo != null)
                     {
-                        if ((fileinfo.Attributes & (uint)FileAttributes.Directory) == targetAttribute)
+                        if ((fileinfo.Attributes & FileAttributes.Directory) == targetAttribute)
                         {
                             fileNames.Add(fileinfo.FileName);
                         }

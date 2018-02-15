@@ -1,12 +1,8 @@
-using System;
 using System.Text;
-using System.IO;
-using Microsoft.SPOT;
 
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("MFWsStack")]
 
-namespace System.IO
-{
+namespace System.IO {
     public class StreamWriter : TextWriter
     {
         private Stream m_stream;

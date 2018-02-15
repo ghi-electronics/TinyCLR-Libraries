@@ -1,13 +1,10 @@
 ﻿////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-using System;
 using System.Collections;
-using Microsoft.SPOT.IO;
-using NativeIO = Microsoft.SPOT.IO.NativeIO;
+using GHIElectronics.TinyCLR.IO;
 
-namespace System.IO
-{
+namespace System.IO {
     public enum FileEnumFlags
     {
         Files = 0x0001,
@@ -17,8 +14,8 @@ namespace System.IO
 
     public class FileEnum : IEnumerator, IDisposable
     {
-        private NativeFindFile  m_findFile;
-        private NativeFileInfo  m_currentFile;
+        private IFileSystemEntryfinder  m_findFile;
+        private FileSystemEntry  m_currentFile;
         private FileEnumFlags   m_flags;
         private string          m_path;
         private bool            m_disposed;
@@ -30,7 +27,7 @@ namespace System.IO
             this.m_path  = path;
 
             this.m_openForReadHandle = FileSystemManager.AddToOpenListForRead(this.m_path);
-            this.m_findFile          = new NativeFindFile(this.m_path, "*");
+            this.m_findFile          = DriveInfo.GetForPath(this.m_path).Find(this.m_path, "*");
         }
 
         #region IEnumerator Members
@@ -55,9 +52,9 @@ namespace System.IO
             {
                 if (this.m_flags != FileEnumFlags.FilesAndDirectories)
                 {
-                    var targetAttribute = (0 != (this.m_flags & FileEnumFlags.Directories) ? (uint)FileAttributes.Directory : 0);
+                    var targetAttribute = (0 != (this.m_flags & FileEnumFlags.Directories) ? FileAttributes.Directory : 0);
 
-                    if ((fileinfo.Attributes & (uint)FileAttributes.Directory) == targetAttribute)
+                    if ((fileinfo.Attributes & FileAttributes.Directory) == targetAttribute)
                     {
                         this.m_currentFile = fileinfo;
                         break;
@@ -98,7 +95,7 @@ namespace System.IO
                 this.m_openForReadHandle = FileSystemManager.AddToOpenListForRead(this.m_path);
             }
 
-            this.m_findFile = new NativeFindFile(this.m_path, "*");
+            this.m_findFile = DriveInfo.GetForPath(this.m_path).Find(this.m_path, "*");
         }
 
         #endregion

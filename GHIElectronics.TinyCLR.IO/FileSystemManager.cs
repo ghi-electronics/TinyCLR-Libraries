@@ -1,10 +1,7 @@
-using System;
 using System.Collections;
-using System.Runtime.CompilerServices;
-using Microsoft.SPOT.IO;
+using GHIElectronics.TinyCLR.IO;
 
-namespace System.IO
-{
+namespace System.IO {
     internal class FileSystemManager
     {
         // KEEP IN-SYNC WITH FileAccess.cs and FileShare.cs
@@ -22,7 +19,7 @@ namespace System.IO
         internal class FileRecord
         {
             public string FullName;
-            public NativeFileStream NativeFileStream;
+            public IFileStream NativeFileStream;
             public int Share;
 
             public FileRecord(string fullName, int share)
@@ -205,8 +202,9 @@ namespace System.IO
         }
 
         //--//
+        internal const string FSRoot = @"\";
 
-        public static string CurrentDirectory = NativeIO.FSRoot;
+        public static string CurrentDirectory = FileSystemManager.FSRoot;
         private static object m_currentDirectoryRecord = null;
 
         //--//
@@ -218,7 +216,7 @@ namespace System.IO
                 RemoveFromOpenList(m_currentDirectoryRecord);
             }
 
-            if (path != NativeIO.FSRoot)
+            if (path != FileSystemManager.FSRoot)
             {
                 m_currentDirectoryRecord = AddToOpenListForRead(path);
             }

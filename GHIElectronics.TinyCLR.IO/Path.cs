@@ -5,8 +5,6 @@ using System;
 using System.Collections;
 using System.Text;
 
-using NativeIO = Microsoft.SPOT.IO.NativeIO;
-
 namespace System.IO
 {
     /*
@@ -406,6 +404,9 @@ namespace System.IO
                 throw new ArgumentException();
         }
 
+        internal const int FSMaxPathLength = 260 - 2; // From FS_decl.h
+        internal const int FSMaxFilenameLength = 256; // From FS_decl.h
+
         internal static string NormalizePath(string path, bool pattern)
         {
             ValidateNullOrEmpty(path);
@@ -440,7 +441,7 @@ namespace System.IO
 
             if (rootedPath)
             {
-                var limit = i + NativeIO.FSNameMaxLength;
+                var limit = i + 8;
                 for (; i < limit && i < pathLength; i++)
                 {
                     if (path[i] == '\\')
@@ -453,7 +454,7 @@ namespace System.IO
                 {
                     throw new IOException("", (int)IOException.IOExceptionErrorCode.VolumeNotFound);
                 }
-                else if (pathLength - i >= NativeIO.FSMaxPathLength) // if the "relative" path exceeds the limit
+                else if (pathLength - i >= FSMaxPathLength) // if the "relative" path exceeds the limit
                 {
                     throw new IOException("", (int)IOException.IOExceptionErrorCode.PathTooLong);
                 }
@@ -480,7 +481,7 @@ namespace System.IO
                     /// Do nothing. Apparently paths like c:\\folder\\\file.txt works fine in Windows.
                     continue;
                 }
-                else if (pathPartLen >= NativeIO.FSMaxFilenameLength)
+                else if (pathPartLen >= FSMaxFilenameLength)
                 {
                     throw new IOException("", (int)IOException.IOExceptionErrorCode.PathTooLong);
                 }

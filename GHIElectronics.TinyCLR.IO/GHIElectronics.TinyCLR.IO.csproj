@@ -46,10 +46,13 @@
     <Compile Include="FileStream.cs" />
     <Compile Include="FileSystemInfo.cs" />
     <Compile Include="FileSystemManager.cs" />
-    <Compile Include="IFileSystem.cs" />
-    <Compile Include="MediaManager.cs" />
+    <Compile Include="Providers\FileSystemEntry.cs" />
+    <Compile Include="Providers\IDriveProvider.cs" />
+    <Compile Include="DriveInfo.cs" />
     <Compile Include="Path.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Providers\IFileStream.cs" />
+    <Compile Include="Providers\IFileSystemEntryfinder.cs" />
     <Compile Include="StreamReader.cs" />
     <Compile Include="StreamWriter.cs" />
     <Compile Include="TextReader.cs" />

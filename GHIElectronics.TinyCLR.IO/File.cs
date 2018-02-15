@@ -1,15 +1,4 @@
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Copyright (c) Microsoft Corporation.  All rights reserved.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-using System;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Collections;
-using NativeIO = Microsoft.SPOT.IO.NativeIO;
-using Microsoft.SPOT.IO;
-
-namespace System.IO
-{
+namespace System.IO {
     // Class for creating FileStream objects, and some basic file management
     // routines such as Delete, etc.
     public static class File
@@ -47,11 +36,11 @@ namespace System.IO
 
             var writerMode = (overwrite) ? FileMode.Create : FileMode.CreateNew;
 
-            var reader = new FileStream(sourceFileName, FileMode.Open, FileAccess.Read, FileShare.Read, NativeFileStream.BufferSizeDefault);
+            var reader = new FileStream(sourceFileName, FileMode.Open, FileAccess.Read, FileShare.Read, FileStream.BufferSizeDefault);
 
             try
             {
-                using (var writer = new FileStream(destFileName, writerMode, FileAccess.Write, FileShare.None, NativeFileStream.BufferSizeDefault))
+                using (var writer = new FileStream(destFileName, writerMode, FileAccess.Write, FileShare.None, FileStream.BufferSizeDefault))
                 {
                     var fileLength = reader.Length;
                     writer.SetLength(fileLength);
@@ -67,7 +56,7 @@ namespace System.IO
                     }
 
                     // Copy the attributes too
-                    NativeIO.SetAttributes(destFileName, NativeIO.GetAttributes(sourceFileName));
+                    DriveInfo.GetForPath(destFileName).SetAttributes(destFileName, DriveInfo.GetForPath(sourceFileName).GetAttributes(sourceFileName));
                 }
             }
             finally
@@ -91,7 +80,7 @@ namespace System.IO
         // Your application must have Create, Read, and Write permissions to
         // the file.
         //
-        public static FileStream Create(string path) => new FileStream(path, FileMode.Create, FileAccess.ReadWrite, FileShare.None, NativeFileStream.BufferSizeDefault);
+        public static FileStream Create(string path) => new FileStream(path, FileMode.Create, FileAccess.ReadWrite, FileShare.None, FileStream.BufferSizeDefault);
 
         // Creates a file in a particular path.  If the file exists, it is replaced.
         // The file is opened with ReadWrite access and cannot be opened by another
@@ -125,28 +114,28 @@ namespace System.IO
 
             try
             {
-                var attributes = NativeIO.GetAttributes(folderPath);
+                var attributes = DriveInfo.GetForPath(path).GetAttributes(folderPath);
                 /// If the folder does not exist or invalid we throw DirNotFound Exception (same as desktop).
-                if (attributes == 0xFFFFFFFF)
+                if ((uint)attributes == 0xFFFFFFFF)
                 {
                     throw new IOException("", (int)IOException.IOExceptionErrorCode.DirectoryNotFound);
                 }
 
                 /// Folder exists, lets verify whether the file itself exists.
-                attributes = NativeIO.GetAttributes(path);
-                if (attributes == 0xFFFFFFFF)
+                attributes = DriveInfo.GetForPath(path).GetAttributes(path);
+                if ((uint)attributes == 0xFFFFFFFF)
                 {
                     // No-op on file not found
                     return;
                 }
 
-                if ((attributes & (uint)(FileAttributes.Directory | FileAttributes.ReadOnly)) != 0)
+                if ((attributes & (FileAttributes.Directory | FileAttributes.ReadOnly)) != 0)
                 {
                     /// it's a readonly file or an directory
                     throw new IOException("", (int)IOException.IOExceptionErrorCode.UnauthorizedAccess);
                 }
 
-                NativeIO.Delete(path);
+                DriveInfo.GetForPath(path).Delete(path);
             }
             finally
             {
@@ -179,13 +168,13 @@ namespace System.IO
                 }
                 else
                 {
-                    var attributes = NativeIO.GetAttributes(path);
+                    var attributes = DriveInfo.GetForPath(path).GetAttributes(path);
 
                     /// This is essentially file not found.
-                    if (attributes == 0xFFFFFFFF)
+                    if ((uint)attributes == 0xFFFFFFFF)
                         return false;
 
-                    if ((attributes & (uint)FileAttributes.Directory) == 0)
+                    if ((attributes & FileAttributes.Directory) == 0)
                     {
                         /// Not a directory, it must be a file.
                         return true;
@@ -202,11 +191,11 @@ namespace System.IO
             return false;
         }
 
-        public static FileStream Open(string path, FileMode mode) => new FileStream(path, mode, (mode == FileMode.Append ? FileAccess.Write : FileAccess.ReadWrite), FileShare.None, NativeFileStream.BufferSizeDefault);
+        public static FileStream Open(string path, FileMode mode) => new FileStream(path, mode, (mode == FileMode.Append ? FileAccess.Write : FileAccess.ReadWrite), FileShare.None, FileStream.BufferSizeDefault);
 
-        public static FileStream Open(string path, FileMode mode, FileAccess access) => new FileStream(path, mode, access, FileShare.None, NativeFileStream.BufferSizeDefault);
+        public static FileStream Open(string path, FileMode mode, FileAccess access) => new FileStream(path, mode, access, FileShare.None, FileStream.BufferSizeDefault);
 
-        public static FileStream Open(string path, FileMode mode, FileAccess access, FileShare share) => new FileStream(path, mode, access, share, NativeFileStream.BufferSizeDefault);
+        public static FileStream Open(string path, FileMode mode, FileAccess access, FileShare share) => new FileStream(path, mode, access, share, FileStream.BufferSizeDefault);
 
         public static FileAttributes GetAttributes(string path)
         {
@@ -214,8 +203,8 @@ namespace System.IO
 
             var fullPath = Path.GetFullPath(path);
 
-            var attributes = NativeIO.GetAttributes(fullPath);
-            if (attributes == 0xFFFFFFFF)
+            var attributes = DriveInfo.GetForPath(fullPath).GetAttributes(fullPath);
+            if ((uint)attributes == 0xFFFFFFFF)
                 throw new IOException("", (int)IOException.IOExceptionErrorCode.FileNotFound);
             else if (attributes == 0x0)
                 return FileAttributes.Normal;
@@ -229,17 +218,17 @@ namespace System.IO
 
             var fullPath = Path.GetFullPath(path);
 
-            NativeIO.SetAttributes(fullPath, (uint)fileAttributes);
+            DriveInfo.GetForPath(fullPath).SetAttributes(fullPath, fileAttributes);
         }
 
-        public static FileStream OpenRead(string path) => new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read, NativeFileStream.BufferSizeDefault);
+        public static FileStream OpenRead(string path) => new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read, FileStream.BufferSizeDefault);
 
-        public static FileStream OpenWrite(string path) => new FileStream(path, FileMode.OpenOrCreate, FileAccess.Write, FileShare.None, NativeFileStream.BufferSizeDefault);
+        public static FileStream OpenWrite(string path) => new FileStream(path, FileMode.OpenOrCreate, FileAccess.Write, FileShare.None, FileStream.BufferSizeDefault);
 
         public static byte[] ReadAllBytes(string path)
         {
             byte[] bytes;
-            using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read, NativeFileStream.BufferSizeDefault))
+            using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read, FileStream.BufferSizeDefault))
             {
                 // Do a blocking read
                 var index = 0;
@@ -264,7 +253,7 @@ namespace System.IO
             if (bytes == null)
                 throw new ArgumentNullException("bytes");
 
-            using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.Read, NativeFileStream.BufferSizeDefault))
+            using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.Read, FileStream.BufferSizeDefault))
                 fs.Write(bytes, 0, bytes.Length);
         }
 
@@ -278,6 +267,7 @@ namespace System.IO
         //
         public static void Move(string sourceFileName, string destFileName)
         {
+            if (Path.GetPathRoot(sourceFileName) != Path.GetPathRoot(destFileName)) throw new ArgumentException();
             // sourceFileName and destFileName validation in Path.GetFullPath()
 
             sourceFileName = Path.GetFullPath(sourceFileName);
@@ -299,7 +289,7 @@ namespace System.IO
                 }
 
                 //We'll try copy and deleting if Move returns false
-                tryCopyAndDelete = !NativeIO.Move(sourceFileName, destFileName);
+                tryCopyAndDelete = !DriveInfo.GetForPath(sourceFileName).Move(sourceFileName, destFileName);
             }
             finally
             {
