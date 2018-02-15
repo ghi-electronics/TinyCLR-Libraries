@@ -276,7 +276,7 @@ namespace System.IO
 
                 if (isDirectory)
                 {
-                    VolumeInfo[] volumes = VolumeInfo.GetVolumes();
+                    var volumes = VolumeInfo.GetVolumes();
                     var count = volumes.Length;
                     for (var i = 0; i < count; i++)
                     {
