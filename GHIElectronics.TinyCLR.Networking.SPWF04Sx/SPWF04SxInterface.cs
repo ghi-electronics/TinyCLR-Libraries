@@ -10,7 +10,7 @@ using GHIElectronics.TinyCLR.Devices.Spi;
 using GHIElectronics.TinyCLR.Networking.SPWF04Sx.Helpers;
 
 namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
-    public class SPWF04SxInterface : NetworkInterface, ISocket, IDns, IDisposable {
+    public class SPWF04SxInterface : NetworkInterface, ISocketProvider, IDnsProvider, IDisposable {
         private readonly ObjectPool commandPool;
         private readonly Hashtable netifSockets;
         private readonly Queue pendingCommands;
@@ -506,7 +506,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
             host += address[7];
         }
 
-        int ISocket.Create(AddressFamily addressFamily, SocketType socketType, ProtocolType protocolType) {
+        int ISocketProvider.Create(AddressFamily addressFamily, SocketType socketType, ProtocolType protocolType) {
             if (addressFamily != AddressFamily.InterNetwork || socketType != SocketType.Stream || protocolType != ProtocolType.Tcp) throw new ArgumentException();
 
             var id = this.nextSocketId++;
@@ -516,15 +516,15 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
             return id;
         }
 
-        int ISocket.Available(int socket) => this.QuerySocket(this.GetInternalSocketId(socket));
+        int ISocketProvider.Available(int socket) => this.QuerySocket(this.GetInternalSocketId(socket));
 
-        void ISocket.Close(int socket) {
+        void ISocketProvider.Close(int socket) {
             this.CloseSocket(this.GetInternalSocketId(socket));
 
             this.netifSockets.Remove(socket);
         }
 
-        void ISocket.Connect(int socket, SocketAddress address) {
+        void ISocketProvider.Connect(int socket, SocketAddress address) {
             if (!this.netifSockets.Contains(socket)) throw new ArgumentException();
             if (address.Family != AddressFamily.InterNetwork) throw new ArgumentException();
 
@@ -533,7 +533,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
             this.netifSockets[socket] = this.OpenSocket(host, port, SPWF04SxConnectionyType.Tcp, this.ForceSocketsTls ? SPWF04SxConnectionSecurityType.Tls : SPWF04SxConnectionSecurityType.None, this.ForceSocketsTls ? this.ForceSocketsTlsCommonName : null);
         }
 
-        int ISocket.Send(int socket, byte[] buffer, int offset, int count, SocketFlags flags, int timeout) {
+        int ISocketProvider.Send(int socket, byte[] buffer, int offset, int count, SocketFlags flags, int timeout) {
             if (flags != SocketFlags.None) throw new ArgumentException();
 
             this.WriteSocket(this.GetInternalSocketId(socket), buffer, offset, count);
@@ -541,7 +541,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
             return count;
         }
 
-        int ISocket.Receive(int socket, byte[] buffer, int offset, int count, SocketFlags flags, int timeout) {
+        int ISocketProvider.Receive(int socket, byte[] buffer, int offset, int count, SocketFlags flags, int timeout) {
             if (flags != SocketFlags.None) throw new ArgumentException();
             if (timeout != Timeout.Infinite && timeout < 0) throw new ArgumentException();
 
@@ -558,7 +558,7 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
             return avail > 0 ? this.ReadSocket(sock, buffer, offset, Math.Min(avail, count)) : 0;
         }
 
-        bool ISocket.Poll(int socket, int microSeconds, SelectMode mode) {
+        bool ISocketProvider.Poll(int socket, int microSeconds, SelectMode mode) {
             switch (mode) {
                 default: throw new ArgumentException();
                 case SelectMode.SelectError: return false;
@@ -567,25 +567,25 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
             }
         }
 
-        void ISocket.Bind(int socket, SocketAddress address) => throw new NotImplementedException();
-        void ISocket.Listen(int socket, int backlog) => throw new NotImplementedException();
-        int ISocket.Accept(int socket) => throw new NotImplementedException();
-        int ISocket.SendTo(int socket, byte[] buffer, int offset, int count, SocketFlags flags, int timeout, SocketAddress address) => throw new NotImplementedException();
-        int ISocket.ReceiveFrom(int socket, byte[] buffer, int offset, int count, SocketFlags flags, int timeout, ref SocketAddress address) => throw new NotImplementedException();
+        void ISocketProvider.Bind(int socket, SocketAddress address) => throw new NotImplementedException();
+        void ISocketProvider.Listen(int socket, int backlog) => throw new NotImplementedException();
+        int ISocketProvider.Accept(int socket) => throw new NotImplementedException();
+        int ISocketProvider.SendTo(int socket, byte[] buffer, int offset, int count, SocketFlags flags, int timeout, SocketAddress address) => throw new NotImplementedException();
+        int ISocketProvider.ReceiveFrom(int socket, byte[] buffer, int offset, int count, SocketFlags flags, int timeout, ref SocketAddress address) => throw new NotImplementedException();
 
-        void ISocket.GetRemoteAddress(int socket, out SocketAddress address) => address = new SocketAddress(AddressFamily.InterNetwork, 16);
-        void ISocket.GetLocalAddress(int socket, out SocketAddress address) => address = new SocketAddress(AddressFamily.InterNetwork, 16);
+        void ISocketProvider.GetRemoteAddress(int socket, out SocketAddress address) => address = new SocketAddress(AddressFamily.InterNetwork, 16);
+        void ISocketProvider.GetLocalAddress(int socket, out SocketAddress address) => address = new SocketAddress(AddressFamily.InterNetwork, 16);
 
-        void ISocket.GetOption(int socket, SocketOptionLevel optionLevel, SocketOptionName optionName, byte[] optionValue) {
+        void ISocketProvider.GetOption(int socket, SocketOptionLevel optionLevel, SocketOptionName optionName, byte[] optionValue) {
             if (optionLevel == SocketOptionLevel.Socket && optionName == SocketOptionName.Type)
                 Array.Copy(BitConverter.GetBytes((int)SocketType.Stream), optionValue, 4);
         }
 
-        void ISocket.SetOption(int socket, SocketOptionLevel optionLevel, SocketOptionName optionName, byte[] optionValue) {
+        void ISocketProvider.SetOption(int socket, SocketOptionLevel optionLevel, SocketOptionName optionName, byte[] optionValue) {
 
         }
 
-        void IDns.GetHostByName(string name, out string canonicalName, out SocketAddress[] addresses) {
+        void IDnsProvider.GetHostByName(string name, out string canonicalName, out SocketAddress[] addresses) {
             var cmd = this.GetCommand()
                 .AddParameter(name)
                 .AddParameter("80")

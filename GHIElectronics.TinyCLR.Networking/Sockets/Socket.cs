@@ -14,7 +14,7 @@ namespace System.Net.Sockets {
 */
         internal int m_Handle = -1;
 
-        internal readonly ISocket ni;
+        internal readonly ISocketProvider ni;
         private bool m_fBlocking = true;
         private EndPoint m_localEndPoint = null;
 

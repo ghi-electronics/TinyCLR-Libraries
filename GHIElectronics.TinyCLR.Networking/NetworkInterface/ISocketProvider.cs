@@ -1,7 +1,7 @@
 using System.Net.Sockets;
 
 namespace System.Net.NetworkInterface {
-    public interface ISocket {
+    public interface ISocketProvider {
         int Create(AddressFamily addressFamily, SocketType socketType, ProtocolType protocolType);
         void Close(int socket);
 
@@ -24,9 +24,5 @@ namespace System.Net.NetworkInterface {
 
         void GetOption(int socket, SocketOptionLevel optionLevel, SocketOptionName optionName, byte[] optionValue);
         void SetOption(int socket, SocketOptionLevel optionLevel, SocketOptionName optionName, byte[] optionValue);
-    }
-
-    public interface IDns {
-        void GetHostByName(string name, out string canonicalName, out SocketAddress[] addresses);
     }
 }
