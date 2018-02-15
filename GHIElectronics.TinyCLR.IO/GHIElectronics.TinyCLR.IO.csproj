@@ -47,7 +47,6 @@
     <Compile Include="FileSystemInfo.cs" />
     <Compile Include="FileSystemManager.cs" />
     <Compile Include="IFileSystem.cs" />
-    <Compile Include="MemoryStream.cs" />
     <Compile Include="Path.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StreamReader.cs" />
