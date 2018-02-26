@@ -7,7 +7,10 @@ namespace System.Net {
     using System.Collections;
     using System.Diagnostics;
     using System.IO;
+    using System.Net.Security;
     using System.Net.Sockets;
+    using System.Security.Authentication;
+    using System.Security.Cryptography.X509Certificates;
     using System.Text;
     using System.Threading;
 
@@ -84,7 +87,7 @@ namespace System.Net {
                         if (timePassed.Milliseconds > HttpListener.DefaultKeepAliveMilliseconds)
                         {
                             m_ConnectedStreams.RemoveAt(i);
-
+                            
                             // Closes the socket to release resources.
                             streamWrapper.Dispose();
                         }
@@ -135,7 +138,7 @@ namespace System.Net {
 
             base.Dispose(disposing);
         }
-
+        
 
         /// <summary>
         /// The length in KB of the default maximum for response headers
@@ -152,7 +155,7 @@ namespace System.Net {
         private const int DefaultReadWriteTimeout = 5 * 60 * 1000; // 5 minutes
 
         /// <summary>
-        ///  maximum length of the line in reponse line
+        ///  maximum length of the line in reponse line 
         /// </summary>
         internal const int maxHTTPLineLength = 4000;
 
@@ -215,7 +218,7 @@ namespace System.Net {
         /// <b>HttpWebRequest</b>.  When the server certificate is received, it
         /// is validated with certificates in this array.
         /// </remarks>
-        //X509Certificate[] m_caCerts;
+        X509Certificate[] m_caCerts;
 
         /// <summary>
         /// The number of people using the connection.  Must reference-count this
@@ -340,10 +343,10 @@ namespace System.Net {
         /// servers.  These certificates are used only for https connections;
         /// http connections do not require them.
         /// </summary>
-        //public X509Certificate[] HttpsAuthentCerts {
-        //    get => this.m_caCerts;
-        //    set => this.m_caCerts = value;
-        //}
+        public X509Certificate[] HttpsAuthentCerts {
+            get => this.m_caCerts;
+            set => this.m_caCerts = value;
+        }
 
         /// <summary>
         /// Gets or sets a timeout in milliseconds when writing to or reading
@@ -1167,7 +1170,7 @@ namespace System.Net {
                             {
                                 // No exception, good we can condtinue and re-use connected stream.
 
-                                // Control flow returning here means persistent connection actually works.
+                                // Control flow returning here means persistent connection actually works. 
                                 inputStream.m_InUse = true;
                                 inputStream.m_lastUsed = DateTime.Now;
 
@@ -1271,36 +1274,36 @@ namespace System.Net {
                 retStream = new InputNetworkStreamWrapper(new NetworkStream(socket), socket, !isHttps, proxyServer.Host + ":" + proxyServer.Port);
 
                 // For https proxy works differenly from http.
-                //if (isHttps)
-                //{
-                //    // If proxy is set, then for https we need to send "CONNECT" command to proxy.
-                //    // Once this command is send, the socket from proxy works as if it is the socket to the destination server.
-                //    if (proxyServer != targetServer)
-                //    {
-                //        var request = "CONNECT " + remoteServer + " HTTP/" + this.ProtocolVersion + "\r\n\r\n";
-                //        var bytesToSend = Encoding.UTF8.GetBytes(request);
-                //        retStream.Write(bytesToSend, 0, bytesToSend.Length);
-                //
-                //        // Now proxy should respond with the connected status. If it is successul, then we are good to go.
-                //        var respData = ParseHTTPResponse(retStream, this.m_keepAlive);
-                //        if (respData.m_statusCode != (int)HttpStatusCode.OK)
-                //        {
-                //            throw new WebException("Proxy returned " + respData.m_statusCode, WebExceptionStatus.ConnectFailure);
-                //        }
-                //    }
-                //
-                //    // Once connection estiblished need to create secure stream and authenticate server.
-                //    var sslStream = new SslStream(retStream.m_Socket);
-                //
-                //    // Throws exception is fails.
-                //    sslStream.AuthenticateAsClient(this.m_originalUrl.Host, null, this.m_caCerts, SslProtocols.Default);
-                //
-                //    // Changes the stream to SSL stream.
-                //    retStream.m_Stream = sslStream;
-                //
-                //    // Changes the address. Originally socket was connected to proxy, now as if it connected to m_originalUrl.Host on m_originalUrl.Port
-                //    retStream.m_rmAddrAndPort = this.m_originalUrl.Host + ":" + this.m_originalUrl.Port;
-                //}
+                if (isHttps)
+                {
+                    // If proxy is set, then for https we need to send "CONNECT" command to proxy.
+                    // Once this command is send, the socket from proxy works as if it is the socket to the destination server.
+                    if (proxyServer != targetServer)
+                    {
+                        var request = "CONNECT " + remoteServer + " HTTP/" + this.ProtocolVersion + "\r\n\r\n";
+                        var bytesToSend = Encoding.UTF8.GetBytes(request);
+                        retStream.Write(bytesToSend, 0, bytesToSend.Length);
+
+                        // Now proxy should respond with the connected status. If it is successul, then we are good to go.
+                        var respData = ParseHTTPResponse(retStream, this.m_keepAlive);
+                        if (respData.m_statusCode != (int)HttpStatusCode.OK)
+                        {
+                            throw new WebException("Proxy returned " + respData.m_statusCode, WebExceptionStatus.ConnectFailure);
+                        }
+                    }
+
+                    // Once connection estiblished need to create secure stream and authenticate server.
+                    var sslStream = new SslStream(retStream.m_Socket);
+
+                    // Throws exception is fails.
+                    sslStream.AuthenticateAsClient(this.m_originalUrl.Host, null, this.m_caCerts, SslVerification.CertificateRequired, SslProtocols.Default);
+
+                    // Changes the stream to SSL stream.
+                    retStream.m_Stream = sslStream;
+
+                    // Changes the address. Originally socket was connected to proxy, now as if it connected to m_originalUrl.Host on m_originalUrl.Port
+                    retStream.m_rmAddrAndPort = this.m_originalUrl.Host + ":" + this.m_originalUrl.Port;
+                }
 
                 lock (m_ConnectedStreams)
                 {
@@ -1532,8 +1535,8 @@ namespace System.Net {
         }
 
         /// <summary>
-        /// Returns a response from an Internet resource.  Overrides the
-        /// <itemref>WebRequest</itemref>.<see cref="System.Net.WebRequest.GetResponse"/>
+        /// Returns a response from an Internet resource.  Overrides the 
+        /// <itemref>WebRequest</itemref>.<see cref="System.Net.WebRequest.GetResponse"/> 
         /// method.
         /// </summary>
         /// <returns>The response from the Internet resource.</returns>
@@ -1543,7 +1546,7 @@ namespace System.Net {
 
             try
             {
-                // If response was not sent, Submit the request.
+                // If response was not sent, Submit the request. 
                 if (!this.m_requestSent)
                 {
                     SubmitRequest();
@@ -1554,7 +1557,7 @@ namespace System.Net {
                 // reset the total response bytes for the new request.
                 this.m_requestStream.m_BytesLeftInResponse = -1;
 
-                // create the request timeout timer.  This will kill the operation if it takes longer than specified by the Timeout property.
+                // create the request timeout timer.  This will kill the operation if it takes longer than specified by the Timeout property.  
                 // The underlying socket will be closed to end the web request
                 using (var tmr = new Timer(new TimerCallback(this.OnRequestTimeout), null, this.m_timeout, System.Threading.Timeout.Infinite))
                 {
@@ -1574,9 +1577,9 @@ namespace System.Net {
                         }
                     }
                 }
-
+                
                 response = new HttpWebResponse(this.m_method, this.m_originalUrl, respData, this);
-
+                
                 // Now we look if response has chunked encoding. If it is chunked, we need to set flag in m_requestStream we return.
                 if (respData.m_chunked)
                 {
@@ -1638,7 +1641,7 @@ namespace System.Net {
                 }
                 throw;
             }
-
+            
             // Return the stream
             return this.m_requestStream.CloneStream();
         }
