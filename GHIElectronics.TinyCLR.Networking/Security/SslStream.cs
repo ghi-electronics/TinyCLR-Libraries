@@ -1,10 +1,10 @@
-using System;
 using System.IO;
 using System.Net.Sockets;
 using System.Runtime.CompilerServices;
+using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
 
-namespace Microsoft.SPOT.Net.Security {
+namespace System.Net.Security {
     public class SslStream : NetworkStream {
         // Internal flags
         private int _sslContext;
