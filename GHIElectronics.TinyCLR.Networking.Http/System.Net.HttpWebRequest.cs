@@ -18,10 +18,8 @@ namespace System.Net {
     /// This is the class that we use to create HTTP and requests.
     /// Used to register prefix "http" with WEB Request class.
     /// </summary>
-    internal class HttpRequestCreator : IWebRequestCreate
-    {
-        internal HttpRequestCreator()
-        {
+    internal class HttpRequestCreator : IWebRequestCreate {
+        internal HttpRequestCreator() {
         }
 
         /// <summary>
@@ -41,8 +39,7 @@ namespace System.Net {
     /// <remarks>This class does the main work of the request: it collects the header information
     /// from the user, exposes the Stream for outgoing entity data, and processes the incoming
     /// request.</remarks>
-    public class HttpWebRequest : WebRequest
-    {
+    public class HttpWebRequest : WebRequest {
 
         /// <summary>
         /// Array list of connected streams.
@@ -66,37 +63,31 @@ namespace System.Net {
         /// are idle for long time.
         /// </summary>
         /// <param name="unused">Unused</param>
-        static private void CheckPersistentConnections(object unused)
-        {
+        static private void CheckPersistentConnections(object unused) {
             var count = m_ConnectedStreams.Count;
             // The fastest way to exit out - if there are no sockets in the list - exit out.
-            if (count > 0)
-            {
+            if (count > 0) {
                 var curTime = DateTime.Now;
-                lock (m_ConnectedStreams)
-                {
+                lock (m_ConnectedStreams) {
                     count = m_ConnectedStreams.Count;
 
-                    for (var i = count-1; i >= 0; i--)
-                    {
+                    for (var i = count - 1; i >= 0; i--) {
                         var streamWrapper = (InputNetworkStreamWrapper)m_ConnectedStreams[i];
 
                         var timePassed = streamWrapper.m_lastUsed - curTime;
 
                         // If the socket is old, then close and remove from the list.
-                        if (timePassed.Milliseconds > HttpListener.DefaultKeepAliveMilliseconds)
-                        {
+                        if (timePassed.Milliseconds > HttpListener.DefaultKeepAliveMilliseconds) {
                             m_ConnectedStreams.RemoveAt(i);
-                            
+
                             // Closes the socket to release resources.
                             streamWrapper.Dispose();
                         }
                     }
 
                     // turn off the timer if there are no active streams
-                    if(m_ConnectedStreams.Count > 0)
-                    {
-                        m_DropOldConnectionsTimer.Change( HttpListener.DefaultKeepAliveMilliseconds, System.Threading.Timeout.Infinite );
+                    if (m_ConnectedStreams.Count > 0) {
+                        m_DropOldConnectionsTimer.Change(HttpListener.DefaultKeepAliveMilliseconds, System.Threading.Timeout.Infinite);
                     }
                 }
             }
@@ -105,15 +96,13 @@ namespace System.Net {
         /// <summary>
         /// Registers <itemref>HttpRequestCreator</itemref> as the creator for the "http" prefix.
         /// </summary>
-        static HttpWebRequest()
-        {
+        static HttpWebRequest() {
             // Creates instance of HttpRequestCreator. HttpRequestCreator creates HttpWebRequest
             var Creator = new HttpRequestCreator();
             // Register prefix. HttpWebRequest handles both http and https
             RegisterPrefix("http:", Creator);
             RegisterPrefix("https:", Creator);
-            if (m_ConnectedStreams == null)
-            {
+            if (m_ConnectedStreams == null) {
                 // Creates new list for connected sockets.
                 m_ConnectedStreams = new ArrayList();
                 m_DropOldConnectionsTimer = new Timer(CheckPersistentConnections, null, System.Threading.Timeout.Infinite, System.Threading.Timeout.Infinite);
@@ -124,12 +113,9 @@ namespace System.Net {
         /// Closes a response stream, if present.
         /// </summary>
         /// <param name="disposing">Not used.</param>
-        protected override void Dispose(bool disposing)
-        {
-            if(this.m_requestStream != null)
-            {
-                if(!this.m_responseCreated)
-                {
+        protected override void Dispose(bool disposing) {
+            if (this.m_requestStream != null) {
+                if (!this.m_responseCreated) {
                     RemoveStreamFromPool(this.m_requestStream);
 
                     this.m_requestStream.Dispose();
@@ -138,7 +124,7 @@ namespace System.Net {
 
             base.Dispose(disposing);
         }
-        
+
 
         /// <summary>
         /// The length in KB of the default maximum for response headers
@@ -155,7 +141,7 @@ namespace System.Net {
         private const int DefaultReadWriteTimeout = 5 * 60 * 1000; // 5 minutes
 
         /// <summary>
-        ///  maximum length of the line in reponse line 
+        ///  maximum length of the line in reponse line
         /// </summary>
         internal const int maxHTTPLineLength = 4000;
 
@@ -685,13 +671,11 @@ namespace System.Net {
         /// </summary>
         /// <param name="HeaderName">The name of the HTTP header.</param>
         /// <param name="value">The value of the HTTP header.</param>
-        private void SetSpecialHeaders(string HeaderName, string value)
-        {
+        private void SetSpecialHeaders(string HeaderName, string value) {
             value = WebHeaderCollection.CheckBadChars(value, true);
 
             this.m_httpRequestHeaders.RemoveInternal(HeaderName);
-            if (value != null && value.Length != 0)
-            {
+            if (value != null && value.Length != 0) {
                 this.m_httpRequestHeaders.AddInternal(HeaderName, value);
             }
         }
@@ -821,14 +805,11 @@ namespace System.Net {
         /// <b>null</b> clears the
         /// <itemref>IfModifiedSince</itemref> header.</para>
         /// </remarks>
-        public DateTime IfModifiedSince
-        {
-            get
-            {
+        public DateTime IfModifiedSince {
+            get {
                 var ifmodHeaderValue = this.m_httpRequestHeaders[HttpKnownHeaderNames.IfModifiedSince];
 
-                if (ifmodHeaderValue == null)
-                {
+                if (ifmodHeaderValue == null) {
                     return DateTime.Now;
                 }
 
@@ -848,8 +829,7 @@ namespace System.Net {
         /// to the basic header state.
         /// </summary>
         /// <param name="Url">The Url object for which we're creating.</param>
-        internal HttpWebRequest(Uri Url)
-        {
+        internal HttpWebRequest(Uri Url) {
             this.m_requestSent = false;
             this.m_originalUrl = Url;
             this.SendChunked = false;
@@ -873,8 +853,7 @@ namespace System.Net {
             this.m_responseCreated = false;
         }
 
-        public void Reset()
-        {
+        public void Reset() {
             this.m_requestSent = false;
             this.m_responseCreated = false;
             this.m_contentLength = -1;
@@ -918,18 +897,15 @@ namespace System.Net {
         /// <paramref name="rangeSpecifier"/> to some other string allows
         /// support for custom range specifiers other than bytes.  The
         /// byte-range specifier is defined in RFC 2616 by the IETF.</remarks>
-        public void AddRange(string rangeSpecifier, int from, int to)
-        {
+        public void AddRange(string rangeSpecifier, int from, int to) {
 
             // Do some range checking before assembling the header
-            if ((from < 0) || (to < 0) || (from > to))
-            {
+            if ((from < 0) || (to < 0) || (from > to)) {
                 throw new ArgumentOutOfRangeException();
             }
 
             // Add it
-            if (!AddRange(rangeSpecifier, from.ToString(), to.ToString()))
-            {
+            if (!AddRange(rangeSpecifier, from.ToString(), to.ToString())) {
                 throw new InvalidOperationException();
             }
         }
@@ -941,10 +917,8 @@ namespace System.Net {
         /// <param name="rangeSpecifier">The description of the range, such as
         /// "bytes".</param>
         /// <param name="range">The range value.</param>
-        public void AddRange(string rangeSpecifier, int range)
-        {
-            if (!AddRange(rangeSpecifier, range.ToString(), (range >= 0) ? "" : null))
-            {
+        public void AddRange(string rangeSpecifier, int range) {
+            if (!AddRange(rangeSpecifier, range.ToString(), (range >= 0) ? "" : null)) {
                 throw new InvalidOperationException();
             }
         }
@@ -962,31 +936,25 @@ namespace System.Net {
         /// request will be made; for example, a byte-range request, or a
         /// row-range request.  Range types cannot be mixed.
         /// </remarks>
-        private bool AddRange(string rangeSpecifier, string from, string to)
-        {
+        private bool AddRange(string rangeSpecifier, string from, string to) {
             // Checks for NULL rangeSpecifier
-            if (rangeSpecifier == null)
-            {
+            if (rangeSpecifier == null) {
                 throw new ArgumentNullException();
             }
 
             // Checks for Valid characters in rangeSpecifier
-            if (!WebHeaderCollection.IsValidToken(rangeSpecifier))
-            {
+            if (!WebHeaderCollection.IsValidToken(rangeSpecifier)) {
                 throw new ArgumentException();
             }
 
             // Add range specifier or appends to existing one
             var curRange = this.m_httpRequestHeaders[HttpKnownHeaderNames.Range];
 
-            if ((curRange == null) || (curRange.Length == 0))
-            {
+            if ((curRange == null) || (curRange.Length == 0)) {
                 curRange = rangeSpecifier + "=";
             }
-            else
-            {
-                if (string.Compare(curRange.Substring(0, curRange.IndexOf('=')), rangeSpecifier) != 0)
-                {
+            else {
+                if (string.Compare(curRange.Substring(0, curRange.IndexOf('=')), rangeSpecifier) != 0) {
                     return false;
                 }
 
@@ -994,8 +962,7 @@ namespace System.Net {
             }
 
             curRange += from.ToString();
-            if (to != null)
-            {
+            if (to != null) {
                 curRange += "-" + to;
             }
 
@@ -1007,26 +974,21 @@ namespace System.Net {
         /// This function is called first in GetRequestStream() and throws exception
         /// if conditions are not correct.
         /// </summary>
-        private void ValidateGetRequestStream()
-        {
+        private void ValidateGetRequestStream() {
             // TransferEncoding is set to a value and SendChunked is false.
-            if (this.TransferEncoding != null && this.SendChunked == false)
-            {
+            if (this.TransferEncoding != null && this.SendChunked == false) {
                 throw new InvalidOperationException();
             }
 
             // ProtocolViolationException The Method property is GET or HEAD.
-            if (this.m_method == "GET" || this.m_method == "HEAD")
-            {
+            if (this.m_method == "GET" || this.m_method == "HEAD") {
                 throw new ProtocolViolationException("HTTP Method is incorrect: " + this.Method);
             }
 
             // Condition for exception - KeepAlive is true, AllowWriteStreamBuffering is false,
             // ContentLength is -1, SendChunked is false.
-            if (this.m_method == "PUT" || this.m_method == "POST")
-            {
-                if (this.ContentLength == -1 && this.SendChunked == false)
-                {
+            if (this.m_method == "PUT" || this.m_method == "POST") {
+                if (this.ContentLength == -1 && this.SendChunked == false) {
                     throw new ProtocolViolationException("Content lenght must be present for this request");
                 }
             }
@@ -1035,29 +997,23 @@ namespace System.Net {
         /// <summary>
         /// Updates the HTTP WEB header collection to prepare it for request.
         /// </summary>
-        private void PrepareHeaders()
-        {
+        private void PrepareHeaders() {
             // Depending on protocol version we update HTTP headers collection.
-            if (!(this.m_version.Equals(HttpVersion.Version10)))
-            {
-                if (this.m_httpWriteMode == HttpWriteMode.Write)
-                {
+            if (!(this.m_version.Equals(HttpVersion.Version10))) {
+                if (this.m_httpWriteMode == HttpWriteMode.Write) {
                     this.m_httpRequestHeaders.ChangeInternal(HttpKnownHeaderNames.ContentLength, this.m_contentLength.ToString());
                 }
-                else if (this.m_httpWriteMode == HttpWriteMode.Chunked)
-                {
+                else if (this.m_httpWriteMode == HttpWriteMode.Chunked) {
                     this.m_httpRequestHeaders.AddInternal(HttpKnownHeaderNames.TransferEncoding, "chunked");
                 }
 
                 // Set keepAlive header, we always send it, do not rely in defaults.
                 // Basically we send "Connection:Close" or "Connection:Keep-Alive"
                 string connectionValue;
-                if (this.m_keepAlive)
-                {
+                if (this.m_keepAlive) {
                     connectionValue = "Keep-Alive";
                 }
-                else
-                {
+                else {
                     connectionValue = "Close";
                 }
 
@@ -1065,34 +1021,29 @@ namespace System.Net {
             }
 
             //1.0 path
-            else
-            {
+            else {
                 //1.0 doesn't support chunking
                 this.SendChunked = false;
 
                 //1.0 doesn't support keep alive
                 this.m_keepAlive = false;
 
-                if (this.m_httpWriteMode == HttpWriteMode.Write)
-                {
+                if (this.m_httpWriteMode == HttpWriteMode.Write) {
                     this.m_httpRequestHeaders.ChangeInternal(HttpKnownHeaderNames.ContentLength, this.m_contentLength.ToString());
                 }
             }
 
             this.m_httpRequestHeaders.ChangeInternal(HttpKnownHeaderNames.Host, ConnectHostAndPort());
             // Adds user name and password for basic Http authentication.
-            if (this.m_NetworkCredentials != null && this.m_NetworkCredentials.AuthenticationType == AuthenticationType.Basic)
-            {   // If credentials are supplied, we need to add header like "Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ=="
+            if (this.m_NetworkCredentials != null && this.m_NetworkCredentials.AuthenticationType == AuthenticationType.Basic) {   // If credentials are supplied, we need to add header like "Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ=="
                 // where QWxhZGRpbjpvcGVuIHNlc2FtZQ== is b64 encoded user name and password orginating as username:password.
                 var userInfo = "";
-                if (this.m_NetworkCredentials.UserName != null)
-                {
+                if (this.m_NetworkCredentials.UserName != null) {
                     userInfo += this.m_NetworkCredentials.UserName;
                 }
 
                 userInfo += ":";
-                if (this.m_NetworkCredentials.Password != null)
-                {
+                if (this.m_NetworkCredentials.Password != null) {
                     userInfo += this.m_NetworkCredentials.Password;
                 }
 
@@ -1111,11 +1062,9 @@ namespace System.Net {
         /// Need update for HTTPS.
         /// </summary>
         /// <returns>String with host Url and port corresponding to target Uri.</returns>
-        internal string ConnectHostAndPort()
-        {
+        internal string ConnectHostAndPort() {
             var retStr = this.m_originalUrl.Host;
-            if (this.m_originalUrl.Port != 80)
-            {
+            if (this.m_originalUrl.Port != 80) {
                 retStr += ":" + this.m_originalUrl.Port;
             }
 
@@ -1125,12 +1074,9 @@ namespace System.Net {
         /// <summary>
         /// Removes the given stream from the connection pool
         /// </summary>
-        internal static void RemoveStreamFromPool(InputNetworkStreamWrapper stream)
-        {
-            lock (m_ConnectedStreams)
-            {
-                if (m_ConnectedStreams.Contains(stream))
-                {
+        internal static void RemoveStreamFromPool(InputNetworkStreamWrapper stream) {
+            lock (m_ConnectedStreams) {
+                if (m_ConnectedStreams.Contains(stream)) {
                     m_ConnectedStreams.Remove(stream);
                 }
             }
@@ -1143,56 +1089,47 @@ namespace System.Net {
         /// <param name="proxyServer">Uri that describes the proxy server.</param>
         /// <param name="targetServer">Uri that describes the target (real) server.</param>
         /// <returns>Nerwork stream connected to server.</returns>
-        private InputNetworkStreamWrapper EstablishConnection(Uri proxyServer, Uri targetServer)
-        {
+        private InputNetworkStreamWrapper EstablishConnection(Uri proxyServer, Uri targetServer) {
             InputNetworkStreamWrapper retStream = null;
 
             // Create a socket and set reuse true.
             // But before creating new socket we look in the list of existing sockets. If socket for this host already
             // exist - use it. No need to create new socket.
             var remoteServer = targetServer.Host + ":" + targetServer.Port;
-            lock (m_ConnectedStreams)
-            {
+            lock (m_ConnectedStreams) {
                 var removeStreamList = new ArrayList();
 
-                for (var i = 0; i < m_ConnectedStreams.Count; i++)
-                {
+                for (var i = 0; i < m_ConnectedStreams.Count; i++) {
                     var inputStream = (InputNetworkStreamWrapper)m_ConnectedStreams[i];
 
-                    if (inputStream.m_rmAddrAndPort == remoteServer && !inputStream.m_InUse)
-                    {
+                    if (inputStream.m_rmAddrAndPort == remoteServer && !inputStream.m_InUse) {
                         // Re-use the connected socket.
                         // But first we need to know that socket is not closed.
-                        try
-                        {
+                        try {
                             // If socket is closed ( from this or other side ) the call throws exception.
-                            if (inputStream.m_Socket.Poll(1, SelectMode.SelectWrite))
-                            {
+                            if (inputStream.m_Socket.Poll(1, SelectMode.SelectWrite)) {
                                 // No exception, good we can condtinue and re-use connected stream.
 
-                                // Control flow returning here means persistent connection actually works. 
+                                // Control flow returning here means persistent connection actually works.
                                 inputStream.m_InUse = true;
                                 inputStream.m_lastUsed = DateTime.Now;
 
                                 retStream = inputStream;
                                 break;
                             }
-                            else
-                            {
+                            else {
                                 removeStreamList.Add(inputStream);
                             }
 
                         }
-                        catch (Exception)
-                        {
+                        catch (Exception) {
                             removeStreamList.Add(inputStream);
                         }
 
                     }
                 }
 
-                for (var i = 0; i < removeStreamList.Count; i++)
-                {
+                for (var i = 0; i < removeStreamList.Count; i++) {
                     var removeStream = (InputNetworkStreamWrapper)removeStreamList[i];
 
                     // Means socket was closed. Remove it from the list.
@@ -1202,69 +1139,56 @@ namespace System.Net {
                 }
             }
 
-            if (retStream == null)
-            {
+            if (retStream == null) {
                 // Existing connection did not worked. Need to establish new one.
                 IPAddress address = null;
                 var hostNameType = proxyServer.HostNameType;
-                if (hostNameType == UriHostNameType.IPv4)
-                {
+                if (hostNameType == UriHostNameType.IPv4) {
                     address = IPAddress.Parse(proxyServer.Host);
                 }
-                else if (hostNameType == UriHostNameType.Dns)
-                {
+                else if (hostNameType == UriHostNameType.Dns) {
                     IPHostEntry hostEntry = null;
 
-                    try
-                    {
+                    try {
                         hostEntry = Dns.GetHostEntry(proxyServer.Host);
                     }
-                    catch(SocketException se)
-                    {
+                    catch (SocketException se) {
                         throw new WebException("host not available", se, WebExceptionStatus.ConnectFailure, null);
                     }
 
                     var addressListSize = hostEntry.AddressList.Length;
-                    for (var i = 0; i < addressListSize; i++)
-                    {
-                        if ((address = hostEntry.AddressList[i]) != null)
-                        {
+                    for (var i = 0; i < addressListSize; i++) {
+                        if ((address = hostEntry.AddressList[i]) != null) {
                             break;
                         }
                     }
 
-                    if (address == null)
-                    {
+                    if (address == null) {
                         throw new WebException("Unable to resolve Dns entry to valid IPv4 Address", WebExceptionStatus.NameResolutionFailure);
                     }
                 }
-                else
-                {
+                else {
                     throw new WebException("Only IPv4 or Dns host names allowed.");
                 }
 
                 // If socket was not found in waiting connections, then we create new one.
                 var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
-                try
-                {
+                try {
                     socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
                 }
-                catch{}
-                try
-                {
+                catch { }
+                try {
                     socket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.NoDelay, true);
                 }
-                catch{}
+                catch { }
 
                 // Connect to remote endpoint
-                try
-                {
+                try {
                     var remoteEP = new IPEndPoint(address, proxyServer.Port);
                     socket.Connect((EndPoint)remoteEP);
                 }
-                catch (SocketException e)
-                {
+                catch (SocketException e) {
                     throw new WebException("connection failed", e, WebExceptionStatus.ConnectFailure, null);
                 }
 
@@ -1274,20 +1198,17 @@ namespace System.Net {
                 retStream = new InputNetworkStreamWrapper(new NetworkStream(socket), socket, !isHttps, proxyServer.Host + ":" + proxyServer.Port);
 
                 // For https proxy works differenly from http.
-                if (isHttps)
-                {
+                if (isHttps) {
                     // If proxy is set, then for https we need to send "CONNECT" command to proxy.
                     // Once this command is send, the socket from proxy works as if it is the socket to the destination server.
-                    if (proxyServer != targetServer)
-                    {
+                    if (proxyServer != targetServer) {
                         var request = "CONNECT " + remoteServer + " HTTP/" + this.ProtocolVersion + "\r\n\r\n";
                         var bytesToSend = Encoding.UTF8.GetBytes(request);
                         retStream.Write(bytesToSend, 0, bytesToSend.Length);
 
                         // Now proxy should respond with the connected status. If it is successul, then we are good to go.
                         var respData = ParseHTTPResponse(retStream, this.m_keepAlive);
-                        if (respData.m_statusCode != (int)HttpStatusCode.OK)
-                        {
+                        if (respData.m_statusCode != (int)HttpStatusCode.OK) {
                             throw new WebException("Proxy returned " + respData.m_statusCode, WebExceptionStatus.ConnectFailure);
                         }
                     }
@@ -1305,13 +1226,11 @@ namespace System.Net {
                     retStream.m_rmAddrAndPort = this.m_originalUrl.Host + ":" + this.m_originalUrl.Port;
                 }
 
-                lock (m_ConnectedStreams)
-                {
+                lock (m_ConnectedStreams) {
                     m_ConnectedStreams.Add(retStream);
 
                     // if the current stream list is empty then start the timer that drops unused connections.
-                    if (m_ConnectedStreams.Count == 1)
-                    {
+                    if (m_ConnectedStreams.Count == 1) {
                         m_DropOldConnectionsTimer.Change(HttpListener.DefaultKeepAliveMilliseconds, System.Threading.Timeout.Infinite);
                     }
                 }
@@ -1323,28 +1242,23 @@ namespace System.Net {
         /// <summary>
         /// Submits request to the WEB server.
         /// </summary>
-        private void SubmitRequest()
-        {
+        private void SubmitRequest() {
             // We have connected socket. Create request stream
             // If proxy is set - connect to proxy server.
 
-            if(this.m_requestStream == null)
-            {
-                if (this.m_proxy == null)
-                {   // Direct connection to target server.
+            if (this.m_requestStream == null) {
+                if (this.m_proxy == null) {   // Direct connection to target server.
                     this.m_requestStream = EstablishConnection(this.m_originalUrl, this.m_originalUrl);
                 }
                 else // Connection through proxy. We create network stream connected to proxy
                 {
                     var proxyUri = this.m_proxy.GetProxy(this.m_originalUrl);
 
-                    if (this.m_originalUrl.Scheme == "https")
-                    {
+                    if (this.m_originalUrl.Scheme == "https") {
                         // For HTTPs we still need to know the target name to decide on persistent connection.
                         this.m_requestStream = EstablishConnection(proxyUri, this.m_originalUrl);
                     }
-                    else
-                    {
+                    else {
                         // For normal HTTP all requests go to proxy
                         this.m_requestStream = EstablishConnection(proxyUri, proxyUri);
                     }
@@ -1380,8 +1294,7 @@ namespace System.Net {
         /// <param name="inStream">Network stream connected to server.</param>
         /// <param name="defaultKeepAlive">TBD</param>
         /// <returns>CoreResponseData that describes server response.</returns>
-        private CoreResponseData ParseHTTPResponse(InputNetworkStreamWrapper inStream, bool defaultKeepAlive)
-        {
+        private CoreResponseData ParseHTTPResponse(InputNetworkStreamWrapper inStream, bool defaultKeepAlive) {
             // CoreResponseData keeps all the information of the response.
             var ret = new CoreResponseData();
             // maximumHeadersLength is maximum total length of http header. Basically this is amount
@@ -1398,16 +1311,13 @@ namespace System.Net {
 
             // find HTTP version, read http/1.x
             var httpVersionString = line.Substring(0, currentOffset).ToLower();
-            if (httpVersionString.Equals("http/1.1"))
-            {
+            if (httpVersionString.Equals("http/1.1")) {
                 ret.m_version = HttpVersion.Version11;
             }
-            else if (httpVersionString.Equals("http/1.0"))
-            {
+            else if (httpVersionString.Equals("http/1.0")) {
                 ret.m_version = HttpVersion.Version10;
             }
-            else
-            {
+            else {
                 ret.m_status = WebExceptionStatus.ServerProtocolViolation;
                 ret.m_exceptionMessage = "Unknown http version: " + httpVersionString;
                 return ret;
@@ -1420,15 +1330,13 @@ namespace System.Net {
             var codeStart = currentOffset;
             for (; currentOffset < line.Length && ' ' != line[currentOffset]; ++currentOffset) ;
             var statusCode = -1;
-            try
-            {
+            try {
                 var statusCodeStr =
                     line.Substring(codeStart,
                                     currentOffset - codeStart);
                 statusCode = Convert.ToInt32(statusCodeStr);
             }
-            catch (Exception e)
-            {
+            catch (Exception e) {
                 ret.m_status = WebExceptionStatus.ServerProtocolViolation;
                 ret.m_exceptionMessage = "Missing status code in HTTP reply";
                 ret.m_innerException = e;
@@ -1446,13 +1354,11 @@ namespace System.Net {
             ret.m_chunked = false;
             ret.m_contentLength = -1;
 
-            while ((line = inStream.Read_HTTP_Header(maxHTTPLineLength)).Length > 0)
-            {
+            while ((line = inStream.Read_HTTP_Header(maxHTTPLineLength)).Length > 0) {
                 // line.Length is used for the header. Substruct it.
                 headersLength -= line.Length;
                 // If total length used for header is exceeded, we break
-                if (headersLength < 0)
-                {
+                if (headersLength < 0) {
                     ret.m_status = WebExceptionStatus.ServerProtocolViolation;
                     ret.m_exceptionMessage = "Headers size exceed limit";
                     return ret;
@@ -1460,8 +1366,7 @@ namespace System.Net {
 
                 // Now parse the header.
                 var sepIdx = line.IndexOf(':');
-                if (sepIdx == -1)
-                {
+                if (sepIdx == -1) {
                     ret.m_status = WebExceptionStatus.ServerProtocolViolation;
                     ret.m_exceptionMessage = "Illegal header format: " + line;
                     return ret;
@@ -1472,18 +1377,15 @@ namespace System.Net {
                 var matchableHeaderName = headerName.ToLower();
 
                 ret.m_headers.AddInternal(headerName, headerValue);
-                if (matchableHeaderName.Equals("content-length"))
-                {
-                    try
-                    {
+                if (matchableHeaderName.Equals("content-length")) {
+                    try {
                         ret.m_contentLength = Convert.ToInt32(headerValue);
 
                         // set the response stream length for the input stream, so that an EOF will be read
                         // if the caller tries to read base the response content length
                         inStream.m_BytesLeftInResponse = ret.m_contentLength;
                     }
-                    catch (Exception e)
-                    {
+                    catch (Exception e) {
                         ret.m_status =
                             WebExceptionStatus.ServerProtocolViolation;
                         ret.m_exceptionMessage = "Content length NAN: " + headerValue;
@@ -1491,17 +1393,13 @@ namespace System.Net {
                         return ret;
                     }
                 }
-                else if (matchableHeaderName.Equals("transfer-encoding"))
-                {
-                    if (headerValue.ToLower().IndexOf("chunked") != -1)
-                    {
+                else if (matchableHeaderName.Equals("transfer-encoding")) {
+                    if (headerValue.ToLower().IndexOf("chunked") != -1) {
                         ret.m_chunked = true;
                     }
                 }
-                else if (matchableHeaderName.Equals("connection"))
-                {
-                    if (headerValue.ToLower().IndexOf(HttpKnownHeaderValues.close) != -1)
-                    {
+                else if (matchableHeaderName.Equals("connection")) {
+                    if (headerValue.ToLower().IndexOf(HttpKnownHeaderValues.close) != -1) {
                         ret.m_shouldClose = true;
                     }
                 }
@@ -1515,40 +1413,32 @@ namespace System.Net {
         /// indicated by the property Timeout.
         /// </summary>
         /// <param name="arg"></param>
-        private void OnRequestTimeout(object arg)
-        {
-            if(this.m_requestStream != null && this.m_requestStream.m_Socket != null)
-            {
-                try
-                {
+        private void OnRequestTimeout(object arg) {
+            if (this.m_requestStream != null && this.m_requestStream.m_Socket != null) {
+                try {
                     // Close the socket to kill the operation
                     this.m_requestStream.m_Socket.Close();
                 }
-                catch
-                {
+                catch {
                 }
-                finally
-                {
+                finally {
                     this.m_requestStream.m_InUse = false;
                 }
             }
         }
 
         /// <summary>
-        /// Returns a response from an Internet resource.  Overrides the 
-        /// <itemref>WebRequest</itemref>.<see cref="System.Net.WebRequest.GetResponse"/> 
+        /// Returns a response from an Internet resource.  Overrides the
+        /// <itemref>WebRequest</itemref>.<see cref="System.Net.WebRequest.GetResponse"/>
         /// method.
         /// </summary>
         /// <returns>The response from the Internet resource.</returns>
-        public override WebResponse GetResponse()
-        {
+        public override WebResponse GetResponse() {
             HttpWebResponse response = null;
 
-            try
-            {
-                // If response was not sent, Submit the request. 
-                if (!this.m_requestSent)
-                {
+            try {
+                // If response was not sent, Submit the request.
+                if (!this.m_requestSent) {
                     SubmitRequest();
                 }
 
@@ -1557,32 +1447,27 @@ namespace System.Net {
                 // reset the total response bytes for the new request.
                 this.m_requestStream.m_BytesLeftInResponse = -1;
 
-                // create the request timeout timer.  This will kill the operation if it takes longer than specified by the Timeout property.  
+                // create the request timeout timer.  This will kill the operation if it takes longer than specified by the Timeout property.
                 // The underlying socket will be closed to end the web request
-                using (var tmr = new Timer(new TimerCallback(this.OnRequestTimeout), null, this.m_timeout, System.Threading.Timeout.Infinite))
-                {
+                using (var tmr = new Timer(new TimerCallback(this.OnRequestTimeout), null, this.m_timeout, System.Threading.Timeout.Infinite)) {
                     // Processes response from server. Request stream should already be there.
 
                     respData = ParseHTTPResponse(this.m_requestStream, this.m_keepAlive);
 
-                    if (respData.m_statusCode == (int)HttpStatusCode.Continue)
-                    {
-                        if (this.m_continueDelegate != null)
-                        {
+                    if (respData.m_statusCode == (int)HttpStatusCode.Continue) {
+                        if (this.m_continueDelegate != null) {
                             this.m_continueDelegate(respData.m_statusCode, respData.m_headers);
                         }
-                        else
-                        {
+                        else {
                             respData = ParseHTTPResponse(this.m_requestStream, this.m_keepAlive);
                         }
                     }
                 }
-                
+
                 response = new HttpWebResponse(this.m_method, this.m_originalUrl, respData, this);
-                
+
                 // Now we look if response has chunked encoding. If it is chunked, we need to set flag in m_requestStream we return.
-                if (respData.m_chunked)
-                {
+                if (respData.m_chunked) {
                     this.m_requestStream.m_EnableChunkedDecoding = true;
                 }
 
@@ -1593,22 +1478,18 @@ namespace System.Net {
 
                 this.m_responseCreated = true;
             }
-            catch(SocketException se)
-            {
-                if (this.m_requestStream != null)
-                {
+            catch (SocketException se) {
+                if (this.m_requestStream != null) {
                     this.m_requestStream.m_InUse = false;
 
-                    if (this.m_requestStream.m_Socket != null)
-                    {
+                    if (this.m_requestStream.m_Socket != null) {
                         this.m_requestStream.m_Socket.Close();
                     }
                 }
 
                 throw new WebException("", se);
             }
-            catch(Exception e)
-            {
+            catch (Exception e) {
                 throw new WebException("", e);
             }
 
@@ -1622,26 +1503,22 @@ namespace System.Net {
         /// </summary>
         /// <returns>A <b>Stream</b> to use to write request data.</returns>
         /// <remarks>Used for POST of PUT requests.</remarks>
-        public override Stream GetRequestStream()
-        {
+        public override Stream GetRequestStream() {
             // Validates the call to GetRequestStream. Throws exception on errors.
             ValidateGetRequestStream();
 
             // Submits the request.
-            try
-            {
+            try {
                 SubmitRequest();
             }
-            catch
-            {
-                if(this.m_requestStream != null)
-                {
+            catch {
+                if (this.m_requestStream != null) {
                     RemoveStreamFromPool(this.m_requestStream);
                     this.m_requestStream.Dispose();
                 }
                 throw;
             }
-            
+
             // Return the stream
             return this.m_requestStream.CloneStream();
         }
@@ -1653,8 +1530,7 @@ namespace System.Net {
         /// <param name="resp">Partially constructed HttpWebResponse</param>
         /// <returns>WebException instance</returns>
         private static WebException protocolError(Exception inner,
-                                                   HttpWebResponse resp)
-        {
+                                                   HttpWebResponse resp) {
             var statusCode = resp.StatusCode;
             var sr = (int)statusCode;
             var message = "(" + ((int)statusCode) + ")";
@@ -1669,8 +1545,7 @@ namespace System.Net {
 
         internal bool m_sentHeaders = false;
 
-        private bool hasEntityData()
-        {
+        private bool hasEntityData() {
             if (this.m_httpWriteMode != HttpWriteMode.None)
                 return true;
             else
@@ -1684,23 +1559,19 @@ namespace System.Net {
         /// message.
         /// </summary>
         /// <returns>Byte array with HTTP request. This data is sent through network.</returns>
-        private byte[] GetHTTPRequestData()
-        {
+        private byte[] GetHTTPRequestData() {
             //step 1 - compute the length of the headers.
 
             string statusLine;
 
             // Connect verbs require CONNECT host:port
-            if (this.Method.ToUpper().Equals("CONNECT"))
-            {
+            if (this.Method.ToUpper().Equals("CONNECT")) {
                 statusLine = "CONNECT " + this.Address.Host + ":" + this.Address.Port + " HTTP/" + this.ProtocolVersion + "\r\n";
             }
-            else if (this.m_proxy != null && this.m_originalUrl.Scheme != "https")
-            {
+            else if (this.m_proxy != null && this.m_originalUrl.Scheme != "https") {
                 statusLine = this.Method + " " + this.Address.AbsoluteUri + " HTTP/" + this.ProtocolVersion + "\r\n";
             }
-            else
-            {
+            else {
                 statusLine = this.Method + " " + this.Address.AbsolutePath + " HTTP/" + this.ProtocolVersion + "\r\n";    // .PathAndQuery
             }
 
@@ -1731,11 +1602,9 @@ namespace System.Net {
         /// <param name="offset">Offset to start convertion.</param>
         /// <param name="count">Count of bytes to convert to string.</param>
         /// <returns>String converted from byte array.</returns>
-        private static string toEAscii(byte[] data, int offset, int count)
-        {
+        private static string toEAscii(byte[] data, int offset, int count) {
             var output = new char[count];
-            for (var i = 0; i < count; ++i)
-            {
+            for (var i = 0; i < count; ++i) {
                 output[i] = (char)data[offset + i];
             }
 
@@ -1747,11 +1616,9 @@ namespace System.Net {
         /// </summary>
         /// <param name="data">string to convert</param>
         /// <returns>array of bytes converted from string</returns>
-        internal static byte[] fromEAscii(string data)
-        {
+        internal static byte[] fromEAscii(string data) {
             var ret = new byte[data.Length];
-            for (var i = 0; i < data.Length; ++i)
-            {
+            for (var i = 0; i < data.Length; ++i) {
                 ret[i] = (byte)data[i];
             }
 
@@ -1766,10 +1633,8 @@ namespace System.Net {
         /// <param name="responseCode">HTTP response code</param>
         /// <returns><b>true</b> if the specified response code is one of the
         /// defined values; otherwise, <b>false</b>.</returns>
-        private bool setContentLengthToZero(HttpStatusCode responseCode)
-        {
-            switch (responseCode)
-            {
+        private bool setContentLengthToZero(HttpStatusCode responseCode) {
+            switch (responseCode) {
                 case HttpStatusCode.SwitchingProtocols:
                 case HttpStatusCode.ResetContent:
                 case HttpStatusCode.NotModified:
@@ -1788,8 +1653,7 @@ namespace System.Net {
         /// <param name="bytes">Output array.</param>
         /// <param name="offset">Offset to start placing data in array.</param>
         /// <returns>Count of bytes copied</returns>
-        private static int copyString(string src, byte[] bytes, int offset)
-        {
+        private static int copyString(string src, byte[] bytes, int offset) {
             int i;
             for (i = 0; i < src.Length; ++i)
                 bytes[offset + i] = (byte)src[i];
