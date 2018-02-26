@@ -3,12 +3,15 @@ using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
+using GHIElectronics.TinyCLR.Net.NetworkInterface;
+using NI = System.Net.NetworkInterface.NetworkInterface;
 
 namespace System.Net.Security {
     public class SslStream : NetworkStream {
         // Internal flags
-        private int _sslContext;
+        private int sslHandle;
         private bool _isServer;
+        private readonly ISslStreamProvider ni;
 
         //--//
 
@@ -18,56 +21,18 @@ namespace System.Net.Security {
                 throw new NotSupportedException();
             }
 
-            this._sslContext = -1;
             this._isServer = false;
+            this.sslHandle = -1;
+
+            this.ni = NI.GetActiveForSslStream();
         }
 
-        public void AuthenticateAsClient(string targetHost, params SslProtocols[] sslProtocols) => AuthenticateAsClient(targetHost, null, null, SslVerification.NoVerification, sslProtocols);
+        public void AuthenticateAsClient(string targetHost, params SslProtocols[] sslProtocols) => AuthenticateAsClient(targetHost, default(X509Certificate));
 
-        public void AuthenticateAsClient(string targetHost, X509Certificate cert, SslVerification verify, params SslProtocols[] sslProtocols) => AuthenticateAsClient(targetHost, cert, null, verify, sslProtocols);
+        public void AuthenticateAsClient(string targetHost, X509Certificate cert, params SslProtocols[] sslProtocols) => this.sslHandle = this.ni.AuthenticateAsClient(this._socket.m_Handle, targetHost, cert, sslProtocols);
 
-        public void AuthenticateAsClient(string targetHost, X509Certificate cert, X509Certificate[] ca, SslVerification verify, params SslProtocols[] sslProtocols) => Authenticate(false, targetHost, cert, ca, verify, sslProtocols);
+        public void AuthenticateAsServer(X509Certificate cert, params SslProtocols[] sslProtocols) => this.sslHandle = this.ni.AuthenticateAsServer(this._socket.m_Handle, cert, sslProtocols);
 
-        public void AuthenticateAsServer(X509Certificate cert, SslVerification verify, params SslProtocols[] sslProtocols) => AuthenticateAsServer(cert, null, verify, sslProtocols);
-
-        public void AuthenticateAsServer(X509Certificate cert, X509Certificate[] ca, SslVerification verify, params SslProtocols[] sslProtocols) => Authenticate(true, "", cert, ca, verify, sslProtocols);
-
-        public void UpdateCertificates(X509Certificate cert, X509Certificate[] ca) {
-            if (this._sslContext == -1) throw new InvalidOperationException();
-
-            SslNative.UpdateCertificates(this._sslContext, cert, ca);
-        }
-
-        internal void Authenticate(bool isServer, string targetHost, X509Certificate certificate, X509Certificate[] ca, SslVerification verify, params SslProtocols[] sslProtocols) {
-            SslProtocols vers = (SslProtocols)0;
-
-            if (-1 != this._sslContext) throw new InvalidOperationException();
-
-            for (int i = sslProtocols.Length - 1; i >= 0; i--) {
-                vers |= sslProtocols[i];
-            }
-
-            this._isServer = isServer;
-
-            try {
-                if (isServer) {
-                    this._sslContext = SslNative.SecureServerInit((int)vers, (int)verify, certificate, ca);
-                    SslNative.SecureAccept(this._sslContext, this._socket);
-                }
-                else {
-                    this._sslContext = SslNative.SecureClientInit((int)vers, (int)verify, certificate, ca);
-                    SslNative.SecureConnect(this._sslContext, targetHost, this._socket);
-                }
-            }
-            catch {
-                if (this._sslContext != -1) {
-                    SslNative.ExitSecureContext(this._sslContext);
-                    this._sslContext = -1;
-                }
-
-                throw;
-            }
-        }
 
         public bool IsServer => this._isServer;
 
@@ -76,7 +41,7 @@ namespace System.Net.Security {
                 if (this._disposed) throw new ObjectDisposedException();
                 if (this._socket == null) throw new IOException();
 
-                return SslNative.DataAvailable(this._socket);
+                return this.ni.Available(this.sslHandle);
             }
         }
 
@@ -85,7 +50,7 @@ namespace System.Net.Security {
                 if (this._disposed) throw new ObjectDisposedException();
                 if (this._socket == null) throw new IOException();
 
-                return (SslNative.DataAvailable(this._socket) > 0);
+                return (this.ni.Available(this.sslHandle) > 0);
             }
         }
 
@@ -101,14 +66,9 @@ namespace System.Net.Security {
             if (!this._disposed) {
                 this._disposed = true;
 
-                if (this._socket.m_Handle != -1) {
-                    SslNative.SecureCloseSocket(this._socket);
-                    this._socket.m_Handle = -1;
-                }
-
-                if (this._sslContext != -1) {
-                    SslNative.ExitSecureContext(this._sslContext);
-                    this._sslContext = -1;
+                if (this.sslHandle != -1) {
+                    this.ni.Close(this.sslHandle);
+                    this.sslHandle = -1;
                 }
             }
         }
@@ -130,7 +90,7 @@ namespace System.Net.Security {
                 throw new ArgumentOutOfRangeException();
             }
 
-            return SslNative.SecureRead(this._socket, buffer, offset, size, this._socket.ReceiveTimeout);
+            return this.ni.Read(this.sslHandle, buffer, offset, size, this._socket.ReceiveTimeout);
         }
 
         public override void Write(byte[] buffer, int offset, int size) {
@@ -150,7 +110,7 @@ namespace System.Net.Security {
                 throw new ArgumentOutOfRangeException();
             }
 
-            SslNative.SecureWrite(this._socket, buffer, offset, size, this._socket.SendTimeout);
+            this.ni.Write(this.sslHandle, buffer, offset, size, this._socket.SendTimeout);
         }
     }
 }

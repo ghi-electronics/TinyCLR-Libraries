@@ -64,6 +64,7 @@ namespace System.Net.NetworkInterface {
         }
 
         internal static ISocketProvider GetActiveForSocket() => (NetworkInterface.ActiveNetworkInterface ?? throw new InvalidOperationException("No active interface")) is ISocketProvider t ? t : throw new InvalidOperationException("Active interface does not support sockets.");
+        internal static ISslStreamProvider GetActiveForSslStream() => (NetworkInterface.ActiveNetworkInterface ?? throw new InvalidOperationException("No active interface")) is ISslStreamProvider t ? t : throw new InvalidOperationException("Active interface does not support SSL streams.");
         internal static IDnsProvider GetActiveForDns() => (NetworkInterface.ActiveNetworkInterface ?? throw new InvalidOperationException("No active interface")) is IDnsProvider t ? t : throw new InvalidOperationException("Active interface does not support DNS.");
 
         public static NetworkInterface ActiveNetworkInterface {

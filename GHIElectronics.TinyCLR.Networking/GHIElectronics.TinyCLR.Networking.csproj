@@ -37,6 +37,7 @@
     <Compile Include="Authentication\SslProtocols.cs" />
     <Compile Include="Cryptography\X509Certificate.cs" />
     <Compile Include="NetworkInterface\IDnsProvider.cs" />
+    <Compile Include="NetworkInterface\ISslStreamProvider.cs" />
     <Compile Include="NetworkInterface\PhysicalAddress.cs" />
     <Compile Include="Net\DNS.cs" />
     <Compile Include="Net\EndPoint.cs" />

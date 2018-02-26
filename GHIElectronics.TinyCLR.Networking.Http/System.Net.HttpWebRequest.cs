@@ -1217,7 +1217,7 @@ namespace System.Net {
                     var sslStream = new SslStream(retStream.m_Socket);
 
                     // Throws exception is fails.
-                    sslStream.AuthenticateAsClient(this.m_originalUrl.Host, null, this.m_caCerts, SslProtocols.Default);
+                    sslStream.AuthenticateAsClient(this.m_originalUrl.Host, this.m_caCerts[0], SslProtocols.Default);
 
                     // Changes the stream to SSL stream.
                     retStream.m_Stream = sslStream;
