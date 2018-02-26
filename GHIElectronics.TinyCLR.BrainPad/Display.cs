@@ -229,6 +229,9 @@ namespace GHIElectronics.TinyCLR.BrainPad {
 
             WriteCommand(0x29); //Display on
             Thread.Sleep(50);
+
+            WriteCommand(0x11); //Make sure sleep exit
+            Thread.Sleep(50);
         }
 #endif
         public Display() {
@@ -262,7 +265,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
                     };
                     this.spi = SpiDevice.FromId(G30.SpiBus.Spi2, settings);
                     InitN18();
-                    InitN18();
+
                     // clear the entire screen
                     SetClip(0, 0, 160, 128);
                     WriteCommand(0x2C);
