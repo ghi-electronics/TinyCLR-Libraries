@@ -162,7 +162,7 @@ namespace System.Net.Sockets
         {
             get
             {
-                if (this._disposed == true) throw new ObjectDisposedException();
+                if (this._disposed) throw new ObjectDisposedException();
                 if (this._socket.m_Handle == -1) throw new IOException();
 
                 return this._socket.Available;
@@ -190,7 +190,7 @@ namespace System.Net.Sockets
         {
             get
             {
-                if (this._disposed == true) throw new ObjectDisposedException();
+                if (this._disposed) throw new ObjectDisposedException();
                 if (this._socket.m_Handle == -1) throw new IOException();
 
                 return (this._socket.Available > 0);
@@ -237,7 +237,7 @@ namespace System.Net.Sockets
                 {
                     if (disposing)
                     {
-                        if (this._ownsSocket == true)
+                        if (this._ownsSocket)
                             this._socket.Close();
                     }
                 }

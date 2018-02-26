@@ -330,7 +330,7 @@ namespace System.Net.Sockets {
             return this.ni.Poll(this.m_Handle, microSeconds, mode);
         }
 
-        [MethodImplAttribute(MethodImplOptions.Synchronized)]
+        [MethodImpl(MethodImplOptions.Synchronized)]
         protected virtual void Dispose(bool disposing)
         {
             if (this.m_Handle != -1)
