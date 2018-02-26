@@ -3,6 +3,8 @@ using System.Collections;
 using System.Net;
 using System.Net.NetworkInterface;
 using System.Net.Sockets;
+using System.Security.Authentication;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
 using GHIElectronics.TinyCLR.Devices.Gpio;
@@ -11,7 +13,7 @@ using GHIElectronics.TinyCLR.Net.NetworkInterface;
 using GHIElectronics.TinyCLR.Networking.SPWF04Sx.Helpers;
 
 namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
-    public class SPWF04SxInterface : NetworkInterface, ISocketProvider, IDnsProvider, IDisposable {
+    public class SPWF04SxInterface : NetworkInterface, ISocketProvider, ISslStreamProvider, IDnsProvider, IDisposable {
         private readonly ObjectPool commandPool;
         private readonly Hashtable netifSockets;
         private readonly Queue pendingCommands;
@@ -585,6 +587,13 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
         void ISocketProvider.SetOption(int socket, SocketOptionLevel optionLevel, SocketOptionName optionName, byte[] optionValue) {
 
         }
+
+        int ISslStreamProvider.AuthenticateAsClient(int socketHandle, string targetHost, X509Certificate certificate, SslProtocols[] sslProtocols) => socketHandle;
+        int ISslStreamProvider.AuthenticateAsServer(int socketHandle, X509Certificate certificate, SslProtocols[] sslProtocols) => throw new NotImplementedException();
+        void ISslStreamProvider.Close(int handle) => ((ISocketProvider)this).Close(handle);
+        int ISslStreamProvider.Read(int handle, byte[] buffer, int offset, int count, int timeout) => ((ISocketProvider)this).Receive(handle, buffer, offset, count, SocketFlags.None, timeout);
+        int ISslStreamProvider.Write(int handle, byte[] buffer, int offset, int count, int timeout) => ((ISocketProvider)this).Send(handle, buffer, offset, count, SocketFlags.None, timeout);
+        int ISslStreamProvider.Available(int handle) => ((ISocketProvider)this).Available(handle);
 
         void IDnsProvider.GetHostByName(string name, out string canonicalName, out SocketAddress[] addresses) {
             var cmd = this.GetCommand()

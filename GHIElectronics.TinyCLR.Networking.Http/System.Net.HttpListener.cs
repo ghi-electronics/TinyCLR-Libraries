@@ -4,7 +4,10 @@
 
 namespace System.Net {
     using System.Collections;
+    using System.Net.Security;
     using System.Net.Sockets;
+    using System.Security.Authentication;
+    using System.Security.Cryptography.X509Certificates;
     using System.Threading;
 
     /// <summary>
@@ -15,8 +18,7 @@ namespace System.Net {
     /// This class enables using a socket to receive data that uses the HTTP
     /// protocol.
     /// </remarks>
-    public class HttpListener
-    {
+    public class HttpListener {
         /// <summary>
         /// Indicates whether the listener is waiting on an http or https
         /// connection.
@@ -26,7 +28,7 @@ namespace System.Net {
         /// <summary>
         /// The certificate to send during https authentication.
         /// </summary>
-        //X509Certificate m_httpsCert;
+        X509Certificate m_httpsCert;
 
         /// <summary>
         /// This value is the number of connections that can be ready but are
@@ -118,18 +120,14 @@ namespace System.Net {
         /// <param name="port">The port to start listening on.  If -1, the
         /// default port is used (port 80 for http, or port 443 for https).
         /// </param>
-        private void InitListener(string prefix, int port)
-        {
-            switch (prefix.ToLower())
-            {
-                case "http":
-                    {
+        private void InitListener(string prefix, int port) {
+            switch (prefix.ToLower()) {
+                case "http": {
                         this.m_IsHttpsConnection = false;
                         this.m_Port = Uri.HttpDefaultPort;
                         break;
                     }
-                case "https":
-                    {
+                case "https": {
                         this.m_IsHttpsConnection = true;
                         this.m_Port = Uri.HttpsDefaultPort;
                         break;
@@ -137,8 +135,7 @@ namespace System.Net {
                 default: throw new ArgumentException("Prefix should be http or https");
             }
 
-            if (port != -1)
-            {
+            if (port != -1) {
                 this.m_Port = port;
             }
 
@@ -155,10 +152,8 @@ namespace System.Net {
         /// <remarks>This is an internal function, not visible to the user.
         /// </remarks>
         /// <param name="clientStream">The stream to add.</param>
-        internal void AddClientStream(OutputNetworkStreamWrapper clientStream)
-        {
-            lock(this.m_ClientStreams)
-            {
+        internal void AddClientStream(OutputNetworkStreamWrapper clientStream) {
+            lock (this.m_ClientStreams) {
                 this.m_ClientStreams.Add(clientStream);
             }
         }
@@ -168,14 +163,10 @@ namespace System.Net {
         /// streams.
         /// </summary>
         /// <param name="clientStream">The stream to remove.</param>
-        internal void RemoveClientStream(OutputNetworkStreamWrapper clientStream)
-        {
-            lock(this.m_ClientStreams)
-            {
-                for (var i = 0; i < this.m_ClientStreams.Count; i++)
-                {
-                    if (clientStream == this.m_ClientStreams[i])
-                    {
+        internal void RemoveClientStream(OutputNetworkStreamWrapper clientStream) {
+            lock (this.m_ClientStreams) {
+                for (var i = 0; i < this.m_ClientStreams.Count; i++) {
+                    if (clientStream == this.m_ClientStreams[i]) {
                         this.m_ClientStreams.RemoveAt(i);
                         break;
                     }
@@ -191,10 +182,8 @@ namespace System.Net {
         /// For that purpose we create class that keeps references to both listerner and socket and
         /// start thread using member function of this class as delegate.
         /// Internal class not visible to user.</remarks>
-        private class HttpListernerAndStream
-        {
-            internal HttpListernerAndStream(HttpListener listener, OutputNetworkStreamWrapper outputStream)
-            {
+        private class HttpListernerAndStream {
+            internal HttpListernerAndStream(HttpListener listener, OutputNetworkStreamWrapper outputStream) {
                 this.m_listener = listener;
                 this.m_outStream = outputStream;
             }
@@ -206,8 +195,7 @@ namespace System.Net {
             internal void AddToWaitingConnections() => this.m_listener.WaitingConnectionThreadFunc(this.m_outStream);
         }
 
-        internal void AddToWaitingConnections(OutputNetworkStreamWrapper outputStream)
-        {
+        internal void AddToWaitingConnections(OutputNetworkStreamWrapper outputStream) {
             // Create a thread that blocks onsocket.Poll - basically waits for new data from client.
             var listAndSock = new HttpListernerAndStream(this, outputStream);
 
@@ -219,19 +207,15 @@ namespace System.Net {
         /// <summary>
         /// Waits for new data from the client.
         /// </summary>
-        private void WaitingConnectionThreadFunc(OutputNetworkStreamWrapper outputStream)
-        {
-            try
-            {
+        private void WaitingConnectionThreadFunc(OutputNetworkStreamWrapper outputStream) {
+            try {
                 // This is a blocking call waiting for more data.
                 outputStream.m_Socket.Poll(DefaultKeepAliveMilliseconds * 1000, SelectMode.SelectRead);
 
-                if (outputStream.m_Socket.Available > 0)
-                {
+                if (outputStream.m_Socket.Available > 0) {
 
                     // Add this connected stream to the list.
-                    lock (this.m_InputStreamsQueue)
-                    {
+                    lock (this.m_InputStreamsQueue) {
                         this.m_InputStreamsQueue.Enqueue(outputStream);
                     }
 
@@ -243,8 +227,7 @@ namespace System.Net {
                     outputStream.Dispose();
                 }
             }
-            catch
-            {
+            catch {
             }
         }
 
@@ -263,24 +246,20 @@ namespace System.Net {
         /// <itemref>HttpListener</itemref>.
         /// </para>
         /// </remarks>
-        public void Abort()
-        {
-            lock (this)
-            {
+        public void Abort() {
+            lock (this) {
                 // First we shut down the service.
                 Close();
 
                 // Now we need to go through list of all client sockets and close all of them.
                 // This will cause exceptions on read/write operations on these sockets.
-                foreach (OutputNetworkStreamWrapper netStream in this.m_ClientStreams)
-                {
+                foreach (OutputNetworkStreamWrapper netStream in this.m_ClientStreams) {
                     netStream.Close();
                 }
                 this.m_ClientStreams.Clear();
             }
 
-            if (this.m_thAccept != null)
-            {
+            if (this.m_thAccept != null) {
                 this.m_thAccept.Join();
             }
         }
@@ -291,8 +270,7 @@ namespace System.Net {
         /// <remarks>On new connections, this method enques the new input
         /// network stream and sets an event that a new connection is available.
         /// </remarks>
-        private void AcceptThreadFunc()
-        {
+        private void AcceptThreadFunc() {
             Thread.CurrentThread.Priority = ThreadPriority.AboveNormal;
             // If there was no exception up to this point, means we succeded to start listening.
             this.m_ServiceRunning = true;
@@ -303,38 +281,31 @@ namespace System.Net {
             this.m_RequestArrived.Set();
 
             // The value of m_serviceStarted normally is changed from other thread by calling Stop.
-            while (this.m_ServiceRunning)
-            {
+            while (this.m_ServiceRunning) {
                 Socket clientSock;
                 // Need to create NetworkStream or SSL stream depending on protocol used.
                 NetworkStream netStream = null;
 
-                try
-                {
+                try {
                     // It is important that multithread access to m_listener.Accept(); is not locked.
                     // If it was locked - then Close or Stop would be blocked potnetially for ever while waiting for connection.
                     // This is a blocking call waiting for connection.
                     clientSock = this.m_listener.Accept();
 
                     retry = 0;
-                    try
-                    {
+                    try {
                         // set NoDelay to increase HTTP(s) response times
                         clientSock.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.NoDelay, true);
                     }
-                    catch
-                    {
+                    catch {
 
                     }
                 }
-                catch (SocketException)
-                {
-                    if (retry > 5)
-                    {
+                catch (SocketException) {
+                    if (retry > 5) {
                         // If request to stop listener flag is set or locking call is interupted return
                         // On exception we stop the service and record the exception.
-                        if (this.m_ServiceRunning && !this.m_Closed)
-                        {
+                        if (this.m_ServiceRunning && !this.m_Closed) {
                             Stop();
                         }
 
@@ -347,12 +318,10 @@ namespace System.Net {
                     retry++;
                     continue;
                 }
-                catch
-                {
+                catch {
                     // If request to stop listener flag is set or locking call is interupted return
                     // On exception we stop the service and record the exception.
-                    if (this.m_ServiceRunning && !this.m_Closed)
-                    {
+                    if (this.m_ServiceRunning && !this.m_Closed) {
                         Stop();
                     }
 
@@ -362,35 +331,29 @@ namespace System.Net {
                     break;
                 }
 
-                try
-                {
-                    //if (!this.m_IsHttpsConnection)
-                    //{
+                try {
+                    if (!this.m_IsHttpsConnection) {
                         // This is case of normal HTTP. Create network stream.
                         netStream = new NetworkStream(clientSock, true);
-                    //}
-                    //else
-                    //{
-                    //    // This is the case of https.
-                    //    // Once connection estiblished need to create secure stream and authenticate server.
-                    //    netStream = new SslStream(clientSock);
-                    //
-                    //    var sslProtocols = new SslProtocols[] { SslProtocols.Default };
-                    //
-                    //    // Throws exception if fails.
-                    //    ((SslStream)netStream).AuthenticateAsServer(this.m_httpsCert, sslProtocols);
-                    //
-                    //    netStream.ReadTimeout = 10000;
-                    //}
+                    }
+                    else {
+                        // This is the case of https.
+                        // Once connection estiblished need to create secure stream and authenticate server.
+                        netStream = new SslStream(clientSock);
+
+                        var sslProtocols = new SslProtocols[] { SslProtocols.Default };
+
+                        // Throws exception if fails.
+                        ((SslStream)netStream).AuthenticateAsServer(this.m_httpsCert, sslProtocols);
+
+                        netStream.ReadTimeout = 10000;
+                    }
                 }
-                catch(SocketException)
-                {
-                    if (netStream != null)
-                    {
+                catch (SocketException) {
+                    if (netStream != null) {
                         netStream.Dispose();
                     }
-                    else
-                    {
+                    else {
                         clientSock.Close();
                     }
 
@@ -401,8 +364,7 @@ namespace System.Net {
                 }
 
                 // Add this connected stream to the list.
-                lock (this.m_InputStreamsQueue)
-                {
+                lock (this.m_InputStreamsQueue) {
                     this.m_InputStreamsQueue.Enqueue(new OutputNetworkStreamWrapper(clientSock, netStream));
                 }
 
@@ -420,33 +382,28 @@ namespace System.Net {
         /// have started an <itemref>HttpListener</itemref> object, you can use
         /// the <see cref='System.Net.HttpListener.Stop'/> method to stop it.
         /// </remarks>
-        public void Start()
-        {
-            lock (this)
-            {
+        public void Start() {
+            lock (this) {
                 if (this.m_Closed) throw new ObjectDisposedException();
 
                 // If service was already started, the call has no effect.
-                if (this.m_ServiceRunning)
-                {
+                if (this.m_ServiceRunning) {
                     return;
                 }
 
                 this.m_listener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
-                try
-                {
+                try {
                     // set NoDelay to increase HTTP(s) response times
                     this.m_listener.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.NoDelay, true);
                 }
-                catch {}
+                catch { }
 
-                try
-                {
+                try {
                     // Start server socket to accept incoming connections.
                     this.m_listener.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
                 }
-                catch {}
+                catch { }
 
                 var endPoint = new IPEndPoint(IPAddress.Any, this.m_Port);
                 this.m_listener.Bind(endPoint);
@@ -471,17 +428,13 @@ namespace System.Net {
         /// <itemref>HttpListener</itemref> object.  To temporarily pause an
         /// <itemref>HttpListener</itemref> object, use the
         /// <see cref='System.Net.HttpListener.Stop'/> method.</remarks>
-        public void Close()
-        {
-            lock(this)
-            {
+        public void Close() {
+            lock (this) {
                 // close does not throw
-                try
-                {
+                try {
                     Stop();
                 }
-                catch
-                {
+                catch {
                 }
 
                 this.m_Closed = true;
@@ -499,12 +452,10 @@ namespace System.Net {
         /// to restart it.
         /// </para>
         /// </remarks>
-        public void Stop()
-        {
+        public void Stop() {
             // Need to lock access to object, because Stop can be called from a
             // different thread.
-            lock (this)
-            {
+            lock (this) {
                 if (this.m_Closed) throw new ObjectDisposedException();
 
                 this.m_ServiceRunning = false;
@@ -512,8 +463,7 @@ namespace System.Net {
                 // We close the server socket that listen for incoming connection.
                 // Connections that already accepted are processed.
                 // Connections that has been in queue for server socket, but not accepted, are lost.
-                if(this.m_listener != null)
-                {
+                if (this.m_listener != null) {
                     this.m_listener.Close();
                     this.m_listener = null;
 
@@ -549,24 +499,19 @@ namespace System.Net {
         ///         HttpListenerContext context = myListener.GetContext();
         /// </code>
         /// </example>
-        public HttpListenerContext GetContext()
-        {
+        public HttpListenerContext GetContext() {
             // Protects access for simulteneous call for GetContext and Close or Stop.
-            lock (this)
-            {
+            lock (this) {
                 if (this.m_Closed) throw new ObjectDisposedException();
 
                 if (!this.m_ServiceRunning) throw new InvalidOperationException();
             }
 
             // Try to get context until service is running.
-            while (this.m_ServiceRunning)
-            {
+            while (this.m_ServiceRunning) {
                 // Before waiting for event we need to look for pending connections.
-                lock (this.m_InputStreamsQueue)
-                {
-                    if (this.m_InputStreamsQueue.Count > 0)
-                    {
+                lock (this.m_InputStreamsQueue) {
+                    if (this.m_InputStreamsQueue.Count > 0) {
                         if (this.m_InputStreamsQueue.Dequeue() is OutputNetworkStreamWrapper outputStreamWrap) {
                             return new HttpListenerContext(outputStreamWrap, this);
                         }
@@ -617,10 +562,10 @@ namespace System.Net {
         /// The certificate used if <b>HttpListener</b> implements an https
         /// server.
         /// </summary>
-        //public X509Certificate HttpsCert {
-        //    get => this.m_httpsCert;
-        //    set => this.m_httpsCert = value;
-        //}
+        public X509Certificate HttpsCert {
+            get => this.m_httpsCert;
+            set => this.m_httpsCert = value;
+        }
     }
 }
 
