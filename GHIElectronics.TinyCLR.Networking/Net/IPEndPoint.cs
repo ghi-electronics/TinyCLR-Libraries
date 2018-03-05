@@ -2,30 +2,24 @@
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-namespace System.Net
-{
-    using System.Net.Sockets;
-    using System.Globalization;
-
+namespace System.Net {
     using System.Diagnostics;
+    using System.Net.Sockets;
 
     [Serializable]
-    public class IPEndPoint : EndPoint
-    {
+    public class IPEndPoint : EndPoint {
         public const int MinPort = 0x00000000;
         public const int MaxPort = 0x0000FFFF;
 
         private IPAddress m_Address;
         private int m_Port;
 
-        public IPEndPoint(long address, int port)
-        {
+        public IPEndPoint(long address, int port) {
             this.m_Port = port;
             this.m_Address = new IPAddress(address);
         }
 
-        public IPEndPoint(IPAddress address, int port)
-        {
+        public IPEndPoint(IPAddress address, int port) {
             this.m_Port = port;
             this.m_Address = address;
         }
@@ -34,8 +28,7 @@ namespace System.Net
 
         public int Port => this.m_Port;
 
-        public override SocketAddress Serialize()
-        {
+        public override SocketAddress Serialize() {
             // create a new SocketAddress
             //
             var socketAddress = new SocketAddress(AddressFamily.InterNetwork, SocketAddress.IPv4AddressSize);
@@ -54,8 +47,7 @@ namespace System.Net
             return socketAddress;
         }
 
-        public override EndPoint Create(SocketAddress socketAddress)
-        {
+        public override EndPoint Create(SocketAddress socketAddress) {
             // strip out of SocketAddress information on the EndPoint
             //
 
@@ -82,17 +74,16 @@ namespace System.Net
 
         public override string ToString() => this.m_Address.ToString() + ":" + this.m_Port.ToString();
 
-        public override bool Equals(object obj)
-        {
+        public override bool Equals(object obj) {
             var ep = obj as IPEndPoint;
-            if (ep == null)
-            {
+            if (ep == null) {
                 return false;
             }
 
             return ep.m_Address.Equals(this.m_Address) && ep.m_Port == this.m_Port;
         }
 
+        public override int GetHashCode() => this.m_Address.GetHashCode() ^ this.m_Port;
     } // class IPEndPoint
 } // namespace System.Net
 

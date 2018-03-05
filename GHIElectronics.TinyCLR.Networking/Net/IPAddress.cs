@@ -7,17 +7,14 @@ namespace System.Net {
     ///    <para>Provides an internet protocol (IP) address.</para>
     /// </devdoc>
     [Serializable]
-    public class IPAddress
-    {
+    public class IPAddress {
 
         public static readonly IPAddress Any = new IPAddress(0x0000000000000000);
         public static readonly IPAddress Loopback = new IPAddress(0x000000000100007F);
         internal long m_Address;
 
-        public IPAddress(long newAddress)
-        {
-            if (newAddress < 0 || newAddress > 0x00000000FFFFFFFF)
-            {
+        public IPAddress(long newAddress) {
+            if (newAddress < 0 || newAddress > 0x00000000FFFFFFFF) {
                 throw new ArgumentOutOfRangeException();
             }
 
@@ -25,12 +22,10 @@ namespace System.Net {
         }
 
         public IPAddress(byte[] newAddressBytes)
-            : this(((((newAddressBytes[3] << 0x18) | (newAddressBytes[2] << 0x10)) | (newAddressBytes[1] << 0x08)) | newAddressBytes[0]) & ((long)0xFFFFFFFF))
-        {
+            : this(((((newAddressBytes[3] << 0x18) | (newAddressBytes[2] << 0x10)) | (newAddressBytes[1] << 0x08)) | newAddressBytes[0]) & ((long)0xFFFFFFFF)) {
         }
 
-        public override bool Equals(object obj)
-        {
+        public override bool Equals(object obj) {
             var addr = obj as IPAddress;
 
             if (obj == null) return false;
@@ -46,8 +41,7 @@ namespace System.Net {
                 (byte)(this.m_Address >> 24)
             };
 
-        public static IPAddress Parse(string ipString)
-        {
+        public static IPAddress Parse(string ipString) {
             if (ipString == null)
                 throw new ArgumentNullException();
 
@@ -58,18 +52,15 @@ namespace System.Net {
             ulong octet = 0L;
             var length = ipString.Length;
 
-            for (var i = 0; i < length; ++i)
-            {
+            for (var i = 0; i < length; ++i) {
                 // Parse to '.' or end of IP address
                 if (ipString[i] == '.' || i == length - 1)
                     // If the IP starts with a '.'
                     // or a segment is longer than 3 characters or shiftIndex > last bit position throw.
-                    if (i == 0 || i - lastIndex > 3 || shiftIndex > 24)
-                    {
+                    if (i == 0 || i - lastIndex > 3 || shiftIndex > 24) {
                         throw new ArgumentException();
                     }
-                    else
-                    {
+                    else {
                         i = i == length - 1 ? ++i : i;
                         octet = (ulong)(ConvertStringToInt32(ipString.Substring(lastIndex, i - lastIndex)) & 0x00000000000000FF);
                         ipAddress = ipAddress + (ulong)((octet << shiftIndex) & mask);
@@ -81,6 +72,8 @@ namespace System.Net {
 
             return new IPAddress((long)ipAddress);
         }
+
+        public override int GetHashCode() => unchecked((int)this.m_Address);
 
         public override string ToString() => ((byte)(this.m_Address)).ToString() +
                     "." +
@@ -116,29 +109,24 @@ namespace System.Net {
         /// Value does not consist of an optional sign followed by a sequence of digits
         /// (zero through nine).
         /// </exception>
-        private static int ConvertStringToInt32(string value)
-        {
+        private static int ConvertStringToInt32(string value) {
             var num = value.ToCharArray();
             var result = 0;
 
             var isNegative = false;
             var signIndex = 0;
 
-            if (num[0] == '-')
-            {
+            if (num[0] == '-') {
                 isNegative = true;
                 signIndex = 1;
             }
-            else if (num[0] == '+')
-            {
+            else if (num[0] == '+') {
                 signIndex = 1;
             }
 
             var exp = 1;
-            for (var i = num.Length - 1; i >= signIndex; i--)
-            {
-                if (num[i] < '0' || num[i] > '9')
-                {
+            for (var i = num.Length - 1; i >= signIndex; i--) {
+                if (num[i] < '0' || num[i] > '9') {
                     throw new ArgumentException();
                 }
 
