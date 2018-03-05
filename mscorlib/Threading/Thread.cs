@@ -61,6 +61,8 @@ namespace System.Threading {
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public extern static AppDomain GetDomain();
+
+        public override int GetHashCode() => this.ManagedThreadId;
     }
 
     ////// declaring a local var of this enum type and passing it by ref into a function that needs to do a
