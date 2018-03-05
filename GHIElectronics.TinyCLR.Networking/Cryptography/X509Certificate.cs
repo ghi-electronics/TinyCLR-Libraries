@@ -3,7 +3,6 @@ namespace System.Security.Cryptography.X509Certificates {
 
     public class X509Certificate {
         private byte[] m_certificate;
-        private string m_password;
 
         protected string m_issuer;
         protected string m_subject;
