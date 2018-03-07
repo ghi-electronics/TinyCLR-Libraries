@@ -58,6 +58,8 @@
     <Compile Include="GpioPulseReaderWriter.cs" />
     <Compile Include="GpioChangeReader.cs" />
     <Compile Include="GpioChangeWriter.cs" />
+    <Compile Include="RtcProvider.cs" />
+    <Compile Include="RtcController.cs" />
     <Compile Include="SpiSoftwareProvider.cs" />
     <Compile Include="I2cSoftwareProvider.cs" />
     <Compile Include="SpiController.cs" />

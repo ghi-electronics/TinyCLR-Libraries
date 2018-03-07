@@ -20,10 +20,11 @@ namespace System.Runtime.InteropServices {
         GpioProvider = 4 | 0x40000000,
         I2cProvider = 5 | 0x40000000,
         PwmProvider = 6 | 0x40000000,
-        SpiProvider = 7 | 0x40000000,
-        UartProvider = 8 | 0x40000000,
-        UsbClientProvider = 9 | 0x40000000,
-        UsbHostProvider = 10 | 0x40000000,
+        RtcProvider = 7 | 0x40000000,
+        SpiProvider = 8 | 0x40000000,
+        UartProvider = 9 | 0x40000000,
+        UsbClientProvider = 10 | 0x40000000,
+        UsbHostProvider = 11 | 0x40000000,
         Custom = 0 | 0x80000000,
     }
 
