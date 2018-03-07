@@ -22,7 +22,7 @@ namespace System.Runtime.InteropServices {
         PwmProvider = 6 | 0x40000000,
         SpiProvider = 7 | 0x40000000,
         UartProvider = 8 | 0x40000000,
-        UsbClientProvider = 9,
+        UsbClientProvider = 9 | 0x40000000,
         UsbHostProvider = 10 | 0x40000000,
         Custom = 0 | 0x80000000,
     }
