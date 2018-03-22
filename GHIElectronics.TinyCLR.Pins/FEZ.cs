@@ -139,8 +139,6 @@
         public static class UartPort {
             /// <summary>UART port on D1 (TX) and D0 (RX).</summary>
             public const string Usart1 = FEZCLR.UartPort.Usart1;
-            /// <summary>UART port on WiFi TX (TX), WiFi RX (RX), WiFi CTS (CTS), and WiFi RTS (RTS).</summary>
-            public const string WiFi = FEZCLR.UartPort.Usart2;
         }
 
         /// <summary>I2C bus definitions.</summary>
