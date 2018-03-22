@@ -1,39 +1,4 @@
-﻿/*
-
-The display code is part GHI Electronics Part from
-https://github.com/adafruit/Adafruit_SSD1306/blob/master/Adafruit_SSD1306.cpp
-with thie following license...
-
-Software License Agreement (BSD License)
-Copyright (c) 2012, Adafruit Industries
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-
-1. Redistributions of source code must retain the above copyright
-notice, this list of conditions and the following disclaimer.
-2. Redistributions in binary form must reproduce the above copyright
-notice, this list of conditions and the following disclaimer in the
-documentation and/or other materials provided with the distribution.
-3. Neither the name of the copyright holders nor the
-names of its contributors may be used to endorse or promote products
-derived from this software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS ''AS IS'' AND ANY
-EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE FOR ANY
-DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
-#define SUPPORT_ORIGINAL_BRAINPAD
+﻿#define SUPPORT_ORIGINAL_BRAINPAD
 
 using System;
 using System.ComponentModel;
@@ -277,66 +242,42 @@ namespace GHIElectronics.TinyCLR.BrainPad {
 #endif
                 case BoardType.BP2:
                     this.vram = new byte[(128 * 64 / 8) + 1];
-                    // Init sequence
-                    Ssd1306_command(0xae);// SSD1306_DISPLAYOFF);                    // 0xAE
-                    Ssd1306_command(0xd5);// SSD1306_SETDISPLAYCLOCKDIV);            // 0xD5
-                    Ssd1306_command(0x80);                                  // the suggested ratio 0x80
 
-                    Ssd1306_command(0xa8);// SSD1306_SETMULTIPLEX);                  // 0xA8
-                    Ssd1306_command(64 - 1);
-
-                    Ssd1306_command(0xd3);// SSD1306_SETDISPLAYOFFSET);              // 0xD3
-                    Ssd1306_command(0x0);                                   // no offset
-                    Ssd1306_command(0x40);// SSD1306_SETSTARTLINE | 0x0);            // line #0
-                    Ssd1306_command(0x8d);// SSD1306_CHARGEPUMP);                    // 0x8D
-
-                    //if (false)//vccstate == SSD1306_EXTERNALVCC)
-                    //
-                    //{ Ssd1306_command(0x10); }
-                    //else {
-                    Ssd1306_command(0x14);
-                    //}
-
-                    Ssd1306_command(0x20);// SSD1306_MEMORYMODE);                    // 0x20
-                    Ssd1306_command(0x00);                                  // 0x0 act like ks0108
-                    Ssd1306_command(0xa1);// SSD1306_SEGREMAP | 0x1);
-                    Ssd1306_command(0xc8);// SSD1306_COMSCANDEC);
-
-
-                    Ssd1306_command(0xda);// SSD1306_SETCOMPINS);                    // 0xDA
+                    Ssd1306_command(0xae);// turn off oled panel
+                    Ssd1306_command(0x00);// set low column address
+                    Ssd1306_command(0x10);// set high column address
+                    Ssd1306_command(0x40);// set start line address
+                    Ssd1306_command(0x81);// set contrast control register
+                    Ssd1306_command(0xcf);
+                    Ssd1306_command(0xa1);// set segment re-map 95 to 0
+                    Ssd1306_command(0xa6);// set normal display
+                    Ssd1306_command(0xa8);// set multiplex ratio(1 to 64)
+                    Ssd1306_command(0x3f);// 1/64 duty
+                    Ssd1306_command(0xd3);// set display offset
+                    Ssd1306_command(0x00);// not offset
+                    Ssd1306_command(0xd5);// set display clock divide ratio/oscillator frequency
+                    Ssd1306_command(0x80);// set divide ratio
+                    Ssd1306_command(0xd9);// set pre-charge period
+                    Ssd1306_command(0xf1);
+                    Ssd1306_command(0xda);// set com pins hardware configuration
                     Ssd1306_command(0x12);
-                    Ssd1306_command(0x81);// SSD1306_SETCONTRAST);                   // 0x81
+                    Ssd1306_command(0xdb);//--set vcomh
+                    Ssd1306_command(0x40);//--set startline 0x0
+                    Ssd1306_command(0x8d);//--set Charge Pump enable/disable
+                    Ssd1306_command(0x14);//--set(0x10) disable
+                    Ssd1306_command(0xaf);//--turn on oled panel
+                    Ssd1306_command(0xc8);// mirror the screen
 
-                    //if (false)//vccstate == SSD1306_EXTERNALVCC)
-                    //{ Ssd1306_command(0x9F); }
-                    //else {
-                    Ssd1306_command(0xCF);
-                    //}
+                    // Mapping
+                    Ssd1306_command(0x20);
+                    Ssd1306_command(0x00);
+                    Ssd1306_command(0x21);
+                    Ssd1306_command(0);
+                    Ssd1306_command(128 - 1);
+                    Ssd1306_command(0x22);
+                    Ssd1306_command(0);
+                    Ssd1306_command(7);
 
-                    Ssd1306_command(0xd9);// SSD1306_SETPRECHARGE);                  // 0xd9
-
-                    //if (false)//vccstate == SSD1306_EXTERNALVCC)
-                    //{ Ssd1306_command(0x22); }
-                    //else {
-                    Ssd1306_command(0xF1);
-                    //}
-
-                    Ssd1306_command(0xd8);// SSD1306_SETVCOMDETECT);                 // 0xDB
-                    Ssd1306_command(0x40);
-                    Ssd1306_command(0xa4);//SSD1306_DISPLAYALLON_RESUME);           // 0xA4
-                    Ssd1306_command(0xa6);// SSD1306_NORMALDISPLAY);                 // 0xA6
-
-                    Ssd1306_command(0x2e);// SSD1306_DEACTIVATE_SCROLL);
-
-                    Ssd1306_command(0xaf);// SSD1306_DISPLAYON);//--turn on oled panel
-
-
-                    Ssd1306_command(0x21);// SSD1306_COLUMNADDR);
-                    Ssd1306_command(0);   // Column start address (0 = reset)
-                    Ssd1306_command(128 - 1); // Column end address (127 = reset)
-                    Ssd1306_command(0x22);// SSD1306_PAGEADDR);
-                    Ssd1306_command(0); // Page start address (0 = reset)
-                    Ssd1306_command(7); // Page end address
                     break;
             }
             this.ClearScreen();
