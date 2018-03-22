@@ -35,13 +35,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #define SUPPORT_ORIGINAL_BRAINPAD
 
+using System;
+using System.ComponentModel;
+using System.Threading;
 using GHIElectronics.TinyCLR.Devices.Gpio;
 using GHIElectronics.TinyCLR.Devices.I2c;
 using GHIElectronics.TinyCLR.Devices.Spi;
 using GHIElectronics.TinyCLR.Pins;
-using System;
-using System.ComponentModel;
-using System.Threading;
 
 namespace GHIElectronics.TinyCLR.BrainPad {
     public class Picture {
@@ -271,7 +271,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
                     WriteCommand(0x2C);
                     this.controlPin.Write(GpioPinValue.High);
                     for (var i = 0; i < 160 * 128 * 2 / 16; i++)
-                        this.spi.Write(buffer16);
+                        this.spi.Write(this.buffer16);
 
                     break;
 #endif
