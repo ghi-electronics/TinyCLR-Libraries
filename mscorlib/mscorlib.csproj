@@ -181,6 +181,7 @@
     <Compile Include="Runtime\InteropServices\Interop.cs" />
     <Compile Include="Runtime\InteropServices\LayoutKind.cs" />
     <Compile Include="Runtime\InteropServices\Marshal.cs" />
+    <Compile Include="Runtime\InteropServices\SystemTime.cs" />
     <Compile Include="Runtime\Remoting\RemotingServices.cs" />
     <Compile Include="Runtime\Remoting\__TransparentProxy.cs" />
     <Compile Include="SByte.cs" />

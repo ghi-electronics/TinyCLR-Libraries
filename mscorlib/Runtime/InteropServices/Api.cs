@@ -9,6 +9,7 @@ namespace System.Runtime.InteropServices {
         InteropProvider = 2,
         MemoryProvider = 3,
         TaskProvider = 4,
+        SystemTimeProvider = 5,
         DeploymentProvider = 0 | 0x20000000,
         InterruptProvider = 1 | 0x20000000,
         PowerProvider = 2 | 0x20000000,
