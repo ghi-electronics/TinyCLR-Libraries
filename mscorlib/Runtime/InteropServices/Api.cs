@@ -12,7 +12,7 @@ namespace System.Runtime.InteropServices {
         DeploymentProvider = 0 | 0x20000000,
         InterruptProvider = 1 | 0x20000000,
         PowerProvider = 2 | 0x20000000,
-        TimeProvider = 3 | 0x20000000,
+        NativeTimeProvider = 3 | 0x20000000,
         AdcProvider = 0 | 0x40000000,
         CanProvider = 1 | 0x40000000,
         DacProvider = 2 | 0x40000000,
