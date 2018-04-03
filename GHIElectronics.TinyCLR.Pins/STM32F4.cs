@@ -475,6 +475,8 @@
             public const string Uart7 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.UartProvider\\6";
             /// <summary>UART port.</summary>
             public const string Uart8 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.UartProvider\\7";
+            /// <summary>UART port.</summary>
+            public const string Uart9 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.UartProvider\\8";
         }
 
         /// <summary>I2C bus definitions.</summary>
