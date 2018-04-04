@@ -80,6 +80,9 @@
     <Compile Include="LPC24.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="STM32F4.cs" />
+    <Compile Include="STM32F7.cs" />
+    <Compile Include="UC2550.cs" />
+    <Compile Include="UC5550.cs" />
     <Compile Include="USBizi100.cs" />
     <Compile Include="USBizi144.cs" />
   </ItemGroup>
