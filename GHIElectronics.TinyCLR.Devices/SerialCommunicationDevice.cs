@@ -169,6 +169,23 @@ namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
                 set;
             }
 
+            public extern uint UnreadDataCount {
+                [MethodImpl(MethodImplOptions.InternalCall)]
+                get;
+            }
+
+            public extern uint UnsendDataCount {
+                [MethodImpl(MethodImplOptions.InternalCall)]
+                get;
+            }
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            public extern void ClearReadBuffer();
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            public extern void ClearSendBuffer();
+
+
             private void Open() {
                 if (this.opened)
                     return;
