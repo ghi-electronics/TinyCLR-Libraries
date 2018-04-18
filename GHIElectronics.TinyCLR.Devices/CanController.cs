@@ -68,7 +68,7 @@ namespace GHIElectronics.TinyCLR.Devices.Can {
         public void ClearWriteBuffer() => this.provider.ClearReadBuffer();
 
         public int UnreadMessageCount => this.provider.UnreadMessageCount;
-        public int UnwriteMessageCount => this.provider.UnwrittenMessageCount;
+        public int UnwrittenMessageCount => this.provider.UnwrittenMessageCount;
         public bool IsWritingAllowed => this.provider.IsWritingAllowed;
         public int ReadErrorCount => this.provider.ReadErrorCount;
         public int WriteErrorCount => this.provider.WriteErrorCount;
