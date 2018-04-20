@@ -1,7 +1,7 @@
-﻿using GHIElectronics.TinyCLR.Devices.Adc;
-using GHIElectronics.TinyCLR.Pins;
-using System;
+﻿using System;
 using System.ComponentModel;
+using GHIElectronics.TinyCLR.Devices.Adc;
+using GHIElectronics.TinyCLR.Pins;
 
 namespace GHIElectronics.TinyCLR.BrainPad {
     public class TemperatureSensor {
@@ -25,7 +25,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
 
             sum /= 10.0;
 
-            return (sum * 3300.0 - 450.0) / 19.5;
+            return (sum * 3300.0 - 400.0) / 19.5;
         }
 
         public double ReadTemperatureInFahrenheit() => (9.0 / 5.0) * this.ReadTemperatureInCelsius() + 32.0;
