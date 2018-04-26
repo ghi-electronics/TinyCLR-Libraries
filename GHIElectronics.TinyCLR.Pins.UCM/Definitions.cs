@@ -168,7 +168,7 @@ namespace GHIElectronics.TinyCLR.Pins {
             UCMStandard.UartPort.A = UC5550.UartPort.Usart1;
             UCMStandard.UartPort.B = UC5550.UartPort.Usart6;
             UCMStandard.UartPort.C = UC5550.UartPort.Uart7;
-            UCMStandard.UartPort.D = UC5550.UartPort.USart3;
+            UCMStandard.UartPort.D = UC5550.UartPort.Usart3;
 
             UCMStandard.UartPort.HandshakingA = UC5550.UartPort.Usart2;
 
