@@ -61,6 +61,8 @@
         public static class UartPort {
             public static string A { get; internal set; }
             public static string B { get; internal set; }
+            public static string C { get; internal set; }
+            public static string D { get; internal set; }
 
             public static string HandshakingA { get; internal set; }
             public static string HandshakingB { get; internal set; }
