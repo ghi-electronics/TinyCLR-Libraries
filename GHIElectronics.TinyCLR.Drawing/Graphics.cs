@@ -7,6 +7,7 @@ namespace System.Drawing {
 
         internal Internal.Bitmap surface;
         private bool disposed;
+        private static bool callFromImage;
         private IntPtr hdc;
 
         internal Graphics(byte[] buffer) : this(new Internal.Bitmap(buffer, Internal.Bitmap.BitmapImageType.Bmp), IntPtr.Zero) { }
@@ -24,7 +25,7 @@ namespace System.Drawing {
         }
 
         private void Dispose(bool disposing) {
-            if (!this.disposed) {
+            if (!this.disposed && !callFromImage) {
                 this.surface?.Dispose();
                 this.surface = null;
 
@@ -50,7 +51,11 @@ namespace System.Drawing {
             return new Graphics(width, height, hdc);
         }
 
-        public static Graphics FromImage(Image image) => image.data;
+        public static Graphics FromImage(Image image) {
+            callFromImage = true;
+
+            return image.data;
+        }
 
         public void Flush() {
             if (this.hdc == IntPtr.Zero) throw new InvalidOperationException("Graphics not for screen.");
