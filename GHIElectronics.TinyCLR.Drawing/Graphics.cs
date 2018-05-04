@@ -7,7 +7,11 @@ namespace System.Drawing {
 
         internal Internal.Bitmap surface;
         private bool disposed;
+<<<<<<< HEAD
         private bool callFromImage;
+=======
+        private static bool callFromImage;
+>>>>>>> devViktor
         private IntPtr hdc;
 
         internal Graphics(byte[] buffer) : this(new Internal.Bitmap(buffer, Internal.Bitmap.BitmapImageType.Bmp), IntPtr.Zero) { }
@@ -25,7 +29,11 @@ namespace System.Drawing {
         }
 
         private void Dispose(bool disposing) {
+<<<<<<< HEAD
             if (!this.disposed && !this.callFromImage) {
+=======
+            if (!this.disposed && !callFromImage) {
+>>>>>>> devViktor
                 this.surface?.Dispose();
                 this.surface = null;
 
@@ -52,7 +60,11 @@ namespace System.Drawing {
         }
 
         public static Graphics FromImage(Image image) {
+<<<<<<< HEAD
             image.data.callFromImage = true;
+=======
+            callFromImage = true;
+>>>>>>> devViktor
 
             return image.data;
         }
