@@ -39,7 +39,7 @@ namespace System.Drawing {
         private void ComputeTextInRect(string text, out int renderWidth, out int renderHeight, int availableWidth) => ComputeTextInRect(text, out renderWidth, out renderHeight, 0, 0, availableWidth, 0, Internal.Bitmap.DT_IgnoreHeight | Internal.Bitmap.DT_WordWrap);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        public extern void CreateInstantFromResources(uint buffer, uint size, uint assembly);
+        private extern void CreateInstantFromResources(uint buffer, uint size, uint assembly);
     }
 }
 

@@ -172,7 +172,7 @@ namespace System.Resources {
 
                 if (obj != null) {
 
-                    var method = obj.GetType().GetMethod("CreateInstantFromResources");
+                    var method = obj.GetType().GetMethod("CreateInstantFromResources", BindingFlags.NonPublic | BindingFlags.Instance);
 
                     if (method != null)
                         method.Invoke(obj, new object[] { data, (uint)length, assembly });
