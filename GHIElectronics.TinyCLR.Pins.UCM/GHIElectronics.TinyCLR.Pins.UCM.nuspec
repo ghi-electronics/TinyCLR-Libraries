@@ -2,7 +2,7 @@
 
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
-    <id>GHIElectronics.TinyCLR.Core</id>
+    <id>GHIElectronics.TinyCLR.Pins.UCM</id>
     <version>0.10.0</version>
     <authors>GHI Electronics, LLC</authors>
     <owners>GHI Electronics, LLC</owners>
@@ -10,12 +10,15 @@
     <iconUrl>http://files.ghielectronics.com/downloads/Logos/GHIElectronicsTinyCLRNuGet.png</iconUrl>
     <licenseUrl>http://files.ghielectronics.com/downloads/TinyCLR/License.txt</licenseUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
-    <description>The mscorlib library for TinyCLR OS.</description>
+    <description>The UCM pins library for TinyCLR OS.</description>
     <copyright>Copyright GHI Electronics, LLC 2018</copyright>
     <tags>TinyCLR TinyCLROS</tags>
+    <dependencies>
+      <dependency id="GHIElectronics.TinyCLR.Core" version="[0.10.0, 0.11.0)" />
+      <dependency id="GHIElectronics.TinyCLR.Pins" version="[0.10.0, 0.11.0)" />
+    </dependencies>
   </metadata>
   <files>
-    <file src="$TargetDir$mscorlib.dll" target="lib\net452" />
-    <file src="$ProjectDir$GHIElectronics.TinyCLR.Core.props" target="build\net452" />
+    <file src="$TargetDir$GHIElectronics.TinyCLR.Pins.UCM.dll" target="lib\net452" />
   </files>
 </package>
