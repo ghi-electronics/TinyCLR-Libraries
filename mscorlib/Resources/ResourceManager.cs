@@ -23,7 +23,7 @@ namespace System.Resources {
         extern static private int NativeFindResource(string baseName, Assembly assembly);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        extern private object NativeGetObject(short id, int offset, int length);
+        extern private object NativeGetObject(short id, int offset, int length, out uint buffer, out uint size, out uint assembly);
 
         public ResourceManager(string baseName, Assembly assembly)
             : this(baseName, assembly, CultureInfo.CurrentUICulture.Name, true) {
@@ -164,10 +164,20 @@ namespace System.Resources {
 
             var rm = this;
 
+            var data = 0U;
+            var assembly = 0U;
+            var size = 0U;
+
             while (rm != null) {
-                var obj = rm.NativeGetObject(id, offset, length);
+                var obj = rm.NativeGetObject(id, offset, length, out data, out size, out assembly);
 
                 if (obj != null) {
+
+                    var method = obj.GetType().GetMethod("CreateInstantFromResources", BindingFlags.NonPublic | BindingFlags.Instance);
+
+                    if (method != null)
+                        method.Invoke(obj, new object[] { data, size, assembly });
+
                     if (obj.GetType().FullName != "System.Drawing.Internal.Bitmap")
                         return obj;
 

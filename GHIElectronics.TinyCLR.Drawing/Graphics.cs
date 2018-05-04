@@ -153,6 +153,9 @@ namespace System.Drawing {
             [MethodImpl(MethodImplOptions.InternalCall)]
             public static extern bool GetSizeForLcdFromHdc(IntPtr hdc, out int width, out int height);
 
+            [MethodImplAttribute(MethodImplOptions.InternalCall)]
+            private extern void CreateInstantFromResources(uint buffer, uint size, uint assembly);
+
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern Bitmap(byte[] imageData, BitmapImageType type);
 
