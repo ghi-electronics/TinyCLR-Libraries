@@ -7,7 +7,7 @@ namespace System.Drawing {
 
         internal Internal.Bitmap surface;
         private bool disposed;
-        private bool callFromImage;
+        internal bool callFromImage;
         private IntPtr hdc;
 
         internal Graphics(byte[] buffer) : this(new Internal.Bitmap(buffer, Internal.Bitmap.BitmapImageType.Bmp), IntPtr.Zero) { }

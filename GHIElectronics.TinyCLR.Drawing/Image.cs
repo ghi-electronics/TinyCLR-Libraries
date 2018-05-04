@@ -27,6 +27,7 @@ namespace System.Drawing {
 
         protected virtual void Dispose(bool disposing) {
             if (!this.disposed) {
+                this.data.callFromImage = false;
                 this.data.Dispose();
 
                 this.disposed = true;
