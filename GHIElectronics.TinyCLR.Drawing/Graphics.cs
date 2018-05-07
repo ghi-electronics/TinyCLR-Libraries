@@ -7,15 +7,7 @@ namespace System.Drawing {
 
         internal Internal.Bitmap surface;
         private bool disposed;
-<<<<<<< HEAD
         internal bool callFromImage;
-=======
-<<<<<<< HEAD
-        private bool callFromImage;
-=======
-        private static bool callFromImage;
->>>>>>> devViktor
->>>>>>> dev
         private IntPtr hdc;
 
         internal Graphics(byte[] buffer) : this(new Internal.Bitmap(buffer, Internal.Bitmap.BitmapImageType.Bmp), IntPtr.Zero) { }
@@ -33,15 +25,7 @@ namespace System.Drawing {
         }
 
         private void Dispose(bool disposing) {
-<<<<<<< HEAD
             if (!this.disposed && !this.callFromImage) {
-=======
-<<<<<<< HEAD
-            if (!this.disposed && !this.callFromImage) {
-=======
-            if (!this.disposed && !callFromImage) {
->>>>>>> devViktor
->>>>>>> dev
                 this.surface?.Dispose();
                 this.surface = null;
 
@@ -68,15 +52,7 @@ namespace System.Drawing {
         }
 
         public static Graphics FromImage(Image image) {
-<<<<<<< HEAD
             image.data.callFromImage = true;
-=======
-<<<<<<< HEAD
-            image.data.callFromImage = true;
-=======
-            callFromImage = true;
->>>>>>> devViktor
->>>>>>> dev
 
             return image.data;
         }
@@ -176,6 +152,9 @@ namespace System.Drawing {
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public static extern bool GetSizeForLcdFromHdc(IntPtr hdc, out int width, out int height);
+
+            [MethodImplAttribute(MethodImplOptions.InternalCall)]
+            private extern void CreateInstantFromResources(uint buffer, uint size, uint assembly);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern Bitmap(byte[] imageData, BitmapImageType type);

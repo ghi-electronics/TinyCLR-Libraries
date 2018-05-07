@@ -6,7 +6,6 @@ namespace System.Drawing {
     public abstract class Image : MarshalByRefObject, ICloneable, IDisposable {
         internal Graphics data;
         private bool disposed;
-        //private bool callFromImage;
 
         public int Width => this.data.Width;
         public int Height => this.data.Height;
