@@ -793,22 +793,6 @@ namespace GHIElectronics.TinyCLR.BrainPad {
         public void DrawNumber(int x, int y, long number) => DrawText(x, y, number.ToString("N0"));
         public void DrawSmallNumber(int x, int y, long number) => DrawSmallText(x, y, number.ToString("N0"));
 
-        public void DrawTextAndShowOnScreen(int x, int y, string text) => DrawScaledTextAndShowOnScreen(x, y, text, 2, 2);
-        public void DrawSmallTextAndShowOnScreen(int x, int y, string text) => DrawScaledTextAndShowOnScreen(x, y, text, 1, 1);
-
-        public void DrawScaledTextAndShowOnScreen(int x, int y, string text, int HScale, int VScale) {
-            this.ClearScreen();
-
-            this.DrawScaledText(x, y, text, HScale, VScale);
-
-            this.ShowOnScreen();
-        }
-
-        public void DrawNumberAndShowOnScreen(int x, int y, double number) => DrawTextAndShowOnScreen(x, y, number.ToString("N2"));
-        public void DrawSmallNumberAndShowOnScreen(int x, int y, double number) => DrawSmallTextAndShowOnScreen(x, y, number.ToString("N2"));
-        public void DrawNumberAndShowOnScreen(int x, int y, long number) => DrawTextAndShowOnScreen(x, y, number.ToString("N0"));
-        public void DrawSmallNumberAndShowOnScreen(int x, int y, long number) => DrawSmallTextAndShowOnScreen(x, y, number.ToString("N0"));
-
         public void InvertColors(bool invert) {
             if (invert)
                 Ssd1306_command(0xa7);
