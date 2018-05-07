@@ -280,11 +280,11 @@ namespace GHIElectronics.TinyCLR.BrainPad {
 
                     break;
             }
-            this.ClearScreen();
-            this.ShowOnScreen();
+            this.Clear();
+            this.RefreshScreen();
         }
 
-        public void ShowOnScreen() {
+        public void RefreshScreen() {
 
             switch (Board.BoardType) {
 #if SUPPORT_ORIGINAL_BRAINPAD
@@ -385,7 +385,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
         /// <summary>
         /// Clears the Display.
         /// </summary>
-        public void ClearScreen() {
+        public void Clear() {
             switch (Board.BoardType) {
 #if SUPPORT_ORIGINAL_BRAINPAD
                 case BoardType.Original:
@@ -407,8 +407,8 @@ namespace GHIElectronics.TinyCLR.BrainPad {
             }
         }
 
-        public void ClearPartOfScreen(int x, int y, int width, int height) {
-            if (x == 0 && y == 0 && width == 128 && height == 64) ClearScreen();
+        public void ClearPart(int x, int y, int width, int height) {
+            if (x == 0 && y == 0 && width == 128 && height == 64) Clear();
             for (var lx = x; lx < width + x; lx++)
                 for (var ly = y; ly < height + y; ly++)
                     Point(lx, ly, false);
@@ -741,7 +741,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
 
                 }
             }
-            ClearPartOfScreen(x + 5 * HScale, y, HScale, 8 * VScale);// clear the space between characters
+            ClearPart(x + 5 * HScale, y, HScale, 8 * VScale);// clear the space between characters
         }
 
         /// <summary>
@@ -792,22 +792,6 @@ namespace GHIElectronics.TinyCLR.BrainPad {
         public void DrawSmallNumber(int x, int y, double number) => DrawSmallText(x, y, number.ToString("N2"));
         public void DrawNumber(int x, int y, long number) => DrawText(x, y, number.ToString("N0"));
         public void DrawSmallNumber(int x, int y, long number) => DrawSmallText(x, y, number.ToString("N0"));
-
-        public void DrawTextAndShowOnScreen(int x, int y, string text) => DrawScaledTextAndShowOnScreen(x, y, text, 2, 2);
-        public void DrawSmallTextAndShowOnScreen(int x, int y, string text) => DrawScaledTextAndShowOnScreen(x, y, text, 1, 1);
-
-        public void DrawScaledTextAndShowOnScreen(int x, int y, string text, int HScale, int VScale) {
-            this.ClearScreen();
-
-            this.DrawScaledText(x, y, text, HScale, VScale);
-
-            this.ShowOnScreen();
-        }
-
-        public void DrawNumberAndShowOnScreen(int x, int y, double number) => DrawTextAndShowOnScreen(x, y, number.ToString("N2"));
-        public void DrawSmallNumberAndShowOnScreen(int x, int y, double number) => DrawSmallTextAndShowOnScreen(x, y, number.ToString("N2"));
-        public void DrawNumberAndShowOnScreen(int x, int y, long number) => DrawTextAndShowOnScreen(x, y, number.ToString("N0"));
-        public void DrawSmallNumberAndShowOnScreen(int x, int y, long number) => DrawSmallTextAndShowOnScreen(x, y, number.ToString("N0"));
 
         public void InvertColors(bool invert) {
             if (invert)
