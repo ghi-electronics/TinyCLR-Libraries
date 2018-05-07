@@ -280,11 +280,11 @@ namespace GHIElectronics.TinyCLR.BrainPad {
 
                     break;
             }
-            this.ClearScreen();
-            this.ShowOnScreen();
+            this.Clear();
+            this.RefreshScreen();
         }
 
-        public void ShowOnScreen() {
+        public void RefreshScreen() {
 
             switch (Board.BoardType) {
 #if SUPPORT_ORIGINAL_BRAINPAD
@@ -385,7 +385,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
         /// <summary>
         /// Clears the Display.
         /// </summary>
-        public void ClearScreen() {
+        public void Clear() {
             switch (Board.BoardType) {
 #if SUPPORT_ORIGINAL_BRAINPAD
                 case BoardType.Original:
@@ -407,8 +407,8 @@ namespace GHIElectronics.TinyCLR.BrainPad {
             }
         }
 
-        public void ClearPartOfScreen(int x, int y, int width, int height) {
-            if (x == 0 && y == 0 && width == 128 && height == 64) ClearScreen();
+        public void ClearPart(int x, int y, int width, int height) {
+            if (x == 0 && y == 0 && width == 128 && height == 64) Clear();
             for (var lx = x; lx < width + x; lx++)
                 for (var ly = y; ly < height + y; ly++)
                     Point(lx, ly, false);
@@ -741,7 +741,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
 
                 }
             }
-            ClearPartOfScreen(x + 5 * HScale, y, HScale, 8 * VScale);// clear the space between characters
+            ClearPart(x + 5 * HScale, y, HScale, 8 * VScale);// clear the space between characters
         }
 
         /// <summary>
