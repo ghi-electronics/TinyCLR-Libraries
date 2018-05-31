@@ -5,44 +5,42 @@ using System.Runtime.InteropServices;
 
 namespace GHIElectronics.TinyCLR.Devices.Can.Provider {
     public interface ICanProvider {
-        ICanControllerProvider[] GetControllers();
+        ICanControllerProvider GetControllers(int idx);
     }
 
     public interface ICanControllerProvider : IDisposable {
-        void Reset();
-        int ReadMessages(CanMessage[] messages, int offset, int count);
-        int WriteMessages(CanMessage[] messages, int offset, int count);
-        void SetBitTiming(CanBitTiming bitTiming);
-        void SetExplicitFilters(uint[] filters);
-        void SetGroupFilters(uint[] lowerBounds, uint[] upperBounds);
-        void ClearReadBuffer();
-        void ClearWriteBuffer();
+        void Reset(int controller);
+        int ReadMessages(int controller, CanMessage[] messages, int offset, int count);
+        int WriteMessages(int controller, CanMessage[] messages, int offset, int count);
+        void SetBitTiming(int controller, CanBitTiming bitTiming);
+        void SetExplicitFilters(int controller, uint[] filters);
+        void SetGroupFilters(int controller, uint[] lowerBounds, uint[] upperBounds);
+        void ClearReadBuffer(int controller);
+        void ClearWriteBuffer(int controller);
 
-        int UnreadMessageCount { get; }
-        int UnwrittenMessageCount { get; }
-        bool IsWritingAllowed { get; }
-        int ReadErrorCount { get; }
-        int WriteErrorCount { get; }
-        uint SourceClock { get; }
+        int UnreadMessageCount(int controller);
+        int UnwrittenMessageCount(int controller);
+        bool IsWritingAllowed(int controller);
+        int ReadErrorCount(int controller);
+        int WriteErrorCount(int controller);
+        uint SourceClock(int controller);
     }
 
     public class CanProvider : ICanProvider {
-        private readonly ICanControllerProvider[] controllers;
+        private ICanControllerProvider controllers;
         private static Hashtable providers = new Hashtable();
 
         public string Name { get; }
 
-        public ICanControllerProvider[] GetControllers() => this.controllers;
+        public ICanControllerProvider GetControllers(int idx) {
+            var api = Api.Find(this.Name, ApiType.CanProvider);
 
-        private CanProvider(string name) {
-            var api = Api.Find(name, ApiType.CanProvider);
+            this.controllers = new DefaultCanControllerProvider(api.Implementation[0], idx);
 
-            this.Name = name;
-            this.controllers = new ICanControllerProvider[api.Count];
-
-            for (var i = 0U; i < this.controllers.Length; i++)
-                this.controllers[i] = new DefaultCanControllerProvider(api.Implementation[i]);
+            return this.controllers;
         }
+
+        private CanProvider(string name) => this.Name = name;
 
         public static ICanProvider FromId(string id) {
             if (CanProvider.providers.Contains(id))
@@ -62,94 +60,83 @@ namespace GHIElectronics.TinyCLR.Devices.Can.Provider {
 #pragma warning restore CS0169
         private bool disposed = false;
 
-        internal DefaultCanControllerProvider(IntPtr nativeProvider) {
-            this.nativeProvider = nativeProvider;
+        int controllerId;
 
-            this.NativeAcquire();
+        internal DefaultCanControllerProvider(IntPtr nativeProvider, int controllerId) {
+            this.nativeProvider = nativeProvider;
+            this.controllerId = controllerId;
+
+            this.NativeAcquire(controllerId);
         }
 
         ~DefaultCanControllerProvider() => this.Dispose();
 
         public void Dispose() {
             if (!this.disposed) {
-                this.NativeRelease();
+                this.NativeRelease(this.controllerId);
                 GC.SuppressFinalize(this);
                 this.disposed = true;
             }
         }
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private extern void NativeAcquire();
+        private extern void NativeAcquire(int controller);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private extern void NativeRelease();
+        private extern void NativeRelease(int controller);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern void Reset();
+        public extern void Reset(int controller);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern int ReadMessages(CanMessage[] messages, int offset, int count);
+        public extern int ReadMessages(int controller, CanMessage[] messages, int offset, int count);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern int WriteMessages(CanMessage[] messages, int offset, int count);
+        public extern int WriteMessages(int controller, CanMessage[] messages, int offset, int count);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern void SetBitTiming(CanBitTiming bitTiming);
+        public extern void SetBitTiming(int controller, CanBitTiming bitTiming);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern void SetExplicitFilters(uint[] filters);
+        public extern void SetExplicitFilters(int controller, uint[] filters);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern void SetGroupFilters(uint[] lowerBounds, uint[] upperBounds);
+        public extern void SetGroupFilters(int controller, uint[] lowerBounds, uint[] upperBounds);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern void ClearReadBuffer();
+        public extern void ClearReadBuffer(int controller);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern void ClearWriteBuffer();
+        public extern void ClearWriteBuffer(int controller);
 
-        public extern int UnreadMessageCount {
-            [MethodImpl(MethodImplOptions.InternalCall)]
-            get;
-        }
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        public extern int UnreadMessageCount(int controller);
 
-        public extern int UnwrittenMessageCount {
-            [MethodImpl(MethodImplOptions.InternalCall)]
-            get;
-        }
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        public extern int UnwrittenMessageCount(int controller);
 
-        public extern bool IsWritingAllowed {
-            [MethodImpl(MethodImplOptions.InternalCall)]
-            get;
-        }
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        public extern bool IsWritingAllowed(int controller);
 
-        public extern int ReadErrorCount {
-            [MethodImpl(MethodImplOptions.InternalCall)]
-            get;
-        }
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        public extern int ReadErrorCount(int controller);
 
-        public extern int WriteErrorCount {
-            [MethodImpl(MethodImplOptions.InternalCall)]
-            get;
-        }
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        public extern int WriteErrorCount(int controller);
 
-        public extern uint SourceClock {
-            [MethodImpl(MethodImplOptions.InternalCall)]
-            get;
-        }
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        public extern uint SourceClock(int controller);
 
-        public extern uint ReadBufferSize {
-            [MethodImpl(MethodImplOptions.InternalCall)]
-            get;
-            [MethodImpl(MethodImplOptions.InternalCall)]
-            set;
-        }
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        public extern uint GetReadBufferSize(int controller);
 
-        public extern uint WriteBufferSize {
-            [MethodImpl(MethodImplOptions.InternalCall)]
-            get;
-            [MethodImpl(MethodImplOptions.InternalCall)]
-            set;
-        }
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        public extern void SetReadBufferSize(int controller, int size);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        public extern uint GetWriteBufferSize(int controller);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        public extern void SetWriteBufferSize(int controller, int size);
     }
 }
