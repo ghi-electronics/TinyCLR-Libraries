@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 
 namespace GHIElectronics.TinyCLR.Devices.Can.Provider {
     public interface ICanProvider {
-        ICanControllerProvider GetControllers(int idx);
+        ICanControllerProvider GetController(int idx);
     }
 
     public interface ICanControllerProvider : IDisposable {
@@ -32,8 +32,11 @@ namespace GHIElectronics.TinyCLR.Devices.Can.Provider {
 
         public string Name { get; }
 
-        public ICanControllerProvider GetControllers(int idx) {
+        public ICanControllerProvider GetController(int idx) {
             var api = Api.Find(this.Name, ApiType.CanProvider);
+
+            if (idx >= api.Count)
+                throw new ArgumentException("Controller id is out of array");
 
             this.controllers = new DefaultCanControllerProvider(api.Implementation[0], idx);
 
