@@ -38,7 +38,7 @@ namespace GHIElectronics.TinyCLR.Devices.I2c.Provider {
     }
 
     public interface II2cProvider {
-        II2cControllerProvider[] GetControllers();
+        II2cControllerProvider GetController(int idx);
     }
 
     public interface II2cControllerProvider {
@@ -64,22 +64,21 @@ namespace GHIElectronics.TinyCLR.Devices.I2c.Provider {
     }
 
     public class I2cProvider : II2cProvider {
-        private II2cControllerProvider[] controllers;
+        private II2cControllerProvider controllers;
         private static Hashtable providers = new Hashtable();
 
         public string Name { get; }
 
-        public II2cControllerProvider[] GetControllers() => this.controllers;
+        public II2cControllerProvider GetController(int idx) {
 
-        private I2cProvider(string name) {
-            var api = Api.Find(name, ApiType.I2cProvider);
+            var api = Api.Find(this.Name, ApiType.I2cProvider);
 
-            this.Name = name;
-            this.controllers = new II2cControllerProvider[api.Count];
+            this.controllers = new DefaultI2cControllerProvider(api.Implementation[0], idx);
 
-            for (var i = 0U; i < this.controllers.Length; i++)
-                this.controllers[i] = new DefaultI2cControllerProvider(api.Implementation[i]);
+            return this.controllers;
         }
+
+        private I2cProvider(string name) => this.Name = name;
 
         public static II2cProvider FromId(string id) {
             if (I2cProvider.providers.Contains(id))
@@ -97,16 +96,18 @@ namespace GHIElectronics.TinyCLR.Devices.I2c.Provider {
         private readonly IntPtr nativeProvider;
         private int created;
         private bool isExclusive;
+        private int controllerId;
 
-        internal DefaultI2cControllerProvider(IntPtr nativeProvider) {
+        internal DefaultI2cControllerProvider(IntPtr nativeProvider, int idx) {
             this.nativeProvider = nativeProvider;
             this.created = 0;
             this.isExclusive = false;
+            this.controllerId = idx;
         }
 
         public void Release(DefaultI2cDeviceProvider provider) {
             if (--this.created == 0)
-                this.ReleaseNative();
+                this.ReleaseNative(this.controllerId);
         }
 
         public II2cDeviceProvider GetDeviceProvider(ProviderI2cConnectionSettings settings) {
@@ -116,16 +117,16 @@ namespace GHIElectronics.TinyCLR.Devices.I2c.Provider {
             this.isExclusive = settings.SharingMode == ProviderI2cSharingMode.Exclusive;
 
             if (this.created++ == 0)
-                this.AcquireNative();
+                this.AcquireNative(this.controllerId);
 
-            return new DefaultI2cDeviceProvider(this, this.nativeProvider, settings);
+            return new DefaultI2cDeviceProvider(this, this.nativeProvider, settings, this.controllerId);
         }
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        extern private void AcquireNative();
+        extern private void AcquireNative(int channel);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        extern private void ReleaseNative();
+        extern private void ReleaseNative(int channel);
     }
 
     internal sealed class DefaultI2cDeviceProvider : II2cDeviceProvider {
@@ -134,13 +135,15 @@ namespace GHIElectronics.TinyCLR.Devices.I2c.Provider {
 
         private bool m_disposed = false;
         private I2cConnectionSettings m_settings;
+        private int idx;
 
         public string DeviceId => "";
 
-        internal DefaultI2cDeviceProvider(DefaultI2cControllerProvider parent, IntPtr nativeProvider, ProviderI2cConnectionSettings settings) {
+        internal DefaultI2cDeviceProvider(DefaultI2cControllerProvider parent, IntPtr nativeProvider, ProviderI2cConnectionSettings settings, int idx) {
             this.nativeProvider = nativeProvider;
             this.parent = parent;
             this.m_settings = new I2cConnectionSettings(settings);
+            this.idx = idx;
         }
 
         ~DefaultI2cDeviceProvider() {
@@ -178,7 +181,7 @@ namespace GHIElectronics.TinyCLR.Devices.I2c.Provider {
             if (length < 0) throw new ArgumentOutOfRangeException(nameof(length));
             if (buffer.Length < offset + length) throw new ArgumentException(nameof(buffer));
 
-            this.ReadInternal(buffer, offset, length, out var transferred, out var status);
+            this.ReadInternal(this.idx, buffer, offset, length, out var transferred, out var status);
 
             return new ProviderI2cTransferResult { BytesTransferred = transferred, Status = status };
         }
@@ -189,7 +192,7 @@ namespace GHIElectronics.TinyCLR.Devices.I2c.Provider {
             if (length < 0) throw new ArgumentOutOfRangeException(nameof(length));
             if (buffer.Length < offset + length) throw new ArgumentException(nameof(buffer));
 
-            this.WriteInternal(buffer, offset, length, out var transferred, out var status);
+            this.WriteInternal(this.idx, buffer, offset, length, out var transferred, out var status);
 
             return new ProviderI2cTransferResult { BytesTransferred = transferred, Status = status };
         }
@@ -205,18 +208,18 @@ namespace GHIElectronics.TinyCLR.Devices.I2c.Provider {
             if (readLength < 0) throw new ArgumentOutOfRangeException(nameof(readLength));
             if (readBuffer.Length < readOffset + readLength) throw new ArgumentException(nameof(readBuffer));
 
-            this.WriteReadInternal(writeBuffer, writeOffset, writeLength, readBuffer, readOffset, readLength, out var transferred, out var status);
+            this.WriteReadInternal(this.idx, writeBuffer, writeOffset, writeLength, readBuffer, readOffset, readLength, out var transferred, out var status);
 
             return new ProviderI2cTransferResult { BytesTransferred = transferred, Status = status };
         }
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private extern void ReadInternal(byte[] buffer, int offset, int length, out uint transferred, out ProviderI2cTransferStatus status);
+        private extern void ReadInternal(int channel, byte[] buffer, int offset, int length, out uint transferred, out ProviderI2cTransferStatus status);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private extern void WriteInternal(byte[] buffer, int offset, int length, out uint transferred, out ProviderI2cTransferStatus status);
+        private extern void WriteInternal(int channel, byte[] buffer, int offset, int length, out uint transferred, out ProviderI2cTransferStatus status);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private extern void WriteReadInternal(byte[] writeBuffer, int writeOffset, int writeLength, byte[] readBuffer, int readOffset, int readLength, out uint transferred, out ProviderI2cTransferStatus status);
+        private extern void WriteReadInternal(int channel, byte[] writeBuffer, int writeOffset, int writeLength, byte[] readBuffer, int readOffset, int readLength, out uint transferred, out ProviderI2cTransferStatus status);
     }
 }

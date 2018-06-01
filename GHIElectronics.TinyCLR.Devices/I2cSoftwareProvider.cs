@@ -1,9 +1,9 @@
-﻿using GHIElectronics.TinyCLR.Devices.Gpio;
-using GHIElectronics.TinyCLR.Devices.Gpio.Provider;
-using GHIElectronics.TinyCLR.Devices.I2c.Provider;
-using System;
+﻿using System;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using GHIElectronics.TinyCLR.Devices.Gpio;
+using GHIElectronics.TinyCLR.Devices.Gpio.Provider;
+using GHIElectronics.TinyCLR.Devices.I2c.Provider;
 
 namespace GHIElectronics.TinyCLR.Devices.I2c {
     public class I2cSoftwareProvider : II2cProvider {
@@ -11,7 +11,7 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
         private readonly int sda;
         private readonly int scl;
         private readonly bool useSoftwarePullups;
-        private II2cControllerProvider[] controllers;
+        private II2cControllerProvider controllers;
 
         public I2cSoftwareProvider(int sda, int scl) : this(sda, scl, true) { }
         public I2cSoftwareProvider(int sda, int scl, bool useSoftwarePullups) : this(GpioController.GetDefault(), sda, scl, useSoftwarePullups) { }
@@ -24,7 +24,7 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
             this.useSoftwarePullups = useSoftwarePullups;
         }
 
-        public II2cControllerProvider[] GetControllers() => this.controllers = (this.controllers ?? new[] { new I2cSoftwareControllerProvider(this.controller, this.sda, this.scl, this.useSoftwarePullups) });
+        public II2cControllerProvider GetController(int idx) => this.controllers = (this.controllers ?? new I2cSoftwareControllerProvider(this.controller, this.sda, this.scl, this.useSoftwarePullups));
     }
 
     internal class I2cSoftwareControllerProvider : II2cControllerProvider {
