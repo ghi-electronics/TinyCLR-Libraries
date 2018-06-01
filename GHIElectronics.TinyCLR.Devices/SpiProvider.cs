@@ -37,7 +37,7 @@ namespace GHIElectronics.TinyCLR.Devices.Spi.Provider {
     }
 
     public interface ISpiProvider {
-        ISpiControllerProvider[] GetControllers();
+        ISpiControllerProvider GetControllers(int idx);
     }
 
     public interface ISpiControllerProvider {
@@ -60,22 +60,20 @@ namespace GHIElectronics.TinyCLR.Devices.Spi.Provider {
     }
 
     public class SpiProvider : ISpiProvider {
-        private ISpiControllerProvider[] controllers;
+        private ISpiControllerProvider controllers;
         private static Hashtable providers = new Hashtable();
 
         public string Name { get; }
 
-        public ISpiControllerProvider[] GetControllers() => this.controllers;
+        public ISpiControllerProvider GetControllers(int idx) {
+            var api = Api.Find(this.Name, ApiType.SpiProvider);
 
-        private SpiProvider(string name) {
-            var api = Api.Find(name, ApiType.SpiProvider);
+            this.controllers = new DefaultSpiControllerProvider(api.Implementation[0], idx);
 
-            this.Name = name;
-            this.controllers = new ISpiControllerProvider[api.Count];
-
-            for (var i = 0U; i < this.controllers.Length; i++)
-                this.controllers[i] = new DefaultSpiControllerProvider(api.Implementation[i]);
+            return this.controllers;
         }
+
+        private SpiProvider(string name) => this.Name = name;
 
         public static ISpiProvider FromId(string id) {
             if (SpiProvider.providers.Contains(id))
@@ -93,11 +91,13 @@ namespace GHIElectronics.TinyCLR.Devices.Spi.Provider {
         private readonly IntPtr nativeProvider;
         private int created;
         private bool isExclusive;
+        private int idx;
 
-        internal DefaultSpiControllerProvider(IntPtr nativeProvider) {
+        internal DefaultSpiControllerProvider(IntPtr nativeProvider, int idx) {
             this.nativeProvider = nativeProvider;
             this.created = 0;
             this.isExclusive = false;
+            this.idx = idx;
         }
 
         public void Release(DefaultSpiDeviceProvider provider) {

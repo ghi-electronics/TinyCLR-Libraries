@@ -1,6 +1,6 @@
-﻿using GHIElectronics.TinyCLR.Devices.Spi.Provider;
-using System;
+﻿using System;
 using System.Runtime.InteropServices;
+using GHIElectronics.TinyCLR.Devices.Spi.Provider;
 
 namespace GHIElectronics.TinyCLR.Devices.Spi {
     public sealed class SpiDevice : IDisposable {
@@ -37,7 +37,7 @@ namespace GHIElectronics.TinyCLR.Devices.Spi {
             if (Api.ParseSelector(selector, out var providerId, out var controllerIndex)) {
                 var api = Api.Find(providerId, ApiType.SpiProvider);
 
-                return new SpiBusInfo(api.Implementation[controllerIndex]);
+                return new SpiBusInfo(api.Implementation[0], (int)controllerIndex);
             }
 
             throw new ArgumentException();
@@ -80,7 +80,7 @@ namespace GHIElectronics.TinyCLR.Devices.Spi {
                     throw new ArgumentException();
             }
 
-            return Api.ParseSelector(busId, out var providerId, out var idx) ? new SpiDevice(settings, SpiProvider.FromId(providerId).GetControllers()[idx].GetDeviceProvider(new ProviderSpiConnectionSettings(settings))) : null;
+            return Api.ParseSelector(busId, out var providerId, out var idx) ? new SpiDevice(settings, SpiProvider.FromId(providerId).GetControllers((int)idx).GetDeviceProvider(new ProviderSpiConnectionSettings(settings))) : null;
         }
 
     }
