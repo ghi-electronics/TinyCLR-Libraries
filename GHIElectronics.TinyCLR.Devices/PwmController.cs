@@ -1,6 +1,6 @@
-using GHIElectronics.TinyCLR.Devices.Pwm.Provider;
 using System;
 using System.Runtime.InteropServices;
+using GHIElectronics.TinyCLR.Devices.Pwm.Provider;
 
 namespace GHIElectronics.TinyCLR.Devices.Pwm {
     public sealed class PwmController {
@@ -19,22 +19,9 @@ namespace GHIElectronics.TinyCLR.Devices.Pwm {
         public static string GetDeviceSelector() => throw new NotSupportedException();
         public static string GetDeviceSelector(string friendlyName) => throw new NotSupportedException();
 
-        public static PwmController FromId(string deviceId) => Api.ParseSelector(deviceId, out var providerId, out var idx) ? new PwmController(PwmProvider.FromId(providerId).GetControllers()[idx]) : null;
+        public static PwmController FromId(string deviceId) => Api.ParseSelector(deviceId, out var providerId, out var idx) ? new PwmController(PwmProvider.FromId(providerId).GetControllers((int)idx)) : null;
 
         public static PwmController GetDefault() => LowLevelDevicesController.DefaultProvider?.PwmControllerProvider != null ? new PwmController(LowLevelDevicesController.DefaultProvider?.PwmControllerProvider) : PwmController.FromId(Api.GetDefaultSelector(ApiType.PwmProvider));
-
-        public static PwmController[] GetControllers(IPwmProvider provider) {
-            // FUTURE: This should return "Task<IReadOnlyList<PwmController>>"
-
-            var providers = provider.GetControllers();
-            var controllers = new PwmController[providers.Length];
-
-            for (var i = 0; i < providers.Length; ++i) {
-                controllers[i] = new PwmController(providers[i]);
-            }
-
-            return controllers;
-        }
 
         public double SetDesiredFrequency(double desiredFrequency) {
             if ((desiredFrequency < this.m_provider.MinFrequency) || (desiredFrequency > this.m_provider.MaxFrequency)) {

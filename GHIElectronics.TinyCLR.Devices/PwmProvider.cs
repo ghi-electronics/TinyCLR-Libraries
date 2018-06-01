@@ -31,26 +31,24 @@ namespace GHIElectronics.TinyCLR.Devices.Pwm.Provider {
 
     public interface IPwmProvider {
         // FUTURE: This should return "IReadOnlyList<IPwmControllerProvider>"
-        IPwmControllerProvider[] GetControllers();
+        IPwmControllerProvider GetControllers(int idx);
     }
 
     public class PwmProvider : IPwmProvider {
-        private IPwmControllerProvider[] controllers;
+        private IPwmControllerProvider controllers;
         private readonly static Hashtable providers = new Hashtable();
 
         public string Name { get; }
 
-        public IPwmControllerProvider[] GetControllers() => this.controllers;
+        public IPwmControllerProvider GetControllers(int idx) {
+            var api = Api.Find(this.Name, ApiType.PwmProvider);
 
-        private PwmProvider(string name) {
-            var api = Api.Find(name, ApiType.PwmProvider);
+            this.controllers = new DefaultPwmControllerProvider(api.Implementation[0], idx);
 
-            this.Name = name;
-            this.controllers = new IPwmControllerProvider[api.Count];
-
-            for (var i = 0U; i < this.controllers.Length; i++)
-                this.controllers[i] = new DefaultPwmControllerProvider(api.Implementation[i]);
+            return this.controllers;
         }
+
+        private PwmProvider(string name) => this.Name = name;
 
         public static IPwmProvider FromId(string id) {
             if (PwmProvider.providers.Contains(id))
@@ -69,15 +67,17 @@ namespace GHIElectronics.TinyCLR.Devices.Pwm.Provider {
         private readonly IntPtr nativeProvider;
 #pragma warning restore CS0169
 
-        internal DefaultPwmControllerProvider(IntPtr nativeProvider) {
+        internal DefaultPwmControllerProvider(IntPtr nativeProvider, int idx) {
             this.nativeProvider = nativeProvider;
-
+            this.idx = idx;
             this.AcquireNative();
         }
 
         ~DefaultPwmControllerProvider() => this.ReleaseNative();
 
         public double ActualFrequency { get; private set; }
+
+        private int idx;
 
         public extern double MaxFrequency {
             [MethodImpl(MethodImplOptions.InternalCall)]
