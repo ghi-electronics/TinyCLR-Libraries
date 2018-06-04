@@ -20,11 +20,11 @@ namespace GHIElectronics.TinyCLR.Devices.Can {
 
     public sealed class CanController {
         private readonly ICanControllerProvider provider;
-        private readonly int idx;
+        private readonly uint idx;
         private readonly NativeEventDispatcher nativeMessageAvailableEvent;
         private readonly NativeEventDispatcher nativeErrorEvent;
 
-        internal CanController(ICanControllerProvider provider, int idx) {
+        internal CanController(ICanControllerProvider provider, uint idx) {
             this.provider = provider;
             this.idx = idx;
 
@@ -38,31 +38,35 @@ namespace GHIElectronics.TinyCLR.Devices.Can {
         public static CanController GetDefault() {
             var idx = 0U;
 
-            return new CanController(LowLevelDevicesController.DefaultProvider?.CanControllerProvider ?? (Api.ParseSelector(Api.GetDefaultSelector(ApiType.CanProvider), out var providerId, out idx) ? CanProvider.FromId(providerId).GetController((int)idx) : null), (int)idx);
+            return new CanController(LowLevelDevicesController.DefaultProvider?.CanControllerProvider ?? (Api.ParseSelector(Api.GetDefaultSelector(ApiType.CanProvider), out var providerId, out idx) ? CanProvider.FromId(providerId).GetControllers((int)idx) : null), idx);
         }
 
-        public static CanController FromId(string controllerId) => Api.ParseSelector(controllerId, out var providerId, out var idx) ? new CanController(CanProvider.FromId(providerId).GetController((int)idx), (int)idx) : null;
+        public static CanController GetControllers(ICanProvider provider) =>
+            // TODO
+            null;
 
-        public void Reset() => this.provider.Reset(this.idx);
-        public void SetBitTiming(CanBitTiming bitTiming) => this.provider.SetBitTiming(this.idx, bitTiming);
+        public static CanController FromId(string controllerId) => Api.ParseSelector(controllerId, out var providerId, out var idx) ? new CanController(CanProvider.FromId(providerId).GetControllers((int)idx), idx) : null;
+
+        public void Reset() => this.provider.Reset();
+        public void SetBitTiming(CanBitTiming bitTiming) => this.provider.SetBitTiming(bitTiming);
 
         public bool ReadMessage(out CanMessage message) => this.ReadMessages(new[] { message = new CanMessage() }, 0, 1) == 1;
-        public int ReadMessages(CanMessage[] messages, int offset, int count) => this.provider.ReadMessages(this.idx, messages, offset, count);
+        public int ReadMessages(CanMessage[] messages, int offset, int count) => this.provider.ReadMessages(messages, offset, count);
 
         public bool WriteMessage(CanMessage message) => this.WriteMessages(new[] { message }, 0, 1) == 1;
-        public int WriteMessages(CanMessage[] messages, int offset, int count) => this.provider.WriteMessages(this.idx, messages, offset, count);
+        public int WriteMessages(CanMessage[] messages, int offset, int count) => this.provider.WriteMessages(messages, offset, count);
 
-        public void SetExplicitFilters(uint[] filters) => this.provider.SetExplicitFilters(this.idx, filters);
-        public void SetGroupFilters(uint[] lowerBounds, uint[] upperBounds) => this.provider.SetGroupFilters(this.idx, lowerBounds, upperBounds);
-        public void ClearReadBuffer() => this.provider.ClearReadBuffer(this.idx);
-        public void ClearWriteBuffer() => this.provider.ClearReadBuffer(this.idx);
+        public void SetExplicitFilters(uint[] filters) => this.provider.SetExplicitFilters(filters);
+        public void SetGroupFilters(uint[] lowerBounds, uint[] upperBounds) => this.provider.SetGroupFilters(lowerBounds, upperBounds);
+        public void ClearReadBuffer() => this.provider.ClearReadBuffer();
+        public void ClearWriteBuffer() => this.provider.ClearReadBuffer();
 
-        public int UnreadMessageCount => this.provider.UnreadMessageCount(this.idx);
-        public int UnwrittenMessageCount => this.provider.UnwrittenMessageCount(this.idx);
-        public bool IsWritingAllowed => this.provider.IsWritingAllowed(this.idx);
-        public int ReadErrorCount => this.provider.ReadErrorCount(this.idx);
-        public int WriteErrorCount => this.provider.WriteErrorCount(this.idx);
-        public uint SourceClock => this.provider.SourceClock(this.idx);
+        public int UnreadMessageCount => this.provider.UnreadMessageCount;
+        public int UnwrittenMessageCount => this.provider.UnwrittenMessageCount;
+        public bool IsWritingAllowed => this.provider.IsWritingAllowed;
+        public int ReadErrorCount => this.provider.ReadErrorCount;
+        public int WriteErrorCount => this.provider.WriteErrorCount;
+        public uint SourceClock => this.provider.SourceClock;
 
         public event MessageReceivedEventHandler MessageReceived;
         public event ErrorReceivedEventHandler ErrorReceived;

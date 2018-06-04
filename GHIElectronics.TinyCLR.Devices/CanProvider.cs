@@ -5,25 +5,25 @@ using System.Runtime.InteropServices;
 
 namespace GHIElectronics.TinyCLR.Devices.Can.Provider {
     public interface ICanProvider {
-        ICanControllerProvider GetController(int idx);
+        ICanControllerProvider GetControllers(int idx);
     }
 
     public interface ICanControllerProvider : IDisposable {
-        void Reset(int controller);
-        int ReadMessages(int controller, CanMessage[] messages, int offset, int count);
-        int WriteMessages(int controller, CanMessage[] messages, int offset, int count);
-        void SetBitTiming(int controller, CanBitTiming bitTiming);
-        void SetExplicitFilters(int controller, uint[] filters);
-        void SetGroupFilters(int controller, uint[] lowerBounds, uint[] upperBounds);
-        void ClearReadBuffer(int controller);
-        void ClearWriteBuffer(int controller);
+        void Reset();
+        int ReadMessages(CanMessage[] messages, int offset, int count);
+        int WriteMessages(CanMessage[] messages, int offset, int count);
+        void SetBitTiming(CanBitTiming bitTiming);
+        void SetExplicitFilters(uint[] filters);
+        void SetGroupFilters(uint[] lowerBounds, uint[] upperBounds);
+        void ClearReadBuffer();
+        void ClearWriteBuffer();
 
-        int UnreadMessageCount(int controller);
-        int UnwrittenMessageCount(int controller);
-        bool IsWritingAllowed(int controller);
-        int ReadErrorCount(int controller);
-        int WriteErrorCount(int controller);
-        uint SourceClock(int controller);
+        int UnreadMessageCount { get; }
+        int UnwrittenMessageCount { get; }
+        bool IsWritingAllowed { get; }
+        int ReadErrorCount { get; }
+        int WriteErrorCount { get; }
+        uint SourceClock { get; }
     }
 
     public class CanProvider : ICanProvider {
@@ -32,11 +32,8 @@ namespace GHIElectronics.TinyCLR.Devices.Can.Provider {
 
         public string Name { get; }
 
-        public ICanControllerProvider GetController(int idx) {
+        public ICanControllerProvider GetControllers(int idx) {
             var api = Api.Find(this.Name, ApiType.CanProvider);
-
-            if (idx >= api.Count)
-                throw new ArgumentException("Controller id is out of array");
 
             this.controllers = new DefaultCanControllerProvider(api.Implementation[0], idx);
 
@@ -62,84 +59,97 @@ namespace GHIElectronics.TinyCLR.Devices.Can.Provider {
         private readonly IntPtr nativeProvider;
 #pragma warning restore CS0169
         private bool disposed = false;
+        private int idx;
 
-        int controllerId;
-
-        internal DefaultCanControllerProvider(IntPtr nativeProvider, int controllerId) {
+        internal DefaultCanControllerProvider(IntPtr nativeProvider, int idx) {
             this.nativeProvider = nativeProvider;
-            this.controllerId = controllerId;
+            this.idx = idx;
 
-            this.NativeAcquire(controllerId);
+            this.NativeAcquire();
         }
 
         ~DefaultCanControllerProvider() => this.Dispose();
 
         public void Dispose() {
             if (!this.disposed) {
-                this.NativeRelease(this.controllerId);
+                this.NativeRelease();
                 GC.SuppressFinalize(this);
                 this.disposed = true;
             }
         }
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private extern void NativeAcquire(int controller);
+        private extern void NativeAcquire();
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private extern void NativeRelease(int controller);
+        private extern void NativeRelease();
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern void Reset(int controller);
+        public extern void Reset();
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern int ReadMessages(int controller, CanMessage[] messages, int offset, int count);
+        public extern int ReadMessages(CanMessage[] messages, int offset, int count);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern int WriteMessages(int controller, CanMessage[] messages, int offset, int count);
+        public extern int WriteMessages(CanMessage[] messages, int offset, int count);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern void SetBitTiming(int controller, CanBitTiming bitTiming);
+        public extern void SetBitTiming(CanBitTiming bitTiming);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern void SetExplicitFilters(int controller, uint[] filters);
+        public extern void SetExplicitFilters(uint[] filters);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern void SetGroupFilters(int controller, uint[] lowerBounds, uint[] upperBounds);
+        public extern void SetGroupFilters(uint[] lowerBounds, uint[] upperBounds);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern void ClearReadBuffer(int controller);
+        public extern void ClearReadBuffer();
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern void ClearWriteBuffer(int controller);
+        public extern void ClearWriteBuffer();
 
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern int UnreadMessageCount(int controller);
+        public extern int UnreadMessageCount {
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            get;
+        }
 
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern int UnwrittenMessageCount(int controller);
+        public extern int UnwrittenMessageCount {
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            get;
+        }
 
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern bool IsWritingAllowed(int controller);
+        public extern bool IsWritingAllowed {
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            get;
+        }
 
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern int ReadErrorCount(int controller);
+        public extern int ReadErrorCount {
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            get;
+        }
 
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern int WriteErrorCount(int controller);
+        public extern int WriteErrorCount {
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            get;
+        }
 
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern uint SourceClock(int controller);
+        public extern uint SourceClock {
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            get;
+        }
 
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern uint GetReadBufferSize(int controller);
+        public extern uint ReadBufferSize {
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            get;
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            set;
+        }
 
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern void SetReadBufferSize(int controller, int size);
-
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern uint GetWriteBufferSize(int controller);
-
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern void SetWriteBufferSize(int controller, int size);
+        public extern uint WriteBufferSize {
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            get;
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            set;
+        }
     }
 }
