@@ -38,14 +38,14 @@ namespace GHIElectronics.TinyCLR.Devices.Can {
         public static CanController GetDefault() {
             var idx = 0U;
 
-            return new CanController(LowLevelDevicesController.DefaultProvider?.CanControllerProvider ?? (Api.ParseSelector(Api.GetDefaultSelector(ApiType.CanProvider), out var providerId, out idx) ? CanProvider.FromId(providerId).GetControllers((int)idx) : null), idx);
+            return new CanController(LowLevelDevicesController.DefaultProvider?.CanControllerProvider ?? (Api.ParseSelector(Api.GetDefaultSelector(ApiType.CanProvider), out var providerId, out idx) ? CanProvider.FromId(providerId).GetController((int)idx) : null), idx);
         }
 
-        public static CanController GetControllers(ICanProvider provider) =>
+        public static CanController GetController(ICanProvider provider) =>
             // TODO
             null;
 
-        public static CanController FromId(string controllerId) => Api.ParseSelector(controllerId, out var providerId, out var idx) ? new CanController(CanProvider.FromId(providerId).GetControllers((int)idx), idx) : null;
+        public static CanController FromId(string controllerId) => Api.ParseSelector(controllerId, out var providerId, out var idx) ? new CanController(CanProvider.FromId(providerId).GetController((int)idx), idx) : null;
 
         public void Reset() => this.provider.Reset();
         public void SetBitTiming(CanBitTiming bitTiming) => this.provider.SetBitTiming(bitTiming);

@@ -7,24 +7,24 @@ using GHIElectronics.TinyCLR.Devices.I2c.Provider;
 
 namespace GHIElectronics.TinyCLR.Devices.I2c {
     public class I2cSoftwareProvider : II2cProvider {
-        private readonly GpioController controller;
+        private readonly GpioController gpioController;
         private readonly int sda;
         private readonly int scl;
         private readonly bool useSoftwarePullups;
-        private II2cControllerProvider controllers;
+        private II2cControllerProvider i2cController;
 
         public I2cSoftwareProvider(int sda, int scl) : this(sda, scl, true) { }
         public I2cSoftwareProvider(int sda, int scl, bool useSoftwarePullups) : this(GpioController.GetDefault(), sda, scl, useSoftwarePullups) { }
         public I2cSoftwareProvider(GpioController controller, int sda, int scl) : this(controller, sda, scl, true) { }
 
         public I2cSoftwareProvider(GpioController controller, int sda, int scl, bool useSoftwarePullups) {
-            this.controller = controller;
+            this.gpioController = controller;
             this.sda = sda;
             this.scl = scl;
             this.useSoftwarePullups = useSoftwarePullups;
         }
 
-        public II2cControllerProvider GetControllers(int idx = 0) => this.controllers = (this.controllers ?? new I2cSoftwareControllerProvider(this.controller, this.sda, this.scl, this.useSoftwarePullups));
+        public II2cControllerProvider GetController(int idx = 0) => this.i2cController = (this.i2cController ?? new I2cSoftwareControllerProvider(this.gpioController, this.sda, this.scl, this.useSoftwarePullups));
     }
 
     internal class I2cSoftwareControllerProvider : II2cControllerProvider {

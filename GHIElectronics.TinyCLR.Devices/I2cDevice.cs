@@ -25,7 +25,7 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
             if (settings.SlaveAddress < 0 || settings.SlaveAddress > 127) throw new ArgumentOutOfRangeException();
             if (deviceId == null) throw new ArgumentNullException(nameof(deviceId));
 
-            return Api.ParseSelector(deviceId, out var providerId, out var idx) ? new I2cDevice(settings, I2cProvider.FromId(providerId).GetControllers((int)idx).GetDeviceProvider(new ProviderI2cConnectionSettings(settings))) : null;
+            return Api.ParseSelector(deviceId, out var providerId, out var idx) ? new I2cDevice(settings, I2cProvider.FromId(providerId).GetController((int)idx).GetDeviceProvider(new ProviderI2cConnectionSettings(settings))) : null;
         }
 
         public static string GetDeviceSelector() => throw new NotSupportedException();

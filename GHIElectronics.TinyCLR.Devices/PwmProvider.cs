@@ -31,21 +31,21 @@ namespace GHIElectronics.TinyCLR.Devices.Pwm.Provider {
 
     public interface IPwmProvider {
         // FUTURE: This should return "IReadOnlyList<IPwmControllerProvider>"
-        IPwmControllerProvider GetControllers(int idx);
+        IPwmControllerProvider GetController(int idx);
     }
 
     public class PwmProvider : IPwmProvider {
-        private IPwmControllerProvider controllers;
+        private IPwmControllerProvider controller;
         private readonly static Hashtable providers = new Hashtable();
 
         public string Name { get; }
 
-        public IPwmControllerProvider GetControllers(int idx) {
+        public IPwmControllerProvider GetController(int idx) {
             var api = Api.Find(this.Name, ApiType.PwmProvider);
 
-            this.controllers = new DefaultPwmControllerProvider(api.Implementation[0], idx);
+            this.controller = new DefaultPwmControllerProvider(api.Implementation[0], idx);
 
-            return this.controllers;
+            return this.controller;
         }
 
         private PwmProvider(string name) => this.Name = name;

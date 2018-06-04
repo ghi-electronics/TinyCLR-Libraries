@@ -4,22 +4,22 @@ using GHIElectronics.TinyCLR.Devices.Spi.Provider;
 
 namespace GHIElectronics.TinyCLR.Devices.Spi {
     public class SpiSoftwareProvider : ISpiProvider {
-        private readonly GpioController controller;
+        private readonly GpioController gpioController;
         private readonly int miso;
         private readonly int mosi;
         private readonly int sck;
-        private ISpiControllerProvider controllers;
+        private ISpiControllerProvider spiController;
 
         public SpiSoftwareProvider(int miso, int mosi, int sck) : this(GpioController.GetDefault(), miso, mosi, sck) { }
 
         public SpiSoftwareProvider(GpioController controller, int miso, int mosi, int sck) {
-            this.controller = controller;
+            this.gpioController = controller;
             this.miso = miso;
             this.mosi = mosi;
             this.sck = sck;
         }
 
-        public ISpiControllerProvider GetControllers(int idx = 0) => this.controllers = (this.controllers ?? new SpiSoftwareControllerProvider(this.controller, this.miso, this.mosi, this.sck));
+        public ISpiControllerProvider GetController(int idx = 0) => this.spiController = (this.spiController ?? new SpiSoftwareControllerProvider(this.gpioController, this.miso, this.mosi, this.sck));
     }
 
     internal class SpiSoftwareControllerProvider : ISpiControllerProvider {

@@ -38,7 +38,7 @@ namespace GHIElectronics.TinyCLR.Devices.I2c.Provider {
     }
 
     public interface II2cProvider {
-        II2cControllerProvider GetControllers(int idx);
+        II2cControllerProvider GetController(int idx);
     }
 
     public interface II2cControllerProvider {
@@ -64,20 +64,20 @@ namespace GHIElectronics.TinyCLR.Devices.I2c.Provider {
     }
 
     public class I2cProvider : II2cProvider {
-        private II2cControllerProvider controllers;
+        private II2cControllerProvider controller;
         private static Hashtable providers = new Hashtable();
         private int idx;
 
         public string Name { get; }
 
-        public II2cControllerProvider GetControllers(int idx) {
+        public II2cControllerProvider GetController(int idx) {
             var api = Api.Find(this.Name, ApiType.I2cProvider);
 
             this.idx = idx;
 
-            this.controllers = new DefaultI2cControllerProvider(api.Implementation[0], idx);
+            this.controller = new DefaultI2cControllerProvider(api.Implementation[0], idx);
 
-            return this.controllers;
+            return this.controller;
         }
 
         private I2cProvider(string name) => this.Name = name;

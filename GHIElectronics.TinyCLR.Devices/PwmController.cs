@@ -19,7 +19,7 @@ namespace GHIElectronics.TinyCLR.Devices.Pwm {
         public static string GetDeviceSelector() => throw new NotSupportedException();
         public static string GetDeviceSelector(string friendlyName) => throw new NotSupportedException();
 
-        public static PwmController FromId(string deviceId) => Api.ParseSelector(deviceId, out var providerId, out var idx) ? new PwmController(PwmProvider.FromId(providerId).GetControllers((int)idx)) : null;
+        public static PwmController FromId(string deviceId) => Api.ParseSelector(deviceId, out var providerId, out var idx) ? new PwmController(PwmProvider.FromId(providerId).GetController((int)idx)) : null;
 
         public static PwmController GetDefault() => LowLevelDevicesController.DefaultProvider?.PwmControllerProvider != null ? new PwmController(LowLevelDevicesController.DefaultProvider?.PwmControllerProvider) : PwmController.FromId(Api.GetDefaultSelector(ApiType.PwmProvider));
 

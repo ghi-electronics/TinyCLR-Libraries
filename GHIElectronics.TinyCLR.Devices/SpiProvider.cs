@@ -37,7 +37,7 @@ namespace GHIElectronics.TinyCLR.Devices.Spi.Provider {
     }
 
     public interface ISpiProvider {
-        ISpiControllerProvider GetControllers(int idx);
+        ISpiControllerProvider GetController(int idx);
     }
 
     public interface ISpiControllerProvider {
@@ -60,17 +60,17 @@ namespace GHIElectronics.TinyCLR.Devices.Spi.Provider {
     }
 
     public class SpiProvider : ISpiProvider {
-        private ISpiControllerProvider controllers;
+        private ISpiControllerProvider controller;
         private static Hashtable providers = new Hashtable();
 
         public string Name { get; }
 
-        public ISpiControllerProvider GetControllers(int idx) {
+        public ISpiControllerProvider GetController(int idx) {
             var api = Api.Find(this.Name, ApiType.SpiProvider);
 
-            this.controllers = new DefaultSpiControllerProvider(api.Implementation[0], idx);
+            this.controller = new DefaultSpiControllerProvider(api.Implementation[0], idx);
 
-            return this.controllers;
+            return this.controller;
         }
 
         private SpiProvider(string name) => this.Name = name;
