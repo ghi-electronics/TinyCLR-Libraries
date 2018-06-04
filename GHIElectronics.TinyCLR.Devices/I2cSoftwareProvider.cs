@@ -24,7 +24,7 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
             this.useSoftwarePullups = useSoftwarePullups;
         }
 
-        public II2cControllerProvider GetController(int idx) => this.controllers = (this.controllers ?? new I2cSoftwareControllerProvider(this.controller, this.sda, this.scl, this.useSoftwarePullups));
+        public II2cControllerProvider GetControllers(int idx = 0) => this.controllers = (this.controllers ?? new I2cSoftwareControllerProvider(this.controller, this.sda, this.scl, this.useSoftwarePullups));
     }
 
     internal class I2cSoftwareControllerProvider : II2cControllerProvider {
