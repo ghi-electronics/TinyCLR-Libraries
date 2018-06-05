@@ -75,7 +75,7 @@ namespace GHIElectronics.TinyCLR.Devices.I2c.Provider {
 
             this.idx = idx;
 
-            this.controller = new DefaultI2cControllerProvider(api.Implementation[0], idx);
+            this.controller = new DefaultI2cControllerProvider(api.Implementation, idx);
 
             return this.controller;
         }

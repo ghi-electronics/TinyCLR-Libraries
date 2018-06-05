@@ -17,7 +17,7 @@ namespace GHIElectronics.TinyCLR.Devices.Adc {
         public int MaxValue => this.m_provider.MaxValue;
 
         public AdcChannelMode ChannelMode {
-            get => (AdcChannelMode)m_provider.ChannelMode;
+            get => (AdcChannelMode)this.m_provider.ChannelMode;
 
             set {
                 switch (value) {
@@ -33,19 +33,11 @@ namespace GHIElectronics.TinyCLR.Devices.Adc {
             }
         }
 
-        public static AdcController GetDefault() => new AdcController(LowLevelDevicesController.DefaultProvider?.AdcControllerProvider ?? (Api.ParseSelector(Api.GetDefaultSelector(ApiType.AdcProvider), out var providerId, out var idx) ? AdcProvider.FromId(providerId).GetControllers()[idx] : null));
+        public static AdcController GetDefault() => new AdcController(LowLevelDevicesController.DefaultProvider?.AdcControllerProvider ?? (Api.ParseSelector(Api.GetDefaultSelector(ApiType.AdcProvider), out var providerId, out var idx) ? AdcProvider.FromId(providerId).GetControllers() : null));
 
-        public static AdcController[] GetControllers(IAdcProvider provider) {
+        public static AdcController GetControllers(IAdcProvider provider) {
             // FUTURE: This should return "Task<IVectorView<AdcController>>"
-
-            var providers = provider.GetControllers();
-            var controllers = new AdcController[providers.Length];
-
-            for (var i = 0; i < providers.Length; ++i) {
-                controllers[i] = new AdcController(providers[i]);
-            }
-
-            return controllers;
+            return new AdcController(provider.GetControllers()); ;
         }
 
         public bool IsChannelModeSupported(AdcChannelMode channelMode) {

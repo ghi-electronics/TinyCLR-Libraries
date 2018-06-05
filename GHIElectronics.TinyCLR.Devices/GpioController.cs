@@ -1,5 +1,5 @@
-using GHIElectronics.TinyCLR.Devices.Gpio.Provider;
 using System.Runtime.InteropServices;
+using GHIElectronics.TinyCLR.Devices.Gpio.Provider;
 
 namespace GHIElectronics.TinyCLR.Devices.Gpio {
     /// <summary>
@@ -24,16 +24,10 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio {
         /// <returns>The default GPIO controller for the system, or null if the system has no GPIO controller.</returns>
         public static GpioController GetDefault() => LowLevelDevicesController.DefaultProvider?.GpioControllerProvider != null ? new GpioController(LowLevelDevicesController.DefaultProvider?.GpioControllerProvider) : GpioController.GetNativeDefault();
 
-        internal static GpioController GetNativeDefault() => Api.ParseSelector(Api.GetDefaultSelector(ApiType.GpioProvider), out var providerId, out var idx) ? new GpioController(GpioProvider.FromId(providerId).GetControllers()[idx]) : null;
+        internal static GpioController GetNativeDefault() => Api.ParseSelector(Api.GetDefaultSelector(ApiType.GpioProvider), out var providerId, out var idx) ? new GpioController(GpioProvider.FromId(providerId).GetControllers()) : null;
 
-        public static GpioController[] GetControllers(IGpioProvider provider) {
-            var providers = provider.GetControllers();
-            var controllers = new GpioController[providers.Length];
-
-            for (var i = 0; i < providers.Length; i++)
-                controllers[i] = new GpioController(providers[i]);
-
-            return controllers;
+        public static GpioController GetControllers(IGpioProvider provider) {
+            return new GpioController(provider.GetControllers()); ;
         }
 
         /// <summary>

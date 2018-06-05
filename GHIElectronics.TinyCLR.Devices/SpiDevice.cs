@@ -37,7 +37,7 @@ namespace GHIElectronics.TinyCLR.Devices.Spi {
             if (Api.ParseSelector(selector, out var providerId, out var controllerIndex)) {
                 var api = Api.Find(providerId, ApiType.SpiProvider);
 
-                return new SpiBusInfo(api.Implementation[0], (int)controllerIndex);
+                return new SpiBusInfo(api.Implementation, (int)controllerIndex);
             }
 
             throw new ArgumentException();

@@ -35,7 +35,7 @@ namespace GHIElectronics.TinyCLR.Devices.Can.Provider {
         public ICanControllerProvider GetController(int idx) {
             var api = Api.Find(this.Name, ApiType.CanProvider);
 
-            this.controller = new DefaultCanControllerProvider(api.Implementation[0], idx);
+            this.controller = new DefaultCanControllerProvider(api.Implementation, idx);
 
             return this.controller;
         }

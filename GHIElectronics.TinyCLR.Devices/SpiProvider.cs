@@ -68,7 +68,7 @@ namespace GHIElectronics.TinyCLR.Devices.Spi.Provider {
         public ISpiControllerProvider GetController(int idx) {
             var api = Api.Find(this.Name, ApiType.SpiProvider);
 
-            this.controller = new DefaultSpiControllerProvider(api.Implementation[0], idx);
+            this.controller = new DefaultSpiControllerProvider(api.Implementation, idx);
 
             return this.controller;
         }
