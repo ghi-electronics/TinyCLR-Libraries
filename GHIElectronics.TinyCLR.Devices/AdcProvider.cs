@@ -33,22 +33,22 @@ namespace GHIElectronics.TinyCLR.Devices.Adc.Provider {
     }
 
     public interface IAdcProvider {
-        IAdcControllerProvider GetControllers();
+        IAdcControllerProvider GetController();
     }
 
     public class AdcProvider : IAdcProvider {
-        private IAdcControllerProvider controllers;
+        private IAdcControllerProvider controller;
         private readonly static Hashtable providers = new Hashtable();
 
         public string Name { get; }
 
-        public IAdcControllerProvider GetControllers() => this.controllers;
+        public IAdcControllerProvider GetController() => this.controller;
 
         private AdcProvider(string name) {
             var api = Api.Find(name, ApiType.AdcProvider);
 
             this.Name = name;
-            this.controllers = new DefaultAdcControllerProvider(api.Implementation);
+            this.controller = new DefaultAdcControllerProvider(api.Implementation);
         }
 
         public static IAdcProvider FromId(string id) {

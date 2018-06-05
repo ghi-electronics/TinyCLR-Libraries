@@ -54,7 +54,7 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio.Provider {
     }
 
     public interface IGpioProvider {
-        IGpioControllerProvider GetControllers();
+        IGpioControllerProvider GetController();
     }
 
     public interface IGpioControllerProvider {
@@ -64,18 +64,18 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio.Provider {
     }
 
     public class GpioProvider : IGpioProvider {
-        private IGpioControllerProvider controllers;
+        private IGpioControllerProvider controller;
         private readonly static Hashtable providers = new Hashtable();
 
         public string Name { get; }
 
-        public IGpioControllerProvider GetControllers() => this.controllers;
+        public IGpioControllerProvider GetController() => this.controller;
 
         private GpioProvider(string name) {
             var api = Api.Find(name, ApiType.GpioProvider);
 
             this.Name = name;
-            this.controllers = new DefaultGpioControllerProvider(name, api.Implementation);
+            this.controller = new DefaultGpioControllerProvider(name, api.Implementation);
         }
 
         public static IGpioProvider FromId(string id) {

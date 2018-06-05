@@ -27,22 +27,22 @@ namespace GHIElectronics.TinyCLR.Devices.Dac.Provider {
     }
 
     public interface IDacProvider {
-        IDacControllerProvider GetControllers();
+        IDacControllerProvider GetController();
     }
 
     public class DacProvider : IDacProvider {
-        private IDacControllerProvider controllers;
+        private IDacControllerProvider controller;
         private readonly static Hashtable providers = new Hashtable();
 
         public string Name { get; }
 
-        public IDacControllerProvider GetControllers() => this.controllers;
+        public IDacControllerProvider GetController() => this.controller;
 
         private DacProvider(string name) {
             var api = Api.Find(name, ApiType.DacProvider);
 
             this.Name = name;
-            this.controllers = new DefaultDacControllerProvider(api.Implementation);
+            this.controller = new DefaultDacControllerProvider(api.Implementation);
         }
 
         public static IDacProvider FromId(string id) {

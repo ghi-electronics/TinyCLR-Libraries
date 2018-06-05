@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 
 namespace GHIElectronics.TinyCLR.Devices.Display.Provider {
     public interface IDisplayProvider {
-        IDisplayControllerProvider GetControllers();
+        IDisplayControllerProvider GetController();
     }
 
     public interface IDisplayControllerProvider {
@@ -18,18 +18,18 @@ namespace GHIElectronics.TinyCLR.Devices.Display.Provider {
     }
 
     public class DisplayProvider : IDisplayProvider {
-        private IDisplayControllerProvider controllers;
+        private IDisplayControllerProvider controller;
         private static Hashtable providers = new Hashtable();
 
         public string Name { get; }
 
-        public IDisplayControllerProvider GetControllers() => this.controllers;
+        public IDisplayControllerProvider GetController() => this.controller;
 
         private DisplayProvider(string name) {
             var api = Api.Find(name, ApiType.DisplayProvider);
 
             this.Name = name;
-            this.controllers = new DefaultDisplayControllerProvider(api.Implementation);
+            this.controller = new DefaultDisplayControllerProvider(api.Implementation);
         }
 
         public static IDisplayProvider FromId(string id) {

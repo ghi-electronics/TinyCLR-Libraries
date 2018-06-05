@@ -33,11 +33,11 @@ namespace GHIElectronics.TinyCLR.Devices.Adc {
             }
         }
 
-        public static AdcController GetDefault() => new AdcController(LowLevelDevicesController.DefaultProvider?.AdcControllerProvider ?? (Api.ParseSelector(Api.GetDefaultSelector(ApiType.AdcProvider), out var providerId, out var idx) ? AdcProvider.FromId(providerId).GetControllers() : null));
+        public static AdcController GetDefault() => new AdcController(LowLevelDevicesController.DefaultProvider?.AdcControllerProvider ?? (Api.ParseSelector(Api.GetDefaultSelector(ApiType.AdcProvider), out var providerId, out var idx) ? AdcProvider.FromId(providerId).GetController() : null));
 
-        public static AdcController GetControllers(IAdcProvider provider) {
+        public static AdcController GetController(IAdcProvider provider) {
             // FUTURE: This should return "Task<IVectorView<AdcController>>"
-            return new AdcController(provider.GetControllers()); ;
+            return new AdcController(provider.GetController()); ;
         }
 
         public bool IsChannelModeSupported(AdcChannelMode channelMode) {
