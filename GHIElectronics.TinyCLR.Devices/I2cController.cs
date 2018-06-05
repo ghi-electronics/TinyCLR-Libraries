@@ -11,8 +11,7 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
 
         public I2cDevice GetDevice(I2cConnectionSettings settings) => new I2cDevice(settings, this.provider.GetDeviceProvider(new ProviderI2cConnectionSettings(settings)));
 
-        public static I2cController GetController(II2cProvider provider) =>
-            //TODO
-            null;
+        public static I2cController GetController(II2cProvider provider, int idx = 0) => new I2cController(provider.GetController(idx));
+
     }
 }
