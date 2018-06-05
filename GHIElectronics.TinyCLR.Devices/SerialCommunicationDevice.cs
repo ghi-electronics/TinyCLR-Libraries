@@ -1,7 +1,7 @@
-﻿using GHIElectronics.TinyCLR.Storage.Streams;
-using System;
+﻿using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using GHIElectronics.TinyCLR.Storage.Streams;
 
 namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
     public delegate void ErrorReceivedDelegate(SerialDevice sender, ErrorReceivedEventArgs e);
@@ -95,7 +95,7 @@ namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
 
                 if (api == null || api.Count <= this.idx) throw new ArgumentException("Invalid id.", nameof(providerId));
 
-                this.nativeProvider = api.Implementation[this.idx];
+                this.nativeProvider = api.Implementation[0];
             }
 
             public void Dispose() => this.parent.Dispose();
