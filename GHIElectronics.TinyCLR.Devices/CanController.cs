@@ -24,7 +24,7 @@ namespace GHIElectronics.TinyCLR.Devices.Can {
         private readonly NativeEventDispatcher nativeMessageAvailableEvent;
         private readonly NativeEventDispatcher nativeErrorEvent;
 
-        internal CanController(ICanControllerProvider provider, uint idx) {
+        internal CanController(ICanControllerProvider provider, uint idx = 0) {
             this.provider = provider;
             this.idx = idx;
 
@@ -35,17 +35,20 @@ namespace GHIElectronics.TinyCLR.Devices.Can {
             this.nativeErrorEvent.OnInterrupt += (pn, ci, d0, d1, d2, ts) => { if (this.idx == ci) this.ErrorReceived?.Invoke(this, new ErrorReceivedEventArgs((CanError)d0)); };
         }
 
-        public static CanController GetDefault() {
-            var idx = 0U;
+        public static CanController GetDefault() => new CanController(LowLevelDevicesController.DefaultProvider?.CanControllerProvider ?? (Api.ParseSelector(Api.GetDefaultSelector(ApiType.CanProvider), out var providerId, out var idx) ? CanProvider.FromId(providerId).GetControllers()[idx] : null));
 
-            return new CanController(LowLevelDevicesController.DefaultProvider?.CanControllerProvider ?? (Api.ParseSelector(Api.GetDefaultSelector(ApiType.CanProvider), out var providerId, out idx) ? CanProvider.FromId(providerId).GetController((int)idx) : null), idx);
+        public static CanController[] GetControllers(ICanProvider provider) {
+            var providerControllers = provider.GetControllers();
+            var controllers = new CanController[providerControllers.Length];
+
+            for (var i = 0U; i < providerControllers.Length; ++i) {
+                controllers[i] = new CanController(providerControllers[i], i);
+            }
+
+            return controllers;
         }
 
-        public static CanController GetController(ICanProvider provider) =>
-            // TODO
-            null;
-
-        public static CanController FromId(string controllerId) => Api.ParseSelector(controllerId, out var providerId, out var idx) ? new CanController(CanProvider.FromId(providerId).GetController((int)idx), idx) : null;
+        public static CanController FromId(string controllerId) => Api.ParseSelector(controllerId, out var providerId, out var idx) ? new CanController(CanProvider.FromId(providerId).GetControllers()[idx], idx) : null;
 
         public void Reset() => this.provider.Reset();
         public void SetBitTiming(CanBitTiming bitTiming) => this.provider.SetBitTiming(bitTiming);
