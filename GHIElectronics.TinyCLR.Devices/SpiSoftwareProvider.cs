@@ -8,7 +8,7 @@ namespace GHIElectronics.TinyCLR.Devices.Spi {
         private readonly int miso;
         private readonly int mosi;
         private readonly int sck;
-        private ISpiControllerProvider spiController;
+        private ISpiControllerProvider[] spiController;
 
         public SpiSoftwareProvider(int miso, int mosi, int sck) : this(GpioController.GetDefault(), miso, mosi, sck) { }
 
@@ -19,7 +19,7 @@ namespace GHIElectronics.TinyCLR.Devices.Spi {
             this.sck = sck;
         }
 
-        public ISpiControllerProvider GetController(int idx = 0) => this.spiController = (this.spiController ?? new SpiSoftwareControllerProvider(this.gpioController, this.miso, this.mosi, this.sck));
+        public ISpiControllerProvider[] GetControllers() => this.spiController = (this.spiController ?? new[] { new SpiSoftwareControllerProvider(this.gpioController, this.miso, this.mosi, this.sck) });
     }
 
     internal class SpiSoftwareControllerProvider : ISpiControllerProvider {
