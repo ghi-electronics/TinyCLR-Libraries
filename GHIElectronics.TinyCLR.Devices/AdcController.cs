@@ -1,6 +1,6 @@
-using GHIElectronics.TinyCLR.Devices.Adc.Provider;
 using System;
 using System.Runtime.InteropServices;
+using GHIElectronics.TinyCLR.Devices.Adc.Provider;
 
 namespace GHIElectronics.TinyCLR.Devices.Adc {
     public sealed class AdcController {
@@ -33,11 +33,18 @@ namespace GHIElectronics.TinyCLR.Devices.Adc {
             }
         }
 
-        public static AdcController GetDefault() => new AdcController(LowLevelDevicesController.DefaultProvider?.AdcControllerProvider ?? (Api.ParseSelector(Api.GetDefaultSelector(ApiType.AdcProvider), out var providerId, out var idx) ? AdcProvider.FromId(providerId).GetController() : null));
+        public static AdcController GetDefault() => new AdcController(LowLevelDevicesController.DefaultProvider?.AdcControllerProvider ?? (Api.ParseSelector(Api.GetDefaultSelector(ApiType.AdcProvider), out var providerId, out var idx) ? AdcProvider.FromId(providerId).GetControllers()[idx] : null));
 
-        public static AdcController GetController(IAdcProvider provider) {
+        public static AdcController[] GetControllers(IAdcProvider provider) {
             // FUTURE: This should return "Task<IVectorView<AdcController>>"
-            return new AdcController(provider.GetController()); ;
+            var providers = provider.GetControllers();
+            var controllers = new AdcController[providers.Length];
+
+            for (var i = 0; i < providers.Length; ++i) {
+                controllers[i] = new AdcController(providers[i]);
+            }
+
+            return controllers;
         }
 
         public bool IsChannelModeSupported(AdcChannelMode channelMode) {
