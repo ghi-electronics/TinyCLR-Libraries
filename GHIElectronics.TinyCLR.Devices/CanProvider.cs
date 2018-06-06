@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 
 namespace GHIElectronics.TinyCLR.Devices.Can.Provider {
     public interface ICanProvider {
-        ICanControllerProvider GetController(int idx);
+        ICanControllerProvider[] GetControllers();
     }
 
     public interface ICanControllerProvider : IDisposable {
@@ -27,17 +27,22 @@ namespace GHIElectronics.TinyCLR.Devices.Can.Provider {
     }
 
     public class CanProvider : ICanProvider {
-        private ICanControllerProvider controller;
+        private ICanControllerProvider[] controllers;
         private static Hashtable providers = new Hashtable();
 
         public string Name { get; }
 
-        public ICanControllerProvider GetController(int idx) {
+        public ICanControllerProvider[] GetControllers() {
             var api = Api.Find(this.Name, ApiType.CanProvider);
 
-            this.controller = new DefaultCanControllerProvider(api.Implementation, idx);
+            var controllerCount = DefaultCanControllerProvider.GetControllerCount(api.Implementation);
 
-            return this.controller;
+            this.controllers = new ICanControllerProvider[controllerCount];
+
+            for (var i = 0; i < this.controllers.Length; i++)
+                this.controllers[i] = new DefaultCanControllerProvider(api.Implementation, i);
+
+            return this.controllers;
         }
 
         private CanProvider(string name) => this.Name = name;
@@ -151,5 +156,8 @@ namespace GHIElectronics.TinyCLR.Devices.Can.Provider {
             [MethodImpl(MethodImplOptions.InternalCall)]
             set;
         }
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        extern static internal int GetControllerCount(IntPtr nativeProvider);
     }
 }
