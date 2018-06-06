@@ -27,24 +27,29 @@ namespace GHIElectronics.TinyCLR.Devices.Dac.Provider {
     }
 
     public interface IDacProvider {
-        IDacControllerProvider GetController();
+        IDacControllerProvider[] GetControllers();
     }
 
     public class DacProvider : IDacProvider {
-        private IDacControllerProvider controller;
+        private IDacControllerProvider[] controllers;
         private readonly static Hashtable providers = new Hashtable();
 
         public string Name { get; }
 
-        public IDacControllerProvider GetController() => this.controller;
+        public IDacControllerProvider[] GetControllers() => this.controllers;
 
         private DacProvider(string name) {
-            var api = Api.Find(name, ApiType.DacProvider);
-
             this.Name = name;
-            this.controller = new DefaultDacControllerProvider(api.Implementation);
-        }
 
+            var api = Api.Find(this.Name, ApiType.DacProvider);
+
+            var controllerCount = DefaultDacControllerProvider.GetControllerCount(api.Implementation);
+
+            this.controllers = new IDacControllerProvider[controllerCount];
+
+            for (var i = 0; i < this.controllers.Length; i++)
+                this.controllers[i] = new DefaultDacControllerProvider(api.Implementation, i);
+        }
         public static IDacProvider FromId(string id) {
             if (DacProvider.providers.Contains(id))
                 return (IDacProvider)DacProvider.providers[id];
@@ -60,10 +65,13 @@ namespace GHIElectronics.TinyCLR.Devices.Dac.Provider {
     internal class DefaultDacControllerProvider : IDacControllerProvider {
 #pragma warning disable CS0169
         private readonly IntPtr nativeProvider;
+        private readonly int idx;
 #pragma warning restore CS0169
 
-        internal DefaultDacControllerProvider(IntPtr nativeProvider) {
+        internal DefaultDacControllerProvider(IntPtr nativeProvider, int idx = 0) {
             this.nativeProvider = nativeProvider;
+
+            this.idx = idx;
 
             this.AcquireNative();
         }
@@ -104,5 +112,8 @@ namespace GHIElectronics.TinyCLR.Devices.Dac.Provider {
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         extern private void ReleaseNative();
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        extern static internal int GetControllerCount(IntPtr nativeProvider);
     }
 }
