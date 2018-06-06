@@ -31,24 +31,29 @@ namespace GHIElectronics.TinyCLR.Devices.Pwm.Provider {
 
     public interface IPwmProvider {
         // FUTURE: This should return "IReadOnlyList<IPwmControllerProvider>"
-        IPwmControllerProvider GetController(int idx);
+        IPwmControllerProvider[] GetControllers();
     }
 
     public class PwmProvider : IPwmProvider {
-        private IPwmControllerProvider controller;
+        private IPwmControllerProvider[] controllers;
         private readonly static Hashtable providers = new Hashtable();
 
         public string Name { get; }
 
-        public IPwmControllerProvider GetController(int idx) {
+        public IPwmControllerProvider[] GetControllers() => this.controllers;
+
+        private PwmProvider(string name) {
+            this.Name = name;
             var api = Api.Find(this.Name, ApiType.PwmProvider);
 
-            this.controller = new DefaultPwmControllerProvider(api.Implementation, idx);
+            var controllerCount = DefaultPwmControllerProvider.GetControllerCount(api.Implementation);
 
-            return this.controller;
+            this.controllers = new IPwmControllerProvider[controllerCount];
+
+            for (var i = 0; i < this.controllers.Length; i++)
+                this.controllers[i] = new DefaultPwmControllerProvider(api.Implementation, i);
+
         }
-
-        private PwmProvider(string name) => this.Name = name;
 
         public static IPwmProvider FromId(string id) {
             if (PwmProvider.providers.Contains(id))
@@ -117,5 +122,8 @@ namespace GHIElectronics.TinyCLR.Devices.Pwm.Provider {
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         public extern void SetPulseParameters(int pinNumber, double dutyCycle, bool invertPolarity);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        extern static internal int GetControllerCount(IntPtr nativeProvider);
     }
 }
