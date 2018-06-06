@@ -42,11 +42,11 @@ namespace GHIElectronics.TinyCLR.Devices.Adc {
 
         public static AdcController[] GetControllers(IAdcProvider provider) {
             // FUTURE: This should return "Task<IVectorView<AdcController>>"
-            var controllersProvider = provider.GetControllers();
-            var controllers = new AdcController[controllersProvider.Length];
+            var providerControllers = provider.GetControllers();
+            var controllers = new AdcController[providerControllers.Length];
 
-            for (var i = 0; i < controllersProvider.Length; ++i) {
-                controllers[i] = new AdcController(controllersProvider[i], i);
+            for (var i = 0; i < providerControllers.Length; ++i) {
+                controllers[i] = new AdcController(providerControllers[i], i);
             }
 
             return controllers;
