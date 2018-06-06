@@ -32,7 +32,11 @@ namespace GHIElectronics.TinyCLR.Devices.Can.Provider {
 
         public string Name { get; }
 
-        public ICanControllerProvider[] GetControllers() {
+        public ICanControllerProvider[] GetControllers() => this.controllers;
+
+        private CanProvider(string name) {
+            this.Name = name;
+
             var api = Api.Find(this.Name, ApiType.CanProvider);
 
             var controllerCount = DefaultCanControllerProvider.GetControllerCount(api.Implementation);
@@ -41,11 +45,7 @@ namespace GHIElectronics.TinyCLR.Devices.Can.Provider {
 
             for (var i = 0; i < this.controllers.Length; i++)
                 this.controllers[i] = new DefaultCanControllerProvider(api.Implementation, i);
-
-            return this.controllers;
         }
-
-        private CanProvider(string name) => this.Name = name;
 
         public static ICanProvider FromId(string id) {
             if (CanProvider.providers.Contains(id))
