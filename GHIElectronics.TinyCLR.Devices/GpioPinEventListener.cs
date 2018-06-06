@@ -6,13 +6,13 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio.Provider {
         private IDictionary pinMap = new Hashtable();
         private NativeEventDispatcher dispatcher;
 
-        private static string GetKey(string providerName, ulong pin) => $"{providerName}\\{pin}";
+        private static string GetKey(string providerName, uint controllerIndex, ulong pin) => $"{providerName}\\{controllerIndex}\\{pin}";
 
         public GpioPinEventListener() {
             this.dispatcher = NativeEventDispatcher.GetDispatcher("GHIElectronics.TinyCLR.NativeEventNames.Gpio.ValueChanged");
             this.dispatcher.OnInterrupt += (pn, ci, d0, d1, d2, ts) => {
                 var pin = default(DefaultGpioPinProvider);
-                var key = GpioPinEventListener.GetKey(pn, d0);
+                var key = GpioPinEventListener.GetKey(pn, ci, d0);
                 var edge = d1 != 0 ? ProviderGpioPinEdge.RisingEdge : ProviderGpioPinEdge.FallingEdge;
 
                 lock (this.pinMap)
@@ -24,15 +24,15 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio.Provider {
             };
         }
 
-        public void AddPin(string providerName, DefaultGpioPinProvider pin) {
-            var key = GpioPinEventListener.GetKey(providerName, (ulong)pin.PinNumber);
+        public void AddPin(string providerName, uint controllerIndex, DefaultGpioPinProvider pin) {
+            var key = GpioPinEventListener.GetKey(providerName, controllerIndex, (ulong)pin.PinNumber);
 
             lock (this.pinMap)
                 this.pinMap[key] = pin;
         }
 
-        public void RemovePin(string providerName, DefaultGpioPinProvider pin) {
-            var key = GpioPinEventListener.GetKey(providerName, (ulong)pin.PinNumber);
+        public void RemovePin(string providerName, uint controllerIndex, DefaultGpioPinProvider pin) {
+            var key = GpioPinEventListener.GetKey(providerName, controllerIndex, (ulong)pin.PinNumber);
 
             lock (this.pinMap)
                 if (this.pinMap.Contains(key))

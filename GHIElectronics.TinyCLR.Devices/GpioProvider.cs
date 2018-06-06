@@ -54,7 +54,7 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio.Provider {
     }
 
     public interface IGpioProvider {
-        IGpioControllerProvider GetController();
+        IGpioControllerProvider[] GetControllers();
     }
 
     public interface IGpioControllerProvider {
@@ -64,18 +64,23 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio.Provider {
     }
 
     public class GpioProvider : IGpioProvider {
-        private IGpioControllerProvider controller;
+        private IGpioControllerProvider[] controllers;
         private readonly static Hashtable providers = new Hashtable();
 
         public string Name { get; }
 
-        public IGpioControllerProvider GetController() => this.controller;
+        public IGpioControllerProvider[] GetControllers() => this.controllers;
 
         private GpioProvider(string name) {
             var api = Api.Find(name, ApiType.GpioProvider);
 
             this.Name = name;
-            this.controller = new DefaultGpioControllerProvider(name, api.Implementation);
+
+            var controllerCount = DefaultGpioControllerProvider.GetControllerCount(api.Implementation);
+            this.controllers = new IGpioControllerProvider[controllerCount];
+
+            for (var i = 0U; i < this.controllers.Length; i++)
+                this.controllers[i] = new DefaultGpioControllerProvider(name, i, api.Implementation);
         }
 
         public static IGpioProvider FromId(string id) {
@@ -94,12 +99,14 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio.Provider {
         private readonly IntPtr nativeProvider;
         private readonly ArrayList exclusivePins;
         private readonly Hashtable acquiredPins;
-        public readonly string Name;        
+        public readonly string Name;
+        public readonly uint Index;
 
-        internal DefaultGpioControllerProvider(string name, IntPtr nativeProvider) {
+        internal DefaultGpioControllerProvider(string name, uint index, IntPtr nativeProvider) {
             this.exclusivePins = new ArrayList();
             this.acquiredPins = new Hashtable();
             this.Name = name;
+            this.Index = index;
 
             this.nativeProvider = nativeProvider;
 
@@ -157,6 +164,9 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio.Provider {
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private extern void ReleaseNative(int pinNumber);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        extern static internal int GetControllerCount(IntPtr nativeProvider);
     }
 
     internal sealed class DefaultGpioPinProvider : IGpioPinProvider {
@@ -181,7 +191,7 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio.Provider {
 
             this.SharingMode = sharingMode;
 
-            s_eventListener.AddPin(this.parent.Name, this);
+            s_eventListener.AddPin(this.parent.Name, this.parent.Index, this);
         }
 
         ~DefaultGpioPinProvider() {
@@ -394,7 +404,7 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio.Provider {
         /// <param name="disposing">True if called from Dispose, false if called from the finalizer.</param>
         private void Dispose(bool disposing) {
             if (disposing) {
-                s_eventListener.RemovePin(this.parent.Name, this);
+                s_eventListener.RemovePin(this.parent.Name, this.parent.Index, this);
                 this.parent.Release(this);
             }
         }
