@@ -11,7 +11,7 @@ namespace GHIElectronics.TinyCLR.Devices.Spi {
 
         public SpiDevice GetDevice(SpiConnectionSettings settings) => new SpiDevice(settings, this.provider.GetDeviceProvider(new ProviderSpiConnectionSettings(settings)));
 
-        public static SpiController[] GetController(ISpiProvider provider) {
+        public static SpiController[] GetControllers(ISpiProvider provider) {
             var providers = provider.GetControllers();
 
             var controllers = new SpiController[providers.Length];
