@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 
 namespace GHIElectronics.TinyCLR.Devices.Display.Provider {
     public interface IDisplayProvider {
-        IDisplayControllerProvider GetController();
+        IDisplayControllerProvider[] GetControllers();
     }
 
     public interface IDisplayControllerProvider {
@@ -18,18 +18,24 @@ namespace GHIElectronics.TinyCLR.Devices.Display.Provider {
     }
 
     public class DisplayProvider : IDisplayProvider {
-        private IDisplayControllerProvider controller;
+        private IDisplayControllerProvider[] controllers;
         private static Hashtable providers = new Hashtable();
 
         public string Name { get; }
 
-        public IDisplayControllerProvider GetController() => this.controller;
+        public IDisplayControllerProvider[] GetControllers() => this.controllers;
 
         private DisplayProvider(string name) {
-            var api = Api.Find(name, ApiType.DisplayProvider);
-
             this.Name = name;
-            this.controller = new DefaultDisplayControllerProvider(api.Implementation);
+
+            var api = Api.Find(this.Name, ApiType.DisplayProvider);
+
+            var controllerCount = DefaultDisplayControllerProvider.GetControllerCount(api.Implementation);
+
+            this.controllers = new IDisplayControllerProvider[controllerCount];
+
+            for (var i = 0; i < this.controllers.Length; i++)
+                this.controllers[i] = new DefaultDisplayControllerProvider(api.Implementation, i);
         }
 
         public static IDisplayProvider FromId(string id) {
@@ -47,9 +53,13 @@ namespace GHIElectronics.TinyCLR.Devices.Display.Provider {
     internal class DefaultDisplayControllerProvider : IDisplayControllerProvider {
 #pragma warning disable CS0169
         private readonly IntPtr nativeProvider;
+        private readonly int idx;
 #pragma warning restore CS0169
 
-        internal DefaultDisplayControllerProvider(IntPtr nativeProvider) => this.nativeProvider = nativeProvider;
+        internal DefaultDisplayControllerProvider(IntPtr nativeProvider, int idx = 0) {
+            this.nativeProvider = nativeProvider;
+            this.idx = idx;
+        }
 
         public IntPtr Hdc => this.nativeProvider;
 
@@ -85,5 +95,8 @@ namespace GHIElectronics.TinyCLR.Devices.Display.Provider {
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private extern bool SetSpiConfiguration(uint width, uint height, DisplayDataFormat dataFormat, string spiSelector);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        extern static internal int GetControllerCount(IntPtr nativeProvider);
     }
 }
