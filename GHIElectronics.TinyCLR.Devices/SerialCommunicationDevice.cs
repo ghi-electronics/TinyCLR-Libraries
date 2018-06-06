@@ -215,6 +215,9 @@ namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             private extern int NativeWrite(byte[] buffer, int offset, int count, int timeout);
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            extern static internal int GetControllerCount(IntPtr nativeProvider);
         }
     }
 }
