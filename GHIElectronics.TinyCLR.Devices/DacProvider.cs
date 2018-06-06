@@ -43,9 +43,7 @@ namespace GHIElectronics.TinyCLR.Devices.Dac.Provider {
 
             var api = Api.Find(this.Name, ApiType.DacProvider);
 
-            var controllerCount = DefaultDacControllerProvider.GetControllerCount(api.Implementation);
-
-            this.controllers = new IDacControllerProvider[controllerCount];
+            this.controllers = new IDacControllerProvider[DefaultDacControllerProvider.GetControllerCount(api.Implementation)];
 
             for (var i = 0; i < this.controllers.Length; i++)
                 this.controllers[i] = new DefaultDacControllerProvider(api.Implementation, i);

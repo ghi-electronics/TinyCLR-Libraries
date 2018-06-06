@@ -73,11 +73,10 @@ namespace GHIElectronics.TinyCLR.Devices.I2c.Provider {
 
         private I2cProvider(string name) {
             this.Name = name;
+
             var api = Api.Find(this.Name, ApiType.I2cProvider);
 
-            var controllerCount = DefaultI2cControllerProvider.GetControllerCount(api.Implementation);
-
-            this.controllers = new II2cControllerProvider[controllerCount];
+            this.controllers = new II2cControllerProvider[DefaultI2cControllerProvider.GetControllerCount(api.Implementation)];
 
             for (var i = 0; i < this.controllers.Length; i++)
                 this.controllers[i] = new DefaultI2cControllerProvider(api.Implementation, i);

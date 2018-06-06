@@ -76,8 +76,7 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio.Provider {
 
             this.Name = name;
 
-            var controllerCount = DefaultGpioControllerProvider.GetControllerCount(api.Implementation);
-            this.controllers = new IGpioControllerProvider[controllerCount];
+            this.controllers = new IGpioControllerProvider[DefaultGpioControllerProvider.GetControllerCount(api.Implementation)];
 
             for (var i = 0U; i < this.controllers.Length; i++)
                 this.controllers[i] = new DefaultGpioControllerProvider(name, i, api.Implementation);

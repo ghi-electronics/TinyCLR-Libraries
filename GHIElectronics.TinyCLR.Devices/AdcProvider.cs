@@ -45,13 +45,11 @@ namespace GHIElectronics.TinyCLR.Devices.Adc.Provider {
         public IAdcControllerProvider[] GetControllers() => this.controllers;
 
         private AdcProvider(string name) {
-            var api = Api.Find(name, ApiType.AdcProvider);
-
             this.Name = name;
 
-            var controllerCount = DefaultAdcControllerProvider.GetControllerCount(api.Implementation);
+            var api = Api.Find(name, ApiType.AdcProvider);
 
-            this.controllers = new IAdcControllerProvider[controllerCount];
+            this.controllers = new IAdcControllerProvider[DefaultAdcControllerProvider.GetControllerCount(api.Implementation)];
 
             for (var i = 0; i < this.controllers.Length; i++)
                 this.controllers[i] = new DefaultAdcControllerProvider(api.Implementation, i);

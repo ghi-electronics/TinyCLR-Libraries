@@ -44,11 +44,10 @@ namespace GHIElectronics.TinyCLR.Devices.Pwm.Provider {
 
         private PwmProvider(string name) {
             this.Name = name;
+
             var api = Api.Find(this.Name, ApiType.PwmProvider);
 
-            var controllerCount = DefaultPwmControllerProvider.GetControllerCount(api.Implementation);
-
-            this.controllers = new IPwmControllerProvider[controllerCount];
+            this.controllers = new IPwmControllerProvider[DefaultPwmControllerProvider.GetControllerCount(api.Implementation)];
 
             for (var i = 0; i < this.controllers.Length; i++)
                 this.controllers[i] = new DefaultPwmControllerProvider(api.Implementation, i);

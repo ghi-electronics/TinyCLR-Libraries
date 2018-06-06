@@ -30,9 +30,7 @@ namespace GHIElectronics.TinyCLR.Devices.Display.Provider {
 
             var api = Api.Find(this.Name, ApiType.DisplayProvider);
 
-            var controllerCount = DefaultDisplayControllerProvider.GetControllerCount(api.Implementation);
-
-            this.controllers = new IDisplayControllerProvider[controllerCount];
+            this.controllers = new IDisplayControllerProvider[DefaultDisplayControllerProvider.GetControllerCount(api.Implementation)];
 
             for (var i = 0; i < this.controllers.Length; i++)
                 this.controllers[i] = new DefaultDisplayControllerProvider(api.Implementation, i);

@@ -5,21 +5,17 @@ using GHIElectronics.TinyCLR.Devices.Display.Provider;
 namespace GHIElectronics.TinyCLR.Devices.Display {
     public sealed class DisplayController {
         private IDisplayControllerProvider provider;
-        private int idx;
 
-        internal DisplayController(IDisplayControllerProvider provider, int idx = 0) {
-            this.provider = provider;
-            this.idx = idx;
-        }
+        internal DisplayController(IDisplayControllerProvider provider) => this.provider = provider;
 
         public static DisplayController GetDefault() => new DisplayController(LowLevelDevicesController.DefaultProvider?.DisplayControllerProvider ?? (Api.ParseSelector(Api.GetDefaultSelector(ApiType.DisplayProvider), out var providerId, out var idx) ? DisplayProvider.FromId(providerId).GetControllers()[idx] : null));
 
         public static DisplayController[] GetControllers(IDisplayProvider provider) {
-            var providerControllers = provider.GetControllers();
-            var controllers = new DisplayController[providerControllers.Length];
+            var providers = provider.GetControllers();
+            var controllers = new DisplayController[providers.Length];
 
-            for (var i = 0; i < providerControllers.Length; ++i) {
-                controllers[i] = new DisplayController(providerControllers[i], i);
+            for (var i = 0; i < providers.Length; ++i) {
+                controllers[i] = new DisplayController(providers[i]);
             }
 
             return controllers;

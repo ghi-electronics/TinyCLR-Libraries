@@ -38,11 +38,11 @@ namespace GHIElectronics.TinyCLR.Devices.Can {
         public static CanController GetDefault() => new CanController(LowLevelDevicesController.DefaultProvider?.CanControllerProvider ?? (Api.ParseSelector(Api.GetDefaultSelector(ApiType.CanProvider), out var providerId, out var idx) ? CanProvider.FromId(providerId).GetControllers()[idx] : null));
 
         public static CanController[] GetControllers(ICanProvider provider) {
-            var providerControllers = provider.GetControllers();
-            var controllers = new CanController[providerControllers.Length];
+            var providers = provider.GetControllers();
+            var controllers = new CanController[providers.Length];
 
-            for (var i = 0U; i < providerControllers.Length; ++i) {
-                controllers[i] = new CanController(providerControllers[i], i);
+            for (var i = 0U; i < providers.Length; ++i) {
+                controllers[i] = new CanController(providers[i], i);
             }
 
             return controllers;

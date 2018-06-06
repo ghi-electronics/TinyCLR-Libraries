@@ -16,11 +16,11 @@ namespace GHIElectronics.TinyCLR.Devices.Dac {
         public static DacController GetDefault() => new DacController(LowLevelDevicesController.DefaultProvider?.DacControllerProvider ?? (Api.ParseSelector(Api.GetDefaultSelector(ApiType.DacProvider), out var providerId, out var idx) ? DacProvider.FromId(providerId).GetControllers()[idx] : null));
 
         public static DacController[] GetController(IDacProvider provider) {
-            var providerControllers = provider.GetControllers();
-            var controllers = new DacController[providerControllers.Length];
+            var providers = provider.GetControllers();
+            var controllers = new DacController[providers.Length];
 
-            for (var i = 0; i < providerControllers.Length; ++i)
-                controllers[i] = new DacController(providerControllers[i]);
+            for (var i = 0; i < providers.Length; ++i)
+                controllers[i] = new DacController(providers[i]);
 
             return controllers;
         }

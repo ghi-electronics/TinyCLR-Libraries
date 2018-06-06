@@ -5,12 +5,9 @@ using GHIElectronics.TinyCLR.Devices.Pwm.Provider;
 namespace GHIElectronics.TinyCLR.Devices.Pwm {
     public sealed class PwmController {
         private IPwmControllerProvider m_provider;
-        private int idx;
 
-        internal PwmController(IPwmControllerProvider provider, int idx = 0) {
-            this.m_provider = provider;
-            this.idx = idx;
-        }
+
+        internal PwmController(IPwmControllerProvider provider) => this.m_provider = provider;
 
         public int PinCount => this.m_provider.PinCount;
 
@@ -31,10 +28,11 @@ namespace GHIElectronics.TinyCLR.Devices.Pwm {
             // FUTURE: This should return "Task<IReadOnlyList<PwmController>>"
 
             var providers = provider.GetControllers();
+
             var controllers = new PwmController[providers.Length];
 
             for (var i = 0; i < providers.Length; ++i) {
-                controllers[i] = new PwmController(providers[i], i);
+                controllers[i] = new PwmController(providers[i]);
             }
 
             return controllers;

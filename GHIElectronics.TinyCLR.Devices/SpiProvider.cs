@@ -72,9 +72,7 @@ namespace GHIElectronics.TinyCLR.Devices.Spi.Provider {
 
             var api = Api.Find(this.Name, ApiType.SpiProvider);
 
-            var controllerCount = DefaultSpiControllerProvider.GetControllerCount(api.Implementation);
-
-            this.controllers = new ISpiControllerProvider[controllerCount];
+            this.controllers = new ISpiControllerProvider[DefaultSpiControllerProvider.GetControllerCount(api.Implementation)];
 
             for (var i = 0; i < this.controllers.Length; i++)
                 this.controllers[i] = new DefaultSpiControllerProvider(api.Implementation, i);
