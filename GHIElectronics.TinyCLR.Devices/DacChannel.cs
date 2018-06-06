@@ -1,5 +1,5 @@
-using GHIElectronics.TinyCLR.Devices.Dac.Provider;
 using System;
+using GHIElectronics.TinyCLR.Devices.Dac.Provider;
 
 namespace GHIElectronics.TinyCLR.Devices.Dac {
     public sealed class DacChannel : IDisposable {
@@ -8,7 +8,7 @@ namespace GHIElectronics.TinyCLR.Devices.Dac {
         private DacController controller;
         private IDacControllerProvider provider;
 
-        internal DacChannel(DacController controller, IDacControllerProvider provider, int channel) {
+        internal DacChannel(IDacControllerProvider provider, DacController controller, int channel) {
             this.channel = channel;
             this.disposed = false;
             this.controller = controller;

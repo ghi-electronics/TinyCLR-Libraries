@@ -1,6 +1,6 @@
-﻿using GHIElectronics.TinyCLR.Devices.I2c.Provider;
-using System;
+﻿using System;
 using System.Runtime.InteropServices;
+using GHIElectronics.TinyCLR.Devices.I2c.Provider;
 
 namespace GHIElectronics.TinyCLR.Devices.I2c {
     public struct I2cTransferResult {

@@ -1,6 +1,6 @@
-using GHIElectronics.TinyCLR.Devices.Display.Provider;
 using System;
 using System.Runtime.InteropServices;
+using GHIElectronics.TinyCLR.Devices.Display.Provider;
 
 namespace GHIElectronics.TinyCLR.Devices.Display {
     public sealed class DisplayController {
@@ -14,8 +14,9 @@ namespace GHIElectronics.TinyCLR.Devices.Display {
             var providers = provider.GetControllers();
             var controllers = new DisplayController[providers.Length];
 
-            for (var i = 0; i < providers.Length; i++)
+            for (var i = 0; i < providers.Length; ++i) {
                 controllers[i] = new DisplayController(providers[i]);
+            }
 
             return controllers;
         }

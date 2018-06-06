@@ -18,7 +18,7 @@ namespace GHIElectronics.TinyCLR.Devices.Rtc.Provider {
             var api = Api.Find(name, ApiType.RtcProvider);
 
             this.Name = name;
-            this.nativeProvider = api.Implementation[0];
+            this.nativeProvider = api.Implementation;
 
             this.Acquire();
         }

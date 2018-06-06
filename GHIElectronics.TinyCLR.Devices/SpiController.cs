@@ -1,5 +1,5 @@
-﻿using GHIElectronics.TinyCLR.Devices.Spi.Provider;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
+using GHIElectronics.TinyCLR.Devices.Spi.Provider;
 
 namespace GHIElectronics.TinyCLR.Devices.Spi {
     public sealed class SpiController {
@@ -13,6 +13,7 @@ namespace GHIElectronics.TinyCLR.Devices.Spi {
 
         public static SpiController[] GetControllers(ISpiProvider provider) {
             var providers = provider.GetControllers();
+
             var controllers = new SpiController[providers.Length];
 
             for (var i = 0; i < providers.Length; i++)

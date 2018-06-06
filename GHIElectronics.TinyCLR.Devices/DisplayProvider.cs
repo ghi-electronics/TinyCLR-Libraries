@@ -26,13 +26,14 @@ namespace GHIElectronics.TinyCLR.Devices.Display.Provider {
         public IDisplayControllerProvider[] GetControllers() => this.controllers;
 
         private DisplayProvider(string name) {
-            var api = Api.Find(name, ApiType.DisplayProvider);
-
             this.Name = name;
-            this.controllers = new IDisplayControllerProvider[api.Count];
 
-            for (var i = 0U; i < this.controllers.Length; i++)
-                this.controllers[i] = new DefaultDisplayControllerProvider(api.Implementation[i]);
+            var api = Api.Find(this.Name, ApiType.DisplayProvider);
+
+            this.controllers = new IDisplayControllerProvider[DefaultDisplayControllerProvider.GetControllerCount(api.Implementation)];
+
+            for (var i = 0; i < this.controllers.Length; i++)
+                this.controllers[i] = new DefaultDisplayControllerProvider(api.Implementation, i);
         }
 
         public static IDisplayProvider FromId(string id) {
@@ -50,9 +51,13 @@ namespace GHIElectronics.TinyCLR.Devices.Display.Provider {
     internal class DefaultDisplayControllerProvider : IDisplayControllerProvider {
 #pragma warning disable CS0169
         private readonly IntPtr nativeProvider;
+        private readonly int idx;
 #pragma warning restore CS0169
 
-        internal DefaultDisplayControllerProvider(IntPtr nativeProvider) => this.nativeProvider = nativeProvider;
+        internal DefaultDisplayControllerProvider(IntPtr nativeProvider, int idx = 0) {
+            this.nativeProvider = nativeProvider;
+            this.idx = idx;
+        }
 
         public IntPtr Hdc => this.nativeProvider;
 
@@ -88,5 +93,8 @@ namespace GHIElectronics.TinyCLR.Devices.Display.Provider {
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private extern bool SetSpiConfiguration(uint width, uint height, DisplayDataFormat dataFormat, string spiSelector);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        extern static internal int GetControllerCount(IntPtr nativeProvider);
     }
 }

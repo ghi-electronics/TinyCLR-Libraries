@@ -43,13 +43,15 @@ namespace GHIElectronics.TinyCLR.Devices.Pwm.Provider {
         public IPwmControllerProvider[] GetControllers() => this.controllers;
 
         private PwmProvider(string name) {
-            var api = Api.Find(name, ApiType.PwmProvider);
-
             this.Name = name;
-            this.controllers = new IPwmControllerProvider[api.Count];
 
-            for (var i = 0U; i < this.controllers.Length; i++)
-                this.controllers[i] = new DefaultPwmControllerProvider(api.Implementation[i]);
+            var api = Api.Find(this.Name, ApiType.PwmProvider);
+
+            this.controllers = new IPwmControllerProvider[DefaultPwmControllerProvider.GetControllerCount(api.Implementation)];
+
+            for (var i = 0; i < this.controllers.Length; i++)
+                this.controllers[i] = new DefaultPwmControllerProvider(api.Implementation, i);
+
         }
 
         public static IPwmProvider FromId(string id) {
@@ -69,15 +71,17 @@ namespace GHIElectronics.TinyCLR.Devices.Pwm.Provider {
         private readonly IntPtr nativeProvider;
 #pragma warning restore CS0169
 
-        internal DefaultPwmControllerProvider(IntPtr nativeProvider) {
+        internal DefaultPwmControllerProvider(IntPtr nativeProvider, int idx) {
             this.nativeProvider = nativeProvider;
-
+            this.idx = idx;
             this.AcquireNative();
         }
 
         ~DefaultPwmControllerProvider() => this.ReleaseNative();
 
         public double ActualFrequency { get; private set; }
+
+        private int idx;
 
         public extern double MaxFrequency {
             [MethodImpl(MethodImplOptions.InternalCall)]
@@ -117,5 +121,8 @@ namespace GHIElectronics.TinyCLR.Devices.Pwm.Provider {
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         public extern void SetPulseParameters(int pinNumber, double dutyCycle, bool invertPolarity);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        extern static internal int GetControllerCount(IntPtr nativeProvider);
     }
 }

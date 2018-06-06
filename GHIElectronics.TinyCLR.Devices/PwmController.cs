@@ -1,10 +1,11 @@
-using GHIElectronics.TinyCLR.Devices.Pwm.Provider;
 using System;
 using System.Runtime.InteropServices;
+using GHIElectronics.TinyCLR.Devices.Pwm.Provider;
 
 namespace GHIElectronics.TinyCLR.Devices.Pwm {
     public sealed class PwmController {
         private IPwmControllerProvider m_provider;
+
 
         internal PwmController(IPwmControllerProvider provider) => this.m_provider = provider;
 
@@ -27,6 +28,7 @@ namespace GHIElectronics.TinyCLR.Devices.Pwm {
             // FUTURE: This should return "Task<IReadOnlyList<PwmController>>"
 
             var providers = provider.GetControllers();
+
             var controllers = new PwmController[providers.Length];
 
             for (var i = 0; i < providers.Length; ++i) {

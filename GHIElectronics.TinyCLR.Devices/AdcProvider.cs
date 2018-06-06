@@ -45,13 +45,14 @@ namespace GHIElectronics.TinyCLR.Devices.Adc.Provider {
         public IAdcControllerProvider[] GetControllers() => this.controllers;
 
         private AdcProvider(string name) {
+            this.Name = name;
+
             var api = Api.Find(name, ApiType.AdcProvider);
 
-            this.Name = name;
-            this.controllers = new IAdcControllerProvider[api.Count];
+            this.controllers = new IAdcControllerProvider[DefaultAdcControllerProvider.GetControllerCount(api.Implementation)];
 
-            for (var i = 0U; i < this.controllers.Length; i++)
-                this.controllers[i] = new DefaultAdcControllerProvider(api.Implementation[i]);
+            for (var i = 0; i < this.controllers.Length; i++)
+                this.controllers[i] = new DefaultAdcControllerProvider(api.Implementation, i);
         }
 
         public static IAdcProvider FromId(string id) {
@@ -69,11 +70,12 @@ namespace GHIElectronics.TinyCLR.Devices.Adc.Provider {
     internal class DefaultAdcControllerProvider : IAdcControllerProvider {
 #pragma warning disable CS0169
         private readonly IntPtr nativeProvider;
+        private readonly int idx;
 #pragma warning restore CS0169
 
-        internal DefaultAdcControllerProvider(IntPtr nativeProvider) {
+        internal DefaultAdcControllerProvider(IntPtr nativeProvider, int idx) {
             this.nativeProvider = nativeProvider;
-
+            this.idx = idx;
             this.AcquireNative();
         }
 
@@ -123,5 +125,8 @@ namespace GHIElectronics.TinyCLR.Devices.Adc.Provider {
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         extern private void ReleaseNative();
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        extern static internal int GetControllerCount(IntPtr nativeProvider);
     }
 }

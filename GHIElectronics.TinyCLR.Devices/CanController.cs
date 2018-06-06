@@ -24,7 +24,7 @@ namespace GHIElectronics.TinyCLR.Devices.Can {
         private readonly NativeEventDispatcher nativeMessageAvailableEvent;
         private readonly NativeEventDispatcher nativeErrorEvent;
 
-        internal CanController(ICanControllerProvider provider, uint idx) {
+        internal CanController(ICanControllerProvider provider, uint idx = 0) {
             this.provider = provider;
             this.idx = idx;
 
@@ -35,18 +35,15 @@ namespace GHIElectronics.TinyCLR.Devices.Can {
             this.nativeErrorEvent.OnInterrupt += (pn, ci, d0, d1, d2, ts) => { if (this.idx == ci) this.ErrorReceived?.Invoke(this, new ErrorReceivedEventArgs((CanError)d0)); };
         }
 
-        public static CanController GetDefault() {
-            var idx = 0U;
-
-            return new CanController(LowLevelDevicesController.DefaultProvider?.CanControllerProvider ?? (Api.ParseSelector(Api.GetDefaultSelector(ApiType.CanProvider), out var providerId, out idx) ? CanProvider.FromId(providerId).GetControllers()[idx] : null), idx);
-        }
+        public static CanController GetDefault() => new CanController(LowLevelDevicesController.DefaultProvider?.CanControllerProvider ?? (Api.ParseSelector(Api.GetDefaultSelector(ApiType.CanProvider), out var providerId, out var idx) ? CanProvider.FromId(providerId).GetControllers()[idx] : null));
 
         public static CanController[] GetControllers(ICanProvider provider) {
             var providers = provider.GetControllers();
             var controllers = new CanController[providers.Length];
 
-            for (var i = 0U; i < providers.Length; i++)
+            for (var i = 0U; i < providers.Length; ++i) {
                 controllers[i] = new CanController(providers[i], i);
+            }
 
             return controllers;
         }

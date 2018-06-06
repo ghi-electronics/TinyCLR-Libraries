@@ -1,6 +1,6 @@
-using GHIElectronics.TinyCLR.Devices.Adc.Provider;
 using System;
 using System.Runtime.InteropServices;
+using GHIElectronics.TinyCLR.Devices.Adc.Provider;
 
 namespace GHIElectronics.TinyCLR.Devices.Adc {
     public sealed class AdcController {
@@ -17,7 +17,7 @@ namespace GHIElectronics.TinyCLR.Devices.Adc {
         public int MaxValue => this.m_provider.MaxValue;
 
         public AdcChannelMode ChannelMode {
-            get => (AdcChannelMode)m_provider.ChannelMode;
+            get => (AdcChannelMode)this.m_provider.ChannelMode;
 
             set {
                 switch (value) {
@@ -37,7 +37,6 @@ namespace GHIElectronics.TinyCLR.Devices.Adc {
 
         public static AdcController[] GetControllers(IAdcProvider provider) {
             // FUTURE: This should return "Task<IVectorView<AdcController>>"
-
             var providers = provider.GetControllers();
             var controllers = new AdcController[providers.Length];
 

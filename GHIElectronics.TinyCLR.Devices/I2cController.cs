@@ -1,5 +1,5 @@
-﻿using GHIElectronics.TinyCLR.Devices.I2c.Provider;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
+using GHIElectronics.TinyCLR.Devices.I2c.Provider;
 
 namespace GHIElectronics.TinyCLR.Devices.I2c {
     public sealed class I2cController {
@@ -15,10 +15,12 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
             var providers = provider.GetControllers();
             var controllers = new I2cController[providers.Length];
 
-            for (var i = 0; i < providers.Length; i++)
+            for (var i = 0; i < providers.Length; ++i) {
                 controllers[i] = new I2cController(providers[i]);
+            }
 
             return controllers;
         }
+
     }
 }

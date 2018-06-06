@@ -1,5 +1,5 @@
-using GHIElectronics.TinyCLR.Devices.Gpio.Provider;
 using System.Runtime.InteropServices;
+using GHIElectronics.TinyCLR.Devices.Gpio.Provider;
 
 namespace GHIElectronics.TinyCLR.Devices.Gpio {
     /// <summary>

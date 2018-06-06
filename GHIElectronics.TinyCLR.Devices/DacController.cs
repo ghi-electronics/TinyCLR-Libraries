@@ -1,6 +1,6 @@
-using GHIElectronics.TinyCLR.Devices.Dac.Provider;
 using System;
 using System.Runtime.InteropServices;
+using GHIElectronics.TinyCLR.Devices.Dac.Provider;
 
 namespace GHIElectronics.TinyCLR.Devices.Dac {
     public sealed class DacController {
@@ -29,7 +29,7 @@ namespace GHIElectronics.TinyCLR.Devices.Dac {
             if (channel < 0 || channel >= this.provider.ChannelCount)
                 throw new ArgumentOutOfRangeException();
 
-            return new DacChannel(this, this.provider, channel);
+            return new DacChannel(this.provider, this, channel);
         }
     }
 }

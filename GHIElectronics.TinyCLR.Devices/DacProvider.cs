@@ -39,15 +39,15 @@ namespace GHIElectronics.TinyCLR.Devices.Dac.Provider {
         public IDacControllerProvider[] GetControllers() => this.controllers;
 
         private DacProvider(string name) {
-            var api = Api.Find(name, ApiType.DacProvider);
-
             this.Name = name;
-            this.controllers = new IDacControllerProvider[api.Count];
 
-            for (var i = 0U; i < this.controllers.Length; i++)
-                this.controllers[i] = new DefaultDacControllerProvider(api.Implementation[i]);
+            var api = Api.Find(this.Name, ApiType.DacProvider);
+
+            this.controllers = new IDacControllerProvider[DefaultDacControllerProvider.GetControllerCount(api.Implementation)];
+
+            for (var i = 0; i < this.controllers.Length; i++)
+                this.controllers[i] = new DefaultDacControllerProvider(api.Implementation, i);
         }
-
         public static IDacProvider FromId(string id) {
             if (DacProvider.providers.Contains(id))
                 return (IDacProvider)DacProvider.providers[id];
@@ -63,10 +63,13 @@ namespace GHIElectronics.TinyCLR.Devices.Dac.Provider {
     internal class DefaultDacControllerProvider : IDacControllerProvider {
 #pragma warning disable CS0169
         private readonly IntPtr nativeProvider;
+        private readonly int idx;
 #pragma warning restore CS0169
 
-        internal DefaultDacControllerProvider(IntPtr nativeProvider) {
+        internal DefaultDacControllerProvider(IntPtr nativeProvider, int idx = 0) {
             this.nativeProvider = nativeProvider;
+
+            this.idx = idx;
 
             this.AcquireNative();
         }
@@ -107,5 +110,8 @@ namespace GHIElectronics.TinyCLR.Devices.Dac.Provider {
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         extern private void ReleaseNative();
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        extern static internal int GetControllerCount(IntPtr nativeProvider);
     }
 }

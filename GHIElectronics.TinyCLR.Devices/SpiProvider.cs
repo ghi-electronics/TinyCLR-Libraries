@@ -68,13 +68,14 @@ namespace GHIElectronics.TinyCLR.Devices.Spi.Provider {
         public ISpiControllerProvider[] GetControllers() => this.controllers;
 
         private SpiProvider(string name) {
-            var api = Api.Find(name, ApiType.SpiProvider);
-
             this.Name = name;
-            this.controllers = new ISpiControllerProvider[api.Count];
 
-            for (var i = 0U; i < this.controllers.Length; i++)
-                this.controllers[i] = new DefaultSpiControllerProvider(api.Implementation[i]);
+            var api = Api.Find(this.Name, ApiType.SpiProvider);
+
+            this.controllers = new ISpiControllerProvider[DefaultSpiControllerProvider.GetControllerCount(api.Implementation)];
+
+            for (var i = 0; i < this.controllers.Length; i++)
+                this.controllers[i] = new DefaultSpiControllerProvider(api.Implementation, i);
         }
 
         public static ISpiProvider FromId(string id) {
@@ -93,11 +94,13 @@ namespace GHIElectronics.TinyCLR.Devices.Spi.Provider {
         private readonly IntPtr nativeProvider;
         private int created;
         private bool isExclusive;
+        private int idx;
 
-        internal DefaultSpiControllerProvider(IntPtr nativeProvider) {
+        internal DefaultSpiControllerProvider(IntPtr nativeProvider, int idx) {
             this.nativeProvider = nativeProvider;
             this.created = 0;
             this.isExclusive = false;
+            this.idx = idx;
         }
 
         public void Release(DefaultSpiDeviceProvider provider) {
@@ -122,6 +125,9 @@ namespace GHIElectronics.TinyCLR.Devices.Spi.Provider {
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         extern private void ReleaseNative();
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        extern static internal int GetControllerCount(IntPtr nativeProvider);
     }
 
     internal sealed class DefaultSpiDeviceProvider : ISpiDeviceProvider {

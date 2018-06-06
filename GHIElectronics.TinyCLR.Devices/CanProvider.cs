@@ -27,7 +27,7 @@ namespace GHIElectronics.TinyCLR.Devices.Can.Provider {
     }
 
     public class CanProvider : ICanProvider {
-        private readonly ICanControllerProvider[] controllers;
+        private ICanControllerProvider[] controllers;
         private static Hashtable providers = new Hashtable();
 
         public string Name { get; }
@@ -35,13 +35,14 @@ namespace GHIElectronics.TinyCLR.Devices.Can.Provider {
         public ICanControllerProvider[] GetControllers() => this.controllers;
 
         private CanProvider(string name) {
-            var api = Api.Find(name, ApiType.CanProvider);
-
             this.Name = name;
-            this.controllers = new ICanControllerProvider[api.Count];
 
-            for (var i = 0U; i < this.controllers.Length; i++)
-                this.controllers[i] = new DefaultCanControllerProvider(api.Implementation[i]);
+            var api = Api.Find(this.Name, ApiType.CanProvider);
+
+            this.controllers = new ICanControllerProvider[DefaultCanControllerProvider.GetControllerCount(api.Implementation)];
+
+            for (var i = 0; i < this.controllers.Length; i++)
+                this.controllers[i] = new DefaultCanControllerProvider(api.Implementation, i);
         }
 
         public static ICanProvider FromId(string id) {
@@ -61,9 +62,11 @@ namespace GHIElectronics.TinyCLR.Devices.Can.Provider {
         private readonly IntPtr nativeProvider;
 #pragma warning restore CS0169
         private bool disposed = false;
+        private int idx;
 
-        internal DefaultCanControllerProvider(IntPtr nativeProvider) {
+        internal DefaultCanControllerProvider(IntPtr nativeProvider, int idx) {
             this.nativeProvider = nativeProvider;
+            this.idx = idx;
 
             this.NativeAcquire();
         }
@@ -151,5 +154,8 @@ namespace GHIElectronics.TinyCLR.Devices.Can.Provider {
             [MethodImpl(MethodImplOptions.InternalCall)]
             set;
         }
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        extern static internal int GetControllerCount(IntPtr nativeProvider);
     }
 }

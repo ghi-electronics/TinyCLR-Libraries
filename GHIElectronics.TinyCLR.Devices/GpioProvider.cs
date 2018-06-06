@@ -75,10 +75,11 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio.Provider {
             var api = Api.Find(name, ApiType.GpioProvider);
 
             this.Name = name;
-            this.controllers = new IGpioControllerProvider[api.Count];
+
+            this.controllers = new IGpioControllerProvider[DefaultGpioControllerProvider.GetControllerCount(api.Implementation)];
 
             for (var i = 0U; i < this.controllers.Length; i++)
-                this.controllers[i] = new DefaultGpioControllerProvider(name, i, api.Implementation[i]);
+                this.controllers[i] = new DefaultGpioControllerProvider(name, i, api.Implementation);
         }
 
         public static IGpioProvider FromId(string id) {
@@ -162,6 +163,9 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio.Provider {
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private extern void ReleaseNative(int pinNumber);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        extern static internal int GetControllerCount(IntPtr nativeProvider);
     }
 
     internal sealed class DefaultGpioPinProvider : IGpioPinProvider {

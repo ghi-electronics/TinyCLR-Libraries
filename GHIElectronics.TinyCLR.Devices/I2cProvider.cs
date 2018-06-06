@@ -72,13 +72,14 @@ namespace GHIElectronics.TinyCLR.Devices.I2c.Provider {
         public II2cControllerProvider[] GetControllers() => this.controllers;
 
         private I2cProvider(string name) {
-            var api = Api.Find(name, ApiType.I2cProvider);
-
             this.Name = name;
-            this.controllers = new II2cControllerProvider[api.Count];
 
-            for (var i = 0U; i < this.controllers.Length; i++)
-                this.controllers[i] = new DefaultI2cControllerProvider(api.Implementation[i]);
+            var api = Api.Find(this.Name, ApiType.I2cProvider);
+
+            this.controllers = new II2cControllerProvider[DefaultI2cControllerProvider.GetControllerCount(api.Implementation)];
+
+            for (var i = 0; i < this.controllers.Length; i++)
+                this.controllers[i] = new DefaultI2cControllerProvider(api.Implementation, i);
         }
 
         public static II2cProvider FromId(string id) {
@@ -97,11 +98,13 @@ namespace GHIElectronics.TinyCLR.Devices.I2c.Provider {
         private readonly IntPtr nativeProvider;
         private int created;
         private bool isExclusive;
+        private int idx;
 
-        internal DefaultI2cControllerProvider(IntPtr nativeProvider) {
+        internal DefaultI2cControllerProvider(IntPtr nativeProvider, int idx) {
             this.nativeProvider = nativeProvider;
             this.created = 0;
             this.isExclusive = false;
+            this.idx = idx;
         }
 
         public void Release(DefaultI2cDeviceProvider provider) {
@@ -126,6 +129,9 @@ namespace GHIElectronics.TinyCLR.Devices.I2c.Provider {
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         extern private void ReleaseNative();
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        extern static internal int GetControllerCount(IntPtr nativeProvider);
     }
 
     internal sealed class DefaultI2cDeviceProvider : II2cDeviceProvider {

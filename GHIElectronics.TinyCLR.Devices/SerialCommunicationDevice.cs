@@ -1,7 +1,7 @@
-﻿using GHIElectronics.TinyCLR.Storage.Streams;
-using System;
+﻿using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using GHIElectronics.TinyCLR.Storage.Streams;
 
 namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
     public delegate void ErrorReceivedDelegate(SerialDevice sender, ErrorReceivedEventArgs e);
@@ -93,9 +93,9 @@ namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
 
                 var api = Api.Find(this.providerId, ApiType.UartProvider);
 
-                if (api == null || api.Count <= this.idx) throw new ArgumentException("Invalid id.", nameof(providerId));
+                if (api == null) throw new ArgumentException("Invalid id.", nameof(providerId));
 
-                this.nativeProvider = api.Implementation[this.idx];
+                this.nativeProvider = api.Implementation;
             }
 
             public void Dispose() => this.parent.Dispose();
@@ -215,6 +215,9 @@ namespace GHIElectronics.TinyCLR.Devices.SerialCommunication {
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             private extern int NativeWrite(byte[] buffer, int offset, int count, int timeout);
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            extern static internal int GetControllerCount(IntPtr nativeProvider);
         }
     }
 }

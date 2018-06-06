@@ -39,9 +39,9 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
         /// <value>The bus address of the I²C device. Only 7-bit addressing is supported, so the range of valid values
         ///     is from 8 to 119.</value>
         public int SlaveAddress {
-            get => m_slaveAddress;
+            get => this.m_slaveAddress;
 
-            set => m_slaveAddress = value;
+            set => this.m_slaveAddress = value;
         }
 
         /// <summary>
@@ -50,9 +50,9 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
         /// </summary>
         /// <value>The bus speed to use for connecting to an I²C device.</value>
         public I2cBusSpeed BusSpeed {
-            get => m_busSpeed;
+            get => this.m_busSpeed;
 
-            set => m_busSpeed = value;
+            set => this.m_busSpeed = value;
         }
 
         /// <summary>
@@ -62,9 +62,9 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
         /// </summary>
         /// <value>The sharing mode to use to connect to the I²C bus address.</value>
         public I2cSharingMode SharingMode {
-            get => m_sharingMode;
+            get => this.m_sharingMode;
 
-            set => m_sharingMode = value;
+            set => this.m_sharingMode = value;
         }
     }
 }
