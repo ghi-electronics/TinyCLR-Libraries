@@ -6,7 +6,12 @@ namespace GHIElectronics.TinyCLR.Devices.Adc {
     public sealed class AdcController {
         private IAdcControllerProvider m_provider;
 
-        internal AdcController(IAdcControllerProvider provider) => this.m_provider = provider;
+        private int idx;
+
+        internal AdcController(IAdcControllerProvider provider, int idx = 0) {
+            this.m_provider = provider;
+            this.idx = idx;
+        }
 
         public int ChannelCount => this.m_provider.ChannelCount;
 
@@ -37,11 +42,11 @@ namespace GHIElectronics.TinyCLR.Devices.Adc {
 
         public static AdcController[] GetControllers(IAdcProvider provider) {
             // FUTURE: This should return "Task<IVectorView<AdcController>>"
-            var providers = provider.GetControllers();
-            var controllers = new AdcController[providers.Length];
+            var controllersProvider = provider.GetControllers();
+            var controllers = new AdcController[controllersProvider.Length];
 
-            for (var i = 0; i < providers.Length; ++i) {
-                controllers[i] = new AdcController(providers[i]);
+            for (var i = 0; i < controllersProvider.Length; ++i) {
+                controllers[i] = new AdcController(controllersProvider[i], i);
             }
 
             return controllers;
