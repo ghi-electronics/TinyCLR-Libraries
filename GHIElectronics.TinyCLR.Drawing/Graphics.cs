@@ -37,6 +37,12 @@ namespace System.Drawing {
 
         ~Graphics() => this.Dispose(false);
 
+        public SizeF MeasureString(string text, Font font) {
+            font.ComputeExtent(text, out var width, out var height);
+
+            return new SizeF(width, height);
+        }
+
         public void Clear(Color color) {
             if (color != Color.Black) throw new NotSupportedException();
 

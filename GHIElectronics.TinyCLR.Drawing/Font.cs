@@ -47,7 +47,7 @@ namespace System.Drawing {
         [MethodImpl(MethodImplOptions.InternalCall)]
         private extern void ComputeTextInRect(string text, out int renderWidth, out int renderHeight, int xRelStart, int yRelStart, int availableWidth, int availableHeight, uint dtFlags);
 
-        private void ComputeExtent(string text, out int width, out int height) => ComputeExtent(text, out width, out height, DefaultKerning);
+        internal void ComputeExtent(string text, out int width, out int height) => ComputeExtent(text, out width, out height, DefaultKerning);
         private void ComputeTextInRect(string text, out int renderWidth, out int renderHeight) => ComputeTextInRect(text, out renderWidth, out renderHeight, 0, 0, 65536, 0, Internal.Bitmap.DT_IgnoreHeight | Internal.Bitmap.DT_WordWrap);
         private void ComputeTextInRect(string text, out int renderWidth, out int renderHeight, int availableWidth) => ComputeTextInRect(text, out renderWidth, out renderHeight, 0, 0, availableWidth, 0, Internal.Bitmap.DT_IgnoreHeight | Internal.Bitmap.DT_WordWrap);
 
