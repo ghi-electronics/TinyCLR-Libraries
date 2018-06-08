@@ -10,6 +10,8 @@ namespace System.Drawing {
         internal bool callFromImage;
         private IntPtr hdc;
 
+        public GraphicsUnit PageUnit { get; } = GraphicsUnit.Pixel;
+
         internal Graphics(byte[] buffer) : this(new Internal.Bitmap(buffer, Internal.Bitmap.BitmapImageType.Bmp), IntPtr.Zero) { }
         internal Graphics(int width, int height) : this(width, height, IntPtr.Zero) { }
         private Graphics(int width, int height, IntPtr hdc) : this(new Internal.Bitmap(width, height), hdc) { }
