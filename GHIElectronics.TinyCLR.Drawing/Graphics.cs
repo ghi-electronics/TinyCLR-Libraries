@@ -43,6 +43,8 @@ namespace System.Drawing {
             return new SizeF(width, height);
         }
 
+        public SizeF MeasureString(string text, Font font, SizeF layoutArea, StringFormat stringFormat) => throw new NotImplementedException();
+
         public void Clear(Color color) {
             if (color != Color.Black) throw new NotSupportedException();
 
@@ -99,6 +101,10 @@ namespace System.Drawing {
                 throw new NotSupportedException();
             }
         }
+
+        public void DrawString(string s, Font font, Brush brush, float x, float y, StringFormat format) => throw new NotImplementedException();
+        public void DrawString(string s, Font font, Brush brush, RectangleF layoutRectangle) => throw new NotImplementedException();
+        public void DrawString(string s, Font font, Brush brush, RectangleF layoutRectangle, StringFormat format) => throw new NotImplementedException();
 
         public void DrawEllipse(Pen pen, int x, int y, int width, int height) {
             if (pen.Color.A != 0xFF) throw new NotSupportedException("Alpha not supported.");
