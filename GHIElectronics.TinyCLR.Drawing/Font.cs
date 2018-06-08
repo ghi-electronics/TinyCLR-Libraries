@@ -1,6 +1,16 @@
 ﻿using System.Runtime.CompilerServices;
 
 namespace System.Drawing {
+    public enum GraphicsUnit {
+        World = 0,
+        Display = 1,
+        Pixel = 2,
+        Point = 3,
+        Inch = 4,
+        Document = 5,
+        Millimeter = 6
+    }
+
     //The name and namespace of this must match the definition in c_TypeIndexLookup in TypeSystem.cpp
     public sealed class Font : MarshalByRefObject, ICloneable, IDisposable {
 #pragma warning disable CS0169 // The field is never used
@@ -17,6 +27,8 @@ namespace System.Drawing {
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private extern int CharWidth(char c);
+
+        public GraphicsUnit Unit { get; } = GraphicsUnit.Pixel;
 
         private extern int Height { [MethodImpl(MethodImplOptions.InternalCall)] get; }
         private extern int AverageWidth { [MethodImpl(MethodImplOptions.InternalCall)] get; }
