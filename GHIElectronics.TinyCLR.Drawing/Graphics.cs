@@ -71,7 +71,17 @@ namespace System.Drawing {
             this.surface.Flush(this.hdc);
         }
 
-        public void DrawImage(Image image, int x, int y) => this.surface.DrawImage(x, y, image.data.surface, 0, 0, image.Width, image.Height, 0xFF);
+        //Draws a portion of an image at a specified location.
+        public void DrawImage(Image image, int x, int y, Rectangle srcRect, GraphicsUnit srcUnit) => this.surface.StretchImage(x, y, srcRect.Width, srcRect.Height, image.data.surface, srcRect.X, srcRect.Y, srcRect.Width, srcRect.Height, 0xFF);
+
+        //Draws the specified Image at the specified location and with the specified size.
+        public void DrawImage(Image image, int x, int y, int width, int height) => this.surface.StretchImage(x, y, width, height, image.data.surface, 0, 0, image.Width, image.Height, 0xFF);
+
+        //Draws the specified image, using its original physical size, at the location specified by a coordinate pair.
+        public void DrawImage(Image image, int x, int y) => this.surface.StretchImage(x, y, image.Width, image.Height, image.data.surface, 0, 0, image.Width, image.Height, 0xFF);
+
+        //Draws the specified portion of the specified Image at the specified location and with the specified size.
+        public void DrawImage(Image image, Rectangle destRect, Rectangle srcRect, GraphicsUnit srcUnit) => this.surface.StretchImage(destRect.X, destRect.Y, destRect.Width, destRect.Height, image.data.surface, srcRect.X, srcRect.Y, srcRect.Width, srcRect.Height, 0xFF);
 
         public void DrawLine(Pen pen, int x1, int y1, int x2, int y2) {
             if (pen.Color.A != 0xFF) throw new NotSupportedException("Alpha not supported.");
