@@ -30,7 +30,8 @@ namespace System.Drawing {
 
         public GraphicsUnit Unit { get; } = GraphicsUnit.Pixel;
 
-        private extern int Height { [MethodImpl(MethodImplOptions.InternalCall)] get; }
+        public extern int Height { [MethodImpl(MethodImplOptions.InternalCall)] get; }
+
         private extern int AverageWidth { [MethodImpl(MethodImplOptions.InternalCall)] get; }
         private extern int MaxWidth { [MethodImpl(MethodImplOptions.InternalCall)] get; }
 
