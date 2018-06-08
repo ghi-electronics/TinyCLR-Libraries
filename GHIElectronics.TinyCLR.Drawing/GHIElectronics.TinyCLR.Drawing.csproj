@@ -41,6 +41,7 @@
     <Compile Include="Image.cs" />
     <Compile Include="Pen.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Rectangle.cs" />
     <Compile Include="SizeF.cs" />
   </ItemGroup>
   <ItemGroup>
