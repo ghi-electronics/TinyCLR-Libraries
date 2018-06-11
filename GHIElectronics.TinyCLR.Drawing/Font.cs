@@ -28,7 +28,7 @@ namespace System.Drawing {
         [MethodImpl(MethodImplOptions.InternalCall)]
         private extern int CharWidth(char c);
 
-        public GraphicsUnit Unit { get; } = GraphicsUnit.Pixel;
+        public GraphicsUnit Unit => GraphicsUnit.Pixel;
 
         public extern int Height { [MethodImpl(MethodImplOptions.InternalCall)] get; }
 
@@ -45,7 +45,7 @@ namespace System.Drawing {
         private extern void ComputeExtent(string text, out int width, out int height, int kerning);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private extern void ComputeTextInRect(string text, out int renderWidth, out int renderHeight, int xRelStart, int yRelStart, int availableWidth, int availableHeight, uint dtFlags);
+        internal extern void ComputeTextInRect(string text, out int renderWidth, out int renderHeight, int xRelStart, int yRelStart, int availableWidth, int availableHeight, uint dtFlags);
 
         internal void ComputeExtent(string text, out int width, out int height) => ComputeExtent(text, out width, out height, DefaultKerning);
         private void ComputeTextInRect(string text, out int renderWidth, out int renderHeight) => ComputeTextInRect(text, out renderWidth, out renderHeight, 0, 0, 65536, 0, Internal.Bitmap.DT_IgnoreHeight | Internal.Bitmap.DT_WordWrap);

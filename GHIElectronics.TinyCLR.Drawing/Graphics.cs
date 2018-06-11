@@ -35,6 +35,39 @@ namespace System.Drawing {
             }
         }
 
+        private uint ToFlags(StringFormat format, float height, bool ignoreHeight, bool truncateAtBottom) {
+            var flags = Internal.Bitmap.DT_WordWrap;
+
+            if (ignoreHeight || height == 0.0) flags |= Internal.Bitmap.DT_IgnoreHeight;
+            if (truncateAtBottom) flags |= Internal.Bitmap.DT_TruncateAtBottom;
+
+            if (format.FormatFlags != 0) throw new NotSupportedException();
+
+            switch (format.Alignment) {
+                case StringAlignment.Center: flags |= Internal.Bitmap.DT_AlignmentCenter; break;
+                case StringAlignment.Far: flags |= Internal.Bitmap.DT_AlignmentRight; break;
+                case StringAlignment.Near: flags |= Internal.Bitmap.DT_AlignmentLeft; break;
+                default: throw new ArgumentException();
+            }
+
+            switch (format.Trimming) {
+                case StringTrimming.EllipsisCharacter: flags |= Internal.Bitmap.DT_TrimmingCharacterEllipsis; break;
+                case StringTrimming.EllipsisWord: flags |= Internal.Bitmap.DT_TrimmingWordEllipsis; break;
+                case StringTrimming.None:
+                    break;
+
+                case StringTrimming.EllipsisPath:
+                case StringTrimming.Character:
+                case StringTrimming.Word:
+                    throw new NotSupportedException();
+
+                default:
+                    throw new ArgumentException();
+            }
+
+            return flags;
+        }
+
         ~Graphics() => this.Dispose(false);
 
         public SizeF MeasureString(string text, Font font) {
@@ -43,7 +76,11 @@ namespace System.Drawing {
             return new SizeF(width, height);
         }
 
-        public SizeF MeasureString(string text, Font font, SizeF layoutArea, StringFormat stringFormat) => throw new NotImplementedException();
+        public SizeF MeasureString(string text, Font font, SizeF layoutArea, StringFormat stringFormat) {
+            font.ComputeTextInRect(text, out var width, out var height, 0, 0, (int)layoutArea.Width, (int)layoutArea.Height, this.ToFlags(stringFormat, layoutArea.Height, false, false));
+
+            return new SizeF(width, height);
+        }
 
         public void Clear(Color color) {
             if (color != Color.Black) throw new NotSupportedException();
@@ -102,9 +139,21 @@ namespace System.Drawing {
             }
         }
 
-        public void DrawString(string s, Font font, Brush brush, float x, float y, StringFormat format) => throw new NotImplementedException();
-        public void DrawString(string s, Font font, Brush brush, RectangleF layoutRectangle) => throw new NotImplementedException();
-        public void DrawString(string s, Font font, Brush brush, RectangleF layoutRectangle, StringFormat format) => throw new NotImplementedException();
+        public void DrawString(string s, Font font, Brush brush, RectangleF layoutRectangle) => this.DrawString(s, font, brush, layoutRectangle, new StringFormat {
+            Trimming = StringTrimming.EllipsisWord,
+            Alignment = StringAlignment.Near
+        });
+
+        public void DrawString(string s, Font font, Brush brush, RectangleF layoutRectangle, StringFormat format) {
+            if (brush is SolidBrush b) {
+                if (b.Color.A != 0xFF) throw new NotSupportedException("Alpha not supported.");
+
+                this.surface.DrawTextInRect(s, (int)layoutRectangle.X, (int)layoutRectangle.Y, (int)layoutRectangle.Width, (int)layoutRectangle.Height, this.ToFlags(format, layoutRectangle.Height, false, false), b.Color, font);
+            }
+            else {
+                throw new NotSupportedException();
+            }
+        }
 
         public void DrawEllipse(Pen pen, int x, int y, int width, int height) {
             if (pen.Color.A != 0xFF) throw new NotSupportedException("Alpha not supported.");
@@ -255,7 +304,7 @@ namespace System.Drawing {
                 var xRelStart = 0;
                 var yRelStart = 0;
 
-                DrawTextInRect(ref text, ref xRelStart, ref yRelStart, x, y, width, height, dtFlags, (uint)color.ToArgb(), font);
+                DrawTextInRect(ref text, ref xRelStart, ref yRelStart, x, y, width, height, dtFlags, (uint)(color.value & 0x00FFFFFF), font);
             }
 
             //public void DrawEllipse(Color colorOutline, int x, int y, int xRadius, int yRadius) => DrawEllipse(colorOutline, 1, x, y, xRadius, yRadius, Color.Black, 0, 0, Color.Black, 0, 0, OpacityOpaque);
