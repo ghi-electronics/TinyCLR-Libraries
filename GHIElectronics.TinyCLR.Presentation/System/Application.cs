@@ -943,7 +943,7 @@ namespace Microsoft.SPOT
         /// </summary>
         static private bool DefaultContextExceptionHandler(object sender, Exception e)
         {
-            Trace.Print("[Default DispatcherException Handler] Exception caught: " + e.GetType().FullName);
+            Trace.WriteLine("[Default DispatcherException Handler] Exception caught: " + e.GetType().FullName);
 
             // what do we want to do when we get an exception? throw up a dialog?
 
