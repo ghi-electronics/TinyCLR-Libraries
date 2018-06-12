@@ -10,6 +10,7 @@ using Microsoft.SPOT.Input;
 using Microsoft.SPOT.Touch;
 using Microsoft.SPOT.Presentation;
 using System.Diagnostics;
+using GHIElectronics.TinyCLR.Devices.Display;
 
 namespace Microsoft.SPOT
 {
@@ -34,6 +35,13 @@ namespace Microsoft.SPOT
     /// </summary>
     public class Application : DispatcherObject
     {
+        private DisplayController display;
+
+        public void SetDisplayController(DisplayController display) {
+            if (this.display != null) throw new InvalidOperationException();
+
+            this.display = display ?? throw new ArgumentException();
+        }
 
         //------------------------------------------------------
         //
@@ -147,6 +155,10 @@ namespace Microsoft.SPOT
         /// shown once the Application is run.</param>
         public void Run(Window window)
         {
+            if (this.display == null) throw new InvalidOperationException();
+
+            SystemMetrics.Set(this.display);
+
             VerifyAccess();
             // In this case, we should throw an exception when Run is called for the second time.
             // When app is shutdown, _appIsShutdown is set to true.  If it is true here, then we
