@@ -36,7 +36,7 @@ namespace System.Drawing {
         }
 
         private uint ToFlags(StringFormat format, float height, bool ignoreHeight, bool truncateAtBottom) {
-            var flags = Internal.Bitmap.DT_WordWrap;
+            var flags = 0U;
 
             if (ignoreHeight || height == 0.0) flags |= Internal.Bitmap.DT_IgnoreHeight;
             if (truncateAtBottom) flags |= Internal.Bitmap.DT_TruncateAtBottom;
@@ -52,7 +52,7 @@ namespace System.Drawing {
 
             switch (format.Trimming) {
                 case StringTrimming.EllipsisCharacter: flags |= Internal.Bitmap.DT_TrimmingCharacterEllipsis; break;
-                case StringTrimming.EllipsisWord: flags |= Internal.Bitmap.DT_TrimmingWordEllipsis; break;
+                case StringTrimming.EllipsisWord: flags |= Internal.Bitmap.DT_WordWrap | Internal.Bitmap.DT_TrimmingWordEllipsis; break;
                 case StringTrimming.None:
                     break;
 
