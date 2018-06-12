@@ -9,8 +9,8 @@ namespace Microsoft.SPOT.Presentation.Media
     public abstract class Brush
     {
         private ushort _opacity = Bitmap.OpacityOpaque;
-        
-        public ushort Opacity 
+
+        public ushort Opacity
         {
             get
             {
@@ -18,9 +18,9 @@ namespace Microsoft.SPOT.Presentation.Media
             }
             set
             {
-                // clip values              
+                // clip values
                 if(value > Bitmap.OpacityOpaque) value = Bitmap.OpacityOpaque;
-                
+
                 _opacity = value;
             }
         }

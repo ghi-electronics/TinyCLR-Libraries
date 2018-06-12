@@ -5,6 +5,13 @@ using System.Text;
 using System.Threading;
 
 namespace Microsoft.SPOT {
+    public enum Button {
+        VK_DOWN,
+        VK_UP,
+        VK_LEFT,
+        VK_RIGHT
+    }
+
     public class Bitmap : IDisposable {
         public void Dispose() {
 

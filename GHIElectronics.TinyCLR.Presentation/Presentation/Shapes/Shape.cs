@@ -3,19 +3,20 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 using System;
+using System.Drawing;
 using Microsoft.SPOT.Presentation.Media;
 
 namespace Microsoft.SPOT.Presentation.Shapes
 {
     public abstract class Shape : UIElement
     {
-        public Brush Fill
+        public Media.Brush Fill
         {
             get
             {
                 if (_fill == null)
                 {
-                    _fill = new SolidColorBrush(Colors.Black);
+                    _fill = new SolidColorBrush(Color.Black);
                     _fill.Opacity = Bitmap.OpacityTransparent;
                 }
 
@@ -29,13 +30,13 @@ namespace Microsoft.SPOT.Presentation.Shapes
             }
         }
 
-        public Pen Stroke
+        public Media.Pen Stroke
         {
             get
             {
                 if (_stroke == null)
                 {
-                    _stroke = new Pen(Colors.White, 0);
+                    _stroke = new Media.Pen(Color.White, 0);
                 }
 
                 return _stroke;
@@ -48,8 +49,8 @@ namespace Microsoft.SPOT.Presentation.Shapes
             }
         }
 
-        private Brush _fill;
-        private Pen _stroke;
+        private Media.Brush _fill;
+        private Media.Pen _stroke;
     }
 }
 

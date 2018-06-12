@@ -246,7 +246,7 @@ namespace Microsoft.SPOT.Presentation
                     //it will be sluggish. If we don't yield here, the loop is goign to be a deadly one
 
                     int loopCounter = 0;
-                    TimeSpan loopStartTime = TimeSpan.Zero;
+                    long loopStartTime = 0;
 
                     while (true)
                     {
@@ -282,7 +282,7 @@ namespace Microsoft.SPOT.Presentation
                     //provide user with ability to continue to interact with the app, even though
                     //it will be sluggish. If we don't yield here, the loop is goign to be a deadly one
                     loopCounter = 0;
-                    loopStartTime = TimeSpan.Zero;
+                    loopStartTime = 0;
 
                     while (true)
                     {
@@ -350,15 +350,15 @@ namespace Microsoft.SPOT.Presentation
         //
         // ensures we don't spend all day doing layout, and
         // give the system the chance to do something else.
-        private bool LimitExecution(ref TimeSpan loopStartTime)
+        private bool LimitExecution(ref long loopStartTime)
         {
-            if (loopStartTime.Ticks == 0)
+            if (loopStartTime == 0)
             {
-                loopStartTime = Microsoft.SPOT.Hardware.Utility.GetMachineTime();
+                loopStartTime = DateTime.Now.Ticks;
             }
             else
             {
-                if ((Microsoft.SPOT.Hardware.Utility.GetMachineTime() - loopStartTime).Ticks > 153 * 2 * TimeSpan.TicksPerMillisecond) // 153*2 = magic*science
+                if ((DateTime.Now.Ticks - loopStartTime) > 153 * 2 * TimeSpan.TicksPerMillisecond) // 153*2 = magic*science
                 {
                     //loop detected. Lets go over to background to let input work.
                     Dispatcher.BeginInvoke(_updateLayoutBackground, this);

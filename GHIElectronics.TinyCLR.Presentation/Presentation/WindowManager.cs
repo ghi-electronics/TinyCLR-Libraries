@@ -7,7 +7,6 @@ using System.Collections;
 using System.Threading;
 
 using Microsoft.SPOT.Presentation;
-using Microsoft.SPOT.Hardware;
 
 using Microsoft.SPOT.Presentation.Media;
 

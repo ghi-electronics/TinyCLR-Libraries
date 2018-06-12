@@ -5,7 +5,6 @@ using System;
 using System.Collections;
 using System.Threading;
 using Microsoft.SPOT;
-using Microsoft.SPOT.Hardware;
 using Microsoft.SPOT.Presentation.Media;
 
 namespace Microsoft.SPOT.Presentation.Controls

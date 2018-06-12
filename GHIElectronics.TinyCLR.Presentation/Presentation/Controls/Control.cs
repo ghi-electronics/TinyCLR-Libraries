@@ -3,13 +3,14 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 using System;
+using System.Drawing;
 using Microsoft.SPOT.Presentation.Media;
 
 namespace Microsoft.SPOT.Presentation.Controls
 {
     public class Control : UIElement
     {
-        public Brush Background
+        public Media.Brush Background
         {
             get
             {
@@ -43,7 +44,7 @@ namespace Microsoft.SPOT.Presentation.Controls
             }
         }
 
-        public Brush Foreground
+        public Media.Brush Foreground
         {
             get
             {
@@ -69,8 +70,8 @@ namespace Microsoft.SPOT.Presentation.Controls
             }
         }
 
-        protected internal Brush _background = null;
-        protected internal Brush _foreground = new SolidColorBrush(Colors.Black);
+        protected internal Media.Brush _background = null;
+        protected internal Media.Brush _foreground = new SolidColorBrush(Color.Black);
         protected internal Font _font;
     }
 }

@@ -3,6 +3,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 using System;
+using System.Drawing;
 using Microsoft.SPOT.Presentation.Media;
 
 namespace Microsoft.SPOT.Presentation.Controls
@@ -11,12 +12,12 @@ namespace Microsoft.SPOT.Presentation.Controls
     {
         public Border()
         {
-            _borderBrush = new SolidColorBrush(Colors.Black);
+            _borderBrush = new SolidColorBrush(Color.Black);
 
             _borderLeft = _borderTop = _borderRight = _borderBottom = 1;
         }
 
-        public Brush BorderBrush
+        public Media.Brush BorderBrush
         {
             get
             {
@@ -118,7 +119,7 @@ namespace Microsoft.SPOT.Presentation.Controls
             }
         }
 
-        private Brush _borderBrush;
+        private Media.Brush _borderBrush;
         private int _borderLeft, _borderTop, _borderRight, _borderBottom;
     }
 }

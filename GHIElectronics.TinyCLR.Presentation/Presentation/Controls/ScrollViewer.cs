@@ -1,6 +1,5 @@
 using System;
 using System.Diagnostics;
-using Microsoft.SPOT.Hardware;
 using Microsoft.SPOT.Input;
 using Microsoft.SPOT.Presentation.Media;
 
@@ -265,16 +264,16 @@ namespace Microsoft.SPOT.Presentation.Controls
         {
             switch (e.Button)
             {
-                case Microsoft.SPOT.Hardware.Button.VK_UP:
+                case Button.VK_UP:
                     if (_scrollingStyle == ScrollingStyle.LineByLine) LineUp(); else PageUp();
                     break;
-                case Microsoft.SPOT.Hardware.Button.VK_DOWN:
+                case Button.VK_DOWN:
                     if (_scrollingStyle == ScrollingStyle.LineByLine) LineDown(); else PageDown();
                     break;
-                case Microsoft.SPOT.Hardware.Button.VK_LEFT:
+                case Button.VK_LEFT:
                     if (_scrollingStyle == ScrollingStyle.LineByLine) LineLeft(); else PageLeft();
                     break;
-                case Microsoft.SPOT.Hardware.Button.VK_RIGHT:
+                case Button.VK_RIGHT:
                     if (_scrollingStyle == ScrollingStyle.LineByLine) LineRight(); else PageRight();
                     break;
                 default:

@@ -8,6 +8,7 @@ using System.Threading;
 using Microsoft.SPOT.Presentation.Controls;
 using Microsoft.SPOT.Presentation.Media;
 using System.Runtime.CompilerServices;
+using System.Drawing;
 
 namespace Microsoft.SPOT.Presentation
 {
@@ -36,7 +37,7 @@ namespace Microsoft.SPOT.Presentation
             //and to live on the same thread.
             _windowManager = WindowManager.EnsureInstance();
 
-            _background = new SolidColorBrush(Colors.White);
+            _background = new SolidColorBrush(Color.White);
             //
             // dependency property initialization.
             // we don't have them, so we just update the properties on the base class,
