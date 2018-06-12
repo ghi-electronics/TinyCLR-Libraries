@@ -133,6 +133,12 @@
     <None Include="GHIElectronics.TinyCLR.Presentation.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GHIElectronics.TinyCLR.Drawing\GHIElectronics.TinyCLR.Drawing.csproj">
+      <Project>{52A54E94-2FD8-4EEE-822C-C8C7F27AF423}</Project>
+      <Name>GHIElectronics.TinyCLR.Drawing</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
