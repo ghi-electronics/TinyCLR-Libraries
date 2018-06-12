@@ -1,5 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 
+[assembly: InternalsVisibleTo("GHIElectronics.TinyCLR.Presentation")]
+
 namespace System.Drawing {
     public enum GraphicsUnit {
         World = 0,
@@ -32,14 +34,14 @@ namespace System.Drawing {
 
         public extern int Height { [MethodImpl(MethodImplOptions.InternalCall)] get; }
 
-        private extern int AverageWidth { [MethodImpl(MethodImplOptions.InternalCall)] get; }
-        private extern int MaxWidth { [MethodImpl(MethodImplOptions.InternalCall)] get; }
+        internal extern int AverageWidth { [MethodImpl(MethodImplOptions.InternalCall)] get; }
+        internal extern int MaxWidth { [MethodImpl(MethodImplOptions.InternalCall)] get; }
 
-        private extern int Ascent { [MethodImpl(MethodImplOptions.InternalCall)] get; }
-        private extern int Descent { [MethodImpl(MethodImplOptions.InternalCall)] get; }
+        internal extern int Ascent { [MethodImpl(MethodImplOptions.InternalCall)] get; }
+        internal extern int Descent { [MethodImpl(MethodImplOptions.InternalCall)] get; }
 
-        private extern int InternalLeading { [MethodImpl(MethodImplOptions.InternalCall)] get; }
-        private extern int ExternalLeading { [MethodImpl(MethodImplOptions.InternalCall)] get; }
+        internal extern int InternalLeading { [MethodImpl(MethodImplOptions.InternalCall)] get; }
+        internal extern int ExternalLeading { [MethodImpl(MethodImplOptions.InternalCall)] get; }
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private extern void ComputeExtent(string text, out int width, out int height, int kerning);
@@ -48,8 +50,8 @@ namespace System.Drawing {
         internal extern void ComputeTextInRect(string text, out int renderWidth, out int renderHeight, int xRelStart, int yRelStart, int availableWidth, int availableHeight, uint dtFlags);
 
         internal void ComputeExtent(string text, out int width, out int height) => ComputeExtent(text, out width, out height, DefaultKerning);
-        private void ComputeTextInRect(string text, out int renderWidth, out int renderHeight) => ComputeTextInRect(text, out renderWidth, out renderHeight, 0, 0, 65536, 0, Internal.Bitmap.DT_IgnoreHeight | Internal.Bitmap.DT_WordWrap);
-        private void ComputeTextInRect(string text, out int renderWidth, out int renderHeight, int availableWidth) => ComputeTextInRect(text, out renderWidth, out renderHeight, 0, 0, availableWidth, 0, Internal.Bitmap.DT_IgnoreHeight | Internal.Bitmap.DT_WordWrap);
+        internal void ComputeTextInRect(string text, out int renderWidth, out int renderHeight) => ComputeTextInRect(text, out renderWidth, out renderHeight, 0, 0, 65536, 0, Internal.Bitmap.DT_IgnoreHeight | Internal.Bitmap.DT_WordWrap);
+        internal void ComputeTextInRect(string text, out int renderWidth, out int renderHeight, int availableWidth) => ComputeTextInRect(text, out renderWidth, out renderHeight, 0, 0, availableWidth, 0, Internal.Bitmap.DT_IgnoreHeight | Internal.Bitmap.DT_WordWrap);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         private extern void CreateInstantFromResources(uint buffer, uint size, uint assembly);
