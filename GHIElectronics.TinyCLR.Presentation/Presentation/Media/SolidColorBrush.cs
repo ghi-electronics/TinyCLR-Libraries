@@ -3,6 +3,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 using System;
 using System.Collections;
+using System.Drawing;
 
 namespace Microsoft.SPOT.Presentation.Media
 {
@@ -221,7 +222,7 @@ namespace Microsoft.SPOT.Presentation.Media
 
                     ///
                     /// add both x endpoints if the line is horizontal
-                    /// 
+                    ///
                     if (lines[i].dy == 0)
                     {
                         x1     = lines[i].x1;
@@ -259,7 +260,7 @@ namespace Microsoft.SPOT.Presentation.Media
                             ///
                             /// Only add duplicate x values if the intersection produces up (^) or down (v) angles
                             /// as opposed to right (<) or left (>) angles.
-                            /// 
+                            ///
                             if      (ix == x1 && isYMin != x1YMin) { idx1 = int.MaxValue;          }
                             else if (ix  > x1                    ) { idx1 = j + offset; offset++;  }
                         }
@@ -269,7 +270,7 @@ namespace Microsoft.SPOT.Presentation.Media
                             ///
                             /// Only add duplicate x values if the intersection produces up (^) or down (v) angles
                             /// as opposed to right (<) or left (>) angles.
-                            /// 
+                            ///
                             if      (ix == x2 && isYMin != x2YMin) { idx2 = int.MaxValue;          }
                             else if (ix  > x2                    ) { idx2 = j + offset; offset++;  }
                         }

@@ -4,13 +4,14 @@
 
 using System;
 using System.Collections;
+using System.Drawing;
 
 namespace Microsoft.SPOT.Presentation.Media
 {
     /// <summary>
     /// Drawing Context.
     /// </summary>
-    public class DrawingContext : DispatcherObject,IDisposable 
+    public class DrawingContext : DispatcherObject,IDisposable
     {
         public DrawingContext(Bitmap bmp)
         {
@@ -27,16 +28,16 @@ namespace Microsoft.SPOT.Presentation.Media
             VerifyAccess();
 
             _x += dx;
-            _y += dy;            
-        }        
- 
+            _y += dy;
+        }
+
         public void GetTranslation(out int x, out int y)
         {
             VerifyAccess();
 
             x = _x;
-            y = _y;            
-        }        
+            y = _y;
+        }
 
         public Bitmap Bitmap
         {
@@ -57,7 +58,7 @@ namespace Microsoft.SPOT.Presentation.Media
 
         internal void Close()
         {
-            _bitmap = null;                   
+            _bitmap = null;
         }
 
         public void DrawPolygon(Brush brush, Pen pen, int[] pts)
@@ -79,7 +80,7 @@ namespace Microsoft.SPOT.Presentation.Media
             }
         }
 
-        public void SetPixel(Microsoft.SPOT.Presentation.Media.Color color, int x, int y)
+        public void SetPixel(Color color, int x, int y)
         {
             VerifyAccess();
 
@@ -135,14 +136,14 @@ namespace Microsoft.SPOT.Presentation.Media
             VerifyAccess();
 
             _bitmap.DrawImage( _x + destinationX, _y + destinationY, source, sourceX, sourceY, sourceWidth, sourceHeight, opacity );
-        }                
-        
+        }
+
         public void RotateImage( int angle, int destinationX, int destinationY, Bitmap bitmap, int sourceX, int sourceY, int sourceWidth, int sourceHeight, ushort opacity )
         {
             VerifyAccess();
 
             _bitmap.RotateImage( angle,  _x + destinationX, _y +  destinationY, bitmap, sourceX, sourceY, sourceWidth, sourceHeight, opacity );
-        }                
+        }
 
         public void StretchImage(int xDst, int yDst, int widthDst, int heightDst, Bitmap bitmap, int xSrc, int ySrc, int widthSrc, int heightSrc, ushort opacity)
         {
@@ -269,13 +270,13 @@ namespace Microsoft.SPOT.Presentation.Media
             VerifyAccess();
 
             int n = _clippingRectangles.Count;
-            
+
             if (n > 0)
             {
                 _clippingRectangles.Pop();
 
                 ClipRectangle rect;
-                
+
                 if (n == 1) // in this case, at this point the stack is empty
                 {
                     rect = new ClipRectangle(0, 0, _bitmap.Width, _bitmap.Height);
@@ -286,7 +287,7 @@ namespace Microsoft.SPOT.Presentation.Media
                 }
 
                 _bitmap.SetClippingRectangle(rect.X, rect.Y, rect.Width, rect.Height);
-                
+
                 EmptyClipRect = (rect.Width == 0 && rect.Height == 0);
             }
         }
@@ -357,7 +358,7 @@ namespace Microsoft.SPOT.Presentation.Media
 
         protected virtual void Dispose(bool disposing)
         {
-            _bitmap = null; 
+            _bitmap = null;
         }
 
     }

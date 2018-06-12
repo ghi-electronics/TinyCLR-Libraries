@@ -5,6 +5,7 @@
 using System;
 using System.Collections;
 using System.Diagnostics;
+using System.Drawing;
 using Microsoft.SPOT.Input;
 using Microsoft.SPOT.Presentation.Media;
 
