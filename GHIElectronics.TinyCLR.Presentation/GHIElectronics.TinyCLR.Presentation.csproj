@@ -34,6 +34,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Bitmap.cs" />
     <Compile Include="Input\ButtonDevice.cs" />
     <Compile Include="Input\ButtonEventArgs.cs" />
     <Compile Include="Input\ButtonEventHandler.cs" />
@@ -85,7 +86,6 @@
     <Compile Include="Presentation\HorizontalAlignment.cs" />
     <Compile Include="Presentation\LayoutManager.cs" />
     <Compile Include="Presentation\Media\Brush.cs" />
-    <Compile Include="Presentation\Media\Colors.cs" />
     <Compile Include="Presentation\Media\Constants.cs" />
     <Compile Include="Presentation\Media\DrawingContext.cs" />
     <Compile Include="Presentation\Media\ImageBrush.cs" />
