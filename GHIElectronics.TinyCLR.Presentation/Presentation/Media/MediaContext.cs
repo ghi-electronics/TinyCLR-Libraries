@@ -5,6 +5,7 @@
 using System;
 using System.Collections;
 using System.Diagnostics;
+using System.Drawing;
 using Microsoft.SPOT;
 using Microsoft.SPOT.Presentation;
 
@@ -24,8 +25,15 @@ namespace Microsoft.SPOT.Presentation.Media
             _renderMessage = new DispatcherOperationCallback(RenderMessageHandler);
 
             // we have one render target, the window manager
+            var disp = WindowManager.Instance.DisplayController;
+
             _target = WindowManager.Instance;
-            _screen = new Bitmap(SystemMetrics.ScreenWidth, SystemMetrics.ScreenHeight);
+            _screen = new Bitmap(Graphics.FromHdc(disp.Hdc));
+
+            _screenW = (int)disp.ActiveSettings.Width;
+            _screenH = (int)disp.ActiveSettings.Height;
+            _dirtyX0 = (int)disp.ActiveSettings.Width;
+            _dirtyY0 = (int)disp.ActiveSettings.Height;
         }
 
         /// <summary>
@@ -145,8 +153,8 @@ namespace Microsoft.SPOT.Presentation.Media
             if (y1 > _dirtyY1) _dirtyY1 = y1;
         }
 
-        private int _screenW = SystemMetrics.ScreenWidth, _screenH = SystemMetrics.ScreenHeight;
-        private int _dirtyX0 = SystemMetrics.ScreenWidth, _dirtyY0 = SystemMetrics.ScreenHeight, _dirtyX1 = 0, _dirtyY1 = 0;
+        private int _screenW = 0, _screenH = 0;
+        private int _dirtyX0 = 0, _dirtyY0 = 0, _dirtyX1 = 0, _dirtyY1 = 0;
 
         /// <summary>
         /// This is the standard RenderMessageHandler callback, posted via PostRender()

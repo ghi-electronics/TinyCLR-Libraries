@@ -35,7 +35,9 @@ namespace Microsoft.SPOT.Presentation
         {
             //There is only one WindowManager.  All Windows currently are forced to be created
             //and to live on the same thread.
-            _windowManager = WindowManager.EnsureInstance();
+            if (WindowManager.Instance == null) throw new InvalidOperationException();
+
+            _windowManager = WindowManager.Instance;
 
             _background = new SolidColorBrush(Color.White);
             //

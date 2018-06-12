@@ -18,11 +18,6 @@ namespace Microsoft.SPOT.Presentation.Media
             this._bitmap = bmp;
         }
 
-        public DrawingContext(int width, int height)
-        {
-            this._bitmap = new Bitmap(width, height);
-        }
-
         public void Translate(int dx, int dy)
         {
             VerifyAccess();

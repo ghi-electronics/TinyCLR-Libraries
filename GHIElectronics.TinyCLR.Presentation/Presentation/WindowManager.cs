@@ -5,7 +5,7 @@
 using System;
 using System.Collections;
 using System.Threading;
-
+using GHIElectronics.TinyCLR.Devices.Display;
 using Microsoft.SPOT.Presentation;
 
 using Microsoft.SPOT.Presentation.Media;
@@ -16,8 +16,12 @@ namespace Microsoft.SPOT.Presentation
 
     public class WindowManager : Controls.Canvas
     {
-        private WindowManager()
+        public DisplayController DisplayController { get; }
+
+        private WindowManager(DisplayController displayController)
         {
+            this.DisplayController = displayController;
+
             //
             // initially measure and arrange ourselves.
             //
@@ -37,11 +41,11 @@ namespace Microsoft.SPOT.Presentation
             Arrange(0, 0, desiredWidth, desiredHeight);
         }
 
-        internal static WindowManager EnsureInstance()
+        internal static WindowManager EnsureInstance(DisplayController displayController)
         {
             if (Instance == null)
             {
-                WindowManager wm = new WindowManager();
+                WindowManager wm = new WindowManager(displayController);
                 // implicitly the window manager is responsible for posting renders
                 wm._flags |= Flags.ShouldPostRender;
             }
@@ -52,8 +56,8 @@ namespace Microsoft.SPOT.Presentation
         protected override void MeasureOverride(int availableWidth, int availableHeight, out int desiredWidth, out int desiredHeight)
         {
             base.MeasureOverride(availableWidth, availableHeight, out desiredWidth, out desiredHeight);
-            desiredWidth = SystemMetrics.ScreenWidth;
-            desiredHeight = SystemMetrics.ScreenHeight;
+            desiredWidth = (int)this.DisplayController.ActiveSettings.Width;
+            desiredHeight = (int)this.DisplayController.ActiveSettings.Height;
         }
 
         internal void SetTopMost(Window window)

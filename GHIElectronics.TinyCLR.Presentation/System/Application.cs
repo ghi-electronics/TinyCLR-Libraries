@@ -35,13 +35,7 @@ namespace Microsoft.SPOT
     /// </summary>
     public class Application : DispatcherObject
     {
-        private DisplayController display;
-
-        public void SetDisplayController(DisplayController display) {
-            if (this.display != null) throw new InvalidOperationException();
-
-            this.display = display ?? throw new ArgumentException();
-        }
+        private readonly DisplayController display;
 
         //------------------------------------------------------
         //
@@ -51,11 +45,22 @@ namespace Microsoft.SPOT
 
         #region Constructors
 
+        public Application() : this(DisplayController.GetDefault()) {
+
+        }
+
         /// <summary>
         ///     Application constructor
         /// </summary>
-        public Application()
+        public Application(DisplayController display)
         {
+            this.display = display ?? throw new ArgumentException();
+
+            WindowManager.EnsureInstance(this.display);
+
+            _stylusMaxX = (int)this.display.ActiveSettings.Width;
+            _stylusMaxY = (int)this.display.ActiveSettings.Height;
+
             /* TRACING
                         if (EventTrace.IsEnabled(EventTrace.Flags.performance, EventTrace.Level.normal))
                         {
@@ -155,10 +160,6 @@ namespace Microsoft.SPOT
         /// shown once the Application is run.</param>
         public void Run(Window window)
         {
-            if (this.display == null) throw new InvalidOperationException();
-
-            SystemMetrics.Set(this.display);
-
             VerifyAccess();
             // In this case, we should throw an exception when Run is called for the second time.
             // When app is shutdown, _appIsShutdown is set to true.  If it is true here, then we
@@ -169,7 +170,7 @@ namespace Microsoft.SPOT
             }
 
             //This is the only UI thread.  Make sure the WindowManager is created on this thread.
-            WindowManager.EnsureInstance();
+            WindowManager.EnsureInstance(this.display);
 
             if (window != null)
             {
@@ -290,8 +291,8 @@ namespace Microsoft.SPOT
                         // only look for different target window if the touch point is inside
                         // the system metrics, otherwise, it may be a touch calibration point
                         // which is translated in the application layer.
-                        if(xSrc <= SystemMetrics.ScreenWidth &&
-                           ySrc <= SystemMetrics.ScreenHeight)
+                        if(xSrc <= (int)this.display.ActiveSettings.Width &&
+                           ySrc <= (int)this.display.ActiveSettings.Height)
                         {
                             targetWindow = null;
                         }
@@ -998,8 +999,8 @@ namespace Microsoft.SPOT
         private static InputManager _inputManager = null;
         private InputProviderSite _inputProviderSite = null;
 
-        private static int _stylusMaxX = SystemMetrics.ScreenWidth;
-        private static int _stylusMaxY = SystemMetrics.ScreenHeight;
+        private static int _stylusMaxX;
+        private static int _stylusMaxY;
 
         /*REFACTOR        private EventHandlerList            _events;
 
