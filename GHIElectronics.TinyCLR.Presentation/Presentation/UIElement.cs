@@ -10,6 +10,7 @@ using System.Runtime.CompilerServices;
 using Microsoft.SPOT.Touch;
 using Microsoft.SPOT.Input;
 using Microsoft.SPOT.Presentation.Media;
+using System.Diagnostics;
 
 namespace Microsoft.SPOT.Presentation
 {
@@ -319,7 +320,7 @@ namespace Microsoft.SPOT.Presentation
             set
             {
                 VerifyAccess();
-                
+
                 if(value < 0) throw new ArgumentException();
 
                 if (_requestedSize == null)
@@ -354,7 +355,7 @@ namespace Microsoft.SPOT.Presentation
 
                 if(value < 0) throw new ArgumentException();
 
-                if (_requestedSize == null) 
+                if (_requestedSize == null)
                 {
                     _requestedSize = new Pair();
                 }

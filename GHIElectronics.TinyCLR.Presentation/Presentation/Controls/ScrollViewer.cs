@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using Microsoft.SPOT.Hardware;
 using Microsoft.SPOT.Input;
 using Microsoft.SPOT.Presentation.Media;

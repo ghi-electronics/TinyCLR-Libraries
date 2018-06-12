@@ -4,7 +4,7 @@
 
 using System;
 using System.Collections;
-
+using System.Diagnostics;
 using Microsoft.SPOT.Input;
 using Microsoft.SPOT.Presentation.Media;
 

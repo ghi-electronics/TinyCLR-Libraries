@@ -9,6 +9,7 @@ using System.Runtime.CompilerServices;
 using Microsoft.SPOT.Input;
 using Microsoft.SPOT.Touch;
 using Microsoft.SPOT.Presentation;
+using System.Diagnostics;
 
 namespace Microsoft.SPOT
 {
@@ -274,7 +275,7 @@ namespace Microsoft.SPOT
                     if (!(x <= xSrc && xSrc <= (x + w) &&
                         y <= ySrc && ySrc <= (y + h)))
                     {
-                        // only look for different target window if the touch point is inside 
+                        // only look for different target window if the touch point is inside
                         // the system metrics, otherwise, it may be a touch calibration point
                         // which is translated in the application layer.
                         if(xSrc <= SystemMetrics.ScreenWidth &&

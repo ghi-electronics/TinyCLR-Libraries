@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections;
+using System.Diagnostics;
 using System.Threading;
 
 //In what case was EnsureStatics needed?

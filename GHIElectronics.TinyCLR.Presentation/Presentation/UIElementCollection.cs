@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Diagnostics;
 using Microsoft.SPOT;
 
 namespace Microsoft.SPOT.Presentation

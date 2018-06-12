@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections;
+using System.Diagnostics;
 using Microsoft.SPOT;
 using Microsoft.SPOT.Presentation;
 
@@ -263,7 +264,7 @@ namespace Microsoft.SPOT.Presentation.Media
 
         protected virtual void Dispose(bool disposing)
         {
-            _screen.Dispose();    
+            _screen.Dispose();
         }
 
     }
