@@ -111,7 +111,7 @@ namespace Microsoft.SPOT.Presentation
             GenericEvent genericEvent = e.InternalEvent;
             switch (genericEvent.EventCategory)
             {
-                case (byte)EventCategory.Gesture:
+                case 2: // (byte)EventCategory.Gesture:
                     {
                         TouchGestureEventArgs ge = new TouchGestureEventArgs();
 

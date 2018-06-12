@@ -32,7 +32,7 @@ namespace Microsoft.SPOT
     /// <summary>
     /// Application base class
     /// </summary>
-    public class Application : DispatcherObject, IEventListener
+    public class Application : DispatcherObject
     {
 
         //------------------------------------------------------
