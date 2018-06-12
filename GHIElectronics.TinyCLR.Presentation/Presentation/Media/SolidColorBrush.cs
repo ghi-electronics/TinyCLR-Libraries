@@ -18,7 +18,7 @@ namespace Microsoft.SPOT.Presentation.Media
 
         protected internal override void RenderRectangle(Bitmap bmp, Pen pen, int x, int y, int width, int height)
         {
-            Color outlineColor = (pen != null) ? pen.Color : (Color)0x0;
+            Color outlineColor = (pen != null) ? pen.Color : Color.Transparent;
             ushort outlineThickness = (pen != null) ? pen.Thickness : (ushort)0;
 
             bmp.DrawRectangle(outlineColor, outlineThickness, x, y, width, height, 0, 0,
@@ -27,7 +27,7 @@ namespace Microsoft.SPOT.Presentation.Media
 
         protected internal override void RenderEllipse(Bitmap bmp, Pen pen, int x, int y, int xRadius, int yRadius)
         {
-            Color outlineColor = (pen != null) ? pen.Color : (Color)0x0;
+            Color outlineColor = (pen != null) ? pen.Color : Color.Transparent;
             ushort outlineThickness = (pen != null) ? pen.Thickness : (ushort)0;
 
             bmp.DrawEllipse(outlineColor, outlineThickness, x, y, xRadius, yRadius,

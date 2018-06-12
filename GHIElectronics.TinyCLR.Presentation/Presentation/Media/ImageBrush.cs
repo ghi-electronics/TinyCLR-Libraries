@@ -35,7 +35,7 @@ namespace Microsoft.SPOT.Presentation.Media
             if (pen != null && pen.Thickness > 0)
             {
                 bmp.DrawRectangle(pen.Color, pen.Thickness, x, y, width, height, 0, 0,
-                                      (Color)0, 0, 0, (Color)0, 0, 0, 0);
+                                      Color.Transparent, 0, 0, Color.Transparent, 0, 0, 0);
             }
         }
     }

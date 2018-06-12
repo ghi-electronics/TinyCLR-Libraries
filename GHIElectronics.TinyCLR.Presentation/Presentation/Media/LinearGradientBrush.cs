@@ -35,7 +35,7 @@ namespace Microsoft.SPOT.Presentation.Media
 
         protected internal override void RenderRectangle(Bitmap bmp, Pen pen, int x, int y, int width, int height)
         {
-            Color outlineColor = (pen != null) ? pen.Color : (Color)0x0;
+            Color outlineColor = (pen != null) ? pen.Color : Color.Transparent;
             ushort outlineThickness = (pen != null) ? pen.Thickness : (ushort)0;
 
             int x1, y1;

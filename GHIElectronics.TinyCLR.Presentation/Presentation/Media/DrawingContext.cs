@@ -112,7 +112,7 @@ namespace Microsoft.SPOT.Presentation.Media
             else if (pen != null && pen.Thickness > 0)
             {
                 _bitmap.DrawEllipse(pen.Color, pen.Thickness, _x + x, _y + y, xRadius, yRadius,
-                    (Color)0x0, 0, 0, (Color)0x0, 0, 0, 0);
+                    Color.Transparent, 0, 0, Color.Transparent, 0, 0, 0);
             }
 
         }
@@ -307,7 +307,7 @@ namespace Microsoft.SPOT.Presentation.Media
             else if (pen != null && pen.Thickness > 0)
             {
                 _bitmap.DrawRectangle(pen.Color, pen.Thickness, _x + x, _y + y, width, height, 0, 0,
-                                      (Color)0, 0, 0, (Color)0, 0, 0, 0);
+                                      Color.Transparent, 0, 0, Color.Transparent, 0, 0, 0);
             }
         }
 

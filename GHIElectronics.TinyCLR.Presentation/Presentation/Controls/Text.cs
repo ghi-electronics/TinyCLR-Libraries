@@ -25,7 +25,7 @@ namespace Microsoft.SPOT.Presentation.Controls
         {
             _text = content;
             _font = font;
-            _foreColor = Colors.Black;
+            _foreColor = Color.Black;
         }
 
         public Font Font
