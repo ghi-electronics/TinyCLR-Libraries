@@ -4,7 +4,6 @@
 
 using System;
 using Microsoft.SPOT;
-using Microsoft.SPOT.Hardware;
 using Microsoft.SPOT.Presentation;
 
 namespace Microsoft.SPOT.Input

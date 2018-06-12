@@ -10,6 +10,19 @@ namespace Microsoft.SPOT.Input
 {
     public delegate void GenericEventHandler(object sender, GenericEventArgs e);
 
+    public class BaseEvent {
+        public ushort Source;
+        public byte EventMessage;
+    }
+
+    public class GenericEvent : BaseEvent {
+        public byte EventCategory;
+        public uint EventData;
+        public int X;
+        public int Y;
+        public DateTime Time;
+    }
+
     public class GenericEventArgs : InputEventArgs
     {
         public GenericEventArgs(InputDevice inputDevice, GenericEvent genericEvent)

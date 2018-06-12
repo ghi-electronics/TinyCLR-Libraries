@@ -6,10 +6,12 @@ using System.Threading;
 
 namespace Microsoft.SPOT {
     public enum Button {
+        None,
         VK_DOWN,
         VK_UP,
         VK_LEFT,
-        VK_RIGHT
+        VK_RIGHT,
+        LastSystemDefinedButton
     }
 
     public class Bitmap : IDisposable {

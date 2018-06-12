@@ -128,6 +128,7 @@
     <Compile Include="System\Threading\DispatcherOperationStatus.cs" />
     <Compile Include="System\Threading\DispatcherTimer.cs" />
     <Compile Include="System\WindowCollection.cs" />
+    <Compile Include="Touch.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="GHIElectronics.TinyCLR.Presentation.nuspec" />
