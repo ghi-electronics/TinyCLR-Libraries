@@ -319,7 +319,7 @@ namespace Microsoft.SPOT.Input
             {
                 // It is possible that we can be re-entered by a nested
                 // dispatcher frame.  Continue processing the staging
-                // area if we need to. 
+                // area if we need to.
                 if (_stagingArea.Count > 0)
                 {
                     // Before we actually start to drain the staging area, we need
@@ -357,14 +357,14 @@ namespace Microsoft.SPOT.Input
                     // Add the handlers in reverse order so that handlers that
                     // users add are invoked before handlers in the system.
 
-                    _preProcessInput = (PreProcessInputEventHandler)WeakDelegate.Combine(value, _preProcessInput);
+                    _preProcessInput = (PreProcessInputEventHandler)Delegate.Combine(value, _preProcessInput);
                 }
 
                 remove
                 {
                     VerifyAccess();
 
-                    _preProcessInput = (PreProcessInputEventHandler)WeakDelegate.Remove(_preProcessInput, value);
+                    _preProcessInput = (PreProcessInputEventHandler)Delegate.Remove(_preProcessInput, value);
                 }
             }
 
@@ -378,13 +378,13 @@ namespace Microsoft.SPOT.Input
                     // Add the handlers in reverse order so that handlers that
                     // users add are invoked before handlers in the system.
 
-                    _preNotifyInput = (NotifyInputEventHandler)WeakDelegate.Combine(value, _preNotifyInput);
+                    _preNotifyInput = (NotifyInputEventHandler)Delegate.Combine(value, _preNotifyInput);
                 }
 
                 remove
                 {
                     VerifyAccess();
-                    _preNotifyInput = (NotifyInputEventHandler)WeakDelegate.Remove(_preNotifyInput, value);
+                    _preNotifyInput = (NotifyInputEventHandler)Delegate.Remove(_preNotifyInput, value);
                 }
 
             }
@@ -399,14 +399,14 @@ namespace Microsoft.SPOT.Input
                     // Add the handlers in reverse order so that handlers that
                     // users add are invoked before handlers in the system.
 
-                    _postNotifyInput = (NotifyInputEventHandler)WeakDelegate.Combine(value, _postNotifyInput);
+                    _postNotifyInput = (NotifyInputEventHandler)Delegate.Combine(value, _postNotifyInput);
                 }
 
                 remove
                 {
                     VerifyAccess();
 
-                    _postNotifyInput = (NotifyInputEventHandler)WeakDelegate.Remove(_postNotifyInput, value);
+                    _postNotifyInput = (NotifyInputEventHandler)Delegate.Remove(_postNotifyInput, value);
                 }
             }
 
@@ -420,14 +420,14 @@ namespace Microsoft.SPOT.Input
                     // Add the handlers in reverse order so that handlers that
                     // users add are invoked before handlers in the system.
 
-                    _postProcessInput = (ProcessInputEventHandler)WeakDelegate.Combine(value, _postProcessInput);
+                    _postProcessInput = (ProcessInputEventHandler)Delegate.Combine(value, _postProcessInput);
                 }
 
                 remove
                 {
                     VerifyAccess();
 
-                    _postProcessInput = (ProcessInputEventHandler)WeakDelegate.Remove(_postProcessInput, value);
+                    _postProcessInput = (ProcessInputEventHandler)Delegate.Remove(_postProcessInput, value);
                 }
             }
 
