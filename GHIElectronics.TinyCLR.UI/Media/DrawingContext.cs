@@ -12,7 +12,7 @@ namespace GHIElectronics.TinyCLR.UI.Media {
     /// Drawing Context.
     /// </summary>
     public class DrawingContext : DispatcherObject, IDisposable {
-        public DrawingContext(Bitmap bmp) => this._bitmap = bmp;
+        internal DrawingContext(Bitmap bmp) => this._bitmap = bmp;
 
         public void Translate(int dx, int dy) {
             VerifyAccess();
@@ -26,14 +26,6 @@ namespace GHIElectronics.TinyCLR.UI.Media {
 
             x = this._x;
             y = this._y;
-        }
-
-        public Bitmap Bitmap {
-            get {
-                VerifyAccess();
-
-                return this._bitmap;
-            }
         }
 
         public void Clear() {
@@ -91,43 +83,43 @@ namespace GHIElectronics.TinyCLR.UI.Media {
 
         }
 
-        public void DrawImage(Bitmap source, int x, int y) {
+        public void DrawImage(ImageSource source, int x, int y) {
             VerifyAccess();
 
             this._bitmap.DrawImage(this._x + x, this._y + y, source, 0, 0, source.Width, source.Height);
         }
 
-        public void DrawImage(Bitmap source, int destinationX, int destinationY, int sourceX, int sourceY, int sourceWidth, int sourceHeight) {
+        public void DrawImage(ImageSource source, int destinationX, int destinationY, int sourceX, int sourceY, int sourceWidth, int sourceHeight) {
             VerifyAccess();
 
             this._bitmap.DrawImage(this._x + destinationX, this._y + destinationY, source, sourceX, sourceY, sourceWidth, sourceHeight);
         }
 
-        public void BlendImage(Bitmap source, int destinationX, int destinationY, int sourceX, int sourceY, int sourceWidth, int sourceHeight, ushort opacity) {
+        public void BlendImage(ImageSource source, int destinationX, int destinationY, int sourceX, int sourceY, int sourceWidth, int sourceHeight, ushort opacity) {
             VerifyAccess();
 
             this._bitmap.DrawImage(this._x + destinationX, this._y + destinationY, source, sourceX, sourceY, sourceWidth, sourceHeight, opacity);
         }
 
-        public void RotateImage(int angle, int destinationX, int destinationY, Bitmap bitmap, int sourceX, int sourceY, int sourceWidth, int sourceHeight, ushort opacity) {
+        public void RotateImage(int angle, int destinationX, int destinationY, ImageSource bitmap, int sourceX, int sourceY, int sourceWidth, int sourceHeight, ushort opacity) {
             VerifyAccess();
 
             this._bitmap.RotateImage(angle, this._x + destinationX, this._y + destinationY, bitmap, sourceX, sourceY, sourceWidth, sourceHeight, opacity);
         }
 
-        public void StretchImage(int xDst, int yDst, int widthDst, int heightDst, Bitmap bitmap, int xSrc, int ySrc, int widthSrc, int heightSrc, ushort opacity) {
+        public void StretchImage(int xDst, int yDst, int widthDst, int heightDst, ImageSource bitmap, int xSrc, int ySrc, int widthSrc, int heightSrc, ushort opacity) {
             VerifyAccess();
 
             this._bitmap.StretchImage(this._x + xDst, this._y + yDst, widthDst, heightDst, bitmap, xSrc, ySrc, widthSrc, heightSrc, opacity);
         }
 
-        public void TileImage(int xDst, int yDst, Bitmap bitmap, int width, int height, ushort opacity) {
+        public void TileImage(int xDst, int yDst, ImageSource bitmap, int width, int height, ushort opacity) {
             VerifyAccess();
 
             this._bitmap.TileImage(this._x + xDst, this._y + yDst, bitmap, width, height, opacity);
         }
 
-        public void Scale9Image(int xDst, int yDst, int widthDst, int heightDst, Bitmap bitmap, int leftBorder, int topBorder, int rightBorder, int bottomBorder, ushort opacity) {
+        public void Scale9Image(int xDst, int yDst, int widthDst, int heightDst, ImageSource bitmap, int leftBorder, int topBorder, int rightBorder, int bottomBorder, ushort opacity) {
             VerifyAccess();
 
             this._bitmap.Scale9Image(this._x + xDst, this._y + yDst, widthDst, heightDst, bitmap, leftBorder, topBorder, rightBorder, bottomBorder, opacity);

@@ -9,7 +9,7 @@ namespace GHIElectronics.TinyCLR.UI.Media {
 
         public SolidColorBrush(Color color) => this.Color = color;
 
-        protected internal override void RenderRectangle(Bitmap bmp, Pen pen, int x, int y, int width, int height) {
+        internal override void RenderRectangle(Bitmap bmp, Pen pen, int x, int y, int width, int height) {
             var outlineColor = (pen != null) ? pen.Color : Color.Transparent;
             var outlineThickness = (ushort)0;
 
@@ -20,7 +20,7 @@ namespace GHIElectronics.TinyCLR.UI.Media {
                                       this.Color, 0, 0, this.Color, 0, 0, this.Opacity);
         }
 
-        protected internal override void RenderEllipse(Bitmap bmp, Pen pen, int x, int y, int xRadius, int yRadius) {
+        internal override void RenderEllipse(Bitmap bmp, Pen pen, int x, int y, int xRadius, int yRadius) {
             var outlineColor = (pen != null) ? pen.Color : Color.Transparent;
             var outlineThickness = (ushort)0;
 
@@ -71,7 +71,7 @@ namespace GHIElectronics.TinyCLR.UI.Media {
         /// <param name="bmp"></param>
         /// <param name="outline"></param>
         /// <param name="pts"></param>
-        protected internal override void RenderPolygon(Bitmap bmp, Pen outline, int[] pts) {
+        internal override void RenderPolygon(Bitmap bmp, Pen outline, int[] pts) {
             var n = pts.Length / 2; /// This is number of points and number of lines (closed polygon).
 
             /// Polygon to fill must have at least 3 points.

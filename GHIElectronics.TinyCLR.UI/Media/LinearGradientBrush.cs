@@ -28,7 +28,7 @@ namespace GHIElectronics.TinyCLR.UI.Media {
             this.EndY = endY;
         }
 
-        protected internal override void RenderRectangle(Bitmap bmp, Pen pen, int x, int y, int width, int height) {
+        internal override void RenderRectangle(Bitmap bmp, Pen pen, int x, int y, int width, int height) {
             var outlineColor = (pen != null) ? pen.Color : Color.Transparent;
             var outlineThickness = (ushort)0;
 

@@ -18,10 +18,10 @@ namespace GHIElectronics.TinyCLR.UI.Media {
             }
         }
 
-        protected internal abstract void RenderRectangle(Bitmap bmp, Pen outline, int x, int y, int width, int height);
-        protected internal virtual void RenderEllipse(Bitmap bmp, Pen outline, int x, int y, int xRadius, int yRadius) => throw new NotSupportedException("RenderEllipse is not supported with this brush.");
+        internal abstract void RenderRectangle(Bitmap bmp, Pen outline, int x, int y, int width, int height);
+        internal virtual void RenderEllipse(Bitmap bmp, Pen outline, int x, int y, int xRadius, int yRadius) => throw new NotSupportedException("RenderEllipse is not supported with this brush.");
 
-        protected internal virtual void RenderPolygon(Bitmap bmp, Pen outline, int[] pts) => throw new NotSupportedException("RenderPolygon is not supported with this brush.");
+        internal virtual void RenderPolygon(Bitmap bmp, Pen outline, int[] pts) => throw new NotSupportedException("RenderPolygon is not supported with this brush.");
     }
 
     public enum BrushMappingMode {

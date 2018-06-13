@@ -9,13 +9,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
     /// Summary description for Image.
     /// </summary>
     public class Image : UIElement {
-        public Image() {
-        }
-
-        public Image(Bitmap bmp)
-            : this() => this._bitmap = bmp;
-
-        public Bitmap Bitmap {
+        public ImageSource Source {
             get {
                 VerifyAccess();
 
@@ -45,7 +39,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
-        private Bitmap _bitmap;
+        private ImageSource _bitmap;
     }
 }
 

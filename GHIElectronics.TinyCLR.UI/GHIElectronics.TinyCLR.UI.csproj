@@ -13,6 +13,7 @@
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A1948822-69DD-4150-919B-F3F42EFB71CC};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <LangVersion>latest</LangVersion>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
   </PropertyGroup>
@@ -85,6 +86,7 @@
     <Compile Include="Controls\TextRunCollection.cs" />
     <Compile Include="Input\Button.cs" />
     <Compile Include="UI\HorizontalAlignment.cs" />
+    <Compile Include="Media\ImageSource.cs" />
     <Compile Include="UI\LayoutManager.cs" />
     <Compile Include="Media\Brush.cs" />
     <Compile Include="Media\Constants.cs" />
