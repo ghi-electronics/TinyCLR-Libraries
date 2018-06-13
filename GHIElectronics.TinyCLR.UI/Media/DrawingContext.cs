@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections;
-using System.Drawing;
 using GHIElectronics.TinyCLR.UI.Threading;
 
 namespace GHIElectronics.TinyCLR.UI.Media {
@@ -78,7 +77,7 @@ namespace GHIElectronics.TinyCLR.UI.Media {
             // Pen
             else if (pen != null && pen.Thickness > 0) {
                 this._bitmap.DrawEllipse(pen.Color, pen.Thickness, this._x + x, this._y + y, xRadius, yRadius,
-                    Color.Transparent, 0, 0, Color.Transparent, 0, 0, 0);
+                    Colors.Transparent, 0, 0, Colors.Transparent, 0, 0, 0);
             }
 
         }
@@ -125,13 +124,13 @@ namespace GHIElectronics.TinyCLR.UI.Media {
             this._bitmap.Scale9Image(this._x + xDst, this._y + yDst, widthDst, heightDst, bitmap, leftBorder, topBorder, rightBorder, bottomBorder, opacity);
         }
 
-        public void DrawText(string text, Font font, Color color, int x, int y) {
+        public void DrawText(string text, System.Drawing.Font font, Color color, int x, int y) {
             VerifyAccess();
 
             this._bitmap.DrawText(text, font, color, this._x + x, this._y + y);
         }
 
-        public bool DrawText(ref string text, Font font, Color color, int x, int y, int width, int height,
+        public bool DrawText(ref string text, System.Drawing.Font font, Color color, int x, int y, int width, int height,
                              TextAlignment alignment, TextTrimming trimming) {
             VerifyAccess();
 
@@ -250,7 +249,7 @@ namespace GHIElectronics.TinyCLR.UI.Media {
             // Pen
             else if (pen != null && pen.Thickness > 0) {
                 this._bitmap.DrawRectangle(pen.Color, pen.Thickness, this._x + x, this._y + y, width, height, 0, 0,
-                                      Color.Transparent, 0, 0, Color.Transparent, 0, 0, 0);
+                                      Colors.Transparent, 0, 0, Colors.Transparent, 0, 0, 0);
             }
         }
 

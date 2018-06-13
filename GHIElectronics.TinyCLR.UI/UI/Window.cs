@@ -3,7 +3,6 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 using System;
-using System.Drawing;
 using System.Runtime.CompilerServices;
 using GHIElectronics.TinyCLR.UI.Controls;
 using GHIElectronics.TinyCLR.UI.Media;
@@ -34,7 +33,7 @@ namespace GHIElectronics.TinyCLR.UI {
 
             this._windowManager = WindowManager.Instance;
 
-            this._background = new SolidColorBrush(Color.White);
+            this._background = new SolidColorBrush(Colors.White);
             //
             // dependency property initialization.
             // we don't have them, so we just update the properties on the base class,

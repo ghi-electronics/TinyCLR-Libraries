@@ -4,7 +4,7 @@
 
 using System;
 using System.Collections;
-using System.Drawing;
+using GHIElectronics.TinyCLR.UI.Media;
 
 namespace GHIElectronics.TinyCLR.UI.Controls {
     public class TextRunCollection : ICollection {
@@ -18,7 +18,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
         public int Count => this._textRuns.Count;
 
-        public int Add(string text, Font font, Color foreColor) => Add(new TextRun(text, font, foreColor));
+        public int Add(string text, System.Drawing.Font font, Color foreColor) => Add(new TextRun(text, font, foreColor));
 
         public int Add(TextRun textRun) {
             if (textRun == null) {

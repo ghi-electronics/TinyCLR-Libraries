@@ -3,13 +3,12 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 using System;
-using System.Drawing;
 using GHIElectronics.TinyCLR.UI.Media;
 
 namespace GHIElectronics.TinyCLR.UI.Controls {
     public class Border : ContentControl {
         public Border() {
-            this._borderBrush = new SolidColorBrush(Color.Black);
+            this._borderBrush = new SolidColorBrush(Colors.Black);
 
             this._borderLeft = this._borderTop = this._borderRight = this._borderBottom = 1;
         }

@@ -3,7 +3,6 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 using System;
-using System.Drawing;
 using GHIElectronics.TinyCLR.UI.Media;
 
 namespace GHIElectronics.TinyCLR.UI.Controls {
@@ -16,13 +15,13 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             : this(null, content) {
         }
 
-        public Text(Font font, string content) {
+        public Text(System.Drawing.Font font, string content) {
             this._text = content;
             this._font = font;
-            this._foreColor = Color.Black;
+            this._foreColor = Colors.Black;
         }
 
-        public Font Font {
+        public System.Drawing.Font Font {
             get => this._font;
 
             set {
@@ -149,7 +148,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
 #endif
 
-        protected Font _font;
+        protected System.Drawing.Font _font;
         private Color _foreColor;
         protected string _text;
         private bool _textWrap;

@@ -2,7 +2,6 @@
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-using System.Drawing;
 using GHIElectronics.TinyCLR.UI.Media;
 
 namespace GHIElectronics.TinyCLR.UI.Controls {
@@ -22,7 +21,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
-        public Font Font {
+        public System.Drawing.Font Font {
             get => this._font;
 
             set {
@@ -55,8 +54,8 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         }
 
         protected internal Media.Brush _background = null;
-        protected internal Media.Brush _foreground = new SolidColorBrush(Color.Black);
-        protected internal Font _font;
+        protected internal Media.Brush _foreground = new SolidColorBrush(Colors.Black);
+        protected internal System.Drawing.Font _font;
     }
 }
 

@@ -1,7 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-using System.Drawing;
 
 namespace GHIElectronics.TinyCLR.UI.Media {
     public sealed class SolidColorBrush : Brush {
@@ -10,7 +9,7 @@ namespace GHIElectronics.TinyCLR.UI.Media {
         public SolidColorBrush(Color color) => this.Color = color;
 
         internal override void RenderRectangle(Bitmap bmp, Pen pen, int x, int y, int width, int height) {
-            var outlineColor = (pen != null) ? pen.Color : Color.Transparent;
+            var outlineColor = (pen != null) ? pen.Color : Colors.Transparent;
             var outlineThickness = (ushort)0;
 
             if (pen != null)
@@ -21,7 +20,7 @@ namespace GHIElectronics.TinyCLR.UI.Media {
         }
 
         internal override void RenderEllipse(Bitmap bmp, Pen pen, int x, int y, int xRadius, int yRadius) {
-            var outlineColor = (pen != null) ? pen.Color : Color.Transparent;
+            var outlineColor = (pen != null) ? pen.Color : Colors.Transparent;
             var outlineThickness = (ushort)0;
 
             if (pen != null)

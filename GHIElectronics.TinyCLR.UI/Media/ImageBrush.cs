@@ -2,8 +2,6 @@
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-using System.Drawing;
-
 namespace GHIElectronics.TinyCLR.UI.Media {
     public sealed class ImageBrush : Brush {
         public ImageSource ImageSource;
@@ -24,7 +22,7 @@ namespace GHIElectronics.TinyCLR.UI.Media {
 
             if (pen != null && pen.Thickness > 0) {
                 bmp.DrawRectangle(pen.Color, pen.Thickness, x, y, width, height, 0, 0,
-                                      Color.Transparent, 0, 0, Color.Transparent, 0, 0, 0);
+                                      Colors.Transparent, 0, 0, Colors.Transparent, 0, 0, 0);
             }
         }
     }

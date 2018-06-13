@@ -4,12 +4,12 @@
 
 using System;
 using System.Diagnostics;
-using System.Drawing;
+using GHIElectronics.TinyCLR.UI.Media;
 
 namespace GHIElectronics.TinyCLR.UI.Controls {
     public class TextRun {
         public readonly string Text;
-        public readonly Font Font;
+        public readonly System.Drawing.Font Font;
         public readonly Color ForeColor;
 
         internal bool IsEndOfLine;
@@ -20,7 +20,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         private TextRun() {
         }
 
-        public TextRun(string text, Font font, Color foreColor) {
+        public TextRun(string text, System.Drawing.Font font, Color foreColor) {
             if (text == null || text.Length == 0) {
                 throw new ArgumentNullException("Text must be non-null and non-empty");
             }

@@ -2,7 +2,6 @@
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-using System.Drawing;
 using GHIElectronics.TinyCLR.UI.Media;
 
 namespace GHIElectronics.TinyCLR.UI.Shapes {
@@ -10,7 +9,7 @@ namespace GHIElectronics.TinyCLR.UI.Shapes {
         public Media.Brush Fill {
             get {
                 if (this._fill == null) {
-                    this._fill = new SolidColorBrush(Color.Black) {
+                    this._fill = new SolidColorBrush(Colors.Black) {
                         Opacity = Bitmap.OpacityTransparent
                     };
                 }
@@ -27,7 +26,7 @@ namespace GHIElectronics.TinyCLR.UI.Shapes {
         public Media.Pen Stroke {
             get {
                 if (this._stroke == null) {
-                    this._stroke = new Media.Pen(Color.White, 0);
+                    this._stroke = new Media.Pen(Colors.White, 0);
                 }
 
                 return this._stroke;
