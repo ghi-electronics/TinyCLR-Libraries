@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using GHIElectronics.TinyCLR.Devices.Display;
 using GHIElectronics.TinyCLR.UI.Input;
+using GHIElectronics.TinyCLR.UI.Threading;
 
 namespace GHIElectronics.TinyCLR.UI {
 

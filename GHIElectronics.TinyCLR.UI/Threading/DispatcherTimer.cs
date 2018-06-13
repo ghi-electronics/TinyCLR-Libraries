@@ -5,7 +5,7 @@
 using System;
 using System.Threading;
 
-namespace GHIElectronics.TinyCLR.UI {
+namespace GHIElectronics.TinyCLR.UI.Threading {
     /// <summary>
     ///     A timer that is integrated into the Dispatcher queues, and will
     ///     be processed after a given amount of time

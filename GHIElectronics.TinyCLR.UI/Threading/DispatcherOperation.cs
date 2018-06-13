@@ -5,7 +5,7 @@
 using System;
 using System.Threading;
 
-namespace GHIElectronics.TinyCLR.UI {
+namespace GHIElectronics.TinyCLR.UI.Threading {
     /// <summary>
     ///     DispatcherOperation represents a delegate that has been
     ///     posted to the Dispatcher queue.

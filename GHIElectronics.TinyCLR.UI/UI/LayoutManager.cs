@@ -5,6 +5,7 @@
 using System;
 using System.Collections;
 using GHIElectronics.TinyCLR.UI.Media;
+using GHIElectronics.TinyCLR.UI.Threading;
 
 namespace GHIElectronics.TinyCLR.UI {
     // LayoutManager is responsible for all layout operations. It maintains the Arrange,

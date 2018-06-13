@@ -51,7 +51,7 @@ namespace GHIElectronics.TinyCLR.UI {
 
             // check if within an app && on the same thread
             if (app != null) {
-                if (app.Dispatcher.Thread == Dispatcher.CurrentDispatcher.Thread) {
+                if (app.Dispatcher.Thread == Threading.Dispatcher.CurrentDispatcher.Thread) {
                     // add to window collection
                     // use internal version since we want to update the underlying collection
                     app.WindowsInternal.Add(this);

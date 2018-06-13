@@ -5,6 +5,7 @@
 using System;
 using System.Collections;
 using System.Drawing;
+using GHIElectronics.TinyCLR.UI.Threading;
 
 namespace GHIElectronics.TinyCLR.UI.Media {
     /// <summary>

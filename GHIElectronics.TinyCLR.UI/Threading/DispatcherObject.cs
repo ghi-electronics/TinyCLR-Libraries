@@ -4,7 +4,7 @@
 
 using System.Threading;
 
-namespace GHIElectronics.TinyCLR.UI {
+namespace GHIElectronics.TinyCLR.UI.Threading {
     /// <summary>
     ///     A DispatcherObject is an object associated with a
     ///     <see cref="Dispatcher"/>.  A DispatcherObject instance should

@@ -11,7 +11,7 @@ using System.Threading;
 //When a program has a static Window type that gets initialized in the static constructor?
 //Does this case still work or not? If not, keep code as it was but inlined.
 
-namespace GHIElectronics.TinyCLR.UI {
+namespace GHIElectronics.TinyCLR.UI.Threading {
     /// <summary>
     ///     Provides UI services for a thread.
     /// </summary>

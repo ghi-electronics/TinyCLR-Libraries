@@ -120,12 +120,12 @@
     <Compile Include="UI\RoutedEventHandlerInfo.cs" />
     <Compile Include="UI\RouteItem.cs" />
     <Compile Include="UI\RoutingStrategy.cs" />
-    <Compile Include="UI\Dispatcher.cs" />
-    <Compile Include="UI\DispatcherFrame.cs" />
-    <Compile Include="UI\DispatcherObject.cs" />
-    <Compile Include="UI\DispatcherOperation.cs" />
-    <Compile Include="UI\DispatcherOperationStatus.cs" />
-    <Compile Include="UI\DispatcherTimer.cs" />
+    <Compile Include="Threading\Dispatcher.cs" />
+    <Compile Include="Threading\DispatcherFrame.cs" />
+    <Compile Include="Threading\DispatcherObject.cs" />
+    <Compile Include="Threading\DispatcherOperation.cs" />
+    <Compile Include="Threading\DispatcherOperationStatus.cs" />
+    <Compile Include="Threading\DispatcherTimer.cs" />
     <Compile Include="UI\WindowCollection.cs" />
   </ItemGroup>
   <ItemGroup>

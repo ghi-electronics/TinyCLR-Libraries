@@ -7,6 +7,7 @@ using System.Collections;
 using System.Diagnostics;
 using GHIElectronics.TinyCLR.UI.Input;
 using GHIElectronics.TinyCLR.UI.Media;
+using GHIElectronics.TinyCLR.UI.Threading;
 
 namespace GHIElectronics.TinyCLR.UI {
     public abstract class UIElement : DispatcherObject {
