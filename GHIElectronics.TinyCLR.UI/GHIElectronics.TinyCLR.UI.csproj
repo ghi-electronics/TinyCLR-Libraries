@@ -8,8 +8,8 @@
     <ProjectGuid>{2BD3FB57-7D27-4DAF-A0DC-A23F5793E12A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GHIElectronics.TinyCLR.Presentation</RootNamespace>
-    <AssemblyName>GHIElectronics.TinyCLR.Presentation</AssemblyName>
+    <RootNamespace>GHIElectronics.TinyCLR.UI</RootNamespace>
+    <AssemblyName>GHIElectronics.TinyCLR.UI</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A1948822-69DD-4150-919B-F3F42EFB71CC};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -130,7 +130,7 @@
     <Compile Include="Touch.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="GHIElectronics.TinyCLR.Presentation.nuspec" />
+    <None Include="GHIElectronics.TinyCLR.UI.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

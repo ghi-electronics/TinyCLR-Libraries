@@ -48,7 +48,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.IO",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Pins.UCM", "GHIElectronics.TinyCLR.Pins.UCM\GHIElectronics.TinyCLR.Pins.UCM.csproj", "{C4F24406-6C04-4F46-B148-07B08A0779BA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Presentation", "GHIElectronics.TinyCLR.Presentation\GHIElectronics.TinyCLR.Presentation.csproj", "{2BD3FB57-7D27-4DAF-A0DC-A23F5793E12A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.UI", "GHIElectronics.TinyCLR.UI\GHIElectronics.TinyCLR.UI.csproj", "{2BD3FB57-7D27-4DAF-A0DC-A23F5793E12A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPF", "C:\Users\johnb\Desktop\WPF\WPF\WPF.csproj", "{2B0DDB44-A543-4854-933A-F4B3495D9A1A}"
 EndProject

@@ -1,6 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("GHIElectronics.TinyCLR.Presentation")]
+[assembly: InternalsVisibleTo("GHIElectronics.TinyCLR.UI")]
 
 namespace System.Drawing {
     public enum GraphicsUnit {
