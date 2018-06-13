@@ -5,11 +5,10 @@
 using System;
 using System.Collections;
 using System.Diagnostics;
-using Microsoft.SPOT.Input;
-using Microsoft.SPOT.Presentation.Media;
-using Microsoft.SPOT.Touch;
+using GHIElectronics.TinyCLR.UI.Input;
+using GHIElectronics.TinyCLR.UI.Media;
 
-namespace Microsoft.SPOT.Presentation {
+namespace GHIElectronics.TinyCLR.UI {
     public abstract class UIElement : DispatcherObject {
         protected UIElement() {
             EnsureClassHandlers();

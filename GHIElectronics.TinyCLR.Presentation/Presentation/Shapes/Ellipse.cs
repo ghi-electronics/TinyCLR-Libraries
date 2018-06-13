@@ -4,7 +4,7 @@
 
 using System;
 
-namespace Microsoft.SPOT.Presentation.Shapes {
+namespace GHIElectronics.TinyCLR.UI.Shapes {
     public class Ellipse : Shape {
         public Ellipse(int xRadius, int yRadius) {
             if (xRadius < 0 || yRadius < 0) {

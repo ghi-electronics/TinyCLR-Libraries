@@ -4,7 +4,7 @@
 
 using System;
 
-namespace Microsoft.SPOT.Presentation.Media {
+namespace GHIElectronics.TinyCLR.UI.Media {
     public abstract class Brush {
         private ushort _opacity = Bitmap.OpacityOpaque;
 

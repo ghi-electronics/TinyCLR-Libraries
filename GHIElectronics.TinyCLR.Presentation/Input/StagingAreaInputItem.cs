@@ -4,7 +4,7 @@
 
 using System.Collections;
 
-namespace Microsoft.SPOT.Input {
+namespace GHIElectronics.TinyCLR.UI.Input {
     /// <summary>
     ///     This class encapsulates an input event while it is being
     ///     processed by the input manager.

@@ -1,4 +1,4 @@
-namespace Microsoft.SPOT.Presentation.Controls {
+namespace GHIElectronics.TinyCLR.UI.Controls {
     public enum Orientation {
         Horizontal,
         Vertical

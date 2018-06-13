@@ -5,9 +5,9 @@
 using System;
 using System.Collections;
 using System.Diagnostics;
-using Microsoft.SPOT.Presentation.Media;
+using GHIElectronics.TinyCLR.UI.Media;
 
-namespace Microsoft.SPOT.Presentation.Controls {
+namespace GHIElectronics.TinyCLR.UI.Controls {
     public class TextFlow : UIElement {
         public TextRunCollection TextRuns;
 
@@ -271,7 +271,7 @@ namespace Microsoft.SPOT.Presentation.Controls {
             return lineCache;
         }
 
-        protected override void OnButtonDown(Microsoft.SPOT.Input.ButtonEventArgs e) {
+        protected override void OnButtonDown(GHIElectronics.TinyCLR.UI.Input.ButtonEventArgs e) {
             if (e.Button == Button.VK_UP || e.Button == Button.VK_DOWN) {
                 var isUp = (e.Button == Button.VK_UP);
                 switch (this._scrollingStyle) {

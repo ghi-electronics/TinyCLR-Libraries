@@ -1,4 +1,4 @@
-namespace Microsoft.SPOT.Input {
+namespace GHIElectronics.TinyCLR.UI.Input {
     /// <summary>
     ///     Delegate type for handles of events that use
     ///     <see cref="ProcessInputEventArgs"/>.

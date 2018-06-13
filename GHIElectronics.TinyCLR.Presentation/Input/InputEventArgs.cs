@@ -4,7 +4,7 @@
 
 using System;
 
-namespace Microsoft.SPOT.Input {
+namespace GHIElectronics.TinyCLR.UI.Input {
     /// <summary>
     ///     The InputEventArgs class represents a type of RoutedEventArgs that
     ///     are relevant to all input events.

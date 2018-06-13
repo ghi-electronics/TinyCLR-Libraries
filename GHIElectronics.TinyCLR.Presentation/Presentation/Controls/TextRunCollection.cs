@@ -6,7 +6,7 @@ using System;
 using System.Collections;
 using System.Drawing;
 
-namespace Microsoft.SPOT.Presentation.Controls {
+namespace GHIElectronics.TinyCLR.UI.Controls {
     public class TextRunCollection : ICollection {
         private TextFlow _textFlow;
         private ArrayList _textRuns;

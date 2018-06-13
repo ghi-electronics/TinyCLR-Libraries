@@ -3,9 +3,9 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 using System.Drawing;
-using Microsoft.SPOT.Presentation.Media;
+using GHIElectronics.TinyCLR.UI.Media;
 
-namespace Microsoft.SPOT.Presentation.Controls {
+namespace GHIElectronics.TinyCLR.UI.Controls {
     public class Control : UIElement {
         public Media.Brush Background {
             get {

@@ -2,9 +2,7 @@ using System;
 using System.Collections;
 using System.Diagnostics;
 
-using Microsoft.SPOT.Presentation;
-
-namespace Microsoft.SPOT {
+namespace GHIElectronics.TinyCLR.UI {
     #region WindowCollection class
 
     /// <summary>

@@ -6,7 +6,7 @@ using System;
 using System.Collections;
 using System.Drawing;
 
-namespace Microsoft.SPOT.Presentation.Media {
+namespace GHIElectronics.TinyCLR.UI.Media {
     /// <summary>
     /// Drawing Context.
     /// </summary>

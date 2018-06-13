@@ -4,7 +4,7 @@
 
 using System;
 
-namespace Microsoft.SPOT.Presentation.Shapes {
+namespace GHIElectronics.TinyCLR.UI.Shapes {
     public class Rectangle : Shape {
         public Rectangle() {
             this.Width = 0;

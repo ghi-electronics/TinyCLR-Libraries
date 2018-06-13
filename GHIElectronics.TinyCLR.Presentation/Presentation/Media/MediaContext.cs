@@ -7,7 +7,7 @@ using System.Collections;
 using System.Diagnostics;
 using System.Drawing;
 
-namespace Microsoft.SPOT.Presentation.Media {
+namespace GHIElectronics.TinyCLR.UI.Media {
     /// <summary>
     /// The MediaContext class controls the rendering
     /// </summary>

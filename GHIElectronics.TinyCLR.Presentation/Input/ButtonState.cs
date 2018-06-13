@@ -4,7 +4,7 @@
 
 using System;
 
-namespace Microsoft.SPOT.Input {
+namespace GHIElectronics.TinyCLR.UI.Input {
 
     /// <summary>
     ///     The ButtonState enumeration describes the state that buttons

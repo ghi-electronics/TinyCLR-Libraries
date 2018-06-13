@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Drawing;
 
-namespace Microsoft.SPOT {
+namespace GHIElectronics.TinyCLR.UI {
     public enum Button {
         None,
         VK_DOWN,

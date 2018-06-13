@@ -4,7 +4,7 @@
 
 
 
-namespace Microsoft.SPOT.Presentation.Controls {
+namespace GHIElectronics.TinyCLR.UI.Controls {
     public class StackPanel : Panel {
         public StackPanel()
             : this(Orientation.Vertical) {

@@ -1,6 +1,6 @@
 using System;
 
-namespace Microsoft.SPOT.Presentation.Controls {
+namespace GHIElectronics.TinyCLR.UI.Controls {
     public class ScrollChangedEventArgs : EventArgs {
         public readonly int HorizontalChange;
         public readonly int HorizontalOffset;

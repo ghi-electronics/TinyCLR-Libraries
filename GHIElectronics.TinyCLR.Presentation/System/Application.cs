@@ -6,11 +6,9 @@ using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using GHIElectronics.TinyCLR.Devices.Display;
-using Microsoft.SPOT.Input;
-using Microsoft.SPOT.Presentation;
-using Microsoft.SPOT.Touch;
+using GHIElectronics.TinyCLR.UI.Input;
 
-namespace Microsoft.SPOT {
+namespace GHIElectronics.TinyCLR.UI {
 
     /*
     /// <summary>+
@@ -294,9 +292,7 @@ EventTrace.EventProvider.TraceEvent(EventTrace.APPGUID, MS.Utility.EventType.Inf
                 dev = _inputManager._touchDevice;
 
             }
-            else if (ev is GenericEvent) {
-                var genericEvent = (GenericEvent)ev;
-
+            else if (ev is GenericEvent genericEvent) {
                 var targetWindow = TouchCapture.Captured;
 
                 if (targetWindow == null) {

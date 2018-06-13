@@ -5,7 +5,7 @@
 using System;
 using System.Threading;
 
-namespace Microsoft.SPOT {
+namespace GHIElectronics.TinyCLR.UI {
     /// <summary>
     ///     DispatcherOperation represents a delegate that has been
     ///     posted to the Dispatcher queue.

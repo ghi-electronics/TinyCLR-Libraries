@@ -1,4 +1,4 @@
-namespace Microsoft.SPOT.Input {
+namespace GHIElectronics.TinyCLR.UI.Input {
 
     /* REFACTOR
 

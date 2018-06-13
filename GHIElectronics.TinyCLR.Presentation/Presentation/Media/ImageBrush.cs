@@ -4,7 +4,7 @@
 
 using System.Drawing;
 
-namespace Microsoft.SPOT.Presentation.Media {
+namespace GHIElectronics.TinyCLR.UI.Media {
     public sealed class ImageBrush : Brush {
         public Bitmap BitmapSource;
         public Stretch Stretch = Stretch.Fill;

@@ -1,4 +1,4 @@
-namespace Microsoft.SPOT.Presentation {
+namespace GHIElectronics.TinyCLR.UI {
     public enum VerticalAlignment {
         Top,
         Center,

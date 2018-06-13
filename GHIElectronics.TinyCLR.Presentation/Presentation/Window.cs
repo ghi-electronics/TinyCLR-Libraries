@@ -5,10 +5,10 @@
 using System;
 using System.Drawing;
 using System.Runtime.CompilerServices;
-using Microsoft.SPOT.Presentation.Controls;
-using Microsoft.SPOT.Presentation.Media;
+using GHIElectronics.TinyCLR.UI.Controls;
+using GHIElectronics.TinyCLR.UI.Media;
 
-namespace Microsoft.SPOT.Presentation {
+namespace GHIElectronics.TinyCLR.UI {
     public class Window : ContentControl {
         //---------------------------------------------------
         //
@@ -47,7 +47,7 @@ namespace Microsoft.SPOT.Presentation {
             // register us with the window manager, like a good little boy
             this._windowManager.Children.Add(this);
 
-            var app = Microsoft.SPOT.Application.Current;
+            var app = GHIElectronics.TinyCLR.UI.Application.Current;
 
             // check if within an app && on the same thread
             if (app != null) {
@@ -71,7 +71,7 @@ namespace Microsoft.SPOT.Presentation {
 
         [MethodImplAttribute(MethodImplOptions.Synchronized)]
         public void Close() {
-            var app = Microsoft.SPOT.Application.Current;
+            var app = GHIElectronics.TinyCLR.UI.Application.Current;
             if (app != null) {
                 app.WindowsInternal.Remove(this);
                 app.NonAppWindowsInternal.Remove(this);

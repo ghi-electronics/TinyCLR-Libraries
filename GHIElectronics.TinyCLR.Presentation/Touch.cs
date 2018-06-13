@@ -1,7 +1,6 @@
 ﻿using System;
-using Microsoft.SPOT.Input;
 
-namespace Microsoft.SPOT.Touch {
+namespace GHIElectronics.TinyCLR.UI.Input {
     public enum TouchMessages : byte {
         Down = 1,
         Up = 2,

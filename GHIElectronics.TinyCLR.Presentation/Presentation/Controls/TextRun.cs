@@ -6,7 +6,7 @@ using System;
 using System.Diagnostics;
 using System.Drawing;
 
-namespace Microsoft.SPOT.Presentation.Controls {
+namespace GHIElectronics.TinyCLR.UI.Controls {
     public class TextRun {
         public readonly string Text;
         public readonly Font Font;

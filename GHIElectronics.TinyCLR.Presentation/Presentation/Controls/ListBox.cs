@@ -3,7 +3,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 using System;
 
-namespace Microsoft.SPOT.Presentation.Controls {
+namespace GHIElectronics.TinyCLR.UI.Controls {
     public class ListBox : ContentControl {
         public ListBox() {
             this._panel = new StackPanel();
@@ -113,7 +113,7 @@ namespace Microsoft.SPOT.Presentation.Controls {
             }
         }
 
-        protected override void OnButtonDown(Microsoft.SPOT.Input.ButtonEventArgs e) {
+        protected override void OnButtonDown(GHIElectronics.TinyCLR.UI.Input.ButtonEventArgs e) {
             if (e.Button == Button.VK_DOWN && this._selectedIndex < this.Items.Count - 1) {
                 var newIndex = this._selectedIndex + 1;
                 while (newIndex < this.Items.Count && !this.Items[newIndex].IsSelectable) newIndex++;

@@ -3,10 +3,8 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 using System;
-using System.Collections;
 
-namespace Microsoft.SPOT
-{
+namespace GHIElectronics.TinyCLR.UI {
     /// <summary>
     ///     The container for all state associated
     ///     with a RoutedEvent
@@ -29,8 +27,7 @@ namespace Microsoft.SPOT
     ///     providing extra event state info, and invoking the
     ///     handler associated with the RoutedEvent
     /// </remarks>
-    public class RoutedEventArgs : EventArgs
-    {
+    public class RoutedEventArgs : EventArgs {
         #region Construction
 
         /// <summary>
@@ -48,8 +45,7 @@ namespace Microsoft.SPOT
         ///     <see cref="OriginalSource"/> also defaults to null
         ///     <para/>
         /// </remarks>
-        public RoutedEventArgs()
-        {
+        public RoutedEventArgs() {
         }
 
         /// <summary>
@@ -57,8 +53,7 @@ namespace Microsoft.SPOT
         /// </summary>
         /// <param name="routedEvent">The new value that the RoutedEvent Property is being set to </param>
         public RoutedEventArgs(RoutedEvent routedEvent)
-            : this(routedEvent, null)
-        {
+            : this(routedEvent, null) {
         }
 
         /// <summary>
@@ -66,8 +61,7 @@ namespace Microsoft.SPOT
         /// </summary>
         /// <param name="source">The new value that the SourceProperty is being set to </param>
         /// <param name="routedEvent">The new value that the RoutedEvent Property is being set to </param>
-        public RoutedEventArgs(RoutedEvent routedEvent, object source)
-        {
+        public RoutedEventArgs(RoutedEvent routedEvent, object source) {
             this._routedEvent = routedEvent;
             this._source = this._originalSource = source;
         }
@@ -194,8 +188,7 @@ namespace Microsoft.SPOT
         /// <param name="source">
         ///     The new value that the SourceProperty is being set to
         /// </param>
-        protected virtual void OnSetSource(object source)
-        {
+        protected virtual void OnSetSource(object source) {
         }
 
         #endregion External API
@@ -208,21 +201,17 @@ namespace Microsoft.SPOT
         /// <param name="routeItem">
         ///     RouteItem containing handler and target
         /// </param>
-        internal void InvokeHandler(RouteItem routeItem)
-        {
+        internal void InvokeHandler(RouteItem routeItem) {
             var routedEventHandlerInfo = routeItem._routedEventHandlerInfo;
 
-            if (this.Handled == false || routedEventHandlerInfo._handledEventsToo == true)
-            {
+            if (this.Handled == false || routedEventHandlerInfo._handledEventsToo == true) {
                 var handler = routedEventHandlerInfo._handler;
                 this._flags |= Flags.InvokingHandler;
 
-                try
-                {
+                try {
                     handler(routeItem._target, this);
                 }
-                finally
-                {
+                finally {
                     this._flags &= ~Flags.InvokingHandler;
                 }
             }
@@ -239,8 +228,7 @@ namespace Microsoft.SPOT
         private Flags _flags;
 
         [Flags]
-        private enum Flags : uint
-        {
+        private enum Flags : uint {
             Handled = 1,
             InvokingHandler = 2,
         }

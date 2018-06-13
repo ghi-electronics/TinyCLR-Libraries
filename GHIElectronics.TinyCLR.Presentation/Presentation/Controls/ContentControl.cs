@@ -4,7 +4,7 @@
 
 
 
-namespace Microsoft.SPOT.Presentation.Controls {
+namespace GHIElectronics.TinyCLR.UI.Controls {
     public abstract class ContentControl : Control {
         public UIElement Child {
             get {

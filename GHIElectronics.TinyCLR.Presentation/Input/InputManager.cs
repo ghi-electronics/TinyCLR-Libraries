@@ -4,9 +4,8 @@
 
 using System;
 using System.Collections;
-using Microsoft.SPOT.Presentation;
 
-namespace Microsoft.SPOT.Input {
+namespace GHIElectronics.TinyCLR.UI.Input {
     /// <summary>
     ///     The InputManager class is responsible for coordinating all of the
     ///     input system in TinyCore.

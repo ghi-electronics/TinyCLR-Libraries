@@ -2,9 +2,9 @@
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-using Microsoft.SPOT.Input;
+using GHIElectronics.TinyCLR.UI.Input;
 
-namespace Microsoft.SPOT.Presentation {
+namespace GHIElectronics.TinyCLR.UI {
     /// <summary>
     /// Presentation source is our connection to the rest of the managed system.
     ///

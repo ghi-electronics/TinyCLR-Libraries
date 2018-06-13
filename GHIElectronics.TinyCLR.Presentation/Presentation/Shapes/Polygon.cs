@@ -4,7 +4,7 @@
 
 using System;
 
-namespace Microsoft.SPOT.Presentation.Shapes {
+namespace GHIElectronics.TinyCLR.UI.Shapes {
     public class Polygon : Shape {
 
         public Polygon() {

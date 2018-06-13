@@ -3,9 +3,9 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 using System.Drawing;
-using Microsoft.SPOT.Presentation.Media;
+using GHIElectronics.TinyCLR.UI.Media;
 
-namespace Microsoft.SPOT.Presentation.Shapes {
+namespace GHIElectronics.TinyCLR.UI.Shapes {
     public abstract class Shape : UIElement {
         public Media.Brush Fill {
             get {

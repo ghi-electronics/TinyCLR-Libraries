@@ -4,9 +4,8 @@
 #define TRACK_BUTTON_STATE
 
 using System;
-using Microsoft.SPOT.Presentation;
 
-namespace Microsoft.SPOT.Input {
+namespace GHIElectronics.TinyCLR.UI.Input {
     /// <summary>
     ///     The ButtonDevice class represents the button device to the
     ///     members of a context.

@@ -11,7 +11,7 @@ using System.Threading;
 //When a program has a static Window type that gets initialized in the static constructor?
 //Does this case still work or not? If not, keep code as it was but inlined.
 
-namespace Microsoft.SPOT {
+namespace GHIElectronics.TinyCLR.UI {
     /// <summary>
     ///     Provides UI services for a thread.
     /// </summary>
@@ -490,9 +490,9 @@ namespace Microsoft.SPOT {
         internal DispatcherExceptionEventHandler _finalExceptionHandler;
 
         // these are per dispatcher, track them here.
-        internal Microsoft.SPOT.Presentation.LayoutManager _layoutManager;
-        internal Microsoft.SPOT.Input.InputManager _inputManager;
-        internal Microsoft.SPOT.Presentation.Media.MediaContext _mediaContext;
+        internal GHIElectronics.TinyCLR.UI.LayoutManager _layoutManager;
+        internal GHIElectronics.TinyCLR.UI.Input.InputManager _inputManager;
+        internal GHIElectronics.TinyCLR.UI.Media.MediaContext _mediaContext;
 
         //
         // we use this type of a global static lock.  we can't guarantee

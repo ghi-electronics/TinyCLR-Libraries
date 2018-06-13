@@ -4,9 +4,9 @@
 
 using GHIElectronics.TinyCLR.Devices.Display;
 
-using Microsoft.SPOT.Presentation.Media;
+using GHIElectronics.TinyCLR.UI.Media;
 
-namespace Microsoft.SPOT.Presentation {
+namespace GHIElectronics.TinyCLR.UI {
     public delegate void PostRenderEventHandler(DrawingContext dc);
 
     public class WindowManager : Controls.Canvas {

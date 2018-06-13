@@ -3,10 +3,8 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 using System;
-using Microsoft.SPOT.Presentation;
-using Microsoft.SPOT.Touch;
 
-namespace Microsoft.SPOT.Input {
+namespace GHIElectronics.TinyCLR.UI.Input {
     /// <summary>
     ///     The RawTouchInputReport class encapsulates the raw input
     ///     provided from a multitouch source.

@@ -4,9 +4,9 @@
 
 using System;
 using System.Drawing;
-using Microsoft.SPOT.Presentation.Media;
+using GHIElectronics.TinyCLR.UI.Media;
 
-namespace Microsoft.SPOT.Presentation.Controls {
+namespace GHIElectronics.TinyCLR.UI.Controls {
     public class Border : ContentControl {
         public Border() {
             this._borderBrush = new SolidColorBrush(Color.Black);

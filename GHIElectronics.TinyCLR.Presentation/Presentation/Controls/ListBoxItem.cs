@@ -1,4 +1,4 @@
-namespace Microsoft.SPOT.Presentation.Controls {
+namespace GHIElectronics.TinyCLR.UI.Controls {
     public class ListBoxItem : ContentControl {
         public bool IsSelected => (this._listBox != null && this._listBox.SelectedItem == this);
 

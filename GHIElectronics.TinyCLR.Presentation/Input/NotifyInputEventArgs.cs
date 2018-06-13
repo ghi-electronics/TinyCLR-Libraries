@@ -4,7 +4,7 @@
 
 using System;
 
-namespace Microsoft.SPOT.Input {
+namespace GHIElectronics.TinyCLR.UI.Input {
     /// <summary>
     ///     Provides information about an input event being processed by the
     ///     input manager.

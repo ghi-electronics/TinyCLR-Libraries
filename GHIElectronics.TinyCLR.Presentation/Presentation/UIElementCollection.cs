@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Diagnostics;
 
-namespace Microsoft.SPOT.Presentation {
+namespace GHIElectronics.TinyCLR.UI {
     /// <summary>
     /// A UIElementCollection is a ordered collection of UIElements.
     /// </summary>

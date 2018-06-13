@@ -1,4 +1,4 @@
-namespace Microsoft.SPOT {
+namespace GHIElectronics.TinyCLR.UI {
     // An item in the EventRoute
     //
     // RouteItem constitutes

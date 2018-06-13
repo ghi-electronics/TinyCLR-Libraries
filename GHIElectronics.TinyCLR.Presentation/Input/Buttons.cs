@@ -2,9 +2,8 @@
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-using Microsoft.SPOT.Presentation;
 
-namespace Microsoft.SPOT.Input {
+namespace GHIElectronics.TinyCLR.UI.Input {
 
     // REFACTOR -- this could potentially be integrated with ButtonDevice, though
     // this can give us a nice friendly class name (maybe ButtonPad or something instead),

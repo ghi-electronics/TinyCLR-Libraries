@@ -4,7 +4,7 @@
 
 using System.Drawing;
 
-namespace Microsoft.SPOT.Presentation.Media {
+namespace GHIElectronics.TinyCLR.UI.Media {
     public sealed class LinearGradientBrush : Brush {
         public Color StartColor;
         public Color EndColor;

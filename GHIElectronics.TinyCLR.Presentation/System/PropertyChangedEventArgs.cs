@@ -1,4 +1,4 @@
-namespace Microsoft.SPOT {
+namespace GHIElectronics.TinyCLR.UI {
     /// <summary>
     ///     Provides data for the various property changed events.
     /// </summary>

@@ -4,7 +4,7 @@
 
 using System;
 
-namespace Microsoft.SPOT.Input {
+namespace GHIElectronics.TinyCLR.UI.Input {
     /// <summary>
     ///     The InputReportEventArgs class contains information about an input
     ///     report that is being processed.

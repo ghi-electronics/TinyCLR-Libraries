@@ -4,9 +4,9 @@
 
 using System;
 using System.Collections;
-using Microsoft.SPOT.Presentation.Media;
+using GHIElectronics.TinyCLR.UI.Media;
 
-namespace Microsoft.SPOT.Presentation {
+namespace GHIElectronics.TinyCLR.UI {
     // LayoutManager is responsible for all layout operations. It maintains the Arrange,
     // Invalidate and Measure queues.
     //

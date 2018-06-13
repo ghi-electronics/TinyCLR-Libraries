@@ -4,9 +4,9 @@
 
 using System;
 using System.Drawing;
-using Microsoft.SPOT.Presentation.Media;
+using GHIElectronics.TinyCLR.UI.Media;
 
-namespace Microsoft.SPOT.Presentation.Controls {
+namespace GHIElectronics.TinyCLR.UI.Controls {
     public class Text : UIElement {
         public Text()
             : this(null, null) {

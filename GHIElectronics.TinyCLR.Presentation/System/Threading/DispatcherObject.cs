@@ -4,7 +4,7 @@
 
 using System.Threading;
 
-namespace Microsoft.SPOT {
+namespace GHIElectronics.TinyCLR.UI {
     /// <summary>
     ///     A DispatcherObject is an object associated with a
     ///     <see cref="Dispatcher"/>.  A DispatcherObject instance should

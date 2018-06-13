@@ -1,6 +1,6 @@
 using System;
 
-namespace Microsoft.SPOT.Presentation.Controls {
+namespace GHIElectronics.TinyCLR.UI.Controls {
     public class SelectionChangedEventArgs : EventArgs {
         public readonly int PreviousSelectedIndex;
         public readonly int SelectedIndex;

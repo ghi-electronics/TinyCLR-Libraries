@@ -1,4 +1,4 @@
-namespace Microsoft.SPOT {
+namespace GHIElectronics.TinyCLR.UI {
     /// <summary>
     ///     Routing Strategy can be either of
     ///     Tunnel or Bubble

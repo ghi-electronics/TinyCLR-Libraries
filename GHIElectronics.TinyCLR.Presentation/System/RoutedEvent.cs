@@ -1,6 +1,6 @@
 using System;
 
-namespace Microsoft.SPOT {
+namespace GHIElectronics.TinyCLR.UI {
     /// <summary>
     ///     RoutedEvent is a unique identifier for
     ///     any registered RoutedEvent

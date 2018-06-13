@@ -4,7 +4,7 @@
 
 using System;
 
-namespace Microsoft.SPOT.Input {
+namespace GHIElectronics.TinyCLR.UI.Input {
 
     /// <summary>
     ///     The object which input providers use to report input to the input manager.

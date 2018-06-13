@@ -1,7 +1,7 @@
 using System;
 using System.Diagnostics;
 
-namespace Microsoft.SPOT.Presentation.Controls {
+namespace GHIElectronics.TinyCLR.UI.Controls {
     public class ScrollViewer : ContentControl {
         public ScrollViewer() {
             this.HorizontalAlignment = HorizontalAlignment.Left;
@@ -174,7 +174,7 @@ namespace Microsoft.SPOT.Presentation.Controls {
             this._previousVerticalOffset = this._verticalOffset;
         }
 
-        protected override void OnButtonDown(Microsoft.SPOT.Input.ButtonEventArgs e) {
+        protected override void OnButtonDown(GHIElectronics.TinyCLR.UI.Input.ButtonEventArgs e) {
             switch (e.Button) {
                 case Button.VK_UP:
                     if (this._scrollingStyle == ScrollingStyle.LineByLine) LineUp(); else PageUp();

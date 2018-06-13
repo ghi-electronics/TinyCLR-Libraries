@@ -1,4 +1,4 @@
-namespace Microsoft.SPOT.Input {
+namespace GHIElectronics.TinyCLR.UI.Input {
     /// <summary>
     ///     Allows the handler to cancel the processing of an input event.
     /// </summary>

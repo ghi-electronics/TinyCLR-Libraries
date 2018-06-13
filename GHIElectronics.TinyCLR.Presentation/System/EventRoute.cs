@@ -5,7 +5,7 @@
 using System;
 using System.Collections;
 
-namespace Microsoft.SPOT {
+namespace GHIElectronics.TinyCLR.UI {
     /// <summary>
     ///     Container for the route to be followed
     ///     by a RoutedEvent when raised

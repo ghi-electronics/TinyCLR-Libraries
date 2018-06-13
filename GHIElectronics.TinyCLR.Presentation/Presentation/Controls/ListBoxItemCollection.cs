@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 
-namespace Microsoft.SPOT.Presentation.Controls {
+namespace GHIElectronics.TinyCLR.UI.Controls {
     public class ListBoxItemCollection : ICollection {
         UIElementCollection _items;
 

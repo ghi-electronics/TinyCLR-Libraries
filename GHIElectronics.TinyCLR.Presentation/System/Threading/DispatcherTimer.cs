@@ -5,7 +5,7 @@
 using System;
 using System.Threading;
 
-namespace Microsoft.SPOT {
+namespace GHIElectronics.TinyCLR.UI {
     /// <summary>
     ///     A timer that is integrated into the Dispatcher queues, and will
     ///     be processed after a given amount of time
