@@ -1,11 +1,13 @@
 ﻿namespace GHIElectronics.TinyCLR.UI.Input {
     public enum Button {
         None,
-        VK_DOWN,
-        VK_UP,
-        VK_LEFT,
-        VK_RIGHT,
-        VK_SELECT,
+        Down,
+        Up,
+        Left,
+        Right,
+        Select,
+        Back,
+        Home,
         LastSystemDefinedButton
     }
 }
