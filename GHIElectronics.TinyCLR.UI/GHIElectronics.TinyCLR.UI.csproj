@@ -120,14 +120,13 @@
     <Compile Include="UI\RoutedEventHandlerInfo.cs" />
     <Compile Include="UI\RouteItem.cs" />
     <Compile Include="UI\RoutingStrategy.cs" />
-    <Compile Include="UI\Threading\Dispatcher.cs" />
-    <Compile Include="UI\Threading\DispatcherFrame.cs" />
-    <Compile Include="UI\Threading\DispatcherObject.cs" />
-    <Compile Include="UI\Threading\DispatcherOperation.cs" />
-    <Compile Include="UI\Threading\DispatcherOperationStatus.cs" />
-    <Compile Include="UI\Threading\DispatcherTimer.cs" />
+    <Compile Include="UI\Dispatcher.cs" />
+    <Compile Include="UI\DispatcherFrame.cs" />
+    <Compile Include="UI\DispatcherObject.cs" />
+    <Compile Include="UI\DispatcherOperation.cs" />
+    <Compile Include="UI\DispatcherOperationStatus.cs" />
+    <Compile Include="UI\DispatcherTimer.cs" />
     <Compile Include="UI\WindowCollection.cs" />
-    <Compile Include="UI\Touch.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="GHIElectronics.TinyCLR.UI.nuspec" />
