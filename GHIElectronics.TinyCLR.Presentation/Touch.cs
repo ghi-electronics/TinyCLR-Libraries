@@ -1,8 +1,5 @@
-﻿using Microsoft.SPOT.Input;
-using System;
-using System.Collections;
-using System.Text;
-using System.Threading;
+﻿using System;
+using Microsoft.SPOT.Input;
 
 namespace Microsoft.SPOT.Touch {
     public enum TouchMessages : byte {
@@ -66,11 +63,7 @@ namespace Microsoft.SPOT.Touch {
         /// </note>
         public ushort Arguments;
 
-        public double Angle {
-            get {
-                return (double)(Arguments);
-            }
-        }
+        public double Angle => (double)(this.Arguments);
     }
 
     public delegate void TouchGestureEventHandler(object sender, TouchGestureEventArgs e);

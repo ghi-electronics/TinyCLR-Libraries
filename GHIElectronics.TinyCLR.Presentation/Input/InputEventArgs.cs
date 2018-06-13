@@ -3,17 +3,14 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 using System;
-using System.Collections;
 
-namespace Microsoft.SPOT.Input
-{
+namespace Microsoft.SPOT.Input {
     /// <summary>
     ///     The InputEventArgs class represents a type of RoutedEventArgs that
     ///     are relevant to all input events.
     /// </summary>
 
-    public class InputEventArgs : RoutedEventArgs
-    {
+    public class InputEventArgs : RoutedEventArgs {
         /// <summary>
         ///     Initializes a new instance of the InputEventArgs class.
         /// </summary>
@@ -23,23 +20,19 @@ namespace Microsoft.SPOT.Input
         /// <param name="timestamp">
         ///     The time when the input occured.
         /// </param>
-        public InputEventArgs(InputDevice inputDevice, DateTime timestamp)
-        {
+        public InputEventArgs(InputDevice inputDevice, DateTime timestamp) {
             /* inputDevice parameter being null is valid                */
             /* timestamp parameter is valuetype, need not be checked    */
 
-            _inputDevice = inputDevice;
-            Timestamp = timestamp;
+            this._inputDevice = inputDevice;
+            this.Timestamp = timestamp;
         }
 
         /// <summary>
         ///     Read-only access to the input device that initiated this
         ///     event.
         /// </summary>
-        public InputDevice Device
-        {
-            get { return _inputDevice; }
-        }
+        public InputDevice Device => this._inputDevice;
 
         /// <summary>
         ///     Read-only access to the input timestamp.

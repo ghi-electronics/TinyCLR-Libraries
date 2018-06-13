@@ -6,87 +6,72 @@ using System;
 using System.Drawing;
 using Microsoft.SPOT.Presentation.Media;
 
-namespace Microsoft.SPOT.Presentation.Controls
-{
-    public class Border : ContentControl
-    {
-        public Border()
-        {
-            _borderBrush = new SolidColorBrush(Color.Black);
+namespace Microsoft.SPOT.Presentation.Controls {
+    public class Border : ContentControl {
+        public Border() {
+            this._borderBrush = new SolidColorBrush(Color.Black);
 
-            _borderLeft = _borderTop = _borderRight = _borderBottom = 1;
+            this._borderLeft = this._borderTop = this._borderRight = this._borderBottom = 1;
         }
 
-        public Media.Brush BorderBrush
-        {
-            get
-            {
+        public Media.Brush BorderBrush {
+            get {
                 VerifyAccess();
 
-                return _borderBrush;
+                return this._borderBrush;
             }
 
-            set
-            {
+            set {
                 VerifyAccess();
 
-                _borderBrush = value;
+                this._borderBrush = value;
                 Invalidate();
             }
         }
 
-        public void GetBorderThickness(out int left, out int top, out int right, out int bottom)
-        {
-            left = _borderLeft;
-            top = _borderTop;
-            right = _borderRight;
-            bottom = _borderBottom;
+        public void GetBorderThickness(out int left, out int top, out int right, out int bottom) {
+            left = this._borderLeft;
+            top = this._borderTop;
+            right = this._borderRight;
+            bottom = this._borderBottom;
         }
 
-        public void SetBorderThickness(int length)
-        {
+        public void SetBorderThickness(int length) =>
             // no need to verify access here as the next call will do it
             SetBorderThickness(length, length, length, length);
-        }
 
-        public void SetBorderThickness(int left, int top, int right, int bottom)
-        {
+        public void SetBorderThickness(int left, int top, int right, int bottom) {
             VerifyAccess();
 
             /// Negative values are not valid (same behavior as desktop WPF).
-            if ((left < 0) || (right < 0) || (top < 0) || (bottom < 0))
-            {
-                string errorMessage = "'" + left.ToString() + "," + top.ToString() + "," + right.ToString() + "," + bottom.ToString() + "' is not a valid value 'BorderThickness'";
+            if ((left < 0) || (right < 0) || (top < 0) || (bottom < 0)) {
+                var errorMessage = "'" + left.ToString() + "," + top.ToString() + "," + right.ToString() + "," + bottom.ToString() + "' is not a valid value 'BorderThickness'";
 
                 throw new ArgumentException(errorMessage);
             }
 
-            _borderLeft = left;
-            _borderTop = top;
-            _borderRight = right;
-            _borderBottom = bottom;
+            this._borderLeft = left;
+            this._borderTop = top;
+            this._borderRight = right;
+            this._borderBottom = bottom;
             InvalidateMeasure();
         }
 
-        protected override void ArrangeOverride(int arrangeWidth, int arrangeHeight)
-        {
-            UIElement child = Child;
-            if (child != null)
-            {
-                child.Arrange(_borderLeft,
-                              _borderTop,
-                              arrangeWidth - _borderLeft - _borderRight,
-                              arrangeHeight - _borderTop - _borderBottom);
+        protected override void ArrangeOverride(int arrangeWidth, int arrangeHeight) {
+            var child = this.Child;
+            if (child != null) {
+                child.Arrange(this._borderLeft,
+                              this._borderTop,
+                              arrangeWidth - this._borderLeft - this._borderRight,
+                              arrangeHeight - this._borderTop - this._borderBottom);
             }
         }
 
-        protected override void MeasureOverride(int availableWidth, int availableHeight, out int desiredWidth, out int desiredHeight)
-        {
-            UIElement child = Child;
-            if (child != null)
-            {
-                int horizontalBorder = _borderLeft + _borderRight;
-                int verticalBorder = _borderTop + _borderBottom;
+        protected override void MeasureOverride(int availableWidth, int availableHeight, out int desiredWidth, out int desiredHeight) {
+            var child = this.Child;
+            if (child != null) {
+                var horizontalBorder = this._borderLeft + this._borderRight;
+                var verticalBorder = this._borderTop + this._borderBottom;
 
                 child.Measure(availableWidth - horizontalBorder, availableHeight - verticalBorder);
 
@@ -94,28 +79,25 @@ namespace Microsoft.SPOT.Presentation.Controls
                 desiredWidth += horizontalBorder;
                 desiredHeight += verticalBorder;
             }
-            else
-            {
+            else {
                 desiredWidth = desiredHeight = 0;
             }
         }
 
-        public override void OnRender(DrawingContext dc)
-        {
-            int width = _renderWidth;
-            int height = _renderHeight;
+        public override void OnRender(DrawingContext dc) {
+            var width = this._renderWidth;
+            var height = this._renderHeight;
 
             // Border
             //
-            dc.DrawRectangle(_borderBrush, null, 0, 0, width, height);
+            dc.DrawRectangle(this._borderBrush, null, 0, 0, width, height);
 
             // Background
             //
-            if (_background != null)
-            {
-                dc.DrawRectangle(_background, null, _borderLeft, _borderTop,
-                                                     width - _borderLeft - _borderRight,
-                                                     height - _borderTop - _borderBottom);
+            if (this._background != null) {
+                dc.DrawRectangle(this._background, null, this._borderLeft, this._borderTop,
+                                                     width - this._borderLeft - this._borderRight,
+                                                     height - this._borderTop - this._borderBottom);
             }
         }
 

@@ -2,23 +2,17 @@
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-using System;
-using System.Collections;
-using System.Threading;
 
-namespace Microsoft.SPOT
-{
+namespace Microsoft.SPOT {
     /// <summary>
     ///     Representation of Dispatcher frame.
     /// </summary>
-    public class DispatcherFrame
-    {
+    public class DispatcherFrame {
         /// <summary>
         ///     Constructs a new instance of the DispatcherFrame class.
         /// </summary>
         public DispatcherFrame()
-            : this(true)
-        {
+            : this(true) {
         }
 
         /// <summary>
@@ -37,29 +31,24 @@ namespace Microsoft.SPOT
         ///        for their important criteria to be met.  These frames
         ///        should have a timeout associated with them.
         /// </param>
-        public DispatcherFrame(bool exitWhenRequested)
-        {
-            _exitWhenRequested = exitWhenRequested;
-            _continue = true;
-            _dispatcher = Dispatcher.CurrentDispatcher;
+        public DispatcherFrame(bool exitWhenRequested) {
+            this._exitWhenRequested = exitWhenRequested;
+            this._continue = true;
+            this._dispatcher = Dispatcher.CurrentDispatcher;
         }
 
         /// <summary>
         ///     Indicates that this dispatcher frame should exit.
         /// </summary>
-        public bool Continue
-        {
-            get
-            {
+        public bool Continue {
+            get {
                 // First check if this frame wants to continue.
-                bool shouldContinue = _continue;
-                if (shouldContinue)
-                {
+                var shouldContinue = this._continue;
+                if (shouldContinue) {
                     // This frame wants to continue, so next check if it will
                     // respect the "exit requests" from the dispatcher.
                     // and if the dispatcher wants to exit.
-                    if (_exitWhenRequested && _dispatcher._hasShutdownStarted)
-                    {
+                    if (this._exitWhenRequested && this._dispatcher._hasShutdownStarted) {
                         shouldContinue = false;
                     }
                 }
@@ -67,11 +56,10 @@ namespace Microsoft.SPOT
                 return shouldContinue;
             }
 
-            set
-            {
-                _continue = value;
+            set {
+                this._continue = value;
 
-                _dispatcher.QueryContinueFrame();
+                this._dispatcher.QueryContinueFrame();
             }
         }
 

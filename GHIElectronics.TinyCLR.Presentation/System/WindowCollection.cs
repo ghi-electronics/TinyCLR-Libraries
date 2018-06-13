@@ -1,12 +1,10 @@
 using System;
 using System.Collections;
 using System.Diagnostics;
-using System.Threading;
 
 using Microsoft.SPOT.Presentation;
 
-namespace Microsoft.SPOT
-{
+namespace Microsoft.SPOT {
     #region WindowCollection class
 
     /// <summary>
@@ -14,8 +12,7 @@ namespace Microsoft.SPOT
     /// opened in the current application.
     /// </summary>
     //CONSIDER: Should this be a sealed class?
-    public sealed class WindowCollection : ICollection
-    {
+    public sealed class WindowCollection : ICollection {
         //------------------------------------------------------
         //
         //   Public Methods
@@ -25,17 +22,15 @@ namespace Microsoft.SPOT
         /// <summary>
         /// Default Constructor
         /// </summary>
-        public WindowCollection()
-        {
-            _list = new ArrayList();
-            _list.Capacity = 1;
-        }
+        public WindowCollection() => this._list = new ArrayList {
+            Capacity = 1
+        };
 
-        internal WindowCollection(int count)
-        {
+        internal WindowCollection(int count) {
             Debug.Assert(count >= 0, "count must not be less than zero");
-            _list = new ArrayList();
-            _list.Capacity = 1;
+            this._list = new ArrayList {
+                Capacity = 1
+            };
         }
 
         #endregion Public Methods
@@ -49,13 +44,7 @@ namespace Microsoft.SPOT
         /// <summary>
         /// Overloaded [] operator to access the WindowCollection list
         /// </summary>
-        public Window this[int index]
-        {
-            get
-            {
-                return _list[index] as Window;
-            }
-        }
+        public Window this[int index] => this._list[index] as Window;
 
         #endregion Operator overload
 
@@ -69,10 +58,7 @@ namespace Microsoft.SPOT
         /// GetEnumerator
         /// </summary>
         /// <returns></returns>
-        public IEnumerator GetEnumerator()
-        {
-            return _list.GetEnumerator();
-        }
+        public IEnumerator GetEnumerator() => this._list.GetEnumerator();
 
         #endregion IEnumerable implementation
 
@@ -87,53 +73,29 @@ namespace Microsoft.SPOT
         /// </summary>
         /// <param name="array"></param>
         /// <param name="index"></param>
-        void ICollection.CopyTo(Array array, int index)
-        {
-            _list.CopyTo(array, index);
-        }
+        void ICollection.CopyTo(Array array, int index) => this._list.CopyTo(array, index);
 
         /// <summary>
         /// CopyTo
         /// </summary>
         /// <param name="array"></param>
         /// <param name="index"></param>
-        public void CopyTo(Window[] array, int index)
-        {
-            _list.CopyTo(array, index);
-        }
+        public void CopyTo(Window[] array, int index) => this._list.CopyTo(array, index);
 
         /// <summary>
         /// Count property
         /// </summary>
-        public int Count
-        {
-            get
-            {
-                return _list.Count;
-            }
-        }
+        public int Count => this._list.Count;
 
         /// <summary>
         /// IsSynchronized
         /// </summary>
-        public bool IsSynchronized
-        {
-            get
-            {
-                return _list.IsSynchronized;
-            }
-        }
+        public bool IsSynchronized => this._list.IsSynchronized;
 
         /// <summary>
         /// SyncRoot
         /// </summary>
-        public Object SyncRoot
-        {
-            get
-            {
-                return _list.SyncRoot;
-            }
-        }
+        public object SyncRoot => this._list.SyncRoot;
 
         #endregion ICollection implementation
 
@@ -143,39 +105,26 @@ namespace Microsoft.SPOT
         //
         //------------------------------------------------------
         #region Internal Methods
-        internal WindowCollection Clone()
-        {
+        internal WindowCollection Clone() {
             WindowCollection clone;
-            lock (_list.SyncRoot)
-            {
-                clone = new WindowCollection(_list.Count);
-                for (int i = 0; i < _list.Count; i++)
-                {
-                    clone._list.Add(_list[i]);
+            lock (this._list.SyncRoot) {
+                clone = new WindowCollection(this._list.Count);
+                for (var i = 0; i < this._list.Count; i++) {
+                    clone._list.Add(this._list[i]);
                 }
             }
 
             return clone;
         }
 
-        internal void Remove(Window win)
-        {
-            _list.Remove(win);
-        }
+        internal void Remove(Window win) => this._list.Remove(win);
 
-        internal int Add(Window win)
-        {
-            return _list.Add(win);
-        }
+        internal int Add(Window win) => this._list.Add(win);
 
-        internal bool HasItem(Window win)
-        {
-            lock (_list.SyncRoot)
-            {
-                for (int i = 0; i < _list.Count; i++)
-                {
-                    if (_list[i] == win)
-                    {
+        internal bool HasItem(Window win) {
+            lock (this._list.SyncRoot) {
+                for (var i = 0; i < this._list.Count; i++) {
+                    if (this._list[i] == win) {
                         return true;
                     }
                 }

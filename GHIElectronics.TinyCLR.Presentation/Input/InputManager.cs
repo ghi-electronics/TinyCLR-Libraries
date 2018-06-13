@@ -2,22 +2,18 @@
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-using System.Collections;
-using System.Threading;
 using System;
-using Microsoft.SPOT;
+using System.Collections;
 using Microsoft.SPOT.Presentation;
 
-namespace Microsoft.SPOT.Input
-{
+namespace Microsoft.SPOT.Input {
     /// <summary>
     ///     The InputManager class is responsible for coordinating all of the
     ///     input system in TinyCore.
     ///
     ///     The input manager exists per Dispatcher
     /// </summary>
-    public sealed class InputManager : DispatcherObject
-    {
+    public sealed class InputManager : DispatcherObject {
 
         /// <summary>
         ///     A routed event indicating that an input report arrived.
@@ -35,20 +31,15 @@ namespace Microsoft.SPOT.Input
         /// <remarks>
         ///     This class will not be available in internet zone.
         /// </remarks>
-        public static InputManager CurrentInputManager
-        {
-            get
-            {
-                Dispatcher dispatcher = Dispatcher.CurrentDispatcher;
+        public static InputManager CurrentInputManager {
+            get {
+                var dispatcher = Dispatcher.CurrentDispatcher;
 
                 if (dispatcher == null) throw new InvalidOperationException("no dispatcher");
 
-                if (dispatcher._inputManager == null)
-                {
-                    lock (typeof(GlobalLock))
-                    {
-                        if (dispatcher._inputManager == null)
-                        {
+                if (dispatcher._inputManager == null) {
+                    lock (typeof(GlobalLock)) {
+                        if (dispatcher._inputManager == null) {
                             dispatcher._inputManager = new InputManager();
                         }
                     }
@@ -58,47 +49,27 @@ namespace Microsoft.SPOT.Input
             }
         }
 
-        private InputManager()
-        {
-            _stagingArea = new Queue();
-            _currentStagingStack = new Stack();
-            _frameStagingArea = new ArrayList();
-            InputDeviceEvents = new DeviceEvents[(int)InputDeviceType.Last];
+        private InputManager() {
+            this._stagingArea = new Queue();
+            this._currentStagingStack = new Stack();
+            this._frameStagingArea = new ArrayList();
+            this.InputDeviceEvents = new DeviceEvents[(int)InputDeviceType.Last];
 
-            for (int i = 0; i < (int)InputDeviceType.Last; i++)
-            {
-                InputDeviceEvents[i] = new DeviceEvents();
+            for (var i = 0; i < (int)InputDeviceType.Last; i++) {
+                this.InputDeviceEvents[i] = new DeviceEvents();
             }
 
-            _continueProcessingStagingAreaCallback = new DispatcherOperationCallback(ProcessStagingArea);
-            _buttonDevice = new ButtonDevice(this);
-            _touchDevice = new TouchDevice(this);
-            _genericDevice = new GenericDevice(this);
+            this._continueProcessingStagingAreaCallback = new DispatcherOperationCallback(this.ProcessStagingArea);
+            this._buttonDevice = new ButtonDevice(this);
+            this._touchDevice = new TouchDevice(this);
+            this._genericDevice = new GenericDevice(this);
         }
 
-        public ButtonDevice ButtonDevice
-        {
-            get
-            {
-                return _buttonDevice;
-            }
-        }
+        public ButtonDevice ButtonDevice => this._buttonDevice;
 
-        public TouchDevice TouchDevice
-        {
-            get
-            {
-                return _touchDevice;
-            }
-        }
+        public TouchDevice TouchDevice => this._touchDevice;
 
-        public GenericDevice GenericDevice
-        {
-            get
-            {
-                return _genericDevice;
-            }
-        }
+        public GenericDevice GenericDevice => this._genericDevice;
 
         /// <summary>
         ///     Registers an input provider with the input manager.
@@ -106,49 +77,42 @@ namespace Microsoft.SPOT.Input
         /// <param name="inputProvider">
         ///     The input provider to register.
         /// </param>
-        public InputProviderSite RegisterInputProvider(object inputProvider)
-        {
+        public InputProviderSite RegisterInputProvider(object inputProvider) {
             VerifyAccess();
 
             // Create a site for this provider, and keep track of it.
-            InputProviderSite site = new InputProviderSite(this, inputProvider);
+            var site = new InputProviderSite(this, inputProvider);
 
-            int idx = _inputProviders.IndexOf(inputProvider);
-            if (idx < 0)
-            {
-                _inputProviders.Add(inputProvider);
-                _inputProviderSites.Add(site);
+            var idx = this._inputProviders.IndexOf(inputProvider);
+            if (idx < 0) {
+                this._inputProviders.Add(inputProvider);
+                this._inputProviderSites.Add(site);
             }
-            else
-            {
+            else {
                 // NOTE -- should we dispose the old one?
-                _inputProviders[idx] = inputProvider;
-                _inputProviderSites[idx] = site;
+                this._inputProviders[idx] = inputProvider;
+                this._inputProviderSites[idx] = site;
             }
 
             return site;
         }
 
-        internal void UnregisterInputProvider(object inputProvider)
-        {
-            int i = _inputProviders.IndexOf(inputProvider);
-            if (i >= 0)
-            {
-                _inputProviders.RemoveAt(i);
-                _inputProviderSites.RemoveAt(i);
+        internal void UnregisterInputProvider(object inputProvider) {
+            var i = this._inputProviders.IndexOf(inputProvider);
+            if (i >= 0) {
+                this._inputProviders.RemoveAt(i);
+                this._inputProviderSites.RemoveAt(i);
             }
         }
 
         /// <summary>
         ///     Returns a collection of input providers registered with the input manager.
         /// </summary>
-        public ICollection InputProviders
-        {
-            get
-            {
+        public ICollection InputProviders {
+            get {
                 VerifyAccess();
 
-                return _inputProviders;
+                return this._inputProviders;
             }
         }
 
@@ -157,13 +121,11 @@ namespace Microsoft.SPOT.Input
         ///     report an "interesting" user action.  What exactly constitutes
         ///     such an action is up to each device to implement.
         /// </summary>
-        public InputDevice MostRecentInputDevice
-        {
-            get
-            { //If GenericInputDevice/TouchDevice use VerifyAccess in SetTarget, this verify can be removed.
-                VerifyAccess(); return _mostRecentInputDevice;
+        public InputDevice MostRecentInputDevice {
+            get { //If GenericInputDevice/TouchDevice use VerifyAccess in SetTarget, this verify can be removed.
+                VerifyAccess(); return this._mostRecentInputDevice;
             }
-            set { VerifyAccess(); _mostRecentInputDevice = value; }
+            set { VerifyAccess(); this._mostRecentInputDevice = value; }
         }
 
         /// <summary>
@@ -178,43 +140,38 @@ namespace Microsoft.SPOT.Input
         ///     Whether or not any event generated as a consequence of this
         ///     event was handled.
         /// </returns>
-        public bool ProcessInput(InputEventArgs input)
-        {
+        public bool ProcessInput(InputEventArgs input) {
             VerifyAccess();
 
-            if (input == null)
-            {
+            if (input == null) {
                 throw new ArgumentNullException("input");
             }
 
             // Push a marker indicating the portion of the staging area
             // that needs to be processed.
-            Stack stk = new Stack();
+            var stk = new Stack();
 
             // Push the input to be processed onto the staging area.
             stk.Push(new StagingAreaInputItem(input, null));
 
-            _stagingArea.Enqueue(stk);
+            this._stagingArea.Enqueue(stk);
 
             // Post a work item to continue processing the staging area
             // in case someone pushes a dispatcher frame in the middle
             // of input processing.
-            DispatcherFrame frame = Dispatcher.CurrentFrame;
-            if (frame != null)
-            {
-                if (!_frameStagingArea.Contains(frame))
-                {
-                    _frameStagingArea.Add(frame);
-                    Dispatcher.BeginInvoke(_continueProcessingStagingAreaCallback, frame);
+            var frame = this.Dispatcher.CurrentFrame;
+            if (frame != null) {
+                if (!this._frameStagingArea.Contains(frame)) {
+                    this._frameStagingArea.Add(frame);
+                    this.Dispatcher.BeginInvoke(this._continueProcessingStagingAreaCallback, frame);
                 }
             }
 
             return true;
         }
 
-        private object ProcessStagingArea(object frame)
-        {
-            bool handled = false;
+        private object ProcessStagingArea(object frame) {
+            var handled = false;
 
             // NOTE -- avalon caches the XXXEventArgs.  In our system, the costs are different,
             // so it is probably cheaper for us to just create them, since everything gets created
@@ -226,109 +183,89 @@ namespace Microsoft.SPOT.Input
             // changes underneath us.  Instead, just loop until we find a
             // frame marker or until the staging area is empty.
 
-            try
-            {
-                while (_stagingArea.Count > 0)
-                {
-                    _currentStagingStack = _stagingArea.Dequeue() as Stack;
+            try {
+                while (this._stagingArea.Count > 0) {
+                    this._currentStagingStack = this._stagingArea.Dequeue() as Stack;
 
-                    do
-                    {
-                        StagingAreaInputItem item = (StagingAreaInputItem)_currentStagingStack.Pop();
+                    do {
+                        var item = (StagingAreaInputItem)this._currentStagingStack.Pop();
 
                         // Pre-Process the input.  This could modify the staging
                         // area, and it could cancel the processing of this
                         // input event.
                         //
 
-                        bool fCanceled = false;
+                        var fCanceled = false;
 
-                        int devType = (int)item.Input._inputDevice.DeviceType;
+                        var devType = (int)item.Input._inputDevice.DeviceType;
 
-                        if (InputDeviceEvents[devType]._preProcessInput != null)
-                        {
+                        if (this.InputDeviceEvents[devType]._preProcessInput != null) {
                             PreProcessInputEventArgs preProcessInputEventArgs;
-                            InputDeviceEvents[devType]._preProcessInput(this, preProcessInputEventArgs = new PreProcessInputEventArgs(item));
+                            this.InputDeviceEvents[devType]._preProcessInput(this, preProcessInputEventArgs = new PreProcessInputEventArgs(item));
 
                             fCanceled = preProcessInputEventArgs._canceled;
                         }
 
-                        if (!fCanceled)
-                        {
+                        if (!fCanceled) {
                             // Pre-Notify the input.
                             //
-                            if (InputDeviceEvents[devType]._preNotifyInput != null)
-                            {
-                                InputDeviceEvents[devType]._preNotifyInput(this, new NotifyInputEventArgs(item));
-                            }
+                            this.InputDeviceEvents[devType]._preNotifyInput?.Invoke(this, new NotifyInputEventArgs(item));
 
                             // Raise the input event being processed.
-                            InputEventArgs input = item.Input;
+                            var input = item.Input;
 
                             // Some input events are explicitly associated with
                             // an element.  Those that are not instead are associated with
                             // the target of the input device for this event.
-                            UIElement eventSource = input._source as UIElement;
+                            var eventSource = input._source as UIElement;
 
-                            if (eventSource == null && input._inputDevice != null)
-                            {
+                            if (eventSource == null && input._inputDevice != null) {
                                 eventSource = input._inputDevice.Target;
                             }
 
-                            if (eventSource != null)
-                            {
+                            if (eventSource != null) {
                                 eventSource.RaiseEvent(input);
                             }
 
                             // Post-Notify the input.
                             //
-                            if (InputDeviceEvents[devType]._postNotifyInput != null)
-                            {
-                                InputDeviceEvents[devType]._postNotifyInput(this, new NotifyInputEventArgs(item));
-                            }
+                            this.InputDeviceEvents[devType]._postNotifyInput?.Invoke(this, new NotifyInputEventArgs(item));
 
                             // Post-Process the input.  This could modify the staging
                             // area.
-                            if (InputDeviceEvents[devType]._postProcessInput != null)
-                            {
-                                InputDeviceEvents[devType]._postProcessInput(this, new ProcessInputEventArgs(item));
-                            }
+                            this.InputDeviceEvents[devType]._postProcessInput?.Invoke(this, new ProcessInputEventArgs(item));
 
                             // PreviewInputReport --> InputReport
-                            if (item.Input._routedEvent == InputManager.PreviewInputReportEvent)
-                            {
-                                if (!item.Input.Handled)
-                                {
-                                    InputReportEventArgs previewInputReport = (InputReportEventArgs)item.Input;
-                                    InputReportEventArgs inputReport = new InputReportEventArgs(previewInputReport.Device, previewInputReport.Report);
-                                    inputReport.RoutedEvent = InputManager.InputReportEvent;
+                            if (item.Input._routedEvent == InputManager.PreviewInputReportEvent) {
+                                if (!item.Input.Handled) {
+                                    var previewInputReport = (InputReportEventArgs)item.Input;
+                                    var inputReport = new InputReportEventArgs(previewInputReport.Device, previewInputReport.Report) {
+                                        RoutedEvent = InputManager.InputReportEvent
+                                    };
 
-                                    _currentStagingStack.Push(new StagingAreaInputItem(inputReport, item));
+                                    this._currentStagingStack.Push(new StagingAreaInputItem(inputReport, item));
                                 }
                             }
 
-                            if (input.Handled)
-                            {
+                            if (input.Handled) {
                                 handled = true;
                             }
                         }
-                    } while (_currentStagingStack.Count > 0);
+                    } while (this._currentStagingStack.Count > 0);
                 }
             }
-            finally
-            {
+            finally {
                 // It is possible that we can be re-entered by a nested
                 // dispatcher frame.  Continue processing the staging
                 // area if we need to.
-                if (_stagingArea.Count > 0)
-                {
+                if (this._stagingArea.Count > 0) {
                     // Before we actually start to drain the staging area, we need
                     // to post a work item to process more input.  This enables us
                     // to process more input if we enter a nested pump.
-                    Dispatcher.BeginInvoke(_continueProcessingStagingAreaCallback, Dispatcher.CurrentFrame);
+                    this.Dispatcher.BeginInvoke(this._continueProcessingStagingAreaCallback, this.Dispatcher.CurrentFrame);
                 }
 
-                _frameStagingArea.Remove(frame);
+                this._frameStagingArea.Remove(frame);
             }
 
             return handled;
@@ -337,97 +274,83 @@ namespace Microsoft.SPOT.Input
         private DispatcherOperationCallback _continueProcessingStagingAreaCallback;
         private ArrayList _frameStagingArea;
 
-        public enum InputDeviceType : int
-        {
+        public enum InputDeviceType : int {
             Button = 0,
             Touch,
             Generic,
             Last,
         }
 
-        public class DeviceEvents : DispatcherObject
-        {
+        public class DeviceEvents : DispatcherObject {
             /// <summary>Subscribe for all input before it is processed</summary>
-            public event PreProcessInputEventHandler PreProcessInput
-            {
-                add
-                {
+            public event PreProcessInputEventHandler PreProcessInput {
+                add {
                     VerifyAccess();
 
                     // Add the handlers in reverse order so that handlers that
                     // users add are invoked before handlers in the system.
 
-                    _preProcessInput = (PreProcessInputEventHandler)Delegate.Combine(value, _preProcessInput);
+                    this._preProcessInput = (PreProcessInputEventHandler)Delegate.Combine(value, this._preProcessInput);
                 }
 
-                remove
-                {
+                remove {
                     VerifyAccess();
 
-                    _preProcessInput = (PreProcessInputEventHandler)Delegate.Remove(_preProcessInput, value);
+                    this._preProcessInput = (PreProcessInputEventHandler)Delegate.Remove(this._preProcessInput, value);
                 }
             }
 
             /// <summary>Subscribe for all input before it is notified</summary>
-            public event NotifyInputEventHandler PreNotifyInput
-            {
-                add
-                {
+            public event NotifyInputEventHandler PreNotifyInput {
+                add {
                     VerifyAccess();
 
                     // Add the handlers in reverse order so that handlers that
                     // users add are invoked before handlers in the system.
 
-                    _preNotifyInput = (NotifyInputEventHandler)Delegate.Combine(value, _preNotifyInput);
+                    this._preNotifyInput = (NotifyInputEventHandler)Delegate.Combine(value, this._preNotifyInput);
                 }
 
-                remove
-                {
+                remove {
                     VerifyAccess();
-                    _preNotifyInput = (NotifyInputEventHandler)Delegate.Remove(_preNotifyInput, value);
+                    this._preNotifyInput = (NotifyInputEventHandler)Delegate.Remove(this._preNotifyInput, value);
                 }
 
             }
 
             /// <summary>Subscribe to all input after it is notified</summary>
-            public event NotifyInputEventHandler PostNotifyInput
-            {
-                add
-                {
+            public event NotifyInputEventHandler PostNotifyInput {
+                add {
                     VerifyAccess();
 
                     // Add the handlers in reverse order so that handlers that
                     // users add are invoked before handlers in the system.
 
-                    _postNotifyInput = (NotifyInputEventHandler)Delegate.Combine(value, _postNotifyInput);
+                    this._postNotifyInput = (NotifyInputEventHandler)Delegate.Combine(value, this._postNotifyInput);
                 }
 
-                remove
-                {
+                remove {
                     VerifyAccess();
 
-                    _postNotifyInput = (NotifyInputEventHandler)Delegate.Remove(_postNotifyInput, value);
+                    this._postNotifyInput = (NotifyInputEventHandler)Delegate.Remove(this._postNotifyInput, value);
                 }
             }
 
             /// <summary>subscribe to all input after it is processed</summary>
-            public event ProcessInputEventHandler PostProcessInput
-            {
-                add
-                {
+            public event ProcessInputEventHandler PostProcessInput {
+                add {
                     VerifyAccess();
 
                     // Add the handlers in reverse order so that handlers that
                     // users add are invoked before handlers in the system.
 
-                    _postProcessInput = (ProcessInputEventHandler)Delegate.Combine(value, _postProcessInput);
+                    this._postProcessInput = (ProcessInputEventHandler)Delegate.Combine(value, this._postProcessInput);
                 }
 
-                remove
-                {
+                remove {
                     VerifyAccess();
 
-                    _postProcessInput = (ProcessInputEventHandler)Delegate.Remove(_postProcessInput, value);
+                    this._postProcessInput = (ProcessInputEventHandler)Delegate.Remove(this._postProcessInput, value);
                 }
             }
 

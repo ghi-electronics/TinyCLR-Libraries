@@ -3,13 +3,10 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 using System;
-using Microsoft.SPOT;
-using Microsoft.SPOT.Input;
-using Microsoft.SPOT.Touch;
 using Microsoft.SPOT.Presentation;
+using Microsoft.SPOT.Touch;
 
-namespace Microsoft.SPOT.Input
-{
+namespace Microsoft.SPOT.Input {
     /// <summary>
     ///     The RawTouchInputReport class encapsulates the raw input
     ///     provided from a multitouch source.
@@ -19,8 +16,7 @@ namespace Microsoft.SPOT.Input
     ///     blittable types.  This is required so that the report can be
     ///     marshalled across application domains.
     /// </remarks>
-    public class RawTouchInputReport : InputReport
-    {
+    public class RawTouchInputReport : InputReport {
         /// <summary>
         ///     Constructs an instance of the RawKeyboardInputReport class.
         /// </summary>
@@ -31,19 +27,17 @@ namespace Microsoft.SPOT.Input
         ///     The time when the input occured.
         /// </param>
         public RawTouchInputReport(PresentationSource inputSource, DateTime timestamp, byte eventMessage, TouchInput[] touches)
-            : base(inputSource, timestamp)
-        {
-            EventMessage = eventMessage;
-            Touches = touches;
+            : base(inputSource, timestamp) {
+            this.EventMessage = eventMessage;
+            this.Touches = touches;
         }
 
         public RawTouchInputReport(PresentationSource inputSource,
                     DateTime timestamp, byte eventMessage, TouchInput[] touches, UIElement destTarget)
-            : base(inputSource, timestamp)
-        {
-            EventMessage = eventMessage;
-            Touches = touches;
-            Target = destTarget;
+            : base(inputSource, timestamp) {
+            this.EventMessage = eventMessage;
+            this.Touches = touches;
+            this.Target = destTarget;
         }
 
         public readonly UIElement Target;
@@ -51,8 +45,7 @@ namespace Microsoft.SPOT.Input
         public readonly TouchInput[] Touches;
     }
 
-    public enum RawTouchActions
-    {
+    public enum RawTouchActions {
         TouchDown = 0x01,
         TouchUp = 0x02,
         Activate = 0x04,

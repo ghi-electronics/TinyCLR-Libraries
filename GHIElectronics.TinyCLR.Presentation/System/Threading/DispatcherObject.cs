@@ -2,12 +2,9 @@
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-using System;
-using System.Collections;
 using System.Threading;
 
-namespace Microsoft.SPOT
-{
+namespace Microsoft.SPOT {
     /// <summary>
     ///     A DispatcherObject is an object associated with a
     ///     <see cref="Dispatcher"/>.  A DispatcherObject instance should
@@ -21,8 +18,7 @@ namespace Microsoft.SPOT
     ///     DispatcherObject cannot be independently instantiated; that is,
     ///     all constructors are protected.
     /// </remarks>
-    public abstract class DispatcherObject
-    {
+    public abstract class DispatcherObject {
 
         /// <summary>
         ///     Checks that the calling thread has access to this object.
@@ -36,15 +32,13 @@ namespace Microsoft.SPOT
         /// <returns>
         ///     True if the calling thread has access to this object.
         /// </returns>
-        public bool CheckAccess()
-        {
-            bool accessAllowed = true;
+        public bool CheckAccess() {
+            var accessAllowed = true;
 
             // Note: a DispatcherObject that is not associated with a
             // dispatcher is considered to be free-threaded.
-            if (Dispatcher != null)
-            {
-                accessAllowed = Dispatcher.CheckAccess();
+            if (this.Dispatcher != null) {
+                accessAllowed = this.Dispatcher.CheckAccess();
             }
 
             return accessAllowed;
@@ -61,23 +55,18 @@ namespace Microsoft.SPOT
         ///
         ///     This is only verified in debug builds.
         /// </remarks>
-        public void VerifyAccess()
-        {
+        public void VerifyAccess() {
             // Note: a DispatcherObject that is not associated with a
             // dispatcher is considered to be free-threaded.
-            if (Dispatcher != null)
-            {
-                Dispatcher.VerifyAccess();
+            if (this.Dispatcher != null) {
+                this.Dispatcher.VerifyAccess();
             }
         }
 
         /// <summary>
         ///     Instantiate this object associated with the current Dispatcher.
         /// </summary>
-        protected DispatcherObject()
-        {
-            Dispatcher = Dispatcher.CurrentDispatcher;
-        }
+        protected DispatcherObject() => this.Dispatcher = Dispatcher.CurrentDispatcher;
 
         /// <summary>
         ///     Instantiate this object associated with the current Dispatcher.
@@ -85,17 +74,14 @@ namespace Microsoft.SPOT
         /// <param name="canBeUnbound">
         ///     Whether or not the object can be detached from any Dispatcher.
         /// </param>
-        internal DispatcherObject(bool canBeUnbound)
-        {
-            if (canBeUnbound)
-            {
+        internal DispatcherObject(bool canBeUnbound) {
+            if (canBeUnbound) {
                 // DispatcherObjects that can be unbound do not force
                 // the creation of a dispatcher.
-                Dispatcher = Dispatcher.FromThread(Thread.CurrentThread);
+                this.Dispatcher = Dispatcher.FromThread(Thread.CurrentThread);
             }
-            else
-            {
-                Dispatcher = Dispatcher.CurrentDispatcher;
+            else {
+                this.Dispatcher = Dispatcher.CurrentDispatcher;
             }
         }
 

@@ -2,15 +2,12 @@
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-using System;
 
-namespace Microsoft.SPOT.Presentation
-{
+namespace Microsoft.SPOT.Presentation {
     /// <summary>
     /// Visibility - Enum which describes 3 possible visibility options.
     /// </summary>
-    public enum Visibility
-    {
+    public enum Visibility {
         /// <summary>
         /// Normally visible.
         /// </summary>

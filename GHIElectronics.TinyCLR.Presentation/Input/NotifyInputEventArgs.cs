@@ -3,11 +3,8 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 using System;
-using System.Collections;
-using Microsoft.SPOT;
 
-namespace Microsoft.SPOT.Input
-{
+namespace Microsoft.SPOT.Input {
     /// <summary>
     ///     Provides information about an input event being processed by the
     ///     input manager.
@@ -18,13 +15,9 @@ namespace Microsoft.SPOT.Input
     ///     <list>
     ///     </list>
     /// </remarks>
-    public class NotifyInputEventArgs : EventArgs
-    {
+    public class NotifyInputEventArgs : EventArgs {
         // Only we can make these.
-        internal NotifyInputEventArgs(StagingAreaInputItem input)
-        {
-            StagingItem = input;
-        }
+        internal NotifyInputEventArgs(StagingAreaInputItem input) => this.StagingItem = input;
 
         /// <summary>
         ///     The staging area input item being processed by the input

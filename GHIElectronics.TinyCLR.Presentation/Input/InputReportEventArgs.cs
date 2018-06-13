@@ -3,17 +3,13 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 using System;
-using Microsoft.SPOT;
-using Microsoft.SPOT.Presentation;
 
-namespace Microsoft.SPOT.Input
-{
+namespace Microsoft.SPOT.Input {
     /// <summary>
     ///     The InputReportEventArgs class contains information about an input
     ///     report that is being processed.
     /// </summary>
-    public class InputReportEventArgs : InputEventArgs
-    {
+    public class InputReportEventArgs : InputEventArgs {
         /// <summary>
         ///     Initializes a new instance of the InputReportEventArgs class.
         /// </summary>
@@ -25,13 +21,7 @@ namespace Microsoft.SPOT.Input
         /// </param>
         public InputReportEventArgs(InputDevice inputDevice,
                                     InputReport report)
-            : base(inputDevice, ((report != null) ? report.Timestamp : DateTime.MinValue))
-        {
-            if (report == null)
-                throw new ArgumentNullException("report");
-
-            Report = report;
-        }
+            : base(inputDevice, ((report != null) ? report.Timestamp : DateTime.MinValue)) => this.Report = report ?? throw new ArgumentNullException("report");
 
         /// <summary>
         ///     Read-only access to the input report being processed.

@@ -5,14 +5,12 @@
 using System;
 using Microsoft.SPOT.Presentation;
 
-namespace Microsoft.SPOT.Input
-{
+namespace Microsoft.SPOT.Input {
     /// <summary>
     ///     The ButtonEventArgs class contains information about button states.
     /// </summary>
     /// <ExternalAPI/>
-    public class ButtonEventArgs : InputEventArgs
-    {
+    public class ButtonEventArgs : InputEventArgs {
         /// <summary>
         ///     Constructs an instance of the ButtonEventArgs class.
         /// </summary>
@@ -26,10 +24,9 @@ namespace Microsoft.SPOT.Input
         ///     The button referenced by the event.
         /// </param>
         public ButtonEventArgs(ButtonDevice buttonDevice, PresentationSource inputSource, DateTime timestamp, Button button)
-            : base(buttonDevice, timestamp)
-        {
-            InputSource = inputSource;
-            Button = button;
+            : base(buttonDevice, timestamp) {
+            this.InputSource = inputSource;
+            this.Button = button;
         }
 
         /// <summary>
@@ -40,10 +37,7 @@ namespace Microsoft.SPOT.Input
         /// <summary>
         ///     The state of the button referenced by the event.
         /// </summary>
-        public ButtonState ButtonState
-        {
-            get { return ((ButtonDevice)this.Device).GetButtonState(Button); }
-        }
+        public ButtonState ButtonState => ((ButtonDevice)this.Device).GetButtonState(this.Button);
 
         /// <summary>
         /// The source for this button
@@ -53,10 +47,7 @@ namespace Microsoft.SPOT.Input
         /// <summary>
         ///     Whether the button pressed is a repeated button or not.
         /// </summary>
-        public bool IsRepeat
-        {
-            get { return _isRepeat; }
-        }
+        public bool IsRepeat => this._isRepeat;
 
         internal bool _isRepeat;
     }

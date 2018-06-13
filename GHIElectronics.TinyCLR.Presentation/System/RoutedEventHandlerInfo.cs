@@ -2,17 +2,15 @@
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-using System;
 
-namespace Microsoft.SPOT
-{
+namespace Microsoft.SPOT {
 
     /// <summary>
     ///     RoutedEventHandler Definition
     /// </summary>
     /// <ExternalAPI/>
     public delegate void RoutedEventHandler(object sender, RoutedEventArgs e);
-    
+
     /// <summary>
     ///     Container for handler instance and other
     ///     invocation preferences for this handler
@@ -29,8 +27,7 @@ namespace Microsoft.SPOT
     ///     used by ContentElement in the Framework
     ///     to store Instance EventHandlers
     /// </remarks>
-    public class RoutedEventHandlerInfo
-    {
+    public class RoutedEventHandlerInfo {
         #region Construction
 
         /// <summary>
@@ -43,10 +40,9 @@ namespace Microsoft.SPOT
         ///     Flag that indicates if or not the handler must
         ///     be invoked for already handled events
         /// </param>
-        internal RoutedEventHandlerInfo(RoutedEventHandler handler, bool handledEventsToo)
-        {
-            _handler = handler;
-            _handledEventsToo = handledEventsToo;
+        internal RoutedEventHandlerInfo(RoutedEventHandler handler, bool handledEventsToo) {
+            this._handler = handler;
+            this._handledEventsToo = handledEventsToo;
         }
 
         #endregion Construction
@@ -56,27 +52,20 @@ namespace Microsoft.SPOT
         /// <summary>
         ///     Returns associated handler instance
         /// </summary>
-        public RoutedEventHandler Handler
-        {
-            get { return _handler; }
-        }
+        public RoutedEventHandler Handler => this._handler;
 
         /// <summary>
         ///     Returns HandledEventsToo Flag
         /// </summary>
-        public bool InvokeHandledEventsToo
-        {
-            get { return _handledEventsToo; }
-        }
+        public bool InvokeHandledEventsToo => this._handledEventsToo;
 
         /// <summary>
         ///     Is the given object equivalent to the current one
         /// </summary>
-        public override bool Equals(object obj)
-        {
-            RoutedEventHandlerInfo tmp = obj as RoutedEventHandlerInfo;
+        public override bool Equals(object obj) {
+            var tmp = obj as RoutedEventHandlerInfo;
 
-            if (tmp == null )
+            if (tmp == null)
                 return false;
 
             return Equals(tmp);
@@ -85,35 +74,23 @@ namespace Microsoft.SPOT
         /// <summary>
         ///     Is the given RoutedEventHandlerInfo equals the current
         /// </summary>
-        public bool Equals(RoutedEventHandlerInfo handlerInfo)
-        {
-            return _handler == handlerInfo._handler && _handledEventsToo == handlerInfo._handledEventsToo;
-        }
+        public bool Equals(RoutedEventHandlerInfo handlerInfo) => this._handler == handlerInfo._handler && this._handledEventsToo == handlerInfo._handledEventsToo;
 
         /// <summary>
         ///     Serves as a hash function for a particular type, suitable for use in
         ///     hashing algorithms and data structures like a hash table
         /// </summary>
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
-        }
+        public override int GetHashCode() => base.GetHashCode();
 
         /// <summary>
         ///     Equals operator overload
         /// </summary>
-        public static bool operator ==(RoutedEventHandlerInfo handlerInfo1, RoutedEventHandlerInfo handlerInfo2)
-        {
-            return handlerInfo1.Equals(handlerInfo2);
-        }
+        public static bool operator ==(RoutedEventHandlerInfo handlerInfo1, RoutedEventHandlerInfo handlerInfo2) => handlerInfo1.Equals(handlerInfo2);
 
         /// <summary>
         ///     NotEquals operator overload
         /// </summary>
-        public static bool operator !=(RoutedEventHandlerInfo handlerInfo1, RoutedEventHandlerInfo handlerInfo2)
-        {
-            return !handlerInfo1.Equals(handlerInfo2);
-        }
+        public static bool operator !=(RoutedEventHandlerInfo handlerInfo1, RoutedEventHandlerInfo handlerInfo2) => !handlerInfo1.Equals(handlerInfo2);
 
         #endregion Operations
 

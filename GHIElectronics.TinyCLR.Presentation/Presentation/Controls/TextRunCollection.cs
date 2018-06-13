@@ -5,132 +5,82 @@
 using System;
 using System.Collections;
 using System.Drawing;
-using Microsoft.SPOT.Input;
-using Microsoft.SPOT.Presentation.Media;
 
-namespace Microsoft.SPOT.Presentation.Controls
-{
-    public class TextRunCollection : ICollection
-    {
+namespace Microsoft.SPOT.Presentation.Controls {
+    public class TextRunCollection : ICollection {
         private TextFlow _textFlow;
         private ArrayList _textRuns;
 
-        internal TextRunCollection(TextFlow textFlow)
-        {
+        internal TextRunCollection(TextFlow textFlow) {
             this._textFlow = textFlow;
-            _textRuns = new ArrayList();
+            this._textRuns = new ArrayList();
         }
 
-        public int Count
-        {
-            get
-            {
-                return _textRuns.Count;
-            }
-        }
+        public int Count => this._textRuns.Count;
 
-        public int Add(string text, Font font, Color foreColor)
-        {
-            return Add(new TextRun(text, font, foreColor));
-        }
+        public int Add(string text, Font font, Color foreColor) => Add(new TextRun(text, font, foreColor));
 
-        public int Add(TextRun textRun)
-        {
-            if (textRun == null)
-            {
+        public int Add(TextRun textRun) {
+            if (textRun == null) {
                 throw new ArgumentNullException("textRun");
             }
 
-            int result = _textRuns.Add(textRun);
-            _textFlow.InvalidateMeasure();
+            var result = this._textRuns.Add(textRun);
+            this._textFlow.InvalidateMeasure();
             return result;
         }
 
-        public void Clear()
-        {
-            _textRuns.Clear();
-            _textFlow.InvalidateMeasure();
+        public void Clear() {
+            this._textRuns.Clear();
+            this._textFlow.InvalidateMeasure();
         }
 
-        public bool Contains(TextRun run)
-        {
-            return _textRuns.Contains(run);
+        public bool Contains(TextRun run) => this._textRuns.Contains(run);
+
+        public int IndexOf(TextRun run) => this._textRuns.IndexOf(run);
+
+        public void Insert(int index, TextRun run) {
+            this._textRuns.Insert(index, run);
+            this._textFlow.InvalidateMeasure();
         }
 
-        public int IndexOf(TextRun run)
-        {
-            return _textRuns.IndexOf(run);
+        public void Remove(TextRun run) {
+            this._textRuns.Remove(run);
+            this._textFlow.InvalidateMeasure();
         }
 
-        public void Insert(int index, TextRun run)
-        {
-            _textRuns.Insert(index, run);
-            _textFlow.InvalidateMeasure();
-        }
-
-        public void Remove(TextRun run)
-        {
-            _textRuns.Remove(run);
-            _textFlow.InvalidateMeasure();
-        }
-
-        public void RemoveAt(int index)
-        {
-            if (index < 0 || index >= _textRuns.Count)
-            {
+        public void RemoveAt(int index) {
+            if (index < 0 || index >= this._textRuns.Count) {
                 throw new ArgumentOutOfRangeException("index");
             }
 
-            _textRuns.RemoveAt(index);
+            this._textRuns.RemoveAt(index);
 
-            _textFlow.InvalidateMeasure();
+            this._textFlow.InvalidateMeasure();
         }
 
-        public TextRun this[int index]
-        {
-            get
-            {
-                return (TextRun)_textRuns[index];
-            }
+        public TextRun this[int index] {
+            get => (TextRun)this._textRuns[index];
 
-            set
-            {
-                _textRuns[index] = value;
-                _textFlow.InvalidateMeasure();
+            set {
+                this._textRuns[index] = value;
+                this._textFlow.InvalidateMeasure();
             }
         }
 
         #region ICollection Members
 
-        public bool IsSynchronized
-        {
-            get
-            {
-                return false;
-            }
-        }
+        public bool IsSynchronized => false;
 
-        public void CopyTo(Array array, int index)
-        {
-            _textRuns.CopyTo(array, index);
-        }
+        public void CopyTo(Array array, int index) => this._textRuns.CopyTo(array, index);
 
-        public object SyncRoot
-        {
-            get
-            {
-                return null;
-            }
-        }
+        public object SyncRoot => null;
 
         #endregion
 
         #region IEnumerable Members
 
-        public IEnumerator GetEnumerator()
-        {
-            return _textRuns.GetEnumerator();
-        }
+        public IEnumerator GetEnumerator() => this._textRuns.GetEnumerator();
 
         #endregion
     }

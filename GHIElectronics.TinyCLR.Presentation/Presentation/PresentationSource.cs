@@ -2,20 +2,14 @@
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-using System;
-using System.Collections;
-using System.Threading;
-using Microsoft.SPOT;
 using Microsoft.SPOT.Input;
 
-namespace Microsoft.SPOT.Presentation
-{
+namespace Microsoft.SPOT.Presentation {
     /// <summary>
     /// Presentation source is our connection to the rest of the managed system.
     ///
     /// </summary>
-    public class PresentationSource : DispatcherObject
-    {
+    public class PresentationSource : DispatcherObject {
         //------------------------------------------------------
         //
         // Constructors
@@ -26,8 +20,7 @@ namespace Microsoft.SPOT.Presentation
         /// <summary>
         ///     Constructs an instance of the PresentationSource object.
         /// </summary>
-        public PresentationSource()
-        {
+        public PresentationSource() {
         }
 
         #endregion
@@ -35,32 +28,24 @@ namespace Microsoft.SPOT.Presentation
         /// <summary>
         /// The Root UIElement for this source.
         /// </summary>
-        public UIElement RootUIElement
-        {
-            get
-            {
-                return _rootUIElement;
-            }
+        public UIElement RootUIElement {
+            get => this._rootUIElement;
 
-            set
-            {
+            set {
                 VerifyAccess();
 
-                if (_rootUIElement != value)
-                {
-                    UIElement oldRoot = _rootUIElement;
+                if (this._rootUIElement != value) {
+                    var oldRoot = this._rootUIElement;
 
-                    _rootUIElement = value;
+                    this._rootUIElement = value;
 
-                    if (value != null)
-                    {
+                    if (value != null) {
                         /*  need layout events
                           _rootUIElement.LayoutUpdated += new EventHandler(OnLayoutUpdated);
                         */
                     }
 
-                    if (oldRoot != null)
-                    {
+                    if (oldRoot != null) {
                         /* we need layout events
                         oldRoot.LayoutUpdated -= new EventHandler(OnLayoutUpdated);
                         */
@@ -72,9 +57,7 @@ namespace Microsoft.SPOT.Presentation
 
                     // set up the size.
                     value.Measure(Media.Constants.MaxExtent, Media.Constants.MaxExtent);
-
-                    int desiredWidth, desiredHeight;
-                    value.GetDesiredSize(out desiredWidth, out desiredHeight);
+                    value.GetDesiredSize(out var desiredWidth, out var desiredHeight);
                     value.Arrange(0, 0, desiredWidth, desiredHeight);
 
                     // update focus.

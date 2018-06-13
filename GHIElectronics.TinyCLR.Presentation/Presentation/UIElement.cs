@@ -3,29 +3,23 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 using System;
-using System.Threading;
 using System.Collections;
-using System.Runtime.CompilerServices;
-
-using Microsoft.SPOT.Touch;
+using System.Diagnostics;
 using Microsoft.SPOT.Input;
 using Microsoft.SPOT.Presentation.Media;
-using System.Diagnostics;
+using Microsoft.SPOT.Touch;
 
-namespace Microsoft.SPOT.Presentation
-{
-    public abstract class UIElement : DispatcherObject
-    {
-        protected UIElement()
-        {
+namespace Microsoft.SPOT.Presentation {
+    public abstract class UIElement : DispatcherObject {
+        protected UIElement() {
             EnsureClassHandlers();
 
-            _flags = Flags.NeverMeasured | Flags.NeverArranged | Flags.Enabled;
+            this._flags = Flags.NeverMeasured | Flags.NeverArranged | Flags.Enabled;
 
-            _visibility = Visibility.Visible;
+            this._visibility = Visibility.Visible;
 
-            _verticalAlignment = VerticalAlignment.Stretch;
-            _horizontalAlignment = HorizontalAlignment.Stretch;
+            this._verticalAlignment = VerticalAlignment.Stretch;
+            this._horizontalAlignment = HorizontalAlignment.Stretch;
         }
 
         #region Class Handlers
@@ -34,21 +28,18 @@ namespace Microsoft.SPOT.Presentation
             Hashtable table,
             RoutedEvent routedEvent,
             RoutedEventHandler handler,
-            bool handledEventsToo)
-        {
-            if (routedEvent == null || handler == null)
-            {
+            bool handledEventsToo) {
+            if (routedEvent == null || handler == null) {
                 throw new ArgumentNullException();
             }
 
             // Create a new RoutedEventHandler
-            RoutedEventHandlerInfo routedEventHandlerInfo =
+            var routedEventHandlerInfo =
                 new RoutedEventHandlerInfo(handler, handledEventsToo);
 
             // Get the entry corresponding to the given RoutedEvent
-            ArrayList handlers = (ArrayList)table[routedEvent];
-            if (handlers == null)
-            {
+            var handlers = (ArrayList)table[routedEvent];
+            if (handlers == null) {
                 table[routedEvent] = (handlers = new ArrayList());
             }
 
@@ -56,32 +47,30 @@ namespace Microsoft.SPOT.Presentation
             handlers.Add(routedEventHandlerInfo);
         }
 
-        private static void EnsureClassHandlers()
-        {
+        private static void EnsureClassHandlers() {
             // since we can't rely on the order of static constructors,
             // we will do this the first time an element is created.
             // we have a single dispatcher, so we don't have to worry about
             // race conditions here..
 
-            if (_classEventHandlersStore == null)
-            {
+            if (_classEventHandlersStore == null) {
                 _classEventHandlersStore = new Hashtable();
 
                 // buttons
                 AddRoutedEventHandler(_classEventHandlersStore, Buttons.PreviewButtonDownEvent, new RoutedEventHandler(UIElement.OnPreviewButtonDownThunk), false);
-                AddRoutedEventHandler(_classEventHandlersStore, Buttons.ButtonDownEvent       , new RoutedEventHandler(UIElement.OnButtonDownThunk)       , false);
-                AddRoutedEventHandler(_classEventHandlersStore, Buttons.PreviewButtonUpEvent  , new RoutedEventHandler(UIElement.OnPreviewButtonUpThunk)  , false);
-                AddRoutedEventHandler(_classEventHandlersStore, Buttons.ButtonUpEvent         , new RoutedEventHandler(UIElement.OnButtonUpThunk)         , false);
+                AddRoutedEventHandler(_classEventHandlersStore, Buttons.ButtonDownEvent, new RoutedEventHandler(UIElement.OnButtonDownThunk), false);
+                AddRoutedEventHandler(_classEventHandlersStore, Buttons.PreviewButtonUpEvent, new RoutedEventHandler(UIElement.OnPreviewButtonUpThunk), false);
+                AddRoutedEventHandler(_classEventHandlersStore, Buttons.ButtonUpEvent, new RoutedEventHandler(UIElement.OnButtonUpThunk), false);
 
                 // focus
-                AddRoutedEventHandler(_classEventHandlersStore, Buttons.GotFocusEvent         , new RoutedEventHandler(UIElement.OnGotFocusThunk)          , true);
-                AddRoutedEventHandler(_classEventHandlersStore, Buttons.LostFocusEvent        , new RoutedEventHandler(UIElement.OnLostFocusThunk)         , true);
+                AddRoutedEventHandler(_classEventHandlersStore, Buttons.GotFocusEvent, new RoutedEventHandler(UIElement.OnGotFocusThunk), true);
+                AddRoutedEventHandler(_classEventHandlersStore, Buttons.LostFocusEvent, new RoutedEventHandler(UIElement.OnLostFocusThunk), true);
 
-                AddRoutedEventHandler(_classEventHandlersStore, TouchEvents.TouchDownEvent    , new RoutedEventHandler(UIElement.OnTouchDownThunk)         , false);
-                AddRoutedEventHandler(_classEventHandlersStore, TouchEvents.TouchUpEvent      , new RoutedEventHandler(UIElement.OnTouchUpThunk)           , false);
-                AddRoutedEventHandler(_classEventHandlersStore, TouchEvents.TouchMoveEvent    , new RoutedEventHandler(UIElement.OnTouchMoveThunk)         , false);
+                AddRoutedEventHandler(_classEventHandlersStore, TouchEvents.TouchDownEvent, new RoutedEventHandler(UIElement.OnTouchDownThunk), false);
+                AddRoutedEventHandler(_classEventHandlersStore, TouchEvents.TouchUpEvent, new RoutedEventHandler(UIElement.OnTouchUpThunk), false);
+                AddRoutedEventHandler(_classEventHandlersStore, TouchEvents.TouchMoveEvent, new RoutedEventHandler(UIElement.OnTouchMoveThunk), false);
 
-                AddRoutedEventHandler(_classEventHandlersStore, GenericEvents.GenericStandardEvent, new RoutedEventHandler(UIElement.OnGenericEventThunk)  , true);
+                AddRoutedEventHandler(_classEventHandlersStore, GenericEvents.GenericStandardEvent, new RoutedEventHandler(UIElement.OnGenericEventThunk), true);
 
             }
         }
@@ -92,119 +81,68 @@ namespace Microsoft.SPOT.Presentation
         // or to use per-instance storage for every class handler (wasteful).  So we will trade off some code size here
         // to get class handlers.
 
-        private static void OnPreviewButtonDownThunk(object sender, RoutedEventArgs e) { ((UIElement)sender).OnPreviewButtonDown((ButtonEventArgs)e); }
+        private static void OnPreviewButtonDownThunk(object sender, RoutedEventArgs e) => ((UIElement)sender).OnPreviewButtonDown((ButtonEventArgs)e);
 
-        private static void OnButtonDownThunk(object sender, RoutedEventArgs e) { ((UIElement)sender).OnButtonDown((ButtonEventArgs)e); }
+        private static void OnButtonDownThunk(object sender, RoutedEventArgs e) => ((UIElement)sender).OnButtonDown((ButtonEventArgs)e);
 
-        private static void OnPreviewButtonUpThunk(object sender, RoutedEventArgs e) { ((UIElement)sender).OnPreviewButtonUp((ButtonEventArgs)e); }
+        private static void OnPreviewButtonUpThunk(object sender, RoutedEventArgs e) => ((UIElement)sender).OnPreviewButtonUp((ButtonEventArgs)e);
 
-        private static void OnButtonUpThunk(object sender, RoutedEventArgs e) { ((UIElement)sender).OnButtonUp((ButtonEventArgs)e); }
+        private static void OnButtonUpThunk(object sender, RoutedEventArgs e) => ((UIElement)sender).OnButtonUp((ButtonEventArgs)e);
 
-        private static void OnGotFocusThunk(object sender, RoutedEventArgs e) { ((UIElement)sender).OnGotFocus((FocusChangedEventArgs)e); }
+        private static void OnGotFocusThunk(object sender, RoutedEventArgs e) => ((UIElement)sender).OnGotFocus((FocusChangedEventArgs)e);
 
-        private static void OnLostFocusThunk(object sender, RoutedEventArgs e) { ((UIElement)sender).OnLostFocus((FocusChangedEventArgs)e); }
+        private static void OnLostFocusThunk(object sender, RoutedEventArgs e) => ((UIElement)sender).OnLostFocus((FocusChangedEventArgs)e);
 
-        private static void OnGenericEventThunk(object sender, RoutedEventArgs e) { ((UIElement)sender).OnGenericEvent((GenericEventArgs)e); }
+        private static void OnGenericEventThunk(object sender, RoutedEventArgs e) => ((UIElement)sender).OnGenericEvent((GenericEventArgs)e);
 
-        protected virtual void OnGenericEvent(GenericEventArgs e)
-        {
-            GenericEvent genericEvent = e.InternalEvent;
-            switch (genericEvent.EventCategory)
-            {
+        protected virtual void OnGenericEvent(GenericEventArgs e) {
+            var genericEvent = e.InternalEvent;
+            switch (genericEvent.EventCategory) {
                 case 2: // (byte)EventCategory.Gesture:
                     {
-                        TouchGestureEventArgs ge = new TouchGestureEventArgs();
+                        var ge = new TouchGestureEventArgs {
+                            Gesture = (TouchGesture)genericEvent.EventMessage,
+                            X = genericEvent.X,
+                            Y = genericEvent.Y,
+                            Arguments = (ushort)genericEvent.EventData
+                        };
 
-                        ge.Gesture = (TouchGesture)genericEvent.EventMessage;
-                        ge.X = genericEvent.X;
-                        ge.Y = genericEvent.Y;
-                        ge.Arguments = (ushort)genericEvent.EventData;
-
-                        if (ge.Gesture == TouchGesture.Begin)
-                        {
+                        if (ge.Gesture == TouchGesture.Begin) {
                             OnTouchGestureStarted(ge);
                         }
-                        else if (ge.Gesture == TouchGesture.End)
-                        {
+                        else if (ge.Gesture == TouchGesture.End) {
                             OnTouchGestureEnded(ge);
                         }
-                        else
-                        {
+                        else {
                             OnTouchGestureChanged(ge);
                         }
 
                         break;
                     }
-                default:
-                    {
+                default: {
                         break;
                     }
             }
 
         }
 
-        private static void OnTouchDownThunk(object sender, RoutedEventArgs e)
-        {
-            ((UIElement)sender).OnTouchDown((TouchEventArgs)e);
-        }
+        private static void OnTouchDownThunk(object sender, RoutedEventArgs e) => ((UIElement)sender).OnTouchDown((TouchEventArgs)e);
 
-        private static void OnTouchUpThunk(object sender, RoutedEventArgs e)
-        {
-            ((UIElement)sender).OnTouchUp((TouchEventArgs)e);
-        }
+        private static void OnTouchUpThunk(object sender, RoutedEventArgs e) => ((UIElement)sender).OnTouchUp((TouchEventArgs)e);
 
-        private static void OnTouchMoveThunk(object sender, RoutedEventArgs e)
-        {
-            ((UIElement)sender).OnTouchMove((TouchEventArgs)e);
-        }
+        private static void OnTouchMoveThunk(object sender, RoutedEventArgs e) => ((UIElement)sender).OnTouchMove((TouchEventArgs)e);
 
-        protected virtual void OnTouchDown(TouchEventArgs e)
-        {
-            if (TouchDown != null)
-            {
-                TouchDown(this, e);
-            }
-        }
+        protected virtual void OnTouchDown(TouchEventArgs e) => TouchDown?.Invoke(this, e);
 
-        protected virtual void OnTouchUp(TouchEventArgs e)
-        {
-            if (TouchUp != null)
-            {
-                TouchUp(this, e);
-            }
-        }
+        protected virtual void OnTouchUp(TouchEventArgs e) => TouchUp?.Invoke(this, e);
 
-        protected virtual void OnTouchMove(TouchEventArgs e)
-        {
-            if (TouchMove != null)
-            {
-                TouchMove(this, e);
-            }
-        }
+        protected virtual void OnTouchMove(TouchEventArgs e) => TouchMove?.Invoke(this, e);
 
-        protected virtual void OnTouchGestureStarted(TouchGestureEventArgs e)
-        {
-            if (TouchGestureStart != null)
-            {
-                TouchGestureStart(this, e);
-            }
-        }
+        protected virtual void OnTouchGestureStarted(TouchGestureEventArgs e) => TouchGestureStart?.Invoke(this, e);
 
-        protected virtual void OnTouchGestureChanged(TouchGestureEventArgs e)
-        {
-            if (TouchGestureChanged != null)
-            {
-                TouchGestureChanged(this, e);
-            }
-        }
+        protected virtual void OnTouchGestureChanged(TouchGestureEventArgs e) => TouchGestureChanged?.Invoke(this, e);
 
-        protected virtual void OnTouchGestureEnded(TouchGestureEventArgs e)
-        {
-            if (TouchGestureEnd != null)
-            {
-                TouchGestureEnd(this, e);
-            }
-        }
+        protected virtual void OnTouchGestureEnded(TouchGestureEventArgs e) => TouchGestureEnd?.Invoke(this, e);
 
         /// <summary>
         ///     An event reporting a button was pressed.
@@ -246,131 +184,97 @@ namespace Microsoft.SPOT.Presentation
         public event TouchGestureEventHandler TouchGestureChanged;
         public event TouchGestureEventHandler TouchGestureEnd;
 
-        public void GetDesiredSize(out int width, out int height)
-        {
-            if (this.Visibility == Visibility.Collapsed)
-            {
+        public void GetDesiredSize(out int width, out int height) {
+            if (this.Visibility == Visibility.Collapsed) {
                 width = 0;
                 height = 0;
             }
-            else
-            {
-                width = _desiredWidth;
-                height = _desiredHeight;
+            else {
+                width = this._desiredWidth;
+                height = this._desiredHeight;
             }
         }
 
-        public void GetMargin(out int left, out int top, out int right, out int bottom)
-        {
-            left = _marginLeft;
-            top = _marginTop;
-            right = _marginRight;
-            bottom = _marginBottom;
+        public void GetMargin(out int left, out int top, out int right, out int bottom) {
+            left = this._marginLeft;
+            top = this._marginTop;
+            right = this._marginRight;
+            bottom = this._marginBottom;
         }
 
-        public void SetMargin(int length)
-        {
+        public void SetMargin(int length) {
             VerifyAccess();
 
             SetMargin(length, length, length, length);
         }
 
-        public void SetMargin(int left, int top, int right, int bottom)
-        {
+        public void SetMargin(int left, int top, int right, int bottom) {
             VerifyAccess();
 
-            _marginLeft = left;
-            _marginTop = top;
-            _marginRight = right;
-            _marginBottom = bottom;
+            this._marginLeft = left;
+            this._marginTop = top;
+            this._marginRight = right;
+            this._marginBottom = bottom;
             InvalidateMeasure();
         }
 
-        public int ActualWidth
-        {
-            get
-            {
-                return _renderWidth;
-            }
-        }
+        public int ActualWidth => this._renderWidth;
 
-        public int ActualHeight
-        {
-            get
-            {
-                return _renderHeight;
-            }
-        }
+        public int ActualHeight => this._renderHeight;
 
-        public int Height
-        {
-            get
-            {
-                int height;
-                if (IsHeightSet(out height))
-                {
+        public int Height {
+            get {
+                if (IsHeightSet(out var height)) {
                     return height;
                 }
-                else
-                {
+                else {
                     throw new InvalidOperationException("height not set");
                 }
             }
 
-            set
-            {
+            set {
                 VerifyAccess();
 
-                if(value < 0) throw new ArgumentException();
+                if (value < 0) throw new ArgumentException();
 
-                if (_requestedSize == null)
-                {
-                    _requestedSize = new Pair();
+                if (this._requestedSize == null) {
+                    this._requestedSize = new Pair();
                 }
 
-                _requestedSize._second = value;
-                _requestedSize._status |= Pair.Flags_Second;
+                this._requestedSize._second = value;
+                this._requestedSize._status |= Pair.Flags_Second;
                 InvalidateMeasure();
             }
         }
 
-        public int Width
-        {
-            get
-            {
-                int width;
-                if (IsWidthSet(out width))
-                {
+        public int Width {
+            get {
+                if (IsWidthSet(out var width)) {
                     return width;
                 }
-                else
-                {
+                else {
                     throw new InvalidOperationException("width not set");
                 }
             }
 
-            set
-            {
+            set {
                 VerifyAccess();
 
-                if(value < 0) throw new ArgumentException();
+                if (value < 0) throw new ArgumentException();
 
-                if (_requestedSize == null)
-                {
-                    _requestedSize = new Pair();
+                if (this._requestedSize == null) {
+                    this._requestedSize = new Pair();
                 }
 
-                _requestedSize._first = value;
-                _requestedSize._status |= Pair.Flags_First;
+                this._requestedSize._first = value;
+                this._requestedSize._status |= Pair.Flags_First;
                 InvalidateMeasure();
             }
         }
 
-        private bool IsHeightSet(out int height)
-        {
-            Pair size = _requestedSize;
-            if (size != null && (size._status & Pair.Flags_Second) != 0)
-            {
+        private bool IsHeightSet(out int height) {
+            var size = this._requestedSize;
+            if (size != null && (size._status & Pair.Flags_Second) != 0) {
                 height = size._second;
                 return true;
             }
@@ -379,11 +283,9 @@ namespace Microsoft.SPOT.Presentation
             return false;
         }
 
-        private bool IsWidthSet(out int width)
-        {
-            Pair size = _requestedSize;
-            if (size != null && (size._status & Pair.Flags_First) != 0)
-            {
+        private bool IsWidthSet(out int width) {
+            var size = this._requestedSize;
+            if (size != null && (size._status & Pair.Flags_First) != 0) {
                 width = size._first;
                 return true;
             }
@@ -392,30 +294,25 @@ namespace Microsoft.SPOT.Presentation
             return false;
         }
 
-        public void GetLayoutOffset(out int x, out int y)
-        {
+        public void GetLayoutOffset(out int x, out int y) {
             x = this._offsetX;
             y = this._offsetY;
         }
 
-        public void GetRenderSize(out int width, out int height)
-        {
+        public void GetRenderSize(out int width, out int height) {
             width = this._renderWidth;
             height = this._renderHeight;
         }
 
-        protected UIElementCollection LogicalChildren
-        {
-            get
-            {
+        protected UIElementCollection LogicalChildren {
+            get {
                 VerifyAccess();
 
-                if (_logicalChildren == null)
-                {
-                    _logicalChildren = new UIElementCollection(this);
+                if (this._logicalChildren == null) {
+                    this._logicalChildren = new UIElementCollection(this);
                 }
 
-                return _logicalChildren;
+                return this._logicalChildren;
             }
         }
 
@@ -425,19 +322,15 @@ namespace Microsoft.SPOT.Presentation
         protected internal virtual void OnChildrenChanged(
             UIElement added,
             UIElement removed,
-            int indexAffected)
-        {
+            int indexAffected) {
             //Child visibility can't change if parent isn't visible
-            if ((this._flags & Flags.IsVisibleCache) != 0)
-            {
-                if (removed != null && removed._visibility == Visibility.Visible)
-                {
+            if ((this._flags & Flags.IsVisibleCache) != 0) {
+                if (removed != null && removed._visibility == Visibility.Visible) {
                     removed._flags &= ~Flags.IsVisibleCache;
                     removed.OnIsVisibleChanged(true);
                 }
 
-                if (added != null && added._visibility == Visibility.Visible)
-                {
+                if (added != null && added._visibility == Visibility.Visible) {
                     added._flags |= Flags.IsVisibleCache;
                     added.OnIsVisibleChanged(false);
                 }
@@ -448,63 +341,49 @@ namespace Microsoft.SPOT.Presentation
         ///     A property indicating if the button is focused on this
         ///     element or not.
         /// </summary>
-        public bool IsFocused
-        {
-            get
-            {
+        public bool IsFocused =>
                 // avalon also has a dependencyproperty for this I think, but I'm not sure we need it.
-                return (Buttons.FocusedElement == this);
-            }
-        }
+                (Buttons.FocusedElement == this);
 
         private void ComputeAlignmentOffset(int clientWidth, int clientHeight,
                                             int arrangeWidth, int arrangeHeight,
-                                            out int dx, out int dy)
-        {
-            HorizontalAlignment ha = HorizontalAlignment;
-            VerticalAlignment va = VerticalAlignment;
+                                            out int dx, out int dy) {
+            var ha = this.HorizontalAlignment;
+            var va = this.VerticalAlignment;
 
             //this is to degenerate Stretch to Top-Left in case when clipping is about to occur
             //if we need it to be Center instead, simply remove these 2 ifs
             if (ha == HorizontalAlignment.Stretch
-                && arrangeWidth > clientWidth)
-            {
+                && arrangeWidth > clientWidth) {
                 ha = HorizontalAlignment.Left;
             }
 
             if (va == VerticalAlignment.Stretch
-                && arrangeHeight > clientHeight)
-            {
+                && arrangeHeight > clientHeight) {
                 va = VerticalAlignment.Top;
             }
 
             //end of degeneration of Stretch to Top-Left
 
             if (ha == HorizontalAlignment.Center
-                || ha == HorizontalAlignment.Stretch)
-            {
+                || ha == HorizontalAlignment.Stretch) {
                 dx = (clientWidth - arrangeWidth) / 2;
             }
-            else if (ha == HorizontalAlignment.Right)
-            {
+            else if (ha == HorizontalAlignment.Right) {
                 dx = clientWidth - arrangeWidth;
             }
-            else
-            {
+            else {
                 dx = 0;
             }
 
             if (va == VerticalAlignment.Center
-                || va == VerticalAlignment.Stretch)
-            {
+                || va == VerticalAlignment.Stretch) {
                 dy = (clientHeight - arrangeHeight) / 2;
             }
-            else if (va == VerticalAlignment.Bottom)
-            {
+            else if (va == VerticalAlignment.Bottom) {
                 dy = clientHeight - arrangeHeight;
             }
-            else
-            {
+            else {
                 dy = 0;
             }
         }
@@ -512,21 +391,16 @@ namespace Microsoft.SPOT.Presentation
         /// <summary>
         /// Recursively propagates IsLayoutSuspended flag down to the whole v's sub tree.
         /// </summary>
-        internal static void PropagateSuspendLayout(UIElement v)
-        {
-            if ((v._flags & Flags.IsLayoutSuspended) == 0)
-            {
+        internal static void PropagateSuspendLayout(UIElement v) {
+            if ((v._flags & Flags.IsLayoutSuspended) == 0) {
                 v._flags |= Flags.IsLayoutSuspended;
 
-                UIElementCollection children = v._logicalChildren;
-                if (children != null)
-                {
-                    int count = children.Count;
-                    for (int i = 0; i < count; i++)
-                    {
-                        UIElement child = children[i];
-                        if (child != null)
-                        {
+                var children = v._logicalChildren;
+                if (children != null) {
+                    var count = children.Count;
+                    for (var i = 0; i < count; i++) {
+                        var child = children[i];
+                        if (child != null) {
                             PropagateSuspendLayout(child);
                         }
                     }
@@ -539,36 +413,29 @@ namespace Microsoft.SPOT.Presentation
         /// For UIElements also re-inserts the UIElement into Measure and / or Arrange update queues
         /// if necessary.
         /// </summary>
-        internal static void PropagateResumeLayout(UIElement e)
-        {
-            if ((e._flags & Flags.IsLayoutSuspended) != 0)
-            {
+        internal static void PropagateResumeLayout(UIElement e) {
+            if ((e._flags & Flags.IsLayoutSuspended) != 0) {
                 e._flags &= ~Flags.IsLayoutSuspended;
 
                 Debug.Assert((e._flags & (Flags.MeasureInProgress | Flags.ArrangeInProgress)) == 0);
 
-                bool requireMeasureUpdate = ((e._flags & Flags.InvalidMeasure) != 0) && ((e._flags & Flags.NeverMeasured) == 0);
-                bool requireArrangeUpdate = ((e._flags & Flags.InvalidArrange) != 0) && ((e._flags & Flags.NeverArranged) == 0);
-                LayoutManager layoutManager = (requireMeasureUpdate || requireArrangeUpdate) ? LayoutManager.From(e.Dispatcher) : null;
-                if (requireMeasureUpdate)
-                {
+                var requireMeasureUpdate = ((e._flags & Flags.InvalidMeasure) != 0) && ((e._flags & Flags.NeverMeasured) == 0);
+                var requireArrangeUpdate = ((e._flags & Flags.InvalidArrange) != 0) && ((e._flags & Flags.NeverArranged) == 0);
+                var layoutManager = (requireMeasureUpdate || requireArrangeUpdate) ? LayoutManager.From(e.Dispatcher) : null;
+                if (requireMeasureUpdate) {
                     layoutManager.MeasureQueue.Add(e);
                 }
 
-                if (requireArrangeUpdate)
-                {
+                if (requireArrangeUpdate) {
                     layoutManager.ArrangeQueue.Add(e);
                 }
 
-                UIElementCollection children = e._logicalChildren;
-                if (children != null)
-                {
-                    int count = children.Count;
-                    for (int i = 0; i < count; i++)
-                    {
-                        UIElement child = children[i];
-                        if (child != null)
-                        {
+                var children = e._logicalChildren;
+                if (children != null) {
+                    var count = children.Count;
+                    for (var i = 0; i < count; i++) {
+                        var child = children[i];
+                        if (child != null) {
                             PropagateResumeLayout(child);
                         }
                     }
@@ -595,8 +462,7 @@ namespace Microsoft.SPOT.Presentation
         /// <param name="availableHeight">Available height that parent can give to the child. May be MaxValue (when parent wants to
         /// measure to content). This is soft constraint. Child can return bigger size to indicate that it wants bigger space and hope
         /// that parent can throw in scrolling...</param>
-        public void Measure(int availableWidth, int availableHeight)
-        {
+        public void Measure(int availableWidth, int availableHeight) {
             VerifyAccess();
 
 #if TINYCLR_DEBUG_LAYOUT
@@ -604,11 +470,10 @@ namespace Microsoft.SPOT.Presentation
 #endif
 
             // cache here, since we read this a few times before writing.
-            Flags flags = _flags;
+            var flags = this._flags;
 
             //if Collapsed, we should not Measure, keep dirty bit but remove request
-            if (this.Visibility == Visibility.Collapsed || ((flags & Flags.IsLayoutSuspended) != 0))
-            {
+            if (this.Visibility == Visibility.Collapsed || ((flags & Flags.IsLayoutSuspended) != 0)) {
                 //reset measure request.
 
                 LayoutManager.CurrentLayoutManager.MeasureQueue.Remove(this);
@@ -616,8 +481,8 @@ namespace Microsoft.SPOT.Presentation
                 //  remember though that parent tried to measure at this size
                 //  in case when later this element is called to measure incrementally
                 //  it has up-to-date information stored in _previousAvailableSize
-                _previousAvailableWidth = availableWidth;
-                _previousAvailableHeight = availableHeight;
+                this._previousAvailableWidth = availableWidth;
+                this._previousAvailableHeight = availableHeight;
 
                 return;
             }
@@ -662,9 +527,8 @@ namespace Microsoft.SPOT.Presentation
             //
             if (((flags & Flags.InvalidMeasure) == 0) &&
                 ((flags & Flags.NeverMeasured) == 0) &&
-                availableWidth == _previousAvailableWidth &&
-                availableHeight == _previousAvailableHeight)
-            {
+                availableWidth == this._previousAvailableWidth &&
+                availableHeight == this._previousAvailableHeight) {
 #if TINYCLR_DEBUG_LAYOUT
                 String traceMessage = this.GetType().FullName + ": measure by passed";
 
@@ -673,10 +537,10 @@ namespace Microsoft.SPOT.Presentation
                 return;
             }
 
-            _flags &= ~Flags.NeverMeasured;
+            this._flags &= ~Flags.NeverMeasured;
 
-            int previousWidth = _desiredWidth;
-            int previousHeight = _desiredHeight;
+            var previousWidth = this._desiredWidth;
+            var previousHeight = this._desiredHeight;
 
             //we always want to be arranged, ensure arrange request
             //doing it before OnMeasure prevents unneeded requests from children in the queue
@@ -684,55 +548,48 @@ namespace Microsoft.SPOT.Presentation
 
             // MeasureInProgress prevents OnChildDesiredSizeChange to cause the elements be put
             // into the queue.
-            _flags |= Flags.MeasureInProgress;
+            this._flags |= Flags.MeasureInProgress;
 
             int desiredWidth;
             int desiredHeight;
-            try
-            {
+            try {
                 // Compute available size for call into MeasureOverride
                 //
-                int marginWidth = _marginLeft + _marginRight;
-                int marginHeight = _marginTop + _marginBottom;
-                int frameworkAvailableWidth = availableWidth - marginWidth;
-                int frameworkAvailableHeight = availableHeight - marginHeight;
-                if (_requestedSize != null)
-                {
+                var marginWidth = this._marginLeft + this._marginRight;
+                var marginHeight = this._marginTop + this._marginBottom;
+                var frameworkAvailableWidth = availableWidth - marginWidth;
+                var frameworkAvailableHeight = availableHeight - marginHeight;
+                if (this._requestedSize != null) {
                     // Respect requested size
                     //
-                    bool haveRequestedWidth = (_requestedSize._status & Pair.Flags_First) != 0;
-                    bool haveRequestedHeight = (_requestedSize._status & Pair.Flags_Second) != 0;
-                    if (haveRequestedWidth)
-                    {
-                        frameworkAvailableWidth = System.Math.Min(_requestedSize._first, frameworkAvailableWidth);
+                    var haveRequestedWidth = (this._requestedSize._status & Pair.Flags_First) != 0;
+                    var haveRequestedHeight = (this._requestedSize._status & Pair.Flags_Second) != 0;
+                    if (haveRequestedWidth) {
+                        frameworkAvailableWidth = System.Math.Min(this._requestedSize._first, frameworkAvailableWidth);
                     }
 
-                    if (haveRequestedHeight)
-                    {
-                        frameworkAvailableHeight = System.Math.Min(_requestedSize._second, frameworkAvailableHeight);
+                    if (haveRequestedHeight) {
+                        frameworkAvailableHeight = System.Math.Min(this._requestedSize._second, frameworkAvailableHeight);
                     }
 
                     MeasureOverride(frameworkAvailableWidth, frameworkAvailableHeight, out desiredWidth, out desiredHeight);
 
-                    if (haveRequestedWidth)
-                    {
-                        desiredWidth = _requestedSize._first;
+                    if (haveRequestedWidth) {
+                        desiredWidth = this._requestedSize._first;
                     }
 
-                    if (haveRequestedHeight)
-                    {
-                        desiredHeight = _requestedSize._second;
+                    if (haveRequestedHeight) {
+                        desiredHeight = this._requestedSize._second;
                     }
                 }
-                else
-                {
+                else {
                     // No requested size specified
                     MeasureOverride(frameworkAvailableWidth, frameworkAvailableHeight, out desiredWidth, out desiredHeight);
                 }
 
                 // Restrict the desired size to the available size
-                _unclippedWidth = desiredWidth;
-                _unclippedHeight = desiredHeight;
+                this._unclippedWidth = desiredWidth;
+                this._unclippedHeight = desiredHeight;
                 desiredWidth = System.Math.Min(desiredWidth, frameworkAvailableWidth);
                 desiredHeight = System.Math.Min(desiredHeight, frameworkAvailableHeight);
 
@@ -740,26 +597,23 @@ namespace Microsoft.SPOT.Presentation
                 desiredWidth += marginWidth;
                 desiredHeight += marginHeight;
             }
-            finally
-            {
-                _flags &= ~Flags.MeasureInProgress;
-                _previousAvailableWidth = availableWidth;
-                _previousAvailableHeight = availableHeight;
+            finally {
+                this._flags &= ~Flags.MeasureInProgress;
+                this._previousAvailableWidth = availableWidth;
+                this._previousAvailableHeight = availableHeight;
             }
 
-            _flags &= ~Flags.InvalidMeasure;
+            this._flags &= ~Flags.InvalidMeasure;
 
             LayoutManager.CurrentLayoutManager.MeasureQueue.Remove(this);
 
-            _desiredWidth = desiredWidth;
-            _desiredHeight = desiredHeight;
+            this._desiredWidth = desiredWidth;
+            this._desiredHeight = desiredHeight;
 
             //notify parent if our desired size changed (waterfall effect)
-            if ((_flags & Flags.MeasureDuringArrange) == 0 && !(previousWidth == desiredWidth && previousHeight == desiredHeight))
-            {
-                UIElement parent = _parent;
-                if (parent != null && (parent._flags & Flags.MeasureInProgress) == 0)
-                {
+            if ((this._flags & Flags.MeasureDuringArrange) == 0 && !(previousWidth == desiredWidth && previousHeight == desiredHeight)) {
+                var parent = this._parent;
+                if (parent != null && (parent._flags & Flags.MeasureInProgress) == 0) {
                     parent.OnChildDesiredSizeChanged(this);
                 }
             }
@@ -791,63 +645,55 @@ namespace Microsoft.SPOT.Presentation
         /// <param name="finalRectWidth">This is the Width that parent or system wants this UIElement to assume.</param>
         /// <param name="finalRectHeight">This is the height that parent or system wants this UIElement to assume.</param>
 
-        public void Arrange(int finalRectX, int finalRectY, int finalRectWidth, int finalRectHeight)
-        {
+        public void Arrange(int finalRectX, int finalRectY, int finalRectWidth, int finalRectHeight) {
             VerifyAccess();
 
             //in case parent did not call Measure on a child, we call it now.
             //parent can skip calling Measure on a child if it does not care about child's size
             //passing finalSize practically means "set size" because that's what Measure(sz)/Arrange(same_sz) means
-            if ((_flags & (Flags.InvalidMeasure | Flags.NeverMeasured)) != 0)
-            {
-                try
-                {
-                    _flags |= Flags.MeasureDuringArrange;
+            if ((this._flags & (Flags.InvalidMeasure | Flags.NeverMeasured)) != 0) {
+                try {
+                    this._flags |= Flags.MeasureDuringArrange;
                     Measure(finalRectWidth, finalRectHeight);
                 }
-                finally
-                {
-                    _flags &= ~Flags.MeasureDuringArrange;
+                finally {
+                    this._flags &= ~Flags.MeasureDuringArrange;
                 }
             }
 
             //if Collapsed, we should not Arrange, keep dirty bit but remove request
             //
             if (this.Visibility == Visibility.Collapsed
-                || ((_flags & Flags.IsLayoutSuspended) != 0)
+                || ((this._flags & Flags.IsLayoutSuspended) != 0)
 
-                )
-            {
+                ) {
                 //reset arrange request.
                 LayoutManager.CurrentLayoutManager.ArrangeQueue.Remove(this);
 
                 //  remember though that parent tried to arrange at this rect
                 //  in case when later this element is called to arrange incrementally
                 //  it has up-to-date information stored in _finalRect
-                _finalX = finalRectX;
-                _finalY = finalRectY;
-                _finalWidth = finalRectWidth;
-                _finalHeight = finalRectHeight;
+                this._finalX = finalRectX;
+                this._finalY = finalRectY;
+                this._finalWidth = finalRectWidth;
+                this._finalHeight = finalRectHeight;
                 return;
             }
 
             //your basic bypass. No reason to calc the same thing.
-            if (((_flags & Flags.InvalidArrange) == 0) &&
-                ((_flags & Flags.NeverArranged) == 0) &&
-                finalRectWidth == _finalWidth &&
-                finalRectHeight == _finalHeight)
-            {
-                if (finalRectX != _finalX || finalRectY != _finalY)
-                {
-                    _offsetX = _offsetX - _finalX + finalRectX;
-                    _offsetY = _offsetY - _finalY + finalRectY;
+            if (((this._flags & Flags.InvalidArrange) == 0) &&
+                ((this._flags & Flags.NeverArranged) == 0) &&
+                finalRectWidth == this._finalWidth &&
+                finalRectHeight == this._finalHeight) {
+                if (finalRectX != this._finalX || finalRectY != this._finalY) {
+                    this._offsetX = this._offsetX - this._finalX + finalRectX;
+                    this._offsetY = this._offsetY - this._finalY + finalRectY;
 
                     // Cache final position
-                    _finalX = finalRectX;
-                    _finalY = finalRectY;
+                    this._finalX = finalRectX;
+                    this._finalY = finalRectY;
 
-                    if (IsRenderable())
-                    {
+                    if (IsRenderable()) {
                         PropagateFlags(this, Flags.IsSubtreeDirtyForRender);
                     }
                 }
@@ -855,81 +701,72 @@ namespace Microsoft.SPOT.Presentation
                 return;
             }
 
-            _flags = (_flags & ~Flags.NeverArranged) | Flags.ArrangeInProgress;
+            this._flags = (this._flags & ~Flags.NeverArranged) | Flags.ArrangeInProgress;
 
-            int marginWidth = _marginLeft + _marginRight;
-            int marginHeight = _marginTop + _marginBottom;
+            var marginWidth = this._marginLeft + this._marginRight;
+            var marginHeight = this._marginTop + this._marginBottom;
 
             // Alignment==Stretch --> arrange at the slot size minus margins
             // Alignment!=Stretch --> arrange at the desiredSize minus margins
-            int arrangeWidth = (HorizontalAlignment == HorizontalAlignment.Stretch) ? finalRectWidth : _desiredWidth;
-            int arrangeHeight = (VerticalAlignment == VerticalAlignment.Stretch) ? finalRectHeight : _desiredHeight;
+            var arrangeWidth = (this.HorizontalAlignment == HorizontalAlignment.Stretch) ? finalRectWidth : this._desiredWidth;
+            var arrangeHeight = (this.VerticalAlignment == VerticalAlignment.Stretch) ? finalRectHeight : this._desiredHeight;
 
             arrangeWidth -= marginWidth;
             arrangeHeight -= marginHeight;
 
             // If a particular size has been requested, and that size is less than the available size,
             // honor the requested size.
-            if (_requestedSize != null)
-            {
-                if ((_requestedSize._status & Pair.Flags_First) != 0)
-                {
-                    int width = _requestedSize._first;
-                    if (width < arrangeWidth)
-                    {
+            if (this._requestedSize != null) {
+                if ((this._requestedSize._status & Pair.Flags_First) != 0) {
+                    var width = this._requestedSize._first;
+                    if (width < arrangeWidth) {
                         arrangeWidth = width;
                     }
                 }
 
-                if ((_requestedSize._status & Pair.Flags_Second) != 0)
-                {
-                    int height = _requestedSize._second;
-                    if (height < arrangeHeight)
-                    {
+                if ((this._requestedSize._status & Pair.Flags_Second) != 0) {
+                    var height = this._requestedSize._second;
+                    if (height < arrangeHeight) {
                         arrangeHeight = height;
                     }
                 }
             }
 
-            try
-            {
+            try {
                 ArrangeOverride(arrangeWidth, arrangeHeight);
             }
-            finally
-            {
-                _flags &= ~Flags.ArrangeInProgress;
+            finally {
+                this._flags &= ~Flags.ArrangeInProgress;
             }
 
             // Account for alignment
             int offsetX, offsetY;
-            int clientWidth = System.Math.Max(0, finalRectWidth - marginWidth);
-            int clientHeight = System.Math.Max(0, finalRectHeight - marginHeight);
+            var clientWidth = System.Math.Max(0, finalRectWidth - marginWidth);
+            var clientHeight = System.Math.Max(0, finalRectHeight - marginHeight);
 
-            if (clientWidth != arrangeWidth || clientHeight != arrangeHeight)
-            {
+            if (clientWidth != arrangeWidth || clientHeight != arrangeHeight) {
                 ComputeAlignmentOffset(clientWidth, clientHeight, arrangeWidth, arrangeHeight, out offsetX, out offsetY);
 #if TINYCLR_DEBUG_LAYOUT
                 Trace.Print(this.ToString() + ": ComputeAlignmentOffset: " + PrintSize(clientWidth, clientHeight) + ", " + PrintSize(arrangeWidth, arrangeHeight) + " returned " + offsetX.ToString() + ", " + offsetY.ToString());
 #endif
             }
-            else
-            {
+            else {
                 offsetX = offsetY = 0;
             }
 
-            offsetX += finalRectX + _marginLeft;
-            offsetY += finalRectY + _marginTop;
+            offsetX += finalRectX + this._marginLeft;
+            offsetY += finalRectY + this._marginTop;
 
-            _offsetX = offsetX;
-            _offsetY = offsetY;
-            _renderWidth = arrangeWidth;
-            _renderHeight = arrangeHeight;
+            this._offsetX = offsetX;
+            this._offsetY = offsetY;
+            this._renderWidth = arrangeWidth;
+            this._renderHeight = arrangeHeight;
 
             // Cache final rect
-            _finalX = finalRectX;
-            _finalY = finalRectY;
-            _finalWidth = finalRectWidth;
-            _finalHeight = finalRectHeight;
+            this._finalX = finalRectX;
+            this._finalY = finalRectY;
+            this._finalWidth = finalRectWidth;
+            this._finalHeight = finalRectHeight;
 
 #if TINYCLR_DEBUG_LAYOUT
             Trace.Print(this.ToString() + ": Layout offset = " + PrintSize(_offsetX, _offsetY));
@@ -937,12 +774,11 @@ namespace Microsoft.SPOT.Presentation
 
             // Reset dirtiness
             //
-            _flags &= ~Flags.InvalidArrange;
+            this._flags &= ~Flags.InvalidArrange;
 
             LayoutManager.CurrentLayoutManager.ArrangeQueue.Remove(this);
 
-            if (IsRenderable())
-            {
+            if (IsRenderable()) {
                 PropagateFlags(this, Flags.IsSubtreeDirtyForRender);
             }
         }
@@ -992,10 +828,7 @@ namespace Microsoft.SPOT.Presentation
         /// <param name="availableHeight"></param>
         /// <param name="desiredWidth"></param>
         /// <param name="desiredHeight"></param>
-        protected virtual void MeasureOverride(int availableWidth, int availableHeight, out int desiredWidth, out int desiredHeight)
-        {
-            desiredHeight = desiredWidth = 0;
-        }
+        protected virtual void MeasureOverride(int availableWidth, int availableHeight, out int desiredWidth, out int desiredHeight) => desiredHeight = desiredWidth = 0;
 
         /// <summary>
         /// ArrangeOverride allows for the customization of the final sizing and positioning of children.
@@ -1023,15 +856,12 @@ namespace Microsoft.SPOT.Presentation
         /// </remarks>
         /// <param name="arrangeWidth">Final width</param>
         /// <param name="arrangeHeight">Final height</param>
-        protected virtual void ArrangeOverride(int arrangeWidth, int arrangeHeight)
-        {
-            UIElementCollection children = _logicalChildren;
-            if (children != null)
-            {
-                int count = children.Count;
-                for (int i = 0; i < count; i++)
-                {
-                    UIElement child = children[i];
+        protected virtual void ArrangeOverride(int arrangeWidth, int arrangeHeight) {
+            var children = this._logicalChildren;
+            if (children != null) {
+                var count = children.Count;
+                for (var i = 0; i < count; i++) {
+                    var child = children[i];
                     child.Arrange(0, 0, arrangeWidth, arrangeHeight);
                 }
             }
@@ -1048,8 +878,7 @@ namespace Microsoft.SPOT.Presentation
         /// it after each change in the UIElement tree. It makes sense to either never call it (system will do this
         /// in a deferred manner) or only call it if you absolutely need updated sizes and positions after you do all changes.
         /// </remarks>
-        public void UpdateLayout()
-        {
+        public void UpdateLayout() {
             VerifyAccess();
 
             LayoutManager.CurrentLayoutManager.UpdateLayout();
@@ -1063,13 +892,7 @@ namespace Microsoft.SPOT.Presentation
         /// IsArrangeValid and IsMeasureValid are related,
         /// in that arrangement cannot be valid without measurement first being valid.
         /// </remarks>
-        public bool IsMeasureValid
-        {
-            get
-            {
-                return (_flags & Flags.InvalidMeasure) == 0;
-            }
-        }
+        public bool IsMeasureValid => (this._flags & Flags.InvalidMeasure) == 0;
 
         /// <summary>
         /// Determines if the RenderSize and position of child elements is valid.
@@ -1079,13 +902,7 @@ namespace Microsoft.SPOT.Presentation
         /// IsArrangeValid and IsMeasureValid are related, in that arrangement cannot be valid without measurement first
         /// being valid.
         /// </remarks>
-        public bool IsArrangeValid
-        {
-            get
-            {
-                return (_flags & Flags.InvalidArrange) == 0;
-            }
-        }
+        public bool IsArrangeValid => (this._flags & Flags.InvalidArrange) == 0;
 
         /// <summary>
         /// Given x, y co-ordinates of the parent UIElement,
@@ -1099,30 +916,25 @@ namespace Microsoft.SPOT.Presentation
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <returns></returns>
-        public UIElement ChildElementFromPoint(int x, int y)
-        {
+        public UIElement ChildElementFromPoint(int x, int y) {
             UIElement targetElement = null;
 
             /// Translate.
-            x -= _offsetX;
-            y -= _offsetY;
+            x -= this._offsetX;
+            y -= this._offsetY;
 
-            if ((x >= 0) && (y >= 0) && (x <= _renderWidth) && (y <= _renderHeight))
-            {
+            if ((x >= 0) && (y >= 0) && (x <= this._renderWidth) && (y <= this._renderHeight)) {
                 targetElement = this;
 
-                UIElementCollection children = _logicalChildren;
+                var children = this._logicalChildren;
                 if (children != null) //children appears to be null, instead of empty array in some cases.
                 {
-                    if (children.Count > 0)
-                    {
-                        int count = children.Count;
-                        for (int i = count - 1; i >= 0; i--)
-                        {
-                            UIElement child = children[i];
-                            UIElement target = child.ChildElementFromPoint(x, y);
-                            if (target != null)
-                            {
+                    if (children.Count > 0) {
+                        var count = children.Count;
+                        for (var i = count - 1; i >= 0; i--) {
+                            var child = children[i];
+                            var target = child.ChildElementFromPoint(x, y);
+                            if (target != null) {
                                 targetElement = target;
                                 break;
                             }
@@ -1134,31 +946,23 @@ namespace Microsoft.SPOT.Presentation
             return targetElement;
         }
 
-        public void GetUnclippedSize(out int width, out int height)
-        {
-            width = _unclippedWidth;
-            height = _unclippedHeight;
+        public void GetUnclippedSize(out int width, out int height) {
+            width = this._unclippedWidth;
+            height = this._unclippedHeight;
         }
 
-        public bool ContainsPoint(int x, int y)
-        {
-            return (x >= _offsetX && x < (_offsetX + _renderWidth) && y >= _offsetY && y < (_offsetY + _renderHeight));
-        }
+        public bool ContainsPoint(int x, int y) => (x >= this._offsetX && x < (this._offsetX + this._renderWidth) && y >= this._offsetY && y < (this._offsetY + this._renderHeight));
 
-        public UIElement GetPointerTarget(int x, int y)
-        {
+        public UIElement GetPointerTarget(int x, int y) {
             UIElement target = null;
 
-            UIElementCollection children = _logicalChildren;
+            var children = this._logicalChildren;
 
-            while (children != null)
-            {
-                int i = children.Count;
-                while (--i >= 0)
-                {
-                    UIElement element = children[i];
-                    if (element != null && element.Visibility == Visibility.Visible && element.ContainsPoint(x, y))
-                    {
+            while (children != null) {
+                var i = children.Count;
+                while (--i >= 0) {
+                    var element = children[i];
+                    if (element != null && element.Visibility == Visibility.Visible && element.ContainsPoint(x, y)) {
                         target = element;
                         children = element._logicalChildren;
 
@@ -1168,8 +972,7 @@ namespace Microsoft.SPOT.Presentation
                     }
                 }
 
-                if (i < 0)
-                {
+                if (i < 0) {
                     break;
                 }
             }
@@ -1182,11 +985,9 @@ namespace Microsoft.SPOT.Presentation
         /// </summary>
         /// <param name="x"></param>
         /// <param name="y"></param>
-        public void PointToScreen(ref int x, ref int y)
-        {
-            UIElement client = this;
-            while (client != null)
-            {
+        public void PointToScreen(ref int x, ref int y) {
+            var client = this;
+            while (client != null) {
                 x += client._offsetX;
                 y += client._offsetY;
 
@@ -1194,12 +995,10 @@ namespace Microsoft.SPOT.Presentation
             }
         }
 
-        public void PointToClient(ref int x, ref int y)
-        {
-            UIElement client = this;
+        public void PointToClient(ref int x, ref int y) {
+            var client = this;
             //need to cache this value on first call after relayout.
-            while (client != null)
-            {
+            while (client != null) {
                 x -= client._offsetX;
                 y -= client._offsetY;
 
@@ -1208,14 +1007,13 @@ namespace Microsoft.SPOT.Presentation
         }
 
         // This is needed to prevent dirty elements from drawing and crashing while doing so.
-        private bool IsRenderable()
-        {
+        private bool IsRenderable() {
             // VerifyAccess(); - we're only called by Arrange() which already did verification
 
             //elements that were created but never invalidated/measured are clean
             //from layout perspective, but we still don't want to render them
             //because they don't have state build up enough for that.
-            if ((_flags & (Flags.NeverMeasured | Flags.NeverArranged)) != 0)
+            if ((this._flags & (Flags.NeverMeasured | Flags.NeverArranged)) != 0)
                 return false;
 
             //if UIElement is collapsed, no rendering is needed
@@ -1223,10 +1021,10 @@ namespace Microsoft.SPOT.Presentation
             //UIElement to break itself since RenderSize is reported as (0,0)
             //when UIElement is Collapsed
             //
-            if (_visibility == Visibility.Collapsed || _visibility == Visibility.Hidden)
+            if (this._visibility == Visibility.Collapsed || this._visibility == Visibility.Hidden)
                 return false;
 
-            return (_flags & (Flags.InvalidArrange | Flags.InvalidMeasure)) == 0;
+            return (this._flags & (Flags.InvalidArrange | Flags.InvalidMeasure)) == 0;
         }
 
         /// <summary>
@@ -1234,18 +1032,15 @@ namespace Microsoft.SPOT.Presentation
         /// This has the effect of also invalidating the arrange state for the UIElement.
         /// The UIElement will be queued for an update layout that will occur asynchronously.
         /// </summary>
-        public void InvalidateMeasure()
-        {
+        public void InvalidateMeasure() {
             VerifyAccess();
 
-            Flags flags = _flags;
+            var flags = this._flags;
 
-            if ((flags & (Flags.InvalidMeasure | Flags.MeasureInProgress)) == 0)
-            {
-                _flags |= Flags.InvalidMeasure;
+            if ((flags & (Flags.InvalidMeasure | Flags.MeasureInProgress)) == 0) {
+                this._flags |= Flags.InvalidMeasure;
 
-                if ((flags & Flags.NeverMeasured) == 0)
-                {
+                if ((flags & Flags.NeverMeasured) == 0) {
                     LayoutManager.CurrentLayoutManager.MeasureQueue.Add(this);
                 }
             }
@@ -1257,41 +1052,29 @@ namespace Microsoft.SPOT.Presentation
         /// MeasureOverride will not be called unless InvalidateMeasure is also called - or that something
         /// else caused the measure state to be invalidated.
         /// </summary>
-        public void InvalidateArrange()
-        {
+        public void InvalidateArrange() {
             VerifyAccess();
 
-            Flags flags = _flags;
+            var flags = this._flags;
 
-            if ((flags & (Flags.InvalidArrange | Flags.ArrangeInProgress)) == 0)
-            {
-                _flags |= Flags.InvalidArrange;
+            if ((flags & (Flags.InvalidArrange | Flags.ArrangeInProgress)) == 0) {
+                this._flags |= Flags.InvalidArrange;
 
-                if ((flags & Flags.NeverArranged) == 0)
-                {
+                if ((flags & Flags.NeverArranged) == 0) {
                     LayoutManager.CurrentLayoutManager.ArrangeQueue.Add(this);
                 }
             }
         }
 
-        public UIElement Parent
-        {
-            get
-            {
-                return _parent;
-            }
-        }
+        public UIElement Parent => this._parent;
 
-        public UIElement RootUIElement
-        {
-            get
-            {
+        public UIElement RootUIElement {
+            get {
                 // we use two pointers to atomically check / iterate
                 // through parents
                 UIElement p = null;
-                UIElement pp = this;
-                do
-                {
+                var pp = this;
+                do {
                     p = pp;
                     pp = p._parent;
                 } while (pp != null);
@@ -1305,39 +1088,26 @@ namespace Microsoft.SPOT.Presentation
         /// for posting renders. This method is also used to ensure that the Visual is not
         /// used in multiple CompositionTargets.
         /// </summary>
-        internal bool GetIsRootElement()
-        {
-            return ((_flags & Flags.ShouldPostRender) != 0);
-        }
+        internal bool GetIsRootElement() => ((this._flags & Flags.ShouldPostRender) != 0);
 
-        public HorizontalAlignment HorizontalAlignment
-        {
-            get
-            {
-                return _horizontalAlignment;
-            }
+        public HorizontalAlignment HorizontalAlignment {
+            get => this._horizontalAlignment;
 
-            set
-            {
+            set {
                 VerifyAccess();
 
-                _horizontalAlignment = value;
+                this._horizontalAlignment = value;
                 InvalidateArrange();
             }
         }
 
-        public VerticalAlignment VerticalAlignment
-        {
-            get
-            {
-                return _verticalAlignment;
-            }
+        public VerticalAlignment VerticalAlignment {
+            get => this._verticalAlignment;
 
-            set
-            {
+            set {
                 VerifyAccess();
 
-                _verticalAlignment = value;
+                this._verticalAlignment = value;
                 InvalidateArrange();
             }
         }
@@ -1352,95 +1122,73 @@ namespace Microsoft.SPOT.Presentation
         /// Finer point: this method can only be called in the scenario when the system calls Measure on a child,
         /// not when parent calls it since if parent calls it, it means parent has dirty layout and is recalculating already.
         /// </remarks>
-        protected virtual void OnChildDesiredSizeChanged(UIElement child)
-        {
-            if (IsMeasureValid)
-            {
+        protected virtual void OnChildDesiredSizeChanged(UIElement child) {
+            if (this.IsMeasureValid) {
                 InvalidateMeasure();
             }
         }
 
-        public virtual void OnRender(DrawingContext dc)
-        {
+        public virtual void OnRender(DrawingContext dc) {
         }
 
         /// <summary>
         ///     Visibility accessor
         /// </summary>
-        public Visibility Visibility
-        {
-            get
-            {
-                return _visibility;
-            }
+        public Visibility Visibility {
+            get => this._visibility;
 
-            set
-            {
+            set {
                 VerifyAccess();
 
-                if (_visibility != value)
-                {
-                    bool wasVisible = (_flags & Flags.IsVisibleCache) != 0;
+                if (this._visibility != value) {
+                    var wasVisible = (this._flags & Flags.IsVisibleCache) != 0;
 
-                    bool invalidateMeasure = (_visibility == Visibility.Collapsed || value == Visibility.Collapsed);
+                    var invalidateMeasure = (this._visibility == Visibility.Collapsed || value == Visibility.Collapsed);
 
-                    _visibility = value;
+                    this._visibility = value;
 
-                    bool isVisible = false;
+                    var isVisible = false;
 
-                    bool parentVisible = (_parent == null) ? false : (_parent._flags & Flags.IsVisibleCache) != 0;
-                    if (parentVisible && value == Visibility.Visible)
-                    {
-                        _flags = _flags | Flags.IsVisibleCache;
+                    var parentVisible = (this._parent == null) ? false : (this._parent._flags & Flags.IsVisibleCache) != 0;
+                    if (parentVisible && value == Visibility.Visible) {
+                        this._flags = this._flags | Flags.IsVisibleCache;
                         isVisible = true;
                     }
-                    else
-                    {
-                        _flags = _flags & ~Flags.IsVisibleCache;
+                    else {
+                        this._flags = this._flags & ~Flags.IsVisibleCache;
                     }
 
-                    if (invalidateMeasure && _parent != null)
-                    {
-                        _parent.InvalidateMeasure();
+                    if (invalidateMeasure && this._parent != null) {
+                        this._parent.InvalidateMeasure();
                     }
 
-                    if (wasVisible != isVisible)
-                    {
+                    if (wasVisible != isVisible) {
                         OnIsVisibleChanged(wasVisible);
                     }
                 }
             }
         }
 
-        private void OnIsVisibleChanged(bool wasVisible)
-        {
+        private void OnIsVisibleChanged(bool wasVisible) {
             //Desktop WPF sends the event to the parent first.
-            if (_isVisibleChanged != null)
-            {
-                _isVisibleChanged(this, new PropertyChangedEventArgs("IsVisible", wasVisible, !wasVisible));
-            }
+            this._isVisibleChanged?.Invoke(this, new PropertyChangedEventArgs("IsVisible", wasVisible, !wasVisible));
 
             // Loop through all children and fire events for only those that need it.
-            UIElementCollection children = _logicalChildren;
-            if (children != null)
-            {
-                int n = children.Count;
-                for (int i = 0; i < n; i++)
-                {
-                    UIElement child = children[i];
+            var children = this._logicalChildren;
+            if (children != null) {
+                var n = children.Count;
+                for (var i = 0; i < n; i++) {
+                    var child = children[i];
 
-                    if (child._visibility == Visibility.Visible)
-                    {
+                    if (child._visibility == Visibility.Visible) {
                         /* The IsVisbile property on a child can only change if it wants to be visible.
                          * If the parent is transitioning from visible to not, it only affects visible children.
                          * If the parent is transitioning from invisible to visible, it only affects children who want to be visible.
                          */
-                        if (!wasVisible)
-                        {
+                        if (!wasVisible) {
                             child._flags = child._flags | Flags.IsVisibleCache;
                         }
-                        else
-                        {
+                        else {
                             child._flags = child._flags & ~Flags.IsVisibleCache;
                         }
 
@@ -1453,143 +1201,114 @@ namespace Microsoft.SPOT.Presentation
         /// <summary>
         ///     A property indicating if this element is Visible or not.
         /// </summary>
-        public bool IsVisible
-        {
-            get
-            {
-                return (_flags & Flags.IsVisibleCache) != 0;
-            }
-        }
+        public bool IsVisible => (this._flags & Flags.IsVisibleCache) != 0;
 
-        public event PropertyChangedEventHandler IsVisibleChanged
-        {
-            add
-            {
+        public event PropertyChangedEventHandler IsVisibleChanged {
+            add {
                 VerifyAccess();
 
-                _isVisibleChanged += value;
+                this._isVisibleChanged += value;
             }
 
-            remove
-            {
+            remove {
                 VerifyAccess();
 
-                _isVisibleChanged -= value;
+                this._isVisibleChanged -= value;
             }
         }
 
         /// <summary>
         ///     Fetches the value of the IsEnabled property
         /// </summary>
-        public bool IsEnabled
-        {
-            get
-            {
+        public bool IsEnabled {
+            get {
                 // REFACTOR
                 // Implement this similar to IsVisibleChanged and fire
                 // IsEnabledChanged events on child elements?
 
                 // If our parent is not enabled, then we cannot be either.
-                UIElement parent = _parent;
+                var parent = this._parent;
 
-                bool isEnabled = parent == null ? true : parent.IsEnabled;
+                var isEnabled = parent == null ? true : parent.IsEnabled;
 
-                if (isEnabled)
-                {
+                if (isEnabled) {
                     // If our parent was enabled, then we may or may not be.
-                    isEnabled = ((_flags & Flags.Enabled) != 0);
+                    isEnabled = ((this._flags & Flags.Enabled) != 0);
                 }
 
                 return isEnabled;
             }
 
-            set
-            {
+            set {
                 VerifyAccess();
 
-                bool wasEnabled = IsEnabled;
+                var wasEnabled = this.IsEnabled;
 
-                if (value)
-                {
-                    _flags |= Flags.Enabled;
+                if (value) {
+                    this._flags |= Flags.Enabled;
                 }
-                else
-                {
-                    _flags &= ~Flags.Enabled;
+                else {
+                    this._flags &= ~Flags.Enabled;
                 }
 
-                if (_isEnabledChanged != null && wasEnabled != IsEnabled)
-                {
-                    _isEnabledChanged(this, new PropertyChangedEventArgs("IsEnabled", wasEnabled, !wasEnabled));
+                if (this._isEnabledChanged != null && wasEnabled != this.IsEnabled) {
+                    this._isEnabledChanged(this, new PropertyChangedEventArgs("IsEnabled", wasEnabled, !wasEnabled));
                 }
             }
         }
 
-        public event PropertyChangedEventHandler IsEnabledChanged
-        {
-            add
-            {
+        public event PropertyChangedEventHandler IsEnabledChanged {
+            add {
                 VerifyAccess();
 
-                _isEnabledChanged += value;
+                this._isEnabledChanged += value;
             }
 
-            remove
-            {
+            remove {
                 VerifyAccess();
 
-                _isEnabledChanged -= value;
+                this._isEnabledChanged -= value;
             }
         }
 
-        protected internal virtual void RenderRecursive(DrawingContext dc)
-        {
+        protected internal virtual void RenderRecursive(DrawingContext dc) {
             Debug.Assert(this.IsMeasureValid && this.IsArrangeValid);
 
-            dc.Translate(_offsetX, _offsetY);
-            dc.PushClippingRectangle(0, 0, _renderWidth, _renderHeight);
-            try
-            {
+            dc.Translate(this._offsetX, this._offsetY);
+            dc.PushClippingRectangle(0, 0, this._renderWidth, this._renderHeight);
+            try {
                 Debug.Assert(this.Visibility == Visibility.Visible);
 
-                if (!dc.EmptyClipRect)
-                {
+                if (!dc.EmptyClipRect) {
                     OnRender(dc);
-                    UIElementCollection children = _logicalChildren;
-                    if (children != null)
-                    {
-                        int n = children.Count;
-                        for (int i = 0; i < n; i++)
-                        {
-                            UIElement child = children[i];
-                            if (child.IsRenderable())
-                            {
+                    var children = this._logicalChildren;
+                    if (children != null) {
+                        var n = children.Count;
+                        for (var i = 0; i < n; i++) {
+                            var child = children[i];
+                            if (child.IsRenderable()) {
                                 child.RenderRecursive(dc);
                             }
                         }
                     }
                 }
             }
-            finally
-            {
+            finally {
                 dc.PopClippingRectangle();
-                dc.Translate(-_offsetX, -_offsetY);
+                dc.Translate(-this._offsetX, -this._offsetY);
 
                 //-------------------------------------------------------------------------------
                 // Reset the render flags.
 
-                _flags &= ~(Flags.IsSubtreeDirtyForRender | Flags.IsDirtyForRender);
+                this._flags &= ~(Flags.IsSubtreeDirtyForRender | Flags.IsDirtyForRender);
             }
         }
 
-        internal static void PropagateFlags(UIElement e, Flags flags)
-        {
-            while ((e != null) && ((e._flags & flags) == 0))
-            {
+        internal static void PropagateFlags(UIElement e, Flags flags) {
+            while ((e != null) && ((e._flags & flags) == 0)) {
                 e._flags |= flags;
 
-                if ((e._flags & Flags.ShouldPostRender) != 0)
-                {
+                if ((e._flags & Flags.ShouldPostRender) != 0) {
                     MediaContext.From(e.Dispatcher).PostRender();
                 }
 
@@ -1597,28 +1316,25 @@ namespace Microsoft.SPOT.Presentation
             }
         }
 
-        private void MarkDirtyRect(int x, int y, int w, int h)
-        {
+        private void MarkDirtyRect(int x, int y, int w, int h) {
             PointToScreen(ref x, ref y);
-            MediaContext.From(Dispatcher).AddDirtyArea(x, y, w, h);
+            MediaContext.From(this.Dispatcher).AddDirtyArea(x, y, w, h);
 
             PropagateFlags(
                 this,
                 Flags.IsSubtreeDirtyForRender);
         }
 
-        public void InvalidateRect(int x, int y, int w, int h)
-        {
+        public void InvalidateRect(int x, int y, int w, int h) {
             VerifyAccess();
 
             MarkDirtyRect(x, y, w, h);
         }
 
-        public void Invalidate()
-        {
+        public void Invalidate() {
             VerifyAccess();
 
-            MarkDirtyRect(0, 0, _renderWidth, _renderHeight);
+            MarkDirtyRect(0, 0, this._renderWidth, this._renderHeight);
         }
 
         #region Eventing
@@ -1643,38 +1359,32 @@ namespace Microsoft.SPOT.Presentation
         ///     <see cref="RoutedEventArgs"/> for the event to
         ///     be raised
         /// </param>
-        public void RaiseEvent(RoutedEventArgs args)
-        {
+        public void RaiseEvent(RoutedEventArgs args) {
             // Verify Context Access
             VerifyAccess();
 
-            if (args == null)
-            {
+            if (args == null) {
                 throw new ArgumentNullException();
             }
 
-            EventRoute route = new EventRoute(args._routedEvent);
+            var route = new EventRoute(args._routedEvent);
 
             // Set Source
             args.Source = this;
 
             // direct.
-            if (args._routedEvent._routingStrategy == RoutingStrategy.Direct)
-            {
+            if (args._routedEvent._routingStrategy == RoutingStrategy.Direct) {
                 this.AddToEventRouteImpl(route, args);
             }
-            else
-            {
-                int cElements = 0;
+            else {
+                var cElements = 0;
 
-                UIElement uiElement = this;
+                var uiElement = this;
 
-                do
-                {
+                do {
                     // Protect against infinite loops by limiting the number of elements
                     // that we will process.
-                    if (cElements++ > MAX_ELEMENTS_IN_ROUTE)
-                    {
+                    if (cElements++ > MAX_ELEMENTS_IN_ROUTE) {
                         throw new InvalidOperationException(/*SR.Get(SRID.TreeLoop) */);
                     }
 
@@ -1695,43 +1405,36 @@ namespace Microsoft.SPOT.Presentation
         ///     Add the event handlers for this element to the route.
         /// </summary>
         // REFACTOR -- do we need this to be public?
-        public void AddToEventRoute(EventRoute route, RoutedEventArgs args)
-        {
+        public void AddToEventRoute(EventRoute route, RoutedEventArgs args) {
             VerifyAccess();
 
-            if (route == null || args == null)
-            {
+            if (route == null || args == null) {
                 throw new ArgumentNullException();
             }
 
             AddToEventRouteImpl(route, args);
         }
 
-        private void AddToEventRouteImpl(EventRoute route, RoutedEventArgs args)
-        {
+        private void AddToEventRouteImpl(EventRoute route, RoutedEventArgs args) {
             //
             // add class listeners then instance listeners.
             //
-            Hashtable store = _classEventHandlersStore;
-            RoutedEvent evt = args._routedEvent;
-            for (int repeat = 0; repeat < 2; repeat++)
-            {
-                if (store != null)
-                {
-                    ArrayList eventListeners = (ArrayList)store[evt];
+            var store = _classEventHandlersStore;
+            var evt = args._routedEvent;
+            for (var repeat = 0; repeat < 2; repeat++) {
+                if (store != null) {
+                    var eventListeners = (ArrayList)store[evt];
 
                     // Add all listeners for this UIElement
-                    if (eventListeners != null)
-                    {
-                        for (int i = 0, count = eventListeners.Count; i < count; i++)
-                        {
-                            RoutedEventHandlerInfo eventListener = (RoutedEventHandlerInfo)eventListeners[i];
+                    if (eventListeners != null) {
+                        for (int i = 0, count = eventListeners.Count; i < count; i++) {
+                            var eventListener = (RoutedEventHandlerInfo)eventListeners[i];
                             route.Add(this, eventListener._handler, eventListener._handledEventsToo);
                         }
                     }
                 }
 
-                store = _instanceEventHandlersStore;
+                store = this._instanceEventHandlersStore;
             }
         }
 
@@ -1742,16 +1445,13 @@ namespace Microsoft.SPOT.Presentation
         /// <summary>
         /// Ensure the store has been created.
         /// </summary>
-        protected Hashtable InstanceEventHandlersStore
-        {
-            get
-            {
-                if (_instanceEventHandlersStore == null)
-                {
-                    _instanceEventHandlersStore = new Hashtable();
+        protected Hashtable InstanceEventHandlersStore {
+            get {
+                if (this._instanceEventHandlersStore == null) {
+                    this._instanceEventHandlersStore = new Hashtable();
                 }
 
-                return _instanceEventHandlersStore;
+                return this._instanceEventHandlersStore;
             }
         }
 
@@ -1796,17 +1496,15 @@ namespace Microsoft.SPOT.Presentation
         public void AddHandler(
             RoutedEvent routedEvent,
             RoutedEventHandler handler,
-            bool handledEventsToo)
-        {
+            bool handledEventsToo) {
             // Verify Context Access
             this.VerifyAccess();
 
-            if (routedEvent == null || handler == null)
-            {
+            if (routedEvent == null || handler == null) {
                 throw new ArgumentNullException();
             }
 
-            AddRoutedEventHandler(InstanceEventHandlersStore, routedEvent, handler, handledEventsToo);
+            AddRoutedEventHandler(this.InstanceEventHandlersStore, routedEvent, handler, handledEventsToo);
         }
 
         #endregion
@@ -1827,8 +1525,7 @@ namespace Microsoft.SPOT.Presentation
         internal const int MAX_ELEMENTS_IN_ROUTE = 256;
 
         [Flags]
-        internal enum Flags : uint
-        {
+        internal enum Flags : uint {
             None = 0x00000000,
             // IsSubtreeDirtyForRender indicates that at least one element in the sub-graph of this element needs to
             // be re-rendered.
@@ -1866,8 +1563,7 @@ namespace Microsoft.SPOT.Presentation
 
         // Layout
         //
-        internal class Pair
-        {
+        internal class Pair {
             public const int Flags_First = 0x1;  // Can be (optionally) used with _status
             public const int Flags_Second = 0x2;
 

@@ -4,16 +4,14 @@
 
 using System;
 
-namespace Microsoft.SPOT.Input
-{
+namespace Microsoft.SPOT.Input {
 
     /// <summary>
     ///     The ButtonState enumeration describes the state that buttons
     ///     can be in.
     /// </summary>
     [Flags]
-    public enum ButtonState : byte
-    {
+    public enum ButtonState : byte {
         /// <summary>
         ///     No state (same as up).
         /// </summary>

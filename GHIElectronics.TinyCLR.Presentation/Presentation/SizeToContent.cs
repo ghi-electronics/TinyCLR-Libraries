@@ -2,18 +2,12 @@
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-using System;
-using System.Collections;
-using System.Threading;
-using Microsoft.SPOT.Presentation.Controls;
 
-namespace Microsoft.SPOT.Presentation
-{
+namespace Microsoft.SPOT.Presentation {
     /// <summary>
     /// SizeToContent
     /// </summary>
-    public enum SizeToContent
-    {
+    public enum SizeToContent {
         /// <summary>
         /// Does not size to content
         /// </summary>

@@ -2,12 +2,9 @@
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-using System;
 
-namespace Microsoft.SPOT.Presentation.Media
-{
-    public enum TextTrimming
-    {
+namespace Microsoft.SPOT.Presentation.Media {
+    public enum TextTrimming {
         CharacterEllipsis,
         None,
         WordEllipsis,

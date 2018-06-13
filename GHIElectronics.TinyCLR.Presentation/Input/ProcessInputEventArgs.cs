@@ -1,10 +1,4 @@
-
-using System;
-using System.Collections;
-using Microsoft.SPOT;
-
-namespace Microsoft.SPOT.Input
-{
+namespace Microsoft.SPOT.Input {
 
     /* REFACTOR
 
@@ -27,12 +21,10 @@ namespace Microsoft.SPOT.Input
     ///         </item>
     ///     </list>
     /// </remarks>
-    public class ProcessInputEventArgs : NotifyInputEventArgs
-    {
+    public class ProcessInputEventArgs : NotifyInputEventArgs {
         // Only we can make these.
         internal ProcessInputEventArgs(StagingAreaInputItem input)
-            : base(input)
-        {
+            : base(input) {
         }
 
         /// <summary>
@@ -51,10 +43,10 @@ namespace Microsoft.SPOT.Input
         public StagingAreaInputItem PushInput(InputEventArgs input,
                                               StagingAreaInputItem promote) // Note: this should be a bool, and always use the InputItem available on these args.
         {
-            StagingAreaInputItem item = new StagingAreaInputItem(input, promote);
+            var item = new StagingAreaInputItem(input, promote);
 
             InputManager.CurrentInputManager._currentStagingStack.Push(item);
-            
+
             return item;
         }
 
@@ -68,10 +60,9 @@ namespace Microsoft.SPOT.Input
         /// <returns>
         ///     The specified staging area input item.
         /// </returns>
-        public StagingAreaInputItem PushInput(StagingAreaInputItem input)
-        {
+        public StagingAreaInputItem PushInput(StagingAreaInputItem input) {
             InputManager.CurrentInputManager._currentStagingStack.Push(input);
-            
+
             return input;
         }
 
@@ -82,12 +73,10 @@ namespace Microsoft.SPOT.Input
         ///     The input event that was on the top of the staging area.
         ///     This can be null, if the staging area was empty.
         /// </returns>
-        public StagingAreaInputItem PopInput()
-        {
-            Stack stagingArea = InputManager.CurrentInputManager._currentStagingStack;
-            
-            if (stagingArea.Count > 0)
-            {
+        public StagingAreaInputItem PopInput() {
+            var stagingArea = InputManager.CurrentInputManager._currentStagingStack;
+
+            if (stagingArea.Count > 0) {
                 return (StagingAreaInputItem)stagingArea.Pop();
             }
 
@@ -101,12 +90,10 @@ namespace Microsoft.SPOT.Input
         ///     The input event that is on the top of the staging area.
         ///     This can be null, if the staging area is empty.
         /// </returns>
-        public StagingAreaInputItem PeekInput()
-        {
-            Stack stagingArea = InputManager.CurrentInputManager._currentStagingStack;
-            
-            if (stagingArea.Count > 0)
-            {
+        public StagingAreaInputItem PeekInput() {
+            var stagingArea = InputManager.CurrentInputManager._currentStagingStack;
+
+            if (stagingArea.Count > 0) {
                 return (StagingAreaInputItem)stagingArea.Peek();
             }
 

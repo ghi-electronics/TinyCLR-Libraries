@@ -4,45 +4,31 @@
 
 using System;
 
-namespace Microsoft.SPOT.Presentation.Shapes
-{
-    public class Polygon : Shape
-    {
+namespace Microsoft.SPOT.Presentation.Shapes {
+    public class Polygon : Shape {
 
-        public Polygon()
-        {
+        public Polygon() {
         }
 
-        public Polygon(int[] pts)
-        {
-            Points = pts;
-        }
+        public Polygon(int[] pts) => this.Points = pts;
 
-        public int[] Points
-        {
-            get
-            {
-                return _pts;
-            }
+        public int[] Points {
+            get => this._pts;
 
-            set
-            {
-                if(value == null || value.Length == 0)
-                {
+            set {
+                if (value == null || value.Length == 0) {
                     throw new ArgumentException();
                 }
-                
-                _pts = value;
+
+                this._pts = value;
 
                 InvalidateMeasure();
             }
         }
 
-        public override void OnRender(Media.DrawingContext dc)
-        {
-            if (_pts != null)
-            {
-                dc.DrawPolygon(Fill, Stroke, _pts);
+        public override void OnRender(Media.DrawingContext dc) {
+            if (this._pts != null) {
+                dc.DrawPolygon(this.Fill, this.Stroke, this._pts);
             }
         }
 

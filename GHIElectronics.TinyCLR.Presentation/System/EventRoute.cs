@@ -4,10 +4,8 @@
 
 using System;
 using System.Collections;
-using System.Diagnostics;
 
-namespace Microsoft.SPOT
-{
+namespace Microsoft.SPOT {
     /// <summary>
     ///     Container for the route to be followed
     ///     by a RoutedEvent when raised
@@ -24,8 +22,7 @@ namespace Microsoft.SPOT
     ///     and also allows for the handlers in the list
     ///     to be invoked
     /// </remarks>
-    public sealed class EventRoute
-    {
+    public sealed class EventRoute {
         #region Construction
 
         /// <summary>
@@ -36,15 +33,9 @@ namespace Microsoft.SPOT
         ///     Non-null <see cref="RoutedEvent"/> to be associated with
         ///     this <see cref="EventRoute"/>
         /// </param>
-        public EventRoute(RoutedEvent routedEvent)
-        {
-            if (routedEvent == null)
-            {
-                throw new ArgumentNullException("routedEvent");
-            }
-
-            RoutedEvent = routedEvent;
-            _routeItemList = new ArrayList();
+        public EventRoute(RoutedEvent routedEvent) {
+            this.RoutedEvent = routedEvent ?? throw new ArgumentNullException("routedEvent");
+            this._routeItemList = new ArrayList();
         }
 
         #endregion Construction
@@ -73,21 +64,18 @@ namespace Microsoft.SPOT
         /// </param>
         // need to consider creating an AddImpl, and consider if we even need to
         // make this public?
-        public void Add(object target, RoutedEventHandler handler, bool handledEventsToo)
-        {
-            if (target == null)
-            {
+        public void Add(object target, RoutedEventHandler handler, bool handledEventsToo) {
+            if (target == null) {
                 throw new ArgumentNullException("target");
             }
 
-            if (handler == null)
-            {
+            if (handler == null) {
                 throw new ArgumentNullException("handler");
             }
 
-            RouteItem routeItem = new RouteItem(target, new RoutedEventHandlerInfo(handler, handledEventsToo));
+            var routeItem = new RouteItem(target, new RoutedEventHandlerInfo(handler, handledEventsToo));
 
-            _routeItemList.Add(routeItem);
+            this._routeItemList.Add(routeItem);
         }
 
         /// <summary>
@@ -118,54 +106,44 @@ namespace Microsoft.SPOT
         ///     <see cref="RoutedEventArgs"/> that carry
         ///     all the details specific to this RoutedEvent
         /// </param>
-        internal void InvokeHandlers(object source, RoutedEventArgs args)
-        {
+        internal void InvokeHandlers(object source, RoutedEventArgs args) {
             // Check RoutingStrategy to know the order of invocation
             if (args.RoutedEvent.RoutingStrategy == RoutingStrategy.Bubble ||
-                args.RoutedEvent.RoutingStrategy == RoutingStrategy.Direct)
-            {
+                args.RoutedEvent.RoutingStrategy == RoutingStrategy.Direct) {
 
                 // If the RoutingStrategy of the associated is
                 // Bubble the handlers for the last target
                 // added are the last ones invoked
                 // Invoke class listeners
-                for (int i = 0, count = _routeItemList.Count; i < count; i++)
-                {
-                    RouteItem ri = ((RouteItem)_routeItemList[i]);
+                for (int i = 0, count = this._routeItemList.Count; i < count; i++) {
+                    var ri = ((RouteItem)this._routeItemList[i]);
                     args.InvokeHandler(ri);
                 }
             }
-            else
-            {
-                int endTargetIndex = _routeItemList.Count - 1;
+            else {
+                var endTargetIndex = this._routeItemList.Count - 1;
                 int startTargetIndex;
 
                 // If the RoutingStrategy of the associated is
                 // Tunnel the handlers for the last target
                 // added are the first ones invoked
-                while (endTargetIndex >= 0)
-                {
+                while (endTargetIndex >= 0) {
                     // For tunnel events we need to invoke handlers for the last target first.
                     // However the handlers for that individual target must be fired in the right order.
-                    object currTarget = ((RouteItem)_routeItemList[endTargetIndex]).Target;
-                    for (startTargetIndex = endTargetIndex; startTargetIndex >= 0; startTargetIndex--)
-                    {
-                        if (((RouteItem)_routeItemList[startTargetIndex]).Target != currTarget)
-                        {
-                            if(startTargetIndex == endTargetIndex && endTargetIndex > 0)
-                            {
+                    var currTarget = ((RouteItem)this._routeItemList[endTargetIndex]).Target;
+                    for (startTargetIndex = endTargetIndex; startTargetIndex >= 0; startTargetIndex--) {
+                        if (((RouteItem)this._routeItemList[startTargetIndex]).Target != currTarget) {
+                            if (startTargetIndex == endTargetIndex && endTargetIndex > 0) {
                                 endTargetIndex--;
                             }
-                            else
-                            {
+                            else {
                                 break;
                             }
                         }
                     }
 
-                    for (int i = startTargetIndex + 1; i <= endTargetIndex; i++)
-                    {
-                        RouteItem ri = ((RouteItem)_routeItemList[i]);
+                    for (var i = startTargetIndex + 1; i <= endTargetIndex; i++) {
+                        var ri = ((RouteItem)this._routeItemList[i]);
                         args.InvokeHandler(ri);
                     }
 

@@ -3,17 +3,14 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 using System;
-using System.Collections;
-using System.Threading;
-using System.Runtime.CompilerServices;
-using Microsoft.SPOT.Input;
-using Microsoft.SPOT.Touch;
-using Microsoft.SPOT.Presentation;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using GHIElectronics.TinyCLR.Devices.Display;
+using Microsoft.SPOT.Input;
+using Microsoft.SPOT.Presentation;
+using Microsoft.SPOT.Touch;
 
-namespace Microsoft.SPOT
-{
+namespace Microsoft.SPOT {
 
     /*
     /// <summary>+
@@ -33,8 +30,7 @@ namespace Microsoft.SPOT
     /// <summary>
     /// Application base class
     /// </summary>
-    public class Application : DispatcherObject
-    {
+    public class Application : DispatcherObject {
         private readonly DisplayController display;
 
         //------------------------------------------------------
@@ -52,8 +48,7 @@ namespace Microsoft.SPOT
         /// <summary>
         ///     Application constructor
         /// </summary>
-        public Application(DisplayController display)
-        {
+        public Application(DisplayController display) {
             this.display = display ?? throw new ArgumentException();
 
             WindowManager.EnsureInstance(this.display);
@@ -69,19 +64,16 @@ namespace Microsoft.SPOT
                         }
 
             */
-            lock (typeof(GlobalLock))
-            {
+            lock (typeof(GlobalLock)) {
                 // set the default statics
                 // DO NOT move this from the begining of this constructor
-                if (_appCreatedInThisAppDomain == false)
-                {
+                if (_appCreatedInThisAppDomain == false) {
                     Debug.Assert(_appInstance == null, "_appInstance must be null here.");
                     _appInstance = this;
                     IsShuttingDown = false;
                     _appCreatedInThisAppDomain = true;
                 }
-                else
-                {
+                else {
                     //lock will be released, so no worries about throwing an exception inside the lock
                     throw new InvalidOperationException("application is a singleton");
                 }
@@ -98,11 +90,10 @@ namespace Microsoft.SPOT
             // Also, doing startup (firing OnStartup etc.) once our dispatcher
             // is run ensures that we run before any external code is run in the
             // application's Dispatcher.
-            Dispatcher.BeginInvoke(new DispatcherOperationCallback(this.StartupCallback), null);
+            this.Dispatcher.BeginInvoke(new DispatcherOperationCallback(this.StartupCallback), null);
         }
 
-        private object StartupCallback(object unused)
-        {
+        private object StartupCallback(object unused) {
             // Event handler exception continuality: if exception occurs in Startup event handler,
             // our state would not be corrupted because it is fired by posting the item in the queue.
             // Please check Event handler exception continuality if the logic changes.
@@ -132,18 +123,16 @@ namespace Microsoft.SPOT
         ///     immediately afterwards.
         ///</remarks>
         /// <returns>ExitCode of the application</returns>
-        public void Run()
-        {
+        public void Run() =>
             /* TRACING
-                        if (EventTrace.IsEnabled(EventTrace.Flags.performance, EventTrace.Level.normal))
-                        {
-                            EventTrace.EventProvider.TraceEvent(EventTrace.APPGUID, MS.Utility.EventType.Info,
-                                                                EventTrace.APPRUN);
-                        }
+if (EventTrace.IsEnabled(EventTrace.Flags.performance, EventTrace.Level.normal))
+{
+EventTrace.EventProvider.TraceEvent(EventTrace.APPGUID, MS.Utility.EventType.Info,
+                                    EventTrace.APPRUN);
+}
 
-            */
+*/
             this.Run(null);
-        }
 
         ///<summary>
         ///     Run is called to start an application.
@@ -158,40 +147,33 @@ namespace Microsoft.SPOT
         /// <param name="window">Window that will be added to the Windows property and made the MainWindow of the Applcation.
         /// The passed Window must be created on the same thread as the Application object.  Furthermore, this Window is
         /// shown once the Application is run.</param>
-        public void Run(Window window)
-        {
+        public void Run(Window window) {
             VerifyAccess();
             // In this case, we should throw an exception when Run is called for the second time.
             // When app is shutdown, _appIsShutdown is set to true.  If it is true here, then we
             // throw an exception
-            if (_appIsShutdown == true)
-            {
+            if (this._appIsShutdown == true) {
                 throw new InvalidOperationException("cannot call Run multiple times");
             }
 
             //This is the only UI thread.  Make sure the WindowManager is created on this thread.
             WindowManager.EnsureInstance(this.display);
 
-            if (window != null)
-            {
-                if (window.CheckAccess() == false)
-                {
+            if (window != null) {
+                if (window.CheckAccess() == false) {
                     throw new ArgumentException("window must be on same dispatcher");
                 }
 
-                if (WindowsInternal.HasItem(window) == false)
-                {
-                    WindowsInternal.Add(window);
+                if (this.WindowsInternal.HasItem(window) == false) {
+                    this.WindowsInternal.Add(window);
                 }
 
-                if (MainWindow == null)
-                {
-                    MainWindow = window;
+                if (this.MainWindow == null) {
+                    this.MainWindow = window;
                 }
 
-                if (window.Visibility != Visibility.Visible)
-                {
-                    Dispatcher.BeginInvoke(new DispatcherOperationCallback(this.ShowWindow), window);
+                if (window.Visibility != Visibility.Visible) {
+                    this.Dispatcher.BeginInvoke(new DispatcherOperationCallback(this.ShowWindow), window);
                 }
             }
 
@@ -215,7 +197,7 @@ namespace Microsoft.SPOT
 
             // run the dispatcher - this method will not return
             // until the dispatcher is killed
-            _ownDispatcherStarted = true;
+            this._ownDispatcherStarted = true;
             Dispatcher.Run();
         }
 
@@ -225,94 +207,80 @@ namespace Microsoft.SPOT
         ///     Once shutdown() is called, the application gets called with the
         ///     OnShutdown method to raise the Shutdown event.
         /// </summary>
-        public void Shutdown()
-        {
+        public void Shutdown() {
             VerifyAccess();
 
             //Already called once??
-            if (IsShuttingDown == true)
-            {
+            if (IsShuttingDown == true) {
                 return;
             }
 
             IsShuttingDown = true;
 
-            Dispatcher.BeginInvoke(new DispatcherOperationCallback(ShutdownCallback), null);
+            this.Dispatcher.BeginInvoke(new DispatcherOperationCallback(this.ShutdownCallback), null);
         }
 
         [MethodImplAttribute(MethodImplOptions.Synchronized)]
-        public void InitializeForEventSource()
-        {
-            if (_inputManager == null)
-            {
+        public void InitializeForEventSource() {
+            if (_inputManager == null) {
                 _inputManager = InputManager.CurrentInputManager;
 
-                _inputProviderSite =
+                this._inputProviderSite =
                     _inputManager.RegisterInputProvider(this);
 
                 _reportInputMethod =
-                    new DispatcherOperationCallback(delegate(object o)
-                            {
-                                InputReportArgs args = (InputReportArgs)o;
-                                return _inputProviderSite.ReportInput(args.Device, args.Report);
-                            });
+                    new DispatcherOperationCallback(delegate (object o) {
+                        var args = (InputReportArgs)o;
+                        return this._inputProviderSite.ReportInput(args.Device, args.Report);
+                    });
             }
         }
 
-        public bool OnEvent(BaseEvent ev)
-        {
+        public bool OnEvent(BaseEvent ev) {
             InputReport ir = null;
             InputDevice dev = null;
 
             /// Process known events, otherwise forward as generic to MainWindow.
             ///
 
-            TouchEvent touchEvent = ev as TouchEvent;
-            if (touchEvent != null)
-            {
-                Microsoft.SPOT.Presentation.UIElement targetWindow = TouchCapture.Captured;
+            if (ev is TouchEvent touchEvent) {
+                var targetWindow = TouchCapture.Captured;
 
                 ///
                 ///  Make sure the current event's coordinates are contained in the current
                 ///  stylus/touch window, if not then search for the appropriate window
                 ///
-                if (targetWindow != null && touchEvent.EventMessage == (byte)TouchMessages.Down)
-                {
-                    int x = 0, y = 0, w, h;
-                    int xSrc = touchEvent.Touches[0].X;
-                    int ySrc = touchEvent.Touches[0].Y;
+                if (targetWindow != null && touchEvent.EventMessage == (byte)TouchMessages.Down) {
+                    int x = 0, y = 0;
+                    var xSrc = touchEvent.Touches[0].X;
+                    var ySrc = touchEvent.Touches[0].Y;
 
                     targetWindow.PointToScreen(ref x, ref y);
-                    targetWindow.GetRenderSize(out w, out h);
+                    targetWindow.GetRenderSize(out var w, out var h);
 
                     if (!(x <= xSrc && xSrc <= (x + w) &&
-                        y <= ySrc && ySrc <= (y + h)))
-                    {
+                        y <= ySrc && ySrc <= (y + h))) {
                         // only look for different target window if the touch point is inside
                         // the system metrics, otherwise, it may be a touch calibration point
                         // which is translated in the application layer.
-                        if(xSrc <= (int)this.display.ActiveSettings.Width &&
-                           ySrc <= (int)this.display.ActiveSettings.Height)
-                        {
+                        if (xSrc <= (int)this.display.ActiveSettings.Width &&
+                           ySrc <= (int)this.display.ActiveSettings.Height) {
                             targetWindow = null;
                         }
                     }
                 }
 
-                if (targetWindow == null)
-                {
+                if (targetWindow == null) {
                     //If we can enforce that the first event in the array is always the primary touch, we don't have to
                     //search.
                     targetWindow = WindowManager.Instance.GetPointerTarget(touchEvent.Touches[0].X, touchEvent.Touches[0].Y);
                 }
 
-                if (targetWindow != null)
-                {
+                if (targetWindow != null) {
                     _inputManager.TouchDevice.SetTarget(targetWindow);
                 }
-                else
-                {
-                    _inputManager.TouchDevice.SetTarget(MainWindow);
+                else {
+                    _inputManager.TouchDevice.SetTarget(this.MainWindow);
                 }
 
                 ir =
@@ -326,36 +294,31 @@ namespace Microsoft.SPOT
                 dev = _inputManager._touchDevice;
 
             }
-            else if (ev is GenericEvent)
-            {
-                GenericEvent genericEvent = (GenericEvent)ev;
+            else if (ev is GenericEvent) {
+                var genericEvent = (GenericEvent)ev;
 
-                    Microsoft.SPOT.Presentation.UIElement targetWindow = TouchCapture.Captured;
+                var targetWindow = TouchCapture.Captured;
 
-                    if (targetWindow == null)
-                    {
-                        targetWindow = WindowManager.Instance.GetPointerTarget(genericEvent.X, genericEvent.Y);
-                    }
+                if (targetWindow == null) {
+                    targetWindow = WindowManager.Instance.GetPointerTarget(genericEvent.X, genericEvent.Y);
+                }
 
-                    if (targetWindow != null)
-                    {
-                        _inputManager.GenericDevice.SetTarget(targetWindow);
-                    }
-                    else
-                    {
-                        _inputManager.GenericDevice.SetTarget(MainWindow);
-                    }
+                if (targetWindow != null) {
+                    _inputManager.GenericDevice.SetTarget(targetWindow);
+                }
+                else {
+                    _inputManager.GenericDevice.SetTarget(this.MainWindow);
+                }
 
-                    ir = new RawGenericInputReport(
-                           null,
-                           genericEvent
-                           );
+                ir = new RawGenericInputReport(
+                       null,
+                       genericEvent
+                       );
 
-                    dev = _inputManager._genericDevice;
+                dev = _inputManager._genericDevice;
 
             }
-            else
-            {
+            else {
                 /// Unkown event.
             }
 
@@ -378,12 +341,9 @@ namespace Microsoft.SPOT
         ///     The Current property enables the developer to always get to the application in
         ///     AppDomain in which they are running.
         /// </summary>
-        static public Application Current
-        {
-            get
-            {
-                lock (typeof(GlobalLock))
-                {
+        static public Application Current {
+            get {
+                lock (typeof(GlobalLock)) {
                     return _appInstance;
                 }
             }
@@ -395,13 +355,7 @@ namespace Microsoft.SPOT
         /// </summary>
         // DO-NOT USE THIS PROPERY IF YOU MEAN TO MODIFY THE UNDERLYING COLLECTION.  USE
         // WindowsInternal PROPERTY FOR MODIFYING THE UNDERLYING DATASTRUCTURE.
-        public WindowCollection Windows
-        {
-            get
-            {
-                return WindowsInternal.Clone();
-            }
-        }
+        public WindowCollection Windows => this.WindowsInternal.Clone();
 
         /// <summary>
         ///     The MainWindow property indicates the primary window of the application.
@@ -412,25 +366,14 @@ namespace Microsoft.SPOT
         ///     It is a recommended programming style to refer to MainWindow in code instead of Windows[0].
         ///
         /// </remarks>
-        public Window MainWindow
-        {
-            get
-            {
-                /// We do not need VerifyAccess here, MainWindow property should be accessible
-                /// from any thread, since it could be needed for non-UI related operations.
-                /// This is also in-line with desktop CLR behavior, where you can access Form object
-                /// itself from any thread, although many actionable items are blocked from
-                /// non-UI ones.
-                return _mainWindow;
-            }
+        public Window MainWindow {
+            get => this._mainWindow;
 
-            set
-            {
+            set {
                 VerifyAccess();
 
-                if (value != _mainWindow)
-                {
-                    _mainWindow = value;
+                if (value != this._mainWindow) {
+                    this._mainWindow = value;
                 }
             }
         }
@@ -456,27 +399,20 @@ namespace Microsoft.SPOT
         ///         OnExplicitShutdown- this mode will shutdown the application only when an
         ///                             explicit call to OnShutdown() has been made.
         /// </summary>
-        public ShutdownMode ShutdownMode
-        {
-            get
-            {
-                return _shutdownMode;
-            }
+        public ShutdownMode ShutdownMode {
+            get => this._shutdownMode;
 
-            set
-            {
+            set {
                 VerifyAccess();
-                if (!IsValidShutdownMode(value))
-                {
+                if (!IsValidShutdownMode(value)) {
                     throw new ArgumentOutOfRangeException("value", "enum");
                 }
 
-                if (IsShuttingDown == true || _appIsShutdown == true)
-                {
+                if (IsShuttingDown == true || this._appIsShutdown == true) {
                     throw new InvalidOperationException();
                 }
 
-                _shutdownMode = value;
+                this._shutdownMode = value;
             }
         }
 
@@ -494,20 +430,18 @@ namespace Microsoft.SPOT
         ///     The Startup event is fired when an application is starting.
         ///     This event is raised by the OnStartup method.
         /// </summary>
-        public event EventHandler Startup
-        {
-            add { VerifyAccess(); _startupEventHandler += value; }
-            remove { VerifyAccess(); _startupEventHandler -= value; }
+        public event EventHandler Startup {
+            add { VerifyAccess(); this._startupEventHandler += value; }
+            remove { VerifyAccess(); this._startupEventHandler -= value; }
         }
 
         /// <summary>
         /// The Exit event is fired when an application is shutting down.
         /// This event is raised by the OnExit method.
         /// </summary>
-        public event EventHandler Exit
-        {
-            add { VerifyAccess(); _exitEventHandler += value; }
-            remove { VerifyAccess(); _exitEventHandler -= value; }
+        public event EventHandler Exit {
+            add { VerifyAccess(); this._exitEventHandler += value; }
+            remove { VerifyAccess(); this._exitEventHandler -= value; }
         }
 
 #if(FALSE)
@@ -576,15 +510,10 @@ namespace Microsoft.SPOT
         ///     to be raised.
         /// </remarks>
         /// <param name="e">The event args that will be passed to the Startup event</param>
-        protected virtual void OnStartup(EventArgs e)
-        {
+        protected virtual void OnStartup(EventArgs e) =>
             // VerifyAccess(); //we're only called via Invoke so this is unnecessary?
 
-            if (_startupEventHandler != null)
-            {
-                _startupEventHandler(this, e);
-            }
-        }
+            this._startupEventHandler?.Invoke(this, e);
 
         /// <summary>
         ///     OnExit is called to raise the Exit event.
@@ -598,15 +527,10 @@ namespace Microsoft.SPOT
         ///     corresponding event to be raised.
         /// </remarks>
         /// <param name="e">The event args that will be passed to the Exit event</param>
-        protected virtual void OnExit(EventArgs e)
-        {
+        protected virtual void OnExit(EventArgs e) =>
             // VerifyAccess(); //- Only called via an Invoked frame, so unnecessary?
 
-            if (_exitEventHandler != null)
-            {
-                _exitEventHandler(this, e);
-            }
-        }
+            this._exitEventHandler?.Invoke(this, e);
 
 #if(false)
         // REFACTOR
@@ -701,49 +625,43 @@ namespace Microsoft.SPOT
         /// <summary>
         /// DO NOT USE - internal method
         /// </summary>
-        internal virtual void DoShutdown()
-        {
+        internal virtual void DoShutdown() {
             // VerifyAccess(); - is this really necessary when we're only called via an Invoke?
 
             // We need to know if we have been shut down already.
             // We cannot check the IsShuttingDown variable because it is set true
             // in the function that calls us.
 
-            lock (typeof(GlobalLock))
-            {
-                _appWindowList = null;
+            lock (typeof(GlobalLock)) {
+                this._appWindowList = null;
             }
 
-            EventArgs e = new EventArgs();
+            var e = new EventArgs();
 
             // Event handler exception continuality: if exception occurs in ShuttingDown event handler,
             // our cleanup action is to finish Shuttingdown.  Since Shuttingdown cannot be cancelled.
             // We don't want user to use throw exception and catch it to cancel Shuttingdown.
-            try
-            {
+            try {
                 // fire Applicaiton Exit event
                 OnExit(e);
             }
-            finally
-            {
+            finally {
 
-                lock (typeof(GlobalLock))
-                {
+                lock (typeof(GlobalLock)) {
                     _appInstance = null;
-                    _nonAppWindowList = null;
+                    this._nonAppWindowList = null;
                 }
 
-                _mainWindow = null;
+                this._mainWindow = null;
 
                 // REFACTOR -- disconnect from managed system
 
-                _appIsShutdown = true; // mark app as shutdown
+                this._appIsShutdown = true; // mark app as shutdown
             }
         }
 
-        private object ShowWindow(object obj)
-        {
-            Window win = obj as Window;
+        private object ShowWindow(object obj) {
+            var win = obj as Window;
             win.Visibility = Visibility.Visible;
             return null;
         }
@@ -761,53 +679,40 @@ namespace Microsoft.SPOT
         // The public Windows property returns a copy of the underlying
         // WindowCollection.  This property is used internally to enable
         // modyfying the underlying collection.
-        internal WindowCollection WindowsInternal
-        {
-            get
-            {
-                lock (typeof(GlobalLock))
-                {
-                    if (_appWindowList == null)
-                    {
-                        _appWindowList = new WindowCollection();
+        internal WindowCollection WindowsInternal {
+            get {
+                lock (typeof(GlobalLock)) {
+                    if (this._appWindowList == null) {
+                        this._appWindowList = new WindowCollection();
                     }
 
-                    return _appWindowList;
+                    return this._appWindowList;
                 }
             }
         }
 
-        internal WindowCollection NonAppWindowsInternal
-        {
-            get
-            {
-                lock (typeof(GlobalLock))
-                {
-                    if (_nonAppWindowList == null)
-                    {
-                        _nonAppWindowList = new WindowCollection();
+        internal WindowCollection NonAppWindowsInternal {
+            get {
+                lock (typeof(GlobalLock)) {
+                    if (this._nonAppWindowList == null) {
+                        this._nonAppWindowList = new WindowCollection();
                     }
 
-                    return _nonAppWindowList;
+                    return this._nonAppWindowList;
                 }
             }
 
         }
 
-        internal static bool IsShuttingDown
-        {
-            get
-            {
-                lock (typeof(GlobalLock))
-                {
+        internal static bool IsShuttingDown {
+            get {
+                lock (typeof(GlobalLock)) {
                     return _isShuttingDown;
                 }
             }
 
-            set
-            {
-                lock (typeof(GlobalLock))
-                {
+            set {
+                lock (typeof(GlobalLock)) {
                     _isShuttingDown = value;
                 }
             }
@@ -929,21 +834,17 @@ namespace Microsoft.SPOT
         /// This method gets called on dispatch of the Shutdown DispatcherOperationCallback
         /// </summary>
 
-        private object ShutdownCallback(object arg)
-        {
+        private object ShutdownCallback(object arg) {
             // Event handler exception continuality: if exception occurs in Exit event handler,
             // our cleanup action is to finish Shutdown since Exit cannot be cancelled. We don't
             // want user to use throw exception and catch it to cancel Shutdown.
-            try
-            {
+            try {
                 DoShutdown();
             }
-            finally
-            {
+            finally {
                 // Quit the dispatcher if we ran our own.
-                if (_ownDispatcherStarted == true)
-                {
-                    Dispatcher.InvokeShutdown();
+                if (this._ownDispatcherStarted == true) {
+                    this.Dispatcher.InvokeShutdown();
                 }
 
             }
@@ -954,8 +855,7 @@ namespace Microsoft.SPOT
         /// <summary>
         /// This DispatcherException event handler creates the default UI
         /// </summary>
-        static private bool DefaultContextExceptionHandler(object sender, Exception e)
-        {
+        static private bool DefaultContextExceptionHandler(object sender, Exception e) {
             Trace.WriteLine("[Default DispatcherException Handler] Exception caught: " + e.GetType().FullName);
 
             // what do we want to do when we get an exception? throw up a dialog?
@@ -963,12 +863,9 @@ namespace Microsoft.SPOT
             return true;
         }
 
-        private static bool IsValidShutdownMode(ShutdownMode value)
-        {
-            return value == ShutdownMode.OnExplicitShutdown
+        private static bool IsValidShutdownMode(ShutdownMode value) => value == ShutdownMode.OnExplicitShutdown
                 || value == ShutdownMode.OnLastWindowClose
                 || value == ShutdownMode.OnMainWindowClose;
-        }
 
         #endregion Private Methods
 
@@ -1020,8 +917,7 @@ namespace Microsoft.SPOT
     /// <summary>
     ///     Enum for ShutdownMode
     /// </summary>
-    public enum ShutdownMode : byte
-    {
+    public enum ShutdownMode : byte {
         /// <summary>
         ///
         /// </summary>
@@ -1047,8 +943,7 @@ namespace Microsoft.SPOT
     /// <summary>
     ///     Enum for ReasonSessionEnding
     /// </summary>
-    public enum ReasonSessionEnding : byte
-    {
+    public enum ReasonSessionEnding : byte {
         /// <summary>
         ///
         /// </summary>

@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections;
 using System.Drawing;
-using System.Text;
-using System.Threading;
 
 namespace Microsoft.SPOT {
     public enum Button {
@@ -11,6 +8,7 @@ namespace Microsoft.SPOT {
         VK_UP,
         VK_LEFT,
         VK_RIGHT,
+        VK_SELECT,
         LastSystemDefinedButton
     }
 

@@ -5,17 +5,13 @@
 using System;
 using System.Collections;
 using System.Diagnostics;
-using System.Drawing;
 using Microsoft.SPOT.Presentation.Media;
 
-namespace Microsoft.SPOT.Presentation.Controls
-{
-    public class TextFlow : UIElement
-    {
+namespace Microsoft.SPOT.Presentation.Controls {
+    public class TextFlow : UIElement {
         public TextRunCollection TextRuns;
 
-        internal class TextLine
-        {
+        internal class TextLine {
             public const int DefaultLineHeight = 10;
 
             public TextRun[] Runs;
@@ -23,38 +19,31 @@ namespace Microsoft.SPOT.Presentation.Controls
             public int Height;
             private int _width;
 
-            public TextLine(ArrayList runs, int height, int baseline)
-            {
-                Runs = (TextRun[])runs.ToArray(typeof(TextRun));
+            public TextLine(ArrayList runs, int height, int baseline) {
+                this.Runs = (TextRun[])runs.ToArray(typeof(TextRun));
                 this.Baseline = baseline;
                 this.Height = height;
             }
 
             // Empty line with specified height
-            public TextLine(int height)
-            {
-                Runs = new TextRun[0];
+            public TextLine(int height) {
+                this.Runs = new TextRun[0];
                 this.Height = height;
             }
 
-            public int Width
-            {
-                get
-                {
-                    if (_width == 0)
-                    {
-                        int lineWidth = 0;
-                        int width, height;
-                        for (int i = Runs.Length - 1; i >= 0; i--)
-                        {
-                            Runs[i].GetSize(out width, out height);
+            public int Width {
+                get {
+                    if (this._width == 0) {
+                        var lineWidth = 0;
+                        for (var i = this.Runs.Length - 1; i >= 0; i--) {
+                            this.Runs[i].GetSize(out var width, out var height);
                             lineWidth += width;
                         }
 
-                        _width = lineWidth;
+                        this._width = lineWidth;
                     }
 
-                    return _width;
+                    return this._width;
                 }
             }
         }
@@ -65,81 +54,61 @@ namespace Microsoft.SPOT.Presentation.Controls
 
         internal ScrollingStyle _scrollingStyle = ScrollingStyle.LineByLine;
 
-        public TextFlow()
-        {
-            TextRuns = new TextRunCollection(this);
-        }
+        public TextFlow() => this.TextRuns = new TextRunCollection(this);
 
-        public ScrollingStyle ScrollingStyle
-        {
-            get
-            {
-                return _scrollingStyle;
-            }
+        public ScrollingStyle ScrollingStyle {
+            get => this._scrollingStyle;
 
-            set
-            {
+            set {
                 VerifyAccess();
 
-                if (value < ScrollingStyle.First || value > ScrollingStyle.Last)
-                {
+                if (value < ScrollingStyle.First || value > ScrollingStyle.Last) {
                     throw new ArgumentOutOfRangeException("ScrollingStyle", "Invalid Enum");
                 }
 
-                _scrollingStyle = value;
+                this._scrollingStyle = value;
             }
         }
 
-        public TextAlignment TextAlignment
-        {
-            get
-            {
-                return _alignment;
-            }
+        public TextAlignment TextAlignment {
+            get => this._alignment;
 
-            set
-            {
+            set {
                 VerifyAccess();
 
-                _alignment = value;
+                this._alignment = value;
                 Invalidate();
             }
         }
 
-        protected override void MeasureOverride(int availableWidth, int availableHeight, out int desiredWidth, out int desiredHeight)
-        {
+        protected override void MeasureOverride(int availableWidth, int availableHeight, out int desiredWidth, out int desiredHeight) {
             desiredWidth = availableWidth;
             desiredHeight = availableHeight;
 
-            if (availableWidth > 0)
-            {
-                _lineCache = SplitLines(availableWidth);
+            if (availableWidth > 0) {
+                this._lineCache = SplitLines(availableWidth);
 
                 // Compute total desired height
                 //
-                int totalHeight = 0;
-                for (int lineNumber = _lineCache.Count - 1; lineNumber >= 0; --lineNumber)
-                {
-                    totalHeight += ((TextLine)_lineCache[lineNumber]).Height;
+                var totalHeight = 0;
+                for (var lineNumber = this._lineCache.Count - 1; lineNumber >= 0; --lineNumber) {
+                    totalHeight += ((TextLine)this._lineCache[lineNumber]).Height;
                 }
 
                 desiredHeight = totalHeight;
             }
         }
 
-        internal bool LineScroll(bool up)
-        {
-            if (_lineCache == null) return false;
+        internal bool LineScroll(bool up) {
+            if (this._lineCache == null) return false;
 
-            if (up && _currentLine > 0)
-            {
-                _currentLine--;
+            if (up && this._currentLine > 0) {
+                this._currentLine--;
                 Invalidate();
                 return true;
             }
-            else if (!up && _currentLine < _lineCache.Count - 1)
-            {
-                _currentLine++;
+            else if (!up && this._currentLine < this._lineCache.Count - 1) {
+                this._currentLine++;
                 Invalidate();
                 return true;
             }
@@ -147,41 +116,34 @@ namespace Microsoft.SPOT.Presentation.Controls
             return false;
         }
 
-        internal bool PageScroll(bool up)
-        {
-            if (_lineCache == null) return false;
+        internal bool PageScroll(bool up) {
+            if (this._lineCache == null) return false;
 
-            int lineNumber = _currentLine;
-            int nLines = _lineCache.Count;
-            int pageHeight = _renderHeight;
-            int heightOfLines = 0;
+            var lineNumber = this._currentLine;
+            var nLines = this._lineCache.Count;
+            var pageHeight = this._renderHeight;
+            var heightOfLines = 0;
 
-            if (up)
-            {
+            if (up) {
                 // Determine first line of previous page
                 //
-                while (lineNumber > 0)
-                {
+                while (lineNumber > 0) {
                     lineNumber--;
-                    TextLine line = (TextLine)_lineCache[lineNumber];
+                    var line = (TextLine)this._lineCache[lineNumber];
                     heightOfLines += line.Height;
-                    if (heightOfLines > pageHeight)
-                    {
+                    if (heightOfLines > pageHeight) {
                         lineNumber++;
                         break;
                     }
                 }
             }
-            else
-            {
+            else {
                 // Determine first line of next page
                 //
-                while (lineNumber < nLines)
-                {
-                    TextLine line = (TextLine)_lineCache[lineNumber];
+                while (lineNumber < nLines) {
+                    var line = (TextLine)this._lineCache[lineNumber];
                     heightOfLines += line.Height;
-                    if (heightOfLines > pageHeight)
-                    {
+                    if (heightOfLines > pageHeight) {
                         break;
                     }
 
@@ -191,14 +153,12 @@ namespace Microsoft.SPOT.Presentation.Controls
                 if (lineNumber == nLines) lineNumber = nLines - 1;
             }
 
-            if (_currentLine != lineNumber)
-            {
-                _currentLine = lineNumber;
+            if (this._currentLine != lineNumber) {
+                this._currentLine = lineNumber;
                 Invalidate();
                 return true;
             }
-            else
-            {
+            else {
                 return false;
             }
         }
@@ -206,68 +166,52 @@ namespace Microsoft.SPOT.Presentation.Controls
         // Given an available width, takes the TextRuns and arranges them into
         // separate lines, breaking where possible at whitespace.
         //
-        internal ArrayList SplitLines(int availableWidth)
-        {
+        internal ArrayList SplitLines(int availableWidth) {
             Debug.Assert(availableWidth > 0);
 
-            int lineWidth = 0;
+            var lineWidth = 0;
 
-            ArrayList remainingRuns = new ArrayList();
-            for (int i = 0; i < TextRuns.Count; i++)
-            {
-                remainingRuns.Add(TextRuns[i]);
+            var remainingRuns = new ArrayList();
+            for (var i = 0; i < this.TextRuns.Count; i++) {
+                remainingRuns.Add(this.TextRuns[i]);
             }
 
-            ArrayList lineCache = new ArrayList();
-            ArrayList runsOnCurrentLine = new ArrayList();
+            var lineCache = new ArrayList();
+            var runsOnCurrentLine = new ArrayList();
 
-            while (remainingRuns.Count > 0)
-            {
-                bool newLine = false;
+            while (remainingRuns.Count > 0) {
+                var newLine = false;
 
-                TextRun run = (TextRun)remainingRuns[0];
+                var run = (TextRun)remainingRuns[0];
                 remainingRuns.RemoveAt(0);
 
-                if (run.IsEndOfLine)
-                {
+                if (run.IsEndOfLine) {
                     newLine = true;
                 }
-                else
-                {
-                    // Add run to end of current line
-                    //
-                    int runWidth, runHeight;
-                    run.GetSize(out runWidth, out runHeight);
+                else {
+                    run.GetSize(out var runWidth, out var runHeight);
                     lineWidth += runWidth;
                     runsOnCurrentLine.Add(run);
 
                     // If the line length now extends beyond the available width, attempt to break the line
                     //
-                    if (lineWidth > availableWidth)
-                    {
-                        bool onlyRunOnCurrentLine = (runsOnCurrentLine.Count == 1);
+                    if (lineWidth > availableWidth) {
+                        var onlyRunOnCurrentLine = (runsOnCurrentLine.Count == 1);
 
-                        if (run.Text.Length > 1)
-                        {
+                        if (run.Text.Length > 1) {
                             runsOnCurrentLine.Remove(run);
-
-                            TextRun run1, run2;
-                            if (run.Break(runWidth - (lineWidth - availableWidth), out run1, out run2, onlyRunOnCurrentLine))
-                            {
+                            if (run.Break(runWidth - (lineWidth - availableWidth), out var run1, out var run2, onlyRunOnCurrentLine)) {
                                 // Break and put overflow on next line
                                 //
-                                if (run1 != null)
-                                {
+                                if (run1 != null) {
                                     runsOnCurrentLine.Add(run1);
                                 }
 
-                                if (run2 != null)
-                                {
+                                if (run2 != null) {
                                     remainingRuns.Insert(0, run2);
                                 }
                             }
-                            else if (!onlyRunOnCurrentLine)
-                            {
+                            else if (!onlyRunOnCurrentLine) {
                                 // No break found - put it on its own line
                                 //
                                 remainingRuns.Insert(0, run);
@@ -275,8 +219,7 @@ namespace Microsoft.SPOT.Presentation.Controls
                         }
                         else // run.Text.Length == 1
                         {
-                            if (!onlyRunOnCurrentLine)
-                            {
+                            if (!onlyRunOnCurrentLine) {
                                 runsOnCurrentLine.Remove(run);
                                 remainingRuns.Insert(0, run);
                             }
@@ -285,28 +228,23 @@ namespace Microsoft.SPOT.Presentation.Controls
                         newLine = true;
                     }
 
-                    if (lineWidth >= availableWidth || remainingRuns.Count == 0)
-                    {
+                    if (lineWidth >= availableWidth || remainingRuns.Count == 0) {
                         newLine = true;
                     }
                 }
 
                 // If we're done with this line, add it to the list
                 //
-                if (newLine)
-                {
-                    int lineHeight = 0;
-                    int baseLine = 0;
-                    int nRuns = runsOnCurrentLine.Count;
-                    if (nRuns > 0)
-                    {
+                if (newLine) {
+                    var lineHeight = 0;
+                    var baseLine = 0;
+                    var nRuns = runsOnCurrentLine.Count;
+                    if (nRuns > 0) {
                         // Compute line height & baseline
-                        for (int i = 0; i < nRuns; i++)
-                        {
-                            Font font = ((TextRun)runsOnCurrentLine[i]).Font;
-                            int h = font.Height + font.ExternalLeading;
-                            if (h > lineHeight)
-                            {
+                        for (var i = 0; i < nRuns; i++) {
+                            var font = ((TextRun)runsOnCurrentLine[i]).Font;
+                            var h = font.Height + font.ExternalLeading;
+                            if (h > lineHeight) {
                                 lineHeight = h;
                                 baseLine = font.Ascent;
                             }
@@ -315,8 +253,7 @@ namespace Microsoft.SPOT.Presentation.Controls
                         // Add line to cache
                         lineCache.Add(new TextLine(runsOnCurrentLine, lineHeight, baseLine));
                     }
-                    else
-                    {
+                    else {
                         // Empty line. Just borrow the height from the previous line, if any
                         lineHeight = (lineCache.Count) > 0 ?
                             ((TextLine)lineCache[lineCache.Count - 1]).Height :
@@ -334,13 +271,10 @@ namespace Microsoft.SPOT.Presentation.Controls
             return lineCache;
         }
 
-        protected override void OnButtonDown(Microsoft.SPOT.Input.ButtonEventArgs e)
-        {
-            if (e.Button == Button.VK_UP || e.Button == Button.VK_DOWN)
-            {
-                bool isUp = (e.Button == Button.VK_UP);
-                switch (_scrollingStyle)
-                {
+        protected override void OnButtonDown(Microsoft.SPOT.Input.ButtonEventArgs e) {
+            if (e.Button == Button.VK_UP || e.Button == Button.VK_DOWN) {
+                var isUp = (e.Button == Button.VK_UP);
+                switch (this._scrollingStyle) {
                     case ScrollingStyle.PageByPage:
                         e.Handled = PageScroll(isUp);
                         break;
@@ -354,35 +288,28 @@ namespace Microsoft.SPOT.Presentation.Controls
             }
         }
 
-        public override void OnRender(Media.DrawingContext dc)
-        {
-            if (_lineCache == null || _lineCache.Count == 0)
-            {
+        public override void OnRender(Media.DrawingContext dc) {
+            if (this._lineCache == null || this._lineCache.Count == 0) {
                 return;
             }
 
-            int nLines = _lineCache.Count;
-            int top = 0;
-
-            int width, height;
-            GetRenderSize(out width, out height);
+            var nLines = this._lineCache.Count;
+            var top = 0;
+            GetRenderSize(out var width, out var height);
 
             // Draw each line of Text
             //
-            int lineNumber = _currentLine;
-            while (lineNumber < nLines)
-            {
-                TextLine line = (TextLine)_lineCache[lineNumber];
-                if (top + line.Height > height)
-                {
+            var lineNumber = this._currentLine;
+            while (lineNumber < nLines) {
+                var line = (TextLine)this._lineCache[lineNumber];
+                if (top + line.Height > height) {
                     break;
                 }
 
-                TextRun[] runs = line.Runs;
+                var runs = line.Runs;
 
                 int x;
-                switch (_alignment)
-                {
+                switch (this._alignment) {
                     case TextAlignment.Left:
                         x = 0;
                         break;
@@ -399,12 +326,10 @@ namespace Microsoft.SPOT.Presentation.Controls
                         throw new NotSupportedException();
                 }
 
-                for (int i = 0; i < runs.Length; i++)
-                {
-                    TextRun run = runs[i];
-                    int w, h;
-                    run.GetSize(out w, out h);
-                    int y = top + line.Baseline - run.Font.Ascent;
+                for (var i = 0; i < runs.Length; i++) {
+                    var run = runs[i];
+                    run.GetSize(out var w, out var h);
+                    var y = top + line.Baseline - run.Font.Ascent;
                     dc.DrawText(run.Text, run.Font, run.ForeColor, x, y);
                     x += w;
                 }
@@ -414,31 +339,20 @@ namespace Microsoft.SPOT.Presentation.Controls
             }
         }
 
-        public int TopLine
-        {
-            get
-            {
-                return _currentLine;
-            }
+        public int TopLine {
+            get => this._currentLine;
 
-            set
-            {
+            set {
                 VerifyAccess();
 
-                Object temp = _lineCache[value]; // Easy way to make sure _lineCache is valid and value is within range
+                var temp = this._lineCache[value]; // Easy way to make sure _lineCache is valid and value is within range
 
-                _currentLine = value;
+                this._currentLine = value;
                 Invalidate();
             }
         }
 
-        public int LineCount
-        {
-            get
-            {
-                return _lineCache.Count; // if _lineCache is null, it'll throw a NullReferenceException
-            }
-        }
+        public int LineCount => this._lineCache.Count; // if _lineCache is null, it'll throw a NullReferenceException
     }
 }
 

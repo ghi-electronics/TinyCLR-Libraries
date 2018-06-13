@@ -2,13 +2,9 @@
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-using System;
-using Microsoft.SPOT;
-using Microsoft.SPOT.Input;
 using Microsoft.SPOT.Presentation;
 
-namespace Microsoft.SPOT.Input
-{
+namespace Microsoft.SPOT.Input {
     /// <summary>
     ///     The RawGenericInputReport class encapsulates the raw input
     ///     provided from a keyboard.
@@ -18,8 +14,7 @@ namespace Microsoft.SPOT.Input
     ///     blittable types.  This is required so that the report can be
     ///     marshalled across application domains.
     /// </remarks>
-    public class RawGenericInputReport : InputReport
-    {
+    public class RawGenericInputReport : InputReport {
         /// <summary>
         ///     Constructs an instance of the RawKeyboardInputReport class.
         /// </summary>
@@ -30,18 +25,16 @@ namespace Microsoft.SPOT.Input
         ///     The time when the input occured.
         /// </param>
         public RawGenericInputReport(PresentationSource inputSource, GenericEvent genericEvent)
-            : base(inputSource, genericEvent.Time)
-        {
-            InternalEvent = genericEvent;
-            Target = null;
+            : base(inputSource, genericEvent.Time) {
+            this.InternalEvent = genericEvent;
+            this.Target = null;
         }
 
         public RawGenericInputReport(PresentationSource inputSource,
                         GenericEvent genericEvent, UIElement destTarget)
-            : base(inputSource, genericEvent.Time)
-        {
-            InternalEvent = genericEvent;
-            Target = destTarget;
+            : base(inputSource, genericEvent.Time) {
+            this.InternalEvent = genericEvent;
+            this.Target = destTarget;
         }
 
         public readonly UIElement Target;

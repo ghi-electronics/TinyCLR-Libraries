@@ -5,13 +5,11 @@
 using System;
 using Microsoft.SPOT.Presentation;
 
-namespace Microsoft.SPOT.Input
-{
+namespace Microsoft.SPOT.Input {
     /// <summary>
     ///     The FocusChangedEventArgs class contains information about focus states
     /// </summary>
-    public class FocusChangedEventArgs : InputEventArgs
-    {
+    public class FocusChangedEventArgs : InputEventArgs {
         /// <summary>
         ///     Constructs an instance of the FocusChangedEventArgs class.
         /// </summary>
@@ -28,10 +26,9 @@ namespace Microsoft.SPOT.Input
         ///     The element that now has focus.
         /// </param>
         public FocusChangedEventArgs(ButtonDevice buttonDevice, DateTime timestamp, UIElement oldFocus, UIElement newFocus)
-            : base(buttonDevice, timestamp)
-        {
-            OldFocus = oldFocus;
-            NewFocus = newFocus;
+            : base(buttonDevice, timestamp) {
+            this.OldFocus = oldFocus;
+            this.NewFocus = newFocus;
         }
 
         /// <summary>

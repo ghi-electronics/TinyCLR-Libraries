@@ -6,53 +6,44 @@ using System;
 using System.Collections;
 using System.Diagnostics;
 using System.Drawing;
-using Microsoft.SPOT;
-using Microsoft.SPOT.Presentation;
 
-namespace Microsoft.SPOT.Presentation.Media
-{
+namespace Microsoft.SPOT.Presentation.Media {
     /// <summary>
     /// The MediaContext class controls the rendering
     /// </summary>
-    internal class MediaContext : DispatcherObject , IDisposable
-    {
+    internal class MediaContext : DispatcherObject, IDisposable {
         /// <summary>
         /// The MediaContext lives in the Dispatcher and is the MediaSystem's class that keeps
         /// per Dispatcher state.
         /// </summary>
-        internal MediaContext()
-        {
-            _renderMessage = new DispatcherOperationCallback(RenderMessageHandler);
+        internal MediaContext() {
+            this._renderMessage = new DispatcherOperationCallback(this.RenderMessageHandler);
 
             // we have one render target, the window manager
             var disp = WindowManager.Instance.DisplayController;
 
-            _target = WindowManager.Instance;
-            _screen = new Bitmap(Graphics.FromHdc(disp.Hdc));
+            this._target = WindowManager.Instance;
+            this._screen = new Bitmap(Graphics.FromHdc(disp.Hdc));
 
-            _screenW = (int)disp.ActiveSettings.Width;
-            _screenH = (int)disp.ActiveSettings.Height;
-            _dirtyX0 = (int)disp.ActiveSettings.Width;
-            _dirtyY0 = (int)disp.ActiveSettings.Height;
+            this._screenW = (int)disp.ActiveSettings.Width;
+            this._screenH = (int)disp.ActiveSettings.Height;
+            this._dirtyX0 = (int)disp.ActiveSettings.Width;
+            this._dirtyY0 = (int)disp.ActiveSettings.Height;
         }
 
         /// <summary>
         /// Gets the MediaContext from the context passed in as argument.
         /// </summary>
-        internal static MediaContext From(Dispatcher dispatcher)
-        {
+        internal static MediaContext From(Dispatcher dispatcher) {
             Debug.Assert(dispatcher != null, "Dispatcher required");
 
-            MediaContext cm = dispatcher._mediaContext;
+            var cm = dispatcher._mediaContext;
 
-            if (cm == null)
-            {
-                lock (typeof(GlobalLock))
-                {
+            if (cm == null) {
+                lock (typeof(GlobalLock)) {
                     cm = dispatcher._mediaContext;
 
-                    if (cm == null)
-                    {
+                    if (cm == null) {
                         cm = new MediaContext();
                         dispatcher._mediaContext = cm;
                     }
@@ -62,27 +53,21 @@ namespace Microsoft.SPOT.Presentation.Media
             return cm;
         }
 
-        private class InvokeOnRenderCallback
-        {
+        private class InvokeOnRenderCallback {
             private DispatcherOperationCallback _callback;
             private object _arg;
 
             public InvokeOnRenderCallback(
                 DispatcherOperationCallback callback,
-                object arg)
-            {
-                _callback = callback;
-                _arg = arg;
+                object arg) {
+                this._callback = callback;
+                this._arg = arg;
             }
 
-            public void DoWork()
-            {
-                _callback(_arg);
-            }
+            public void DoWork() => this._callback(this._arg);
         }
 
-        internal void BeginInvokeOnRender(DispatcherOperationCallback callback, object arg)
-        {
+        internal void BeginInvokeOnRender(DispatcherOperationCallback callback, object arg) {
             Debug.Assert(callback != null);
 
             // While technically it could be OK for the arg to be null, for now
@@ -91,20 +76,16 @@ namespace Microsoft.SPOT.Presentation.Media
 
             Debug.Assert(arg != null);
 
-            if (_invokeOnRenderCallbacks == null)
-            {
-                lock (this)
-                {
-                    if (_invokeOnRenderCallbacks == null)
-                    {
-                        _invokeOnRenderCallbacks = new ArrayList();
+            if (this._invokeOnRenderCallbacks == null) {
+                lock (this) {
+                    if (this._invokeOnRenderCallbacks == null) {
+                        this._invokeOnRenderCallbacks = new ArrayList();
                     }
                 }
             }
 
-            lock (_invokeOnRenderCallbacks)
-            {
-                _invokeOnRenderCallbacks.Add(new InvokeOnRenderCallback(callback, arg));
+            lock (this._invokeOnRenderCallbacks) {
+                this._invokeOnRenderCallbacks.Add(new InvokeOnRenderCallback(callback, arg));
             }
 
             PostRender();
@@ -120,37 +101,33 @@ namespace Microsoft.SPOT.Presentation.Media
         /// now."  Events such as a change to the visual tree would result in
         /// this method being called.
         /// </remarks>
-        internal void PostRender()
-        {
+        internal void PostRender() {
             VerifyAccess();
 
-            if (!_isRendering)
-            {
-                if (_currentRenderOp == null)
-                {
+            if (!this._isRendering) {
+                if (this._currentRenderOp == null) {
                     // If we don't have a render operation in the queue, add one
-                    _currentRenderOp = Dispatcher.BeginInvoke(_renderMessage, null);
+                    this._currentRenderOp = this.Dispatcher.BeginInvoke(this._renderMessage, null);
                 }
             }
         }
 
-        internal void AddDirtyArea(int x, int y, int w, int h)
-        {
+        internal void AddDirtyArea(int x, int y, int w, int h) {
             if (x < 0) x = 0;
-            if (x + w > _screenW) w = _screenW - x;
+            if (x + w > this._screenW) w = this._screenW - x;
             if (w <= 0) return;
 
             if (y < 0) y = 0;
-            if (y + h > _screenH) h = _screenH - y;
+            if (y + h > this._screenH) h = this._screenH - y;
             if (h <= 0) return;
 
-            int x1 = x + w;
-            int y1 = y + h;
+            var x1 = x + w;
+            var y1 = y + h;
 
-            if (x < _dirtyX0) _dirtyX0 = x;
-            if (y < _dirtyY0) _dirtyY0 = y;
-            if (x1 > _dirtyX1) _dirtyX1 = x1;
-            if (y1 > _dirtyY1) _dirtyY1 = y1;
+            if (x < this._dirtyX0) this._dirtyX0 = x;
+            if (y < this._dirtyY0) this._dirtyY0 = y;
+            if (x1 > this._dirtyX1) this._dirtyX1 = x1;
+            if (y1 > this._dirtyY1) this._dirtyY1 = y1;
         }
 
         private int _screenW = 0, _screenH = 0;
@@ -161,86 +138,74 @@ namespace Microsoft.SPOT.Presentation.Media
         /// and Resize().  This wraps RenderMessageHandlerCore and emits an ETW events
         /// to trace its execution.
         /// </summary>
-        internal object RenderMessageHandler(object arg)
-        {
-            try
-            {
-                _isRendering = true;
+        internal object RenderMessageHandler(object arg) {
+            try {
+                this._isRendering = true;
 
                 //_screen.Clear();
 
-                if (_invokeOnRenderCallbacks != null)
-                {
-                    int callbackLoopCount = 0;
-                    int count = _invokeOnRenderCallbacks.Count;
+                if (this._invokeOnRenderCallbacks != null) {
+                    var callbackLoopCount = 0;
+                    var count = this._invokeOnRenderCallbacks.Count;
 
-                    while (count > 0)
-                    {
+                    while (count > 0) {
                         callbackLoopCount++;
-                        if (callbackLoopCount > 153)
-                        {
+                        if (callbackLoopCount > 153) {
                             throw new InvalidOperationException("infinite loop");
                         }
 
                         InvokeOnRenderCallback[] callbacks;
 
-                        lock (_invokeOnRenderCallbacks)
-                        {
-                            count = _invokeOnRenderCallbacks.Count;
+                        lock (this._invokeOnRenderCallbacks) {
+                            count = this._invokeOnRenderCallbacks.Count;
                             callbacks = new InvokeOnRenderCallback[count];
 
-                            _invokeOnRenderCallbacks.CopyTo(callbacks);
-                            _invokeOnRenderCallbacks.Clear();
+                            this._invokeOnRenderCallbacks.CopyTo(callbacks);
+                            this._invokeOnRenderCallbacks.Clear();
                         }
 
-                        for (int i = 0; i < count; i++)
-                        {
+                        for (var i = 0; i < count; i++) {
                             callbacks[i].DoWork();
                         }
 
-                        count = _invokeOnRenderCallbacks.Count;
+                        count = this._invokeOnRenderCallbacks.Count;
                     }
                 }
 
-                DrawingContext dc = new DrawingContext(_screen);
+                var dc = new DrawingContext(this._screen);
 
                 /* The dirty rectange MUST be read after the InvokeOnRender callbacks are
                  * complete, as they can trigger layout changes or invalidate controls
                  * which are expected to be redrawn. */
-                int x = _dirtyX0;
-                int y = _dirtyY0;
-                int w = _dirtyX1 - _dirtyX0;
-                int h = _dirtyY1 - _dirtyY0;
-                _dirtyX0 = _screenW; _dirtyY0 = _screenH;
-                _dirtyX1 = _dirtyY1 = 0;
+                var x = this._dirtyX0;
+                var y = this._dirtyY0;
+                var w = this._dirtyX1 - this._dirtyX0;
+                var h = this._dirtyY1 - this._dirtyY0;
+                this._dirtyX0 = this._screenW; this._dirtyY0 = this._screenH;
+                this._dirtyX1 = this._dirtyY1 = 0;
 
-                try
-                {
-                    if (w > 0 && h > 0)
-                    {
+                try {
+                    if (w > 0 && h > 0) {
                         //
                         // This is the big Render!
                         //
                         // We've now updated layout and the updated scene will be
                         // rendered.
                         dc.PushClippingRectangle(x, y, w, h);
-                        _target.RenderRecursive(dc);
+                        this._target.RenderRecursive(dc);
                         dc.PopClippingRectangle();
                     }
                 }
-                finally
-                {
+                finally {
                     dc.Close();
-                    if (w > 0 && h > 0)
-                    {
-                        _screen.Flush(x, y, w, h);
+                    if (w > 0 && h > 0) {
+                        this._screen.Flush(x, y, w, h);
                     }
                 }
             }
-            finally
-            {
-                _currentRenderOp = null;
-                _isRendering = false;
+            finally {
+                this._currentRenderOp = null;
+                this._isRendering = false;
             }
 
             return null;
@@ -264,16 +229,12 @@ namespace Microsoft.SPOT.Presentation.Media
 
         private class GlobalLock { }
 
-        public void Dispose()
-        {
+        public void Dispose() {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
 
-        protected virtual void Dispose(bool disposing)
-        {
-            _screen.Dispose();
-        }
+        protected virtual void Dispose(bool disposing) => this._screen.Dispose();
 
     }
 }

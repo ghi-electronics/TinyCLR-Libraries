@@ -1,9 +1,6 @@
 using System;
-using System.Collections;
-using System.Threading;
 
-namespace Microsoft.SPOT
-{
+namespace Microsoft.SPOT {
     /// <summary>
     ///     RoutedEvent is a unique identifier for
     ///     any registered RoutedEvent
@@ -19,8 +16,7 @@ namespace Microsoft.SPOT
     ///     NOTE: None of the members can be null
     /// </remarks>
     /// <ExternalAPI/>
-    public sealed class RoutedEvent
-    {
+    public sealed class RoutedEvent {
         #region External API
 
         /// <summary>
@@ -32,20 +28,14 @@ namespace Microsoft.SPOT
         ///     when talking about uniqueness)
         /// </remarks>
         /// <ExternalAPI/>
-        public string Name
-        {
-            get { return _name; }
-        }
+        public string Name => this._name;
 
         /// <summary>
         ///     Returns the <see cref="RoutingStrategy"/>
         ///     of the RoutedEvent
         /// </summary>
         /// <ExternalAPI/>
-        public RoutingStrategy RoutingStrategy
-        {
-            get { return _routingStrategy; }
-        }
+        public RoutingStrategy RoutingStrategy => this._routingStrategy;
 
         /// <summary>
         ///     Returns Type of Handler for the RoutedEvent
@@ -54,18 +44,12 @@ namespace Microsoft.SPOT
         ///     HandlerType is a type of delegate
         /// </remarks>
         /// <ExternalAPI/>
-        public Type HandlerType
-        {
-            get { return _handlerType; }
-        }
+        public Type HandlerType => this._handlerType;
 
         /// <summary>
         ///    String representation
         /// </summary>
-        public override string ToString()
-        {
-            return _name;
-        }
+        public override string ToString() => this._name;
 
         #endregion External API
 
@@ -84,29 +68,23 @@ namespace Microsoft.SPOT
             string name,
             RoutingStrategy routingStrategy,
             Type handlerType
-            )
-        {
-            _name = name;
-            _routingStrategy = routingStrategy;
-            _handlerType = handlerType;
-            lock (typeof(GlobalLock))
-            {
-                if (_eventCount >= Int32.MaxValue)
-                {
+            ) {
+            this._name = name;
+            this._routingStrategy = routingStrategy;
+            this._handlerType = handlerType;
+            lock (typeof(GlobalLock)) {
+                if (_eventCount >= int.MaxValue) {
                     throw new InvalidOperationException("too many events");
                 }
 
-                _globalIndex = _eventCount++;
+                this._globalIndex = _eventCount++;
             }
         }
 
         /// <summary>
         ///    Index for this event
         /// </summary>
-        internal int GlobalIndex
-        {
-            get { return _globalIndex; }
-        }
+        internal int GlobalIndex => this._globalIndex;
 
         #endregion Construction
 

@@ -2,24 +2,17 @@
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-using System;
-using System.Collections;
-using System.Threading;
 using GHIElectronics.TinyCLR.Devices.Display;
-using Microsoft.SPOT.Presentation;
 
 using Microsoft.SPOT.Presentation.Media;
 
-namespace Microsoft.SPOT.Presentation
-{
+namespace Microsoft.SPOT.Presentation {
     public delegate void PostRenderEventHandler(DrawingContext dc);
 
-    public class WindowManager : Controls.Canvas
-    {
+    public class WindowManager : Controls.Canvas {
         public DisplayController DisplayController { get; }
 
-        private WindowManager(DisplayController displayController)
-        {
+        private WindowManager(DisplayController displayController) {
             this.DisplayController = displayController;
 
             //
@@ -30,22 +23,17 @@ namespace Microsoft.SPOT.Presentation
             //
             // WindowManagers have no parents but they are Visible.
             //
-            _flags = _flags | Flags.IsVisibleCache;
+            this._flags = this._flags | Flags.IsVisibleCache;
 
             Measure(Media.Constants.MaxExtent, Media.Constants.MaxExtent);
-
-            int desiredWidth, desiredHeight;
-
-            GetDesiredSize(out desiredWidth, out desiredHeight);
+            GetDesiredSize(out var desiredWidth, out var desiredHeight);
 
             Arrange(0, 0, desiredWidth, desiredHeight);
         }
 
-        internal static WindowManager EnsureInstance(DisplayController displayController)
-        {
-            if (Instance == null)
-            {
-                WindowManager wm = new WindowManager(displayController);
+        internal static WindowManager EnsureInstance(DisplayController displayController) {
+            if (Instance == null) {
+                var wm = new WindowManager(displayController);
                 // implicitly the window manager is responsible for posting renders
                 wm._flags |= Flags.ShouldPostRender;
             }
@@ -53,53 +41,45 @@ namespace Microsoft.SPOT.Presentation
             return Instance;
         }
 
-        protected override void MeasureOverride(int availableWidth, int availableHeight, out int desiredWidth, out int desiredHeight)
-        {
+        protected override void MeasureOverride(int availableWidth, int availableHeight, out int desiredWidth, out int desiredHeight) {
             base.MeasureOverride(availableWidth, availableHeight, out desiredWidth, out desiredHeight);
             desiredWidth = (int)this.DisplayController.ActiveSettings.Width;
             desiredHeight = (int)this.DisplayController.ActiveSettings.Height;
         }
 
-        internal void SetTopMost(Window window)
-        {
-            UIElementCollection children = LogicalChildren;
+        internal void SetTopMost(Window window) {
+            var children = this.LogicalChildren;
 
-            if (!IsTopMost(window))
-            {
+            if (!IsTopMost(window)) {
                 children.Remove(window);
                 children.Add(window);
             }
         }
 
-        internal bool IsTopMost(Window window)
-        {
-            int index = LogicalChildren.IndexOf(window);
-            return (index >= 0 && index == LogicalChildren.Count - 1);
+        internal bool IsTopMost(Window window) {
+            var index = this.LogicalChildren.IndexOf(window);
+            return (index >= 0 && index == this.LogicalChildren.Count - 1);
         }
 
         //
         // this was added for aux, behavior needs to change for watch.
         //
-        protected internal override void OnChildrenChanged(UIElement added, UIElement removed, int indexAffected)
-        {
+        protected internal override void OnChildrenChanged(UIElement added, UIElement removed, int indexAffected) {
             base.OnChildrenChanged(added, removed, indexAffected);
 
-            UIElementCollection children = LogicalChildren;
-            int last = children.Count - 1;
+            var children = this.LogicalChildren;
+            var last = children.Count - 1;
 
             // something was added, and it's the topmost. Make sure it is visible before setting focus
-            if (added != null && indexAffected == last && Visibility.Visible == added.Visibility)
-            {
+            if (added != null && indexAffected == last && Visibility.Visible == added.Visibility) {
                 Input.Buttons.Focus(added);
                 Input.TouchCapture.Capture(added);
             }
 
             // something was removed and it lost focus to us.
-            if (removed != null && this.IsFocused)
-            {
+            if (removed != null && this.IsFocused) {
                 // we still have a window left, so make it focused.
-                if (last >= 0)
-                {
+                if (last >= 0) {
                     Input.Buttons.Focus(children[last]);
                     Input.TouchCapture.Capture(children[last]);
                 }
@@ -114,27 +94,20 @@ namespace Microsoft.SPOT.Presentation
 
         private PostRenderEventHandler _postRenderHandler;
 
-        public event PostRenderEventHandler PostRender
-        {
-            add
-            {
-                _postRenderHandler += value;
+        public event PostRenderEventHandler PostRender {
+            add {
+                this._postRenderHandler += value;
             }
 
-            remove
-            {
-                _postRenderHandler -= value;
+            remove {
+                this._postRenderHandler -= value;
             }
         }
 
-        protected internal override void RenderRecursive(DrawingContext dc)
-        {
+        protected internal override void RenderRecursive(DrawingContext dc) {
             base.RenderRecursive(dc);
 
-            if (_postRenderHandler != null)
-            {
-                _postRenderHandler(dc);
-            }
+            this._postRenderHandler?.Invoke(dc);
         }
     }
 

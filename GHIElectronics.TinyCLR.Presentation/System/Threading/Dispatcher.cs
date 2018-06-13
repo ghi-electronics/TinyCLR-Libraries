@@ -11,22 +11,18 @@ using System.Threading;
 //When a program has a static Window type that gets initialized in the static constructor?
 //Does this case still work or not? If not, keep code as it was but inlined.
 
-namespace Microsoft.SPOT
-{
+namespace Microsoft.SPOT {
     /// <summary>
     ///     Provides UI services for a thread.
     /// </summary>
-    public sealed class Dispatcher
-    {
+    public sealed class Dispatcher {
         /// <summary>
         /// Returns the Dispatcher for the current thread.
         /// </summary>
         /// <value>Dispatcher</value>
-        public static Dispatcher CurrentDispatcher
-        {
-            get
-            {
-                Dispatcher dispatcher = FromThread(Thread.CurrentThread);
+        public static Dispatcher CurrentDispatcher {
+            get {
+                var dispatcher = FromThread(Thread.CurrentThread);
 
                 //While FromThread() and Dispatcher() both operate in the GlobalLock,
                 //and this function does not, there is no race condition because threads cannot
@@ -34,14 +30,11 @@ namespace Microsoft.SPOT
                 //create a Dispatcher for themselves, they cannot create a Dispatcher for this
                 //thread, therefore only one Dispatcher for each thread can exist in the ArrayList,
                 //and there is no race condition.
-                if (dispatcher == null)
-                {
-                    lock(typeof(GlobalLock))
-                    {
+                if (dispatcher == null) {
+                    lock (typeof(GlobalLock)) {
                         dispatcher = FromThread(Thread.CurrentThread);
 
-                        if(dispatcher == null)
-                        {
+                        if (dispatcher == null) {
                             dispatcher = new Dispatcher();
                         }
                     }
@@ -58,29 +51,24 @@ namespace Microsoft.SPOT
         ///     If there is no dispatcher available for the specified thread,
         ///     this method will return null.
         /// </remarks>
-        public static Dispatcher FromThread(Thread thread)
-        {
+        public static Dispatcher FromThread(Thread thread) {
             Dispatcher dispatcher = null;
 
             // _possibleDispatcher is initialized in the static constructor and is never changed.
             // According to section 12.6.6 of Partition I of ECMA 335, reads and writes of object
             // references shall be atomic.
             dispatcher = _possibleDispatcher;
-            if (dispatcher == null || dispatcher._thread != thread)
-            {
+            if (dispatcher == null || dispatcher._thread != thread) {
                 // The "possible" dispatcher either was null or belongs to
                 // the a different thread.
                 dispatcher = null;
 
-                WeakReference wref = (WeakReference)_dispatchers[thread.ManagedThreadId];
+                var wref = (WeakReference)_dispatchers[thread.ManagedThreadId];
 
-                if(wref != null)
-                {
+                if (wref != null) {
                     dispatcher = wref.Target as Dispatcher;
-                    if (dispatcher != null)
-                    {
-                        if (dispatcher._thread == thread)
-                        {
+                    if (dispatcher != null) {
+                        if (dispatcher._thread == thread) {
                             // Shortcut: we track one static reference to the last current
                             // dispatcher we gave out.  For single-threaded apps, this will
                             // be set all the time.  For multi-threaded apps, this will be
@@ -90,8 +78,7 @@ namespace Microsoft.SPOT
                             // again.
                             _possibleDispatcher = dispatcher;
                         }
-                        else
-                        {
+                        else {
                             _dispatchers.Remove(thread.ManagedThreadId);
                         }
                     }
@@ -101,18 +88,16 @@ namespace Microsoft.SPOT
             return dispatcher;
         }
 
-        private Dispatcher()
-        {
-            _thread = Thread.CurrentThread;
-            _queue = new Queue();
-            _event = new AutoResetEvent(false);
-            _instanceLock = new Object();
+        private Dispatcher() {
+            this._thread = Thread.CurrentThread;
+            this._queue = new Queue();
+            this._event = new AutoResetEvent(false);
+            this._instanceLock = new object();
 
             // Add ourselves to the map of dispatchers to threads.
-            _dispatchers[_thread.ManagedThreadId] = new WeakReference(this);
+            _dispatchers[this._thread.ManagedThreadId] = new WeakReference(this);
 
-            if(_possibleDispatcher == null)
-            {
+            if (_possibleDispatcher == null) {
                 _possibleDispatcher = this;
             }
         }
@@ -129,10 +114,7 @@ namespace Microsoft.SPOT
         /// <returns>
         ///     True if the calling thread has access to this object.
         /// </returns>
-        public bool CheckAccess()
-        {
-            return (_thread == Thread.CurrentThread);
-        }
+        public bool CheckAccess() => (this._thread == Thread.CurrentThread);
 
         /// <summary>
         ///     Verifies that the calling thread has access to this object.
@@ -143,10 +125,8 @@ namespace Microsoft.SPOT
         ///     This method is public so that derived classes can probe to
         ///     see if the calling thread has access to itself.
         /// </remarks>
-        public void VerifyAccess()
-        {
-            if (_thread != Thread.CurrentThread)
-            {
+        public void VerifyAccess() {
+            if (this._thread != Thread.CurrentThread) {
                 throw new InvalidOperationException();
             }
         }
@@ -155,23 +135,14 @@ namespace Microsoft.SPOT
         /// Thread for the dispatcher.
         /// </summary>
         /// <value></value>
-        public Thread Thread
-        {
-            get
-            {
-                return _thread;
-            }
-        }
+        public Thread Thread => this._thread;
 
         // Returns whether or not the operation was removed.
-        internal bool Abort(DispatcherOperation operation)
-        {
-            bool notify = false;
+        internal bool Abort(DispatcherOperation operation) {
+            var notify = false;
 
-            lock (_instanceLock)
-            {
-                if (operation.Status == DispatcherOperationStatus.Pending)
-                {
+            lock (this._instanceLock) {
+                if (operation.Status == DispatcherOperationStatus.Pending) {
                     operation.Status = DispatcherOperationStatus.Aborted;
                     notify = true;
                 }
@@ -185,82 +156,62 @@ namespace Microsoft.SPOT
         ///     The process may complete asynchronously, since we may be
         ///     nested in dispatcher frames.
         /// </summary>
-        public void InvokeShutdown()
-        {
+        public void InvokeShutdown() {
             VerifyAccess();
 
-            if (_hasShutdownFinished)
-            {
+            if (this._hasShutdownFinished) {
                 throw new InvalidOperationException();
             }
 
-            try
-            {
-                if (!_hasShutdownStarted)
-                {
+            try {
+                if (!this._hasShutdownStarted) {
                     // Call the ShutdownStarted event before we actually mark ourselves
                     // as shutting down.  This is so the handlers can actaully do work
                     // when they get this event without throwing exceptions.
-                    EventHandler e = ShutdownStarted;
-                    if (e != null)
-                    {
-                        e(this, EventArgs.Empty);
-                    }
+                    ShutdownStarted?.Invoke(this, EventArgs.Empty);
 
-                    _hasShutdownStarted = true;
+                    this._hasShutdownStarted = true;
 
-                    if (_frameDepth > 0)
-                    {
+                    if (this._frameDepth > 0) {
                         // If there are any frames running, we have to wait for them
                         // to unwind before we can safely destroy the dispatcher.
                     }
-                    else
-                    {
+                    else {
                         // The current thread is not spinning inside of the Dispatcher,
                         // so we can go ahead and destroy it.
                         ShutdownImpl();
                     }
 
-                    _dispatchers.Remove(_thread.ManagedThreadId);
+                    _dispatchers.Remove(this._thread.ManagedThreadId);
                 }
             }
-            catch (Exception e)
-            {
-                if (_finalExceptionHandler == null || !_finalExceptionHandler(this, e))
-                {
+            catch (Exception e) {
+                if (this._finalExceptionHandler == null || !this._finalExceptionHandler(this, e)) {
                     throw;
                 }
             }
         }
 
-        private void ShutdownImpl()
-        {
-            Debug.Assert(_hasShutdownStarted);
-            Debug.Assert(!_hasShutdownFinished);
+        private void ShutdownImpl() {
+            Debug.Assert(this._hasShutdownStarted);
+            Debug.Assert(!this._hasShutdownFinished);
 
             // Call the ShutdownFinished event before we actually mark ourselves
             // as shut down.  This is so the handlers can actaully do work
             // when they get this event without throwing exceptions.
-            EventHandler e = ShutdownFinished;
-            if (e != null)
-            {
-                e(this, EventArgs.Empty);
-            }
+            ShutdownFinished?.Invoke(this, EventArgs.Empty);
 
             // Mark this dispatcher as shut down.  Attempts to BeginInvoke
             // or Invoke will result in an exception.
-            _hasShutdownFinished = true;
+            this._hasShutdownFinished = true;
 
-            lock (_instanceLock)
-            {
+            lock (this._instanceLock) {
                 // Now that the queue is off-line, abort all pending operations,
                 // including inactive ones.
-                while (_queue.Count > 0)
-                {
-                    DispatcherOperation operation = (DispatcherOperation)_queue.Dequeue();
+                while (this._queue.Count > 0) {
+                    var operation = (DispatcherOperation)this._queue.Dequeue();
 
-                    if (operation != null)
-                    {
+                    if (operation != null) {
                         operation.Abort();
                     }
                 }
@@ -270,32 +221,17 @@ namespace Microsoft.SPOT
         //
         // wakes up the dispatcher to force it to check the
         // frame.Continue flag
-        internal void QueryContinueFrame()
-        {
-            _event.Set();
-        }
+        internal void QueryContinueFrame() => this._event.Set();
 
         /// <summary>
         ///     Whether or not the dispatcher is shutting down.
         /// </summary>
-        public bool HasShutdownStarted
-        {
-            get
-            {
-                return _hasShutdownStarted;
-            }
-        }
+        public bool HasShutdownStarted => this._hasShutdownStarted;
 
         /// <summary>
         ///     Whether or not the dispatcher has been shut down.
         /// </summary>
-        public bool HasShutdownFinished
-        {
-            get
-            {
-                return _hasShutdownFinished;
-            }
-        }
+        public bool HasShutdownFinished => this._hasShutdownFinished;
 
         /// <summary>
         ///     Raised when the dispatcher starts shutting down.
@@ -313,10 +249,7 @@ namespace Microsoft.SPOT
         /// <remarks>
         ///     This frame will continue until the dispatcher is shut down.
         /// </remarks>
-        public static void Run()
-        {
-            PushFrame(new DispatcherFrame());
-        }
+        public static void Run() => PushFrame(new DispatcherFrame());
 
         /// <summary>
         ///     Push an execution frame.
@@ -324,47 +257,37 @@ namespace Microsoft.SPOT
         /// <param name="frame">
         ///     The frame for the dispatcher to process.
         /// </param>
-        public static void PushFrame(DispatcherFrame frame)
-        {
-            if (frame == null)
-            {
+        public static void PushFrame(DispatcherFrame frame) {
+            if (frame == null) {
                 throw new ArgumentNullException();
             }
 
-            Dispatcher dispatcher = Dispatcher.CurrentDispatcher;
-            if (dispatcher._hasShutdownFinished)
-            {
+            var dispatcher = Dispatcher.CurrentDispatcher;
+            if (dispatcher._hasShutdownFinished) {
                 throw new InvalidOperationException();
             }
 
             dispatcher.PushFrameImpl(frame);
         }
 
-        internal DispatcherFrame CurrentFrame
-        {
-            get { return _currentFrame; }
-        }
+        internal DispatcherFrame CurrentFrame => this._currentFrame;
 
         //
         // instance implementation of PushFrame
-        private void PushFrameImpl(DispatcherFrame frame)
-        {
-            DispatcherFrame prevFrame = _currentFrame;
-            _frameDepth++;
-            try
-            {
-                _currentFrame = frame;
+        private void PushFrameImpl(DispatcherFrame frame) {
+            var prevFrame = this._currentFrame;
+            this._frameDepth++;
+            try {
+                this._currentFrame = frame;
 
-                while (frame.Continue)
-                {
+                while (frame.Continue) {
                     DispatcherOperation op = null;
-                    bool aborted = false;
+                    var aborted = false;
 
                     //
                     // Dequeue the next operation if appropriate
-                    if (_queue.Count > 0)
-                    {
-                        op = (DispatcherOperation)_queue.Dequeue();
+                    if (this._queue.Count > 0) {
+                        op = (DispatcherOperation)this._queue.Dequeue();
 
                         //Must check aborted flag inside lock because
                         //user program could call op.Abort() between
@@ -372,10 +295,8 @@ namespace Microsoft.SPOT
                         aborted = op.Status == DispatcherOperationStatus.Aborted;
                     }
 
-                    if (op != null)
-                    {
-                        if (!aborted)
-                        {
+                    if (op != null) {
+                        if (!aborted) {
                             // Invoke the operation:
                             Debug.Assert(op._status == DispatcherOperationStatus.Pending);
 
@@ -384,15 +305,12 @@ namespace Microsoft.SPOT
 
                             op._result = null;
 
-                            try
-                            {
+                            try {
                                 op._result = op._method(op._args);
                             }
-                            catch (Exception e)
-                            {
-                                if (_finalExceptionHandler == null ||
-                                        !_finalExceptionHandler(op, e))
-                                {
+                            catch (Exception e) {
+                                if (this._finalExceptionHandler == null ||
+                                        !this._finalExceptionHandler(op, e)) {
                                     throw;
                                 }
                             }
@@ -404,24 +322,20 @@ namespace Microsoft.SPOT
                             op.OnCompleted();
                         }
                     }
-                    else
-                    {
-                        _event.WaitOne();
+                    else {
+                        this._event.WaitOne();
                     }
                 }
             }
-            finally
-            {
-                _frameDepth--;
+            finally {
+                this._frameDepth--;
 
-                _currentFrame = prevFrame;
+                this._currentFrame = prevFrame;
 
                 // If this was the last frame to exit after a quit, we
                 // can now dispose the dispatcher.
-                if (_frameDepth == 0)
-                {
-                    if (_hasShutdownStarted)
-                    {
+                if (this._frameDepth == 0) {
+                    if (this._hasShutdownStarted) {
                         ShutdownImpl();
                     }
                 }
@@ -444,25 +358,22 @@ namespace Microsoft.SPOT
         ///     A DispatcherOperation object that represents the result of the
         ///     BeginInvoke operation.  null if the operation could not be queued.
         /// </returns>
-        public DispatcherOperation BeginInvoke(DispatcherOperationCallback method, object args)
-        {
-            if (method == null)
-            {
+        public DispatcherOperation BeginInvoke(DispatcherOperationCallback method, object args) {
+            if (method == null) {
                 throw new ArgumentNullException();
             }
 
             DispatcherOperation operation = null;
 
-            if (!_hasShutdownFinished)
-            {
+            if (!this._hasShutdownFinished) {
                 operation = new DispatcherOperation(this, method, args);
 
                 // Add the operation to the work queue
-                _queue.Enqueue(operation);
+                this._queue.Enqueue(operation);
 
                 // this will only cause at most 1 extra dispatcher loop, so
                 // always set the event.
-                _event.Set();
+                this._event.Set();
             }
 
             return operation;
@@ -487,32 +398,26 @@ namespace Microsoft.SPOT
         ///     The return value from the delegate being invoked, or null if
         ///     the delegate has no return value or if the operation was aborted.
         /// </returns>
-        public object Invoke(TimeSpan timeout, DispatcherOperationCallback method, object args)
-        {
-            if (method == null)
-            {
+        public object Invoke(TimeSpan timeout, DispatcherOperationCallback method, object args) {
+            if (method == null) {
                 throw new ArgumentNullException();
             }
 
             object result = null;
 
-            DispatcherOperation op = BeginInvoke(method, args);
+            var op = BeginInvoke(method, args);
 
-            if (op != null)
-            {
+            if (op != null) {
                 op.Wait(timeout);
 
-                if (op.Status == DispatcherOperationStatus.Completed)
-                {
+                if (op.Status == DispatcherOperationStatus.Completed) {
                     result = op.Result;
                 }
-                else if (op.Status == DispatcherOperationStatus.Aborted)
-                {
+                else if (op.Status == DispatcherOperationStatus.Aborted) {
                     // Hm, someone aborted us.  Maybe the dispatcher got
                     // shut down on us?  Just return null.
                 }
-                else
-                {
+                else {
                     // We timed out, just abort the op so that it doesn't
                     // invoke later.
                     //
@@ -534,16 +439,13 @@ namespace Microsoft.SPOT
         //
         // Invoke a delegate in a try/catch.
         //
-        internal object WrappedInvoke(DispatcherOperationCallback callback, object arg)
-        {
+        internal object WrappedInvoke(DispatcherOperationCallback callback, object arg) {
             object result = null;
 
-            try
-            {
+            try {
                 result = callback(arg);
             }
-            catch (Exception e)
-            {
+            catch (Exception e) {
 #if TINYCLR_DEBUG_DISPATCHER
                 // allow the debugger to break on the original exception.
                 if (System.Diagnostics.Debugger.IsAttached)
@@ -551,8 +453,7 @@ namespace Microsoft.SPOT
                 }
                 else
 #endif
-                if (_finalExceptionHandler == null || !_finalExceptionHandler(this, e))
-                {
+                if (this._finalExceptionHandler == null || !this._finalExceptionHandler(this, e)) {
                     throw;
                 }
             }
@@ -560,15 +461,9 @@ namespace Microsoft.SPOT
             return result;
         }
 
-        internal static void SetFinalDispatcherExceptionHandler(DispatcherExceptionEventHandler handler)
-        {
-            Dispatcher.CurrentDispatcher.SetFinalExceptionHandler(handler);
-        }
+        internal static void SetFinalDispatcherExceptionHandler(DispatcherExceptionEventHandler handler) => Dispatcher.CurrentDispatcher.SetFinalExceptionHandler(handler);
 
-        internal void SetFinalExceptionHandler(DispatcherExceptionEventHandler handler)
-        {
-            _finalExceptionHandler = handler;
-        }
+        internal void SetFinalExceptionHandler(DispatcherExceptionEventHandler handler) => this._finalExceptionHandler = handler;
 
         private DispatcherFrame _currentFrame;
         private int _frameDepth;

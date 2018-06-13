@@ -1,109 +1,72 @@
 using System;
 using System.Collections;
-using System.Threading;
-using Microsoft.SPOT;
-using Microsoft.SPOT.Input;
-using Microsoft.SPOT.Presentation.Media;
 
-namespace Microsoft.SPOT.Presentation.Controls
-{
-    public class ListBoxItemCollection : ICollection
-    {
+namespace Microsoft.SPOT.Presentation.Controls {
+    public class ListBoxItemCollection : ICollection {
         UIElementCollection _items;
 
-        public ListBoxItemCollection(ListBox listBox, UIElementCollection items)
-        {
-            _listBox = listBox;
-            _items = items;
+        public ListBoxItemCollection(ListBox listBox, UIElementCollection items) {
+            this._listBox = listBox;
+            this._items = items;
         }
 
-        public int Add(ListBoxItem item)
-        {
-            int pos = _items.Add(item);
-            item.SetListBox(_listBox);
+        public int Add(ListBoxItem item) {
+            var pos = this._items.Add(item);
+            item.SetListBox(this._listBox);
             return pos;
         }
 
-        public int Add(UIElement element)
-        {
-            ListBoxItem item = new ListBoxItem();
-            item.Child = element;
+        public int Add(UIElement element) {
+            var item = new ListBoxItem {
+                Child = element
+            };
             return Add(item);
         }
 
-        public void Clear()
-        {
-            _items.Clear();
+        public void Clear() => this._items.Clear();
+
+        public bool Contains(ListBoxItem item) => this._items.Contains(item);
+
+        public ListBoxItem this[int index] {
+            get => (ListBoxItem)this._items[index];
+            set { this._items[index] = value; value.SetListBox(this._listBox); }
         }
 
-        public bool Contains(ListBoxItem item)
-        {
-            return _items.Contains(item);
+        public int IndexOf(ListBoxItem item) => this._items.IndexOf(item);
+
+        public void Insert(int index, ListBoxItem item) {
+            this._items.Insert(index, item);
+            item.SetListBox(this._listBox);
         }
 
-        public ListBoxItem this[int index]
-        {
-            get { return (ListBoxItem)_items[index]; }
-            set { _items[index] = value; value.SetListBox(_listBox); }
-        }
-
-        public int IndexOf(ListBoxItem item)
-        {
-            return _items.IndexOf(item);
-        }
-
-        public void Insert(int index, ListBoxItem item)
-        {
-            _items.Insert(index, item);
-            item.SetListBox(_listBox);
-        }
-
-        public void Remove(ListBoxItem item)
-        {
-            _items.Remove(item);
+        public void Remove(ListBoxItem item) {
+            this._items.Remove(item);
             item.SetListBox(null);
         }
 
-        public void RemoveAt(int index)
-        {
-            if (index >= 0 && index < _items.Count)
-            {
+        public void RemoveAt(int index) {
+            if (index >= 0 && index < this._items.Count) {
                 this[index].SetListBox(null);
             }
 
-            _items.RemoveAt(index);
+            this._items.RemoveAt(index);
         }
 
         #region ICollection Members
 
-        public void CopyTo(Array array, int index)
-        {
-            _items.CopyTo(array, index);
-        }
+        public void CopyTo(Array array, int index) => this._items.CopyTo(array, index);
 
-        public int Count
-        {
-            get { return _items.Count; }
-        }
+        public int Count => this._items.Count;
 
-        public bool IsSynchronized
-        {
-            get { return _items.IsSynchronized; }
-        }
+        public bool IsSynchronized => this._items.IsSynchronized;
 
-        public object SyncRoot
-        {
-            get { return _items.SyncRoot; }
-        }
+        public object SyncRoot => this._items.SyncRoot;
 
         #endregion
 
         #region IEnumerable Members
 
-        public IEnumerator GetEnumerator()
-        {
-            return ((IEnumerable)_items).GetEnumerator();
-        }
+        public IEnumerator GetEnumerator() => ((IEnumerable)this._items).GetEnumerator();
 
         #endregion
 

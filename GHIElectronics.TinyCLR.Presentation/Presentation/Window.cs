@@ -3,17 +3,13 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 using System;
-using System.Collections;
-using System.Threading;
+using System.Drawing;
+using System.Runtime.CompilerServices;
 using Microsoft.SPOT.Presentation.Controls;
 using Microsoft.SPOT.Presentation.Media;
-using System.Runtime.CompilerServices;
-using System.Drawing;
 
-namespace Microsoft.SPOT.Presentation
-{
-    public class Window : ContentControl
-    {
+namespace Microsoft.SPOT.Presentation {
+    public class Window : ContentControl {
         //---------------------------------------------------
         //
         // Constructors
@@ -31,15 +27,14 @@ namespace Microsoft.SPOT.Presentation
         /// </remarks>
         ///     Initializes the Width/Height, Top/Left properties to use windows
         ///     default. Updates Application object properties if inside app.
-        public Window()
-        {
+        public Window() {
             //There is only one WindowManager.  All Windows currently are forced to be created
             //and to live on the same thread.
             if (WindowManager.Instance == null) throw new InvalidOperationException();
 
-            _windowManager = WindowManager.Instance;
+            this._windowManager = WindowManager.Instance;
 
-            _background = new SolidColorBrush(Color.White);
+            this._background = new SolidColorBrush(Color.White);
             //
             // dependency property initialization.
             // we don't have them, so we just update the properties on the base class,
@@ -50,25 +45,21 @@ namespace Microsoft.SPOT.Presentation
             this.Visibility = Visibility.Collapsed;
 
             // register us with the window manager, like a good little boy
-            _windowManager.Children.Add(this);
+            this._windowManager.Children.Add(this);
 
-            Application app = Microsoft.SPOT.Application.Current;
+            var app = Microsoft.SPOT.Application.Current;
 
             // check if within an app && on the same thread
-            if (app != null)
-            {
-                if (app.Dispatcher.Thread == Dispatcher.CurrentDispatcher.Thread)
-                {
+            if (app != null) {
+                if (app.Dispatcher.Thread == Dispatcher.CurrentDispatcher.Thread) {
                     // add to window collection
                     // use internal version since we want to update the underlying collection
                     app.WindowsInternal.Add(this);
-                    if (app.MainWindow == null)
-                    {
+                    if (app.MainWindow == null) {
                         app.MainWindow = this;
                     }
                 }
-                else
-                {
+                else {
                     app.NonAppWindowsInternal.Add(this);
                 }
             }
@@ -78,20 +69,17 @@ namespace Microsoft.SPOT.Presentation
 
         #region Public Methods
 
-        [MethodImplAttribute( MethodImplOptions.Synchronized )]
-        public void Close()
-        {
-            Application app = Microsoft.SPOT.Application.Current;
-            if (app != null)
-            {
+        [MethodImplAttribute(MethodImplOptions.Synchronized)]
+        public void Close() {
+            var app = Microsoft.SPOT.Application.Current;
+            if (app != null) {
                 app.WindowsInternal.Remove(this);
                 app.NonAppWindowsInternal.Remove(this);
             }
 
-            if(_windowManager != null)
-            {
-                _windowManager.Children.Remove(this);
-                _windowManager = null;
+            if (this._windowManager != null) {
+                this._windowManager.Children.Remove(this);
+                this._windowManager = null;
             }
         }
 
@@ -110,17 +98,12 @@ namespace Microsoft.SPOT.Presentation
         /// <value>
         /// Default value is SizeToContent.Manual
         /// </value>
-        public SizeToContent SizeToContent
-        {
-            get
-            {
-                return _sizeToContent;
-            }
+        public SizeToContent SizeToContent {
+            get => this._sizeToContent;
 
-            set
-            {
+            set {
                 VerifyAccess();
-                _sizeToContent = value;
+                this._sizeToContent = value;
             }
         }
 
@@ -128,29 +111,19 @@ namespace Microsoft.SPOT.Presentation
         ///     Position for Top of the host window
         /// </summary>
         /// <value></value>
-        public int Top
-        {
-            get
-            {
-                return Canvas.GetTop(this);
-            }
+        public int Top {
+            get => Canvas.GetTop(this);
 
-            set
-            {
+            set {
                 VerifyAccess();
                 Canvas.SetTop(this, value);
             }
         }
 
-        public int Left
-        {
-            get
-            {
-                return Canvas.GetLeft(this);
-            }
+        public int Left {
+            get => Canvas.GetLeft(this);
 
-            set
-            {
+            set {
                 VerifyAccess();
 
                 Canvas.SetLeft(this, value);
@@ -160,18 +133,13 @@ namespace Microsoft.SPOT.Presentation
         /// <summary>
         ///     Determines if this window is always on the top.
         /// </summary>
-        public bool Topmost
-        {
-            get
-            {
-                return _windowManager.IsTopMost(this);
-            }
+        public bool Topmost {
+            get => this._windowManager.IsTopMost(this);
 
-            set
-            {
+            set {
                 VerifyAccess();
 
-                _windowManager.SetTopMost(this);
+                this._windowManager.SetTopMost(this);
             }
         }
 
@@ -202,15 +170,12 @@ namespace Microsoft.SPOT.Presentation
         ///     Deducts the frame size from the constraint and then passes it on
         ///     to it's child.  Only supports one Visual child (just like control)
         /// </remarks>
-        protected override void MeasureOverride(int availableWidth, int availableHeight, out int desiredWidth, out int desiredHeight)
-        {
-            UIElementCollection children = this.LogicalChildren;
+        protected override void MeasureOverride(int availableWidth, int availableHeight, out int desiredWidth, out int desiredHeight) {
+            var children = this.LogicalChildren;
 
-            if (children.Count > 0)
-            {
-                UIElement child = (UIElement)children[0];
-                if (child != null)
-                {
+            if (children.Count > 0) {
+                var child = (UIElement)children[0];
+                if (child != null) {
                     // REFACTOR --we need to subtract the frame & chrome around the visual child.
                     child.Measure(availableWidth, availableHeight);
                     child.GetDesiredSize(out desiredWidth, out desiredHeight);
@@ -230,15 +195,11 @@ namespace Microsoft.SPOT.Presentation
         ///     Deducts the frame size of the window from the constraint and then
         ///     arranges it's child.  Supports only one child.
         /// </remarks>
-        protected override void ArrangeOverride(int arrangeWidth, int arrangeHeight)
-        {
-            UIElementCollection children = this.LogicalChildren;
+        protected override void ArrangeOverride(int arrangeWidth, int arrangeHeight) {
+            var children = this.LogicalChildren;
 
-            if (children.Count > 0)
-            {
-                UIElement child = children[0] as UIElement;
-                if (child != null)
-                {
+            if (children.Count > 0) {
+                if (children[0] is UIElement child) {
                     child.Arrange(0, 0, arrangeWidth, arrangeHeight);
                 }
             }

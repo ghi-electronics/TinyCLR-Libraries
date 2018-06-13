@@ -1,14 +1,10 @@
-using System;
-
-namespace Microsoft.SPOT
-{
+namespace Microsoft.SPOT {
     /// <summary>
     ///     Routing Strategy can be either of
     ///     Tunnel or Bubble
     /// </summary>
     /// <ExternalAPI/>
-    public enum RoutingStrategy
-    {
+    public enum RoutingStrategy {
         /// <summary>
         ///     Tunnel
         /// </summary>

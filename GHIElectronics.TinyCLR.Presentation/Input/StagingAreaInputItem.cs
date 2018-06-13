@@ -2,12 +2,9 @@
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-using System;
 using System.Collections;
-using Microsoft.SPOT;
 
-namespace Microsoft.SPOT.Input
-{
+namespace Microsoft.SPOT.Input {
     /// <summary>
     ///     This class encapsulates an input event while it is being
     ///     processed by the input manager.
@@ -16,17 +13,14 @@ namespace Microsoft.SPOT.Input
     ///     This class just provides the dictionary-based storage for
     ///     all of the listeners of the various input manager events.
     /// </remarks>
-    public class StagingAreaInputItem
-    {
-        internal StagingAreaInputItem(InputEventArgs input, StagingAreaInputItem promote)
-        {
-            Input = input;
+    public class StagingAreaInputItem {
+        internal StagingAreaInputItem(InputEventArgs input, StagingAreaInputItem promote) {
+            this.Input = input;
 
-            if (promote != null && promote._table != null)
-            {
+            if (promote != null && promote._table != null) {
                 // REFACTOR -- need a hashtable!
 
-                _table = (Hashtable)promote._table.Clone();
+                this._table = (Hashtable)promote._table.Clone();
             }
         }
 
@@ -45,15 +39,12 @@ namespace Microsoft.SPOT.Input
         /// <returns>
         ///     The data previously set for this key, or null.
         /// </returns>
-        public object GetData(object key)
-        {
-            if (_table == null)
-            {
+        public object GetData(object key) {
+            if (this._table == null) {
                 return null;
             }
-            else
-            {
-                return _table[key];
+            else {
+                return this._table[key];
             }
         }
 
@@ -67,14 +58,12 @@ namespace Microsoft.SPOT.Input
         /// <param name="value">
         ///     The data to set for this key.  This can be null.
         /// </param>
-        public void SetData(object key, object value)
-        {
-            if (_table == null)
-            {
-                _table = new Hashtable();
+        public void SetData(object key, object value) {
+            if (this._table == null) {
+                this._table = new Hashtable();
             }
 
-            _table[key] = value;
+            this._table[key] = value;
         }
 
         Hashtable _table;

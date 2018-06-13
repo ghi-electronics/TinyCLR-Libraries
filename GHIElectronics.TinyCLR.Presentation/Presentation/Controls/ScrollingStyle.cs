@@ -2,10 +2,8 @@
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-namespace Microsoft.SPOT.Presentation.Controls
-{
-    public enum ScrollingStyle
-    {
+namespace Microsoft.SPOT.Presentation.Controls {
+    public enum ScrollingStyle {
         First,
 
         LineByLine = First,

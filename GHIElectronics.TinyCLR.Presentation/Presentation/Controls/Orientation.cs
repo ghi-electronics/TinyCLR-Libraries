@@ -1,7 +1,5 @@
-namespace Microsoft.SPOT.Presentation.Controls
-{
-    public enum Orientation
-    {
+namespace Microsoft.SPOT.Presentation.Controls {
+    public enum Orientation {
         Horizontal,
         Vertical
     }

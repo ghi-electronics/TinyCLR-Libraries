@@ -68,8 +68,8 @@ namespace Microsoft.SPOT
         /// <param name="routedEvent">The new value that the RoutedEvent Property is being set to </param>
         public RoutedEventArgs(RoutedEvent routedEvent, object source)
         {
-            _routedEvent = routedEvent;
-            _source = _originalSource = source;
+            this._routedEvent = routedEvent;
+            this._source = this._originalSource = source;
         }
 
         #endregion Construction
@@ -83,15 +83,13 @@ namespace Microsoft.SPOT
         ///     The <see cref="RoutedEvent"/> cannot be null
         ///     at any time
         /// </remarks>
-        public RoutedEvent RoutedEvent
-        {
-            get { return _routedEvent; }
-            set
-            {
-                if ((_flags & (Flags.InvokingHandler)) != 0)
+        public RoutedEvent RoutedEvent {
+            get => this._routedEvent;
+            set {
+                if ((this._flags & (Flags.InvokingHandler)) != 0)
                     throw new InvalidOperationException();
 
-                _routedEvent = value;
+                this._routedEvent = value;
             }
         }
 
@@ -103,17 +101,11 @@ namespace Microsoft.SPOT
         ///     Initially starts with a false value before routing
         ///     has begun
         /// </remarks>
-        public bool Handled
-        {
-            get
-            {
-                return ((_flags & Flags.Handled) != 0);
-            }
+        public bool Handled {
+            get => ((this._flags & Flags.Handled) != 0);
 
-            set
-            {
-                if (_routedEvent == null)
-                {
+            set {
+                if (this._routedEvent == null) {
                     throw new InvalidOperationException();
                 }
 
@@ -141,40 +133,35 @@ namespace Microsoft.SPOT
                 // For more information see the following task:
                 // 20284: Input promotion breaks down when lower level input is intercepted
 
-                _flags |= Flags.Handled;
+                this._flags |= Flags.Handled;
             }
         }
 
         /// <summary>
         ///     Returns Source object that raised the RoutedEvent
         /// </summary>
-        public object Source
-        {
-            get { return _source; }
-            set
-            {
+        public object Source {
+            get => this._source;
+            set {
 
-                if ((_flags & (Flags.InvokingHandler)) != 0)
+                if ((this._flags & (Flags.InvokingHandler)) != 0)
                     throw new InvalidOperationException();
 
-                if (_routedEvent == null)
-                {
+                if (this._routedEvent == null) {
                     throw new InvalidOperationException();
                 }
 
-                object source = value;
-                if (_source == null && _originalSource == null)
-                {
+                var source = value;
+                if (this._source == null && this._originalSource == null) {
                     // Gets here when it is the first time that the source is set.
                     // This implies that this is also the original source of the event
-                    _source = _originalSource = source;
+                    this._source = this._originalSource = source;
                     OnSetSource(source);
                 }
-                else if (_source != source)
-                {
+                else if (this._source != source) {
                     // This is the actiaon taken at all other times when the
                     // source is being set to a different value from what it was
-                    _source = source;
+                    this._source = source;
                     OnSetSource(source);
                 }
             }
@@ -190,10 +177,7 @@ namespace Microsoft.SPOT
         ///     This property acquires its value once before the event
         ///     handlers are invoked and never changes then on
         /// </remarks>
-        public object OriginalSource
-        {
-            get { return _originalSource; }
-        }
+        public object OriginalSource => this._originalSource;
 
         /// <summary>
         ///     Invoked when the source of the event is set
@@ -226,12 +210,12 @@ namespace Microsoft.SPOT
         /// </param>
         internal void InvokeHandler(RouteItem routeItem)
         {
-            RoutedEventHandlerInfo routedEventHandlerInfo = routeItem._routedEventHandlerInfo;
+            var routedEventHandlerInfo = routeItem._routedEventHandlerInfo;
 
             if (this.Handled == false || routedEventHandlerInfo._handledEventsToo == true)
             {
-                RoutedEventHandler handler = routedEventHandlerInfo._handler;
-                _flags |= Flags.InvokingHandler;
+                var handler = routedEventHandlerInfo._handler;
+                this._flags |= Flags.InvokingHandler;
 
                 try
                 {
@@ -239,7 +223,7 @@ namespace Microsoft.SPOT
                 }
                 finally
                 {
-                    _flags &= ~Flags.InvokingHandler;
+                    this._flags &= ~Flags.InvokingHandler;
                 }
             }
         }

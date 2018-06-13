@@ -2,18 +2,13 @@
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-using System;
-using System.Collections;
-using System.Threading;
 
-namespace Microsoft.SPOT
-{
+namespace Microsoft.SPOT {
     /// <summary>
     ///     An enumeration describing the status of a DispatcherOperation.
     /// </summary>
     ///
-    public enum DispatcherOperationStatus
-    {
+    public enum DispatcherOperationStatus {
         /// <summary>
         ///     The operation is still pending.
         /// </summary>

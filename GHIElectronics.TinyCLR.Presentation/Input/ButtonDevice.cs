@@ -4,45 +4,29 @@
 #define TRACK_BUTTON_STATE
 
 using System;
-using Microsoft.SPOT;
 using Microsoft.SPOT.Presentation;
 
-namespace Microsoft.SPOT.Input
-{
+namespace Microsoft.SPOT.Input {
     /// <summary>
     ///     The ButtonDevice class represents the button device to the
     ///     members of a context.
     /// </summary>
-    public sealed class ButtonDevice : InputDevice
-    {
-        internal ButtonDevice(InputManager inputManager)
-        {
-            _inputManager = inputManager;
+    public sealed class ButtonDevice : InputDevice {
+        internal ButtonDevice(InputManager inputManager) {
+            this._inputManager = inputManager;
 
-            _inputManager.InputDeviceEvents[(int)InputManager.InputDeviceType.Button].PreNotifyInput += new NotifyInputEventHandler(PreNotifyInput);
-            _inputManager.InputDeviceEvents[(int)InputManager.InputDeviceType.Button].PostProcessInput += new ProcessInputEventHandler(PostProcessInput);
+            this._inputManager.InputDeviceEvents[(int)InputManager.InputDeviceType.Button].PreNotifyInput += new NotifyInputEventHandler(this.PreNotifyInput);
+            this._inputManager.InputDeviceEvents[(int)InputManager.InputDeviceType.Button].PostProcessInput += new ProcessInputEventHandler(this.PostProcessInput);
 
-            _isEnabledOrVisibleChangedEventHandler = new PropertyChangedEventHandler(OnIsEnabledOrVisibleChanged);
+            this._isEnabledOrVisibleChangedEventHandler = new PropertyChangedEventHandler(this.OnIsEnabledOrVisibleChanged);
         }
 
         /// <summary>
         ///     Returns the element that input from this device is sent to.
         /// </summary>
-        public override UIElement Target
-        {
-            get
-            {
-                return _focus;
-            }
-        }
+        public override UIElement Target => this._focus;
 
-        public override InputManager.InputDeviceType DeviceType
-        {
-            get
-            {
-                return InputManager.InputDeviceType.Button;
-            }
-        }
+        public override InputManager.InputDeviceType DeviceType => InputManager.InputDeviceType.Button;
 
         /// <summary>
         ///     Focuses the button input on a particular element.
@@ -51,73 +35,59 @@ namespace Microsoft.SPOT.Input
         ///     The element to focus the button pad on.
         /// </param>
         /// <returns>Element focused to</returns>
-        public UIElement Focus(UIElement obj)
-        {
+        public UIElement Focus(UIElement obj) {
             VerifyAccess();
 
-            bool forceToNullIfFailed = false;
+            var forceToNullIfFailed = false;
 
             // Make sure that the element is enabled.  This includes all parents.
-            bool enabled = true;
-            bool visible = true;
-            if (obj != null)
-            {
+            var enabled = true;
+            var visible = true;
+            if (obj != null) {
                 enabled = obj.IsEnabled;
                 visible = obj.IsVisible;
 
-                if ((enabled && visible) && forceToNullIfFailed)
-                {
+                if ((enabled && visible) && forceToNullIfFailed) {
                     obj = null;
                     enabled = true;
                     visible = true;
                 }
             }
 
-            if ((enabled && visible) && obj != _focus)
-            {
+            if ((enabled && visible) && obj != this._focus) {
                 // go ahead and change our internal sense of focus to the desired element.
                 ChangeFocus(obj, DateTime.UtcNow);
             }
 
-            return _focus;
+            return this._focus;
         }
 
         /// <summary>
         ///     Returns whether or not the specified button is down.
         /// </summary>
-        public bool IsButtonDown(Button button)
-        {
-            return GetButtonState(button) == ButtonState.Down;
-        }
+        public bool IsButtonDown(Button button) => GetButtonState(button) == ButtonState.Down;
 
         /// <summary>
         ///     Returns whether or not the specified button is up.
         /// </summary>
-        public bool IsButtonUp(Button button)
-        {
-            return GetButtonState(button) == ButtonState.None;
-        }
+        public bool IsButtonUp(Button button) => GetButtonState(button) == ButtonState.None;
 
         /// <summary>
         ///     Returns whether or not the specified button is held.
         /// </summary>
-        public bool IsButtonHeld(Button button)
-        {
-            return GetButtonState(button) == ButtonState.Held;
-        }
+        public bool IsButtonHeld(Button button) => GetButtonState(button) == ButtonState.Held;
 
         /// <summary>
         ///     Returns the state of the specified button.
         /// </summary>
-        public ButtonState GetButtonState(Button button)
-        {
+        public ButtonState GetButtonState(Button button) {
 #if TRACK_BUTTON_STATE
 
             if ((int)Button.LastSystemDefinedButton <= (int)button || (int)button <= 0)
                 throw new ArgumentOutOfRangeException("button", "invalid enum");
 
-            int index = (int)button / 4;
-            int state = (_buttonState[index] >> ((int)button % 4)) & 0x3;
+            var index = (int)button / 4;
+            var state = (this._buttonState[index] >> ((int)button % 4)) & 0x3;
 
             return (ButtonState)state;
 #else
@@ -126,8 +96,7 @@ namespace Microsoft.SPOT.Input
         }
 
 #if TRACK_BUTTON_STATE
-        internal void SetButtonState(Button button, ButtonState state)
-        {
+        internal void SetButtonState(Button button, ButtonState state) {
             //If the PreNotifyInput event sent by the InputManager is always sent by the
             //correct thread, this is redundant. Also, why is this function 'internal'
             //when we only access it from inside this class?
@@ -136,78 +105,70 @@ namespace Microsoft.SPOT.Input
             if ((int)Button.LastSystemDefinedButton <= (int)button || (int)button <= 0)
                 throw new ArgumentOutOfRangeException("button", "invalid enum");
 
-            int index = (int)button / 4;
-            int shift = ((int)button % 4);
+            var index = (int)button / 4;
+            var shift = ((int)button % 4);
 
-            byte newState = _buttonState[index];
+            var newState = this._buttonState[index];
 
             newState &= (byte)(~((byte)(0x3 << shift)));
             newState |= (byte)((int)state << shift);
 
-            _buttonState[index] = newState;
+            this._buttonState[index] = newState;
         }
 
 #endif
 
-        private void ChangeFocus(UIElement focus, DateTime timestamp)
-        {
-            if (focus != _focus)
-            {
+        private void ChangeFocus(UIElement focus, DateTime timestamp) {
+            if (focus != this._focus) {
                 // Update the critical pieces of data.
-                UIElement oldFocus = _focus;
-                _focus = focus;
-                _focusRootUIElement = focus != null ? focus.RootUIElement : null;
+                var oldFocus = this._focus;
+                this._focus = focus;
+                this._focusRootUIElement = focus?.RootUIElement;
 
                 // Adjust the handlers we use to track everything.
-                if (oldFocus != null)
-                {
-                    oldFocus.IsEnabledChanged -= _isEnabledOrVisibleChangedEventHandler;
-                    oldFocus.IsVisibleChanged -= _isEnabledOrVisibleChangedEventHandler;
+                if (oldFocus != null) {
+                    oldFocus.IsEnabledChanged -= this._isEnabledOrVisibleChangedEventHandler;
+                    oldFocus.IsVisibleChanged -= this._isEnabledOrVisibleChangedEventHandler;
                 }
 
-                if (focus != null)
-                {
-                    focus.IsEnabledChanged += _isEnabledOrVisibleChangedEventHandler;
-                    focus.IsVisibleChanged += _isEnabledOrVisibleChangedEventHandler;
+                if (focus != null) {
+                    focus.IsEnabledChanged += this._isEnabledOrVisibleChangedEventHandler;
+                    focus.IsVisibleChanged += this._isEnabledOrVisibleChangedEventHandler;
                 }
 
                 // Send the LostFocus and GotFocus events.
-                if (oldFocus != null)
-                {
-                    FocusChangedEventArgs lostFocus = new FocusChangedEventArgs(this, timestamp, oldFocus, focus);
-                    lostFocus.RoutedEvent = Buttons.LostFocusEvent;
-                    lostFocus.Source = oldFocus;
+                if (oldFocus != null) {
+                    var lostFocus = new FocusChangedEventArgs(this, timestamp, oldFocus, focus) {
+                        RoutedEvent = Buttons.LostFocusEvent,
+                        Source = oldFocus
+                    };
 
-                    _inputManager.ProcessInput(lostFocus);
+                    this._inputManager.ProcessInput(lostFocus);
                 }
 
-                if (focus != null)
-                {
-                    FocusChangedEventArgs gotFocus = new FocusChangedEventArgs(this, timestamp, oldFocus, focus);
-                    gotFocus.RoutedEvent = Buttons.GotFocusEvent;
-                    gotFocus.Source = focus;
+                if (focus != null) {
+                    var gotFocus = new FocusChangedEventArgs(this, timestamp, oldFocus, focus) {
+                        RoutedEvent = Buttons.GotFocusEvent,
+                        Source = focus
+                    };
 
-                    _inputManager.ProcessInput(gotFocus);
+                    this._inputManager.ProcessInput(gotFocus);
                 }
             }
         }
 
-        private void OnIsEnabledOrVisibleChanged(object sender, PropertyChangedEventArgs e)
-        {
+        private void OnIsEnabledOrVisibleChanged(object sender, PropertyChangedEventArgs e) =>
             // The element with focus just became disabled or non-visible
             //
             // We can't leave focus on a disabled element, so move it.
             //
             // Will need to change this for watch, but this solution is for aux now.
 
-            Focus(_focus.Parent);
-        }
+            Focus(this._focus.Parent);
 
-        private void PreNotifyInput(object sender, NotifyInputEventArgs e)
-        {
-            RawButtonInputReport buttonInput = ExtractRawButtonInputReport(e, InputManager.PreviewInputReportEvent);
-            if (buttonInput != null)
-            {
+        private void PreNotifyInput(object sender, NotifyInputEventArgs e) {
+            var buttonInput = ExtractRawButtonInputReport(e, InputManager.PreviewInputReportEvent);
+            if (buttonInput != null) {
                 CheckForDisconnectedFocus();
                 /*
 
@@ -231,21 +192,19 @@ REFACTOR --
                 start them again later.  Could be interesting.
 */
 
-                if ((buttonInput.Actions & RawButtonActions.Activate) == RawButtonActions.Activate)
-                {
+                if ((buttonInput.Actions & RawButtonActions.Activate) == RawButtonActions.Activate) {
                     //System.Console.WriteLine("Initializing the button state.");
 
 #if TRACK_BUTTON_STATE
                     // Clear out our key state storage.
-                    for (int i = 0; i < _buttonState.Length; i++)
-                    {
-                        _buttonState[i] = 0;
+                    for (var i = 0; i < this._buttonState.Length; i++) {
+                        this._buttonState[i] = 0;
                     }
 
 #endif
                     // we are now active.
                     // we should track which source is active so we don't confuse deactivations.
-                    _isActive = true;
+                    this._isActive = true;
                 }
 
                 // Generally, we need to check against redundant actions.
@@ -256,24 +215,21 @@ REFACTOR --
 
                 // If the input is reporting a button down, the action is never
                 // considered redundant.
-                if ((buttonInput.Actions & RawButtonActions.ButtonDown) == RawButtonActions.ButtonDown)
-                {
-                    RawButtonActions actions = GetNonRedundantActions(e);
+                if ((buttonInput.Actions & RawButtonActions.ButtonDown) == RawButtonActions.ButtonDown) {
+                    var actions = GetNonRedundantActions(e);
                     actions |= RawButtonActions.ButtonDown;
-                    e.StagingItem.SetData(_tagNonRedundantActions, actions);
+                    e.StagingItem.SetData(this._tagNonRedundantActions, actions);
 
                     // Pass along the button that was pressed, and update our state.
-                    e.StagingItem.SetData(_tagButton, buttonInput.Button);
+                    e.StagingItem.SetData(this._tagButton, buttonInput.Button);
 
 #if TRACK_BUTTON_STATE
-                    ButtonState buttonState = GetButtonState(buttonInput.Button);
+                    var buttonState = GetButtonState(buttonInput.Button);
 
-                    if ((buttonState & ButtonState.Down) == ButtonState.Down)
-                    {
+                    if ((buttonState & ButtonState.Down) == ButtonState.Down) {
                         buttonState = ButtonState.Down | ButtonState.Held;
                     }
-                    else
-                    {
+                    else {
                         buttonState |= ButtonState.Down;
                     }
 
@@ -281,31 +237,27 @@ REFACTOR --
 #endif
 
                     // Tell the InputManager that the MostRecentDevice is us.
-                    if (_inputManager != null && _inputManager.MostRecentInputDevice != this)
-                    {
-                        _inputManager.MostRecentInputDevice = (InputDevice)this;
+                    if (this._inputManager != null && this._inputManager.MostRecentInputDevice != this) {
+                        this._inputManager.MostRecentInputDevice = (InputDevice)this;
                     }
                 }
 
                 // need to detect redundant ups.
-                if ((buttonInput.Actions & RawButtonActions.ButtonUp) == RawButtonActions.ButtonUp)
-                {
-                    RawButtonActions actions = GetNonRedundantActions(e);
+                if ((buttonInput.Actions & RawButtonActions.ButtonUp) == RawButtonActions.ButtonUp) {
+                    var actions = GetNonRedundantActions(e);
                     actions |= RawButtonActions.ButtonUp;
-                    e.StagingItem.SetData(_tagNonRedundantActions, actions);
+                    e.StagingItem.SetData(this._tagNonRedundantActions, actions);
 
                     // Pass along the button that was pressed, and update our state.
-                    e.StagingItem.SetData(_tagButton, buttonInput.Button);
+                    e.StagingItem.SetData(this._tagButton, buttonInput.Button);
 
 #if TRACK_BUTTON_STATE
-                    ButtonState buttonState = GetButtonState(buttonInput.Button);
+                    var buttonState = GetButtonState(buttonInput.Button);
 
-                    if ((buttonState & ButtonState.Down) == ButtonState.Down)
-                    {
+                    if ((buttonState & ButtonState.Down) == ButtonState.Down) {
                         buttonState &= (~ButtonState.Down) & (ButtonState.Down | ButtonState.Held);
                     }
-                    else
-                    {
+                    else {
                         buttonState |= ButtonState.Held;
                     }
 
@@ -313,130 +265,114 @@ REFACTOR --
 #endif
 
                     // Tell the InputManager that the MostRecentDevice is us.
-                    if (_inputManager != null && _inputManager.MostRecentInputDevice != this)
-                    {
-                        _inputManager.MostRecentInputDevice = (InputDevice)this;
+                    if (this._inputManager != null && this._inputManager.MostRecentInputDevice != this) {
+                        this._inputManager.MostRecentInputDevice = (InputDevice)this;
                     }
                 }
             }
 
             // On ButtonDown, we might need to set the Repeat flag
 
-            if (e.StagingItem.Input.RoutedEvent == Buttons.PreviewButtonDownEvent)
-            {
+            if (e.StagingItem.Input.RoutedEvent == Buttons.PreviewButtonDownEvent) {
                 CheckForDisconnectedFocus();
 
-                ButtonEventArgs args = (ButtonEventArgs)e.StagingItem.Input;
+                var args = (ButtonEventArgs)e.StagingItem.Input;
 
                 // Is this the same as the previous button?
-                if (_previousButton == args.Button)
-                {
+                if (this._previousButton == args.Button) {
                     // Yes, this is a repeat (we got the buttondown for it twice, with no ButtonUp in between)
                     // what about chording?
                     args._isRepeat = true;
                 }
 
                 // Otherwise, keep this button to check against next time.
-                else
-                {
-                    _previousButton = args.Button;
+                else {
+                    this._previousButton = args.Button;
                     args._isRepeat = false;
                 }
 
             }
 
             // On ButtonUp, we clear Repeat flag
-            else if (e.StagingItem.Input.RoutedEvent == Buttons.PreviewButtonUpEvent)
-            {
+            else if (e.StagingItem.Input.RoutedEvent == Buttons.PreviewButtonUpEvent) {
                 CheckForDisconnectedFocus();
 
-                ButtonEventArgs args = (ButtonEventArgs)e.StagingItem.Input;
+                var args = (ButtonEventArgs)e.StagingItem.Input;
                 args._isRepeat = false;
 
                 // Clear _previousButton, so that down/up/down/up doesn't look like a repeat
-                _previousButton = Button.None;
+                this._previousButton = Button.None;
 
             }
         }
 
-        private void PostProcessInput(object sender, ProcessInputEventArgs e)
-        {
+        private void PostProcessInput(object sender, ProcessInputEventArgs e) {
             // PreviewButtonDown --> ButtonDown
-            if (e.StagingItem.Input.RoutedEvent == Buttons.PreviewButtonDownEvent)
-            {
+            if (e.StagingItem.Input.RoutedEvent == Buttons.PreviewButtonDownEvent) {
                 CheckForDisconnectedFocus();
 
-                if (!e.StagingItem.Input.Handled)
-                {
-                    ButtonEventArgs previewButtonDown = (ButtonEventArgs)e.StagingItem.Input;
-                    ButtonEventArgs buttonDown = new ButtonEventArgs(this, previewButtonDown.InputSource, previewButtonDown.Timestamp, previewButtonDown.Button);
-
-                    buttonDown._isRepeat = previewButtonDown.IsRepeat;
-                    buttonDown.RoutedEvent = Buttons.ButtonDownEvent;
+                if (!e.StagingItem.Input.Handled) {
+                    var previewButtonDown = (ButtonEventArgs)e.StagingItem.Input;
+                    var buttonDown = new ButtonEventArgs(this, previewButtonDown.InputSource, previewButtonDown.Timestamp, previewButtonDown.Button) {
+                        _isRepeat = previewButtonDown.IsRepeat,
+                        RoutedEvent = Buttons.ButtonDownEvent
+                    };
 
                     e.PushInput(buttonDown, e.StagingItem);
                 }
             }
 
             // PreviewButtonUp --> ButtonUp
-            if (e.StagingItem.Input.RoutedEvent == Buttons.PreviewButtonUpEvent)
-            {
+            if (e.StagingItem.Input.RoutedEvent == Buttons.PreviewButtonUpEvent) {
                 CheckForDisconnectedFocus();
 
-                if (!e.StagingItem.Input.Handled)
-                {
-                    ButtonEventArgs previewButtonUp = (ButtonEventArgs)e.StagingItem.Input;
+                if (!e.StagingItem.Input.Handled) {
+                    var previewButtonUp = (ButtonEventArgs)e.StagingItem.Input;
 
-                    ButtonEventArgs buttonUp = new ButtonEventArgs(this, previewButtonUp.InputSource, previewButtonUp.Timestamp, previewButtonUp.Button);
-
-                    buttonUp.RoutedEvent = Buttons.ButtonUpEvent;
+                    var buttonUp = new ButtonEventArgs(this, previewButtonUp.InputSource, previewButtonUp.Timestamp, previewButtonUp.Button) {
+                        RoutedEvent = Buttons.ButtonUpEvent
+                    };
 
                     e.PushInput(buttonUp, e.StagingItem);
                 }
             }
 
-            RawButtonInputReport buttonInput = ExtractRawButtonInputReport(e, InputManager.InputReportEvent);
-            if (buttonInput != null)
-            {
+            var buttonInput = ExtractRawButtonInputReport(e, InputManager.InputReportEvent);
+            if (buttonInput != null) {
                 CheckForDisconnectedFocus();
 
-                if (!e.StagingItem.Input.Handled)
-                {
+                if (!e.StagingItem.Input.Handled) {
                     // In general, this is where we promote the non-redundant
                     // reported actions to our premier events.
-                    RawButtonActions actions = GetNonRedundantActions(e);
+                    var actions = GetNonRedundantActions(e);
 
                     // Raw --> PreviewButtonDown
-                    if ((actions & RawButtonActions.ButtonDown) == RawButtonActions.ButtonDown)
-                    {
-                        Button button = (Button)e.StagingItem.GetData(_tagButton);
-                        if (button != Button.None)
-                        {
-                            ButtonEventArgs previewButtonDown = new ButtonEventArgs(this, buttonInput.InputSource, buttonInput.Timestamp, button);
-                            previewButtonDown.RoutedEvent = Buttons.PreviewButtonDownEvent;
+                    if ((actions & RawButtonActions.ButtonDown) == RawButtonActions.ButtonDown) {
+                        var button = (Button)e.StagingItem.GetData(this._tagButton);
+                        if (button != Button.None) {
+                            var previewButtonDown = new ButtonEventArgs(this, buttonInput.InputSource, buttonInput.Timestamp, button) {
+                                RoutedEvent = Buttons.PreviewButtonDownEvent
+                            };
                             e.PushInput(previewButtonDown, e.StagingItem);
                         }
                     }
 
                     // Raw --> PreviewButtonUp
-                    if ((actions & RawButtonActions.ButtonUp) == RawButtonActions.ButtonUp)
-                    {
-                        Button button = (Button)e.StagingItem.GetData(_tagButton);
-                        if (button != Button.None)
-                        {
-                            ButtonEventArgs previewButtonUp = new ButtonEventArgs(this, buttonInput.InputSource, buttonInput.Timestamp, button);
-                            previewButtonUp.RoutedEvent = Buttons.PreviewButtonUpEvent;
+                    if ((actions & RawButtonActions.ButtonUp) == RawButtonActions.ButtonUp) {
+                        var button = (Button)e.StagingItem.GetData(this._tagButton);
+                        if (button != Button.None) {
+                            var previewButtonUp = new ButtonEventArgs(this, buttonInput.InputSource, buttonInput.Timestamp, button) {
+                                RoutedEvent = Buttons.PreviewButtonUpEvent
+                            };
                             e.PushInput(previewButtonUp, e.StagingItem);
                         }
                     }
                 }
 
                 // Deactivate
-                if ((buttonInput.Actions & RawButtonActions.Deactivate) == RawButtonActions.Deactivate)
-                {
-                    if (_isActive)
-                    {
-                        _isActive = false;
+                if ((buttonInput.Actions & RawButtonActions.Deactivate) == RawButtonActions.Deactivate) {
+                    if (this._isActive) {
+                        this._isActive = false;
 
                         // Even if handled, a button deactivate results in a lost focus.
                         ChangeFocus(null, e.StagingItem.Input.Timestamp);
@@ -445,19 +381,16 @@ REFACTOR --
             }
         }
 
-        private RawButtonActions GetNonRedundantActions(NotifyInputEventArgs e)
-        {
+        private RawButtonActions GetNonRedundantActions(NotifyInputEventArgs e) {
             RawButtonActions actions;
 
             // The CLR throws a null-ref exception if it tries to unbox a
             // null.  So we have to special case that.
-            object o = e.StagingItem.GetData(_tagNonRedundantActions);
-            if (o != null)
-            {
+            var o = e.StagingItem.GetData(this._tagNonRedundantActions);
+            if (o != null) {
                 actions = (RawButtonActions)o;
             }
-            else
-            {
+            else {
                 actions = new RawButtonActions();
             }
 
@@ -468,30 +401,24 @@ REFACTOR --
         // element gets deleted from the tree (logical or visual).  The
         // best we can do right now is clear out the focus if we detect
         // that the tree containing the focus was disconnected.
-        private bool CheckForDisconnectedFocus()
-        {
-            bool wasDisconnected = false;
+        private bool CheckForDisconnectedFocus() {
+            var wasDisconnected = false;
 
-            if (_focus != null && _focus.RootUIElement != _focusRootUIElement)
-            {
+            if (this._focus != null && this._focus.RootUIElement != this._focusRootUIElement) {
                 wasDisconnected = true;
 
                 // need to remove this for the watch, placed here for aux now.
-                Focus(_focusRootUIElement);
+                Focus(this._focusRootUIElement);
             }
 
             return wasDisconnected;
         }
 
-        private RawButtonInputReport ExtractRawButtonInputReport(NotifyInputEventArgs e, RoutedEvent Event)
-        {
+        private RawButtonInputReport ExtractRawButtonInputReport(NotifyInputEventArgs e, RoutedEvent Event) {
             RawButtonInputReport buttonInput = null;
 
-            InputReportEventArgs input = e.StagingItem.Input as InputReportEventArgs;
-            if (input != null)
-            {
-                if (input.Report is RawButtonInputReport && input.RoutedEvent == Event)
-                {
+            if (e.StagingItem.Input is InputReportEventArgs input) {
+                if (input.Report is RawButtonInputReport && input.RoutedEvent == Event) {
                     buttonInput = (RawButtonInputReport)input.Report;
                 }
             }

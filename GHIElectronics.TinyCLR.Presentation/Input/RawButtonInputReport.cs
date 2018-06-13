@@ -3,11 +3,9 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 using System;
-using Microsoft.SPOT;
 using Microsoft.SPOT.Presentation;
 
-namespace Microsoft.SPOT.Input
-{
+namespace Microsoft.SPOT.Input {
     /// <summary>
     ///     The RawButtonInputReport class encapsulates the raw input
     ///     provided from a keyboard.
@@ -17,8 +15,7 @@ namespace Microsoft.SPOT.Input
     ///     blittable types.  This is required so that the report can be
     ///     marshalled across application domains.
     /// </remarks>
-    public class RawButtonInputReport : InputReport
-    {
+    public class RawButtonInputReport : InputReport {
         /// <summary>
         ///     Constructs an instance of the RawKeyboardInputReport class.
         /// </summary>
@@ -29,10 +26,9 @@ namespace Microsoft.SPOT.Input
         ///     The time when the input occured.
         /// </param>
         public RawButtonInputReport(PresentationSource inputSource, DateTime timestamp, Button button, RawButtonActions actions)
-            : base(inputSource, timestamp)
-        {
-            Button = button;
-            Actions = actions;
+            : base(inputSource, timestamp) {
+            this.Button = button;
+            this.Actions = actions;
         }
 
         /// <summary>
@@ -47,8 +43,7 @@ namespace Microsoft.SPOT.Input
     }
 
     // REFACTOR -- this goes in a separate CS file.
-    public enum RawButtonActions
-    {
+    public enum RawButtonActions {
         ButtonDown = 1,
         ButtonUp = 2,
         Activate = 4,

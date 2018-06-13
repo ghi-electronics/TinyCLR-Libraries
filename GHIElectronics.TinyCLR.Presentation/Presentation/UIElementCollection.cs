@@ -1,10 +1,8 @@
 using System;
 using System.Collections;
 using System.Diagnostics;
-using Microsoft.SPOT;
 
-namespace Microsoft.SPOT.Presentation
-{
+namespace Microsoft.SPOT.Presentation {
     /// <summary>
     /// A UIElementCollection is a ordered collection of UIElements.
     /// </summary>
@@ -15,66 +13,40 @@ namespace Microsoft.SPOT.Presentation
     /// This collection is an amalgam of UIElementCollection and UIElementCollection from Avalon
     ///
     /// </remarks>
-    public class UIElementCollection : ICollection
-    {
+    public class UIElementCollection : ICollection {
 
-        public UIElementCollection(UIElement owner)
-        {
+        public UIElementCollection(UIElement owner) {
             Debug.Assert(owner != null);
-            _owner = owner;
+            this._owner = owner;
         }
 
-        public virtual int Count
-        {
-            get
-            {
-                return _size;
-            }
-        }
+        public virtual int Count => this._size;
 
-        public virtual bool IsSynchronized
-        {
-            get
-            {
-                return false;
-            }
-        }
+        public virtual bool IsSynchronized => false;
 
-        public virtual object SyncRoot
-        {
-            get
-            {
-                return this;
-            }
-        }
+        public virtual object SyncRoot => this;
 
         /// <summary>
         /// Copies the UIElement collection to the specified array starting at the specified index.
         /// </summary>
-        public void CopyTo(Array array, int index)
-        {
-            if (array == null)
-            {
+        public void CopyTo(Array array, int index) {
+            if (array == null) {
                 throw new ArgumentNullException("array");
             }
 
             if ((index < 0) ||
-                (array.Length - index < _size))
-            {
+                (array.Length - index < this._size)) {
                 throw new ArgumentOutOfRangeException("index");
             }
 
-            Array.Copy(_items, 0, array, index, _size);
+            Array.Copy(this._items, 0, array, index, this._size);
         }
 
         /// <summary>
         /// Strongly typed version of CopyTo
         /// Copies the collection into the Array.
         /// </summary>
-        public virtual void CopyTo(UIElement[] array, int index)
-        {
-            CopyTo((Array)array, index);
-        }
+        public virtual void CopyTo(UIElement[] array, int index) => CopyTo((Array)array, index);
 
         // ----------------------------------------------------------------
         // ArrayList like operations for the UIElementCollection
@@ -85,11 +57,9 @@ namespace Microsoft.SPOT.Presentation
         /// value. If the currect capacity of the list is less than min, the
         /// capacity is increased to min.
         /// </summary>
-        private void EnsureCapacity(int min)
-        {
-            if (Capacity < min)
-            {
-                Capacity = System.Math.Max(min, (int)(Capacity * c_growFactor));
+        private void EnsureCapacity(int min) {
+            if (this.Capacity < min) {
+                this.Capacity = System.Math.Max(min, (int)(this.Capacity * c_growFactor));
             }
         }
 
@@ -109,39 +79,34 @@ namespace Microsoft.SPOT.Presentation
         /// By default the capacity is 0.
         /// </remarks>
         /// <exception cref="ArgumentOutOfRangeException">Capacity is set to a value that is less than Count.</exception>
-        public virtual int Capacity
-        {
-            get
-            {
-                return _items != null ? _items.Length : 0;
+        public virtual int Capacity {
+            get {
+                if (this._items == null)
+                    return 0;
+
+                return this._items.Length;
             }
 
-            set
-            {
-                int currentCapacity = _items != null ? _items.Length : 0;
-                if (value != currentCapacity)
-                {
-                    if (value < _size)
-                    {
+            set {
+                var currentCapacity = this.Capacity;
+                if (value != currentCapacity) {
+                    if (value < this._size) {
                         throw new ArgumentOutOfRangeException("value", "not enough capacity");
                     }
 
-                    if (value > 0)
-                    {
-                        UIElement[] newItems = new UIElement[value];
-                        if (_size > 0)
-                        {
-                            Debug.Assert(_items != null);
-                            Array.Copy(_items, 0, newItems, 0, _size);
+                    if (value > 0) {
+                        var newItems = new UIElement[value];
+                        if (this._size > 0) {
+                            Debug.Assert(this._items != null);
+                            Array.Copy(this._items, 0, newItems, 0, this._size);
                         }
 
-                        _items = newItems;
+                        this._items = newItems;
                     }
-                    else
-                    {
+                    else {
                         Debug.Assert(value == 0, "There shouldn't be a case where value != 0.");
-                        Debug.Assert(_size == 0, "Size must be 0 here.");
-                        _items = null;
+                        Debug.Assert(this._size == 0, "Size must be 0 here.");
+                        this._items = null;
                     }
                 }
             }
@@ -155,35 +120,28 @@ namespace Microsoft.SPOT.Presentation
         /// UIElementCollection by using the following systax: <c>myUIElementCollection[index]</c>.</remarks>
         /// <exception cref="ArgumentOutOfRangeException"><c>index</c> is less than zero -or- <c>index</c> is equal to or greater than Count.</exception>
         /// <exception cref="ArgumentException">If the new child has already a parent or if the slot a the specified index is not null.</exception>
-        public UIElement this[int index]
-        {
-            get
-            {
-                if (index < 0 || index >= _size) throw new ArgumentOutOfRangeException("index");
-                return _items[index];
+        public UIElement this[int index] {
+            get {
+                if (index < 0 || index >= this._size) throw new ArgumentOutOfRangeException("index");
+                return this._items[index];
             }
 
-            set
-            {
-                _owner.VerifyAccess();
+            set {
+                this._owner.VerifyAccess();
 
-                if (value == null)
-                {
+                if (value == null) {
                     throw new ArgumentNullException("value");
                 }
 
-                if (index < 0 || index >= _size) throw new ArgumentOutOfRangeException("index");
+                if (index < 0 || index >= this._size) throw new ArgumentOutOfRangeException("index");
 
-                UIElement child = _items[index];
+                var child = this._items[index];
 
-                if (child != value)
-                {
-                    if ((value == null) && (child != null))
-                    {
+                if (child != value) {
+                    if ((value == null) && (child != null)) {
                         DisconnectChild(index);
                     }
-                    else if (value != null)
-                    {
+                    else if (value != null) {
                         if ((value._parent != null) || // Only a visual that isn't a visual parent or
                             (value.GetIsRootElement())) // are a root node of a visual target can be set into the collection.
                         {
@@ -193,7 +151,7 @@ namespace Microsoft.SPOT.Presentation
                         ConnectChild(index, value);
                     }
 
-                    _owner.InvalidateMeasure();
+                    this._owner.InvalidateMeasure();
                 }
             }
         }
@@ -205,8 +163,7 @@ namespace Microsoft.SPOT.Presentation
         /// also requires that the passed in child is not connected to another UIElement.
         /// </summary>
         /// <exception cref="ArgumentException">If the new child has already a parent or if the slot a the specified index is not null.</exception>
-        private void ConnectChild(int index, UIElement value)
-        {
+        private void ConnectChild(int index, UIElement value) {
             // Every function that calls this function needs to call VerifyAccess to prevent
             // foreign threads from changing the tree.
             //
@@ -215,43 +172,42 @@ namespace Microsoft.SPOT.Presentation
             //
             value.VerifyAccess();
 
-            Debug.Assert(_items[index] == null);
+            Debug.Assert(this._items[index] == null);
 
-            value._parent = _owner;
+            value._parent = this._owner;
 
             // The child might be dirty. Hence we need to propagate dirty information
             // from the parent and from the child.
-            UIElement.PropagateFlags(_owner, UIElement.Flags.IsSubtreeDirtyForRender);
+            UIElement.PropagateFlags(this._owner, UIElement.Flags.IsSubtreeDirtyForRender);
             UIElement.PropagateFlags(value, UIElement.Flags.IsSubtreeDirtyForRender);
             value._flags |= UIElement.Flags.IsDirtyForRender;
-            _items[index] = value;
-            _version++;
+            this._items[index] = value;
+            this._version++;
 
             UIElement.PropagateResumeLayout(value);
 
             // Fire notifications
-            _owner.OnChildrenChanged(value, null /* no removed child */, index);
+            this._owner.OnChildrenChanged(value, null /* no removed child */, index);
         }
 
         /// <summary>
         /// Disconnects a child.
         /// </summary>
-        private void DisconnectChild(int index)
-        {
-            Debug.Assert(_items[index] != null);
+        private void DisconnectChild(int index) {
+            Debug.Assert(this._items[index] != null);
 
-            UIElement child = _items[index];
+            var child = this._items[index];
 
             // Every function that calls this function needs to call VerifyAccess to prevent
             // foreign threads from changing the tree.
 
-            UIElement oldParent = child._parent;
+            var oldParent = child._parent;
 
-            _items[index] = null;
+            this._items[index] = null;
 
             child._parent = null;
-            UIElement.PropagateFlags(_owner, UIElement.Flags.IsSubtreeDirtyForRender);
-            _version++;
+            UIElement.PropagateFlags(this._owner, UIElement.Flags.IsSubtreeDirtyForRender);
+            this._version++;
 
             UIElement.PropagateSuspendLayout(child);
 
@@ -265,12 +221,10 @@ namespace Microsoft.SPOT.Presentation
         /// <returns>The UIElementCollection index at which the UIElement has been added.</returns>
         /// <remarks>Adding a null is allowed.</remarks>
         /// <exception cref="ArgumentException">If the new child has already a parent.</exception>
-        public int Add(UIElement element)
-        {
-            _owner.VerifyAccess();
+        public int Add(UIElement element) {
+            this._owner.VerifyAccess();
 
-            if (element == null)
-            {
+            if (element == null) {
                 throw new ArgumentNullException("element");
             }
 
@@ -280,19 +234,18 @@ namespace Microsoft.SPOT.Presentation
                 throw new System.ArgumentException("element has parent");
             }
 
-            if ((_items == null) || (_size == _items.Length))
-            {
-                EnsureCapacity(_size + 1);
+            if ((this._items == null) || (this._size == this._items.Length)) {
+                EnsureCapacity(this._size + 1);
             }
 
-            int addedPosition = _size++;
-            Debug.Assert(_items[addedPosition] == null);
+            var addedPosition = this._size++;
+            Debug.Assert(this._items[addedPosition] == null);
 
             ConnectChild(addedPosition, element);
-            _version++;
+            this._version++;
 
             // invalidate measure on parent
-            _owner.InvalidateMeasure();
+            this._owner.InvalidateMeasure();
 
             return addedPosition;
         }
@@ -303,14 +256,10 @@ namespace Microsoft.SPOT.Presentation
         /// of the first entry with null is returned. If there is no null entry -1 is returned.
         /// </summary>
         /// <param name="UIElement">The UIElement to locate in the UIElementCollection.</param>
-        public int IndexOf(UIElement element)
-        {
-            if (element == null || element._parent == _owner)
-            {
-                for (int i = 0; i < _size; i++)
-                {
-                    if (_items[i] == element)
-                    {
+        public int IndexOf(UIElement element) {
+            if (element == null || element._parent == this._owner) {
+                for (var i = 0; i < this._size; i++) {
+                    if (this._items[i] == element) {
                         return i;
                     }
                 }
@@ -318,8 +267,7 @@ namespace Microsoft.SPOT.Presentation
                 // not found, return -1
                 return -1;
             }
-            else
-            {
+            else {
                 return -1;
             }
         }
@@ -336,16 +284,13 @@ namespace Microsoft.SPOT.Presentation
         /// If element is null then the first null entry is removed. Note that removing
         /// a null entry is linear in the size of the collection.
         /// </remarks>
-        public void Remove(UIElement element)
-        {
-            int indexToRemove = -1;
+        public void Remove(UIElement element) {
+            var indexToRemove = -1;
 
-            _owner.VerifyAccess();
+            this._owner.VerifyAccess();
 
-            if (element != null)
-            {
-                if (element._parent != _owner)
-                {
+            if (element != null) {
+                if (element._parent != this._owner) {
                     // If the UIElement is not in this collection we silently return without
                     // failing. This is the same behavior that ArrayList implements.
                     return;
@@ -355,56 +300,46 @@ namespace Microsoft.SPOT.Presentation
 
                 DisconnectChild(indexToRemove = IndexOf(element));
             }
-            else
-            {
+            else {
                 // This is the case where element == null. We then remove the first null
                 // entry.
-                for (int i = 0; i < _size; i++)
-                {
-                    if (_items[i] == null)
-                    {
+                for (var i = 0; i < this._size; i++) {
+                    if (this._items[i] == null) {
                         indexToRemove = i;
                         break;
                     }
                 }
             }
 
-            if (indexToRemove != -1)
-            {
-                --_size;
+            if (indexToRemove != -1) {
+                --this._size;
 
-                for (int i = indexToRemove; i < _size; i++)
-                {
-                    UIElement child = _items[i + 1];
-                    _items[i] = child;
+                for (var i = indexToRemove; i < this._size; i++) {
+                    var child = this._items[i + 1];
+                    this._items[i] = child;
                 }
 
-                _items[_size] = null;
+                this._items[this._size] = null;
             }
 
-            _owner.InvalidateMeasure();
+            this._owner.InvalidateMeasure();
         }
 
         /// <summary>
         /// Determines whether a element is in the UIElementCollection.
         /// </summary>
-        public bool Contains(UIElement element)
-        {
-            if (element == null)
-            {
-                for (int i = 0; i < _size; i++)
-                {
-                    if (_items[i] == null)
-                    {
+        public bool Contains(UIElement element) {
+            if (element == null) {
+                for (var i = 0; i < this._size; i++) {
+                    if (this._items[i] == null) {
                         return true;
                     }
                 }
 
                 return false;
             }
-            else
-            {
-                return (element._parent == _owner);
+            else {
+                return (element._parent == this._owner);
             }
         }
 
@@ -416,25 +351,22 @@ namespace Microsoft.SPOT.Presentation
         /// To reset the capacity of the UIElementCollection, call TrimToSize
         /// or set the Capacity property directly.
         /// </remarks>
-        public void Clear()
-        {
-            _owner.VerifyAccess();
+        public void Clear() {
+            this._owner.VerifyAccess();
 
-            for (int i = 0; i < _size; i++)
-            {
-                if (_items[i] != null)
-                {
-                    Debug.Assert(_items[i]._parent == _owner);
+            for (var i = 0; i < this._size; i++) {
+                if (this._items[i] != null) {
+                    Debug.Assert(this._items[i]._parent == this._owner);
                     DisconnectChild(i);
                 }
 
-                _items[i] = null;
+                this._items[i] = null;
             }
 
-            _size = 0;
-            _version++;
+            this._size = 0;
+            this._version++;
 
-            _owner.InvalidateMeasure();
+            this._owner.InvalidateMeasure();
         }
 
         /// <summary>
@@ -461,17 +393,14 @@ namespace Microsoft.SPOT.Presentation
         /// accommodate the new UIElement. The indexes of the UIElements that are
         /// moved are also updated.
         /// </remarks>
-        public void Insert(int index, UIElement element)
-        {
-            _owner.VerifyAccess();
+        public void Insert(int index, UIElement element) {
+            this._owner.VerifyAccess();
 
-            if (index < 0 || index > _size)
-            {
+            if (index < 0 || index > this._size) {
                 throw new ArgumentOutOfRangeException("index");
             }
 
-            if (element == null)
-            {
+            if (element == null) {
                 throw new ArgumentNullException("element");
             }
 
@@ -481,24 +410,22 @@ namespace Microsoft.SPOT.Presentation
                 throw new System.ArgumentException("element has parent");
             }
 
-            if ((_items == null) || (_size == _items.Length))
-            {
-                EnsureCapacity(_size + 1);
+            if ((this._items == null) || (this._size == this._items.Length)) {
+                EnsureCapacity(this._size + 1);
             }
 
-            for (int i = _size - 1; i >= index; i--)
-            {
-                UIElement child = _items[i];
-                _items[i + 1] = child;
+            for (var i = this._size - 1; i >= index; i--) {
+                var child = this._items[i];
+                this._items[i + 1] = child;
             }
 
-            _items[index] = null;
+            this._items[index] = null;
 
-            _size++;
+            this._size++;
             ConnectChild(index, element);
             // Note SetUIElement that increments the version to ensure proper enumerator
             // functionality.
-            _owner.InvalidateMeasure();
+            this._owner.InvalidateMeasure();
         }
 
         /// <summary>
@@ -512,14 +439,12 @@ namespace Microsoft.SPOT.Presentation
         /// the vacated spot. The indexes of the UIElements that are moved are
         /// also updated.
         /// </remarks>
-        public void RemoveAt(int index)
-        {
-            if (index < 0 || index >= _size)
-            {
+        public void RemoveAt(int index) {
+            if (index < 0 || index >= this._size) {
                 throw new ArgumentOutOfRangeException("index");
             }
 
-            Remove(_items[index]);
+            Remove(this._items[index]);
         }
 
         /// <summary>
@@ -541,45 +466,37 @@ namespace Microsoft.SPOT.Presentation
         /// the vacated spot. The indexes of the UIElements that are moved are
         /// also updated.
         /// </remarks>
-        public void RemoveRange(int index, int count)
-        {
-            _owner.VerifyAccess();
+        public void RemoveRange(int index, int count) {
+            this._owner.VerifyAccess();
 
-            if (index < 0)
-            {
+            if (index < 0) {
                 throw new ArgumentOutOfRangeException("index");
             }
 
-            if (count < 0)
-            {
+            if (count < 0) {
                 throw new ArgumentOutOfRangeException("count");
             }
 
-            if (_size - index < count)
-            {
+            if (this._size - index < count) {
                 throw new ArgumentOutOfRangeException("index");
             }
 
-            if (count > 0)
-            {
-                for (int i = index; i < index + count; i++)
-                {
-                    if (_items[i] != null)
-                    {
+            if (count > 0) {
+                for (var i = index; i < index + count; i++) {
+                    if (this._items[i] != null) {
                         DisconnectChild(i);
-                        _items[i] = null;
+                        this._items[i] = null;
                     }
                 }
 
-                _size -= count;
-                for (int i = index; i < _size; i++)
-                {
-                    UIElement child = _items[i + count];
-                    _items[i] = child;
-                    _items[i + count] = null;
+                this._size -= count;
+                for (var i = index; i < this._size; i++) {
+                    var child = this._items[i + count];
+                    this._items[i] = child;
+                    this._items[i + count] = null;
                 }
 
-                _version++; // Incrementing version number here to be consistent with the ArrayList
+                this._version++; // Incrementing version number here to be consistent with the ArrayList
                 // implementation.
             }
         }
@@ -592,10 +509,7 @@ namespace Microsoft.SPOT.Presentation
         /// Returns an enumerator that can iterate through the UIElementCollection.
         /// </summary>
         /// <returns>Enumerator that enumerates the UIElementCollection in order.</returns>
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return new Enumerator(this);
-        }
+        IEnumerator IEnumerable.GetEnumerator() => new Enumerator(this);
 
         /// <summary>
         /// This is a simple UIElementCollection enumerator that is based on
@@ -606,51 +520,41 @@ namespace Microsoft.SPOT.Presentation
         ///   this is faster, because it's smaller.  Benchmarks showed
         ///   this.
         /// </summary>
-        public struct Enumerator : IEnumerator, ICloneable
-        {
+        public struct Enumerator : IEnumerator, ICloneable {
             private UIElementCollection _collection;
             private int _index; // -1 means not started. -2 means that it reached the end.
             private int _version;
             private UIElement _currentElement;
 
-            internal Enumerator(UIElementCollection collection)
-            {
-                _collection = collection;
-                _index = -1; // not started.
-                _version = _collection._version;
-                _currentElement = null;
+            internal Enumerator(UIElementCollection collection) {
+                this._collection = collection;
+                this._index = -1; // not started.
+                this._version = this._collection._version;
+                this._currentElement = null;
             }
 
             /// <summary>
             /// Creates a new object that is a copy of the current instance.
             /// </summary>
-            public Object Clone()
-            {
-                return MemberwiseClone();
-            }
+            public object Clone() => MemberwiseClone();
 
             /// <summary>
             /// Advances the enumerator to the next element of the collection.
             /// </summary>
-            public bool MoveNext()
-            {
-                if (_version == _collection._version)
-                {
-                    if ((_index > -2) && (_index < (_collection._size - 1)))
-                    {
-                        _index++;
-                        _currentElement = _collection[_index];
+            public bool MoveNext() {
+                if (this._version == this._collection._version) {
+                    if ((this._index > -2) && (this._index < (this._collection._size - 1))) {
+                        this._index++;
+                        this._currentElement = this._collection[this._index];
                         return true;
                     }
-                    else
-                    {
-                        _currentElement = null;
-                        _index = -2; // -2 <=> reached the end.
+                    else {
+                        this._currentElement = null;
+                        this._index = -2; // -2 <=> reached the end.
                         return false;
                     }
                 }
-                else
-                {
+                else {
                     throw new InvalidOperationException("collection changed");
                 }
             }
@@ -658,51 +562,39 @@ namespace Microsoft.SPOT.Presentation
             /// <summary>
             /// Gets the current UIElement.
             /// </summary>
-            object IEnumerator.Current
-            {
-                get
-                {
-                    return this.Current;
-                }
-            }
+            object IEnumerator.Current => this.Current;
 
             /// <summary>
             /// Gets the current UIElement.
             /// </summary>
-            public UIElement Current
-            {
-                get
-                {
+            public UIElement Current {
+                get {
                     // Disable PREsharp warning about throwing exceptions in property
                     // get methods; see Windows OS Bugs #1035349 for an explanation.
 
-                    if (_index < 0)
-                    {
-                        if (_index == -1)
-                        {
+                    if (this._index < 0) {
+                        if (this._index == -1) {
                             // Not started.
                             throw new InvalidOperationException("not started");
                         }
-                        else
-                        {
+                        else {
                             // Reached the end.
-                            Debug.Assert(_index == -2);
+                            Debug.Assert(this._index == -2);
                             throw new InvalidOperationException("reached end");
                         }
                     }
 
-                    return _currentElement;
+                    return this._currentElement;
                 }
             }
 
             /// <summary>
             /// Sets the enumerator to its initial position, which is before the first element in the collection.
             /// </summary>
-            public void Reset()
-            {
-                if (_version != _collection._version)
+            public void Reset() {
+                if (this._version != this._collection._version)
                     throw new InvalidOperationException("collection changed");
-                _index = -1; // not started.
+                this._index = -1; // not started.
             }
         }
 

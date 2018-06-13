@@ -1,54 +1,29 @@
-using System;
-using System.Collections;
-using System.Threading;
-using Microsoft.SPOT;
-using Microsoft.SPOT.Input;
-using Microsoft.SPOT.Presentation.Media;
+namespace Microsoft.SPOT.Presentation.Controls {
+    public class ListBoxItem : ContentControl {
+        public bool IsSelected => (this._listBox != null && this._listBox.SelectedItem == this);
 
-namespace Microsoft.SPOT.Presentation.Controls
-{
-    public class ListBoxItem : ContentControl
-    {
-        public bool IsSelected
-        {
-            get
-            {
-                return (_listBox != null && _listBox.SelectedItem == this);
-            }
-        }
+        public bool IsSelectable {
+            get => this._isSelectable;
 
-        public bool IsSelectable
-        {
-            get
-            {
-                return _isSelectable;
-            }
-
-            set
-            {
+            set {
                 VerifyAccess();
 
-                if (_isSelectable != value)
-                {
-                    _isSelectable = value;
-                    if (!value && IsSelected)
-                    {
-                        _listBox.SelectedIndex = -1;
+                if (this._isSelectable != value) {
+                    this._isSelectable = value;
+                    if (!value && this.IsSelected) {
+                        this._listBox.SelectedIndex = -1;
                     }
                 }
             }
         }
 
-        protected internal virtual void OnIsSelectedChanged(bool isSelected)
-        {
+        protected internal virtual void OnIsSelectedChanged(bool isSelected) {
         }
 
-        internal void SetListBox(ListBox listbox)
-        {
+        internal void SetListBox(ListBox listbox) {
             this._listBox = listbox;
-            if (IsSelected && !IsSelectable)
-            {
-                _listBox.SelectedIndex = -1;
+            if (this.IsSelected && !this.IsSelectable) {
+                this._listBox.SelectedIndex = -1;
             }
         }
 

@@ -50,6 +50,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Pins
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Presentation", "GHIElectronics.TinyCLR.Presentation\GHIElectronics.TinyCLR.Presentation.csproj", "{2BD3FB57-7D27-4DAF-A0DC-A23F5793E12A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPF", "C:\Users\johnb\Desktop\WPF\WPF\WPF.csproj", "{2B0DDB44-A543-4854-933A-F4B3495D9A1A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -104,6 +106,12 @@ Global
 		{2BD3FB57-7D27-4DAF-A0DC-A23F5793E12A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2BD3FB57-7D27-4DAF-A0DC-A23F5793E12A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2BD3FB57-7D27-4DAF-A0DC-A23F5793E12A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2B0DDB44-A543-4854-933A-F4B3495D9A1A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B0DDB44-A543-4854-933A-F4B3495D9A1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B0DDB44-A543-4854-933A-F4B3495D9A1A}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{2B0DDB44-A543-4854-933A-F4B3495D9A1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B0DDB44-A543-4854-933A-F4B3495D9A1A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2B0DDB44-A543-4854-933A-F4B3495D9A1A}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

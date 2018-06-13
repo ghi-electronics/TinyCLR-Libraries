@@ -3,147 +3,100 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 using System;
-using System.Collections;
 using System.Drawing;
 using Microsoft.SPOT.Presentation.Media;
 
-namespace Microsoft.SPOT.Presentation.Controls
-{
-    public class Text : UIElement
-    {
+namespace Microsoft.SPOT.Presentation.Controls {
+    public class Text : UIElement {
         public Text()
-            : this(null, null)
-        {
+            : this(null, null) {
         }
 
         public Text(string content)
-            : this(null, content)
-        {
+            : this(null, content) {
         }
 
-        public Text(Font font, string content)
-        {
-            _text = content;
-            _font = font;
-            _foreColor = Color.Black;
+        public Text(Font font, string content) {
+            this._text = content;
+            this._font = font;
+            this._foreColor = Color.Black;
         }
 
-        public Font Font
-        {
-            get
-            {
-                return _font;
-            }
+        public Font Font {
+            get => this._font;
 
-            set
-            {
+            set {
                 VerifyAccess();
 
-                _font = value;
+                this._font = value;
                 InvalidateMeasure();
             }
         }
 
-        public Color ForeColor
-        {
-            get
-            {
-                return _foreColor;
-            }
+        public Color ForeColor {
+            get => this._foreColor;
 
-            set
-            {
+            set {
                 VerifyAccess();
 
-                _foreColor = value;
+                this._foreColor = value;
                 Invalidate();
             }
         }
 
-        public string TextContent
-        {
-            get
-            {
-                return _text;
-            }
+        public string TextContent {
+            get => this._text;
 
-            set
-            {
+            set {
                 VerifyAccess();
 
-                if (_text != value)
-                {
-                    _text = value;
+                if (this._text != value) {
+                    this._text = value;
                     InvalidateMeasure();
                 }
             }
         }
 
-        public TextTrimming Trimming
-        {
-            get
-            {
-                return _trimming;
-            }
+        public TextTrimming Trimming {
+            get => this._trimming;
 
-            set
-            {
+            set {
                 VerifyAccess();
 
-                _trimming = value;
+                this._trimming = value;
                 Invalidate();
             }
         }
 
-        public TextAlignment TextAlignment
-        {
-            get
-            {
-                return _alignment;
-            }
+        public TextAlignment TextAlignment {
+            get => this._alignment;
 
-            set
-            {
+            set {
                 VerifyAccess();
 
-                _alignment = value;
+                this._alignment = value;
                 Invalidate();
             }
         }
 
-        public int LineHeight
-        {
-            //Don't support IgnoreDescent, etc...
-            get
-            {
-                return (_font != null) ? (_font.Height + _font.ExternalLeading) : 0;
-            }
-        }
+        public int LineHeight => (this._font != null) ? (this._font.Height + this._font.ExternalLeading) : 0;
 
-        public bool TextWrap
-        {
-            get
-            {
-                return _textWrap;
-            }
+        public bool TextWrap {
+            get => this._textWrap;
 
-            set
-            {
+            set {
                 VerifyAccess();
 
-                _textWrap = value;
+                this._textWrap = value;
                 InvalidateMeasure();
             }
         }
 
-        protected override void MeasureOverride(int availableWidth, int availableHeight, out int desiredWidth, out int desiredHeight)
-        {
-            if (_font != null && _text != null && _text.Length > 0)
-            {
-                uint flags = Bitmap.DT_IgnoreHeight | Bitmap.DT_WordWrap;
+        protected override void MeasureOverride(int availableWidth, int availableHeight, out int desiredWidth, out int desiredHeight) {
+            if (this._font != null && this._text != null && this._text.Length > 0) {
+                var flags = Bitmap.DT_IgnoreHeight | Bitmap.DT_WordWrap;
 
-                switch (_alignment)
-                {
+                switch (this._alignment) {
                     case TextAlignment.Left:
                         flags |= Bitmap.DT_AlignmentLeft;
                         break;
@@ -157,8 +110,7 @@ namespace Microsoft.SPOT.Presentation.Controls
                         throw new NotSupportedException();
                 }
 
-                switch (_trimming)
-                {
+                switch (this._trimming) {
                     case TextTrimming.CharacterEllipsis:
                         flags |= Bitmap.DT_TrimmingCharacterEllipsis;
                         break;
@@ -167,25 +119,25 @@ namespace Microsoft.SPOT.Presentation.Controls
                         break;
                 }
 
-                _font.ComputeTextInRect(_text, out desiredWidth, out desiredHeight, 0, 0, availableWidth, 0, flags);
+                this._font.ComputeTextInRect(this._text, out desiredWidth, out desiredHeight, 0, 0, availableWidth, 0, flags);
 
-                if (_textWrap == false) desiredHeight = _font.Height;
+                if (this._textWrap == false) desiredHeight = this._font.Height;
             }
-            else
-            {
+            else {
                 desiredWidth = 0;
-                desiredHeight = (_font != null) ? _font.Height : 0;
+                desiredHeight = 0;
+
+                if (this._font != null)
+                    desiredHeight = this._font.Height;
             }
         }
 
-        public override void OnRender(DrawingContext dc)
-        {
-            if (_font != null && _text != null)
-            {
-                int height = _textWrap ? _renderHeight : _font.Height;
+        public override void OnRender(DrawingContext dc) {
+            if (this._font != null && this._text != null) {
+                var height = this._textWrap ? this._renderHeight : this._font.Height;
 
-                string txt = _text;
-                dc.DrawText(ref txt, _font, _foreColor, 0, 0, _renderWidth, height, _alignment, _trimming);
+                var txt = this._text;
+                dc.DrawText(ref txt, this._font, this._foreColor, 0, 0, this._renderWidth, height, this._alignment, this._trimming);
             }
         }
 

@@ -2,49 +2,39 @@
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-using System;
 using System.Drawing;
 using Microsoft.SPOT.Presentation.Media;
 
-namespace Microsoft.SPOT.Presentation.Shapes
-{
-    public abstract class Shape : UIElement
-    {
-        public Media.Brush Fill
-        {
-            get
-            {
-                if (_fill == null)
-                {
-                    _fill = new SolidColorBrush(Color.Black);
-                    _fill.Opacity = Bitmap.OpacityTransparent;
+namespace Microsoft.SPOT.Presentation.Shapes {
+    public abstract class Shape : UIElement {
+        public Media.Brush Fill {
+            get {
+                if (this._fill == null) {
+                    this._fill = new SolidColorBrush(Color.Black) {
+                        Opacity = Bitmap.OpacityTransparent
+                    };
                 }
 
-                return _fill;
+                return this._fill;
             }
 
-            set
-            {
-                _fill = value;
+            set {
+                this._fill = value;
                 Invalidate();
             }
         }
 
-        public Media.Pen Stroke
-        {
-            get
-            {
-                if (_stroke == null)
-                {
-                    _stroke = new Media.Pen(Color.White, 0);
+        public Media.Pen Stroke {
+            get {
+                if (this._stroke == null) {
+                    this._stroke = new Media.Pen(Color.White, 0);
                 }
 
-                return _stroke;
+                return this._stroke;
             }
 
-            set
-            {
-                _stroke = value;
+            set {
+                this._stroke = value;
                 Invalidate();
             }
         }
