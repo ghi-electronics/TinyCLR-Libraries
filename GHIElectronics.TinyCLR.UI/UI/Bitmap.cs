@@ -2,16 +2,6 @@
 using System.Drawing;
 
 namespace GHIElectronics.TinyCLR.UI {
-    public enum Button {
-        None,
-        VK_DOWN,
-        VK_UP,
-        VK_LEFT,
-        VK_RIGHT,
-        VK_SELECT,
-        LastSystemDefinedButton
-    }
-
     public class Bitmap : IDisposable {
         private readonly Graphics g;
 

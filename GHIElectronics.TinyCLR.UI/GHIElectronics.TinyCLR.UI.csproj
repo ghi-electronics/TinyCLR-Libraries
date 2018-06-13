@@ -83,6 +83,7 @@
     <Compile Include="Controls\TextFlow.cs" />
     <Compile Include="Controls\TextRun.cs" />
     <Compile Include="Controls\TextRunCollection.cs" />
+    <Compile Include="Input\Button.cs" />
     <Compile Include="UI\HorizontalAlignment.cs" />
     <Compile Include="UI\LayoutManager.cs" />
     <Compile Include="Media\Brush.cs" />

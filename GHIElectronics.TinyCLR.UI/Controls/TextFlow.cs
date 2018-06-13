@@ -5,6 +5,7 @@
 using System;
 using System.Collections;
 using System.Diagnostics;
+using GHIElectronics.TinyCLR.UI.Input;
 using GHIElectronics.TinyCLR.UI.Media;
 
 namespace GHIElectronics.TinyCLR.UI.Controls {
