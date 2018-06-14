@@ -32,6 +32,8 @@ namespace GHIElectronics.TinyCLR.UI {
     public class Application : DispatcherObject {
         private readonly DisplayController display;
 
+        public InputProvider InputProvider { get; }
+
         //------------------------------------------------------
         //
         //  Constructors
@@ -77,6 +79,10 @@ namespace GHIElectronics.TinyCLR.UI {
                     throw new InvalidOperationException("application is a singleton");
                 }
             }
+
+            this.InitializeForEventSource();
+
+            this.InputProvider = new InputProvider(this);
 
             Dispatcher.SetFinalDispatcherExceptionHandler(new DispatcherExceptionEventHandler(DefaultContextExceptionHandler));
 

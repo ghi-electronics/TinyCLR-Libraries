@@ -35,6 +35,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Input\InputProvider.cs" />
     <Compile Include="Media\Color.cs" />
     <Compile Include="UI\Bitmap.cs" />
     <Compile Include="Input\ButtonDevice.cs" />
