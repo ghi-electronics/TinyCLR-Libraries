@@ -1,3 +1,5 @@
+using GHIElectronics.TinyCLR.UI.Input;
+
 namespace GHIElectronics.TinyCLR.UI.Controls {
     public class ListBoxItem : ContentControl {
         public bool IsSelected => (this._listBox != null && this._listBox.SelectedItem == this);
@@ -18,6 +20,11 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         }
 
         protected internal virtual void OnIsSelectedChanged(bool isSelected) {
+        }
+
+        protected override void OnTouchUp(TouchEventArgs e) {
+            if (this.IsSelectable)
+                this._listBox.SelectedItem = this;
         }
 
         internal void SetListBox(ListBox listbox) {
