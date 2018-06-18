@@ -103,6 +103,7 @@
     <Compile Include="Media\Stretch.cs" />
     <Compile Include="Media\TextAlignment.cs" />
     <Compile Include="Media\TextTrimming.cs" />
+    <Compile Include="UI\OnScreenKeyboard.cs" />
     <Compile Include="UI\PresentationSource.cs" />
     <Compile Include="Shapes\Ellipse.cs" />
     <Compile Include="Shapes\Line.cs" />

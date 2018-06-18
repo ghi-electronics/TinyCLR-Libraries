@@ -29,9 +29,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
-        protected override void OnTouchUp(TouchEventArgs e) {
-
-        }
+        protected override void OnTouchUp(TouchEventArgs e) => Application.Current.ShowOnScreenKeyboardFor(this);
 
         protected override void MeasureOverride(int availableWidth, int availableHeight, out int desiredWidth, out int desiredHeight) {
             this._font.ComputeExtent(this.text, out desiredWidth, out desiredHeight);

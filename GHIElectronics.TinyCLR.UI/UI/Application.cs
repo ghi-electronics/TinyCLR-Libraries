@@ -6,6 +6,7 @@ using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using GHIElectronics.TinyCLR.Devices.Display;
+using GHIElectronics.TinyCLR.UI.Controls;
 using GHIElectronics.TinyCLR.UI.Input;
 using GHIElectronics.TinyCLR.UI.Threading;
 
@@ -624,6 +625,22 @@ EventTrace.EventProvider.TraceEvent(EventTrace.APPGUID, MS.Utility.EventType.Inf
         //------------------------------------------------------
 
         #region Internal Methods
+
+        private OnScreenKeyboard onScreenKeyboard;
+
+        internal void ShowOnScreenKeyboardFor(TextBox textBox) {
+            this.onScreenKeyboard = this.onScreenKeyboard ?? new OnScreenKeyboard();
+
+            this.onScreenKeyboard.ShowFor(textBox);
+            this.onScreenKeyboard.Visibility = Visibility.Visible;
+            this.onScreenKeyboard.Topmost = true;
+            this.onScreenKeyboard.UpdateLayout();
+        }
+
+        internal void CloseOnScreenKeyboard() {
+            this.onScreenKeyboard.Visibility = Visibility.Hidden;
+            this.onScreenKeyboard.UpdateLayout();
+        }
 
         /// <summary>
         /// DO NOT USE - internal method
