@@ -8,7 +8,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         public event RoutedEventHandler Click;
 
         protected override void OnTouchUp(TouchEventArgs e) {
-            var evt = new RoutedEvent("Click", RoutingStrategy.Bubble, typeof(RoutedEventHandler));
+            var evt = new RoutedEvent("ClickEvent", RoutingStrategy.Bubble, typeof(RoutedEventHandler));
             var args = new RoutedEventArgs(evt, this);
 
             this.Click?.Invoke(this, args);
