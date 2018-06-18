@@ -11,6 +11,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
     public class TextBox : Control {
         private string text = string.Empty;
+        private int width;
 
         public TextBox() => this.Background = new SolidColorBrush(Colors.White);
 
@@ -32,7 +33,11 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
         }
 
-        protected override void MeasureOverride(int availableWidth, int availableHeight, out int desiredWidth, out int desiredHeight) => this._font.ComputeExtent(this.text, out desiredWidth, out desiredHeight);
+        protected override void MeasureOverride(int availableWidth, int availableHeight, out int desiredWidth, out int desiredHeight) {
+            this._font.ComputeExtent(this.text, out desiredWidth, out desiredHeight);
+
+            this.width = desiredWidth;
+        }
 
         public override void OnRender(DrawingContext dc) {
             if (!(this.Foreground is SolidColorBrush b)) throw new NotSupportedException();
@@ -40,8 +45,14 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             base.OnRender(dc);
 
             var txt = this.text;
+            var diff = this._renderWidth - this.width;
 
-            dc.DrawText(ref txt, this._font, b.Color, 0, 0, this._renderWidth, this._font.Height, TextAlignment.Left, TextTrimming.CharacterEllipsis);
+            if (diff > 0) {
+                dc.DrawText(ref txt, this._font, b.Color, 0, 0, this._renderWidth, this._font.Height, TextAlignment.Left, TextTrimming.CharacterEllipsis);
+            }
+            else {
+                dc.DrawText(ref txt, this._font, b.Color, diff, 0, this._renderWidth + this.width, this._font.Height, TextAlignment.Left, TextTrimming.CharacterEllipsis);
+            }
         }
     }
 }
