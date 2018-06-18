@@ -6,7 +6,9 @@
 namespace GHIElectronics.TinyCLR.UI.Media {
     public enum Stretch {
         None,
-        Fill
+        Fill,
+        Uniform,
+        UniformToFill,
     }
 }
 

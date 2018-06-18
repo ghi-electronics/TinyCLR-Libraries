@@ -32,7 +32,10 @@ namespace GHIElectronics.TinyCLR.UI {
             holder.Children.Add(this.input);
 
             this.image = new Controls.Image {
-                Source = null
+                Source = null,
+                Width = WindowManager.Instance.ActualWidth,
+                Height = WindowManager.Instance.ActualHeight - OnScreenKeyboard.Font.Height,
+                Stretch = Stretch.Fill
             };
 
             this.image.TouchUp += this.OnTouchUp;
