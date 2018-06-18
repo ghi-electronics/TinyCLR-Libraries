@@ -22,6 +22,8 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             set {
                 this.text = value;
 
+                this.InvalidateMeasure();
+
                 var evt = new RoutedEvent("TextChangedEvent", RoutingStrategy.Bubble, typeof(TextChangedEventHandler));
                 var args = new TextChangedEventArgs(evt, this);
 
@@ -29,7 +31,12 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
-        protected override void OnTouchUp(TouchEventArgs e) => Application.Current.ShowOnScreenKeyboardFor(this);
+        internal bool ForOnScreenKeyboard { get; set; }
+
+        protected override void OnTouchUp(TouchEventArgs e) {
+            if (!this.ForOnScreenKeyboard)
+                Application.Current.ShowOnScreenKeyboardFor(this);
+        }
 
         protected override void MeasureOverride(int availableWidth, int availableHeight, out int desiredWidth, out int desiredHeight) {
             this._font.ComputeExtent(this.text, out desiredWidth, out desiredHeight);
