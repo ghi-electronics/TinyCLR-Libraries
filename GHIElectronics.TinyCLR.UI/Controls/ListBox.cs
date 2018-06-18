@@ -115,7 +115,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         }
 
         protected override void OnButtonDown(GHIElectronics.TinyCLR.UI.Input.ButtonEventArgs e) {
-            if (e.Button == Button.Down && this._selectedIndex < this.Items.Count - 1) {
+            if (e.Button == HardwareButton.Down && this._selectedIndex < this.Items.Count - 1) {
                 var newIndex = this._selectedIndex + 1;
                 while (newIndex < this.Items.Count && !this.Items[newIndex].IsSelectable) newIndex++;
 
@@ -125,7 +125,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                     e.Handled = true;
                 }
             }
-            else if (e.Button == Button.Up && this._selectedIndex > 0) {
+            else if (e.Button == HardwareButton.Up && this._selectedIndex > 0) {
                 var newIndex = this._selectedIndex - 1;
                 while (newIndex >= 0 && !this.Items[newIndex].IsSelectable) newIndex--;
 

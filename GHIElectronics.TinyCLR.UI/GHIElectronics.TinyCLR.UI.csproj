@@ -35,6 +35,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Controls\Button.cs" />
     <Compile Include="Input\InputProvider.cs" />
     <Compile Include="Media\Color.cs" />
     <Compile Include="UI\Bitmap.cs" />
@@ -86,7 +87,7 @@
     <Compile Include="Controls\TextFlow.cs" />
     <Compile Include="Controls\TextRun.cs" />
     <Compile Include="Controls\TextRunCollection.cs" />
-    <Compile Include="Input\Button.cs" />
+    <Compile Include="Input\HardwareButton.cs" />
     <Compile Include="UI\HorizontalAlignment.cs" />
     <Compile Include="Media\ImageSource.cs" />
     <Compile Include="UI\LayoutManager.cs" />

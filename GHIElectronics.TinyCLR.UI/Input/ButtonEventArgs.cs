@@ -22,7 +22,7 @@ namespace GHIElectronics.TinyCLR.UI.Input {
         /// <param name="button">
         ///     The button referenced by the event.
         /// </param>
-        public ButtonEventArgs(ButtonDevice buttonDevice, PresentationSource inputSource, DateTime timestamp, Button button)
+        public ButtonEventArgs(ButtonDevice buttonDevice, PresentationSource inputSource, DateTime timestamp, HardwareButton button)
             : base(buttonDevice, timestamp) {
             this.InputSource = inputSource;
             this.Button = button;
@@ -31,7 +31,7 @@ namespace GHIElectronics.TinyCLR.UI.Input {
         /// <summary>
         ///     The Button referenced by the event.
         /// </summary>
-        public readonly Button Button;
+        public readonly HardwareButton Button;
 
         /// <summary>
         ///     The state of the button referenced by the event.

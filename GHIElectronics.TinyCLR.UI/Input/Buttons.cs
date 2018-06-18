@@ -66,22 +66,22 @@ namespace GHIElectronics.TinyCLR.UI.Input {
         /// <summary>
         ///     Returns whether or not the specified button is down.
         /// </summary>
-        public static bool IsButtonDown(Button button) => PrimaryDevice.IsButtonDown(button);
+        public static bool IsButtonDown(HardwareButton button) => PrimaryDevice.IsButtonDown(button);
 
         /// <summary>
         ///     Returns whether or not the specified button is up.
         /// </summary>
-        public static bool IsButtonUp(Button button) => PrimaryDevice.IsButtonUp(button);
+        public static bool IsButtonUp(HardwareButton button) => PrimaryDevice.IsButtonUp(button);
 
         /// <summary>
         ///     Returns whether or not the specified button is held.
         /// </summary>
-        public static bool IsButtonHeld(Button button) => PrimaryDevice.IsButtonHeld(button);
+        public static bool IsButtonHeld(HardwareButton button) => PrimaryDevice.IsButtonHeld(button);
 
         /// <summary>
         ///     Returns the state of the specified button.
         /// </summary>
-        public static ButtonState GetButtonState(Button button) => PrimaryDevice.GetButtonState(button);
+        public static ButtonState GetButtonState(HardwareButton button) => PrimaryDevice.GetButtonState(button);
 
         /// <summary>
         ///     The primary button device.

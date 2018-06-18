@@ -24,7 +24,7 @@ namespace GHIElectronics.TinyCLR.UI.Input {
         /// <param name="timestamp">
         ///     The time when the input occured.
         /// </param>
-        public RawButtonInputReport(PresentationSource inputSource, DateTime timestamp, Button button, RawButtonActions actions)
+        public RawButtonInputReport(PresentationSource inputSource, DateTime timestamp, HardwareButton button, RawButtonActions actions)
             : base(inputSource, timestamp) {
             this.Button = button;
             this.Actions = actions;
@@ -33,7 +33,7 @@ namespace GHIElectronics.TinyCLR.UI.Input {
         /// <summary>
         /// Read-only access to the button reported.
         /// </summary>
-        public readonly Button Button;
+        public readonly HardwareButton Button;
 
         /// <summary>
         /// Read-only access to the action reported.

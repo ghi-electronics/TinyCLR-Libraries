@@ -10,7 +10,7 @@ namespace GHIElectronics.TinyCLR.UI.Input {
             this.application = a;
         }
 
-        public void RaiseButton(Button button, bool state, DateTime time) {
+        public void RaiseButton(HardwareButton button, bool state, DateTime time) {
             var report = new RawButtonInputReport(null, time, button, state ? RawButtonActions.ButtonUp : RawButtonActions.ButtonDown);
             var args = new InputReportArgs(InputManager.CurrentInputManager.ButtonDevice, report);
 

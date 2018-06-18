@@ -64,25 +64,25 @@ namespace GHIElectronics.TinyCLR.UI.Input {
         /// <summary>
         ///     Returns whether or not the specified button is down.
         /// </summary>
-        public bool IsButtonDown(Button button) => GetButtonState(button) == ButtonState.Down;
+        public bool IsButtonDown(HardwareButton button) => GetButtonState(button) == ButtonState.Down;
 
         /// <summary>
         ///     Returns whether or not the specified button is up.
         /// </summary>
-        public bool IsButtonUp(Button button) => GetButtonState(button) == ButtonState.None;
+        public bool IsButtonUp(HardwareButton button) => GetButtonState(button) == ButtonState.None;
 
         /// <summary>
         ///     Returns whether or not the specified button is held.
         /// </summary>
-        public bool IsButtonHeld(Button button) => GetButtonState(button) == ButtonState.Held;
+        public bool IsButtonHeld(HardwareButton button) => GetButtonState(button) == ButtonState.Held;
 
         /// <summary>
         ///     Returns the state of the specified button.
         /// </summary>
-        public ButtonState GetButtonState(Button button) {
+        public ButtonState GetButtonState(HardwareButton button) {
 #if TRACK_BUTTON_STATE
 
-            if ((int)Button.LastSystemDefinedButton <= (int)button || (int)button <= 0)
+            if ((int)HardwareButton.LastSystemDefinedButton <= (int)button || (int)button <= 0)
                 throw new ArgumentOutOfRangeException("button", "invalid enum");
 
             var index = (int)button / 4;
@@ -95,13 +95,13 @@ namespace GHIElectronics.TinyCLR.UI.Input {
         }
 
 #if TRACK_BUTTON_STATE
-        internal void SetButtonState(Button button, ButtonState state) {
+        internal void SetButtonState(HardwareButton button, ButtonState state) {
             //If the PreNotifyInput event sent by the InputManager is always sent by the
             //correct thread, this is redundant. Also, why is this function 'internal'
             //when we only access it from inside this class?
             VerifyAccess();
 
-            if ((int)Button.LastSystemDefinedButton <= (int)button || (int)button <= 0)
+            if ((int)HardwareButton.LastSystemDefinedButton <= (int)button || (int)button <= 0)
                 throw new ArgumentOutOfRangeException("button", "invalid enum");
 
             var index = (int)button / 4;
@@ -300,7 +300,7 @@ REFACTOR --
                 args._isRepeat = false;
 
                 // Clear _previousButton, so that down/up/down/up doesn't look like a repeat
-                this._previousButton = Button.None;
+                this._previousButton = HardwareButton.None;
 
             }
         }
@@ -347,8 +347,8 @@ REFACTOR --
 
                     // Raw --> PreviewButtonDown
                     if ((actions & RawButtonActions.ButtonDown) == RawButtonActions.ButtonDown) {
-                        var button = (Button)e.StagingItem.GetData(this._tagButton);
-                        if (button != Button.None) {
+                        var button = (HardwareButton)e.StagingItem.GetData(this._tagButton);
+                        if (button != HardwareButton.None) {
                             var previewButtonDown = new ButtonEventArgs(this, buttonInput.InputSource, buttonInput.Timestamp, button) {
                                 RoutedEvent = Buttons.PreviewButtonDownEvent
                             };
@@ -358,8 +358,8 @@ REFACTOR --
 
                     // Raw --> PreviewButtonUp
                     if ((actions & RawButtonActions.ButtonUp) == RawButtonActions.ButtonUp) {
-                        var button = (Button)e.StagingItem.GetData(this._tagButton);
-                        if (button != Button.None) {
+                        var button = (HardwareButton)e.StagingItem.GetData(this._tagButton);
+                        if (button != HardwareButton.None) {
                             var previewButtonUp = new ButtonEventArgs(this, buttonInput.InputSource, buttonInput.Timestamp, button) {
                                 RoutedEvent = Buttons.PreviewButtonUpEvent
                             };
@@ -430,13 +430,13 @@ REFACTOR --
 
         private UIElement _focus;
         private UIElement _focusRootUIElement;
-        private Button _previousButton;
+        private HardwareButton _previousButton;
 
         private PropertyChangedEventHandler _isEnabledOrVisibleChangedEventHandler;
 
 #if TRACK_BUTTON_STATE
         // Device state we track
-        private byte[] _buttonState = new byte[(int)Button.LastSystemDefinedButton / 4];
+        private byte[] _buttonState = new byte[(int)HardwareButton.LastSystemDefinedButton / 4];
 #endif
 
         // Data tags for information we pass around the staging area.

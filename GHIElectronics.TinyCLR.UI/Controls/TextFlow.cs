@@ -273,8 +273,8 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         }
 
         protected override void OnButtonDown(GHIElectronics.TinyCLR.UI.Input.ButtonEventArgs e) {
-            if (e.Button == Button.Up || e.Button == Button.Down) {
-                var isUp = (e.Button == Button.Up);
+            if (e.Button == HardwareButton.Up || e.Button == HardwareButton.Down) {
+                var isUp = (e.Button == HardwareButton.Up);
                 switch (this._scrollingStyle) {
                     case ScrollingStyle.PageByPage:
                         e.Handled = PageScroll(isUp);

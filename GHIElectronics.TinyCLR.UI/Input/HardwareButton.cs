@@ -1,5 +1,5 @@
 ﻿namespace GHIElectronics.TinyCLR.UI.Input {
-    public enum Button {
+    public enum HardwareButton {
         None,
         Down,
         Up,

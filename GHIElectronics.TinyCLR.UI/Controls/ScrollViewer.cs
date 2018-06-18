@@ -177,16 +177,16 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
         protected override void OnButtonDown(GHIElectronics.TinyCLR.UI.Input.ButtonEventArgs e) {
             switch (e.Button) {
-                case Button.Up:
+                case HardwareButton.Up:
                     if (this._scrollingStyle == ScrollingStyle.LineByLine) LineUp(); else PageUp();
                     break;
-                case Button.Down:
+                case HardwareButton.Down:
                     if (this._scrollingStyle == ScrollingStyle.LineByLine) LineDown(); else PageDown();
                     break;
-                case Button.Left:
+                case HardwareButton.Left:
                     if (this._scrollingStyle == ScrollingStyle.LineByLine) LineLeft(); else PageLeft();
                     break;
-                case Button.Right:
+                case HardwareButton.Right:
                     if (this._scrollingStyle == ScrollingStyle.LineByLine) LineRight(); else PageRight();
                     break;
                 default:
