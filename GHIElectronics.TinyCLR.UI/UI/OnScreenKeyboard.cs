@@ -82,7 +82,7 @@ namespace GHIElectronics.TinyCLR.UI {
             }
         }
 
-        private void Backspace() => this.input.Text = this.input.Text.Substring(0, this.input.Text.Length - 1);
+        private void Backspace() { if (this.input.Text.Length > 0) this.input.Text = this.input.Text.Substring(0, this.input.Text.Length - 1); }
         private void Append(char c) => this.input.Text += c;
 
         private void Close() {
