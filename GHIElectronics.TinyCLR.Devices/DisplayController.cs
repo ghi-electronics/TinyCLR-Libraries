@@ -21,8 +21,15 @@ namespace GHIElectronics.TinyCLR.Devices.Display {
             return controllers;
         }
 
-        public void ApplySettings(DisplayControllerSettings settings) => this.provider.ApplySettings(settings);
+        public void ApplySettings(DisplayControllerSettings settings) {
+            this.provider.ApplySettings(settings);
+
+            this.ActiveSettings = settings;
+        }
+
         public void WriteString(string str) => this.provider.WriteString(str);
+
+        public DisplayControllerSettings ActiveSettings { get; private set; }
 
         public IntPtr Hdc => this.provider.Hdc;
         public DisplayInterface Interface => this.provider.Interface;

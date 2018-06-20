@@ -6,16 +6,16 @@ namespace System.Drawing {
     public struct Color {
         public static readonly Color Empty = new Color();
 
-        public static Color Transparent { get; } = Color.FromArgb(0x00, 0x00, 0x00, 0x00);
+        public static Color Transparent { get; } = Color.FromArgb(0x00, 0xFF, 0xFF, 0xFF);
         public static Color Black { get; } = Color.FromArgb(0xFF, 0x00, 0x00, 0x00);
         public static Color White { get; } = Color.FromArgb(0xFF, 0xFF, 0xFF, 0xFF);
         public static Color Gray { get; } = Color.FromArgb(0xFF, 0x80, 0x80, 0x80);
         public static Color Red { get; } = Color.FromArgb(0xFF, 0xFF, 0x00, 0x00);
-        public static Color Green { get; } = Color.FromArgb(0xFF, 0x00, 0xFF, 0x00);
+        public static Color Green { get; } = Color.FromArgb(0xFF, 0x00, 0x80, 0x00);
         public static Color Blue { get; } = Color.FromArgb(0xFF, 0x00, 0x00, 0xFF);
         public static Color Yellow { get; } = Color.FromArgb(0xFF, 0xFF, 0xFF, 0x00);
-        public static Color Purple { get; } = Color.FromArgb(0xFF, 0xFF, 0x00, 0xFF);
-        public static Color Teal { get; } = Color.FromArgb(0xFF, 0x00, 0xFF, 0xFF);
+        public static Color Purple { get; } = Color.FromArgb(0xFF, 0x80, 0x00, 0x80);
+        public static Color Teal { get; } = Color.FromArgb(0xFF, 0x00, 0x80, 0x80);
 
         private const int ARGBAlphaShift = 24;
         private const int ARGBRedShift = 0;
