@@ -1,10 +1,15 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using GHIElectronics.TinyCLR.Devices.SdCard.Provider;
+
+[assembly: InternalsVisibleTo("GHIElectronics.TinyCLR.IO")]
 
 namespace GHIElectronics.TinyCLR.Devices.SdCard {
     public sealed class SdCardController {
         private ISdCardControllerProvider provider;
+
+        internal object driveProvider;
 
         internal SdCardController(ISdCardControllerProvider provider) => this.provider = provider;
 

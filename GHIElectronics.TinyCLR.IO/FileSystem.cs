@@ -12,10 +12,19 @@ namespace GHIElectronics.TinyCLR.IO {
 
             FileSystem.Initialize(sdCard.Hdc, sdCard.ControllerIndex, provider.Name);
 
+            sdCard.driveProvider = drive;
+
             return drive;
         }
 
-        public static bool Unmount(SdCardController sdCard) => FileSystem.Uninitialize(sdCard.Hdc, sdCard.ControllerIndex);
+        public static bool Unmount(SdCardController sdCard) {
+
+            var drive = (IDriveProvider)sdCard.driveProvider;
+
+            DriveInfo.DeregisterDriveProvider(drive);
+
+            return FileSystem.Uninitialize(sdCard.Hdc, sdCard.ControllerIndex);
+        }
 
         public static void Flush(SdCardController sdCard) => FileSystem.FlushAll(sdCard.Hdc, sdCard.ControllerIndex);
 
