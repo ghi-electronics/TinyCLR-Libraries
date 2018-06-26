@@ -162,13 +162,16 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Keyboard_Lowercase.bmp" />
+    <None Include="Resources\Keyboard_Lowercase.gif" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Keyboard_Numbers.bmp" />
+    <None Include="Resources\Keyboard_Numbers.gif" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Keyboard_Uppercase.bmp" />
+    <None Include="Resources\Keyboard_Symbols.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Keyboard_Uppercase.gif" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

@@ -34,6 +34,7 @@ namespace GHIElectronics.TinyCLR.UI
         {
             Keyboard_Numbers = -14062,
             Keyboard_Lowercase = -10522,
+            Keyboard_Symbols = 1558,
             Keyboard_Uppercase = 21332,
         }
     }

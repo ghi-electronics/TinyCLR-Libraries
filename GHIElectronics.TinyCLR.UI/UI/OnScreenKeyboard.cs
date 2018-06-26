@@ -189,8 +189,7 @@ namespace GHIElectronics.TinyCLR.UI {
                     break;
 
                 case KeyboardViewId.Symbols:
-                    //image = Resources.GetBitmap(Resources.BitmapResources.Keyboard_Symbols);
-                    image = Resources.GetBitmap(Resources.BitmapResources.Keyboard_Numbers);
+                    image = Resources.GetBitmap(Resources.BitmapResources.Keyboard_Symbols);
                     view.RowColumnOffset = new[] { 0, 0, 0, 0 };
                     view.ColumnWidth = new[] {
                         full,
