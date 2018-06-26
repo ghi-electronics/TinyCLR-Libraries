@@ -5,6 +5,7 @@ using GHIElectronics.TinyCLR.Devices.Display.Provider;
 using GHIElectronics.TinyCLR.Devices.Gpio.Provider;
 using GHIElectronics.TinyCLR.Devices.I2c.Provider;
 using GHIElectronics.TinyCLR.Devices.Pwm.Provider;
+using GHIElectronics.TinyCLR.Devices.SdCard.Provider;
 using GHIElectronics.TinyCLR.Devices.Spi.Provider;
 
 namespace GHIElectronics.TinyCLR.Devices {
@@ -21,6 +22,7 @@ namespace GHIElectronics.TinyCLR.Devices {
         II2cControllerProvider I2cControllerProvider { get; }
         IPwmControllerProvider PwmControllerProvider { get; }
         ISpiControllerProvider SpiControllerProvider { get; }
+        ISdCardControllerProvider SdCardControllerProvider { get; }
     }
 
     public sealed class LowLevelDevicesAggregateProvider : ILowLevelDevicesAggregateProvider {
@@ -32,8 +34,9 @@ namespace GHIElectronics.TinyCLR.Devices {
         public II2cControllerProvider I2cControllerProvider { get; }
         public IPwmControllerProvider PwmControllerProvider { get; }
         public ISpiControllerProvider SpiControllerProvider { get; }
+        public ISdCardControllerProvider SdCardControllerProvider { get; }
 
-        public LowLevelDevicesAggregateProvider(IAdcControllerProvider adc, ICanControllerProvider can, IDacControllerProvider dac, IDisplayControllerProvider display, IPwmControllerProvider pwm, IGpioControllerProvider gpio, II2cControllerProvider i2c, ISpiControllerProvider spi) {
+        public LowLevelDevicesAggregateProvider(IAdcControllerProvider adc, ICanControllerProvider can, IDacControllerProvider dac, IDisplayControllerProvider display, IPwmControllerProvider pwm, IGpioControllerProvider gpio, II2cControllerProvider i2c, ISpiControllerProvider spi, ISdCardControllerProvider sdCard) {
             this.AdcControllerProvider = adc;
             this.CanControllerProvider = can;
             this.DacControllerProvider = dac;
@@ -42,6 +45,7 @@ namespace GHIElectronics.TinyCLR.Devices {
             this.GpioControllerProvider = gpio;
             this.I2cControllerProvider = i2c;
             this.SpiControllerProvider = spi;
+            this.SdCardControllerProvider = sdCard;
         }
     }
 }
