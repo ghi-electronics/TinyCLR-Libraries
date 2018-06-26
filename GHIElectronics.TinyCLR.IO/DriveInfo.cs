@@ -49,7 +49,7 @@ namespace System.IO {
             return di;
         }
 
-        public static string RegisterDriveProvider(IDriveProvider provider) {
+        public static IDriveProvider RegisterDriveProvider(IDriveProvider provider) {
             if (provider == null) throw new ArgumentNullException();
 
             var root = string.Empty;
@@ -69,7 +69,9 @@ namespace System.IO {
                 DriveInfo.driveProviders.Add(root, provider);
             }
 
-            return root;
+            provider.Name = root;
+
+            return provider;
         }
 
         public static void DeregisterDriveProvider(IDriveProvider provider) {

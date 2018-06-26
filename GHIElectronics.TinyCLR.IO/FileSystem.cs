@@ -8,11 +8,9 @@ namespace GHIElectronics.TinyCLR.IO {
         public static IDriveProvider Mount(SdCardController sdCard) {
             var drive = new NativeDriveProvider();
 
-            var name = DriveInfo.RegisterDriveProvider(drive);
+            var provider = DriveInfo.RegisterDriveProvider(drive);
 
-            drive.Name = name;
-
-            FileSystem.Initialize(sdCard.Hdc, sdCard.ControllerIndex, name);
+            FileSystem.Initialize(sdCard.Hdc, sdCard.ControllerIndex, provider.Name);
 
             return drive;
         }
@@ -45,7 +43,7 @@ namespace GHIElectronics.TinyCLR.IO {
 
             public extern string VolumeLabel { [MethodImpl(MethodImplOptions.InternalCall)] get; }
 
-            public string Name { get; internal set; }
+            public string Name { get; set; }
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void CreateDirectory(string path);
