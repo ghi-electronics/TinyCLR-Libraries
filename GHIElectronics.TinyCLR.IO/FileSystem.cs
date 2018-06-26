@@ -19,6 +19,11 @@ namespace GHIElectronics.TinyCLR.IO {
 
         public static bool Unmount(SdCardController sdCard) => FileSystem.Uninitialize(sdCard.Hdc, sdCard.ControllerIndex);
 
+        public static void Flush(SdCardController sdCard) => FileSystem.FlushAll(sdCard.Hdc, sdCard.ControllerIndex);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private extern static void FlushAll(IntPtr nativeProvider, int controllerIndex);
+
         [MethodImpl(MethodImplOptions.InternalCall)]
         private extern static void Initialize(IntPtr nativeProvider, int controllerIndex, string name);
 
