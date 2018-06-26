@@ -7,7 +7,7 @@ namespace GHIElectronics.TinyCLR.IO {
         void Close();
     }
 
-    public class NativeFileSystemEntryfinder : IFileSystemEntryfinder {
+    internal class NativeFileSystemEntryfinder : IFileSystemEntryfinder {
         IntPtr implPtr;
 
         object m_ff;
