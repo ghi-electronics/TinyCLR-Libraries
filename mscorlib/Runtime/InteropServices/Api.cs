@@ -25,7 +25,7 @@ namespace System.Runtime.InteropServices {
         SpiProvider = 8 | 0x40000000,
         UartProvider = 9 | 0x40000000,
         UsbClientProvider = 10 | 0x40000000,
-        UsbHostProvider = 11 | 0x40000000,
+        SdCardProvider = 11 | 0x40000000,
         Custom = 0 | 0x80000000,
     }
 

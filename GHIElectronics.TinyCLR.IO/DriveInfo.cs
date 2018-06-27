@@ -34,6 +34,7 @@ namespace System.IO {
                 if (!DriveInfo.driveProviders.Contains(driveName)) throw new ArgumentException();
 
                 this.provider = (IDriveProvider)DriveInfo.driveProviders[driveName];
+
                 this.Name = driveName;
             }
         }
@@ -48,8 +49,10 @@ namespace System.IO {
             return di;
         }
 
-        public static void RegisterDriveProvider(IDriveProvider provider) {
+        public static IDriveProvider RegisterDriveProvider(IDriveProvider provider) {
             if (provider == null) throw new ArgumentNullException();
+
+            var root = string.Empty;
 
             lock (DriveInfo.driveProviders) {
                 if (DriveInfo.driveNames == null) {
@@ -61,8 +64,14 @@ namespace System.IO {
                     DriveInfo.driveNames = s;
                 }
 
-                DriveInfo.driveProviders.Add(DriveInfo.driveNames.Pop(), provider);
+                root = (string)DriveInfo.driveNames.Pop();
+
+                DriveInfo.driveProviders.Add(root, provider);
             }
+
+            provider.Name = root;
+
+            return provider;
         }
 
         public static void DeregisterDriveProvider(IDriveProvider provider) {

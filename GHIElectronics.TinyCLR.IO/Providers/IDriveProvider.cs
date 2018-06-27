@@ -9,6 +9,7 @@ namespace GHIElectronics.TinyCLR.IO {
         long TotalFreeSpace { get; }
         long TotalSize { get; }
         string VolumeLabel { get; }
+        string Name { get; set; }
 
         IFileSystemEntryfinder Find(string path, string searchPattern);
         FileSystemEntry GetFileSystemEntry(string path);
