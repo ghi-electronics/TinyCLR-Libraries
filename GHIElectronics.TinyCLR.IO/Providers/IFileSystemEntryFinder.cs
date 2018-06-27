@@ -7,13 +7,13 @@ namespace GHIElectronics.TinyCLR.IO {
         void Close();
     }
 
-    internal class NativeFileSystemEntryfinder : IFileSystemEntryfinder {
+    internal class NativeFileSystemEntryFinder : IFileSystemEntryfinder {
         IntPtr implPtr;
 
         object m_ff;
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern NativeFileSystemEntryfinder(string path, string searchPattern);
+        public extern NativeFileSystemEntryFinder(string path, string searchPattern);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         extern void IFileSystemEntryfinder.Close();
