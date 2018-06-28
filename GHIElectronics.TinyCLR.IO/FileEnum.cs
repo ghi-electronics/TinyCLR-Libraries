@@ -14,7 +14,7 @@ namespace System.IO {
 
     public class FileEnum : IEnumerator, IDisposable
     {
-        private IFileSystemEntryfinder  m_findFile;
+        private IFileSystemEntryFinder  m_findFile;
         private FileSystemEntry  m_currentFile;
         private FileEnumFlags   m_flags;
         private string          m_path;

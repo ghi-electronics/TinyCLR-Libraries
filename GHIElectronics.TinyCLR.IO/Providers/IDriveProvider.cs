@@ -11,7 +11,7 @@ namespace GHIElectronics.TinyCLR.IO {
         string VolumeLabel { get; }
         string Name { get; set; }
 
-        IFileSystemEntryfinder Find(string path, string searchPattern);
+        IFileSystemEntryFinder Find(string path, string searchPattern);
         FileSystemEntry GetFileSystemEntry(string path);
         IFileStream OpenFile(string path, int bufferSize);
         void Delete(string path);

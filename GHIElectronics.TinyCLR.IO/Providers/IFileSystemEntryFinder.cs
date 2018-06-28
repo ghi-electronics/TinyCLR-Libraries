@@ -2,12 +2,12 @@
 using System.Runtime.CompilerServices;
 
 namespace GHIElectronics.TinyCLR.IO {
-    public interface IFileSystemEntryfinder {
+    public interface IFileSystemEntryFinder {
         FileSystemEntry GetNext();
         void Close();
     }
 
-    internal class NativeFileSystemEntryFinder : IFileSystemEntryfinder {
+    internal class NativeFileSystemEntryFinder : IFileSystemEntryFinder {
         IntPtr implPtr;
 
         object m_ff;
@@ -16,10 +16,10 @@ namespace GHIElectronics.TinyCLR.IO {
         public extern NativeFileSystemEntryFinder(string path, string searchPattern);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        extern void IFileSystemEntryfinder.Close();
+        extern void IFileSystemEntryFinder.Close();
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        extern FileSystemEntry IFileSystemEntryfinder.GetNext();
+        extern FileSystemEntry IFileSystemEntryFinder.GetNext();
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         public static extern FileSystemEntry GetFileInfo(string path);

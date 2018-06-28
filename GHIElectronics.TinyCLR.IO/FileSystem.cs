@@ -72,7 +72,7 @@ namespace GHIElectronics.TinyCLR.IO {
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void SetAttributes(string path, FileAttributes attributes);
 
-            public IFileSystemEntryfinder Find(string path, string searchPattern) => new NativeFileSystemEntryFinder(path, searchPattern);
+            public IFileSystemEntryFinder Find(string path, string searchPattern) => new NativeFileSystemEntryFinder(path, searchPattern);
 
             public IFileStream OpenFile(string path, int bufferSize) => new NativeFileStream(path, bufferSize);
         }
