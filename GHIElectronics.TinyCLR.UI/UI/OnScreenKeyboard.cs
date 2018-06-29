@@ -18,7 +18,7 @@ namespace GHIElectronics.TinyCLR.UI {
         private int offsetX;
         private int offsetY;
 
-        public static Font Font { get; set; }
+        public static new Font Font { get; set; }
 
         internal OnScreenKeyboard() {
             this.views = new Hashtable();
@@ -85,7 +85,7 @@ namespace GHIElectronics.TinyCLR.UI {
         private void Backspace() { if (this.input.Text.Length > 0) this.input.Text = this.input.Text.Substring(0, this.input.Text.Length - 1); }
         private void Append(char c) => this.input.Text += c;
 
-        private void Close() {
+        private new void Close() {
             this.source.Text = this.input.Text;
 
             Application.Current.CloseOnScreenKeyboard();

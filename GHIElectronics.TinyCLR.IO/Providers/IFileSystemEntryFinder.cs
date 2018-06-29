@@ -8,9 +8,11 @@ namespace GHIElectronics.TinyCLR.IO {
     }
 
     internal class NativeFileSystemEntryFinder : IFileSystemEntryFinder {
+#pragma warning disable CS0169
         IntPtr implPtr;
 
         object m_ff;
+#pragma warning restore CS0169
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         public extern NativeFileSystemEntryFinder(string path, string searchPattern);

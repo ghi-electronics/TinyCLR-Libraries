@@ -78,9 +78,11 @@ namespace GHIElectronics.TinyCLR.IO {
         }
 
         private class NativeFileStream : IFileStream {
+#pragma warning disable CS0169
             private IntPtr impl;
 
             private object obj;
+#pragma warning restore CS0169
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern NativeFileStream(string path, int bufferSize);
