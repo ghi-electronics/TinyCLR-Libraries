@@ -1,7 +1,7 @@
-﻿using GHIElectronics.TinyCLR.Devices.I2c;
-using GHIElectronics.TinyCLR.Pins;
-using System;
+﻿using System;
 using System.ComponentModel;
+using GHIElectronics.TinyCLR.Devices.I2c;
+using GHIElectronics.TinyCLR.Pins;
 
 namespace GHIElectronics.TinyCLR.BrainPad {
     public class Accelerometer {
@@ -30,34 +30,48 @@ namespace GHIElectronics.TinyCLR.BrainPad {
 
             this.device.WriteRead(this.buffer1, data);
         }
-        private double ReadAxis(byte register) {
-            // device.ReadRegisters(register, buffer);
-            ReadRegisters(register, this.buffer2);
+
+        private int ReadAxis(byte register) {
+            this.ReadRegisters(register, this.buffer2);
+
             var value = (double)(this.buffer2[0] << 2 | this.buffer2[1] >> 6);
 
             if (value > 511.0)
                 value -= 1024.0;
 
-            return value / 256.0;
+            var res = (int)((value / 256.0) * 100);
+
+            if (this.EnableFullRange)
+                return res;
+
+            if (res > 100)
+                return 100;
+
+            if (res < -100)
+                return -100;
+
+            return res;
         }
+
+        public bool EnableFullRange { get; set; } = false;
 
         /// <summary>
         /// Reads the acceleration on the y axis.
         /// </summary>
         /// <returns>The acceleration.</returns>
-        public double ReadY() => -1 * ReadAxis(0x01);
+        public int ReadY() => -1 * ReadAxis(0x01);
 
         /// <summary>
         /// Reads the acceleration on the x axis.
         /// </summary>
         /// <returns>The acceleration.</returns>
-        public double ReadX() => ReadAxis(0x03);
+        public int ReadX() => ReadAxis(0x03);
 
         /// <summary>
         /// Reads the acceleration on the z axis.
         /// </summary>
         /// <returns>The acceleration.</returns>
-        public double ReadZ() => -1 * ReadAxis(0x05);
+        public int ReadZ() => -1 * ReadAxis(0x05);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => base.Equals(obj);
