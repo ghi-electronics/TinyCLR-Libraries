@@ -363,10 +363,10 @@ namespace System.IO {
 
             var pathLength = path.Length;
             var rootedPath = Path.IsPathRooted(path);
-            var i = 3;
+            var i = 0;
 
             if (rootedPath) {
-                var limit = i + 8;
+                var limit = i + 3;
                 for (; i < limit && i < pathLength; i++) {
                     if (path[i] == '\\') {
                         break;
