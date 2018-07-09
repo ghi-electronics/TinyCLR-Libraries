@@ -1,12 +1,9 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-using System;
 using System.Collections;
-using System.Text;
 
-namespace System.IO
-{
+namespace System.IO {
     /*
      * Provides methods for processing directory strings in an ideally
      * cross-platform manner.  Most of the methods don't do a complete
@@ -28,11 +25,9 @@ namespace System.IO
      * your strings.
      */
     // Class contains only static data, no need to serialize
-    public sealed class Path
-    {
+    public sealed class Path {
 
-        private Path()
-        {
+        private Path() {
         }
 
         /*
@@ -70,18 +65,14 @@ namespace System.IO
          * @see #getExtension
          * @see #hasExtension
          */
-        public static string ChangeExtension(string path, string extension)
-        {
-            if (path != null)
-            {
+        public static string ChangeExtension(string path, string extension) {
+            if (path != null) {
                 CheckInvalidPathChars(path);
 
                 var s = path;
-                for (var i = path.Length; --i >= 0; )
-                {
+                for (var i = path.Length; --i >= 0;) {
                     var ch = path[i];
-                    if (ch == '.')
-                    {
+                    if (ch == '.') {
                         s = path.Substring(0, i);
                         break;
                     }
@@ -89,10 +80,8 @@ namespace System.IO
                     if (ch == DirectorySeparatorChar) break;
                 }
 
-                if (extension != null && path.Length != 0)
-                {
-                    if (extension.Length == 0 || extension[0] != '.')
-                    {
+                if (extension != null && path.Length != 0) {
+                    if (extension.Length == 0 || extension[0] != '.') {
                         s = s + ".";
                     }
 
@@ -122,17 +111,14 @@ namespace System.IO
        * @see #GetRoot
        * @see #IsRooted
        */
-        public static string GetDirectoryName(string path)
-        {
-            if (path != null)
-            {
+        public static string GetDirectoryName(string path) {
+            if (path != null) {
                 NormalizePath(path, false);
 
                 var root = GetRootLength(path);
 
                 var i = path.Length;
-                if (i > root)
-                {
+                if (i > root) {
                     i = path.Length;
                     if (i == root) return null;
                     while (i > root && path[--i] != DirectorySeparatorChar) ;
@@ -149,8 +135,7 @@ namespace System.IO
          *
          * @internalonly
          */
-        internal static int GetRootLength(string path)
-        {
+        internal static int GetRootLength(string path) {
             CheckInvalidPathChars(path);
 
             return path.IndexOf('\\') is var i && i != -1 ? i + 1 : 0;
@@ -160,12 +145,10 @@ namespace System.IO
 
         public static char[] GetInvalidPathChars() => (char[])InvalidPathChars.Clone();
 
-        public static string GetFullPath(string path)
-        {
+        public static string GetFullPath(string path) {
             ValidateNullOrEmpty(path);
 
-            if (!Path.IsPathRooted(path))
-            {
+            if (!Path.IsPathRooted(path)) {
                 var currDir = Directory.GetCurrentDirectory();
                 path = Path.Combine(currDir, path);
             }
@@ -189,18 +172,15 @@ namespace System.IO
          * @see #GetRoot
          * @see #HasExtension
          */
-        public static string GetExtension(string path)
-        {
+        public static string GetExtension(string path) {
             if (path == null)
                 return null;
 
             CheckInvalidPathChars(path);
             var length = path.Length;
-            for (var i = length; --i >= 0; )
-            {
+            for (var i = length; --i >= 0;) {
                 var ch = path[i];
-                if (ch == '.')
-                {
+                if (ch == '.') {
                     if (i != length - 1)
                         return path.Substring(i, length - i);
                     else
@@ -229,15 +209,12 @@ namespace System.IO
          * @see #GetExtension
          * @see #GetRoot
          */
-        public static string GetFileName(string path)
-        {
-            if (path != null)
-            {
+        public static string GetFileName(string path) {
+            if (path != null) {
                 CheckInvalidPathChars(path);
 
                 var length = path.Length;
-                for (var i = length; --i >= 0; )
-                {
+                for (var i = length; --i >= 0;) {
                     var ch = path[i];
                     if (ch == DirectorySeparatorChar)
                         return path.Substring(i + 1, length - i - 1);
@@ -248,11 +225,9 @@ namespace System.IO
             return path;
         }
 
-        public static string GetFileNameWithoutExtension(string path)
-        {
+        public static string GetFileNameWithoutExtension(string path) {
             path = GetFileName(path);
-            if (path != null)
-            {
+            if (path != null) {
                 int i;
                 if ((i = path.LastIndexOf('.')) == -1)
                     return path; // No path extension found
@@ -281,8 +256,7 @@ namespace System.IO
          * @see #GetName
          * @see #IsRooted
          */
-        public static string GetPathRoot(string path)
-        {
+        public static string GetPathRoot(string path) {
             if (path == null) return null;
             return path.Substring(0, GetRootLength(path));
         }
@@ -299,17 +273,13 @@ namespace System.IO
         * @see #ChangeExtension
         * @see #GetExtension
         */
-        public static bool HasExtension(string path)
-        {
-            if (path != null)
-            {
+        public static bool HasExtension(string path) {
+            if (path != null) {
                 CheckInvalidPathChars(path);
 
-                for (var i = path.Length; --i >= 0; )
-                {
+                for (var i = path.Length; --i >= 0;) {
                     var ch = path[i];
-                    if (ch == '.')
-                    {
+                    if (ch == '.') {
                         if (i != path.Length - 1)
                             return true;
                         else
@@ -332,10 +302,8 @@ namespace System.IO
          * @exception ArgumentException if <var>path</var> contains invalid characters.
          * @see #GetRoot
          */
-        public static bool IsPathRooted(string path)
-        {
-            if (path != null)
-            {
+        public static bool IsPathRooted(string path) {
+            if (path != null) {
                 CheckInvalidPathChars(path);
 
                 var length = path.Length;
@@ -346,8 +314,7 @@ namespace System.IO
             return false;
         }
 
-        public static string Combine(string path1, string path2)
-        {
+        public static string Combine(string path1, string path2) {
             if (path1 == null || path2 == null)
                 throw new ArgumentNullException(/*(path1==null) ? "path1" : "path2"*/);
             CheckInvalidPathChars(path1);
@@ -370,8 +337,7 @@ namespace System.IO
 
         //--//
 
-        internal static void CheckInvalidPathChars(string path)
-        {
+        internal static void CheckInvalidPathChars(string path) {
             if (-1 != path.IndexOfAny(InvalidPathChars))
                 throw new ArgumentException(/*Environment.GetResourceString("Argument_InvalidPathChars")*/);
         }
@@ -381,8 +347,7 @@ namespace System.IO
 
         internal static char[] m_illegalCharacters = { '?', '*' };
 
-        internal static void ValidateNullOrEmpty(string str)
-        {
+        internal static void ValidateNullOrEmpty(string str) {
             if (str == null)
                 throw new ArgumentNullException();
 
@@ -393,21 +358,17 @@ namespace System.IO
         internal const int FSMaxPathLength = 260 - 2; // From FS_decl.h
         internal const int FSMaxFilenameLength = 256; // From FS_decl.h
 
-        internal static string NormalizePath(string path, bool pattern)
-        {
+        internal static string NormalizePath(string path, bool pattern) {
             ValidateNullOrEmpty(path);
 
             var pathLength = path.Length;
             var rootedPath = Path.IsPathRooted(path);
             var i = 3;
 
-            if (rootedPath)
-            {
+            if (rootedPath) {
                 var limit = i + 8;
-                for (; i < limit && i < pathLength; i++)
-                {
-                    if (path[i] == '\\')
-                    {
+                for (; i < limit && i < pathLength; i++) {
+                    if (path[i] == '\\') {
                         break;
                     }
                 }
@@ -423,8 +384,7 @@ namespace System.IO
             }
             else // For non-rooted paths (i.e. server paths or relative paths), we follow the MAX_PATH (260) limit from desktop
             {
-                if (pathLength >= MAX_PATH)
-                {
+                if (pathLength >= MAX_PATH) {
                     throw new IOException("", (int)IOException.IOExceptionErrorCode.PathTooLong);
                 }
             }
@@ -435,24 +395,20 @@ namespace System.IO
 
             var finalPathSegments = new ArrayList();
             int pathPartLen;
-            for (var e = 0; e < pathParts.Length; e++)
-            {
+            for (var e = 0; e < pathParts.Length; e++) {
                 pathPartLen = pathParts[e].Length;
-                if (pathPartLen == 0)
-                {
+                if (pathPartLen == 0) {
                     /// Do nothing. Apparently paths like c:\\folder\\\file.txt works fine in Windows.
                     continue;
                 }
-                else if (pathPartLen >= FSMaxFilenameLength)
-                {
+                else if (pathPartLen >= FSMaxFilenameLength) {
                     throw new IOException("", (int)IOException.IOExceptionErrorCode.PathTooLong);
                 }
 
                 if (pathParts[e].IndexOfAny(InvalidPathChars) != -1)
                     throw new ArgumentException();
 
-                if (!pattern)
-                {
+                if (!pattern) {
                     if (pathParts[e].IndexOfAny(m_illegalCharacters) != -1)
                         throw new ArgumentException();
                 }
@@ -463,12 +419,10 @@ namespace System.IO
                 var length = pathParts[e].Length;
                 var spaceFound = false;
 
-                for (i = 0; i < length; i++)
-                {
+                for (i = 0; i < length; i++) {
                     if (pathParts[e][i] == '.')
                         continue;
-                    if (pathParts[e][i] == ' ')
-                    {
+                    if (pathParts[e][i] == ' ') {
                         spaceFound = true;
                         continue;
                     }
@@ -476,38 +430,30 @@ namespace System.IO
                     break;
                 }
 
-                if (i >= length)
-                {
-                    if (!spaceFound)
-                    {
+                if (i >= length) {
+                    if (!spaceFound) {
                         /// Dots only.
-                        if (i == 1)
-                        {
+                        if (i == 1) {
                             /// Stay in same directory.
                         }
-                        else if (i == 2)
-                        {
+                        else if (i == 2) {
                             if (finalPathSegments.Count == 0)
                                 throw new ArgumentException();
 
                             finalPathSegments.RemoveAt(finalPathSegments.Count - 1);
                         }
-                        else
-                        {
+                        else {
                             throw new ArgumentException();
                         }
                     }
-                    else
-                    {
+                    else {
                         /// Just dots and spaces doesn't make the cut.
                         throw new ArgumentException();
                     }
                 }
-                else
-                {
+                else {
                     var trim = length - 1;
-                    while (pathParts[e][trim] == ' ' || pathParts[e][trim] == '.')
-                    {
+                    while (pathParts[e][trim] == ' ' || pathParts[e][trim] == '.') {
                         trim--;
                     }
 
@@ -517,14 +463,11 @@ namespace System.IO
 
             var normalizedPath = "";
             var firstSegment = true;
-            for (var e = 0; e < finalPathSegments.Count; e++)
-            {
-                if (!firstSegment)
-                {
+            for (var e = 0; e < finalPathSegments.Count; e++) {
+                if (!firstSegment) {
                     normalizedPath += "\\";
                 }
-                else
-                {
+                else {
                     firstSegment = false;
                 }
 
