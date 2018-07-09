@@ -366,18 +366,7 @@ namespace System.IO {
             var i = 0;
 
             if (rootedPath) {
-                var limit = i + 3;
-                for (; i < limit && i < pathLength; i++) {
-                    if (path[i] == '\\') {
-                        break;
-                    }
-                }
-
-                if (i == limit) // if the namespace is too long
-                {
-                    throw new IOException("", (int)IOException.IOExceptionErrorCode.VolumeNotFound);
-                }
-                else if (pathLength - i >= FSMaxPathLength) // if the "relative" path exceeds the limit
+                if (pathLength - 3 >= FSMaxPathLength) // if the "relative" path exceeds the limit
                 {
                     throw new IOException("", (int)IOException.IOExceptionErrorCode.PathTooLong);
                 }
