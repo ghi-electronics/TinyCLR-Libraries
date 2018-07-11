@@ -26,7 +26,7 @@ IF NOT "%Configuration%" == "debug" IF NOT "%Configuration%" == "release" (
 CALL :Copy mscorlib "TinyCLR_Core\CLR\Libraries\mscorlib"
 CALL :Copy GHIElectronics.TinyCLR.Devices "TinyCLR Ports\Drivers\DevicesInterop"
 CALL :Copy GHIElectronics.TinyCLR.Drawing "TinyCLR Devices\Drivers\Graphics\Drawing"
-CALL :Copy GHIElectronics.TinyCLR.IO "TinyCLR Devices\Drivers\FileSystem\FAT\IOInterop"
+CALL :Copy GHIElectronics.TinyCLR.IO "TinyCLR Devices\Drivers\FileSystem\FAT\Interop"
 
 POPD
 
