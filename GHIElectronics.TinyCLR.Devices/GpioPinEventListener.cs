@@ -6,7 +6,7 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio.Provider {
         private IDictionary pinMap = new Hashtable();
         private NativeEventDispatcher dispatcher;
 
-        private static string GetKey(string providerName, uint controllerIndex, ulong pin) => $"{providerName}\\{controllerIndex}\\{pin}";
+        private static string GetKey(string providerName, ulong controllerIndex, ulong pin) => $"{providerName}\\{controllerIndex}\\{pin}";
 
         public GpioPinEventListener() {
             this.dispatcher = NativeEventDispatcher.GetDispatcher("GHIElectronics.TinyCLR.NativeEventNames.Gpio.ValueChanged");
