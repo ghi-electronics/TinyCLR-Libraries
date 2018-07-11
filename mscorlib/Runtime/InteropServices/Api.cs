@@ -44,11 +44,11 @@ namespace System.Runtime.InteropServices {
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         [CLSCompliant(false)]
-        public static extern string GetDefaultSelector(ApiType type);
+        public static extern string GetDefaultName(ApiType type);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         [CLSCompliant(false)]
-        public static extern void SetDefaultSelector(ApiType type, string selector);
+        public static extern void SetDefaultName(ApiType type, string selector);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         public static extern Api[] FindAll();
@@ -76,11 +76,6 @@ namespace System.Runtime.InteropServices {
 
             return res;
         }
-
-        public static string CreateSelector(string providerId) => providerId ?? throw new ArgumentNullException(nameof(providerId));
-
-        [CLSCompliant(false)]
-        public static string CreateSelector(string providerId, uint controllerIndex) => $"{Api.CreateSelector(providerId)}\\{controllerIndex}";
 
         public string Author { get; }
         public string Name { get; }

@@ -35,7 +35,7 @@ namespace GHIElectronics.TinyCLR.Devices.Can {
             this.nativeErrorEvent.OnInterrupt += (pn, ci, d0, d1, d2, ts) => { if (this.idx == ci) this.ErrorReceived?.Invoke(this, new ErrorReceivedEventArgs((CanError)d0)); };
         }
 
-        public static CanController GetDefault() => new CanController(LowLevelDevicesController.DefaultProvider?.CanControllerProvider ?? (Api.ParseSelector(Api.GetDefaultSelector(ApiType.CanProvider), out var providerId, out var idx) ? CanProvider.FromId(providerId).GetControllers()[idx] : null));
+        public static CanController GetDefault() => new CanController(LowLevelDevicesController.DefaultProvider?.CanControllerProvider ?? (Api.ParseSelector(Api.GetDefaultName(ApiType.CanProvider), out var providerId, out var idx) ? CanProvider.FromId(providerId).GetControllers()[idx] : null));
 
         public static CanController[] GetControllers(ICanProvider provider) {
             var providers = provider.GetControllers();

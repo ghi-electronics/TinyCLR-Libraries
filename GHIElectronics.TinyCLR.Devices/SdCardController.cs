@@ -13,7 +13,7 @@ namespace GHIElectronics.TinyCLR.Devices.SdCard {
 
         internal SdCardController(ISdCardControllerProvider provider) => this.provider = provider;
 
-        public static SdCardController GetDefault() => new SdCardController(Api.ParseSelector(Api.GetDefaultSelector(ApiType.SdCardProvider), out var providerId, out var idx) ? SdCardProvider.FromId(providerId).GetControllers()[idx] : null);
+        public static SdCardController GetDefault() => new SdCardController(Api.ParseSelector(Api.GetDefaultName(ApiType.SdCardProvider), out var providerId, out var idx) ? SdCardProvider.FromId(providerId).GetControllers()[idx] : null);
 
         public static SdCardController[] GetControllers(ISdCardProvider provider) {
 
