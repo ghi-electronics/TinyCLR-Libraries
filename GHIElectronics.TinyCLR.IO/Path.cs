@@ -463,6 +463,10 @@ namespace System.IO {
                 normalizedPath += (string)finalPathSegments[e];
             }
 
+            if (rootedPath) {
+                normalizedPath += @"\";
+            }
+
             return normalizedPath;
         }
     }
