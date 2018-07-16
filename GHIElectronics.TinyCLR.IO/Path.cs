@@ -463,7 +463,7 @@ namespace System.IO {
                 normalizedPath += (string)finalPathSegments[e];
             }
 
-            if (rootedPath) {
+            if (rootedPath && normalizedPath.Length == 2) { // only add if root folder
                 normalizedPath += @"\";
             }
 
