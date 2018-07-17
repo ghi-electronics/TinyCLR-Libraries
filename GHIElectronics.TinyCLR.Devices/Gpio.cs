@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using GHIElectronics.TinyCLR.Devices.Gpio.Provider;
 
 namespace GHIElectronics.TinyCLR.Devices.Gpio {
     public delegate void GpioPinValueChangedEventHandler(GpioPin sender, GpioPinValueChangedEventArgs e);
@@ -34,31 +35,13 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio {
         RisingEdge = 0x02,
     }
 
-    public interface IGpioControllerProvider : IDisposable {
-        uint PinCount { get; }
-
-        void OpenPin(uint pin);
-        void ClosePin(uint pin);
-
-        bool IsDriveModeSupported(uint pin, GpioPinDriveMode mode);
-        void SetPinChangedHandler(uint pin, GpioPinEdge edge, GpioPinValueChangedEventHandler value);
-        void ClearPinChangedHandler(uint pin);
-
-        TimeSpan GetDebounceTimeout(uint pin);
-        void SetDebounceTimeout(uint pin, TimeSpan value);
-        GpioPinDriveMode GetDriveMode(uint pin);
-        void SetDriveMode(uint pin, GpioPinDriveMode value);
-        GpioPinValue Read(uint pin);
-        void Write(uint pin, GpioPinValue value);
-    }
-
     public sealed class GpioController : IDisposable {
         public IGpioControllerProvider Provider { get; }
 
         private GpioController(IGpioControllerProvider provider) => this.Provider = provider;
 
         public static GpioController GetDefault() => Api.GetDefaultFromCreator(ApiType.GpioController) is GpioController c ? c : GpioController.FromName(Api.GetDefaultName(ApiType.GpioController));
-        public static GpioController FromName(string name) => GpioController.FromProvider(new Native.GpioControllerApiWrapper(Api.Find(name, ApiType.GpioController)));
+        public static GpioController FromName(string name) => GpioController.FromProvider(new Provider.GpioControllerApiWrapper(Api.Find(name, ApiType.GpioController)));
         public static GpioController FromProvider(IGpioControllerProvider provider) => new GpioController(provider);
 
         public void Dispose() => this.Provider.Dispose();
@@ -130,7 +113,25 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio {
         private void OnValueChanged(GpioPin sender, GpioPinValueChangedEventArgs e) => this.callbacks?.Invoke(this, e);
     }
 
-    namespace Native {
+    namespace Provider {
+        public interface IGpioControllerProvider : IDisposable {
+            uint PinCount { get; }
+
+            void OpenPin(uint pin);
+            void ClosePin(uint pin);
+
+            bool IsDriveModeSupported(uint pin, GpioPinDriveMode mode);
+            void SetPinChangedHandler(uint pin, GpioPinEdge edge, GpioPinValueChangedEventHandler value);
+            void ClearPinChangedHandler(uint pin);
+
+            TimeSpan GetDebounceTimeout(uint pin);
+            void SetDebounceTimeout(uint pin, TimeSpan value);
+            GpioPinDriveMode GetDriveMode(uint pin);
+            void SetDriveMode(uint pin, GpioPinDriveMode value);
+            GpioPinValue Read(uint pin);
+            void Write(uint pin, GpioPinValue value);
+        }
+
         public sealed class GpioControllerApiWrapper : IGpioControllerProvider {
             private readonly IntPtr impl;
             private IDictionary pinMap;

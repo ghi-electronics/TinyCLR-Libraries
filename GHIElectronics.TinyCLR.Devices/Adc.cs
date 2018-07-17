@@ -1,27 +1,12 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using GHIElectronics.TinyCLR.Devices.Adc.Provider;
 
 namespace GHIElectronics.TinyCLR.Devices.Adc {
     public enum AdcChannelMode {
         SingleEnded = 0,
         Differential = 1
-    }
-
-    public interface IAdcControllerProvider : IDisposable {
-        uint ChannelCount { get; }
-        uint ResolutionInBits { get; }
-        int MinValue { get; }
-        int MaxValue { get; }
-
-        bool IsChannelModeSupported(AdcChannelMode mode);
-        AdcChannelMode GetChannelMode();
-        void SetChannelMode(AdcChannelMode value);
-
-        void OpenChannel(uint channel);
-        void CloseChannel(uint channel);
-
-        int Read(uint channel);
     }
 
     public sealed class AdcController : IDisposable {
@@ -30,7 +15,7 @@ namespace GHIElectronics.TinyCLR.Devices.Adc {
         private AdcController(IAdcControllerProvider provider) => this.Provider = provider;
 
         public static AdcController GetDefault() => Api.GetDefaultFromCreator(ApiType.AdcController) is AdcController c ? c : AdcController.FromName(Api.GetDefaultName(ApiType.AdcController));
-        public static AdcController FromName(string name) => AdcController.FromProvider(new Native.AdcControllerApiWrapper(Api.Find(name, ApiType.AdcController)));
+        public static AdcController FromName(string name) => AdcController.FromProvider(new Provider.AdcControllerApiWrapper(Api.Find(name, ApiType.AdcController)));
         public static AdcController FromProvider(IAdcControllerProvider provider) => new AdcController(provider);
 
         public uint ChannelCount => this.Provider.ChannelCount;
@@ -67,7 +52,23 @@ namespace GHIElectronics.TinyCLR.Devices.Adc {
         public double ReadRatio() => (this.ReadValue() - this.Controller.MinValue) / (double)(this.Controller.MaxValue - this.Controller.MinValue);
     }
 
-    namespace Native {
+    namespace Provider {
+        public interface IAdcControllerProvider : IDisposable {
+            uint ChannelCount { get; }
+            uint ResolutionInBits { get; }
+            int MinValue { get; }
+            int MaxValue { get; }
+
+            bool IsChannelModeSupported(AdcChannelMode mode);
+            AdcChannelMode GetChannelMode();
+            void SetChannelMode(AdcChannelMode value);
+
+            void OpenChannel(uint channel);
+            void CloseChannel(uint channel);
+
+            int Read(uint channel);
+        }
+
         public sealed class AdcControllerApiWrapper : IAdcControllerProvider {
             private readonly IntPtr impl;
 
