@@ -1,41 +1,50 @@
 ﻿using System;
+using System.Collections;
 using System.IO;
 using System.Runtime.CompilerServices;
-using GHIElectronics.TinyCLR.Devices.SdCard;
 
 namespace GHIElectronics.TinyCLR.IO {
     public static class FileSystem {
-        public static IDriveProvider Mount(SdCardController sdCard) {
+        private static readonly IDictionary mounted = new Hashtable();
+
+        public static IDriveProvider Mount(IntPtr hdc) {
+            if (FileSystem.mounted.Contains(hdc))
+                throw new InvalidOperationException("Already mounted");
+
             var drive = new NativeDriveProvider();
 
             var provider = DriveInfo.RegisterDriveProvider(drive);
 
-            FileSystem.Initialize(sdCard.Hdc, sdCard.ControllerIndex, provider.Name);
+            FileSystem.Initialize(hdc, provider.Name);
 
-            sdCard.driveProvider = drive;
+            mounted[hdc] = drive;
 
             return drive;
         }
 
-        public static bool Unmount(SdCardController sdCard) {
+        public static bool Unmount(IntPtr hdc) {
+            if (!FileSystem.mounted.Contains(hdc))
+                throw new InvalidOperationException("Not mounted");
 
-            var drive = (IDriveProvider)sdCard.driveProvider;
+            var drive = (IDriveProvider)FileSystem.mounted[hdc];
+
+            FileSystem.mounted.Remove(hdc);
 
             DriveInfo.DeregisterDriveProvider(drive);
 
-            return FileSystem.Uninitialize(sdCard.Hdc, sdCard.ControllerIndex);
+            return FileSystem.Uninitialize(hdc);
         }
 
-        public static void Flush(SdCardController sdCard) => FileSystem.FlushAll(sdCard.Hdc, sdCard.ControllerIndex);
+        public static void Flush(IntPtr hdc) => FileSystem.FlushAll(hdc);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private extern static void FlushAll(IntPtr nativeProvider, int controllerIndex);
+        private extern static void FlushAll(IntPtr nativeProvider);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private extern static void Initialize(IntPtr nativeProvider, int controllerIndex, string name);
+        private extern static void Initialize(IntPtr nativeProvider, string name);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private extern static bool Uninitialize(IntPtr nativeProvider, int controllerIndex);
+        private extern static bool Uninitialize(IntPtr nativeProvider);
 
         private class NativeDriveProvider : IDriveProvider {
             public extern DriveType DriveType { [MethodImpl(MethodImplOptions.InternalCall)] get; }
