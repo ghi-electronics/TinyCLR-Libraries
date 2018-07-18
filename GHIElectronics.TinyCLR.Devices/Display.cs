@@ -121,14 +121,17 @@ namespace GHIElectronics.TinyCLR.Devices.Display {
             public extern void DrawString(string value);
 
             public void SetConfiguration(DisplayControllerSettings configuration) {
-                if (this.Interface == DisplayInterface.Parallel && configuration is ParallelDisplayControllerSettings pcfg) {
-                    this.SetParallelConfiguration(pcfg.Width, pcfg.Height, pcfg.DataFormat, pcfg.DataEnableIsFixed, pcfg.DataEnablePolarity, pcfg.PixelPolarity, pcfg.PixelClockRate, pcfg.HorizontalSyncPolarity, pcfg.HorizontalSyncPulseWidth, pcfg.HorizontalFrontPorch, pcfg.HorizontalBackPorch, pcfg.VerticalSyncPolarity, pcfg.VerticalSyncPulseWidth, pcfg.VerticalFrontPorch, pcfg.VerticalBackPorch);
-                }
-                else if (this.Interface == DisplayInterface.Spi && configuration is SpiDisplayControllerSettings scfg) {
-                    this.SetSpiConfiguration(scfg.Width, scfg.Height, scfg.DataFormat, scfg.SpiApiName);
-                }
-                else {
-                    throw new ArgumentException("Must pass an instance whose type matches the interface type.");
+                switch (this.Interface) {
+                    case DisplayInterface.Parallel when configuration is ParallelDisplayControllerSettings pcfg:
+                        this.SetParallelConfiguration(pcfg.Width, pcfg.Height, pcfg.DataFormat, pcfg.DataEnableIsFixed, pcfg.DataEnablePolarity, pcfg.PixelPolarity, pcfg.PixelClockRate, pcfg.HorizontalSyncPolarity, pcfg.HorizontalSyncPulseWidth, pcfg.HorizontalFrontPorch, pcfg.HorizontalBackPorch, pcfg.VerticalSyncPolarity, pcfg.VerticalSyncPulseWidth, pcfg.VerticalFrontPorch, pcfg.VerticalBackPorch);
+                        break;
+
+                    case DisplayInterface.Spi when configuration is SpiDisplayControllerSettings scfg:
+                        this.SetSpiConfiguration(scfg.Width, scfg.Height, scfg.DataFormat, scfg.SpiApiName);
+                        break;
+
+                    default:
+                        throw new ArgumentException("Must pass an instance whose type matches the interface type.");
                 }
             }
 
