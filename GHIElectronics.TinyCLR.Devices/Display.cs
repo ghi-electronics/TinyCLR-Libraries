@@ -122,7 +122,7 @@ namespace GHIElectronics.TinyCLR.Devices.Display {
                         throw new InvalidOperationException("Invalid settings passed.");
                 }
                 else {
-                    throw new ArgumentException($"Must pass an instance whose type matches the interface type.");
+                    throw new ArgumentException("Must pass an instance whose type matches the interface type.");
                 }
             }
 
