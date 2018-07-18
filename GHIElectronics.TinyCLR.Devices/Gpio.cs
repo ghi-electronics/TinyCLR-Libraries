@@ -41,7 +41,7 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio {
         private GpioController(IGpioControllerProvider provider) => this.Provider = provider;
 
         public static GpioController GetDefault() => Api.GetDefaultFromCreator(ApiType.GpioController) is GpioController c ? c : GpioController.FromName(Api.GetDefaultName(ApiType.GpioController));
-        public static GpioController FromName(string name) => GpioController.FromProvider(new Provider.GpioControllerApiWrapper(Api.Find(name, ApiType.GpioController)));
+        public static GpioController FromName(string name) => GpioController.FromProvider(new GpioControllerApiWrapper(Api.Find(name, ApiType.GpioController)));
         public static GpioController FromProvider(IGpioControllerProvider provider) => new GpioController(provider);
 
         public void Dispose() => this.Provider.Dispose();
@@ -192,7 +192,7 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio {
 
             private static string GetEventKey(string apiName, ulong pin) => $"{apiName}\\{pin}";
 
-            public void SetPinChangedHandler(uint pin, GpioPinEdge edge, GpioPinValueChangedEventHandler handler) {
+            public void SetPinChangedHandler(uint pin, GpioPinEdge edge, GpioPinValueChangedEventHandler value) {
                 if (this.dispatcher == null) {
                     this.dispatcher = NativeEventDispatcher.GetDispatcher("GHIElectronics.TinyCLR.NativeEventNames.Gpio.PinChanged");
                     this.pinMap = new Hashtable();
@@ -203,7 +203,7 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio {
                 var key = GpioControllerApiWrapper.GetEventKey(this.Api.Name, pin);
 
                 lock (this.pinMap)
-                    this.pinMap[key] = handler;
+                    this.pinMap[key] = value;
 
                 this.SetPinChangedEdge(pin, edge);
             }

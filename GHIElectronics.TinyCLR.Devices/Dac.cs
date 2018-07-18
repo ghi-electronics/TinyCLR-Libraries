@@ -10,7 +10,7 @@ namespace GHIElectronics.TinyCLR.Devices.Dac {
         private DacController(IDacControllerProvider provider) => this.Provider = provider;
 
         public static DacController GetDefault() => Api.GetDefaultFromCreator(ApiType.DacController) is DacController c ? c : DacController.FromName(Api.GetDefaultName(ApiType.DacController));
-        public static DacController FromName(string name) => DacController.FromProvider(new Provider.DacControllerApiWrapper(Api.Find(name, ApiType.DacController)));
+        public static DacController FromName(string name) => DacController.FromProvider(new DacControllerApiWrapper(Api.Find(name, ApiType.DacController)));
         public static DacController FromProvider(IDacControllerProvider provider) => new DacController(provider);
 
         public uint ChannelCount => this.Provider.ChannelCount;

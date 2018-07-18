@@ -15,7 +15,7 @@ namespace GHIElectronics.TinyCLR.Devices.Adc {
         private AdcController(IAdcControllerProvider provider) => this.Provider = provider;
 
         public static AdcController GetDefault() => Api.GetDefaultFromCreator(ApiType.AdcController) is AdcController c ? c : AdcController.FromName(Api.GetDefaultName(ApiType.AdcController));
-        public static AdcController FromName(string name) => AdcController.FromProvider(new Provider.AdcControllerApiWrapper(Api.Find(name, ApiType.AdcController)));
+        public static AdcController FromName(string name) => AdcController.FromProvider(new AdcControllerApiWrapper(Api.Find(name, ApiType.AdcController)));
         public static AdcController FromProvider(IAdcControllerProvider provider) => new AdcController(provider);
 
         public uint ChannelCount => this.Provider.ChannelCount;
