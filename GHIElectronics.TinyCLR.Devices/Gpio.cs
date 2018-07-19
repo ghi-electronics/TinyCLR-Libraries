@@ -47,6 +47,25 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio {
         public void Dispose() => this.Provider.Dispose();
 
         public GpioPin OpenPin(uint pinNumber) => new GpioPin(this, pinNumber);
+
+        public GpioPin[] OpenPins(params uint[] pinNumbers) {
+            var res = new GpioPin[pinNumbers.Length];
+            var i = 0U;
+
+            for (; i < pinNumbers.Length; i++) {
+                try {
+                    res[i] = this.OpenPin(i);
+                }
+                catch {
+                    for (var ii = 0; ii < i; ii++)
+                        res[ii].Dispose();
+
+                    throw;
+                }
+            }
+
+            return res;
+        }
     }
 
     public sealed class GpioPin : IDisposable {
