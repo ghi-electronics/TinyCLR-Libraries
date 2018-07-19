@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using GHIElectronics.TinyCLR.Devices.Gpio;
 using GHIElectronics.TinyCLR.Devices.Spi.Provider;
 
 namespace GHIElectronics.TinyCLR.Devices.Spi {
@@ -128,6 +130,119 @@ namespace GHIElectronics.TinyCLR.Devices.Spi {
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void WriteRead(byte[] writeBuffer, uint writeOffset, uint writeLength, byte[] readBuffer, uint readOffset, uint readLength, bool deselectAfter);
+        }
+
+        public sealed class SpiControllerSoftwareProvider : ISpiControllerProvider {
+            private readonly IDictionary chipSelects;
+            private readonly GpioController gpioController;
+            private readonly GpioPin mosi;
+            private readonly GpioPin miso;
+            private readonly GpioPin sck;
+            private GpioPin cs;
+            private bool captureOnRisingEdge;
+            private GpioPinValue clockIdleState;
+            private GpioPinValue clockActiveState;
+
+            public uint ChipSelectLineCount => 0;
+            public uint MinClockFrequency => 0;
+            public uint MaxClockFrequency => 1_000_000_000;
+            public uint[] SupportedDataBitLengths => new[] { 8U };
+
+            public SpiControllerSoftwareProvider(uint mosiPinNumber, uint misoPinNumber, uint sckPinNumber) : this(GpioController.GetDefault(), mosiPinNumber, misoPinNumber, sckPinNumber) {
+
+            }
+
+            public SpiControllerSoftwareProvider(GpioController gpioController, uint mosiPinNumber, uint misoPinNumber, uint sckPinNumber) {
+                this.chipSelects = new Hashtable();
+                this.gpioController = gpioController;
+
+                var pins = gpioController.OpenPins(mosiPinNumber, misoPinNumber, sckPinNumber);
+
+                this.mosi = pins[0];
+                this.miso = pins[1];
+                this.sck = pins[2];
+
+                this.miso.SetDriveMode(GpioPinDriveMode.Input);
+
+                this.sck.Write(this.clockIdleState);
+                this.sck.SetDriveMode(GpioPinDriveMode.Output);
+
+                this.cs.Write(GpioPinValue.High);
+                this.cs.SetDriveMode(GpioPinDriveMode.Output);
+
+                this.mosi.Write(GpioPinValue.Low);
+                this.mosi.SetDriveMode(GpioPinDriveMode.Output);
+            }
+
+            public void Dispose() {
+                this.mosi.Dispose();
+                this.miso.Dispose();
+                this.sck.Dispose();
+            }
+
+            public void SetActiveSettings(SpiConnectionSettings connectionSettings) {
+                if (connectionSettings.DataBitLength != 8) throw new NotSupportedException();
+                if (connectionSettings.UseControllerChipSelect) throw new NotSupportedException();
+
+                this.captureOnRisingEdge = ((((int)connectionSettings.Mode) & 0x01) == 0);
+                this.clockActiveState = (((int)connectionSettings.Mode) & 0x02) == 0 ? GpioPinValue.High : GpioPinValue.Low;
+                this.clockIdleState = this.clockActiveState == GpioPinValue.High ? GpioPinValue.Low : GpioPinValue.High;
+
+                if (!this.chipSelects.Contains(connectionSettings.ChipSelectLine)) {
+                    var cs = this.gpioController.OpenPin(connectionSettings.ChipSelectLine);
+
+                    this.chipSelects[connectionSettings.ChipSelectLine] = cs;
+
+                    cs.Write(GpioPinValue.High);
+                    cs.SetDriveMode(GpioPinDriveMode.Output);
+                }
+
+                this.cs = (GpioPin)this.chipSelects[connectionSettings.ChipSelectLine];
+                this.cs.Write(GpioPinValue.High);
+            }
+
+            public void WriteRead(byte[] writeBuffer, uint writeOffset, uint writeLength, byte[] readBuffer, uint readOffset, uint readLength, bool deselectAfter) {
+                if (readBuffer != null)
+                    Array.Clear(readBuffer, 0, (int)readLength);
+
+                this.sck.Write(this.clockIdleState);
+                this.cs.Write(GpioPinValue.Low);
+
+                for (var i = 0; i < Math.Max(readLength, writeLength); i++) {
+                    byte mask = 0x80;
+                    var w = i < writeLength && writeBuffer != null ? writeBuffer[i + writeOffset] : (byte)0;
+                    var r = false;
+
+                    for (var j = 0; j < 8; j++) {
+                        if (this.captureOnRisingEdge) {
+                            this.sck.Write(this.clockIdleState);
+
+                            this.mosi.Write((w & mask) != 0 ? GpioPinValue.High : GpioPinValue.Low);
+                            r = this.miso.Read() == GpioPinValue.High;
+
+                            this.sck.Write(this.clockActiveState);
+                        }
+                        else {
+                            this.sck.Write(this.clockActiveState);
+
+                            this.mosi.Write((w & mask) != 0 ? GpioPinValue.High : GpioPinValue.Low);
+                            r = this.miso.Read() == GpioPinValue.High;
+
+                            this.sck.Write(this.clockIdleState);
+                        }
+
+                        if (i < readLength && readBuffer != null && r)
+                            readBuffer[i + readOffset] |= mask;
+
+                        mask >>= 1;
+                    }
+                }
+
+                this.sck.Write(this.clockIdleState);
+
+                if (deselectAfter)
+                    this.cs.Write(GpioPinValue.High);
+            }
         }
     }
 }
