@@ -179,16 +179,10 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
             public I2cControllerSoftwareProvider(GpioController controller, uint sdaPinNumber, uint sclPinNumber, bool usePullups) {
                 this.usePullups = usePullups;
 
-                this.sda = controller.OpenPin(sdaPinNumber);
+                var pins = controller.OpenPins(sdaPinNumber, sclPinNumber);
 
-                try {
-                    this.scl = controller.OpenPin(sclPinNumber);
-                }
-                catch {
-                    this.sda.Dispose();
-
-                    throw;
-                }
+                this.sda = pins[0];
+                this.scl = pins[1];
             }
 
             public void Dispose() {
