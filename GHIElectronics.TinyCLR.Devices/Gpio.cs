@@ -66,6 +66,28 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio {
 
             return res;
         }
+
+        public bool TryOpenPin(uint pinNumber, out GpioPin pin) {
+            try {
+                pin = this.OpenPin(pinNumber);
+                return true;
+            }
+            catch {
+                pin = null;
+                return false;
+            }
+        }
+
+        public bool TryOpenPins(out GpioPin[] pins, params uint[] pinNumbers) {
+            try {
+                pins = this.OpenPins(pinNumbers);
+                return true;
+            }
+            catch {
+                pins = null;
+                return false;
+            }
+        }
     }
 
     public sealed class GpioPin : IDisposable {
