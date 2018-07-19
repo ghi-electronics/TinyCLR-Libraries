@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Threading;
+using GHIElectronics.TinyCLR.Devices.Gpio;
 using GHIElectronics.TinyCLR.Devices.I2c.Provider;
 
 namespace GHIElectronics.TinyCLR.Devices.I2c {
@@ -143,6 +145,216 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern I2cTransferStatus WriteRead(byte[] writeBuffer, uint writeOffset, uint writeLength, byte[] readBuffer, uint readOffset, uint readLength, bool sendStopAfter, out uint written, out uint read);
+        }
+
+        public sealed class I2cControllerSoftwareProvider : II2cControllerProvider {
+            private readonly bool usePullups;
+            private readonly GpioPin sda;
+            private readonly GpioPin scl;
+            private byte writeAddress;
+            private byte readAddress;
+            private bool start;
+
+            public I2cControllerSoftwareProvider(uint sdaPinNumber, uint sclPinNumber) : this(sdaPinNumber, sclPinNumber, true) { }
+            public I2cControllerSoftwareProvider(uint sdaPinNumber, uint sclPinNumber, bool usePullups) : this(GpioController.GetDefault(), sdaPinNumber, sclPinNumber, usePullups) { }
+            public I2cControllerSoftwareProvider(GpioController controller, uint sdaPinNumber, uint sclPinNumber) : this(controller, sdaPinNumber, sclPinNumber, true) { }
+
+            public I2cControllerSoftwareProvider(GpioController controller, uint sdaPinNumber, uint sclPinNumber, bool usePullups) {
+                this.usePullups = usePullups;
+
+                this.sda = controller.OpenPin(sdaPinNumber);
+
+                try {
+                    this.scl = controller.OpenPin(sclPinNumber);
+                }
+                finally {
+                    this.sda.Dispose();
+                }
+            }
+
+            public void Dispose() {
+                this.sda.Dispose();
+                this.scl.Dispose();
+            }
+
+            public void SetActiveSettings(uint slaveAddress, I2cBusSpeed speed) {
+                if (slaveAddress > 0x7F) throw new NotSupportedException();
+                if (speed != I2cBusSpeed.StandardMode) throw new NotSupportedException();
+
+                this.writeAddress = (byte)(slaveAddress << 1);
+                this.readAddress = (byte)((slaveAddress << 1) | 1);
+                this.start = false;
+
+                this.ReleaseScl();
+                this.ReleaseSda();
+            }
+
+            public I2cTransferStatus WriteRead(byte[] writeBuffer, uint writeOffset, uint writeLength, byte[] readBuffer, uint readOffset, uint readLength, bool sendStopAfter, out uint written, out uint read) {
+                var res = this.Write(writeBuffer, writeOffset, writeLength, true, false);
+
+                written = res.BytesWritten;
+                read = res.BytesRead;
+
+                if (res.Status == I2cTransferStatus.FullTransfer) {
+                    res = this.Read(readBuffer, readOffset, readLength, true, true);
+
+                    written += res.BytesWritten;
+                    read += res.BytesRead;
+                }
+
+                this.ReleaseScl();
+                this.ReleaseSda();
+
+                return res.Status;
+            }
+
+            private I2cTransferResult Write(byte[] buffer, uint offset, uint length, bool sendStart, bool sendStop) {
+                if (!this.Send(sendStart, length == 0, this.writeAddress))
+                    return new I2cTransferResult(I2cTransferStatus.SlaveAddressNotAcknowledged, 0, 0);
+
+                for (var i = 0U; i < length; i++)
+                    if (!this.Send(false, i == length - 1 && sendStop, buffer[i + offset]))
+                        return new I2cTransferResult(I2cTransferStatus.PartialTransfer, i, 0);
+
+                return new I2cTransferResult(I2cTransferStatus.FullTransfer, length, 0);
+            }
+
+            private I2cTransferResult Read(byte[] buffer, uint offset, uint length, bool sendStart, bool sendStop) {
+                if (!this.Send(sendStart, length == 0, this.readAddress))
+                    return new I2cTransferResult(I2cTransferStatus.SlaveAddressNotAcknowledged, 0, 0);
+
+                for (var i = 0U; i < length; i++)
+                    if (!this.Receive(i < length - 1, i == length - 1 && sendStop, out buffer[i + offset]))
+                        return new I2cTransferResult(I2cTransferStatus.PartialTransfer, 0, i);
+
+                return new I2cTransferResult(I2cTransferStatus.FullTransfer, 0, length);
+            }
+
+            private void ClearScl() {
+                this.scl.SetDriveMode(GpioPinDriveMode.Output);
+                this.scl.Write(GpioPinValue.Low);
+            }
+
+            private void ClearSda() {
+                this.sda.SetDriveMode(GpioPinDriveMode.Output);
+                this.sda.Write(GpioPinValue.Low);
+            }
+
+            private void ReleaseScl() {
+                this.scl.SetDriveMode(this.usePullups ? GpioPinDriveMode.InputPullUp : GpioPinDriveMode.Input);
+                this.ReadScl();
+            }
+
+            private void ReleaseSda() {
+                this.sda.SetDriveMode(this.usePullups ? GpioPinDriveMode.InputPullUp : GpioPinDriveMode.Input);
+                this.ReadSda();
+            }
+
+            private bool ReadScl() {
+                this.scl.SetDriveMode(this.usePullups ? GpioPinDriveMode.InputPullUp : GpioPinDriveMode.Input);
+                return this.scl.Read() == GpioPinValue.High;
+            }
+
+            private bool ReadSda() {
+                this.sda.SetDriveMode(this.usePullups ? GpioPinDriveMode.InputPullUp : GpioPinDriveMode.Input);
+                return this.sda.Read() == GpioPinValue.High;
+            }
+
+            private void WaitForScl() {
+                var i = 0;
+
+                while (!this.ReadScl() && i++ < 100)
+                    Thread.Sleep(1);
+            }
+
+            private bool WriteBit(bool bit) {
+                if (bit)
+                    this.ReleaseSda();
+                else
+                    this.ClearSda();
+
+                this.WaitForScl();
+
+                if (bit && !this.ReadSda())
+                    return false;
+
+                this.ClearScl();
+
+                return true;
+            }
+
+            private bool ReadBit() {
+                this.ReleaseSda();
+
+                this.WaitForScl();
+
+                var bit = this.ReadSda();
+
+                this.ClearScl();
+
+                return bit;
+            }
+
+            private bool SendStart() {
+                if (this.start) {
+                    this.ReleaseSda();
+
+                    this.WaitForScl();
+                }
+
+                if (!this.ReadSda())
+                    return false;
+
+                this.ClearSda();
+
+                this.ClearScl();
+
+                this.start = true;
+
+                return true;
+            }
+
+            private bool SendStop() {
+                this.ClearSda();
+
+                this.WaitForScl();
+
+                if (!this.ReadSda())
+                    return false;
+
+                this.start = false;
+
+                return true;
+            }
+
+            private bool Send(bool sendStart, bool sendStop, byte data) {
+                if (sendStart)
+                    this.SendStart();
+
+                for (var bit = 0; bit < 8; bit++) {
+                    this.WriteBit((data & 0x80) != 0);
+
+                    data <<= 1;
+                }
+
+                var nack = this.ReadBit();
+
+                if (sendStop)
+                    this.SendStop();
+
+                return !nack;
+            }
+
+            private bool Receive(bool sendAck, bool sendStop, out byte data) {
+                data = 0;
+
+                for (var bit = 0; bit < 8; bit++)
+                    data = (byte)((data << 1) | (this.ReadBit() ? 1 : 0));
+
+                var res = this.WriteBit(!sendAck);
+
+                return (!sendStop || this.SendStop()) && res;
+            }
         }
     }
 }
