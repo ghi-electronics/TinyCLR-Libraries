@@ -25,7 +25,7 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
             if (this.active != device) {
                 this.active = device;
 
-                this.Provider.SetActiveSettings(device.ConnectionSettings.SlaveAddress, device.ConnectionSettings.BusSpeed);
+                this.Provider.SetActiveSettings(device.ConnectionSettings);
             }
         }
     }
@@ -75,14 +75,24 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
 
     public sealed class I2cConnectionSettings {
         public uint SlaveAddress { get; set; }
+        public I2cAddressFormat AddressFormat { get; set; }
         public I2cBusSpeed BusSpeed { get; set; }
 
-        public I2cConnectionSettings(uint slaveAddress) : this(slaveAddress, I2cBusSpeed.StandardMode) {
+        public I2cConnectionSettings(uint slaveAddress) : this(slaveAddress, I2cAddressFormat.SevenBit, I2cBusSpeed.StandardMode) {
 
         }
 
-        public I2cConnectionSettings(uint slaveAddress, I2cBusSpeed busSpeed) {
+        public I2cConnectionSettings(uint slaveAddress, I2cBusSpeed busSpeed) : this(slaveAddress, I2cAddressFormat.SevenBit, busSpeed) {
+
+        }
+
+        public I2cConnectionSettings(uint slaveAddress, I2cAddressFormat addressFormat) : this(slaveAddress, addressFormat, I2cBusSpeed.StandardMode) {
+
+        }
+
+        public I2cConnectionSettings(uint slaveAddress, I2cAddressFormat addressFormat, I2cBusSpeed busSpeed) {
             this.SlaveAddress = slaveAddress;
+            this.AddressFormat = addressFormat;
             this.BusSpeed = busSpeed;
         }
     }
@@ -90,6 +100,11 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
     public enum I2cBusSpeed {
         StandardMode = 0,
         FastMode = 1,
+    }
+
+    public enum I2cAddressFormat {
+        SevenBit = 0,
+        TenBit = 1,
     }
 
     public enum I2cTransferStatus {
@@ -115,7 +130,7 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
 
     namespace Provider {
         public interface II2cControllerProvider : IDisposable {
-            void SetActiveSettings(uint slaveAddress, I2cBusSpeed speed);
+            void SetActiveSettings(I2cConnectionSettings connectionSettings);
             I2cTransferStatus WriteRead(byte[] writeBuffer, uint writeOffset, uint writeLength, byte[] readBuffer, uint readOffset, uint readLength, bool sendStopAfter, out uint written, out uint read);
         }
 
@@ -134,6 +149,8 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
 
             public void Dispose() => this.Release();
 
+            public void SetActiveSettings(I2cConnectionSettings connectionSettings) => this.SetActiveSettings(connectionSettings.SlaveAddress, connectionSettings.AddressFormat, connectionSettings.BusSpeed);
+
             [MethodImpl(MethodImplOptions.InternalCall)]
             private extern void Acquire();
 
@@ -141,7 +158,7 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
             private extern void Release();
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern void SetActiveSettings(uint slaveAddress, I2cBusSpeed speed);
+            private extern void SetActiveSettings(uint slaveAddress, I2cAddressFormat addressFormat, I2cBusSpeed busSpeed);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern I2cTransferStatus WriteRead(byte[] writeBuffer, uint writeOffset, uint writeLength, byte[] readBuffer, uint readOffset, uint readLength, bool sendStopAfter, out uint written, out uint read);
@@ -177,12 +194,12 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
                 this.scl.Dispose();
             }
 
-            public void SetActiveSettings(uint slaveAddress, I2cBusSpeed speed) {
-                if (slaveAddress > 0x7F) throw new NotSupportedException();
-                if (speed != I2cBusSpeed.StandardMode) throw new NotSupportedException();
+            public void SetActiveSettings(I2cConnectionSettings connectionSettings) {
+                if (connectionSettings.AddressFormat != I2cAddressFormat.SevenBit) throw new NotSupportedException();
+                if (connectionSettings.BusSpeed != I2cBusSpeed.StandardMode) throw new NotSupportedException();
 
-                this.writeAddress = (byte)(slaveAddress << 1);
-                this.readAddress = (byte)((slaveAddress << 1) | 1);
+                this.writeAddress = (byte)(connectionSettings.SlaveAddress << 1);
+                this.readAddress = (byte)((connectionSettings.SlaveAddress << 1) | 1);
                 this.start = false;
 
                 this.ReleaseScl();
