@@ -184,8 +184,10 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
                 try {
                     this.scl = controller.OpenPin(sclPinNumber);
                 }
-                finally {
+                catch {
                     this.sda.Dispose();
+
+                    throw;
                 }
             }
 
