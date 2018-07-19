@@ -1,13 +1,13 @@
-﻿using GHIElectronics.TinyCLR.Devices.Pwm;
-using GHIElectronics.TinyCLR.Pins;
-using System;
+﻿using System;
 using System.ComponentModel;
+using GHIElectronics.TinyCLR.Devices.Pwm;
+using GHIElectronics.TinyCLR.Pins;
 
 namespace GHIElectronics.TinyCLR.BrainPad {
     public class LightBulb {
-        private PwmPin red;
-        private PwmPin green;
-        private PwmPin blue;
+        private PwmChannel red;
+        private PwmChannel green;
+        private PwmChannel blue;
         //private bool started;
 
         public LightBulb() {

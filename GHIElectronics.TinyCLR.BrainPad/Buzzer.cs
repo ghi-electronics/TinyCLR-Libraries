@@ -1,17 +1,17 @@
-﻿using GHIElectronics.TinyCLR.Devices.Pwm;
-using GHIElectronics.TinyCLR.Pins;
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.Threading;
+using GHIElectronics.TinyCLR.Devices.Pwm;
+using GHIElectronics.TinyCLR.Pins;
 
 namespace GHIElectronics.TinyCLR.BrainPad {
     public class Buzzer {
         private PwmController controller;
-        private PwmPin buzz;
+        private PwmChannel buzz;
 
         public Buzzer() {
             this.controller = PwmController.FromId(Board.BoardType == BoardType.BP2 ? FEZCLR.PwmPin.Controller4.Id : G30.PwmPin.Controller4.Id);
-            this.buzz = this.controller.OpenPin(Board.BoardType == BoardType.BP2 ? FEZCLR.PwmPin.Controller4.PB8 : G30.PwmPin.Controller4.PB8);
+            this.buzz = this.controller.OpenChannel(Board.BoardType == BoardType.BP2 ? FEZCLR.PwmPin.Controller4.PB8 : G30.PwmPin.Controller4.PB8);
         }
 
         /// <summary>
