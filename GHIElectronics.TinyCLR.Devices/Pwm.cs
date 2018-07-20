@@ -23,6 +23,7 @@ namespace GHIElectronics.TinyCLR.Devices.Pwm {
 
         public double SetDesiredFrequency(double desiredFrequency) => this.ActualFrequency = this.Provider.SetDesiredFrequency(desiredFrequency);
 
+        public PwmChannel OpenChannel(int channelNumber) => this.OpenChannel((uint)channelNumber);
         public PwmChannel OpenChannel(uint channelNumber) => new PwmChannel(this, channelNumber);
     }
 

@@ -76,6 +76,9 @@ namespace GHIElectronics.TinyCLR.Devices.Spi {
         public uint DataBitLength { get; set; } = 8;
         public SpiMode Mode { get; set; } = SpiMode.Mode0;
 
+        public SpiConnectionSettings(int chipSelectLine) : this((uint)chipSelectLine) {
+        }
+
         public SpiConnectionSettings(uint chipSelectLine) => this.ChipSelectLine = chipSelectLine;
     }
 
@@ -208,7 +211,7 @@ namespace GHIElectronics.TinyCLR.Devices.Spi {
                 this.sck.Write(this.clockIdleState);
                 this.cs.Write(GpioPinValue.Low);
 
-                for (var i = 0; i < Math.Max(readLength, writeLength); i++) {
+                for (var i = 0U; i < Math.Max(readLength, writeLength); i++) {
                     byte mask = 0x80;
                     var w = i < writeLength && writeBuffer != null ? writeBuffer[i + writeOffset] : (byte)0;
                     var r = false;

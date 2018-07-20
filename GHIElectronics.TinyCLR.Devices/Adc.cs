@@ -32,6 +32,7 @@ namespace GHIElectronics.TinyCLR.Devices.Adc {
 
         public void Dispose() => this.Provider.Dispose();
 
+        public AdcChannel OpenChannel(int channelNumber) => this.OpenChannel((uint)channelNumber);
         public AdcChannel OpenChannel(uint channelNumber) => new AdcChannel(this, channelNumber);
     }
 

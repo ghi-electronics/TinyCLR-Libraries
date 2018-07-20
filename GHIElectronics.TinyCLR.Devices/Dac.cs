@@ -20,6 +20,7 @@ namespace GHIElectronics.TinyCLR.Devices.Dac {
 
         public void Dispose() => this.Provider.Dispose();
 
+        public DacChannel OpenChannel(int channelNumber) => this.OpenChannel((uint)channelNumber);
         public DacChannel OpenChannel(uint channelNumber) => new DacChannel(this, channelNumber);
     }
 
