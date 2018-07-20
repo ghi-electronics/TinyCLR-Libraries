@@ -50,7 +50,7 @@ namespace GHIElectronics.TinyCLR.Devices.Can {
         public event ErrorReceivedEventHandler ErrorReceived;
     }
 
-    public enum CanError : byte {
+    public enum CanError {
         ReadBufferOverrun = 0,
         ReadBufferFull = 1,
         BusOff = 2,
