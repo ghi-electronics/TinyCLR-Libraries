@@ -60,13 +60,13 @@ namespace GHIElectronics.TinyCLR.Devices.Can {
     public delegate void MessageReceivedEventHandler(CanController sender, MessageReceivedEventArgs e);
     public delegate void ErrorReceivedEventHandler(CanController sender, ErrorReceivedEventArgs e);
 
-    public class MessageReceivedEventArgs {
+    public sealed class MessageReceivedEventArgs {
         public uint Count { get; }
 
         internal MessageReceivedEventArgs(uint count) => this.Count = count;
     }
 
-    public class ErrorReceivedEventArgs {
+    public sealed class ErrorReceivedEventArgs {
         public CanError Error { get; }
 
         internal ErrorReceivedEventArgs(CanError error) => this.Error = error;
