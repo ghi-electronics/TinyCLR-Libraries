@@ -13,11 +13,11 @@ namespace GHIElectronics.TinyCLR.BrainPad {
         public LightBulb() {
             //started = false;
 
-            var PWM = PwmController.FromId(Board.BoardType == BoardType.BP2 ? FEZCLR.PwmPin.Controller3.Id : G30.PwmPin.Controller3.Id);
+            var PWM = PwmController.FromName(Board.BoardType == BoardType.BP2 ? FEZCLR.PwmPin.Controller3.Id : G30.PwmPin.Controller3.Id);
             PWM.SetDesiredFrequency(10000);
-            this.red = PWM.OpenPin(Board.BoardType == BoardType.BP2 ? FEZCLR.PwmPin.Controller3.PC9 : G30.PwmPin.Controller3.PC9);
-            this.green = PWM.OpenPin(Board.BoardType == BoardType.BP2 ? FEZCLR.PwmPin.Controller3.PC8 : G30.PwmPin.Controller3.PC8);
-            this.blue = PWM.OpenPin(Board.BoardType == BoardType.BP2 ? FEZCLR.PwmPin.Controller3.PC6 : G30.PwmPin.Controller3.PC7);
+            this.red = PWM.OpenChannel(Board.BoardType == BoardType.BP2 ? FEZCLR.PwmPin.Controller3.PC9 : G30.PwmPin.Controller3.PC9);
+            this.green = PWM.OpenChannel(Board.BoardType == BoardType.BP2 ? FEZCLR.PwmPin.Controller3.PC8 : G30.PwmPin.Controller3.PC8);
+            this.blue = PWM.OpenChannel(Board.BoardType == BoardType.BP2 ? FEZCLR.PwmPin.Controller3.PC6 : G30.PwmPin.Controller3.PC7);
             // red = new PWM(Peripherals.LightBulb.Red, 10000, 1, false);
             // green = new PWM(Peripherals.LightBulb.Green, 10000, 1, false);
             //blue = new PWM(Peripherals.LightBulb.Blue, 10000, 1, false);

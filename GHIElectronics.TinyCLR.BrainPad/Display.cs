@@ -44,7 +44,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
             None
         }
 
-        private I2cDevice i2cDevice = I2cDevice.FromId(Board.BoardType == BoardType.BP2 ? FEZCLR.I2cBus.I2c1 : G30.I2cBus.I2c1, new I2cConnectionSettings(0x3C) { BusSpeed = I2cBusSpeed.FastMode });
+        private I2cDevice i2cDevice = I2cController.FromName(Board.BoardType == BoardType.BP2 ? FEZCLR.I2cBus.I2c1 : G30.I2cBus.I2c1).GetDevice(new I2cConnectionSettings(0x3C) { BusSpeed = I2cBusSpeed.FastMode });
 
         public Picture CreatePicture(int width, int height, byte[] data) => this.CreateScaledPicture(width, height, data, 1);
         public Picture CreateScaledPicture(int width, int height, byte[] data, int scale) => data != null ? new Picture(width, height, data, scale) : throw new Exception("Incorrect picture data size");
@@ -227,7 +227,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
                         ClockFrequency = 12000000,
                         DataBitLength = 8,
                     };
-                    this.spi = SpiDevice.FromId(G30.SpiBus.Spi2, settings);
+                    this.spi = SpiController.FromName(G30.SpiBus.Spi2).GetDevice(settings);
                     InitN18();
 
                     // clear the entire screen
