@@ -24,10 +24,10 @@ namespace GHIElectronics.TinyCLR.Devices.Can {
         public void Disable() => this.Provider.Disable();
 
         public bool WriteMessage(CanMessage message) => this.WriteMessages(new[] { message }, 0, 1) == 1;
-        public int WriteMessages(CanMessage[] messages, int offset, int count) => this.Provider.WriteMessages(messages, (int)offset, (int)count);
+        public int WriteMessages(CanMessage[] messages, int offset, int count) => this.Provider.WriteMessages(messages, offset, count);
 
         public bool ReadMessage(out CanMessage message) => this.ReadMessages(new[] { message = new CanMessage() }, 0, 1) == 1;
-        public int ReadMessages(CanMessage[] messages, int offset, int count) => this.Provider.ReadMessages(messages, (int)offset, (int)count);
+        public int ReadMessages(CanMessage[] messages, int offset, int count) => this.Provider.ReadMessages(messages, offset, count);
 
         public void SetBitTiming(CanBitTiming bitTiming) => this.Provider.SetBitTiming(bitTiming);
         public void SetExplicitFilters(int[] filters) => this.Provider.SetExplicitFilters(filters);
@@ -145,7 +145,7 @@ namespace GHIElectronics.TinyCLR.Devices.Can {
             this.IsRemoteTransmissionRequest = isRemoteTransmissionRequesti;
             this.IsExtendedId = isExtendedId;
             this.TimeStamp = DateTime.Now;
-            this.Length = (int)count;
+            this.Length = count;
             this.data = new byte[8];
 
             if (count != 0)

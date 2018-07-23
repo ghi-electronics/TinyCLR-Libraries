@@ -33,20 +33,20 @@ namespace GHIElectronics.TinyCLR.Devices.Rtc {
         public int Microsecond;
         public int Nanosecond;
 
-        public DateTime ToDateTime() => new DateTime((int)this.Year, (int)this.Month, (int)this.DayOfMonth, (int)this.Hour, (int)this.Minute, (int)this.Second, (int)this.Millisecond).AddTicks((long)((TimeSpan.TicksPerMillisecond / 1_000.0) * this.Microsecond + (TimeSpan.TicksPerMillisecond / 1_000_000.0) * this.Nanosecond));
+        public DateTime ToDateTime() => new DateTime(this.Year, this.Month, this.DayOfMonth, this.Hour, this.Minute, this.Second, this.Millisecond).AddTicks((long)((TimeSpan.TicksPerMillisecond / 1_000.0) * this.Microsecond + (TimeSpan.TicksPerMillisecond / 1_000_000.0) * this.Nanosecond));
 
         public static RtcDateTime FromDateTime(DateTime value) {
             var dt = new RtcDateTime {
-                Year = (int)value.Year,
-                Month = (int)value.Month,
+                Year = value.Year,
+                Month = value.Month,
                 Week = int.MaxValue,
-                DayOfYear = (int)value.DayOfYear,
-                DayOfMonth = (int)value.Day,
+                DayOfYear = value.DayOfYear,
+                DayOfMonth = value.Day,
                 DayOfWeek = (int)value.DayOfWeek,
-                Hour = (int)value.Hour,
-                Minute = (int)value.Minute,
-                Second = (int)value.Second,
-                Millisecond = (int)value.Millisecond
+                Hour = value.Hour,
+                Minute = value.Minute,
+                Second = value.Second,
+                Millisecond = value.Millisecond
             };
 
             var remaining = (int)(value.TimeOfDay.Ticks % 10_000);

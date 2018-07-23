@@ -65,7 +65,7 @@ namespace GHIElectronics.TinyCLR.Devices.Spi {
         private void WriteRead(byte[] writeBuffer, int writeOffset, int writeLength, byte[] readBuffer, int readOffset, int readLength, bool deselectAfter = true) {
             this.Controller.SetActive(this);
 
-            this.Controller.Provider.WriteRead(writeBuffer, (int)writeOffset, (int)writeLength, readBuffer, (int)readOffset, (int)readLength, deselectAfter);
+            this.Controller.Provider.WriteRead(writeBuffer, writeOffset, writeLength, readBuffer, readOffset, readLength, deselectAfter);
         }
     }
 
@@ -203,7 +203,7 @@ namespace GHIElectronics.TinyCLR.Devices.Spi {
 
             public void WriteRead(byte[] writeBuffer, int writeOffset, int writeLength, byte[] readBuffer, int readOffset, int readLength, bool deselectAfter) {
                 if (readBuffer != null)
-                    Array.Clear(readBuffer, 0, (int)readLength);
+                    Array.Clear(readBuffer, 0, readLength);
 
                 this.sck.Write(this.clockIdleState);
                 this.cs.Write(GpioPinValue.Low);

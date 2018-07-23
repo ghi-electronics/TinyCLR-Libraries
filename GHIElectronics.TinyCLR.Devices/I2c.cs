@@ -53,7 +53,7 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
         public void WriteRead(byte[] writeBuffer, int writeOffset, int writeLength, byte[] readBuffer, int readOffset, int readLength) {
             this.Controller.SetActive(this);
 
-            if (this.Controller.Provider.WriteRead(writeBuffer, (int)writeOffset, (int)writeLength, readBuffer, (int)readOffset, (int)readLength, true, out _, out _) != I2cTransferStatus.FullTransfer)
+            if (this.Controller.Provider.WriteRead(writeBuffer, writeOffset, writeLength, readBuffer, readOffset, readLength, true, out _, out _) != I2cTransferStatus.FullTransfer)
                 throw new InvalidOperationException();
         }
 
@@ -67,7 +67,7 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
         public I2cTransferResult WriteReadPartial(byte[] writeBuffer, int writeOffset, int writeLength, byte[] readBuffer, int readOffset, int readLength) {
             this.Controller.SetActive(this);
 
-            var res = this.Controller.Provider.WriteRead(writeBuffer, (int)writeOffset, (int)writeLength, readBuffer, (int)readOffset, (int)readLength, true, out var written, out var read);
+            var res = this.Controller.Provider.WriteRead(writeBuffer, writeOffset, writeLength, readBuffer, readOffset, readLength, true, out var written, out var read);
 
             return new I2cTransferResult(res, written, read);
         }
