@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace System.Runtime.InteropServices {
     [CLSCompliant(false)]
-    public delegate void NativeEventHandler(string apiName, ulong data0, ulong data1, ulong data2, IntPtr data3, DateTime timestamp);
+    public delegate void NativeEventHandler(string apiName, long data0, long data1, long data2, IntPtr data3, DateTime timestamp);
 
     public sealed class NativeEventDispatcher : IDisposable {
         private static Hashtable instances = new Hashtable();
@@ -66,7 +66,7 @@ namespace System.Runtime.InteropServices {
                     throw new ObjectDisposedException();
                 }
 
-                NativeEventHandler callbacksOld = this.m_callbacks;
+                var callbacksOld = this.m_callbacks;
                 var callbacksNew = (NativeEventHandler)Delegate.Combine(callbacksOld, value);
 
                 try {
@@ -101,7 +101,7 @@ namespace System.Runtime.InteropServices {
                     throw new ObjectDisposedException();
                 }
 
-                NativeEventHandler callbacksOld = this.m_callbacks;
+                var callbacksOld = this.m_callbacks;
                 var callbacksNew = (NativeEventHandler)Delegate.Remove(callbacksOld, value);
 
                 try {
@@ -119,6 +119,6 @@ namespace System.Runtime.InteropServices {
             }
         }
 
-        private void MultiCastCase(string providerName, ulong data0, ulong data1, ulong data2, IntPtr data3, DateTime timestamp) => this.m_callbacks?.Invoke(providerName, data0, data1, data2, data3, timestamp);
+        private void MultiCastCase(string providerName, long data0, long data1, long data2, IntPtr data3, DateTime timestamp) => this.m_callbacks?.Invoke(providerName, data0, data1, data2, data3, timestamp);
     }
 }
