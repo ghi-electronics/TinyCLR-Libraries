@@ -38,8 +38,8 @@ namespace GHIElectronics.TinyCLR.Devices.Uart {
 
         public int WriteBufferSize { get => this.Provider.WriteBufferSize; set => this.Provider.WriteBufferSize = value; }
         public int ReadBufferSize { get => this.Provider.ReadBufferSize; set => this.Provider.ReadBufferSize = value; }
-        public int UnwrittenCount => this.Provider.UnwrittenCount;
-        public int UnreadCount => this.Provider.UnreadCount;
+        public int BytesToWrite => this.Provider.BytesToWrite;
+        public int BytesToRead => this.Provider.BytesToRead;
 
         public bool IsRequestToSendEnabled { get => this.Provider.IsRequestToSendEnabled; set => this.Provider.IsRequestToSendEnabled = value; }
         public bool ClearToSendState => this.Provider.ClearToSendState;
@@ -108,8 +108,8 @@ namespace GHIElectronics.TinyCLR.Devices.Uart {
 
             int WriteBufferSize { get; set; }
             int ReadBufferSize { get; set; }
-            int UnwrittenCount { get; }
-            int UnreadCount { get; }
+            int BytesToWrite { get; }
+            int BytesToRead { get; }
 
             bool IsRequestToSendEnabled { get; set; }
             bool ClearToSendState { get; }
@@ -157,8 +157,8 @@ namespace GHIElectronics.TinyCLR.Devices.Uart {
 
             public extern int WriteBufferSize { [MethodImpl(MethodImplOptions.InternalCall)] get; [MethodImpl(MethodImplOptions.InternalCall)] set; }
             public extern int ReadBufferSize { [MethodImpl(MethodImplOptions.InternalCall)] get; [MethodImpl(MethodImplOptions.InternalCall)] set; }
-            public extern int UnwrittenCount { [MethodImpl(MethodImplOptions.InternalCall)] get; }
-            public extern int UnreadCount { [MethodImpl(MethodImplOptions.InternalCall)] get; }
+            public extern int BytesToWrite { [MethodImpl(MethodImplOptions.InternalCall)] get; }
+            public extern int BytesToRead { [MethodImpl(MethodImplOptions.InternalCall)] get; }
 
             public extern bool IsRequestToSendEnabled { [MethodImpl(MethodImplOptions.InternalCall)] get; [MethodImpl(MethodImplOptions.InternalCall)] set; }
             public extern bool ClearToSendState { [MethodImpl(MethodImplOptions.InternalCall)] get; }

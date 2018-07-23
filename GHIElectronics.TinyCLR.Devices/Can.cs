@@ -38,8 +38,8 @@ namespace GHIElectronics.TinyCLR.Devices.Can {
         public int WriteBufferSize { get => this.Provider.WriteBufferSize; set => this.Provider.WriteBufferSize = value; }
         public int ReadBufferSize { get => this.Provider.ReadBufferSize; set => this.Provider.ReadBufferSize = value; }
 
-        public int UnwrittenMessageCount => this.Provider.UnwrittenMessageCount;
-        public int UnreadMessageCount => this.Provider.UnreadMessageCount;
+        public int MessagesToWrite => this.Provider.MessagesToWrite;
+        public int MessagesToRead => this.Provider.MessagesToRead;
         public bool CanWriteMessage => this.Provider.CanWriteMessage;
         public bool CanReadMessage => this.Provider.CanReadMessage;
         public int WriteErrorCount => this.Provider.WriteErrorCount;
@@ -170,8 +170,8 @@ namespace GHIElectronics.TinyCLR.Devices.Can {
             int WriteBufferSize { get; set; }
             int ReadBufferSize { get; set; }
 
-            int UnwrittenMessageCount { get; }
-            int UnreadMessageCount { get; }
+            int MessagesToWrite { get; }
+            int MessagesToRead { get; }
             bool CanWriteMessage { get; }
             bool CanReadMessage { get; }
             int WriteErrorCount { get; }
@@ -217,8 +217,8 @@ namespace GHIElectronics.TinyCLR.Devices.Can {
             public extern int WriteBufferSize { [MethodImpl(MethodImplOptions.InternalCall)] get; [MethodImpl(MethodImplOptions.InternalCall)] set; }
             public extern int ReadBufferSize { [MethodImpl(MethodImplOptions.InternalCall)] get; [MethodImpl(MethodImplOptions.InternalCall)] set; }
 
-            public extern int UnwrittenMessageCount { [MethodImpl(MethodImplOptions.InternalCall)] get; }
-            public extern int UnreadMessageCount { [MethodImpl(MethodImplOptions.InternalCall)] get; }
+            public extern int MessagesToWrite { [MethodImpl(MethodImplOptions.InternalCall)] get; }
+            public extern int MessagesToRead { [MethodImpl(MethodImplOptions.InternalCall)] get; }
             public extern bool CanWriteMessage { [MethodImpl(MethodImplOptions.InternalCall)] get; }
             public extern bool CanReadMessage { [MethodImpl(MethodImplOptions.InternalCall)] get; }
             public extern int WriteErrorCount { [MethodImpl(MethodImplOptions.InternalCall)] get; }
