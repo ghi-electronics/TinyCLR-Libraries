@@ -12,8 +12,8 @@ namespace GHIElectronics.TinyCLR.Devices.Signals {
     public sealed class PulseFeedback : IDisposable {
         private readonly PulseFeedbackMode mode;
         private readonly IntPtr gpioApi;
-        private readonly uint pulsePinNumber;
-        private readonly uint echoPinNumber;
+        private readonly int pulsePinNumber;
+        private readonly int echoPinNumber;
         private readonly GpioPin pulsePin;
         private readonly GpioPin echoPin;
 
@@ -24,22 +24,22 @@ namespace GHIElectronics.TinyCLR.Devices.Signals {
         public GpioPinValue EchoPinValue { get; set; }
         public GpioPinDriveMode EchoPinDriveMode { get; set; }
 
-        public PulseFeedback(uint pinNumber, PulseFeedbackMode mode)
+        public PulseFeedback(int pinNumber, PulseFeedbackMode mode)
             : this(GpioController.GetDefault(), pinNumber, mode) {
 
         }
 
-        public PulseFeedback(uint pulsePinNumber, uint echoPinNumber, PulseFeedbackMode mode)
+        public PulseFeedback(int pulsePinNumber, int echoPinNumber, PulseFeedbackMode mode)
             : this(GpioController.GetDefault(), pulsePinNumber, echoPinNumber, mode) {
 
         }
 
-        public PulseFeedback(GpioController gpioController, uint pinNumber, PulseFeedbackMode mode)
+        public PulseFeedback(GpioController gpioController, int pinNumber, PulseFeedbackMode mode)
             : this(gpioController, pinNumber, pinNumber, mode) {
 
         }
 
-        public PulseFeedback(GpioController gpioController, uint pulsePinNumber, uint echoPinNumber, PulseFeedbackMode mode) {
+        public PulseFeedback(GpioController gpioController, int pulsePinNumber, int echoPinNumber, PulseFeedbackMode mode) {
             if (!(gpioController.Provider is Gpio.Provider.GpioControllerApiWrapper p)) throw new NotSupportedException();
 
             this.DisableInterrupts = false;
@@ -69,23 +69,23 @@ namespace GHIElectronics.TinyCLR.Devices.Signals {
         }
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern ulong GeneratePulse();
+        public extern long GeneratePulse();
     }
 
     public sealed class SignalGenerator : IDisposable {
         private readonly IntPtr gpioApi;
-        private readonly uint pinNumber;
+        private readonly int pinNumber;
         private readonly GpioPin pin;
 
         public bool DisableInterrupts { get; set; }
         public bool GeneratecarrierFrequency { get; set; }
-        public uint CarrierFrequency { get; set; }
+        public int CarrierFrequency { get; set; }
 
-        public SignalGenerator(uint pinNumber, GpioPinValue initialValue) : this(GpioController.GetDefault(), pinNumber, initialValue) {
+        public SignalGenerator(int pinNumber, GpioPinValue initialValue) : this(GpioController.GetDefault(), pinNumber, initialValue) {
 
         }
 
-        public SignalGenerator(GpioController gpioController, uint pinNumber, GpioPinValue initialValue) {
+        public SignalGenerator(GpioController gpioController, int pinNumber, GpioPinValue initialValue) {
             if (!(gpioController.Provider is Gpio.Provider.GpioControllerApiWrapper p)) throw new NotSupportedException();
 
             this.gpioApi = p.Api.Implementation;
@@ -100,26 +100,25 @@ namespace GHIElectronics.TinyCLR.Devices.Signals {
 
         public void Write(GpioPinValue value) => this.pin.Write(value);
 
-        public void Write(uint[] buffer) => this.Write(buffer, 0, buffer.Length);
-        public void Write(uint[] buffer, int offset, int count) => this.Write(buffer, (uint)offset, (uint)count);
+        public void Write(int[] buffer) => this.Write(buffer, 0, buffer.Length);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private extern void Write(uint[] buffer, uint offset, uint count);
+        public extern void Write(int[] buffer, int offset, int count);
     }
 
     public sealed class SignalCapture : IDisposable {
         private readonly IntPtr gpioApi;
-        private readonly uint pinNumber;
+        private readonly int pinNumber;
         private readonly GpioPin pin;
 
         public bool DisableInterrupts { get; set; }
         public TimeSpan Timeout { get; set; }
 
-        public SignalCapture(uint pinNumber, GpioPinDriveMode driveMode) : this(GpioController.GetDefault(), pinNumber, driveMode) {
+        public SignalCapture(int pinNumber, GpioPinDriveMode driveMode) : this(GpioController.GetDefault(), pinNumber, driveMode) {
 
         }
 
-        public SignalCapture(GpioController gpioController, uint pinNumber, GpioPinDriveMode driveMode) {
+        public SignalCapture(GpioController gpioController, int pinNumber, GpioPinDriveMode driveMode) {
             if (!(gpioController.Provider is Gpio.Provider.GpioControllerApiWrapper p)) throw new NotSupportedException();
 
             switch (driveMode) {
@@ -142,16 +141,14 @@ namespace GHIElectronics.TinyCLR.Devices.Signals {
 
         public GpioPinValue Read() => this.pin.Read();
 
-        public int Read(out bool initialState, uint[] buffer) => this.Read(out initialState, buffer, 0, buffer.Length);
-        public int Read(out bool initialState, uint[] buffer, int offset, int count) => (int)this.Read(out initialState, buffer, (uint)offset, (uint)count);
+        public int Read(out bool initialState, int[] buffer) => this.Read(out initialState, buffer, 0, buffer.Length);
 
-        public int Read(bool waitForState, uint[] buffer) => this.Read(waitForState, buffer, 0, buffer.Length);
-        public int Read(bool waitForState, uint[] buffer, int offset, int count) => (int)this.Read(waitForState, buffer, (uint)offset, (uint)count);
+        public int Read(bool waitForState, int[] buffer) => this.Read(waitForState, buffer, 0, buffer.Length);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private extern uint Read(out bool initialState, uint[] buffer, uint offset, uint count);
+        public extern int Read(out bool initialState, int[] buffer, int offset, int count);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private extern uint Read(bool waitforInitialState, uint[] buffer, uint offset, uint count);
+        public extern int Read(bool waitforInitialState, int[] buffer, int offset, int count);
     }
 }

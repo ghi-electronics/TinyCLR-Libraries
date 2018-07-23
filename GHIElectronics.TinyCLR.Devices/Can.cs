@@ -24,27 +24,27 @@ namespace GHIElectronics.TinyCLR.Devices.Can {
         public void Disable() => this.Provider.Disable();
 
         public bool WriteMessage(CanMessage message) => this.WriteMessages(new[] { message }, 0, 1) == 1;
-        public uint WriteMessages(CanMessage[] messages, int offset, int count) => this.Provider.WriteMessages(messages, (uint)offset, (uint)count);
+        public int WriteMessages(CanMessage[] messages, int offset, int count) => this.Provider.WriteMessages(messages, (int)offset, (int)count);
 
         public bool ReadMessage(out CanMessage message) => this.ReadMessages(new[] { message = new CanMessage() }, 0, 1) == 1;
-        public uint ReadMessages(CanMessage[] messages, int offset, int count) => this.Provider.ReadMessages(messages, (uint)offset, (uint)count);
+        public int ReadMessages(CanMessage[] messages, int offset, int count) => this.Provider.ReadMessages(messages, (int)offset, (int)count);
 
         public void SetBitTiming(CanBitTiming bitTiming) => this.Provider.SetBitTiming(bitTiming);
-        public void SetExplicitFilters(uint[] filters) => this.Provider.SetExplicitFilters(filters);
-        public void SetGroupFilters(uint[] lowerBounds, uint[] upperBounds) => this.Provider.SetGroupFilters(lowerBounds, upperBounds);
+        public void SetExplicitFilters(int[] filters) => this.Provider.SetExplicitFilters(filters);
+        public void SetGroupFilters(int[] lowerBounds, int[] upperBounds) => this.Provider.SetGroupFilters(lowerBounds, upperBounds);
         public void ClearWriteBuffer() => this.Provider.ClearReadBuffer();
         public void ClearReadBuffer() => this.Provider.ClearReadBuffer();
 
-        public uint WriteBufferSize { get => this.Provider.WriteBufferSize; set => this.Provider.WriteBufferSize = value; }
-        public uint ReadBufferSize { get => this.Provider.ReadBufferSize; set => this.Provider.ReadBufferSize = value; }
+        public int WriteBufferSize { get => this.Provider.WriteBufferSize; set => this.Provider.WriteBufferSize = value; }
+        public int ReadBufferSize { get => this.Provider.ReadBufferSize; set => this.Provider.ReadBufferSize = value; }
 
-        public uint UnwrittenMessageCount => this.Provider.UnwrittenMessageCount;
-        public uint UnreadMessageCount => this.Provider.UnreadMessageCount;
+        public int UnwrittenMessageCount => this.Provider.UnwrittenMessageCount;
+        public int UnreadMessageCount => this.Provider.UnreadMessageCount;
         public bool CanWriteMessage => this.Provider.CanWriteMessage;
         public bool CanReadMessage => this.Provider.CanReadMessage;
-        public uint WriteErrorCount => this.Provider.WriteErrorCount;
-        public uint ReadErrorCount => this.Provider.ReadErrorCount;
-        public uint SourceClock => this.Provider.SourceClock;
+        public int WriteErrorCount => this.Provider.WriteErrorCount;
+        public int ReadErrorCount => this.Provider.ReadErrorCount;
+        public int SourceClock => this.Provider.SourceClock;
 
         public event MessageReceivedEventHandler MessageReceived;
         public event ErrorReceivedEventHandler ErrorReceived;
@@ -61,9 +61,9 @@ namespace GHIElectronics.TinyCLR.Devices.Can {
     public delegate void ErrorReceivedEventHandler(CanController sender, ErrorReceivedEventArgs e);
 
     public sealed class MessageReceivedEventArgs {
-        public uint Count { get; }
+        public int Count { get; }
 
-        internal MessageReceivedEventArgs(uint count) => this.Count = count;
+        internal MessageReceivedEventArgs(int count) => this.Count = count;
     }
 
     public sealed class ErrorReceivedEventArgs {
@@ -73,22 +73,22 @@ namespace GHIElectronics.TinyCLR.Devices.Can {
     }
 
     public sealed class CanBitTiming {
-        public uint Propagation { get; set; }
-        public uint Phase1 { get; set; }
-        public uint Phase2 { get; set; }
-        public uint BaudratePrescaler { get; set; }
-        public uint SynchronizationJumpWidth { get; set; }
+        public int Propagation { get; set; }
+        public int Phase1 { get; set; }
+        public int Phase2 { get; set; }
+        public int BaudratePrescaler { get; set; }
+        public int SynchronizationJumpWidth { get; set; }
         public bool UseMultiBitSampling { get; set; }
 
         public CanBitTiming()
             : this(0, 0, 0, 0, 0, false) {
         }
 
-        public CanBitTiming(uint propagation, uint phase1, uint phase2, uint baudratePrescaler, uint synchronizationJumpWidth)
+        public CanBitTiming(int propagation, int phase1, int phase2, int baudratePrescaler, int synchronizationJumpWidth)
             : this(propagation, phase1, phase2, baudratePrescaler, synchronizationJumpWidth, false) {
         }
 
-        public CanBitTiming(uint propagation, uint phase1, uint phase2, uint baudratePrescaler, uint synchronizationJumpWidth, bool useMultiBitSampling) {
+        public CanBitTiming(int propagation, int phase1, int phase2, int baudratePrescaler, int synchronizationJumpWidth, bool useMultiBitSampling) {
             this.Propagation = propagation;
             this.Phase1 = phase1;
             this.Phase2 = phase2;
@@ -101,10 +101,10 @@ namespace GHIElectronics.TinyCLR.Devices.Can {
     public sealed class CanMessage {
         private byte[] data;
 
-        public uint ArbitrationId { get; set; }
+        public int ArbitrationId { get; set; }
         public bool IsExtendedId { get; set; }
         public bool IsRemoteTransmissionRequest { get; set; }
-        public uint Length { get; set; }
+        public int Length { get; set; }
         public DateTime TimeStamp { get; set; }
 
         public byte[] Data {
@@ -122,19 +122,19 @@ namespace GHIElectronics.TinyCLR.Devices.Can {
             : this(0, new byte[8], 0, 0, false, false) {
         }
 
-        public CanMessage(uint arbitrationId)
+        public CanMessage(int arbitrationId)
             : this(arbitrationId, null, 0, 0) {
         }
 
-        public CanMessage(uint arbitrationId, byte[] data)
+        public CanMessage(int arbitrationId, byte[] data)
             : this(arbitrationId, data, 0, data != null ? data.Length : 0) {
         }
 
-        public CanMessage(uint arbitrationId, byte[] data, int offset, int count)
+        public CanMessage(int arbitrationId, byte[] data, int offset, int count)
             : this(arbitrationId, data, offset, count, false, false) {
         }
 
-        public CanMessage(uint arbitrationId, byte[] data, int offset, int count, bool isRemoteTransmissionRequesti, bool isExtendedId) {
+        public CanMessage(int arbitrationId, byte[] data, int offset, int count, bool isRemoteTransmissionRequesti, bool isExtendedId) {
             if (count < 0 || count > 8) throw new ArgumentOutOfRangeException(nameof(count), "count must be between zero and eight.");
             if (data == null && count != 0) throw new ArgumentOutOfRangeException(nameof(count), "count must be zero when data is null.");
             if (count != 0 && offset + count > data.Length) throw new ArgumentOutOfRangeException(nameof(data), "data.Length must be at least offset + count.");
@@ -145,7 +145,7 @@ namespace GHIElectronics.TinyCLR.Devices.Can {
             this.IsRemoteTransmissionRequest = isRemoteTransmissionRequesti;
             this.IsExtendedId = isExtendedId;
             this.TimeStamp = DateTime.Now;
-            this.Length = (uint)count;
+            this.Length = (int)count;
             this.data = new byte[8];
 
             if (count != 0)
@@ -158,25 +158,25 @@ namespace GHIElectronics.TinyCLR.Devices.Can {
             void Enable();
             void Disable();
 
-            uint WriteMessages(CanMessage[] messages, uint offset, uint count);
-            uint ReadMessages(CanMessage[] messages, uint offset, uint count);
+            int WriteMessages(CanMessage[] messages, int offset, int count);
+            int ReadMessages(CanMessage[] messages, int offset, int count);
 
             void SetBitTiming(CanBitTiming bitTiming);
-            void SetExplicitFilters(uint[] filters);
-            void SetGroupFilters(uint[] lowerBounds, uint[] upperBounds);
+            void SetExplicitFilters(int[] filters);
+            void SetGroupFilters(int[] lowerBounds, int[] upperBounds);
             void ClearWriteBuffer();
             void ClearReadBuffer();
 
-            uint WriteBufferSize { get; set; }
-            uint ReadBufferSize { get; set; }
+            int WriteBufferSize { get; set; }
+            int ReadBufferSize { get; set; }
 
-            uint UnwrittenMessageCount { get; }
-            uint UnreadMessageCount { get; }
+            int UnwrittenMessageCount { get; }
+            int UnreadMessageCount { get; }
             bool CanWriteMessage { get; }
             bool CanReadMessage { get; }
-            uint WriteErrorCount { get; }
-            uint ReadErrorCount { get; }
-            uint SourceClock { get; }
+            int WriteErrorCount { get; }
+            int ReadErrorCount { get; }
+            int SourceClock { get; }
 
             event MessageReceivedEventHandler MessageReceived;
             event ErrorReceivedEventHandler ErrorReceived;
@@ -199,7 +199,7 @@ namespace GHIElectronics.TinyCLR.Devices.Can {
                 this.messageReceivedDispatcher = NativeEventDispatcher.GetDispatcher("GHIElectronics.TinyCLR.NativeEventNames.Can.MessageReceived");
                 this.errorReceivedDispatcher = NativeEventDispatcher.GetDispatcher("GHIElectronics.TinyCLR.NativeEventNames.Can.ErrorReceived");
 
-                this.messageReceivedDispatcher.OnInterrupt += (apiName, d0, d1, d2, d3, ts) => { if (this.Api.Name == apiName) this.MessageReceived?.Invoke(null, new MessageReceivedEventArgs((uint)d0)); };
+                this.messageReceivedDispatcher.OnInterrupt += (apiName, d0, d1, d2, d3, ts) => { if (this.Api.Name == apiName) this.MessageReceived?.Invoke(null, new MessageReceivedEventArgs((int)d0)); };
                 this.errorReceivedDispatcher.OnInterrupt += (apiName, d0, d1, d2, d3, ts) => { if (this.Api.Name == apiName) this.ErrorReceived?.Invoke(null, new ErrorReceivedEventArgs((CanError)d0)); };
             }
 
@@ -214,16 +214,16 @@ namespace GHIElectronics.TinyCLR.Devices.Can {
             [MethodImpl(MethodImplOptions.InternalCall)]
             private extern void Release();
 
-            public extern uint WriteBufferSize { [MethodImpl(MethodImplOptions.InternalCall)] get; [MethodImpl(MethodImplOptions.InternalCall)] set; }
-            public extern uint ReadBufferSize { [MethodImpl(MethodImplOptions.InternalCall)] get; [MethodImpl(MethodImplOptions.InternalCall)] set; }
+            public extern int WriteBufferSize { [MethodImpl(MethodImplOptions.InternalCall)] get; [MethodImpl(MethodImplOptions.InternalCall)] set; }
+            public extern int ReadBufferSize { [MethodImpl(MethodImplOptions.InternalCall)] get; [MethodImpl(MethodImplOptions.InternalCall)] set; }
 
-            public extern uint UnwrittenMessageCount { [MethodImpl(MethodImplOptions.InternalCall)] get; }
-            public extern uint UnreadMessageCount { [MethodImpl(MethodImplOptions.InternalCall)] get; }
+            public extern int UnwrittenMessageCount { [MethodImpl(MethodImplOptions.InternalCall)] get; }
+            public extern int UnreadMessageCount { [MethodImpl(MethodImplOptions.InternalCall)] get; }
             public extern bool CanWriteMessage { [MethodImpl(MethodImplOptions.InternalCall)] get; }
             public extern bool CanReadMessage { [MethodImpl(MethodImplOptions.InternalCall)] get; }
-            public extern uint WriteErrorCount { [MethodImpl(MethodImplOptions.InternalCall)] get; }
-            public extern uint ReadErrorCount { [MethodImpl(MethodImplOptions.InternalCall)] get; }
-            public extern uint SourceClock { [MethodImpl(MethodImplOptions.InternalCall)] get; }
+            public extern int WriteErrorCount { [MethodImpl(MethodImplOptions.InternalCall)] get; }
+            public extern int ReadErrorCount { [MethodImpl(MethodImplOptions.InternalCall)] get; }
+            public extern int SourceClock { [MethodImpl(MethodImplOptions.InternalCall)] get; }
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void Enable();
@@ -232,19 +232,19 @@ namespace GHIElectronics.TinyCLR.Devices.Can {
             public extern void Disable();
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern uint WriteMessages(CanMessage[] messages, uint offset, uint count);
+            public extern int WriteMessages(CanMessage[] messages, int offset, int count);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern uint ReadMessages(CanMessage[] messages, uint offset, uint count);
+            public extern int ReadMessages(CanMessage[] messages, int offset, int count);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void SetBitTiming(CanBitTiming bitTiming);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern void SetExplicitFilters(uint[] filters);
+            public extern void SetExplicitFilters(int[] filters);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern void SetGroupFilters(uint[] lowerBounds, uint[] upperBounds);
+            public extern void SetGroupFilters(int[] lowerBounds, int[] upperBounds);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void ClearWriteBuffer();

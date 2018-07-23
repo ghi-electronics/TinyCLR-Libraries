@@ -24,22 +24,22 @@ namespace GHIElectronics.TinyCLR.Devices.Uart {
         public void Enable() => this.Provider.Enable();
         public void Disable() => this.Provider.Disable();
 
-        public void SetActiveSettings(uint baudRate, uint dataBits, UartParity parity, UartStopBitCount stopBits, UartHandshake handshaking) => this.Provider.SetActiveSettings(baudRate, dataBits, parity, stopBits, handshaking);
+        public void SetActiveSettings(int baudRate, int dataBits, UartParity parity, UartStopBitCount stopBits, UartHandshake handshaking) => this.Provider.SetActiveSettings(baudRate, dataBits, parity, stopBits, handshaking);
         public void Flush() => this.Provider.Flush();
 
-        public uint Read(byte[] buffer) => this.Read(buffer, 0, buffer.Length);
-        public uint Read(byte[] buffer, int offset, int length) => this.Provider.Read(buffer, (uint)offset, (uint)length);
+        public int Read(byte[] buffer) => this.Read(buffer, 0, buffer.Length);
+        public int Read(byte[] buffer, int offset, int length) => this.Provider.Read(buffer, (int)offset, (int)length);
 
-        public uint Write(byte[] buffer) => this.Read(buffer, 0, buffer.Length);
-        public uint Write(byte[] buffer, int offset, int length) => this.Provider.Write(buffer, (uint)offset, (uint)length);
+        public int Write(byte[] buffer) => this.Read(buffer, 0, buffer.Length);
+        public int Write(byte[] buffer, int offset, int length) => this.Provider.Write(buffer, (int)offset, (int)length);
 
         public void ClearWriteBuffer() => this.Provider.ClearWriteBuffer();
         public void ClearReadBuffer() => this.Provider.ClearReadBuffer();
 
-        public uint WriteBufferSize { get => this.Provider.WriteBufferSize; set => this.Provider.WriteBufferSize = value; }
-        public uint ReadBufferSize { get => this.Provider.ReadBufferSize; set => this.Provider.ReadBufferSize = value; }
-        public uint UnwrittenCount => this.Provider.UnwrittenCount;
-        public uint UnreadCount => this.Provider.UnreadCount;
+        public int WriteBufferSize { get => this.Provider.WriteBufferSize; set => this.Provider.WriteBufferSize = value; }
+        public int ReadBufferSize { get => this.Provider.ReadBufferSize; set => this.Provider.ReadBufferSize = value; }
+        public int UnwrittenCount => this.Provider.UnwrittenCount;
+        public int UnreadCount => this.Provider.UnreadCount;
 
         public bool IsRequestToSendEnabled { get => this.Provider.IsRequestToSendEnabled; set => this.Provider.IsRequestToSendEnabled = value; }
         public bool ClearToSendState => this.Provider.ClearToSendState;
@@ -82,9 +82,9 @@ namespace GHIElectronics.TinyCLR.Devices.Uart {
     public delegate void ErrorReceivedEventHandler(UartController sender, ErrorReceivedEventArgs e);
 
     public sealed class DataReceivedEventArgs {
-        public uint Count { get; }
+        public int Count { get; }
 
-        internal DataReceivedEventArgs(uint count) => this.Count = count;
+        internal DataReceivedEventArgs(int count) => this.Count = count;
     }
 
     public sealed class ErrorReceivedEventArgs {
@@ -98,18 +98,18 @@ namespace GHIElectronics.TinyCLR.Devices.Uart {
             void Enable();
             void Disable();
 
-            void SetActiveSettings(uint baudRate, uint dataBits, UartParity parity, UartStopBitCount stopBits, UartHandshake handshaking);
+            void SetActiveSettings(int baudRate, int dataBits, UartParity parity, UartStopBitCount stopBits, UartHandshake handshaking);
             void Flush();
-            uint Read(byte[] buffer, uint offset, uint length);
-            uint Write(byte[] buffer, uint offset, uint length);
+            int Read(byte[] buffer, int offset, int length);
+            int Write(byte[] buffer, int offset, int length);
 
             void ClearWriteBuffer();
             void ClearReadBuffer();
 
-            uint WriteBufferSize { get; set; }
-            uint ReadBufferSize { get; set; }
-            uint UnwrittenCount { get; }
-            uint UnreadCount { get; }
+            int WriteBufferSize { get; set; }
+            int ReadBufferSize { get; set; }
+            int UnwrittenCount { get; }
+            int UnreadCount { get; }
 
             bool IsRequestToSendEnabled { get; set; }
             bool ClearToSendState { get; }
@@ -139,7 +139,7 @@ namespace GHIElectronics.TinyCLR.Devices.Uart {
                 this.errorReceivedDispatcher = NativeEventDispatcher.GetDispatcher("GHIElectronics.TinyCLR.NativeEventNames.Uart.ErrorReceived");
 
                 this.clearToSendChangedDispatcher.OnInterrupt += (apiName, d0, d1, d2, d3, ts) => { if (this.Api.Name == apiName) this.ClearToSendChanged?.Invoke(null, new EventArgs()); };
-                this.dataReceivedDispatcher.OnInterrupt += (apiName, d0, d1, d2, d3, ts) => { if (this.Api.Name == apiName) this.DataReceived?.Invoke(null, new DataReceivedEventArgs((uint)d0)); };
+                this.dataReceivedDispatcher.OnInterrupt += (apiName, d0, d1, d2, d3, ts) => { if (this.Api.Name == apiName) this.DataReceived?.Invoke(null, new DataReceivedEventArgs((int)d0)); };
                 this.errorReceivedDispatcher.OnInterrupt += (apiName, d0, d1, d2, d3, ts) => { if (this.Api.Name == apiName) this.ErrorReceived?.Invoke(null, new ErrorReceivedEventArgs((UartError)d0)); };
             }
 
@@ -155,10 +155,10 @@ namespace GHIElectronics.TinyCLR.Devices.Uart {
             [MethodImpl(MethodImplOptions.InternalCall)]
             private extern void Release();
 
-            public extern uint WriteBufferSize { [MethodImpl(MethodImplOptions.InternalCall)] get; [MethodImpl(MethodImplOptions.InternalCall)] set; }
-            public extern uint ReadBufferSize { [MethodImpl(MethodImplOptions.InternalCall)] get; [MethodImpl(MethodImplOptions.InternalCall)] set; }
-            public extern uint UnwrittenCount { [MethodImpl(MethodImplOptions.InternalCall)] get; }
-            public extern uint UnreadCount { [MethodImpl(MethodImplOptions.InternalCall)] get; }
+            public extern int WriteBufferSize { [MethodImpl(MethodImplOptions.InternalCall)] get; [MethodImpl(MethodImplOptions.InternalCall)] set; }
+            public extern int ReadBufferSize { [MethodImpl(MethodImplOptions.InternalCall)] get; [MethodImpl(MethodImplOptions.InternalCall)] set; }
+            public extern int UnwrittenCount { [MethodImpl(MethodImplOptions.InternalCall)] get; }
+            public extern int UnreadCount { [MethodImpl(MethodImplOptions.InternalCall)] get; }
 
             public extern bool IsRequestToSendEnabled { [MethodImpl(MethodImplOptions.InternalCall)] get; [MethodImpl(MethodImplOptions.InternalCall)] set; }
             public extern bool ClearToSendState { [MethodImpl(MethodImplOptions.InternalCall)] get; }
@@ -170,16 +170,16 @@ namespace GHIElectronics.TinyCLR.Devices.Uart {
             public extern void Disable();
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern void SetActiveSettings(uint baudRate, uint dataBits, UartParity parity, UartStopBitCount stopBits, UartHandshake handshaking);
+            public extern void SetActiveSettings(int baudRate, int dataBits, UartParity parity, UartStopBitCount stopBits, UartHandshake handshaking);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void Flush();
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern uint Read(byte[] buffer, uint offset, uint length);
+            public extern int Read(byte[] buffer, int offset, int length);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern uint Write(byte[] buffer, uint offset, uint length);
+            public extern int Write(byte[] buffer, int offset, int length);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void ClearWriteBuffer();

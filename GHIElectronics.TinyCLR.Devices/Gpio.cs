@@ -47,13 +47,11 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio {
         public void Dispose() => this.Provider.Dispose();
 
 
-        public GpioPin OpenPin(int pinNumber) => this.OpenPin((uint)pinNumber);
+        public GpioPin OpenPin(int pinNumber) => new GpioPin(this, pinNumber);
 
-        public GpioPin OpenPin(uint pinNumber) => new GpioPin(this, pinNumber);
-
-        public GpioPin[] OpenPins(params uint[] pinNumbers) {
+        public GpioPin[] OpenPins(params int[] pinNumbers) {
             var res = new GpioPin[pinNumbers.Length];
-            var i = 0U;
+            var i = 0;
 
             for (; i < pinNumbers.Length; i++) {
                 try {
@@ -70,7 +68,7 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio {
             return res;
         }
 
-        public bool TryOpenPin(uint pinNumber, out GpioPin pin) {
+        public bool TryOpenPin(int pinNumber, out GpioPin pin) {
             try {
                 pin = this.OpenPin(pinNumber);
                 return true;
@@ -81,7 +79,7 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio {
             }
         }
 
-        public bool TryOpenPins(out GpioPin[] pins, params uint[] pinNumbers) {
+        public bool TryOpenPins(out GpioPin[] pins, params int[] pinNumbers) {
             try {
                 pins = this.OpenPins(pinNumbers);
                 return true;
@@ -97,10 +95,10 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio {
         private GpioPinValueChangedEventHandler callbacks;
         private GpioPinEdge valueChangedEdge = GpioPinEdge.FallingEdge | GpioPinEdge.RisingEdge;
 
-        public uint PinNumber { get; }
+        public int PinNumber { get; }
         public GpioController Controller { get; }
 
-        internal GpioPin(GpioController controller, uint pinNumber) {
+        internal GpioPin(GpioController controller, int pinNumber) {
             this.PinNumber = pinNumber;
             this.Controller = controller;
 
@@ -109,7 +107,7 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio {
 
         public void Dispose() => this.Controller.Provider.ClosePin(this.PinNumber);
 
-        public bool IsDriveModeSupported(uint pin, GpioPinDriveMode mode) => this.Controller.Provider.IsDriveModeSupported(pin, mode);
+        public bool IsDriveModeSupported(int pin, GpioPinDriveMode mode) => this.Controller.Provider.IsDriveModeSupported(pin, mode);
 
         public TimeSpan DebounceTimeout { get => this.Controller.Provider.GetDebounceTimeout(this.PinNumber); set => this.Controller.Provider.SetDebounceTimeout(this.PinNumber, value); }
         public GpioPinDriveMode DriveMode { get => this.Controller.Provider.GetDriveMode(this.PinNumber); set => this.Controller.Provider.SetDriveMode(this.PinNumber, value); }
@@ -159,21 +157,21 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio {
 
     namespace Provider {
         public interface IGpioControllerProvider : IDisposable {
-            uint PinCount { get; }
+            int PinCount { get; }
 
-            void OpenPin(uint pin);
-            void ClosePin(uint pin);
+            void OpenPin(int pin);
+            void ClosePin(int pin);
 
-            bool IsDriveModeSupported(uint pin, GpioPinDriveMode mode);
-            void SetPinChangedHandler(uint pin, GpioPinEdge edge, GpioPinValueChangedEventHandler value);
-            void ClearPinChangedHandler(uint pin);
+            bool IsDriveModeSupported(int pin, GpioPinDriveMode mode);
+            void SetPinChangedHandler(int pin, GpioPinEdge edge, GpioPinValueChangedEventHandler value);
+            void ClearPinChangedHandler(int pin);
 
-            TimeSpan GetDebounceTimeout(uint pin);
-            void SetDebounceTimeout(uint pin, TimeSpan value);
-            GpioPinDriveMode GetDriveMode(uint pin);
-            void SetDriveMode(uint pin, GpioPinDriveMode value);
-            GpioPinValue Read(uint pin);
-            void Write(uint pin, GpioPinValue value);
+            TimeSpan GetDebounceTimeout(int pin);
+            void SetDebounceTimeout(int pin, TimeSpan value);
+            GpioPinDriveMode GetDriveMode(int pin);
+            void SetDriveMode(int pin, GpioPinDriveMode value);
+            GpioPinValue Read(int pin);
+            void Write(int pin, GpioPinValue value);
         }
 
         public sealed class GpioControllerApiWrapper : IGpioControllerProvider {
@@ -199,44 +197,44 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio {
             [MethodImpl(MethodImplOptions.InternalCall)]
             private extern void Release();
 
-            public extern uint PinCount { [MethodImpl(MethodImplOptions.InternalCall)] get; }
+            public extern int PinCount { [MethodImpl(MethodImplOptions.InternalCall)] get; }
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern void OpenPin(uint pin);
+            public extern void OpenPin(int pin);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern void ClosePin(uint pin);
+            public extern void ClosePin(int pin);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern TimeSpan GetDebounceTimeout(uint pin);
+            public extern TimeSpan GetDebounceTimeout(int pin);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern void SetDebounceTimeout(uint pin, TimeSpan value);
+            public extern void SetDebounceTimeout(int pin, TimeSpan value);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern GpioPinDriveMode GetDriveMode(uint pin);
+            public extern GpioPinDriveMode GetDriveMode(int pin);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern void SetDriveMode(uint pin, GpioPinDriveMode value);
+            public extern void SetDriveMode(int pin, GpioPinDriveMode value);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern GpioPinValue Read(uint pin);
+            public extern GpioPinValue Read(int pin);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern void Write(uint pin, GpioPinValue value);
+            public extern void Write(int pin, GpioPinValue value);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern bool IsDriveModeSupported(uint pin, GpioPinDriveMode mode);
+            public extern bool IsDriveModeSupported(int pin, GpioPinDriveMode mode);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            private extern void SetPinChangedEdge(uint pin, GpioPinEdge edge);
+            private extern void SetPinChangedEdge(int pin, GpioPinEdge edge);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            private extern void ClearPinChangedEdge(uint pin);
+            private extern void ClearPinChangedEdge(int pin);
 
-            private static string GetEventKey(string apiName, ulong pin) => $"{apiName}\\{pin}";
+            private static string GetEventKey(string apiName, long pin) => $"{apiName}\\{pin}";
 
-            public void SetPinChangedHandler(uint pin, GpioPinEdge edge, GpioPinValueChangedEventHandler value) {
+            public void SetPinChangedHandler(int pin, GpioPinEdge edge, GpioPinValueChangedEventHandler value) {
                 if (this.dispatcher == null) {
                     this.dispatcher = NativeEventDispatcher.GetDispatcher("GHIElectronics.TinyCLR.NativeEventNames.Gpio.PinChanged");
                     this.pinMap = new Hashtable();
@@ -252,7 +250,7 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio {
                 this.SetPinChangedEdge(pin, edge);
             }
 
-            public void ClearPinChangedHandler(uint pin) {
+            public void ClearPinChangedHandler(int pin) {
                 var key = GpioControllerApiWrapper.GetEventKey(this.Api.Name, pin);
 
                 lock (this.pinMap)
@@ -262,7 +260,7 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio {
                 this.ClearPinChangedEdge(pin);
             }
 
-            private void OnDispatcher(string api, ulong d0, ulong d1, ulong d2, IntPtr d3, DateTime ts) {
+            private void OnDispatcher(string api, long d0, long d1, long d2, IntPtr d3, DateTime ts) {
                 var handler = default(GpioPinValueChangedEventHandler);
                 var key = GpioControllerApiWrapper.GetEventKey(api, d0);
                 var edge = d1 != 0 ? GpioPinEdge.RisingEdge : GpioPinEdge.FallingEdge;

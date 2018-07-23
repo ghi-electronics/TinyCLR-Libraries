@@ -20,36 +20,36 @@ namespace GHIElectronics.TinyCLR.Devices.Rtc {
     }
 
     public struct RtcDateTime {
-        public uint Year;
-        public uint Month;
-        public uint Week;
-        public uint DayOfYear;
-        public uint DayOfMonth;
-        public uint DayOfWeek;
-        public uint Hour;
-        public uint Minute;
-        public uint Second;
-        public uint Millisecond;
-        public uint Microsecond;
-        public uint Nanosecond;
+        public int Year;
+        public int Month;
+        public int Week;
+        public int DayOfYear;
+        public int DayOfMonth;
+        public int DayOfWeek;
+        public int Hour;
+        public int Minute;
+        public int Second;
+        public int Millisecond;
+        public int Microsecond;
+        public int Nanosecond;
 
         public DateTime ToDateTime() => new DateTime((int)this.Year, (int)this.Month, (int)this.DayOfMonth, (int)this.Hour, (int)this.Minute, (int)this.Second, (int)this.Millisecond).AddTicks((long)((TimeSpan.TicksPerMillisecond / 1_000.0) * this.Microsecond + (TimeSpan.TicksPerMillisecond / 1_000_000.0) * this.Nanosecond));
 
         public static RtcDateTime FromDateTime(DateTime value) {
             var dt = new RtcDateTime {
-                Year = (uint)value.Year,
-                Month = (uint)value.Month,
-                Week = uint.MaxValue,
-                DayOfYear = (uint)value.DayOfYear,
-                DayOfMonth = (uint)value.Day,
-                DayOfWeek = (uint)value.DayOfWeek,
-                Hour = (uint)value.Hour,
-                Minute = (uint)value.Minute,
-                Second = (uint)value.Second,
-                Millisecond = (uint)value.Millisecond
+                Year = (int)value.Year,
+                Month = (int)value.Month,
+                Week = int.MaxValue,
+                DayOfYear = (int)value.DayOfYear,
+                DayOfMonth = (int)value.Day,
+                DayOfWeek = (int)value.DayOfWeek,
+                Hour = (int)value.Hour,
+                Minute = (int)value.Minute,
+                Second = (int)value.Second,
+                Millisecond = (int)value.Millisecond
             };
 
-            var remaining = (uint)(value.TimeOfDay.Ticks % 10_000);
+            var remaining = (int)(value.TimeOfDay.Ticks % 10_000);
 
             dt.Microsecond = remaining / 10;
             dt.Nanosecond = (remaining % 10) * 100;

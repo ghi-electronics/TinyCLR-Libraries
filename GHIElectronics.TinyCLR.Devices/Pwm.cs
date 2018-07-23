@@ -15,7 +15,7 @@ namespace GHIElectronics.TinyCLR.Devices.Pwm {
 
         public double ActualFrequency { get; private set; }
 
-        public uint ChannelCount => this.Provider.ChannelCount;
+        public int ChannelCount => this.Provider.ChannelCount;
         public double MinFrequency => this.Provider.MinFrequency;
         public double MaxFrequency => this.Provider.MaxFrequency;
 
@@ -23,19 +23,18 @@ namespace GHIElectronics.TinyCLR.Devices.Pwm {
 
         public double SetDesiredFrequency(double desiredFrequency) => this.ActualFrequency = this.Provider.SetDesiredFrequency(desiredFrequency);
 
-        public PwmChannel OpenChannel(int channelNumber) => this.OpenChannel((uint)channelNumber);
-        public PwmChannel OpenChannel(uint channelNumber) => new PwmChannel(this, channelNumber);
+        public PwmChannel OpenChannel(int channelNumber) => new PwmChannel(this, channelNumber);
     }
 
     public sealed class PwmChannel : IDisposable {
         private PwmPulsePolarity polarity;
         private double dutyCycle;
 
-        public uint ChannelNumber { get; }
+        public int ChannelNumber { get; }
         public PwmController Controller { get; }
         public bool IsStarted { get; private set; }
 
-        internal PwmChannel(PwmController controller, uint channelNumber) {
+        internal PwmChannel(PwmController controller, int channelNumber) {
             this.ChannelNumber = channelNumber;
             this.Controller = controller;
 
@@ -83,17 +82,17 @@ namespace GHIElectronics.TinyCLR.Devices.Pwm {
 
     namespace Provider {
         public interface IPwmControllerProvider : IDisposable {
-            uint ChannelCount { get; }
+            int ChannelCount { get; }
             double MinFrequency { get; }
             double MaxFrequency { get; }
 
-            void OpenChannel(uint channel);
-            void CloseChannel(uint channel);
+            void OpenChannel(int channel);
+            void CloseChannel(int channel);
 
-            void EnableChannel(uint channel);
-            void DisableChannel(uint channel);
+            void EnableChannel(int channel);
+            void DisableChannel(int channel);
 
-            void SetPulseParameters(uint channel, double dutyCycle, PwmPulsePolarity polarity);
+            void SetPulseParameters(int channel, double dutyCycle, PwmPulsePolarity polarity);
             double SetDesiredFrequency(double frequency);
         }
 
@@ -118,24 +117,24 @@ namespace GHIElectronics.TinyCLR.Devices.Pwm {
             [MethodImpl(MethodImplOptions.InternalCall)]
             private extern void Release();
 
-            public extern uint ChannelCount { [MethodImpl(MethodImplOptions.InternalCall)] get; }
+            public extern int ChannelCount { [MethodImpl(MethodImplOptions.InternalCall)] get; }
             public extern double MinFrequency { [MethodImpl(MethodImplOptions.InternalCall)] get; }
             public extern double MaxFrequency { [MethodImpl(MethodImplOptions.InternalCall)] get; }
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern void OpenChannel(uint channel);
+            public extern void OpenChannel(int channel);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern void CloseChannel(uint channel);
+            public extern void CloseChannel(int channel);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern void EnableChannel(uint channel);
+            public extern void EnableChannel(int channel);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern void DisableChannel(uint channel);
+            public extern void DisableChannel(int channel);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern void SetPulseParameters(uint channel, double dutyCycle, PwmPulsePolarity polarity);
+            public extern void SetPulseParameters(int channel, double dutyCycle, PwmPulsePolarity polarity);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern double SetDesiredFrequency(double frequency);

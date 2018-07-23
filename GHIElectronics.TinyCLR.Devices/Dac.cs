@@ -13,24 +13,23 @@ namespace GHIElectronics.TinyCLR.Devices.Dac {
         public static DacController FromName(string name) => DacController.FromProvider(new DacControllerApiWrapper(Api.Find(name, ApiType.DacController)));
         public static DacController FromProvider(IDacControllerProvider provider) => new DacController(provider);
 
-        public uint ChannelCount => this.Provider.ChannelCount;
-        public uint ResolutionInBits => this.Provider.ResolutionInBits;
+        public int ChannelCount => this.Provider.ChannelCount;
+        public int ResolutionInBits => this.Provider.ResolutionInBits;
         public int MinValue => this.Provider.MinValue;
         public int MaxValue => this.Provider.MaxValue;
 
         public void Dispose() => this.Provider.Dispose();
 
-        public DacChannel OpenChannel(int channelNumber) => this.OpenChannel((uint)channelNumber);
-        public DacChannel OpenChannel(uint channelNumber) => new DacChannel(this, channelNumber);
+        public DacChannel OpenChannel(int channelNumber) => new DacChannel(this, channelNumber);
     }
 
     public sealed class DacChannel : IDisposable {
-        public uint ChannelNumber { get; }
+        public int ChannelNumber { get; }
         public DacController Controller { get; }
 
         public int LastWrittenValue { get; private set; }
 
-        internal DacChannel(DacController controller, uint channelNumber) {
+        internal DacChannel(DacController controller, int channelNumber) {
             this.ChannelNumber = channelNumber;
             this.Controller = controller;
 
@@ -45,15 +44,15 @@ namespace GHIElectronics.TinyCLR.Devices.Dac {
 
     namespace Provider {
         public interface IDacControllerProvider : IDisposable {
-            uint ChannelCount { get; }
-            uint ResolutionInBits { get; }
+            int ChannelCount { get; }
+            int ResolutionInBits { get; }
             int MinValue { get; }
             int MaxValue { get; }
 
-            void OpenChannel(uint channel);
-            void CloseChannel(uint channel);
+            void OpenChannel(int channel);
+            void CloseChannel(int channel);
 
-            void Write(uint channel, int value);
+            void Write(int channel, int value);
         }
 
         public sealed class DacControllerApiWrapper : IDacControllerProvider {
@@ -77,19 +76,19 @@ namespace GHIElectronics.TinyCLR.Devices.Dac {
             [MethodImpl(MethodImplOptions.InternalCall)]
             private extern void Release();
 
-            public extern uint ChannelCount { [MethodImpl(MethodImplOptions.InternalCall)] get; }
-            public extern uint ResolutionInBits { [MethodImpl(MethodImplOptions.InternalCall)] get; }
+            public extern int ChannelCount { [MethodImpl(MethodImplOptions.InternalCall)] get; }
+            public extern int ResolutionInBits { [MethodImpl(MethodImplOptions.InternalCall)] get; }
             public extern int MinValue { [MethodImpl(MethodImplOptions.InternalCall)] get; }
             public extern int MaxValue { [MethodImpl(MethodImplOptions.InternalCall)] get; }
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern void OpenChannel(uint channel);
+            public extern void OpenChannel(int channel);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern void CloseChannel(uint channel);
+            public extern void CloseChannel(int channel);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern void Write(uint channel, int value);
+            public extern void Write(int channel, int value);
         }
     }
 }

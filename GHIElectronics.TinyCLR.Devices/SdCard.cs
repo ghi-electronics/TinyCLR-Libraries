@@ -20,11 +20,11 @@ namespace GHIElectronics.TinyCLR.Devices.SdCard {
 
     namespace Provider {
         public interface ISdCardControllerProvider : IDisposable {
-            uint ReadSectors(ulong sector, uint count, byte[] buffer, int offset, uint timeout);
-            uint WriteSectors(ulong sector, uint count, byte[] buffer, int offset, uint timeout);
-            uint EraseSectors(ulong sector, uint count, uint timeout);
-            bool IsSectorErased(ulong sector);
-            void GetSectorMap(out uint[] sizes, out uint count, out bool uniform);
+            int ReadSectors(long sector, int count, byte[] buffer, int offset, int timeout);
+            int WriteSectors(long sector, int count, byte[] buffer, int offset, int timeout);
+            int EraseSectors(long sector, int count, int timeout);
+            bool IsSectorErased(long sector);
+            void GetSectorMap(out int[] sizes, out int count, out bool uniform);
         }
 
         public sealed class SdCardControllerApiWrapper : ISdCardControllerProvider, IApiImplementation {
@@ -51,19 +51,19 @@ namespace GHIElectronics.TinyCLR.Devices.SdCard {
             private extern void Release();
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern uint ReadSectors(ulong sector, uint count, byte[] buffer, int offset, uint timeout);
+            public extern int ReadSectors(long sector, int count, byte[] buffer, int offset, int timeout);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern uint WriteSectors(ulong sector, uint count, byte[] buffer, int offset, uint timeout);
+            public extern int WriteSectors(long sector, int count, byte[] buffer, int offset, int timeout);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern uint EraseSectors(ulong sector, uint count, uint timeout);
+            public extern int EraseSectors(long sector, int count, int timeout);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern bool IsSectorErased(ulong sector);
+            public extern bool IsSectorErased(long sector);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern void GetSectorMap(out uint[] sizes, out uint count, out bool uniform);
+            public extern void GetSectorMap(out int[] sizes, out int count, out bool uniform);
         }
     }
 }

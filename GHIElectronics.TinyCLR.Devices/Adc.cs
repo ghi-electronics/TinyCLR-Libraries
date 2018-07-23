@@ -18,8 +18,8 @@ namespace GHIElectronics.TinyCLR.Devices.Adc {
         public static AdcController FromName(string name) => AdcController.FromProvider(new AdcControllerApiWrapper(Api.Find(name, ApiType.AdcController)));
         public static AdcController FromProvider(IAdcControllerProvider provider) => new AdcController(provider);
 
-        public uint ChannelCount => this.Provider.ChannelCount;
-        public uint ResolutionInBits => this.Provider.ResolutionInBits;
+        public int ChannelCount => this.Provider.ChannelCount;
+        public int ResolutionInBits => this.Provider.ResolutionInBits;
         public int MinValue => this.Provider.MinValue;
         public int MaxValue => this.Provider.MaxValue;
 
@@ -32,15 +32,14 @@ namespace GHIElectronics.TinyCLR.Devices.Adc {
 
         public void Dispose() => this.Provider.Dispose();
 
-        public AdcChannel OpenChannel(int channelNumber) => this.OpenChannel((uint)channelNumber);
-        public AdcChannel OpenChannel(uint channelNumber) => new AdcChannel(this, channelNumber);
+        public AdcChannel OpenChannel(int channelNumber) => new AdcChannel(this, channelNumber);
     }
 
     public sealed class AdcChannel : IDisposable {
-        public uint ChannelNumber { get; }
+        public int ChannelNumber { get; }
         public AdcController Controller { get; }
 
-        internal AdcChannel(AdcController controller, uint channelNumber) {
+        internal AdcChannel(AdcController controller, int channelNumber) {
             this.ChannelNumber = channelNumber;
             this.Controller = controller;
 
@@ -55,8 +54,8 @@ namespace GHIElectronics.TinyCLR.Devices.Adc {
 
     namespace Provider {
         public interface IAdcControllerProvider : IDisposable {
-            uint ChannelCount { get; }
-            uint ResolutionInBits { get; }
+            int ChannelCount { get; }
+            int ResolutionInBits { get; }
             int MinValue { get; }
             int MaxValue { get; }
 
@@ -64,10 +63,10 @@ namespace GHIElectronics.TinyCLR.Devices.Adc {
             AdcChannelMode GetChannelMode();
             void SetChannelMode(AdcChannelMode value);
 
-            void OpenChannel(uint channel);
-            void CloseChannel(uint channel);
+            void OpenChannel(int channel);
+            void CloseChannel(int channel);
 
-            int Read(uint channel);
+            int Read(int channel);
         }
 
         public sealed class AdcControllerApiWrapper : IAdcControllerProvider {
@@ -91,8 +90,8 @@ namespace GHIElectronics.TinyCLR.Devices.Adc {
             [MethodImpl(MethodImplOptions.InternalCall)]
             private extern void Release();
 
-            public extern uint ChannelCount { [MethodImpl(MethodImplOptions.InternalCall)] get; }
-            public extern uint ResolutionInBits { [MethodImpl(MethodImplOptions.InternalCall)] get; }
+            public extern int ChannelCount { [MethodImpl(MethodImplOptions.InternalCall)] get; }
+            public extern int ResolutionInBits { [MethodImpl(MethodImplOptions.InternalCall)] get; }
             public extern int MinValue { [MethodImpl(MethodImplOptions.InternalCall)] get; }
             public extern int MaxValue { [MethodImpl(MethodImplOptions.InternalCall)] get; }
 
@@ -106,13 +105,13 @@ namespace GHIElectronics.TinyCLR.Devices.Adc {
             public extern void SetChannelMode(AdcChannelMode value);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern void OpenChannel(uint channel);
+            public extern void OpenChannel(int channel);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern void CloseChannel(uint channel);
+            public extern void CloseChannel(int channel);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern int Read(uint channel);
+            public extern int Read(int channel);
         }
     }
 }

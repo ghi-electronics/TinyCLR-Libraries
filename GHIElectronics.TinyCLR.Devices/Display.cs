@@ -25,7 +25,7 @@ namespace GHIElectronics.TinyCLR.Devices.Display {
         public void Enable() => this.Provider.Enable();
         public void Disable() => this.Provider.Disable();
 
-        public void DrawBuffer(uint x, uint y, uint width, uint height, byte[] data, int offset) => this.Provider.DrawBuffer(x, y, width, height, data, offset);
+        public void DrawBuffer(int x, int y, int width, int height, byte[] data, int offset) => this.Provider.DrawBuffer(x, y, width, height, data, offset);
         public void DrawString(string value) => this.Provider.DrawString(value);
 
         public void SetConfiguration(DisplayControllerSettings configuration) {
@@ -45,8 +45,8 @@ namespace GHIElectronics.TinyCLR.Devices.Display {
     }
 
     public class DisplayControllerSettings {
-        public uint Width { get; set; }
-        public uint Height { get; set; }
+        public int Width { get; set; }
+        public int Height { get; set; }
         public DisplayDataFormat DataFormat { get; set; }
     }
 
@@ -54,15 +54,15 @@ namespace GHIElectronics.TinyCLR.Devices.Display {
         public bool DataEnableIsFixed { get; set; }
         public bool DataEnablePolarity { get; set; }
         public bool PixelPolarity { get; set; }
-        public uint PixelClockRate { get; set; }
+        public int PixelClockRate { get; set; }
         public bool HorizontalSyncPolarity { get; set; }
-        public uint HorizontalSyncPulseWidth { get; set; }
-        public uint HorizontalFrontPorch { get; set; }
-        public uint HorizontalBackPorch { get; set; }
+        public int HorizontalSyncPulseWidth { get; set; }
+        public int HorizontalFrontPorch { get; set; }
+        public int HorizontalBackPorch { get; set; }
         public bool VerticalSyncPolarity { get; set; }
-        public uint VerticalSyncPulseWidth { get; set; }
-        public uint VerticalFrontPorch { get; set; }
-        public uint VerticalBackPorch { get; set; }
+        public int VerticalSyncPulseWidth { get; set; }
+        public int VerticalFrontPorch { get; set; }
+        public int VerticalBackPorch { get; set; }
     }
 
     public class SpiDisplayControllerSettings : DisplayControllerSettings {
@@ -77,7 +77,7 @@ namespace GHIElectronics.TinyCLR.Devices.Display {
             void Enable();
             void Disable();
             void SetConfiguration(DisplayControllerSettings configuration);
-            void DrawBuffer(uint x, uint y, uint width, uint height, byte[] data, int offset);
+            void DrawBuffer(int x, int y, int width, int height, byte[] data, int offset);
             void DrawString(string value);
         }
 
@@ -111,7 +111,7 @@ namespace GHIElectronics.TinyCLR.Devices.Display {
             public extern void Disable();
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern void DrawBuffer(uint x, uint y, uint width, uint height, byte[] data, int offset);
+            public extern void DrawBuffer(int x, int y, int width, int height, byte[] data, int offset);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void DrawString(string value);
@@ -132,10 +132,10 @@ namespace GHIElectronics.TinyCLR.Devices.Display {
             }
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            private extern void SetParallelConfiguration(uint width, uint height, DisplayDataFormat dataFormat, bool dataEnableIsFixed, bool dataEnablePolarity, bool pixelPolarity, uint pixelClockRate, bool horizontalSyncPolarity, uint horizontalSyncPulseWidth, uint horizontalFrontPorch, uint horizontalBackPorch, bool verticalSyncPolarity, uint verticalSyncPulseWidth, uint verticalFrontPorch, uint verticalBackPorch);
+            private extern void SetParallelConfiguration(int width, int height, DisplayDataFormat dataFormat, bool dataEnableIsFixed, bool dataEnablePolarity, bool pixelPolarity, int pixelClockRate, bool horizontalSyncPolarity, int horizontalSyncPulseWidth, int horizontalFrontPorch, int horizontalBackPorch, bool verticalSyncPolarity, int verticalSyncPulseWidth, int verticalFrontPorch, int verticalBackPorch);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            private extern void SetSpiConfiguration(uint width, uint height, DisplayDataFormat dataFormat, string spiApiName);
+            private extern void SetSpiConfiguration(int width, int height, DisplayDataFormat dataFormat, string spiApiName);
 
             public extern DisplayInterface Interface { [MethodImpl(MethodImplOptions.InternalCall)] get; }
             public extern DisplayDataFormat[] SupportedDataFormats { [MethodImpl(MethodImplOptions.InternalCall)] get; }
