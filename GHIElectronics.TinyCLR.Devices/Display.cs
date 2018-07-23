@@ -13,7 +13,7 @@ namespace GHIElectronics.TinyCLR.Devices.Display {
         public static DisplayController FromName(string name) => DisplayController.FromProvider(new DisplayControllerApiWrapper(Api.Find(name, ApiType.DisplayController)));
         public static DisplayController FromProvider(IDisplayControllerProvider provider) => new DisplayController(provider);
 
-        public IntPtr Hdc => this.Provider is IDisplayControllerHdc h ? h.Hdc : throw new NotSupportedException();
+        public IntPtr Hdc => this.Provider is IApiImplementation a ? a.Implementation : throw new NotSupportedException();
 
         public DisplayControllerSettings ActiveConfiguration { get; private set; }
 
@@ -81,16 +81,12 @@ namespace GHIElectronics.TinyCLR.Devices.Display {
             void DrawString(string value);
         }
 
-        public interface IDisplayControllerHdc {
-            IntPtr Hdc { get; }
-        }
-
-        public sealed class DisplayControllerApiWrapper : IDisplayControllerProvider, IDisplayControllerHdc {
+        public sealed class DisplayControllerApiWrapper : IDisplayControllerProvider, IApiImplementation {
             private readonly IntPtr impl;
 
             public Api Api { get; }
 
-            public IntPtr Hdc => this.impl;
+            IntPtr IApiImplementation.Implementation => this.impl;
 
             public DisplayControllerApiWrapper(Api api) {
                 this.Api = api;

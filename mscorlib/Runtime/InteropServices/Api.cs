@@ -36,6 +36,10 @@ namespace System.Runtime.InteropServices {
         Custom = 0 | 0x80000000,
     }
 
+    public interface IApiImplementation {
+        IntPtr Implementation { get; }
+    }
+
     [CLSCompliant(false)]
     public sealed class Api {
         public delegate object DefaultCreator();

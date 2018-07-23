@@ -13,7 +13,7 @@ namespace GHIElectronics.TinyCLR.Devices.SdCard {
         public static SdCardController FromName(string name) => SdCardController.FromProvider(new SdCardControllerApiWrapper(Api.Find(name, ApiType.SdCardController)));
         public static SdCardController FromProvider(ISdCardControllerProvider provider) => new SdCardController(provider);
 
-        public IntPtr Hdc => this.Provider is ISdCardControllerHdc h ? h.Hdc : throw new NotSupportedException();
+        public IntPtr Hdc => this.Provider is IApiImplementation a ? a.Implementation : throw new NotSupportedException();
 
         public void Dispose() => this.Provider.Dispose();
     }
@@ -27,16 +27,12 @@ namespace GHIElectronics.TinyCLR.Devices.SdCard {
             void GetSectorMap(out uint[] sizes, out uint count, out bool uniform);
         }
 
-        public interface ISdCardControllerHdc {
-            IntPtr Hdc { get; }
-        }
-
-        public sealed class SdCardControllerApiWrapper : ISdCardControllerProvider, ISdCardControllerHdc {
+        public sealed class SdCardControllerApiWrapper : ISdCardControllerProvider, IApiImplementation {
             private readonly IntPtr impl;
 
             public Api Api { get; }
 
-            public IntPtr Hdc => this.impl;
+            IntPtr IApiImplementation.Implementation => this.impl;
 
             public SdCardControllerApiWrapper(Api api) {
                 this.Api = api;
