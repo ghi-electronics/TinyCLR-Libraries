@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using GHIElectronics.TinyCLR.Devices.Gpio;
 using GHIElectronics.TinyCLR.Devices.Spi.Provider;
+using GHIElectronics.TinyCLR.Native;
 
 namespace GHIElectronics.TinyCLR.Devices.Spi {
     public sealed class SpiController : IDisposable {

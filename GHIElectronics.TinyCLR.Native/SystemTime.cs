@@ -1,9 +1,9 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System;
+using System.Runtime.CompilerServices;
 
-namespace System.Runtime.InteropServices {
+namespace GHIElectronics.TinyCLR.Native {
     public static class SystemTime {
         [MethodImpl(MethodImplOptions.InternalCall)]
-        [CLSCompliant(false)]
         public static extern void SetSystemTime(ulong utcTicks, int timezoneOffsetMinutes);
     }
 }

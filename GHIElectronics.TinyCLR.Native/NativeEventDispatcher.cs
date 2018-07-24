@@ -1,8 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Runtime.CompilerServices;
 
-namespace System.Runtime.InteropServices {
-    [CLSCompliant(false)]
+namespace GHIElectronics.TinyCLR.Native {
     public delegate void NativeEventHandler(string apiName, long data0, long data1, long data2, IntPtr data3, DateTime timestamp);
 
     public sealed class NativeEventDispatcher : IDisposable {
@@ -58,7 +58,6 @@ namespace System.Runtime.InteropServices {
             return inst;
         }
 
-        [CLSCompliant(false)]
         public event NativeEventHandler OnInterrupt {
             [MethodImpl(MethodImplOptions.Synchronized)]
             add {

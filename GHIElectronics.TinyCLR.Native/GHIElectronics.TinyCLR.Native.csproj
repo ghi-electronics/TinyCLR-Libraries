@@ -5,11 +5,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{04B01E7E-5052-4E52-B21B-0BF37B9E0C86}</ProjectGuid>
+    <ProjectGuid>{B602474A-AEB0-491C-832B-7EAF0B4511C0}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GHIElectronics.TinyCLR.Devices</RootNamespace>
-    <AssemblyName>GHIElectronics.TinyCLR.Devices</AssemblyName>
+    <RootNamespace>GHIElectronics.TinyCLR.Native</RootNamespace>
+    <AssemblyName>GHIElectronics.TinyCLR.Native</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A1948822-69DD-4150-919B-F3F42EFB71CC};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -34,29 +34,16 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Adc.cs" />
-    <Compile Include="Can.cs" />
-    <Compile Include="Dac.cs" />
-    <Compile Include="Display.cs" />
-    <Compile Include="Gpio.cs" />
-    <Compile Include="I2c.cs" />
-    <Compile Include="Pwm.cs" />
-    <Compile Include="SdCard.cs" />
-    <Compile Include="Uart.cs" />
+    <Compile Include="Api.cs" />
+    <Compile Include="DeviceInformation.cs" />
+    <Compile Include="Interop.cs" />
+    <Compile Include="NativeEventDispatcher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Rtc.cs" />
-    <Compile Include="Signals.cs" />
-    <Compile Include="Spi.cs" />
+    <Compile Include="SystemTime.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="GHIElectronics.TinyCLR.Devices.nuspec" />
+    <None Include="GHIElectronics.TinyCLR.Native.nuspec" />
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\GHIElectronics.TinyCLR.Native\GHIElectronics.TinyCLR.Native.csproj">
-      <Project>{B602474A-AEB0-491C-832B-7EAF0B4511C0}</Project>
-      <Name>GHIElectronics.TinyCLR.Native</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using GHIElectronics.TinyCLR.Devices.Gpio.Provider;
+using GHIElectronics.TinyCLR.Native;
 
 namespace GHIElectronics.TinyCLR.Devices.Gpio {
     public delegate void GpioPinValueChangedEventHandler(GpioPin sender, GpioPinValueChangedEventArgs e);

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using GHIElectronics.TinyCLR.Devices.Can.Provider;
+using GHIElectronics.TinyCLR.Native;
 
 namespace GHIElectronics.TinyCLR.Devices.Can {
     public sealed class CanController : IDisposable {

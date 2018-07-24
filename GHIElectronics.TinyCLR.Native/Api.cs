@@ -1,9 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Runtime.CompilerServices;
 
-namespace System.Runtime.InteropServices {
+namespace GHIElectronics.TinyCLR.Native {
     //Keep in sync with native
-    [CLSCompliant(false)]
     public enum ApiType : uint {
         ApiManager = 0,
         DebuggerManager = 1,
@@ -40,7 +40,6 @@ namespace System.Runtime.InteropServices {
         IntPtr Implementation { get; }
     }
 
-    [CLSCompliant(false)]
     public sealed class Api {
         public delegate object DefaultCreator();
 

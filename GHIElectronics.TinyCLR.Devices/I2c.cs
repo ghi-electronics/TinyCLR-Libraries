@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using System.Threading;
 using GHIElectronics.TinyCLR.Devices.Gpio;
 using GHIElectronics.TinyCLR.Devices.I2c.Provider;
+using GHIElectronics.TinyCLR.Native;
 
 namespace GHIElectronics.TinyCLR.Devices.I2c {
     public sealed class I2cController : IDisposable {

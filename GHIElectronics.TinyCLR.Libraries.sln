@@ -45,6 +45,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Pins
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.UI", "GHIElectronics.TinyCLR.UI\GHIElectronics.TinyCLR.UI.csproj", "{2BD3FB57-7D27-4DAF-A0DC-A23F5793E12A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Native", "GHIElectronics.TinyCLR.Native\GHIElectronics.TinyCLR.Native.csproj", "{B602474A-AEB0-491C-832B-7EAF0B4511C0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -95,6 +97,10 @@ Global
 		{2BD3FB57-7D27-4DAF-A0DC-A23F5793E12A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2BD3FB57-7D27-4DAF-A0DC-A23F5793E12A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2BD3FB57-7D27-4DAF-A0DC-A23F5793E12A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B602474A-AEB0-491C-832B-7EAF0B4511C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B602474A-AEB0-491C-832B-7EAF0B4511C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B602474A-AEB0-491C-832B-7EAF0B4511C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B602474A-AEB0-491C-832B-7EAF0B4511C0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

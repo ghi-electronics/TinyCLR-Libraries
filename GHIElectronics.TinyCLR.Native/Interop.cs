@@ -1,6 +1,7 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System;
+using System.Runtime.CompilerServices;
 
-namespace System.Runtime.InteropServices {
+namespace GHIElectronics.TinyCLR.Native {
     public sealed class Interop {
         private Interop() { }
 
@@ -11,14 +12,12 @@ namespace System.Runtime.InteropServices {
         public static extern void Remove(IntPtr address);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        [CLSCompliant(false)]
-        public static extern void RaiseEvent(string eventDispatcherName, string providerName, ulong data0, ulong data1, ulong data2, IntPtr data3);
+        public static extern void RaiseEvent(string eventDispatcherName, string apiName, ulong data0, ulong data1, ulong data2, IntPtr data3);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         public static extern Interop[] FindAll();
 
         public string Name { get; }
-        [CLSCompliant(false)]
         public uint Checksum { get; }
         public IntPtr Methods { get; }
     }
