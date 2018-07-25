@@ -41,7 +41,7 @@
     <Compile Include="Gpio.cs" />
     <Compile Include="I2c.cs" />
     <Compile Include="Pwm.cs" />
-    <Compile Include="SdCard.cs" />
+    <Compile Include="Storage.cs" />
     <Compile Include="Uart.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rtc.cs" />
