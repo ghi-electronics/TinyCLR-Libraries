@@ -55,7 +55,7 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio {
 
             for (; i < pinNumbers.Length; i++) {
                 try {
-                    res[i] = this.OpenPin(i);
+                    res[i] = this.OpenPin(pinNumbers[i]);
                 }
                 catch {
                     for (var ii = 0; ii < i; ii++)
