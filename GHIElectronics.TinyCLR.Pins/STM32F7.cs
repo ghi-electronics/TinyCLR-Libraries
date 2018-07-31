@@ -4,7 +4,7 @@
         /// <summary>GPIO pin definitions.</summary>
         public static class GpioPin {
             /// <summary>API id.</summary>
-            public const string Id = "GHIElectronics.TinyCLR.NativeApis.STM32F7.GpioProvider\\0";
+            public const string Id = "GHIElectronics.TinyCLR.NativeApis.STM32F7.GpioController\\0";
 
             /// <summary>GPIO pin.</summary>
             public const int PA0 = 0;
@@ -363,7 +363,7 @@
         /// <summary>ADC channel definitions.</summary>
         public static class AdcChannel {
             /// <summary>API id.</summary>
-            public const string Id = "GHIElectronics.TinyCLR.NativeApis.STM32F7.AdcProvider\\0";
+            public const string Id = "GHIElectronics.TinyCLR.NativeApis.STM32F7.AdcController\\0";
 
             /// <summary>ADC channel.</summary>
             public const int Channel0 = 0;
@@ -408,7 +408,7 @@
         /// <summary>DAC channel definitions.</summary>
         public static class DacChannel {
             /// <summary>API id.</summary>
-            public const string Id = "GHIElectronics.TinyCLR.NativeApis.STM32F7.DacProvider\\0";
+            public const string Id = "GHIElectronics.TinyCLR.NativeApis.STM32F7.DacController\\0";
 
             /// <summary>DAC channel.</summary>
             public const int Channel1 = 0;
@@ -419,33 +419,33 @@
         /// <summary>PWM pin definitions.</summary>
         public static class PwmPin {
             /// <summary>API id.</summary>
-            public const string Tim1 = "GHIElectronics.TinyCLR.NativeApis.STM32F7.PwmProvider\\0";
+            public const string Tim1 = "GHIElectronics.TinyCLR.NativeApis.STM32F7.PwmController\\0";
             /// <summary>API id.</summary>
-            public const string Tim2 = "GHIElectronics.TinyCLR.NativeApis.STM32F7.PwmProvider\\1";
+            public const string Tim2 = "GHIElectronics.TinyCLR.NativeApis.STM32F7.PwmController\\1";
             /// <summary>API id.</summary>
-            public const string Tim3 = "GHIElectronics.TinyCLR.NativeApis.STM32F7.PwmProvider\\2";
+            public const string Tim3 = "GHIElectronics.TinyCLR.NativeApis.STM32F7.PwmController\\2";
             /// <summary>API id.</summary>
-            public const string Tim4 = "GHIElectronics.TinyCLR.NativeApis.STM32F7.PwmProvider\\3";
+            public const string Tim4 = "GHIElectronics.TinyCLR.NativeApis.STM32F7.PwmController\\3";
             /// <summary>API id.</summary>
-            public const string Tim5 = "GHIElectronics.TinyCLR.NativeApis.STM32F7.PwmProvider\\4";
+            public const string Tim5 = "GHIElectronics.TinyCLR.NativeApis.STM32F7.PwmController\\4";
             /// <summary>API id.</summary>
-            public const string Tim6 = "GHIElectronics.TinyCLR.NativeApis.STM32F7.PwmProvider\\5";
+            public const string Tim6 = "GHIElectronics.TinyCLR.NativeApis.STM32F7.PwmController\\5";
             /// <summary>API id.</summary>
-            public const string Tim7 = "GHIElectronics.TinyCLR.NativeApis.STM32F7.PwmProvider\\6";
+            public const string Tim7 = "GHIElectronics.TinyCLR.NativeApis.STM32F7.PwmController\\6";
             /// <summary>API id.</summary>
-            public const string Tim8 = "GHIElectronics.TinyCLR.NativeApis.STM32F7.PwmProvider\\7";
+            public const string Tim8 = "GHIElectronics.TinyCLR.NativeApis.STM32F7.PwmController\\7";
             /// <summary>API id.</summary>
-            public const string Tim9 = "GHIElectronics.TinyCLR.NativeApis.STM32F7.PwmProvider\\8";
+            public const string Tim9 = "GHIElectronics.TinyCLR.NativeApis.STM32F7.PwmController\\8";
             /// <summary>API id.</summary>
-            public const string Tim10 = "GHIElectronics.TinyCLR.NativeApis.STM32F7.PwmProvider\\9";
+            public const string Tim10 = "GHIElectronics.TinyCLR.NativeApis.STM32F7.PwmController\\9";
             /// <summary>API id.</summary>
-            public const string Tim11 = "GHIElectronics.TinyCLR.NativeApis.STM32F7.PwmProvider\\10";
+            public const string Tim11 = "GHIElectronics.TinyCLR.NativeApis.STM32F7.PwmController\\10";
             /// <summary>API id.</summary>
-            public const string Tim12 = "GHIElectronics.TinyCLR.NativeApis.STM32F7.PwmProvider\\11";
+            public const string Tim12 = "GHIElectronics.TinyCLR.NativeApis.STM32F7.PwmController\\11";
             /// <summary>API id.</summary>
-            public const string Tim13 = "GHIElectronics.TinyCLR.NativeApis.STM32F7.PwmProvider\\12";
+            public const string Tim13 = "GHIElectronics.TinyCLR.NativeApis.STM32F7.PwmController\\12";
             /// <summary>API id.</summary>
-            public const string Tim14 = "GHIElectronics.TinyCLR.NativeApis.STM32F7.PwmProvider\\13";
+            public const string Tim14 = "GHIElectronics.TinyCLR.NativeApis.STM32F7.PwmController\\13";
 
             /// <summary>PWM pin.</summary>
             public const int Channel0 = 0;
@@ -460,75 +460,75 @@
         /// <summary>UART port definitions.</summary>
         public static class UartPort {
             /// <summary>UART port.</summary>
-            public const string Usart1 = "GHIElectronics.TinyCLR.NativeApis.STM32F7.UartProvider\\0";
+            public const string Usart1 = "GHIElectronics.TinyCLR.NativeApis.STM32F7.UartController\\0";
             /// <summary>UART port.</summary>
-            public const string Usart2 = "GHIElectronics.TinyCLR.NativeApis.STM32F7.UartProvider\\1";
+            public const string Usart2 = "GHIElectronics.TinyCLR.NativeApis.STM32F7.UartController\\1";
             /// <summary>UART port.</summary>
-            public const string Usart3 = "GHIElectronics.TinyCLR.NativeApis.STM32F7.UartProvider\\2";
+            public const string Usart3 = "GHIElectronics.TinyCLR.NativeApis.STM32F7.UartController\\2";
             /// <summary>UART port.</summary>
-            public const string Uart4 = "GHIElectronics.TinyCLR.NativeApis.STM32F7.UartProvider\\3";
+            public const string Uart4 = "GHIElectronics.TinyCLR.NativeApis.STM32F7.UartController\\3";
             /// <summary>UART port.</summary>
-            public const string Uart5 = "GHIElectronics.TinyCLR.NativeApis.STM32F7.UartProvider\\4";
+            public const string Uart5 = "GHIElectronics.TinyCLR.NativeApis.STM32F7.UartController\\4";
             /// <summary>UART port.</summary>
-            public const string Usart6 = "GHIElectronics.TinyCLR.NativeApis.STM32F7.UartProvider\\5";
+            public const string Usart6 = "GHIElectronics.TinyCLR.NativeApis.STM32F7.UartController\\5";
             /// <summary>UART port.</summary>
-            public const string Uart7 = "GHIElectronics.TinyCLR.NativeApis.STM32F7.UartProvider\\6";
+            public const string Uart7 = "GHIElectronics.TinyCLR.NativeApis.STM32F7.UartController\\6";
             /// <summary>UART port.</summary>
-            public const string Uart8 = "GHIElectronics.TinyCLR.NativeApis.STM32F7.UartProvider\\7";
+            public const string Uart8 = "GHIElectronics.TinyCLR.NativeApis.STM32F7.UartController\\7";
             /// <summary>UART port.</summary>
-            public const string Uart9 = "GHIElectronics.TinyCLR.NativeApis.STM32F7.UartProvider\\8";
+            public const string Uart9 = "GHIElectronics.TinyCLR.NativeApis.STM32F7.UartController\\8";
         }
 
         /// <summary>I2C bus definitions.</summary>
         public static class I2cBus {
             /// <summary>I2C bus.</summary>
-            public const string I2c1 = "GHIElectronics.TinyCLR.NativeApis.STM32F7.I2cProvider\\0";
+            public const string I2c1 = "GHIElectronics.TinyCLR.NativeApis.STM32F7.I2cController\\0";
             /// <summary>I2C bus.</summary>
-            public const string I2c2 = "GHIElectronics.TinyCLR.NativeApis.STM32F7.I2cProvider\\1";
+            public const string I2c2 = "GHIElectronics.TinyCLR.NativeApis.STM32F7.I2cController\\1";
             /// <summary>I2C bus.</summary>
-            public const string I2c3 = "GHIElectronics.TinyCLR.NativeApis.STM32F7.I2cProvider\\2";
+            public const string I2c3 = "GHIElectronics.TinyCLR.NativeApis.STM32F7.I2cController\\2";
         }
 
         /// <summary>SPI bus definitions.</summary>
         public static class SpiBus {
             /// <summary>SPI bus.</summary>
-            public const string Spi1 = "GHIElectronics.TinyCLR.NativeApis.STM32F7.SpiProvider\\0";
+            public const string Spi1 = "GHIElectronics.TinyCLR.NativeApis.STM32F7.SpiController\\0";
             /// <summary>SPI bus.</summary>
-            public const string Spi2 = "GHIElectronics.TinyCLR.NativeApis.STM32F7.SpiProvider\\1";
+            public const string Spi2 = "GHIElectronics.TinyCLR.NativeApis.STM32F7.SpiController\\1";
             /// <summary>SPI bus.</summary>
-            public const string Spi3 = "GHIElectronics.TinyCLR.NativeApis.STM32F7.SpiProvider\\2";
+            public const string Spi3 = "GHIElectronics.TinyCLR.NativeApis.STM32F7.SpiController\\2";
             /// <summary>SPI bus.</summary>
-            public const string Spi4 = "GHIElectronics.TinyCLR.NativeApis.STM32F7.SpiProvider\\3";
+            public const string Spi4 = "GHIElectronics.TinyCLR.NativeApis.STM32F7.SpiController\\3";
             /// <summary>SPI bus.</summary>
-            public const string Spi5 = "GHIElectronics.TinyCLR.NativeApis.STM32F7.SpiProvider\\4";
+            public const string Spi5 = "GHIElectronics.TinyCLR.NativeApis.STM32F7.SpiController\\4";
             /// <summary>SPI bus.</summary>
-            public const string Spi6 = "GHIElectronics.TinyCLR.NativeApis.STM32F7.SpiProvider\\5";
+            public const string Spi6 = "GHIElectronics.TinyCLR.NativeApis.STM32F7.SpiController\\5";
         }
 
         /// <summary>CAN bus definitions.</summary>
         public static class CanBus {
             /// <summary>CAN bus.</summary>
-            public const string Can1 = "GHIElectronics.TinyCLR.NativeApis.STM32F7.CanProvider\\0";
+            public const string Can1 = "GHIElectronics.TinyCLR.NativeApis.STM32F7.CanController\\0";
             /// <summary>CAN bus.</summary>
-            public const string Can2 = "GHIElectronics.TinyCLR.NativeApis.STM32F7.CanProvider\\1";
+            public const string Can2 = "GHIElectronics.TinyCLR.NativeApis.STM32F7.CanController\\1";
         }
 
         /// <summary>USB client port definitions.</summary>
         public static class UsbClientPort {
             /// <summary>USB client port.</summary>
-            public const string UsbOtg = "GHIElectronics.TinyCLR.NativeApis.STM32F7.UsbClientProvider\\0";
+            public const string UsbOtg = "GHIElectronics.TinyCLR.NativeApis.STM32F7.UsbClientController\\0";
         }
 
         /// <summary>USB host port definitions.</summary>
         public static class UsbHostPort {
             /// <summary>USB host port.</summary>
-            public const string UsbOtg = "GHIElectronics.TinyCLR.NativeApis.STM32F7.UsbHostProvider\\0";
+            public const string UsbOtg = "GHIElectronics.TinyCLR.NativeApis.STM32F7.UsbHostController\\0";
         }
 
         /// <summary>Display definitions.</summary>
         public static class Display {
             /// <summary>API id.</summary>
-            public const string Lcd = "GHIElectronics.TinyCLR.NativeApis.STM32F7.DisplayProvider\\0";
+            public const string Lcd = "GHIElectronics.TinyCLR.NativeApis.STM32F7.DisplayController\\0";
         }
     }
 }
