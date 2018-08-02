@@ -30,7 +30,7 @@ namespace GHIElectronics.TinyCLR.Devices.Uart {
         public int Read(byte[] buffer) => this.Read(buffer, 0, buffer.Length);
         public int Read(byte[] buffer, int offset, int length) => this.Provider.Read(buffer, offset, length);
 
-        public int Write(byte[] buffer) => this.Read(buffer, 0, buffer.Length);
+        public int Write(byte[] buffer) => this.Write(buffer, 0, buffer.Length);
         public int Write(byte[] buffer, int offset, int length) => this.Provider.Write(buffer, offset, length);
 
         public void ClearWriteBuffer() => this.Provider.ClearWriteBuffer();
