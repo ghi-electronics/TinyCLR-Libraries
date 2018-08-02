@@ -53,7 +53,7 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
         public void WriteRead(byte[] writeBuffer, int writeOffset, int writeLength, byte[] readBuffer, int readOffset, int readLength) {
             this.Controller.SetActive(this);
 
-            if (this.Controller.Provider.WriteRead(writeBuffer, writeOffset, writeLength, readBuffer, readOffset, readLength, true, out _, out _) != I2cTransferStatus.FullTransfer)
+            if (this.Controller.Provider.WriteRead(writeBuffer, writeOffset, writeLength, readBuffer, readOffset, readLength, true, true, out _, out _) != I2cTransferStatus.FullTransfer)
                 throw new InvalidOperationException();
         }
 
@@ -67,7 +67,7 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
         public I2cTransferResult WriteReadPartial(byte[] writeBuffer, int writeOffset, int writeLength, byte[] readBuffer, int readOffset, int readLength) {
             this.Controller.SetActive(this);
 
-            var res = this.Controller.Provider.WriteRead(writeBuffer, writeOffset, writeLength, readBuffer, readOffset, readLength, true, out var written, out var read);
+            var res = this.Controller.Provider.WriteRead(writeBuffer, writeOffset, writeLength, readBuffer, readOffset, readLength, true, true, out var written, out var read);
 
             return new I2cTransferResult(res, written, read);
         }
@@ -131,7 +131,7 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
     namespace Provider {
         public interface II2cControllerProvider : IDisposable {
             void SetActiveSettings(I2cConnectionSettings connectionSettings);
-            I2cTransferStatus WriteRead(byte[] writeBuffer, int writeOffset, int writeLength, byte[] readBuffer, int readOffset, int readLength, bool sendStopAfter, out int written, out int read);
+            I2cTransferStatus WriteRead(byte[] writeBuffer, int writeOffset, int writeLength, byte[] readBuffer, int readOffset, int readLength, bool sendStartCondition, bool sendStopCondition, out int written, out int read);
         }
 
         public sealed class I2cControllerApiWrapper : II2cControllerProvider {
@@ -161,7 +161,7 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
             private extern void SetActiveSettings(int slaveAddress, I2cAddressFormat addressFormat, I2cBusSpeed busSpeed);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern I2cTransferStatus WriteRead(byte[] writeBuffer, int writeOffset, int writeLength, byte[] readBuffer, int readOffset, int readLength, bool sendStopAfter, out int written, out int read);
+            public extern I2cTransferStatus WriteRead(byte[] writeBuffer, int writeOffset, int writeLength, byte[] readBuffer, int readOffset, int readLength, bool sendStartCondition, bool sendStopCondition, out int written, out int read);
         }
 
         public sealed class I2cControllerSoftwareProvider : II2cControllerProvider {
@@ -202,7 +202,7 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
                 this.ReleaseSda();
             }
 
-            public I2cTransferStatus WriteRead(byte[] writeBuffer, int writeOffset, int writeLength, byte[] readBuffer, int readOffset, int readLength, bool sendStopAfter, out int written, out int read) {
+            public I2cTransferStatus WriteRead(byte[] writeBuffer, int writeOffset, int writeLength, byte[] readBuffer, int readOffset, int readLength, bool sendStartCondition, bool sendStopCondition, out int written, out int read) {
                 var res = this.Write(writeBuffer, writeOffset, writeLength, true, false);
 
                 written = res.BytesWritten;
