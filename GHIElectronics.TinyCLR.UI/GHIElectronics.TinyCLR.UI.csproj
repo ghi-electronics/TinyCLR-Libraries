@@ -142,13 +142,15 @@
     <Compile Include="UI\WindowCollection.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="GHIElectronics.TinyCLR.UI.nuspec" />
+    <None Include="GHIElectronics.TinyCLR.UI.nuspec">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\GHIElectronics.TinyCLR.Devices\GHIElectronics.TinyCLR.Devices.csproj">
-      <Project>{04B01E7E-5052-4E52-B21B-0BF37B9E0C86}</Project>
-      <Name>GHIElectronics.TinyCLR.Devices</Name>
+    <ProjectReference Include="..\GHIElectronics.TinyCLR.Devices.Display\GHIElectronics.TinyCLR.Devices.Display.csproj">
+      <Project>{2E1DCA92-5601-4038-A1F0-01A604FB0B65}</Project>
+      <Name>GHIElectronics.TinyCLR.Devices.Display</Name>
     </ProjectReference>
     <ProjectReference Include="..\GHIElectronics.TinyCLR.Drawing\GHIElectronics.TinyCLR.Drawing.csproj">
       <Project>{52A54E94-2FD8-4EEE-822C-C8C7F27AF423}</Project>

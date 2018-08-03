@@ -15,7 +15,8 @@
     <tags>TinyCLR TinyCLROS</tags>
     <dependencies>
       <dependency id="GHIElectronics.TinyCLR.Core" version="[0.12.0, 0.13.0)" />
-      <dependency id="GHIElectronics.TinyCLR.Devices" version="[0.12.0, 0.13.0)" />
+      <dependency id="GHIElectronics.TinyCLR.Devices.Gpio" version="[0.12.0, 0.13.0)" />
+      <dependency id="GHIElectronics.TinyCLR.Devices.Spi" version="[0.12.0, 0.13.0)" />
       <dependency id="GHIElectronics.TinyCLR.Networking" version="[0.12.0, 0.13.0)" />
     </dependencies>
   </metadata>

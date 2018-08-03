@@ -42,6 +42,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\GHIElectronics.TinyCLR.Devices.Gpio\GHIElectronics.TinyCLR.Devices.Gpio.csproj">
+      <Project>{21FBFF15-D7C4-48A8-B3D1-CE70A288B3EA}</Project>
+      <Name>GHIElectronics.TinyCLR.Devices.Gpio</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GHIElectronics.TinyCLR.Native\GHIElectronics.TinyCLR.Native.csproj">
       <Project>{B602474A-AEB0-491C-832B-7EAF0B4511C0}</Project>
       <Name>GHIElectronics.TinyCLR.Native</Name>
