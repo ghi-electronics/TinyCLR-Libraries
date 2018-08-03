@@ -113,92 +113,92 @@
             public const int PA5 = STM32F4.DacChannel.Channel2;
         }
 
-        public static class PwmPin {
+        public static class PwmChannel {
             public static class Controller1 {
-                public const string Id = STM32F4.PwmPin.Tim1;
+                public const string Id = STM32F4.PwmChannel.Tim1;
 
-                public const int PE9 = STM32F4.PwmPin.Channel0;
-                public const int PE11 = STM32F4.PwmPin.Channel1;
-                public const int PE13 = STM32F4.PwmPin.Channel2;
-                public const int PE14 = STM32F4.PwmPin.Channel3;
+                public const int PE9 = STM32F4.PwmChannel.Channel0;
+                public const int PE11 = STM32F4.PwmChannel.Channel1;
+                public const int PE13 = STM32F4.PwmChannel.Channel2;
+                public const int PE14 = STM32F4.PwmChannel.Channel3;
             }
 
             public static class Controller2 {
-                public const string Id = STM32F4.PwmPin.Tim2;
+                public const string Id = STM32F4.PwmChannel.Tim2;
 
-                public const int PA15 = STM32F4.PwmPin.Channel0;
-                public const int PB3 = STM32F4.PwmPin.Channel1;
-                public const int PB10 = STM32F4.PwmPin.Channel2;
+                public const int PA15 = STM32F4.PwmChannel.Channel0;
+                public const int PB3 = STM32F4.PwmChannel.Channel1;
+                public const int PB10 = STM32F4.PwmChannel.Channel2;
             }
 
             public static class Controller3 {
-                public const string Id = STM32F4.PwmPin.Tim3;
+                public const string Id = STM32F4.PwmChannel.Tim3;
 
-                public const int PC6 = STM32F4.PwmPin.Channel0;
-                public const int PC7 = STM32F4.PwmPin.Channel1;
-                public const int PB0 = STM32F4.PwmPin.Channel2;
+                public const int PC6 = STM32F4.PwmChannel.Channel0;
+                public const int PC7 = STM32F4.PwmChannel.Channel1;
+                public const int PB0 = STM32F4.PwmChannel.Channel2;
             }
 
             public static class Controller4 {
-                public const string Id = STM32F4.PwmPin.Tim4;
+                public const string Id = STM32F4.PwmChannel.Tim4;
 
-                public const int PB7 = STM32F4.PwmPin.Channel1;
-                public const int PD14 = STM32F4.PwmPin.Channel2;
-                public const int PD15 = STM32F4.PwmPin.Channel3;
+                public const int PB7 = STM32F4.PwmChannel.Channel1;
+                public const int PD14 = STM32F4.PwmChannel.Channel2;
+                public const int PD15 = STM32F4.PwmChannel.Channel3;
             }
 
             public static class Controller5 {
-                public const string Id = STM32F4.PwmPin.Tim5;
+                public const string Id = STM32F4.PwmChannel.Tim5;
 
-                public const int PA0 = STM32F4.PwmPin.Channel0;
-                public const int PA1 = STM32F4.PwmPin.Channel1;
-                public const int PA2 = STM32F4.PwmPin.Channel2;
-                public const int PA3 = STM32F4.PwmPin.Channel3;
+                public const int PA0 = STM32F4.PwmChannel.Channel0;
+                public const int PA1 = STM32F4.PwmChannel.Channel1;
+                public const int PA2 = STM32F4.PwmChannel.Channel2;
+                public const int PA3 = STM32F4.PwmChannel.Channel3;
             }
 
             public static class Controller8 {
-                public const string Id = STM32F4.PwmPin.Tim8;
+                public const string Id = STM32F4.PwmChannel.Tim8;
 
-                public const int PC8 = STM32F4.PwmPin.Channel2;
-                public const int PC9 = STM32F4.PwmPin.Channel3;
+                public const int PC8 = STM32F4.PwmChannel.Channel2;
+                public const int PC9 = STM32F4.PwmChannel.Channel3;
             }
 
             public static class Controller9 {
-                public const string Id = STM32F4.PwmPin.Tim9;
+                public const string Id = STM32F4.PwmChannel.Tim9;
 
-                public const int PE5 = STM32F4.PwmPin.Channel0;
-                public const int PE6 = STM32F4.PwmPin.Channel1;
+                public const int PE5 = STM32F4.PwmChannel.Channel0;
+                public const int PE6 = STM32F4.PwmChannel.Channel1;
             }
 
             public static class Controller10 {
-                public const string Id = STM32F4.PwmPin.Tim10;
+                public const string Id = STM32F4.PwmChannel.Tim10;
 
-                public const int PB8 = STM32F4.PwmPin.Channel0;
+                public const int PB8 = STM32F4.PwmChannel.Channel0;
             }
 
             public static class Controller11 {
-                public const string Id = STM32F4.PwmPin.Tim11;
+                public const string Id = STM32F4.PwmChannel.Tim11;
 
-                public const int PB9 = STM32F4.PwmPin.Channel0;
+                public const int PB9 = STM32F4.PwmChannel.Channel0;
             }
 
             public static class Controller12 {
-                public const string Id = STM32F4.PwmPin.Tim12;
+                public const string Id = STM32F4.PwmChannel.Tim12;
 
-                public const int PB14 = STM32F4.PwmPin.Channel0;
-                public const int PB15 = STM32F4.PwmPin.Channel1;
+                public const int PB14 = STM32F4.PwmChannel.Channel0;
+                public const int PB15 = STM32F4.PwmChannel.Channel1;
             }
 
             public static class Controller13 {
-                public const string Id = STM32F4.PwmPin.Tim13;
+                public const string Id = STM32F4.PwmChannel.Tim13;
 
-                public const int PA6 = STM32F4.PwmPin.Channel0;
+                public const int PA6 = STM32F4.PwmChannel.Channel0;
             }
 
             public static class Controller14 {
-                public const string Id = STM32F4.PwmPin.Tim14;
+                public const string Id = STM32F4.PwmChannel.Tim14;
 
-                public const int PA7 = STM32F4.PwmPin.Channel0;
+                public const int PA7 = STM32F4.PwmChannel.Channel0;
             }
         }
 

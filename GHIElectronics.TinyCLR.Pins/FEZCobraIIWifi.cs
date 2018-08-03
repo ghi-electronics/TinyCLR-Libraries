@@ -213,27 +213,27 @@
         }
 
         /// <summary>PWM pin definitions.</summary>
-        public static class PwmPin {
+        public static class PwmChannel {
             /// <summary>PWM controller.</summary>
             public static class Controller0 {
                 /// <summary>API id.</summary>
-                public const string Id = G120.PwmPin.Controller0.Id;
+                public const string Id = G120.PwmChannel.Controller0.Id;
 
                 /// <summary>PWM pin.</summary>
-                public const int P1_5 = G120.PwmPin.Controller0.P1_5;
+                public const int P1_5 = G120.PwmChannel.Controller0.P1_5;
             }
 
             /// <summary>PWM controller.</summary>
             public static class Controller1 {
                 /// <summary>API id.</summary>
-                public const string Id = G120.PwmPin.Controller1.Id;
+                public const string Id = G120.PwmChannel.Controller1.Id;
 
                 /// <summary>PWM pin.</summary>
-                public const int P3_24 = G120.PwmPin.Controller1.P3_24;
+                public const int P3_24 = G120.PwmChannel.Controller1.P3_24;
                 /// <summary>PWM pin.</summary>
-                public const int P3_25 = G120.PwmPin.Controller1.P3_25;
+                public const int P3_25 = G120.PwmChannel.Controller1.P3_25;
                 /// <summary>PWM pin.</summary>
-                public const int P3_26 = G120.PwmPin.Controller1.P3_26;
+                public const int P3_26 = G120.PwmChannel.Controller1.P3_26;
             }
         }
 

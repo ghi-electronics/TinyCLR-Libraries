@@ -34,38 +34,38 @@
         }
 
         /// <summary>PWM pin definitions.</summary>
-        public static class PwmPin {
+        public static class PwmChannel {
             /// <summary>PWM controller definitions.</summary>
             public static class Controller2 {
                 /// <summary>API id.</summary>
-                public const string Id = FEZCLR.PwmPin.Controller2.Id;
+                public const string Id = FEZCLR.PwmChannel.Controller2.Id;
 
                 /// <summary>PWM pin for Servo one.</summary>
-                public const int ServoOne = FEZCLR.PwmPin.Controller2.PA3;
+                public const int ServoOne = FEZCLR.PwmChannel.Controller2.PA3;
                 /// <summary>PWM pin for Servo two.</summary>
-                public const int ServoTwo = FEZCLR.PwmPin.Controller2.PA0;
+                public const int ServoTwo = FEZCLR.PwmChannel.Controller2.PA0;
             }
 
             /// <summary>PWM controller definitions.</summary>
             public static class Controller3 {
                 /// <summary>API id.</summary>
-                public const string Id = FEZCLR.PwmPin.Controller3.Id;
+                public const string Id = FEZCLR.PwmChannel.Controller3.Id;
 
                 /// <summary>PWM pin for LightBulb Red.</summary>
-                public const int LightBulbRed = FEZCLR.PwmPin.Controller3.PC9;
+                public const int LightBulbRed = FEZCLR.PwmChannel.Controller3.PC9;
                 /// <summary>PWM pin for LightBulb Green.</summary>
-                public const int LightBulbGreen = FEZCLR.PwmPin.Controller3.PC8;
+                public const int LightBulbGreen = FEZCLR.PwmChannel.Controller3.PC8;
                 /// <summary>PWM pin for LightBulb Blue.</summary>
-                public const int LightBulbBlue = FEZCLR.PwmPin.Controller3.PC6;
+                public const int LightBulbBlue = FEZCLR.PwmChannel.Controller3.PC6;
             }
 
             /// <summary>PWM controller definitions.</summary>
             public static class Controller4 {
                 /// <summary>API id.</summary>
-                public const string Id = FEZCLR.PwmPin.Controller4.Id;
+                public const string Id = FEZCLR.PwmChannel.Controller4.Id;
 
                 /// <summary>PWM pin for Buzzer.</summary>
-                public const int Buzzer = FEZCLR.PwmPin.Controller4.PB8;
+                public const int Buzzer = FEZCLR.PwmChannel.Controller4.PB8;
             }
         }
 
@@ -122,27 +122,27 @@
             }
 
             /// <summary>PWM pin definitions.</summary>
-            public static class PwmPin {
+            public static class PwmChannel {
                 /// <summary>PWM controller.</summary>
                 public static class Controller1 {
                     /// <summary>API id.</summary>
-                    public const string Id = FEZCLR.PwmPin.Controller1.Id;
+                    public const string Id = FEZCLR.PwmChannel.Controller1.Id;
 
                     /// <summary>PWM pin.</summary>
-                    public const int Pwm = FEZCLR.PwmPin.Controller1.PA8;
+                    public const int Pwm = FEZCLR.PwmChannel.Controller1.PA8;
                     /// <summary>PWM pin.</summary>
-                    public const int Rx = FEZCLR.PwmPin.Controller1.PA10;
+                    public const int Rx = FEZCLR.PwmChannel.Controller1.PA10;
                     /// <summary>PWM pin.</summary>
-                    public const int Tx = FEZCLR.PwmPin.Controller1.PA9;
+                    public const int Tx = FEZCLR.PwmChannel.Controller1.PA9;
                 }
 
                 /// <summary>PWM controller.</summary>
                 public static class Controller2 {
                     /// <summary>API id.</summary>
-                    public const string Id = FEZCLR.PwmPin.Controller2.Id;
+                    public const string Id = FEZCLR.PwmChannel.Controller2.Id;
 
                     /// <summary>PWM pin.</summary>
-                    public const int Int = FEZCLR.PwmPin.Controller2.PA2;
+                    public const int Int = FEZCLR.PwmChannel.Controller2.PA2;
                 }
             }
 

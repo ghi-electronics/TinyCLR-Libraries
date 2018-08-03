@@ -76,27 +76,27 @@
         }
 
         /// <summary>PWM pin definitions.</summary>
-        public static class PwmPin {
+        public static class PwmChannel {
             /// <summary>PWM controller.</summary>
             public static class Controller0 {
                 /// <summary>API id.</summary>
-                public const string Id = EMX.PwmPin.Controller0.Id;
+                public const string Id = EMX.PwmChannel.Controller0.Id;
 
                 /// <summary>PWM pin.</summary>
-                public const int IO50 = EMX.PwmPin.Controller0.P3_17;
+                public const int IO50 = EMX.PwmChannel.Controller0.P3_17;
             }
 
             /// <summary>PWM controller.</summary>
             public static class Controller1 {
                 /// <summary>API id.</summary>
-                public const string Id = EMX.PwmPin.Controller1.Id;
+                public const string Id = EMX.PwmChannel.Controller1.Id;
 
                 /// <summary>PWM pin.</summary>
-                public const int IO49 = EMX.PwmPin.Controller1.P3_26;
+                public const int IO49 = EMX.PwmChannel.Controller1.P3_26;
                 /// <summary>PWM pin.</summary>
-                public const int IO74 = EMX.PwmPin.Controller1.P3_29;
+                public const int IO74 = EMX.PwmChannel.Controller1.P3_29;
                 /// <summary>PWM pin.</summary>
-                public const int IO48 = EMX.PwmPin.Controller1.P3_27;
+                public const int IO48 = EMX.PwmChannel.Controller1.P3_27;
             }
         }
 

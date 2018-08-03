@@ -185,43 +185,43 @@
         }
 
         /// <summary>PWM pin definitions.</summary>
-        public static class PwmPin {
+        public static class PwmChannel {
             /// <summary>PWM controller.</summary>
             public static class Controller0 {
                 /// <summary>API id.</summary>
-                public const string Id = LPC17.PwmPin.Pwm0;
+                public const string Id = LPC17.PwmChannel.Pwm0;
 
                 /// <summary>PWM pin.</summary>
-                public const int P1_2 = LPC17.PwmPin.Output1;
+                public const int P1_2 = LPC17.PwmChannel.Output1;
                 /// <summary>PWM pin.</summary>
-                public const int P1_3 = LPC17.PwmPin.Output2;
+                public const int P1_3 = LPC17.PwmChannel.Output2;
                 /// <summary>PWM pin.</summary>
-                public const int P1_5 = LPC17.PwmPin.Output3;
+                public const int P1_5 = LPC17.PwmChannel.Output3;
                 /// <summary>PWM pin.</summary>
-                public const int P1_6 = LPC17.PwmPin.Output4;
+                public const int P1_6 = LPC17.PwmChannel.Output4;
                 /// <summary>PWM pin.</summary>
-                public const int P1_7 = LPC17.PwmPin.Output5;
+                public const int P1_7 = LPC17.PwmChannel.Output5;
                 /// <summary>PWM pin.</summary>
-                public const int P1_11 = LPC17.PwmPin.Output6;
+                public const int P1_11 = LPC17.PwmChannel.Output6;
             }
 
             /// <summary>PWM controller.</summary>
             public static class Controller1 {
                 /// <summary>API id.</summary>
-                public const string Id = LPC17.PwmPin.Pwm1;
+                public const string Id = LPC17.PwmChannel.Pwm1;
 
                 /// <summary>PWM pin.</summary>
-                public const int P3_24 = LPC17.PwmPin.Output1;
+                public const int P3_24 = LPC17.PwmChannel.Output1;
                 /// <summary>PWM pin.</summary>
-                public const int P3_25 = LPC17.PwmPin.Output2;
+                public const int P3_25 = LPC17.PwmChannel.Output2;
                 /// <summary>PWM pin.</summary>
-                public const int P3_26 = LPC17.PwmPin.Output3;
+                public const int P3_26 = LPC17.PwmChannel.Output3;
                 /// <summary>PWM pin.</summary>
-                public const int P2_3 = LPC17.PwmPin.Output4;
+                public const int P2_3 = LPC17.PwmChannel.Output4;
                 /// <summary>PWM pin.</summary>
-                public const int P2_4 = LPC17.PwmPin.Output5;
+                public const int P2_4 = LPC17.PwmChannel.Output5;
                 /// <summary>PWM pin.</summary>
-                public const int P2_5 = LPC17.PwmPin.Output6;
+                public const int P2_5 = LPC17.PwmChannel.Output6;
             }
         }
 

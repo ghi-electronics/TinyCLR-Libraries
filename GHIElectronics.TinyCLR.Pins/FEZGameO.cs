@@ -42,22 +42,22 @@
         }
 
         /// <summary>PWM pin definitions.</summary>
-        public static class PwmPin {
+        public static class PwmChannel {
             /// <summary>PWM controller.</summary>
             public static class Controller1 {
                 /// <summary>API id.</summary>
-                public const string Id = Cerb.PwmPin.Controller1.Id;
+                public const string Id = Cerb.PwmChannel.Controller1.Id;
 
                 /// <summary>PWM pin for speaker digital volume control.</summary>
-                public const int Volume = Cerb.PwmPin.Controller1.PA8;
+                public const int Volume = Cerb.PwmChannel.Controller1.PA8;
             }
 
             public static class Controller14 {
                 /// <summary>API id.</summary>
-                public const string Id = Cerb.PwmPin.Controller14.Id;
+                public const string Id = Cerb.PwmChannel.Controller14.Id;
 
                 /// <summary>PWM pin for LCD backlight.</summary>
-                public const int LcdBacklight = Cerb.PwmPin.Controller14.PA7;
+                public const int LcdBacklight = Cerb.PwmChannel.Controller14.PA7;
             }
         }
 

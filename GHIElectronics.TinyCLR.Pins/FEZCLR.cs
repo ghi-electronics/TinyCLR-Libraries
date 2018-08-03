@@ -144,63 +144,63 @@
         }
 
         /// <summary>PWM pin definitions.</summary>
-        public static class PwmPin {
+        public static class PwmChannel {
             /// <summary>PWM controller.</summary>
             public static class Controller1 {
                 /// <summary>API id.</summary>
-                public const string Id = STM32F4.PwmPin.Tim1;
+                public const string Id = STM32F4.PwmChannel.Tim1;
 
                 /// <summary>PWM pin.</summary>
-                public const int PA8 = STM32F4.PwmPin.Channel0;
+                public const int PA8 = STM32F4.PwmChannel.Channel0;
                 /// <summary>PWM pin.</summary>
-                public const int PA9 = STM32F4.PwmPin.Channel1;
+                public const int PA9 = STM32F4.PwmChannel.Channel1;
                 /// <summary>PWM pin.</summary>
-                public const int PA10 = STM32F4.PwmPin.Channel2;
+                public const int PA10 = STM32F4.PwmChannel.Channel2;
             }
 
             /// <summary>PWM controller.</summary>
             public static class Controller2 {
                 /// <summary>API id.</summary>
-                public const string Id = STM32F4.PwmPin.Tim2;
+                public const string Id = STM32F4.PwmChannel.Tim2;
 
                 /// <summary>PWM pin.</summary>
-                public const int PA0 = STM32F4.PwmPin.Channel0;
+                public const int PA0 = STM32F4.PwmChannel.Channel0;
                 /// <summary>PWM pin.</summary>
-                public const int PA1 = STM32F4.PwmPin.Channel1;
+                public const int PA1 = STM32F4.PwmChannel.Channel1;
                 /// <summary>PWM pin.</summary>
-                public const int PA2 = STM32F4.PwmPin.Channel2;
+                public const int PA2 = STM32F4.PwmChannel.Channel2;
                 /// <summary>PWM pin.</summary>
-                public const int PA3 = STM32F4.PwmPin.Channel3;
+                public const int PA3 = STM32F4.PwmChannel.Channel3;
             }
 
             /// <summary>PWM controller.</summary>
             public static class Controller3 {
                 /// <summary>API id.</summary>
-                public const string Id = STM32F4.PwmPin.Tim3;
+                public const string Id = STM32F4.PwmChannel.Tim3;
 
                 /// <summary>PWM pin.</summary>
-                public const int PC6 = STM32F4.PwmPin.Channel0;
+                public const int PC6 = STM32F4.PwmChannel.Channel0;
                 /// <summary>PWM pin.</summary>
-                public const int PB5 = STM32F4.PwmPin.Channel1;
+                public const int PB5 = STM32F4.PwmChannel.Channel1;
                 /// <summary>PWM pin.</summary>
-                public const int PC8 = STM32F4.PwmPin.Channel2;
+                public const int PC8 = STM32F4.PwmChannel.Channel2;
                 /// <summary>PWM pin.</summary>
-                public const int PC9 = STM32F4.PwmPin.Channel3;
+                public const int PC9 = STM32F4.PwmChannel.Channel3;
             }
 
             /// <summary>PWM controller.</summary>
             public static class Controller4 {
                 /// <summary>API id.</summary>
-                public const string Id = STM32F4.PwmPin.Tim4;
+                public const string Id = STM32F4.PwmChannel.Tim4;
 
                 /// <summary>PWM pin.</summary>
-                public const int PB6 = STM32F4.PwmPin.Channel0;
+                public const int PB6 = STM32F4.PwmChannel.Channel0;
                 /// <summary>PWM pin.</summary>
-                public const int PB7 = STM32F4.PwmPin.Channel1;
+                public const int PB7 = STM32F4.PwmChannel.Channel1;
                 /// <summary>PWM pin.</summary>
-                public const int PB8 = STM32F4.PwmPin.Channel2;
+                public const int PB8 = STM32F4.PwmChannel.Channel2;
                 /// <summary>PWM pin.</summary>
-                public const int PB9 = STM32F4.PwmPin.Channel3;
+                public const int PB9 = STM32F4.PwmChannel.Channel3;
             }
         }
 

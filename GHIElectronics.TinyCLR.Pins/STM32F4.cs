@@ -417,7 +417,7 @@
         }
 
         /// <summary>PWM pin definitions.</summary>
-        public static class PwmPin {
+        public static class PwmChannel {
             /// <summary>API id.</summary>
             public const string Tim1 = "GHIElectronics.TinyCLR.NativeApis.STM32F4.PwmController\\0";
             /// <summary>API id.</summary>

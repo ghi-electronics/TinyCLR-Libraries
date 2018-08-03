@@ -113,50 +113,50 @@
         }
 
         /// <summary>PWM pin definitions.</summary>
-        public static class PwmPin {
+        public static class PwmChannel {
             /// <summary>PWM controller.</summary>
             public static class Controller1 {
                 /// <summary>API id.</summary>
-                public const string Id = Cerb.PwmPin.Controller1.Id;
+                public const string Id = Cerb.PwmChannel.Controller1.Id;
 
                 /// <summary>PWM pin.</summary>
-                public const int PA8 = Cerb.PwmPin.Controller1.PA8;
+                public const int PA8 = Cerb.PwmChannel.Controller1.PA8;
             }
 
             public static class Controller2 {
                 /// <summary>API id.</summary>
-                public const string Id = Cerb.PwmPin.Controller2.Id;
+                public const string Id = Cerb.PwmChannel.Controller2.Id;
 
                 /// <summary>PWM pin.</summary>
-                public const int PB3 = Cerb.PwmPin.Controller2.PB3;
+                public const int PB3 = Cerb.PwmChannel.Controller2.PB3;
             }
 
             public static class Controller3 {
                 /// <summary>API id.</summary>
-                public const string Id = Cerb.PwmPin.Controller3.Id;
+                public const string Id = Cerb.PwmChannel.Controller3.Id;
 
                 /// <summary>PWM pin.</summary>
-                public const int PB5 = Cerb.PwmPin.Controller3.PB5;
+                public const int PB5 = Cerb.PwmChannel.Controller3.PB5;
                 /// <summary>PWM pin.</summary>
-                public const int PB4 = Cerb.PwmPin.Controller3.PB4;
+                public const int PB4 = Cerb.PwmChannel.Controller3.PB4;
             }
 
             public static class Controller8 {
                 /// <summary>API id.</summary>
-                public const string Id = Cerb.PwmPin.Controller8.Id;
+                public const string Id = Cerb.PwmChannel.Controller8.Id;
 
                 /// <summary>PWM pin.</summary>
-                public const int PC6 = Cerb.PwmPin.Controller8.PC6;
+                public const int PC6 = Cerb.PwmChannel.Controller8.PC6;
                 /// <summary>PWM pin.</summary>
-                public const int PC7 = Cerb.PwmPin.Controller8.PC7;
+                public const int PC7 = Cerb.PwmChannel.Controller8.PC7;
             }
 
             public static class Controller14 {
                 /// <summary>API id.</summary>
-                public const string Id = Cerb.PwmPin.Controller14.Id;
+                public const string Id = Cerb.PwmChannel.Controller14.Id;
 
                 /// <summary>PWM pin.</summary>
-                public const int PA7 = Cerb.PwmPin.Controller14.PA7;
+                public const int PA7 = Cerb.PwmChannel.Controller14.PA7;
             }
         }
 
