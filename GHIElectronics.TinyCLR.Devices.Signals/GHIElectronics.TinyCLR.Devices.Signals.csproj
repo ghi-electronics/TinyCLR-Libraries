@@ -5,11 +5,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{04B01E7E-5052-4E52-B21B-0BF37B9E0C86}</ProjectGuid>
+    <ProjectGuid>{ACC9F6AC-DB1E-4A48-95A2-08F521B8A9CD}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GHIElectronics.TinyCLR.Devices</RootNamespace>
-    <AssemblyName>GHIElectronics.TinyCLR.Devices</AssemblyName>
+    <RootNamespace>GHIElectronics.TinyCLR.Devices.Signals</RootNamespace>
+    <AssemblyName>GHIElectronics.TinyCLR.Devices.Signals</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A1948822-69DD-4150-919B-F3F42EFB71CC};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -34,16 +34,18 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="GHIElectronics.TinyCLR.Devices.nuspec" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Signals.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="GHIElectronics.TinyCLR.Devices.Signals.nuspec" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GHIElectronics.TinyCLR.Native\GHIElectronics.TinyCLR.Native.csproj">
       <Project>{B602474A-AEB0-491C-832B-7EAF0B4511C0}</Project>
       <Name>GHIElectronics.TinyCLR.Native</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Properties\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
