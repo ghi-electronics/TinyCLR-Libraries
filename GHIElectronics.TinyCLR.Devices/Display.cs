@@ -26,6 +26,7 @@ namespace GHIElectronics.TinyCLR.Devices.Display {
         public void Disable() => this.Provider.Disable();
 
         public void DrawBuffer(int x, int y, int width, int height, byte[] data, int offset) => this.Provider.DrawBuffer(x, y, width, height, data, offset);
+        public void DrawPixel(int x, int y, long color) => this.Provider.DrawPixel(x, y, color);
         public void DrawString(string value) => this.Provider.DrawString(value);
 
         public void SetConfiguration(DisplayControllerSettings configuration) {
@@ -78,6 +79,7 @@ namespace GHIElectronics.TinyCLR.Devices.Display {
             void Disable();
             void SetConfiguration(DisplayControllerSettings configuration);
             void DrawBuffer(int x, int y, int width, int height, byte[] data, int offset);
+            void DrawPixel(int x, int y, long color);
             void DrawString(string value);
         }
 
@@ -112,6 +114,9 @@ namespace GHIElectronics.TinyCLR.Devices.Display {
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void DrawBuffer(int x, int y, int width, int height, byte[] data, int offset);
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            public extern void DrawPixel(int x, int y, long color);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void DrawString(string value);
