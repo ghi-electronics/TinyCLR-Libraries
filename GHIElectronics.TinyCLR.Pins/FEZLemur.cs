@@ -128,59 +128,59 @@
         }
 
         /// <summary>PWM pin definitions.</summary>
-        public static class PwmPin {
+        public static class PwmChannel {
             /// <summary>PWM controller.</summary>
             public static class Controller1 {
                 /// <summary>API id.</summary>
-                public const string Id = G30.PwmPin.Controller1.Id;
+                public const string Id = G30.PwmChannel.Controller1.Id;
 
                 /// <summary>PWM pin.</summary>
-                public const int D8 = G30.PwmPin.Controller1.PA8;
+                public const int D8 = G30.PwmChannel.Controller1.PA8;
                 /// <summary>PWM pin.</summary>
-                public const int D1 = G30.PwmPin.Controller1.PA9;
+                public const int D1 = G30.PwmChannel.Controller1.PA9;
                 /// <summary>PWM pin.</summary>
-                public const int D0 = G30.PwmPin.Controller1.PA10;
+                public const int D0 = G30.PwmChannel.Controller1.PA10;
             }
 
             /// <summary>PWM controller.</summary>
             public static class Controller2 {
                 /// <summary>API id.</summary>
-                public const string Id = G30.PwmPin.Controller2.Id;
+                public const string Id = G30.PwmChannel.Controller2.Id;
 
                 /// <summary>PWM pin.</summary>
-                public const int D6 = G30.PwmPin.Controller2.PA0;
+                public const int D6 = G30.PwmChannel.Controller2.PA0;
                 /// <summary>PWM pin.</summary>
-                public const int D5 = G30.PwmPin.Controller2.PA1;
+                public const int D5 = G30.PwmChannel.Controller2.PA1;
                 /// <summary>PWM pin.</summary>
-                public const int D9 = G30.PwmPin.Controller2.PA2;
+                public const int D9 = G30.PwmChannel.Controller2.PA2;
                 /// <summary>PWM pin.</summary>
-                public const int D10 = G30.PwmPin.Controller2.PA3;
+                public const int D10 = G30.PwmChannel.Controller2.PA3;
             }
 
             /// <summary>PWM controller.</summary>
             public static class Controller3 {
                 /// <summary>API id.</summary>
-                public const string Id = G30.PwmPin.Controller3.Id;
+                public const string Id = G30.PwmChannel.Controller3.Id;
 
                 /// <summary>PWM pin.</summary>
-                public const int D29 = G30.PwmPin.Controller3.PC6;
+                public const int D29 = G30.PwmChannel.Controller3.PC6;
                 /// <summary>PWM pin.</summary>
-                public const int D30 = G30.PwmPin.Controller3.PC7;
+                public const int D30 = G30.PwmChannel.Controller3.PC7;
             }
 
             /// <summary>PWM controller.</summary>
             public static class Controller4 {
                 /// <summary>API id.</summary>
-                public const string Id = G30.PwmPin.Controller4.Id;
+                public const string Id = G30.PwmChannel.Controller4.Id;
 
                 /// <summary>PWM pin.</summary>
-                public const int D3 = G30.PwmPin.Controller4.PB6;
+                public const int D3 = G30.PwmChannel.Controller4.PB6;
                 /// <summary>PWM pin.</summary>
-                public const int D2 = G30.PwmPin.Controller4.PB7;
+                public const int D2 = G30.PwmChannel.Controller4.PB7;
                 /// <summary>PWM pin.</summary>
-                public const int Led2 = G30.PwmPin.Controller4.PB8;
+                public const int Led2 = G30.PwmChannel.Controller4.PB8;
                 /// <summary>PWM pin.</summary>
-                public const int Led1 = G30.PwmPin.Controller4.PB9;
+                public const int Led1 = G30.PwmChannel.Controller4.PB9;
             }
         }
 

@@ -249,40 +249,40 @@
         }
 
         /// <summary>PWM pin definitions.</summary>
-        public static class PwmPin {
+        public static class PwmChannel {
             /// <summary>PWM controller.</summary>
             public static class Controller0 {
                 /// <summary>API id.</summary>
-                public const string Id = G120E.PwmPin.Controller0.Id;
+                public const string Id = G120E.PwmChannel.Controller0.Id;
 
                 /// <summary>Socket definition.</summary>
                 public static class Socket11 {
                     /// <summary>PWM pin.</summary>
-                    public const int Pin8 = G120E.PwmPin.Controller0.P3_16;
+                    public const int Pin8 = G120E.PwmChannel.Controller0.P3_16;
                     /// <summary>PWM pin.</summary>
-                    public const int Pin9 = G120E.PwmPin.Controller0.P3_17;
+                    public const int Pin9 = G120E.PwmChannel.Controller0.P3_17;
                 }
             }
 
             /// <summary>PWM controller.</summary>
             public static class Controller1 {
                 /// <summary>API id.</summary>
-                public const string Id = G120E.PwmPin.Controller1.Id;
+                public const string Id = G120E.PwmChannel.Controller1.Id;
 
                 /// <summary>Socket definition.</summary>
                 public static class Socket8 {
                     /// <summary>PWM pin.</summary>
-                    public const int Pin7 = G120E.PwmPin.Controller1.P3_29;
+                    public const int Pin7 = G120E.PwmChannel.Controller1.P3_29;
                     /// <summary>PWM pin.</summary>
-                    public const int Pin8 = G120E.PwmPin.Controller1.P3_27;
+                    public const int Pin8 = G120E.PwmChannel.Controller1.P3_27;
                     /// <summary>PWM pin.</summary>
-                    public const int Pin9 = G120E.PwmPin.Controller1.P3_26;
+                    public const int Pin9 = G120E.PwmChannel.Controller1.P3_26;
                 }
 
                 /// <summary>Socket definition.</summary>
                 public static class Socket11 {
                     /// <summary>PWM pin.</summary>
-                    public const int Pin7 = G120E.PwmPin.Controller1.P3_24;
+                    public const int Pin7 = G120E.PwmChannel.Controller1.P3_24;
                 }
             }
         }

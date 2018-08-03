@@ -47,7 +47,7 @@
             public static int H { get; internal set; }
         }
 
-        public static class PwmPin {
+        public static class PwmChannel {
             public static IdPinPair A { get; internal set; }
             public static IdPinPair B { get; internal set; }
             public static IdPinPair C { get; internal set; }

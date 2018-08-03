@@ -67,22 +67,22 @@
         }
 
         /// <summary>PWM pin definitions.</summary>
-        public static class PwmPin {
+        public static class PwmChannel {
             /// <summary>PWM controller.</summary>
             public static class Controller1 {
                 /// <summary>API id.</summary>
-                public const string Id = USBizi100.PwmPin.Controller1.Id;
+                public const string Id = USBizi100.PwmChannel.Controller1.Id;
 
                 /// <summary>PWM pin.</summary>
-                public const int Di3 = USBizi100.PwmPin.Controller1.P1_18;
+                public const int Di3 = USBizi100.PwmChannel.Controller1.P1_18;
                 /// <summary>PWM pin.</summary>
-                public const int Di5 = USBizi100.PwmPin.Controller1.P1_20;
+                public const int Di5 = USBizi100.PwmChannel.Controller1.P1_20;
                 /// <summary>PWM pin.</summary>
-                public const int Di6 = USBizi100.PwmPin.Controller1.P1_21;
+                public const int Di6 = USBizi100.PwmChannel.Controller1.P1_21;
                 /// <summary>PWM pin.</summary>
-                public const int Di9 = USBizi100.PwmPin.Controller1.P2_4;
+                public const int Di9 = USBizi100.PwmChannel.Controller1.P2_4;
                 /// <summary>PWM pin.</summary>
-                public const int Di10 = USBizi100.PwmPin.Controller1.P2_5;
+                public const int Di10 = USBizi100.PwmChannel.Controller1.P2_5;
             }
         }
 

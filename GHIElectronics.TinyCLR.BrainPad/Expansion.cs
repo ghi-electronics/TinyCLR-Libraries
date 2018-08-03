@@ -71,14 +71,14 @@ namespace GHIElectronics.TinyCLR.BrainPad {
             public new Type GetType() => base.GetType();
 
             public class Controller1Def {
-                public string Id { get; } = Pins.BrainPad.Expansion.PwmPin.Controller1.Id;
+                public string Id { get; } = Pins.BrainPad.Expansion.PwmChannel.Controller1.Id;
 
                 /// <summary>PWM pin.</summary>
-                public int Pwm { get; } = Pins.BrainPad.Expansion.PwmPin.Controller1.Pwm;
+                public int Pwm { get; } = Pins.BrainPad.Expansion.PwmChannel.Controller1.Pwm;
                 /// <summary>PWM pin.</summary>
-                public int Rx { get; } = Pins.BrainPad.Expansion.PwmPin.Controller1.Rx;
+                public int Rx { get; } = Pins.BrainPad.Expansion.PwmChannel.Controller1.Rx;
                 /// <summary>PWM pin.</summary>
-                public int Tx { get; } = Pins.BrainPad.Expansion.PwmPin.Controller1.Tx;
+                public int Tx { get; } = Pins.BrainPad.Expansion.PwmChannel.Controller1.Tx;
 
                 [EditorBrowsable(EditorBrowsableState.Never)]
                 public override bool Equals(object obj) => base.Equals(obj);
@@ -91,10 +91,10 @@ namespace GHIElectronics.TinyCLR.BrainPad {
             }
 
             public class Controller2Def {
-                public string Id { get; } = Pins.BrainPad.Expansion.PwmPin.Controller2.Id;
+                public string Id { get; } = Pins.BrainPad.Expansion.PwmChannel.Controller2.Id;
 
                 /// <summary>PWM pin.</summary>
-                public int Int { get; } = Pins.BrainPad.Expansion.PwmPin.Controller2.Int;
+                public int Int { get; } = Pins.BrainPad.Expansion.PwmChannel.Controller2.Int;
 
                 [EditorBrowsable(EditorBrowsableState.Never)]
                 public override bool Equals(object obj) => base.Equals(obj);
@@ -148,7 +148,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
 
         public GpioPinDef GpioPin { get; } = new GpioPinDef();
         public AdcChannelDef AdcChannel { get; } = new AdcChannelDef();
-        public PwmPinDef PwmPin { get; } = new PwmPinDef();
+        public PwmPinDef PwmChannel { get; } = new PwmPinDef();
         public UartPortDef UartPort { get; } = new UartPortDef();
         public I2cBusDef I2cBus { get; } = new I2cBusDef();
         public SpiBusDef SpiBus { get; } = new SpiBusDef();

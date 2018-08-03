@@ -294,7 +294,7 @@
         }
 
         /// <summary>PWM pin definitions.</summary>
-        public static class PwmPin {
+        public static class PwmChannel {
             /// <summary>API id.</summary>
             public const string Pwm0 = "GHIElectronics.TinyCLR.NativeApis.AT91.PwmController\\0";
             /// <summary>API id.</summary>

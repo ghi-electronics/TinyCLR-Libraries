@@ -79,23 +79,23 @@
         }
 
         /// <summary>PWM pin definitions.</summary>
-        public static class PwmPin {
+        public static class PwmChannel {
             /// <summary>PWM controller.</summary>
             public static class Controller0 {
                 /// <summary>API id.</summary>
-                public const string Id = EmbeddedMasterNonTFT.PwmPin.Controller0.Id;
+                public const string Id = EmbeddedMasterNonTFT.PwmChannel.Controller0.Id;
 
                 /// <summary>PWM pin.</summary>
-                public const int GreenLed = EmbeddedMasterNonTFT.PwmPin.Controller0.P3_16;
+                public const int GreenLed = EmbeddedMasterNonTFT.PwmChannel.Controller0.P3_16;
             }
 
             /// <summary>PWM controller.</summary>
             public static class Controller1 {
                 /// <summary>API id.</summary>
-                public const string Id = EmbeddedMasterNonTFT.PwmPin.Controller1.Id;
+                public const string Id = EmbeddedMasterNonTFT.PwmChannel.Controller1.Id;
 
                 /// <summary>PWM pin.</summary>
-                public const int Db25Pin22 = EmbeddedMasterNonTFT.PwmPin.Controller1.P3_24;
+                public const int Db25Pin22 = EmbeddedMasterNonTFT.PwmChannel.Controller1.P3_24;
             }
         }
 

@@ -217,40 +217,40 @@
         }
 
         /// <summary>PWM pin definitions.</summary>
-        public static class PwmPin {
+        public static class PwmChannel {
             /// <summary>PWM controller.</summary>
             public static class Controller0 {
                 /// <summary>API id.</summary>
-                public const string Id = G400S.PwmPin.Controller0.Id;
+                public const string Id = G400S.PwmChannel.Controller0.Id;
 
                 /// <summary>Socket definition.</summary>
                 public static class Socket18 {
                     /// <summary>PWM pin.</summary>
-                    public const int Pin7 = G400S.PwmPin.Controller0.PC18;
+                    public const int Pin7 = G400S.PwmChannel.Controller0.PC18;
                 }
             }
 
             /// <summary>PWM controller.</summary>
             public static class Controller1 {
                 /// <summary>API id.</summary>
-                public const string Id = G400S.PwmPin.Controller1.Id;
+                public const string Id = G400S.PwmChannel.Controller1.Id;
 
                 /// <summary>Socket definition.</summary>
                 public static class Socket18 {
                     /// <summary>PWM pin.</summary>
-                    public const int Pin8 = G400S.PwmPin.Controller1.PC19;
+                    public const int Pin8 = G400S.PwmChannel.Controller1.PC19;
                 }
             }
 
             /// <summary>PWM controller.</summary>
             public static class Controller2 {
                 /// <summary>API id.</summary>
-                public const string Id = G400S.PwmPin.Controller2.Id;
+                public const string Id = G400S.PwmChannel.Controller2.Id;
 
                 /// <summary>Socket definition.</summary>
                 public static class Socket18 {
                     /// <summary>PWM pin.</summary>
-                    public const int Pin9 = G400S.PwmPin.Controller2.PC20;
+                    public const int Pin9 = G400S.PwmChannel.Controller2.PC20;
                 }
             }
         }
