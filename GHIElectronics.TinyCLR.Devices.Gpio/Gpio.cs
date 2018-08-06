@@ -46,7 +46,6 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio {
 
         public void Dispose() => this.Provider.Dispose();
 
-
         public GpioPin OpenPin(int pinNumber) => new GpioPin(this, pinNumber);
 
         public GpioPin[] OpenPins(params int[] pinNumbers) {
@@ -110,10 +109,9 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio {
         public bool IsDriveModeSupported(int pin, GpioPinDriveMode mode) => this.Controller.Provider.IsDriveModeSupported(pin, mode);
 
         public TimeSpan DebounceTimeout { get => this.Controller.Provider.GetDebounceTimeout(this.PinNumber); set => this.Controller.Provider.SetDebounceTimeout(this.PinNumber, value); }
-        public GpioPinDriveMode DriveMode { get => this.Controller.Provider.GetDriveMode(this.PinNumber); set => this.Controller.Provider.SetDriveMode(this.PinNumber, value); }
 
-        public GpioPinDriveMode GetDriveMode() => this.DriveMode;
-        public void SetDriveMode(GpioPinDriveMode value) => this.DriveMode = value;
+        public GpioPinDriveMode GetDriveMode() => this.Controller.Provider.GetDriveMode(this.PinNumber);
+        public void SetDriveMode(GpioPinDriveMode value) => this.Controller.Provider.SetDriveMode(this.PinNumber, value);
 
         public GpioPinValue Read() => this.Controller.Provider.Read(this.PinNumber);
 
