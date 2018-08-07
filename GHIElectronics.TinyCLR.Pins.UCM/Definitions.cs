@@ -43,10 +43,10 @@ namespace GHIElectronics.TinyCLR.Pins {
             UCMStandard.AdcChannel.G = G400D.AdcChannel.PB14;
             UCMStandard.AdcChannel.H = G400D.AdcChannel.PB15;
 
-            UCMStandard.PwmPin.A = new UCMStandard.IdPinPair(G400D.PwmPin.Controller0.Id, G400D.PwmPin.Controller0.PC18);
-            UCMStandard.PwmPin.B = new UCMStandard.IdPinPair(G400D.PwmPin.Controller1.Id, G400D.PwmPin.Controller1.PC19);
-            UCMStandard.PwmPin.C = new UCMStandard.IdPinPair(G400D.PwmPin.Controller3.Id, G400D.PwmPin.Controller3.PC21);
-            UCMStandard.PwmPin.D = new UCMStandard.IdPinPair(G400D.PwmPin.Controller2.Id, G400D.PwmPin.Controller2.PC20);
+            UCMStandard.PwmChannel.A = new UCMStandard.IdPinPair(G400D.PwmChannel.Controller0.Id, G400D.PwmChannel.Controller0.PC18);
+            UCMStandard.PwmChannel.B = new UCMStandard.IdPinPair(G400D.PwmChannel.Controller1.Id, G400D.PwmChannel.Controller1.PC19);
+            UCMStandard.PwmChannel.C = new UCMStandard.IdPinPair(G400D.PwmChannel.Controller3.Id, G400D.PwmChannel.Controller3.PC21);
+            UCMStandard.PwmChannel.D = new UCMStandard.IdPinPair(G400D.PwmChannel.Controller2.Id, G400D.PwmChannel.Controller2.PC20);
 
             UCMStandard.UartPort.A = G400D.UartPort.Debug;
 
@@ -95,14 +95,14 @@ namespace GHIElectronics.TinyCLR.Pins {
             UCMStandard.AdcChannel.G = UC2550.AdcChannel.PA6;
             UCMStandard.AdcChannel.H = UC2550.AdcChannel.PA7;
 
-            UCMStandard.PwmPin.A = new UCMStandard.IdPinPair(UC2550.PwmPin.Controller1.Id, UC2550.PwmPin.Controller1.PE9);
-            UCMStandard.PwmPin.B = new UCMStandard.IdPinPair(UC2550.PwmPin.Controller1.Id, UC2550.PwmPin.Controller1.PE11);
-            UCMStandard.PwmPin.C = new UCMStandard.IdPinPair(UC2550.PwmPin.Controller3.Id, UC2550.PwmPin.Controller3.PC6);
-            UCMStandard.PwmPin.D = new UCMStandard.IdPinPair(UC2550.PwmPin.Controller3.Id, UC2550.PwmPin.Controller3.PC7);
-            UCMStandard.PwmPin.E = new UCMStandard.IdPinPair(UC2550.PwmPin.Controller9.Id, UC2550.PwmPin.Controller9.PE5);
-            UCMStandard.PwmPin.F = new UCMStandard.IdPinPair(UC2550.PwmPin.Controller9.Id, UC2550.PwmPin.Controller9.PE6);
-            UCMStandard.PwmPin.G = new UCMStandard.IdPinPair(UC2550.PwmPin.Controller12.Id, UC2550.PwmPin.Controller12.PB14);
-            UCMStandard.PwmPin.H = new UCMStandard.IdPinPair(UC2550.PwmPin.Controller12.Id, UC2550.PwmPin.Controller12.PB15);
+            UCMStandard.PwmChannel.A = new UCMStandard.IdPinPair(UC2550.PwmChannel.Controller1.Id, UC2550.PwmChannel.Controller1.PE9);
+            UCMStandard.PwmChannel.B = new UCMStandard.IdPinPair(UC2550.PwmChannel.Controller1.Id, UC2550.PwmChannel.Controller1.PE11);
+            UCMStandard.PwmChannel.C = new UCMStandard.IdPinPair(UC2550.PwmChannel.Controller3.Id, UC2550.PwmChannel.Controller3.PC6);
+            UCMStandard.PwmChannel.D = new UCMStandard.IdPinPair(UC2550.PwmChannel.Controller3.Id, UC2550.PwmChannel.Controller3.PC7);
+            UCMStandard.PwmChannel.E = new UCMStandard.IdPinPair(UC2550.PwmChannel.Controller9.Id, UC2550.PwmChannel.Controller9.PE5);
+            UCMStandard.PwmChannel.F = new UCMStandard.IdPinPair(UC2550.PwmChannel.Controller9.Id, UC2550.PwmChannel.Controller9.PE6);
+            UCMStandard.PwmChannel.G = new UCMStandard.IdPinPair(UC2550.PwmChannel.Controller12.Id, UC2550.PwmChannel.Controller12.PB14);
+            UCMStandard.PwmChannel.H = new UCMStandard.IdPinPair(UC2550.PwmChannel.Controller12.Id, UC2550.PwmChannel.Controller12.PB15);
 
             UCMStandard.UartPort.A = UC2550.UartPort.Usart1;
             UCMStandard.UartPort.B = UC2550.UartPort.Uart7;
@@ -156,14 +156,14 @@ namespace GHIElectronics.TinyCLR.Pins {
             UCMStandard.AdcChannel.G = UC5550.AdcChannel.PC2;
             UCMStandard.AdcChannel.H = UC5550.AdcChannel.PC3;
 
-            UCMStandard.PwmPin.A = new UCMStandard.IdPinPair(UC5550.PwmPin.Controller2.Id, UC5550.PwmPin.Controller2.PA15);
-            UCMStandard.PwmPin.B = new UCMStandard.IdPinPair(UC5550.PwmPin.Controller4.Id, UC5550.PwmPin.Controller4.PB7);
-            UCMStandard.PwmPin.C = new UCMStandard.IdPinPair(UC5550.PwmPin.Controller5.Id, UC5550.PwmPin.Controller5.PH11);
-            UCMStandard.PwmPin.D = new UCMStandard.IdPinPair(UC5550.PwmPin.Controller8.Id, UC5550.PwmPin.Controller8.PI5);
-            UCMStandard.PwmPin.E = new UCMStandard.IdPinPair(UC5550.PwmPin.Controller8.Id, UC5550.PwmPin.Controller8.PI6);
-            UCMStandard.PwmPin.F = new UCMStandard.IdPinPair(UC5550.PwmPin.Controller8.Id, UC5550.PwmPin.Controller8.PI7);
-            UCMStandard.PwmPin.G = new UCMStandard.IdPinPair(UC5550.PwmPin.Controller8.Id, UC5550.PwmPin.Controller8.PI2);
-            UCMStandard.PwmPin.H = new UCMStandard.IdPinPair(UC5550.PwmPin.Controller2.Id, UC5550.PwmPin.Controller9.PA3);
+            UCMStandard.PwmChannel.A = new UCMStandard.IdPinPair(UC5550.PwmChannel.Controller2.Id, UC5550.PwmChannel.Controller2.PA15);
+            UCMStandard.PwmChannel.B = new UCMStandard.IdPinPair(UC5550.PwmChannel.Controller4.Id, UC5550.PwmChannel.Controller4.PB7);
+            UCMStandard.PwmChannel.C = new UCMStandard.IdPinPair(UC5550.PwmChannel.Controller5.Id, UC5550.PwmChannel.Controller5.PH11);
+            UCMStandard.PwmChannel.D = new UCMStandard.IdPinPair(UC5550.PwmChannel.Controller8.Id, UC5550.PwmChannel.Controller8.PI5);
+            UCMStandard.PwmChannel.E = new UCMStandard.IdPinPair(UC5550.PwmChannel.Controller8.Id, UC5550.PwmChannel.Controller8.PI6);
+            UCMStandard.PwmChannel.F = new UCMStandard.IdPinPair(UC5550.PwmChannel.Controller8.Id, UC5550.PwmChannel.Controller8.PI7);
+            UCMStandard.PwmChannel.G = new UCMStandard.IdPinPair(UC5550.PwmChannel.Controller8.Id, UC5550.PwmChannel.Controller8.PI2);
+            UCMStandard.PwmChannel.H = new UCMStandard.IdPinPair(UC5550.PwmChannel.Controller2.Id, UC5550.PwmChannel.Controller9.PA3);
 
             UCMStandard.UartPort.A = UC5550.UartPort.Usart1;
             UCMStandard.UartPort.B = UC5550.UartPort.Usart6;

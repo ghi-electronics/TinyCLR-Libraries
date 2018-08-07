@@ -4,7 +4,7 @@
         /// <summary>GPIO pin definitions.</summary>
         public static class GpioPin {
             /// <summary>API id.</summary>
-            public const string Id = "GHIElectronics.TinyCLR.NativeApis.LPC24.GpioProvider\\0";
+            public const string Id = "GHIElectronics.TinyCLR.NativeApis.LPC24.GpioController\\0";
 
             /// <summary>GPIO pin.</summary>
             public const int P0_0 = 0;
@@ -331,7 +331,7 @@
         /// <summary>ADC channel definitions.</summary>
         public static class AdcChannel {
             /// <summary>API id.</summary>
-            public const string Id = "GHIElectronics.TinyCLR.NativeApis.LPC24.AdcProvider\\0";
+            public const string Id = "GHIElectronics.TinyCLR.NativeApis.LPC24.AdcController\\0";
 
             /// <summary>ADC channel.</summary>
             public const int Channel0 = 0;
@@ -354,18 +354,18 @@
         /// <summary>DAC channel definitions.</summary>
         public static class DacChannel {
             /// <summary>API id.</summary>
-            public const string Id = "GHIElectronics.TinyCLR.NativeApis.LPC24.DacProvider\\0";
+            public const string Id = "GHIElectronics.TinyCLR.NativeApis.LPC24.DacController\\0";
 
             /// <summary>DAC channel.</summary>
             public const int Channel0 = 0;
         }
 
         /// <summary>PWM pin definitions.</summary>
-        public static class PwmPin {
+        public static class PwmChannel {
             /// <summary>API id.</summary>
-            public const string Pwm0 = "GHIElectronics.TinyCLR.NativeApis.LPC24.PwmProvider\\0";
+            public const string Pwm0 = "GHIElectronics.TinyCLR.NativeApis.LPC24.PwmController\\0";
             /// <summary>API id.</summary>
-            public const string Pwm1 = "GHIElectronics.TinyCLR.NativeApis.LPC24.PwmProvider\\1";
+            public const string Pwm1 = "GHIElectronics.TinyCLR.NativeApis.LPC24.PwmController\\1";
 
             /// <summary>PWM pin.</summary>
             public const int Output1 = 0;
@@ -384,63 +384,63 @@
         /// <summary>UART port definitions.</summary>
         public static class UartPort {
             /// <summary>UART port.</summary>
-            public const string Uart0 = "GHIElectronics.TinyCLR.NativeApis.LPC24.UartProvider\\0";
+            public const string Uart0 = "GHIElectronics.TinyCLR.NativeApis.LPC24.UartController\\0";
             /// <summary>UART port.</summary>
-            public const string Uart1 = "GHIElectronics.TinyCLR.NativeApis.LPC24.UartProvider\\1";
+            public const string Uart1 = "GHIElectronics.TinyCLR.NativeApis.LPC24.UartController\\1";
             /// <summary>UART port.</summary>
-            public const string Uart2 = "GHIElectronics.TinyCLR.NativeApis.LPC24.UartProvider\\2";
+            public const string Uart2 = "GHIElectronics.TinyCLR.NativeApis.LPC24.UartController\\2";
             /// <summary>UART port.</summary>
-            public const string Uart3 = "GHIElectronics.TinyCLR.NativeApis.LPC24.UartProvider\\3";
+            public const string Uart3 = "GHIElectronics.TinyCLR.NativeApis.LPC24.UartController\\3";
             /// <summary>UART port.</summary>
-            public const string Usart4 = "GHIElectronics.TinyCLR.NativeApis.LPC24.UartProvider\\4";
+            public const string Usart4 = "GHIElectronics.TinyCLR.NativeApis.LPC24.UartController\\4";
         }
 
         /// <summary>I2C bus definitions.</summary>
         public static class I2cBus {
             /// <summary>I2C bus.</summary>
-            public const string I2c0 = "GHIElectronics.TinyCLR.NativeApis.LPC24.I2cProvider\\0";
+            public const string I2c0 = "GHIElectronics.TinyCLR.NativeApis.LPC24.I2cController\\0";
             /// <summary>I2C bus.</summary>
-            public const string I2c1 = "GHIElectronics.TinyCLR.NativeApis.LPC24.I2cProvider\\1";
+            public const string I2c1 = "GHIElectronics.TinyCLR.NativeApis.LPC24.I2cController\\1";
             /// <summary>I2C bus.</summary>
-            public const string I2c2 = "GHIElectronics.TinyCLR.NativeApis.LPC24.I2cProvider\\2";
+            public const string I2c2 = "GHIElectronics.TinyCLR.NativeApis.LPC24.I2cController\\2";
         }
 
         /// <summary>SPI bus definitions.</summary>
         public static class SpiBus {
             /// <summary>SPI bus.</summary>
-            public const string Spi0 = "GHIElectronics.TinyCLR.NativeApis.LPC24.SpiProvider\\0";
+            public const string Spi0 = "GHIElectronics.TinyCLR.NativeApis.LPC24.SpiController\\0";
             /// <summary>SPI bus.</summary>
-            public const string Spi1 = "GHIElectronics.TinyCLR.NativeApis.LPC24.SpiProvider\\1";
+            public const string Spi1 = "GHIElectronics.TinyCLR.NativeApis.LPC24.SpiController\\1";
             /// <summary>SPI bus.</summary>
-            public const string Spi2 = "GHIElectronics.TinyCLR.NativeApis.LPC24.SpiProvider\\2";
+            public const string Spi2 = "GHIElectronics.TinyCLR.NativeApis.LPC24.SpiController\\2";
         }
 
         /// <summary>CAN bus definitions.</summary>
         public static class CanBus {
             /// <summary>CAN bus.</summary>
-            public const string Can1 = "GHIElectronics.TinyCLR.NativeApis.LPC24.CanProvider\\0";
+            public const string Can1 = "GHIElectronics.TinyCLR.NativeApis.LPC24.CanController\\0";
             /// <summary>CAN bus.</summary>
-            public const string Can2 = "GHIElectronics.TinyCLR.NativeApis.LPC24.CanProvider\\1";
+            public const string Can2 = "GHIElectronics.TinyCLR.NativeApis.LPC24.CanController\\1";
         }
 
         /// <summary>USB client port definitions.</summary>
         public static class UsbClientPort {
             /// <summary>USB client port.</summary>
-            public const string UsbDevice = "GHIElectronics.TinyCLR.NativeApis.LPC24.UsbClientProvider\\0";
+            public const string UsbDevice = "GHIElectronics.TinyCLR.NativeApis.LPC24.UsbClientController\\0";
         }
 
         /// <summary>USB host port definitions.</summary>
         public static class UsbHostPort {
             /// <summary>USB host port.</summary>
-            public const string UsbHost1 = "GHIElectronics.TinyCLR.NativeApis.LPC24.UsbHostProvider\\0";
+            public const string UsbHost1 = "GHIElectronics.TinyCLR.NativeApis.LPC24.UsbHostController\\0";
             /// <summary>USB host port.</summary>
-            public const string UsbHost2 = "GHIElectronics.TinyCLR.NativeApis.LPC24.UsbHostProvider\\1";
+            public const string UsbHost2 = "GHIElectronics.TinyCLR.NativeApis.LPC24.UsbHostController\\1";
         }
 
         /// <summary>Display definitions.</summary>
         public static class Display {
             /// <summary>API id.</summary>
-            public const string Lcd = "GHIElectronics.TinyCLR.NativeApis.LPC24.DisplayProvider\\0";
+            public const string Lcd = "GHIElectronics.TinyCLR.NativeApis.LPC24.DisplayController\\0";
         }
     }
 }

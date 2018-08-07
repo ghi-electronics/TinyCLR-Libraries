@@ -219,127 +219,127 @@
         }
 
         /// <summary>PWM pin definitions.</summary>
-        public static class PwmPin {
+        public static class PwmChannel {
             /// <summary>PWM controller.</summary>
             public static class Controller1 {
                 /// <summary>API id.</summary>
-                public const string Id = STM32F4.PwmPin.Tim1;
+                public const string Id = STM32F4.PwmChannel.Tim1;
 
                 /// <summary>PWM pin.</summary>
-                public const int PE9 = STM32F4.PwmPin.Channel0;
+                public const int PE9 = STM32F4.PwmChannel.Channel0;
                 /// <summary>PWM pin.</summary>
-                public const int PE11 = STM32F4.PwmPin.Channel1;
+                public const int PE11 = STM32F4.PwmChannel.Channel1;
                 /// <summary>PWM pin.</summary>
-                public const int PE13 = STM32F4.PwmPin.Channel2;
+                public const int PE13 = STM32F4.PwmChannel.Channel2;
                 /// <summary>PWM pin.</summary>
-                public const int PE14 = STM32F4.PwmPin.Channel3;
+                public const int PE14 = STM32F4.PwmChannel.Channel3;
             }
 
             /// <summary>PWM controller.</summary>
             public static class Controller2 {
                 /// <summary>API id.</summary>
-                public const string Id = STM32F4.PwmPin.Tim2;
+                public const string Id = STM32F4.PwmChannel.Tim2;
 
                 /// <summary>PWM pin.</summary>
-                public const int PA15 = STM32F4.PwmPin.Channel0;
+                public const int PA15 = STM32F4.PwmChannel.Channel0;
                 /// <summary>PWM pin.</summary>
-                public const int PB3 = STM32F4.PwmPin.Channel1;
+                public const int PB3 = STM32F4.PwmChannel.Channel1;
                 /// <summary>PWM pin.</summary>
-                public const int PB10 = STM32F4.PwmPin.Channel2;
+                public const int PB10 = STM32F4.PwmChannel.Channel2;
                 /// <summary>PWM pin.</summary>
-                public const int PB11 = STM32F4.PwmPin.Channel3;
+                public const int PB11 = STM32F4.PwmChannel.Channel3;
             }
 
             /// <summary>PWM controller.</summary>
             public static class Controller3 {
                 /// <summary>API id.</summary>
-                public const string Id = STM32F4.PwmPin.Tim3;
+                public const string Id = STM32F4.PwmChannel.Tim3;
 
                 /// <summary>PWM pin.</summary>
-                public const int PB4 = STM32F4.PwmPin.Channel0;
+                public const int PB4 = STM32F4.PwmChannel.Channel0;
                 /// <summary>PWM pin.</summary>
-                public const int PB5 = STM32F4.PwmPin.Channel1;
+                public const int PB5 = STM32F4.PwmChannel.Channel1;
                 /// <summary>PWM pin.</summary>
-                public const int PB0 = STM32F4.PwmPin.Channel2;
+                public const int PB0 = STM32F4.PwmChannel.Channel2;
                 /// <summary>PWM pin.</summary>
-                public const int PB1 = STM32F4.PwmPin.Channel3;
+                public const int PB1 = STM32F4.PwmChannel.Channel3;
             }
 
             /// <summary>PWM controller.</summary>
             public static class Controller4 {
                 /// <summary>API id.</summary>
-                public const string Id = STM32F4.PwmPin.Tim4;
+                public const string Id = STM32F4.PwmChannel.Tim4;
 
                 /// <summary>PWM pin.</summary>
-                public const int PD12 = STM32F4.PwmPin.Channel0;
+                public const int PD12 = STM32F4.PwmChannel.Channel0;
                 /// <summary>PWM pin.</summary>
-                public const int PD13 = STM32F4.PwmPin.Channel1;
+                public const int PD13 = STM32F4.PwmChannel.Channel1;
                 /// <summary>PWM pin.</summary>
-                public const int PD14 = STM32F4.PwmPin.Channel2;
+                public const int PD14 = STM32F4.PwmChannel.Channel2;
                 /// <summary>PWM pin.</summary>
-                public const int PD15 = STM32F4.PwmPin.Channel3;
+                public const int PD15 = STM32F4.PwmChannel.Channel3;
             }
 
             /// <summary>PWM controller.</summary>
             public static class Controller8 {
                 /// <summary>API id.</summary>
-                public const string Id = STM32F4.PwmPin.Tim8;
+                public const string Id = STM32F4.PwmChannel.Tim8;
 
                 /// <summary>PWM pin.</summary>
-                public const int PC6 = STM32F4.PwmPin.Channel0;
+                public const int PC6 = STM32F4.PwmChannel.Channel0;
                 /// <summary>PWM pin.</summary>
-                public const int PC7 = STM32F4.PwmPin.Channel1;
+                public const int PC7 = STM32F4.PwmChannel.Channel1;
                 /// <summary>PWM pin.</summary>
-                public const int PC8 = STM32F4.PwmPin.Channel2;
+                public const int PC8 = STM32F4.PwmChannel.Channel2;
                 /// <summary>PWM pin.</summary>
-                public const int PC9 = STM32F4.PwmPin.Channel3;
+                public const int PC9 = STM32F4.PwmChannel.Channel3;
             }
 
             /// <summary>PWM controller.</summary>
             public static class Controller9 {
                 /// <summary>API id.</summary>
-                public const string Id = STM32F4.PwmPin.Tim9;
+                public const string Id = STM32F4.PwmChannel.Tim9;
 
                 /// <summary>PWM pin.</summary>
-                public const int PA2 = STM32F4.PwmPin.Channel0;
+                public const int PA2 = STM32F4.PwmChannel.Channel0;
                 /// <summary>PWM pin.</summary>
-                public const int PA3 = STM32F4.PwmPin.Channel1;
+                public const int PA3 = STM32F4.PwmChannel.Channel1;
             }
 
             /// <summary>PWM controller.</summary>
             public static class Controller10 {
                 /// <summary>API id.</summary>
-                public const string Id = STM32F4.PwmPin.Tim10;
+                public const string Id = STM32F4.PwmChannel.Tim10;
 
                 /// <summary>PWM pin.</summary>
-                public const int PB8 = STM32F4.PwmPin.Channel0;
+                public const int PB8 = STM32F4.PwmChannel.Channel0;
             }
 
             /// <summary>PWM controller.</summary>
             public static class Controller11 {
                 /// <summary>API id.</summary>
-                public const string Id = STM32F4.PwmPin.Tim11;
+                public const string Id = STM32F4.PwmChannel.Tim11;
 
                 /// <summary>PWM pin.</summary>
-                public const int PB9 = STM32F4.PwmPin.Channel0;
+                public const int PB9 = STM32F4.PwmChannel.Channel0;
             }
 
             /// <summary>PWM controller.</summary>
             public static class Controller13 {
                 /// <summary>API id.</summary>
-                public const string Id = STM32F4.PwmPin.Tim13;
+                public const string Id = STM32F4.PwmChannel.Tim13;
 
                 /// <summary>PWM pin.</summary>
-                public const int PA6 = STM32F4.PwmPin.Channel0;
+                public const int PA6 = STM32F4.PwmChannel.Channel0;
             }
 
             /// <summary>PWM controller.</summary>
             public static class Controller14 {
                 /// <summary>API id.</summary>
-                public const string Id = STM32F4.PwmPin.Tim14;
+                public const string Id = STM32F4.PwmChannel.Tim14;
 
                 /// <summary>PWM pin.</summary>
-                public const int PA7 = STM32F4.PwmPin.Channel0;
+                public const int PA7 = STM32F4.PwmChannel.Channel0;
             }
         }
 

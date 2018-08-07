@@ -63,12 +63,6 @@
     <None Include="GHIElectronics.TinyCLR.IO.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\GHIElectronics.TinyCLR.Devices\GHIElectronics.TinyCLR.Devices.csproj">
-      <Project>{04B01E7E-5052-4E52-B21B-0BF37B9E0C86}</Project>
-      <Name>GHIElectronics.TinyCLR.Devices</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

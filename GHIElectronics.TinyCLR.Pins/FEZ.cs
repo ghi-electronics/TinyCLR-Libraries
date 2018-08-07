@@ -90,11 +90,11 @@
         }
 
         /// <summary>PWM pin definitions.</summary>
-        public static class PwmPin {
+        public static class PwmChannel {
             /// <summary>PWM controller.</summary>
             public static class Controller1 {
                 /// <summary>API id.</summary>
-                public const string Id = FEZCLR.PwmPin.Controller1.Id;
+                public const string Id = FEZCLR.PwmChannel.Controller1.Id;
 
                 /// <summary>PWM pin.</summary>
                 public const int D3 = 0;
@@ -107,7 +107,7 @@
             /// <summary>PWM controller.</summary>
             public static class Controller3 {
                 /// <summary>API id.</summary>
-                public const string Id = FEZCLR.PwmPin.Controller3.Id;
+                public const string Id = FEZCLR.PwmChannel.Controller3.Id;
 
                 /// <summary>PWM pin.</summary>
                 public const int D6 = 0;
@@ -122,7 +122,7 @@
             /// <summary>PWM controller.</summary>
             public static class Controller4 {
                 /// <summary>API id.</summary>
-                public const string Id = FEZCLR.PwmPin.Controller4.Id;
+                public const string Id = FEZCLR.PwmChannel.Controller4.Id;
 
                 /// <summary>PWM pin.</summary>
                 public const int Scl = 0;

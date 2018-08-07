@@ -34,57 +34,60 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="AdcChannel.cs" />
-    <Compile Include="AdcController.cs" />
-    <Compile Include="AdcEnums.cs" />
-    <Compile Include="AdcProvider.cs" />
-    <Compile Include="CanController.cs" />
-    <Compile Include="CanProvider.cs" />
-    <Compile Include="DacChannel.cs" />
-    <Compile Include="DacController.cs" />
-    <Compile Include="DacProvider.cs" />
-    <Compile Include="DisplayProvider.cs" />
-    <Compile Include="DeviceInformation.cs" />
-    <Compile Include="DisplayController.cs" />
-    <Compile Include="GpioController.cs" />
-    <Compile Include="GpioEnums.cs" />
-    <Compile Include="GpioProvider.cs" />
-    <Compile Include="GpioPin.cs" />
-    <Compile Include="GpioPinEventListener.cs" />
-    <Compile Include="GpioPinValueChangedEventArgs.cs" />
-    <Compile Include="I2cConnectionSettings.cs" />
-    <Compile Include="DisplayControllerSettings.cs" />
-    <Compile Include="LowLevelDevicesController.cs" />
-    <Compile Include="GpioPulseReaderWriter.cs" />
-    <Compile Include="GpioChangeReader.cs" />
-    <Compile Include="GpioChangeWriter.cs" />
-    <Compile Include="RtcProvider.cs" />
-    <Compile Include="RtcController.cs" />
-    <Compile Include="SdCardController.cs" />
-    <Compile Include="SdCardProvider.cs" />
-    <Compile Include="SpiSoftwareProvider.cs" />
-    <Compile Include="I2cSoftwareProvider.cs" />
-    <Compile Include="SpiController.cs" />
-    <Compile Include="I2cController.cs" />
-    <Compile Include="I2cDevice.cs" />
-    <Compile Include="I2cProvider.cs" />
-    <Compile Include="I2cEnums.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PwmController.cs" />
-    <Compile Include="PwmEnums.cs" />
-    <Compile Include="PwmPin.cs" />
-    <Compile Include="PwmProvider.cs" />
-    <Compile Include="SerialCommunicationDevice.cs" />
-    <Compile Include="SerialCommunicationEnums.cs" />
-    <Compile Include="SpiBusInfo.cs" />
-    <Compile Include="SpiConnectionSettings.cs" />
-    <Compile Include="SpiDevice.cs" />
-    <Compile Include="SpiProvider.cs" />
-    <Compile Include="SpiEnums.cs" />
+    <None Include="GHIElectronics.TinyCLR.Devices.nuspec" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="GHIElectronics.TinyCLR.Devices.nuspec" />
-    <None Include="packages.config" />
+    <Folder Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GHIElectronics.TinyCLR.Devices.Adc\GHIElectronics.TinyCLR.Devices.Adc.csproj">
+      <Project>{F37DE4C9-9C6E-4FE3-BABB-2B815FADD162}</Project>
+      <Name>GHIElectronics.TinyCLR.Devices.Adc</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GHIElectronics.TinyCLR.Devices.Can\GHIElectronics.TinyCLR.Devices.Can.csproj">
+      <Project>{E74910F5-CF61-4EA3-A7A6-6D6C0AAF7266}</Project>
+      <Name>GHIElectronics.TinyCLR.Devices.Can</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GHIElectronics.TinyCLR.Devices.Dac\GHIElectronics.TinyCLR.Devices.Dac.csproj">
+      <Project>{A35B5EE4-20EE-4E01-B218-C0B4B2DD3219}</Project>
+      <Name>GHIElectronics.TinyCLR.Devices.Dac</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GHIElectronics.TinyCLR.Devices.Display\GHIElectronics.TinyCLR.Devices.Display.csproj">
+      <Project>{2E1DCA92-5601-4038-A1F0-01A604FB0B65}</Project>
+      <Name>GHIElectronics.TinyCLR.Devices.Display</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GHIElectronics.TinyCLR.Devices.Gpio\GHIElectronics.TinyCLR.Devices.Gpio.csproj">
+      <Project>{21FBFF15-D7C4-48A8-B3D1-CE70A288B3EA}</Project>
+      <Name>GHIElectronics.TinyCLR.Devices.Gpio</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GHIElectronics.TinyCLR.Devices.I2c\GHIElectronics.TinyCLR.Devices.I2c.csproj">
+      <Project>{670AD403-A7C6-4C0A-A9A3-82767B3FCBB2}</Project>
+      <Name>GHIElectronics.TinyCLR.Devices.I2c</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GHIElectronics.TinyCLR.Devices.Pwm\GHIElectronics.TinyCLR.Devices.Pwm.csproj">
+      <Project>{ED1377EE-A8C8-4EC0-9CAD-F32E5AD9AD30}</Project>
+      <Name>GHIElectronics.TinyCLR.Devices.Pwm</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GHIElectronics.TinyCLR.Devices.Rtc\GHIElectronics.TinyCLR.Devices.Rtc.csproj">
+      <Project>{6AC30771-0622-42C8-AD44-AD30D9DE2A97}</Project>
+      <Name>GHIElectronics.TinyCLR.Devices.Rtc</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GHIElectronics.TinyCLR.Devices.Signals\GHIElectronics.TinyCLR.Devices.Signals.csproj">
+      <Project>{ACC9F6AC-DB1E-4A48-95A2-08F521B8A9CD}</Project>
+      <Name>GHIElectronics.TinyCLR.Devices.Signals</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GHIElectronics.TinyCLR.Devices.Spi\GHIElectronics.TinyCLR.Devices.Spi.csproj">
+      <Project>{6CF1CBC7-B597-4BB7-8149-289B849ED283}</Project>
+      <Name>GHIElectronics.TinyCLR.Devices.Spi</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GHIElectronics.TinyCLR.Devices.Storage\GHIElectronics.TinyCLR.Devices.Storage.csproj">
+      <Project>{F3CD9D5A-75B4-4AD9-852D-4B0895ED3979}</Project>
+      <Name>GHIElectronics.TinyCLR.Devices.Storage</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GHIElectronics.TinyCLR.Devices.Uart\GHIElectronics.TinyCLR.Devices.Uart.csproj">
+      <Project>{D4456808-26EE-49D9-99ED-A11F5FF78EB9}</Project>
+      <Name>GHIElectronics.TinyCLR.Devices.Uart</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

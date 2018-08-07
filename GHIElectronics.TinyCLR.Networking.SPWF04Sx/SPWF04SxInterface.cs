@@ -37,7 +37,6 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
         public static SpiConnectionSettings GetConnectionSettings(int chipSelectLine) => new SpiConnectionSettings(chipSelectLine) {
             ClockFrequency = 4000000,
             Mode = SpiMode.Mode0,
-            SharingMode = SpiSharingMode.Exclusive,
             DataBitLength = 8
         };
 

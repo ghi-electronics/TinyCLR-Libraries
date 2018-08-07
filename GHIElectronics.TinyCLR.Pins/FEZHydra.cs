@@ -261,50 +261,50 @@ namespace GHIElectronics.TinyCLR.Pins {
         }
 
         /// <summary>PWM channel definitions.</summary>
-        public static class PwmPin {
+        public static class PwmChannel {
             /// <summary>Controller definition.</summary>
             public static class Pwm0 {
                 /// <summary>API id.</summary
-                public const string Id = AT91.PwmPin.Pwm0;
+                public const string Id = AT91.PwmChannel.Pwm0;
 
                 /// <summary>Socket definition.</summary>
                 public static class Socket7 {
                     /// <summary>PWM pin.</summary
-                    public const int Pin7 = AT91.PwmPin.Channel0;
+                    public const int Pin7 = AT91.PwmChannel.Channel0;
                 }
             }
 
             /// <summary>Controller definition.</summary>
             public static class Pwm1 {
                 /// <summary>API id.</summary
-                public const string Id = AT91.PwmPin.Pwm1;
+                public const string Id = AT91.PwmChannel.Pwm1;
 
                 /// <summary>Socket definition.</summary>
                 public static class Socket7 {
                     /// <summary>PWM pin.</summary
-                    public const int Pin8 = AT91.PwmPin.Channel0;
+                    public const int Pin8 = AT91.PwmChannel.Channel0;
                 }
             }
 
             /// <summary>Controller definition.</summary>
             public static class Pwm2 {
                 /// <summary>API id.</summary
-                public const string Id = AT91.PwmPin.Pwm2;
+                public const string Id = AT91.PwmChannel.Pwm2;
 
                 /// <summary>Socket definition.</summary>
                 public static class Socket7 {
                     /// <summary>PWM pin.</summary
-                    public const int Pin9 = AT91.PwmPin.Channel0;
+                    public const int Pin9 = AT91.PwmChannel.Channel0;
                 }
             }
 
             /// <summary>Controller definition.</summary>
             public static class Pwm3 {
                 /// <summary>API id.</summary
-                public const string Id = AT91.PwmPin.Pwm3;
+                public const string Id = AT91.PwmChannel.Pwm3;
 
                 /// <summary>PWM pin.</summary
-                public const int DebugLed = AT91.PwmPin.Channel0;
+                public const int DebugLed = AT91.PwmChannel.Channel0;
             }
         }
 

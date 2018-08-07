@@ -167,49 +167,49 @@
         }
 
         /// <summary>PWM pin definitions.</summary>
-        public static class PwmPin {
+        public static class PwmChannel {
             /// <summary>PWM controller.</summary>
             public static class Controller1 {
                 /// <summary>API id.</summary>
-                public const string Id = Cerb.PwmPin.Controller1.Id;
+                public const string Id = Cerb.PwmChannel.Controller1.Id;
 
                 /// <summary>PWM pin.</summary>
-                public const int D5 = Cerb.PwmPin.Controller1.PA8;
+                public const int D5 = Cerb.PwmChannel.Controller1.PA8;
                 /// <summary>PWM pin.</summary>
-                public const int D6 = Cerb.PwmPin.Controller1.PA10;
+                public const int D6 = Cerb.PwmChannel.Controller1.PA10;
             }
 
             /// <summary>PWM controller.</summary>
             public static class Controller2 {
                 /// <summary>API id.</summary>
-                public const string Id = Cerb.PwmPin.Controller2.Id;
+                public const string Id = Cerb.PwmChannel.Controller2.Id;
 
                 /// <summary>PWM pin.</summary>
-                public const int D10 = Cerb.PwmPin.Controller2.PA15;
+                public const int D10 = Cerb.PwmChannel.Controller2.PA15;
                 /// <summary>PWM pin.</summary>
-                public const int D13 = Cerb.PwmPin.Controller2.PB3;
+                public const int D13 = Cerb.PwmChannel.Controller2.PB3;
 
                 /// <summary>Socket definition.</summary>
                 public static class Socket1 {
                     /// <summary>PWM pin.</summary>
-                    public const int Pin9 = Cerb.PwmPin.Controller2.PB3;
+                    public const int Pin9 = Cerb.PwmChannel.Controller2.PB3;
                 }
             }
 
             /// <summary>PWM controller.</summary>
             public static class Controller3 {
                 /// <summary>API id.</summary>
-                public const string Id = Cerb.PwmPin.Controller3.Id;
+                public const string Id = Cerb.PwmChannel.Controller3.Id;
 
                 /// <summary>PWM pin.</summary>
-                public const int D12 = Cerb.PwmPin.Controller3.PB4;
+                public const int D12 = Cerb.PwmChannel.Controller3.PB4;
 
                 /// <summary>Socket definition.</summary>
                 public static class Socket1 {
                     /// <summary>PWM pin.</summary>
-                    public const int Pin7 = Cerb.PwmPin.Controller3.PB5;
+                    public const int Pin7 = Cerb.PwmChannel.Controller3.PB5;
                     /// <summary>PWM pin.</summary>
-                    public const int Pin8 = Cerb.PwmPin.Controller3.PB4;
+                    public const int Pin8 = Cerb.PwmChannel.Controller3.PB4;
                 }
             }
         }

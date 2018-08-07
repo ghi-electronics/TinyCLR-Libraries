@@ -55,8 +55,8 @@ namespace GHIElectronics.TinyCLR.UI {
 
             WindowManager.EnsureInstance(this.display);
 
-            _stylusMaxX = (int)this.display.ActiveSettings.Width;
-            _stylusMaxY = (int)this.display.ActiveSettings.Height;
+            _stylusMaxX = (int)this.display.ActiveConfiguration.Width;
+            _stylusMaxY = (int)this.display.ActiveConfiguration.Height;
 
             /* TRACING
                         if (EventTrace.IsEnabled(EventTrace.Flags.performance, EventTrace.Level.normal))
@@ -269,8 +269,8 @@ EventTrace.EventProvider.TraceEvent(EventTrace.APPGUID, MS.Utility.EventType.Inf
                         // only look for different target window if the touch point is inside
                         // the system metrics, otherwise, it may be a touch calibration point
                         // which is translated in the application layer.
-                        if (xSrc <= (int)this.display.ActiveSettings.Width &&
-                           ySrc <= (int)this.display.ActiveSettings.Height) {
+                        if (xSrc <= (int)this.display.ActiveConfiguration.Width &&
+                           ySrc <= (int)this.display.ActiveConfiguration.Height) {
                             targetWindow = null;
                         }
                     }

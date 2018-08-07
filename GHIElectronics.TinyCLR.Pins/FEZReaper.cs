@@ -257,93 +257,93 @@
         }
 
         /// <summary>PWM pin definitions.</summary>
-        public static class PwmPin {
+        public static class PwmChannel {
             /// <summary>PWM controller.</summary>
             public static class Controller1 {
                 /// <summary>API id.</summary>
-                public const string Id = G80.PwmPin.Controller1.Id;
+                public const string Id = G80.PwmChannel.Controller1.Id;
 
                 /// <summary>Socket definition.</summary>
                 public static class Socket4 {
                     /// <summary>PWM pin.</summary>
-                    public const int Pin7 = G80.PwmPin.Controller1.PE11;
+                    public const int Pin7 = G80.PwmChannel.Controller1.PE11;
                     /// <summary>PWM pin.</summary>
-                    public const int Pin8 = G80.PwmPin.Controller1.PE13;
+                    public const int Pin8 = G80.PwmChannel.Controller1.PE13;
                     /// <summary>PWM pin.</summary>
-                    public const int Pin9 = G80.PwmPin.Controller1.PE14;
+                    public const int Pin9 = G80.PwmChannel.Controller1.PE14;
                 }
             }
 
             /// <summary>PWM controller.</summary>
             public static class Controller2 {
-                public const string Id = G80.PwmPin.Controller2.Id;
+                public const string Id = G80.PwmChannel.Controller2.Id;
 
                 /// <summary>Socket definition.</summary>
                 public static class Socket4 {
                     /// <summary>PWM pin.</summary>
-                    public const int Pin6 = G80.PwmPin.Controller2.PA15;
+                    public const int Pin6 = G80.PwmChannel.Controller2.PA15;
                 }
 
                 /// <summary>Socket definition.</summary>
                 public static class Socket7 {
                     /// <summary>PWM pin.</summary>
-                    public const int Pin9 = G80.PwmPin.Controller2.PB11;
+                    public const int Pin9 = G80.PwmChannel.Controller2.PB11;
                 }
 
                 /// <summary>Socket definition.</summary>
                 public static class Socket8 {
                     /// <summary>PWM pin.</summary>
-                    public const int Pin9 = G80.PwmPin.Controller2.PB3;
+                    public const int Pin9 = G80.PwmChannel.Controller2.PB3;
                 }
             }
 
             /// <summary>PWM controller.</summary>
             public static class Controller3 {
-                public const string Id = G80.PwmPin.Controller3.Id;
+                public const string Id = G80.PwmChannel.Controller3.Id;
 
                 /// <summary>Socket definition.</summary>
                 public static class Socket8 {
                     /// <summary>PWM pin.</summary>
-                    public const int Pin7 = G80.PwmPin.Controller3.PB5;
+                    public const int Pin7 = G80.PwmChannel.Controller3.PB5;
                     /// <summary>PWM pin.</summary>
-                    public const int Pin8 = G80.PwmPin.Controller3.PB4;
+                    public const int Pin8 = G80.PwmChannel.Controller3.PB4;
                 }
             }
 
             /// <summary>PWM controller.</summary>
             public static class Controller4 {
-                public const string Id = G80.PwmPin.Controller4.Id;
+                public const string Id = G80.PwmChannel.Controller4.Id;
 
                 /// <summary>Socket definition.</summary>
                 public static class Socket12 {
                     /// <summary>PWM pin.</summary>
-                    public const int Pin7 = G80.PwmPin.Controller4.PD13;
+                    public const int Pin7 = G80.PwmChannel.Controller4.PD13;
                     /// <summary>PWM pin.</summary>
-                    public const int Pin8 = G80.PwmPin.Controller4.PD14;
+                    public const int Pin8 = G80.PwmChannel.Controller4.PD14;
                     /// <summary>PWM pin.</summary>
-                    public const int Pin9 = G80.PwmPin.Controller4.PD15;
+                    public const int Pin9 = G80.PwmChannel.Controller4.PD15;
                 }
             }
 
             /// <summary>PWM controller.</summary>
             public static class Controller10 {
-                public const string Id = G80.PwmPin.Controller10.Id;
+                public const string Id = G80.PwmChannel.Controller10.Id;
 
                 /// <summary>Socket definition.</summary>
                 public static class Socket7 {
                     /// <summary>PWM pin.</summary>
-                    public const int Pin7 = G80.PwmPin.Controller10.PB8;
+                    public const int Pin7 = G80.PwmChannel.Controller10.PB8;
                 }
             }
 
             /// <summary>PWM controller.</summary>
             public static class Controller11 {
-                public const string Id = G80.PwmPin.Controller11.Id;
+                public const string Id = G80.PwmChannel.Controller11.Id;
 
                 /// <summary>Socket definition.</summary>
                 public static class Socket7 {
                     /// <summary>PWM pin.</summary>
-                    public const int Pin7 = G80.PwmPin.Controller11.PB9;
+                    public const int Pin7 = G80.PwmChannel.Controller11.PB9;
                 }
             }
         }

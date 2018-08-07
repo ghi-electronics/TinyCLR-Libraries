@@ -43,8 +43,8 @@ namespace GHIElectronics.TinyCLR.UI {
 
         protected override void MeasureOverride(int availableWidth, int availableHeight, out int desiredWidth, out int desiredHeight) {
             base.MeasureOverride(availableWidth, availableHeight, out desiredWidth, out desiredHeight);
-            desiredWidth = (int)this.DisplayController.ActiveSettings.Width;
-            desiredHeight = (int)this.DisplayController.ActiveSettings.Height;
+            desiredWidth = (int)this.DisplayController.ActiveConfiguration.Width;
+            desiredHeight = (int)this.DisplayController.ActiveConfiguration.Height;
         }
 
         internal void SetTopMost(Window window) {
