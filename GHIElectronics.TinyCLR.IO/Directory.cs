@@ -233,7 +233,7 @@ namespace System.IO {
             var fileNames = new ArrayList();
 
             var root = Path.GetPathRoot(path);
-            if (string.Equals(root, path)) {
+            if (false && string.Equals(root, path)) { //TODO check to see it always go here
                 /// This is special case. Return all the volumes.
                 /// Note this will not work, once we start having \\server\share like paths.
 
