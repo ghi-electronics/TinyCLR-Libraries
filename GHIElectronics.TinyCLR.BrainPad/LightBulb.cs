@@ -52,22 +52,22 @@ namespace GHIElectronics.TinyCLR.BrainPad {
         /// <summary>
         /// Turns the light bulb on.
         /// </summary>
-        public void TurnWhite() => TurnColor(100, 100, 100);
+        public void TurnWhite() => TurnColor(40, 30, 80);
 
         /// <summary>
         /// Turns the light bulb Red.
         /// </summary>
-        public void TurnRed() => TurnColor(100, 0, 0);
+        public void TurnRed() => TurnColor(40, 0, 0);
 
         /// <summary>
         /// Turns the light bulb Green.
         /// </summary>
-        public void TurnGreen() => TurnColor(0, 100, 0);
+        public void TurnGreen() => TurnColor(0, 30, 0);
 
         /// <summary>
         /// Turns the light bulb Blue.
         /// </summary>
-        public void TurnBlue() => TurnColor(0, 0, 100);
+        public void TurnBlue() => TurnColor(0, 0, 80);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => base.Equals(obj);
