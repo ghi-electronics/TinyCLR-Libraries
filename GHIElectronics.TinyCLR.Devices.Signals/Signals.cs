@@ -79,7 +79,7 @@ namespace GHIElectronics.TinyCLR.Devices.Signals {
 
         public bool DisableInterrupts { get; set; }
         public bool GeneratecarrierFrequency { get; set; }
-        public int CarrierFrequency { get; set; }
+        public long CarrierFrequency { get; set; }
 
         public SignalGenerator(int pinNumber, GpioPinValue initialValue) : this(GpioController.GetDefault(), pinNumber, initialValue) {
 
@@ -100,10 +100,10 @@ namespace GHIElectronics.TinyCLR.Devices.Signals {
 
         public void Write(GpioPinValue value) => this.pin.Write(value);
 
-        public void Write(int[] buffer) => this.Write(buffer, 0, buffer.Length);
+        public void Write(long[] buffer) => this.Write(buffer, 0, buffer.Length);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern void Write(int[] buffer, int offset, int count);
+        public extern void Write(long[] buffer, int offset, int count);
     }
 
     public sealed class SignalCapture : IDisposable {
@@ -141,14 +141,14 @@ namespace GHIElectronics.TinyCLR.Devices.Signals {
 
         public GpioPinValue Read() => this.pin.Read();
 
-        public int Read(out bool initialState, int[] buffer) => this.Read(out initialState, buffer, 0, buffer.Length);
+        public int Read(out bool initialState, long[] buffer) => this.Read(out initialState, buffer, 0, buffer.Length);
 
-        public int Read(bool waitForState, int[] buffer) => this.Read(waitForState, buffer, 0, buffer.Length);
-
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern int Read(out bool initialState, int[] buffer, int offset, int count);
+        public int Read(bool waitForState, long[] buffer) => this.Read(waitForState, buffer, 0, buffer.Length);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern int Read(bool waitforInitialState, int[] buffer, int offset, int count);
+        public extern int Read(out bool initialState, long[] buffer, int offset, int count);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        public extern int Read(bool waitforInitialState, long[] buffer, int offset, int count);
     }
 }
