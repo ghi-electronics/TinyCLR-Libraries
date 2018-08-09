@@ -78,7 +78,7 @@ namespace GHIElectronics.TinyCLR.Devices.Signals {
         private readonly GpioPin pin;
 
         public bool DisableInterrupts { get; set; }
-        public bool GeneratecarrierFrequency { get; set; }
+        public bool GenerateCarrierFrequency { get; set; }
         public long CarrierFrequency { get; set; }
 
         public SignalGenerator(int pinNumber, GpioPinValue initialValue) : this(GpioController.GetDefault(), pinNumber, initialValue) {
@@ -141,14 +141,14 @@ namespace GHIElectronics.TinyCLR.Devices.Signals {
 
         public GpioPinValue Read() => this.pin.Read();
 
-        public int Read(out bool initialState, long[] buffer) => this.Read(out initialState, buffer, 0, buffer.Length);
+        public int Read(out GpioPinValue initialState, long[] buffer) => this.Read(out initialState, buffer, 0, buffer.Length);
 
-        public int Read(bool waitForState, long[] buffer) => this.Read(waitForState, buffer, 0, buffer.Length);
-
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern int Read(out bool initialState, long[] buffer, int offset, int count);
+        public int Read(GpioPinValue waitForState, long[] buffer) => this.Read(waitForState, buffer, 0, buffer.Length);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern int Read(bool waitforInitialState, long[] buffer, int offset, int count);
+        public extern int Read(out GpioPinValue initialState, long[] buffer, int offset, int count);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        public extern int Read(GpioPinValue waitforInitialState, long[] buffer, int offset, int count);
     }
 }
