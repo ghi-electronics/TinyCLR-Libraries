@@ -3,7 +3,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>GHIElectronics.TinyCLR.Devices.I2c</id>
-    <version>0.12.0</version>
+    <version>1.0.0-preview1</version>
     <authors>GHI Electronics, LLC</authors>
     <owners>GHI Electronics, LLC</owners>
     <projectUrl>https://ghielectronics.com/</projectUrl>
@@ -14,9 +14,9 @@
     <copyright>Copyright GHI Electronics, LLC 2018</copyright>
     <tags>TinyCLR TinyCLROS</tags>
     <dependencies>
-      <dependency id="GHIElectronics.TinyCLR.Core" version="[0.12.0, 0.13.0)" />
-      <dependency id="GHIElectronics.TinyCLR.Native" version="[0.12.0, 0.13.0)" />
-      <dependency id="GHIElectronics.TinyCLR.Devices.Gpio" version="[0.12.0, 0.13.0)" />
+      <dependency id="GHIElectronics.TinyCLR.Core" version="1.0.0-preview1" />
+      <dependency id="GHIElectronics.TinyCLR.Native" version="1.0.0-preview1" />
+      <dependency id="GHIElectronics.TinyCLR.Devices.Gpio" version="1.0.0-preview1" />
     </dependencies>
   </metadata>
   <files>
