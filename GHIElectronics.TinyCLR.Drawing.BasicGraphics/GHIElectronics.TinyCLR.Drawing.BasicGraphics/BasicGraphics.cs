@@ -59,5 +59,15 @@ namespace GHIElectronics.TinyCLR.Drawing.BasicGraphics {
                 this.DrawPixel(x + width - 1, i, pen);
             }
         }
+
+        /// <summary>
+        /// Draws an ellipse.
+        /// </summary>
+        /// <param name="pen">The Pen object that determines the color, width, and style of the ellipse.</param>
+        /// <param name="x">The x-coordinate of the upper-left corner of the bounding rectangle that defines the ellipse.</param>
+        /// <param name="y">The y-coordinate of the upper-left corner of the bounding rectangle that defines the ellipse.</param>
+        /// <param name="width">The Width of the bounding rectangle that defines the ellipse.</param>
+        /// <param name="height">Height of the bounding rectangle that defines the ellipse.</param>
+        public void DrawEllipse(Pen pen, int x, int y, int width, int height) => throw new NotImplementedException();
     }
 }
