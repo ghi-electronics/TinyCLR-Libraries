@@ -60,6 +60,8 @@ namespace GHIElectronics.TinyCLR.Drawing.BasicGraphics {
             }
         }
 
+        public void FillRectangle(Brush brush, int x, int y, int width, int height) => throw new NotSupportedException();
+
         /// <summary>
         /// Draws an ellipse.
         /// </summary>
@@ -69,5 +71,7 @@ namespace GHIElectronics.TinyCLR.Drawing.BasicGraphics {
         /// <param name="width">The Width of the bounding rectangle that defines the ellipse.</param>
         /// <param name="height">Height of the bounding rectangle that defines the ellipse.</param>
         public void DrawEllipse(Pen pen, int x, int y, int width, int height) => throw new NotImplementedException();
+
+        public void FillEllipse(Brush brush, int x, int y, int width, int height) => throw new NotSupportedException();
     }
 }
