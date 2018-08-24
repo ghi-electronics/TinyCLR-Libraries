@@ -11,7 +11,7 @@ namespace System.Drawing {
         public static Color White { get; } = Color.FromArgb(0xFF, 0xFF, 0xFF, 0xFF);
         public static Color Gray { get; } = Color.FromArgb(0xFF, 0x80, 0x80, 0x80);
         public static Color Red { get; } = Color.FromArgb(0xFF, 0xFF, 0x00, 0x00);
-        public static Color Green { get; } = Color.FromArgb(0xFF, 0x00, 0x80, 0x00);
+        public static Color Green { get; } = Color.FromArgb(0xFF, 0x00, 0xFF, 0x00);
         public static Color Blue { get; } = Color.FromArgb(0xFF, 0x00, 0x00, 0xFF);
         public static Color Yellow { get; } = Color.FromArgb(0xFF, 0xFF, 0xFF, 0x00);
         public static Color Purple { get; } = Color.FromArgb(0xFF, 0x80, 0x00, 0x80);
