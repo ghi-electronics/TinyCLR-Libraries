@@ -70,7 +70,49 @@ namespace GHIElectronics.TinyCLR.Drawing.BasicGraphics {
         /// <param name="y">The y-coordinate of the upper-left corner of the bounding rectangle that defines the ellipse.</param>
         /// <param name="width">The Width of the bounding rectangle that defines the ellipse.</param>
         /// <param name="height">Height of the bounding rectangle that defines the ellipse.</param>
-        public void DrawEllipse(Pen pen, int x, int y, int width, int height) => throw new NotImplementedException();
+        public void DrawEllipse(Pen pen, int x, int y, int width, int height) {
+            if (width != height)
+                throw new Exception("width and height must be equal!");
+
+            var radius = width / 2;
+            if (radius <= 0) return;
+
+            var centerX = x + radius;
+            var centerY = y + radius;
+
+            var f = 1 - radius;
+            var ddFX = 1;
+            var ddFY = -2 * radius;
+            var dX = 0;
+            var dY = radius;
+
+            this.DrawPixel(centerX, centerY + radius, pen);
+            this.DrawPixel(centerX, centerY - radius, pen);
+            this.DrawPixel(centerX + radius, centerY, pen);
+            this.DrawPixel(centerX - radius, centerY, pen);
+
+            while (dX < dY) {
+                if (f >= 0) {
+                    dY--;
+                    ddFY += 2;
+                    f += ddFY;
+                }
+
+                dX++;
+                ddFX += 2;
+                f += ddFX;
+
+                this.DrawPixel(centerX + dX, centerY + dY, pen);
+                this.DrawPixel(centerX - dX, centerY + dY, pen);
+                this.DrawPixel(centerX + dX, centerY - dY, pen);
+                this.DrawPixel(centerX - dX, centerY - dY, pen);
+
+                this.DrawPixel(centerX + dY, centerY + dX, pen);
+                this.DrawPixel(centerX - dY, centerY + dX, pen);
+                this.DrawPixel(centerX + dY, centerY - dX, pen);
+                this.DrawPixel(centerX - dY, centerY - dX, pen);
+            }
+        }
 
         public void FillEllipse(Brush brush, int x, int y, int width, int height) => throw new NotSupportedException();
     }
