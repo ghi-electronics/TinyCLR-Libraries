@@ -15,6 +15,7 @@
     <tags>TinyCLR TinyCLROS</tags>
     <dependencies>
       <dependency id="GHIElectronics.TinyCLR.Core" version="1.0.0-preview1" />
+      <dependency id="GHIElectronics.TinyCLR.Drawing" version="1.0.0-preview1" />
     </dependencies>
   </metadata>
   <files>
