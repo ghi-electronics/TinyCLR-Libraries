@@ -43,7 +43,21 @@ namespace GHIElectronics.TinyCLR.Drawing.BasicGraphics {
                     this.DrawPixel(x1, y1, pen);
                 }
             }
+        }
 
+        public void DrawRectangle(Pen pen, int x, int y, int width, int height) {
+            if (width < 0) return;
+            if (height < 0) return;
+
+            for (var i = x; i < x + width; i++) {
+                this.DrawPixel(i, y, pen);
+                this.DrawPixel(i, y + height - 1, pen);
+            }
+
+            for (var i = y; i < y + height; i++) {
+                this.DrawPixel(x, i, pen);
+                this.DrawPixel(x + width - 1, i, pen);
+            }
         }
     }
 }
