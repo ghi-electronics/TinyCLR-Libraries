@@ -274,5 +274,18 @@ namespace GHIElectronics.TinyCLR.Drawing.BasicGraphics {
             0x00, 0x41, 0x41, 0x36, 0x08, /* } */
             0x08, 0x08, 0x2a, 0x1c, 0x08  /* ~ */
         };
+
+        //Draws a portion of an image at a specified location.
+        public void DrawImage(Image image, int x, int y, Rectangle srcRect, GraphicsUnit srcUnit) => throw new NotSupportedException("Not supported at this time.");
+
+        //Draws the specified Image at the specified location and with the specified size.
+        public void DrawImage(Image image, int x, int y, int width, int height) => throw new NotSupportedException("Not supported at this time.");
+
+        //Draws the specified image, using its original physical size, at the location specified by a coordinate pair.
+        public void DrawImage(Image image, int x, int y) => throw new NotSupportedException("Not supported at this time.");
+
+        //Draws the specified portion of the specified Image at the specified location and with the specified size.
+        public void DrawImage(Image image, Rectangle destRect, Rectangle srcRect, GraphicsUnit srcUnit) => throw new NotSupportedException("Not supported at this time.");
+
     }
 }
