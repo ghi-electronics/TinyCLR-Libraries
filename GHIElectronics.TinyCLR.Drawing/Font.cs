@@ -24,6 +24,16 @@ namespace System.Drawing {
 
         private Font() { }
 
+        public Font(string familyName, float emSize) {
+            var sz = (int)emSize;
+
+            this.IsGHIMono8x5 = familyName == "GHIMono8x5" && (sz % 8) == 0 ? true : throw new NotSupportedException();
+            this.Size = sz;
+        }
+
+        internal int Size { get; }
+        internal bool IsGHIMono8x5 { get; }
+
         public object Clone() => throw new NotImplementedException();
         public void Dispose() { }
 
