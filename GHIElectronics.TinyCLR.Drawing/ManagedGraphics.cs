@@ -82,11 +82,23 @@
             if (font == null) throw new ArgumentNullException(nameof(font));
             if (!font.IsGHIMono8x5) throw new NotSupportedException();
 
+            var originalX = x;
             var hScale = font.Size / 8;
             var vScale = hScale;
 
             for (var i = 0; i < text.Length; i++) {
-
+                if (text[i] >= 32) {
+                    this.DrawLetter(x, y, text[i], color, hScale, vScale);
+                    x += (6 * hScale);
+                }
+                else {
+                    if (text[i] == '\n') {
+                        y += (9 * vScale);
+                        x = originalX;
+                    }
+                    if (text[i] == '\r')
+                        x = originalX;
+                }
             }
         }
 
@@ -200,15 +212,15 @@
                     this.SetPixel(x, y, mg.GetPixel(x, y));
         }
 
-        private void DrawLetter(int x, int y, char letter, uint color, int HScale, int VScale) {
+        private void DrawLetter(int x, int y, char letter, uint color, int hScale, int vScale) {
             var index = 5 * (letter - 32);
 
             for (var horizontalFontSize = 0; horizontalFontSize < 5; horizontalFontSize++) {
-                for (var hs = 0; hs < HScale; hs++) {
-                    for (var verticleFoneSize = 0; verticleFoneSize < 8; verticleFoneSize++) {
-                        for (var vs = 0; vs < VScale; vs++) {
-                            if ((this.GHIMono8x5[index + horizontalFontSize] & (1 << verticleFoneSize)) != 0)
-                                this.SetPixel(x + (horizontalFontSize * HScale) + hs, y + (verticleFoneSize * VScale) + vs, color);
+                for (var hs = 0; hs < hScale; hs++) {
+                    for (var verticleFontSize = 0; verticleFontSize < 8; verticleFontSize++) {
+                        for (var vs = 0; vs < vScale; vs++) {
+                            if ((this.GHIMono8x5[index + horizontalFontSize] & (1 << verticleFontSize)) != 0)
+                                this.SetPixel(x + (horizontalFontSize * hScale) + hs, y + (verticleFontSize * vScale) + vs, color);
                         }
                     }
                 }
