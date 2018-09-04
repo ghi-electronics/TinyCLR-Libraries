@@ -3,6 +3,27 @@ using System.Runtime.CompilerServices;
 using GHIElectronics.TinyCLR.Native;
 
 namespace System.Drawing {
+    internal sealed class Rgb565 : IDrawTarget {
+        private readonly byte[] data;
+
+        public Rgb565(int width, int height) {
+            this.Width = width;
+            this.Height = height;
+
+            this.data = new byte[width * height * 2];
+        }
+
+        public int Width { get; }
+        public int Height { get; }
+
+        public void SetPixel(int x, int y, Color color) => throw new NotImplementedException();
+
+        public void Flush() => throw new NotSupportedException();
+        public void Clear(Color color) => throw new NotSupportedException();
+
+        public void Dispose() => throw new NotSupportedException();
+    }
+
     internal interface IGraphics : IDisposable {
         int Width { get; }
         int Height { get; }
@@ -27,6 +48,30 @@ namespace System.Drawing {
         void SetPixel(int x, int y, Color color);
         void Clear(Color color);
         void Flush();
+    }
+
+    internal sealed class ManagedGraphics : IGraphics {
+        private readonly IDrawTarget drawTarget;
+
+        public ManagedGraphics(IDrawTarget drawTarget) => this.drawTarget = drawTarget;
+
+        public int Width => this.drawTarget.Width;
+        public int Height => this.drawTarget.Height;
+
+        public void Clear() => this.drawTarget.Clear(Color.Black);
+        public void Dispose() => this.drawTarget.Dispose();
+        public void Flush(IntPtr hdc) => this.drawTarget.Flush();
+
+        public uint GetPixel(int x, int y) => throw new NotImplementedException();
+        public void SetPixel(int x, int y, uint color) => throw new NotImplementedException();
+        public byte[] GetBitmap() => throw new NotImplementedException();
+
+        public void DrawLine(uint color, int thickness, int x0, int y0, int x1, int y1) => throw new NotImplementedException();
+        public void DrawRectangle(uint colorOutline, int thicknessOutline, int x, int y, int width, int height, int xCornerRadius, int yCornerRadius, uint colorGradientStart, int xGradientStart, int yGradientStart, uint colorGradientEnd, int xGradientEnd, int yGradientEnd, ushort opacity) => throw new NotImplementedException();
+        public void DrawEllipse(uint colorOutline, int thicknessOutline, int x, int y, int xRadius, int yRadius, uint colorGradientStart, int xGradientStart, int yGradientStart, uint colorGradientEnd, int xGradientEnd, int yGradientEnd, ushort opacity) => throw new NotImplementedException();
+        public void DrawText(string text, Font font, uint color, int x, int y) => throw new NotImplementedException();
+        public void DrawTextInRect(string text, int x, int y, int width, int height, uint dtFlags, Color color, Font font) => throw new NotImplementedException();
+        public void StretchImage(int xDst, int yDst, int widthDst, int heightDst, IGraphics image, int xSrc, int ySrc, int widthSrc, int heightSrc, ushort opacity) => throw new NotImplementedException();
     }
 
     public sealed class Graphics : MarshalByRefObject, IDisposable {
@@ -71,7 +116,7 @@ namespace System.Drawing {
 
         private static IGraphics CreateSurface(int width, int height) {
             if (!Graphics.HasDrawing())
-                throw new NotSupportedException();
+                return new ManagedGraphics(new Rgb565(width, height));
 
             return new Internal.Bitmap(width, height);
         }
@@ -79,7 +124,7 @@ namespace System.Drawing {
         internal Graphics(byte[] buffer) : this(Graphics.CreateSurface(buffer), IntPtr.Zero) { }
         internal Graphics(int width, int height) : this(width, height, IntPtr.Zero) { }
         private Graphics(int width, int height, IntPtr hdc) : this(Graphics.CreateSurface(width, height), hdc) { }
-        private Graphics(IDrawTarget target, IntPtr hdc) => throw new NotSupportedException();
+        private Graphics(IDrawTarget target, IntPtr hdc) : this(new ManagedGraphics(target), hdc) { }
 
         internal Graphics(IGraphics bmp, IntPtr hdc) {
             this.surface = bmp;
