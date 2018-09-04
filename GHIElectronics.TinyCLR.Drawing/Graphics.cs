@@ -26,9 +26,12 @@ namespace System.Drawing {
         int Width { get; }
         int Height { get; }
 
-        void SetPixel(int x, int y, Color color);
         void Clear(Color color);
         void Flush();
+
+        Color GetPixel(int x, int y);
+        void SetPixel(int x, int y, Color color);
+        byte[] GetData();
     }
 
     public sealed class Graphics : MarshalByRefObject, IDisposable {

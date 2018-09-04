@@ -12,7 +12,9 @@
         public int Width { get; }
         public int Height { get; }
 
+        public Color GetPixel(int x, int y) => throw new NotImplementedException();
         public void SetPixel(int x, int y, Color color) => throw new NotImplementedException();
+        public byte[] GetData() => throw new NotImplementedException();
 
         public void Flush() => throw new NotSupportedException();
         public void Clear(Color color) => throw new NotSupportedException();
