@@ -24,7 +24,7 @@ namespace System.Drawing {
 
         internal readonly long value;
 
-        private Color(long value) => this.value = value;
+        internal Color(long value) => this.value = value;
 
         public byte R => (byte)((this.value >> ARGBRedShift) & 0xFF);
         public byte G => (byte)((this.value >> ARGBGreenShift) & 0xFF);
