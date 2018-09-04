@@ -90,7 +90,7 @@
             }
         }
 
-        readonly byte[] font = new byte[95 * 5] {
+        readonly byte[] GHIMono8x5 = new byte[95 * 5] {
             0x00, 0x00, 0x00, 0x00, 0x00, /* Space	0x20 */
             0x00, 0x00, 0x4f, 0x00, 0x00, /* ! */
             0x00, 0x07, 0x00, 0x07, 0x00, /* " */
@@ -198,6 +198,21 @@
             for (var y = 0; y < widthDst; y++)
                 for (var x = 0; x < widthDst; x++)
                     this.SetPixel(x, y, mg.GetPixel(x, y));
+        }
+
+        private void DrawLetter(int x, int y, char letter, uint color, int HScale, int VScale) {
+            var index = 5 * (letter - 32);
+
+            for (var horizontalFontSize = 0; horizontalFontSize < 5; horizontalFontSize++) {
+                for (var hs = 0; hs < HScale; hs++) {
+                    for (var verticleFoneSize = 0; verticleFoneSize < 8; verticleFoneSize++) {
+                        for (var vs = 0; vs < VScale; vs++) {
+                            if ((this.GHIMono8x5[index + horizontalFontSize] & (1 << verticleFoneSize)) != 0)
+                                this.SetPixel(x + (horizontalFontSize * HScale) + hs, y + (verticleFoneSize * VScale) + vs, color);
+                        }
+                    }
+                }
+            }
         }
     }
 }
