@@ -130,7 +130,50 @@
             }
         }
 
-        public void DrawEllipse(uint colorOutline, int thicknessOutline, int x, int y, int xRadius, int yRadius, uint colorGradientStart, int xGradientStart, int yGradientStart, uint colorGradientEnd, int xGradientEnd, int yGradientEnd, ushort opacity) => throw new NotImplementedException();
+        public void DrawEllipse(uint colorOutline, int thicknessOutline, int x, int y, int xRadius, int yRadius, uint colorGradientStart, int xGradientStart, int yGradientStart, uint colorGradientEnd, int xGradientEnd, int yGradientEnd, ushort opacity) {
+            if (thicknessOutline != 1) throw new ArgumentException("Line thicknesses other than 1 are not supported at this time.");
+            if (opacity != 0xFF) throw new ArgumentException("Total opacity is only supported at this time.");
+            if (xRadius != yRadius) throw new ArgumentException("xRadius and yRadius must be equal");
+
+            var radius = xRadius;
+            if (radius <= 0) return;
+
+            var centerX = x + radius;
+            var centerY = y + radius;
+
+            var f = 1 - radius;
+            var ddFX = 1;
+            var ddFY = -2 * radius;
+            var dX = 0;
+            var dY = radius;
+
+            this.SetPixel(centerX, centerY + radius, colorOutline);
+            this.SetPixel(centerX, centerY - radius, colorOutline);
+            this.SetPixel(centerX + radius, centerY, colorOutline);
+            this.SetPixel(centerX - radius, centerY, colorOutline);
+
+            while (dX < dY) {
+                if (f >= 0) {
+                    dY--;
+                    ddFY += 2;
+                    f += ddFY;
+                }
+
+                dX++;
+                ddFX += 2;
+                f += ddFX;
+
+                this.SetPixel(centerX + dX, centerY + dY, colorOutline);
+                this.SetPixel(centerX - dX, centerY + dY, colorOutline);
+                this.SetPixel(centerX + dX, centerY - dY, colorOutline);
+                this.SetPixel(centerX - dX, centerY - dY, colorOutline);
+
+                this.SetPixel(centerX + dY, centerY + dX, colorOutline);
+                this.SetPixel(centerX - dY, centerY + dX, colorOutline);
+                this.SetPixel(centerX + dY, centerY - dX, colorOutline);
+                this.SetPixel(centerX - dY, centerY - dX, colorOutline);
+            }
+        }
 
         public void DrawText(string text, Font font, uint color, int x, int y) {
             if (text == null) throw new ArgumentNullException(nameof(text));
