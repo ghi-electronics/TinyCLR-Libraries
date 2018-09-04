@@ -1,22 +1,66 @@
 using System.Runtime.CompilerServices;
+using GHIElectronics.TinyCLR.Native;
 
 namespace System.Drawing {
+    internal interface IGraphics : IDisposable {
+        int Width { get; }
+        int Height { get; }
+
+        void DrawRectangle(uint colorOutline, int thicknessOutline, int x, int y, int width, int height, int xCornerRadius, int yCornerRadius, uint colorGradientStart, int xGradientStart, int yGradientStart, uint colorGradientEnd, int xGradientEnd, int yGradientEnd, ushort opacity);
+        void DrawEllipse(uint colorOutline, int thicknessOutline, int x, int y, int xRadius, int yRadius, uint colorGradientStart, int xGradientStart, int yGradientStart, uint colorGradientEnd, int xGradientEnd, int yGradientEnd, ushort opacity);
+        void DrawText(string text, Font font, uint color, int x, int y);
+        void DrawTextInRect(string text, int x, int y, int width, int height, uint dtFlags, Color color, Font font);
+        void StretchImage(int xDst, int yDst, int widthDst, int heightDst, IGraphics image, int xSrc, int ySrc, int widthSrc, int heightSrc, ushort opacity);
+        void DrawLine(uint color, int thickness, int x0, int y0, int x1, int y1);
+        uint GetPixel(int x, int y);
+        void SetPixel(int x, int y, uint color);
+        void Clear();
+        void Flush(IntPtr hdc);
+        byte[] GetBitmap();
+    }
+
     public sealed class Graphics : MarshalByRefObject, IDisposable {
         internal int Width => this.surface.Width;
         internal int Height => this.surface.Height;
 
-        internal Internal.Bitmap surface;
+        internal IGraphics surface;
         private bool disposed;
         internal bool callFromImage;
         private IntPtr hdc;
 
         public GraphicsUnit PageUnit { get; } = GraphicsUnit.Pixel;
 
-        internal Graphics(byte[] buffer) : this(new Internal.Bitmap(buffer, Internal.Bitmap.BitmapImageType.Bmp), IntPtr.Zero) { }
-        internal Graphics(int width, int height) : this(width, height, IntPtr.Zero) { }
-        private Graphics(int width, int height, IntPtr hdc) : this(new Internal.Bitmap(width, height), hdc) { }
+        internal uint GetPixel(int x, int y) => this.surface.GetPixel(x, y);
+        public void SetPixel(int x, int y, uint color) => this.surface.SetPixel(x, y, color);
+        internal byte[] GetBitmap() => this.surface.GetBitmap();
 
-        internal Graphics(Internal.Bitmap bmp, IntPtr hdc) {
+        private static bool HasDrawing() {
+            foreach (var i in Interop.FindAll())
+                if (i.Name == "GHIElectronics.TinyCLR.Drawing")
+                    return true;
+
+            return false;
+        }
+
+        private static IGraphics CreateSurface(byte[] buffer) {
+            if (!Graphics.HasDrawing())
+                throw new NotSupportedException();
+
+            return new Internal.Bitmap(buffer, Internal.Bitmap.BitmapImageType.Bmp);
+        }
+
+        private static IGraphics CreateSurface(int width, int height) {
+            if (!Graphics.HasDrawing())
+                throw new NotSupportedException();
+
+            return new Internal.Bitmap(width, height);
+        }
+
+        internal Graphics(byte[] buffer) : this(Graphics.CreateSurface(buffer), IntPtr.Zero) { }
+        internal Graphics(int width, int height) : this(width, height, IntPtr.Zero) { }
+        private Graphics(int width, int height, IntPtr hdc) : this(Graphics.CreateSurface(width, height), hdc) { }
+
+        internal Graphics(IGraphics bmp, IntPtr hdc) {
             this.surface = bmp;
             this.hdc = hdc;
         }
@@ -208,7 +252,7 @@ namespace System.Drawing {
 
     namespace Internal {
         //The name and namespace of this must match the definition in c_TypeIndexLookup in TypeSystem.cpp and ResourceManager.GetObject
-        internal class Bitmap : MarshalByRefObject, IDisposable {
+        internal class Bitmap : MarshalByRefObject, IDisposable, IGraphics {
 #pragma warning disable CS0169 // The field is never used
             private object m_bitmap;
 #pragma warning restore CS0169 // The field is never used
@@ -304,7 +348,7 @@ namespace System.Drawing {
                 var xRelStart = 0;
                 var yRelStart = 0;
 
-                DrawTextInRect(ref text, ref xRelStart, ref yRelStart, x, y, width, height, dtFlags, (uint)(color.value & 0x00FFFFFF), font);
+                this.DrawTextInRect(ref text, ref xRelStart, ref yRelStart, x, y, width, height, dtFlags, (uint)(color.value & 0x00FFFFFF), font);
             }
 
             //public void DrawEllipse(Color colorOutline, int x, int y, int xRadius, int yRadius) => DrawEllipse(colorOutline, 1, x, y, xRadius, yRadius, Color.Black, 0, 0, Color.Black, 0, 0, OpacityOpaque);
@@ -340,6 +384,11 @@ namespace System.Drawing {
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void StretchImage(int xDst, int yDst, int widthDst, int heightDst, Bitmap bitmap, int xSrc, int ySrc, int widthSrc, int heightSrc, ushort opacity);
+
+            public void StretchImage(int xDst, int yDst, int widthDst, int heightDst, IGraphics bitmap, int xSrc, int ySrc, int widthSrc, int heightSrc, ushort opacity) {
+                if (bitmap is Bitmap b)
+                    this.StretchImage(xDst, yDst, widthDst, heightDst, b, xSrc, ySrc, widthSrc, heightSrc, opacity);
+            }
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void TileImage(int xDst, int yDst, Bitmap bitmap, int width, int height, ushort opacity);
