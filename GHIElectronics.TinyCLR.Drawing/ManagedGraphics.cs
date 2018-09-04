@@ -73,7 +73,45 @@
 
         public void DrawTextInRect(string text, int x, int y, int width, int height, uint dtFlags, Color color, Font font) => throw new NotSupportedException();
 
-        public void DrawLine(uint color, int thickness, int x0, int y0, int x1, int y1) => throw new NotImplementedException();
+        public void DrawLine(uint color, int thickness, int x0, int y0, int x1, int y1) {
+            if (thickness != 1) throw new ArgumentException("Other line thicknesses except 1 are not supported at this time.");
+
+            var xLength = x1 - x0;
+            var yLength = y1 - y0;
+            int stepx, stepy;
+
+            if (yLength < 0) { yLength = -yLength; stepy = -1; } else { stepy = 1; }
+            if (xLength < 0) { xLength = -xLength; stepx = -1; } else { stepx = 1; }
+            yLength <<= 1;                                  // yLength is now 2 * yLength
+            xLength <<= 1;                                  // xLength is now 2 * xLength
+
+            this.SetPixel(x0, y0, color);
+            if (xLength > yLength) {
+                var fraction = yLength - (xLength >> 1);    // same as 2 * yLength - xLength
+                while (x0 != x1) {
+                    if (fraction >= 0) {
+                        y0 += stepy;
+                        fraction -= xLength;                // same as fraction -= 2 * xLength
+                    }
+                    x0 += stepx;
+                    fraction += yLength;                    // same as fraction -= 2 * yLength
+                    this.SetPixel(x0, y0, color);
+                }
+            }
+            else {
+                var fraction = xLength - (yLength >> 1);
+                while (y0 != y1) {
+                    if (fraction >= 0) {
+                        x0 += stepx;
+                        fraction -= yLength;
+                    }
+                    y0 += stepy;
+                    fraction += xLength;
+                    this.SetPixel(x0, y0, color);
+                }
+            }
+        }
+
         public void DrawRectangle(uint colorOutline, int thicknessOutline, int x, int y, int width, int height, int xCornerRadius, int yCornerRadius, uint colorGradientStart, int xGradientStart, int yGradientStart, uint colorGradientEnd, int xGradientEnd, int yGradientEnd, ushort opacity) => throw new NotImplementedException();
         public void DrawEllipse(uint colorOutline, int thicknessOutline, int x, int y, int xRadius, int yRadius, uint colorGradientStart, int xGradientStart, int yGradientStart, uint colorGradientEnd, int xGradientEnd, int yGradientEnd, ushort opacity) => throw new NotImplementedException();
 
