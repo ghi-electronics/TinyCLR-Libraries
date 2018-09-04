@@ -28,17 +28,19 @@ namespace System.Drawing {
         int Width { get; }
         int Height { get; }
 
+        void Clear();
+        void Flush(IntPtr hdc);
+
+        uint GetPixel(int x, int y);
+        void SetPixel(int x, int y, uint color);
+        byte[] GetBitmap();
+
+        void DrawLine(uint color, int thickness, int x0, int y0, int x1, int y1);
         void DrawRectangle(uint colorOutline, int thicknessOutline, int x, int y, int width, int height, int xCornerRadius, int yCornerRadius, uint colorGradientStart, int xGradientStart, int yGradientStart, uint colorGradientEnd, int xGradientEnd, int yGradientEnd, ushort opacity);
         void DrawEllipse(uint colorOutline, int thicknessOutline, int x, int y, int xRadius, int yRadius, uint colorGradientStart, int xGradientStart, int yGradientStart, uint colorGradientEnd, int xGradientEnd, int yGradientEnd, ushort opacity);
         void DrawText(string text, Font font, uint color, int x, int y);
         void DrawTextInRect(string text, int x, int y, int width, int height, uint dtFlags, Color color, Font font);
         void StretchImage(int xDst, int yDst, int widthDst, int heightDst, IGraphics image, int xSrc, int ySrc, int widthSrc, int heightSrc, ushort opacity);
-        void DrawLine(uint color, int thickness, int x0, int y0, int x1, int y1);
-        uint GetPixel(int x, int y);
-        void SetPixel(int x, int y, uint color);
-        void Clear();
-        void Flush(IntPtr hdc);
-        byte[] GetBitmap();
     }
 
     public interface IDrawTarget : IDisposable {
@@ -59,8 +61,8 @@ namespace System.Drawing {
         public int Height => this.drawTarget.Height;
 
         public void Clear() => this.drawTarget.Clear(Color.Black);
-        public void Dispose() => this.drawTarget.Dispose();
         public void Flush(IntPtr hdc) => this.drawTarget.Flush();
+        public void Dispose() => this.drawTarget.Dispose();
 
         public uint GetPixel(int x, int y) => throw new NotImplementedException();
         public void SetPixel(int x, int y, uint color) => throw new NotImplementedException();
