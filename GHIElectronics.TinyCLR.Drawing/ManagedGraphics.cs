@@ -102,6 +102,33 @@
             }
         }
 
+        public void StretchImage(int xDst, int yDst, int widthDst, int heightDst, IGraphics image, int xSrc, int ySrc, int widthSrc, int heightSrc, ushort opacity) {
+            if (!(image is ManagedGraphics mg)) throw new NotSupportedException();
+
+            var dt = mg.drawTarget;
+
+            if (xSrc != 0 || ySrc != 0 || widthSrc != dt.Width || heightSrc != dt.Height || widthSrc != widthDst || heightSrc != heightDst || opacity != 0xFF) throw new NotSupportedException();
+
+            for (var y = 0; y < widthDst; y++)
+                for (var x = 0; x < widthDst; x++)
+                    this.SetPixel(x, y, mg.GetPixel(x, y));
+        }
+
+        private void DrawLetter(int x, int y, char letter, uint color, int hScale, int vScale) {
+            var index = 5 * (letter - 32);
+
+            for (var horizontalFontSize = 0; horizontalFontSize < 5; horizontalFontSize++) {
+                for (var hs = 0; hs < hScale; hs++) {
+                    for (var verticleFontSize = 0; verticleFontSize < 8; verticleFontSize++) {
+                        for (var vs = 0; vs < vScale; vs++) {
+                            if ((this.GHIMono8x5[index + horizontalFontSize] & (1 << verticleFontSize)) != 0)
+                                this.SetPixel(x + (horizontalFontSize * hScale) + hs, y + (verticleFontSize * vScale) + vs, color);
+                        }
+                    }
+                }
+            }
+        }
+
         readonly byte[] GHIMono8x5 = new byte[95 * 5] {
             0x00, 0x00, 0x00, 0x00, 0x00, /* Space	0x20 */
             0x00, 0x00, 0x4f, 0x00, 0x00, /* ! */
@@ -199,32 +226,5 @@
             0x00, 0x41, 0x41, 0x36, 0x08, /* } */
             0x08, 0x08, 0x2a, 0x1c, 0x08  /* ~ */
         };
-
-        public void StretchImage(int xDst, int yDst, int widthDst, int heightDst, IGraphics image, int xSrc, int ySrc, int widthSrc, int heightSrc, ushort opacity) {
-            if (!(image is ManagedGraphics mg)) throw new NotSupportedException();
-
-            var dt = mg.drawTarget;
-
-            if (xSrc != 0 || ySrc != 0 || widthSrc != dt.Width || heightSrc != dt.Height || widthSrc != widthDst || heightSrc != heightDst || opacity != 0xFF) throw new NotSupportedException();
-
-            for (var y = 0; y < widthDst; y++)
-                for (var x = 0; x < widthDst; x++)
-                    this.SetPixel(x, y, mg.GetPixel(x, y));
-        }
-
-        private void DrawLetter(int x, int y, char letter, uint color, int hScale, int vScale) {
-            var index = 5 * (letter - 32);
-
-            for (var horizontalFontSize = 0; horizontalFontSize < 5; horizontalFontSize++) {
-                for (var hs = 0; hs < hScale; hs++) {
-                    for (var verticleFontSize = 0; verticleFontSize < 8; verticleFontSize++) {
-                        for (var vs = 0; vs < vScale; vs++) {
-                            if ((this.GHIMono8x5[index + horizontalFontSize] & (1 << verticleFontSize)) != 0)
-                                this.SetPixel(x + (horizontalFontSize * hScale) + hs, y + (verticleFontSize * vScale) + vs, color);
-                        }
-                    }
-                }
-            }
-        }
     }
 }
