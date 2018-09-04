@@ -71,7 +71,42 @@
         public void SetPixel(int x, int y, uint color) => this.drawTarget.SetPixel(x, y, new Color(color));
         public byte[] GetBitmap() => this.drawTarget.GetData();
 
-        public void DrawTextInRect(string text, int x, int y, int width, int height, uint dtFlags, Color color, Font font) => throw new NotSupportedException();
+        public void DrawTextInRect(string text, int x, int y, int width, int height, uint dtFlags, Color color, Font font) {
+            if (text == null) throw new ArgumentNullException(nameof(text));
+            if (font == null) throw new ArgumentNullException(nameof(font));
+            if (!font.IsGHIMono8x5) throw new NotSupportedException();
+
+            if (width < 0) return;
+            if (height < 0) return;
+
+            var originalX = x;
+            var hScale = font.Size / 8;
+            var vScale = hScale;
+
+            for (var i = 0; i < text.Length; i++) {
+                if (text[i] >= 32) {
+                    if (width % (6 * hScale) == 0) {
+                        this.DrawLetter(x, y, text[i], (uint)color.value, hScale, vScale);
+                        x += (6 * hScale);
+                    }
+                    else {
+                        if (height % (9 * vScale) == 0) {
+                            y += (9 * vScale);
+                            x = originalX;
+                        }
+                        else return;
+                    }
+                }
+                else {
+                    if (text[i] == '\n') {
+                        y += (9 * vScale);
+                        x = originalX;
+                    }
+                    if (text[i] == '\r')
+                        x = originalX;
+                }
+            }
+        }
 
         public void DrawLine(uint color, int thickness, int x0, int y0, int x1, int y1) {
             if (thickness != 1) throw new ArgumentException("Line thicknesses other than 1 are not supported at this time.");
