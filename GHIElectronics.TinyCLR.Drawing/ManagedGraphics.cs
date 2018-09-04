@@ -74,7 +74,7 @@
         public void DrawTextInRect(string text, int x, int y, int width, int height, uint dtFlags, Color color, Font font) => throw new NotSupportedException();
 
         public void DrawLine(uint color, int thickness, int x0, int y0, int x1, int y1) {
-            if (thickness != 1) throw new ArgumentException("Other line thicknesses except 1 are not supported at this time.");
+            if (thickness != 1) throw new ArgumentException("Line thicknesses other than 1 are not supported at this time.");
 
             var xLength = x1 - x0;
             var yLength = y1 - y0;
@@ -112,7 +112,24 @@
             }
         }
 
-        public void DrawRectangle(uint colorOutline, int thicknessOutline, int x, int y, int width, int height, int xCornerRadius, int yCornerRadius, uint colorGradientStart, int xGradientStart, int yGradientStart, uint colorGradientEnd, int xGradientEnd, int yGradientEnd, ushort opacity) => throw new NotImplementedException();
+        public void DrawRectangle(uint colorOutline, int thicknessOutline, int x, int y, int width, int height, int xCornerRadius, int yCornerRadius, uint colorGradientStart, int xGradientStart, int yGradientStart, uint colorGradientEnd, int xGradientEnd, int yGradientEnd, ushort opacity) {
+            if (thicknessOutline != 1) throw new ArgumentException("Line thicknesses other than 1 are not supported at this time.");
+            if (opacity != 0xFF) throw new ArgumentException("Total opacity is only supported at this time.");
+
+            if (width < 0) return;
+            if (height < 0) return;
+
+            for (var i = x; i < x + width; i++) {
+                this.SetPixel(i, y, colorOutline);
+                this.SetPixel(i, y + height - 1, colorOutline);
+            }
+
+            for (var i = y; i < y + height; i++) {
+                this.SetPixel(x, i, colorOutline);
+                this.SetPixel(x + width - 1, i, colorOutline);
+            }
+        }
+
         public void DrawEllipse(uint colorOutline, int thicknessOutline, int x, int y, int xRadius, int yRadius, uint colorGradientStart, int xGradientStart, int yGradientStart, uint colorGradientEnd, int xGradientEnd, int yGradientEnd, ushort opacity) => throw new NotImplementedException();
 
         public void DrawText(string text, Font font, uint color, int x, int y) {
