@@ -1,6 +1,27 @@
+using System;
 using System.Collections;
+using System.Drawing;
 using System.Runtime.CompilerServices;
+using GHIElectronics.TinyCLR.Drawing;
 using GHIElectronics.TinyCLR.Native;
+
+namespace GHIElectronics.TinyCLR.Drawing {
+    public interface IDrawTarget : IDisposable {
+        int Width { get; }
+        int Height { get; }
+
+        void Clear(Color color);
+        void Flush();
+
+        Color GetPixel(int x, int y);
+        void SetPixel(int x, int y, Color color);
+        byte[] GetData();
+    }
+
+    public static class GraphicsManager {
+        public static IntPtr RegisterDrawTarget(IDrawTarget target) => System.Drawing.Graphics.RegisterDrawTarget(target);
+    }
+}
 
 namespace System.Drawing {
     internal interface IGraphics : IDisposable {
@@ -22,18 +43,6 @@ namespace System.Drawing {
         void StretchImage(int xDst, int yDst, int widthDst, int heightDst, IGraphics image, int xSrc, int ySrc, int widthSrc, int heightSrc, ushort opacity);
     }
 
-    public interface IDrawTarget : IDisposable {
-        int Width { get; }
-        int Height { get; }
-
-        void Clear(Color color);
-        void Flush();
-
-        Color GetPixel(int x, int y);
-        void SetPixel(int x, int y, Color color);
-        byte[] GetData();
-    }
-
     public sealed class Graphics : MarshalByRefObject, IDisposable {
         internal int Width => this.surface.Width;
         internal int Height => this.surface.Height;
@@ -48,7 +57,7 @@ namespace System.Drawing {
         private static Hashtable drawTargets = new Hashtable();
         private static IntPtr nextHdc = IntPtr.Zero;
 
-        public static IntPtr RegisterDrawTarget(IDrawTarget target) {
+        internal static IntPtr RegisterDrawTarget(IDrawTarget target) {
             Graphics.nextHdc = IntPtr.Add(Graphics.nextHdc, 1);
             Graphics.drawTargets.Add(Graphics.nextHdc, target);
 

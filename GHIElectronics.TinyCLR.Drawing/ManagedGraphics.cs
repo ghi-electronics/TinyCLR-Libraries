@@ -1,4 +1,7 @@
-﻿namespace System.Drawing {
+﻿using System;
+using System.Drawing;
+
+namespace GHIElectronics.TinyCLR.Drawing {
     internal sealed class Rgb565 : IDrawTarget {
         private readonly byte[] data;
 
