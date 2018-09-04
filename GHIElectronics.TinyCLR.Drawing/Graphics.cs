@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Runtime.CompilerServices;
 using GHIElectronics.TinyCLR.Native;
 
@@ -19,6 +20,15 @@ namespace System.Drawing {
         byte[] GetBitmap();
     }
 
+    public interface IDrawTarget : IDisposable {
+        int Width { get; }
+        int Height { get; }
+
+        void SetPixel(int x, int y, Color color);
+        void Clear(Color color);
+        void Flush();
+    }
+
     public sealed class Graphics : MarshalByRefObject, IDisposable {
         internal int Width => this.surface.Width;
         internal int Height => this.surface.Height;
@@ -29,6 +39,16 @@ namespace System.Drawing {
         private IntPtr hdc;
 
         public GraphicsUnit PageUnit { get; } = GraphicsUnit.Pixel;
+
+        private static Hashtable drawTargets = new Hashtable();
+        private static IntPtr nextHdc = IntPtr.Zero;
+
+        public static IntPtr RegisterDrawTarget(IDrawTarget target) {
+            Graphics.nextHdc = IntPtr.Add(Graphics.nextHdc, 1);
+            Graphics.drawTargets.Add(Graphics.nextHdc, target);
+
+            return Graphics.nextHdc;
+        }
 
         internal uint GetPixel(int x, int y) => this.surface.GetPixel(x, y);
         public void SetPixel(int x, int y, uint color) => this.surface.SetPixel(x, y, color);
@@ -59,6 +79,7 @@ namespace System.Drawing {
         internal Graphics(byte[] buffer) : this(Graphics.CreateSurface(buffer), IntPtr.Zero) { }
         internal Graphics(int width, int height) : this(width, height, IntPtr.Zero) { }
         private Graphics(int width, int height, IntPtr hdc) : this(Graphics.CreateSurface(width, height), hdc) { }
+        private Graphics(IDrawTarget target, IntPtr hdc) => throw new NotSupportedException();
 
         internal Graphics(IGraphics bmp, IntPtr hdc) {
             this.surface = bmp;
@@ -135,11 +156,16 @@ namespace System.Drawing {
         public static Graphics FromHdc(IntPtr hdc) {
             if (hdc == IntPtr.Zero) throw new ArgumentNullException(nameof(hdc));
 
-            var res = Internal.Bitmap.GetSizeForLcdFromHdc(hdc, out var width, out var height);
+            if (!Graphics.drawTargets.Contains(hdc)) {
+                var res = Internal.Bitmap.GetSizeForLcdFromHdc(hdc, out var width, out var height);
 
-            if (!res || width == 0 || height == 0) throw new InvalidOperationException("No screen configured.");
+                if (!res || width == 0 || height == 0) throw new InvalidOperationException("No screen configured.");
 
-            return new Graphics(width, height, hdc);
+                return new Graphics(width, height, hdc);
+            }
+            else {
+                return new Graphics((IDrawTarget)Graphics.drawTargets[hdc], hdc);
+            }
         }
 
         public static Graphics FromImage(Image image) {
