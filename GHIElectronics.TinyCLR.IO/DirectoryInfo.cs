@@ -17,9 +17,7 @@ namespace System.IO
 
             this.m_fullPath = Path.GetFullPath(path);
 
-        public override string Name {
-            get => Path.GetFileName(this.m_fullPath).Length == 0 ? this.m_fullPath : Path.GetFileName(this.m_fullPath);
-        }
+        public override string Name => Path.GetFileName(this.m_fullPath).Length == 0 ? this.m_fullPath : Path.GetFileName(this.m_fullPath);
 
         public DirectoryInfo Parent
         {
