@@ -144,9 +144,9 @@ namespace GHIElectronics.TinyCLR.Devices.Uart {
                 this.dataReceivedDispatcher = NativeEventDispatcher.GetDispatcher("GHIElectronics.TinyCLR.NativeEventNames.Uart.DataReceived");
                 this.errorReceivedDispatcher = NativeEventDispatcher.GetDispatcher("GHIElectronics.TinyCLR.NativeEventNames.Uart.ErrorReceived");
 
-                this.clearToSendChangedDispatcher.OnInterrupt += (apiName, d0, d1, d2, d3, ts) => { if (this.Api.Name == apiName) this.ClearToSendChanged?.Invoke(null, new ClearToSendChangedEventArgs(d0 != 0)); };
-                this.dataReceivedDispatcher.OnInterrupt += (apiName, d0, d1, d2, d3, ts) => { if (this.Api.Name == apiName) this.DataReceived?.Invoke(null, new DataReceivedEventArgs((int)d0)); };
-                this.errorReceivedDispatcher.OnInterrupt += (apiName, d0, d1, d2, d3, ts) => { if (this.Api.Name == apiName) this.ErrorReceived?.Invoke(null, new ErrorReceivedEventArgs((UartError)d0)); };
+                this.clearToSendChangedDispatcher.OnInterrupt += (apiName, d0, d1, d2, d3, ts) => { if (this.Api.Name == apiName) this.ClearToSendChanged?.Invoke(null, new ClearToSendChangedEventArgs(d1 != 0)); };
+                this.dataReceivedDispatcher.OnInterrupt += (apiName, d0, d1, d2, d3, ts) => { if (this.Api.Name == apiName) this.DataReceived?.Invoke(null, new DataReceivedEventArgs((int)d1)); };
+                this.errorReceivedDispatcher.OnInterrupt += (apiName, d0, d1, d2, d3, ts) => { if (this.Api.Name == apiName) this.ErrorReceived?.Invoke(null, new ErrorReceivedEventArgs((UartError)d1)); };
             }
 
             public event ClearToSendChangedEventHandler ClearToSendChanged;
