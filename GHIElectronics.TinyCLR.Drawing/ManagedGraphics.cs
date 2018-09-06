@@ -243,11 +243,11 @@ namespace GHIElectronics.TinyCLR.Drawing {
 
             var dt = mg.drawTarget;
 
-            if (xSrc != 0 || ySrc != 0 || widthSrc != dt.Width || heightSrc != dt.Height || widthSrc != widthDst || heightSrc != heightDst || opacity != 0xFF) throw new NotSupportedException();
+            if (widthSrc != widthDst || heightSrc != heightDst || opacity != 0xFF) throw new NotSupportedException();
 
-            for (var y = 0; y < widthDst; y++)
-                for (var x = 0; x < widthDst; x++)
-                    this.SetPixel(x, y, mg.GetPixel(x, y));
+            for (var y = ySrc; y < heightSrc; y++)
+                for (var x = xSrc; x < widthSrc; x++)
+                    this.SetPixel(x + xDst, y + yDst, mg.GetPixel(x, y));
         }
 
         private void DrawLetter(int x, int y, char letter, uint color, int hScale, int vScale) {
