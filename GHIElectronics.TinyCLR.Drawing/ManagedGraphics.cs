@@ -74,16 +74,12 @@ namespace GHIElectronics.TinyCLR.Drawing {
 
             for (var i = 0; i < text.Length; i++) {
                 if (text[i] >= 32) {
-                    if (width % (6 * hScale) == 0) {
-                        this.DrawLetter(x, y, text[i], (uint)color.value, hScale, vScale);
-                        x += (6 * hScale);
-                    }
-                    else {
-                        if (height % (9 * vScale) == 0) {
-                            y += (9 * vScale);
-                            x = originalX;
-                        }
-                        else return;
+                    this.DrawLetter(x, y, text[i], (uint)color.value, hScale, vScale);
+                    x += (6 * hScale);
+
+                    if (x + 6 * hScale - originalX > width) {
+                        y += 9 * vScale;
+                        x = originalX;
                     }
                 }
                 else {
@@ -94,6 +90,9 @@ namespace GHIElectronics.TinyCLR.Drawing {
                     if (text[i] == '\r')
                         x = originalX;
                 }
+
+                if (y + 9 * vScale > height)
+                    break;
             }
         }
 
@@ -138,7 +137,7 @@ namespace GHIElectronics.TinyCLR.Drawing {
 
         public void DrawRectangle(uint colorOutline, int thicknessOutline, int x, int y, int width, int height, int xCornerRadius, int yCornerRadius, uint colorGradientStart, int xGradientStart, int yGradientStart, uint colorGradientEnd, int xGradientEnd, int yGradientEnd, ushort opacity) {
             if (thicknessOutline != 1) throw new ArgumentException("Line thicknesses other than 1 are not supported at this time.");
-            if (opacity != 0xFF) throw new ArgumentException("Total opacity is only supported at this time.");
+            if (opacity != 0x00) throw new ArgumentException("Total opacity is only supported at this time.");
 
             if (width < 0) return;
             if (height < 0) return;
@@ -156,7 +155,7 @@ namespace GHIElectronics.TinyCLR.Drawing {
 
         public void DrawEllipse(uint colorOutline, int thicknessOutline, int x, int y, int xRadius, int yRadius, uint colorGradientStart, int xGradientStart, int yGradientStart, uint colorGradientEnd, int xGradientEnd, int yGradientEnd, ushort opacity) {
             if (thicknessOutline != 1) throw new ArgumentException("Line thicknesses other than 1 are not supported at this time.");
-            if (opacity != 0xFF) throw new ArgumentException("Total opacity is only supported at this time.");
+            if (opacity != 0x00) throw new ArgumentException("Total opacity is only supported at this time.");
             if (xRadius != yRadius) throw new ArgumentException("xRadius and yRadius must be equal");
 
             var radius = xRadius;

@@ -209,7 +209,7 @@ namespace System.Drawing {
         public void DrawLine(Pen pen, int x1, int y1, int x2, int y2) {
             if (pen.Color.A != 0xFF) throw new NotSupportedException("Alpha not supported.");
 
-            this.surface.DrawLine((uint)(pen.Color.value & 0x00FFFFFF), (int)pen.Width / 2, x1, y1, x2, y2);
+            this.surface.DrawLine((uint)(pen.Color.value & 0x00FFFFFF), (int)pen.Width, x1, y1, x2, y2);
         }
 
         public void DrawString(string s, Font font, Brush brush, float x, float y) {
