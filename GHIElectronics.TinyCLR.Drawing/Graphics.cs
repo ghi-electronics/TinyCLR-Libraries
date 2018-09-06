@@ -65,7 +65,7 @@ namespace System.Drawing {
         }
 
         internal uint GetPixel(int x, int y) => this.surface.GetPixel(x, y);
-        public void SetPixel(int x, int y, uint color) => this.surface.SetPixel(x, y, color);
+        internal void SetPixel(int x, int y, uint color) => this.surface.SetPixel(x, y, color);
         internal byte[] GetBitmap() => this.surface.GetBitmap();
 
         private static bool HasDrawing() {
