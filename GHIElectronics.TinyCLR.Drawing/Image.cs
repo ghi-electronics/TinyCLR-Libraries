@@ -56,7 +56,7 @@ namespace System.Drawing {
             this.data = new Graphics(buffer);
         }
 
-        public void SetPixel(int x, int y, Color color) => this.data.SetPixel(x, y, (uint)color.ToRgb());
+        public void SetPixel(int x, int y, Color color) => this.data.SetPixel(x, y, (uint)color.ToArgb());
         public Color GetPixel(int x, int y) => Color.FromArgb((int)this.data.GetPixel(x, y));
     }
 
