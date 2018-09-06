@@ -33,7 +33,7 @@ namespace System.Drawing {
 
         public bool IsEmpty => false;
 
-        private string NameAndARGBValue => $"ARGB=({this.A}, {this.R}, {this.R}, {this.B})";
+        private string NameAndARGBValue => $"ARGB=({this.A}, {this.R}, {this.G}, {this.B})";
 
         public string Name => this.value.ToString("x");
 
