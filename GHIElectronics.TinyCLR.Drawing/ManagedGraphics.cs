@@ -3,58 +3,44 @@ using System.Drawing;
 
 namespace GHIElectronics.TinyCLR.Drawing {
     internal sealed class Rgb565 : IDrawTarget {
-        private readonly byte[] data;
+        private readonly byte[] buffer;
 
         public Rgb565(int width, int height) {
             this.Width = width;
             this.Height = height;
 
-            this.data = new byte[width * height * 2];
+            this.buffer = new byte[width * height * 2];
         }
 
         public int Width { get; }
         public int Height { get; }
 
-        public Color GetPixel(int x, int y) {
-            var idx = (y * this.Width + x) * 2;
-            var b1 = this.data[idx];
-            var b2 = this.data[idx + 1];
-
-            var r = (b1 & 0b1111_1000) << 0;
-            var g = ((b1 & 0b0000_0111) << 5) | ((b2 & 0b1110_0000) >> 3);
-            var b = (b2 & 0b0001_1111) << 3;
-
-            return Color.FromArgb(r, g, b);
-        }
-
-        public void SetPixel(int x, int y, Color color) {
-            var r = (color.R & 0b1111_1000) << 8;
-            var g = (color.G & 0b1111_1100) << 3;
-            var b = (color.B & 0b1111_1000) >> 3;
-            var c = r | g | b;
-
-            var idx = (y * this.Width + x) * 2;
-            var b1 = (byte)((c & 0xFF00) >> 8);
-            var b2 = (byte)((c & 0x00FF) >> 0);
-
-            this.data[idx] = b1;
-            this.data[idx + 1] = b2;
-        }
-
-        public byte[] GetData() => this.data;
-
-        public void Flush() {
-
-        }
+        public byte[] GetData() => this.buffer;
+        public void Flush() => throw new NotSupportedException();
 
         public void Clear(Color color) {
             if (color != Color.Black) throw new NotSupportedException();
 
-            Array.Clear(this.data, 0, this.data.Length);
+            Array.Clear(this.buffer, 0, this.buffer.Length);
         }
 
         public void Dispose() {
 
+        }
+
+        public Color GetPixel(int x, int y) {
+            var idx = (y * this.Width + x) * 2;
+            var clr = (this.buffer[idx] << 8) | this.buffer[idx + 1];
+
+            return Color.FromArgb(((clr & 0b1111_1000_0000_0000) << 8) | ((clr & 0b0000_0111_1110_0000) << 5) | ((clr & 0b0000_0000_0001_1111) << 3));
+        }
+
+        public void SetPixel(int x, int y, Color color) {
+            var idx = (y * this.Width + x) * 2;
+            var clr = color.ToArgb();
+
+            this.buffer[idx] = (byte)(((clr & 0b0000_0000_1111_1000_0000_0000_0000_0000) >> 16) | ((clr & 0b0000_0000_0000_0000_1110_0000_0000_0000) >> 13));
+            this.buffer[idx + 1] = (byte)(((clr & 0b0000_0000_0000_0000_0001_1100_0000_0000) >> 5) | ((clr & 0b0000_0000_0000_0000_0000_0000_1111_1000) >> 3));
         }
     }
 
