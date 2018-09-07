@@ -19,7 +19,7 @@ namespace System.Drawing {
             if (format == null) throw new ArgumentNullException(nameof(format));
             if (format != ImageFormat.MemoryBmp) throw new ArgumentException("Only MemoryBmp supported.");
 
-            var buf = this.data.surface.GetBitmap();
+            var buf = this.data.GetBitmap();
 
             stream.Seek(0, SeekOrigin.Begin);
             stream.Write(buf, 0, buf.Length);
@@ -56,8 +56,8 @@ namespace System.Drawing {
             this.data = new Graphics(buffer);
         }
 
-        public void SetPixel(int x, int y, Color color) => this.data.surface.SetPixel(x, y, (uint)color.ToRgb());
-        public Color GetPixel(int x, int y) => Color.FromArgb((int)this.data.surface.GetPixel(x, y));
+        public void SetPixel(int x, int y, Color color) => this.data.SetPixel(x, y, (uint)color.ToArgb());
+        public Color GetPixel(int x, int y) => Color.FromArgb((int)this.data.GetPixel(x, y));
     }
 
     namespace Imaging {

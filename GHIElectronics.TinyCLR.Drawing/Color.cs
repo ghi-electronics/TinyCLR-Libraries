@@ -18,13 +18,13 @@ namespace System.Drawing {
         public static Color Teal { get; } = Color.FromArgb(0xFF, 0x00, 0x80, 0x80);
 
         private const int ARGBAlphaShift = 24;
-        private const int ARGBRedShift = 0;
+        private const int ARGBRedShift = 16;
         private const int ARGBGreenShift = 8;
-        private const int ARGBBlueShift = 16;
+        private const int ARGBBlueShift = 0;
 
         internal readonly long value;
 
-        private Color(long value) => this.value = value;
+        internal Color(long value) => this.value = value;
 
         public byte R => (byte)((this.value >> ARGBRedShift) & 0xFF);
         public byte G => (byte)((this.value >> ARGBGreenShift) & 0xFF);
@@ -33,7 +33,7 @@ namespace System.Drawing {
 
         public bool IsEmpty => false;
 
-        private string NameAndARGBValue => $"ARGB=({this.A}, {this.R}, {this.R}, {this.B})";
+        private string NameAndARGBValue => $"ARGB=({this.A}, {this.R}, {this.G}, {this.B})";
 
         public string Name => this.value.ToString("x");
 
