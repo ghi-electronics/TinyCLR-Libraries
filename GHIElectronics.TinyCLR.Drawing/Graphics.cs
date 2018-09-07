@@ -85,7 +85,7 @@ namespace System.Drawing {
 
         private static IGraphics CreateSurface(int width, int height) {
             if (!Graphics.HasDrawing())
-                return new ManagedGraphics(new Rgb565(width, height));
+                return new ManagedGraphics(new BufferDrawTargetRgb565(width, height));
 
             return new Internal.Bitmap(width, height);
         }

@@ -2,21 +2,20 @@
 using System.Drawing;
 
 namespace GHIElectronics.TinyCLR.Drawing {
-    internal sealed class Rgb565 : IDrawTarget {
-        private readonly byte[] buffer;
+    public abstract class BufferDrawTarget : IDrawTarget {
+        protected readonly byte[] buffer;
 
-        public Rgb565(int width, int height) {
+        protected BufferDrawTarget(int width, int height, int bpp) {
+            this.buffer = new byte[width * height * bpp / 8];
+
             this.Width = width;
             this.Height = height;
-
-            this.buffer = new byte[width * height * 2];
         }
 
         public int Width { get; }
         public int Height { get; }
 
         public byte[] GetData() => this.buffer;
-        public void Flush() => throw new NotSupportedException();
 
         public void Clear(Color color) {
             if (color != Color.Black) throw new NotSupportedException();
@@ -24,18 +23,73 @@ namespace GHIElectronics.TinyCLR.Drawing {
             Array.Clear(this.buffer, 0, this.buffer.Length);
         }
 
-        public void Dispose() {
+        public virtual void Dispose() {
 
         }
 
-        public Color GetPixel(int x, int y) {
+        public virtual void Flush() {
+
+        }
+
+        public abstract Color GetPixel(int x, int y);
+        public abstract void SetPixel(int x, int y, Color color);
+    }
+
+    public class BufferDrawTargetRgb444 : BufferDrawTarget {
+        public BufferDrawTargetRgb444(int width, int height) : base(width, height, 12) {
+
+        }
+
+        public override Color GetPixel(int x, int y) {
+            var px = y * this.Width + x;
+            var clr = 0;
+
+            if ((px % 2) == 0) {
+                var idx = px * 3 / 2;
+
+                clr = (this.buffer[idx] << 4) | ((this.buffer[idx + 1] & 0b1111_0000) >> 4);
+            }
+            else {
+                var idx = (px - 1) * 3 / 2 + 1;
+
+                clr = ((this.buffer[idx] & 0b0000_1111) << 8) | this.buffer[idx + 1];
+            }
+
+            return Color.FromArgb(((clr & 0b0000_0000_0000_1111_0000_0000) << 12) | ((clr & 0b0000_0000_0000_0000_1111_0000) << 8) | ((clr & 0b0000_0000_0000_0000_0000_1111) << 4));
+        }
+
+        public override void SetPixel(int x, int y, Color color) {
+            var px = y * this.Width + x;
+            var clr = color.ToArgb();
+
+            if ((px % 2) == 0) {
+                var idx = px * 3 / 2;
+
+                this.buffer[idx] = (byte)(((clr & 0b0000_0000_1111_0000_0000_0000_0000_0000) >> 16) | ((clr & 0b0000_0000_0000_0000_1111_0000_0000_0000) >> 12));
+                this.buffer[idx + 1] = (byte)((clr & 0b0000_0000_0000_0000_0000_0000_1111_0000) | (this.buffer[idx + 1] & 0b0000_0000_0000_0000_0000_0000_0000_1111));
+            }
+            else {
+                var idx = (px - 1) * 3 / 2 + 1;
+
+                this.buffer[idx] = (byte)((this.buffer[idx] & 0b0000_0000_0000_0000_0000_0000_1111_0000) | ((clr & 0b0000_0000_1111_0000_0000_0000_0000_0000) >> 20));
+                this.buffer[idx + 1] = (byte)(((clr & 0b0000_0000_0000_0000_1111_0000_0000_0000) >> 8) | ((clr & 0b0000_0000_0000_0000_0000_0000_1111_0000) >> 4));
+            }
+        }
+    }
+
+    public class BufferDrawTargetRgb565 : BufferDrawTarget {
+        public BufferDrawTargetRgb565(int width, int height) : base(width, height, 16) {
+
+        }
+
+        public override Color GetPixel(int x, int y) {
             var idx = (y * this.Width + x) * 2;
             var clr = (this.buffer[idx] << 8) | this.buffer[idx + 1];
 
             return Color.FromArgb(((clr & 0b1111_1000_0000_0000) << 8) | ((clr & 0b0000_0111_1110_0000) << 5) | ((clr & 0b0000_0000_0001_1111) << 3));
         }
 
-        public void SetPixel(int x, int y, Color color) {
+        public override void SetPixel(int x, int y, Color color) {
             var idx = (y * this.Width + x) * 2;
             var clr = color.ToArgb();
 
