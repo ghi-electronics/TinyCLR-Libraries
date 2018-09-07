@@ -215,8 +215,8 @@ namespace GHIElectronics.TinyCLR.Drawing {
             var radius = xRadius;
             if (radius <= 0) return;
 
-            var centerX = x + radius;
-            var centerY = y + radius;
+            var centerX = x;
+            var centerY = y;
 
             var f = 1 - radius;
             var ddFX = 1;
