@@ -36,7 +36,8 @@ namespace GHIElectronics.TinyCLR.Devices.Storage {
         public bool CanExecuteDirect { get; }
         public bool EraseBeforeWrite { get; }
         public bool Removable { get; }
-        public bool RegionsRepeat { get; }
+        public bool RegionsContiguous { get; }
+        public bool RegionsEqualSized { get; }
         public int RegionCount { get; }
         public long[] RegionAddresses { get; }
         public int[] RegionSizes { get; }
