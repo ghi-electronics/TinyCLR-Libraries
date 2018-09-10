@@ -38,6 +38,7 @@
     <Compile Include="DeviceInformation.cs" />
     <Compile Include="Interop.cs" />
     <Compile Include="NativeEventDispatcher.cs" />
+    <Compile Include="Memory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Power.cs" />
     <Compile Include="SystemTime.cs" />
