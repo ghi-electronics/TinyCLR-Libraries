@@ -19,6 +19,11 @@ namespace GHIElectronics.TinyCLR.Devices.Rtc {
 
         public RtcDateTime GetTime() => this.IsValid ? this.Provider.GetTime() : throw new InvalidOperationException();
         public void SetTime(RtcDateTime value) => this.Provider.SetTime(value);
+
+        public DateTime Now {
+            get => this.GetTime().ToDateTime();
+            set => this.SetTime(RtcDateTime.FromDateTime(value));
+        }
     }
 
     public struct RtcDateTime {
