@@ -15,7 +15,9 @@ namespace GHIElectronics.TinyCLR.Devices.Rtc {
 
         public void Dispose() => this.Provider.Dispose();
 
-        public RtcDateTime GetTime() => this.Provider.GetTime();
+        public bool IsValid => this.Provider.IsValid;
+
+        public RtcDateTime GetTime() => this.IsValid ? this.Provider.GetTime() : throw new InvalidOperationException();
         public void SetTime(RtcDateTime value) => this.Provider.SetTime(value);
     }
 
@@ -60,6 +62,8 @@ namespace GHIElectronics.TinyCLR.Devices.Rtc {
 
     namespace Provider {
         public interface IRtcControllerProvider : IDisposable {
+            bool IsValid { get; }
+
             RtcDateTime GetTime();
             void SetTime(RtcDateTime value);
         }
@@ -90,6 +94,8 @@ namespace GHIElectronics.TinyCLR.Devices.Rtc {
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void SetTime(RtcDateTime value);
+
+            public extern bool IsValid { [MethodImpl(MethodImplOptions.InternalCall)] get; }
         }
     }
 }
