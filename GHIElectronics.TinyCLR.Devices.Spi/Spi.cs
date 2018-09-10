@@ -70,13 +70,11 @@ namespace GHIElectronics.TinyCLR.Devices.Spi {
     }
 
     public sealed class SpiConnectionSettings {
-        public bool UseControllerChipSelect { get; set; } = false;
+        public SpiChipSelectType ChipSelectType { get; set; } = SpiChipSelectType.None;
         public int ChipSelectLine { get; set; }
         public int ClockFrequency { get; set; } = 1_000_000;
         public int DataBitLength { get; set; } = 8;
         public SpiMode Mode { get; set; } = SpiMode.Mode0;
-
-        public SpiConnectionSettings(int chipSelectLine) => this.ChipSelectLine = chipSelectLine;
     }
 
     public enum SpiMode {
@@ -84,6 +82,12 @@ namespace GHIElectronics.TinyCLR.Devices.Spi {
         Mode1 = 1,
         Mode2 = 2,
         Mode3 = 3,
+    }
+
+    public enum SpiChipSelectType {
+        None = 0,
+        Controller = 1,
+        Gpio = 2
     }
 
     namespace Provider {
@@ -112,7 +116,7 @@ namespace GHIElectronics.TinyCLR.Devices.Spi {
 
             public void Dispose() => this.Release();
 
-            public void SetActiveSettings(SpiConnectionSettings connectionSettings) => this.SetActiveSettings(connectionSettings.ChipSelectLine, connectionSettings.UseControllerChipSelect, connectionSettings.ClockFrequency, connectionSettings.DataBitLength, connectionSettings.Mode);
+            public void SetActiveSettings(SpiConnectionSettings connectionSettings) => this.SetActiveSettings(connectionSettings.ChipSelectLine, connectionSettings.ChipSelectType, connectionSettings.ClockFrequency, connectionSettings.DataBitLength, connectionSettings.Mode);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             private extern void Acquire();
@@ -126,7 +130,7 @@ namespace GHIElectronics.TinyCLR.Devices.Spi {
             public extern int[] SupportedDataBitLengths { [MethodImpl(MethodImplOptions.InternalCall)] get; }
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            private extern void SetActiveSettings(int chipSelectLine, bool useControllerChipSelect, int clockFrequency, int dataBitLength, SpiMode mode);
+            private extern void SetActiveSettings(int chipSelectLine, SpiChipSelectType chipSelectType, int clockFrequency, int dataBitLength, SpiMode mode);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void WriteRead(byte[] writeBuffer, int writeOffset, int writeLength, byte[] readBuffer, int readOffset, int readLength, bool deselectAfter);
@@ -164,41 +168,41 @@ namespace GHIElectronics.TinyCLR.Devices.Spi {
 
                 this.miso.SetDriveMode(GpioPinDriveMode.Input);
 
-                this.sck.Write(this.clockIdleState);
-                this.sck.SetDriveMode(GpioPinDriveMode.Output);
-
-                this.cs.Write(GpioPinValue.High);
-                this.cs.SetDriveMode(GpioPinDriveMode.Output);
-
                 this.mosi.Write(GpioPinValue.Low);
                 this.mosi.SetDriveMode(GpioPinDriveMode.Output);
+
+                this.sck.Write(this.clockIdleState);
+                this.sck.SetDriveMode(GpioPinDriveMode.Output);
             }
 
             public void Dispose() {
                 this.mosi.Dispose();
                 this.miso.Dispose();
                 this.sck.Dispose();
+                this.cs?.Dispose();
             }
 
             public void SetActiveSettings(SpiConnectionSettings connectionSettings) {
                 if (connectionSettings.DataBitLength != 8) throw new NotSupportedException();
-                if (connectionSettings.UseControllerChipSelect) throw new NotSupportedException();
+                if (connectionSettings.ChipSelectType == SpiChipSelectType.Controller) throw new NotSupportedException();
 
                 this.captureOnRisingEdge = ((((int)connectionSettings.Mode) & 0x01) == 0);
                 this.clockActiveState = (((int)connectionSettings.Mode) & 0x02) == 0 ? GpioPinValue.High : GpioPinValue.Low;
                 this.clockIdleState = this.clockActiveState == GpioPinValue.High ? GpioPinValue.Low : GpioPinValue.High;
 
-                if (!this.chipSelects.Contains(connectionSettings.ChipSelectLine)) {
-                    var cs = this.gpioController.OpenPin(connectionSettings.ChipSelectLine);
+                if (connectionSettings.ChipSelectType == SpiChipSelectType.Gpio) {
+                    if (!this.chipSelects.Contains(connectionSettings.ChipSelectLine)) {
+                        var cs = this.gpioController.OpenPin(connectionSettings.ChipSelectLine);
 
-                    this.chipSelects[connectionSettings.ChipSelectLine] = cs;
+                        this.chipSelects[connectionSettings.ChipSelectLine] = cs;
 
-                    cs.Write(GpioPinValue.High);
-                    cs.SetDriveMode(GpioPinDriveMode.Output);
+                        cs.Write(GpioPinValue.High);
+                        cs.SetDriveMode(GpioPinDriveMode.Output);
+                    }
+
+                    this.cs = (GpioPin)this.chipSelects[connectionSettings.ChipSelectLine];
+                    this.cs.Write(GpioPinValue.High);
                 }
-
-                this.cs = (GpioPin)this.chipSelects[connectionSettings.ChipSelectLine];
-                this.cs.Write(GpioPinValue.High);
             }
 
             public void WriteRead(byte[] writeBuffer, int writeOffset, int writeLength, byte[] readBuffer, int readOffset, int readLength, bool deselectAfter) {
@@ -206,7 +210,7 @@ namespace GHIElectronics.TinyCLR.Devices.Spi {
                     Array.Clear(readBuffer, 0, readLength);
 
                 this.sck.Write(this.clockIdleState);
-                this.cs.Write(GpioPinValue.Low);
+                this.cs?.Write(GpioPinValue.Low);
 
                 for (var i = 0; i < Math.Max(readLength, writeLength); i++) {
                     byte mask = 0x80;
@@ -241,7 +245,7 @@ namespace GHIElectronics.TinyCLR.Devices.Spi {
                 this.sck.Write(this.clockIdleState);
 
                 if (deselectAfter)
-                    this.cs.Write(GpioPinValue.High);
+                    this.cs?.Write(GpioPinValue.High);
             }
         }
     }
