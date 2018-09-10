@@ -222,10 +222,12 @@ namespace GHIElectronics.TinyCLR.BrainPad {
                     this.resetPin.Write(GpioPinValue.High);
                     Thread.Sleep(100);
 
-                    var settings = new SpiConnectionSettings(G30.GpioPin.PB12) {
+                    var settings = new SpiConnectionSettings {
                         Mode = SpiMode.Mode3,
                         ClockFrequency = 12000000,
                         DataBitLength = 8,
+                        ChipSelectType = SpiChipSelectType.Gpio,
+                        ChipSelectLine = G30.GpioPin.PB12
                     };
                     this.spi = SpiController.FromName(G30.SpiBus.Spi2).GetDevice(settings);
                     InitN18();

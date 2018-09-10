@@ -34,10 +34,12 @@ namespace GHIElectronics.TinyCLR.Networking.SPWF04Sx {
         public bool ForceSocketsTls { get; set; }
         public string ForceSocketsTlsCommonName { get; set; }
 
-        public static SpiConnectionSettings GetConnectionSettings(int chipSelectLine) => new SpiConnectionSettings(chipSelectLine) {
+        public static SpiConnectionSettings GetConnectionSettings(SpiChipSelectType chipSelectType, int chipSelectLine) => new SpiConnectionSettings {
             ClockFrequency = 4000000,
             Mode = SpiMode.Mode0,
-            DataBitLength = 8
+            DataBitLength = 8,
+            ChipSelectType = chipSelectType,
+            ChipSelectLine = chipSelectLine
         };
 
         public SPWF04SxInterface(SpiDevice spi, GpioPin irq, GpioPin reset) {
