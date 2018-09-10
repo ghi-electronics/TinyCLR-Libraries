@@ -1,12 +1,13 @@
 ﻿using System.Runtime.CompilerServices;
 
 namespace GHIElectronics.TinyCLR.Native {
-    public enum PowerSleepLevel {
+    public enum PowerSleepLevel : uint {
         Level0 = 0,
         Level1 = 1,
         Level2 = 2,
         Level3 = 3,
         Level4 = 4,
+        Custom = 0 | 0x80000000,
     }
 
     public static class Power {
