@@ -2,9 +2,11 @@
 
 namespace GHIElectronics.TinyCLR.Native {
     public enum PowerSleepLevel {
-        Sleep = 0,
-        Hibernate = 1,
-        Off = 2,
+        Level0 = 0,
+        Level1 = 1,
+        Level2 = 2,
+        Level3 = 3,
+        Level4 = 4,
     }
 
     public static class Power {
