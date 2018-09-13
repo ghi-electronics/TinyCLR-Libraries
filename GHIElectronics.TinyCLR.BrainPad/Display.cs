@@ -189,10 +189,10 @@ namespace GHIElectronics.TinyCLR.BrainPad {
 
             public override void Flush() => this.parent.DrawBuffer(0, 0, this.Width, this.Height, this.buffer, 0);
 
-            public override Color GetPixel(int x, int y) => throw new NotImplementedException();
+            public override Color GetPixel(int x, int y) => (this.buffer[(y / 8) * this.Width + x] & (1 << y % 8)) != 0 ? Color.White : Color.Black;
 
             public override void SetPixel(int x, int y, Color color) {
-                var index = x + (y / 8) * 128;
+                var index = (y / 8) * this.Width + x;
 
                 if (color != Color.Black) {
                     this.buffer[index] |= (byte)(1 << (y % 8));
