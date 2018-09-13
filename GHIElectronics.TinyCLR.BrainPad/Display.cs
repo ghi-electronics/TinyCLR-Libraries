@@ -224,9 +224,9 @@ namespace GHIElectronics.TinyCLR.BrainPad {
 
         public void RefreshScreen() => this.screen.Flush();
 
-        private Pen set = new Pen(Color.Blue);
+        private Pen set = new Pen(Color.FromArgb(0xFF, 0x00, 0xFF, 0xFF));
         private Pen clear = new Pen(Color.Black);
-        private Brush brush = new SolidBrush(Color.Blue);
+        private Brush brush = new SolidBrush(Color.FromArgb(0xFF, 0x00, 0xFF, 0xFF));
 
         private void Point(int x, int y, bool set) => this.screen.DrawRectangle(set ? this.set : this.clear, x, y, 1, 1);
 
