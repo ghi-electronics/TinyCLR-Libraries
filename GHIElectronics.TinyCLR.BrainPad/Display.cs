@@ -193,6 +193,9 @@ namespace GHIElectronics.TinyCLR.BrainPad {
                     this.st7735.SetDrawWindow(0, 0, 160, 128);
                     this.st7735.SendDrawCommand();
                     var buf = new byte[1024];
+                    for (var i = 0; i < buf.Length; i++)
+                        buf[i] = 0x22;
+
                     for (var i = 0; i < 30; i++)
                         this.st7735.SendData(buf);
 
