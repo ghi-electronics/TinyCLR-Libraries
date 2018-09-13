@@ -188,11 +188,18 @@ namespace GHIElectronics.TinyCLR.BrainPad {
                     this.st7735 = new ST7735Controller(this.spi, this.controlPin, this.resetPin);
                     this.st7735.SetDataFormat(Devices.Display.DisplayDataFormat.Rgb444);
                     this.st7735.SetDataAccessControl(true, true, false, false);
-                    this.st7735.SetDrawWindow((160 - this.Width) / 2, (128 - this.Height) / 2, this.Width, this.Height);
                     this.st7735.Enable();
 
+                    this.st7735.SetDrawWindow(0, 0, 160, 128);
+                    this.st7735.SendDrawCommand();
+                    var buf = new byte[1024];
+                    for (var i = 0; i < 30; i++)
+                        this.st7735.SendData(buf);
+
+                    this.st7735.SetDrawWindow((160 - this.Width) / 2, (128 - this.Height) / 2, this.Width, this.Height);
+
                     this.display = DisplayController.FromProvider(this.st7735);
-                    this.display.SetConfiguration(new SpiDisplayControllerSettings { Width = 128, Height = 80, DataFormat = DisplayDataFormat.Rgb444 });
+                    this.display.SetConfiguration(new SpiDisplayControllerSettings { Width = 128, Height = 64, DataFormat = DisplayDataFormat.Rgb444 });
                     this.display.Enable();
 
                     this.screen = Graphics.FromHdc(GraphicsManager.RegisterDrawTarget(new ST7735DrawTarget(this.display)));
