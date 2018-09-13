@@ -47,8 +47,12 @@ namespace GHIElectronics.TinyCLR.Devices.Storage {
 
     public sealed class PresenceChangedEventArgs {
         public bool Present { get; }
+        public DateTime Timestamp { get; }
 
-        internal PresenceChangedEventArgs(bool present) => this.Present = present;
+        internal PresenceChangedEventArgs(bool present, DateTime timestamp) {
+            this.Present = present;
+            this.Timestamp = timestamp;
+        }
     }
 
     namespace Provider {
@@ -83,7 +87,7 @@ namespace GHIElectronics.TinyCLR.Devices.Storage {
 
                 this.presenceChangedDispatcher = NativeEventDispatcher.GetDispatcher("GHIElectronics.TinyCLR.NativeEventNames.Storage.PresenceChanged");
 
-                this.presenceChangedDispatcher.OnInterrupt += (apiName, d0, d1, d2, d3, ts) => { if (this.Api.Name == apiName) this.PresenceChanged?.Invoke(null, new PresenceChangedEventArgs(d0 != 0)); };
+                this.presenceChangedDispatcher.OnInterrupt += (apiName, d0, d1, d2, d3, ts) => { if (this.Api.Name == apiName) this.PresenceChanged?.Invoke(null, new PresenceChangedEventArgs(d0 != 0, ts)); };
             }
 
             public event PresenceChangedEventHandler PresenceChanged;

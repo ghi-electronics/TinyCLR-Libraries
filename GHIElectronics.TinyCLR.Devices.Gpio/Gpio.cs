@@ -9,8 +9,12 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio {
 
     public sealed class GpioPinValueChangedEventArgs : EventArgs {
         public GpioPinEdge Edge { get; }
+        public DateTime Timestamp { get; }
 
-        internal GpioPinValueChangedEventArgs(GpioPinEdge edge) => this.Edge = edge;
+        internal GpioPinValueChangedEventArgs(GpioPinEdge edge, DateTime timestamp) {
+            this.Edge = edge;
+            this.Timestamp = timestamp;
+        }
     }
 
     public enum GpioPinDriveMode {
@@ -121,7 +125,7 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio {
             this.Controller.Provider.Write(this.PinNumber, value);
 
             if (init != value)
-                this.OnValueChanged(this, new GpioPinValueChangedEventArgs(value == GpioPinValue.High ? GpioPinEdge.RisingEdge : GpioPinEdge.FallingEdge));
+                this.OnValueChanged(this, new GpioPinValueChangedEventArgs(value == GpioPinValue.High ? GpioPinEdge.RisingEdge : GpioPinEdge.FallingEdge, DateTime.UtcNow));
         }
 
         public GpioPinEdge ValueChangedEdge {
@@ -268,7 +272,7 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio {
                         handler = (GpioPinValueChangedEventHandler)this.pinMap[key];
 
                 if (handler != null)
-                    handler?.Invoke(null, new GpioPinValueChangedEventArgs(edge));
+                    handler?.Invoke(null, new GpioPinValueChangedEventArgs(edge, ts));
             }
         }
     }
