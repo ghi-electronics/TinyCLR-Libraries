@@ -39,6 +39,7 @@ namespace GHIElectronics.TinyCLR.Devices.Display {
     public enum DisplayInterface {
         Parallel = 0,
         Spi = 1,
+        I2c = 2,
     }
 
     public enum DisplayDataFormat {
