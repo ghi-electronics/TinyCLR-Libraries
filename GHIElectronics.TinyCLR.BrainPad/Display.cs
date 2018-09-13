@@ -6,6 +6,7 @@ using System.Threading;
 using GHIElectronics.TinyCLR.Devices.Gpio;
 using GHIElectronics.TinyCLR.Devices.I2c;
 using GHIElectronics.TinyCLR.Devices.Spi;
+using GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735;
 using GHIElectronics.TinyCLR.Pins;
 
 namespace GHIElectronics.TinyCLR.BrainPad {
@@ -58,54 +59,14 @@ namespace GHIElectronics.TinyCLR.BrainPad {
 
         }
 #if SUPPORT_ORIGINAL_BRAINPAD
-        private const byte ST7735_MADCTL = 0x36;
-        private const byte MADCTL_MY = 0x80;
-        private const byte MADCTL_MX = 0x40;
-        private const byte MADCTL_MV = 0x20;
-        private const byte MADCTL_BGR = 0x08;
         private const int ORIGINAL_VRAMS = 12;
 
         private SpiDevice spi;
         private GpioPin controlPin;
         private GpioPin resetPin;
         private GpioPin backlightPin;
-        private byte[] buffer1 = new byte[1];
-        private byte[] buffer4 = new byte[4];
-        private byte[] buffer16 = new byte[16];
-        private void WriteData(byte[] data) {
-            this.controlPin.Write(GpioPinValue.High);
-            this.spi.Write(data);
-            //Thread.Sleep(0);
-        }
-
-        private void WriteCommand(byte command) {
-            this.buffer1[0] = command;
-            this.controlPin.Write(GpioPinValue.Low);
-            this.spi.Write(this.buffer1);
-            //Thread.Sleep(0);
-        }
-
-        private void WriteData(byte data) {
-            this.buffer1[0] = data;
-            this.controlPin.Write(GpioPinValue.High);
-            this.spi.Write(this.buffer1);
-            //Thread.Sleep(0);
-        }
-        private void SetClip(int x, int y, int width, int height) {
-            WriteCommand(0x2A);
-
-            this.controlPin.Write(GpioPinValue.High);
-            this.buffer4[1] = (byte)x;
-            this.buffer4[3] = (byte)(x + width - 1);
-            this.spi.Write(this.buffer4);
-
-            WriteCommand(0x2B);
-            this.controlPin.Write(GpioPinValue.High);
-            this.buffer4[1] = (byte)y;
-            this.buffer4[3] = (byte)(y + height - 1);
-            this.spi.Write(this.buffer4);
-        }
 #endif
+
         /// <summary>
         /// The width of the display in pixels.
         /// </summary>
@@ -119,86 +80,9 @@ namespace GHIElectronics.TinyCLR.BrainPad {
         private byte[][] vrams;
         private byte[] vram;
 #if SUPPORT_ORIGINAL_BRAINPAD
-        private void InitN18() {
-            WriteCommand(0x11); //Sleep exit
-            Thread.Sleep(200);
-
-            // ST7735R Frame Rate
-            WriteCommand(0xB1);
-            WriteData(0x01); WriteData(0x2C); WriteData(0x2D);
-            WriteCommand(0xB2);
-            WriteData(0x01); WriteData(0x2C); WriteData(0x2D);
-            WriteCommand(0xB3);
-            WriteData(0x01); WriteData(0x2C); WriteData(0x2D);
-            WriteData(0x01); WriteData(0x2C); WriteData(0x2D);
-
-            WriteCommand(0xB4); // Column inversion
-            WriteData(0x07);
-
-            // ST7735R Power Sequence
-            WriteCommand(0xC0);
-            WriteData(0xA2); WriteData(0x02); WriteData(0x84);
-            WriteCommand(0xC1); WriteData(0xC5);
-            WriteCommand(0xC2);
-            WriteData(0x0A); WriteData(0x00);
-            WriteCommand(0xC3);
-            WriteData(0x8A); WriteData(0x2A);
-            WriteCommand(0xC4);
-            WriteData(0x8A); WriteData(0xEE);
-
-            WriteCommand(0xC5); // VCOM
-            WriteData(0x0E);
-
-            WriteCommand(0x36); // MX, MY, RGB mode
-            WriteData(MADCTL_MX | MADCTL_MY | MADCTL_BGR);
-
-            // ST7735R Gamma Sequence
-            WriteCommand(0xe0);
-            WriteData(0x0f); WriteData(0x1a);
-            WriteData(0x0f); WriteData(0x18);
-            WriteData(0x2f); WriteData(0x28);
-            WriteData(0x20); WriteData(0x22);
-            WriteData(0x1f); WriteData(0x1b);
-            WriteData(0x23); WriteData(0x37); WriteData(0x00);
-
-            WriteData(0x07);
-            WriteData(0x02); WriteData(0x10);
-            WriteCommand(0xe1);
-            WriteData(0x0f); WriteData(0x1b);
-            WriteData(0x0f); WriteData(0x17);
-            WriteData(0x33); WriteData(0x2c);
-            WriteData(0x29); WriteData(0x2e);
-            WriteData(0x30); WriteData(0x30);
-            WriteData(0x39); WriteData(0x3f);
-            WriteData(0x00); WriteData(0x07);
-            WriteData(0x03); WriteData(0x10);
-
-            WriteCommand(0x2a);
-            WriteData(0x00); WriteData(0x00);
-            WriteData(0x00); WriteData(0x7f);
-            WriteCommand(0x2b);
-            WriteData(0x00); WriteData(0x00);
-            WriteData(0x00); WriteData(0x9f);
-
-            WriteCommand(0xF0); //Enable test command
-            WriteData(0x01);
-            WriteCommand(0xF6); //Disable ram power save mode
-            WriteData(0x00);
-
-            WriteCommand(0x3A); //65k mode
-            WriteData(0x03);
-
-            // Rotate
-            WriteCommand(ST7735_MADCTL);
-            WriteData(MADCTL_MV | MADCTL_MY);
-
-            WriteCommand(0x29); //Display on
-            Thread.Sleep(50);
-
-            WriteCommand(0x11); //Make sure sleep exit
-            Thread.Sleep(50);
-        }
+        private ST7735Controller st7735;
 #endif
+
         public Display() {
 
             switch (Board.BoardType) {
@@ -217,11 +101,6 @@ namespace GHIElectronics.TinyCLR.BrainPad {
                     this.backlightPin.SetDriveMode(GpioPinDriveMode.Output);
                     this.backlightPin.Write(GpioPinValue.High);
 
-                    this.resetPin.Write(GpioPinValue.Low);
-                    Thread.Sleep(30);
-                    this.resetPin.Write(GpioPinValue.High);
-                    Thread.Sleep(100);
-
                     var settings = new SpiConnectionSettings {
                         Mode = SpiMode.Mode3,
                         ClockFrequency = 12000000,
@@ -230,14 +109,12 @@ namespace GHIElectronics.TinyCLR.BrainPad {
                         ChipSelectLine = G30.GpioPin.PB12
                     };
                     this.spi = SpiController.FromName(G30.SpiBus.Spi2).GetDevice(settings);
-                    InitN18();
 
-                    // clear the entire screen
-                    SetClip(0, 0, 160, 128);
-                    WriteCommand(0x2C);
-                    this.controlPin.Write(GpioPinValue.High);
-                    for (var i = 0; i < 160 * 128 * 2 / 16; i++)
-                        this.spi.Write(this.buffer16);
+                    this.st7735 = new ST7735Controller(this.spi, this.controlPin, this.resetPin);
+                    this.st7735.SetDataFormat(Devices.Display.DisplayDataFormat.Rgb444);
+                    this.st7735.SetDataAccessControl(true, true, false, false);
+                    this.st7735.SetDrawWindow((160 - this.Width) / 2, (128 - this.Height) / 2, this.Width, this.Height);
+                    this.st7735.Enable();
 
                     break;
 #endif
@@ -293,9 +170,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
                     if (this.vrams == null)
                         return;
 
-                    SetClip((160 - this.Width) / 2, (128 - this.Height) / 2, this.Width, this.Height);
-                    WriteCommand(0x2C);
-                    this.controlPin.Write(GpioPinValue.High);
+                    this.st7735.SendDrawCommand();
 
                     for (var i = 0; i < this.vrams.Length; i++)
                         this.spi.Write(this.vrams[i]);
