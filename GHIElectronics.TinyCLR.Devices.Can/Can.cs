@@ -105,7 +105,7 @@ namespace GHIElectronics.TinyCLR.Devices.Can {
         public bool IsExtendedId { get; set; }
         public bool IsRemoteTransmissionRequest { get; set; }
         public int Length { get; set; }
-        public DateTime TimeStamp { get; set; }
+        public DateTime Timestamp { get; set; }
 
         public byte[] Data {
             get => this.data;
@@ -144,7 +144,7 @@ namespace GHIElectronics.TinyCLR.Devices.Can {
             this.ArbitrationId = arbitrationId;
             this.IsRemoteTransmissionRequest = isRemoteTransmissionRequesti;
             this.IsExtendedId = isExtendedId;
-            this.TimeStamp = DateTime.Now;
+            this.Timestamp = DateTime.Now;
             this.Length = count;
             this.data = new byte[8];
 
