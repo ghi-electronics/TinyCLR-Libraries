@@ -83,20 +83,32 @@ namespace GHIElectronics.TinyCLR.Devices.Uart {
 
     public sealed class ClearToSendChangedEventArgs {
         public bool State { get; }
+        public DateTime Timestamp { get; }
 
-        internal ClearToSendChangedEventArgs(bool state) => this.State = state;
+        internal ClearToSendChangedEventArgs(bool state, DateTime timestamp) {
+            this.State = state;
+            this.Timestamp = timestamp;
+        }
     }
 
     public sealed class DataReceivedEventArgs {
         public int Count { get; }
+        public DateTime Timestamp { get; }
 
-        internal DataReceivedEventArgs(int count) => this.Count = count;
+        internal DataReceivedEventArgs(int count, DateTime timestamp) {
+            this.Count = count;
+            this.Timestamp = timestamp;
+        }
     }
 
     public sealed class ErrorReceivedEventArgs {
         public UartError Error { get; }
+        public DateTime Timestamp { get; }
 
-        internal ErrorReceivedEventArgs(UartError error) => this.Error = error;
+        internal ErrorReceivedEventArgs(UartError error, DateTime timestamp) {
+            this.Error = error;
+            this.Timestamp = timestamp;
+        }
     }
 
     namespace Provider {
@@ -144,9 +156,9 @@ namespace GHIElectronics.TinyCLR.Devices.Uart {
                 this.dataReceivedDispatcher = NativeEventDispatcher.GetDispatcher("GHIElectronics.TinyCLR.NativeEventNames.Uart.DataReceived");
                 this.errorReceivedDispatcher = NativeEventDispatcher.GetDispatcher("GHIElectronics.TinyCLR.NativeEventNames.Uart.ErrorReceived");
 
-                this.clearToSendChangedDispatcher.OnInterrupt += (apiName, d0, d1, d2, d3, ts) => { if (this.Api.Name == apiName) this.ClearToSendChanged?.Invoke(null, new ClearToSendChangedEventArgs(d0 != 0)); };
-                this.dataReceivedDispatcher.OnInterrupt += (apiName, d0, d1, d2, d3, ts) => { if (this.Api.Name == apiName) this.DataReceived?.Invoke(null, new DataReceivedEventArgs((int)d0)); };
-                this.errorReceivedDispatcher.OnInterrupt += (apiName, d0, d1, d2, d3, ts) => { if (this.Api.Name == apiName) this.ErrorReceived?.Invoke(null, new ErrorReceivedEventArgs((UartError)d0)); };
+                this.clearToSendChangedDispatcher.OnInterrupt += (apiName, d0, d1, d2, d3, ts) => { if (this.Api.Name == apiName) this.ClearToSendChanged?.Invoke(null, new ClearToSendChangedEventArgs(d0 != 0, ts)); };
+                this.dataReceivedDispatcher.OnInterrupt += (apiName, d0, d1, d2, d3, ts) => { if (this.Api.Name == apiName) this.DataReceived?.Invoke(null, new DataReceivedEventArgs((int)d0, ts)); };
+                this.errorReceivedDispatcher.OnInterrupt += (apiName, d0, d1, d2, d3, ts) => { if (this.Api.Name == apiName) this.ErrorReceived?.Invoke(null, new ErrorReceivedEventArgs((UartError)d0, ts)); };
             }
 
             public event ClearToSendChangedEventHandler ClearToSendChanged;

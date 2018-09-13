@@ -62,14 +62,22 @@ namespace GHIElectronics.TinyCLR.Devices.Can {
 
     public sealed class MessageReceivedEventArgs {
         public int Count { get; }
+        public DateTime Timestamp { get; }
 
-        internal MessageReceivedEventArgs(int count) => this.Count = count;
+        internal MessageReceivedEventArgs(int count, DateTime timestamp) {
+            this.Count = count;
+            this.Timestamp = timestamp;
+        }
     }
 
     public sealed class ErrorReceivedEventArgs {
         public CanError Error { get; }
+        public DateTime Timestamp { get; }
 
-        internal ErrorReceivedEventArgs(CanError error) => this.Error = error;
+        internal ErrorReceivedEventArgs(CanError error, DateTime timestamp) {
+            this.Error = error;
+            this.Timestamp = timestamp;
+        }
     }
 
     public sealed class CanBitTiming {
@@ -105,7 +113,7 @@ namespace GHIElectronics.TinyCLR.Devices.Can {
         public bool IsExtendedId { get; set; }
         public bool IsRemoteTransmissionRequest { get; set; }
         public int Length { get; set; }
-        public DateTime TimeStamp { get; set; }
+        public DateTime Timestamp { get; set; }
 
         public byte[] Data {
             get => this.data;
@@ -144,7 +152,7 @@ namespace GHIElectronics.TinyCLR.Devices.Can {
             this.ArbitrationId = arbitrationId;
             this.IsRemoteTransmissionRequest = isRemoteTransmissionRequesti;
             this.IsExtendedId = isExtendedId;
-            this.TimeStamp = DateTime.Now;
+            this.Timestamp = DateTime.Now;
             this.Length = count;
             this.data = new byte[8];
 
@@ -199,8 +207,8 @@ namespace GHIElectronics.TinyCLR.Devices.Can {
                 this.messageReceivedDispatcher = NativeEventDispatcher.GetDispatcher("GHIElectronics.TinyCLR.NativeEventNames.Can.MessageReceived");
                 this.errorReceivedDispatcher = NativeEventDispatcher.GetDispatcher("GHIElectronics.TinyCLR.NativeEventNames.Can.ErrorReceived");
 
-                this.messageReceivedDispatcher.OnInterrupt += (apiName, d0, d1, d2, d3, ts) => { if (this.Api.Name == apiName) this.MessageReceived?.Invoke(null, new MessageReceivedEventArgs((int)d0)); };
-                this.errorReceivedDispatcher.OnInterrupt += (apiName, d0, d1, d2, d3, ts) => { if (this.Api.Name == apiName) this.ErrorReceived?.Invoke(null, new ErrorReceivedEventArgs((CanError)d0)); };
+                this.messageReceivedDispatcher.OnInterrupt += (apiName, d0, d1, d2, d3, ts) => { if (this.Api.Name == apiName) this.MessageReceived?.Invoke(null, new MessageReceivedEventArgs((int)d0, ts)); };
+                this.errorReceivedDispatcher.OnInterrupt += (apiName, d0, d1, d2, d3, ts) => { if (this.Api.Name == apiName) this.ErrorReceived?.Invoke(null, new ErrorReceivedEventArgs((CanError)d0, ts)); };
             }
 
             public event MessageReceivedEventHandler MessageReceived;
