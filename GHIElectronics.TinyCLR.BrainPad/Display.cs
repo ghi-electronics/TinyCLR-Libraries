@@ -212,9 +212,8 @@ namespace GHIElectronics.TinyCLR.BrainPad {
                         return;
 
                     this.st7735.SendDrawCommand();
-
                     for (var i = 0; i < this.vrams.Length; i++)
-                        this.spi.Write(this.vrams[i]);
+                        this.st7735.SendData(this.vrams[i]);
 
                     break;
 #endif
