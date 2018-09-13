@@ -3,8 +3,8 @@
 using System;
 using System.ComponentModel;
 using System.Drawing;
-using System.Threading;
 using GHIElectronics.TinyCLR.Devices.Display;
+using GHIElectronics.TinyCLR.Devices.Display.Provider;
 using GHIElectronics.TinyCLR.Devices.Gpio;
 using GHIElectronics.TinyCLR.Devices.I2c;
 using GHIElectronics.TinyCLR.Devices.Spi;
@@ -38,7 +38,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
         }
     }
 
-    public class SSD1306Controller {
+    public class SSD1306Controller : IDisplayControllerProvider {
         private readonly byte[] vram = new byte[128 * 64 / 8 + 1];
         private readonly byte[] buffer2 = new byte[2];
         private readonly I2cDevice i2c;
@@ -115,6 +115,29 @@ namespace GHIElectronics.TinyCLR.BrainPad {
 
             this.i2c.Write(this.vram);
         }
+
+        DisplayInterface IDisplayControllerProvider.Interface => DisplayInterface.Spi;
+        DisplayDataFormat[] IDisplayControllerProvider.SupportedDataFormats => new[] { DisplayDataFormat.Rgb444 };
+
+        void IDisplayControllerProvider.Enable() {
+
+        }
+
+        void IDisplayControllerProvider.Disable() => throw new NotSupportedException();
+
+        void IDisplayControllerProvider.DrawString(string value) => throw new NotSupportedException();
+        void IDisplayControllerProvider.DrawPixel(int x, int y, long color) => throw new NotSupportedException();
+
+        void IDisplayControllerProvider.SetConfiguration(DisplayControllerSettings configuration) {
+
+        }
+
+        void IDisplayControllerProvider.DrawBuffer(int x, int y, int width, int height, byte[] data, int offset) {
+            if (x != 0 || y != 0 || width != this.Width || height != this.Height)
+                throw new NotSupportedException();
+
+            this.DrawBuffer(data, offset);
+        }
     }
 
     public class Display {
@@ -127,29 +150,28 @@ namespace GHIElectronics.TinyCLR.BrainPad {
             None
         }
 
-        private I2cDevice i2cDevice;
-        private SSD1306Controller ssd1306;
-        private Graphics screen;
-        private DisplayController display;
+        private readonly I2cDevice i2cDevice;
+        private readonly SSD1306Controller ssd1306;
+        private readonly Graphics screen;
+        private readonly DisplayController display;
 
         public Picture CreatePicture(int width, int height, byte[] data) => this.CreateScaledPicture(width, height, data, 1);
         public Picture CreateScaledPicture(int width, int height, byte[] data, int scale) => data != null ? new Picture(width, height, data, scale) : throw new Exception("Incorrect picture data size");
 
 #if SUPPORT_ORIGINAL_BRAINPAD
-        private SpiDevice spi;
-        private GpioPin controlPin;
-        private GpioPin resetPin;
-        private GpioPin backlightPin;
+        private readonly SpiDevice spi;
+        private readonly GpioPin controlPin;
+        private readonly GpioPin resetPin;
+        private readonly GpioPin backlightPin;
 #endif
 
         public int Width { get; } = 128;
 
         public int Height { get; } = 64;
 
-        private Font font = new Font("GHIMono8x5", 8);
+        private readonly Font font = new Font("GHIMono8x5", 8);
 #if SUPPORT_ORIGINAL_BRAINPAD
-        private ST7735Controller st7735;
-#endif
+        private readonly ST7735Controller st7735;
 
         private sealed class ST7735DrawTarget : BufferDrawTargetRgb444 {
             private readonly DisplayController parent;
@@ -157,6 +179,28 @@ namespace GHIElectronics.TinyCLR.BrainPad {
             public ST7735DrawTarget(DisplayController parent) : base(parent.ActiveConfiguration.Width, parent.ActiveConfiguration.Height) => this.parent = parent;
 
             public override void Flush() => this.parent.DrawBuffer(0, 0, this.Width, this.Height, this.buffer, 0);
+        }
+#endif
+
+        private sealed class SSD1306DrawTarget : BufferDrawTarget {
+            private readonly DisplayController parent;
+
+            public SSD1306DrawTarget(DisplayController parent) : base(parent.ActiveConfiguration.Width, parent.ActiveConfiguration.Height, 1) => this.parent = parent;
+
+            public override void Flush() => this.parent.DrawBuffer(0, 0, this.Width, this.Height, this.buffer, 0);
+
+            public override Color GetPixel(int x, int y) => throw new NotImplementedException();
+
+            public override void SetPixel(int x, int y, Color color) {
+                var index = x + (y / 8) * 128;
+
+                if (color != Color.Black) {
+                    this.buffer[index] |= (byte)(1 << (y % 8));
+                }
+                else {
+                    this.buffer[index] &= (byte)(~(1 << (y % 8)));
+                }
+            }
         }
 
         public Display() {
@@ -213,11 +257,11 @@ namespace GHIElectronics.TinyCLR.BrainPad {
                     this.i2cDevice = I2cController.FromName(Board.BoardType == BoardType.BP2 ? FEZCLR.I2cBus.I2c1 : G30.I2cBus.I2c1).GetDevice(SSD1306Controller.GetConnectionSettings());
                     this.ssd1306 = new SSD1306Controller(this.i2cDevice);
 
-                    this.display = DisplayController.FromProvider(this.st7735 /*this.ssd1306*/);
-                    this.display.SetConfiguration(new SpiDisplayControllerSettings { Width = 128, Height = 80, DataFormat = DisplayDataFormat.Rgb444 });
+                    this.display = DisplayController.FromProvider(this.ssd1306);
+                    this.display.SetConfiguration(new DisplayControllerSettings { Width = 128, Height = 64, DataFormat = DisplayDataFormat.Rgb444 });
                     this.display.Enable();
 
-                    this.screen = Graphics.FromHdc(GraphicsManager.RegisterDrawTarget(new ST7735DrawTarget(this.display)));
+                    this.screen = Graphics.FromHdc(GraphicsManager.RegisterDrawTarget(new SSD1306DrawTarget(this.display)));
 
                     break;
             }
@@ -227,9 +271,9 @@ namespace GHIElectronics.TinyCLR.BrainPad {
 
         public void RefreshScreen() => this.screen.Flush();
 
-        private Pen set = new Pen(Color.FromArgb(0xFF, 0x00, 0xFF, 0xFF));
-        private Pen clear = new Pen(Color.Black);
-        private Brush brush = new SolidBrush(Color.FromArgb(0xFF, 0x00, 0xFF, 0xFF));
+        private readonly Pen set = new Pen(Color.FromArgb(0xFF, 0x00, 0xFF, 0xFF));
+        private readonly Pen clear = new Pen(Color.Black);
+        private readonly Brush brush = new SolidBrush(Color.FromArgb(0xFF, 0x00, 0xFF, 0xFF));
 
         private void Point(int x, int y, bool set) => this.screen.DrawRectangle(set ? this.set : this.clear, x, y, 1, 1);
 
@@ -277,7 +321,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
 
         public void DrawLine(int x0, int y0, int x1, int y1) => this.screen.DrawLine(this.set, x0, y0, x1, y1);
 
-        public void DrawCircle(int x, int y, int r) => this.screen.DrawEllipse(this.set, x - r, y - r, r * 2  + 1, r * 2 + 1);
+        public void DrawCircle(int x, int y, int r) => this.screen.DrawEllipse(this.set, x - r, y - r, r * 2 + 1, r * 2 + 1);
 
         public void DrawRectangle(int x, int y, int width, int height) => this.screen.DrawRectangle(this.set, x, y, width, height);
 

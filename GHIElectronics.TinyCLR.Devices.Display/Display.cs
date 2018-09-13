@@ -45,6 +45,7 @@ namespace GHIElectronics.TinyCLR.Devices.Display {
     public enum DisplayDataFormat {
         Rgb565 = 0,
         Rgb444 = 1,
+        VerticalStrip1Bpp = 2,
     }
 
     public class DisplayControllerSettings {
