@@ -12,7 +12,7 @@ namespace GHIElectronics.TinyCLR.Native {
         public static extern void Remove(IntPtr address);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public static extern void RaiseEvent(string eventDispatcherName, string apiName, ulong data0, ulong data1, ulong data2, IntPtr data3);
+        public static extern void RaiseEvent(string eventDispatcherName, string apiName, ulong data0, ulong data1, ulong data2, IntPtr data3, DateTime timestamp);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         public static extern Interop[] FindAll();
