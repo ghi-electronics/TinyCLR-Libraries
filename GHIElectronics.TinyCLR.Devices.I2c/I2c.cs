@@ -149,8 +149,6 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
 
             public void Dispose() => this.Release();
 
-            public void SetActiveSettings(I2cConnectionSettings connectionSettings) => this.SetActiveSettings(connectionSettings.SlaveAddress, connectionSettings.AddressFormat, connectionSettings.BusSpeed);
-
             [MethodImpl(MethodImplOptions.InternalCall)]
             private extern void Acquire();
 
@@ -158,7 +156,7 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
             private extern void Release();
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            private extern void SetActiveSettings(int slaveAddress, I2cAddressFormat addressFormat, I2cBusSpeed busSpeed);
+            public extern void SetActiveSettings(I2cConnectionSettings connectionSettings);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern I2cTransferStatus WriteRead(byte[] writeBuffer, int writeOffset, int writeLength, byte[] readBuffer, int readOffset, int readLength, bool sendStartCondition, bool sendStopCondition, out int written, out int read);

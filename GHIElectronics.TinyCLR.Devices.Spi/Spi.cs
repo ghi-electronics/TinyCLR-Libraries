@@ -116,8 +116,6 @@ namespace GHIElectronics.TinyCLR.Devices.Spi {
 
             public void Dispose() => this.Release();
 
-            public void SetActiveSettings(SpiConnectionSettings connectionSettings) => this.SetActiveSettings(connectionSettings.ChipSelectLine, connectionSettings.ChipSelectType, connectionSettings.ClockFrequency, connectionSettings.DataBitLength, connectionSettings.Mode);
-
             [MethodImpl(MethodImplOptions.InternalCall)]
             private extern void Acquire();
 
@@ -130,7 +128,7 @@ namespace GHIElectronics.TinyCLR.Devices.Spi {
             public extern int[] SupportedDataBitLengths { [MethodImpl(MethodImplOptions.InternalCall)] get; }
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            private extern void SetActiveSettings(int chipSelectLine, SpiChipSelectType chipSelectType, int clockFrequency, int dataBitLength, SpiMode mode);
+            public extern void SetActiveSettings(SpiConnectionSettings connectionSettings);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void WriteRead(byte[] writeBuffer, int writeOffset, int writeLength, byte[] readBuffer, int readOffset, int readLength, bool deselectAfter);
