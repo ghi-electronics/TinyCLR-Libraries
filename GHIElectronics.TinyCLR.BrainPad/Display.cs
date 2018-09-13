@@ -322,10 +322,10 @@ namespace GHIElectronics.TinyCLR.BrainPad {
         }
 
         public void ClearPart(int x, int y, int width, int height) {
-            if (x == 0 && y == 0 && width == 128 && height == 64) Clear();
+            if (x == 0 && y == 0 && width == 128 && height == 64) this.Clear();
             for (var lx = x; lx < width + x; lx++)
                 for (var ly = y; ly < height + y; ly++)
-                    Point(lx, ly, false);
+                    this.Point(lx, ly, false);
         }
 
         /// <summary>
@@ -348,22 +348,22 @@ namespace GHIElectronics.TinyCLR.BrainPad {
                 for (var yd = 0; yd < picture.Height; yd++) {
                     switch (mirror) {
                         case Transform.None:
-                            Point(x + xd, y + yd, picture.Data[picture.Width * yd + xd] == 1);
+                            this.Point(x + xd, y + yd, picture.Data[picture.Width * yd + xd] == 1);
                             break;
                         case Transform.FlipHorizontal:
-                            Point(x + picture.Width - xd, y + yd, picture.Data[picture.Width * yd + xd] == 1);
+                            this.Point(x + picture.Width - xd, y + yd, picture.Data[picture.Width * yd + xd] == 1);
                             break;
                         case Transform.FlipVertical:
-                            Point(x + xd, y + picture.Height - yd, picture.Data[picture.Width * yd + xd] == 1);
+                            this.Point(x + xd, y + picture.Height - yd, picture.Data[picture.Width * yd + xd] == 1);
                             break;
                         case Transform.Rotate90:
-                            Point(x + picture.Width - yd, y + xd, picture.Data[picture.Width * yd + xd] == 1);
+                            this.Point(x + picture.Width - yd, y + xd, picture.Data[picture.Width * yd + xd] == 1);
                             break;
                         case Transform.Rotate180:
-                            Point(x + picture.Width - xd, y + picture.Height - yd, picture.Data[picture.Width * yd + xd] == 1);
+                            this.Point(x + picture.Width - xd, y + picture.Height - yd, picture.Data[picture.Width * yd + xd] == 1);
                             break;
                         case Transform.Rotate270:
-                            Point(x + yd, y + picture.Height - xd, picture.Data[picture.Width * yd + xd] == 1);
+                            this.Point(x + yd, y + picture.Height - xd, picture.Data[picture.Width * yd + xd] == 1);
                             break;
                     }
                 }
@@ -390,7 +390,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
             dy <<= 1;                                                  // dy is now 2*dy
             dx <<= 1;                                                  // dx is now 2*dx
 
-            Point(x0, y0, true);
+            this.Point(x0, y0, true);
             if (dx > dy) {
                 var fraction = dy - (dx >> 1);                         // same as 2*dy - dx
                 while (x0 != x1) {
@@ -400,7 +400,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
                     }
                     x0 += stepx;
                     fraction += dy;                                    // same as fraction -= 2*dy
-                    Point(x0, y0, true);
+                    this.Point(x0, y0, true);
                 }
             }
             else {
@@ -412,7 +412,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
                     }
                     y0 += stepy;
                     fraction += dx;
-                    Point(x0, y0, true);
+                    this.Point(x0, y0, true);
                 }
             }
 
@@ -485,10 +485,10 @@ namespace GHIElectronics.TinyCLR.BrainPad {
             var dX = 0;
             var dY = r;
 
-            DrawPoint(x, y + r);
-            DrawPoint(x, y - r);
-            DrawPoint(x + r, y);
-            DrawPoint(x - r, y);
+            this.DrawPoint(x, y + r);
+            this.DrawPoint(x, y - r);
+            this.DrawPoint(x + r, y);
+            this.DrawPoint(x - r, y);
 
             while (dX < dY) {
                 if (f >= 0) {
@@ -501,15 +501,15 @@ namespace GHIElectronics.TinyCLR.BrainPad {
                 ddFX += 2;
                 f += ddFX;
 
-                DrawPoint(x + dX, y + dY);
-                DrawPoint(x - dX, y + dY);
-                DrawPoint(x + dX, y - dY);
-                DrawPoint(x - dX, y - dY);
+                this.DrawPoint(x + dX, y + dY);
+                this.DrawPoint(x - dX, y + dY);
+                this.DrawPoint(x + dX, y - dY);
+                this.DrawPoint(x - dX, y - dY);
 
-                DrawPoint(x + dY, y + dX);
-                DrawPoint(x - dY, y + dX);
-                DrawPoint(x + dY, y - dX);
-                DrawPoint(x - dY, y - dX);
+                this.DrawPoint(x + dY, y + dX);
+                this.DrawPoint(x - dY, y + dX);
+                this.DrawPoint(x + dY, y - dX);
+                this.DrawPoint(x - dY, y - dX);
             }
         }
 
@@ -526,20 +526,20 @@ namespace GHIElectronics.TinyCLR.BrainPad {
             if (height < 0) return;
 
             for (var i = x; i < x + width; i++) {
-                DrawPoint(i, y);
-                DrawPoint(i, y + height - 1);
+                this.DrawPoint(i, y);
+                this.DrawPoint(i, y + height - 1);
             }
 
             for (var i = y; i < y + height; i++) {
-                DrawPoint(x, i);
-                DrawPoint(x + width - 1, i);
+                this.DrawPoint(x, i);
+                this.DrawPoint(x + width - 1, i);
             }
         }
 
         public void DrawFilledRectangle(int x, int y, int width, int height) {
             for (var lx = x; lx < width + x; lx++)
                 for (var ly = y; ly < height + y; ly++)
-                    Point(lx, ly, true);
+                    this.Point(lx, ly, true);
         }
 
         byte[] font = new byte[95 * 5] {
@@ -649,13 +649,13 @@ namespace GHIElectronics.TinyCLR.BrainPad {
                     for (var v = 0; v < 8; v++) {
                         var show = (this.font[index + h] & (1 << v)) != 0;
                         for (var vs = 0; vs < VScale; vs++) {
-                            Point(x + (h * HScale) + hs, y + (v * VScale) + vs, show);
+                            this.Point(x + (h * HScale) + hs, y + (v * VScale) + vs, show);
                         }
                     }
 
                 }
             }
-            ClearPart(x + 5 * HScale, y, HScale, 8 * VScale);// clear the space between characters
+            this.ClearPart(x + 5 * HScale, y, HScale, 8 * VScale);// clear the space between characters
         }
 
         /// <summary>
@@ -664,7 +664,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
         /// <param name="x">The x coordinate to draw at.</param>
         /// <param name="y">The y coordinate to draw at.</param>
         /// <param name="text">The string to draw.</param>
-        public void DrawText(int x, int y, string text) => DrawScaledText(x, y, text, 2, 2);
+        public void DrawText(int x, int y, string text) => this.DrawScaledText(x, y, text, 2, 2);
 
         /// <summary>
         /// Draws text at the given location.
@@ -672,7 +672,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
         /// <param name="x">The x coordinate to draw at.</param>
         /// <param name="y">The y coordinate to draw at.</param>
         /// <param name="text">The string to draw.</param>
-        public void DrawSmallText(int x, int y, string text) => DrawScaledText(x, y, text, 1, 1);
+        public void DrawSmallText(int x, int y, string text) => this.DrawScaledText(x, y, text, 1, 1);
 
         /// <summary>
         /// Draws text at the given location.
@@ -687,7 +687,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
 
             for (var i = 0; i < text.Length; i++) {
                 if (text[i] >= 32) {
-                    DrawText(x, y, text[i], HScale, VScale);
+                    this.DrawText(x, y, text[i], HScale, VScale);
                     x += (6 * HScale);
 
                 }
@@ -702,10 +702,10 @@ namespace GHIElectronics.TinyCLR.BrainPad {
             }
         }
 
-        public void DrawNumber(int x, int y, double number) => DrawText(x, y, number.ToString("N2"));
-        public void DrawSmallNumber(int x, int y, double number) => DrawSmallText(x, y, number.ToString("N2"));
-        public void DrawNumber(int x, int y, long number) => DrawText(x, y, number.ToString("N0"));
-        public void DrawSmallNumber(int x, int y, long number) => DrawSmallText(x, y, number.ToString("N0"));
+        public void DrawNumber(int x, int y, double number) => this.DrawText(x, y, number.ToString("N2"));
+        public void DrawSmallNumber(int x, int y, double number) => this.DrawSmallText(x, y, number.ToString("N2"));
+        public void DrawNumber(int x, int y, long number) => this.DrawText(x, y, number.ToString("N0"));
+        public void DrawSmallNumber(int x, int y, long number) => this.DrawSmallText(x, y, number.ToString("N0"));
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => base.Equals(obj);
