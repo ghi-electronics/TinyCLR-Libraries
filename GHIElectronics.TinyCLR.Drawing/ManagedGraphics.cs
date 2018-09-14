@@ -98,6 +98,25 @@ namespace GHIElectronics.TinyCLR.Drawing {
         }
     }
 
+    public class BufferDrawTargetVerticalByteStrip1Bpp : BufferDrawTarget {
+        public BufferDrawTargetVerticalByteStrip1Bpp(int width, int height) : base(width, height, 1) {
+
+        }
+
+        public override Color GetPixel(int x, int y) => (this.buffer[(y / 8) * this.Width + x] & (1 << y % 8)) != 0 ? Color.White : Color.Black;
+
+        public override void SetPixel(int x, int y, Color color) {
+            var index = (y / 8) * this.Width + x;
+
+            if (color != Color.Black) {
+                this.buffer[index] |= (byte)(1 << (y % 8));
+            }
+            else {
+                this.buffer[index] &= (byte)(~(1 << (y % 8)));
+            }
+        }
+    }
+
     internal sealed class ManagedGraphics : IGraphics {
         private readonly IDrawTarget drawTarget;
 
