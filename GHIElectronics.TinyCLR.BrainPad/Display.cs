@@ -43,7 +43,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
         private readonly byte[] buffer2 = new byte[2];
         private readonly I2cDevice i2c;
 
-        public DisplayDataFormat DataFormat => (DisplayDataFormat)(-1);
+        public DisplayDataFormat DataFormat => DisplayDataFormat.VerticalByteStrip1Bpp;
         public int Width => 128;
         public int Height => 64;
 
@@ -116,8 +116,8 @@ namespace GHIElectronics.TinyCLR.BrainPad {
             this.i2c.Write(this.vram);
         }
 
-        DisplayInterface IDisplayControllerProvider.Interface => DisplayInterface.Spi;
-        DisplayDataFormat[] IDisplayControllerProvider.SupportedDataFormats => new[] { DisplayDataFormat.Rgb444 };
+        DisplayInterface IDisplayControllerProvider.Interface => DisplayInterface.I2c;
+        DisplayDataFormat[] IDisplayControllerProvider.SupportedDataFormats => new[] { DisplayDataFormat.VerticalByteStrip1Bpp };
 
         void IDisplayControllerProvider.Enable() {
 
@@ -182,25 +182,12 @@ namespace GHIElectronics.TinyCLR.BrainPad {
         }
 #endif
 
-        private sealed class SSD1306DrawTarget : BufferDrawTarget {
+        private sealed class SSD1306DrawTarget : BufferDrawTargetVerticalByteStrip1Bpp {
             private readonly DisplayController parent;
 
-            public SSD1306DrawTarget(DisplayController parent) : base(parent.ActiveConfiguration.Width, parent.ActiveConfiguration.Height, 1) => this.parent = parent;
+            public SSD1306DrawTarget(DisplayController parent) : base(parent.ActiveConfiguration.Width, parent.ActiveConfiguration.Height) => this.parent = parent;
 
             public override void Flush() => this.parent.DrawBuffer(0, 0, this.Width, this.Height, this.buffer, 0);
-
-            public override Color GetPixel(int x, int y) => (this.buffer[(y / 8) * this.Width + x] & (1 << y % 8)) != 0 ? Color.White : Color.Black;
-
-            public override void SetPixel(int x, int y, Color color) {
-                var index = (y / 8) * this.Width + x;
-
-                if (color != Color.Black) {
-                    this.buffer[index] |= (byte)(1 << (y % 8));
-                }
-                else {
-                    this.buffer[index] &= (byte)(~(1 << (y % 8)));
-                }
-            }
         }
 
         public Display() {
@@ -230,7 +217,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
                     this.spi = SpiController.FromName(G30.SpiBus.Spi2).GetDevice(settings);
 
                     this.st7735 = new ST7735Controller(this.spi, this.controlPin, this.resetPin);
-                    this.st7735.SetDataFormat(Devices.Display.DisplayDataFormat.Rgb444);
+                    this.st7735.SetDataFormat(DisplayDataFormat.Rgb444);
                     this.st7735.SetDataAccessControl(true, true, false, false);
                     this.st7735.Enable();
 
@@ -258,7 +245,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
                     this.ssd1306 = new SSD1306Controller(this.i2cDevice);
 
                     this.display = DisplayController.FromProvider(this.ssd1306);
-                    this.display.SetConfiguration(new DisplayControllerSettings { Width = 128, Height = 64, DataFormat = DisplayDataFormat.Rgb444 });
+                    this.display.SetConfiguration(new DisplayControllerSettings { Width = 128, Height = 64, DataFormat = DisplayDataFormat.VerticalByteStrip1Bpp });
                     this.display.Enable();
 
                     this.screen = Graphics.FromHdc(GraphicsManager.RegisterDrawTarget(new SSD1306DrawTarget(this.display)));
