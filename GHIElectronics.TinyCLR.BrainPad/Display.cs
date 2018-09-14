@@ -4,12 +4,12 @@ using System;
 using System.ComponentModel;
 using System.Drawing;
 using GHIElectronics.TinyCLR.Devices.Display;
-using GHIElectronics.TinyCLR.Devices.Display.Provider;
 using GHIElectronics.TinyCLR.Devices.Gpio;
 using GHIElectronics.TinyCLR.Devices.I2c;
 using GHIElectronics.TinyCLR.Devices.Spi;
 using GHIElectronics.TinyCLR.Drawing;
 using GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735;
+using GHIElectronics.TinyCLR.Drivers.SolomonSystech.SSD1306;
 using GHIElectronics.TinyCLR.Pins;
 
 namespace GHIElectronics.TinyCLR.BrainPad {
@@ -35,108 +35,6 @@ namespace GHIElectronics.TinyCLR.BrainPad {
                     for (var y = 0; y < this.Height; y++)
                         this.Data[y * this.Width + x] = data[y / scale * width + x / scale];
             }
-        }
-    }
-
-    public class SSD1306Controller : IDisplayControllerProvider {
-        private readonly byte[] vram = new byte[128 * 64 / 8 + 1];
-        private readonly byte[] buffer2 = new byte[2];
-        private readonly I2cDevice i2c;
-
-        public DisplayDataFormat DataFormat => DisplayDataFormat.VerticalByteStrip1Bpp;
-        public int Width => 128;
-        public int Height => 64;
-
-        public int MaxWidth => 128;
-        public int MaxHeight => 64;
-
-        public static I2cConnectionSettings GetConnectionSettings() => new I2cConnectionSettings(0x3C) {
-            AddressFormat = I2cAddressFormat.SevenBit,
-            BusSpeed = I2cBusSpeed.FastMode,
-        };
-
-        public SSD1306Controller(I2cDevice i2c) {
-            this.vram[0] = 0x40;
-            this.i2c = i2c;
-
-            this.Initialize();
-        }
-
-        private void Initialize() {
-            this.SendCommand(0xae);// turn off oled panel
-            this.SendCommand(0x00);// set low column address
-            this.SendCommand(0x10);// set high column address
-            this.SendCommand(0x40);// set start line address
-            this.SendCommand(0x81);// set contrast control register
-            this.SendCommand(0xcf);
-            this.SendCommand(0xa1);// set segment re-map 95 to 0
-            this.SendCommand(0xa6);// set normal display
-            this.SendCommand(0xa8);// set multiplex ratio(1 to 64)
-            this.SendCommand(0x3f);// 1/64 duty
-            this.SendCommand(0xd3);// set display offset
-            this.SendCommand(0x00);// not offset
-            this.SendCommand(0xd5);// set display clock divide ratio/oscillator frequency
-            this.SendCommand(0x80);// set divide ratio
-            this.SendCommand(0xd9);// set pre-charge period
-            this.SendCommand(0xf1);
-            this.SendCommand(0xda);// set com pins hardware configuration
-            this.SendCommand(0x12);
-            this.SendCommand(0xdb);//--set vcomh
-            this.SendCommand(0x40);//--set startline 0x0
-            this.SendCommand(0x8d);//--set Charge Pump enable/disable
-            this.SendCommand(0x14);//--set(0x10) disable
-            this.SendCommand(0xaf);//--turn on oled panel
-            this.SendCommand(0xc8);// mirror the screen
-
-            // Mapping
-            this.SendCommand(0x20);
-            this.SendCommand(0x00);
-            this.SendCommand(0x21);
-            this.SendCommand(0);
-            this.SendCommand(128 - 1);
-            this.SendCommand(0x22);
-            this.SendCommand(0);
-            this.SendCommand(7);
-        }
-
-        public void Dispose() => this.i2c.Dispose();
-
-        public void SendCommand(byte cmd) {
-            this.buffer2[1] = cmd;
-            this.i2c.Write(this.buffer2);
-        }
-
-        public void SetColorFormat(bool invert) => this.SendCommand((byte)(invert ? 0xa7 : 0xa6));
-
-        public void DrawBuffer(byte[] buffer) => this.DrawBuffer(buffer, 0);
-
-        public void DrawBuffer(byte[] buffer, int offset) {
-            Array.Copy(buffer, offset, this.vram, 1, this.vram.Length - 1);
-
-            this.i2c.Write(this.vram);
-        }
-
-        DisplayInterface IDisplayControllerProvider.Interface => DisplayInterface.I2c;
-        DisplayDataFormat[] IDisplayControllerProvider.SupportedDataFormats => new[] { DisplayDataFormat.VerticalByteStrip1Bpp };
-
-        void IDisplayControllerProvider.Enable() {
-
-        }
-
-        void IDisplayControllerProvider.Disable() => throw new NotSupportedException();
-
-        void IDisplayControllerProvider.DrawString(string value) => throw new NotSupportedException();
-        void IDisplayControllerProvider.DrawPixel(int x, int y, long color) => throw new NotSupportedException();
-
-        void IDisplayControllerProvider.SetConfiguration(DisplayControllerSettings configuration) {
-
-        }
-
-        void IDisplayControllerProvider.DrawBuffer(int x, int y, int width, int height, byte[] data, int offset) {
-            if (x != 0 || y != 0 || width != this.Width || height != this.Height)
-                throw new NotSupportedException();
-
-            this.DrawBuffer(data, offset);
         }
     }
 

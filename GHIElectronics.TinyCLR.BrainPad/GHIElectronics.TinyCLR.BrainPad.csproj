@@ -80,6 +80,9 @@
     <Reference Include="GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735.1.0.0-preview1\lib\net452\GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735.dll</HintPath>
     </Reference>
+    <Reference Include="GHIElectronics.TinyCLR.Drivers.SolomonSystech.SSD1306, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\GHIElectronics.TinyCLR.Drivers.SolomonSystech.SSD1306.1.0.0-preview1\lib\net452\GHIElectronics.TinyCLR.Drivers.SolomonSystech.SSD1306.dll</HintPath>
+    </Reference>
     <Reference Include="GHIElectronics.TinyCLR.Native, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\GHIElectronics.TinyCLR.Native.1.0.0-preview1\lib\net452\GHIElectronics.TinyCLR.Native.dll</HintPath>
     </Reference>
