@@ -16,10 +16,14 @@
     <dependencies>
       <dependency id="GHIElectronics.TinyCLR.Core" version="1.0.0-preview1" />
       <dependency id="GHIElectronics.TinyCLR.Devices.Adc" version="1.0.0-preview1" />
+      <dependency id="GHIElectronics.TinyCLR.Devices.Display" version="1.0.0-preview1" />
       <dependency id="GHIElectronics.TinyCLR.Devices.Gpio" version="1.0.0-preview1" />
       <dependency id="GHIElectronics.TinyCLR.Devices.I2c" version="1.0.0-preview1" />
       <dependency id="GHIElectronics.TinyCLR.Devices.Pwm" version="1.0.0-preview1" />
       <dependency id="GHIElectronics.TinyCLR.Devices.Spi" version="1.0.0-preview1" />
+      <dependency id="GHIElectronics.TinyCLR.Drawing" version="1.0.0-preview1" />
+      <dependency id="GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735" version="1.0.0-preview1" />
+      <dependency id="GHIElectronics.TinyCLR.Drivers.SolomonSystech.SSD1306" version="1.0.0-preview1" />
       <dependency id="GHIElectronics.TinyCLR.Pins" version="1.0.0-preview1" />
     </dependencies>
   </metadata>

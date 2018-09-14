@@ -2,10 +2,14 @@
 
 using System;
 using System.ComponentModel;
-using System.Threading;
+using System.Drawing;
+using GHIElectronics.TinyCLR.Devices.Display;
 using GHIElectronics.TinyCLR.Devices.Gpio;
 using GHIElectronics.TinyCLR.Devices.I2c;
 using GHIElectronics.TinyCLR.Devices.Spi;
+using GHIElectronics.TinyCLR.Drawing;
+using GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735;
+using GHIElectronics.TinyCLR.Drivers.SolomonSystech.SSD1306;
 using GHIElectronics.TinyCLR.Pins;
 
 namespace GHIElectronics.TinyCLR.BrainPad {
@@ -44,163 +48,47 @@ namespace GHIElectronics.TinyCLR.BrainPad {
             None
         }
 
-        private I2cDevice i2cDevice = I2cController.FromName(Board.BoardType == BoardType.BP2 ? FEZCLR.I2cBus.I2c1 : G30.I2cBus.I2c1).GetDevice(new I2cConnectionSettings(0x3C) { BusSpeed = I2cBusSpeed.FastMode });
+        private readonly I2cDevice i2cDevice;
+        private readonly SSD1306Controller ssd1306;
+        private readonly Graphics screen;
+        private readonly DisplayController display;
 
         public Picture CreatePicture(int width, int height, byte[] data) => this.CreateScaledPicture(width, height, data, 1);
         public Picture CreateScaledPicture(int width, int height, byte[] data, int scale) => data != null ? new Picture(width, height, data, scale) : throw new Exception("Incorrect picture data size");
 
-        private void Ssd1306_command(int cmd) {
-
-            var buff = new byte[2];
-            buff[1] = (byte)cmd;
-            this.i2cDevice.Write(buff);
-
-
-        }
 #if SUPPORT_ORIGINAL_BRAINPAD
-        private const byte ST7735_MADCTL = 0x36;
-        private const byte MADCTL_MY = 0x80;
-        private const byte MADCTL_MX = 0x40;
-        private const byte MADCTL_MV = 0x20;
-        private const byte MADCTL_BGR = 0x08;
-        private const int ORIGINAL_VRAMS = 12;
-
-        private SpiDevice spi;
-        private GpioPin controlPin;
-        private GpioPin resetPin;
-        private GpioPin backlightPin;
-        private byte[] buffer1 = new byte[1];
-        private byte[] buffer4 = new byte[4];
-        private byte[] buffer16 = new byte[16];
-        private void WriteData(byte[] data) {
-            this.controlPin.Write(GpioPinValue.High);
-            this.spi.Write(data);
-            //Thread.Sleep(0);
-        }
-
-        private void WriteCommand(byte command) {
-            this.buffer1[0] = command;
-            this.controlPin.Write(GpioPinValue.Low);
-            this.spi.Write(this.buffer1);
-            //Thread.Sleep(0);
-        }
-
-        private void WriteData(byte data) {
-            this.buffer1[0] = data;
-            this.controlPin.Write(GpioPinValue.High);
-            this.spi.Write(this.buffer1);
-            //Thread.Sleep(0);
-        }
-        private void SetClip(int x, int y, int width, int height) {
-            WriteCommand(0x2A);
-
-            this.controlPin.Write(GpioPinValue.High);
-            this.buffer4[1] = (byte)x;
-            this.buffer4[3] = (byte)(x + width - 1);
-            this.spi.Write(this.buffer4);
-
-            WriteCommand(0x2B);
-            this.controlPin.Write(GpioPinValue.High);
-            this.buffer4[1] = (byte)y;
-            this.buffer4[3] = (byte)(y + height - 1);
-            this.spi.Write(this.buffer4);
-        }
+        private readonly SpiDevice spi;
+        private readonly GpioPin controlPin;
+        private readonly GpioPin resetPin;
+        private readonly GpioPin backlightPin;
 #endif
-        /// <summary>
-        /// The width of the display in pixels.
-        /// </summary>
+
         public int Width { get; } = 128;
 
-        /// <summary>
-        /// The height of the display in pixels.
-        /// </summary>
         public int Height { get; } = 64;
 
-        private byte[][] vrams;
-        private byte[] vram;
+        private readonly Font font = new Font("GHIMono8x5", 8);
 #if SUPPORT_ORIGINAL_BRAINPAD
-        private void InitN18() {
-            WriteCommand(0x11); //Sleep exit
-            Thread.Sleep(200);
+        private readonly ST7735Controller st7735;
 
-            // ST7735R Frame Rate
-            WriteCommand(0xB1);
-            WriteData(0x01); WriteData(0x2C); WriteData(0x2D);
-            WriteCommand(0xB2);
-            WriteData(0x01); WriteData(0x2C); WriteData(0x2D);
-            WriteCommand(0xB3);
-            WriteData(0x01); WriteData(0x2C); WriteData(0x2D);
-            WriteData(0x01); WriteData(0x2C); WriteData(0x2D);
+        private sealed class ST7735DrawTarget : BufferDrawTargetRgb444 {
+            private readonly DisplayController parent;
 
-            WriteCommand(0xB4); // Column inversion
-            WriteData(0x07);
+            public ST7735DrawTarget(DisplayController parent) : base(parent.ActiveConfiguration.Width, parent.ActiveConfiguration.Height) => this.parent = parent;
 
-            // ST7735R Power Sequence
-            WriteCommand(0xC0);
-            WriteData(0xA2); WriteData(0x02); WriteData(0x84);
-            WriteCommand(0xC1); WriteData(0xC5);
-            WriteCommand(0xC2);
-            WriteData(0x0A); WriteData(0x00);
-            WriteCommand(0xC3);
-            WriteData(0x8A); WriteData(0x2A);
-            WriteCommand(0xC4);
-            WriteData(0x8A); WriteData(0xEE);
-
-            WriteCommand(0xC5); // VCOM
-            WriteData(0x0E);
-
-            WriteCommand(0x36); // MX, MY, RGB mode
-            WriteData(MADCTL_MX | MADCTL_MY | MADCTL_BGR);
-
-            // ST7735R Gamma Sequence
-            WriteCommand(0xe0);
-            WriteData(0x0f); WriteData(0x1a);
-            WriteData(0x0f); WriteData(0x18);
-            WriteData(0x2f); WriteData(0x28);
-            WriteData(0x20); WriteData(0x22);
-            WriteData(0x1f); WriteData(0x1b);
-            WriteData(0x23); WriteData(0x37); WriteData(0x00);
-
-            WriteData(0x07);
-            WriteData(0x02); WriteData(0x10);
-            WriteCommand(0xe1);
-            WriteData(0x0f); WriteData(0x1b);
-            WriteData(0x0f); WriteData(0x17);
-            WriteData(0x33); WriteData(0x2c);
-            WriteData(0x29); WriteData(0x2e);
-            WriteData(0x30); WriteData(0x30);
-            WriteData(0x39); WriteData(0x3f);
-            WriteData(0x00); WriteData(0x07);
-            WriteData(0x03); WriteData(0x10);
-
-            WriteCommand(0x2a);
-            WriteData(0x00); WriteData(0x00);
-            WriteData(0x00); WriteData(0x7f);
-            WriteCommand(0x2b);
-            WriteData(0x00); WriteData(0x00);
-            WriteData(0x00); WriteData(0x9f);
-
-            WriteCommand(0xF0); //Enable test command
-            WriteData(0x01);
-            WriteCommand(0xF6); //Disable ram power save mode
-            WriteData(0x00);
-
-            WriteCommand(0x3A); //65k mode
-            WriteData(0x03);
-
-            // Rotate
-            WriteCommand(ST7735_MADCTL);
-            WriteData(MADCTL_MV | MADCTL_MY);
-
-            WriteCommand(0x29); //Display on
-            Thread.Sleep(50);
-
-            WriteCommand(0x11); //Make sure sleep exit
-            Thread.Sleep(50);
+            public override void Flush() => this.parent.DrawBuffer(0, 0, this.Width, this.Height, this.buffer, 0);
         }
 #endif
-        public Display() {
 
+        private sealed class SSD1306DrawTarget : BufferDrawTargetVerticalByteStrip1Bpp {
+            private readonly DisplayController parent;
+
+            public SSD1306DrawTarget(DisplayController parent) : base(parent.ActiveConfiguration.Width, parent.ActiveConfiguration.Height) => this.parent = parent;
+
+            public override void Flush() => this.parent.DrawBuffer(0, 0, this.Width, this.Height, this.buffer, 0);
+        }
+
+        public Display() {
             switch (Board.BoardType) {
 #if SUPPORT_ORIGINAL_BRAINPAD
                 case BoardType.Original:
@@ -217,11 +105,6 @@ namespace GHIElectronics.TinyCLR.BrainPad {
                     this.backlightPin.SetDriveMode(GpioPinDriveMode.Output);
                     this.backlightPin.Write(GpioPinValue.High);
 
-                    this.resetPin.Write(GpioPinValue.Low);
-                    Thread.Sleep(30);
-                    this.resetPin.Write(GpioPinValue.High);
-                    Thread.Sleep(100);
-
                     var settings = new SpiConnectionSettings {
                         Mode = SpiMode.Mode3,
                         ClockFrequency = 12000000,
@@ -230,54 +113,40 @@ namespace GHIElectronics.TinyCLR.BrainPad {
                         ChipSelectLine = G30.GpioPin.PB12
                     };
                     this.spi = SpiController.FromName(G30.SpiBus.Spi2).GetDevice(settings);
-                    InitN18();
 
-                    // clear the entire screen
-                    SetClip(0, 0, 160, 128);
-                    WriteCommand(0x2C);
-                    this.controlPin.Write(GpioPinValue.High);
-                    for (var i = 0; i < 160 * 128 * 2 / 16; i++)
-                        this.spi.Write(this.buffer16);
+                    this.st7735 = new ST7735Controller(this.spi, this.controlPin, this.resetPin);
+                    this.st7735.SetDataFormat(DisplayDataFormat.Rgb444);
+                    this.st7735.SetDataAccessControl(true, true, false, false);
+                    this.st7735.Enable();
+
+                    this.st7735.SetDrawWindow(0, 0, 160, 128);
+                    this.st7735.SendDrawCommand();
+                    var buf = new byte[1024];
+                    for (var i = 0; i < buf.Length; i++)
+                        buf[i] = 0x22;
+
+                    for (var i = 0; i < 30; i++)
+                        this.st7735.SendData(buf);
+
+                    this.st7735.SetDrawWindow((160 - this.Width) / 2, (128 - this.Height) / 2, this.Width, this.Height);
+
+                    this.display = DisplayController.FromProvider(this.st7735);
+                    this.display.SetConfiguration(new SpiDisplayControllerSettings { Width = 128, Height = 64, DataFormat = DisplayDataFormat.Rgb444 });
+                    this.display.Enable();
+
+                    this.screen = Graphics.FromHdc(GraphicsManager.RegisterDrawTarget(new ST7735DrawTarget(this.display)));
 
                     break;
 #endif
                 case BoardType.BP2:
-                    this.vram = new byte[(128 * 64 / 8) + 1];
+                    this.i2cDevice = I2cController.FromName(Board.BoardType == BoardType.BP2 ? FEZCLR.I2cBus.I2c1 : G30.I2cBus.I2c1).GetDevice(SSD1306Controller.GetConnectionSettings());
+                    this.ssd1306 = new SSD1306Controller(this.i2cDevice);
 
-                    Ssd1306_command(0xae);// turn off oled panel
-                    Ssd1306_command(0x00);// set low column address
-                    Ssd1306_command(0x10);// set high column address
-                    Ssd1306_command(0x40);// set start line address
-                    Ssd1306_command(0x81);// set contrast control register
-                    Ssd1306_command(0xcf);
-                    Ssd1306_command(0xa1);// set segment re-map 95 to 0
-                    Ssd1306_command(0xa6);// set normal display
-                    Ssd1306_command(0xa8);// set multiplex ratio(1 to 64)
-                    Ssd1306_command(0x3f);// 1/64 duty
-                    Ssd1306_command(0xd3);// set display offset
-                    Ssd1306_command(0x00);// not offset
-                    Ssd1306_command(0xd5);// set display clock divide ratio/oscillator frequency
-                    Ssd1306_command(0x80);// set divide ratio
-                    Ssd1306_command(0xd9);// set pre-charge period
-                    Ssd1306_command(0xf1);
-                    Ssd1306_command(0xda);// set com pins hardware configuration
-                    Ssd1306_command(0x12);
-                    Ssd1306_command(0xdb);//--set vcomh
-                    Ssd1306_command(0x40);//--set startline 0x0
-                    Ssd1306_command(0x8d);//--set Charge Pump enable/disable
-                    Ssd1306_command(0x14);//--set(0x10) disable
-                    Ssd1306_command(0xaf);//--turn on oled panel
-                    Ssd1306_command(0xc8);// mirror the screen
+                    this.display = DisplayController.FromProvider(this.ssd1306);
+                    this.display.SetConfiguration(new DisplayControllerSettings { Width = 128, Height = 64, DataFormat = DisplayDataFormat.VerticalByteStrip1Bpp });
+                    this.display.Enable();
 
-                    // Mapping
-                    Ssd1306_command(0x20);
-                    Ssd1306_command(0x00);
-                    Ssd1306_command(0x21);
-                    Ssd1306_command(0);
-                    Ssd1306_command(128 - 1);
-                    Ssd1306_command(0x22);
-                    Ssd1306_command(0);
-                    Ssd1306_command(7);
+                    this.screen = Graphics.FromHdc(GraphicsManager.RegisterDrawTarget(new SSD1306DrawTarget(this.display)));
 
                     break;
             }
@@ -285,142 +154,20 @@ namespace GHIElectronics.TinyCLR.BrainPad {
             this.RefreshScreen();
         }
 
-        public void RefreshScreen() {
+        public void RefreshScreen() => this.screen.Flush();
 
-            switch (Board.BoardType) {
-#if SUPPORT_ORIGINAL_BRAINPAD
-                case BoardType.Original:
-                    if (this.vrams == null)
-                        return;
+        private readonly Pen set = new Pen(Color.FromArgb(0xFF, 0x00, 0xFF, 0xFF));
+        private readonly Pen clear = new Pen(Color.Black);
+        private readonly Brush brush = new SolidBrush(Color.FromArgb(0xFF, 0x00, 0xFF, 0xFF));
 
-                    SetClip((160 - this.Width) / 2, (128 - this.Height) / 2, this.Width, this.Height);
-                    WriteCommand(0x2C);
-                    this.controlPin.Write(GpioPinValue.High);
+        private void Point(int x, int y, bool set) => this.screen.DrawRectangle(set ? this.set : this.clear, x, y, 1, 1);
 
-                    for (var i = 0; i < this.vrams.Length; i++)
-                        this.spi.Write(this.vrams[i]);
-
-                    break;
-#endif
-                case BoardType.BP2:
-                    this.i2cDevice.Write(this.vram);
-                    break;
-            }
-        }
-
-        private void Point(int x, int y, bool set) {
-            if (x < 0 || x > 127)
-                return;
-            if (y < 0 || y > 63)
-                return;
-
-            switch (Board.BoardType) {
-#if SUPPORT_ORIGINAL_BRAINPAD
-                case BoardType.Original:
-                    var total = (int)(this.Width * this.Height * 1.5);
-                    var each = total / Display.ORIGINAL_VRAMS;
-
-                    if (this.vrams == null) {
-                        //We have many small arrays to reduce chance of our of memory because of fragmentation. Make sure total is evenly divisible by vrams count
-                        GC.Collect();
-
-                        this.vrams = new byte[Display.ORIGINAL_VRAMS][];
-
-                        for (var i = 0; i < this.vrams.Length; i++)
-                            this.vrams[i] = new byte[each];
-                    }
-
-                    var pixel = y * this.Width + x;
-                    var addr = 0;
-                    var mask = 0;
-
-                    if ((pixel % 2) == 0) {
-                        addr = (int)(pixel * 1.5 + 1);
-                        mask = 0xF0;
-                    }
-                    else {
-                        addr = (int)((pixel - 1) * 1.5 + 2);
-                        mask = 0x0F;
-                    }
-
-                    var arr = addr / each;
-
-                    addr %= each;
-
-                    if (set) {
-                        this.vrams[arr][addr] |= (byte)mask;
-                    }
-                    else {
-                        this.vrams[arr][addr] &= (byte)~mask;
-                    }
-                    break;
-#endif
-                case BoardType.BP2:
-                    var index = (x + (y / 8) * 128) + 1;
-
-                    if (set)
-                        this.vram[index] |= (byte)(1 << (y % 8));
-                    else
-                        this.vram[index] &= (byte)(~(1 << (y % 8)));
-                    break;
-            }
-
-        }
-
-        /// <summary>
-        /// Draws a pixel.
-        /// </summary>
-        /// <param name="x">The x coordinate to draw at.</param>
-        /// <param name="y">The y coordinate to draw at.</param>
-        /// <param name="color">The color to draw.</param>
         public void DrawPoint(int x, int y) => this.Point(x, y, true);
 
-        /// <summary>
-        /// Clears a pixel.
-        /// </summary>
-        /// <param name="x">The x coordinate to draw at.</param>
-        /// <param name="y">The y coordinate to draw at.</param>
-        /// <param name="color">The color to draw.</param>
         public void ClearPoint(int x, int y) => this.Point(x, y, false);
 
-        /// <summary>
-        /// Clears the Display.
-        /// </summary>
-        public void Clear() {
-            switch (Board.BoardType) {
-#if SUPPORT_ORIGINAL_BRAINPAD
-                case BoardType.Original:
-                    if (this.vrams == null)
-                        return;
+        public void Clear() => this.screen.Clear(Color.Black);
 
-                    for (var i = 0; i < this.vrams.Length; i++)
-                        Array.Clear(this.vrams[i], 0, this.vrams[i].Length);
-
-                    break;
-#endif
-                case BoardType.BP2:
-                    if (this.vram == null)
-                        return;
-                    Array.Clear(this.vram, 0, this.vram.Length);
-                    if (Board.BoardType == BoardType.BP2)
-                        this.vram[0] = 0x40;
-                    break;
-            }
-        }
-
-        public void ClearPart(int x, int y, int width, int height) {
-            if (x == 0 && y == 0 && width == 128 && height == 64) Clear();
-            for (var lx = x; lx < width + x; lx++)
-                for (var ly = y; ly < height + y; ly++)
-                    Point(lx, ly, false);
-        }
-
-        /// <summary>
-        /// Draws an picture at the given location.
-        /// </summary>
-        /// <param name="x">The x coordinate to draw at.</param>
-        /// <param name="y">The y coordinate to draw at.</param>
-        /// <param name="picture">The picture to draw.</param>
         public void DrawPicture(int x, int y, Picture picture) => this.DrawRotatedPicture(x, y, picture, Transform.None);
         public void DrawPictureRotated90Degrees(int x, int y, Picture picture) => this.DrawRotatedPicture(x, y, picture, Transform.Rotate90);
         public void DrawPictureRotated180Degrees(int x, int y, Picture picture) => this.DrawRotatedPicture(x, y, picture, Transform.Rotate180);
@@ -435,371 +182,49 @@ namespace GHIElectronics.TinyCLR.BrainPad {
                 for (var yd = 0; yd < picture.Height; yd++) {
                     switch (mirror) {
                         case Transform.None:
-                            Point(x + xd, y + yd, picture.Data[picture.Width * yd + xd] == 1);
+                            this.Point(x + xd, y + yd, picture.Data[picture.Width * yd + xd] == 1);
                             break;
                         case Transform.FlipHorizontal:
-                            Point(x + picture.Width - xd, y + yd, picture.Data[picture.Width * yd + xd] == 1);
+                            this.Point(x + picture.Width - xd, y + yd, picture.Data[picture.Width * yd + xd] == 1);
                             break;
                         case Transform.FlipVertical:
-                            Point(x + xd, y + picture.Height - yd, picture.Data[picture.Width * yd + xd] == 1);
+                            this.Point(x + xd, y + picture.Height - yd, picture.Data[picture.Width * yd + xd] == 1);
                             break;
                         case Transform.Rotate90:
-                            Point(x + picture.Width - yd, y + xd, picture.Data[picture.Width * yd + xd] == 1);
+                            this.Point(x + picture.Width - yd, y + xd, picture.Data[picture.Width * yd + xd] == 1);
                             break;
                         case Transform.Rotate180:
-                            Point(x + picture.Width - xd, y + picture.Height - yd, picture.Data[picture.Width * yd + xd] == 1);
+                            this.Point(x + picture.Width - xd, y + picture.Height - yd, picture.Data[picture.Width * yd + xd] == 1);
                             break;
                         case Transform.Rotate270:
-                            Point(x + yd, y + picture.Height - xd, picture.Data[picture.Width * yd + xd] == 1);
+                            this.Point(x + yd, y + picture.Height - xd, picture.Data[picture.Width * yd + xd] == 1);
                             break;
                     }
                 }
             }
         }
 
+        public void DrawLine(int x0, int y0, int x1, int y1) => this.screen.DrawLine(this.set, x0, y0, x1, y1);
 
-        /// <summary>
-        /// Draws a line.
-        /// </summary>
-        /// <param name="x">The x coordinate to start drawing at.</param>
-        /// <param name="y">The y coordinate to start drawing at.</param>
-        /// <param name="x1">The ending x coordinate.</param>
-        /// <param name="y1">The ending y coordinate.</param>
-        /// <param name="color">The color to draw.</param>
-        public void DrawLine(int x0, int y0, int x1, int y1) {
+        public void DrawCircle(int x, int y, int r) => this.screen.DrawEllipse(this.set, x - r, y - r, r * 2 + 1, r * 2 + 1);
 
-            var dy = y1 - y0;
-            var dx = x1 - x0;
-            int stepx, stepy;
-
-            if (dy < 0) { dy = -dy; stepy = -1; } else { stepy = 1; }
-            if (dx < 0) { dx = -dx; stepx = -1; } else { stepx = 1; }
-            dy <<= 1;                                                  // dy is now 2*dy
-            dx <<= 1;                                                  // dx is now 2*dx
-
-            Point(x0, y0, true);
-            if (dx > dy) {
-                var fraction = dy - (dx >> 1);                         // same as 2*dy - dx
-                while (x0 != x1) {
-                    if (fraction >= 0) {
-                        y0 += stepy;
-                        fraction -= dx;                                // same as fraction -= 2*dx
-                    }
-                    x0 += stepx;
-                    fraction += dy;                                    // same as fraction -= 2*dy
-                    Point(x0, y0, true);
-                }
-            }
-            else {
-                var fraction = dx - (dy >> 1);
-                while (y0 != y1) {
-                    if (fraction >= 0) {
-                        x0 += stepx;
-                        fraction -= dy;
-                    }
-                    y0 += stepy;
-                    fraction += dx;
-                    Point(x0, y0, true);
-                }
-            }
-
-            /*var steep = Math.Abs(y1 - y0) > Math.Abs(x1 - x0);
-            int t, dX, dY, yStep, error;
-
-            if (steep) {
-                t = x0;
-                x0 = y0;
-                y0 = t;
-                t = x1;
-                x1 = y1;
-                y1 = t;
-            }
-
-            if (x0 > x1) {
-                t = x0;
-                x0 = x1;
-                x1 = t;
-
-                t = y0;
-                y0 = y1;
-                y1 = t;
-            }
-
-            dX = x1 - x0;
-            dY = System.Math.Abs(y1 - y0);
-
-            error = (dX / 2);
-
-            if (y0 < y1) {
-                yStep = 1;
-            }
-            else {
-                yStep = -1;
-            }
-
-            for (; x0 < x1; x0++) {
-                if (steep) {
-                    DrawPoint(y0, x0, color);
-                }
-                else {
-                    DrawPoint(x0, y0, color);
-                }
-
-                error -= dY;
-
-                if (error < 0) {
-                    y0 += (byte)yStep;
-                    error += dX;
-                }
-            }*/
-
-        }
-
-        /// <summary>
-        /// Draws a circle.
-        /// </summary>
-        /// <param name="x">The x coordinate to draw at.</param>
-        /// <param name="y">The y coordinate to draw at.</param>
-        /// <param name="r">The radius of the circle.</param>
-        /// <param name="color">The color to draw.</param>
-        public void DrawCircle(int x, int y, int r) {
-
-            if (r <= 0) return;
-
-            var f = 1 - r;
-            var ddFX = 1;
-            var ddFY = -2 * r;
-            var dX = 0;
-            var dY = r;
-
-            DrawPoint(x, y + r);
-            DrawPoint(x, y - r);
-            DrawPoint(x + r, y);
-            DrawPoint(x - r, y);
-
-            while (dX < dY) {
-                if (f >= 0) {
-                    dY--;
-                    ddFY += 2;
-                    f += ddFY;
-                }
-
-                dX++;
-                ddFX += 2;
-                f += ddFX;
-
-                DrawPoint(x + dX, y + dY);
-                DrawPoint(x - dX, y + dY);
-                DrawPoint(x + dX, y - dY);
-                DrawPoint(x - dX, y - dY);
-
-                DrawPoint(x + dY, y + dX);
-                DrawPoint(x - dY, y + dX);
-                DrawPoint(x + dY, y - dX);
-                DrawPoint(x - dY, y - dX);
-            }
-        }
-
-        /// <summary>
-        /// Draws a rectangle.
-        /// </summary>
-        /// <param name="x">The x coordinate to draw at.</param>
-        /// <param name="y">The y coordinate to draw at.</param>
-        /// <param name="width">The width of the rectangle.</param>
-        /// <param name="height">The height of the rectangle.</param>
-        /// <param name="color">The color to use.</param>
-        public void DrawRectangle(int x, int y, int width, int height) {
-            if (width < 0) return;
-            if (height < 0) return;
-
-            for (var i = x; i < x + width; i++) {
-                DrawPoint(i, y);
-                DrawPoint(i, y + height - 1);
-            }
-
-            for (var i = y; i < y + height; i++) {
-                DrawPoint(x, i);
-                DrawPoint(x + width - 1, i);
-            }
-        }
+        public void DrawRectangle(int x, int y, int width, int height) => this.screen.DrawRectangle(this.set, x, y, width, height);
 
         public void DrawFilledRectangle(int x, int y, int width, int height) {
             for (var lx = x; lx < width + x; lx++)
                 for (var ly = y; ly < height + y; ly++)
-                    Point(lx, ly, true);
+                    this.Point(lx, ly, true);
         }
 
-        byte[] font = new byte[95 * 5] {
-            0x00, 0x00, 0x00, 0x00, 0x00, /* Space	0x20 */
-            0x00, 0x00, 0x4f, 0x00, 0x00, /* ! */
-            0x00, 0x07, 0x00, 0x07, 0x00, /* " */
-            0x14, 0x7f, 0x14, 0x7f, 0x14, /* # */
-            0x24, 0x2a, 0x7f, 0x2a, 0x12, /* $ */
-            0x23, 0x13, 0x08, 0x64, 0x62, /* % */
-            0x36, 0x49, 0x55, 0x22, 0x20, /* & */
-            0x00, 0x05, 0x03, 0x00, 0x00, /* ' */
-            0x00, 0x1c, 0x22, 0x41, 0x00, /* ( */
-            0x00, 0x41, 0x22, 0x1c, 0x00, /* ) */
-            0x14, 0x08, 0x3e, 0x08, 0x14, /* // */
-            0x08, 0x08, 0x3e, 0x08, 0x08, /* + */
-            0x50, 0x30, 0x00, 0x00, 0x00, /* , */
-            0x08, 0x08, 0x08, 0x08, 0x08, /* - */
-            0x00, 0x60, 0x60, 0x00, 0x00, /* . */
-            0x20, 0x10, 0x08, 0x04, 0x02, /* / */
-            0x3e, 0x51, 0x49, 0x45, 0x3e, /* 0		0x30 */
-            0x00, 0x42, 0x7f, 0x40, 0x00, /* 1 */
-            0x42, 0x61, 0x51, 0x49, 0x46, /* 2 */
-            0x21, 0x41, 0x45, 0x4b, 0x31, /* 3 */
-            0x18, 0x14, 0x12, 0x7f, 0x10, /* 4 */
-            0x27, 0x45, 0x45, 0x45, 0x39, /* 5 */
-            0x3c, 0x4a, 0x49, 0x49, 0x30, /* 6 */
-            0x01, 0x71, 0x09, 0x05, 0x03, /* 7 */
-            0x36, 0x49, 0x49, 0x49, 0x36, /* 8 */
-            0x06, 0x49, 0x49, 0x29, 0x1e, /* 9 */
-            0x00, 0x36, 0x36, 0x00, 0x00, /* : */
-            0x00, 0x56, 0x36, 0x00, 0x00, /* ; */
-            0x08, 0x14, 0x22, 0x41, 0x00, /* < */
-            0x14, 0x14, 0x14, 0x14, 0x14, /* = */
-            0x00, 0x41, 0x22, 0x14, 0x08, /* > */
-            0x02, 0x01, 0x51, 0x09, 0x06, /* ? */
-            0x3e, 0x41, 0x5d, 0x55, 0x1e, /* @		0x40 */
-            0x7e, 0x11, 0x11, 0x11, 0x7e, /* A */
-            0x7f, 0x49, 0x49, 0x49, 0x36, /* B */
-            0x3e, 0x41, 0x41, 0x41, 0x22, /* C */
-            0x7f, 0x41, 0x41, 0x22, 0x1c, /* D */
-            0x7f, 0x49, 0x49, 0x49, 0x41, /* E */
-            0x7f, 0x09, 0x09, 0x09, 0x01, /* F */
-            0x3e, 0x41, 0x49, 0x49, 0x7a, /* G */
-            0x7f, 0x08, 0x08, 0x08, 0x7f, /* H */
-            0x00, 0x41, 0x7f, 0x41, 0x00, /* I */
-            0x20, 0x40, 0x41, 0x3f, 0x01, /* J */
-            0x7f, 0x08, 0x14, 0x22, 0x41, /* K */
-            0x7f, 0x40, 0x40, 0x40, 0x40, /* L */
-            0x7f, 0x02, 0x0c, 0x02, 0x7f, /* M */
-            0x7f, 0x04, 0x08, 0x10, 0x7f, /* N */
-            0x3e, 0x41, 0x41, 0x41, 0x3e, /* O */
-            0x7f, 0x09, 0x09, 0x09, 0x06, /* P		0x50 */
-            0x3e, 0x41, 0x51, 0x21, 0x5e, /* Q */
-            0x7f, 0x09, 0x19, 0x29, 0x46, /* R */
-            0x26, 0x49, 0x49, 0x49, 0x32, /* S */
-            0x01, 0x01, 0x7f, 0x01, 0x01, /* T */
-            0x3f, 0x40, 0x40, 0x40, 0x3f, /* U */
-            0x1f, 0x20, 0x40, 0x20, 0x1f, /* V */
-            0x3f, 0x40, 0x38, 0x40, 0x3f, /* W */
-            0x63, 0x14, 0x08, 0x14, 0x63, /* X */
-            0x07, 0x08, 0x70, 0x08, 0x07, /* Y */
-            0x61, 0x51, 0x49, 0x45, 0x43, /* Z */
-            0x00, 0x7f, 0x41, 0x41, 0x00, /* [ */
-            0x02, 0x04, 0x08, 0x10, 0x20, /* \ */
-            0x00, 0x41, 0x41, 0x7f, 0x00, /* ] */
-            0x04, 0x02, 0x01, 0x02, 0x04, /* ^ */
-            0x40, 0x40, 0x40, 0x40, 0x40, /* _ */
-            0x00, 0x00, 0x03, 0x05, 0x00, /* `		0x60 */
-            0x20, 0x54, 0x54, 0x54, 0x78, /* a */
-            0x7F, 0x44, 0x44, 0x44, 0x38, /* b */
-            0x38, 0x44, 0x44, 0x44, 0x44, /* c */
-            0x38, 0x44, 0x44, 0x44, 0x7f, /* d */
-            0x38, 0x54, 0x54, 0x54, 0x18, /* e */
-            0x04, 0x04, 0x7e, 0x05, 0x05, /* f */
-            0x08, 0x54, 0x54, 0x54, 0x3c, /* g */
-            0x7f, 0x08, 0x04, 0x04, 0x78, /* h */
-            0x00, 0x44, 0x7d, 0x40, 0x00, /* i */
-            0x20, 0x40, 0x44, 0x3d, 0x00, /* j */
-            0x7f, 0x10, 0x28, 0x44, 0x00, /* k */
-            0x00, 0x41, 0x7f, 0x40, 0x00, /* l */
-            0x7c, 0x04, 0x7c, 0x04, 0x78, /* m */
-            0x7c, 0x08, 0x04, 0x04, 0x78, /* n */
-            0x38, 0x44, 0x44, 0x44, 0x38, /* o */
-            0x7c, 0x14, 0x14, 0x14, 0x08, /* p		0x70 */
-            0x08, 0x14, 0x14, 0x14, 0x7c, /* q */
-            0x7c, 0x08, 0x04, 0x04, 0x00, /* r */
-            0x48, 0x54, 0x54, 0x54, 0x24, /* s */
-            0x04, 0x04, 0x3f, 0x44, 0x44, /* t */
-            0x3c, 0x40, 0x40, 0x20, 0x7c, /* u */
-            0x1c, 0x20, 0x40, 0x20, 0x1c, /* v */
-            0x3c, 0x40, 0x30, 0x40, 0x3c, /* w */
-            0x44, 0x28, 0x10, 0x28, 0x44, /* x */
-            0x0c, 0x50, 0x50, 0x50, 0x3c, /* y */
-            0x44, 0x64, 0x54, 0x4c, 0x44, /* z */
-            0x08, 0x36, 0x41, 0x41, 0x00, /* { */
-            0x00, 0x00, 0x77, 0x00, 0x00, /* | */
-            0x00, 0x41, 0x41, 0x36, 0x08, /* } */
-            0x08, 0x08, 0x2a, 0x1c, 0x08  /* ~ */
-        };
+        public void DrawText(int x, int y, string text) => this.DrawScaledText(x, y, text, 2, 2);
+        public void DrawSmallText(int x, int y, string text) => this.DrawScaledText(x, y, text, 1, 1);
 
-        private void DrawText(int x, int y, char letter, int HScale, int VScale) {
-            var index = 5 * (letter - 32);
+        public void DrawScaledText(int x, int y, string text, int HScale, int VScale) => this.screen.DrawString(text, HScale == 1 && VScale == HScale ? this.font : new Font("GHIMono8x5", HScale * 8), this.brush, x, y);
 
-
-            for (var h = 0; h < 5; h++) {
-                for (var hs = 0; hs < HScale; hs++) {
-                    for (var v = 0; v < 8; v++) {
-                        var show = (this.font[index + h] & (1 << v)) != 0;
-                        for (var vs = 0; vs < VScale; vs++) {
-                            Point(x + (h * HScale) + hs, y + (v * VScale) + vs, show);
-                        }
-                    }
-
-                }
-            }
-            ClearPart(x + 5 * HScale, y, HScale, 8 * VScale);// clear the space between characters
-        }
-
-        /// <summary>
-        /// Draws text at the given location.
-        /// </summary>
-        /// <param name="x">The x coordinate to draw at.</param>
-        /// <param name="y">The y coordinate to draw at.</param>
-        /// <param name="text">The string to draw.</param>
-        public void DrawText(int x, int y, string text) => DrawScaledText(x, y, text, 2, 2);
-
-        /// <summary>
-        /// Draws text at the given location.
-        /// </summary>
-        /// <param name="x">The x coordinate to draw at.</param>
-        /// <param name="y">The y coordinate to draw at.</param>
-        /// <param name="text">The string to draw.</param>
-        public void DrawSmallText(int x, int y, string text) => DrawScaledText(x, y, text, 1, 1);
-
-        /// <summary>
-        /// Draws text at the given location.
-        /// </summary>
-        /// <param name="x">The x coordinate to draw at.</param>
-        /// <param name="y">The y coordinate to draw at.</param>
-        /// <param name="text">The string to draw.</param>
-        public void DrawScaledText(int x, int y, string text, int HScale, int VScale) {
-            var originalX = x;
-            if (HScale == 0 || VScale == 0) return;
-            if (text == null) throw new ArgumentNullException("data");
-
-            for (var i = 0; i < text.Length; i++) {
-                if (text[i] >= 32) {
-                    DrawText(x, y, text[i], HScale, VScale);
-                    x += (6 * HScale);
-
-                }
-                else {
-                    if (text[i] == '\n') {
-                        y += (9 * VScale);
-                    }
-                    if (text[i] == '\r') {
-                        x = originalX;
-                    }
-                }
-            }
-        }
-
-        public void DrawNumber(int x, int y, double number) => DrawText(x, y, number.ToString("N2"));
-        public void DrawSmallNumber(int x, int y, double number) => DrawSmallText(x, y, number.ToString("N2"));
-        public void DrawNumber(int x, int y, long number) => DrawText(x, y, number.ToString("N0"));
-        public void DrawSmallNumber(int x, int y, long number) => DrawSmallText(x, y, number.ToString("N0"));
-
-        public void InvertColors(bool invert) {
-            if (invert)
-                Ssd1306_command(0xa7);
-            else
-                Ssd1306_command(0xa6);
-        }
+        public void DrawNumber(int x, int y, double number) => this.DrawText(x, y, number.ToString("N2"));
+        public void DrawSmallNumber(int x, int y, double number) => this.DrawSmallText(x, y, number.ToString("N2"));
+        public void DrawNumber(int x, int y, long number) => this.DrawText(x, y, number.ToString("N0"));
+        public void DrawSmallNumber(int x, int y, long number) => this.DrawSmallText(x, y, number.ToString("N0"));
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => base.Equals(obj);
