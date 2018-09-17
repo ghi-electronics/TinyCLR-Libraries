@@ -26,10 +26,10 @@ namespace GHIElectronics.TinyCLR.BrainPad {
             switch (Board.BoardType) {
                 case BoardType.BP2:
                     this.buttons = new[] {
-                        GPIO.OpenPin(FEZCLR.GpioPin.PA15),
-                        GPIO.OpenPin(FEZCLR.GpioPin.PB10),
-                        GPIO.OpenPin(FEZCLR.GpioPin.PC13),
-                        GPIO.OpenPin(FEZCLR.GpioPin.PA5)
+                        GPIO.OpenPin(BrainPadBP2.GpioPin.PA15),
+                        GPIO.OpenPin(BrainPadBP2.GpioPin.PB10),
+                        GPIO.OpenPin(BrainPadBP2.GpioPin.PC13),
+                        GPIO.OpenPin(BrainPadBP2.GpioPin.PA5)
                       };
                     break;
 

@@ -139,7 +139,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
                     break;
 #endif
                 case BoardType.BP2:
-                    this.i2cDevice = I2cController.FromName(Board.BoardType == BoardType.BP2 ? FEZCLR.I2cBus.I2c1 : G30.I2cBus.I2c1).GetDevice(SSD1306Controller.GetConnectionSettings());
+                    this.i2cDevice = I2cController.FromName(Board.BoardType == BoardType.BP2 ? BrainPadBP2.I2cBus.I2c1 : G30.I2cBus.I2c1).GetDevice(SSD1306Controller.GetConnectionSettings());
                     this.ssd1306 = new SSD1306Controller(this.i2cDevice);
 
                     this.display = DisplayController.FromProvider(this.ssd1306);

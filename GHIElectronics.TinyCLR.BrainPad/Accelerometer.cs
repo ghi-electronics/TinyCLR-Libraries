@@ -15,7 +15,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
             var settings = new I2cConnectionSettings(0x1C) {
                 BusSpeed = I2cBusSpeed.FastMode,
             };
-            this.device = I2cController.FromName(Board.BoardType == BoardType.BP2 ? FEZCLR.I2cBus.I2c1 : G30.I2cBus.I2c1).GetDevice(settings);
+            this.device = I2cController.FromName(Board.BoardType == BoardType.BP2 ? BrainPadBP2.I2cBus.I2c1 : G30.I2cBus.I2c1).GetDevice(settings);
             WriteRegister(0x2A, 0x01);
         }
         private void WriteRegister(byte register, byte data) {

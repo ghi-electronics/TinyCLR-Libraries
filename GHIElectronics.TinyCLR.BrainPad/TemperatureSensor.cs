@@ -6,7 +6,7 @@ using GHIElectronics.TinyCLR.Pins;
 namespace GHIElectronics.TinyCLR.BrainPad {
     public class TemperatureSensor {
         //private AnalogInput input;
-        private AdcChannel input = AdcController.GetDefault().OpenChannel(Board.BoardType == BoardType.BP2 ? FEZCLR.AdcChannel.PB0 : G30.AdcChannel.PB0);
+        private AdcChannel input = AdcController.GetDefault().OpenChannel(Board.BoardType == BoardType.BP2 ? BrainPadBP2.AdcChannel.PB0 : G30.AdcChannel.PB0);
         private readonly int voltage = Board.BoardType == BoardType.BP2 ? 3080 : 3300;   //Compensate for voltage drop from diode D2 on BP2.
 
         public TemperatureSensor() {

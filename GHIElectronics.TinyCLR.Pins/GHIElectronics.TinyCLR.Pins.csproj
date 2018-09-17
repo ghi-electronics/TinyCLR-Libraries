@@ -46,6 +46,7 @@
     <Compile Include="FEZCerbot.cs" />
     <Compile Include="FEZCerbuinoBee.cs" />
     <Compile Include="FEZCerbuinoNet.cs" />
+    <Compile Include="BrainPadBP2.cs" />
     <Compile Include="FEZCobra.cs" />
     <Compile Include="FEZCobraII.cs" />
     <Compile Include="FEZCobraIIExtender.cs" />

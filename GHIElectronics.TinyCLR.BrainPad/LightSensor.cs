@@ -6,7 +6,7 @@ using System.ComponentModel;
 namespace GHIElectronics.TinyCLR.BrainPad {
     public class LightSensor {
         //private AnalogInput input;
-        private AdcChannel input = AdcController.GetDefault().OpenChannel(Board.BoardType == BoardType.BP2 ? FEZCLR.AdcChannel.PB1 : G30.AdcChannel.PB1);
+        private AdcChannel input = AdcController.GetDefault().OpenChannel(Board.BoardType == BoardType.BP2 ? BrainPadBP2.AdcChannel.PB1 : G30.AdcChannel.PB1);
         public LightSensor() {
             //input = new AnalogInput(Peripherals.LightSensor);
         }

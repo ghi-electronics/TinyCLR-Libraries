@@ -16,7 +16,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
             internal Servo(int servo) {
                 switch (Board.BoardType) {
                     case BoardType.BP2:
-                        this.controller = PwmController.FromName(FEZCLR.PwmChannel.Controller2.Id);
+                        this.controller = PwmController.FromName(BrainPadBP2.PwmChannel.Controller2.Id);
 
                         break;
 
@@ -35,7 +35,7 @@ namespace GHIElectronics.TinyCLR.BrainPad {
 
                 switch (Board.BoardType) {
                     case BoardType.BP2:
-                        this.servo = this.controller.OpenChannel(servo == 0 ? FEZCLR.PwmChannel.Controller2.PA3 : FEZCLR.PwmChannel.Controller2.PA0);
+                        this.servo = this.controller.OpenChannel(servo == 0 ? BrainPadBP2.PwmChannel.Controller2.PA3 : BrainPadBP2.PwmChannel.Controller2.PA0);
 
                         break;
 
