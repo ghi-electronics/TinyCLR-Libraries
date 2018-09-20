@@ -7,8 +7,6 @@ using GHIElectronics.TinyCLR.Native;
 
 namespace GHIElectronics.TinyCLR.Devices.Spi {
     public sealed class SpiController : IDisposable {
-        private SpiDevice active;
-
         public ISpiControllerProvider Provider { get; }
 
         private SpiController(ISpiControllerProvider provider) => this.Provider = provider;
@@ -26,13 +24,7 @@ namespace GHIElectronics.TinyCLR.Devices.Spi {
         public int MaxClockFrequency => this.Provider.MaxClockFrequency;
         public int[] SupportedDataBitLengths => this.Provider.SupportedDataBitLengths;
 
-        internal void SetActive(SpiDevice device) {
-            if (this.active != device) {
-                this.active = device;
-
-                this.Provider.SetActiveSettings(device.ConnectionSettings);
-            }
-        }
+        internal void SetActive(SpiDevice device) => this.Provider.SetActiveSettings(device.ConnectionSettings);
     }
 
     public sealed class SpiDevice : IDisposable {

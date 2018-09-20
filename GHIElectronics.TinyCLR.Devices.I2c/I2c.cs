@@ -7,8 +7,6 @@ using GHIElectronics.TinyCLR.Native;
 
 namespace GHIElectronics.TinyCLR.Devices.I2c {
     public sealed class I2cController : IDisposable {
-        private I2cDevice active;
-
         public II2cControllerProvider Provider { get; }
 
         private I2cController(II2cControllerProvider provider) => this.Provider = provider;
@@ -21,13 +19,7 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
 
         public I2cDevice GetDevice(I2cConnectionSettings connectionSettings) => new I2cDevice(this, connectionSettings);
 
-        internal void SetActive(I2cDevice device) {
-            if (this.active != device) {
-                this.active = device;
-
-                this.Provider.SetActiveSettings(device.ConnectionSettings);
-            }
-        }
+        internal void SetActive(I2cDevice device) => this.Provider.SetActiveSettings(device.ConnectionSettings);
     }
 
     public sealed class I2cDevice : IDisposable {
