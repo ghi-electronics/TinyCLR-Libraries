@@ -67,6 +67,9 @@ namespace GHIElectronics.TinyCLR.Devices.Spi {
         public int ClockFrequency { get; set; } = 1_000_000;
         public int DataBitLength { get; set; } = 8;
         public SpiMode Mode { get; set; } = SpiMode.Mode0;
+        public TimeSpan ChipSelectSetupTime { get; set; } = TimeSpan.FromTicks(0);
+        public TimeSpan ChipSelectHoldTime { get; set; } = TimeSpan.FromTicks(0);
+        public bool ChipSelectActiveState { get; set; } = false;
     }
 
     public enum SpiMode {
