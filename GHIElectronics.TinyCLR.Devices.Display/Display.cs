@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 using GHIElectronics.TinyCLR.Devices.Display.Provider;
+using GHIElectronics.TinyCLR.Devices.I2c;
+using GHIElectronics.TinyCLR.Devices.Spi;
 using GHIElectronics.TinyCLR.Native;
 
 namespace GHIElectronics.TinyCLR.Devices.Display {
@@ -70,7 +72,13 @@ namespace GHIElectronics.TinyCLR.Devices.Display {
     }
 
     public class SpiDisplayControllerSettings : DisplayControllerSettings {
-        public string SpiApiName { get; set; }
+        public string ApiName { get; set; }
+        public SpiConnectionSettings Settings { get; set; }
+    }
+
+    public class I2cDisplayControllerSettings : DisplayControllerSettings {
+        public string ApiName { get; set; }
+        public I2cConnectionSettings Settings { get; set; }
     }
 
     namespace Provider {
@@ -127,11 +135,15 @@ namespace GHIElectronics.TinyCLR.Devices.Display {
             public void SetConfiguration(DisplayControllerSettings configuration) {
                 switch (this.Interface) {
                     case DisplayInterface.Parallel when configuration is ParallelDisplayControllerSettings pcfg:
-                        this.SetParallelConfiguration(pcfg.Width, pcfg.Height, pcfg.DataFormat, pcfg.DataEnableIsFixed, pcfg.DataEnablePolarity, pcfg.PixelPolarity, pcfg.PixelClockRate, pcfg.HorizontalSyncPolarity, pcfg.HorizontalSyncPulseWidth, pcfg.HorizontalFrontPorch, pcfg.HorizontalBackPorch, pcfg.VerticalSyncPolarity, pcfg.VerticalSyncPulseWidth, pcfg.VerticalFrontPorch, pcfg.VerticalBackPorch);
+                        this.SetConfiguration(pcfg);
                         break;
 
                     case DisplayInterface.Spi when configuration is SpiDisplayControllerSettings scfg:
-                        this.SetSpiConfiguration(scfg.Width, scfg.Height, scfg.DataFormat, scfg.SpiApiName);
+                        this.SetConfiguration(scfg);
+                        break;
+
+                    case DisplayInterface.I2c when configuration is I2cDisplayControllerSettings icfg:
+                        this.SetConfiguration(icfg);
                         break;
 
                     default:
@@ -140,10 +152,13 @@ namespace GHIElectronics.TinyCLR.Devices.Display {
             }
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            private extern void SetParallelConfiguration(int width, int height, DisplayDataFormat dataFormat, bool dataEnableIsFixed, bool dataEnablePolarity, bool pixelPolarity, int pixelClockRate, bool horizontalSyncPolarity, int horizontalSyncPulseWidth, int horizontalFrontPorch, int horizontalBackPorch, bool verticalSyncPolarity, int verticalSyncPulseWidth, int verticalFrontPorch, int verticalBackPorch);
+            private extern void SetConfiguration(ParallelDisplayControllerSettings settings);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            private extern void SetSpiConfiguration(int width, int height, DisplayDataFormat dataFormat, string spiApiName);
+            private extern void SetConfiguration(SpiDisplayControllerSettings settings);
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            private extern void SetConfiguration(I2cDisplayControllerSettings settings);
 
             public extern DisplayInterface Interface { [MethodImpl(MethodImplOptions.InternalCall)] get; }
             public extern DisplayDataFormat[] SupportedDataFormats { [MethodImpl(MethodImplOptions.InternalCall)] get; }
