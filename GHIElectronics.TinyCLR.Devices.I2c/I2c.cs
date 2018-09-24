@@ -193,22 +193,30 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
             }
 
             public I2cTransferStatus WriteRead(byte[] writeBuffer, int writeOffset, int writeLength, byte[] readBuffer, int readOffset, int readLength, bool sendStartCondition, bool sendStopCondition, out int written, out int read) {
-                var res = this.Write(writeBuffer, writeOffset, writeLength, true, false);
+                written = 0;
+                read = 0;
 
-                written = res.BytesWritten;
-                read = res.BytesRead;
+                try {
+                    var res = this.Write(writeBuffer, writeOffset, writeLength, true, readLength == 0);
 
-                if (res.Status == I2cTransferStatus.FullTransfer) {
-                    res = this.Read(readBuffer, readOffset, readLength, true, true);
+                    written = res.BytesWritten;
+                    read = res.BytesRead;
 
-                    written += res.BytesWritten;
-                    read += res.BytesRead;
+                    if (res.Status == I2cTransferStatus.FullTransfer && readLength != 0) {
+                        res = this.Read(readBuffer, readOffset, readLength, true, true);
+
+                        written += res.BytesWritten;
+                        read += res.BytesRead;
+                    }
+
+                    this.ReleaseScl();
+                    this.ReleaseSda();
+
+                    return res.Status;
                 }
-
-                this.ReleaseScl();
-                this.ReleaseSda();
-
-                return res.Status;
+                catch (I2cClockStretchTimeoutException) {
+                    return I2cTransferStatus.ClockStretchTimeout;
+                }
             }
 
             private I2cTransferResult Write(byte[] buffer, int offset, int length, bool sendStart, bool sendStop) {
@@ -268,6 +276,9 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
 
                 while (!this.ReadScl() && i++ < 100)
                     Thread.Sleep(1);
+
+                if (i >= 100)
+                    throw new I2cClockStretchTimeoutException();
             }
 
             private bool WriteBit(bool bit) {
@@ -357,6 +368,10 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
                 var res = this.WriteBit(!sendAck);
 
                 return (!sendStop || this.SendStop()) && res;
+            }
+
+            private class I2cClockStretchTimeoutException : Exception {
+
             }
         }
     }
