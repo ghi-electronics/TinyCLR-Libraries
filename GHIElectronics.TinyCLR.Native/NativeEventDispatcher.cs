@@ -3,7 +3,7 @@ using System.Collections;
 using System.Runtime.CompilerServices;
 
 namespace GHIElectronics.TinyCLR.Native {
-    public delegate void NativeEventHandler(string apiName, long data0, long data1, long data2, IntPtr data3, DateTime timestamp);
+    public delegate void NativeEventHandler(string data0, long data1, long data2, long data3, IntPtr data4, DateTime timestamp);
 
     public sealed class NativeEventDispatcher : IDisposable {
         private static Hashtable instances = new Hashtable();
