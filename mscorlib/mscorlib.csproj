@@ -67,7 +67,6 @@
     <Compile Include="Collections\Queue.cs" />
     <Compile Include="Collections\Stack.cs" />
     <Compile Include="ComponentModel\EditorBrowsableAttribute.cs" />
-    <Compile Include="Contracts.cs" />
     <Compile Include="Convert.cs" />
     <Compile Include="DateTime.cs" />
     <Compile Include="DayOfWeek.cs" />
