@@ -139,6 +139,9 @@ namespace GHIElectronics.TinyCLR.Devices.Spi {
             private bool captureOnRisingEdge;
             private GpioPinValue clockIdleState;
             private GpioPinValue clockActiveState;
+            private TimeSpan chipSelectSetupTime;
+            private TimeSpan chipSelectHoldTime;
+            private bool chipSelectActiveState;
 
             public int ChipSelectLineCount => 0;
             public int MinClockFrequency => 0;
@@ -182,6 +185,9 @@ namespace GHIElectronics.TinyCLR.Devices.Spi {
                 this.captureOnRisingEdge = ((((int)connectionSettings.Mode) & 0x01) == 0);
                 this.clockActiveState = (((int)connectionSettings.Mode) & 0x02) == 0 ? GpioPinValue.High : GpioPinValue.Low;
                 this.clockIdleState = this.clockActiveState == GpioPinValue.High ? GpioPinValue.Low : GpioPinValue.High;
+                this.chipSelectHoldTime = connectionSettings.ChipSelectHoldTime;
+                this.chipSelectSetupTime = connectionSettings.ChipSelectSetupTime;
+                this.chipSelectActiveState = connectionSettings.ChipSelectActiveState;
 
                 if (connectionSettings.ChipSelectType == SpiChipSelectType.Gpio) {
                     if (!this.chipSelects.Contains(connectionSettings.ChipSelectLine)) {
@@ -194,7 +200,7 @@ namespace GHIElectronics.TinyCLR.Devices.Spi {
                     }
 
                     this.cs = (GpioPin)this.chipSelects[connectionSettings.ChipSelectLine];
-                    this.cs.Write(GpioPinValue.High);
+                    this.cs.Write(this.chipSelectActiveState ? GpioPinValue.Low : GpioPinValue.High);
                 }
             }
 
@@ -203,7 +209,10 @@ namespace GHIElectronics.TinyCLR.Devices.Spi {
                     Array.Clear(readBuffer, 0, readLength);
 
                 this.sck.Write(this.clockIdleState);
-                this.cs?.Write(GpioPinValue.Low);
+                this.cs?.Write(this.chipSelectActiveState ? GpioPinValue.High : GpioPinValue.Low);
+
+                if (this.chipSelectSetupTime.Milliseconds > 0)
+                    System.Threading.Thread.Sleep(this.chipSelectSetupTime.Milliseconds);
 
                 for (var i = 0; i < Math.Max(readLength, writeLength); i++) {
                     byte mask = 0x80;
@@ -237,8 +246,11 @@ namespace GHIElectronics.TinyCLR.Devices.Spi {
 
                 this.sck.Write(this.clockIdleState);
 
+                if (this.chipSelectHoldTime.Milliseconds > 0)
+                    System.Threading.Thread.Sleep(this.chipSelectHoldTime.Milliseconds);
+
                 if (deselectAfter)
-                    this.cs?.Write(GpioPinValue.High);
+                    this.cs?.Write(this.chipSelectActiveState ? GpioPinValue.Low : GpioPinValue.High);
             }
         }
     }
