@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using GHIElectronics.TinyCLR.Devices.Gpio;
 using GHIElectronics.TinyCLR.Devices.Spi.Provider;
 using GHIElectronics.TinyCLR.Native;
@@ -211,8 +212,8 @@ namespace GHIElectronics.TinyCLR.Devices.Spi {
                 this.sck.Write(this.clockIdleState);
                 this.cs?.Write(this.chipSelectActiveState ? GpioPinValue.High : GpioPinValue.Low);
 
-                if (this.chipSelectSetupTime.Milliseconds > 0)
-                    System.Threading.Thread.Sleep(this.chipSelectSetupTime.Milliseconds);
+                if (this.chipSelectSetupTime.TotalMilliseconds > 0)
+                    Thread.Sleep(this.chipSelectSetupTime.Milliseconds);
 
                 for (var i = 0; i < Math.Max(readLength, writeLength); i++) {
                     byte mask = 0x80;
@@ -246,8 +247,8 @@ namespace GHIElectronics.TinyCLR.Devices.Spi {
 
                 this.sck.Write(this.clockIdleState);
 
-                if (this.chipSelectHoldTime.Milliseconds > 0)
-                    System.Threading.Thread.Sleep(this.chipSelectHoldTime.Milliseconds);
+                if (this.chipSelectHoldTime.TotalMilliseconds > 0)
+                    Thread.Sleep(this.chipSelectHoldTime.Milliseconds);
 
                 if (deselectAfter)
                     this.cs?.Write(this.chipSelectActiveState ? GpioPinValue.Low : GpioPinValue.High);
