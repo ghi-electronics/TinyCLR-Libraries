@@ -160,5 +160,27 @@
             /// <summary>USB client port on PA11 (DM), PA12 (DP), and VBUS (VBUS).</summary>
             public const string UsbOtg = FEZCLR.UsbClientPort.UsbOtg;
         }
+
+        public static class Wifi {
+            public const int Reset = STM32F4.GpioPin.PC2;
+            public const int Interrupt = STM32F4.GpioPin.PA1;
+
+            public static class Uart {
+                public const int Txd = STM32F4.GpioPin.PB14;
+                public const int Rxd = STM32F4.GpioPin.PB15;
+                public const int Rts = STM32F4.GpioPin.PB13;
+                public const int Cts = STM32F4.GpioPin.PB12;
+            }
+            public static class Spi {
+                public const int Mosi = STM32F4.GpioPin.PB15;
+                public const int Miso = STM32F4.GpioPin.PB14;
+                public const int Clock = STM32F4.GpioPin.PB13;
+                public const int ChipSelect = STM32F4.GpioPin.PB12;
+            }
+        }
+
+        public static class RealTimeClock {
+            public const string Id = STM32F4.RealTimeClock.Id;
+        }
     }
 }

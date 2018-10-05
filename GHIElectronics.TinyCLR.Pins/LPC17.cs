@@ -442,5 +442,17 @@
             /// <summary>API id.</summary>
             public const string Lcd = "GHIElectronics.TinyCLR.NativeApis.LPC17.DisplayController\\0";
         }
+
+        /// <summary>Real Time Clock definitions.</summary>
+        public static class RealTimeClock {
+            /// <summary>API id.</summary>
+            public const string Id = "GHIElectronics.TinyCLR.NativeApis.LPC17.RtcController\\0";
+        }
+
+        /// <summary>SdCard Storage definitions.</summary>
+        public static class SdCardStorage {
+            /// <summary>API id.</summary>
+            public const string Id = "GHIElectronics.TinyCLR.NativeApis.LPC17.SdCardStorageController\\0";
+        }
     }
 }
