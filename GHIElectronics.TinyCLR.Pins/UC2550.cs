@@ -83,6 +83,9 @@
             public const int PE13 = STM32F4.GpioPin.PE13;
             public const int PE14 = STM32F4.GpioPin.PE14;
             public const int PE15 = STM32F4.GpioPin.PE15;
+            public const int WiFiReset = STM32F4.GpioPin.PE15;
+            public const int WiFiInterrupt = STM32F4.GpioPin.PD9;
+            public const int WiFiChipSelect = STM32F4.GpioPin.PD8;
         }
 
         public static class AdcChannel {
@@ -234,30 +237,12 @@
             public const string UsbOtg = STM32F4.UsbClientPort.UsbOtg;
         }
 
-        public static class Wifi {
-            public const int Reset = STM32F4.GpioPin.PE15;
-            public const int Interrupt = STM32F4.GpioPin.PD9;
-
-            public static class Uart {
-                public const int Txd = STM32F4.GpioPin.PE13;
-                public const int Rxd = STM32F4.GpioPin.PE14;
-                public const int Rts = STM32F4.GpioPin.PE12;
-                public const int Cts = STM32F4.GpioPin.PD8;
-            }
-            public static class Spi {
-                public const int Mosi = STM32F4.GpioPin.PE14;
-                public const int Miso = STM32F4.GpioPin.PE13;
-                public const int Clock = STM32F4.GpioPin.PE12;
-                public const int ChipSelect = STM32F4.GpioPin.PD8;
-            }
+        public static class StorageController {
+            public const string SdCard = STM32F4.SdCardStorage.Id;
+            public const int SdCardDetect = STM32F4.GpioPin.PC13;
         }
 
-        public static class SdCardStorage {
-            public const string Id = STM32F4.SdCardStorage.Id;
-            public const int CardDetect = STM32F4.GpioPin.PC13;
-        }
-
-        public static class RealTimeClock {
+        public static class RtcController {
             public const string Id = STM32F4.RealTimeClock.Id;
         }
     }
