@@ -442,6 +442,12 @@
             /// <summary>API id.</summary>
             public const string Lcd = "GHIElectronics.TinyCLR.NativeApis.LPC24.DisplayController\\0";
         }
+                
+        /// <summary>Storage controller definitions.</summary>
+        public static class StorageController {
+            /// <summary>API id.</summary>
+            public const string SdCard = "GHIElectronics.TinyCLR.NativeApis.LPC23.SdCardStorageController\\0";
+        }
 
         /// <summary>RTC controller definitions.</summary>
         public static class RtcController {
@@ -449,10 +455,5 @@
             public const string Id = "GHIElectronics.TinyCLR.NativeApis.LPC24.RtcController\\0";
         }
 
-        /// <summary>Storage controller definitions.</summary>
-        public static class StorageController {
-            /// <summary>API id.</summary>
-            public const string SdCard = "GHIElectronics.TinyCLR.NativeApis.LPC23.SdCardStorageController\\0";
-        }
     }
 }
