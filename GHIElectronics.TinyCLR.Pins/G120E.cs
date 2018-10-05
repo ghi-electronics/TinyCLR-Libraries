@@ -294,5 +294,17 @@
             /// <summary>API id.</summary>
             public const string Lcd = LPC17.Display.Lcd;
         }
+
+        /// <summary>Storage controller definitions.</summary>
+        public static class StorageController {
+            /// <summary>API id.</summary>
+            public const string SdCard = LPC17.StorageController.SdCard;
+        }
+
+        /// <summary>RTC controller definitions.</summary>
+        public static class RtcController {
+            /// <summary>API id.</summary>
+            public const string Id = LPC17.RtcController.Id;
+        }
     }
 }

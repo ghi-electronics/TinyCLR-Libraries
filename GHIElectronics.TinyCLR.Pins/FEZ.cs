@@ -160,5 +160,11 @@
             /// <summary>USB client port on PA11 (DM), PA12 (DP), and VBUS (VBUS).</summary>
             public const string UsbOtg = FEZCLR.UsbClientPort.UsbOtg;
         }
+
+        /// <summary>RTC controller definitions.</summary>
+        public static class RtcController {
+            /// <summary>API id.</summary>
+            public const string Id = STM32F4.RtcController.Id;
+        }
     }
 }

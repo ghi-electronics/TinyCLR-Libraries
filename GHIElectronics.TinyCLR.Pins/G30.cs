@@ -231,5 +231,17 @@
             /// <summary>USB client port on PA11 (DM), PA12 (DP), and PA9 (VBUS).</summary>
             public const string UsbOtg = STM32F4.UsbClientPort.UsbOtg;
         }
+
+        /// <summary>Storage controller definitions.</summary>
+        public static class StorageController {
+            /// <summary>API id.</summary>
+            public const string SdCard = STM32F4.StorageController.SdCard;
+        }
+
+        /// <summary>RTC controller definitions.</summary>
+        public static class RtcController {
+            /// <summary>API id.</summary>
+            public const string Id = STM32F4.RtcController.Id;
+        }
     }
 }

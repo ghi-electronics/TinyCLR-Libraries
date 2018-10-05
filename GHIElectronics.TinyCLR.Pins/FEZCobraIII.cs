@@ -252,5 +252,17 @@ namespace GHIElectronics.TinyCLR.Pins {
             /// <summary>USB host port on UH_DM (D-) and UH_DP (D+).</summary>
             public const string UsbHost1 = G120.UsbHostPort.UsbHost1;
         }
+
+        /// <summary>Storage controller definitions.</summary>
+        public static class StorageController {
+            /// <summary>API id.</summary>
+            public const string SdCard = G120.StorageController.SdCard;
+        }
+
+        /// <summary>RTC controller definitions.</summary>
+        public static class RtcController {
+            /// <summary>API id.</summary>
+            public const string Id = G120.RtcController.Id;
+        }
     }
 }

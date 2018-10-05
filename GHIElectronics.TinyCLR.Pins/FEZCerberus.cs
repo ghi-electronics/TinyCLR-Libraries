@@ -288,5 +288,17 @@
             /// <summary>USB host port.</summary>
             public const string Socket1 = Cerb.UsbHostPort.UsbOtg;
         }
+
+        /// <summary>Storage controller definitions.</summary>
+        public static class StorageController {
+            /// <summary>API id.</summary>
+            public const string SdCard = Cerb.StorageController.SdCard;
+        }
+
+        /// <summary>RTC controller definitions.</summary>
+        public static class RtcController {
+            /// <summary>API id.</summary>
+            public const string Id = Cerb.RtcController.Id;
+        }
     }
 }

@@ -371,5 +371,17 @@
             /// <summary>API id.</summary>
             public const string Lcd = "GHIElectronics.TinyCLR.NativeApis.AT91.DisplayController\\0";
         }
+        
+        /// <summary>Storage controller definitions.</summary>
+        public static class StorageController {
+            /// <summary>API id.</summary>
+            public const string SdCard = "GHIElectronics.TinyCLR.NativeApis.AT91.SdCardStorageController\\0";
+        }
+
+        /// <summary>RTC controller definitions.</summary>
+        public static class RtcController {
+            /// <summary>API id.</summary>
+            public const string Id = "GHIElectronics.TinyCLR.NativeApis.AT91.RtcController\\0";
+        }
     }
 }

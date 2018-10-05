@@ -179,6 +179,9 @@
             public const int PK13 = STM32F7.GpioPin.PK13;
             public const int PK14 = STM32F7.GpioPin.PK14;
             public const int PK15 = STM32F7.GpioPin.PK15;
+            public const int WiFiReset = STM32F7.GpioPin.PG12;
+            public const int WiFiInterrupt = STM32F7.GpioPin.PB11;
+            public const int WiFiChipSelect = STM32F7.GpioPin.PB10;
         }
 
         public static class AdcChannel {
@@ -311,6 +314,7 @@
         public static class SpiBus {
             public const string Spi1 = STM32F7.SpiBus.Spi1;
             public const string Spi5 = STM32F7.SpiBus.Spi5;
+            public const string WiFi = STM32F7.SpiBus.Spi2;
         }
 
         public static class CanBus {
@@ -328,6 +332,14 @@
 
         public static class Display {
             public const string Lcd = STM32F7.Display.Lcd;
+        }
+
+        public static class StorageController {
+            public const string SdCard = STM32F7.StorageController.SdCard;
+        }
+
+        public static class RtcController {
+            public const string Id = STM32F7.RtcController.Id;
         }
     }
 }

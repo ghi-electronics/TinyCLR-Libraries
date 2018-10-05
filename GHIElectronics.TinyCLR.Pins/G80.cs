@@ -388,5 +388,17 @@
             /// <summary>USB host port on PB14 (DM) and PB15 (DP).</summary>
             public const string UsbOtg = STM32F4.UsbHostPort.UsbOtg;
         }
+
+        /// <summary>Storage controller definitions.</summary>
+        public static class StorageController {
+            /// <summary>API id.</summary>
+            public const string SdCard = STM32F4.StorageController.SdCard;
+        }
+
+        /// <summary>RTC controller definitions.</summary>
+        public static class RtcController {
+            /// <summary>API id.</summary>
+            public const string Id = STM32F4.RtcController.Id;
+        }
     }
 }

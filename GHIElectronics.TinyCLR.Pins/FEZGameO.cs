@@ -72,5 +72,17 @@
             /// <summary>USB client port on J1 pin 2 (DM), J1 pin 3 (DP), and J1 pin 1 (VBUS).</summary>
             public const string UsbOtg = Cerb.UsbClientPort.UsbOtg;
         }
+
+        /// <summary>Storage controller definitions.</summary>
+        public static class StorageController {
+            /// <summary>API id.</summary>
+            public const string SdCard = Cerb.StorageController.SdCard;
+        }
+
+        /// <summary>RTC controller definitions.</summary>
+        public static class RtcController {
+            /// <summary>API id.</summary>
+            public const string Id = Cerb.RtcController.Id;
+        }
     }
 }

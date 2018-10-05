@@ -328,5 +328,17 @@
             /// <summary>API id.</summary>
             public const string Lcd = G400S.Display.Lcd;
         }
+
+        /// <summary>Storage controller definitions.</summary>
+        public static class StorageController {
+            /// <summary>API id.</summary>
+            public const string SdCard = G400S.StorageController.SdCard;
+        }
+
+        /// <summary>RTC controller definitions.</summary>
+        public static class RtcController {
+            /// <summary>API id.</summary>
+            public const string Id = G400S.RtcController.Id;
+        }
     }
 }

@@ -119,5 +119,17 @@
             /// <summary>USB client port on D- (D-), D+ (D+), and VBUS (VBUS).</summary>
             public const string UsbDevice = USBizi100.UsbClientPort.UsbDevice;
         }
+
+        /// <summary>Storage controller definitions.</summary>
+        public static class StorageController {
+            /// <summary>API id.</summary>
+            public const string SdCard = USBizi100.StorageController.SdCard;
+        }
+
+        /// <summary>RTC controller definitions.</summary>
+        public static class RtcController {
+            /// <summary>API id.</summary>
+            public const string Id = USBizi100.RtcController.Id;
+        }
     }
 }

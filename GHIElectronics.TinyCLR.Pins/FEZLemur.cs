@@ -211,5 +211,17 @@
             /// <summary>USB client port on D- (DM), D+ (DP), and VBUS (VBUS).</summary>
             public const string UsbOtg = G30.UsbClientPort.UsbOtg;
         }
+
+        /// <summary>Storage controller definitions.</summary>
+        public static class StorageController {
+            /// <summary>API id.</summary>
+            public const string SdCard = G30.StorageController.SdCard;
+        }
+
+        /// <summary>RTC controller definitions.</summary>
+        public static class RtcController {
+            /// <summary>API id.</summary>
+            public const string Id = G30.RtcController.Id;
+        }
     }
 }

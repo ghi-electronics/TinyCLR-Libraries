@@ -209,5 +209,17 @@
             /// <summary>API id.</summary>
             public const string Lcd = AT91.Display.Lcd;
         }
+
+        /// <summary>Storage controller definitions.</summary>
+        public static class StorageController {
+            /// <summary>API definitions.</summary>
+            public const string SdCard = AT91.StorageController.SdCard;
+        }
+
+        /// <summary>RTC controller definitions.</summary>
+        public static class RtcController {
+            /// <summary>API id.</summary>
+            public const string Id = AT91.RtcController.Id;
+        }
     }
 }

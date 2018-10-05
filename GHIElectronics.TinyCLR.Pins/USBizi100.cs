@@ -259,5 +259,17 @@
             /// <summary>USB client port on P0_30 (D-), P0_29 (D+), and P2_8 (VBUS).</summary>
             public const string UsbDevice = LPC24.UsbClientPort.UsbDevice;
         }
+
+        /// <summary>Storage controller definitions.</summary>
+        public static class StorageController {
+            /// <summary>API id.</summary>
+            public const string SdCard = LPC24.StorageController.SdCard;
+        }
+
+        /// <summary>RTC controller definitions.</summary>
+        public static class RtcController {
+            /// <summary>API id.</summary>
+            public const string Id = LPC24.RtcController.Id;
+        }
     }
 }

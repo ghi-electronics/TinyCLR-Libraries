@@ -133,5 +133,17 @@
             /// <summary>USB host port on USB host connector X1.</summary>
             public const string UsbHost1 = USBizi144.UsbHostPort.UsbHost1;
         }
+
+        /// <summary>Storage controller definitions.</summary>
+        public static class StorageController {
+            /// <summary>API id.</summary>
+            public const string SdCard = USBizi144.StorageController.SdCard;
+        }
+
+        /// <summary>RTC controller definitions.</summary>
+        public static class RtcController {
+            /// <summary>API id.</summary>
+            public const string Id = USBizi144.RtcController.Id;
+        }
     }
 }
