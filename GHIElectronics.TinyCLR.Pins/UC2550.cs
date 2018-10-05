@@ -86,6 +86,7 @@
             public const int WiFiReset = STM32F4.GpioPin.PE15;
             public const int WiFiInterrupt = STM32F4.GpioPin.PD9;
             public const int WiFiChipSelect = STM32F4.GpioPin.PD8;
+            public const int SdCardDetect = STM32F4.GpioPin.PC13;
         }
 
         public static class AdcChannel {
@@ -239,7 +240,6 @@
 
         public static class StorageController {
             public const string SdCard = STM32F4.SdCardStorage.Id;
-            public const int SdCardDetect = STM32F4.GpioPin.PC13;
         }
 
         public static class RtcController {
