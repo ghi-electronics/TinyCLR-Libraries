@@ -289,7 +289,7 @@
             public const string Socket1 = Cerb.UsbHostPort.UsbOtg;
         }
 
-        /// <summary>StorageController definitions.</summary>
+        /// <summary>Storage controller definitions.</summary>
         public static class StorageController {
             /// <summary>API id.</summary>
             public const string SdCard = Cerb.StorageController.SdCard;

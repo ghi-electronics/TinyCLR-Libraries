@@ -329,7 +329,7 @@
             public const string Lcd = EMX.Display.Lcd;
         }
 
-        /// <summary>StorageController definitions.</summary>
+        /// <summary>Storage controller definitions.</summary>
         public static class StorageController {
             /// <summary>API id.</summary>
             public const string SdCard = EMX.StorageController.SdCard;

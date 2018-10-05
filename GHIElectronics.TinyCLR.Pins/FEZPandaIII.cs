@@ -341,7 +341,7 @@
             public const string UsbOtg = G80.UsbHostPort.UsbOtg;
         }
 
-        /// <summary>StorageController definitions.</summary>
+        /// <summary>Storage controller definitions.</summary>
         public static class StorageController {
             /// <summary>API id.</summary>
             public const string SdCard = G80.StorageController.SdCard;

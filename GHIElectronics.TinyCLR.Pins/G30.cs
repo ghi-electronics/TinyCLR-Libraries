@@ -232,7 +232,7 @@
             public const string UsbOtg = STM32F4.UsbClientPort.UsbOtg;
         }
 
-        /// <summary>StorageController definitions.</summary>
+        /// <summary>Storage controller definitions.</summary>
         public static class StorageController {
             /// <summary>API id.</summary>
             public const string SdCard = STM32F4.StorageController.SdCard;

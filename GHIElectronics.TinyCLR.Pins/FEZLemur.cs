@@ -212,7 +212,7 @@
             public const string UsbOtg = G30.UsbClientPort.UsbOtg;
         }
 
-        /// <summary>StorageController definitions.</summary>
+        /// <summary>Storage controller definitions.</summary>
         public static class StorageController {
             /// <summary>API id.</summary>
             public const string SdCard = G30.StorageController.SdCard;

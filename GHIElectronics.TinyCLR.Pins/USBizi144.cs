@@ -270,7 +270,7 @@
             public const string UsbHost1 = LPC24.UsbHostPort.UsbHost1;
         }
 
-        /// <summary>StorageController definitions.</summary>
+        /// <summary>Storage controller definitions.</summary>
         public static class StorageController {
             /// <summary>API id.</summary>
             public const string SdCard = LPC24.StorageController.SdCard;

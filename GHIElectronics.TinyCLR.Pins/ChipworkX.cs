@@ -210,7 +210,7 @@
             public const string Lcd = AT91.Display.Lcd;
         }
 
-        /// <summary>StorageController definitions.</summary>
+        /// <summary>Storage controller definitions.</summary>
         public static class StorageController {
             /// <summary>API definitions.</summary>
             public const string SdCard = AT91.StorageController.SdCard;

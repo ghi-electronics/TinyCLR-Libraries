@@ -128,7 +128,7 @@
             public const string UsbDevice = USBizi100.UsbClientPort.UsbDevice;
         }
 
-        /// <summary>StorageController definitions.</summary>
+        /// <summary>Storage controller definitions.</summary>
         public static class StorageController {
             /// <summary>API id.</summary>
             public const string SdCard = USBizi100.StorageController.SdCard;

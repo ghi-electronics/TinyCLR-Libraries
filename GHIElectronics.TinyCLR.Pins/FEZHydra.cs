@@ -342,7 +342,7 @@ namespace GHIElectronics.TinyCLR.Pins {
             public const string Socket2 = AT91.UsbClientPort.Udphs;
         }
 
-        /// <summary>StorageController definitions.</summary>
+        /// <summary>Storage controller definitions.</summary>
         public static class StorageController {
             /// <summary>API id.</summary>
             public const string SdCard = AT91.StorageController.SdCard;

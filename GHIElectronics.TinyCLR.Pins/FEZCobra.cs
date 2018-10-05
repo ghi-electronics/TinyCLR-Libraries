@@ -146,7 +146,7 @@
             public const string UsbHost1 = EMX.UsbHostPort.UsbHost1;
         }
 
-        /// <summary>StorageController definitions.</summary>
+        /// <summary>Storage controller definitions.</summary>
         public static class StorageController {
             /// <summary>API id.</summary>
             public const string SdCard = EMX.StorageController.SdCard;
