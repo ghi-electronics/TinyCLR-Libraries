@@ -238,7 +238,7 @@
             public const string UsbOtg = STM32F4.UsbHostPort.UsbOtg;
         }
 
-        /// <summary>RtcController definitions.</summary>
+        /// <summary>RTC controller definitions.</summary>
         public static class RtcController {
             /// <summary>API id.</summary>
             public const string Id = STM32F4.RtcController.Id;

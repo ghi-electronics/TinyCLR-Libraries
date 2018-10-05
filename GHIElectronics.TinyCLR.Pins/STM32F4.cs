@@ -531,13 +531,13 @@
             public const string Lcd = "GHIElectronics.TinyCLR.NativeApis.STM32F4.DisplayController\\0";
         }
 
-        /// <summary>Real Time Clock definitions.</summary>
+        /// <summary>RTC controller definitions.</summary>
         public static class RtcController {
             /// <summary>API id.</summary>
             public const string Id = "GHIElectronics.TinyCLR.NativeApis.STM32F4.RtcController\\0";
         }
 
-        /// <summary>SdCard Storage definitions.</summary>
+        /// <summary>Storage controller definitions.</summary>
         public static class StorageController {
             /// <summary>API id.</summary>
             public const string SdCard = "GHIElectronics.TinyCLR.NativeApis.STM32F4.SdCardStorageController\\0";

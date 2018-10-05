@@ -293,13 +293,13 @@
             public const string Lcd = LPC24.Display.Lcd;
         }
 
-        /// <summary>StorageController definitions.</summary>
+        /// <summary>Storage controller definitions.</summary>
         public static class StorageController {
             /// <summary>API id.</summary>
             public const string SdCard = LPC24.StorageController.SdCard;
         }
 
-        /// <summary>RtcController definitions.</summary>
+        /// <summary>RTC controller definitions.</summary>
         public static class RtcController {
             /// <summary>API id.</summary>
             public const string Id = LPC24.RtcController.Id;

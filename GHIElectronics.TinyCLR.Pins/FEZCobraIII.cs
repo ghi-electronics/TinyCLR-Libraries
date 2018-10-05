@@ -259,7 +259,7 @@ namespace GHIElectronics.TinyCLR.Pins {
             public const string SdCard = G120.StorageController.SdCard;
         }
 
-        /// <summary>RtcController definitions.</summary>
+        /// <summary>RTC controller definitions.</summary>
         public static class RtcController {
             /// <summary>API id.</summary>
             public const string Id = G120.RtcController.Id;

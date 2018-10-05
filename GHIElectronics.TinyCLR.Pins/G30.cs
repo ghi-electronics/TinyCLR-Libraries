@@ -238,7 +238,7 @@
             public const string SdCard = STM32F4.StorageController.SdCard;
         }
 
-        /// <summary>RtcController definitions.</summary>
+        /// <summary>RTC controller definitions.</summary>
         public static class RtcController {
             /// <summary>API id.</summary>
             public const string Id = STM32F4.RtcController.Id;

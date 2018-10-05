@@ -335,7 +335,7 @@
             public const string SdCard = EMX.StorageController.SdCard;
         }
 
-        /// <summary>RtcController definitions.</summary>
+        /// <summary>RTC controller definitions.</summary>
         public static class RtcController {
             /// <summary>API id.</summary>
             public const string Id = EMX.RtcController.Id;
