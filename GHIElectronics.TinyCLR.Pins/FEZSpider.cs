@@ -328,5 +328,17 @@
             /// <summary>API id.</summary>
             public const string Lcd = EMX.Display.Lcd;
         }
+
+        /// <summary>StorageController definitions.</summary>
+        public static class StorageController {
+            /// <summary>API id.</summary>
+            public const string SdCard = EMX.StorageController.SdCard;
+        }
+
+        /// <summary>RtcController definitions.</summary>
+        public static class RtcController {
+            /// <summary>API id.</summary>
+            public const string Id = EMX.RtcController.Id;
+        }
     }
 }

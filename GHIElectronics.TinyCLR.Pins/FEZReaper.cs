@@ -399,5 +399,17 @@
             /// <summary>USB host port.</summary>
             public const string Socket2 = G80.UsbHostPort.UsbOtg;
         }
+
+        /// <summary>StorageController definitions.</summary>
+        public static class StorageController {
+            /// <summary>API id.</summary>
+            public const string SdCard = G80.StorageController.SdCard;
+        }
+
+        /// <summary>RtcController definitions.</summary>
+        public static class RtcController {
+            /// <summary>API id.</summary>
+            public const string Id = G80.RtcController.Id;
+        }
     }
 }

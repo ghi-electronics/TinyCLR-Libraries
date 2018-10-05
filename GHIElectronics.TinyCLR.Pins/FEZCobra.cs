@@ -145,5 +145,17 @@
             /// <summary>USB host port on UH_D- (D-) and UH_D+ (D+).</summary>
             public const string UsbHost1 = EMX.UsbHostPort.UsbHost1;
         }
+
+        /// <summary>StorageController definitions.</summary>
+        public static class StorageController {
+            /// <summary>API id.</summary>
+            public const string SdCard = EMX.StorageController.SdCard;
+        }
+
+        /// <summary>RtcController definitions.</summary>
+        public static class RtcController {
+            /// <summary>API id.</summary>
+            public const string Id = EMX.RtcController.Id;
+        }
     }
 }

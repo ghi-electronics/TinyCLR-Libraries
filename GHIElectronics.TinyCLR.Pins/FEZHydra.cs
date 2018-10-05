@@ -341,5 +341,17 @@ namespace GHIElectronics.TinyCLR.Pins {
             /// <summary>USB client port.</summary>
             public const string Socket2 = AT91.UsbClientPort.Udphs;
         }
+
+        /// <summary>StorageController definitions.</summary>
+        public static class StorageController {
+            /// <summary>API id.</summary>
+            public const string SdCard = AT91.SdCardStorage.Id;
+        }
+
+        /// <summary>RtcController definitions.</summary>
+        public static class RtcController {
+            /// <summary>API id.</summary>
+            public const string Id = AT91.RealTimeClock.Id;
+        }
     }
 }

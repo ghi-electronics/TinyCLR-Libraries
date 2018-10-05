@@ -294,5 +294,17 @@
             /// <summary>API id.</summary>
             public const string Lcd = G120.Display.Lcd;
         }
+
+        /// <summary>StorageController definitions.</summary>
+        public static class StorageController {
+            /// <summary>API id.</summary>
+            public const string SdCard = G120.StorageController.SdCard;
+        }
+
+        /// <summary>RtcController definitions.</summary>
+        public static class RtcController {
+            /// <summary>API id.</summary>
+            public const string Id = G120.RtcController.Id;
+        }
     }
 }

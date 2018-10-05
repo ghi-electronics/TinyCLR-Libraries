@@ -288,5 +288,17 @@
             /// <summary>API id.</summary>
             public const string Lcd = LPC24.Display.Lcd;
         }
+
+        /// <summary>StorageController definitions.</summary>
+        public static class StorageController {
+            /// <summary>API id.</summary>
+            public const string SdCard = LPC24.SdCardStorage.Id;
+        }
+
+        /// <summary>RtcController definitions.</summary>
+        public static class RtcController {
+            /// <summary>API definitions.</summary>
+            public const string Id = LPC24.RealTimeClock.Id;
+        }
     }
 }

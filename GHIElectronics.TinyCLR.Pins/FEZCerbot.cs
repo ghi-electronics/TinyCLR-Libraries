@@ -220,5 +220,17 @@
             /// <summary>USB host port on PB14 (DM) and PB15 (DP).</summary>
             public const string UsbOtg = Cerb.UsbHostPort.UsbOtg;
         }
+
+        /// <summary>StorageController definitions.</summary>
+        public static class StorageController {
+            /// <summary>API id.</summary>
+            public const string SdCard = Cerb.StorageController.SdCard;
+        }
+
+        /// <summary>RtcController definitions.</summary>
+        public static class RtcController {
+            /// <summary>API id.</summary>
+            public const string Id = Cerb.RtcController.Id;
+        }
     }
 }

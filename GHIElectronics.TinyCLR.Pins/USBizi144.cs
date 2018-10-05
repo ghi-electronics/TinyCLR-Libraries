@@ -269,5 +269,17 @@
             /// <summary>USB host port on P0_30 (D-) and P0_29 (D+).</summary>
             public const string UsbHost1 = LPC24.UsbHostPort.UsbHost1;
         }
+
+        /// <summary>StorageController definitions.</summary>
+        public static class StorageController {
+            /// <summary>API id.</summary>
+            public const string SdCard = LPC24.SdCardStorage.Id;
+        }
+
+        /// <summary>RtcController definitions.</summary>
+        public static class RtcController {
+            /// <summary>API id.</summary>
+            public const string Id = LPC24.RealTimeClock.Id;
+        }
     }
 }
