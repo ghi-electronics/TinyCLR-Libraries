@@ -182,7 +182,6 @@
             public const int WiFiReset = STM32F7.GpioPin.PG12;
             public const int WiFiInterrupt = STM32F7.GpioPin.PB11;
             public const int WiFiChipSelect = STM32F7.GpioPin.PB10;
-            public const int SdCardDetect = STM32F7.GpioPin.PC13;
         }
 
         public static class AdcChannel {
@@ -315,6 +314,7 @@
         public static class SpiBus {
             public const string Spi1 = STM32F7.SpiBus.Spi1;
             public const string Spi5 = STM32F7.SpiBus.Spi5;
+            public const string WiFi = STM32F7.SpiBus.Spi2;
         }
 
         public static class CanBus {
