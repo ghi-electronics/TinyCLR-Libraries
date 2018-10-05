@@ -215,13 +215,13 @@
         /// <summary>StorageController definitions.</summary>
         public static class StorageController {
             /// <summary>API id.</summary>
-            public const string SdCard = AT91.SdCardStorage.Id;
+            public const string SdCard = G30.StorageController.SdCard;
         }
 
         /// <summary>RtcController definitions.</summary>
         public static class RtcController {
             /// <summary>API id.</summary>
-            public const string Id = AT91.RealTimeClock.Id;
+            public const string Id = G30.RtcController.Id;
         }
     }
 }

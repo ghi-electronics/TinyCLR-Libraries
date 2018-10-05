@@ -298,13 +298,13 @@
         /// <summary>StorageController definitions.</summary>
         public static class StorageController {
             /// <summary>API id.</summary>
-            public const string SdCard = LPC17.SdCardStorage.Id;
+            public const string SdCard = LPC17.StorageController.SdCard;
         }
 
         /// <summary>RtcController definitions.</summary>
         public static class RtcController {
             /// <summary>API id.</summary>
-            public const string Id = LPC17.RealTimeClock.Id;
+            public const string Id = LPC17.RtcController.Id;
         }
     }
 }

@@ -444,15 +444,15 @@
         }
 
         /// <summary>Real Time Clock definitions.</summary>
-        public static class RealTimeClock {
+        public static class RtcController {
             /// <summary>API id.</summary>
             public const string Id = "GHIElectronics.TinyCLR.NativeApis.LPC17.RtcController\\0";
         }
 
         /// <summary>SdCard Storage definitions.</summary>
-        public static class SdCardStorage {
+        public static class StorageController {
             /// <summary>API id.</summary>
-            public const string Id = "GHIElectronics.TinyCLR.NativeApis.LPC17.SdCardStorageController\\0";
+            public const string SdCard = "GHIElectronics.TinyCLR.NativeApis.LPC17.SdCardStorageController\\0";
         }
     }
 }

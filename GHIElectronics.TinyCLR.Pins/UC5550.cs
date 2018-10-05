@@ -335,11 +335,11 @@
         }
 
         public static class StorageController {
-            public const string SdCard = STM32F7.SdCardStorage.Id;
+            public const string SdCard = STM32F7.StorageController.SdCard;
         }
 
         public static class RtcController {
-            public const string Id = STM32F7.RealTimeClock.Id;
+            public const string Id = STM32F7.RtcController.Id;
         }
     }
 }

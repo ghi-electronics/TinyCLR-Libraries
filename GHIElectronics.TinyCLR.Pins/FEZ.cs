@@ -164,7 +164,7 @@
         /// <summary>RtcController definitions.</summary>
         public static class RtcController {
             /// <summary>API id.</summary>
-            public const string Id = STM32F4.RealTimeClock.Id;
+            public const string Id = STM32F4.RtcController.Id;
         }
     }
 }
