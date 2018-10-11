@@ -12,16 +12,20 @@ namespace GHIElectronics.TinyCLR.Native {
     }
 
     [Flags]
-    public enum PowerSleepWakeSource : uint {
-        Gpio = 0,
-        Rtc = 1,
-        SystemTimer = 2,
-        Timer = 4,
-        Network = 8,
-        Can = 16,
-        Uart = 32,
-        UsbClient = 64,
-        UsbHost = 128,
+    public enum PowerSleepWakeSource : ulong {
+        Interrupt = 0,
+        Gpio = 1,
+        Rtc = 2,
+        SystemTimer = 4,
+        Timer = 8,
+        Ethernet = 16,
+        Wifi = 32,
+        Can = 64,
+        Uart = 128,
+        UsbClient = 256,
+        UsbHost = 512,
+        Charger = 1024,
+        Io = 2048,
         Custom = 0 | 0x80000000,
     }
 
@@ -32,6 +36,6 @@ namespace GHIElectronics.TinyCLR.Native {
         public static extern void Reset(bool runCoreAfter);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public static extern void Sleep(PowerSleepLevel sleepLevel, PowerSleepWakeSource wakeSource);
+        public static extern void Sleep(PowerSleepLevel sleepLevel, PowerSleepWakeSource wakeSource, ulong data);
     }
 }
