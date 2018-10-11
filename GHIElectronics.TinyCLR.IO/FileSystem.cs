@@ -47,6 +47,8 @@ namespace GHIElectronics.TinyCLR.IO {
         private extern static bool Uninitialize(IntPtr nativeProvider);
 
         private class NativeDriveProvider : IDriveProvider {
+            private bool initialized;
+
             public extern DriveType DriveType { [MethodImpl(MethodImplOptions.InternalCall)] get; }
 
             public extern string DriveFormat { [MethodImpl(MethodImplOptions.InternalCall)] get; }
@@ -61,7 +63,7 @@ namespace GHIElectronics.TinyCLR.IO {
 
             public extern string VolumeLabel { [MethodImpl(MethodImplOptions.InternalCall)] get; }
 
-            public string Name { get; set; }
+            public string Name { get; private set; }
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void CreateDirectory(string path);
@@ -84,6 +86,13 @@ namespace GHIElectronics.TinyCLR.IO {
             public IFileSystemEntryFinder Find(string path, string searchPattern) => new NativeFileSystemEntryFinder(path, searchPattern);
 
             public IFileStream OpenFile(string path, int bufferSize) => new NativeFileStream(path, bufferSize);
+
+            public void Initialize(string name) {
+                if (this.initialized) throw new InvalidOperationException();
+
+                this.initialized = true;
+                this.Name = name;
+            }
         }
 
         private class NativeFileStream : IFileStream {

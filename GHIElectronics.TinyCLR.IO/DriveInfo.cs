@@ -69,7 +69,7 @@ namespace System.IO {
                 DriveInfo.driveProviders.Add(root, provider);
             }
 
-            provider.Name = root;
+            provider.Initialize(root);
 
             return provider;
         }
