@@ -2,13 +2,14 @@
 using System.Runtime.CompilerServices;
 
 namespace GHIElectronics.TinyCLR.Native {
-    public enum PowerSleepLevel : uint {
-        Level0 = 0,
-        Level1 = 1,
-        Level2 = 2,
-        Level3 = 3,
-        Level4 = 4,
-        Custom = 0 | 0x80000000,
+    public enum PowerLevel : uint {
+        Active = 0,
+        Idle = 1,
+        Sleep1 = 1,
+        Sleep2 = 2,
+        Sleep3 = 3,
+        Off = 4,
+        Custom = 0 | 0x80000000
     }
 
     [Flags]
@@ -25,7 +26,6 @@ namespace GHIElectronics.TinyCLR.Native {
         UsbClient = 256,
         UsbHost = 512,
         Charger = 1024,
-        Io = 2048,
         Custom = 0 | 0x80000000,
     }
 
@@ -36,6 +36,6 @@ namespace GHIElectronics.TinyCLR.Native {
         public static extern void Reset(bool runCoreAfter);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public static extern void Sleep(PowerSleepLevel sleepLevel, PowerSleepWakeSource wakeSource, ulong data);
+        public static extern void SetLevel(PowerLevel powerLevel, PowerSleepWakeSource wakeSource, ulong data);
     }
 }
