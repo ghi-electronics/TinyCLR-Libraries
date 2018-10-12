@@ -14,18 +14,18 @@ namespace GHIElectronics.TinyCLR.Native {
 
     [Flags]
     public enum PowerSleepWakeSource : ulong {
-        Interrupt = 0,
-        Gpio = 1,
-        Rtc = 2,
-        SystemTimer = 4,
-        Timer = 8,
-        Ethernet = 16,
-        Wifi = 32,
-        Can = 64,
-        Uart = 128,
-        UsbClient = 256,
-        UsbHost = 512,
-        Charger = 1024,
+        Interrupt = 1,
+        Gpio = 2,
+        Rtc = 4,
+        SystemTimer = 8,
+        Timer = 16,
+        Ethernet = 32,
+        Wifi = 64,
+        Can = 128,
+        Uart = 256,
+        UsbClient = 512,
+        UsbHost = 1024,
+        Charger = 2048,
         Custom = 0 | 0x80000000,
     }
 
