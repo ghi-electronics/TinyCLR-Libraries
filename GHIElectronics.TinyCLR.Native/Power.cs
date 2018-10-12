@@ -5,10 +5,10 @@ namespace GHIElectronics.TinyCLR.Native {
     public enum PowerLevel : uint {
         Active = 0,
         Idle = 1,
-        Sleep1 = 1,
-        Sleep2 = 2,
-        Sleep3 = 3,
-        Off = 4,
+        Sleep1 = 2,
+        Sleep2 = 3,
+        Sleep3 = 4,
+        Off = 5,
         Custom = 0 | 0x80000000
     }
 
