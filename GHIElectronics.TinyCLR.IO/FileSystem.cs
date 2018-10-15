@@ -120,13 +120,13 @@ namespace GHIElectronics.TinyCLR.IO {
             public extern void Flush();
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern int Read(byte[] buffer, int offset, int count, int timeout);
+            public extern int Read(byte[] buffer, int offset, int count, TimeSpan timeout);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern long Seek(long offset, SeekOrigin origin);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern int Write(byte[] buffer, int offset, int count, int timeout);
+            public extern int Write(byte[] buffer, int offset, int count, TimeSpan timeout);
         }
     }
 }
