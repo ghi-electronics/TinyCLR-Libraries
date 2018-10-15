@@ -2,26 +2,30 @@
 using System.Runtime.CompilerServices;
 
 namespace GHIElectronics.TinyCLR.Native {
-    public enum PowerSleepLevel : uint {
-        Level0 = 0,
-        Level1 = 1,
-        Level2 = 2,
-        Level3 = 3,
-        Level4 = 4,
-        Custom = 0 | 0x80000000,
+    public enum PowerLevel : uint {
+        Active = 0,
+        Idle = 1,
+        Sleep1 = 2,
+        Sleep2 = 3,
+        Sleep3 = 4,
+        Off = 5,
+        Custom = 0 | 0x80000000
     }
 
     [Flags]
-    public enum PowerSleepWakeSource : uint {
-        Gpio = 0,
-        Rtc = 1,
-        SystemTimer = 2,
-        Timer = 4,
-        Network = 8,
-        Can = 16,
-        Uart = 32,
-        UsbClient = 64,
-        UsbHost = 128,
+    public enum PowerSleepWakeSource : ulong {
+        Interrupt = 1,
+        Gpio = 2,
+        Rtc = 4,
+        SystemTimer = 8,
+        Timer = 16,
+        Ethernet = 32,
+        Wifi = 64,
+        Can = 128,
+        Uart = 256,
+        UsbClient = 512,
+        UsbHost = 1024,
+        Charger = 2048,
         Custom = 0 | 0x80000000,
     }
 
@@ -32,6 +36,6 @@ namespace GHIElectronics.TinyCLR.Native {
         public static extern void Reset(bool runCoreAfter);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public static extern void Sleep(PowerSleepLevel sleepLevel, PowerSleepWakeSource wakeSource);
+        public static extern void SetLevel(PowerLevel powerLevel, PowerSleepWakeSource wakeSource, ulong data);
     }
 }
