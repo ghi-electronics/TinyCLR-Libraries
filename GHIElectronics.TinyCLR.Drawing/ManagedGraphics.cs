@@ -41,6 +41,8 @@ namespace GHIElectronics.TinyCLR.Drawing {
         }
 
         public override Color GetPixel(int x, int y) {
+            if (x < 0 || y < 0 || x >= this.Width || y >= this.Height) return default(Color);
+
             var px = y * this.Width + x;
             var clr = 0;
 
@@ -59,6 +61,8 @@ namespace GHIElectronics.TinyCLR.Drawing {
         }
 
         public override void SetPixel(int x, int y, Color color) {
+            if (x < 0 || y < 0 || x >= this.Width || y >= this.Height) return;
+
             var px = y * this.Width + x;
             var clr = color.ToArgb();
 
@@ -83,6 +87,8 @@ namespace GHIElectronics.TinyCLR.Drawing {
         }
 
         public override Color GetPixel(int x, int y) {
+            if (x < 0 || y < 0 || x >= this.Width || y >= this.Height) return default(Color);
+
             var idx = (y * this.Width + x) * 2;
             var clr = (this.buffer[idx] << 8) | this.buffer[idx + 1];
 
@@ -90,6 +96,8 @@ namespace GHIElectronics.TinyCLR.Drawing {
         }
 
         public override void SetPixel(int x, int y, Color color) {
+            if (x < 0 || y < 0 || x >= this.Width || y >= this.Height) return;
+
             var idx = (y * this.Width + x) * 2;
             var clr = color.ToArgb();
 
@@ -103,9 +111,15 @@ namespace GHIElectronics.TinyCLR.Drawing {
 
         }
 
-        public override Color GetPixel(int x, int y) => (this.buffer[(y / 8) * this.Width + x] & (1 << y % 8)) != 0 ? Color.White : Color.Black;
+        public override Color GetPixel(int x, int y) {
+            if (x < 0 || y < 0 || x >= this.Width || y >= this.Height) return default(Color);
+
+            return (this.buffer[(y / 8) * this.Width + x] & (1 << y % 8)) != 0 ? Color.White : Color.Black;
+        }
 
         public override void SetPixel(int x, int y, Color color) {
+            if (x < 0 || y < 0 || x >= this.Width || y >= this.Height) return;
+
             var index = (y / 8) * this.Width + x;
 
             if (color != Color.Black) {
