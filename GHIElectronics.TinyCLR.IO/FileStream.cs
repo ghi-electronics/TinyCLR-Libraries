@@ -7,7 +7,7 @@ using GHIElectronics.TinyCLR.IO;
 namespace System.IO {
 
     public class FileStream : Stream {
-        internal const int TimeoutDefault = 0;
+        internal const int TimeoutDefault = 5000;
         internal const int BufferSizeDefault = 0;
         // Driver data
 
@@ -156,7 +156,7 @@ namespace System.IO {
         }
 
         ~FileStream() {
-            Dispose(false);
+            this.Dispose(false);
         }
 
         // This is for internal use to support proper atomic CopyAndDelete
@@ -165,7 +165,7 @@ namespace System.IO {
             this._nativeFileStream = null; // so Dispose(true) won't close the stream again
             this.drive.Delete(this._fileName);
 
-            Dispose(true);
+            this.Dispose(true);
         }
 
         public override void Flush() {
@@ -187,7 +187,7 @@ namespace System.IO {
 
             lock (this._nativeFileStream) {
                 // argument validation in interop layer
-                return this._nativeFileStream.Read(buffer, offset, count, 0);
+                return this._nativeFileStream.Read(buffer, offset, count, TimeSpan.FromMilliseconds(FileStream.TimeoutDefault));
             }
         }
 
@@ -217,7 +217,7 @@ namespace System.IO {
                 // we check for count being != 0 because we want to handle negative cases
                 // as well in the interop layer
                 while (count != 0) {
-                    bytesWritten = this._nativeFileStream.Write(buffer, offset, count, FileStream.TimeoutDefault);
+                    bytesWritten = this._nativeFileStream.Write(buffer, offset, count, TimeSpan.FromMilliseconds(FileStream.TimeoutDefault));
 
                     if (bytesWritten == 0) throw new IOException();
 
