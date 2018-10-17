@@ -35,8 +35,8 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio {
 
     [Flags]
     public enum GpioPinEdge {
-        FallingEdge = 0x01,
-        RisingEdge = 0x02,
+        FallingEdge = 1,
+        RisingEdge = 2,
     }
 
     public sealed class GpioController : IDisposable {
