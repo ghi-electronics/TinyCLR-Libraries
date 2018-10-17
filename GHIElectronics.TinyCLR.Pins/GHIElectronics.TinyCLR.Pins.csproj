@@ -34,9 +34,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="AT91SAM9Rx64.cs" />
     <Compile Include="CANxtra.cs" />
     <Compile Include="Cerb.cs" />
-    <Compile Include="ChipworkX.cs" />
     <Compile Include="EmbeddedMaster.cs" />
     <Compile Include="EmbeddedMasterNonTFT.cs" />
     <Compile Include="EMX.cs" />
@@ -67,7 +67,7 @@
     <Compile Include="FEZSpider.cs" />
     <Compile Include="FEZSpiderII.cs" />
     <Compile Include="LPC17.cs" />
-    <Compile Include="AT91.cs" />
+    <Compile Include="AT91SAM9X35.cs" />
     <Compile Include="G120.cs" />
     <Compile Include="G120E.cs" />
     <Compile Include="FEZ.cs" />
