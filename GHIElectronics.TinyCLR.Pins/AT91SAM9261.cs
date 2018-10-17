@@ -268,7 +268,9 @@
         /// <summary>USB host port definitions.</summary>
         public static class UsbHostPort {
             /// <summary>USB host port.</summary>
-            public const string Uhpfs = "GHIElectronics.TinyCLR.NativeApis.AT91SAM9261.UsbHostController\\0";            
+            public const string UhpfsA = "GHIElectronics.TinyCLR.NativeApis.AT91SAM9261.UsbHostController\\0"; 
+            /// <summary>USB host port.</summary>
+            public const string UhpfsB = "GHIElectronics.TinyCLR.NativeApis.AT91SAM9261.UsbHostController\\0";                     
         }
 
         /// <summary>Display definitions.</summary>
