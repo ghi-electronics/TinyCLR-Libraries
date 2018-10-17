@@ -193,15 +193,15 @@
         /// <summary>USB client port definitions.</summary>
         public static class UsbClientPort {
             /// <summary>USB client port on UD_DM (DM), UD_DP (DP), and UD_VBUS (VBUS).</summary>
-            public const string Udphs = AT91SAM9261.UsbClientPort.Udphs;
+            public const string Udphs = AT91SAM9261.UsbClientPort.Udpfs;
         }
 
         /// <summary>USB host port definitions.</summary>
         public static class UsbHostPort {
             /// <summary>USB host port on HDDA- (DM) and HDDA+ (DP).</summary>
-            public const string UhphsB = AT91SAM9261.UsbHostPort.UhphsB;
+            public const string UhphsB = AT91SAM9261.UsbHostPort.UhpfsA;
             /// <summary>USB host port on HDDB- (DM) and HDDB+ (DP).</summary>
-            public const string UhphsC = AT91SAM9261.UsbHostPort.UhphsC;
+            public const string UhphsC = AT91SAM9261.UsbHostPort.UhpfsB;
         }
 
         /// <summary>Display definitions.</summary>
