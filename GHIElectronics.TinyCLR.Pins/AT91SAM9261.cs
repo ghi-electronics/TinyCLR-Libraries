@@ -198,68 +198,6 @@
             public const int PC30 = 30 + 64;
             /// <summary>GPIO pin.</summary>
             public const int PC31 = 31 + 64;
-            /// <summary>GPIO pin.</summary>
-            public const int PD0 = 0 + 96;
-            /// <summary>GPIO pin.</summary>
-            public const int PD1 = 1 + 96;
-            /// <summary>GPIO pin.</summary>
-            public const int PD2 = 2 + 96;
-            /// <summary>GPIO pin.</summary>
-            public const int PD3 = 3 + 96;
-            /// <summary>GPIO pin.</summary>
-            public const int PD4 = 4 + 96;
-            /// <summary>GPIO pin.</summary>
-            public const int PD5 = 5 + 96;
-            /// <summary>GPIO pin.</summary>
-            public const int PD6 = 6 + 96;
-            /// <summary>GPIO pin.</summary>
-            public const int PD7 = 7 + 96;
-            /// <summary>GPIO pin.</summary>
-            public const int PD8 = 8 + 96;
-            /// <summary>GPIO pin.</summary>
-            public const int PD9 = 9 + 96;
-            /// <summary>GPIO pin.</summary>
-            public const int PD10 = 10 + 96;
-            /// <summary>GPIO pin.</summary>
-            public const int PD11 = 11 + 96;
-            /// <summary>GPIO pin.</summary>
-            public const int PD12 = 12 + 96;
-            /// <summary>GPIO pin.</summary>
-            public const int PD13 = 13 + 96;
-            /// <summary>GPIO pin.</summary>
-            public const int PD14 = 14 + 96;
-            /// <summary>GPIO pin.</summary>
-            public const int PD15 = 15 + 96;
-            /// <summary>GPIO pin.</summary>
-            public const int PD16 = 16 + 96;
-            /// <summary>GPIO pin.</summary>
-            public const int PD17 = 17 + 96;
-            /// <summary>GPIO pin.</summary>
-            public const int PD18 = 18 + 96;
-            /// <summary>GPIO pin.</summary>
-            public const int PD19 = 19 + 96;
-            /// <summary>GPIO pin.</summary>
-            public const int PD20 = 20 + 96;
-            /// <summary>GPIO pin.</summary>
-            public const int PD21 = 21 + 96;
-            /// <summary>GPIO pin.</summary>
-            public const int PD22 = 22 + 96;
-            /// <summary>GPIO pin.</summary>
-            public const int PD23 = 23 + 96;
-            /// <summary>GPIO pin.</summary>
-            public const int PD24 = 24 + 96;
-            /// <summary>GPIO pin.</summary>
-            public const int PD26 = 26 + 96;
-            /// <summary>GPIO pin.</summary>
-            public const int PD27 = 27 + 96;
-            /// <summary>GPIO pin.</summary>
-            public const int PD28 = 28 + 96;
-            /// <summary>GPIO pin.</summary>
-            public const int PD29 = 29 + 96;
-            /// <summary>GPIO pin.</summary>
-            public const int PD30 = 30 + 96;
-            /// <summary>GPIO pin.</summary>
-            public const int PD31 = 31 + 96;
         }
 
         /// <summary>ADC channel definitions.</summary>
@@ -318,10 +256,6 @@
             public const string Usart1 = "GHIElectronics.TinyCLR.NativeApis.AT91SAM9261.UartController\\2";
             /// <summary>UART port.</summary>
             public const string Usart2 = "GHIElectronics.TinyCLR.NativeApis.AT91SAM9261.UartController\\3";
-            /// <summary>UART port.</summary>
-            public const string Uart0 = "GHIElectronics.TinyCLR.NativeApis.AT91SAM9261.UartController\\4";
-            /// <summary>UART port.</summary>
-            public const string Uart1 = "GHIElectronics.TinyCLR.NativeApis.AT91SAM9261.UartController\\5";
         }
 
         /// <summary>I2C bus definitions.</summary>
@@ -330,8 +264,6 @@
             public const string Twi0 = "GHIElectronics.TinyCLR.NativeApis.AT91SAM9261.I2cController\\0";
             /// <summary>I2C bus.</summary>
             public const string Twi1 = "GHIElectronics.TinyCLR.NativeApis.AT91SAM9261.I2cController\\1";
-            /// <summary>I2C bus.</summary>
-            public const string Twi2 = "GHIElectronics.TinyCLR.NativeApis.AT91SAM9261.I2cController\\2";
         }
 
         /// <summary>SPI bus definitions.</summary>
@@ -342,28 +274,16 @@
             public const string Spi1 = "GHIElectronics.TinyCLR.NativeApis.AT91SAM9261.SpiController\\1";
         }
 
-        /// <summary>CAN bus definitions.</summary>
-        public static class CanBus {
-            /// <summary>CAN bus.</summary>
-            public const string Can0 = "GHIElectronics.TinyCLR.NativeApis.AT91SAM9261.CanController\\0";
-            /// <summary>CAN bus.</summary>
-            public const string Can1 = "GHIElectronics.TinyCLR.NativeApis.AT91SAM9261.CanController\\1";
-        }
-
         /// <summary>USB client port definitions.</summary>
         public static class UsbClientPort {
             /// <summary>USB client port.</summary>
-            public const string Udphs = "GHIElectronics.TinyCLR.NativeApis.AT91SAM9261.UsbClientController\\0";
+            public const string Udpfs = "GHIElectronics.TinyCLR.NativeApis.AT91SAM9261.UsbClientController\\0";
         }
 
         /// <summary>USB host port definitions.</summary>
         public static class UsbHostPort {
             /// <summary>USB host port.</summary>
-            public const string UhphsA = "GHIElectronics.TinyCLR.NativeApis.AT91SAM9261.UsbHostController\\0";
-            /// <summary>USB host port.</summary>
-            public const string UhphsB = "GHIElectronics.TinyCLR.NativeApis.AT91SAM9261.UsbHostController\\1";
-            /// <summary>USB host port.</summary>
-            public const string UhphsC = "GHIElectronics.TinyCLR.NativeApis.AT91SAM9261.UsbHostController\\2";
+            public const string Uhpfs = "GHIElectronics.TinyCLR.NativeApis.AT91SAM9261.UsbHostController\\0";            
         }
 
         /// <summary>Display definitions.</summary>
