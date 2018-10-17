@@ -330,40 +330,18 @@
             public const string Twi0 = "GHIElectronics.TinyCLR.NativeApis.AT91SAM9Rx64.I2cController\\0";
             /// <summary>I2C bus.</summary>
             public const string Twi1 = "GHIElectronics.TinyCLR.NativeApis.AT91SAM9Rx64.I2cController\\1";
-            /// <summary>I2C bus.</summary>
-            public const string Twi2 = "GHIElectronics.TinyCLR.NativeApis.AT91SAM9Rx64.I2cController\\2";
         }
 
         /// <summary>SPI bus definitions.</summary>
         public static class SpiBus {
             /// <summary>SPI bus.</summary>
             public const string Spi0 = "GHIElectronics.TinyCLR.NativeApis.AT91SAM9Rx64.SpiController\\0";
-            /// <summary>SPI bus.</summary>
-            public const string Spi1 = "GHIElectronics.TinyCLR.NativeApis.AT91SAM9Rx64.SpiController\\1";
-        }
-
-        /// <summary>CAN bus definitions.</summary>
-        public static class CanBus {
-            /// <summary>CAN bus.</summary>
-            public const string Can0 = "GHIElectronics.TinyCLR.NativeApis.AT91SAM9Rx64.CanController\\0";
-            /// <summary>CAN bus.</summary>
-            public const string Can1 = "GHIElectronics.TinyCLR.NativeApis.AT91SAM9Rx64.CanController\\1";
         }
 
         /// <summary>USB client port definitions.</summary>
         public static class UsbClientPort {
             /// <summary>USB client port.</summary>
             public const string Udphs = "GHIElectronics.TinyCLR.NativeApis.AT91SAM9Rx64.UsbClientController\\0";
-        }
-
-        /// <summary>USB host port definitions.</summary>
-        public static class UsbHostPort {
-            /// <summary>USB host port.</summary>
-            public const string UhphsA = "GHIElectronics.TinyCLR.NativeApis.AT91SAM9Rx64.UsbHostController\\0";
-            /// <summary>USB host port.</summary>
-            public const string UhphsB = "GHIElectronics.TinyCLR.NativeApis.AT91SAM9Rx64.UsbHostController\\1";
-            /// <summary>USB host port.</summary>
-            public const string UhphsC = "GHIElectronics.TinyCLR.NativeApis.AT91SAM9Rx64.UsbHostController\\2";
         }
 
         /// <summary>Display definitions.</summary>
