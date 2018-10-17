@@ -319,9 +319,7 @@
             /// <summary>UART port.</summary>
             public const string Usart2 = "GHIElectronics.TinyCLR.NativeApis.AT91SAM9Rx64.UartController\\3";
             /// <summary>UART port.</summary>
-            public const string Uart0 = "GHIElectronics.TinyCLR.NativeApis.AT91SAM9Rx64.UartController\\4";
-            /// <summary>UART port.</summary>
-            public const string Uart1 = "GHIElectronics.TinyCLR.NativeApis.AT91SAM9Rx64.UartController\\5";
+            public const string Usart3 = "GHIElectronics.TinyCLR.NativeApis.AT91SAM9Rx64.UartController\\4";
         }
 
         /// <summary>I2C bus definitions.</summary>
