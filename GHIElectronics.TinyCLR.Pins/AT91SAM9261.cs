@@ -230,22 +230,7 @@
             /// <summary>ADC channel.</summary>
             public const int Channel11 = 11;
         }
-
-        /// <summary>PWM pin definitions.</summary>
-        public static class PwmChannel {
-            /// <summary>API id.</summary>
-            public const string Pwm0 = "GHIElectronics.TinyCLR.NativeApis.AT91SAM9261.PwmController\\0";
-            /// <summary>API id.</summary>
-            public const string Pwm1 = "GHIElectronics.TinyCLR.NativeApis.AT91SAM9261.PwmController\\1";
-            /// <summary>API id.</summary>
-            public const string Pwm2 = "GHIElectronics.TinyCLR.NativeApis.AT91SAM9261.PwmController\\2";
-            /// <summary>API id.</summary>
-            public const string Pwm3 = "GHIElectronics.TinyCLR.NativeApis.AT91SAM9261.PwmController\\3";
-
-            /// <summary>PWM pin.</summary>
-            public const int Channel0 = 0;
-        }
-
+        
         /// <summary>UART port definitions.</summary>
         public static class UartPort {
             /// <summary>UART port.</summary>
