@@ -7,11 +7,7 @@ namespace GHIElectronics.TinyCLR.Devices.Storage {
     public sealed class StorageController : IDisposable {
         public IStorageControllerProvider Provider { get; }
 
-        private StorageController(IStorageControllerProvider provider) {
-            this.Provider = provider;
-
-            this.Provider.PresenceChanged += (_, e) => this.PresenceChanged?.Invoke(this, e);
-        }
+        private StorageController(IStorageControllerProvider provider) => this.Provider = provider;
 
         public static StorageController GetDefault() => Api.GetDefaultFromCreator(ApiType.StorageController) is StorageController c ? c : StorageController.FromName(Api.GetDefaultName(ApiType.StorageController));
         public static StorageController FromName(string name) => StorageController.FromProvider(new StorageControllerApiWrapper(Api.Find(name, ApiType.StorageController)));
@@ -24,10 +20,7 @@ namespace GHIElectronics.TinyCLR.Devices.Storage {
         public void Open() => this.Provider.Open();
         public void Close() => this.Provider.Close();
 
-        public bool IsPresent => this.Provider.IsPresent;
         public StorageDescriptor Descriptor => this.Provider.Descriptor;
-
-        public event PresenceChangedEventHandler PresenceChanged;
     }
 
     public sealed class StorageDescriptor {
@@ -43,21 +36,8 @@ namespace GHIElectronics.TinyCLR.Devices.Storage {
         public int[] RegionSizes { get; }
     }
 
-    public delegate void PresenceChangedEventHandler(StorageController sender, PresenceChangedEventArgs e);
-
-    public sealed class PresenceChangedEventArgs {
-        public bool Present { get; }
-        public DateTime Timestamp { get; }
-
-        internal PresenceChangedEventArgs(bool present, DateTime timestamp) {
-            this.Present = present;
-            this.Timestamp = timestamp;
-        }
-    }
-
     namespace Provider {
         public interface IStorageControllerProvider : IDisposable {
-            bool IsPresent { get; }
             StorageDescriptor Descriptor { get; }
 
             void Open();
@@ -66,13 +46,10 @@ namespace GHIElectronics.TinyCLR.Devices.Storage {
             int Write(long address, int count, byte[] buffer, int offset, long timeout);
             int Erase(long address, int count, long timeout);
             bool IsErased(long address, int count);
-
-            event PresenceChangedEventHandler PresenceChanged;
         }
 
         public sealed class StorageControllerApiWrapper : IStorageControllerProvider, IApiImplementation {
             private readonly IntPtr impl;
-            private readonly NativeEventDispatcher presenceChangedDispatcher;
 
             public Api Api { get; }
 
@@ -84,13 +61,7 @@ namespace GHIElectronics.TinyCLR.Devices.Storage {
                 this.impl = api.Implementation;
 
                 this.Acquire();
-
-                this.presenceChangedDispatcher = NativeEventDispatcher.GetDispatcher("GHIElectronics.TinyCLR.NativeEventNames.Storage.PresenceChanged");
-
-                this.presenceChangedDispatcher.OnInterrupt += (apiName, d0, d1, d2, d3, ts) => { if (this.Api.Name == apiName) this.PresenceChanged?.Invoke(null, new PresenceChangedEventArgs(d0 != 0, ts)); };
             }
-
-            public event PresenceChangedEventHandler PresenceChanged;
 
             public void Dispose() => this.Release();
 
@@ -100,7 +71,6 @@ namespace GHIElectronics.TinyCLR.Devices.Storage {
             [MethodImpl(MethodImplOptions.InternalCall)]
             private extern void Release();
 
-            public extern bool IsPresent { [MethodImpl(MethodImplOptions.InternalCall)] get; }
             public extern StorageDescriptor Descriptor { [MethodImpl(MethodImplOptions.InternalCall)] get; }
 
             [MethodImpl(MethodImplOptions.InternalCall)]
