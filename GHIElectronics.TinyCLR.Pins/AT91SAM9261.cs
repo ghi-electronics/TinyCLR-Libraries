@@ -1,10 +1,10 @@
 ﻿namespace GHIElectronics.TinyCLR.Pins {
     /// <summary>Board definition for the AT91.</summary>
-    public static class AT91 {
+    public static class AT91SAM9261 {
         /// <summary>GPIO pin definitions.</summary>
         public static class GpioPin {
             /// <summary>API id.</summary>
-            public const string Id = "GHIElectronics.TinyCLR.NativeApis.AT91.GpioController\\0";
+            public const string Id = "GHIElectronics.TinyCLR.NativeApis.AT91SAM9261.GpioController\\0";
 
             /// <summary>GPIO pin.</summary>
             public const int PA0 = 0;
@@ -265,7 +265,7 @@
         /// <summary>ADC channel definitions.</summary>
         public static class AdcChannel {
             /// <summary>API id.</summary>
-            public const string Id = "GHIElectronics.TinyCLR.NativeApis.AT91.AdcController\\0";
+            public const string Id = "GHIElectronics.TinyCLR.NativeApis.AT91SAM9261.AdcController\\0";
 
             /// <summary>ADC channel.</summary>
             public const int Channel0 = 0;
@@ -296,13 +296,13 @@
         /// <summary>PWM pin definitions.</summary>
         public static class PwmChannel {
             /// <summary>API id.</summary>
-            public const string Pwm0 = "GHIElectronics.TinyCLR.NativeApis.AT91.PwmController\\0";
+            public const string Pwm0 = "GHIElectronics.TinyCLR.NativeApis.AT91SAM9261.PwmController\\0";
             /// <summary>API id.</summary>
-            public const string Pwm1 = "GHIElectronics.TinyCLR.NativeApis.AT91.PwmController\\1";
+            public const string Pwm1 = "GHIElectronics.TinyCLR.NativeApis.AT91SAM9261.PwmController\\1";
             /// <summary>API id.</summary>
-            public const string Pwm2 = "GHIElectronics.TinyCLR.NativeApis.AT91.PwmController\\2";
+            public const string Pwm2 = "GHIElectronics.TinyCLR.NativeApis.AT91SAM9261.PwmController\\2";
             /// <summary>API id.</summary>
-            public const string Pwm3 = "GHIElectronics.TinyCLR.NativeApis.AT91.PwmController\\3";
+            public const string Pwm3 = "GHIElectronics.TinyCLR.NativeApis.AT91SAM9261.PwmController\\3";
 
             /// <summary>PWM pin.</summary>
             public const int Channel0 = 0;
@@ -311,77 +311,77 @@
         /// <summary>UART port definitions.</summary>
         public static class UartPort {
             /// <summary>UART port.</summary>
-            public const string Debug = "GHIElectronics.TinyCLR.NativeApis.AT91.UartController\\0";
+            public const string Debug = "GHIElectronics.TinyCLR.NativeApis.AT91SAM9261.UartController\\0";
             /// <summary>UART port.</summary>
-            public const string Usart0 = "GHIElectronics.TinyCLR.NativeApis.AT91.UartController\\1";
+            public const string Usart0 = "GHIElectronics.TinyCLR.NativeApis.AT91SAM9261.UartController\\1";
             /// <summary>UART port.</summary>
-            public const string Usart1 = "GHIElectronics.TinyCLR.NativeApis.AT91.UartController\\2";
+            public const string Usart1 = "GHIElectronics.TinyCLR.NativeApis.AT91SAM9261.UartController\\2";
             /// <summary>UART port.</summary>
-            public const string Usart2 = "GHIElectronics.TinyCLR.NativeApis.AT91.UartController\\3";
+            public const string Usart2 = "GHIElectronics.TinyCLR.NativeApis.AT91SAM9261.UartController\\3";
             /// <summary>UART port.</summary>
-            public const string Uart0 = "GHIElectronics.TinyCLR.NativeApis.AT91.UartController\\4";
+            public const string Uart0 = "GHIElectronics.TinyCLR.NativeApis.AT91SAM9261.UartController\\4";
             /// <summary>UART port.</summary>
-            public const string Uart1 = "GHIElectronics.TinyCLR.NativeApis.AT91.UartController\\5";
+            public const string Uart1 = "GHIElectronics.TinyCLR.NativeApis.AT91SAM9261.UartController\\5";
         }
 
         /// <summary>I2C bus definitions.</summary>
         public static class I2cBus {
             /// <summary>I2C bus.</summary>
-            public const string Twi0 = "GHIElectronics.TinyCLR.NativeApis.AT91.I2cController\\0";
+            public const string Twi0 = "GHIElectronics.TinyCLR.NativeApis.AT91SAM9261.I2cController\\0";
             /// <summary>I2C bus.</summary>
-            public const string Twi1 = "GHIElectronics.TinyCLR.NativeApis.AT91.I2cController\\1";
+            public const string Twi1 = "GHIElectronics.TinyCLR.NativeApis.AT91SAM9261.I2cController\\1";
             /// <summary>I2C bus.</summary>
-            public const string Twi2 = "GHIElectronics.TinyCLR.NativeApis.AT91.I2cController\\2";
+            public const string Twi2 = "GHIElectronics.TinyCLR.NativeApis.AT91SAM9261.I2cController\\2";
         }
 
         /// <summary>SPI bus definitions.</summary>
         public static class SpiBus {
             /// <summary>SPI bus.</summary>
-            public const string Spi0 = "GHIElectronics.TinyCLR.NativeApis.AT91.SpiController\\0";
+            public const string Spi0 = "GHIElectronics.TinyCLR.NativeApis.AT91SAM9261.SpiController\\0";
             /// <summary>SPI bus.</summary>
-            public const string Spi1 = "GHIElectronics.TinyCLR.NativeApis.AT91.SpiController\\1";
+            public const string Spi1 = "GHIElectronics.TinyCLR.NativeApis.AT91SAM9261.SpiController\\1";
         }
 
         /// <summary>CAN bus definitions.</summary>
         public static class CanBus {
             /// <summary>CAN bus.</summary>
-            public const string Can0 = "GHIElectronics.TinyCLR.NativeApis.AT91.CanController\\0";
+            public const string Can0 = "GHIElectronics.TinyCLR.NativeApis.AT91SAM9261.CanController\\0";
             /// <summary>CAN bus.</summary>
-            public const string Can1 = "GHIElectronics.TinyCLR.NativeApis.AT91.CanController\\1";
+            public const string Can1 = "GHIElectronics.TinyCLR.NativeApis.AT91SAM9261.CanController\\1";
         }
 
         /// <summary>USB client port definitions.</summary>
         public static class UsbClientPort {
             /// <summary>USB client port.</summary>
-            public const string Udphs = "GHIElectronics.TinyCLR.NativeApis.AT91.UsbClientController\\0";
+            public const string Udphs = "GHIElectronics.TinyCLR.NativeApis.AT91SAM9261.UsbClientController\\0";
         }
 
         /// <summary>USB host port definitions.</summary>
         public static class UsbHostPort {
             /// <summary>USB host port.</summary>
-            public const string UhphsA = "GHIElectronics.TinyCLR.NativeApis.AT91.UsbHostController\\0";
+            public const string UhphsA = "GHIElectronics.TinyCLR.NativeApis.AT91SAM9261.UsbHostController\\0";
             /// <summary>USB host port.</summary>
-            public const string UhphsB = "GHIElectronics.TinyCLR.NativeApis.AT91.UsbHostController\\1";
+            public const string UhphsB = "GHIElectronics.TinyCLR.NativeApis.AT91SAM9261.UsbHostController\\1";
             /// <summary>USB host port.</summary>
-            public const string UhphsC = "GHIElectronics.TinyCLR.NativeApis.AT91.UsbHostController\\2";
+            public const string UhphsC = "GHIElectronics.TinyCLR.NativeApis.AT91SAM9261.UsbHostController\\2";
         }
 
         /// <summary>Display definitions.</summary>
         public static class Display {
             /// <summary>API id.</summary>
-            public const string Lcd = "GHIElectronics.TinyCLR.NativeApis.AT91.DisplayController\\0";
+            public const string Lcd = "GHIElectronics.TinyCLR.NativeApis.AT91SAM9261.DisplayController\\0";
         }
-        
+
         /// <summary>Storage controller definitions.</summary>
         public static class StorageController {
             /// <summary>API id.</summary>
-            public const string SdCard = "GHIElectronics.TinyCLR.NativeApis.AT91.SdCardStorageController\\0";
+            public const string SdCard = "GHIElectronics.TinyCLR.NativeApis.AT91SAM9261.SdCardStorageController\\0";
         }
 
         /// <summary>RTC controller definitions.</summary>
         public static class RtcController {
             /// <summary>API id.</summary>
-            public const string Id = "GHIElectronics.TinyCLR.NativeApis.AT91.RtcController\\0";
+            public const string Id = "GHIElectronics.TinyCLR.NativeApis.AT91SAM9261.RtcController\\0";
         }
     }
 }
