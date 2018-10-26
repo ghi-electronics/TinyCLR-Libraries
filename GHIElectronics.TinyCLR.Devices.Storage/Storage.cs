@@ -42,9 +42,9 @@ namespace GHIElectronics.TinyCLR.Devices.Storage {
 
             void Open();
             void Close();
-            int Read(long address, int count, byte[] buffer, int offset, long timeout);
-            int Write(long address, int count, byte[] buffer, int offset, long timeout);
-            int Erase(long address, int count, long timeout);
+            int Read(long address, int count, byte[] buffer, int offset, TimeSpan timeout);
+            int Write(long address, int count, byte[] buffer, int offset, TimeSpan timeout);
+            int Erase(long address, int count, TimeSpan timeout);
             bool IsErased(long address, int count);
         }
 
@@ -80,13 +80,13 @@ namespace GHIElectronics.TinyCLR.Devices.Storage {
             public extern void Close();
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern int Read(long address, int count, byte[] buffer, int offset, long timeout);
+            public extern int Read(long address, int count, byte[] buffer, int offset, TimeSpan timeout);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern int Write(long address, int count, byte[] buffer, int offset, long timeout);
+            public extern int Write(long address, int count, byte[] buffer, int offset, TimeSpan timeout);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern int Erase(long sector, int count, long timeout);
+            public extern int Erase(long sector, int count, TimeSpan timeout);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern bool IsErased(long address, int count);
