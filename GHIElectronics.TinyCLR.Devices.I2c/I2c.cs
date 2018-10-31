@@ -274,8 +274,21 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
             private void WaitForScl() {
                 var i = 0;
 
-                while (!this.ReadScl() && i++ < 100)
-                    Thread.Sleep(1);
+                // We limit 2KHz on all device
+                const int delay = (1000000 / 2000) * 10; // in ticks
+
+                while (i++ < 100) {
+                    var currentTicks = DateTime.Now.Ticks;
+
+                    while (DateTime.Now.Ticks - currentTicks < delay / 2) ;
+
+                    var state = this.ReadScl();
+
+                    while (DateTime.Now.Ticks - currentTicks < delay) ;
+
+                    if (state)
+                        break;
+                }
 
                 if (i >= 100)
                     throw new I2cClockStretchTimeoutException();
