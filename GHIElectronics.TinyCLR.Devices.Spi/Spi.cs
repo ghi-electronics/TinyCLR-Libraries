@@ -222,20 +222,36 @@ namespace GHIElectronics.TinyCLR.Devices.Spi {
 
                     for (var j = 0; j < 8; j++) {
                         if (this.captureOnRisingEdge) {
+                            var currentTicks = DateTime.Now.Ticks;
+
                             this.sck.Write(this.clockIdleState);
 
                             this.mosi.Write((w & mask) != 0 ? GpioPinValue.High : GpioPinValue.Low);
                             r = this.miso.Read() == GpioPinValue.High;
 
+                            var periodClockTicks = DateTime.Now.Ticks - currentTicks;
+
+                            currentTicks = DateTime.Now.Ticks;
+
                             this.sck.Write(this.clockActiveState);
+
+                            while (DateTime.Now.Ticks - currentTicks < periodClockTicks) ;
                         }
                         else {
+                            var currentTicks = DateTime.Now.Ticks;
+
                             this.sck.Write(this.clockActiveState);
 
                             this.mosi.Write((w & mask) != 0 ? GpioPinValue.High : GpioPinValue.Low);
                             r = this.miso.Read() == GpioPinValue.High;
 
+                            var periodClockTicks = DateTime.Now.Ticks - currentTicks;
+
+                            currentTicks = DateTime.Now.Ticks;
+
                             this.sck.Write(this.clockIdleState);
+
+                            while (DateTime.Now.Ticks - currentTicks < periodClockTicks) ;
                         }
 
                         if (i < readLength && readBuffer != null && r)
