@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
-using System.Threading;
 using GHIElectronics.TinyCLR.Devices.Gpio;
 using GHIElectronics.TinyCLR.Devices.I2c.Provider;
 using GHIElectronics.TinyCLR.Native;
@@ -272,26 +271,26 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
             }
 
             private void WaitForScl() {
-                var i = 0;
+                const long timeoutInTicks = 1000 * 1000 * 10; // Timeout: 1 second
+                const long delayInTicks = (1000000 / 2000) * 10; // Max frequency: 2KHz
 
-                // We limit 2KHz on all device
-                const int delay = (1000000 / 2000) * 10; // in ticks
+                var currentTicks = DateTime.Now.Ticks;
+                var timeout = true;
 
-                while (i++ < 100) {
-                    var currentTicks = DateTime.Now.Ticks;
+                while (DateTime.Now.Ticks - currentTicks < delayInTicks / 2) ;
 
-                    while (DateTime.Now.Ticks - currentTicks < delay / 2) ;
-
-                    var state = this.ReadScl();
-
-                    while (DateTime.Now.Ticks - currentTicks < delay) ;
-
-                    if (state)
-                        break;
+                while (timeout && DateTime.Now.Ticks - currentTicks < timeoutInTicks) {
+                    if (this.ReadScl()) timeout = false;
                 }
 
-                if (i >= 100)
+                if (timeout)
                     throw new I2cClockStretchTimeoutException();
+
+                var periodClockInTicks = DateTime.Now.Ticks - currentTicks;
+
+                currentTicks = DateTime.Now.Ticks;
+
+                while (DateTime.Now.Ticks - currentTicks < periodClockInTicks) ;
             }
 
             private bool WriteBit(bool bit) {
