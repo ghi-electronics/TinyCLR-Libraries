@@ -314,7 +314,7 @@
         public static class SpiBus {
             public const string Spi1 = STM32F7.SpiBus.Spi1;
             public const string Spi5 = STM32F7.SpiBus.Spi5;
-            public const string WiFi = STM32F7.SpiBus.Spi2;
+            public const string WiFi = STM32F7.SpiBus.Spi5;
         }
 
         public static class CanBus {
