@@ -202,26 +202,23 @@ namespace System.IO {
         }
 
         //--//
-        internal const string FSRoot = @"\";
+        internal const string FSRoot = @"A:\"; // Default is driver A:
 
         public static string CurrentDirectory = FileSystemManager.FSRoot;
         private static object m_currentDirectoryRecord = null;
 
         //--//
 
-        internal static void SetCurrentDirectory(string path)
-        {
+        internal static void SetCurrentDirectory(string path) {
             if (m_currentDirectoryRecord != null) // implies that CurrentDirectory != NativeIO.FSRoot
             {
                 RemoveFromOpenList(m_currentDirectoryRecord);
             }
 
-            if (path != FileSystemManager.FSRoot)
-            {
+            if (!(path.Length == 3 && path[0] >= 'A' && path[0] <= 'Z' && path[1] == ':' && (path[2] == Path.DirectorySeparatorChar))) {
                 m_currentDirectoryRecord = AddToOpenListForRead(path);
             }
-            else
-            {
+            else {
                 m_currentDirectoryRecord = null;
             }
 
