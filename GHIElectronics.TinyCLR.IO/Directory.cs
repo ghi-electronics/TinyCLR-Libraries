@@ -32,7 +32,7 @@ namespace System.IO {
             path = Path.GetFullPath(path);
 
             /// Is this the absolute root? this always exists.
-            if (path == FileSystemManager.FSRoot) {
+            if (path.Length == 3 && path[0] >= 'A' && path[0] <= 'Z' && path[1] == ':' && (path[2] == Path.DirectorySeparatorChar)) {
                 return true;
             }
             else {
