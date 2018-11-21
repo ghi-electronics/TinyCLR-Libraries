@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="packages\GHIElectronics.TinyCLR.Core.1.0.0-preview2\build\net452\GHIElectronics.TinyCLR.Core.props" Condition="Exists('packages\GHIElectronics.TinyCLR.Core.1.0.0-preview2\build\net452\GHIElectronics.TinyCLR.Core.props')" />
+  <Import Project="packages\GHIElectronics.TinyCLR.Core.1.0.0-preview3\build\net452\GHIElectronics.TinyCLR.Core.props" Condition="Exists('packages\GHIElectronics.TinyCLR.Core.1.0.0-preview3\build\net452\GHIElectronics.TinyCLR.Core.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -57,37 +57,37 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="GHIElectronics.TinyCLR.Devices.Adc, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\GHIElectronics.TinyCLR.Devices.Adc.1.0.0-preview2\lib\net452\GHIElectronics.TinyCLR.Devices.Adc.dll</HintPath>
+      <HintPath>packages\GHIElectronics.TinyCLR.Devices.Adc.1.0.0-preview3\lib\net452\GHIElectronics.TinyCLR.Devices.Adc.dll</HintPath>
     </Reference>
     <Reference Include="GHIElectronics.TinyCLR.Devices.Display, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\GHIElectronics.TinyCLR.Devices.Display.1.0.0-preview2\lib\net452\GHIElectronics.TinyCLR.Devices.Display.dll</HintPath>
+      <HintPath>packages\GHIElectronics.TinyCLR.Devices.Display.1.0.0-preview3\lib\net452\GHIElectronics.TinyCLR.Devices.Display.dll</HintPath>
     </Reference>
     <Reference Include="GHIElectronics.TinyCLR.Devices.Gpio, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\GHIElectronics.TinyCLR.Devices.Gpio.1.0.0-preview2\lib\net452\GHIElectronics.TinyCLR.Devices.Gpio.dll</HintPath>
+      <HintPath>packages\GHIElectronics.TinyCLR.Devices.Gpio.1.0.0-preview3\lib\net452\GHIElectronics.TinyCLR.Devices.Gpio.dll</HintPath>
     </Reference>
     <Reference Include="GHIElectronics.TinyCLR.Devices.I2c, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\GHIElectronics.TinyCLR.Devices.I2c.1.0.0-preview2\lib\net452\GHIElectronics.TinyCLR.Devices.I2c.dll</HintPath>
+      <HintPath>packages\GHIElectronics.TinyCLR.Devices.I2c.1.0.0-preview3\lib\net452\GHIElectronics.TinyCLR.Devices.I2c.dll</HintPath>
     </Reference>
     <Reference Include="GHIElectronics.TinyCLR.Devices.Pwm, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\GHIElectronics.TinyCLR.Devices.Pwm.1.0.0-preview2\lib\net452\GHIElectronics.TinyCLR.Devices.Pwm.dll</HintPath>
+      <HintPath>packages\GHIElectronics.TinyCLR.Devices.Pwm.1.0.0-preview3\lib\net452\GHIElectronics.TinyCLR.Devices.Pwm.dll</HintPath>
     </Reference>
     <Reference Include="GHIElectronics.TinyCLR.Devices.Spi, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\GHIElectronics.TinyCLR.Devices.Spi.1.0.0-preview2\lib\net452\GHIElectronics.TinyCLR.Devices.Spi.dll</HintPath>
+      <HintPath>packages\GHIElectronics.TinyCLR.Devices.Spi.1.0.0-preview3\lib\net452\GHIElectronics.TinyCLR.Devices.Spi.dll</HintPath>
     </Reference>
     <Reference Include="GHIElectronics.TinyCLR.Drawing, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\GHIElectronics.TinyCLR.Drawing.1.0.0-preview2\lib\net452\GHIElectronics.TinyCLR.Drawing.dll</HintPath>
+      <HintPath>packages\GHIElectronics.TinyCLR.Drawing.1.0.0-preview3\lib\net452\GHIElectronics.TinyCLR.Drawing.dll</HintPath>
     </Reference>
     <Reference Include="GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735.1.0.0-preview2\lib\net452\GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735.dll</HintPath>
+      <HintPath>packages\GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735.1.0.0-preview3\lib\net452\GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735.dll</HintPath>
     </Reference>
     <Reference Include="GHIElectronics.TinyCLR.Drivers.SolomonSystech.SSD1306, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\GHIElectronics.TinyCLR.Drivers.SolomonSystech.SSD1306.1.0.0-preview2\lib\net452\GHIElectronics.TinyCLR.Drivers.SolomonSystech.SSD1306.dll</HintPath>
+      <HintPath>packages\GHIElectronics.TinyCLR.Drivers.SolomonSystech.SSD1306.1.0.0-preview3\lib\net452\GHIElectronics.TinyCLR.Drivers.SolomonSystech.SSD1306.dll</HintPath>
     </Reference>
     <Reference Include="GHIElectronics.TinyCLR.Native, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\GHIElectronics.TinyCLR.Native.1.0.0-preview2\lib\net452\GHIElectronics.TinyCLR.Native.dll</HintPath>
+      <HintPath>packages\GHIElectronics.TinyCLR.Native.1.0.0-preview3\lib\net452\GHIElectronics.TinyCLR.Native.dll</HintPath>
     </Reference>
     <Reference Include="GHIElectronics.TinyCLR.Pins, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\GHIElectronics.TinyCLR.Pins.1.0.0-preview2\lib\net452\GHIElectronics.TinyCLR.Pins.dll</HintPath>
+      <HintPath>packages\GHIElectronics.TinyCLR.Pins.1.0.0-preview3\lib\net452\GHIElectronics.TinyCLR.Pins.dll</HintPath>
     </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
@@ -97,7 +97,7 @@
     </PropertyGroup>
     <Error Condition="!Exists('packages\GHIElectronics.Tools.NuGetPacker.1.0.3\build\GHIElectronics.Tools.NuGetPacker.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\GHIElectronics.Tools.NuGetPacker.1.0.3\build\GHIElectronics.Tools.NuGetPacker.targets'))" />
     <Error Condition="!Exists('packages\GHIElectronics.Tools.AssemblySigner.1.0.3\build\GHIElectronics.Tools.AssemblySigner.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\GHIElectronics.Tools.AssemblySigner.1.0.3\build\GHIElectronics.Tools.AssemblySigner.targets'))" />
-    <Error Condition="!Exists('packages\GHIElectronics.TinyCLR.Core.1.0.0-preview2\build\net452\GHIElectronics.TinyCLR.Core.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\GHIElectronics.TinyCLR.Core.1.0.0-preview2\build\net452\GHIElectronics.TinyCLR.Core.props'))" />
+    <Error Condition="!Exists('packages\GHIElectronics.TinyCLR.Core.1.0.0-preview3\build\net452\GHIElectronics.TinyCLR.Core.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\GHIElectronics.TinyCLR.Core.1.0.0-preview3\build\net452\GHIElectronics.TinyCLR.Core.props'))" />
   </Target>
   <Import Project="packages\GHIElectronics.Tools.NuGetPacker.1.0.3\build\GHIElectronics.Tools.NuGetPacker.targets" Condition="Exists('packages\GHIElectronics.Tools.NuGetPacker.1.0.3\build\GHIElectronics.Tools.NuGetPacker.targets')" />
   <Import Project="packages\GHIElectronics.Tools.AssemblySigner.1.0.3\build\GHIElectronics.Tools.AssemblySigner.targets" Condition="Exists('packages\GHIElectronics.Tools.AssemblySigner.1.0.3\build\GHIElectronics.Tools.AssemblySigner.targets')" />
