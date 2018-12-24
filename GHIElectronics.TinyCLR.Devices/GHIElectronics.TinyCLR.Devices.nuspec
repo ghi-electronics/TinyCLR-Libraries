@@ -3,7 +3,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>GHIElectronics.TinyCLR.Devices</id>
-    <version>1.0.0-preview3</version>
+    <version>1.0.0</version>
     <authors>GHI Electronics, LLC</authors>
     <owners>GHI Electronics, LLC</owners>
     <projectUrl>https://ghielectronics.com/</projectUrl>
@@ -14,18 +14,18 @@
     <copyright>Copyright GHI Electronics, LLC 2018</copyright>
     <tags>TinyCLR TinyCLROS</tags>
     <dependencies>
-      <dependency id="GHIElectronics.TinyCLR.Devices.Adc" version="1.0.0-preview3" />
-      <dependency id="GHIElectronics.TinyCLR.Devices.Can" version="1.0.0-preview3" />
-      <dependency id="GHIElectronics.TinyCLR.Devices.Dac" version="1.0.0-preview3" />
-      <dependency id="GHIElectronics.TinyCLR.Devices.Display" version="1.0.0-preview3" />
-      <dependency id="GHIElectronics.TinyCLR.Devices.Gpio" version="1.0.0-preview3" />
-      <dependency id="GHIElectronics.TinyCLR.Devices.I2c" version="1.0.0-preview3" />
-      <dependency id="GHIElectronics.TinyCLR.Devices.Pwm" version="1.0.0-preview3" />
-      <dependency id="GHIElectronics.TinyCLR.Devices.Storage" version="1.0.0-preview3" />
-      <dependency id="GHIElectronics.TinyCLR.Devices.Uart" version="1.0.0-preview3" />
-      <dependency id="GHIElectronics.TinyCLR.Devices.Rtc" version="1.0.0-preview3" />
-      <dependency id="GHIElectronics.TinyCLR.Devices.Signals" version="1.0.0-preview3" />
-      <dependency id="GHIElectronics.TinyCLR.Devices.Spi" version="1.0.0-preview3" />
+      <dependency id="GHIElectronics.TinyCLR.Devices.Adc" version="1.0.0" />
+      <dependency id="GHIElectronics.TinyCLR.Devices.Can" version="1.0.0" />
+      <dependency id="GHIElectronics.TinyCLR.Devices.Dac" version="1.0.0" />
+      <dependency id="GHIElectronics.TinyCLR.Devices.Display" version="1.0.0" />
+      <dependency id="GHIElectronics.TinyCLR.Devices.Gpio" version="1.0.0" />
+      <dependency id="GHIElectronics.TinyCLR.Devices.I2c" version="1.0.0" />
+      <dependency id="GHIElectronics.TinyCLR.Devices.Pwm" version="1.0.0" />
+      <dependency id="GHIElectronics.TinyCLR.Devices.Storage" version="1.0.0" />
+      <dependency id="GHIElectronics.TinyCLR.Devices.Uart" version="1.0.0" />
+      <dependency id="GHIElectronics.TinyCLR.Devices.Rtc" version="1.0.0" />
+      <dependency id="GHIElectronics.TinyCLR.Devices.Signals" version="1.0.0" />
+      <dependency id="GHIElectronics.TinyCLR.Devices.Spi" version="1.0.0" />
     </dependencies>
   </metadata>
   <files>
