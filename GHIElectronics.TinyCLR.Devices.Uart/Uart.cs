@@ -10,9 +10,9 @@ namespace GHIElectronics.TinyCLR.Devices.Uart {
         private UartController(IUartControllerProvider provider) {
             this.Provider = provider;
 
-            this.Provider.ClearToSendChanged += (_, e) => this.ClearToSendChanged?.Invoke(this, e);
-            this.Provider.DataReceived += (_, e) => this.DataReceived?.Invoke(this, e);
-            this.Provider.ErrorReceived += (_, e) => this.ErrorReceived?.Invoke(this, e);
+            this.Provider.ClearToSendChanged += (_, e) => this.clearToSendChangedEvents?.Invoke(this, e);
+            this.Provider.DataReceived += (_, e) => this.dataReceivedEvents?.Invoke(this, e);
+            this.Provider.ErrorReceived += (_, e) => this.errorReceivedEvents?.Invoke(this, e);
         }
 
         public static UartController GetDefault() => Api.GetDefaultFromCreator(ApiType.UartController) is UartController c ? c : UartController.FromName(Api.GetDefaultName(ApiType.UartController));
@@ -44,9 +44,57 @@ namespace GHIElectronics.TinyCLR.Devices.Uart {
         public bool IsRequestToSendEnabled { get => this.Provider.IsRequestToSendEnabled; set => this.Provider.IsRequestToSendEnabled = value; }
         public bool ClearToSendState => this.Provider.ClearToSendState;
 
-        public event ClearToSendChangedEventHandler ClearToSendChanged;
-        public event DataReceivedEventHandler DataReceived;
-        public event ErrorReceivedEventHandler ErrorReceived;
+        private ClearToSendChangedEventHandler clearToSendChangedEvents;
+        private DataReceivedEventHandler dataReceivedEvents;
+        private ErrorReceivedEventHandler errorReceivedEvents;
+
+        public event ClearToSendChangedEventHandler ClearToSendChanged {
+            add {
+                if (this.clearToSendChangedEvents == null) {
+                    this.Provider.SetClearToSendChangedEventEnabled(true);
+                }
+
+                this.clearToSendChangedEvents += value;
+            }
+            remove {
+                if (this.clearToSendChangedEvents != null) {
+                    this.clearToSendChangedEvents -= value;
+                }
+
+                this.Provider.SetClearToSendChangedEventEnabled(false);
+            }
+        }
+
+        public event DataReceivedEventHandler DataReceived {
+            add {
+                if (this.dataReceivedEvents == null) {
+                    this.Provider.SetDataReceivedEventEnabled(true);
+                }
+
+                this.dataReceivedEvents += value;
+            }
+            remove {
+                if (this.dataReceivedEvents != null) {
+                    this.dataReceivedEvents -= value;
+                }
+                this.Provider.SetDataReceivedEventEnabled(false);
+            }
+        }
+        public event ErrorReceivedEventHandler ErrorReceived {
+            add {
+                if (this.errorReceivedEvents == null) {
+                    this.Provider.SetErrorReceivedEventEnabled(true);
+                }
+
+                this.errorReceivedEvents += value;
+            }
+            remove {
+                if (this.errorReceivedEvents != null) {
+                    this.errorReceivedEvents -= value;
+                }
+                this.Provider.SetErrorReceivedEventEnabled(false);
+            }
+        }
     }
 
     public enum UartParity {
@@ -135,6 +183,10 @@ namespace GHIElectronics.TinyCLR.Devices.Uart {
             event ClearToSendChangedEventHandler ClearToSendChanged;
             event DataReceivedEventHandler DataReceived;
             event ErrorReceivedEventHandler ErrorReceived;
+
+            void SetClearToSendChangedEventEnabled(bool enable);
+            void SetDataReceivedEventEnabled(bool enable);
+            void SetErrorReceivedEventEnabled(bool enable);
         }
 
         public sealed class UartControllerApiWrapper : IUartControllerProvider {
@@ -204,6 +256,15 @@ namespace GHIElectronics.TinyCLR.Devices.Uart {
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void ClearReadBuffer();
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            public extern void SetClearToSendChangedEventEnabled(bool enable);
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            public extern void SetDataReceivedEventEnabled(bool enable);
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            public extern void SetErrorReceivedEventEnabled(bool enable);
         }
     }
 }
