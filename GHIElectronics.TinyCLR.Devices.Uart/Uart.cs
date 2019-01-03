@@ -7,13 +7,7 @@ namespace GHIElectronics.TinyCLR.Devices.Uart {
     public sealed class UartController : IDisposable {
         public IUartControllerProvider Provider { get; }
 
-        private UartController(IUartControllerProvider provider) {
-            this.Provider = provider;
-
-            this.Provider.ClearToSendChanged += (_, e) => this.clearToSendChangedEvents?.Invoke(this, e);
-            this.Provider.DataReceived += (_, e) => this.dataReceivedEvents?.Invoke(this, e);
-            this.Provider.ErrorReceived += (_, e) => this.errorReceivedEvents?.Invoke(this, e);
-        }
+        private UartController(IUartControllerProvider provider) => this.Provider = provider;
 
         public static UartController GetDefault() => Api.GetDefaultFromCreator(ApiType.UartController) is UartController c ? c : UartController.FromName(Api.GetDefaultName(ApiType.UartController));
         public static UartController FromName(string name) => UartController.FromProvider(new UartControllerApiWrapper(Api.Find(name, ApiType.UartController)));
@@ -44,56 +38,19 @@ namespace GHIElectronics.TinyCLR.Devices.Uart {
         public bool IsRequestToSendEnabled { get => this.Provider.IsRequestToSendEnabled; set => this.Provider.IsRequestToSendEnabled = value; }
         public bool ClearToSendState => this.Provider.ClearToSendState;
 
-        private ClearToSendChangedEventHandler clearToSendChangedEvents;
-        private DataReceivedEventHandler dataReceivedEvents;
-        private ErrorReceivedEventHandler errorReceivedEvents;
-
         public event ClearToSendChangedEventHandler ClearToSendChanged {
-            add {
-                if (this.clearToSendChangedEvents == null) {
-                    this.Provider.SetClearToSendChangedEventEnabled(true);
-                }
-
-                this.clearToSendChangedEvents += value;
-            }
-            remove {
-                if (this.clearToSendChangedEvents != null) {
-                    this.clearToSendChangedEvents -= value;
-                }
-
-                this.Provider.SetClearToSendChangedEventEnabled(false);
-            }
+            add => this.Provider.ClearToSendChanged += value;
+            remove => this.Provider.ClearToSendChanged -= value;
         }
 
         public event DataReceivedEventHandler DataReceived {
-            add {
-                if (this.dataReceivedEvents == null) {
-                    this.Provider.SetDataReceivedEventEnabled(true);
-                }
-
-                this.dataReceivedEvents += value;
-            }
-            remove {
-                if (this.dataReceivedEvents != null) {
-                    this.dataReceivedEvents -= value;
-                }
-                this.Provider.SetDataReceivedEventEnabled(false);
-            }
+            add => this.Provider.DataReceived += value;
+            remove => this.Provider.DataReceived -= value;
         }
-        public event ErrorReceivedEventHandler ErrorReceived {
-            add {
-                if (this.errorReceivedEvents == null) {
-                    this.Provider.SetErrorReceivedEventEnabled(true);
-                }
 
-                this.errorReceivedEvents += value;
-            }
-            remove {
-                if (this.errorReceivedEvents != null) {
-                    this.errorReceivedEvents -= value;
-                }
-                this.Provider.SetErrorReceivedEventEnabled(false);
-            }
+        public event ErrorReceivedEventHandler ErrorReceived {
+            add => this.Provider.ErrorReceived += value;
+            remove => this.Provider.ErrorReceived -= value;
         }
     }
 
@@ -183,10 +140,6 @@ namespace GHIElectronics.TinyCLR.Devices.Uart {
             event ClearToSendChangedEventHandler ClearToSendChanged;
             event DataReceivedEventHandler DataReceived;
             event ErrorReceivedEventHandler ErrorReceived;
-
-            void SetClearToSendChangedEventEnabled(bool enable);
-            void SetDataReceivedEventEnabled(bool enable);
-            void SetErrorReceivedEventEnabled(bool enable);
         }
 
         public sealed class UartControllerApiWrapper : IUartControllerProvider {
@@ -194,6 +147,9 @@ namespace GHIElectronics.TinyCLR.Devices.Uart {
             private readonly NativeEventDispatcher clearToSendChangedDispatcher;
             private readonly NativeEventDispatcher dataReceivedDispatcher;
             private readonly NativeEventDispatcher errorReceivedDispatcher;
+            private ClearToSendChangedEventHandler clearToSendChangedCallbacks;
+            private DataReceivedEventHandler dataReceivedCallbacks;
+            private ErrorReceivedEventHandler errorReceivedCallbacks;
 
             public Api Api { get; }
 
@@ -208,14 +164,55 @@ namespace GHIElectronics.TinyCLR.Devices.Uart {
                 this.dataReceivedDispatcher = NativeEventDispatcher.GetDispatcher("GHIElectronics.TinyCLR.NativeEventNames.Uart.DataReceived");
                 this.errorReceivedDispatcher = NativeEventDispatcher.GetDispatcher("GHIElectronics.TinyCLR.NativeEventNames.Uart.ErrorReceived");
 
-                this.clearToSendChangedDispatcher.OnInterrupt += (apiName, d0, d1, d2, d3, ts) => { if (this.Api.Name == apiName) this.ClearToSendChanged?.Invoke(null, new ClearToSendChangedEventArgs(d0 != 0, ts)); };
-                this.dataReceivedDispatcher.OnInterrupt += (apiName, d0, d1, d2, d3, ts) => { if (this.Api.Name == apiName) this.DataReceived?.Invoke(null, new DataReceivedEventArgs((int)d0, ts)); };
-                this.errorReceivedDispatcher.OnInterrupt += (apiName, d0, d1, d2, d3, ts) => { if (this.Api.Name == apiName) this.ErrorReceived?.Invoke(null, new ErrorReceivedEventArgs((UartError)d0, ts)); };
+                this.clearToSendChangedDispatcher.OnInterrupt += (apiName, d0, d1, d2, d3, ts) => { if (this.Api.Name == apiName) this.clearToSendChangedCallbacks?.Invoke(null, new ClearToSendChangedEventArgs(d0 != 0, ts)); };
+                this.dataReceivedDispatcher.OnInterrupt += (apiName, d0, d1, d2, d3, ts) => { if (this.Api.Name == apiName) this.dataReceivedCallbacks?.Invoke(null, new DataReceivedEventArgs((int)d0, ts)); };
+                this.errorReceivedDispatcher.OnInterrupt += (apiName, d0, d1, d2, d3, ts) => { if (this.Api.Name == apiName) this.errorReceivedCallbacks?.Invoke(null, new ErrorReceivedEventArgs((UartError)d0, ts)); };
             }
 
-            public event ClearToSendChangedEventHandler ClearToSendChanged;
-            public event DataReceivedEventHandler DataReceived;
-            public event ErrorReceivedEventHandler ErrorReceived;
+            public event ClearToSendChangedEventHandler ClearToSendChanged {
+                add {
+                    if (this.clearToSendChangedCallbacks == null)
+                        this.SetClearToSendChangedEventEnabled(true);
+
+                    this.clearToSendChangedCallbacks += value;
+                }
+                remove {
+                    this.clearToSendChangedCallbacks -= value;
+
+                    if (this.clearToSendChangedCallbacks == null)
+                        this.SetClearToSendChangedEventEnabled(false);
+                }
+            }
+
+            public event DataReceivedEventHandler DataReceived {
+                add {
+                    if (this.dataReceivedCallbacks == null)
+                        this.SetDataReceivedEventEnabled(true);
+
+                    this.dataReceivedCallbacks += value;
+                }
+                remove {
+                    this.dataReceivedCallbacks -= value;
+
+                    if (this.dataReceivedCallbacks == null)
+                        this.SetDataReceivedEventEnabled(false);
+                }
+            }
+
+            public event ErrorReceivedEventHandler ErrorReceived {
+                add {
+                    if (this.errorReceivedCallbacks == null)
+                        this.SetErrorReceivedEventEnabled(true);
+
+                    this.errorReceivedCallbacks += value;
+                }
+                remove {
+                    this.errorReceivedCallbacks -= value;
+
+                    if (this.errorReceivedCallbacks == null)
+                        this.SetErrorReceivedEventEnabled(false);
+                }
+            }
 
             public void Dispose() => this.Release();
 
@@ -224,6 +221,15 @@ namespace GHIElectronics.TinyCLR.Devices.Uart {
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             private extern void Release();
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            private extern void SetClearToSendChangedEventEnabled(bool enabled);
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            private extern void SetDataReceivedEventEnabled(bool enabled);
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            private extern void SetErrorReceivedEventEnabled(bool enabled);
 
             public extern int WriteBufferSize { [MethodImpl(MethodImplOptions.InternalCall)] get; [MethodImpl(MethodImplOptions.InternalCall)] set; }
             public extern int ReadBufferSize { [MethodImpl(MethodImplOptions.InternalCall)] get; [MethodImpl(MethodImplOptions.InternalCall)] set; }
@@ -256,15 +262,6 @@ namespace GHIElectronics.TinyCLR.Devices.Uart {
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void ClearReadBuffer();
-
-            [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern void SetClearToSendChangedEventEnabled(bool enable);
-
-            [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern void SetDataReceivedEventEnabled(bool enable);
-
-            [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern void SetErrorReceivedEventEnabled(bool enable);
         }
     }
 }
