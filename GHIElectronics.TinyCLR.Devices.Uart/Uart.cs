@@ -5,6 +5,10 @@ using GHIElectronics.TinyCLR.Native;
 
 namespace GHIElectronics.TinyCLR.Devices.Uart {
     public sealed class UartController : IDisposable {
+        private ClearToSendChangedEventHandler clearToSendChangedCallbacks;
+        private DataReceivedEventHandler dataReceivedCallbacks;
+        private ErrorReceivedEventHandler errorReceivedCallbacks;
+
         public IUartControllerProvider Provider { get; }
 
         private UartController(IUartControllerProvider provider) => this.Provider = provider;
@@ -38,19 +42,53 @@ namespace GHIElectronics.TinyCLR.Devices.Uart {
         public bool IsRequestToSendEnabled { get => this.Provider.IsRequestToSendEnabled; set => this.Provider.IsRequestToSendEnabled = value; }
         public bool ClearToSendState => this.Provider.ClearToSendState;
 
+        private void OnClearToSendChanged(UartController sender, ClearToSendChangedEventArgs e) => this.clearToSendChangedCallbacks?.Invoke(this, e);
+        private void OnDataReceived(UartController sender, DataReceivedEventArgs e) => this.dataReceivedCallbacks?.Invoke(this, e);
+        private void OnErrorReceived(UartController sender, ErrorReceivedEventArgs e) => this.errorReceivedCallbacks?.Invoke(this, e);
+
         public event ClearToSendChangedEventHandler ClearToSendChanged {
-            add => this.Provider.ClearToSendChanged += value;
-            remove => this.Provider.ClearToSendChanged -= value;
+            add {
+                if (this.clearToSendChangedCallbacks == null)
+                    this.Provider.ClearToSendChanged += this.OnClearToSendChanged;
+
+                this.clearToSendChangedCallbacks += value;
+            }
+            remove {
+                this.clearToSendChangedCallbacks -= value;
+
+                if (this.clearToSendChangedCallbacks == null)
+                    this.Provider.ClearToSendChanged -= this.OnClearToSendChanged;
+            }
         }
 
         public event DataReceivedEventHandler DataReceived {
-            add => this.Provider.DataReceived += value;
-            remove => this.Provider.DataReceived -= value;
+            add {
+                if (this.dataReceivedCallbacks == null)
+                    this.Provider.DataReceived += this.OnDataReceived;
+
+                this.dataReceivedCallbacks += value;
+            }
+            remove {
+                this.dataReceivedCallbacks -= value;
+
+                if (this.dataReceivedCallbacks == null)
+                    this.Provider.DataReceived -= this.OnDataReceived;
+            }
         }
 
         public event ErrorReceivedEventHandler ErrorReceived {
-            add => this.Provider.ErrorReceived += value;
-            remove => this.Provider.ErrorReceived -= value;
+            add {
+                if (this.errorReceivedCallbacks == null)
+                    this.Provider.ErrorReceived += this.OnErrorReceived;
+
+                this.errorReceivedCallbacks += value;
+            }
+            remove {
+                this.errorReceivedCallbacks -= value;
+
+                if (this.errorReceivedCallbacks == null)
+                    this.Provider.ErrorReceived -= this.OnErrorReceived;
+            }
         }
     }
 
