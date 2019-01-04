@@ -5,14 +5,12 @@ using GHIElectronics.TinyCLR.Native;
 
 namespace GHIElectronics.TinyCLR.Devices.Can {
     public sealed class CanController : IDisposable {
+        private MessageReceivedEventHandler messageReceivedCallbacks;
+        private ErrorReceivedEventHandler errorReceivedCallbacks;
+
         public ICanControllerProvider Provider { get; }
 
-        private CanController(ICanControllerProvider provider) {
-            this.Provider = provider;
-
-            this.Provider.MessageReceived += (_, e) => this.MessageReceived?.Invoke(this, e);
-            this.Provider.ErrorReceived += (_, e) => this.ErrorReceived?.Invoke(this, e);
-        }
+        private CanController(ICanControllerProvider provider) => this.Provider = provider;
 
         public static CanController GetDefault() => Api.GetDefaultFromCreator(ApiType.CanController) is CanController c ? c : CanController.FromName(Api.GetDefaultName(ApiType.CanController));
         public static CanController FromName(string name) => CanController.FromProvider(new CanControllerApiWrapper(Api.Find(name, ApiType.CanController)));
@@ -46,8 +44,37 @@ namespace GHIElectronics.TinyCLR.Devices.Can {
         public int ReadErrorCount => this.Provider.ReadErrorCount;
         public int SourceClock => this.Provider.SourceClock;
 
-        public event MessageReceivedEventHandler MessageReceived;
-        public event ErrorReceivedEventHandler ErrorReceived;
+        private void OnMessageReceived(CanController sender, MessageReceivedEventArgs e) => this.messageReceivedCallbacks?.Invoke(this, e);
+        private void OnErrorReceived(CanController sender, ErrorReceivedEventArgs e) => this.errorReceivedCallbacks?.Invoke(this, e);
+
+        public event MessageReceivedEventHandler MessageReceived {
+            add {
+                if (this.messageReceivedCallbacks == null)
+                    this.Provider.MessageReceived += this.OnMessageReceived;
+
+                this.messageReceivedCallbacks += value;
+            }
+            remove {
+                this.messageReceivedCallbacks -= value;
+
+                if (this.messageReceivedCallbacks == null)
+                    this.Provider.MessageReceived -= this.OnMessageReceived;
+            }
+        }
+        public event ErrorReceivedEventHandler ErrorReceived {
+            add {
+                if (this.errorReceivedCallbacks == null)
+                    this.Provider.ErrorReceived += this.OnErrorReceived;
+
+                this.errorReceivedCallbacks += value;
+            }
+            remove {
+                this.errorReceivedCallbacks -= value;
+
+                if (this.errorReceivedCallbacks == null)
+                    this.Provider.ErrorReceived -= this.OnErrorReceived;
+            }
+        }
     }
 
     public enum CanError {
@@ -194,6 +221,8 @@ namespace GHIElectronics.TinyCLR.Devices.Can {
             private readonly IntPtr impl;
             private readonly NativeEventDispatcher messageReceivedDispatcher;
             private readonly NativeEventDispatcher errorReceivedDispatcher;
+            private MessageReceivedEventHandler messageReceivedCallbacks;
+            private ErrorReceivedEventHandler errorReceivedCallbacks;
 
             public Api Api { get; }
 
@@ -207,12 +236,38 @@ namespace GHIElectronics.TinyCLR.Devices.Can {
                 this.messageReceivedDispatcher = NativeEventDispatcher.GetDispatcher("GHIElectronics.TinyCLR.NativeEventNames.Can.MessageReceived");
                 this.errorReceivedDispatcher = NativeEventDispatcher.GetDispatcher("GHIElectronics.TinyCLR.NativeEventNames.Can.ErrorReceived");
 
-                this.messageReceivedDispatcher.OnInterrupt += (apiName, d0, d1, d2, d3, ts) => { if (this.Api.Name == apiName) this.MessageReceived?.Invoke(null, new MessageReceivedEventArgs((int)d0, ts)); };
-                this.errorReceivedDispatcher.OnInterrupt += (apiName, d0, d1, d2, d3, ts) => { if (this.Api.Name == apiName) this.ErrorReceived?.Invoke(null, new ErrorReceivedEventArgs((CanError)d0, ts)); };
+                this.messageReceivedDispatcher.OnInterrupt += (apiName, d0, d1, d2, d3, ts) => { if (this.Api.Name == apiName) this.messageReceivedCallbacks?.Invoke(null, new MessageReceivedEventArgs((int)d0, ts)); };
+                this.errorReceivedDispatcher.OnInterrupt += (apiName, d0, d1, d2, d3, ts) => { if (this.Api.Name == apiName) this.errorReceivedCallbacks?.Invoke(null, new ErrorReceivedEventArgs((CanError)d0, ts)); };
             }
 
-            public event MessageReceivedEventHandler MessageReceived;
-            public event ErrorReceivedEventHandler ErrorReceived;
+            public event MessageReceivedEventHandler MessageReceived {
+                add {
+                    if (this.messageReceivedCallbacks == null)
+                        this.SetMessageaReceivedEventEnabled(true);
+
+                    this.messageReceivedCallbacks += value;
+                }
+                remove {
+                    this.messageReceivedCallbacks -= value;
+
+                    if (this.messageReceivedCallbacks == null)
+                        this.SetMessageaReceivedEventEnabled(false);
+                }
+            }
+            public event ErrorReceivedEventHandler ErrorReceived {
+                add {
+                    if (this.errorReceivedCallbacks == null)
+                        this.SetErrorReceivedEventEnabled(true);
+
+                    this.errorReceivedCallbacks += value;
+                }
+                remove {
+                    this.errorReceivedCallbacks -= value;
+
+                    if (this.errorReceivedCallbacks == null)
+                        this.SetErrorReceivedEventEnabled(false);
+                }
+            }
 
             public void Dispose() => this.Release();
 
@@ -221,6 +276,12 @@ namespace GHIElectronics.TinyCLR.Devices.Can {
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             private extern void Release();
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            private extern void SetMessageaReceivedEventEnabled(bool enabled);
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            private extern void SetErrorReceivedEventEnabled(bool enabled);
 
             public extern int WriteBufferSize { [MethodImpl(MethodImplOptions.InternalCall)] get; [MethodImpl(MethodImplOptions.InternalCall)] set; }
             public extern int ReadBufferSize { [MethodImpl(MethodImplOptions.InternalCall)] get; [MethodImpl(MethodImplOptions.InternalCall)] set; }
