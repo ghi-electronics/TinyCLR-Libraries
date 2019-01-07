@@ -61,6 +61,7 @@ namespace GHIElectronics.TinyCLR.Devices.Can {
                     this.Provider.MessageReceived -= this.OnMessageReceived;
             }
         }
+
         public event ErrorReceivedEventHandler ErrorReceived {
             add {
                 if (this.errorReceivedCallbacks == null)
@@ -254,6 +255,7 @@ namespace GHIElectronics.TinyCLR.Devices.Can {
                         this.SetMessageaReceivedEventEnabled(false);
                 }
             }
+
             public event ErrorReceivedEventHandler ErrorReceived {
                 add {
                     if (this.errorReceivedCallbacks == null)
