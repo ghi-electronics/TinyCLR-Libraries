@@ -209,14 +209,14 @@ namespace System.Drawing {
         public void DrawLine(Pen pen, int x1, int y1, int x2, int y2) {
             if (pen.Color.A != 0xFF) throw new NotSupportedException("Alpha not supported.");
 
-            this.surface.DrawLine((uint)(pen.Color.value & 0x00FFFFFF), (int)pen.Width, x1, y1, x2, y2);
+            this.surface.DrawLine((uint)(pen.Color.value & 0xFFFFFFFF), (int)pen.Width, x1, y1, x2, y2);
         }
 
         public void DrawString(string s, Font font, Brush brush, float x, float y) {
             if (brush is SolidBrush b) {
                 if (b.Color.A != 0xFF) throw new NotSupportedException("Alpha not supported.");
 
-                this.surface.DrawText(s, font, (uint)(b.Color.value & 0x00FFFFFF), (int)x, (int)y);
+                this.surface.DrawText(s, font, (uint)(b.Color.value & 0xFFFFFFFF), (int)x, (int)y);
             }
             else {
                 throw new NotSupportedException();
@@ -242,7 +242,7 @@ namespace System.Drawing {
         public void DrawEllipse(Pen pen, int x, int y, int width, int height) {
             if (pen.Color.A != 0xFF) throw new NotSupportedException("Alpha not supported.");
 
-            var rgb = (uint)(pen.Color.ToArgb() & 0x00FFFFFF);
+            var rgb = (uint)(pen.Color.ToArgb() & 0xFFFFFFFF);
 
             width = (width - 1) / 2;
             height = (height - 1) / 2;
@@ -256,14 +256,14 @@ namespace System.Drawing {
         public void DrawRectangle(Pen pen, int x, int y, int width, int height) {
             if (pen.Color.A != 0xFF) throw new NotSupportedException("Alpha not supported.");
 
-            var rgb = (uint)(pen.Color.ToArgb() & 0x00FFFFFF);
+            var rgb = (uint)(pen.Color.ToArgb() & 0xFFFFFFFF);
 
             this.surface.DrawRectangle(rgb, (int)pen.Width, x, y, width, height, 0, 0, (uint)Color.Transparent.value, x, y, (uint)Color.Transparent.value, x + width, y + height, 0x00);
         }
 
         public void FillEllipse(Brush brush, int x, int y, int width, int height) {
             if (brush is SolidBrush b) {
-                var rgb = (uint)(b.Color.ToArgb() & 0x00FFFFFF);
+                var rgb = (uint)(b.Color.ToArgb() & 0xFFFFFFFF);
 
                 width = (width - 1) / 2;
                 height = (height - 1) / 2;
@@ -280,7 +280,7 @@ namespace System.Drawing {
 
         public void FillRectangle(Brush brush, int x, int y, int width, int height) {
             if (brush is SolidBrush b) {
-                var rgb = (uint)(b.Color.ToArgb() & 0x00FFFFFF);
+                var rgb = (uint)(b.Color.ToArgb() & 0xFFFFFFFF);
 
                 this.surface.DrawRectangle(rgb, 0, x, y, width, height, 0, 0, rgb, x, y, rgb, x + width, y + height, b.Color.A);
             }
@@ -388,7 +388,7 @@ namespace System.Drawing {
                 var xRelStart = 0;
                 var yRelStart = 0;
 
-                this.DrawTextInRect(ref text, ref xRelStart, ref yRelStart, x, y, width, height, dtFlags, (uint)(color.value & 0x00FFFFFF), font);
+                this.DrawTextInRect(ref text, ref xRelStart, ref yRelStart, x, y, width, height, dtFlags, (uint)(color.value & 0xFFFFFFFF), font);
             }
 
             //public void DrawEllipse(Color colorOutline, int x, int y, int xRadius, int yRadius) => DrawEllipse(colorOutline, 1, x, y, xRadius, yRadius, Color.Black, 0, 0, Color.Black, 0, 0, OpacityOpaque);
