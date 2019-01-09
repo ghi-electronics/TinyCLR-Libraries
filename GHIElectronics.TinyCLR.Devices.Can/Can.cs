@@ -22,7 +22,11 @@ namespace GHIElectronics.TinyCLR.Devices.Can {
         public void Disable() => this.Provider.Disable();
 
         public bool WriteMessage(CanMessage message) => this.WriteMessages(new[] { message }, 0, 1) == 1;
-        public int WriteMessages(CanMessage[] messages, int offset, int count) => this.Provider.WriteMessages(messages, offset, count);
+        public int WriteMessages(CanMessage[] messages, int offset, int count) {
+            if (offset + count > messages.Length) throw new ArgumentOutOfRangeException(nameof(count), "offset + count is beyond the end of the array");
+
+            return this.Provider.WriteMessages(messages, offset, count);
+        }
 
         public bool ReadMessage(out CanMessage message) => this.ReadMessages(new[] { message = new CanMessage() }, 0, 1) == 1;
         public int ReadMessages(CanMessage[] messages, int offset, int count) => this.Provider.ReadMessages(messages, offset, count);
