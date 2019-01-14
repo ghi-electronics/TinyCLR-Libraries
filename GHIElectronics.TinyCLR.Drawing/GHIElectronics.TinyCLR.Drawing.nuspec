@@ -11,7 +11,7 @@
     <licenseUrl>http://files.ghielectronics.com/downloads/TinyCLR/License.txt</licenseUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>The drawing library for TinyCLR OS.</description>
-    <copyright>Copyright GHI Electronics, LLC 2018</copyright>
+    <copyright>Copyright GHI Electronics, LLC 2019</copyright>
     <tags>TinyCLR TinyCLROS</tags>
     <dependencies>
       <dependency id="GHIElectronics.TinyCLR.Core" version="1.0.0" />

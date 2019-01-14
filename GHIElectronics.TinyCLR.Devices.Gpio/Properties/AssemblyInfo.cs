@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyDescription("TinyCLR OS GPIO library.")]
 [assembly: AssemblyCompany("GHI Electronics, LLC")]
 [assembly: AssemblyProduct("TinyCLR OS")]
-[assembly: AssemblyCopyright("Copyright © GHI Electronics, LLC 2018")]
+[assembly: AssemblyCopyright("Copyright © GHI Electronics, LLC 2019")]
 [assembly: ComVisible(false)]
 [assembly: Guid("21FBFF15-D7C4-48A8-B3D1-CE70A288B3EA")]
 [assembly: AssemblyVersion("1.0.0.0")]

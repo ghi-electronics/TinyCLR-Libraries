@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyDescription("TinyCLR OS I2C library.")]
 [assembly: AssemblyCompany("GHI Electronics, LLC")]
 [assembly: AssemblyProduct("TinyCLR OS")]
-[assembly: AssemblyCopyright("Copyright © GHI Electronics, LLC 2018")]
+[assembly: AssemblyCopyright("Copyright © GHI Electronics, LLC 2019")]
 [assembly: ComVisible(false)]
 [assembly: Guid("670AD403-A7C6-4C0A-A9A3-82767B3FCBB2")]
 [assembly: AssemblyVersion("1.0.0.0")]
