@@ -7,15 +7,18 @@ namespace GHIElectronics.TinyCLR.IO {
         void Close();
     }
 
-    internal class NativeFileSystemEntryFinder : IFileSystemEntryFinder {
+    internal class NativeFileSystemEntryFinder : IFileSystemEntryFinder, IDisposable {
 #pragma warning disable CS0169
         IntPtr implPtr;
 
-        object m_ff;
 #pragma warning restore CS0169
+        ~NativeFileSystemEntryFinder() => this.Dispose();
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         public extern NativeFileSystemEntryFinder(string path, string searchPattern);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        public extern void Dispose();
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         extern void IFileSystemEntryFinder.Close();
