@@ -31,7 +31,7 @@ namespace System.Drawing {
             this.Size = sz;
         }
 
-        ~Font() => this.Dispose(false);
+        ~Font() => this.Dispose();
 
         internal int Size { get; }
         internal bool IsGHIMono8x5 { get; }
@@ -69,7 +69,7 @@ namespace System.Drawing {
         private extern void CreateInstantFromResources(uint buffer, uint size, uint assembly);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern void Dispose(bool disposing);
+        public extern void Dispose();
     }
 }
 
