@@ -37,7 +37,6 @@ namespace System.Drawing {
         internal bool IsGHIMono8x5 { get; }
 
         public object Clone() => throw new NotImplementedException();
-        public void Dispose() { }
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private extern int CharWidth(char c);
