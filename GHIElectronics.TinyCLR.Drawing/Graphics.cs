@@ -294,7 +294,7 @@ namespace System.Drawing {
         //The name and namespace of this must match the definition in c_TypeIndexLookup in TypeSystem.cpp and ResourceManager.GetObject
         internal class Bitmap : MarshalByRefObject, IDisposable, IGraphics {
 #pragma warning disable CS0169 // The field is never used
-            private object m_bitmap;
+            IntPtr implPtr;
 #pragma warning restore CS0169 // The field is never used
 
             public void Dispose() {
