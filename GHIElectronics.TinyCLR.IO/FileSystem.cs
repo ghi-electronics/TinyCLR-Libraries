@@ -95,15 +95,18 @@ namespace GHIElectronics.TinyCLR.IO {
             }
         }
 
-        private class NativeFileStream : IFileStream {
+        private class NativeFileStream : IFileStream, IDisposable {
 #pragma warning disable CS0169
             private IntPtr impl;
 
-            private object obj;
 #pragma warning restore CS0169
+            ~NativeFileStream() => this.Dispose();
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern NativeFileStream(string path, int bufferSize);
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            public extern void Dispose();
 
             public extern bool CanWrite { [MethodImpl(MethodImplOptions.InternalCall)] get; }
 

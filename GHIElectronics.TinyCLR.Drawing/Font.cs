@@ -16,7 +16,7 @@ namespace System.Drawing {
     //The name and namespace of this must match the definition in c_TypeIndexLookup in TypeSystem.cpp
     public sealed class Font : MarshalByRefObject, ICloneable, IDisposable {
 #pragma warning disable CS0169 // The field is never used
-        private object m_font;
+        IntPtr implPtr;
 #pragma warning restore CS0169 // The field is never used
 
         // Must keep in sync with CLR_GFX_Font::c_DefaultKerning
@@ -30,6 +30,8 @@ namespace System.Drawing {
             this.IsGHIMono8x5 = familyName == "GHIMono8x5" && (sz % 8) == 0 ? true : throw new NotSupportedException();
             this.Size = sz;
         }
+
+        ~Font() => this.Dispose(false);
 
         internal int Size { get; }
         internal bool IsGHIMono8x5 { get; }
@@ -65,6 +67,9 @@ namespace System.Drawing {
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         private extern void CreateInstantFromResources(uint buffer, uint size, uint assembly);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        public extern void Dispose(bool disposing);
     }
 }
 
