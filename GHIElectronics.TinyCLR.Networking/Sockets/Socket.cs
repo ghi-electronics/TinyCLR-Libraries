@@ -27,7 +27,10 @@ namespace System.Net.Sockets {
             this.m_Handle = this.ni.Create(addressFamily, socketType, protocolType);
         }
 
-        private Socket(int handle) => this.m_Handle = handle;
+        private Socket(int handle) {
+            this.ni = NI.GetActiveForSocket();
+            this.m_Handle = handle;
+        }
 
         public int Available {
             get {
@@ -35,11 +38,9 @@ namespace System.Net.Sockets {
                     throw new ObjectDisposedException();
                 }
 
-                uint cBytes = 0;
+                var cBytes = this.ni.Available(this.m_Handle);
 
-                this.ni.Available(this.m_Handle);
-
-                return (int)cBytes;
+                return cBytes;
             }
         }
 
