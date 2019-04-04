@@ -2,13 +2,11 @@ using NI = System.Net.NetworkInterface.NetworkInterface;
 
 namespace System.Net.Sockets {
     using System.Net;
-    using System.Net.NetworkInterface;
     using System.Runtime.CompilerServices;
     using System.Threading;
     using GHIElectronics.TinyCLR.Net.NetworkInterface;
 
-    public class Socket : IDisposable
-    {
+    public class Socket : IDisposable {
         /* WARNING!!!!
 * The m_Handle field MUST be the first field in the Socket class; it is expected by
 * the SPOT.NET.this.ni class.
@@ -29,54 +27,46 @@ namespace System.Net.Sockets {
             this.m_Handle = this.ni.Create(addressFamily, socketType, protocolType);
         }
 
-        private Socket(int handle) => this.m_Handle = handle;
+        private Socket(int handle) {
+            this.ni = NI.GetActiveForSocket();
+            this.m_Handle = handle;
+        }
 
-        public int Available
-        {
-            get
-            {
-                if (this.m_Handle == -1)
-                {
+        public int Available {
+            get {
+                if (this.m_Handle == -1) {
                     throw new ObjectDisposedException();
                 }
 
-                uint cBytes = 0;
+                var cBytes = this.ni.Available(this.m_Handle);
 
-                this.ni.Available(this.m_Handle);
-
-                return (int)cBytes;
+                return cBytes;
             }
         }
 
-        private EndPoint GetEndPoint(bool fLocal)
-        {
-            if (this.m_Handle == -1)
-            {
+        private EndPoint GetEndPoint(bool fLocal) {
+            if (this.m_Handle == -1) {
                 throw new ObjectDisposedException();
             }
 
             EndPoint ep = null;
 
-            if (this.m_localEndPoint == null)
-            {
+            if (this.m_localEndPoint == null) {
                 this.m_localEndPoint = new IPEndPoint(IPAddress.Any, 0);
             }
 
             SocketAddress socketAddress;
 
-            if (fLocal)
-            {
+            if (fLocal) {
                 this.ni.GetLocalAddress(this.m_Handle, out socketAddress);
             }
-            else
-            {
+            else {
                 this.ni.GetRemoteAddress(this.m_Handle, out socketAddress);
             }
 
             ep = this.m_localEndPoint.Create(socketAddress);
 
-            if (fLocal)
-            {
+            if (fLocal) {
                 this.m_localEndPoint = ep;
             }
 
@@ -109,10 +99,8 @@ namespace System.Net.Sockets {
             }
         }
 
-        public void Bind(EndPoint localEP)
-        {
-            if (this.m_Handle == -1)
-            {
+        public void Bind(EndPoint localEP) {
+            if (this.m_Handle == -1) {
                 throw new ObjectDisposedException();
             }
 
@@ -121,44 +109,36 @@ namespace System.Net.Sockets {
             this.m_localEndPoint = localEP;
         }
 
-        public void Connect(EndPoint remoteEP)
-        {
-            if (this.m_Handle == -1)
-            {
+        public void Connect(EndPoint remoteEP) {
+            if (this.m_Handle == -1) {
                 throw new ObjectDisposedException();
             }
 
             this.ni.Connect(this.m_Handle, remoteEP.Serialize());
 
-            if (this.m_fBlocking)
-            {
+            if (this.m_fBlocking) {
                 Poll(-1, SelectMode.SelectWrite);
             }
         }
 
         public void Close() => ((IDisposable)this).Dispose();
 
-        public void Listen(int backlog)
-        {
-            if (this.m_Handle == -1)
-            {
+        public void Listen(int backlog) {
+            if (this.m_Handle == -1) {
                 throw new ObjectDisposedException();
             }
 
             this.ni.Listen(this.m_Handle, backlog);
         }
 
-        public Socket Accept()
-        {
-            if (this.m_Handle == -1)
-            {
+        public Socket Accept() {
+            if (this.m_Handle == -1) {
                 throw new ObjectDisposedException();
             }
 
             int socketHandle;
 
-            if (this.m_fBlocking)
-            {
+            if (this.m_fBlocking) {
                 Poll(-1, SelectMode.SelectRead);
             }
 
@@ -177,20 +157,16 @@ namespace System.Net.Sockets {
 
         public int Send(byte[] buffer) => Send(buffer, 0, buffer != null ? buffer.Length : 0, SocketFlags.None);
 
-        public int Send(byte[] buffer, int offset, int size, SocketFlags socketFlags)
-        {
-            if (this.m_Handle == -1)
-            {
+        public int Send(byte[] buffer, int offset, int size, SocketFlags socketFlags) {
+            if (this.m_Handle == -1) {
                 throw new ObjectDisposedException();
             }
 
             return this.ni.Send(this.m_Handle, buffer, offset, size, socketFlags, this.m_sendTimeout);
         }
 
-        public int SendTo(byte[] buffer, int offset, int size, SocketFlags socketFlags, EndPoint remoteEP)
-        {
-            if (this.m_Handle == -1)
-            {
+        public int SendTo(byte[] buffer, int offset, int size, SocketFlags socketFlags, EndPoint remoteEP) {
+            if (this.m_Handle == -1) {
                 throw new ObjectDisposedException();
             }
 
@@ -211,20 +187,16 @@ namespace System.Net.Sockets {
 
         public int Receive(byte[] buffer) => Receive(buffer, 0, buffer != null ? buffer.Length : 0, SocketFlags.None);
 
-        public int Receive(byte[] buffer, int offset, int size, SocketFlags socketFlags)
-        {
-            if (this.m_Handle == -1)
-            {
+        public int Receive(byte[] buffer, int offset, int size, SocketFlags socketFlags) {
+            if (this.m_Handle == -1) {
                 throw new ObjectDisposedException();
             }
 
             return this.ni.Receive(this.m_Handle, buffer, offset, size, socketFlags, this.m_recvTimeout);
         }
 
-        public int ReceiveFrom(byte[] buffer, int offset, int size, SocketFlags socketFlags, ref EndPoint remoteEP)
-        {
-            if (this.m_Handle == -1)
-            {
+        public int ReceiveFrom(byte[] buffer, int offset, int size, SocketFlags socketFlags, ref EndPoint remoteEP) {
+            if (this.m_Handle == -1) {
                 throw new ObjectDisposedException();
             }
 
@@ -244,22 +216,19 @@ namespace System.Net.Sockets {
 
         public int ReceiveFrom(byte[] buffer, ref EndPoint remoteEP) => ReceiveFrom(buffer, 0, buffer != null ? buffer.Length : 0, SocketFlags.None, ref remoteEP);
 
-        public void SetSocketOption(SocketOptionLevel optionLevel, SocketOptionName optionName, int optionValue)
-        {
-            if (this.m_Handle == -1)
-            {
+        public void SetSocketOption(SocketOptionLevel optionLevel, SocketOptionName optionName, int optionValue) {
+            if (this.m_Handle == -1) {
                 throw new ObjectDisposedException();
             }
 
             //BitConverter.GetBytes(int). Or else deal with endianness here?
             byte[] val;
-            if(SystemInfo.IsBigEndian)
+            if (SystemInfo.IsBigEndian)
                 val = new byte[4] { (byte)(optionValue >> 24), (byte)(optionValue >> 16), (byte)(optionValue >> 8), (byte)(optionValue >> 0) };
             else
                 val = new byte[4] { (byte)(optionValue >> 0), (byte)(optionValue >> 8), (byte)(optionValue >> 16), (byte)(optionValue >> 24) };
 
-            switch (optionName)
-            {
+            switch (optionName) {
                 case SocketOptionName.SendTimeout:
                     this.m_sendTimeout = optionValue;
                     break;
@@ -273,22 +242,18 @@ namespace System.Net.Sockets {
 
         public void SetSocketOption(SocketOptionLevel optionLevel, SocketOptionName optionName, bool optionValue) => SetSocketOption(optionLevel, optionName, (optionValue ? 1 : 0));
 
-        public void SetSocketOption(SocketOptionLevel optionLevel, SocketOptionName optionName, byte[] optionValue)
-        {
-            if (this.m_Handle == -1)
-            {
+        public void SetSocketOption(SocketOptionLevel optionLevel, SocketOptionName optionName, byte[] optionValue) {
+            if (this.m_Handle == -1) {
                 throw new ObjectDisposedException();
             }
 
             this.ni.SetOption(this.m_Handle, optionLevel, optionName, optionValue);
         }
 
-        public object GetSocketOption(SocketOptionLevel optionLevel, SocketOptionName optionName)
-        {
+        public object GetSocketOption(SocketOptionLevel optionLevel, SocketOptionName optionName) {
             if (optionName == SocketOptionName.DontLinger ||
                 optionName == SocketOptionName.AddMembership ||
-                optionName == SocketOptionName.DropMembership)
-            {
+                optionName == SocketOptionName.DropMembership) {
                 //special case linger?
                 throw new NotSupportedException();
             }
@@ -301,7 +266,7 @@ namespace System.Net.Sockets {
             //endianness?
             int iVal;
 
-            if(SystemInfo.IsBigEndian)
+            if (SystemInfo.IsBigEndian)
                 iVal = (val[3] << 0 | val[2] << 8 | val[1] << 16 | val[0] << 24);
             else
                 iVal = (val[0] << 0 | val[1] << 8 | val[2] << 16 | val[3] << 24);
@@ -310,20 +275,16 @@ namespace System.Net.Sockets {
             return (object)iVal;
         }
 
-        public void GetSocketOption(SocketOptionLevel optionLevel, SocketOptionName optionName, byte[] val)
-        {
-            if (this.m_Handle == -1)
-            {
+        public void GetSocketOption(SocketOptionLevel optionLevel, SocketOptionName optionName, byte[] val) {
+            if (this.m_Handle == -1) {
                 throw new ObjectDisposedException();
             }
 
             this.ni.GetOption(this.m_Handle, optionLevel, optionName, val);
         }
 
-        public bool Poll(int microSeconds, SelectMode mode)
-        {
-            if (this.m_Handle == -1)
-            {
+        public bool Poll(int microSeconds, SelectMode mode) {
+            if (this.m_Handle == -1) {
                 throw new ObjectDisposedException();
             }
 
@@ -331,23 +292,19 @@ namespace System.Net.Sockets {
         }
 
         [MethodImpl(MethodImplOptions.Synchronized)]
-        protected virtual void Dispose(bool disposing)
-        {
-            if (this.m_Handle != -1)
-            {
+        protected virtual void Dispose(bool disposing) {
+            if (this.m_Handle != -1) {
                 this.ni.Close(this.m_Handle);
                 this.m_Handle = -1;
             }
         }
 
-        void IDisposable.Dispose()
-        {
+        void IDisposable.Dispose() {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
 
-        ~Socket()
-        {
+        ~Socket() {
             Dispose(false);
         }
     }
