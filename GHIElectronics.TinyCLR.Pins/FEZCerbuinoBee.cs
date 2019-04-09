@@ -60,7 +60,7 @@
                 /// <summary>GPIO pin.</summary>
                 public const int Pin3 = Cerb.GpioPin.PA14;
                 /// <summary>GPIO pin.</summary>
-                public const int Pin4 = Cerb.GpioPin.PA10;
+                public const int Pin4 = Cerb.GpioPin.PB10;
                 /// <summary>GPIO pin.</summary>
                 public const int Pin5 = Cerb.GpioPin.PB11;
                 /// <summary>GPIO pin.</summary>
