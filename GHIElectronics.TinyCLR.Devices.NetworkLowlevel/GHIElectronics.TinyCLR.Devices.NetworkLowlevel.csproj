@@ -8,8 +8,8 @@
     <ProjectGuid>{67594A25-7515-400E-9962-2B34F770B1F7}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GHIElectronics.TinyCLR.Devices.EthernetEmac</RootNamespace>
-    <AssemblyName>GHIElectronics.TinyCLR.Devices.EthernetEmac</AssemblyName>
+    <RootNamespace>GHIElectronics.TinyCLR.Devices.NetworkLowlevel</RootNamespace>
+    <AssemblyName>GHIElectronics.TinyCLR.Devices.NetworkLowlevel</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A1948822-69DD-4150-919B-F3F42EFB71CC};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -34,7 +34,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="EthernetEmacController.cs" />
+    <Compile Include="NetworkLowlevelController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

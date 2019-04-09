@@ -6,17 +6,17 @@ using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
-using GHIElectronics.TinyCLR.Devices.EthernetEmac.Provider;
 using GHIElectronics.TinyCLR.Native;
 using GHIElectronics.TinyCLR.Net.NetworkInterface;
+using GHIElectronics.TinyCLR.Networking.Provider;
 
-namespace GHIElectronics.TinyCLR.Devices.EthernetEmac {
-    public class EthernetEmacController : NetworkInterface, ISocketProvider, ISslStreamProvider, IDnsProvider, IDisposable {
+namespace GHIElectronics.TinyCLR.Networking {
+    public class NetworkController : NetworkInterface, ISocketProvider, ISslStreamProvider, IDnsProvider, IDisposable {
         private readonly Hashtable netifSockets;
 
-        public IEthernetEmacControllerProvider Provider { get; }
+        public INetworkControllerProvider Provider { get; }
 
-        private EthernetEmacController(IEthernetEmacControllerProvider provider) {
+        public NetworkController(INetworkControllerProvider provider) {
             this.Provider = provider;
 
             this.netifSockets = new Hashtable();
@@ -24,11 +24,11 @@ namespace GHIElectronics.TinyCLR.Devices.EthernetEmac {
             NetworkInterface.RegisterNetworkInterface(this);
         }
 
-        public static EthernetEmacController GetDefault() => Api.GetDefaultFromCreator(ApiType.EthernetMacController) is EthernetEmacController c ? c : EthernetEmacController.FromName(Api.GetDefaultName(ApiType.EthernetMacController));
-        public static EthernetEmacController FromName(string name) => EthernetEmacController.FromProvider(new EthernetEmacControllerApiWrapper(Api.Find(name, ApiType.EthernetMacController)));
-        public static EthernetEmacController FromProvider(IEthernetEmacControllerProvider provider) => new EthernetEmacController(provider);
+        public static NetworkController GetDefault() => Api.GetDefaultFromCreator(ApiType.NetworkController) is NetworkController c ? c : NetworkController.FromName(Api.GetDefaultName(ApiType.NetworkController));
+        public static NetworkController FromName(string name) => NetworkController.FromProvider(new NetworkControllerApiWrapper(Api.Find(name, ApiType.Custom)));
+        public static NetworkController FromProvider(INetworkControllerProvider provider) => new NetworkController(provider);
 
-        ~EthernetEmacController() => this.Dispose(false);
+        ~NetworkController() => this.Dispose(false);
 
         public void Dispose() {
             this.Dispose(true);
@@ -41,10 +41,14 @@ namespace GHIElectronics.TinyCLR.Devices.EthernetEmac {
             }
         }
 
-        public void Open() => this.Provider.Open();
-        public void Close() => this.Provider.Close();
+        public void Open(IntPtr hdc) => this.Provider.Open(hdc);
+        public void Close(IntPtr hdc) => this.Provider.Close(hdc);
         public void EnableStaticIP(string ipAddress, string subnetMask, string gatewayAddress) => this.Provider.EnableStaticIP(ipAddress, subnetMask, gatewayAddress);
         public void EnableStaticDns(string[] dnsAddresses) => this.Provider.EnableStaticDns(dnsAddresses);
+        public bool DhcpEnable {
+            get => this.Provider.IsDhcpEnabled();
+            set => this.Provider.SetDhcp(value);
+        }
 
         int ISocketProvider.Accept(int socket) => this.Provider.ISocketProviderNativeAccept(socket);
 
@@ -132,24 +136,27 @@ namespace GHIElectronics.TinyCLR.Devices.EthernetEmac {
             return new PhysicalAddress(ip);
         }
 
-        public override string Id => nameof(EthernetEmac);
+        public override string Id => nameof(NetworkController);
         public override string Name => this.Id;
         public override string Description => string.Empty;
         public override OperationalStatus OperationalStatus => throw new NotImplementedException();
         public override bool IsReceiveOnly => false;
         public override bool SupportsMulticast => false;
-        public override NetworkInterfaceType NetworkInterfaceType => NetworkInterfaceType.Ethernet;
-        public override bool Supports(NetworkInterfaceComponent networkInterfaceComponent) => networkInterfaceComponent == NetworkInterfaceComponent.IPv4;
-        public bool DhcpEnable {
-            get => this.Provider.IsDhcpEnabled();
-            set => this.Provider.SetDhcp(value);
+        public NetworkInterfaceType NetworkInterfaceType {
+            get => this.NetworkInterfaceType;
+            set {
+                this.NetworkInterfaceType = value;
+                this.Provider.SetNetworkInterfaceType(this.NetworkInterfaceType);
+            }
         }
+        public override bool Supports(NetworkInterfaceComponent networkInterfaceComponent) => networkInterfaceComponent == NetworkInterfaceComponent.IPv4;
+
 
         private NetworkAvailabilityEventHandler networkAvailabilityChangedCallbacks;
         private NetworkAddressEventHandler networkAddressChangedCallbacks;
 
-        private void OnNetworkAvailabilityChanged(EthernetEmacController sender, NetworkAvailabilityChangedEventArgs e) => this.networkAvailabilityChangedCallbacks?.Invoke(this, e);
-        private void OnNetworkAddressChanged(EthernetEmacController sender, NetworAddressChangedEventArgs e) => this.networkAddressChangedCallbacks?.Invoke(this, e);
+        private void OnNetworkAvailabilityChanged(NetworkController sender, NetworkAvailabilityChangedEventArgs e) => this.networkAvailabilityChangedCallbacks?.Invoke(this, e);
+        private void OnNetworkAddressChanged(NetworkController sender, NetworAddressChangedEventArgs e) => this.networkAddressChangedCallbacks?.Invoke(this, e);
 
         public event NetworkAvailabilityEventHandler NetworkAvailabilityChanged {
             add {
@@ -183,9 +190,9 @@ namespace GHIElectronics.TinyCLR.Devices.EthernetEmac {
     }
 
     namespace Provider {
-        public interface IEthernetEmacControllerProvider : IDisposable {
-            void Open();
-            void Close();
+        public interface INetworkControllerProvider : IDisposable {
+            void Open(IntPtr hdc);
+            void Close(IntPtr hdc);
             int ISocketProviderNativeAccept(int socket);
             int ISslStreamProviderNativeAuthenticateAsClient(int socketHandle, string targetHost, X509Certificate certificate, SslProtocols[] sslProtocols);
             int ISslStreamProviderNativeAuthenticateAsServer(int socketHandle, X509Certificate certificate, SslProtocols[] sslProtocols);
@@ -214,48 +221,57 @@ namespace GHIElectronics.TinyCLR.Devices.EthernetEmac {
             void EnableStaticDns(string[] dnsAddresses);
             bool IsDhcpEnabled();
             void SetDhcp(bool enable);
+            void SetNetworkInterfaceType(NetworkInterfaceType type);
 
             event NetworkAvailabilityEventHandler NetworkAvailabilityChanged;
             event NetworkAddressEventHandler NetworkAddressChanged;
 
         }
 
-        public sealed class EthernetEmacControllerApiWrapper : IEthernetEmacControllerProvider {
+        public sealed class NetworkControllerApiWrapper : INetworkControllerProvider {
             private readonly IntPtr impl;
+            private IntPtr hdc;
+            private NetworkInterfaceType networkInterfaceType;
+
             private readonly NativeEventDispatcher networkAvailabilityChangedDispatcher;
             private readonly NativeEventDispatcher networkAddressChangedDispatcher;
 
             private NetworkAvailabilityEventHandler networkAvailabilityChangedCallbacks;
             private NetworkAddressEventHandler networkAddressChangedCallbacks;
+
             public Api Api { get; }
 
-            public EthernetEmacControllerApiWrapper(Api api) {
+            public NetworkControllerApiWrapper(Api api) {
                 this.Api = api;
 
                 this.impl = api.Implementation;
 
-                this.Acquire();
-
-                this.networkAvailabilityChangedDispatcher = NativeEventDispatcher.GetDispatcher("GHIElectronics.TinyCLR.NativeEventNames.EthernetEmac.NetworkAvailabilityChanged");
-                this.networkAddressChangedDispatcher = NativeEventDispatcher.GetDispatcher("GHIElectronics.TinyCLR.NativeEventNames.EthernetEmac.NetworkAddressChanged");
+                this.networkAvailabilityChangedDispatcher = NativeEventDispatcher.GetDispatcher("GHIElectronics.TinyCLR.NativeEventNames.NetworkController.NetworkAvailabilityChanged");
+                this.networkAddressChangedDispatcher = NativeEventDispatcher.GetDispatcher("GHIElectronics.TinyCLR.NativeEventNames.NetworkController.NetworkAddressChanged");
 
                 this.networkAvailabilityChangedDispatcher.OnInterrupt += (apiName, d0, d1, d2, d3, ts) => { if (this.Api.Name == apiName) this.networkAvailabilityChangedCallbacks?.Invoke(null, new NetworkAvailabilityChangedEventArgs(d0 != 0, ts)); };
                 this.networkAddressChangedDispatcher.OnInterrupt += (apiName, d0, d1, d2, d3, ts) => { if (this.Api.Name == apiName) this.networkAddressChangedCallbacks?.Invoke(null, new NetworAddressChangedEventArgs((uint)d0, ts)); };
             }
 
-            public void Dispose() => this.Release();
+            public void Dispose() => this.Close(this.hdc);
+
+            public void SetNetworkInterfaceType(NetworkInterfaceType type) => this.networkInterfaceType = type;
+
+            public void Open(IntPtr hdc) {
+                this.hdc = hdc;
+                this.Acquire(hdc);
+            }
+
+            public void Close(IntPtr hdc) {
+                this.Release(hdc);
+                this.hdc = IntPtr.Zero;
+            }
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern void Acquire();
+            public extern void Acquire(IntPtr hdc);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern void Release();
-
-            [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern void Open();
-
-            [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern void Close();
+            public extern void Release(IntPtr hdc);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern int ISocketProviderNativeAccept(int socket);
@@ -410,6 +426,6 @@ namespace GHIElectronics.TinyCLR.Devices.EthernetEmac {
         }
     }
 
-    public delegate void NetworkAvailabilityEventHandler(EthernetEmacController sender, NetworkAvailabilityChangedEventArgs e);
-    public delegate void NetworkAddressEventHandler(EthernetEmacController sender, NetworAddressChangedEventArgs e);
+    public delegate void NetworkAvailabilityEventHandler(NetworkController sender, NetworkAvailabilityChangedEventArgs e);
+    public delegate void NetworkAddressEventHandler(NetworkController sender, NetworAddressChangedEventArgs e);
 }

@@ -36,6 +36,7 @@
   <ItemGroup>
     <Compile Include="Authentication\SslProtocols.cs" />
     <Compile Include="Cryptography\X509Certificate.cs" />
+    <Compile Include="NetworkController.cs" />
     <Compile Include="NetworkInterface\IDnsProvider.cs" />
     <Compile Include="NetworkInterface\ISslStreamProvider.cs" />
     <Compile Include="NetworkInterface\PhysicalAddress.cs" />
@@ -67,7 +68,12 @@
     <None Include="GHIElectronics.TinyCLR.Networking.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\GHIElectronics.TinyCLR.Native\GHIElectronics.TinyCLR.Native.csproj">
+      <Project>{B602474A-AEB0-491C-832B-7EAF0B4511C0}</Project>
+      <Name>GHIElectronics.TinyCLR.Native</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

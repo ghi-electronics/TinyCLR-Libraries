@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Runtime.CompilerServices;
 
@@ -32,6 +32,8 @@ namespace GHIElectronics.TinyCLR.Native {
         UsbClientController = 19 | 0x40000000,
         UsbHostController = 20 | 0x40000000,
         WatchdogController = 21 | 0x40000000,
+        NetworkController = 22 | 0x40000000,
+        NetworkLowlevelController = 23 | 0x40000000,
         Custom = 0 | 0x80000000,
     }
 
