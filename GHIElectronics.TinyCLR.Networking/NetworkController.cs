@@ -45,7 +45,8 @@ namespace GHIElectronics.TinyCLR.Networking {
         public void Close(IntPtr hdc) => this.Provider.Close(hdc);
         public void EnableStaticIP(string ipAddress, string subnetMask, string gatewayAddress) => this.Provider.EnableStaticIP(ipAddress, subnetMask, gatewayAddress);
         public void EnableStaticDns(string[] dnsAddresses) => this.Provider.EnableStaticDns(dnsAddresses);
-        public void SetMacAddress(byte[] macAddress, int length) => this.Provider.SetMacAddress(macAddress, length);
+        public void SetMacAddress(byte[] macAddress) => this.Provider.SetMacAddress(macAddress);
+        public void GetMacAddress(out byte[] macAddress) => this.Provider.GetMacAddress(out macAddress);
         public bool DhcpEnable {
             get => this.Provider.IsDhcpEnabled();
             set => this.Provider.SetDhcp(value);
@@ -218,7 +219,8 @@ namespace GHIElectronics.TinyCLR.Networking {
             int ISslStreamProviderNativeWrite(int handle, byte[] buffer, int offset, int count, int timeout);
             void IDnsProviderNativeGetHostByName(string name, out long address);
             void NativeGetPhysicalAddress(out byte[] ip);
-            void SetMacAddress(byte[] macAddress, int length);
+            void SetMacAddress(byte[] macAddress);
+            void GetMacAddress(out byte[] macAddress);
             void EnableStaticIP(string ipAddress, string subnetMask, string gatewayAddress);
             void EnableStaticDns(string[] dnsAddresses);
             bool IsDhcpEnabled();
@@ -356,7 +358,10 @@ namespace GHIElectronics.TinyCLR.Networking {
             public extern void NativeGetPhysicalAddress(out byte[] ip);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern void SetMacAddress(byte[] macAddress, int length);
+            public extern void SetMacAddress(byte[] macAddress);
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            public extern void GetMacAddress(out byte[] macAddress);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void EnableStaticIP(string ipAddress, string subnetMask, string gatewayAddress);
@@ -371,10 +376,10 @@ namespace GHIElectronics.TinyCLR.Networking {
             public extern void SetDhcp(bool enable);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern bool SetNetworkAvailabilityChangedHandler(bool enable);
+            public extern void SetNetworkAvailabilityChangedHandler(bool enable);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern bool SetNetworkAddressChangedHandler(bool enable);
+            public extern void SetNetworkAddressChangedHandler(bool enable);
 
             public event NetworkAvailabilityEventHandler NetworkAvailabilityChanged {
                 add {
