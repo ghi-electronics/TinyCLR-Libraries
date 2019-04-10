@@ -25,7 +25,7 @@ namespace GHIElectronics.TinyCLR.Networking {
         }
 
         public static NetworkController GetDefault() => Api.GetDefaultFromCreator(ApiType.NetworkController) is NetworkController c ? c : NetworkController.FromName(Api.GetDefaultName(ApiType.NetworkController));
-        public static NetworkController FromName(string name) => NetworkController.FromProvider(new NetworkControllerApiWrapper(Api.Find(name, ApiType.Custom)));
+        public static NetworkController FromName(string name) => NetworkController.FromProvider(new NetworkControllerApiWrapper(Api.Find(name, ApiType.NetworkController)));
         public static NetworkController FromProvider(INetworkControllerProvider provider) => new NetworkController(provider);
 
         ~NetworkController() => this.Dispose(false);
@@ -246,6 +246,8 @@ namespace GHIElectronics.TinyCLR.Networking {
 
                 this.impl = api.Implementation;
 
+                this.Acquire();
+
                 this.networkAvailabilityChangedDispatcher = NativeEventDispatcher.GetDispatcher("GHIElectronics.TinyCLR.NativeEventNames.NetworkController.NetworkAvailabilityChanged");
                 this.networkAddressChangedDispatcher = NativeEventDispatcher.GetDispatcher("GHIElectronics.TinyCLR.NativeEventNames.NetworkController.NetworkAddressChanged");
 
@@ -259,19 +261,25 @@ namespace GHIElectronics.TinyCLR.Networking {
 
             public void Open(IntPtr hdc) {
                 this.hdc = hdc;
-                this.Acquire(hdc);
+                this.Open();
             }
 
             public void Close(IntPtr hdc) {
-                this.Release(hdc);
+                this.Close();
                 this.hdc = IntPtr.Zero;
             }
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern void Acquire(IntPtr hdc);
+            public extern void Acquire();
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern void Release(IntPtr hdc);
+            public extern void Release();
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            public extern void Open();
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            public extern void Close();
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern int ISocketProviderNativeAccept(int socket);
