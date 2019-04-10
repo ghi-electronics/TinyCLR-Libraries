@@ -45,6 +45,7 @@ namespace GHIElectronics.TinyCLR.Networking {
         public void Close(IntPtr hdc) => this.Provider.Close(hdc);
         public void EnableStaticIP(string ipAddress, string subnetMask, string gatewayAddress) => this.Provider.EnableStaticIP(ipAddress, subnetMask, gatewayAddress);
         public void EnableStaticDns(string[] dnsAddresses) => this.Provider.EnableStaticDns(dnsAddresses);
+        public void SetMacAddress(byte[] macAddress, int length) => this.Provider.SetMacAddress(macAddress, length);
         public bool DhcpEnable {
             get => this.Provider.IsDhcpEnabled();
             set => this.Provider.SetDhcp(value);
@@ -217,6 +218,7 @@ namespace GHIElectronics.TinyCLR.Networking {
             int ISslStreamProviderNativeWrite(int handle, byte[] buffer, int offset, int count, int timeout);
             void IDnsProviderNativeGetHostByName(string name, out long address);
             void NativeGetPhysicalAddress(out byte[] ip);
+            void SetMacAddress(byte[] macAddress, int length);
             void EnableStaticIP(string ipAddress, string subnetMask, string gatewayAddress);
             void EnableStaticDns(string[] dnsAddresses);
             bool IsDhcpEnabled();
@@ -352,6 +354,9 @@ namespace GHIElectronics.TinyCLR.Networking {
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void NativeGetPhysicalAddress(out byte[] ip);
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            public extern void SetMacAddress(byte[] macAddress, int length);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void EnableStaticIP(string ipAddress, string subnetMask, string gatewayAddress);
