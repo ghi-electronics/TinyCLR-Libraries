@@ -35,6 +35,8 @@ namespace GHIElectronics.TinyCLR.Devices.NetworkLowlevel {
             this.Api = api;
 
             this.impl = api.Implementation;
+
+            this.Acquire();
         }
 
         public void Dispose() => this.Release();
