@@ -358,6 +358,27 @@ namespace GHIElectronics.TinyCLR.Networking {
             public extern void NativeGetPhysicalAddress(out byte[] ip);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
+            public extern void ISocketProviderNativeShutdown(int socket, int how);
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            public extern void ISocketProviderNativeGetPeerName(int socket, out byte[] address);
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            public extern void ISocketProviderNativeGetSocketName(int socket, out byte[] address);
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            public extern void ISocketProviderNativeGetAddrInfo(string name, out string canonicalName, out byte[][] addresses);
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            public extern void ISocketProviderNativeGetSockOption(int socket, int level, int optname, byte[] optval);
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            public extern void ISocketProviderNativeSetSockOption(int socket, int level, int optname, byte[] optval);
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            public extern void ISocketProviderNativeIoctl(int socket, uint cmd, ref uint arg);
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void SetMacAddress(byte[] macAddress);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
