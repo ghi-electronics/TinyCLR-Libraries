@@ -7,7 +7,7 @@ using System.Security.Cryptography.X509Certificates;
 [assembly: InternalsVisibleTo("GHIElectronics.TinyCLR.Devices.Network")]
 
 namespace GHIElectronics.TinyCLR.Networking {
-    public interface ISocketProvider {
+    public interface INetworkProvider {
 
         //Socket
         int Create(AddressFamily addressFamily, SocketType socketType, ProtocolType protocolType);
@@ -56,11 +56,11 @@ namespace System.Net.Sockets {
 * The m_Handle field MUST be the first field in the Socket class; it is expected by
 * the SPOT.NET.this.ni class.
 */
-        internal static ISocketProvider DefaultProvider { get; set; }
+        internal static INetworkProvider DefaultProvider { get; set; }
 
         internal int m_Handle = -1;
 
-        private readonly ISocketProvider ni;
+        private readonly INetworkProvider ni;
         private bool m_fBlocking = true;
         private EndPoint m_localEndPoint = null;
 
@@ -70,9 +70,6 @@ namespace System.Net.Sockets {
 
         public Socket(AddressFamily addressFamily, SocketType socketType, ProtocolType protocolType) {
             this.ni = Socket.DefaultProvider;
-
-
-
             this.m_Handle = this.ni.Create(addressFamily, socketType, protocolType);
         }
 

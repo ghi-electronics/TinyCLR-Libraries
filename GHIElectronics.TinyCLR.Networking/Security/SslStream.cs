@@ -10,7 +10,7 @@ namespace System.Net.Security {
         // Internal flags
         private int sslHandle;
         private bool _isServer;
-        private readonly ISocketProvider ni;
+        private readonly INetworkProvider ni;
 
         //--//
 
