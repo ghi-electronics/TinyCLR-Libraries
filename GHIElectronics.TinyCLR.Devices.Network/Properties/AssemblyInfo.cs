@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("GHIElectronics.TinyCLR.Devices.EthernetEmac")]
+[assembly: AssemblyTitle("GHIElectronics.TinyCLR.Devices.Network")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("GHIElectronics.TinyCLR.Devices.EthernetEmac")]
+[assembly: AssemblyProduct("GHIElectronics.TinyCLR.Devices.Network")]
 [assembly: AssemblyCopyright("Copyright ©  2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("67594a25-7515-400e-9962-2b34f770b1f7")]
+[assembly: Guid("c6722db2-b687-44c4-b1a1-665c50f34af1")]
 
 // Version information for an assembly consists of the following four values:
 //

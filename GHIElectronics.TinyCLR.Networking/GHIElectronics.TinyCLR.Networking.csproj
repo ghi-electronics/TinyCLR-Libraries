@@ -36,21 +36,15 @@
   <ItemGroup>
     <Compile Include="Authentication\SslProtocols.cs" />
     <Compile Include="Cryptography\X509Certificate.cs" />
-    <Compile Include="NetworkController.cs" />
-    <Compile Include="NetworkInterface\IDnsProvider.cs" />
-    <Compile Include="NetworkInterface\ISslStreamProvider.cs" />
-    <Compile Include="NetworkInterface\PhysicalAddress.cs" />
     <Compile Include="Net\DNS.cs" />
     <Compile Include="Net\EndPoint.cs" />
     <Compile Include="Net\IPAddress.cs" />
     <Compile Include="Net\IPEndPoint.cs" />
     <Compile Include="Net\IPHostEntry.cs" />
-    <Compile Include="NetworkInterface\NetworkInterface.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Net\SocketAddress.cs" />
     <Compile Include="Security\SslStream.cs" />
     <Compile Include="Sockets\SocketException.cs" />
-    <Compile Include="NetworkInterface\ISocketProvider.cs" />
     <Compile Include="Sockets\AddressFamily.cs" />
     <Compile Include="Sockets\NetworkStream.cs" />
     <Compile Include="Sockets\ProtocolFamily.cs" />

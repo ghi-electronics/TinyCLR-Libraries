@@ -3,15 +3,14 @@ using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
-using GHIElectronics.TinyCLR.Net.NetworkInterface;
-using NI = System.Net.NetworkInterface.NetworkInterface;
+using GHIElectronics.TinyCLR.Networking;
 
 namespace System.Net.Security {
     public class SslStream : NetworkStream {
         // Internal flags
         private int sslHandle;
         private bool _isServer;
-        private readonly ISslStreamProvider ni;
+        private readonly ISocketProvider ni;
 
         //--//
 
@@ -24,10 +23,10 @@ namespace System.Net.Security {
             this._isServer = false;
             this.sslHandle = -1;
 
-            this.ni = NI.GetActiveForSslStream();
+            this.ni = Socket.DefaultProvider;
         }
 
-        public void AuthenticateAsClient(string targetHost, params SslProtocols[] sslProtocols) => AuthenticateAsClient(targetHost, default(X509Certificate));
+        public void AuthenticateAsClient(string targetHost, params SslProtocols[] sslProtocols) => this.AuthenticateAsClient(targetHost, default(X509Certificate));
 
         public void AuthenticateAsClient(string targetHost, X509Certificate cert, params SslProtocols[] sslProtocols) => this.sslHandle = this.ni.AuthenticateAsClient(this._socket.m_Handle, targetHost, cert, sslProtocols);
 
@@ -58,7 +57,7 @@ namespace System.Net.Security {
             // Do not re-create Dispose clean-up code here.
             // Calling Dispose(false) is optimal in terms of
             // readability and maintainability.
-            Dispose(false);
+            this.Dispose(false);
         }
 
         [MethodImpl(MethodImplOptions.Synchronized)]
@@ -113,6 +112,7 @@ namespace System.Net.Security {
             this.ni.Write(this.sslHandle, buffer, offset, size, this._socket.SendTimeout);
         }
     }
+
 }
 
 

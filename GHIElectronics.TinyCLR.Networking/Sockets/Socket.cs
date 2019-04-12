@@ -1,19 +1,66 @@
-using NI = System.Net.NetworkInterface.NetworkInterface;
+using System.Net;
+using System.Net.Sockets;
+using System.Runtime.CompilerServices;
+using System.Security.Authentication;
+using System.Security.Cryptography.X509Certificates;
+
+[assembly: InternalsVisibleTo("GHIElectronics.TinyCLR.Devices.Network")]
+
+namespace GHIElectronics.TinyCLR.Networking {
+    public interface ISocketProvider {
+
+        //Socket
+        int Create(AddressFamily addressFamily, SocketType socketType, ProtocolType protocolType);
+        void Close(int socket);
+
+        void Bind(int socket, SocketAddress address);
+        void Listen(int socket, int backlog);
+        int Accept(int socket);
+
+        void Connect(int socket, SocketAddress address);
+
+        int Available(int socket);
+        bool Poll(int socket, int microSeconds, SelectMode mode);
+
+        int Send(int socket, byte[] buffer, int offset, int count, SocketFlags flags, int timeout);
+        int Receive(int socket, byte[] buffer, int offset, int count, SocketFlags flags, int timeout);
+        int SendTo(int socket, byte[] buffer, int offset, int count, SocketFlags flags, int timeout, SocketAddress address);
+        int ReceiveFrom(int socket, byte[] buffer, int offset, int count, SocketFlags flags, int timeout, ref SocketAddress address);
+
+        void GetRemoteAddress(int socket, out SocketAddress address);
+        void GetLocalAddress(int socket, out SocketAddress address);
+
+        void GetOption(int socket, SocketOptionLevel optionLevel, SocketOptionName optionName, byte[] optionValue);
+        void SetOption(int socket, SocketOptionLevel optionLevel, SocketOptionName optionName, byte[] optionValue);
+
+        //SSL
+        int AuthenticateAsClient(int socketHandle, string targetHost, X509Certificate certificate, SslProtocols[] sslProtocols);
+        int AuthenticateAsServer(int socketHandle, X509Certificate certificate, SslProtocols[] sslProtocols);
+
+        int Read(int handle, byte[] buffer, int offset, int count, int timeout);
+        int Write(int handle, byte[] buffer, int offset, int count, int timeout);
+
+        //DNS
+        void GetHostByName(string name, out string canonicalName, out SocketAddress[] addresses);
+    }
+}
 
 namespace System.Net.Sockets {
     using System.Net;
     using System.Runtime.CompilerServices;
     using System.Threading;
-    using GHIElectronics.TinyCLR.Net.NetworkInterface;
+    using GHIElectronics.TinyCLR.Networking;
 
     public class Socket : IDisposable {
         /* WARNING!!!!
 * The m_Handle field MUST be the first field in the Socket class; it is expected by
 * the SPOT.NET.this.ni class.
 */
+        internal static ISocketProvider DefaultProvider { get; set; }
+
         internal int m_Handle = -1;
 
-        internal readonly ISocketProvider ni;
+        private readonly ISocketProvider ni;
         private bool m_fBlocking = true;
         private EndPoint m_localEndPoint = null;
 
@@ -22,13 +69,15 @@ namespace System.Net.Sockets {
         private int m_sendTimeout = System.Threading.Timeout.Infinite;
 
         public Socket(AddressFamily addressFamily, SocketType socketType, ProtocolType protocolType) {
-            this.ni = NI.GetActiveForSocket();
+            this.ni = Socket.DefaultProvider;
+
+
 
             this.m_Handle = this.ni.Create(addressFamily, socketType, protocolType);
         }
 
         private Socket(int handle) {
-            this.ni = NI.GetActiveForSocket();
+            this.ni = Socket.DefaultProvider;
             this.m_Handle = handle;
         }
 
@@ -73,9 +122,9 @@ namespace System.Net.Sockets {
             return ep;
         }
 
-        public EndPoint LocalEndPoint => GetEndPoint(true);
+        public EndPoint LocalEndPoint => this.GetEndPoint(true);
 
-        public EndPoint RemoteEndPoint => GetEndPoint(false);
+        public EndPoint RemoteEndPoint => this.GetEndPoint(false);
 
         public int ReceiveTimeout {
             get => this.m_recvTimeout;
@@ -117,7 +166,7 @@ namespace System.Net.Sockets {
             this.ni.Connect(this.m_Handle, remoteEP.Serialize());
 
             if (this.m_fBlocking) {
-                Poll(-1, SelectMode.SelectWrite);
+                this.Poll(-1, SelectMode.SelectWrite);
             }
         }
 
@@ -139,7 +188,7 @@ namespace System.Net.Sockets {
             int socketHandle;
 
             if (this.m_fBlocking) {
-                Poll(-1, SelectMode.SelectRead);
+                this.Poll(-1, SelectMode.SelectRead);
             }
 
             socketHandle = this.ni.Accept(this.m_Handle);
@@ -151,11 +200,11 @@ namespace System.Net.Sockets {
             return socket;
         }
 
-        public int Send(byte[] buffer, int size, SocketFlags socketFlags) => Send(buffer, 0, size, socketFlags);
+        public int Send(byte[] buffer, int size, SocketFlags socketFlags) => this.Send(buffer, 0, size, socketFlags);
 
-        public int Send(byte[] buffer, SocketFlags socketFlags) => Send(buffer, 0, buffer != null ? buffer.Length : 0, socketFlags);
+        public int Send(byte[] buffer, SocketFlags socketFlags) => this.Send(buffer, 0, buffer != null ? buffer.Length : 0, socketFlags);
 
-        public int Send(byte[] buffer) => Send(buffer, 0, buffer != null ? buffer.Length : 0, SocketFlags.None);
+        public int Send(byte[] buffer) => this.Send(buffer, 0, buffer != null ? buffer.Length : 0, SocketFlags.None);
 
         public int Send(byte[] buffer, int offset, int size, SocketFlags socketFlags) {
             if (this.m_Handle == -1) {
@@ -175,17 +224,17 @@ namespace System.Net.Sockets {
             return this.ni.SendTo(this.m_Handle, buffer, offset, size, socketFlags, this.m_sendTimeout, address);
         }
 
-        public int SendTo(byte[] buffer, int size, SocketFlags socketFlags, EndPoint remoteEP) => SendTo(buffer, 0, size, socketFlags, remoteEP);
+        public int SendTo(byte[] buffer, int size, SocketFlags socketFlags, EndPoint remoteEP) => this.SendTo(buffer, 0, size, socketFlags, remoteEP);
 
-        public int SendTo(byte[] buffer, SocketFlags socketFlags, EndPoint remoteEP) => SendTo(buffer, 0, buffer != null ? buffer.Length : 0, socketFlags, remoteEP);
+        public int SendTo(byte[] buffer, SocketFlags socketFlags, EndPoint remoteEP) => this.SendTo(buffer, 0, buffer != null ? buffer.Length : 0, socketFlags, remoteEP);
 
-        public int SendTo(byte[] buffer, EndPoint remoteEP) => SendTo(buffer, 0, buffer != null ? buffer.Length : 0, SocketFlags.None, remoteEP);
+        public int SendTo(byte[] buffer, EndPoint remoteEP) => this.SendTo(buffer, 0, buffer != null ? buffer.Length : 0, SocketFlags.None, remoteEP);
 
-        public int Receive(byte[] buffer, int size, SocketFlags socketFlags) => Receive(buffer, 0, size, socketFlags);
+        public int Receive(byte[] buffer, int size, SocketFlags socketFlags) => this.Receive(buffer, 0, size, socketFlags);
 
-        public int Receive(byte[] buffer, SocketFlags socketFlags) => Receive(buffer, 0, buffer != null ? buffer.Length : 0, socketFlags);
+        public int Receive(byte[] buffer, SocketFlags socketFlags) => this.Receive(buffer, 0, buffer != null ? buffer.Length : 0, socketFlags);
 
-        public int Receive(byte[] buffer) => Receive(buffer, 0, buffer != null ? buffer.Length : 0, SocketFlags.None);
+        public int Receive(byte[] buffer) => this.Receive(buffer, 0, buffer != null ? buffer.Length : 0, SocketFlags.None);
 
         public int Receive(byte[] buffer, int offset, int size, SocketFlags socketFlags) {
             if (this.m_Handle == -1) {
@@ -210,11 +259,11 @@ namespace System.Net.Sockets {
             return len;
         }
 
-        public int ReceiveFrom(byte[] buffer, int size, SocketFlags socketFlags, ref EndPoint remoteEP) => ReceiveFrom(buffer, 0, size, socketFlags, ref remoteEP);
+        public int ReceiveFrom(byte[] buffer, int size, SocketFlags socketFlags, ref EndPoint remoteEP) => this.ReceiveFrom(buffer, 0, size, socketFlags, ref remoteEP);
 
-        public int ReceiveFrom(byte[] buffer, SocketFlags socketFlags, ref EndPoint remoteEP) => ReceiveFrom(buffer, 0, buffer != null ? buffer.Length : 0, socketFlags, ref remoteEP);
+        public int ReceiveFrom(byte[] buffer, SocketFlags socketFlags, ref EndPoint remoteEP) => this.ReceiveFrom(buffer, 0, buffer != null ? buffer.Length : 0, socketFlags, ref remoteEP);
 
-        public int ReceiveFrom(byte[] buffer, ref EndPoint remoteEP) => ReceiveFrom(buffer, 0, buffer != null ? buffer.Length : 0, SocketFlags.None, ref remoteEP);
+        public int ReceiveFrom(byte[] buffer, ref EndPoint remoteEP) => this.ReceiveFrom(buffer, 0, buffer != null ? buffer.Length : 0, SocketFlags.None, ref remoteEP);
 
         public void SetSocketOption(SocketOptionLevel optionLevel, SocketOptionName optionName, int optionValue) {
             if (this.m_Handle == -1) {
@@ -240,7 +289,7 @@ namespace System.Net.Sockets {
             this.ni.SetOption(this.m_Handle, optionLevel, optionName, val);
         }
 
-        public void SetSocketOption(SocketOptionLevel optionLevel, SocketOptionName optionName, bool optionValue) => SetSocketOption(optionLevel, optionName, (optionValue ? 1 : 0));
+        public void SetSocketOption(SocketOptionLevel optionLevel, SocketOptionName optionName, bool optionValue) => this.SetSocketOption(optionLevel, optionName, (optionValue ? 1 : 0));
 
         public void SetSocketOption(SocketOptionLevel optionLevel, SocketOptionName optionName, byte[] optionValue) {
             if (this.m_Handle == -1) {
@@ -260,7 +309,7 @@ namespace System.Net.Sockets {
 
             var val = new byte[4];
 
-            GetSocketOption(optionLevel, optionName, val);
+            this.GetSocketOption(optionLevel, optionName, val);
 
             //Use BitConverter.ToInt32
             //endianness?
@@ -300,12 +349,12 @@ namespace System.Net.Sockets {
         }
 
         void IDisposable.Dispose() {
-            Dispose(true);
+            this.Dispose(true);
             GC.SuppressFinalize(this);
         }
 
         ~Socket() {
-            Dispose(false);
+            this.Dispose(false);
         }
     }
 }
