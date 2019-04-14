@@ -87,15 +87,19 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
     }
 
     public class NetworkControllerSettings {
-        public byte[] MacAddress { get; set; }
-        public byte[] IpAddress { get; set; }
-        public byte[] SubnetMask { get; set; }
-        public byte[] DefaultGatewayAddress { get; set; }
-        public byte[] Dns { get; set; }
+        public uint flags;
+        public uint ipaddr;
+        public uint subnetmask;
+        public uint gateway;
+        public uint dnsServer1;
+        public uint dnsServer2;
+        public uint macAddressLen;
+        public char[] macAddressBuffer;
 
-        public bool UseDhcp { get; set; }
-        public bool UseStaticDns { get; set; }
+        NetworkControllerType type;
 
+        public bool useDhcp;
+        public bool useStaticDns;
     }
 
     public class EthernetNetworkControllerSettings : NetworkControllerSettings {
@@ -136,6 +140,7 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
 
     namespace Provider {
         public interface INetworkControllerProvider : IDisposable, GHIElectronics.TinyCLR.Networking.INetworkProvider {
+            NetworkControllerSettings ControllerSetting { get; }
             NetworkControllerType ControllerType { get; }
             NetworkCommunicationInterface CommunicationInterface { get; }
 
@@ -234,6 +239,7 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
             [MethodImpl(MethodImplOptions.InternalCall)]
             private extern void SetInterfaceSettings(I2cNetworkCommunicationInterfaceSettings settings);
 
+            public extern NetworkControllerSettings ControllerSetting { [MethodImpl(MethodImplOptions.InternalCall)] get; }
             public extern NetworkControllerType ControllerType { [MethodImpl(MethodImplOptions.InternalCall)] get; }
             public extern NetworkCommunicationInterface CommunicationInterface { [MethodImpl(MethodImplOptions.InternalCall)] get; }
 
