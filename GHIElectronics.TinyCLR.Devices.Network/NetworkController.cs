@@ -362,7 +362,7 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
     }
 
     public sealed class NetworAddressChangedEventArgs {
-        public PhysicalAddress IpAddress { get; }
+        public IPAddress IpAddress { get; }
         public DateTime Timestamp { get; }
 
         internal NetworAddressChangedEventArgs(uint address, DateTime timestamp) {
@@ -372,7 +372,7 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
             ip[2] = (byte)(address >> 16);
             ip[3] = (byte)(address >> 24);
 
-            this.IpAddress = new PhysicalAddress(ip);
+            this.IpAddress = new IPAddress(ip);
             this.Timestamp = timestamp;
         }
     }
