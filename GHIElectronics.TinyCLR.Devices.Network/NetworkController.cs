@@ -87,19 +87,18 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
     }
 
     public class NetworkControllerSettings {
-        public uint flags;
-        public uint ipaddr;
-        public uint subnetmask;
-        public uint gateway;
-        public uint dnsServer1;
-        public uint dnsServer2;
-        public uint macAddressLen;
-        public char[] macAddressBuffer;
+        public IPAddress ipaddr;
+        public IPAddress subnetmask;
+        public IPAddress gateway;
+        public IPAddress dnsServer1;
+        public IPAddress dnsServer2;
 
-        NetworkControllerType type;
+        public uint macAddressLen;
+
+        public byte[] macAddressBuffer;
 
         public bool useDhcp;
-        public bool useStaticDns;
+        public bool useDynamicDns;
     }
 
     public class EthernetNetworkControllerSettings : NetworkControllerSettings {
@@ -244,12 +243,10 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
             public extern NetworkCommunicationInterface CommunicationInterface { [MethodImpl(MethodImplOptions.InternalCall)] get; }
 
             //DNS
-
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void GetHostByName(string name, out string canonicalName, out SocketAddress[] addresses);
 
             //Socket
-
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void Bind(int socket, SocketAddress address);
 

@@ -39,9 +39,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\GHIElectronics.TinyCLR.Devices.I2c\GHIElectronics.TinyCLR.Devices.I2c.csproj">
       <Project>{670AD403-A7C6-4C0A-A9A3-82767B3FCBB2}</Project>
       <Name>GHIElectronics.TinyCLR.Devices.I2c</Name>
@@ -58,6 +55,10 @@
       <Project>{1AFA3955-B36D-4A8A-8B7F-86F39FC2FDE3}</Project>
       <Name>GHIElectronics.TinyCLR.Networking</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="GHIElectronics.TinyCLR.Devices.Network.nuspec" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
