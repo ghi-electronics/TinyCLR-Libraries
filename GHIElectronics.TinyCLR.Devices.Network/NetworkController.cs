@@ -17,10 +17,23 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
         public static NetworkController DefaultController { get; private set; }
         public INetworkControllerProvider Provider { get; }
 
+        public NetworkControllerSettings ActiveConfiguration { get; private set; }
+        public NetworkCommunicationInterfaceSettings ActiveCommunicationInterfaceSettings { get; private set; }
+        public NetworkControllerType ActiveNetworkControllerType { get; private set; }
+
         public NetworkController(INetworkControllerProvider provider) {
             this.Provider = provider;
 
             this.netifSockets = new Hashtable();
+
+            this.NetworkAddressChanged += (s, e) => {
+                var props = this.Provider.GetProperties();
+
+                this.ActiveConfiguration.ipaddr = props.ipaddr;
+                this.ActiveConfiguration.subnetmask = props.subnetmask;
+                this.ActiveConfiguration.gateway = props.gateway;
+                this.ActiveConfiguration.dnsServer = props.dnsServer;
+            };
         }
 
         ~NetworkController() => this.Dispose();
@@ -42,7 +55,14 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
 
         public void Enable() => this.Provider.Enable();
         public void Disable() => this.Provider.Disable();
-        public void SetConfiguration(NetworkControllerSettings controllerSettings, NetworkCommunicationInterfaceSettings communicationInterfaceSettings) => this.Provider.SetConfiguration(controllerSettings, communicationInterfaceSettings);
+
+        public void SetConfiguration(NetworkControllerSettings controllerSettings, NetworkCommunicationInterfaceSettings communicationInterfaceSettings) {
+            this.Provider.SetConfiguration(controllerSettings, communicationInterfaceSettings);
+
+            this.ActiveConfiguration = controllerSettings;
+            this.ActiveCommunicationInterfaceSettings = communicationInterfaceSettings;
+            this.ActiveNetworkControllerType = this.Provider.ControllerType;
+        }
 
         private NetworkAvailabilityEventHandler networkAvailabilityChangedCallbacks;
         private NetworkAddressEventHandler networkAddressChangedCallbacks;
@@ -98,6 +118,13 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
         public bool useDynamicDns;
     }
 
+    public class NetworkControllerProperties {
+        public IPAddress ipaddr;
+        public IPAddress subnetmask;
+        public IPAddress gateway;
+        public IPAddress[] dnsServer;
+    }
+
     public class EthernetNetworkControllerSettings : NetworkControllerSettings {
 
     }
@@ -136,7 +163,6 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
 
     namespace Provider {
         public interface INetworkControllerProvider : IDisposable, GHIElectronics.TinyCLR.Networking.INetworkProvider {
-            NetworkControllerSettings ControllerSetting { get; }
             NetworkControllerType ControllerType { get; }
             NetworkCommunicationInterface CommunicationInterface { get; }
 
@@ -145,6 +171,7 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
             void SetConfiguration(NetworkControllerSettings controllerSettings, NetworkCommunicationInterfaceSettings communicationInterfaceSettings);
             event NetworkAvailabilityEventHandler NetworkAvailabilityChanged;
             event NetworkAddressEventHandler NetworkAddressChanged;
+            NetworkControllerProperties GetProperties();
         }
 
         public sealed class NetworkControllerApiWrapper : INetworkControllerProvider, IApiImplementation {
@@ -171,7 +198,7 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
                 this.networkAddressChangedDispatcher = NativeEventDispatcher.GetDispatcher("GHIElectronics.TinyCLR.Devices.Network.NetworkAddressChanged");
 
                 this.networkAvailabilityChangedDispatcher.OnInterrupt += (apiName, d0, d1, d2, d3, ts) => { if (this.Api.Name == apiName) this.networkAvailabilityChangedCallbacks?.Invoke(null, new NetworkAvailabilityChangedEventArgs(d0 != 0, ts)); };
-                this.networkAddressChangedDispatcher.OnInterrupt += (apiName, d0, d1, d2, d3, ts) => { if (this.Api.Name == apiName) this.networkAddressChangedCallbacks?.Invoke(null, new NetworAddressChangedEventArgs((uint)d0, ts)); };
+                this.networkAddressChangedDispatcher.OnInterrupt += (apiName, d0, d1, d2, d3, ts) => { if (this.Api.Name == apiName) this.networkAddressChangedCallbacks?.Invoke(null, new NetworAddressChangedEventArgs(ts)); };
             }
 
             public void Dispose() => this.Release();
@@ -235,7 +262,9 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
             [MethodImpl(MethodImplOptions.InternalCall)]
             private extern void SetInterfaceSettings(I2cNetworkCommunicationInterfaceSettings settings);
 
-            public extern NetworkControllerSettings ControllerSetting { [MethodImpl(MethodImplOptions.InternalCall)] get; }
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            public extern NetworkControllerProperties GetProperties();
+
             public extern NetworkControllerType ControllerType { [MethodImpl(MethodImplOptions.InternalCall)] get; }
             public extern NetworkCommunicationInterface CommunicationInterface { [MethodImpl(MethodImplOptions.InternalCall)] get; }
 
@@ -359,19 +388,8 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
     }
 
     public sealed class NetworAddressChangedEventArgs {
-        public IPAddress IpAddress { get; }
         public DateTime Timestamp { get; }
-
-        internal NetworAddressChangedEventArgs(uint address, DateTime timestamp) {
-            var ip = new byte[4];
-            ip[0] = (byte)(address >> 0);
-            ip[1] = (byte)(address >> 8);
-            ip[2] = (byte)(address >> 16);
-            ip[3] = (byte)(address >> 24);
-
-            this.IpAddress = new IPAddress(ip);
-            this.Timestamp = timestamp;
-        }
+        internal NetworAddressChangedEventArgs(DateTime timestamp) => this.Timestamp = timestamp;
     }
 
     public delegate void NetworkAvailabilityEventHandler(NetworkController sender, NetworkAvailabilityChangedEventArgs e);
