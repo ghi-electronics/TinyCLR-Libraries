@@ -90,10 +90,7 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
         public IPAddress ipaddr;
         public IPAddress subnetmask;
         public IPAddress gateway;
-        public IPAddress dnsServer1;
-        public IPAddress dnsServer2;
-
-        public uint macAddressLen;
+        public IPAddress[] dnsServer;
 
         public byte[] macAddressBuffer;
 
