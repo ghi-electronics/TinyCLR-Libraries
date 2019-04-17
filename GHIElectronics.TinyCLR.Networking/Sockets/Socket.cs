@@ -1,56 +1,9 @@
 using System.Net;
-using System.Net.Sockets;
 using System.Runtime.CompilerServices;
-using System.Security.Authentication;
-using System.Security.Cryptography.X509Certificates;
-
-[assembly: InternalsVisibleTo("GHIElectronics.TinyCLR.Devices.Network")]
-
-namespace GHIElectronics.TinyCLR.Networking {
-    public interface INetworkProvider {
-
-        //Socket
-        int Create(AddressFamily addressFamily, SocketType socketType, ProtocolType protocolType);
-        void Close(int socket);
-
-        void Bind(int socket, SocketAddress address);
-        void Listen(int socket, int backlog);
-        int Accept(int socket);
-
-        void Connect(int socket, SocketAddress address);
-
-        int Available(int socket);
-        bool Poll(int socket, int microSeconds, SelectMode mode);
-
-        int Send(int socket, byte[] buffer, int offset, int count, SocketFlags flags, int timeout);
-        int Receive(int socket, byte[] buffer, int offset, int count, SocketFlags flags, int timeout);
-        int SendTo(int socket, byte[] buffer, int offset, int count, SocketFlags flags, int timeout, SocketAddress address);
-        int ReceiveFrom(int socket, byte[] buffer, int offset, int count, SocketFlags flags, int timeout, ref SocketAddress address);
-
-        void GetRemoteAddress(int socket, out SocketAddress address);
-        void GetLocalAddress(int socket, out SocketAddress address);
-
-        void GetOption(int socket, SocketOptionLevel optionLevel, SocketOptionName optionName, byte[] optionValue);
-        void SetOption(int socket, SocketOptionLevel optionLevel, SocketOptionName optionName, byte[] optionValue);
-
-        //SSL
-        int AuthenticateAsClient(int socketHandle, string targetHost, X509Certificate certificate, SslProtocols[] sslProtocols);
-        int AuthenticateAsServer(int socketHandle, X509Certificate certificate, SslProtocols[] sslProtocols);
-
-        int Read(int handle, byte[] buffer, int offset, int count, int timeout);
-        int Write(int handle, byte[] buffer, int offset, int count, int timeout);
-
-        //DNS
-        void GetHostByName(string name, out string canonicalName, out SocketAddress[] addresses);
-    }
-}
+using System.Threading;
+using GHIElectronics.TinyCLR.Networking;
 
 namespace System.Net.Sockets {
-    using System.Net;
-    using System.Runtime.CompilerServices;
-    using System.Threading;
-    using GHIElectronics.TinyCLR.Networking;
-
     public class Socket : IDisposable {
         /* WARNING!!!!
 * The m_Handle field MUST be the first field in the Socket class; it is expected by
