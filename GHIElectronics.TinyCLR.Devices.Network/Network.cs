@@ -11,14 +11,14 @@ using GHIElectronics.TinyCLR.Native;
 using GHIElectronics.TinyCLR.Networking;
 
 namespace GHIElectronics.TinyCLR.Devices.Network {
-    public delegate void NetworkLinkConnectedChangedEventHandler(NetworkController sender, NetworkLinkConnectedChangedEventArgs  e);
+    public delegate void NetworkLinkConnectedChangedEventHandler(NetworkController sender, NetworkLinkConnectedChangedEventArgs e);
     public delegate void NetworkAddressChangedEventHandler(NetworkController sender, NetworkAddressChangedEventArgs e);
 
-    public sealed class NetworkLinkConnectedChangedEventArgs : EventArgs  {
+    public sealed class NetworkLinkConnectedChangedEventArgs : EventArgs {
         public bool Connected { get; }
         public DateTime Timestamp { get; }
 
-        internal NetworkLinkConnectedChangedEventArgs (bool connected, DateTime timestamp) {
+        internal NetworkLinkConnectedChangedEventArgs(bool connected, DateTime timestamp) {
             this.Connected = connected;
             this.Timestamp = timestamp;
         }
@@ -77,7 +77,7 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
             Socket.DefaultProvider = this.Provider;
         }
 
-        private void OnNetworkLinkConnectedChanged(NetworkController sender, NetworkLinkConnectedChangedEventArgs  e) => this.networkLinkConnectedChangedCallbacks?.Invoke(this, e);
+        private void OnNetworkLinkConnectedChanged(NetworkController sender, NetworkLinkConnectedChangedEventArgs e) => this.networkLinkConnectedChangedCallbacks?.Invoke(this, e);
         private void OnNetworkAddressChanged(NetworkController sender, NetworkAddressChangedEventArgs e) => this.networkAddressChangedCallbacks?.Invoke(this, e);
 
         public event NetworkLinkConnectedChangedEventHandler NetworkLinkConnectedChanged {
@@ -124,13 +124,13 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
     }
 
     public class NetworkInterfaceSettings {
-        public IPAddress Address { get; }
-        public IPAddress SubnetMask { get; }
-        public IPAddress GatewayAddress { get; }
-        public IPAddress[] DnsAddresses { get; }
-        public byte[] MacAddress { get; }
-        public bool IsDhcpEnabled { get; } = true;
-        public bool IsDynamicDnsEnabled { get; } = true;
+        public IPAddress Address { get; set; }
+        public IPAddress SubnetMask { get; set; }
+        public IPAddress GatewayAddress { get; set; }
+        public IPAddress[] DnsAddresses { get; set; }
+        public byte[] MacAddress { get; set; }
+        public bool IsDhcpEnabled { get; set; } = true;
+        public bool IsDynamicDnsEnabled { get; set; } = true;
     }
 
     public class EthernetNetworkInterfaceSettings : NetworkInterfaceSettings {
@@ -219,7 +219,7 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
                 this.networkLinkConnectedChangedDispatcher = NativeEventDispatcher.GetDispatcher("GHIElectronics.TinyCLR.NativeEventNames.Network.NetworkLinkConnectedChanged");
                 this.networkAddressChangedDispatcher = NativeEventDispatcher.GetDispatcher("GHIElectronics.TinyCLR.NativeEventNames.Network.NetworkAddressChanged");
 
-                this.networkLinkConnectedChangedDispatcher.OnInterrupt += (apiName, d0, d1, d2, d3, ts) => { if (this.Api.Name == apiName) this.networkLinkConnectedChangedCallbacks?.Invoke(null, new NetworkLinkConnectedChangedEventArgs (d0 != 0, ts)); };
+                this.networkLinkConnectedChangedDispatcher.OnInterrupt += (apiName, d0, d1, d2, d3, ts) => { if (this.Api.Name == apiName) this.networkLinkConnectedChangedCallbacks?.Invoke(null, new NetworkLinkConnectedChangedEventArgs(d0 != 0, ts)); };
                 this.networkAddressChangedDispatcher.OnInterrupt += (apiName, d0, d1, d2, d3, ts) => { if (this.Api.Name == apiName) this.networkAddressChangedCallbacks?.Invoke(null, new NetworkAddressChangedEventArgs(ts)); };
             }
 
