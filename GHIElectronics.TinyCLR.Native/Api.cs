@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Runtime.CompilerServices;
 
@@ -19,19 +19,20 @@ namespace GHIElectronics.TinyCLR.Native {
         GpioController = 6 | 0x40000000,
         I2cController = 7 | 0x40000000,
         I2sController = 8 | 0x40000000,
-        OneWireController = 9 | 0x40000000,
-        PowerController = 10 | 0x20000000,
-        PwmController = 11 | 0x40000000,
-        RtcController = 12 | 0x40000000,
-        SaiController = 13 | 0x40000000,
-        SpiController = 14 | 0x40000000,
-        StorageController = 15 | 0x40000000,
-        TaskController = 16 | 0x40000000,
-        TouchController = 17 | 0x40000000,
-        UartController = 18 | 0x40000000,
-        UsbClientController = 19 | 0x40000000,
-        UsbHostController = 20 | 0x40000000,
-        WatchdogController = 21 | 0x40000000,
+        NetworkController = 9 | 0x40000000,
+        OneWireController = 10 | 0x40000000,
+        PowerController = 11 | 0x40000000,
+        PwmController = 12 | 0x40000000,
+        RtcController = 13 | 0x40000000,
+        SaiController = 14 | 0x40000000,
+        SpiController = 15 | 0x40000000,
+        StorageController = 16 | 0x40000000,
+        TaskController = 17 | 0x40000000,
+        TouchController = 18 | 0x40000000,
+        UartController = 19 | 0x40000000,
+        UsbClientController = 20 | 0x40000000,
+        UsbHostController = 21 | 0x40000000,
+        WatchdogController = 22 | 0x40000000,
         Custom = 0 | 0x80000000,
     }
 

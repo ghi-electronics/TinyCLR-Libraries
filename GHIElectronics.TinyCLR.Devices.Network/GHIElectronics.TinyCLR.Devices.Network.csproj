@@ -1,15 +1,15 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildThisFileDirectory)..\mscorlib.props" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{1AFA3955-B36D-4A8A-8B7F-86F39FC2FDE3}</ProjectGuid>
+    <ProjectGuid>{C6722DB2-B687-44C4-B1A1-665C50F34AF1}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GHIElectronics.TinyCLR.Networking</RootNamespace>
-    <AssemblyName>GHIElectronics.TinyCLR.Networking</AssemblyName>
+    <RootNamespace>GHIElectronics.TinyCLR.Devices.Network</RootNamespace>
+    <AssemblyName>GHIElectronics.TinyCLR.Devices.Network</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A1948822-69DD-4150-919B-F3F42EFB71CC};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -34,34 +34,30 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Authentication\SslProtocols.cs" />
-    <Compile Include="Cryptography\X509Certificate.cs" />
-    <Compile Include="Net\DNS.cs" />
-    <Compile Include="Net\EndPoint.cs" />
-    <Compile Include="Net\IPAddress.cs" />
-    <Compile Include="Net\IPEndPoint.cs" />
-    <Compile Include="Net\IPHostEntry.cs" />
+    <Compile Include="Network.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Net\SocketAddress.cs" />
-    <Compile Include="Security\SslStream.cs" />
-    <Compile Include="NetworkProvider.cs" />
-    <Compile Include="Sockets\SocketException.cs" />
-    <Compile Include="Sockets\AddressFamily.cs" />
-    <Compile Include="Sockets\NetworkStream.cs" />
-    <Compile Include="Sockets\ProtocolFamily.cs" />
-    <Compile Include="Sockets\ProtocolType.cs" />
-    <Compile Include="Sockets\SelectMode.cs" />
-    <Compile Include="Sockets\Socket.cs" />
-    <Compile Include="Sockets\SocketErrors.cs" />
-    <Compile Include="Sockets\SocketFlags.cs" />
-    <Compile Include="Sockets\SocketOptionLevel.cs" />
-    <Compile Include="Sockets\SocketOptionName.cs" />
-    <Compile Include="Sockets\SocketType.cs" />
-    <Compile Include="SystemInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="GHIElectronics.TinyCLR.Networking.nuspec" />
+    <None Include="GHIElectronics.TinyCLR.Devices.Network.nuspec" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GHIElectronics.TinyCLR.Devices.I2c\GHIElectronics.TinyCLR.Devices.I2c.csproj">
+      <Project>{670AD403-A7C6-4C0A-A9A3-82767B3FCBB2}</Project>
+      <Name>GHIElectronics.TinyCLR.Devices.I2c</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GHIElectronics.TinyCLR.Devices.Spi\GHIElectronics.TinyCLR.Devices.Spi.csproj">
+      <Project>{6CF1CBC7-B597-4BB7-8149-289B849ED283}</Project>
+      <Name>GHIElectronics.TinyCLR.Devices.Spi</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GHIElectronics.TinyCLR.Native\GHIElectronics.TinyCLR.Native.csproj">
+      <Project>{B602474A-AEB0-491C-832B-7EAF0B4511C0}</Project>
+      <Name>GHIElectronics.TinyCLR.Native</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GHIElectronics.TinyCLR.Networking\GHIElectronics.TinyCLR.Networking.csproj">
+      <Project>{1AFA3955-B36D-4A8A-8B7F-86F39FC2FDE3}</Project>
+      <Name>GHIElectronics.TinyCLR.Networking</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
