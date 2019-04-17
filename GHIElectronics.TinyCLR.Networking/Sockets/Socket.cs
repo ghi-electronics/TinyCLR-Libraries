@@ -1,9 +1,8 @@
-using System.Net;
-using System.Runtime.CompilerServices;
-using System.Threading;
-using GHIElectronics.TinyCLR.Networking;
-
 namespace System.Net.Sockets {
+    using System.Net;
+    using System.Runtime.CompilerServices;
+    using System.Threading;
+
     public class Socket : IDisposable {
         /* WARNING!!!!
 * The m_Handle field MUST be the first field in the Socket class; it is expected by
