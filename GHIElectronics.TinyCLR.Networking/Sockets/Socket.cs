@@ -1,7 +1,10 @@
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("GHIElectronics.TinyCLR.Devices.Network")]
+
 namespace System.Net.Sockets {
     using System.Net;
     using System.Runtime.CompilerServices;
     using System.Threading;
+    using GHIElectronics.TinyCLR.Networking;
 
     public class Socket : IDisposable {
         /* WARNING!!!!
