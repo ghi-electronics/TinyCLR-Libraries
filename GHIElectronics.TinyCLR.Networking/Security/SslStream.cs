@@ -89,7 +89,7 @@ namespace System.Net.Security {
                 throw new ArgumentOutOfRangeException();
             }
 
-            return this.ni.Read(this.sslHandle, buffer, offset, size, this._socket.ReceiveTimeout);
+            return this.ni.SecureRead(this.sslHandle, buffer, offset, size, this._socket.ReceiveTimeout);
         }
 
         public override void Write(byte[] buffer, int offset, int size) {
@@ -109,7 +109,7 @@ namespace System.Net.Security {
                 throw new ArgumentOutOfRangeException();
             }
 
-            this.ni.Write(this.sslHandle, buffer, offset, size, this._socket.SendTimeout);
+            this.ni.SecureWrite(this.sslHandle, buffer, offset, size, this._socket.SendTimeout);
         }
     }
 

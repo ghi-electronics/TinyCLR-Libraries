@@ -24,8 +24,8 @@ namespace GHIElectronics.TinyCLR.Networking {
 
         int AuthenticateAsClient(int socketHandle, string targetHost, X509Certificate certificate, SslProtocols[] sslProtocols);
         int AuthenticateAsServer(int socketHandle, X509Certificate certificate, SslProtocols[] sslProtocols);
-        int Read(int handle, byte[] buffer, int offset, int count, int timeout);
-        int Write(int handle, byte[] buffer, int offset, int count, int timeout);
+        int SecureRead(int handle, byte[] buffer, int offset, int count, int timeout);
+        int SecureWrite(int handle, byte[] buffer, int offset, int count, int timeout);
 
         void GetHostByName(string name, out string canonicalName, out SocketAddress[] addresses);
     }
