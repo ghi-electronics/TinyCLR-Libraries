@@ -10,13 +10,14 @@
     <iconUrl>http://files.ghielectronics.com/downloads/Logos/GHIElectronicsTinyCLRNuGet.png</iconUrl>
     <licenseUrl>http://files.ghielectronics.com/downloads/TinyCLR/License.txt</licenseUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
-    <description>The Network library for TinyCLR OS.</description>
+    <description>The network library for TinyCLR OS.</description>
     <copyright>Copyright GHI Electronics, LLC 2019</copyright>
     <tags>TinyCLR TinyCLROS</tags>
     <dependencies>
+      <dependency id="GHIElectronics.TinyCLR.Core" version="1.0.0" />
       <dependency id="GHIElectronics.TinyCLR.Native" version="1.0.0" />
-      <dependency id="GHIElectronics.TinyCLR.I2c" version="1.0.0" />
-      <dependency id="GHIElectronics.TinyCLR.Spi" version="1.0.0" />
+      <dependency id="GHIElectronics.TinyCLR.Devices.I2c" version="1.0.0" />
+      <dependency id="GHIElectronics.TinyCLR.Devices.Spi" version="1.0.0" />
       <dependency id="GHIElectronics.TinyCLR.Networking" version="1.0.0" />
     </dependencies>
   </metadata>
