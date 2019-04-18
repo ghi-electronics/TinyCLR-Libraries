@@ -3,7 +3,6 @@
 namespace System.Net.Sockets {
     using System.Net;
     using System.Runtime.CompilerServices;
-    using System.Threading;
     using GHIElectronics.TinyCLR.Networking;
 
     public class Socket : IDisposable {
@@ -82,10 +81,10 @@ namespace System.Net.Sockets {
             get => this.m_recvTimeout;
 
             set {
-                if (value < Timeout.Infinite) throw new ArgumentOutOfRangeException();
+                if (value < System.Threading.Timeout.Infinite) throw new ArgumentOutOfRangeException();
 
                 // desktop implementation treats 0 as infinite
-                this.m_recvTimeout = ((value == 0) ? Timeout.Infinite : value);
+                this.m_recvTimeout = ((value == 0) ? System.Threading.Timeout.Infinite : value);
             }
         }
 
@@ -93,10 +92,10 @@ namespace System.Net.Sockets {
             get => this.m_sendTimeout;
 
             set {
-                if (value < Timeout.Infinite) throw new ArgumentOutOfRangeException();
+                if (value < System.Threading.Timeout.Infinite) throw new ArgumentOutOfRangeException();
 
                 // desktop implementation treats 0 as infinite
-                this.m_sendTimeout = ((value == 0) ? Timeout.Infinite : value);
+                this.m_sendTimeout = ((value == 0) ? System.Threading.Timeout.Infinite : value);
             }
         }
 
@@ -163,7 +162,18 @@ namespace System.Net.Sockets {
                 throw new ObjectDisposedException();
             }
 
-            return this.ni.Send(this.m_Handle, buffer, offset, size, socketFlags, this.m_sendTimeout);
+            var expired = DateTime.MaxValue.Ticks;
+
+            if (this.SendTimeout != System.Threading.Timeout.Infinite) {
+                expired = DateTime.Now.Ticks + (this.SendTimeout * 10000);
+            }
+
+            var totalSend = 0;
+
+            while (DateTime.Now.Ticks < expired && totalSend < size)
+                totalSend += this.ni.Send(this.m_Handle, buffer, offset + totalSend, size - totalSend, socketFlags);
+
+            return totalSend;
         }
 
         public int SendTo(byte[] buffer, int offset, int size, SocketFlags socketFlags, EndPoint remoteEP) {
@@ -173,7 +183,18 @@ namespace System.Net.Sockets {
 
             var address = remoteEP.Serialize();
 
-            return this.ni.SendTo(this.m_Handle, buffer, offset, size, socketFlags, this.m_sendTimeout, address);
+            var expired = DateTime.MaxValue.Ticks;
+
+            if (this.SendTimeout != System.Threading.Timeout.Infinite) {
+                expired = DateTime.Now.Ticks + (this.SendTimeout * 10000);
+            }
+
+            var totalSend = 0;
+
+            while (DateTime.Now.Ticks < expired && totalSend < size)
+                totalSend += this.ni.SendTo(this.m_Handle, buffer, offset + offset + totalSend, size - totalSend, socketFlags, address);
+
+            return totalSend;
         }
 
         public int SendTo(byte[] buffer, int size, SocketFlags socketFlags, EndPoint remoteEP) => this.SendTo(buffer, 0, size, socketFlags, remoteEP);
@@ -193,7 +214,18 @@ namespace System.Net.Sockets {
                 throw new ObjectDisposedException();
             }
 
-            return this.ni.Receive(this.m_Handle, buffer, offset, size, socketFlags, this.m_recvTimeout);
+            var expired = DateTime.MaxValue.Ticks;
+
+            if (this.ReceiveTimeout != System.Threading.Timeout.Infinite) {
+                expired = DateTime.Now.Ticks + (this.ReceiveTimeout * 10000);
+            }
+
+            var totalBytesReceive = 0;
+
+            while (DateTime.Now.Ticks < expired && totalBytesReceive < size)
+                totalBytesReceive += this.ni.Receive(this.m_Handle, buffer, offset + totalBytesReceive, size - totalBytesReceive, socketFlags);
+
+            return totalBytesReceive;
         }
 
         public int ReceiveFrom(byte[] buffer, int offset, int size, SocketFlags socketFlags, ref EndPoint remoteEP) {
@@ -202,13 +234,20 @@ namespace System.Net.Sockets {
             }
 
             var address = remoteEP.Serialize();
-            var len = 0;
+            var totalBytesReceive = 0;
 
-            len = this.ni.ReceiveFrom(this.m_Handle, buffer, offset, size, socketFlags, this.m_recvTimeout, ref address);
+            var expired = DateTime.MaxValue.Ticks;
+
+            if (this.ReceiveTimeout != System.Threading.Timeout.Infinite) {
+                expired = DateTime.Now.Ticks + (this.ReceiveTimeout * 10000);
+            }
+
+            while (DateTime.Now.Ticks < expired && totalBytesReceive < size)
+                totalBytesReceive += this.ni.ReceiveFrom(this.m_Handle, buffer, offset + totalBytesReceive, size - totalBytesReceive, socketFlags, ref address);
 
             remoteEP = remoteEP.Create(address);
 
-            return len;
+            return totalBytesReceive;
         }
 
         public int ReceiveFrom(byte[] buffer, int size, SocketFlags socketFlags, ref EndPoint remoteEP) => this.ReceiveFrom(buffer, 0, size, socketFlags, ref remoteEP);
