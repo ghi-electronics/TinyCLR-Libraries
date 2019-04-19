@@ -13,10 +13,10 @@ namespace GHIElectronics.TinyCLR.Networking {
         void Connect(int socket, SocketAddress address);
         int Available(int socket);
         bool Poll(int socket, int microSeconds, SelectMode mode);
-        int Send(int socket, byte[] buffer, int offset, int count, SocketFlags flags, int timeout);
-        int Receive(int socket, byte[] buffer, int offset, int count, SocketFlags flags, int timeout);
-        int SendTo(int socket, byte[] buffer, int offset, int count, SocketFlags flags, int timeout, SocketAddress address);
-        int ReceiveFrom(int socket, byte[] buffer, int offset, int count, SocketFlags flags, int timeout, ref SocketAddress address);
+        int Send(int socket, byte[] buffer, int offset, int count, SocketFlags flags);
+        int Receive(int socket, byte[] buffer, int offset, int count, SocketFlags flags);
+        int SendTo(int socket, byte[] buffer, int offset, int count, SocketFlags flags, SocketAddress address);
+        int ReceiveFrom(int socket, byte[] buffer, int offset, int count, SocketFlags flags, ref SocketAddress address);
         void GetRemoteAddress(int socket, out SocketAddress address);
         void GetLocalAddress(int socket, out SocketAddress address);
         void GetOption(int socket, SocketOptionLevel optionLevel, SocketOptionName optionName, byte[] optionValue);
@@ -24,8 +24,8 @@ namespace GHIElectronics.TinyCLR.Networking {
 
         int AuthenticateAsClient(int socketHandle, string targetHost, X509Certificate certificate, SslProtocols[] sslProtocols);
         int AuthenticateAsServer(int socketHandle, X509Certificate certificate, SslProtocols[] sslProtocols);
-        int SecureRead(int handle, byte[] buffer, int offset, int count, int timeout);
-        int SecureWrite(int handle, byte[] buffer, int offset, int count, int timeout);
+        int SecureRead(int handle, byte[] buffer, int offset, int count);
+        int SecureWrite(int handle, byte[] buffer, int offset, int count);
 
         void GetHostByName(string name, out string canonicalName, out SocketAddress[] addresses);
     }

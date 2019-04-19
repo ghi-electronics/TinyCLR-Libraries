@@ -359,16 +359,16 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
             public extern bool Poll(int socket, int microSeconds, SelectMode mode);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern int Send(int socket, byte[] buffer, int offset, int count, SocketFlags flags, int timeout);
+            public extern int Send(int socket, byte[] buffer, int offset, int count, SocketFlags flags);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern int Receive(int socket, byte[] buffer, int offset, int count, SocketFlags flags, int timeout);
+            public extern int Receive(int socket, byte[] buffer, int offset, int count, SocketFlags flags);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern int SendTo(int socket, byte[] buffer, int offset, int count, SocketFlags flags, int timeout, SocketAddress address);
+            public extern int SendTo(int socket, byte[] buffer, int offset, int count, SocketFlags flags, SocketAddress address);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern int ReceiveFrom(int socket, byte[] buffer, int offset, int count, SocketFlags flags, int timeout, ref SocketAddress address);
+            public extern int ReceiveFrom(int socket, byte[] buffer, int offset, int count, SocketFlags flags, ref SocketAddress address);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void GetRemoteAddress(int socket, out SocketAddress address);
@@ -390,10 +390,10 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
             public extern int AuthenticateAsServer(int socketHandle, X509Certificate certificate, SslProtocols[] sslProtocols);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern int SecureRead(int handle, byte[] buffer, int offset, int count, int timeout);
+            public extern int SecureRead(int handle, byte[] buffer, int offset, int count);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern int SecureWrite(int handle, byte[] buffer, int offset, int count, int timeout);
+            public extern int SecureWrite(int handle, byte[] buffer, int offset, int count);
 
 
             [MethodImpl(MethodImplOptions.InternalCall)]
