@@ -328,7 +328,15 @@ namespace System.Net.Sockets {
                 throw new ObjectDisposedException();
             }
 
-            return this.ni.Poll(this.m_Handle, microSeconds, mode);
+            var expired = (microSeconds == -1) ? DateTime.MaxValue.Ticks : (DateTime.Now.Ticks + microSeconds * 10);
+
+            var poll = false;
+
+            while ((DateTime.Now.Ticks < expired) && !poll) {
+                poll = this.ni.Poll(this.m_Handle, microSeconds, mode);
+            }
+
+            return poll;
         }
 
         [MethodImpl(MethodImplOptions.Synchronized)]
