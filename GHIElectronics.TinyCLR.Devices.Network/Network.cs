@@ -118,6 +118,21 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
         public IPAddress[] DnsAddresses { get; }
     }
 
+    public class NetworkInterfaceProperties {
+        public byte[] MacAddress { get; }
+
+        public EthernetNetworkInterfaceProperties GetEthernetProperties() => this as EthernetNetworkInterfaceProperties;
+        public WiFiNetworkInterfaceProperties GetWiFiProperties() => this as WiFiNetworkInterfaceProperties;
+    }
+
+    public class EthernetNetworkInterfaceProperties : NetworkInterfaceProperties {
+
+    }
+
+    public class WiFiNetworkInterfaceProperties : NetworkInterfaceProperties {
+
+    }
+
     public enum NetworkInterfaceType {
         Ethernet = 0,
         WiFi = 1,
@@ -140,21 +155,6 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
     public class WiFiNetworkInterfaceSettings : NetworkInterfaceSettings {
         public string Ssid { get; set; }
         public string Password { get; set; }
-    }
-
-    public class NetworkInterfaceProperties {
-        public byte[] MacAddress { get; }
-
-        public EthernetNetworkInterfaceProperties GetEthernetProperties() => this as EthernetNetworkInterfaceProperties;
-        public WiFiNetworkInterfaceProperties GetWiFiProperties() => this as WiFiNetworkInterfaceProperties;
-    }
-
-    public class EthernetNetworkInterfaceProperties : NetworkInterfaceProperties {
-
-    }
-
-    public class WiFiNetworkInterfaceProperties : NetworkInterfaceProperties {
-
     }
 
     public enum NetworkCommunicationInterface {
