@@ -165,7 +165,7 @@ namespace System.Net.Sockets {
             var expired = DateTime.MaxValue.Ticks;
 
             if (this.SendTimeout != System.Threading.Timeout.Infinite) {
-                expired = DateTime.Now.Ticks + (this.SendTimeout * 10000);
+                expired = DateTime.Now.Ticks + (this.SendTimeout * 10000L);
             }
 
             var totalSend = 0;
@@ -186,7 +186,7 @@ namespace System.Net.Sockets {
             var expired = DateTime.MaxValue.Ticks;
 
             if (this.SendTimeout != System.Threading.Timeout.Infinite) {
-                expired = DateTime.Now.Ticks + (this.SendTimeout * 10000);
+                expired = DateTime.Now.Ticks + (this.SendTimeout * 10000L);
             }
 
             var totalSend = 0;
@@ -217,7 +217,7 @@ namespace System.Net.Sockets {
             var expired = DateTime.MaxValue.Ticks;
 
             if (this.ReceiveTimeout != System.Threading.Timeout.Infinite) {
-                expired = DateTime.Now.Ticks + (this.ReceiveTimeout * 10000);
+                expired = DateTime.Now.Ticks + (this.ReceiveTimeout * 10000L);
             }
 
             var totalBytesReceive = 0;
@@ -239,7 +239,7 @@ namespace System.Net.Sockets {
             var expired = DateTime.MaxValue.Ticks;
 
             if (this.ReceiveTimeout != System.Threading.Timeout.Infinite) {
-                expired = DateTime.Now.Ticks + (this.ReceiveTimeout * 10000);
+                expired = DateTime.Now.Ticks + (this.ReceiveTimeout * 10000L);
             }
 
             while (DateTime.Now.Ticks < expired && totalBytesReceive < size)
