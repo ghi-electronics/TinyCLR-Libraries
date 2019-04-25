@@ -27,6 +27,7 @@ CALL :Copy mscorlib "TinyCLR_Core\CLR\Libraries\mscorlib"
 CALL :Copy GHIElectronics.TinyCLR.Native "TinyCLR_Core\CLR\Libraries\GHIElectronics_TinyCLR_Native"
 CALL :Copy GHIElectronics.TinyCLR.Drawing "TinyCLR Devices\Drivers\Graphics\interop"
 CALL :Copy GHIElectronics.TinyCLR.IO "TinyCLR Devices\Drivers\Filesystem\interop"
+CALL :Copy GHIElectronics.TinyCLR.Networking "TinyCLR Devices\Drivers\DevicesInterop\Network"
 CALL :Copy GHIElectronics.TinyCLR.Devices.Adc "TinyCLR Devices\Drivers\DevicesInterop\Adc"
 CALL :Copy GHIElectronics.TinyCLR.Devices.Can "TinyCLR Devices\Drivers\DevicesInterop\Can"
 CALL :Copy GHIElectronics.TinyCLR.Devices.Dac "TinyCLR Devices\Drivers\DevicesInterop\Dac"
@@ -39,6 +40,7 @@ CALL :Copy GHIElectronics.TinyCLR.Devices.Uart "TinyCLR Devices\Drivers\DevicesI
 CALL :Copy GHIElectronics.TinyCLR.Devices.Rtc "TinyCLR Devices\Drivers\DevicesInterop\Rtc"
 CALL :Copy GHIElectronics.TinyCLR.Devices.Signals "TinyCLR Devices\Drivers\DevicesInterop\Signals"
 CALL :Copy GHIElectronics.TinyCLR.Devices.Spi "TinyCLR Devices\Drivers\DevicesInterop\Spi"
+CALL :Copy GHIElectronics.TinyCLR.Devices.Network "TinyCLR Devices\Drivers\DevicesInterop\Network"
 
 POPD
 
