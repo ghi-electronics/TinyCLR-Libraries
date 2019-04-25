@@ -34,13 +34,13 @@ CALL :Copy GHIElectronics.TinyCLR.Devices.Dac "TinyCLR Devices\Drivers\DevicesIn
 CALL :Copy GHIElectronics.TinyCLR.Devices.Display "TinyCLR Devices\Drivers\DevicesInterop\Display"
 CALL :Copy GHIElectronics.TinyCLR.Devices.Gpio "TinyCLR Devices\Drivers\DevicesInterop\Gpio"
 CALL :Copy GHIElectronics.TinyCLR.Devices.I2c "TinyCLR Devices\Drivers\DevicesInterop\I2c"
+CALL :Copy GHIElectronics.TinyCLR.Devices.Network "TinyCLR Devices\Drivers\DevicesInterop\Network"
 CALL :Copy GHIElectronics.TinyCLR.Devices.Pwm "TinyCLR Devices\Drivers\DevicesInterop\Pwm"
 CALL :Copy GHIElectronics.TinyCLR.Devices.Storage "TinyCLR Devices\Drivers\DevicesInterop\Storage"
 CALL :Copy GHIElectronics.TinyCLR.Devices.Uart "TinyCLR Devices\Drivers\DevicesInterop\Uart"
 CALL :Copy GHIElectronics.TinyCLR.Devices.Rtc "TinyCLR Devices\Drivers\DevicesInterop\Rtc"
 CALL :Copy GHIElectronics.TinyCLR.Devices.Signals "TinyCLR Devices\Drivers\DevicesInterop\Signals"
 CALL :Copy GHIElectronics.TinyCLR.Devices.Spi "TinyCLR Devices\Drivers\DevicesInterop\Spi"
-CALL :Copy GHIElectronics.TinyCLR.Devices.Network "TinyCLR Devices\Drivers\DevicesInterop\Network"
 
 POPD
 
