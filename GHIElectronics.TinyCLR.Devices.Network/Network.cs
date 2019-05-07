@@ -173,8 +173,8 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
     }
 
     public class SpiNetworkCommunicationInterfaceSettings : NetworkCommunicationInterfaceSettings {
-        public string ApiName { get; set; }
-        public SpiConnectionSettings Settings { get; set; }
+        public string SpiApiName { get; set; }
+        public SpiConnectionSettings SpiSettings { get; set; }
         public string GpioApiName { get; set; }
 
         public int ResetPin { get; set; }
