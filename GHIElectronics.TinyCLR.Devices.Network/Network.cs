@@ -4,6 +4,7 @@ using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
+using GHIElectronics.TinyCLR.Devices.Gpio;
 using GHIElectronics.TinyCLR.Devices.I2c;
 using GHIElectronics.TinyCLR.Devices.Network.Provider;
 using GHIElectronics.TinyCLR.Devices.Spi;
@@ -174,6 +175,11 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
     public class SpiNetworkCommunicationInterfaceSettings : NetworkCommunicationInterfaceSettings {
         public string ApiName { get; set; }
         public SpiConnectionSettings Settings { get; set; }
+        public int ResetPin { get; set; }
+        public int InterruptPin { get; set; }
+        public bool InterruptActiveState { get; set; }
+        public GpioPinEdge InterruptEdge { get; set; }
+        public GpioPinDriveMode InterruptDriveMode { get; set; }
     }
 
     public class I2cNetworkCommunicationInterfaceSettings : NetworkCommunicationInterfaceSettings {
