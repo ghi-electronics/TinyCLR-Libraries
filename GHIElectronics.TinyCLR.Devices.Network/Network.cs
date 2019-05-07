@@ -175,9 +175,13 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
     public class SpiNetworkCommunicationInterfaceSettings : NetworkCommunicationInterfaceSettings {
         public string ApiName { get; set; }
         public SpiConnectionSettings Settings { get; set; }
+        public string GpioApiName { get; set; }
+
         public int ResetPin { get; set; }
+        public GpioPinValue ResetActiveState { get; set; }
+
         public int InterruptPin { get; set; }
-        public bool InterruptActiveState { get; set; }
+        public GpioPinValue InterruptActiveState { get; set; }
         public GpioPinEdge InterruptEdge { get; set; }
         public GpioPinDriveMode InterruptDriveMode { get; set; }
     }
