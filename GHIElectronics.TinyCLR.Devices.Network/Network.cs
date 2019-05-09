@@ -181,7 +181,6 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
         public GpioPinValue ResetActiveState { get; set; }
 
         public int InterruptPin { get; set; }
-        public GpioPinValue InterruptActiveState { get; set; }
         public GpioPinEdge InterruptEdge { get; set; }
         public GpioPinDriveMode InterruptDriveMode { get; set; }
     }
