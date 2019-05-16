@@ -122,7 +122,7 @@ namespace GHIElectronics.TinyCLR.Drawing {
 
             var index = (y / 8) * this.Width + x;
 
-            if (color != Color.Black) {
+            if (color.R > 0 || color.G > 0 || color.B > 0) {
                 this.buffer[index] |= (byte)(1 << (y % 8));
             }
             else {
