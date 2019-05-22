@@ -168,6 +168,17 @@ namespace GHIElectronics.TinyCLR.BrainPad {
 
         public void Clear() => this.screen.Clear(Color.Black);
 
+        public void ClearPart(int x, int y, int width, int height) {
+            if (x == 0 && y == 0 && width == this.Width && height == this.Height) {
+                this.Clear();
+            }
+            else {
+                for (var lx = x; lx < width + x; lx++)
+                    for (var ly = y; ly < height + y; ly++)
+                        this.Point(lx, ly, false);
+            }
+        }
+
         public void DrawPicture(int x, int y, Picture picture) => this.DrawRotatedPicture(x, y, picture, Transform.None);
         public void DrawPictureRotated90Degrees(int x, int y, Picture picture) => this.DrawRotatedPicture(x, y, picture, Transform.Rotate90);
         public void DrawPictureRotated180Degrees(int x, int y, Picture picture) => this.DrawRotatedPicture(x, y, picture, Transform.Rotate180);
