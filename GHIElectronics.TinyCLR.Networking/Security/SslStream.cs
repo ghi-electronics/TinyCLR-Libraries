@@ -93,7 +93,7 @@ namespace System.Net.Security {
             var totalBytesReceive = 0;
 
             if (this._socket.ReceiveTimeout != System.Threading.Timeout.Infinite) {
-                expired = DateTime.Now.Ticks + (this._socket.ReceiveTimeout * 10000);
+                expired = DateTime.Now.Ticks + (this._socket.ReceiveTimeout * 10000L);
             }
 
             while (DateTime.Now.Ticks < expired && totalBytesReceive < size)
@@ -123,7 +123,7 @@ namespace System.Net.Security {
             var totalBytesSent = 0;
 
             if (this._socket.SendTimeout != System.Threading.Timeout.Infinite) {
-                expired = DateTime.Now.Ticks + (this._socket.SendTimeout * 10000);
+                expired = DateTime.Now.Ticks + (this._socket.SendTimeout * 10000L);
             }
 
             while (DateTime.Now.Ticks < expired && totalBytesSent < size)
