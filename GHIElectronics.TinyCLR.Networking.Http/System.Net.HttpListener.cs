@@ -342,7 +342,7 @@ namespace System.Net {
                         netStream = new SslStream(clientSock);
 
                         // Throws exception if fails.
-                        ((SslStream)netStream).AuthenticateAsServer(this.m_httpsCert, SslProtocols.Tls12);
+                        ((SslStream)netStream).AuthenticateAsServer(this.m_httpsCert, SslProtocols.None);
 
                         netStream.ReadTimeout = 10000;
                     }
