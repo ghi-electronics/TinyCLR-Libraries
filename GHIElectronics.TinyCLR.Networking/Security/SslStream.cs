@@ -26,6 +26,8 @@ namespace System.Net.Security {
             this.ni = Socket.DefaultProvider;
         }
 
+        public void AuthenticateAsClient(string targetHost) => this.AuthenticateAsClient(targetHost, default(X509Certificate), SslProtocols.None);
+
         public void AuthenticateAsClient(string targetHost, SslProtocols sslProtocols) => this.AuthenticateAsClient(targetHost, default(X509Certificate), sslProtocols);
 
         public void AuthenticateAsClient(string targetHost, X509Certificate cert, SslProtocols sslProtocols) => this.sslHandle = this.ni.AuthenticateAsClient(this._socket.m_Handle, targetHost, cert, sslProtocols);
