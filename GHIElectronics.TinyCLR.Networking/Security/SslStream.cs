@@ -26,11 +26,11 @@ namespace System.Net.Security {
             this.ni = Socket.DefaultProvider;
         }
 
-        public void AuthenticateAsClient(string targetHost, params SslProtocols[] sslProtocols) => this.AuthenticateAsClient(targetHost, default(X509Certificate));
+        public void AuthenticateAsClient(string targetHost, SslProtocols sslProtocols) => this.AuthenticateAsClient(targetHost, default(X509Certificate), sslProtocols);
 
-        public void AuthenticateAsClient(string targetHost, X509Certificate cert, params SslProtocols[] sslProtocols) => this.sslHandle = this.ni.AuthenticateAsClient(this._socket.m_Handle, targetHost, cert, sslProtocols);
+        public void AuthenticateAsClient(string targetHost, X509Certificate cert, SslProtocols sslProtocols) => this.sslHandle = this.ni.AuthenticateAsClient(this._socket.m_Handle, targetHost, cert, sslProtocols);
 
-        public void AuthenticateAsServer(X509Certificate cert, params SslProtocols[] sslProtocols) => this.sslHandle = this.ni.AuthenticateAsServer(this._socket.m_Handle, cert, sslProtocols);
+        public void AuthenticateAsServer(X509Certificate cert, SslProtocols sslProtocols) => this.sslHandle = this.ni.AuthenticateAsServer(this._socket.m_Handle, cert, sslProtocols);
 
 
         public bool IsServer => this._isServer;
