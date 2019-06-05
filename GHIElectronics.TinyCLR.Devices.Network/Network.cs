@@ -392,12 +392,11 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void SetOption(int socket, SocketOptionLevel optionLevel, SocketOptionName optionName, byte[] optionValue);
 
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            public extern int AuthenticateAsClient(int socketHandle, string targetHost, X509Certificate2 certificate, SslProtocols sslProtocols);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern int AuthenticateAsClient(int socketHandle, string targetHost, X509Certificate certificate, SslProtocols sslProtocols);
-
-            [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern int AuthenticateAsServer(int socketHandle, X509Certificate certificate, SslProtocols sslProtocols);
+            public extern int AuthenticateAsServer(int socketHandle, X509Certificate2 certificate, SslProtocols sslProtocols);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern int SecureRead(int handle, byte[] buffer, int offset, int count);

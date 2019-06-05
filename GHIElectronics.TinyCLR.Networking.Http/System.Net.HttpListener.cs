@@ -28,7 +28,7 @@ namespace System.Net {
         /// <summary>
         /// The certificate to send during https authentication.
         /// </summary>
-        X509Certificate m_httpsCert;
+        X509Certificate2 m_httpsCert;
 
         /// <summary>
         /// This value is the number of connections that can be ready but are
@@ -560,7 +560,7 @@ namespace System.Net {
         /// The certificate used if <b>HttpListener</b> implements an https
         /// server.
         /// </summary>
-        public X509Certificate HttpsCert {
+        public X509Certificate2 HttpsCert {
             get => this.m_httpsCert;
             set => this.m_httpsCert = value;
         }
