@@ -204,7 +204,7 @@ namespace System.Net {
         /// <b>HttpWebRequest</b>.  When the server certificate is received, it
         /// is validated with certificates in this array.
         /// </remarks>
-        X509Certificate2[] m_caCerts;
+        X509Certificate[] m_caCerts;
 
         /// <summary>
         /// The number of people using the connection.  Must reference-count this
@@ -329,7 +329,7 @@ namespace System.Net {
         /// servers.  These certificates are used only for https connections;
         /// http connections do not require them.
         /// </summary>
-        public X509Certificate2[] HttpsAuthentCerts {
+        public X509Certificate[] HttpsAuthentCerts {
             get => this.m_caCerts;
             set => this.m_caCerts = value;
         }

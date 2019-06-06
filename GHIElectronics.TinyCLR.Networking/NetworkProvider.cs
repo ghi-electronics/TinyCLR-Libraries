@@ -22,8 +22,8 @@ namespace GHIElectronics.TinyCLR.Networking {
         void GetOption(int socket, SocketOptionLevel optionLevel, SocketOptionName optionName, byte[] optionValue);
         void SetOption(int socket, SocketOptionLevel optionLevel, SocketOptionName optionName, byte[] optionValue);
 
-        int AuthenticateAsClient(int socketHandle, string targetHost, X509Certificate2 rootCertificate, SslProtocols sslProtocols);
-        int AuthenticateAsServer(int socketHandle, X509Certificate2 certificate, SslProtocols sslProtocols);
+        int AuthenticateAsClient(int socketHandle, string targetHost, X509Certificate rootCertificate, SslProtocols sslProtocols);
+        int AuthenticateAsServer(int socketHandle, X509Certificate certificate, SslProtocols sslProtocols);
         int SecureRead(int handle, byte[] buffer, int offset, int count);
         int SecureWrite(int handle, byte[] buffer, int offset, int count);
 
