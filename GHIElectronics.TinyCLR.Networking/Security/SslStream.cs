@@ -34,7 +34,6 @@ namespace System.Net.Security {
 
         public void AuthenticateAsServer(X509Certificate cert, SslProtocols sslProtocols) => this.sslHandle = this.ni.AuthenticateAsServer(this._socket.m_Handle, cert, sslProtocols);
 
-
         public bool IsServer => this._isServer;
 
         public override long Length {
