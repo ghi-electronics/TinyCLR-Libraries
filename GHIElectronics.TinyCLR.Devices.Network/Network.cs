@@ -147,6 +147,7 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
         public byte[] MacAddress { get; set; }
         public bool IsDhcpEnabled { get; set; } = true;
         public bool IsDynamicDnsEnabled { get; set; } = true;
+        public byte[] TlsEntropy { get; set; }
     }
 
     public class EthernetNetworkInterfaceSettings : NetworkInterfaceSettings {
