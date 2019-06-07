@@ -185,6 +185,8 @@ namespace System.IO {
             if (this._disposed) throw new ObjectDisposedException();
             if (!this.CanRead) throw new NotSupportedException();
 
+            if (offset + count > buffer.Length) throw new ArgumentOutOfRangeException();
+
             lock (this._nativeFileStream) {
                 // argument validation in interop layer
                 return this._nativeFileStream.Read(buffer, offset, count, TimeSpan.FromMilliseconds(FileStream.TimeoutDefault));
@@ -209,6 +211,8 @@ namespace System.IO {
         public override void Write(byte[] buffer, int offset, int count) {
             if (this._disposed) throw new ObjectDisposedException();
             if (!this.CanWrite) throw new NotSupportedException();
+
+            if (offset + count > buffer.Length) throw new ArgumentOutOfRangeException();
 
             // argument validation in interop layer
             int bytesWritten;
