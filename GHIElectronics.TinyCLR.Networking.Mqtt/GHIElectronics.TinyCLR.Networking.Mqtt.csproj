@@ -1,0 +1,99 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\GHIElectronics.TinyCLR.Core.1.0.0\build\net452\GHIElectronics.TinyCLR.Core.props" Condition="Exists('..\packages\GHIElectronics.TinyCLR.Core.1.0.0\build\net452\GHIElectronics.TinyCLR.Core.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{641CB7EC-23CE-4911-83B7-E1D435713F80}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>GHIElectronics.TinyCLR.Networking.Mqtt</RootNamespace>
+    <AssemblyName>GHIElectronics.TinyCLR.Networking.Mqtt</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{A1948822-69DD-4150-919B-F3F42EFB71CC};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Exceptions\MqttClientException.cs" />
+    <Compile Include="Exceptions\MqttCommunicationException.cs" />
+    <Compile Include="Exceptions\MqttConnectionException.cs" />
+    <Compile Include="Exceptions\MqttTimeoutException.cs" />
+    <Compile Include="IMqttNetworkChannel.cs" />
+    <Compile Include="Internal\InternalEvent.cs" />
+    <Compile Include="Internal\MsgInternalEvent.cs" />
+    <Compile Include="Internal\MsgPublishedInternalEvent.cs" />
+    <Compile Include="Messages\MqttMsgBase.cs" />
+    <Compile Include="Messages\MqttMsgConnack.cs" />
+    <Compile Include="Messages\MqttMsgConnect.cs" />
+    <Compile Include="Messages\MqttMsgConnectEventArgs.cs" />
+    <Compile Include="Messages\MqttMsgContext.cs" />
+    <Compile Include="Messages\MqttMsgDisconnect.cs" />
+    <Compile Include="Messages\MqttMsgPingReq.cs" />
+    <Compile Include="Messages\MqttMsgPingResp.cs" />
+    <Compile Include="Messages\MqttMsgPuback.cs" />
+    <Compile Include="Messages\MqttMsgPubcomp.cs" />
+    <Compile Include="Messages\MqttMsgPublish.cs" />
+    <Compile Include="Messages\MqttMsgPublishedEventArgs.cs" />
+    <Compile Include="Messages\MqttMsgPublishEventArgs.cs" />
+    <Compile Include="Messages\MqttMsgPubrec.cs" />
+    <Compile Include="Messages\MqttMsgPubrel.cs" />
+    <Compile Include="Messages\MqttMsgSuback.cs" />
+    <Compile Include="Messages\MqttMsgSubscribe.cs" />
+    <Compile Include="Messages\MqttMsgSubscribedEventArgs.cs" />
+    <Compile Include="Messages\MqttMsgSubscribeEventArgs.cs" />
+    <Compile Include="Messages\MqttMsgUnsuback.cs" />
+    <Compile Include="Messages\MqttMsgUnsubscribe.cs" />
+    <Compile Include="Messages\MqttMsgUnsubscribedEventArgs.cs" />
+    <Compile Include="Messages\MqttMsgUnsubscribeEventArgs.cs" />
+    <Compile Include="MqttClient.cs" />
+    <Compile Include="MqttSettings.cs" />
+    <Compile Include="Net\Fx.cs" />
+    <Compile Include="Net\MqttNetworkChannel.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Session\MqttBrokerSession.cs" />
+    <Compile Include="Session\MqttClientSession.cs" />
+    <Compile Include="Session\MqttSession.cs" />
+    <Compile Include="Utility\QueueExtension.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GHIElectronics.TinyCLR.Networking\GHIElectronics.TinyCLR.Networking.csproj">
+      <Project>{1AFA3955-B36D-4A8A-8B7F-86F39FC2FDE3}</Project>
+      <Name>GHIElectronics.TinyCLR.Networking</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\mscorlib\mscorlib.csproj">
+      <Project>{AA751E21-9220-42CE-8180-516BB59E4555}</Project>
+      <Name>mscorlib</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\GHIElectronics.TinyCLR.Core.1.0.0\build\net452\GHIElectronics.TinyCLR.Core.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\GHIElectronics.TinyCLR.Core.1.0.0\build\net452\GHIElectronics.TinyCLR.Core.props'))" />
+  </Target>
+</Project>
