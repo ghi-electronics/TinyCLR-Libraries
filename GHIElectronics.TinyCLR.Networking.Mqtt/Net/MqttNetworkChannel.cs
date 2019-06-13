@@ -51,7 +51,7 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
         // SSL stream
         private SslStream sslStream;
 
-        private NetworkStream netStream;
+        //private NetworkStream netStream;
 
 
         /// <summary>
@@ -153,11 +153,9 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
             // secure channel requested
             if (this.secure) {
                 // create SSL stream
-
-                this.netStream = new NetworkStream(this.socket);
                 this.sslStream = new SslStream(this.socket);
 
-                this.sslStream.AuthenticateAsClient(this.remoteHostName, this.clientCert, this.sslProtocol);
+                this.sslStream.AuthenticateAsClient(this.remoteHostName, this.caCert, this.sslProtocol);
 
 
             }
@@ -239,9 +237,6 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
         public void Close() {
 
             if (this.secure) {
-
-                this.netStream.Close();
-
                 this.sslStream.Close();
             }
             this.socket.Close();
@@ -256,10 +251,9 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
             // secure channel requested
             if (this.secure) {
 
-                this.netStream = new NetworkStream(this.socket);
                 this.sslStream = new SslStream(this.socket);
 
-                this.sslStream.AuthenticateAsServer(this.serverCert,  this.sslProtocol );
+                this.sslStream.AuthenticateAsServer(this.serverCert, this.sslProtocol);
 
             }
 
