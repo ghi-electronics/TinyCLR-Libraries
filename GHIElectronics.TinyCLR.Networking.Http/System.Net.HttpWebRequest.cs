@@ -9,7 +9,6 @@ namespace System.Net {
     using System.IO;
     using System.Net.Security;
     using System.Net.Sockets;
-    using System.Security.Authentication;
     using System.Security.Cryptography.X509Certificates;
     using System.Text;
     using System.Threading;
@@ -1217,7 +1216,10 @@ namespace System.Net {
                     var sslStream = new SslStream(retStream.m_Socket);
 
                     // Throws exception is fails.
-                    sslStream.AuthenticateAsClient(this.m_originalUrl.Host, this.m_caCerts[0]);
+                    if (this.m_caCerts != null)
+                        sslStream.AuthenticateAsClient(this.m_originalUrl.Host, this.m_caCerts[0]);
+                    else
+                        sslStream.AuthenticateAsClient(this.m_originalUrl.Host);
 
                     // Changes the stream to SSL stream.
                     retStream.m_Stream = sslStream;
