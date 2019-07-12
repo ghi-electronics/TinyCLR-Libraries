@@ -75,7 +75,7 @@
       <HintPath>packages\GHIElectronics.TinyCLR.Devices.Spi.2.0.0-preview1\lib\net452\GHIElectronics.TinyCLR.Devices.Spi.dll</HintPath>
     </Reference>
     <Reference Include="GHIElectronics.TinyCLR.Drawing, Version=2.0.0-preview1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\GHIElectronics.TinyCLR.Drawing.1.0.1\lib\net452\GHIElectronics.TinyCLR.Drawing.dll</HintPath>
+      <HintPath>packages\GHIElectronics.TinyCLR.Drawing.2.0.0-preview1\lib\net452\GHIElectronics.TinyCLR.Drawing.dll</HintPath>
     </Reference>
     <Reference Include="GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735, Version=2.0.0-preview1, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735.2.0.0-preview1\lib\net452\GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735.dll</HintPath>
