@@ -3,7 +3,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>GHIElectronics.TinyCLR.BrainPad</id>
-    <version>1.0.1</version>
+    <version>2.0.0-preview1</version>
     <authors>GHI Electronics, LLC</authors>
     <owners>GHI Electronics, LLC</owners>
     <projectUrl>https://ghielectronics.com/</projectUrl>
@@ -14,17 +14,17 @@
     <copyright>Copyright GHI Electronics, LLC 2019</copyright>
     <tags>TinyCLR TinyCLROS BrainPad education</tags>
     <dependencies>
-      <dependency id="GHIElectronics.TinyCLR.Core" version="1.0.0" />
-      <dependency id="GHIElectronics.TinyCLR.Devices.Adc" version="1.0.0" />
-      <dependency id="GHIElectronics.TinyCLR.Devices.Display" version="1.0.0" />
-      <dependency id="GHIElectronics.TinyCLR.Devices.Gpio" version="1.0.0" />
-      <dependency id="GHIElectronics.TinyCLR.Devices.I2c" version="1.0.0" />
-      <dependency id="GHIElectronics.TinyCLR.Devices.Pwm" version="1.0.0" />
-      <dependency id="GHIElectronics.TinyCLR.Devices.Spi" version="1.0.0" />
-      <dependency id="GHIElectronics.TinyCLR.Drawing" version="1.0.1" />
-      <dependency id="GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735" version="1.0.0" />
-      <dependency id="GHIElectronics.TinyCLR.Drivers.SolomonSystech.SSD1306" version="1.0.0" />
-      <dependency id="GHIElectronics.TinyCLR.Pins" version="1.0.0" />
+      <dependency id="GHIElectronics.TinyCLR.Core" version="2.0.0-preview1" />
+      <dependency id="GHIElectronics.TinyCLR.Devices.Adc" version="2.0.0-preview1" />
+      <dependency id="GHIElectronics.TinyCLR.Devices.Display" version="2.0.0-preview1" />
+      <dependency id="GHIElectronics.TinyCLR.Devices.Gpio" version="2.0.0-preview1" />
+      <dependency id="GHIElectronics.TinyCLR.Devices.I2c" version="2.0.0-preview1" />
+      <dependency id="GHIElectronics.TinyCLR.Devices.Pwm" version="2.0.0-preview1" />
+      <dependency id="GHIElectronics.TinyCLR.Devices.Spi" version="2.0.0-preview1" />
+      <dependency id="GHIElectronics.TinyCLR.Drawing" version="2.0.0-preview1" />
+      <dependency id="GHIElectronics.TinyCLR.Drivers.Sitronix.ST7735" version="2.0.0-preview1" />
+      <dependency id="GHIElectronics.TinyCLR.Drivers.SolomonSystech.SSD1306" version="2.0.0-preview1" />
+      <dependency id="GHIElectronics.TinyCLR.Pins" version="2.0.0-preview1" />
     </dependencies>
   </metadata>
   <files>
