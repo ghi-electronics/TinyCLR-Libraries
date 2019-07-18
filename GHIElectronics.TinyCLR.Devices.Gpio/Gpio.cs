@@ -44,8 +44,8 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio {
 
         private GpioController(IGpioControllerProvider provider) => this.Provider = provider;
 
-        public static GpioController GetDefault() => Api.GetDefaultFromCreator(ApiType.GpioController) is GpioController c ? c : GpioController.FromName(Api.GetDefaultName(ApiType.GpioController));
-        public static GpioController FromName(string name) => GpioController.FromProvider(new GpioControllerApiWrapper(Api.Find(name, ApiType.GpioController)));
+        public static GpioController GetDefault() => NativeApi.GetDefaultFromCreator(NativeApiType.GpioController) is GpioController c ? c : GpioController.FromName(NativeApi.GetDefaultName(NativeApiType.GpioController));
+        public static GpioController FromName(string name) => GpioController.FromProvider(new GpioControllerApiWrapper(NativeApi.Find(name, NativeApiType.GpioController)));
         public static GpioController FromProvider(IGpioControllerProvider provider) => new GpioController(provider);
 
         public void Dispose() => this.Provider.Dispose();
@@ -181,9 +181,9 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio {
             private IDictionary pinMap;
             private NativeEventDispatcher dispatcher;
 
-            public Api Api { get; }
+            public NativeApi Api { get; }
 
-            public GpioControllerApiWrapper(Api api) {
+            public GpioControllerApiWrapper(NativeApi api) {
                 this.Api = api;
 
                 this.impl = api.Implementation;

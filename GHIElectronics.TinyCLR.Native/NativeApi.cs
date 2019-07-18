@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 
 namespace GHIElectronics.TinyCLR.Native {
     //Keep in sync with native
-    public enum ApiType : uint {
+    public enum NativeApiType : uint {
         ApiManager = 0,
         DebuggerManager = 1,
         InteropManager = 2,
@@ -39,15 +39,15 @@ namespace GHIElectronics.TinyCLR.Native {
         IntPtr Implementation { get; }
     }
 
-    public sealed class Api {
+    public sealed class NativeApi {
         public delegate object DefaultCreator();
 
         private static readonly Hashtable defaultCreators = new Hashtable();
 
-        private Api() { }
+        private NativeApi() { }
 
-        public static object GetDefaultFromCreator(ApiType apiType) => Api.defaultCreators.Contains(apiType) ? ((DefaultCreator)Api.defaultCreators[apiType])?.Invoke() : null;
-        public static void SetDefaultCreator(ApiType apiType, DefaultCreator creator) => Api.defaultCreators[apiType] = creator;
+        public static object GetDefaultFromCreator(NativeApiType apiType) => NativeApi.defaultCreators.Contains(apiType) ? ((DefaultCreator)NativeApi.defaultCreators[apiType])?.Invoke() : null;
+        public static void SetDefaultCreator(NativeApiType apiType, DefaultCreator creator) => NativeApi.defaultCreators[apiType] = creator;
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         public static extern void Add(IntPtr address);
@@ -56,21 +56,21 @@ namespace GHIElectronics.TinyCLR.Native {
         public static extern void Remove(IntPtr address);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public static extern Api Find(string name, ApiType type);
+        public static extern NativeApi Find(string name, NativeApiType type);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public static extern string GetDefaultName(ApiType type);
+        public static extern string GetDefaultName(NativeApiType type);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public static extern void SetDefaultName(ApiType type, string selector);
+        public static extern void SetDefaultName(NativeApiType type, string selector);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public static extern Api[] FindAll();
+        public static extern NativeApi[] FindAll();
 
         public string Author { get; }
         public string Name { get; }
         public ulong Version { get; }
-        public ApiType Type { get; }
+        public NativeApiType Type { get; }
         public IntPtr Implementation { get; }
         public IntPtr State { get; }
     }

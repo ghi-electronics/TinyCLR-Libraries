@@ -41,8 +41,8 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
 
         private NetworkController(INetworkControllerProvider provider) => this.Provider = provider;
 
-        public static NetworkController GetDefault() => Api.GetDefaultFromCreator(ApiType.NetworkController) is NetworkController c ? c : NetworkController.FromName(Api.GetDefaultName(ApiType.NetworkController));
-        public static NetworkController FromName(string name) => NetworkController.FromProvider(new NetworkControllerApiWrapper(Api.Find(name, ApiType.NetworkController)));
+        public static NetworkController GetDefault() => NativeApi.GetDefaultFromCreator(NativeApiType.NetworkController) is NetworkController c ? c : NetworkController.FromName(NativeApi.GetDefaultName(NativeApiType.NetworkController));
+        public static NetworkController FromName(string name) => NetworkController.FromProvider(new NetworkControllerApiWrapper(NativeApi.Find(name, NativeApiType.NetworkController)));
         public static NetworkController FromProvider(INetworkControllerProvider provider) => new NetworkController(provider);
 
         public NetworkInterfaceSettings ActiveInterfaceSettings { get; private set; }
@@ -218,9 +218,9 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
             private NetworkLinkConnectedChangedEventHandler networkLinkConnectedChangedCallbacks;
             private NetworkAddressChangedEventHandler networkAddressChangedCallbacks;
 
-            public Api Api { get; }
+            public NativeApi Api { get; }
 
-            public NetworkControllerApiWrapper(Api api) {
+            public NetworkControllerApiWrapper(NativeApi api) {
                 this.Api = api;
 
                 this.impl = api.Implementation;

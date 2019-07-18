@@ -12,8 +12,8 @@ namespace GHIElectronics.TinyCLR.Devices.Can {
 
         private CanController(ICanControllerProvider provider) => this.Provider = provider;
 
-        public static CanController GetDefault() => Api.GetDefaultFromCreator(ApiType.CanController) is CanController c ? c : CanController.FromName(Api.GetDefaultName(ApiType.CanController));
-        public static CanController FromName(string name) => CanController.FromProvider(new CanControllerApiWrapper(Api.Find(name, ApiType.CanController)));
+        public static CanController GetDefault() => NativeApi.GetDefaultFromCreator(NativeApiType.CanController) is CanController c ? c : CanController.FromName(NativeApi.GetDefaultName(NativeApiType.CanController));
+        public static CanController FromName(string name) => CanController.FromProvider(new CanControllerApiWrapper(NativeApi.Find(name, NativeApiType.CanController)));
         public static CanController FromProvider(ICanControllerProvider provider) => new CanController(provider);
 
         public void Dispose() => this.Provider.Dispose();
@@ -229,9 +229,9 @@ namespace GHIElectronics.TinyCLR.Devices.Can {
             private MessageReceivedEventHandler messageReceivedCallbacks;
             private ErrorReceivedEventHandler errorReceivedCallbacks;
 
-            public Api Api { get; }
+            public NativeApi Api { get; }
 
-            public CanControllerApiWrapper(Api api) {
+            public CanControllerApiWrapper(NativeApi api) {
                 this.Api = api;
 
                 this.impl = api.Implementation;

@@ -12,8 +12,8 @@ namespace GHIElectronics.TinyCLR.Devices.Spi {
 
         private SpiController(ISpiControllerProvider provider) => this.Provider = provider;
 
-        public static SpiController GetDefault() => Api.GetDefaultFromCreator(ApiType.SpiController) is SpiController c ? c : SpiController.FromName(Api.GetDefaultName(ApiType.SpiController));
-        public static SpiController FromName(string name) => SpiController.FromProvider(new SpiControllerApiWrapper(Api.Find(name, ApiType.SpiController)));
+        public static SpiController GetDefault() => NativeApi.GetDefaultFromCreator(NativeApiType.SpiController) is SpiController c ? c : SpiController.FromName(NativeApi.GetDefaultName(NativeApiType.SpiController));
+        public static SpiController FromName(string name) => SpiController.FromProvider(new SpiControllerApiWrapper(NativeApi.Find(name, NativeApiType.SpiController)));
         public static SpiController FromProvider(ISpiControllerProvider provider) => new SpiController(provider);
 
         public void Dispose() => this.Provider.Dispose();
@@ -100,9 +100,9 @@ namespace GHIElectronics.TinyCLR.Devices.Spi {
         public sealed class SpiControllerApiWrapper : ISpiControllerProvider {
             private readonly IntPtr impl;
 
-            public Api Api { get; }
+            public NativeApi Api { get; }
 
-            public SpiControllerApiWrapper(Api api) {
+            public SpiControllerApiWrapper(NativeApi api) {
                 this.Api = api;
 
                 this.impl = api.Implementation;

@@ -10,8 +10,8 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
 
         private I2cController(II2cControllerProvider provider) => this.Provider = provider;
 
-        public static I2cController GetDefault() => Api.GetDefaultFromCreator(ApiType.I2cController) is I2cController c ? c : I2cController.FromName(Api.GetDefaultName(ApiType.I2cController));
-        public static I2cController FromName(string name) => I2cController.FromProvider(new I2cControllerApiWrapper(Api.Find(name, ApiType.I2cController)));
+        public static I2cController GetDefault() => NativeApi.GetDefaultFromCreator(NativeApiType.I2cController) is I2cController c ? c : I2cController.FromName(NativeApi.GetDefaultName(NativeApiType.I2cController));
+        public static I2cController FromName(string name) => I2cController.FromProvider(new I2cControllerApiWrapper(NativeApi.Find(name, NativeApiType.I2cController)));
         public static I2cController FromProvider(II2cControllerProvider provider) => new I2cController(provider);
 
         public void Dispose() => this.Provider.Dispose();
@@ -128,9 +128,9 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
         public sealed class I2cControllerApiWrapper : II2cControllerProvider {
             private readonly IntPtr impl;
 
-            public Api Api { get; }
+            public NativeApi Api { get; }
 
-            public I2cControllerApiWrapper(Api api) {
+            public I2cControllerApiWrapper(NativeApi api) {
                 this.Api = api;
 
                 this.impl = api.Implementation;
