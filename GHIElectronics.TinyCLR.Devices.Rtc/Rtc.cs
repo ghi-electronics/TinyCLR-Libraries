@@ -9,8 +9,8 @@ namespace GHIElectronics.TinyCLR.Devices.Rtc {
 
         private RtcController(IRtcControllerProvider provider) => this.Provider = provider;
 
-        public static RtcController GetDefault() => Api.GetDefaultFromCreator(ApiType.RtcController) is RtcController c ? c : RtcController.FromName(Api.GetDefaultName(ApiType.RtcController));
-        public static RtcController FromName(string name) => RtcController.FromProvider(new RtcControllerApiWrapper(Api.Find(name, ApiType.RtcController)));
+        public static RtcController GetDefault() => NativeApi.GetDefaultFromCreator(NativeApiType.RtcController) is RtcController c ? c : RtcController.FromName(NativeApi.GetDefaultName(NativeApiType.RtcController));
+        public static RtcController FromName(string name) => RtcController.FromProvider(new RtcControllerApiWrapper(NativeApi.Find(name, NativeApiType.RtcController)));
         public static RtcController FromProvider(IRtcControllerProvider provider) => new RtcController(provider);
 
         public void Dispose() => this.Provider.Dispose();
@@ -76,9 +76,9 @@ namespace GHIElectronics.TinyCLR.Devices.Rtc {
         public sealed class RtcControllerApiWrapper : IRtcControllerProvider {
             private readonly IntPtr impl;
 
-            public Api Api { get; }
+            public NativeApi Api { get; }
 
-            public RtcControllerApiWrapper(Api api) {
+            public RtcControllerApiWrapper(NativeApi api) {
                 this.Api = api;
 
                 this.impl = api.Implementation;

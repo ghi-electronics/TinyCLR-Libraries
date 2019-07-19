@@ -9,8 +9,8 @@ namespace GHIElectronics.TinyCLR.Devices.Storage {
 
         private StorageController(IStorageControllerProvider provider) => this.Provider = provider;
 
-        public static StorageController GetDefault() => Api.GetDefaultFromCreator(ApiType.StorageController) is StorageController c ? c : StorageController.FromName(Api.GetDefaultName(ApiType.StorageController));
-        public static StorageController FromName(string name) => StorageController.FromProvider(new StorageControllerApiWrapper(Api.Find(name, ApiType.StorageController)));
+        public static StorageController GetDefault() => NativeApi.GetDefaultFromCreator(NativeApiType.StorageController) is StorageController c ? c : StorageController.FromName(NativeApi.GetDefaultName(NativeApiType.StorageController));
+        public static StorageController FromName(string name) => StorageController.FromProvider(new StorageControllerApiWrapper(NativeApi.Find(name, NativeApiType.StorageController)));
         public static StorageController FromProvider(IStorageControllerProvider provider) => new StorageController(provider);
 
         public IntPtr Hdc => this.Provider is IApiImplementation a ? a.Implementation : throw new NotSupportedException();
@@ -51,11 +51,11 @@ namespace GHIElectronics.TinyCLR.Devices.Storage {
         public sealed class StorageControllerApiWrapper : IStorageControllerProvider, IApiImplementation {
             private readonly IntPtr impl;
 
-            public Api Api { get; }
+            public NativeApi Api { get; }
 
             IntPtr IApiImplementation.Implementation => this.impl;
 
-            public StorageControllerApiWrapper(Api api) {
+            public StorageControllerApiWrapper(NativeApi api) {
                 this.Api = api;
 
                 this.impl = api.Implementation;

@@ -11,8 +11,8 @@ namespace GHIElectronics.TinyCLR.Devices.Display {
 
         private DisplayController(IDisplayControllerProvider provider) => this.Provider = provider;
 
-        public static DisplayController GetDefault() => Api.GetDefaultFromCreator(ApiType.DisplayController) is DisplayController c ? c : DisplayController.FromName(Api.GetDefaultName(ApiType.DisplayController));
-        public static DisplayController FromName(string name) => DisplayController.FromProvider(new DisplayControllerApiWrapper(Api.Find(name, ApiType.DisplayController)));
+        public static DisplayController GetDefault() => NativeApi.GetDefaultFromCreator(NativeApiType.DisplayController) is DisplayController c ? c : DisplayController.FromName(NativeApi.GetDefaultName(NativeApiType.DisplayController));
+        public static DisplayController FromName(string name) => DisplayController.FromProvider(new DisplayControllerApiWrapper(NativeApi.Find(name, NativeApiType.DisplayController)));
         public static DisplayController FromProvider(IDisplayControllerProvider provider) => new DisplayController(provider);
 
         public IntPtr Hdc => this.Provider is IApiImplementation a ? a.Implementation : throw new NotSupportedException();
@@ -97,11 +97,11 @@ namespace GHIElectronics.TinyCLR.Devices.Display {
         public sealed class DisplayControllerApiWrapper : IDisplayControllerProvider, IApiImplementation {
             private readonly IntPtr impl;
 
-            public Api Api { get; }
+            public NativeApi Api { get; }
 
             IntPtr IApiImplementation.Implementation => this.impl;
 
-            public DisplayControllerApiWrapper(Api api) {
+            public DisplayControllerApiWrapper(NativeApi api) {
                 this.Api = api;
 
                 this.impl = api.Implementation;

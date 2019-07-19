@@ -14,8 +14,8 @@ namespace GHIElectronics.TinyCLR.Devices.Adc {
 
         private AdcController(IAdcControllerProvider provider) => this.Provider = provider;
 
-        public static AdcController GetDefault() => Api.GetDefaultFromCreator(ApiType.AdcController) is AdcController c ? c : AdcController.FromName(Api.GetDefaultName(ApiType.AdcController));
-        public static AdcController FromName(string name) => AdcController.FromProvider(new AdcControllerApiWrapper(Api.Find(name, ApiType.AdcController)));
+        public static AdcController GetDefault() => NativeApi.GetDefaultFromCreator(NativeApiType.AdcController) is AdcController c ? c : AdcController.FromName(NativeApi.GetDefaultName(NativeApiType.AdcController));
+        public static AdcController FromName(string name) => AdcController.FromProvider(new AdcControllerApiWrapper(NativeApi.Find(name, NativeApiType.AdcController)));
         public static AdcController FromProvider(IAdcControllerProvider provider) => new AdcController(provider);
 
         public int ChannelCount => this.Provider.ChannelCount;
@@ -72,9 +72,9 @@ namespace GHIElectronics.TinyCLR.Devices.Adc {
         public sealed class AdcControllerApiWrapper : IAdcControllerProvider {
             private readonly IntPtr impl;
 
-            public Api Api { get; }
+            public NativeApi Api { get; }
 
-            public AdcControllerApiWrapper(Api api) {
+            public AdcControllerApiWrapper(NativeApi api) {
                 this.Api = api;
 
                 this.impl = api.Implementation;

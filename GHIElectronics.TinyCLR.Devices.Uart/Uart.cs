@@ -13,8 +13,8 @@ namespace GHIElectronics.TinyCLR.Devices.Uart {
 
         private UartController(IUartControllerProvider provider) => this.Provider = provider;
 
-        public static UartController GetDefault() => Api.GetDefaultFromCreator(ApiType.UartController) is UartController c ? c : UartController.FromName(Api.GetDefaultName(ApiType.UartController));
-        public static UartController FromName(string name) => UartController.FromProvider(new UartControllerApiWrapper(Api.Find(name, ApiType.UartController)));
+        public static UartController GetDefault() => NativeApi.GetDefaultFromCreator(NativeApiType.UartController) is UartController c ? c : UartController.FromName(NativeApi.GetDefaultName(NativeApiType.UartController));
+        public static UartController FromName(string name) => UartController.FromProvider(new UartControllerApiWrapper(NativeApi.Find(name, NativeApiType.UartController)));
         public static UartController FromProvider(IUartControllerProvider provider) => new UartController(provider);
 
         public void Dispose() => this.Provider.Dispose();
@@ -189,9 +189,9 @@ namespace GHIElectronics.TinyCLR.Devices.Uart {
             private DataReceivedEventHandler dataReceivedCallbacks;
             private ErrorReceivedEventHandler errorReceivedCallbacks;
 
-            public Api Api { get; }
+            public NativeApi Api { get; }
 
-            public UartControllerApiWrapper(Api api) {
+            public UartControllerApiWrapper(NativeApi api) {
                 this.Api = api;
 
                 this.impl = api.Implementation;
