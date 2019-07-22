@@ -163,9 +163,9 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
 
     public enum PppAuthenticationType {
         None = 0,
-        Any = 1,
-        Pap = 2,
-        Chap = 3,
+        Any = 255,
+        Pap = 1,
+        Chap = 2,
     }
 
     public class PppNetworkInterfaceSettings : NetworkInterfaceSettings {
