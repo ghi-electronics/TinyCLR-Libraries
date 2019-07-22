@@ -172,6 +172,7 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
         public string Username { get; set; }
         public string Password { get; set; }
         public PppAuthenticationType AuthenticationType { get; set; }
+        public IPAddress Address { get; set; }
         public bool ListenForConnection { get; set; }
     }
 
