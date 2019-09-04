@@ -326,6 +326,10 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
                         this.SetInterfaceSettings(wnis);
                         break;
 
+                    case NetworkInterfaceType.Ppp when settings is PppNetworkInterfaceSettings pnis:
+                        this.SetInterfaceSettings(pnis);
+                        break;
+
                     default:
                         throw new ArgumentException("Must pass an instance whose type matches the interface type.");
                 }
@@ -361,6 +365,9 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
             private extern void SetInterfaceSettings(WiFiNetworkInterfaceSettings settings);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
+            private extern void SetInterfaceSettings(PppNetworkInterfaceSettings settings);
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
             private extern void SetCommunicationInterfaceSettings(BuiltInNetworkCommunicationInterfaceSettings settings);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
@@ -368,6 +375,9 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             private extern void SetCommunicationInterfaceSettings(I2cNetworkCommunicationInterfaceSettings settings);
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            private extern void SetCommunicationInterfaceSettings(UartNetworkCommunicationInterfaceSettings settings);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern bool GetLinkConnected();
