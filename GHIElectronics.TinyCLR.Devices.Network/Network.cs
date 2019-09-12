@@ -125,6 +125,7 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
 
         public EthernetNetworkInterfaceProperties GetEthernetProperties() => this as EthernetNetworkInterfaceProperties;
         public WiFiNetworkInterfaceProperties GetWiFiProperties() => this as WiFiNetworkInterfaceProperties;
+        public PppNetworkInterfaceProperties GetPppProperties() => this as PppNetworkInterfaceProperties;
     }
 
     public class EthernetNetworkInterfaceProperties : NetworkInterfaceProperties {
@@ -132,6 +133,10 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
     }
 
     public class WiFiNetworkInterfaceProperties : NetworkInterfaceProperties {
+
+    }
+
+    public class PppNetworkInterfaceProperties : NetworkInterfaceProperties {
 
     }
 
@@ -163,16 +168,15 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
 
     public enum PppAuthenticationType {
         None = 0,
-        Any = 255,
-        Pap = 1,
-        Chap = 2,
+        Any = 1,
+        Pap = 2,
+        Chap = 3,
     }
 
     public class PppNetworkInterfaceSettings : NetworkInterfaceSettings {
         public string Username { get; set; }
         public string Password { get; set; }
         public PppAuthenticationType AuthenticationType { get; set; }
-        public IPAddress Address { get; set; }
         public bool ListenForConnection { get; set; }
     }
 
@@ -218,7 +222,6 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
         public UartParity Parity { get; set; }
         public UartStopBitCount StopBits { get; set; }
         public UartHandshake Handshaking { get; set; }
-
     }
 
     namespace Provider {
