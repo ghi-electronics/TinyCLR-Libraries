@@ -54,6 +54,10 @@
       <Project>{6CF1CBC7-B597-4BB7-8149-289B849ED283}</Project>
       <Name>GHIElectronics.TinyCLR.Devices.Spi</Name>
     </ProjectReference>
+    <ProjectReference Include="..\GHIElectronics.TinyCLR.Devices.Uart\GHIElectronics.TinyCLR.Devices.Uart.csproj">
+      <Project>{D4456808-26EE-49D9-99ED-A11F5FF78EB9}</Project>
+      <Name>GHIElectronics.TinyCLR.Devices.Uart</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GHIElectronics.TinyCLR.Native\GHIElectronics.TinyCLR.Native.csproj">
       <Project>{B602474A-AEB0-491C-832B-7EAF0B4511C0}</Project>
       <Name>GHIElectronics.TinyCLR.Native</Name>

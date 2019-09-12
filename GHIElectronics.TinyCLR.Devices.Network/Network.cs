@@ -8,6 +8,7 @@ using GHIElectronics.TinyCLR.Devices.Gpio;
 using GHIElectronics.TinyCLR.Devices.I2c;
 using GHIElectronics.TinyCLR.Devices.Network.Provider;
 using GHIElectronics.TinyCLR.Devices.Spi;
+using GHIElectronics.TinyCLR.Devices.Uart;
 using GHIElectronics.TinyCLR.Native;
 using GHIElectronics.TinyCLR.Networking;
 
@@ -124,6 +125,7 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
 
         public EthernetNetworkInterfaceProperties GetEthernetProperties() => this as EthernetNetworkInterfaceProperties;
         public WiFiNetworkInterfaceProperties GetWiFiProperties() => this as WiFiNetworkInterfaceProperties;
+        public PppNetworkInterfaceProperties GetPppProperties() => this as PppNetworkInterfaceProperties;
     }
 
     public class EthernetNetworkInterfaceProperties : NetworkInterfaceProperties {
@@ -134,9 +136,14 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
 
     }
 
+    public class PppNetworkInterfaceProperties : NetworkInterfaceProperties {
+
+    }
+
     public enum NetworkInterfaceType {
         Ethernet = 0,
         WiFi = 1,
+        Ppp = 2,
     }
 
     public class NetworkInterfaceSettings {
@@ -159,10 +166,25 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
         public string Password { get; set; }
     }
 
+    public enum PppAuthenticationType {
+        None = 0,
+        Any = 1,
+        Pap = 2,
+        Chap = 3,
+    }
+
+    public class PppNetworkInterfaceSettings : NetworkInterfaceSettings {
+        public string Username { get; set; }
+        public string Password { get; set; }
+        public PppAuthenticationType AuthenticationType { get; set; }
+        public bool ListenForConnection { get; set; }
+    }
+
     public enum NetworkCommunicationInterface {
         BuiltIn = 0,
         Spi = 1,
         I2c = 2,
+        Uart = 3,
     }
 
     public class NetworkCommunicationInterfaceSettings {
@@ -190,6 +212,16 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
     public class I2cNetworkCommunicationInterfaceSettings : NetworkCommunicationInterfaceSettings {
         public string ApiName { get; set; }
         public I2cConnectionSettings Settings { get; set; }
+    }
+
+    public class UartNetworkCommunicationInterfaceSettings : NetworkCommunicationInterfaceSettings {
+        public string ApiName { get; set; }
+
+        public int BaudRate { get; set; }
+        public int DataBits { get; set; }
+        public UartParity Parity { get; set; }
+        public UartStopBitCount StopBits { get; set; }
+        public UartHandshake Handshaking { get; set; }
     }
 
     namespace Provider {
@@ -297,6 +329,10 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
                         this.SetInterfaceSettings(wnis);
                         break;
 
+                    case NetworkInterfaceType.Ppp when settings is PppNetworkInterfaceSettings pnis:
+                        this.SetInterfaceSettings(pnis);
+                        break;
+
                     default:
                         throw new ArgumentException("Must pass an instance whose type matches the interface type.");
                 }
@@ -316,6 +352,10 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
                         this.SetCommunicationInterfaceSettings(icis);
                         break;
 
+                    case NetworkCommunicationInterface.Uart when settings is UartNetworkCommunicationInterfaceSettings ucis:
+                        this.SetCommunicationInterfaceSettings(ucis);
+                        break;
+
                     default:
                         throw new ArgumentException("Must pass an instance whose type matches the communication interface type.");
                 }
@@ -328,6 +368,9 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
             private extern void SetInterfaceSettings(WiFiNetworkInterfaceSettings settings);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
+            private extern void SetInterfaceSettings(PppNetworkInterfaceSettings settings);
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
             private extern void SetCommunicationInterfaceSettings(BuiltInNetworkCommunicationInterfaceSettings settings);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
@@ -335,6 +378,9 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             private extern void SetCommunicationInterfaceSettings(I2cNetworkCommunicationInterfaceSettings settings);
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            private extern void SetCommunicationInterfaceSettings(UartNetworkCommunicationInterfaceSettings settings);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern bool GetLinkConnected();
