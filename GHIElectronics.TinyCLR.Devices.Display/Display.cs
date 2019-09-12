@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.CompilerServices;
 using GHIElectronics.TinyCLR.Devices.Display.Provider;
 using GHIElectronics.TinyCLR.Devices.I2c;
@@ -27,7 +27,7 @@ namespace GHIElectronics.TinyCLR.Devices.Display {
         public void Enable() => this.Provider.Enable();
         public void Disable() => this.Provider.Disable();
 
-        public void DrawBuffer(int x, int y, int width, int height, byte[] data, int offset) => this.Provider.DrawBuffer(x, y, width, height, data, offset);
+        public void DrawBuffer(int targetX, int targetY, int sourceX, int sourceY, int width, int height, int originalWidth, byte[] data, int offset) => this.Provider.DrawBuffer(targetX, targetY, sourceX, sourceY, width, height, originalWidth, data, offset);
         public void DrawPixel(int x, int y, long color) => this.Provider.DrawPixel(x, y, color);
         public void DrawString(string value) => this.Provider.DrawString(value);
 
@@ -89,7 +89,7 @@ namespace GHIElectronics.TinyCLR.Devices.Display {
             void Enable();
             void Disable();
             void SetConfiguration(DisplayControllerSettings configuration);
-            void DrawBuffer(int x, int y, int width, int height, byte[] data, int offset);
+            void DrawBuffer(int targetX, int targetY, int sourceX, int sourceY, int width, int height, int originalWidth, byte[] data, int offset);
             void DrawPixel(int x, int y, long color);
             void DrawString(string value);
         }
@@ -124,7 +124,7 @@ namespace GHIElectronics.TinyCLR.Devices.Display {
             public extern void Disable();
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern void DrawBuffer(int x, int y, int width, int height, byte[] data, int offset);
+            public extern void DrawBuffer(int targetX, int targetY, int sourceX, int sourceY, int width, int height, int originalWidth, byte[] data, int offset);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void DrawPixel(int x, int y, long color);
