@@ -63,6 +63,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Devi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Devices.Network", "GHIElectronics.TinyCLR.Devices.Network\GHIElectronics.TinyCLR.Devices.Network.csproj", "{C6722DB2-B687-44C4-B1A1-665C50F34AF1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.SQLite", "GHIElectronics.TinyCLR.SQLite\GHIElectronics.TinyCLR.SQLite.csproj", "{212BDB85-A7EF-43FB-94B8-07B9259350C1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -161,6 +163,10 @@ Global
 		{C6722DB2-B687-44C4-B1A1-665C50F34AF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C6722DB2-B687-44C4-B1A1-665C50F34AF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C6722DB2-B687-44C4-B1A1-665C50F34AF1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{212BDB85-A7EF-43FB-94B8-07B9259350C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{212BDB85-A7EF-43FB-94B8-07B9259350C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{212BDB85-A7EF-43FB-94B8-07B9259350C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{212BDB85-A7EF-43FB-94B8-07B9259350C1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
