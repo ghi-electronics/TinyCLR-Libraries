@@ -1,10 +1,8 @@
 using System;
 using System.Collections;
-using System.IO;
 using System.Runtime.CompilerServices;
 
 namespace GHIElectronics.TinyCLR.Data.SQLite {
-
     public class ResultSet {
         private int rowCount;
         private int columnCount;
@@ -18,7 +16,7 @@ namespace GHIElectronics.TinyCLR.Data.SQLite {
 
         public ArrayList this[int row] {
             get {
-                if (row < 0 || row >= this.rowCount) throw new ArgumentOutOfRangeException("row");
+                if (row < 0 || row >= this.rowCount) throw new ArgumentOutOfRangeException(nameof(row));
 
                 return (ArrayList)this.Data[row];
             }
@@ -26,16 +24,16 @@ namespace GHIElectronics.TinyCLR.Data.SQLite {
 
         public object this[int row, int column] {
             get {
-                if (row < 0 || row >= this.rowCount) throw new ArgumentOutOfRangeException("row");
-                if (column < 0 || column >= this.columnCount) throw new ArgumentOutOfRangeException("column");
+                if (row < 0 || row >= this.rowCount) throw new ArgumentOutOfRangeException(nameof(row));
+                if (column < 0 || column >= this.columnCount) throw new ArgumentOutOfRangeException(nameof(column));
 
                 return ((ArrayList)this.Data[row])[column];
             }
         }
 
         internal ResultSet(string[] columnNames) {
-            if (columnNames == null) throw new ArgumentNullException("columnNames");
-            if (columnNames.Length == 0) throw new ArgumentException("At least one column must be provided.", "columnNames");
+            if (columnNames == null) throw new ArgumentNullException(nameof(columnNames));
+            if (columnNames.Length == 0) throw new ArgumentException("At least one column must be provided.", nameof(columnNames));
 
             this.data = new ArrayList();
             this.columnNames = new string[columnNames.Length];
@@ -46,7 +44,7 @@ namespace GHIElectronics.TinyCLR.Data.SQLite {
         }
 
         internal void AddRow(ArrayList row) {
-            if (row.Count != this.columnCount) throw new ArgumentException("Row must contain exactly as many members as the number of columns in this result set.", "row");
+            if (row.Count != this.columnCount) throw new ArgumentException("Row must contain exactly as many members as the number of columns in this result set.", nameof(row));
 
             this.rowCount++;
             this.data.Add(row);
@@ -79,9 +77,9 @@ namespace GHIElectronics.TinyCLR.Data.SQLite {
             this.nativePointer = 0;
             this.disposed = false;
 
-            file = Path.GetFullPath(file);
+            file = System.IO.Path.GetFullPath(file);
 
-            if (file == null) throw new ArgumentException("You must provide a valid file.", "file");
+            if (file == null) throw new ArgumentException("You must provide a valid file.", nameof(file));
 
             if (this.NativeOpen(file) != SQLITE_OK)
                 throw new OpenException();
@@ -97,8 +95,8 @@ namespace GHIElectronics.TinyCLR.Data.SQLite {
         }
 
         public void ExecuteNonQuery(string query) {
-            if (this.disposed) throw new ObjectDisposedException();
-            if (query == null) throw new ArgumentNullException("query");
+            if (this.disposed) throw new ObjectDisposedException("Object disposed.");
+            if (query == null) throw new ArgumentNullException(nameof(query));
 
             var handle = this.PrepareSqlStatement(query);
 
@@ -109,8 +107,8 @@ namespace GHIElectronics.TinyCLR.Data.SQLite {
         }
 
         public ResultSet ExecuteQuery(string query) {
-            if (this.disposed) throw new ObjectDisposedException();
-            if (query == null) throw new ArgumentNullException("query");
+            if (this.disposed) throw new ObjectDisposedException("Object disposed.");
+            if (query == null) throw new ArgumentNullException(nameof(query));
 
             var handle = this.PrepareSqlStatement(query);
             var columnCount = this.NativeColumnCount(handle);
@@ -165,7 +163,7 @@ namespace GHIElectronics.TinyCLR.Data.SQLite {
         }
 
         private int PrepareSqlStatement(string query) {
-            if (this.disposed) throw new ObjectDisposedException();
+            if (this.disposed) throw new ObjectDisposedException("Object disposed.");
 
             if (this.NativePrepare(query, query.Length, out var handle) != SQLITE_OK)
                 throw new QueryPrepareException(this.NativeErrorMessage());
@@ -174,7 +172,7 @@ namespace GHIElectronics.TinyCLR.Data.SQLite {
         }
 
         private void FinalizeSqlStatment(int handle) {
-            if (this.disposed) throw new ObjectDisposedException();
+            if (this.disposed) throw new ObjectDisposedException("Object disposed.");
 
             if (this.NativeFinalize(handle) != SQLITE_OK)
                 throw new QueryFinalizationException(this.NativeErrorMessage());
@@ -221,8 +219,5 @@ namespace GHIElectronics.TinyCLR.Data.SQLite {
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         extern private void NativeColumnBlobData(int handle, int column, byte[] buffer);
-
-#pragma warning disable 0414
-#pragma warning restore 0414
     }
 }
