@@ -4,6 +4,7 @@ using System.IO;
 using System.Runtime.CompilerServices;
 
 namespace GHIElectronics.TinyCLR.SQLite {
+
     public class ResultSet {
         private int rowCount;
         private int columnCount;
@@ -11,11 +12,8 @@ namespace GHIElectronics.TinyCLR.SQLite {
         private ArrayList data;
 
         public int RowCount => this.rowCount;
-
         public int ColumnCount => this.columnCount;
-
         public string[] ColumnNames => this.columnNames;
-
         public ArrayList Data => this.data;
 
         public ArrayList this[int row] {
