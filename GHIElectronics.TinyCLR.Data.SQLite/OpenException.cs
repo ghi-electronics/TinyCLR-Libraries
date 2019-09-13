@@ -3,7 +3,6 @@ using System;
 namespace GHIElectronics.TinyCLR.Data.SQLite {
     [Serializable]
     public class OpenException : System.Exception {
-
         internal OpenException() : base() {
         }
 

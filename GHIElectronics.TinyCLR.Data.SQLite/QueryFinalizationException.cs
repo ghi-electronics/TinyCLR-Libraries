@@ -3,7 +3,6 @@ using System;
 namespace GHIElectronics.TinyCLR.Data.SQLite {
     [Serializable]
     public class QueryFinalizationException : System.Exception {
-
         internal QueryFinalizationException() : base() {
         }
 
