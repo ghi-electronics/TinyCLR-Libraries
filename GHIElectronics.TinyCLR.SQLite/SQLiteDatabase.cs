@@ -53,7 +53,7 @@ namespace GHIElectronics.TinyCLR.SQLite {
         }
     }
 
-    public class Database : IDisposable {
+    public class SQLiteDatabase : IDisposable {
         private const int SQLITE_OK = 0;
         private const int SQLITE_ROW = 100;
         private const int SQLITE_DONE = 101;
@@ -68,14 +68,14 @@ namespace GHIElectronics.TinyCLR.SQLite {
         private int nativePointer;
 #pragma warning restore 0414
 
-        public Database() {
+        public SQLiteDatabase() {
             this.nativePointer = 0;
             this.disposed = false;
 
             if (this.NativeOpen(":memory:") != SQLITE_OK) throw new OpenException();
         }
 
-        public Database(string file) {
+        public SQLiteDatabase(string file) {
             this.nativePointer = 0;
             this.disposed = false;
 
@@ -87,7 +87,7 @@ namespace GHIElectronics.TinyCLR.SQLite {
                 throw new OpenException();
         }
 
-        ~Database() {
+        ~SQLiteDatabase() {
             this.Dispose(false);
         }
 
@@ -121,16 +121,16 @@ namespace GHIElectronics.TinyCLR.SQLite {
 
             var results = new ResultSet(columnNames);
 
-            while (this.NativeStep(handle) == Database.SQLITE_ROW) {
+            while (this.NativeStep(handle) == SQLiteDatabase.SQLITE_ROW) {
                 var row = new ArrayList();
 
                 for (var i = 0; i < columnCount; i++) {
                     switch (this.NativeColumnType(handle, i)) {
-                        case Database.SQLITE_INTEGER: row.Add(this.NativeColumnLong(handle, i)); break;
-                        case Database.SQLITE_TEXT: row.Add(this.NativeColumnText(handle, i)); break;
-                        case Database.SQLITE_FLOAT: row.Add(this.NativeColumnDouble(handle, i)); break;
-                        case Database.SQLITE_NULL: row.Add(null); break;
-                        case Database.SQLITE_BLOB:
+                        case SQLiteDatabase.SQLITE_INTEGER: row.Add(this.NativeColumnLong(handle, i)); break;
+                        case SQLiteDatabase.SQLITE_TEXT: row.Add(this.NativeColumnText(handle, i)); break;
+                        case SQLiteDatabase.SQLITE_FLOAT: row.Add(this.NativeColumnDouble(handle, i)); break;
+                        case SQLiteDatabase.SQLITE_NULL: row.Add(null); break;
+                        case SQLiteDatabase.SQLITE_BLOB:
                             var length = this.NativeColumnBlobLength(handle, i);
 
                             if (length == 0) {
