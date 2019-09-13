@@ -1,56 +1,9 @@
 using System;
 using System.Collections;
+using System.IO;
 using System.Runtime.CompilerServices;
 
 namespace GHIElectronics.TinyCLR.Data.SQLite {
-    public class ResultSet {
-        private int rowCount;
-        private int columnCount;
-        private string[] columnNames;
-        private ArrayList data;
-
-        public int RowCount => this.rowCount;
-        public int ColumnCount => this.columnCount;
-        public string[] ColumnNames => this.columnNames;
-        public ArrayList Data => this.data;
-
-        public ArrayList this[int row] {
-            get {
-                if (row < 0 || row >= this.rowCount) throw new ArgumentOutOfRangeException(nameof(row));
-
-                return (ArrayList)this.Data[row];
-            }
-        }
-
-        public object this[int row, int column] {
-            get {
-                if (row < 0 || row >= this.rowCount) throw new ArgumentOutOfRangeException(nameof(row));
-                if (column < 0 || column >= this.columnCount) throw new ArgumentOutOfRangeException(nameof(column));
-
-                return ((ArrayList)this.Data[row])[column];
-            }
-        }
-
-        internal ResultSet(string[] columnNames) {
-            if (columnNames == null) throw new ArgumentNullException(nameof(columnNames));
-            if (columnNames.Length == 0) throw new ArgumentException("At least one column must be provided.", nameof(columnNames));
-
-            this.data = new ArrayList();
-            this.columnNames = new string[columnNames.Length];
-            this.columnCount = columnNames.Length;
-            this.rowCount = 0;
-
-            Array.Copy(columnNames, this.columnNames, columnNames.Length);
-        }
-
-        internal void AddRow(ArrayList row) {
-            if (row.Count != this.columnCount) throw new ArgumentException("Row must contain exactly as many members as the number of columns in this result set.", nameof(row));
-
-            this.rowCount++;
-            this.data.Add(row);
-        }
-    }
-
     public class SQLiteDatabase : IDisposable {
         private const int SQLITE_OK = 0;
         private const int SQLITE_ROW = 100;
@@ -77,7 +30,7 @@ namespace GHIElectronics.TinyCLR.Data.SQLite {
             this.nativePointer = 0;
             this.disposed = false;
 
-            file = System.IO.Path.GetFullPath(file);
+            file = Path.GetFullPath(file);
 
             if (file == null) throw new ArgumentException("You must provide a valid file.", nameof(file));
 
@@ -178,46 +131,46 @@ namespace GHIElectronics.TinyCLR.Data.SQLite {
                 throw new QueryFinalizationException(this.NativeErrorMessage());
         }
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        extern private int NativeOpen(string filename);
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private extern int NativeOpen(string filename);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        extern private int NativeClose();
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private extern int NativeClose();
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        extern private int NativePrepare(string query, int queryLength, out int handle);
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private extern int NativePrepare(string query, int queryLength, out int handle);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        extern private string NativeErrorMessage();
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private extern string NativeErrorMessage();
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        extern private int NativeStep(int handle);
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private extern int NativeStep(int handle);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        extern private int NativeFinalize(int handle);
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private extern int NativeFinalize(int handle);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        extern private int NativeColumnCount(int handle);
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private extern int NativeColumnCount(int handle);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        extern private string NativeColumnName(int handle, int column);
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private extern string NativeColumnName(int handle, int column);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        extern private int NativeColumnType(int handle, int column);
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private extern int NativeColumnType(int handle, int column);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        extern private long NativeColumnLong(int handle, int column);
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private extern long NativeColumnLong(int handle, int column);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        extern private string NativeColumnText(int handle, int column);
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private extern string NativeColumnText(int handle, int column);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        extern private double NativeColumnDouble(int handle, int column);
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private extern double NativeColumnDouble(int handle, int column);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        extern private int NativeColumnBlobLength(int handle, int column);
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private extern int NativeColumnBlobLength(int handle, int column);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        extern private void NativeColumnBlobData(int handle, int column, byte[] buffer);
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private extern void NativeColumnBlobData(int handle, int column, byte[] buffer);
     }
 }
