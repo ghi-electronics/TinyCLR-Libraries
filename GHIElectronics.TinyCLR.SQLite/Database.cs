@@ -4,30 +4,20 @@ using System.IO;
 using System.Runtime.CompilerServices;
 
 namespace GHIElectronics.TinyCLR.SQLite {
-    /// <summary>Represents the results of SQLite query.</summary>
     public class ResultSet {
         private int rowCount;
         private int columnCount;
         private string[] columnNames;
         private ArrayList data;
 
-        /// <summary>The number of rows in the result set.</summary>
         public int RowCount => this.rowCount;
 
-        /// <summary>The number of columns in the result set.</summary>
         public int ColumnCount => this.columnCount;
 
-        /// <summary>The names of the columns.</summary>
         public string[] ColumnNames => this.columnNames;
 
-        /// <summary>
-        /// The result data. Each entry in the array list represents one row as an ArrayList where each entry represents a cell in that row.
-        /// </summary>
         public ArrayList Data => this.data;
 
-        /// <summary>The row data for the row with the given index.</summary>
-        /// <param name="row">The row to access.</param>
-        /// <returns>The ArrayList for that row.</returns>
         public ArrayList this[int row] {
             get {
                 if (row < 0 || row >= this.rowCount) throw new ArgumentOutOfRangeException("row");
@@ -36,10 +26,6 @@ namespace GHIElectronics.TinyCLR.SQLite {
             }
         }
 
-        /// <summary>Accesses the data at the given row and column.</summary>
-        /// <param name="row">The row to access.</param>
-        /// <param name="column">The column to access.</param>
-        /// <returns>The object at that row and column.</returns>
         public object this[int row, int column] {
             get {
                 if (row < 0 || row >= this.rowCount) throw new ArgumentOutOfRangeException("row");
@@ -68,11 +54,7 @@ namespace GHIElectronics.TinyCLR.SQLite {
             this.data.Add(row);
         }
     }
-    /// <summary>A SQLite database. See https://www.ghielectronics.com/docs/135/ for more information.</summary>
-    /// <remarks>
-    /// Supported SQLite database version 3.7.13. This class exposes simple methods to open, close and process SQL queries. Currently, this version
-    /// supports INTEGER, DOUBLE and TEXT record types.
-    /// </remarks>
+
     public class Database : IDisposable {
         private const int SQLITE_OK = 0;
         private const int SQLITE_ROW = 100;
@@ -88,7 +70,6 @@ namespace GHIElectronics.TinyCLR.SQLite {
         private int nativePointer;
 #pragma warning restore 0414
 
-        /// <summary>Creates a SQLite database in memory</summary>
         public Database() {
             this.nativePointer = 0;
             this.disposed = false;
@@ -96,8 +77,6 @@ namespace GHIElectronics.TinyCLR.SQLite {
             if (this.NativeOpen(":memory:") != SQLITE_OK) throw new OpenException();
         }
 
-        /// <summary>Opens or creates a SQLite database with the specified path to a file, such as "\\SD\\Database.dat"</summary>
-        /// <param name="file">The path to the file.</param>
         public Database(string file) {
             this.nativePointer = 0;
             this.disposed = false;
@@ -110,19 +89,15 @@ namespace GHIElectronics.TinyCLR.SQLite {
                 throw new OpenException();
         }
 
-        /// <summary>The finalizer.</summary>
         ~Database() {
             this.Dispose(false);
         }
 
-        /// <summary>Closes the database.</summary>
         public void Dispose() {
             this.Dispose(true);
             GC.SuppressFinalize(this);
         }
 
-        /// <summary>Executes a query that returns no results</summary>
-        /// <param name="query">The SQL query to execute</param>
         public void ExecuteNonQuery(string query) {
             if (this.disposed) throw new ObjectDisposedException();
             if (query == null) throw new ArgumentNullException("query");
@@ -135,9 +110,6 @@ namespace GHIElectronics.TinyCLR.SQLite {
             this.FinalizeSqlStatment(handle);
         }
 
-        /// <summary>Executes a query and returns the results.</summary>
-        /// <param name="query">The SQL query to execute</param>
-        /// <returns>The results of the query.</returns>
         public ResultSet ExecuteQuery(string query) {
             if (this.disposed) throw new ObjectDisposedException();
             if (query == null) throw new ArgumentNullException("query");
@@ -185,8 +157,6 @@ namespace GHIElectronics.TinyCLR.SQLite {
             return results;
         }
 
-        /// <summary>Closes the database.</summary>
-        /// <param name="disposing">Whether or not this is called from Dispose.</param>
         protected virtual void Dispose(bool disposing) {
             if (this.disposed)
                 return;
@@ -253,7 +223,7 @@ namespace GHIElectronics.TinyCLR.SQLite {
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         extern private void NativeColumnBlobData(int handle, int column, byte[] buffer);
-        /// <summary>The exception thrown when the database fails to execute a query.</summary>
+
         [Serializable]
         public class QueryExecutionException : System.Exception {
 
@@ -270,7 +240,6 @@ namespace GHIElectronics.TinyCLR.SQLite {
             }
         }
 
-        /// <summary>The exception thrown when the database fails to finalize a query.</summary>
         [Serializable]
         public class QueryFinalizationException : System.Exception {
 
@@ -287,7 +256,6 @@ namespace GHIElectronics.TinyCLR.SQLite {
             }
         }
 
-        /// <summary>The exception thrown when the database fails to prepare the query.</summary>
         [Serializable]
         public class QueryPrepareException : System.Exception {
 
@@ -304,7 +272,6 @@ namespace GHIElectronics.TinyCLR.SQLite {
             }
         }
 
-        /// <summary>The exception thrown when the database fails to open.</summary>
         [Serializable]
         public class OpenException : System.Exception {
 
