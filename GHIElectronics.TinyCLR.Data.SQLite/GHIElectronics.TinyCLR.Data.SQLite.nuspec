@@ -2,7 +2,7 @@
 
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
-    <id>GHIElectronics.TinyCLR.SQLite</id>
+    <id>GHIElectronics.TinyCLR.Data.SQLite</id>
     <version>2.0.0-preview1</version>
     <authors>GHI Electronics, LLC</authors>
     <owners>GHI Electronics, LLC</owners>
@@ -19,6 +19,6 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="$TargetDir$GHIElectronics.TinyCLR.SQLite.dll" target="lib\net452" />
+    <file src="$TargetDir$GHIElectronics.TinyCLR.Data.SQLite.dll" target="lib\net452" />
   </files>
 </package>

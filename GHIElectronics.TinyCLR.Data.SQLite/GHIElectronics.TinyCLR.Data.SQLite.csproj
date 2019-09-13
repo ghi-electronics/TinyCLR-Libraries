@@ -8,8 +8,8 @@
     <ProjectGuid>{212BDB85-A7EF-43FB-94B8-07B9259350C1}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GHIElectronics.TinyCLR.SQLite</RootNamespace>
-    <AssemblyName>GHIElectronics.TinyCLR.SQLite</AssemblyName>
+    <RootNamespace>GHIElectronics.TinyCLR.Data.SQLite</RootNamespace>
+    <AssemblyName>GHIElectronics.TinyCLR.Data.SQLite</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A1948822-69DD-4150-919B-F3F42EFB71CC};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -38,7 +38,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="GHIElectronics.TinyCLR.SQLite.nuspec" />
+    <None Include="GHIElectronics.TinyCLR.Data.SQLite.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

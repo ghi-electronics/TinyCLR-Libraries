@@ -3,7 +3,7 @@ using System.Collections;
 using System.IO;
 using System.Runtime.CompilerServices;
 
-namespace GHIElectronics.TinyCLR.SQLite {
+namespace GHIElectronics.TinyCLR.Data.SQLite {
 
     public class ResultSet {
         private int rowCount;

@@ -1,7 +1,7 @@
 using System.Reflection;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("GHIElectronics.TinyCLR.SQLite")]
+[assembly: AssemblyTitle("GHIElectronics.TinyCLR.Data.SQLite")]
 [assembly: AssemblyDescription("TinyCLR OS SQLite library.")]
 [assembly: AssemblyCompany("GHI Electronics, LLC")]
 [assembly: AssemblyProduct("TinyCLR OS")]
