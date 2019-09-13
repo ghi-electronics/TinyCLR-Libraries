@@ -34,6 +34,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="OpenException.cs" />
     <Compile Include="QueryExecutionException.cs" />
     <Compile Include="QueryFinalizationException.cs" />
     <Compile Include="QueryPrepareException.cs" />
