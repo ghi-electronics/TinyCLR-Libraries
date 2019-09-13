@@ -34,6 +34,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="QueryExecutionException.cs" />
+    <Compile Include="QueryFinalizationException.cs" />
+    <Compile Include="QueryPrepareException.cs" />
     <Compile Include="SQLiteDatabase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

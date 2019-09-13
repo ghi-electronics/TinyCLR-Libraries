@@ -222,69 +222,6 @@ namespace GHIElectronics.TinyCLR.Data.SQLite {
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         extern private void NativeColumnBlobData(int handle, int column, byte[] buffer);
 
-        [Serializable]
-        public class QueryExecutionException : System.Exception {
-
-            internal QueryExecutionException()
-                : base() {
-            }
-
-            internal QueryExecutionException(string message)
-                : base(message) {
-            }
-
-            internal QueryExecutionException(string message, Exception innerException)
-                : base(message, innerException) {
-            }
-        }
-
-        [Serializable]
-        public class QueryFinalizationException : System.Exception {
-
-            internal QueryFinalizationException()
-                : base() {
-            }
-
-            internal QueryFinalizationException(string message)
-                : base(message) {
-            }
-
-            internal QueryFinalizationException(string message, Exception innerException)
-                : base(message, innerException) {
-            }
-        }
-
-        [Serializable]
-        public class QueryPrepareException : System.Exception {
-
-            internal QueryPrepareException()
-                : base() {
-            }
-
-            internal QueryPrepareException(string message)
-                : base(message) {
-            }
-
-            internal QueryPrepareException(string message, Exception innerException)
-                : base(message, innerException) {
-            }
-        }
-
-        [Serializable]
-        public class OpenException : System.Exception {
-
-            internal OpenException()
-                : base() {
-            }
-
-            internal OpenException(string message)
-                : base(message) {
-            }
-
-            internal OpenException(string message, Exception innerException)
-                : base(message, innerException) {
-            }
-        }
 #pragma warning disable 0414
 #pragma warning restore 0414
     }
