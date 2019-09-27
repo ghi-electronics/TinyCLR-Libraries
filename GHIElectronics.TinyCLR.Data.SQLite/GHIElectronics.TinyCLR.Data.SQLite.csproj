@@ -5,7 +5,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{DC76E1BD-342D-4C14-92D0-E85E053957AA}</ProjectGuid>
+    <ProjectGuid>{212BDB85-A7EF-43FB-94B8-07B9259350C1}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>GHIElectronics.TinyCLR.Data.SQLite</RootNamespace>
