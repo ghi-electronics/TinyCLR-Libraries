@@ -1,8 +1,8 @@
-﻿using System.Reflection;
+using System.Reflection;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("GHIElectronics.TinyCLR.Data.Update")]
-[assembly: AssemblyDescription("TinyCLR OS Update library.")]
+[assembly: AssemblyTitle("GHIElectronics.TinyCLR.Update")]
+[assembly: AssemblyDescription("TinyCLR OS updater library.")]
 [assembly: AssemblyCompany("GHI Electronics, LLC")]
 [assembly: AssemblyProduct("TinyCLR OS")]
 [assembly: AssemblyCopyright("Copyright © GHI Electronics, LLC 2019")]
