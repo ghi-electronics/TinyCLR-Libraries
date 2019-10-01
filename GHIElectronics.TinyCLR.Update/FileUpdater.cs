@@ -4,25 +4,16 @@ using System.Runtime.CompilerServices;
 
 namespace GHIElectronics.TinyCLR.Update {
     public static class FileUpdater {
-        public static void PrepareDeployment(uint[] key, uint checksum) {
-            if (key == null) throw new ArgumentException("key can not be null", nameof(key));
+        public static void LoadAndFlashDeployment(FileStream stream) => FileUpdater.LoadAndFlashDeployment(stream, 0);
+        public static void LoadAndFlashDeployment(FileStream stream, uint checksum) => FileUpdater.LoadAndFlashDeployment(stream, checksum, null);
+        public static void LoadAndFlashDeployment(FileStream stream, uint checksum, uint[] key) {
+            if (stream == null) throw new ArgumentNullException(nameof(stream));
+            if (key != null && key.Length == 0) throw new ArgumentException("A non-null key cannot be zero-length.", nameof(key));
 
-            NativePrepareDeployment(key, checksum);
+            FileUpdater.NativeLoadAndFlashDeployment(stream, key, checksum);
         }
 
-        public static void Flash(FileStream stream, long offset, long count) {
-            if (stream == null) throw new ArgumentException("stream can not be null", nameof(stream));
-
-            if (offset + count > stream.Length)
-                throw new ArgumentOutOfRangeException("out of range");
-
-            NativeFlash(stream, offset, count);
-        }
-
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        extern private static void NativePrepareDeployment(uint[] key, uint checksum);
-
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        extern private static void NativeFlash(FileStream stream, long offset, long count);
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern void NativeLoadAndFlashDeployment(FileStream stream, uint[] key, uint checksum);
     }
 }
