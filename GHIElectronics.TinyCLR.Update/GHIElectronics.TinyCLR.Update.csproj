@@ -39,6 +39,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="GHIElectronics.TinyCLR.Update.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
