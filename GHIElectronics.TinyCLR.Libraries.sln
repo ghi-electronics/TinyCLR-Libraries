@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2027
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29324.140
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mscorlib", "mscorlib\mscorlib.csproj", "{AA751E21-9220-42CE-8180-516BB59E4555}"
 EndProject
@@ -36,6 +36,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.UI", "GHIElectronics.TinyCLR.UI\GHIElectronics.TinyCLR.UI.csproj", "{2BD3FB57-7D27-4DAF-A0DC-A23F5793E12A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Native", "GHIElectronics.TinyCLR.Native\GHIElectronics.TinyCLR.Native.csproj", "{B602474A-AEB0-491C-832B-7EAF0B4511C0}"
+	ProjectSection(ProjectDependencies) = postProject
+		{AA751E21-9220-42CE-8180-516BB59E4555} = {AA751E21-9220-42CE-8180-516BB59E4555}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Devices.Adc", "GHIElectronics.TinyCLR.Devices.Adc\GHIElectronics.TinyCLR.Devices.Adc.csproj", "{F37DE4C9-9C6E-4FE3-BABB-2B815FADD162}"
 EndProject
