@@ -4,16 +4,16 @@ using System.Runtime.CompilerServices;
 namespace GHIElectronics.TinyCLR.Update {
     public static class BufferUpdater {
         public static void InitializeFirmwareUpdate(uint checksum) => BufferUpdater.InitializeFirmwareUpdate(checksum, null);
-        public static void InitializeFirmwareUpdate(uint[] key) => BufferUpdater.InitializeFirmwareUpdate(0, key);
-        public static void InitializeFirmwareUpdate(uint checksum, uint[] key) {
+        public static void InitializeFirmwareUpdate(byte[] key) => BufferUpdater.InitializeFirmwareUpdate(0, key);
+        public static void InitializeFirmwareUpdate(uint checksum, byte[] key) {
             if (key != null && key.Length == 0) throw new ArgumentException("A non-null key cannot be zero-length.", nameof(key));
 
             BufferUpdater.NativeInitializeFirmwareUpdate(checksum, key);
         }
 
         public static void InitializeDeploymentUpdate(uint checksum) => BufferUpdater.InitializeDeploymentUpdate(checksum, null);
-        public static void InitializeDeploymentUpdate(uint[] key) => BufferUpdater.InitializeDeploymentUpdate(0, key);
-        public static void InitializeDeploymentUpdate(uint checksum, uint[] key) {
+        public static void InitializeDeploymentUpdate(byte[] key) => BufferUpdater.InitializeDeploymentUpdate(0, key);
+        public static void InitializeDeploymentUpdate(uint checksum, byte[] key) {
             if (key != null && key.Length == 0) throw new ArgumentException("A non-null key cannot be zero-length.", nameof(key));
 
             BufferUpdater.NativeInitializeDeploymentUpdate(checksum, key);
@@ -42,10 +42,10 @@ namespace GHIElectronics.TinyCLR.Update {
         public static void UpdateAndReset() => BufferUpdater.NativeUpdateAndReset();
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private static extern void NativeInitializeFirmwareUpdate(uint checksum, uint[] key);
+        private static extern void NativeInitializeFirmwareUpdate(uint checksum, byte[] key);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private static extern void NativeInitializeDeploymentUpdate(uint checksum, uint[] key);
+        private static extern void NativeInitializeDeploymentUpdate(uint checksum, byte[] key);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private static extern void NativeLoadFirmware(byte[] data, int offset, int count);
