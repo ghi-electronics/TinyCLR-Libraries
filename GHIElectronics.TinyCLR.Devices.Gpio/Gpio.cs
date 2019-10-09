@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Runtime.CompilerServices;
 using GHIElectronics.TinyCLR.Devices.Gpio.Provider;
@@ -119,14 +119,7 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio {
 
         public GpioPinValue Read() => this.Controller.Provider.Read(this.PinNumber);
 
-        public void Write(GpioPinValue value) {
-            var init = this.Read();
-
-            this.Controller.Provider.Write(this.PinNumber, value);
-
-            if (init != value)
-                this.OnValueChanged(this, new GpioPinValueChangedEventArgs(value == GpioPinValue.High ? GpioPinEdge.RisingEdge : GpioPinEdge.FallingEdge, DateTime.UtcNow));
-        }
+        public void Write(GpioPinValue value) => this.Controller.Provider.Write(this.PinNumber, value);
 
         public GpioPinEdge ValueChangedEdge {
             get => this.valueChangedEdge;
