@@ -21,6 +21,11 @@ namespace GHIElectronics.TinyCLR.Native {
         [MethodImpl(MethodImplOptions.InternalCall)]
         public extern void Free(IntPtr ptr);
 
+        public byte[] ToBytes(IntPtr ptr, long length) => this.ToBytes(ptr, (IntPtr)length);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        public extern byte[] ToBytes(IntPtr ptr, IntPtr length);
+
         [MethodImpl(MethodImplOptions.InternalCall)]
         public extern void GetStats(out IntPtr used, out IntPtr free);
 
