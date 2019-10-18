@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Runtime.CompilerServices;
 using GHIElectronics.TinyCLR.Devices.Gpio.Provider;
@@ -44,8 +44,8 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio {
 
         private GpioController(IGpioControllerProvider provider) => this.Provider = provider;
 
-        public static GpioController GetDefault() => Api.GetDefaultFromCreator(ApiType.GpioController) is GpioController c ? c : GpioController.FromName(Api.GetDefaultName(ApiType.GpioController));
-        public static GpioController FromName(string name) => GpioController.FromProvider(new GpioControllerApiWrapper(Api.Find(name, ApiType.GpioController)));
+        public static GpioController GetDefault() => NativeApi.GetDefaultFromCreator(NativeApiType.GpioController) is GpioController c ? c : GpioController.FromName(NativeApi.GetDefaultName(NativeApiType.GpioController));
+        public static GpioController FromName(string name) => GpioController.FromProvider(new GpioControllerApiWrapper(NativeApi.Find(name, NativeApiType.GpioController)));
         public static GpioController FromProvider(IGpioControllerProvider provider) => new GpioController(provider);
 
         public void Dispose() => this.Provider.Dispose();
@@ -119,14 +119,7 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio {
 
         public GpioPinValue Read() => this.Controller.Provider.Read(this.PinNumber);
 
-        public void Write(GpioPinValue value) {
-            var init = this.Read();
-
-            this.Controller.Provider.Write(this.PinNumber, value);
-
-            if (init != value)
-                this.OnValueChanged(this, new GpioPinValueChangedEventArgs(value == GpioPinValue.High ? GpioPinEdge.RisingEdge : GpioPinEdge.FallingEdge, DateTime.UtcNow));
-        }
+        public void Write(GpioPinValue value) => this.Controller.Provider.Write(this.PinNumber, value);
 
         public GpioPinEdge ValueChangedEdge {
             get => this.valueChangedEdge;
@@ -181,9 +174,9 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio {
             private IDictionary pinMap;
             private NativeEventDispatcher dispatcher;
 
-            public Api Api { get; }
+            public NativeApi Api { get; }
 
-            public GpioControllerApiWrapper(Api api) {
+            public GpioControllerApiWrapper(NativeApi api) {
                 this.Api = api;
 
                 this.impl = api.Implementation;

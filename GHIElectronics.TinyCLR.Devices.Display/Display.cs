@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.CompilerServices;
 using GHIElectronics.TinyCLR.Devices.Display.Provider;
 using GHIElectronics.TinyCLR.Devices.I2c;
@@ -11,8 +11,8 @@ namespace GHIElectronics.TinyCLR.Devices.Display {
 
         private DisplayController(IDisplayControllerProvider provider) => this.Provider = provider;
 
-        public static DisplayController GetDefault() => Api.GetDefaultFromCreator(ApiType.DisplayController) is DisplayController c ? c : DisplayController.FromName(Api.GetDefaultName(ApiType.DisplayController));
-        public static DisplayController FromName(string name) => DisplayController.FromProvider(new DisplayControllerApiWrapper(Api.Find(name, ApiType.DisplayController)));
+        public static DisplayController GetDefault() => NativeApi.GetDefaultFromCreator(NativeApiType.DisplayController) is DisplayController c ? c : DisplayController.FromName(NativeApi.GetDefaultName(NativeApiType.DisplayController));
+        public static DisplayController FromName(string name) => DisplayController.FromProvider(new DisplayControllerApiWrapper(NativeApi.Find(name, NativeApiType.DisplayController)));
         public static DisplayController FromProvider(IDisplayControllerProvider provider) => new DisplayController(provider);
 
         public IntPtr Hdc => this.Provider is IApiImplementation a ? a.Implementation : throw new NotSupportedException();
@@ -27,7 +27,7 @@ namespace GHIElectronics.TinyCLR.Devices.Display {
         public void Enable() => this.Provider.Enable();
         public void Disable() => this.Provider.Disable();
 
-        public void DrawBuffer(int x, int y, int width, int height, byte[] data, int offset) => this.Provider.DrawBuffer(x, y, width, height, data, offset);
+        public void DrawBuffer(int targetX, int targetY, int sourceX, int sourceY, int width, int height, int originalWidth, byte[] data, int offset) => this.Provider.DrawBuffer(targetX, targetY, sourceX, sourceY, width, height, originalWidth, data, offset);
         public void DrawPixel(int x, int y, long color) => this.Provider.DrawPixel(x, y, color);
         public void DrawString(string value) => this.Provider.DrawString(value);
 
@@ -89,7 +89,7 @@ namespace GHIElectronics.TinyCLR.Devices.Display {
             void Enable();
             void Disable();
             void SetConfiguration(DisplayControllerSettings configuration);
-            void DrawBuffer(int x, int y, int width, int height, byte[] data, int offset);
+            void DrawBuffer(int targetX, int targetY, int sourceX, int sourceY, int width, int height, int originalWidth, byte[] data, int offset);
             void DrawPixel(int x, int y, long color);
             void DrawString(string value);
         }
@@ -97,11 +97,11 @@ namespace GHIElectronics.TinyCLR.Devices.Display {
         public sealed class DisplayControllerApiWrapper : IDisplayControllerProvider, IApiImplementation {
             private readonly IntPtr impl;
 
-            public Api Api { get; }
+            public NativeApi Api { get; }
 
             IntPtr IApiImplementation.Implementation => this.impl;
 
-            public DisplayControllerApiWrapper(Api api) {
+            public DisplayControllerApiWrapper(NativeApi api) {
                 this.Api = api;
 
                 this.impl = api.Implementation;
@@ -124,7 +124,7 @@ namespace GHIElectronics.TinyCLR.Devices.Display {
             public extern void Disable();
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern void DrawBuffer(int x, int y, int width, int height, byte[] data, int offset);
+            public extern void DrawBuffer(int targetX, int targetY, int sourceX, int sourceY, int width, int height, int originalWidth, byte[] data, int offset);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void DrawPixel(int x, int y, long color);

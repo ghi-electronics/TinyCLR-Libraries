@@ -9,8 +9,8 @@ namespace GHIElectronics.TinyCLR.Devices.Pwm {
 
         private PwmController(IPwmControllerProvider provider) => this.Provider = provider;
 
-        public static PwmController GetDefault() => Api.GetDefaultFromCreator(ApiType.PwmController) is PwmController c ? c : PwmController.FromName(Api.GetDefaultName(ApiType.PwmController));
-        public static PwmController FromName(string name) => PwmController.FromProvider(new PwmControllerApiWrapper(Api.Find(name, ApiType.PwmController)));
+        public static PwmController GetDefault() => NativeApi.GetDefaultFromCreator(NativeApiType.PwmController) is PwmController c ? c : PwmController.FromName(NativeApi.GetDefaultName(NativeApiType.PwmController));
+        public static PwmController FromName(string name) => PwmController.FromProvider(new PwmControllerApiWrapper(NativeApi.Find(name, NativeApiType.PwmController)));
         public static PwmController FromProvider(IPwmControllerProvider provider) => new PwmController(provider);
 
         public double ActualFrequency { get; private set; }
@@ -99,9 +99,9 @@ namespace GHIElectronics.TinyCLR.Devices.Pwm {
         public sealed class PwmControllerApiWrapper : IPwmControllerProvider {
             private readonly IntPtr impl;
 
-            public Api Api { get; }
+            public NativeApi Api { get; }
 
-            public PwmControllerApiWrapper(Api api) {
+            public PwmControllerApiWrapper(NativeApi api) {
                 this.Api = api;
 
                 this.impl = api.Implementation;

@@ -64,9 +64,9 @@ namespace System.Drawing {
             return Graphics.nextHdc;
         }
 
-        internal uint GetPixel(int x, int y) => this.surface.GetPixel(x, y);
-        internal void SetPixel(int x, int y, uint color) => this.surface.SetPixel(x, y, color);
-        internal byte[] GetBitmap() => this.surface.GetBitmap();
+        public uint GetPixel(int x, int y) => this.surface.GetPixel(x, y);
+        public void SetPixel(int x, int y, uint color) => this.surface.SetPixel(x, y, color);
+        public byte[] GetBitmap() => this.surface.GetBitmap();
 
         private static bool HasDrawing() {
             foreach (var i in Interop.FindAll())

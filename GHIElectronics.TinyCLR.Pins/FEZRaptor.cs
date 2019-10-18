@@ -1,4 +1,4 @@
-﻿namespace GHIElectronics.TinyCLR.Pins {
+namespace GHIElectronics.TinyCLR.Pins {
     /// <summary>Board definition for the FEZ Raptor.</summary>
     public static class FEZRaptor {
         /// <summary>GPIO pin definitions.</summary>
@@ -258,15 +258,15 @@
         /// <summary>UART port definitions.</summary>
         public static class UartPort {
             /// <summary>UART port.</summary>
-            public const string Socket1 = G400S.UartPort.Uart0;
+            public const string Socket1 = G400S.UartPort.Usart2;
             /// <summary>UART port.</summary>
-            public const string Socket4 = G400S.UartPort.Uart1;
+            public const string Socket4 = G400S.UartPort.Usart0;
             /// <summary>UART port.</summary>
-            public const string Socket10 = G400S.UartPort.Usart0;
+            public const string Socket10 = G400S.UartPort.Debug;
             /// <summary>UART port.</summary>
             public const string Socket11 = G400S.UartPort.Usart1;
             /// <summary>UART port.</summary>
-            public const string Socket12 = G400S.UartPort.Usart2;
+            public const string Socket12 = G400S.UartPort.Uart1;
         }
 
         /// <summary>I2C bus definitions.</summary>

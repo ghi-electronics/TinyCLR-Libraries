@@ -34,7 +34,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Api.cs" />
+    <Compile Include="NativeApi.cs" />
     <Compile Include="DeviceInformation.cs" />
     <Compile Include="Interop.cs" />
     <Compile Include="NativeEventDispatcher.cs" />

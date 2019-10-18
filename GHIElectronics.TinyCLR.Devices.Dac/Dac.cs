@@ -9,8 +9,8 @@ namespace GHIElectronics.TinyCLR.Devices.Dac {
 
         private DacController(IDacControllerProvider provider) => this.Provider = provider;
 
-        public static DacController GetDefault() => Api.GetDefaultFromCreator(ApiType.DacController) is DacController c ? c : DacController.FromName(Api.GetDefaultName(ApiType.DacController));
-        public static DacController FromName(string name) => DacController.FromProvider(new DacControllerApiWrapper(Api.Find(name, ApiType.DacController)));
+        public static DacController GetDefault() => NativeApi.GetDefaultFromCreator(NativeApiType.DacController) is DacController c ? c : DacController.FromName(NativeApi.GetDefaultName(NativeApiType.DacController));
+        public static DacController FromName(string name) => DacController.FromProvider(new DacControllerApiWrapper(NativeApi.Find(name, NativeApiType.DacController)));
         public static DacController FromProvider(IDacControllerProvider provider) => new DacController(provider);
 
         public int ChannelCount => this.Provider.ChannelCount;
@@ -58,9 +58,9 @@ namespace GHIElectronics.TinyCLR.Devices.Dac {
         public sealed class DacControllerApiWrapper : IDacControllerProvider {
             private readonly IntPtr impl;
 
-            public Api Api { get; }
+            public NativeApi Api { get; }
 
-            public DacControllerApiWrapper(Api api) {
+            public DacControllerApiWrapper(NativeApi api) {
                 this.Api = api;
 
                 this.impl = api.Implementation;
