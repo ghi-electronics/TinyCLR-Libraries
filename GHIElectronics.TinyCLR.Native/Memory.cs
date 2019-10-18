@@ -33,19 +33,19 @@ namespace GHIElectronics.TinyCLR.Native {
         public long FreeBytes { get { this.GetStats(out _, out var free); return free.ToInt64(); } }
     }
 
-    public class UnsecureBuffer : IDisposable {
+    public class ExternalBuffer : IDisposable {
         private IntPtr ptr;
         private byte[] mem;
         private bool disposed;
 
         public byte[] Bytes => this.mem;
 
-        public UnsecureBuffer(int length) {
+        public ExternalBuffer(int length) {
             this.ptr = Memory.UnsecureMemory.Allocate(length);
             this.mem = Memory.UnsecureMemory.ToBytes(this.ptr, length);
         }
 
-        ~UnsecureBuffer() => this.Dispose(false);
+        ~ExternalBuffer() => this.Dispose(false);
 
         public void Dispose() {
             this.Dispose(true);
