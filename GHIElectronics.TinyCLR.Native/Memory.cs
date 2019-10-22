@@ -33,19 +33,30 @@ namespace GHIElectronics.TinyCLR.Native {
         public long FreeBytes { get { this.GetStats(out _, out var free); return free.ToInt64(); } }
     }
 
-    public class ExternalBuffer : IDisposable {
+    public enum UnmanagedBufferLocation {
+        SecureMemory,
+        UnsecureMemory
+    }
+
+    public class UnmanagedBuffer : IDisposable {
         private IntPtr ptr;
         private byte[] mem;
         private bool disposed;
 
         public byte[] Bytes => this.mem;
 
-        public ExternalBuffer(int length) {
+        public UnmanagedBuffer(int length) : this(length, UnmanagedBufferLocation.UnsecureMemory) {
+
+        }
+
+        public UnmanagedBuffer(int length, UnmanagedBufferLocation location) {
+            if (location != UnmanagedBufferLocation.UnsecureMemory) throw new ArgumentOutOfRangeException(nameof(location));
+
             this.ptr = Memory.UnsecureMemory.Allocate(length);
             this.mem = Memory.UnsecureMemory.ToBytes(this.ptr, length);
         }
 
-        ~ExternalBuffer() => this.Dispose(false);
+        ~UnmanagedBuffer() => this.Dispose(false);
 
         public void Dispose() {
             this.Dispose(true);
