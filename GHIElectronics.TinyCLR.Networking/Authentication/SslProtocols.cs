@@ -1,4 +1,4 @@
-﻿namespace System.Security.Authentication {
+namespace System.Security.Authentication {
     [Flags]
     public enum SslProtocols {
         None = 0,
@@ -38,6 +38,12 @@
         Sha256 = (Alg.ClassHash | Alg.Any | Alg.NameSHA256),
         Sha384 = (Alg.ClassHash | Alg.Any | Alg.NameSHA384),
         Sha512 = (Alg.ClassHash | Alg.Any | Alg.NameSHA512)
+    }
+
+    public enum SslVerification {
+        None = 0,
+        Optional = 1,
+        Required = 2
     }
 
     [Flags]

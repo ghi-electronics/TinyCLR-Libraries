@@ -439,7 +439,7 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
             public extern void SetOption(int socket, SocketOptionLevel optionLevel, SocketOptionName optionName, byte[] optionValue);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern int AuthenticateAsClient(int socketHandle, string targetHost, X509Certificate certificate, SslProtocols sslProtocols);
+            public extern int AuthenticateAsClient(int socketHandle, string targetHost, X509Certificate caCertificate, X509Certificate clientCertificate, SslProtocols sslProtocols, SslVerification sslVerification);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern int AuthenticateAsServer(int socketHandle, X509Certificate certificate, SslProtocols sslProtocols);
@@ -449,7 +449,6 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern int SecureWrite(int handle, byte[] buffer, int offset, int count);
-
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void GetHostByName(string name, out string canonicalName, out SocketAddress[] addresses);
