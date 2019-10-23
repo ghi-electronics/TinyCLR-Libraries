@@ -43,7 +43,8 @@ namespace System.Security.Authentication {
     public enum SslVerification {
         None = 0,
         Optional = 1,
-        Required = 2
+        Required = 2,
+        VerifyOnce = 3
     }
 
     [Flags]
