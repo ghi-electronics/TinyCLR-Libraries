@@ -6,6 +6,8 @@ namespace System.Security.Cryptography.X509Certificates {
 
         public byte[] GetRawCertData() => this.data;
         public byte[] PrivateKey { get; set; }
+
+        public string Password { get; set; }
     }
 }
 

@@ -28,11 +28,15 @@ namespace System.Net.Security {
 
         public void AuthenticateAsClient(string targetHost) => this.AuthenticateAsClient(targetHost, default(X509Certificate));
 
-        public void AuthenticateAsClient(string targetHost, X509Certificate cert) => this.AuthenticateAsClient(targetHost, cert, SslProtocols.None);
+        public void AuthenticateAsClient(string targetHost, X509Certificate caCertificate) => this.AuthenticateAsClient(targetHost, caCertificate, null, SslProtocols.None);
 
-        public void AuthenticateAsClient(string targetHost, X509Certificate cert, SslProtocols sslProtocols) => this.sslHandle = this.ni.AuthenticateAsClient(this._socket.m_Handle, targetHost, cert, sslProtocols);
+        public void AuthenticateAsClient(string targetHost, X509Certificate caCertificate, X509Certificate clientCertificate) => this.AuthenticateAsClient(targetHost, caCertificate, clientCertificate, SslProtocols.None);
 
-        public void AuthenticateAsServer(X509Certificate cert, SslProtocols sslProtocols) => this.sslHandle = this.ni.AuthenticateAsServer(this._socket.m_Handle, cert, sslProtocols);
+        public void AuthenticateAsClient(string targetHost, X509Certificate caCertificate, X509Certificate clientCertificate, SslProtocols sslProtocols) => this.AuthenticateAsClient(targetHost, caCertificate, null, SslProtocols.None, SslVerification.Optional);
+
+        public void AuthenticateAsClient(string targetHost, X509Certificate caCertificate, X509Certificate clientCertificate, SslProtocols sslProtocols, SslVerification sslVerification) => this.sslHandle = this.ni.AuthenticateAsClient(this._socket.m_Handle, targetHost, caCertificate, clientCertificate, sslProtocols, sslVerification);
+
+        public void AuthenticateAsServer(X509Certificate caCertificate, SslProtocols sslProtocols) => this.sslHandle = this.ni.AuthenticateAsServer(this._socket.m_Handle, caCertificate, sslProtocols);
 
         public bool IsServer => this._isServer;
 
