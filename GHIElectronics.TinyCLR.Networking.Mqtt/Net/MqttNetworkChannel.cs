@@ -155,7 +155,7 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
                 // create SSL stream
                 this.sslStream = new SslStream(this.socket);
 
-                this.sslStream.AuthenticateAsClient(this.remoteHostName, this.caCert, this.sslProtocol);
+                this.sslStream.AuthenticateAsClient(this.remoteHostName, this.caCert, this.clientCert, this.sslProtocol);
 
 
             }
