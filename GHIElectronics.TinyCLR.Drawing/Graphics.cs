@@ -84,8 +84,10 @@ namespace System.Drawing {
         }
 
         private static IGraphics CreateSurface(int width, int height) {
-            if (!Graphics.HasDrawing())
-                return new ManagedGraphics(new BufferDrawTargetRgb565(width, height));
+            if (!Graphics.HasDrawing()) {
+
+                throw new ArgumentException("Not supported");
+            }
 
             return new Internal.Bitmap(width, height);
         }
@@ -93,7 +95,6 @@ namespace System.Drawing {
         internal Graphics(byte[] buffer) : this(Graphics.CreateSurface(buffer), IntPtr.Zero) { }
         internal Graphics(int width, int height) : this(width, height, IntPtr.Zero) { }
         private Graphics(int width, int height, IntPtr hdc) : this(Graphics.CreateSurface(width, height), hdc) { }
-        private Graphics(IDrawTarget target, IntPtr hdc) : this(new ManagedGraphics(target), hdc) { }
 
         internal Graphics(IGraphics bmp, IntPtr hdc) {
             this.surface = bmp;
@@ -178,7 +179,7 @@ namespace System.Drawing {
                 return new Graphics(width, height, hdc);
             }
             else {
-                return new Graphics((IDrawTarget)Graphics.drawTargets[hdc], hdc);
+                throw new ArgumentException("Not supported");
             }
         }
 
@@ -188,10 +189,16 @@ namespace System.Drawing {
             return image.data;
         }
 
-        public void Flush() {
-            if (this.hdc == IntPtr.Zero) throw new InvalidOperationException("Graphics not for screen.");
+        public delegate void OnFlushHandler(byte[] data);
 
-            this.surface.Flush(this.hdc);
+        static public event OnFlushHandler OnFlushEvent;
+
+        public void Flush() {
+            if (this.hdc != IntPtr.Zero) {
+                this.surface.Flush(this.hdc);
+            }
+
+            OnFlushEvent?.Invoke(this.surface.GetBitmap());
         }
 
         //Draws a portion of an image at a specified location.

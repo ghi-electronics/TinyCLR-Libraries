@@ -24,7 +24,11 @@ namespace GHIElectronics.TinyCLR.UI.Media {
             var disp = WindowManager.Instance.DisplayController;
 
             this._target = WindowManager.Instance;
-            this._screen = new Bitmap(Graphics.FromHdc(disp.Hdc));
+
+            if (disp.Hdc != IntPtr.Zero) 
+                this._screen = new Bitmap(Graphics.FromHdc(disp.Hdc));
+            else 
+                this._screen = new Bitmap(Graphics.FromImage(new System.Drawing.Bitmap(disp.ActiveConfiguration.Width, disp.ActiveConfiguration.Height)));
 
             this._screenW = (int)disp.ActiveConfiguration.Width;
             this._screenH = (int)disp.ActiveConfiguration.Height;
@@ -202,7 +206,15 @@ namespace GHIElectronics.TinyCLR.UI.Media {
                     if (w > 0 && h > 0) {
                         this._screen.Flush(x, y, w, h);
                     }
-                }
+
+
+
+
+
+
+
+
+         }
             }
             finally {
                 this._currentRenderOp = null;
