@@ -189,7 +189,7 @@ namespace System.Drawing {
             return image.data;
         }
 
-        public delegate void OnFlushHandler(byte[] data);
+        public delegate void OnFlushHandler(IntPtr hdc, byte[] data);
 
         static public event OnFlushHandler OnFlushEvent;
 
@@ -198,7 +198,7 @@ namespace System.Drawing {
                 this.surface.Flush(this.hdc);
             }
 
-            OnFlushEvent?.Invoke(this.surface.GetBitmap());
+            OnFlushEvent?.Invoke(this.hdc, this.surface.GetBitmap());
         }
 
         //Draws a portion of an image at a specified location.
