@@ -3,15 +3,15 @@ using System.Runtime.CompilerServices;
 
 namespace GHIElectronics.TinyCLR.Native {
     public class Memory {
-        private static Memory secure = new Memory(NativeApi.Find("GHIElectronics.TinyCLR.NativeApis.TinyCLR.SecureMemoryManager", NativeApiType.MemoryManager));
-        private static Memory unsecure = new Memory(NativeApi.Find("GHIElectronics.TinyCLR.NativeApis.TinyCLR.UnsecureMemoryManager", NativeApiType.MemoryManager));
+        private static Memory managed = new Memory(NativeApi.Find("GHIElectronics.TinyCLR.NativeApis.TinyCLR.ManagedMemoryManager", NativeApiType.MemoryManager));
+        private static Memory unmanaged = new Memory(NativeApi.Find("GHIElectronics.TinyCLR.NativeApis.TinyCLR.UnmanagedMemoryManager", NativeApiType.MemoryManager));
 
         private readonly IntPtr api;
 
         private Memory(NativeApi api) => this.api = api.Implementation;
 
-        public static Memory SecureMemory => Memory.secure;
-        public static Memory UnsecureMemory => Memory.unsecure;
+        public static Memory ManagedMemory => Memory.managed;
+        public static Memory UnmanagedMemory => Memory.unmanaged;
 
         public IntPtr Allocate(long length) => this.Allocate((IntPtr)length);
 
@@ -34,8 +34,8 @@ namespace GHIElectronics.TinyCLR.Native {
     }
 
     public enum UnmanagedBufferLocation {
-        SecureMemory,
-        UnsecureMemory
+        ManagedMemory,
+        UnmanagedMemory
     }
 
     public class UnmanagedBuffer : IDisposable {
@@ -45,15 +45,15 @@ namespace GHIElectronics.TinyCLR.Native {
 
         public byte[] Bytes => this.mem;
 
-        public UnmanagedBuffer(int length) : this(length, UnmanagedBufferLocation.UnsecureMemory) {
+        public UnmanagedBuffer(int length) : this(length, UnmanagedBufferLocation.UnmanagedMemory) {
 
         }
 
         public UnmanagedBuffer(int length, UnmanagedBufferLocation location) {
-            if (location != UnmanagedBufferLocation.UnsecureMemory) throw new ArgumentOutOfRangeException(nameof(location));
+            if (location != UnmanagedBufferLocation.UnmanagedMemory) throw new ArgumentOutOfRangeException(nameof(location));
 
-            this.ptr = Memory.UnsecureMemory.Allocate(length);
-            this.mem = Memory.UnsecureMemory.ToBytes(this.ptr, length);
+            this.ptr = Memory.UnmanagedMemory.Allocate(length);
+            this.mem = Memory.UnmanagedMemory.ToBytes(this.ptr, length);
         }
 
         ~UnmanagedBuffer() => this.Dispose(false);
@@ -65,7 +65,7 @@ namespace GHIElectronics.TinyCLR.Native {
 
         private void Dispose(bool fDisposing) {
             if (!this.disposed) {
-                Memory.UnsecureMemory.Free(this.ptr);
+                Memory.UnmanagedMemory.Free(this.ptr);
 
                 this.ptr = IntPtr.Zero;
                 this.mem = null;

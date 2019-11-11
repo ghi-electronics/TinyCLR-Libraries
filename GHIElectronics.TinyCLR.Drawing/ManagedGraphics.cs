@@ -1,4 +1,8 @@
-﻿using System;
+#if ENABLE_MANAGED_GRAPHIC
+
+// We don't use managed graphics any more, but keep for reference 
+
+using System;
 using System.Drawing;
 
 namespace GHIElectronics.TinyCLR.Drawing {
@@ -436,3 +440,4 @@ namespace GHIElectronics.TinyCLR.Drawing {
         };
     }
 }
+#endif

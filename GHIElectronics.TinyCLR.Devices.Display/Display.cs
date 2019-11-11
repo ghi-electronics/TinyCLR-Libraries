@@ -15,7 +15,7 @@ namespace GHIElectronics.TinyCLR.Devices.Display {
         public static DisplayController FromName(string name) => DisplayController.FromProvider(new DisplayControllerApiWrapper(NativeApi.Find(name, NativeApiType.DisplayController)));
         public static DisplayController FromProvider(IDisplayControllerProvider provider) => new DisplayController(provider);
 
-        public IntPtr Hdc => this.Provider is IApiImplementation a ? a.Implementation : throw new NotSupportedException();
+        public IntPtr Hdc => this.Provider is IApiImplementation a ? a.Implementation : IntPtr.Zero;
 
         public DisplayControllerSettings ActiveConfiguration { get; private set; }
 
