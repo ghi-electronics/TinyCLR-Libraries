@@ -16,19 +16,18 @@ namespace GHIElectronics.TinyCLR.Devices.Dcmi {
 
         public void Dispose() => this.Provider.Dispose();
 
-        public void SetActiveSettings(CaptureRate captureRate, bool horizontalSyncPolarity, bool verticalSyncPolarity, bool pixelClockPolarity, SynchronizationMode synchronizationMode, ExtendedDataMode extendedDataMode) => this.Provider.SetActiveSettings(captureRate, horizontalSyncPolarity, verticalSyncPolarity, pixelClockPolarity, synchronizationMode, extendedDataMode);
+        public void SetActiveSettings(CaptureRate captureRate, bool horizontalSyncPolarity, bool verticalSyncPolarity, bool pixelClockPolarity, SynchronizationMode synchronizationMode, ExtendedDataMode extendedDataMode, uint sourceClock) => this.Provider.SetActiveSettings(captureRate, horizontalSyncPolarity, verticalSyncPolarity, pixelClockPolarity, synchronizationMode, extendedDataMode, sourceClock);
 
-
-        public int Capture(byte[] data) {
+        public int Capture(byte[] data, int timeoutMillisecond) {
             if (data == null) throw new ArgumentNullException(nameof(data));
-            return this.Capture(data, 0, data.Length);
+            return this.Capture(data, 0, data.Length, timeoutMillisecond);
         }
 
-        public int Capture(byte[] data, int offset, int count) {
+        public int Capture(byte[] data, int offset, int count, int timeoutMillisecond) {
             if (data == null) throw new ArgumentNullException(nameof(data));
             if (offset + count > data.Length) throw new ArgumentOutOfRangeException(nameof(count));
 
-            return this.Provider.Capture(data, offset, count);
+            return this.Provider.Capture(data, offset, count, timeoutMillisecond);
 
         }
 
@@ -61,9 +60,9 @@ namespace GHIElectronics.TinyCLR.Devices.Dcmi {
     namespace Provider {
         public interface IDcmiControllerProvider : IDisposable {
 
-            void SetActiveSettings(CaptureRate captureRate, bool horizontalSyncPolarity, bool verticalSyncPolarity, bool pixelClockPolarity, SynchronizationMode synchronizationMode, ExtendedDataMode extendedDataMode);
+            void SetActiveSettings(CaptureRate captureRate, bool horizontalSyncPolarity, bool verticalSyncPolarity, bool pixelClockPolarity, SynchronizationMode synchronizationMode, ExtendedDataMode extendedDataMode, uint sourceClock);
             
-            int Capture(byte[] data, int offset, int count);
+            int Capture(byte[] data, int offset, int count, int timeoutMillisecond);
 
             void Enable();
 
@@ -87,9 +86,9 @@ namespace GHIElectronics.TinyCLR.Devices.Dcmi {
 
             public void Dispose() => this.Release();
 
-            public void SetActiveSettings(CaptureRate captureRate, bool horizontalSyncPolarity, bool verticalSyncPolarity, bool pixelClockPolarity, SynchronizationMode synchronizationMode, ExtendedDataMode extendedDataMode) => this.NativeSetActiveSettings(captureRate, horizontalSyncPolarity, verticalSyncPolarity, pixelClockPolarity, synchronizationMode, extendedDataMode);
+            public void SetActiveSettings(CaptureRate captureRate, bool horizontalSyncPolarity, bool verticalSyncPolarity, bool pixelClockPolarity, SynchronizationMode synchronizationMode, ExtendedDataMode extendedDataMode, uint sourceClock) => this.NativeSetActiveSettings(captureRate, horizontalSyncPolarity, verticalSyncPolarity, pixelClockPolarity, synchronizationMode, extendedDataMode, sourceClock);
 
-            public int Capture(byte[] data, int offset, int count) => this.NativeCapture(data, offset, count);
+            public int Capture(byte[] data, int offset, int count, int timeoutMillisecond) => this.NativeCapture(data, offset, count, timeoutMillisecond);
 
             public void Enable() => this.NativeEnable();
 
@@ -108,10 +107,10 @@ namespace GHIElectronics.TinyCLR.Devices.Dcmi {
             private extern void NativeDisable();
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            private extern void NativeSetActiveSettings(CaptureRate captureRate, bool horizontalSyncPolarity, bool verticalSyncPolarity, bool pixelClockPolarity, SynchronizationMode synchronizationMode, ExtendedDataMode extendedDataMode);
+            private extern void NativeSetActiveSettings(CaptureRate captureRate, bool horizontalSyncPolarity, bool verticalSyncPolarity, bool pixelClockPolarity, SynchronizationMode synchronizationMode, ExtendedDataMode extendedDataMode, uint sourceClock);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            private extern int NativeCapture(byte[] data, int offset, int count);
+            private extern int NativeCapture(byte[] data, int offset, int count, int timeoutMillisecond);
         }
     }
 }
