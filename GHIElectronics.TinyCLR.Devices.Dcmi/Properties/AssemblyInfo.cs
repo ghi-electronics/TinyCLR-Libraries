@@ -1,8 +1,8 @@
 ﻿using System.Reflection;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("GHIElectronics.TinyCLR.Devices.Dcmi")]
-[assembly: AssemblyDescription("TinyCLR OS Dcmi library.")]
+[assembly: AssemblyTitle("GHIElectronics.TinyCLR.Devices.Camera")]
+[assembly: AssemblyDescription("TinyCLR OS Camera library.")]
 [assembly: AssemblyCompany("GHI Electronics, LLC")]
 [assembly: AssemblyProduct("TinyCLR OS")]
 [assembly: AssemblyCopyright("Copyright © GHI Electronics, LLC 2019")]

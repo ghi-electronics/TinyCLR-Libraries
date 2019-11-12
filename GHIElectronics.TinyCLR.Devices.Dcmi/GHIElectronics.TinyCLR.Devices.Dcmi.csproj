@@ -8,8 +8,8 @@
     <ProjectGuid>{104FA29F-F58B-4C4F-A9B1-A1527FD6A3EF}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GHIElectronics.TinyCLR.Devices.Dcmi</RootNamespace>
-    <AssemblyName>GHIElectronics.TinyCLR.Devices.Dcmi</AssemblyName>
+    <RootNamespace>GHIElectronics.TinyCLR.Devices.Camera</RootNamespace>
+    <AssemblyName>GHIElectronics.TinyCLR.Devices.Camera</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A1948822-69DD-4150-919B-F3F42EFB71CC};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -34,7 +34,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Dcmi.cs" />
+    <Compile Include="Camera.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -44,7 +44,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="GHIElectronics.TinyCLR.Devices.Dcmi.nuspec" />
+    <None Include="GHIElectronics.TinyCLR.Devices.Camera.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
