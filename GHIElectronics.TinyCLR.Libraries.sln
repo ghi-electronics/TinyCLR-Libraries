@@ -72,7 +72,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Upda
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Data.Json", "GHIElectronics.TinyCLR.Data.Json\GHIElectronics.TinyCLR.Data.Json.csproj", "{4B7A2C87-ABC9-4B99-A500-DB147F909945}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Devices.Dcmi", "GHIElectronics.TinyCLR.Devices.Dcmi\GHIElectronics.TinyCLR.Devices.Dcmi.csproj", "{104FA29F-F58B-4C4F-A9B1-A1527FD6A3EF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Devices.Camera", "GHIElectronics.TinyCLR.Devices.Camera\GHIElectronics.TinyCLR.Devices.Camera.csproj", "{104FA29F-F58B-4C4F-A9B1-A1527FD6A3EF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

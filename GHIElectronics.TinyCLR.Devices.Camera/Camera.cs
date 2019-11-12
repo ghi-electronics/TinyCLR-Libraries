@@ -10,8 +10,8 @@ namespace GHIElectronics.TinyCLR.Devices.Camera {
 
         private CameraController(ICameraControllerProvider provider) => this.Provider = provider;
 
-        public static CameraController GetDefault() => NativeApi.GetDefaultFromCreator(NativeApiType.CameraController) is CameraController c ? c : CameraController.FromName(NativeApi.GetDefaultName(NativeApiType.CameraController));
-        public static CameraController FromName(string name) => CameraController.FromProvider(new CameraControllerApiWrapper(NativeApi.Find(name, NativeApiType.CameraController)));
+        public static CameraController GetDefault() => NativeApi.GetDefaultFromCreator(NativeApiType.DcmiController) is CameraController c ? c : CameraController.FromName(NativeApi.GetDefaultName(NativeApiType.DcmiController));
+        public static CameraController FromName(string name) => CameraController.FromProvider(new CameraControllerApiWrapper(NativeApi.Find(name, NativeApiType.DcmiController)));
         public static CameraController FromProvider(ICameraControllerProvider provider) => new CameraController(provider);
 
         public void Dispose() => this.Provider.Dispose();
