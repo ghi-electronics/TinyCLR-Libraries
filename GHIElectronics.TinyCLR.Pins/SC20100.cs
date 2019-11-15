@@ -165,25 +165,25 @@ namespace GHIElectronics.TinyCLR.Pins {
                 public const string Id = STM32H7.AdcChannel.Adc1;
 
                 /// <summary>ADC pin.</summary>
-                public const int PA0 = STM32H7.PwmChannel.Channel0;
+                public const int PA0 = STM32H7.AdcChannel.Channel0;
                 /// <summary>ADC pin.</summary>
-                public const int PA1 = STM32H7.PwmChannel.Channel1;
+                public const int PA1 = STM32H7.AdcChannel.Channel1;
                 /// <summary>ADC pin.</summary>
-                public const int PA6 = STM32H7.PwmChannel.Channel3;
+                public const int PA6 = STM32H7.AdcChannel.Channel3;
                 /// <summary>ADC pin.</summary>
-                public const int PB1 = STM32H7.PwmChannel.Channel5;
+                public const int PB1 = STM32H7.AdcChannel.Channel5;
                 /// <summary>ADC pin.</summary>
-                public const int PA7 = STM32H7.PwmChannel.Channel7;
+                public const int PA7 = STM32H7.AdcChannel.Channel7;
                 /// <summary>ADC pin.</summary>
-                public const int PB0 = STM32H7.PwmChannel.Channel9;
+                public const int PB0 = STM32H7.AdcChannel.Channel9;
                 /// <summary>ADC pin.</summary>
-                public const int PC0 = STM32H7.PwmChannel.Channel10;
+                public const int PC0 = STM32H7.AdcChannel.Channel10;
                 /// <summary>ADC pin.</summary>
-                public const int PA3 = STM32H7.PwmChannel.Channel15;
+                public const int PA3 = STM32H7.AdcChannel.Channel15;
                 /// <summary>ADC pin.</summary>
-                public const int PA4 = STM32H7.PwmChannel.Channel18;
+                public const int PA4 = STM32H7.AdcChannel.Channel18;
                 /// <summary>ADC pin.</summary>
-                public const int PA5 = STM32H7.PwmChannel.Channel19;
+                public const int PA5 = STM32H7.AdcChannel.Channel19;
             }
             /// <summary>ADC controller.</summary>
             public static class Controller3
@@ -192,9 +192,9 @@ namespace GHIElectronics.TinyCLR.Pins {
                 public const string Id = STM32H7.AdcChannel.Adc3;
 
                 /// <summary>ADC pin.</summary>
-                public const int PC2 = STM32H7.PwmChannel.Channel0;
+                public const int PC2 = STM32H7.AdcChannel.Channel0;
                 /// <summary>ADC pin.</summary>
-                public const int PC3 = STM32H7.PwmChannel.Channel1;
+                public const int PC3 = STM32H7.AdcChannel.Channel1;
             }
         }
 
@@ -203,7 +203,7 @@ namespace GHIElectronics.TinyCLR.Pins {
             /// <summary>PWM controller.</summary>
             public static class Controller1 {
                 /// <summary>API id.</summary>
-                public const string Id = STM32H7.PwmChannel.Pwm1;
+                public const string Id = STM32H7.PwmChannel.Tim1;
 
                 /// <summary>PWM pin.</summary>
                 public const int PC19 = STM32H7.PwmChannel.Channel0;
@@ -220,7 +220,7 @@ namespace GHIElectronics.TinyCLR.Pins {
             /// <summary>PWM controller.</summary>
             public static class Controller2 {
                 /// <summary>API id.</summary>
-                public const string Id = STM32H7.PwmChannel.Pwm2;
+                public const string Id = STM32H7.PwmChannel.Tim2;
 
                 /// <summary>PWM pin.</summary>
                 public const int PA15 = STM32H7.PwmChannel.Channel1;
@@ -233,7 +233,7 @@ namespace GHIElectronics.TinyCLR.Pins {
             /// <summary>PWM controller.</summary>
             public static class Controller3 {
                 /// <summary>API id.</summary>
-                public const string Id = STM32H7.PwmChannel.Pwm3;
+                public const string Id = STM32H7.PwmChannel.Tim3;
 
                 /// <summary>PWM pin.</summary>
                 public const int PC6 = STM32H7.PwmChannel.Channel1;
@@ -249,7 +249,7 @@ namespace GHIElectronics.TinyCLR.Pins {
             public static class Controller4
             {
                 /// <summary>API id.</summary>
-                public const string Id = STM32H7.PwmChannel.Pwm4;
+                public const string Id = STM32H7.PwmChannel.Tim4;
 
                 /// <summary>PWM pin.</summary>
                 public const int PB7 = STM32H7.PwmChannel.Channel2;
@@ -259,7 +259,7 @@ namespace GHIElectronics.TinyCLR.Pins {
             public static class Controller5
             {
                 /// <summary>API id.</summary>
-                public const string Id = STM32H7.PwmChannel.Pwm5;
+                public const string Id = STM32H7.PwmChannel.Tim5;
 
                 /// <summary>PWM pin.</summary>
                 public const int PA0 = STM32H7.PwmChannel.Channel1;
@@ -267,7 +267,7 @@ namespace GHIElectronics.TinyCLR.Pins {
             public static class Controller13
             {
                 /// <summary>API id.</summary>
-                public const string Id = STM32H7.PwmChannel.Pwm13;
+                public const string Id = STM32H7.PwmChannel.Tim13;
 
                 /// <summary>PWM pin.</summary>
                 public const int PA6 = STM32H7.PwmChannel.Channel1;
@@ -275,7 +275,7 @@ namespace GHIElectronics.TinyCLR.Pins {
             public static class Controller14
             {
                 /// <summary>API id.</summary>
-                public const string Id = STM32H7.PwmChannel.Pwm14;
+                public const string Id = STM32H7.PwmChannel.Tim14;
 
                 /// <summary>PWM pin.</summary>
                 public const int PA7 = STM32H7.PwmChannel.Channel1;
@@ -283,7 +283,7 @@ namespace GHIElectronics.TinyCLR.Pins {
             public static class Controller15
             {
                 /// <summary>API id.</summary>
-                public const string Id = STM32H7.PwmChannel.Pwm15;
+                public const string Id = STM32H7.PwmChannel.Tim15;
 
                 /// <summary>PWM pin.</summary>
                 public const int PE5 = STM32H7.PwmChannel.Channel1;
@@ -294,7 +294,7 @@ namespace GHIElectronics.TinyCLR.Pins {
             public static class Controller16
             {
                 /// <summary>API id.</summary>
-                public const string Id = STM32H7.PwmChannel.Pwm16;
+                public const string Id = STM32H7.PwmChannel.Tim16;
 
                 /// <summary>PWM pin.</summary>
                 public const int PB8 = STM32H7.PwmChannel.Channel1;
@@ -303,7 +303,7 @@ namespace GHIElectronics.TinyCLR.Pins {
             public static class Controller17
             {
                 /// <summary>API id.</summary>
-                public const string Id = STM32H7.PwmChannel.Pwm17;
+                public const string Id = STM32H7.PwmChannel.Tim17;
 
                 /// <summary>PWM pin.</summary>
                 public const int PB9 = STM32H7.PwmChannel.Channel1;
@@ -331,9 +331,9 @@ namespace GHIElectronics.TinyCLR.Pins {
         /// <summary>I2C bus definitions.</summary>
         public static class I2cBus {
             /// <summary>I2C bus on PB9 (SDA) and PB8 (SCL).</summary>
-            public const string Twi1 = STM32H7.I2cBus.Twi1;
+            public const string I2c1 = STM32H7.I2cBus.I2c1;
             /// <summary>I2C bus on PB11 (SDA) and PB10 (SCL).</summary>
-            public const string Twi2 = STM32H7.I2cBus.Twi2;
+            public const string I2c2 = STM32H7.I2cBus.I2c2;
         }
 
         /// <summary>SPI bus definitions.</summary>

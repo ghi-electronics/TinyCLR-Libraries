@@ -446,6 +446,12 @@ namespace GHIElectronics.TinyCLR.Pins {
             public const string Tim13 = "GHIElectronics.TinyCLR.NativeApis.STM32H7.PwmController\\12";
             /// <summary>API id.</summary>
             public const string Tim14 = "GHIElectronics.TinyCLR.NativeApis.STM32H7.PwmController\\13";
+            /// <summary>API id.</summary>
+            public const string Tim15 = "GHIElectronics.TinyCLR.NativeApis.STM32H7.PwmController\\14";
+            /// <summary>API id.</summary>
+            public const string Tim16 = "GHIElectronics.TinyCLR.NativeApis.STM32H7.PwmController\\15";
+            /// <summary>API id.</summary>
+            public const string Tim17 = "GHIElectronics.TinyCLR.NativeApis.STM32H7.PwmController\\16";
 
             /// <summary>PWM pin.</summary>
             public const int Channel0 = 0;
@@ -455,6 +461,10 @@ namespace GHIElectronics.TinyCLR.Pins {
             public const int Channel2 = 2;
             /// <summary>PWM pin.</summary>
             public const int Channel3 = 3;
+            /// <summary>PWM pin.</summary>
+            public const int Channel4 = 4;
+            /// <summary>PWM pin.</summary>
+            public const int Channel5 = 5;
         }
 
         /// <summary>UART port definitions.</summary>
