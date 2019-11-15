@@ -354,21 +354,21 @@ namespace GHIElectronics.TinyCLR.Pins {
             public const string Can2 = STM32H7.CanBus.Can2;
         }
 
-        /// <summary>USB client port definitions.</summary>
-        public static class UsbClientPort {
-            /// <summary>USB client port on USBC D- (DM) and USBC D+ (DP).</summary>
-            public const string Udphs = STM32H7.UsbClientPort.Udphs;
-        }
+        ///// <summary>USB client port definitions.</summary>
+        //public static class UsbClientPort {
+        //    /// <summary>USB client port on USBC D- (DM) and USBC D+ (DP).</summary>
+        //    public const string Udphs = STM32H7.UsbClientPort.Udphs;
+        //}
 
-        /// <summary>USB host port definitions.</summary>
-        public static class UsbHostPort {
-            /// <summary>USB host port on USBC D- (DM) and USBC D+ (DP).</summary>
-            public const string UhphsA = STM32H7.UsbHostPort.UhphsA;
-            /// <summary>USB host port on USBH0 D- (DM) and USBH0 D+ (DP).</summary>
-            public const string UhphsB = STM32H7.UsbHostPort.UhphsB;
-            /// <summary>USB host port on USBH1 D- (DM) and USBH1 D+ (DP).</summary>
-            public const string UhphsC = STM32H7.UsbHostPort.UhphsC;
-        }
+        ///// <summary>USB host port definitions.</summary>
+        //public static class UsbHostPort {
+        //    /// <summary>USB host port on USBC D- (DM) and USBC D+ (DP).</summary>
+        //    public const string UhphsA = STM32H7.UsbHostPort.UhphsA;
+        //    /// <summary>USB host port on USBH0 D- (DM) and USBH0 D+ (DP).</summary>
+        //    public const string UhphsB = STM32H7.UsbHostPort.UhphsB;
+        //    /// <summary>USB host port on USBH1 D- (DM) and USBH1 D+ (DP).</summary>
+        //    public const string UhphsC = STM32H7.UsbHostPort.UhphsC;
+        //}
 
         /// <summary>Display definitions.</summary>
         public static class Display {
