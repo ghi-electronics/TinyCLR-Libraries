@@ -9,6 +9,10 @@ namespace GHIElectronics.TinyCLR.Pins {
             /// <summary>GPIO pin.</summary>
             public const int PA0 = STM32H7.GpioPin.PA0;
             /// <summary>GPIO pin.</summary>
+            public const int PA1 = STM32H7.GpioPin.PA1;
+            /// <summary>GPIO pin.</summary>
+            public const int PA2 = STM32H7.GpioPin.PA2;
+            /// <summary>GPIO pin.</summary>
             public const int PA3 = STM32H7.GpioPin.PA3;
             /// <summary>GPIO pin.</summary>
             public const int PA4 = STM32H7.GpioPin.PA4;
@@ -25,17 +29,25 @@ namespace GHIElectronics.TinyCLR.Pins {
             /// <summary>GPIO pin.</summary>
             public const int PA10 = STM32H7.GpioPin.PA10;
             /// <summary>GPIO pin.</summary>
+            public const int PA13 = STM32H7.GpioPin.PA13;
+            /// <summary>GPIO pin.</summary>
+            public const int PA14 = STM32H7.GpioPin.PA14;
+            /// <summary>GPIO pin.</summary>            
             public const int PA15 = STM32H7.GpioPin.PA15;
             /// <summary>GPIO pin.</summary>
             public const int PB0 = STM32H7.GpioPin.PB0;
             /// <summary>GPIO pin.</summary>
             public const int PB1 = STM32H7.GpioPin.PB1;
             /// <summary>GPIO pin.</summary>
+            public const int PB2 = STM32H7.GpioPin.PB2;
+            /// <summary>GPIO pin.</summary>
             public const int PB3 = STM32H7.GpioPin.PB3;
             /// <summary>GPIO pin.</summary>
             public const int PB4 = STM32H7.GpioPin.PB4;
             /// <summary>GPIO pin.</summary>
             public const int PB5 = STM32H7.GpioPin.PB5;
+            /// <summary>GPIO pin.</summary>
+            public const int PB6 = STM32H7.GpioPin.PB6;
             /// <summary>GPIO pin.</summary>
             public const int PB7 = STM32H7.GpioPin.PB7;
             /// <summary>GPIO pin.</summary>
@@ -47,9 +59,51 @@ namespace GHIElectronics.TinyCLR.Pins {
             /// <summary>GPIO pin.</summary>
             public const int PB11 = STM32H7.GpioPin.PB11;
             /// <summary>GPIO pin.</summary>
+            public const int PB12 = STM32H7.GpioPin.PB12;
+            /// <summary>GPIO pin.</summary>
+            public const int PB13 = STM32H7.GpioPin.PB13;
+            /// <summary>GPIO pin.</summary>
+            public const int PB14 = STM32H7.GpioPin.PB14;
+            /// <summary>GPIO pin.</summary>
+            public const int PB15 = STM32H7.GpioPin.PB15;
+            /// <summary>GPIO pin.</summary>
+            public const int PC0 = STM32H7.GpioPin.PC0;
+            /// <summary>GPIO pin.</summary>
+            public const int PC1 = STM32H7.GpioPin.PC1;
+            /// <summary>GPIO pin.</summary>
+            public const int PC2 = STM32H7.GpioPin.PC2;
+            /// <summary>GPIO pin.</summary>
+            public const int PC3 = STM32H7.GpioPin.PC3;
+            /// <summary>GPIO pin.</summary>
+            public const int PC4 = STM32H7.GpioPin.PC4;
+            /// <summary>GPIO pin.</summary>
+            public const int PC5 = STM32H7.GpioPin.PC5;
+            /// <summary>GPIO pin.</summary>
             public const int PC6 = STM32H7.GpioPin.PC6;
             /// <summary>GPIO pin.</summary>
             public const int PC7 = STM32H7.GpioPin.PC7;
+            /// <summary>GPIO pin.</summary>
+            public const int PC8 = STM32H7.GpioPin.PC8;
+            /// <summary>GPIO pin.</summary>
+            public const int PC9 = STM32H7.GpioPin.PC9;
+            /// <summary>GPIO pin.</summary>
+            public const int PC10 = STM32H7.GpioPin.PC10;
+            /// <summary>GPIO pin.</summary>
+            public const int PC11 = STM32H7.GpioPin.PC11;
+            /// <summary>GPIO pin.</summary>
+            public const int PC12 = STM32H7.GpioPin.PC12;
+            /// <summary>GPIO pin.</summary>
+            public const int PC13 = STM32H7.GpioPin.PC13;
+            /// <summary>GPIO pin.</summary>
+            public const int PC14 = STM32H7.GpioPin.PC14;
+            /// <summary>GPIO pin.</summary>
+            public const int PC15 = STM32H7.GpioPin.PC15;
+            /// <summary>GPIO pin.</summary>
+            public const int PD0 = STM32H7.GpioPin.PD0;
+            /// <summary>GPIO pin.</summary>
+            public const int PD1 = STM32H7.GpioPin.PD1;
+            /// <summary>GPIO pin.</summary>
+            public const int PD2 = STM32H7.GpioPin.PD2;
             /// <summary>GPIO pin.</summary>
             public const int PD3 = STM32H7.GpioPin.PD3;
             /// <summary>GPIO pin.</summary>
@@ -100,7 +154,6 @@ namespace GHIElectronics.TinyCLR.Pins {
             public const int PE14 = STM32H7.GpioPin.PE14;
             /// <summary>GPIO pin.</summary>
             public const int PE15 = STM32H7.GpioPin.PE15;
-
         }
 
         /// <summary>ADC channel definitions.</summary>
