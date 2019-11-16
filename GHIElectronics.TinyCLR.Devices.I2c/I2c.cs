@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.CompilerServices;
 using GHIElectronics.TinyCLR.Devices.Gpio;
 using GHIElectronics.TinyCLR.Devices.I2c.Provider;
@@ -67,30 +67,21 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
     public sealed class I2cConnectionSettings {
         public int SlaveAddress { get; set; }
         public I2cAddressFormat AddressFormat { get; set; }
-        public I2cBusSpeed BusSpeed { get; set; }
+        public uint BusSpeed { get; set; }
 
-        public I2cConnectionSettings(int slaveAddress) : this(slaveAddress, I2cAddressFormat.SevenBit, I2cBusSpeed.StandardMode) {
-
-        }
-
-        public I2cConnectionSettings(int slaveAddress, I2cBusSpeed busSpeed) : this(slaveAddress, I2cAddressFormat.SevenBit, busSpeed) {
+        public I2cConnectionSettings(int slaveAddress) : this(slaveAddress, I2cAddressFormat.SevenBit) {
 
         }
 
-        public I2cConnectionSettings(int slaveAddress, I2cAddressFormat addressFormat) : this(slaveAddress, addressFormat, I2cBusSpeed.StandardMode) {
+        public I2cConnectionSettings(int slaveAddress, uint busSpeed) : this(slaveAddress, I2cAddressFormat.SevenBit, busSpeed) {
 
         }
 
-        public I2cConnectionSettings(int slaveAddress, I2cAddressFormat addressFormat, I2cBusSpeed busSpeed) {
+        public I2cConnectionSettings(int slaveAddress, I2cAddressFormat addressFormat, uint busSpeed = 100000) {
             this.SlaveAddress = slaveAddress;
             this.AddressFormat = addressFormat;
             this.BusSpeed = busSpeed;
         }
-    }
-
-    public enum I2cBusSpeed {
-        StandardMode = 0,
-        FastMode = 1,
     }
 
     public enum I2cAddressFormat {
@@ -181,7 +172,6 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
 
             public void SetActiveSettings(I2cConnectionSettings connectionSettings) {
                 if (connectionSettings.AddressFormat != I2cAddressFormat.SevenBit) throw new NotSupportedException();
-                if (connectionSettings.BusSpeed != I2cBusSpeed.StandardMode) throw new NotSupportedException();
 
                 this.writeAddress = (byte)(connectionSettings.SlaveAddress << 1);
                 this.readAddress = (byte)((connectionSettings.SlaveAddress << 1) | 1);
@@ -271,15 +261,15 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
             }
 
             private void WaitForScl() {
-                const long timeoutInTicks = 1000 * 1000 * 10; // Timeout: 1 second
-                const long delayInTicks = (1000000 / 2000) * 10; // Max frequency: 2KHz
+                const long TimeoutInTicks = 1000 * 1000 * 10; // Timeout: 1 second
+                const long DelayInTicks = (1000000 / 2000) * 10; // Max frequency: 2KHz
 
                 var currentTicks = DateTime.Now.Ticks;
                 var timeout = true;
 
-                while (DateTime.Now.Ticks - currentTicks < delayInTicks / 2) ;
+                while (DateTime.Now.Ticks - currentTicks < DelayInTicks / 2) ;
 
-                while (timeout && DateTime.Now.Ticks - currentTicks < timeoutInTicks) {
+                while (timeout && DateTime.Now.Ticks - currentTicks < TimeoutInTicks) {
                     if (this.ReadScl()) timeout = false;
                 }
 
