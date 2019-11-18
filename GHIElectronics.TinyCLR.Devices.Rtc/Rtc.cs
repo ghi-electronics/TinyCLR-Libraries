@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.CompilerServices;
 using GHIElectronics.TinyCLR.Devices.Rtc.Provider;
 using GHIElectronics.TinyCLR.Native;
@@ -23,6 +23,34 @@ namespace GHIElectronics.TinyCLR.Devices.Rtc {
         public DateTime Now {
             get => this.GetTime().ToDateTime();
             set => this.SetTime(RtcDateTime.FromDateTime(value));
+        }
+
+        public uint BackupMemorySize => this.Provider.BackupMemorySize;
+
+        public void WriteBackupMemory(byte[] sourceData) => this.WriteBackupMemory(sourceData, 0, 0, sourceData.Length);
+
+        public void WriteBackupMemory(byte[] sourceData, uint destinationOffset) => this.WriteBackupMemory(sourceData, 0, destinationOffset, sourceData.Length);
+
+        public void WriteBackupMemory(byte[] sourceData, uint sourceOffset, uint destinationOffset, int count) {
+            if (sourceData == null) throw new ArgumentNullException(nameof(sourceData));
+            if (count == 0) throw new ArgumentOutOfRangeException(nameof(count));
+            if (sourceOffset + count > sourceData.Length) throw new ArgumentOutOfRangeException(nameof(count));
+            if (destinationOffset + count > this.BackupMemorySize) throw new ArgumentOutOfRangeException(nameof(count));
+
+            this.Provider.WriteBackupMemory(sourceData, sourceOffset, destinationOffset, count);
+        }
+
+        public int ReadBackupMemory(byte[] destinationData) => this.ReadBackupMemory(destinationData, 0, 0, destinationData.Length);
+
+        public int ReadBackupMemory(byte[] destinationData, uint sourceOffset) => this.ReadBackupMemory(destinationData,  0, sourceOffset, destinationData.Length);
+
+        public int ReadBackupMemory(byte[] destinationData, uint destinationOffset, uint sourceOffset,  int count) {
+            if (destinationData == null) throw new ArgumentNullException(nameof(destinationData));
+            if (count == 0) throw new ArgumentOutOfRangeException(nameof(count));
+            if (sourceOffset + count > this.BackupMemorySize) throw new ArgumentOutOfRangeException(nameof(count));
+            if (destinationOffset + count > destinationData.Length) throw new ArgumentOutOfRangeException(nameof(count));
+
+            return this.Provider.ReadBackupMemory(destinationData, destinationOffset, sourceOffset, count);
         }
     }
 
@@ -68,9 +96,12 @@ namespace GHIElectronics.TinyCLR.Devices.Rtc {
     namespace Provider {
         public interface IRtcControllerProvider : IDisposable {
             bool IsValid { get; }
+            uint BackupMemorySize { get; }
 
             RtcDateTime GetTime();
             void SetTime(RtcDateTime value);
+            void WriteBackupMemory(byte[] sourceData, uint sourceOffset, uint destinationOffset, int count);
+            int ReadBackupMemory(byte[] destinationData, uint destinationOffset, uint sourceOffset, int count);            
         }
 
         public sealed class RtcControllerApiWrapper : IRtcControllerProvider {
@@ -101,6 +132,14 @@ namespace GHIElectronics.TinyCLR.Devices.Rtc {
             public extern void SetTime(RtcDateTime value);
 
             public extern bool IsValid { [MethodImpl(MethodImplOptions.InternalCall)] get; }
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            public extern void WriteBackupMemory(byte[] sourceData, uint sourceOffset, uint destinationOffset, int count);
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            public extern int ReadBackupMemory(byte[] destinationData, uint destinationOffset, uint sourceOffset, int count);
+
+            public extern uint BackupMemorySize { [MethodImpl(MethodImplOptions.InternalCall)] get; }
         }
     }
 }
