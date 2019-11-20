@@ -74,6 +74,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Data
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Devices.Camera", "GHIElectronics.TinyCLR.Devices.Camera\GHIElectronics.TinyCLR.Devices.Camera.csproj", "{104FA29F-F58B-4C4F-A9B1-A1527FD6A3EF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Devices.Watchdog", "GHIElectronics.TinyCLR.Devices.Watchdog\GHIElectronics.TinyCLR.Devices.Watchdog.csproj", "{E03295E4-60A5-430F-ACCA-F28E085AD8C9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -188,6 +190,10 @@ Global
 		{104FA29F-F58B-4C4F-A9B1-A1527FD6A3EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{104FA29F-F58B-4C4F-A9B1-A1527FD6A3EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{104FA29F-F58B-4C4F-A9B1-A1527FD6A3EF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E03295E4-60A5-430F-ACCA-F28E085AD8C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E03295E4-60A5-430F-ACCA-F28E085AD8C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E03295E4-60A5-430F-ACCA-F28E085AD8C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E03295E4-60A5-430F-ACCA-F28E085AD8C9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
