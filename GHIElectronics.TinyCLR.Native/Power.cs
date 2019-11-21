@@ -34,7 +34,7 @@ namespace GHIElectronics.TinyCLR.Native {
 
         public static void Hibernate() => SetLevel(PowerLevel.Sleep3, PowerWakeSource.Gpio, 0);
 
-        public static void Shutdown() => SetLevel(PowerLevel.Off, PowerWakeSource.Gpio, 0);
+        public static void Shutdown(bool activeState) => SetLevel(PowerLevel.Off, PowerWakeSource.Gpio, activeState == false ? 0UL : 1);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         public static extern void Reset(bool runCoreAfter);
