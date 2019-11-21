@@ -3,10 +3,10 @@ using System.Collections;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
-using GHIElectronics.TinyCLR.Devices.Usb.Client.Provider;
+using GHIElectronics.TinyCLR.Devices.UsbClient.Provider;
 using GHIElectronics.TinyCLR.Native;
 
-namespace GHIElectronics.TinyCLR.Devices.Usb.Client {
+namespace GHIElectronics.TinyCLR.Devices.UsbClient {
     public sealed class CdcController : IDisposable {
         public ICdcControllerProvider Provider { get; }
 
