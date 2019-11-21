@@ -4,12 +4,12 @@ using GHIElectronics.TinyCLR.Devices.Rtc.Provider;
 using GHIElectronics.TinyCLR.Native;
 
 namespace GHIElectronics.TinyCLR.Devices.Rtc {
-    public enum TamperTrigger {
-        RisingEdge = 0,
-        FallingEdge = 1,
-        LowLevel = 2,
-        HighLevel = 3,
-    }
+    //internal enum TamperTrigger {
+    //    RisingEdge = 0,
+    //    FallingEdge = 1,
+    //    LowLevel = 2,
+    //    HighLevel = 3,
+    //}
 
     public sealed class RtcController : IDisposable {
         public IRtcControllerProvider Provider { get; }
@@ -32,34 +32,7 @@ namespace GHIElectronics.TinyCLR.Devices.Rtc {
             set => this.SetTime(RtcDateTime.FromDateTime(value));
         }
 
-        public uint BackupMemorySize => this.Provider.BackupMemorySize;
         public uint BackupRegisterCount => this.Provider.BackupRegisterCount;
-
-        public void WriteBackupMemory(byte[] sourceData) => this.WriteBackupMemory(sourceData, 0, 0, sourceData.Length);
-
-        public void WriteBackupMemory(byte[] sourceData, uint destinationOffset) => this.WriteBackupMemory(sourceData, 0, destinationOffset, sourceData.Length);
-
-        public void WriteBackupMemory(byte[] sourceData, uint sourceOffset, uint destinationOffset, int count) {
-            if (sourceData == null) throw new ArgumentNullException(nameof(sourceData));
-            if (count == 0) throw new ArgumentOutOfRangeException(nameof(count));
-            if (sourceOffset + count > sourceData.Length) throw new ArgumentOutOfRangeException(nameof(count));
-            if (destinationOffset + count > this.BackupMemorySize) throw new ArgumentOutOfRangeException(nameof(count));
-
-            this.Provider.WriteBackupMemory(sourceData, sourceOffset, destinationOffset, count);
-        }
-
-        public int ReadBackupMemory(byte[] destinationData) => this.ReadBackupMemory(destinationData, 0, 0, destinationData.Length);
-
-        public int ReadBackupMemory(byte[] destinationData, uint sourceOffset) => this.ReadBackupMemory(destinationData,  0, sourceOffset, destinationData.Length);
-
-        public int ReadBackupMemory(byte[] destinationData, uint destinationOffset, uint sourceOffset,  int count) {
-            if (destinationData == null) throw new ArgumentNullException(nameof(destinationData));
-            if (count == 0) throw new ArgumentOutOfRangeException(nameof(count));
-            if (sourceOffset + count > this.BackupMemorySize) throw new ArgumentOutOfRangeException(nameof(count));
-            if (destinationOffset + count > destinationData.Length) throw new ArgumentOutOfRangeException(nameof(count));
-
-            return this.Provider.ReadBackupMemory(destinationData, destinationOffset, sourceOffset, count);
-        }
 
         public void WriteBackupRegister(uint[] sourceData) => this.WriteBackupRegister(sourceData, 0, 0, sourceData.Length);
 
@@ -87,7 +60,8 @@ namespace GHIElectronics.TinyCLR.Devices.Rtc {
             return this.Provider.ReadBackupRegister(destinationData, destinationOffset, sourceOffset, count);
         }
 
-        public void EnableAntiTamper(TamperTrigger trigger) => this.Provider.EnableAntiTamper(trigger);
+        //public void EnableAntiTamper(TamperTrigger trigger) => this.Provider.EnableAntiTamper(trigger);
+        //public void DisableAntiTamper() => this.Provider.DisableAntiTamper();
     }
 
     public struct RtcDateTime {
@@ -132,16 +106,13 @@ namespace GHIElectronics.TinyCLR.Devices.Rtc {
     namespace Provider {
         public interface IRtcControllerProvider : IDisposable {
             bool IsValid { get; }
-            uint BackupMemorySize { get; }
             uint BackupRegisterCount { get; }
-
             RtcDateTime GetTime();
             void SetTime(RtcDateTime value);
-            void WriteBackupMemory(byte[] sourceData, uint sourceOffset, uint destinationOffset, int count);
-            int ReadBackupMemory(byte[] destinationData, uint destinationOffset, uint sourceOffset, int count);
             void WriteBackupRegister(uint[] sourceData, uint sourceOffset, uint destinationOffset, int count);
             int ReadBackupRegister(uint[] destinationData, uint destinationOffset, uint sourceOffset, int count);
-            void EnableAntiTamper(TamperTrigger trigger);
+            //void EnableAntiTamper(TamperTrigger trigger);
+            //void DisableAntiTamper();
         }
 
         public sealed class RtcControllerApiWrapper : IRtcControllerProvider {
@@ -174,14 +145,6 @@ namespace GHIElectronics.TinyCLR.Devices.Rtc {
             public extern bool IsValid { [MethodImpl(MethodImplOptions.InternalCall)] get; }
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern void WriteBackupMemory(byte[] sourceData, uint sourceOffset, uint destinationOffset, int count);
-
-            [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern int ReadBackupMemory(byte[] destinationData, uint destinationOffset, uint sourceOffset, int count);
-
-            public extern uint BackupMemorySize { [MethodImpl(MethodImplOptions.InternalCall)] get; }
-
-            [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void WriteBackupRegister(uint[] sourceData, uint sourceOffset, uint destinationOffset, int count);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
@@ -189,8 +152,10 @@ namespace GHIElectronics.TinyCLR.Devices.Rtc {
 
             public extern uint BackupRegisterCount { [MethodImpl(MethodImplOptions.InternalCall)] get; }
 
-            [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern void EnableAntiTamper(TamperTrigger trigger);
+            //[MethodImpl(MethodImplOptions.InternalCall)]
+            //public extern void EnableAntiTamper(TamperTrigger trigger);
+            //[MethodImpl(MethodImplOptions.InternalCall)]
+            //public extern void DisableAntiTamper();
         }
     }
 }
