@@ -1,4 +1,4 @@
-﻿using System.Drawing.Imaging;
+using System.Drawing.Imaging;
 using System.IO;
 
 namespace System.Drawing {
@@ -42,6 +42,13 @@ namespace System.Drawing {
         ~Image() => this.Dispose(false);
     }
 
+    public enum BitmapImageType : byte {
+        TinyCLRBitmap = 0,
+        Gif = 1,
+        Jpeg = 2,
+        Bmp = 3 // The windows .bmp format
+    }
+
     public sealed class Bitmap : Image {
         private Bitmap(Internal.Bitmap bmp) => this.data = new Graphics(bmp, IntPtr.Zero);
         public Bitmap(int width, int height) => this.data = new Graphics(width, height);
@@ -54,6 +61,12 @@ namespace System.Drawing {
             stream.Read(buffer, 0, buffer.Length);
 
             this.data = new Graphics(buffer);
+        }
+
+        public Bitmap(byte[] buffer, BitmapImageType type) {
+            if (buffer == null) throw new ArgumentNullException(nameof(buffer));
+
+            this.data = new Graphics(buffer, type);
         }
 
         public void SetPixel(int x, int y, Color color) => this.data.SetPixel(x, y, (uint)color.ToArgb());
