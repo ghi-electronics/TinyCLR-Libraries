@@ -34,8 +34,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Cdc.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UsbClient.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
