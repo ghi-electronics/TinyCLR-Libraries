@@ -25,11 +25,10 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
     public delegate void DataReceivedEventHandler(UsbClientController sender, uint count);
     public delegate void DeviceStateChangedEventHandler(UsbClientController sender, DeviceState state);
 
-    
     public sealed class UsbClientController : IDisposable {
         private DataReceivedEventHandler dataReceivedCallbacks;
         private DeviceStateChangedEventHandler deviceStateChangedCallbacks;
-        
+
         public IUsbClientControllerProvider Provider { get; }
 
         private UsbClientController(IUsbClientControllerProvider provider) => this.Provider = provider;
@@ -42,11 +41,17 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
 
         public int ByteToRead => this.Provider.ByteToRead;
         public int ByteToWrite => this.Provider.ByteToWrite;
+        public int WriteBufferSize { get => this.Provider.WriteBufferSize; set => this.Provider.WriteBufferSize = value; }
+        public int ReadBufferSize { get => this.Provider.ReadBufferSize; set => this.Provider.ReadBufferSize = value; }
 
-        public void SetActiveSetting(UsbClientMode mode) => this.SetActiveSetting(mode, 0xFFFF, 0xFFFF, null, null, null);
-        public void SetActiveSetting(UsbClientMode mode, ushort productId) => this.SetActiveSetting(mode, productId, 0xFFFF, null, null, null);
-        public void SetActiveSetting(UsbClientMode mode, ushort productId, ushort vendorId) => this.SetActiveSetting(mode, productId, vendorId, null, null, null);
-        public void SetActiveSetting(UsbClientMode mode, ushort productId, ushort vendorId, string manufactureName, string productname, string serialNumber) => this.Provider.SetActiveSetting(mode, productId, vendorId, manufactureName, productname, serialNumber);
+        public void SetActiveSetting(UsbClientMode mode, ushort productId, ushort vendorId) => this.SetActiveSetting(mode, null, null, null, productId, vendorId);
+        public void SetActiveSetting(UsbClientMode mode, string manufactureName, string productName, string serialNumber, ushort productId, ushort vendorId) => this.SetActiveSetting(mode, manufactureName, productName, serialNumber, productId, vendorId, null);
+        public void SetActiveSetting(UsbClientMode mode, string manufactureName, string productName, string serialNumber, ushort productId, ushort vendorId, string guid) {
+            if (mode == UsbClientMode.WinUsb && guid == null)
+                throw new ArgumentNullException(nameof(guid));
+
+            this.Provider.SetActiveSetting(mode, manufactureName, productName, serialNumber, productId, vendorId, guid);
+        }
 
         public void Enable() => this.Provider.Enable();
         public void Disable() => this.Provider.Disable();
@@ -117,12 +122,15 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
             int ByteToRead { get; }
             int ByteToWrite { get; }
 
+            int WriteBufferSize { get; set; }
+            int ReadBufferSize { get; set; }
+
             DeviceState DeviceState { get; }
 
             void Enable();
             void Disable();
 
-            void SetActiveSetting(UsbClientMode mode, ushort productId, ushort vendorId, string manufactureName, string productname, string serialNumber);
+            void SetActiveSetting(UsbClientMode mode, string manufactureName, string productName, string serialNumber, ushort productId, ushort vendorId, string guid);
 
             int Read(byte[] data, int offset, int count);
             int Write(byte[] data, int offset, int count);
@@ -132,7 +140,7 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
 
             void Flush();
 
-           
+
             event DataReceivedEventHandler DataReceived;
             event DeviceStateChangedEventHandler DeviceStateChanged;
         }
@@ -194,7 +202,7 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
             }
 
             public void Dispose() => this.Release();
-       
+
             public int ByteToRead => this.GetByteToRead();
             public int ByteToWrite => this.GetByteToWrite();
 
@@ -213,7 +221,7 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
             public extern void Disable();
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern void SetActiveSetting(UsbClientMode mode, ushort productId, ushort vendorId, string manufactureName, string productname, string serialNumber);
+            public extern void SetActiveSetting(UsbClientMode mode, string manufactureName, string productName, string serialNumber, ushort productId, ushort vendorId, string guid);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern int Read(byte[] data, int offset, int count);
@@ -244,6 +252,9 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             private extern void SetDataStateChangedEventEnabled(bool enabled);
+
+            public extern int WriteBufferSize { [MethodImpl(MethodImplOptions.InternalCall)] get; [MethodImpl(MethodImplOptions.InternalCall)] set; }
+            public extern int ReadBufferSize { [MethodImpl(MethodImplOptions.InternalCall)] get; [MethodImpl(MethodImplOptions.InternalCall)] set; }
 
         }
     }
