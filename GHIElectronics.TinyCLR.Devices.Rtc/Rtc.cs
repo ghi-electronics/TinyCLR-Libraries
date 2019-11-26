@@ -4,6 +4,12 @@ using GHIElectronics.TinyCLR.Devices.Rtc.Provider;
 using GHIElectronics.TinyCLR.Native;
 
 namespace GHIElectronics.TinyCLR.Devices.Rtc {
+    public enum BatteryChargeMode {
+        None = 0,
+        Fast = 1,
+        Slow = 2
+    }
+
     public sealed class RtcController : IDisposable {
         public IRtcControllerProvider Provider { get; }
 
@@ -42,9 +48,9 @@ namespace GHIElectronics.TinyCLR.Devices.Rtc {
 
         public int ReadBackupMemory(byte[] destinationData) => this.ReadBackupMemory(destinationData, 0, 0, destinationData.Length);
 
-        public int ReadBackupMemory(byte[] destinationData, uint sourceOffset) => this.ReadBackupMemory(destinationData,  0, sourceOffset, destinationData.Length);
+        public int ReadBackupMemory(byte[] destinationData, uint sourceOffset) => this.ReadBackupMemory(destinationData, 0, sourceOffset, destinationData.Length);
 
-        public int ReadBackupMemory(byte[] destinationData, uint destinationOffset, uint sourceOffset,  int count) {
+        public int ReadBackupMemory(byte[] destinationData, uint destinationOffset, uint sourceOffset, int count) {
             if (destinationData == null) throw new ArgumentNullException(nameof(destinationData));
             if (count == 0) throw new ArgumentOutOfRangeException(nameof(count));
             if (sourceOffset + count > this.BackupMemorySize) throw new ArgumentOutOfRangeException(nameof(count));
@@ -52,6 +58,8 @@ namespace GHIElectronics.TinyCLR.Devices.Rtc {
 
             return this.Provider.ReadBackupMemory(destinationData, destinationOffset, sourceOffset, count);
         }
+
+        public void SetChargeMode(BatteryChargeMode chargeMode) => this.Provider.SetChargeMode(chargeMode);
     }
 
     public struct RtcDateTime {
@@ -101,7 +109,8 @@ namespace GHIElectronics.TinyCLR.Devices.Rtc {
             RtcDateTime GetTime();
             void SetTime(RtcDateTime value);
             void WriteBackupMemory(byte[] sourceData, uint sourceOffset, uint destinationOffset, int count);
-            int ReadBackupMemory(byte[] destinationData, uint destinationOffset, uint sourceOffset, int count);            
+            int ReadBackupMemory(byte[] destinationData, uint destinationOffset, uint sourceOffset, int count);
+            void SetChargeMode(BatteryChargeMode chargeMode);
         }
 
         public sealed class RtcControllerApiWrapper : IRtcControllerProvider {
@@ -140,6 +149,9 @@ namespace GHIElectronics.TinyCLR.Devices.Rtc {
             public extern int ReadBackupMemory(byte[] destinationData, uint destinationOffset, uint sourceOffset, int count);
 
             public extern uint BackupMemorySize { [MethodImpl(MethodImplOptions.InternalCall)] get; }
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            public extern void SetChargeMode(BatteryChargeMode chargeMode);
         }
     }
 }
