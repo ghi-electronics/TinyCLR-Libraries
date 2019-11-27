@@ -47,13 +47,13 @@ namespace GHIElectronics.TinyCLR.Native {
         private NativeApi() { }
 
         public static object GetDefaultFromCreator(NativeApiType apiType) => NativeApi.defaultCreators.Contains(apiType) ? ((DefaultCreator)NativeApi.defaultCreators[apiType])?.Invoke() : null;
-        public static void SetDefaultCreator(NativeApiType apiType, DefaultCreator creator) => NativeApi.defaultCreators[apiType] = creator;
+        //public static void SetDefaultCreator(NativeApiType apiType, DefaultCreator creator) => NativeApi.defaultCreators[apiType] = creator;
 
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        public static extern void Add(IntPtr address);
+        //[MethodImpl(MethodImplOptions.InternalCall)]
+        //public static extern void Add(IntPtr address);
 
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        public static extern void Remove(IntPtr address);
+        //[MethodImpl(MethodImplOptions.InternalCall)]
+        //public static extern void Remove(IntPtr address);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         public static extern NativeApi Find(string name, NativeApiType type);
@@ -61,8 +61,8 @@ namespace GHIElectronics.TinyCLR.Native {
         [MethodImpl(MethodImplOptions.InternalCall)]
         public static extern string GetDefaultName(NativeApiType type);
 
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        public static extern void SetDefaultName(NativeApiType type, string selector);
+        //[MethodImpl(MethodImplOptions.InternalCall)]
+        //public static extern void SetDefaultName(NativeApiType type, string selector);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         public static extern NativeApi[] FindAll();
