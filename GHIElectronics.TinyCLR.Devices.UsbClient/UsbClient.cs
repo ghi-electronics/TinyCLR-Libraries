@@ -45,7 +45,9 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
         public int ReadBufferSize { get => this.Provider.ReadBufferSize; set => this.Provider.ReadBufferSize = value; }
 
         public void SetActiveSetting(UsbClientMode mode, ushort productId, ushort vendorId) => this.SetActiveSetting(mode, null, null, null, productId, vendorId);
+        public void SetActiveSetting(UsbClientMode mode, ushort productId, ushort vendorId, string guid) => this.SetActiveSetting(mode, null, null, null, productId, vendorId, guid);
         public void SetActiveSetting(UsbClientMode mode, string manufactureName, string productName, string serialNumber, ushort productId, ushort vendorId) => this.SetActiveSetting(mode, manufactureName, productName, serialNumber, productId, vendorId, null);
+
         public void SetActiveSetting(UsbClientMode mode, string manufactureName, string productName, string serialNumber, ushort productId, ushort vendorId, string guid) {
             if (mode == UsbClientMode.WinUsb && guid == null)
                 throw new ArgumentNullException(nameof(guid));
