@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading;
 
 namespace GHIElectronics.TinyCLR.Media {
-    public sealed class Mpeg {        
+    public sealed class Mpeg {
         const int BLOCK_SIZE = 10 * 1024;
 
         private byte[][] buffer;
@@ -27,6 +27,9 @@ namespace GHIElectronics.TinyCLR.Media {
         private int height;
         private int bufferSize;
         private int bufferCount;
+
+        public delegate void FrameReceivedHandler(byte[] data);
+        public event FrameReceivedHandler OnFrameReceived;
 
         public class Setting {
             public int Width { get; set; }
@@ -50,6 +53,36 @@ namespace GHIElectronics.TinyCLR.Media {
             this.screen = Graphics.FromImage(new Bitmap(this.width, this.height));
         }
 
+        public void StartDecode(FileStream stream) {
+            this.streamToBuffer = stream;
+
+            this.isDecoding = true;
+
+            var pushThread = new Thread(this.PushStreamToBuffer);
+
+            pushThread.Start();
+
+            var pop2Device = new Thread(this.Pop2Device);
+
+            pop2Device.Start();
+        }
+
+        public void StartDecode(byte[] data) {
+            this.dataToBuffer = data;
+
+            this.isDecoding = true;
+
+            var pushThread = new Thread(this.PushDataToBuffer);
+
+            pushThread.Start();
+
+            var pop2Device = new Thread(this.Pop2Device);
+
+            pop2Device.Start();
+        }
+
+        public void StopDecode() => this.isDecoding = false;
+
         private void PushStreamToBuffer() {
             var streamLength = this.streamToBuffer.Length;
             var i = 0;
@@ -65,7 +98,7 @@ namespace GHIElectronics.TinyCLR.Media {
                     continue;
                 }
 
-                var lengthToBuffer = (int)((this.bufferSize < streamLength - i) ? this.bufferSize : (streamLength - i));                
+                var lengthToBuffer = (int)((this.bufferSize < streamLength - i) ? this.bufferSize : (streamLength - i));
 
                 var block = lengthToBuffer / BLOCK_SIZE;
                 var remain = lengthToBuffer % BLOCK_SIZE;
@@ -110,7 +143,7 @@ namespace GHIElectronics.TinyCLR.Media {
                     continue;
                 }
 
-                var lengthToBuffer = (int)((this.bufferSize < dataLength - i) ? this.bufferSize : (dataLength - i));                
+                var lengthToBuffer = (int)((this.bufferSize < dataLength - i) ? this.bufferSize : (dataLength - i));
 
                 var block = lengthToBuffer / BLOCK_SIZE;
                 var remain = lengthToBuffer % BLOCK_SIZE;
@@ -127,7 +160,7 @@ namespace GHIElectronics.TinyCLR.Media {
                     block--;
                 }
 
-                if (remain > 0) {                    
+                if (remain > 0) {
                     Array.Copy(this.dataToBuffer, i, this.buffer[id], index, remain);
 
                     i += remain;
@@ -141,36 +174,6 @@ namespace GHIElectronics.TinyCLR.Media {
                 }
             }
         }
-
-        public void StartDecode(FileStream stream) {
-            this.streamToBuffer = stream;
-
-            this.isDecoding = true;
-
-            var pushThread = new Thread(this.PushStreamToBuffer);
-
-            pushThread.Start();
-
-            var pop2Device = new Thread(this.Pop2Device);
-
-            pop2Device.Start();
-        }
-
-        public void StartDecode(byte[] data) {
-            this.dataToBuffer = data;
-
-            this.isDecoding = true;
-
-            var pushThread = new Thread(this.PushDataToBuffer);
-
-            pushThread.Start();
-
-            var pop2Device = new Thread(this.Pop2Device);
-
-            pop2Device.Start();
-        }
-
-        public void StopDecode() => this.isDecoding = false;
 
         private void Pop2Device() {
 
@@ -235,8 +238,5 @@ namespace GHIElectronics.TinyCLR.Media {
                     this.fifoOut = 0;
             }
         }
-
-        public delegate void FrameReceivedHandler(byte[] data);
-        public event FrameReceivedHandler OnFrameReceived;
     }
 }
