@@ -67,7 +67,7 @@ namespace GHIElectronics.TinyCLR.Media {
                 throw new Exception("Must be mono.");
             }
 
-            this.sampleRate = (int)GHI.Utilities.Arrays.ExtractInt32(wav, this.index);// (int)Utility.ExtractValueFromArray(wav, index, 4);
+            this.sampleRate = BitConverter.ToInt32(wav, this.index);// (int)Utility.ExtractValueFromArray(wav, index, 4);
             this.index += 4;
             if (this.sampleRate != 8000) {
                 throw new Exception("Sample rate must be 8000KHz.");
