@@ -9,8 +9,8 @@
     <ProjectGuid>{2F1F64E0-5E96-46A4-A386-DE17AE01AD7D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GHIElectronics.TinyCLR.Media.Mpeg</RootNamespace>
-    <AssemblyName>GHIElectronics.TinyCLR.Media.Mpeg</AssemblyName>
+    <RootNamespace>GHIElectronics.TinyCLR.Media</RootNamespace>
+    <AssemblyName>GHIElectronics.TinyCLR.Media</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A1948822-69DD-4150-919B-F3F42EFB71CC};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>

@@ -6,7 +6,7 @@ using System.IO;
 using System.Text;
 using System.Threading;
 
-namespace GHIElectronics.TinyCLR.Media.Mpeg {
+namespace GHIElectronics.TinyCLR.Media {
     public sealed class Player {
 
         private byte[][] buffer;
