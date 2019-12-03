@@ -7,7 +7,8 @@ using System.Text;
 using System.Threading;
 
 namespace GHIElectronics.TinyCLR.Media {
-    public sealed class Mpeg {
+    public sealed class Mpeg {        
+        const int BLOCK_SIZE = 10 * 1024;
 
         private byte[][] buffer;
 
@@ -64,9 +65,7 @@ namespace GHIElectronics.TinyCLR.Media {
                     continue;
                 }
 
-                var lengthToBuffer = (int)((this.bufferSize < streamLength - i) ? this.bufferSize : (streamLength - i));
-
-                const int BLOCK_SIZE = 10 * 1024;
+                var lengthToBuffer = (int)((this.bufferSize < streamLength - i) ? this.bufferSize : (streamLength - i));                
 
                 var block = lengthToBuffer / BLOCK_SIZE;
                 var remain = lengthToBuffer % BLOCK_SIZE;
@@ -111,9 +110,7 @@ namespace GHIElectronics.TinyCLR.Media {
                     continue;
                 }
 
-                var lengthToBuffer = (int)((this.bufferSize < dataLength - i) ? this.bufferSize : (dataLength - i));
-
-                const int BLOCK_SIZE = 10 * 1024;
+                var lengthToBuffer = (int)((this.bufferSize < dataLength - i) ? this.bufferSize : (dataLength - i));                
 
                 var block = lengthToBuffer / BLOCK_SIZE;
                 var remain = lengthToBuffer % BLOCK_SIZE;
