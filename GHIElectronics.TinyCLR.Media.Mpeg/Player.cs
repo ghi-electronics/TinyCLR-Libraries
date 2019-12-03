@@ -173,13 +173,16 @@ namespace GHIElectronics.TinyCLR.Media.Mpeg {
 
                         Array.Copy(this.buffer[id], startFrame, frameData, 0, frameData.Length);
 
-                        var image = new Bitmap(frameData, BitmapImageType.Jpeg);
+                        using (var image = new Bitmap(frameData, BitmapImageType.Jpeg)) {
 
-                        this.screen.DrawImage(image, 0, 0, image.Width, image.Height);
+                            this.screen.DrawImage(image, 0, 0, image.Width, image.Height);
 
-                        OnFrameReceived?.Invoke(this.screen.GetBitmap());
+                            if (OnFrameReceived == null)
+                                this.screen.Flush();
+                            else
+                                OnFrameReceived?.Invoke(this.screen.GetBitmap());
+                        }
 
-                        image.Dispose();
                     }
                 }
 
