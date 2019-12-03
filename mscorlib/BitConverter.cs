@@ -228,5 +228,14 @@ namespace System {
         [CLSCompliant(false)]
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         extern public static ulong ToUInt64(byte[] value, int startIndex);
+
+        /// <summary>
+        /// Swap endianness in byte
+        /// <param name="data">The array of bytes.</param>
+        /// <param name="groupSize">Group of bytes to be swapped</param>
+        /// </summary>
+        [CLSCompliant(false)]
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        extern public static void SwapEndianness(byte[] data, int groupSize);
     }
 }
