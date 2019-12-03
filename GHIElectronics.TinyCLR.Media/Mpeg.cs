@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading;
 
 namespace GHIElectronics.TinyCLR.Media {
-    public sealed class Player {
+    public sealed class Mpeg {
 
         private byte[][] buffer;
 
@@ -34,7 +34,7 @@ namespace GHIElectronics.TinyCLR.Media {
             public int BufferCount { get; set; } = 3;
         }
 
-        public Player(Setting setting) {
+        public Mpeg(Setting setting) {
             this.width = setting.Width;
             this.height = setting.Height;
             this.bufferSize = setting.BufferSize;
@@ -97,7 +97,52 @@ namespace GHIElectronics.TinyCLR.Media {
             }
         }
         private void PushDataToBuffer() {
-            //TODO
+            var dataLength = this.dataToBuffer.Length;
+            var i = 0;
+
+            while (i < dataLength) {
+
+                Thread.Sleep(1);
+
+                if (!this.isDecoding)
+                    break;
+
+                if (this.fifoCount == this.bufferCount) {
+                    continue;
+                }
+
+                var lengthToBuffer = (int)((this.bufferSize < dataLength - i) ? this.bufferSize : (dataLength - i));
+
+                const int BLOCK_SIZE = 10 * 1024;
+
+                var block = lengthToBuffer / BLOCK_SIZE;
+                var remain = lengthToBuffer % BLOCK_SIZE;
+
+                var index = 0;
+                var id = this.fifoIn;
+
+                while (block > 0) {
+                    Array.Copy(this.dataToBuffer, i, this.buffer[id], index, BLOCK_SIZE);
+
+                    index += BLOCK_SIZE;
+                    i += BLOCK_SIZE;
+
+                    block--;
+                }
+
+                if (remain > 0) {                    
+                    Array.Copy(this.dataToBuffer, i, this.buffer[id], index, remain);
+
+                    i += remain;
+                }
+
+                this.fifoCount++;
+                this.fifoIn++;
+
+                if (this.fifoIn == this.bufferCount) {
+                    this.fifoIn = 0;
+                }
+            }
         }
 
         public void StartDecode(FileStream stream) {
@@ -145,7 +190,7 @@ namespace GHIElectronics.TinyCLR.Media {
 
                 for (var i = 0; i < this.bufferSize - 4; i++) {
 
-                    var lentmp = 0;
+                    var jpegLength = 0;
                     var foundFrame = false;
 
                     if (this.buffer[id][i] == (byte)'0'
@@ -154,22 +199,22 @@ namespace GHIElectronics.TinyCLR.Media {
                     && this.buffer[id][i + 3] == (byte)'c') {
                         i += 4;
 
-                        lentmp = (this.buffer[id][i] | (this.buffer[id][i + 1] << 8) | (this.buffer[id][i + 2] << 16) | (this.buffer[id][i + 3] << 24));
+                        jpegLength = (this.buffer[id][i] | (this.buffer[id][i + 1] << 8) | (this.buffer[id][i + 2] << 16) | (this.buffer[id][i + 3] << 24));
 
                         i += 4;
 
                         startFrame = i;
 
-                        if (i + lentmp > this.buffer[id].Length)
+                        if (i + jpegLength > this.buffer[id].Length)
                             break;
 
-                        i += (lentmp - 1);
+                        i += (jpegLength - 1);
 
-                        foundFrame = lentmp > 0;
+                        foundFrame = jpegLength > 0;
                     }
 
                     if (foundFrame) {
-                        var frameData = new byte[lentmp];
+                        var frameData = new byte[jpegLength];
 
                         Array.Copy(this.buffer[id], startFrame, frameData, 0, frameData.Length);
 
@@ -196,6 +241,5 @@ namespace GHIElectronics.TinyCLR.Media {
 
         public delegate void FrameReceivedHandler(byte[] data);
         public event FrameReceivedHandler OnFrameReceived;
-
     }
 }
