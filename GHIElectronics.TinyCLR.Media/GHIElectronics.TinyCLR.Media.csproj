@@ -6,7 +6,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{2F1F64E0-5E96-46A4-A386-DE17AE01AD7D}</ProjectGuid>
+    <ProjectGuid>{1DF6F62C-2723-434A-B0E1-9ABB5E35BB9F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>GHIElectronics.TinyCLR.Media</RootNamespace>
@@ -47,6 +47,10 @@
     <ProjectReference Include="..\GHIElectronics.TinyCLR.IO\GHIElectronics.TinyCLR.IO.csproj">
       <Project>{313AEC8E-2B47-4A1A-ACE2-A766D076B2AE}</Project>
       <Name>GHIElectronics.TinyCLR.IO</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GHIElectronics.TinyCLR.Native\GHIElectronics.TinyCLR.Native.csproj">
+      <Project>{B602474A-AEB0-491C-832B-7EAF0B4511C0}</Project>
+      <Name>GHIElectronics.TinyCLR.Native</Name>
     </ProjectReference>
     <ProjectReference Include="..\mscorlib\mscorlib.csproj">
       <Project>{AA751E21-9220-42CE-8180-516BB59E4555}</Project>
