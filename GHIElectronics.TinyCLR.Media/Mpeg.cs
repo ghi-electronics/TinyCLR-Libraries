@@ -5,12 +5,14 @@ using System.Drawing;
 using System.IO;
 using System.Text;
 using System.Threading;
+using GHIElectronics.TinyCLR.Native;
 
 namespace GHIElectronics.TinyCLR.Media {
     public sealed class Mpeg {
-        const int BLOCK_SIZE = 10 * 1024;
+        const int BLOCK_SIZE = 4 * 1024;
 
         private byte[][] buffer;
+        private IntPtr[] unmanagedPtr;
 
         private FileStream streamToBuffer;
         private byte[] dataToBuffer;
@@ -23,34 +25,49 @@ namespace GHIElectronics.TinyCLR.Media {
 
         private Graphics screen;
 
-        private int width;
-        private int height;
         private int bufferSize;
         private int bufferCount;
 
-        public delegate void FrameReceivedHandler(byte[] data);
-        public event FrameReceivedHandler OnFrameReceived;
-
         public class Setting {
-            public int Width { get; set; }
-            public int Height { get; set; }
-            public int BufferSize { get; set; } = 100 * 1024;
+            public int BufferSize { get; set; } = 2 * 1024 * 1024;
             public int BufferCount { get; set; } = 3;
+
+            public Graphics Screen { get; set; }
         }
 
         public Mpeg(Setting setting) {
-            this.width = setting.Width;
-            this.height = setting.Height;
+
             this.bufferSize = setting.BufferSize;
             this.bufferCount = setting.BufferCount;
 
             this.buffer = new byte[this.bufferCount][];
+            this.unmanagedPtr = new IntPtr[this.bufferCount];
 
             for (var c = 0; c < this.bufferCount; c++) {
-                this.buffer[c] = new byte[this.bufferSize];
+
+                if (DeviceInformation.DeviceName == "Sc20260") {
+                    var ptr = Memory.UnmanagedMemory.Allocate(this.bufferSize);
+                    this.buffer[c] = Memory.UnmanagedMemory.ToBytes(ptr, this.bufferSize);
+
+                    this.unmanagedPtr[c] = ptr;
+                }
+                else {
+                    this.buffer[c] = new byte[this.bufferSize];
+                }
             }
 
-            this.screen = Graphics.FromImage(new Bitmap(this.width, this.height));
+            this.screen = setting.Screen;
+
+            if (this.screen == null)
+                throw new NullReferenceException("");
+        }
+
+        ~Mpeg() {
+            if (this.unmanagedPtr != null) {
+                for (var c = 0; c < this.bufferCount; c++) {
+                    Memory.UnmanagedMemory.Free(this.unmanagedPtr[c]);
+                }
+            }
         }
 
         public void StartDecode(FileStream stream) {
@@ -112,6 +129,8 @@ namespace GHIElectronics.TinyCLR.Media {
                     block--;
 
                     i += BLOCK_SIZE;
+
+                    Thread.Sleep(1);
                 }
 
                 if (remain > 0) {
@@ -214,6 +233,9 @@ namespace GHIElectronics.TinyCLR.Media {
                     }
 
                     if (foundFrame) {
+
+                        var t1 = System.DateTime.Now.Ticks;
+
                         var frameData = new byte[jpegLength];
 
                         Array.Copy(this.buffer[id], startFrame, frameData, 0, frameData.Length);
@@ -222,13 +244,18 @@ namespace GHIElectronics.TinyCLR.Media {
 
                             this.screen.DrawImage(image, 0, 0, image.Width, image.Height);
 
-                            if (OnFrameReceived == null)
-                                this.screen.Flush();
-                            else
-                                OnFrameReceived?.Invoke(this.screen.GetBitmap());
+                            this.screen.Flush();
                         }
 
+                        GC.WaitForPendingFinalizers();
+
+                        var t2 = (int)(System.DateTime.Now.Ticks - t1) / 10000;
+
+                        if (t2 < 50)
+                            Thread.Sleep(50 - t2);
+
                     }
+
                 }
 
                 this.fifoCount--;
