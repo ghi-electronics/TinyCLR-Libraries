@@ -9,7 +9,7 @@ using GHIElectronics.TinyCLR.Native;
 
 namespace GHIElectronics.TinyCLR.Media {
     public sealed class Mpeg {
-        const int BLOCK_SIZE = 10 * 1024;
+        const int BLOCK_SIZE = 4 * 1024;
 
         private byte[][] buffer;
         private IntPtr[] unmanagedPtr;
@@ -55,7 +55,11 @@ namespace GHIElectronics.TinyCLR.Media {
                     this.buffer[c] = new byte[this.bufferSize];
                 }
             }
+
             this.screen = setting.Screen;
+
+            if (this.screen == null)
+                throw new NullReferenceException("");
         }
 
         ~Mpeg() {
@@ -125,6 +129,8 @@ namespace GHIElectronics.TinyCLR.Media {
                     block--;
 
                     i += BLOCK_SIZE;
+
+                    Thread.Sleep(1);
                 }
 
                 if (remain > 0) {
