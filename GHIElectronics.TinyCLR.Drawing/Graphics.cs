@@ -76,11 +76,13 @@ namespace System.Drawing {
             return false;
         }
 
-        private static IGraphics CreateSurface(byte[] buffer) {
+        private static IGraphics CreateSurface(byte[] buffer) => CreateSurface(buffer, BitmapImageType.Bmp);
+
+        private static IGraphics CreateSurface(byte[] buffer, BitmapImageType type) {
             if (!Graphics.HasDrawing())
                 throw new NotSupportedException();
 
-            return new Internal.Bitmap(buffer, Internal.Bitmap.BitmapImageType.Bmp);
+            return new Internal.Bitmap(buffer, type);
         }
 
         private static IGraphics CreateSurface(int width, int height) {
@@ -93,6 +95,7 @@ namespace System.Drawing {
         }
 
         internal Graphics(byte[] buffer) : this(Graphics.CreateSurface(buffer), IntPtr.Zero) { }
+        internal Graphics(byte[] buffer, BitmapImageType type) : this(Graphics.CreateSurface(buffer, type), IntPtr.Zero) { }
         internal Graphics(int width, int height) : this(width, height, IntPtr.Zero) { }
         private Graphics(int width, int height, IntPtr hdc) : this(Graphics.CreateSurface(width, height), hdc) { }
 
@@ -382,14 +385,6 @@ namespace System.Drawing {
             public const uint DT_TrimmingWordEllipsis = 0x00000008;
             public const uint DT_TrimmingCharacterEllipsis = 0x00000040;
             public const uint DT_TrimmingMask = 0x00000048;
-
-            //Note that these values have to match the c_Type* consts in CLR_GFX_BitmapDescription
-            public enum BitmapImageType : byte {
-                TinyCLRBitmap = 0,
-                Gif = 1,
-                Jpeg = 2,
-                Bmp = 3 // The windows .bmp format
-            }
 
             public void DrawTextInRect(string text, int x, int y, int width, int height, uint dtFlags, Color color, Font font) {
                 var xRelStart = 0;

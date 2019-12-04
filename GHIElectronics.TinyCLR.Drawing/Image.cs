@@ -1,4 +1,4 @@
-﻿using System.Drawing.Imaging;
+using System.Drawing.Imaging;
 using System.IO;
 
 namespace System.Drawing {
@@ -27,8 +27,9 @@ namespace System.Drawing {
 
         protected virtual void Dispose(bool disposing) {
             if (!this.disposed) {
-                this.data.callFromImage = false;
                 this.data.Dispose();
+
+                this.data.callFromImage = false;
 
                 this.disposed = true;
             }
@@ -40,6 +41,13 @@ namespace System.Drawing {
         }
 
         ~Image() => this.Dispose(false);
+    }
+
+    public enum BitmapImageType : byte {
+        TinyCLRBitmap = 0,
+        Gif = 1,
+        Jpeg = 2,
+        Bmp = 3 // The windows .bmp format
     }
 
     public sealed class Bitmap : Image {
@@ -54,6 +62,12 @@ namespace System.Drawing {
             stream.Read(buffer, 0, buffer.Length);
 
             this.data = new Graphics(buffer);
+        }
+
+        public Bitmap(byte[] buffer, BitmapImageType type) {
+            if (buffer == null) throw new ArgumentNullException(nameof(buffer));
+
+            this.data = new Graphics(buffer, type);
         }
 
         public void SetPixel(int x, int y, Color color) => this.data.SetPixel(x, y, (uint)color.ToArgb());
