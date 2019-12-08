@@ -19,7 +19,7 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
         Disconnect = 14,
     }
 
-    public class MqttPacket {
+    public sealed class MqttPacket {
         internal const byte PACKET_TYPE_MASK = 0xF0;
         internal const byte PACKET_TYPE_OFFSET = 0x04;
         internal const byte PACKET_TYPE_SIZE = 0x04;
