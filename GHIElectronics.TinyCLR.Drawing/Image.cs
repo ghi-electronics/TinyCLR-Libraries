@@ -70,6 +70,12 @@ namespace System.Drawing {
             this.data = new Graphics(buffer, type);
         }
 
+        public Bitmap(byte[] buffer, int offset, int count, BitmapImageType type) {
+            if (buffer == null) throw new ArgumentNullException(nameof(buffer));
+
+            this.data = new Graphics(buffer, offset, count, type);
+        }
+
         public void SetPixel(int x, int y, Color color) => this.data.SetPixel(x, y, (uint)color.ToArgb());
         public Color GetPixel(int x, int y) => Color.FromArgb((int)this.data.GetPixel(x, y));
     }
