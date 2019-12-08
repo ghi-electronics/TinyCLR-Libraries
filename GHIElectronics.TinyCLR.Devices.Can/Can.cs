@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.CompilerServices;
 using GHIElectronics.TinyCLR.Devices.Can.Provider;
 using GHIElectronics.TinyCLR.Native;
@@ -113,7 +113,6 @@ namespace GHIElectronics.TinyCLR.Devices.Can {
     }
 
     public sealed class CanBitTiming {
-        public int Propagation { get; set; }
         public int Phase1 { get; set; }
         public int Phase2 { get; set; }
         public int BaudratePrescaler { get; set; }
@@ -121,16 +120,15 @@ namespace GHIElectronics.TinyCLR.Devices.Can {
         public bool UseMultiBitSampling { get; set; }
 
         public CanBitTiming()
-            : this(0, 0, 0, 0, 0, false) {
+            : this(0, 0, 0, 0, false) {
         }
 
-        public CanBitTiming(int propagation, int phase1, int phase2, int baudratePrescaler, int synchronizationJumpWidth)
-            : this(propagation, phase1, phase2, baudratePrescaler, synchronizationJumpWidth, false) {
+        public CanBitTiming(int propagationPhase1, int phase2, int baudratePrescaler, int synchronizationJumpWidth)
+            : this(propagationPhase1, phase2, baudratePrescaler, synchronizationJumpWidth, false) {
         }
 
-        public CanBitTiming(int propagation, int phase1, int phase2, int baudratePrescaler, int synchronizationJumpWidth, bool useMultiBitSampling) {
-            this.Propagation = propagation;
-            this.Phase1 = phase1;
+        public CanBitTiming(int propagationPhase1, int phase2, int baudratePrescaler, int synchronizationJumpWidth, bool useMultiBitSampling) {
+            this.Phase1 = propagationPhase1;
             this.Phase2 = phase2;
             this.BaudratePrescaler = baudratePrescaler;
             this.SynchronizationJumpWidth = synchronizationJumpWidth;
