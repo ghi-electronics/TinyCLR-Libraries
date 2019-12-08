@@ -82,7 +82,7 @@ namespace System.Net.Security {
                 throw new ArgumentNullException();
             }
 
-            if (this._disposed) {
+            if (this.sslHandle == -1 || this._disposed) {
                 throw new ObjectDisposedException();
             }
 
@@ -112,7 +112,7 @@ namespace System.Net.Security {
                 throw new ArgumentNullException();
             }
 
-            if (this._disposed) {
+            if (this.sslHandle == -1 || this._disposed) {
                 throw new ObjectDisposedException();
             }
 
