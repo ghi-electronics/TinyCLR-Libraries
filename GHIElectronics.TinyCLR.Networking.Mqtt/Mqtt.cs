@@ -19,7 +19,8 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
         IdentifierRejected = 2,
         ServerUnavailable = 3,
         BadUserNameOrPassword = 4,
-        NotAuthorized = 5
+        NotAuthorized = 5,
+        Unknown = -1
     }
 
     public class MqttConnectionSetting {
@@ -42,7 +43,7 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
         public SslProtocols SslProtocol { get; set; }
     }
 
-    public sealed class Mqtt {
+    public class Mqtt {
         const int CONNECTION_TIMEOUT_DEFAULT = 60000;
         const int PING_TIMEOUT_DEFAULT = 5000;
 
@@ -81,7 +82,6 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
         private Queue packetQueue;
         private Queue eventQueue;
 
-        private uint packetCounter = 0;
         private bool isConnectionClosed;
 
         public bool IsConnected => this.isConnected;
@@ -111,7 +111,7 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
             this.stream = new MqttStream(this.clientSetting.BrokerName, this.clientSetting.BrokerPort, this.clientSetting.CaCertificate, this.clientSetting.ClientCertificate, this.clientSetting.SslProtocol);
         }
 
-        public int Connect(MqttConnectionSetting setting) {
+        public ConnectReturnCode Connect(MqttConnectionSetting setting) {
             this.connectionSetting = setting;
 
             var connect = new MqttPacket(PacketType.Connect) {
@@ -164,9 +164,9 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
             }
 
             if (connack != null)
-                return (int)connack.ReturnCode;
+                return connack.ReturnCode;
             else
-                return -1;
+                return ConnectReturnCode.Unknown;
         }
 
         public void Disconnect() {
@@ -220,37 +220,42 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
         }
 
 
-        public uint Subscribe(string[] topics, QoSLevel[] qosLevels) {
+        public void Subscribe(string[] topics, QoSLevel[] qosLevels, ushort packetId) {
+            if (packetId == 0) {
+                throw new ArgumentException(nameof(packetId));
+            }
+          
             var subscribe =
 
                 new MqttPacket(PacketType.Subscribe) {
-                    PacketId = this.CreatePacketId(),
+                    PacketId = packetId,
                     Topics = topics,
                     QosLevels = qosLevels
                 };
 
             this.PushPacketToQueue(subscribe, PacketDirection.ToServer);
-
-            return subscribe.PacketId;
         }
 
-        public uint Unsubscribe(string[] topics) {
+        public void Unsubscribe(string[] topics, ushort packetId) {
+            if (packetId == 0) {
+                throw new ArgumentException(nameof(packetId));
+            }
+
             var unsubscribe =
                 new MqttPacket(PacketType.Unsubscribe) {
                     Topics = topics,
-                    PacketId = this.CreatePacketId()
+                    PacketId = packetId
                 };
 
             this.PushPacketToQueue(unsubscribe, PacketDirection.ToServer);
-
-            return unsubscribe.PacketId;
         }
 
 
-        public uint Publish(string topic, byte[] data) => this.Publish(topic, data, false, QoSLevel.MostOnce);
+        public void Publish(string topic, byte[] data, QoSLevel qosLevel, bool retain, ushort packetId) {
+            if (packetId == 0) {
+                throw new ArgumentException(nameof(packetId));
+            }
 
-
-        public uint Publish(string topic, byte[] data, bool retain, QoSLevel qosLevel) {
             var publish =
                     new MqttPacket(PacketType.Publish) {
                         LastWillTopic = topic,
@@ -258,17 +263,13 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
                         IsDuplicated = false,
                         LastWillQosLevel = qosLevel,
                         LastWillRetain = retain,
-                        PacketId = this.CreatePacketId()
+                        PacketId = packetId
                     };
 
 
             var enqueue = this.PushPacketToQueue(publish, PacketDirection.ToServer);
 
-
-            if (enqueue)
-                return publish.PacketId;
-            else
-
+            if (!enqueue)
                 throw new Exception("Packet full.");
         }
 
@@ -286,6 +287,7 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
             if (!this.isConnectionClosed) {
                 this.isConnectionClosed = true;
                 this.waitForPushEventEvent.Set();
+
             }
         }
 
@@ -657,15 +659,6 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
                     this.packetQueue.Enqueue(packetFromQueue);
                 this.CloseConnection();
             }
-        }
-
-        private uint CreatePacketId() {
-            this.packetCounter++;
-
-            if (this.packetCounter >= 0xFFFF)
-                throw new ArgumentOutOfRangeException("Packet full."); //packet 2 bytes in header
-
-            return this.packetCounter;
         }
 
         private MqttPacket DecodePacketTypeDisconnect(byte controlHeaderByte) {
