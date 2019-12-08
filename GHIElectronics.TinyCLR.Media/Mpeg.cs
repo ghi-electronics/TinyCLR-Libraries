@@ -248,11 +248,7 @@ namespace GHIElectronics.TinyCLR.Media {
 
                         var t1 = System.DateTime.Now.Ticks;
 
-                        var frameData = new byte[jpegLength];
-
-                        Array.Copy(this.fifo.buffer[id], startFrame, frameData, 0, frameData.Length);
-
-                        using (var image = new Bitmap(frameData, BitmapImageType.Jpeg)) {
+                        using (var image = new Bitmap(this.fifo.buffer[id], startFrame, jpegLength, BitmapImageType.Jpeg)) {
 
                             this.screen.DrawImage(image, 0, 0, image.Width, image.Height);
 

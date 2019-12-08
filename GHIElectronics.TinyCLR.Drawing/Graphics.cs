@@ -85,6 +85,13 @@ namespace System.Drawing {
             return new Internal.Bitmap(buffer, type);
         }
 
+        private static IGraphics CreateSurface(byte[] buffer, int offset, int count, BitmapImageType type) {
+            if (!Graphics.HasDrawing())
+                throw new NotSupportedException();
+
+            return new Internal.Bitmap(buffer, offset, count, type);
+        }
+
         private static IGraphics CreateSurface(int width, int height) {
             if (!Graphics.HasDrawing()) {
 
@@ -96,6 +103,7 @@ namespace System.Drawing {
 
         internal Graphics(byte[] buffer) : this(Graphics.CreateSurface(buffer), IntPtr.Zero) { }
         internal Graphics(byte[] buffer, BitmapImageType type) : this(Graphics.CreateSurface(buffer, type), IntPtr.Zero) { }
+        internal Graphics(byte[] buffer,int offset, int count, BitmapImageType type) : this(Graphics.CreateSurface(buffer, offset, count, type), IntPtr.Zero) { }
         internal Graphics(int width, int height) : this(width, height, IntPtr.Zero) { }
         private Graphics(int width, int height, IntPtr hdc) : this(Graphics.CreateSurface(width, height), hdc) { }
 
@@ -325,6 +333,9 @@ namespace System.Drawing {
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern Bitmap(byte[] imageData, BitmapImageType type);
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            public extern Bitmap(byte[] imageData, int offset, int count, BitmapImageType type);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern Bitmap(int width, int height);
