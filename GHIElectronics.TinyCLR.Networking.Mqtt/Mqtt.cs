@@ -82,7 +82,6 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
         private Queue packetQueue;
         private Queue eventQueue;
 
-        private uint packetCounter = 0;
         private bool isConnectionClosed;
 
         public bool IsConnected => this.isConnected;
