@@ -42,7 +42,7 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
         public SslProtocols SslProtocol { get; set; }
     }
 
-    public class Mqtt {
+    public sealed class Mqtt {
         const int CONNECTION_TIMEOUT_DEFAULT = 60000;
         const int PING_TIMEOUT_DEFAULT = 5000;
 
