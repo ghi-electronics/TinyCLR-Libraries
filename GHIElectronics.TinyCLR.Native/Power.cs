@@ -29,7 +29,7 @@ namespace GHIElectronics.TinyCLR.Native {
         Custom = 0 | 0x80000000,
     }
 
-    public enum ResetReason : uint {
+    public enum ResetSource : uint {
         System,
         PowerChanged,
         Watchdog,
@@ -50,6 +50,6 @@ namespace GHIElectronics.TinyCLR.Native {
         public static extern void SetLevel(PowerLevel powerLevel, PowerWakeSource wakeSource, ulong data);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public static extern ResetReason GetResetReason();
+        public static extern ResetSource GetResetSource();
     }
 }
