@@ -46,10 +46,6 @@
       <Project>{21FBFF15-D7C4-48A8-B3D1-CE70A288B3EA}</Project>
       <Name>GHIElectronics.TinyCLR.Devices.Gpio</Name>
     </ProjectReference>
-    <ProjectReference Include="..\GHIElectronics.TinyCLR.Devices.I2c\GHIElectronics.TinyCLR.Devices.I2c.csproj">
-      <Project>{670AD403-A7C6-4C0A-A9A3-82767B3FCBB2}</Project>
-      <Name>GHIElectronics.TinyCLR.Devices.I2c</Name>
-    </ProjectReference>
     <ProjectReference Include="..\GHIElectronics.TinyCLR.Devices.Spi\GHIElectronics.TinyCLR.Devices.Spi.csproj">
       <Project>{6CF1CBC7-B597-4BB7-8149-289B849ED283}</Project>
       <Name>GHIElectronics.TinyCLR.Devices.Spi</Name>
