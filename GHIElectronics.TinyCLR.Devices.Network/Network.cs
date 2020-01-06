@@ -5,7 +5,6 @@ using System.Runtime.CompilerServices;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
 using GHIElectronics.TinyCLR.Devices.Gpio;
-using GHIElectronics.TinyCLR.Devices.I2c;
 using GHIElectronics.TinyCLR.Devices.Network.Provider;
 using GHIElectronics.TinyCLR.Devices.Spi;
 using GHIElectronics.TinyCLR.Devices.Uart;
@@ -182,8 +181,7 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
     public enum NetworkCommunicationInterface {
         BuiltIn = 0,
         Spi = 1,
-        I2c = 2,
-        Uart = 3,
+        Uart = 2,
     }
 
     public class NetworkCommunicationInterfaceSettings {
@@ -206,12 +204,7 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
         public int InterruptPin { get; set; }
         public GpioPinEdge InterruptEdge { get; set; }
         public GpioPinDriveMode InterruptDriveMode { get; set; }
-    }
-
-    public class I2cNetworkCommunicationInterfaceSettings : NetworkCommunicationInterfaceSettings {
-        public string ApiName { get; set; }
-        public I2cConnectionSettings Settings { get; set; }
-    }
+    }   
 
     public class UartNetworkCommunicationInterfaceSettings : NetworkCommunicationInterfaceSettings {
         public string ApiName { get; set; }
@@ -347,10 +340,6 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
                         this.SetCommunicationInterfaceSettings(scis);
                         break;
 
-                    case NetworkCommunicationInterface.I2c when settings is I2cNetworkCommunicationInterfaceSettings icis:
-                        this.SetCommunicationInterfaceSettings(icis);
-                        break;
-
                     case NetworkCommunicationInterface.Uart when settings is UartNetworkCommunicationInterfaceSettings ucis:
                         this.SetCommunicationInterfaceSettings(ucis);
                         break;
@@ -374,9 +363,6 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             private extern void SetCommunicationInterfaceSettings(SpiNetworkCommunicationInterfaceSettings settings);
-
-            [MethodImpl(MethodImplOptions.InternalCall)]
-            private extern void SetCommunicationInterfaceSettings(I2cNetworkCommunicationInterfaceSettings settings);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             private extern void SetCommunicationInterfaceSettings(UartNetworkCommunicationInterfaceSettings settings);
