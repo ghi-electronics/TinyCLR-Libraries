@@ -388,6 +388,17 @@ namespace GHIElectronics.TinyCLR.Pins {
                 public const int PH4 = STM32H7.AdcChannel.Channel15;
             }
         }
+        
+        /// <summary>DAC channel definitions.</summary>
+        public static class DacChannel {
+            /// <summary>API id.</summary>
+            public const string Id = STM32H7.DacChannel.Id;
+
+            /// <summary>DAC channel.</summary>
+            public const int PA4 = STM32H7.DacChannel.Channel1;
+            /// <summary>DAC channel.</summary>
+            public const int PA5 = STM32H7.DacChannel.Channel2;
+        }
 
         /// <summary>PWM pin definitions.</summary>
         public static class PwmChannel {
