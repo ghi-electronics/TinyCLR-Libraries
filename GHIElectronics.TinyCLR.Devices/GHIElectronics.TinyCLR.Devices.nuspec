@@ -16,16 +16,21 @@
     <dependencies>
       <dependency id="GHIElectronics.TinyCLR.Devices.Adc" version="2.0.0-preview2" />
       <dependency id="GHIElectronics.TinyCLR.Devices.Can" version="2.0.0-preview2" />
+      <dependency id="GHIElectronics.TinyCLR.Devices.Camera" version="2.0.0-preview2" />
       <dependency id="GHIElectronics.TinyCLR.Devices.Dac" version="2.0.0-preview2" />
       <dependency id="GHIElectronics.TinyCLR.Devices.Display" version="2.0.0-preview2" />
       <dependency id="GHIElectronics.TinyCLR.Devices.Gpio" version="2.0.0-preview2" />
       <dependency id="GHIElectronics.TinyCLR.Devices.I2c" version="2.0.0-preview2" />
+      <dependency id="GHIElectronics.TinyCLR.Devices.Modbus" version="2.0.0-preview2" />
+      <dependency id="GHIElectronics.TinyCLR.Devices.Network" version="2.0.0-preview2" />
       <dependency id="GHIElectronics.TinyCLR.Devices.Pwm" version="2.0.0-preview2" />
       <dependency id="GHIElectronics.TinyCLR.Devices.Storage" version="2.0.0-preview2" />
       <dependency id="GHIElectronics.TinyCLR.Devices.Uart" version="2.0.0-preview2" />
+      <dependency id="GHIElectronics.TinyCLR.Devices.UsbClient" version="2.0.0-preview2" />
       <dependency id="GHIElectronics.TinyCLR.Devices.Rtc" version="2.0.0-preview2" />
       <dependency id="GHIElectronics.TinyCLR.Devices.Signals" version="2.0.0-preview2" />
       <dependency id="GHIElectronics.TinyCLR.Devices.Spi" version="2.0.0-preview2" />
+      <dependency id="GHIElectronics.TinyCLR.Devices.Watchdog" version="2.0.0-preview2" />
     </dependencies>
   </metadata>
   <files>
