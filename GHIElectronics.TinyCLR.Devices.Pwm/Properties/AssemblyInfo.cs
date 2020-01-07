@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyDescription("TinyCLR OS PWM library.")]
 [assembly: AssemblyCompany("GHI Electronics, LLC")]
 [assembly: AssemblyProduct("TinyCLR OS")]
-[assembly: AssemblyCopyright("Copyright © GHI Electronics, LLC 2019")]
+[assembly: AssemblyCopyright("Copyright © GHI Electronics, LLC 2020")]
 [assembly: ComVisible(false)]
 [assembly: Guid("ED1377EE-A8C8-4EC0-9CAD-F32E5AD9AD30")]
 [assembly: AssemblyVersion("2.0.0.0")]

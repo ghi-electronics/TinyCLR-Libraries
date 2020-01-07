@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyDescription("TinyCLR OS IO library.")]
 [assembly: AssemblyCompany("GHI Electronics, LLC")]
 [assembly: AssemblyProduct("TinyCLR OS")]
-[assembly: AssemblyCopyright("Copyright © GHI Electronics, LLC 2019")]
+[assembly: AssemblyCopyright("Copyright © GHI Electronics, LLC 2020")]
 [assembly: ComVisible(false)]
 [assembly: Guid("313AEC8E-2B47-4A1A-ACE2-A766D076B2AE")]
 [assembly: AssemblyVersion("2.0.0.0")]

@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyDescription("TinyCLR OS UART library.")]
 [assembly: AssemblyCompany("GHI Electronics, LLC")]
 [assembly: AssemblyProduct("TinyCLR OS")]
-[assembly: AssemblyCopyright("Copyright © GHI Electronics, LLC 2019")]
+[assembly: AssemblyCopyright("Copyright © GHI Electronics, LLC 2020")]
 [assembly: ComVisible(false)]
 [assembly: Guid("D4456808-26EE-49D9-99ED-A11F5FF78EB9")]
 [assembly: AssemblyVersion("2.0.0.0")]
