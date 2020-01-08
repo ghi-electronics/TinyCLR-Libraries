@@ -1,4 +1,4 @@
-﻿using System.Runtime.CompilerServices;
+using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("GHIElectronics.TinyCLR.UI")]
 
@@ -17,12 +17,22 @@ namespace System.Drawing {
     public sealed class Font : MarshalByRefObject, ICloneable, IDisposable {
 #pragma warning disable CS0169 // The field is never used
         IntPtr implPtr;
+        IntPtr dataPtr;
 #pragma warning restore CS0169 // The field is never used
 
         // Must keep in sync with CLR_GFX_Font::c_DefaultKerning
         private const int DefaultKerning = 1024;
 
         private Font() { }
+
+        public Font(byte[] data) => new Font(data, 0, data.Length);
+
+        public Font(byte[] data, int offset, int count) {
+            if (data == null) throw new ArgumentNullException(nameof(data));
+            if (offset + count > data.Length) throw new ArgumentOutOfRangeException(nameof(data));
+
+            this.CreateInstantFromBuffer(data, offset, count);
+        }
 
         public Font(string familyName, float emSize) {
             var sz = (int)emSize;
@@ -66,6 +76,9 @@ namespace System.Drawing {
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         private extern void CreateInstantFromResources(uint buffer, uint size, uint assembly);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        private extern void CreateInstantFromBuffer(byte[] data, int offset, int size);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         public extern void Dispose();
