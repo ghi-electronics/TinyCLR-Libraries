@@ -17,6 +17,7 @@ namespace System.Drawing {
     public sealed class Font : MarshalByRefObject, ICloneable, IDisposable {
 #pragma warning disable CS0169 // The field is never used
         IntPtr implPtr;
+        IntPtr dataPtr;
 #pragma warning restore CS0169 // The field is never used
 
         // Must keep in sync with CLR_GFX_Font::c_DefaultKerning
@@ -24,9 +25,9 @@ namespace System.Drawing {
 
         private Font() { }
 
-        public Font(byte[] data) => new Font(data, 0, (uint)data.Length);
+        public Font(byte[] data) => new Font(data, 0, data.Length);
 
-        public Font(byte[] data, uint offset, uint count) {
+        public Font(byte[] data, int offset, int count) {
             if (data == null) throw new ArgumentNullException(nameof(data));
             if (offset + count > data.Length) throw new ArgumentOutOfRangeException(nameof(data));
 
@@ -77,7 +78,7 @@ namespace System.Drawing {
         private extern void CreateInstantFromResources(uint buffer, uint size, uint assembly);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        private extern void CreateInstantFromBuffer(byte[] data, uint offset, uint size);
+        private extern void CreateInstantFromBuffer(byte[] data, int offset, int size);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         public extern void Dispose();
