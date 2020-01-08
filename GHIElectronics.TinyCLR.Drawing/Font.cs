@@ -1,4 +1,4 @@
-﻿using System.Runtime.CompilerServices;
+using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("GHIElectronics.TinyCLR.UI")]
 
@@ -23,6 +23,15 @@ namespace System.Drawing {
         private const int DefaultKerning = 1024;
 
         private Font() { }
+
+        public Font(byte[] data) => new Font(data, 0, (uint)data.Length);
+
+        public Font(byte[] data, uint offset, uint count) {
+            if (data == null) throw new ArgumentNullException(nameof(data));
+            if (offset + count > data.Length) throw new ArgumentOutOfRangeException(nameof(data));
+
+            this.CreateInstantFromBuffer(data, offset, count);
+        }
 
         public Font(string familyName, float emSize) {
             var sz = (int)emSize;
@@ -66,6 +75,9 @@ namespace System.Drawing {
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         private extern void CreateInstantFromResources(uint buffer, uint size, uint assembly);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        private extern void CreateInstantFromBuffer(byte[] data, uint offset, uint size);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         public extern void Dispose();
