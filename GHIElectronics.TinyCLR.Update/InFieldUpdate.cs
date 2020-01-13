@@ -38,10 +38,18 @@ namespace GHIElectronics.TinyCLR.Update {
             this.mode |= Mode.Application;
         }
 
-        public void AuthenticateFirmware(out uint version) => version = this.NativeAuthenticateFirmware();
+        public void AuthenticateFirmware(out uint version) {
+            if ((this.mode & Mode.Firmware) != Mode.Firmware)
+                throw new ArgumentNullException();
+
+            version = this.NativeAuthenticateFirmware();
+        }
 
         public void AuthenticateApplication(out uint version) {
-            if (this.ApplicationKey == null) throw new ArgumentNullException(nameof(this.ApplicationKey));
+            if (this.ApplicationKey == null ) throw new ArgumentNullException(nameof(this.ApplicationKey));
+
+            if ((this.mode & Mode.Application) != Mode.Application)
+                throw new ArgumentNullException();
 
             version = this.NativeAuthenticateApplication(this.ApplicationKey);
         }
