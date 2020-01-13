@@ -35,8 +35,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Application.cs" />
-    <Compile Include="BufferUpdater.cs" />
-    <Compile Include="FileUpdater.cs" />
+    <Compile Include="InFieldUpdate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
