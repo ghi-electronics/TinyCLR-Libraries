@@ -19,6 +19,7 @@ namespace GHIElectronics.TinyCLR.Devices.Watchdog
 
         public void Dispose() => this.Provider.Dispose();
         public uint GetMaxTimeout => this.Provider.GetMaxTimeout;
+        public bool IsEnabled => this.Provider.IsEnabled;
         public void Enable(uint timeout) {
             if (timeout == 0 || timeout > this.GetMaxTimeout)
                 throw new ArgumentOutOfRangeException(nameof(timeout));
@@ -32,6 +33,7 @@ namespace GHIElectronics.TinyCLR.Devices.Watchdog
     namespace Provider {
         public interface IWatchdogControllerProvider : IDisposable {
             uint GetMaxTimeout { get; }
+            bool IsEnabled { get; }
             void Enable(uint timeout);
             void Disable();
             void Reset();
@@ -68,6 +70,8 @@ namespace GHIElectronics.TinyCLR.Devices.Watchdog
             public extern void Reset();
 
             public extern uint GetMaxTimeout { [MethodImpl(MethodImplOptions.InternalCall)] get; }
+
+            public extern bool IsEnabled { [MethodImpl(MethodImplOptions.InternalCall)] get; }
         }
     }
 }
