@@ -80,6 +80,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Netw
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Devices.Modbus", "GHIElectronics.TinyCLR.Devices.Modbus\GHIElectronics.TinyCLR.Devices.Modbus.csproj", "{19886B6D-0A32-42B4-94A0-82614B34ACEF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Devices.Onewire", "GHIElectronics.TinyCLR.Devices.Onewire\GHIElectronics.TinyCLR.Devices.Onewire.csproj", "{F9E03CB8-A7FB-46CC-A3D7-6421E52972AA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -206,6 +208,10 @@ Global
 		{19886B6D-0A32-42B4-94A0-82614B34ACEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{19886B6D-0A32-42B4-94A0-82614B34ACEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{19886B6D-0A32-42B4-94A0-82614B34ACEF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F9E03CB8-A7FB-46CC-A3D7-6421E52972AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F9E03CB8-A7FB-46CC-A3D7-6421E52972AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F9E03CB8-A7FB-46CC-A3D7-6421E52972AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F9E03CB8-A7FB-46CC-A3D7-6421E52972AA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
