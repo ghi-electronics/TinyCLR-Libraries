@@ -6,19 +6,22 @@ using System.Threading;
 using GHIElectronics.TinyCLR.Devices.Gpio;
 
 namespace GHIElectronics.TinyCLR.Devices.Onewire {
-    public sealed class OneWire :IDisposable {
+    public sealed class OneWireController :IDisposable {
         private GpioPin pin;
 
-        public OneWire(int pinNumber) : this(GpioController.GetDefault(), pinNumber) {
+        public OneWireController(int pinNumber) : this(GpioController.GetDefault(), pinNumber) {
 
         }
 
-        public OneWire(GpioController gpioController, int pinNumber) {
+        public OneWireController(GpioController gpioController, int pinNumber) {
             if (!(gpioController.Provider is Gpio.Provider.GpioControllerApiWrapper p)) throw new NotSupportedException();
 
             var gpioApi = p.Api.Implementation;
 
             this.pin = gpioController.OpenPin(pinNumber);
+
+            this.pin.SetDriveMode(GpioPinDriveMode.Output);
+            this.pin.Write(GpioPinValue.Low);
 
             this.NativeInitialize(gpioApi, this.pin.PinNumber);
         }
