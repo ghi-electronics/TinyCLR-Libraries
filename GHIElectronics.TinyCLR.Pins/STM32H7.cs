@@ -548,7 +548,8 @@ namespace GHIElectronics.TinyCLR.Pins {
         /// <summary>Storage controller definitions.</summary>
         public static class StorageController {
             /// <summary>API id.</summary>
-            public const string SdCard = "GHIElectronics.TinyCLR.NativeApis.STM32H7.SdCardStorageController\\0";
+            public const string SdCard = "GHIElectronics.TinyCLR.NativeApis.STM32H7.SdCardStorageController\\0"; 
+            public const string UsbHostMassStorage = "GHIElectronics.TinyCLR.NativeApis.STM32H7.UsbHostMassStorageStorageController\\0";
         }
 
         /// <summary>RTC controller definitions.</summary>
