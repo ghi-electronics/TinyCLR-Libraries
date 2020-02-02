@@ -533,16 +533,29 @@ namespace GHIElectronics.TinyCLR.Pins {
 
         /// <summary>UART port definitions.</summary>
         public static class UartPort {
-            /// <summary>UART port on PD5 (TX) and PD6 (RX).</summary>
-            public const string Usart2 = STM32H7.UartPort.Usart2;
-            /// <summary>UART port on PC6 (TX) and PC7 (RX).</summary>
-            public const string Usart6 = STM32H7.UartPort.Usart6;
             /// <summary>UART port on PA9 (TX) and PA10 (RX).</summary>
             public const string Usart1 = STM32H7.UartPort.Usart1;
-            /// <summary>UART port on PC13 (TX) and PB12 (RX).</summary>
+
+            /// <summary>UART port on PD5 (TX) and PD6 (RX), PD3 (CTS) and PD4 (RTS).</summary>
+            public const string Usart2 = STM32H7.UartPort.Usart2;
+
+            /// <summary>UART port on PC10 (TX) and PC11 (RX).</summary>
+            public const string Usart3 = STM32H7.UartPort.Usart3;
+
+            /// <summary>UART port on PH13 (TX) and PH14 (RX), PB0 (CTS) and PA15 (RTS).</summary>
+            public const string Uart4 = STM32H7.UartPort.Uart4;
+
+            /// <summary>UART port on PB13 (TX) and PB12 (RX), PC9 (CTS) and PC8 (RTS).</summary>
             public const string Uart5 = STM32H7.UartPort.Uart5;
-            /// <summary>UART port on PF7 (TX) and PF6 (RX).</summary>
+
+            /// <summary>UART port on PC6 (TX) and PC7 (RX).</summary>
+            public const string Usart6 = STM32H7.UartPort.Usart6;
+
+            /// <summary>UART port on PF7 (TX) and PF6 (RX), PF9 (CTS) and PF8 (RTS).</summary>
             public const string Uart7 = STM32H7.UartPort.Uart7;
+
+            /// <summary>UART port on PJ8 (TX) and PJ9 (RX).</summary>
+            public const string Uart8 = STM32H7.UartPort.Uart8;
         }
 
         /// <summary>I2C bus definitions.</summary>
