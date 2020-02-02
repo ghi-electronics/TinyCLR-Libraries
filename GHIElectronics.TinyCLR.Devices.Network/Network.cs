@@ -56,6 +56,9 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
         public void Enable() => this.Provider.Enable();
         public void Disable() => this.Provider.Disable();
 
+        public void Suspend() => this.Provider.Suspend();
+        public void Resume() => this.Provider.Resume();
+
         public bool GetLinkConnected() => this.Provider.GetLinkConnected();
         public NetworkIPProperties GetIPProperties() => this.Provider.GetIPProperties();
         public NetworkInterfaceProperties GetInterfaceProperties() => this.Provider.GetInterfaceProperties();
@@ -224,6 +227,9 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
             void Enable();
             void Disable();
 
+            void Suspend();
+            void Resume();
+
             bool GetLinkConnected();
             NetworkIPProperties GetIPProperties();
             NetworkInterfaceProperties GetInterfaceProperties();
@@ -310,6 +316,12 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void Disable();
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            public extern void Suspend();
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            public extern void Resume();
 
             public void SetInterfaceSettings(NetworkInterfaceSettings settings) {
                 switch (this.InterfaceType) {
