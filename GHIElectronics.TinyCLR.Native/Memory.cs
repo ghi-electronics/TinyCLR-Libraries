@@ -31,6 +31,9 @@ namespace GHIElectronics.TinyCLR.Native {
 
         public long UsedBytes { get { this.GetStats(out var used, out _); return used.ToInt64(); } }
         public long FreeBytes { get { this.GetStats(out _, out var free); return free.ToInt64(); } }
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        public static extern void EnableExternalHeap();
     }
 
     public enum UnmanagedBufferLocation {
