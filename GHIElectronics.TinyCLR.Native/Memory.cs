@@ -34,6 +34,9 @@ namespace GHIElectronics.TinyCLR.Native {
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         public static extern void EnableExternalHeap();
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        public static extern bool IsEnabledExternalHeap();
     }
 
     public enum UnmanagedBufferLocation {
