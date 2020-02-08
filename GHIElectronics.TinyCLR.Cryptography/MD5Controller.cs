@@ -9,9 +9,9 @@ using GHIElectronics.TinyCLR.Cryptography.Provider;
 namespace GHIElectronics.TinyCLR.Cryptography {
     public sealed class MD5 : IDisposable {
 
-        public HashAlgorithmProvider Provider { get; }
+        public IHashAlgorithmProvider Provider { get; }
 
-        private MD5(HashAlgorithmProvider provider) => this.Provider = provider;
+        private MD5(IHashAlgorithmProvider provider) => this.Provider = provider;
 
         public static MD5 Create() => new MD5(new HashAlgorithmApiWrapper());
 
@@ -39,19 +39,19 @@ namespace GHIElectronics.TinyCLR.Cryptography {
     }
 
     namespace Provider {
-        public interface HashAlgorithmProvider : IDisposable {
+        public interface IHashAlgorithmProvider : IDisposable {
             int HashSize { get; }
             byte[] Hash { get; }
 
             void Clear();
 
             byte[] ComputeHash(Stream inputStream);
-           
+
             byte[] ComputeHash(byte[] buffer, int offset, int count);
         }
 
-        public sealed class HashAlgorithmApiWrapper : HashAlgorithmProvider {
-            private readonly IntPtr impl;            
+        public sealed class HashAlgorithmApiWrapper : IHashAlgorithmProvider {
+            private readonly IntPtr impl;
             private byte[] hashValue;
 
             public HashAlgorithmApiWrapper() => this.Acquire();
@@ -65,15 +65,40 @@ namespace GHIElectronics.TinyCLR.Cryptography {
             public void Clear() {
                 this.NativeClear();
 
-                this.hashValue = null;                
+                this.hashValue = null;
             }
 
             public byte[] ComputeHash(Stream inputStream) {
-                var value = this.NativeComputeHash(inputStream);
+                if (inputStream == null)
+                    throw new ArgumentNullException();
 
-                this.hashValue = value;
+                const int BLOCK_SIZE = 64;
 
-                return value;
+                var streamLength = inputStream.Length;
+                var block = streamLength / BLOCK_SIZE;
+                var remain = streamLength % BLOCK_SIZE;
+
+                if (!this.NativeComputeStart())
+                    throw new InvalidOperationException();
+
+                var buffer = new byte[BLOCK_SIZE];
+
+                while (block-- > 0) {
+
+                    inputStream.Read(buffer, 0, BLOCK_SIZE);
+
+                    if (!this.NativeComputeUpdate(buffer, 0, BLOCK_SIZE))
+                        throw new InvalidOperationException();
+                }
+
+                if (remain > 0) {
+                    inputStream.Read(buffer, 0, (int)remain);
+
+                    if (!this.NativeComputeUpdate(buffer, 0, (int)remain))
+                        throw new InvalidOperationException();
+                }
+
+                return this.NativeComputeFinish();
             }
 
             public byte[] ComputeHash(byte[] buffer, int offset, int count) {
@@ -98,6 +123,15 @@ namespace GHIElectronics.TinyCLR.Cryptography {
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             private extern void Release();
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            private extern bool NativeComputeStart();
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            private extern bool NativeComputeUpdate(byte[] buffer, int offset, int count);
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            private extern byte[] NativeComputeFinish();
         }
     }
 }
