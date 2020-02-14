@@ -32,10 +32,22 @@ namespace GHIElectronics.TinyCLR.UI
         [System.SerializableAttribute()]
         internal enum BitmapResources : short
         {
+            DropdownButton_Down = -31110,
+            Button_Down = -18532,
             Keyboard_Numbers = -14062,
+            Button_Up = -12892,
+            ProgressBar_Fill = -12135,
+            Modal = -11358,
             Keyboard_Lowercase = -10522,
+            RadioButton = 1102,
             Keyboard_Symbols = 1558,
+            DropdownText_Up = 1846,
+            DropdownButton_Up = 4119,
+            DropdownText_Down = 13519,
+            ProgressBar = 15350,
             Keyboard_Uppercase = 21332,
+            CheckBox_Off = 23409,
+            CheckBox_On = 27788,
         }
     }
 }
