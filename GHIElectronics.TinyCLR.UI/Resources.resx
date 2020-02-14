@@ -130,36 +130,6 @@
   <data name="CheckBox_On" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\CheckBox_On.gif;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="droid_reg08" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\droid_reg08.tinyfnt;System.Byte[], mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="droid_reg09" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\droid_reg09.tinyfnt;System.Byte[], mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="droid_reg10" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\droid_reg10.tinyfnt;System.Byte[], mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="droid_reg11" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\droid_reg11.tinyfnt;System.Byte[], mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="droid_reg12" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\droid_reg12.tinyfnt;System.Byte[], mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="droid_reg14" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\droid_reg14.tinyfnt;System.Byte[], mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="droid_reg18" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\droid_reg18.tinyfnt;System.Byte[], mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="droid_reg24" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\droid_reg24.tinyfnt;System.Byte[], mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="droid_reg32" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\droid_reg32.tinyfnt;System.Byte[], mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="droid_reg48" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\droid_reg48.tinyfnt;System.Byte[], mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
   <data name="DropdownButton_Down" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\DropdownButton_Down.gif;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>

@@ -170,16 +170,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\droid_reg08.tinyfnt" />
-    <None Include="Resources\droid_reg09.tinyfnt" />
-    <None Include="Resources\droid_reg10.tinyfnt" />
-    <None Include="Resources\droid_reg11.tinyfnt" />
-    <None Include="Resources\droid_reg12.tinyfnt" />
-    <None Include="Resources\droid_reg14.tinyfnt" />
-    <None Include="Resources\droid_reg18.tinyfnt" />
-    <None Include="Resources\droid_reg24.tinyfnt" />
-    <None Include="Resources\droid_reg32.tinyfnt" />
-    <None Include="Resources\droid_reg48.tinyfnt" />
     <None Include="Resources\Keyboard_Lowercase.gif" />
   </ItemGroup>
   <ItemGroup>
