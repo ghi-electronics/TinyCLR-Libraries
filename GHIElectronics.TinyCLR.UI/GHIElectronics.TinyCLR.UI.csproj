@@ -35,6 +35,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Controls\CheckBox.cs" />
+    <Compile Include="Controls\Dropdown.cs" />
+    <Compile Include="Controls\ListBoxItemHighlightable.cs" />
+    <Compile Include="Controls\MessageBox.cs" />
+    <Compile Include="Controls\ProgressBar.cs" />
+    <Compile Include="Controls\RadioButton.cs" />
     <Compile Include="Controls\TextBox.cs" />
     <Compile Include="Controls\Button.cs" />
     <Compile Include="Input\InputProvider.cs" />
@@ -164,6 +170,16 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\droid_reg08.tinyfnt" />
+    <None Include="Resources\droid_reg09.tinyfnt" />
+    <None Include="Resources\droid_reg10.tinyfnt" />
+    <None Include="Resources\droid_reg11.tinyfnt" />
+    <None Include="Resources\droid_reg12.tinyfnt" />
+    <None Include="Resources\droid_reg14.tinyfnt" />
+    <None Include="Resources\droid_reg18.tinyfnt" />
+    <None Include="Resources\droid_reg24.tinyfnt" />
+    <None Include="Resources\droid_reg32.tinyfnt" />
+    <None Include="Resources\droid_reg48.tinyfnt" />
     <None Include="Resources\Keyboard_Lowercase.gif" />
   </ItemGroup>
   <ItemGroup>
@@ -174,6 +190,42 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Keyboard_Uppercase.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Button_Down.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Button_Up.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CheckBox_Off.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CheckBox_On.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\DropdownButton_Down.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\DropdownButton_Up.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\DropdownText_Down.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\DropdownText_Up.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Modal.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ProgressBar.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ProgressBar_Fill.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\RadioButton.gif" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
