@@ -67,12 +67,9 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
             WaitForUnsubscribeAck
         }
 
-
-
         internal ConnectReturnCode ReturnCode { get; set; }
-        internal const string PROTOCOL_NAME_V3_1_1 = "MQTT";
 
-        internal const byte PROTOCOL_NAME_V3_1_SIZE = 6;
+        internal const string PROTOCOL_NAME_V3_1_1 = "MQTT";
         internal const byte PROTOCOL_NAME_V3_1_1_SIZE = 4;
 
         internal const byte USERNAME_FLAG_MASK = 0x80;
@@ -150,13 +147,12 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
 
                 remainSize += (vheaderSize + payloadSize);
 
-
                 fheaderSize = 1;
 
                 var tmp = remainSize;
                 do {
                     fheaderSize++;
-                    tmp = tmp / 128;
+                    tmp /= 128;
                 } while (tmp > 0);
 
                 buffer = new byte[fheaderSize + vheaderSize + payloadSize];
@@ -202,12 +198,7 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
                     buffer[index++] = (byte)((passwordToBytes.Length >> 8) & 0x00FF);
                     buffer[index++] = (byte)(passwordToBytes.Length & 0x00FF);
                     Array.Copy(passwordToBytes, 0, buffer, index, passwordToBytes.Length);
-                    index += passwordToBytes.Length;
                 }
-            }
-            else if (this.Type == PacketType.ConnAck) {
-
-                //Server to client
             }
             else if (this.Type == PacketType.PingReq) {
                 buffer = new byte[2];
@@ -227,7 +218,7 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
                 var temp = remainSize;
                 do {
                     fheaderSize++;
-                    temp = temp / 128;
+                    temp /= 128;
                 } while (temp > 0);
 
                 buffer = new byte[fheaderSize + vheaderSize + payloadSize];
@@ -283,7 +274,7 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
 
                 do {
                     fheaderSize++;
-                    tmpSize = tmpSize / 128;
+                    tmpSize /= 128;
                 } while (tmpSize > 0);
 
                 buffer = new byte[fheaderSize + vheaderSize + payloadSize];
@@ -312,17 +303,13 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
 
                 if (this.Data != null) {
                     Array.Copy(this.Data, 0, buffer, index, this.Data.Length);
-                    index += this.Data.Length;
                 }
             }
-            else if (this.Type == PacketType.Suback) {
-                // Server to client
-            }
+
             else if (this.Type == PacketType.Subscribe) {
                 vheaderSize += 2; //packet id 2 bytes;
 
                 var topicsToBytes = new byte[this.Topics.Length][];
-
 
                 int topicIndex;
                 for (topicIndex = 0; topicIndex < this.Topics.Length; topicIndex++) {
@@ -339,7 +326,7 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
                 var tmpSize = remainSize;
                 do {
                     fheaderSize++;
-                    tmpSize = tmpSize / 128;
+                    tmpSize /= 128;
                 } while (tmpSize > 0);
 
                 buffer = new byte[fheaderSize + vheaderSize + payloadSize];
@@ -353,8 +340,6 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
 
                 buffer[index++] = (byte)((this.PacketId >> 8) & 0x00FF);
                 buffer[index++] = (byte)(this.PacketId & 0x00FF);
-
-                topicIndex = 0;
                 for (topicIndex = 0; topicIndex < this.Topics.Length; topicIndex++) {
                     buffer[index++] = (byte)((topicsToBytes[topicIndex].Length >> 8) & 0x00FF);
                     buffer[index++] = (byte)(topicsToBytes[topicIndex].Length & 0x00FF);
@@ -365,15 +350,12 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
                 }
 
             }
-            else if (this.Type == PacketType.Unsuback) {
-                // Server to Client
-            }
             else if (this.Type == PacketType.Unsubscribe) {
                 vheaderSize += 2; //packet id 2 bytes;
 
-                var toppicIndex = 0;
                 var topicsToBytes = new byte[this.Topics.Length][];
 
+                int toppicIndex;
                 for (toppicIndex = 0; toppicIndex < this.Topics.Length; toppicIndex++) {
                     topicsToBytes[toppicIndex] = Encoding.UTF8.GetBytes(this.Topics[toppicIndex]);
                     payloadSize += 2;
@@ -387,7 +369,7 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
 
                 do {
                     fheaderSize++;
-                    tmpSize = tmpSize / 128;
+                    tmpSize /= 128;
                 } while (tmpSize > 0);
 
                 buffer = new byte[fheaderSize + vheaderSize + payloadSize];
@@ -420,30 +402,32 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
             return buffer;
         }
 
-
         internal static int RemainingSizeToPacket(int remainSize, byte[] buffer, int index) {
-            var d = 0;
             do {
-                d = remainSize % 128;
-                remainSize /= 128;
+                var d = remainSize & 0x7F;
+                remainSize >>= 7;
                 if (remainSize > 0)
                     d = d | 0x80;
                 buffer[index++] = (byte)d;
             } while (remainSize > 0);
+
             return index;
         }
 
         internal static int RemainSizeFromStream(MqttStream stream) {
             var mul = 1;
             var v = 0;
-            var d = 0;
-            var next = new byte[1];
+            int d;
             do {
-                stream.Receive(next);
-                d = next[0];
-                v += ((d & 127) * mul);
-                mul *= 128;
-            } while ((d & 128) != 0);
+                var data = new byte[1];
+
+                stream.Receive(data);
+
+                d = data[0];
+                v += ((d & 0x7F) * mul);
+                mul <<= 7;
+            } while ((d & 0x80) != 0);
+
             return v;
         }
     }
