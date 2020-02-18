@@ -162,16 +162,16 @@ namespace System.Net.Sockets {
                 throw new ObjectDisposedException();
             }
 
-            var expired = DateTime.MaxValue.Ticks;
+            //var expired = DateTime.MaxValue.Ticks;
 
-            if (this.SendTimeout != System.Threading.Timeout.Infinite) {
-                expired = DateTime.Now.Ticks + (this.SendTimeout * 10000L);
-            }
+            //if (this.SendTimeout != System.Threading.Timeout.Infinite) {
+            //    expired = DateTime.Now.Ticks + (this.SendTimeout * 10000L);
+            //}
 
             var totalSend = 0;
 
-            while (DateTime.Now.Ticks < expired && totalSend < size)
-                totalSend += this.ni.Send(this.m_Handle, buffer, offset + totalSend, size - totalSend, socketFlags);
+            //while (DateTime.Now.Ticks < expired && totalSend < size)
+            totalSend += this.ni.Send(this.m_Handle, buffer, offset + totalSend, size - totalSend, socketFlags);
 
             return totalSend;
         }
@@ -183,16 +183,16 @@ namespace System.Net.Sockets {
 
             var address = remoteEP.Serialize();
 
-            var expired = DateTime.MaxValue.Ticks;
+            //var expired = DateTime.MaxValue.Ticks;
 
-            if (this.SendTimeout != System.Threading.Timeout.Infinite) {
-                expired = DateTime.Now.Ticks + (this.SendTimeout * 10000L);
-            }
+            //if (this.SendTimeout != System.Threading.Timeout.Infinite) {
+            //    expired = DateTime.Now.Ticks + (this.SendTimeout * 10000L);
+            //}
 
             var totalSend = 0;
 
-            while (DateTime.Now.Ticks < expired && totalSend < size)
-                totalSend += this.ni.SendTo(this.m_Handle, buffer, offset + offset + totalSend, size - totalSend, socketFlags, address);
+            //while (DateTime.Now.Ticks < expired && totalSend < size)
+            totalSend += this.ni.SendTo(this.m_Handle, buffer, offset + offset + totalSend, size - totalSend, socketFlags, address);
 
             return totalSend;
         }
@@ -214,16 +214,16 @@ namespace System.Net.Sockets {
                 throw new ObjectDisposedException();
             }
 
-            var expired = DateTime.MaxValue.Ticks;
+            //var expired = DateTime.MaxValue.Ticks;
 
-            if (this.ReceiveTimeout != System.Threading.Timeout.Infinite) {
-                expired = DateTime.Now.Ticks + (this.ReceiveTimeout * 10000L);
-            }
+            //if (this.ReceiveTimeout != System.Threading.Timeout.Infinite) {
+            //    expired = DateTime.Now.Ticks + (this.ReceiveTimeout * 10000L);
+            //}
 
             var totalBytesReceive = 0;
 
-            while (DateTime.Now.Ticks < expired && totalBytesReceive < size)
-                totalBytesReceive += this.ni.Receive(this.m_Handle, buffer, offset + totalBytesReceive, size - totalBytesReceive, socketFlags);
+            //while (DateTime.Now.Ticks < expired && totalBytesReceive < size)
+            totalBytesReceive += this.ni.Receive(this.m_Handle, buffer, offset + totalBytesReceive, size - totalBytesReceive, socketFlags);
 
             return totalBytesReceive;
         }
@@ -236,14 +236,14 @@ namespace System.Net.Sockets {
             var address = remoteEP.Serialize();
             var totalBytesReceive = 0;
 
-            var expired = DateTime.MaxValue.Ticks;
+            //var expired = DateTime.MaxValue.Ticks;
 
-            if (this.ReceiveTimeout != System.Threading.Timeout.Infinite) {
-                expired = DateTime.Now.Ticks + (this.ReceiveTimeout * 10000L);
-            }
+            //if (this.ReceiveTimeout != System.Threading.Timeout.Infinite) {
+            //    expired = DateTime.Now.Ticks + (this.ReceiveTimeout * 10000L);
+            //}
 
-            while (DateTime.Now.Ticks < expired && totalBytesReceive < size)
-                totalBytesReceive += this.ni.ReceiveFrom(this.m_Handle, buffer, offset + totalBytesReceive, size - totalBytesReceive, socketFlags, ref address);
+            //while (DateTime.Now.Ticks < expired && totalBytesReceive < size)
+            totalBytesReceive += this.ni.ReceiveFrom(this.m_Handle, buffer, offset + totalBytesReceive, size - totalBytesReceive, socketFlags, ref address);
 
             remoteEP = remoteEP.Create(address);
 

@@ -94,15 +94,15 @@ namespace System.Net.Security {
                 throw new ArgumentOutOfRangeException();
             }
 
-            var expired = DateTime.MaxValue.Ticks;
+            //var expired = DateTime.MaxValue.Ticks;
             var totalBytesReceive = 0;
 
-            if (this._socket.ReceiveTimeout != System.Threading.Timeout.Infinite) {
-                expired = DateTime.Now.Ticks + (this._socket.ReceiveTimeout * 10000L);
-            }
+            //if (this._socket.ReceiveTimeout != System.Threading.Timeout.Infinite) {
+            //    expired = DateTime.Now.Ticks + (this._socket.ReceiveTimeout * 10000L);
+            //}
 
-            while (DateTime.Now.Ticks < expired && totalBytesReceive < size)
-                totalBytesReceive += this.ni.SecureRead(this.sslHandle, buffer, offset + totalBytesReceive, size - totalBytesReceive);
+            //while (DateTime.Now.Ticks < expired && totalBytesReceive < size)
+            totalBytesReceive += this.ni.SecureRead(this.sslHandle, buffer, offset + totalBytesReceive, size - totalBytesReceive);
 
             return totalBytesReceive;
         }
@@ -124,15 +124,15 @@ namespace System.Net.Security {
                 throw new ArgumentOutOfRangeException();
             }
 
-            var expired = DateTime.MaxValue.Ticks;
+            //var expired = DateTime.MaxValue.Ticks;
             var totalBytesSent = 0;
 
-            if (this._socket.SendTimeout != System.Threading.Timeout.Infinite) {
-                expired = DateTime.Now.Ticks + (this._socket.SendTimeout * 10000L);
-            }
+            //if (this._socket.SendTimeout != System.Threading.Timeout.Infinite) {
+            //    expired = DateTime.Now.Ticks + (this._socket.SendTimeout * 10000L);
+            //}
 
-            while (DateTime.Now.Ticks < expired && totalBytesSent < size)
-                totalBytesSent += this.ni.SecureWrite(this.sslHandle, buffer, offset + totalBytesSent, size - totalBytesSent);
+            //while (DateTime.Now.Ticks < expired && totalBytesSent < size)
+            totalBytesSent += this.ni.SecureWrite(this.sslHandle, buffer, offset + totalBytesSent, size - totalBytesSent);
 
         }
     }
