@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -63,7 +63,7 @@ namespace GHIElectronics.TinyCLR.Devices.Spi {
     }
 
     public sealed class SpiConnectionSettings {
-        public SpiChipSelectType ChipSelectType { get; set; } = SpiChipSelectType.None;
+        public SpiChipSelectType ChipSelectType { get; set; } = SpiChipSelectType.Gpio;
         public int ChipSelectLine { get; set; }
         public int ClockFrequency { get; set; } = 1_000_000;
         public int DataBitLength { get; set; } = 8;
