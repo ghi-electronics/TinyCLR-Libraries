@@ -10,7 +10,7 @@
     <iconUrl>http://files.ghielectronics.com/downloads/Logos/GHIElectronicsTinyCLRNuGet.png</iconUrl>
     <licenseUrl>http://files.ghielectronics.com/downloads/TinyCLR/License.txt</licenseUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
-    <description>The HTTP library for TinyCLR OS.</description>
+    <description>The MQTT library for TinyCLR OS.</description>
     <copyright>Copyright GHI Electronics, LLC 2020</copyright>
     <tags>TinyCLR TinyCLROS</tags>
     <dependencies>
