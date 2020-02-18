@@ -77,27 +77,22 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
         public event UnsubscribedEventHandler UnsubscribedChanged;
         public event ConnectedEventHandler ConnectedChanged;
 
-        private MqttStream stream;
+        private readonly MqttStream stream;
 
-        private Queue packetQueue;
-        private Queue eventQueue;
+        private readonly Queue packetQueue;
+        private readonly Queue eventQueue;
 
         private bool isConnectionClosed;
 
-        public bool IsConnected => this.isConnected;
+        public bool IsConnected { get; private set; }
 
-        private bool isConnected;
+        public string ClientId => this.ConnectionSetting.ClientId;
 
-        public string ClientId => this.connectionSetting.ClientId;
-
-        public MqttClientSetting ClientSetting => this.clientSetting;
-        public MqttConnectionSetting ConnectionSetting => this.connectionSetting;
-
-        private MqttClientSetting clientSetting;
-        private MqttConnectionSetting connectionSetting;
+        public MqttClientSetting ClientSetting { get; }
+        public MqttConnectionSetting ConnectionSetting { get; private set; }
 
         public Mqtt(MqttClientSetting setting) {
-            this.clientSetting = setting;
+            this.ClientSetting = setting;
 
             this.waitSendReceiveEvent = new AutoResetEvent(false);
             this.autoPingReqEvent = new AutoResetEvent(false);
@@ -108,28 +103,28 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
             this.waitForPushEventEvent = new AutoResetEvent(false);
             this.eventQueue = new Queue();
 
-            this.stream = new MqttStream(this.clientSetting.BrokerName, this.clientSetting.BrokerPort, this.clientSetting.CaCertificate, this.clientSetting.ClientCertificate, this.clientSetting.SslProtocol);
+            this.stream = new MqttStream(this.ClientSetting.BrokerName, this.ClientSetting.BrokerPort, this.ClientSetting.CaCertificate, this.ClientSetting.ClientCertificate, this.ClientSetting.SslProtocol);
         }
 
         public ConnectReturnCode Connect(MqttConnectionSetting setting) {
-            this.connectionSetting = setting;
+            this.ConnectionSetting = setting;
 
             var connect = new MqttPacket(PacketType.Connect) {
-                ClientId = this.connectionSetting.ClientId,
-                LastWillRetain = this.connectionSetting.LastWillRetain,
-                CleanSession = this.connectionSetting.CleanSession,
-                LastWillQosLevel = this.connectionSetting.LastWillQos,
-                LastWillTopic = this.connectionSetting.LastWillTopic,
-                Data = this.connectionSetting.LastWillMessage != null ? System.Text.UTF8Encoding.UTF8.GetBytes(this.connectionSetting.LastWillMessage) : null,
-                Username = this.connectionSetting.UserName,
-                Password = this.connectionSetting.Password,
-                KeepAliveTimeout = this.connectionSetting.KeepAliveTimeout
+                ClientId = this.ConnectionSetting.ClientId,
+                LastWillRetain = this.ConnectionSetting.LastWillRetain,
+                CleanSession = this.ConnectionSetting.CleanSession,
+                LastWillQosLevel = this.ConnectionSetting.LastWillQos,
+                LastWillTopic = this.ConnectionSetting.LastWillTopic,
+                Data = this.ConnectionSetting.LastWillMessage != null ? System.Text.UTF8Encoding.UTF8.GetBytes(this.ConnectionSetting.LastWillMessage) : null,
+                Username = this.ConnectionSetting.UserName,
+                Password = this.ConnectionSetting.Password,
+                KeepAliveTimeout = this.ConnectionSetting.KeepAliveTimeout
             };
 
             try {
                 this.stream.Connect();
             }
-            catch (Exception ex) {
+            catch {
                 throw new Exception("Connecting failed");
             }
 
@@ -143,7 +138,7 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
             var connack = this.SendReceive(connect, CONNECTION_TIMEOUT_DEFAULT);
 
             if (connack != null && connack.ReturnCode == ConnectReturnCode.ConnectionAccepted) {
-                this.keepAliveTimeoutInMilisecond = this.connectionSetting.KeepAliveTimeout * 1000;
+                this.keepAliveTimeoutInMilisecond = this.ConnectionSetting.KeepAliveTimeout * 1000;
 
                 if (this.keepAliveTimeoutInMilisecond != 0) {
 
@@ -157,7 +152,7 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
                 this.threadProssessPacketsThread = new Thread(this.ProcessPacketsThread);
                 this.threadProssessPacketsThread.Start();
 
-                this.isConnected = true;
+                this.IsConnected = true;
 
                 this.OnConnectedChanged(); // Raise event connected
 
@@ -196,7 +191,7 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
 
             this.stream.Close();
 
-            this.isConnected = false;
+            this.IsConnected = false;
         }
 
 
@@ -205,9 +200,9 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
 
             MqttPacket pingresp = null;
             try {
-                pingresp = (MqttPacket)this.SendReceive(pingreq, timeout);
+                pingresp = this.SendReceive(pingreq, timeout);
             }
-            catch (Exception e) {
+            catch {
 
             }
 
@@ -224,7 +219,7 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
             if (packetId == 0) {
                 throw new ArgumentException(nameof(packetId));
             }
-          
+
             var subscribe =
 
                 new MqttPacket(PacketType.Subscribe) {
@@ -307,7 +302,7 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
                 this.lastCommunationInMilisecond = ToMillisecond(DateTime.Now.Ticks);
 
             }
-            catch (Exception e) {
+            catch {
 
                 throw new Exception("Sending failed.");
             }
@@ -325,7 +320,7 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
 
                 this.lastCommunationInMilisecond = ToMillisecond(DateTime.Now.Ticks);
             }
-            catch (Exception e) {
+            catch {
 
                 throw new Exception();
             }
@@ -387,13 +382,12 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
         }
 
         private void ReceiveThread() {
-            var readBytes = 0;
             var controlHeaderByte = new byte[1];
             PacketType packetType;
 
             while (this.isRunning) {
                 try {
-                    readBytes = this.stream.Receive(controlHeaderByte);
+                    var readBytes = this.stream.Receive(controlHeaderByte);
 
                     if (readBytes > 0) {
                         packetType = (PacketType)((controlHeaderByte[0] & PACKET_TYPE_MASK) >> PACKET_TYPE_OFFSET);
@@ -445,7 +439,7 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
                         this.CloseConnection();
                     }
                 }
-                catch (Exception e) {
+                catch {
 
                     this.isConnectAckReceivedSuccess = false;
 
@@ -459,7 +453,6 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
         }
 
         private void StartThread() {
-            var d = 0L;
             var timeoutInMillisecond = this.keepAliveTimeoutInMilisecond;
 
             while (this.isRunning) {
@@ -467,7 +460,7 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
                 this.autoPingReqEvent.WaitOne(timeoutInMillisecond, false);
 
                 if (this.isRunning) {
-                    d = ToMillisecond(DateTime.Now.Ticks) - this.lastCommunationInMilisecond;
+                    var d = ToMillisecond(DateTime.Now.Ticks) - this.lastCommunationInMilisecond;
 
                     if (d > this.keepAliveTimeoutInMilisecond) {
 
@@ -654,78 +647,12 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
                     }
                 }
             }
-            catch (Exception e) {
+            catch {
                 if (packetFromQueue != null)
                     this.packetQueue.Enqueue(packetFromQueue);
                 this.CloseConnection();
             }
         }
-
-        private MqttPacket DecodePacketTypeDisconnect(byte controlHeaderByte) {
-            var packet = new MqttPacket(PacketType.Disconnect);
-
-            EnsureValidFlag(controlHeaderByte, PACKET_DISCONNECT_FLAG_BITS);
-
-            // Clear data in stream
-            RemainSizeFromStream(this.stream);
-
-            return packet;
-        }
-
-        private MqttPacket DecodePacketTypeUnsubscribe(byte controlHeaderByte) {
-            byte[] buffer;
-            var index = 0;
-            byte[] topicToBytes;
-            int topicToBytesLength;
-            var packet = new MqttPacket(PacketType.Unsubscribe);
-
-            EnsureValidFlag(controlHeaderByte, PACKET_UNSUBSCRIBE_FLAG_BITS);
-
-            var remainSize = RemainSizeFromStream(this.stream);
-            buffer = new byte[remainSize];
-
-            var received = this.stream.Receive(buffer);
-
-            packet.PacketId = (ushort)((buffer[index++] << 8) & 0xFF00);
-            packet.PacketId |= (buffer[index++]);
-
-            IList tmpTopics = new ArrayList();
-
-            do {
-                topicToBytesLength = ((buffer[index++] << 8) & 0xFF00);
-                topicToBytesLength |= buffer[index++];
-                topicToBytes = new byte[topicToBytesLength];
-                Array.Copy(buffer, index, topicToBytes, 0, topicToBytesLength);
-                index += topicToBytesLength;
-                tmpTopics.Add(new string(Encoding.UTF8.GetChars(topicToBytes)));
-            } while (index < remainSize);
-
-            packet.Topics = new string[tmpTopics.Count];
-            for (var i = 0; i < tmpTopics.Count; i++) {
-                packet.Topics[i] = (string)tmpTopics[i];
-            }
-
-            return packet;
-        }
-
-        private MqttPacket DecodePacketTypeUnSubscribeAck(byte controlHeaderByte) {
-            byte[] buffer;
-            var index = 0;
-            var packet = new MqttPacket(PacketType.Unsubscribe);
-
-            EnsureValidFlag(controlHeaderByte, PACKET_UNSUBACK_FLAG_BITS);
-
-            var remainSize = RemainSizeFromStream(this.stream);
-            buffer = new byte[remainSize];
-
-            this.stream.Receive(buffer);
-
-            packet.PacketId = (ushort)((buffer[index++] << 8) & 0xFF00);
-            packet.PacketId |= (buffer[index++]);
-
-            return packet;
-        }
-
 
         private MqttPacket DecodePacketTypeSubscribeAck(byte controlHeaderByte) {
             byte[] buffer;
@@ -797,7 +724,6 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
             return packet;
         }
 
-
         private MqttPacket DecodePacketTypeConnectAck(byte controlHeaderByte) {
             byte[] buffer;
             var packet = new MqttPacket(PacketType.ConnAck);
@@ -814,17 +740,6 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
             packet.SessionPresent = (buffer[0] & 1) != 0x00; //3.1.connection Present Flag 
 
             packet.ReturnCode = (ConnectReturnCode)buffer[connectionReturnCodeOffset];
-
-            return packet;
-        }
-
-        private MqttPacket DecodePacketTypePingRequest(byte controlHeaderByte) {
-            var packet = new MqttPacket(PacketType.PingReq);
-
-            EnsureValidFlag(controlHeaderByte, PACKET_PINGREQ_FLAG_BITS);
-
-            // clear data from stream
-            RemainSizeFromStream(this.stream);
 
             return packet;
         }
