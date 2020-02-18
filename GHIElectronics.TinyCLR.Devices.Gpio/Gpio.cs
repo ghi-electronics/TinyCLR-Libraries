@@ -23,9 +23,7 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio {
         InputPullUp = 2,
         InputPullDown = 3,
         OutputOpenDrain = 4,
-        OutputOpenDrainPullUp = 5,
-        OutputOpenSource = 6,
-        OutputOpenSourcePullDown = 7,
+
     }
 
     public enum GpioPinValue {
