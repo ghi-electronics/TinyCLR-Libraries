@@ -82,36 +82,29 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
         }
 
         public int Receive(byte[] buffer) {
+            var expired = DateTime.MaxValue.Ticks;
+            var idx = 0;
             if (this.sslProtocol != SslProtocols.None) {
-                int idx = 0, read = 0;
-                while (idx < buffer.Length) {
-                    read = this.sslStream.Read(buffer, idx, buffer.Length - idx);
-                    if (read == 0)
-                        return 0;
-                    idx += read;
+
+                if (this.sslStream.ReadTimeout != System.Threading.Timeout.Infinite) {
+                    expired = DateTime.Now.Ticks + (this.sslStream.ReadTimeout * 10000L);
                 }
-                return buffer.Length;
+
+                while (idx < buffer.Length && DateTime.Now.Ticks < expired) {
+                    idx += this.sslStream.Read(buffer, idx, buffer.Length - idx);
+                }
             }
             else {
-                int idx = 0, read = 0;
-                while (idx < buffer.Length) {
-                    read = this.socket.Receive(buffer, idx, buffer.Length - idx, SocketFlags.None);
-                    if (read == 0)
-                        return 0;
-                    idx += read;
+                if (this.socket.ReceiveTimeout != System.Threading.Timeout.Infinite) {
+                    expired = DateTime.Now.Ticks + (this.socket.ReceiveTimeout * 10000L);
                 }
-                return buffer.Length;
+
+                while (idx < buffer.Length && DateTime.Now.Ticks < expired) {
+                    idx += this.socket.Receive(buffer, idx, buffer.Length - idx, SocketFlags.None);
+                }
             }
 
-        }
-
-        public int Receive(byte[] buffer, int timeout) {
-            if (this.socket.Poll(timeout * 1000, SelectMode.SelectRead)) {
-                return this.Receive(buffer);
-            }
-            else {
-                return 0;
-            }
+            return idx;
         }
 
         public void Close() {
