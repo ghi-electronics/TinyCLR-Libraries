@@ -63,8 +63,8 @@ namespace GHIElectronics.TinyCLR.Devices.Spi {
     }
 
     public sealed class SpiConnectionSettings {
-        public SpiChipSelectType ChipSelectType { get; set; } = SpiChipSelectType.Gpio;
-        public int ChipSelectLine { get; set; }
+        public SpiChipSelectType ChipSelectType { get; set; } = SpiChipSelectType.None;
+        public int ChipSelectLine { get; set; } = -1;
         public int ClockFrequency { get; set; } = 1_000_000;
         public int DataBitLength { get; set; } = 8;
         public SpiMode Mode { get; set; } = SpiMode.Mode0;
