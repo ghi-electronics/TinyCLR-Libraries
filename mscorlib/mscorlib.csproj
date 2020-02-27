@@ -155,6 +155,7 @@
     <Compile Include="Reflection\MethodImplAttributes.cs" />
     <Compile Include="Reflection\MethodInfo.cs" />
     <Compile Include="Reflection\PropertyInfo.cs" />
+    <Compile Include="Reflection\Reflection.cs" />
     <Compile Include="Reflection\RuntimeConstructorInfo.cs" />
     <Compile Include="Reflection\RuntimeFieldInfo.cs" />
     <Compile Include="Reflection\RuntimeMethodInfo.cs" />
