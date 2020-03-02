@@ -39,15 +39,39 @@ namespace GHIElectronics.TinyCLR.Native {
     public static class Power {
         public static void Reset() => Power.Reset(true);
 
-        public static void Hibernate() => SetLevel(PowerLevel.Sleep3, PowerWakeSource.Gpio, 0);
+        public static void Hibernate(PowerWakeSource wakupSource) {
+            if (wakupSource != PowerWakeSource.Gpio)
+                throw new ArgumentException();
 
-        public static void Shutdown(bool activeState) => SetLevel(PowerLevel.Off, PowerWakeSource.Gpio, activeState == false ? 0UL : 1);
+            SetLevel(PowerLevel.Sleep3, PowerWakeSource.Gpio, 0);
+        }
+
+        public static void Hibernate(PowerWakeSource wakupSource, DateTime wakeupTime) {
+            if (wakupSource != PowerWakeSource.Rtc)
+                throw new ArgumentException();
+
+            SetLevel(PowerLevel.Sleep3, PowerWakeSource.Rtc, (ulong)wakeupTime.Ticks);
+        }
+
+        public static void Shutdown(PowerWakeSource wakupSource, bool activeState) {
+            if (wakupSource != PowerWakeSource.Gpio)
+                throw new ArgumentException();
+
+            SetLevel(PowerLevel.Off, PowerWakeSource.Gpio, activeState == false ? 0UL : 1);
+        }
+
+        public static void Shutdown(PowerWakeSource wakupSource, DateTime wakeupTime) {
+            if (wakupSource != PowerWakeSource.Rtc || wakeupTime.Ticks < DateTime.Now.Ticks)
+                throw new ArgumentException();
+
+            SetLevel(PowerLevel.Off, PowerWakeSource.Rtc, (ulong)wakeupTime.Ticks);
+        }
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         public static extern void Reset(bool runCoreAfter);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public static extern void SetLevel(PowerLevel powerLevel, PowerWakeSource wakeSource, ulong data);
+        private static extern void SetLevel(PowerLevel powerLevel, PowerWakeSource wakeSource, ulong data);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         public static extern ResetSource GetResetSource();
