@@ -27,7 +27,8 @@ namespace GHIElectronics.TinyCLR.Devices.Display {
         public void DrawString(string value) => this.Provider.DrawString(value);
 
         public void SetConfiguration(DisplayControllerSettings configuration) {
-            this.Provider.SetConfiguration(configuration);
+            if (this.Provider != null)
+                this.Provider.SetConfiguration(configuration);
 
             this.ActiveConfiguration = configuration;
         }
