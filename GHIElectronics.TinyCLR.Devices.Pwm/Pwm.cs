@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.CompilerServices;
 using GHIElectronics.TinyCLR.Devices.Pwm.Provider;
 using GHIElectronics.TinyCLR.Native;
@@ -55,6 +55,10 @@ namespace GHIElectronics.TinyCLR.Devices.Pwm {
         public double GetActiveDutyCyclePercentage() => this.dutyCycle;
 
         public void SetActiveDutyCyclePercentage(double dutyCyclePercentage) {
+            if (dutyCyclePercentage > 1.0 || dutyCyclePercentage < 0.0)
+                throw new ArgumentException("dutyCyclePercentage has to be in range 0.0 to 1.0");
+
+
             this.dutyCycle = dutyCyclePercentage;
 
             this.Controller.Provider.SetPulseParameters(this.ChannelNumber, this.dutyCycle, this.polarity);
