@@ -79,6 +79,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Devi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Cryptography", "GHIElectronics.TinyCLR.Cryptography\GHIElectronics.TinyCLR.Cryptography.csproj", "{7082C1DA-1E6C-4DDB-B54A-9609BB79F60F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Media", "GHIElectronics.TinyCLR.Media\GHIElectronics.TinyCLR.Media.csproj", "{C1D12B50-AD07-4DC9-B96D-D747F2AE3EE4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -209,6 +211,10 @@ Global
 		{7082C1DA-1E6C-4DDB-B54A-9609BB79F60F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7082C1DA-1E6C-4DDB-B54A-9609BB79F60F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7082C1DA-1E6C-4DDB-B54A-9609BB79F60F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C1D12B50-AD07-4DC9-B96D-D747F2AE3EE4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1D12B50-AD07-4DC9-B96D-D747F2AE3EE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C1D12B50-AD07-4DC9-B96D-D747F2AE3EE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C1D12B50-AD07-4DC9-B96D-D747F2AE3EE4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
