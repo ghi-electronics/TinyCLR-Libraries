@@ -16,8 +16,6 @@
     <dependencies>
       <dependency id="GHIElectronics.TinyCLR.Core" version="2.0.0-preview4" />
       <dependency id="GHIElectronics.TinyCLR.Native" version="2.0.0-preview4" />
-      <dependency id="GHIElectronics.TinyCLR.Devices.I2c" version="2.0.0-preview4" />
-      <dependency id="GHIElectronics.TinyCLR.Devices.Spi" version="2.0.0-preview4" />
     </dependencies>
   </metadata>
   <files>
