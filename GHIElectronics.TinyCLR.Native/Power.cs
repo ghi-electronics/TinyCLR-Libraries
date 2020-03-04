@@ -2,7 +2,7 @@ using System;
 using System.Runtime.CompilerServices;
 
 namespace GHIElectronics.TinyCLR.Native {
-    public enum PowerLevel : uint {
+    internal enum PowerLevel : uint {
         Active = 0,
         Idle = 1,
         Off = 2,
@@ -13,7 +13,7 @@ namespace GHIElectronics.TinyCLR.Native {
     }
 
     [Flags]
-    public enum PowerWakeSource : ulong {
+    internal enum PowerWakeSource : ulong {
         Interrupt = 1,
         Gpio = 2,
         Rtc = 4,
@@ -37,34 +37,36 @@ namespace GHIElectronics.TinyCLR.Native {
     }
 
     public static class Power {
+
         public static void Reset() => Power.Reset(true);
 
-        public static void Hibernate(PowerWakeSource wakupSource) {
-            if (wakupSource != PowerWakeSource.Gpio)
-                throw new ArgumentException();
+        public static void Sleep() => SetLevel(PowerLevel.Sleep3, PowerWakeSource.Gpio, 0);
 
-            SetLevel(PowerLevel.Sleep3, PowerWakeSource.Gpio, 0);
+        public static void Sleep(DateTime wakeupTime) {
+            var wakeupSource = PowerWakeSource.Gpio;
+            var time = 0UL;
+
+            if (wakeupTime != DateTime.MaxValue) {
+                wakeupSource |= PowerWakeSource.Rtc;
+                time = (ulong)wakeupTime.Ticks;
+            }
+
+            SetLevel(PowerLevel.Sleep3, wakeupSource, time);
         }
 
-        public static void Hibernate(PowerWakeSource wakupSource, DateTime wakeupTime) {
-            if (wakupSource != PowerWakeSource.Rtc)
-                throw new ArgumentException();
+        public static void Shutdown(bool wakeupPin, DateTime wakeupTime) {
+            PowerWakeSource wakeupSource = 0;
+            var time = 0UL;
 
-            SetLevel(PowerLevel.Sleep3, PowerWakeSource.Rtc, (ulong)wakeupTime.Ticks);
-        }
+            if (wakeupTime != DateTime.MaxValue) {
+                wakeupSource |= PowerWakeSource.Rtc;
+                time = (ulong)wakeupTime.Ticks;
+            }
 
-        public static void Shutdown(PowerWakeSource wakupSource, bool activeState) {
-            if (wakupSource != PowerWakeSource.Gpio)
-                throw new ArgumentException();
+            if (wakeupPin)
+                wakeupSource |= PowerWakeSource.Gpio;
 
-            SetLevel(PowerLevel.Off, PowerWakeSource.Gpio, activeState == false ? 0UL : 1);
-        }
-
-        public static void Shutdown(PowerWakeSource wakupSource, DateTime wakeupTime) {
-            if (wakupSource != PowerWakeSource.Rtc || wakeupTime.Ticks < DateTime.Now.Ticks)
-                throw new ArgumentException();
-
-            SetLevel(PowerLevel.Off, PowerWakeSource.Rtc, (ulong)wakeupTime.Ticks);
+            SetLevel(PowerLevel.Off, wakeupSource, time);
         }
 
         [MethodImpl(MethodImplOptions.InternalCall)]
