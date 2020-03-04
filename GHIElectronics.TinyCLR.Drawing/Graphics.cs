@@ -173,11 +173,7 @@ namespace System.Drawing {
             return new SizeF(width, height);
         }
 
-        public void Clear(Color color) {
-            if (color != Color.Black) throw new NotSupportedException();
-
-            this.surface.Clear();
-        }
+        public void Clear() => this.surface.Clear();
 
         public static Graphics FromHdc(IntPtr hdc) {
             if (hdc == IntPtr.Zero) throw new ArgumentNullException(nameof(hdc));
