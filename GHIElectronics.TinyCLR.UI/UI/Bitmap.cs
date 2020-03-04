@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using GHIElectronics.TinyCLR.UI.Media;
 
 namespace GHIElectronics.TinyCLR.UI {
@@ -37,7 +37,7 @@ namespace GHIElectronics.TinyCLR.UI {
 
         public void Dispose() => this.g.Dispose();
 
-        public void Clear() => this.g.Clear(System.Drawing.Color.Black);
+        public void Clear() => this.g.Clear();
         public void Flush(int x, int y, int width, int height) => this.g.Flush();
 
         internal void SetPixel(int x, int y, Color color) => this.surface.SetPixel(x, y, color.ToNativeColor());
