@@ -171,6 +171,8 @@ namespace GHIElectronics.TinyCLR.Pins {
                 /// <summary>ADC pin.</summary>
                 public const int PC0 = STM32H7.AdcChannel.Channel10;
                 /// <summary>ADC pin.</summary>
+                public const int PC1 = STM32H7.AdcChannel.Channel11;
+                /// <summary>ADC pin.</summary>
                 public const int PA3 = STM32H7.AdcChannel.Channel15;
                 /// <summary>ADC pin.</summary>
                 public const int PA0 = STM32H7.AdcChannel.Channel16;
