@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using GHIElectronics.TinyCLR.UI.Input;
 using GHIElectronics.TinyCLR.UI.Media;
 
@@ -16,6 +16,8 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         public TextBox() => this.Background = new SolidColorBrush(Colors.White);
 
         public event TextChangedEventHandler TextChanged;
+
+        public TextAlignment TextAlign { get; set; } = TextAlignment.Left;
 
         public string Text {
             get => this.text;
@@ -51,12 +53,13 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
             var txt = this.text;
             var diff = this._renderWidth - this.width;
+            var y = this._font.Height / 2;
 
             if (diff > 0) {
-                dc.DrawText(ref txt, this._font, b.Color, 0, 0, this._renderWidth, this._font.Height, TextAlignment.Left, TextTrimming.CharacterEllipsis);
+                dc.DrawText(ref txt, this._font, b.Color, 0, y, this._renderWidth, this._font.Height, this.TextAlign, TextTrimming.CharacterEllipsis);
             }
             else {
-                dc.DrawText(ref txt, this._font, b.Color, diff, 0, this._renderWidth + this.width, this._font.Height, TextAlignment.Left, TextTrimming.CharacterEllipsis);
+                dc.DrawText(ref txt, this._font, b.Color, diff, y, this._renderWidth + this.width, this._font.Height, this.TextAlign, TextTrimming.CharacterEllipsis);
             }
         }
     }
