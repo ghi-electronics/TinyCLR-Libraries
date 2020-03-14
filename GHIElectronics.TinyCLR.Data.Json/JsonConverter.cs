@@ -112,7 +112,11 @@ namespace GHIElectronics.TinyCLR.Data.Json
                         {
                             if (field != null)
                             {
-                                if (itemType != typeof(DateTime))
+                                if (itemType == typeof(float))
+                                {
+                                    field.SetValue(instance, (float)((double)((JValue)prop.Value).Value));
+                                }
+                                else if (itemType != typeof(DateTime))
                                 {
                                     field.SetValue(instance, ((JValue)prop.Value).Value);
                                 }
@@ -193,7 +197,7 @@ namespace GHIElectronics.TinyCLR.Data.Json
                 var list = new ArrayList();
 
                 Array array;
-                if (elemType!=null)
+                if (elemType != null)
                     array = Array.CreateInstance(type.GetElementType(), jarray.Length);
                 else
                     array = (Array)factory(path, null, jarray.Length);
@@ -287,7 +291,7 @@ namespace GHIElectronics.TinyCLR.Data.Json
                         throw new Exception("unexpected top-level object type in bson");
                 }
             }
-            if (buffer[offset++]!=0)
+            if (buffer[offset++] != 0)
                 throw new Exception("bad format - missing trailing null on bson document");
             return PopulateObject(dserResult, resultType, "/", factory);
         }

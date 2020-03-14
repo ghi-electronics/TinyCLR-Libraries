@@ -1,81 +1,81 @@
-﻿using System;
+using System;
 
 namespace GHIElectronics.TinyCLR.Data.Json
 {
-	public class JValue : JToken
-	{
-		public JValue()
-		{
-		}
+    public class JValue : JToken
+    {
+        public JValue()
+        {
+        }
 
-		public JValue(object value)
-		{
-			this.Value = value;
-		}
+        public JValue(object value)
+        {
+            this.Value = value;
+        }
 
-		public object Value { get; set; }
+        public object Value { get; set; }
 
-		public static JValue Serialize(Type type, object oValue)
-		{
-			return new JValue()
-			{
-				Value = oValue
-			};
-		}
+        public static JValue Serialize(Type type, object oValue)
+        {
+            return new JValue()
+            {
+                Value = oValue
+            };
+        }
 
-		public override string ToString()
-		{
-			EnterSerialization();
-			try
-			{
-				if (Value == null)
-					return "null";
+        public override string ToString()
+        {
+            EnterSerialization();
+            try
+            {
+                if (Value == null)
+                    return "null";
 
-				var type = this.Value.GetType();
-				if (type == typeof(string) || type == typeof(char))
-					return "\"" + this.Value.ToString() + "\"";
-				else if (type == typeof(DateTime))
-					return "\"" + DateTimeExtensions.ToIso8601(((DateTime)this.Value)) + "\"";
-				else
-					return this.Value.ToString();
-			}
-			finally
-			{
-				ExitSerialization();
-			}
-		}
+                var type = this.Value.GetType();
+                if (type == typeof(string) || type == typeof(char))
+                    return "\"" + this.Value.ToString() + "\"";
+                else if (type == typeof(DateTime))
+                    return "\"" + DateTimeExtensions.ToIso8601(((DateTime)this.Value)) + "\"";
+                else
+                    return this.Value.ToString();
+            }
+            finally
+            {
+                ExitSerialization();
+            }
+        }
 
-		public override int GetBsonSize()
-		{
-			if (this.Value == null)
-				return 0;
+        public override int GetBsonSize()
+        {
+            if (this.Value == null)
+                return 0;
 
-			var type = this.Value.GetType();
-			if (type == typeof(double))
-				return 8;
-			else if (type == typeof(string))
-				return ((string)this.Value).Length + 1;  // preamble, strlen, nul
-			if (type == typeof(char))
-				return 1 + 1;  // strlen==1, nul
-			else if (type == typeof(Int32) || type == typeof(UInt32))
-				return 4;
-			else if (type == typeof(Int64) || type == typeof(UInt64))
-				return 8;
-			else if (type == typeof(DateTime))
-				return 8;
-			else if (type == typeof(bool))
-				return 1;
-			else
-				throw new Exception("Unsupported type");
-		}
+            var type = this.Value.GetType();
+            if (type == typeof(double))
+                return 8;
+            else if (type == typeof(string))
+                return ((string)this.Value).Length + 1;  // preamble, strlen, nul
+            if (type == typeof(char))
+                return 1 + 1;  // strlen==1, nul
+            else if (type == typeof(Int32) || type == typeof(UInt32))
+                return 4;
+            else if (type == typeof(Int64) || type == typeof(UInt64) || type == typeof(float) || type == typeof(double))
+                return 8;
+            else if (type == typeof(DateTime))
+                return 8;
+            else if (type == typeof(bool))
+                return 1;
+            else
+                throw new Exception("Unsupported type");
+        }
 
-		public override int GetBsonSize(string ename)
-		{
-			return 1 + ename.Length + 1 + this.GetBsonSize();
-		}
+        public override int GetBsonSize(string ename)
+        {
+            return 1 + ename.Length + 1 + this.GetBsonSize();
+        }
 
-		public override void ToBson(byte[] buffer, ref int offset)
-		{
+        public override void ToBson(byte[] buffer, ref int offset)
+        {
             if (buffer != null)
             {
                 if (this.Value != null)
@@ -85,7 +85,7 @@ namespace GHIElectronics.TinyCLR.Data.Json
             {
                 offset += this.GetBsonSize();
             }
-		}
+        }
 
         public override BsonTypes GetBsonType()
         {
@@ -93,7 +93,7 @@ namespace GHIElectronics.TinyCLR.Data.Json
                 return BsonTypes.BsonNull;
 
             var type = this.Value.GetType();
-            if (type == typeof(double))
+            if (type == typeof(double) || type == typeof(float))
                 return BsonTypes.BsonDouble;
             else if (type == typeof(string))
                 return BsonTypes.BsonString;
