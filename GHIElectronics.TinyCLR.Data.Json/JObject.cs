@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Reflection;
 using System.Text;
@@ -48,8 +48,17 @@ namespace GHIElectronics.TinyCLR.Data.Json
 					if (m.ReturnType.IsArray)
 						result._members.Add(name.ToLower(), new JProperty(name, JArray.Serialize(m.ReturnType, methodResult)));
 					else
-						result._members.Add(name.ToLower(), new JProperty(name, JObject.Serialize(m.ReturnType, methodResult)));
-				}
+                    {
+                        if (m.ReturnType.IsValueType || m.ReturnType == typeof(string))
+                        {
+                            result._members.Add(name.ToLower(), new JProperty(name, JValue.Serialize(m.ReturnType, methodResult)));
+                        }
+                        else
+                        {
+                            result._members.Add(name.ToLower(), new JProperty(name, JObject.Serialize(m.ReturnType, methodResult)));
+                        }
+                    }
+                }
 			}
 
 			var fields = type.GetFields();

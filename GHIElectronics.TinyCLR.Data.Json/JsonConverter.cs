@@ -141,7 +141,10 @@ namespace GHIElectronics.TinyCLR.Data.Json
                             }
                             else
                             {
-                                if (itemType != typeof(DateTime))
+                                if (itemType == typeof(float)) {
+                                    method.Invoke(instance, new object[] { (float)((double)((JValue)prop.Value).Value) });
+                                }
+                                else if (itemType != typeof(DateTime))
                                 {
                                     method.Invoke(instance, new object[] { ((JValue)prop.Value).Value });
                                 }
