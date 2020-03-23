@@ -396,6 +396,21 @@ namespace GHIElectronics.TinyCLR.Pins {
             public const int PA5 = STM32H7.DacChannel.Channel2;
         }
 
+        /// <summary>Network controller definitions.</summary>
+        public static class NetworkController {
+            /// <summary>AT Winc15x0 id.</summary>
+            public const string ATWinc15x0 = "GHIElectronics.TinyCLR.NativeApis.ATWINC15xx.NetworkController";
+
+            /// <summary>Enc28j60 id.</summary>
+            public const string Enc28j60 = "GHIElectronics.TinyCLR.NativeApis.ENC28J60.NetworkController";
+
+            /// <summary>Enc28j60 id.</summary>
+            public const string EthernetEmac = STM32H7.EthernetController.EthernetEmac;
+
+            /// <summary>PPP id.</summary>
+            public const string Ppp = "GHIElectronics.TinyCLR.NativeApis.Ppp.NetworkController";
+        }
+
         /// <summary>PWM pin definitions.</summary>
         public static class PwmChannel {
 
@@ -609,6 +624,7 @@ namespace GHIElectronics.TinyCLR.Pins {
             /// <summary>API id.</summary>
             public const string SdCard = STM32H7.StorageController.SdCard;
             public const string UsbHostMassStorage = STM32H7.StorageController.UsbHostMassStorage;
+            public const string QuadSpi = STM32H7.StorageController.QuadSpi;
         }
 
         /// <summary>RTC controller definitions.</summary>
