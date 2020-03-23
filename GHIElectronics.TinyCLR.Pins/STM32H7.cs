@@ -550,6 +550,13 @@ namespace GHIElectronics.TinyCLR.Pins {
             /// <summary>API id.</summary>
             public const string SdCard = "GHIElectronics.TinyCLR.NativeApis.STM32H7.SdCardStorageController\\0"; 
             public const string UsbHostMassStorage = "GHIElectronics.TinyCLR.NativeApis.STM32H7.UsbHostMassStorageStorageController\\0";
+            public const string QuadSpi = "GHIElectronics.TinyCLR.NativeApis.STM32H7.QspiStorageController\\0";
+        }
+
+        /// <summary>Network controller definitions.</summary>
+        public static class EthernetController {          
+            /// <summary>Enc28j60 id.</summary>
+            public const string EthernetEmac = "GHIElectronics.TinyCLR.NativeApis.STM32H7.EthernetEmacController\\0";
         }
 
         /// <summary>RTC controller definitions.</summary>
