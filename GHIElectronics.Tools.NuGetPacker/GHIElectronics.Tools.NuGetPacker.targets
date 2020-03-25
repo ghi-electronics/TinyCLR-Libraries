@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <NuGetPackerNuSpecFile Condition="'$(NuGetPackerNuSpecFile)' == ''">$(ProjectDir)$(ProjectName).nuspec</NuGetPackerNuSpecFile>
+    <NuGetPackerProperties>TargetDir=$(TargetDir);ProjectDir=$(ProjectDir);$(NuGetPackerProperties)</NuGetPackerProperties>
+    <NuGetPackerOutputDirectory Condition="'$(NuGetPackerOutputDirectory)' == ''">$(TargetDir)</NuGetPackerOutputDirectory>
+    <NuGetPackerCommandArguments Condition="'$(NuGetPackerCommandArguments)' == ''">pack "$(NuGetPackerNuSpecFile)" -NonInteractive -Properties "$(NuGetPackerProperties)" -OutputDirectory "$(NuGetPackerOutputDirectory.Trim('\\'))"</NuGetPackerCommandArguments>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <FileWrites Include="$(NuGetPackerOutputDirectory)$([System.IO.Path]::GetFileNameWithoutExtension('$(NuGetPackerNuSpecFile)')).*.nupkg" />
+  </ItemGroup>
+
+  <UsingTask TaskName="FindNuGetPackage" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll" >
+    <ParameterGroup>
+      <PackageName ParameterType="System.String" Required="true" />
+      <TargetsFileDirectory ParameterType="System.String" Required="true" />
+      <ProjectStyle ParameterType="System.String" Required="false" />
+      <Directory ParameterType="System.String" Output="true" />
+    </ParameterGroup>
+    <Task>
+      <Code Type="Fragment" Language="cs">
+        Directory = ProjectStyle == "PackageReference" ? System.IO.Directory.GetDirectories(TargetsFileDirectory + "..\\..\\..\\" + PackageName).OrderByDescending(d => d).First() : System.IO.Directory.GetDirectories(TargetsFileDirectory + "..\\..", PackageName + ".*")[0];
+      </Code>
+    </Task>
+  </UsingTask>
+
+  <Target Name="PackNuGet" AfterTargets="Build;SignAssembly">
+    <FindNuGetPackage PackageName="NuGet.CommandLine" TargetsFileDirectory="$(MSBuildThisFileDirectory)" ProjectStyle="$(NuGetProjectStyle)">
+      <Output PropertyName="NuGetCommandLinePackageDirectory" TaskParameter="Directory" />
+    </FindNuGetPackage>
+
+    <Exec Command='"$(NuGetCommandLinePackageDirectory)\tools\NuGet.exe" $(NuGetPackerCommandArguments)' LogStandardErrorAsError="true" />
+  </Target>
+</Project>

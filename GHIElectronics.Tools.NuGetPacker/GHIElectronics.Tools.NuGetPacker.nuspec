@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>GHIElectronics.Tools.NuGetPacker</id>
+    <version>1.0.3</version>
+    <authors>GHI Electronics, LLC</authors>
+    <owners>GHI Electronics, LLC</owners>
+    <projectUrl>https://www.ghielectronics.com/</projectUrl>
+    <iconUrl>http://files.ghielectronics.com/downloads/Logos/GHIElectronicsNuGet.png</iconUrl>
+    <licenseUrl>http://files.ghielectronics.com/downloads/Documents/License.txt</licenseUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>MSBuild target for creating NuGet packages.</description>
+    <copyright>Copyright GHI Electronics, LLC 2020</copyright>
+    <tags>NuGet MSBuild</tags>
+    <developmentDependency>true</developmentDependency>
+    <dependencies>
+      <dependency id="NuGet.CommandLine" version="4.4.1" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="GHIElectronics.Tools.NuGetPacker.targets" target="build" />
+  </files>
+</package>
