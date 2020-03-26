@@ -42,10 +42,18 @@ namespace GHIElectronics.TinyCLR.Devices.Display {
         Rgb565 = 0,
     }
 
+    public enum DisplayOrientation {
+        Degrees0 = 0,
+        Degrees90 = 1,
+        Degrees180 = 2,
+        Degrees270 = 3
+    }
+
     public class DisplayControllerSettings {
         public int Width { get; set; }
         public int Height { get; set; }
         public DisplayDataFormat DataFormat { get; set; }
+        public DisplayOrientation Orientation { get; set; }
     }
 
     public class ParallelDisplayControllerSettings : DisplayControllerSettings {
