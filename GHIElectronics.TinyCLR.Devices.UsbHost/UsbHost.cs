@@ -7,100 +7,44 @@ using GHIElectronics.TinyCLR.Devices.UsbHost.Provider;
 using GHIElectronics.TinyCLR.Native;
 
 namespace GHIElectronics.TinyCLR.Devices.UsbHost {
-    public enum DeviceState {
+    public enum UsbHostDeviceState {
         Detached = 0,
         Attached = 1,
-        Powered = 2,
-        Default = 3,
-        Address = 4,
-        Configured = 5,
-        Suspended = 6,
     };
 
-    public enum UsbClientMode {
-        Cdc = 0,
-        WinUsb = 1
-    }
+    //public enum UsbHostMode {
+    //    Cdc = 0,
+    //    WinUsb = 1
+    //}
 
-    public delegate void DataReceivedEventHandler(UsbClientController sender, uint count);
-    public delegate void DeviceStateChangedEventHandler(UsbClientController sender, DeviceState state);
+    public delegate void DataReceivedEventHandler(UsbHostController sender, uint count);
+    public delegate void DeviceStateChangedEventHandler(UsbHostController sender, UsbHostDeviceState state);
 
-    public sealed class UsbClientController : IDisposable {
-        private DataReceivedEventHandler dataReceivedCallbacks;
+    public sealed class UsbHostController : IDisposable {        
         private DeviceStateChangedEventHandler deviceStateChangedCallbacks;
 
-        public IUsbClientControllerProvider Provider { get; }
+        public IUsbHostControllerProvider Provider { get; }
 
-        private UsbClientController(IUsbClientControllerProvider provider) => this.Provider = provider;
+        private UsbHostController(IUsbHostControllerProvider provider) => this.Provider = provider;
 
-        public static UsbClientController GetDefault() => NativeApi.GetDefaultFromCreator(NativeApiType.UsbClientController) is UsbClientController c ? c : UsbClientController.FromName(NativeApi.GetDefaultName(NativeApiType.UsbClientController));
-        public static UsbClientController FromName(string name) => UsbClientController.FromProvider(new UsbClientControllerApiWrapper(NativeApi.Find(name, NativeApiType.UsbClientController)));
-        public static UsbClientController FromProvider(IUsbClientControllerProvider provider) => new UsbClientController(provider);
+        public static UsbHostController GetDefault() => NativeApi.GetDefaultFromCreator(NativeApiType.UsbHostController) is UsbHostController c ? c : UsbHostController.FromName(NativeApi.GetDefaultName(NativeApiType.UsbHostController));
+        public static UsbHostController FromName(string name) => UsbHostController.FromProvider(new UsbHostControllerApiWrapper(NativeApi.Find(name, NativeApiType.UsbHostController)));
+        public static UsbHostController FromProvider(IUsbHostControllerProvider provider) => new UsbHostController(provider);
 
         public void Dispose() => this.Provider.Dispose();
 
-        public int ByteToRead => this.Provider.ByteToRead;
-        public int ByteToWrite => this.Provider.ByteToWrite;
-        public int WriteBufferSize { get => this.Provider.WriteBufferSize; set => this.Provider.WriteBufferSize = value; }
-        public int ReadBufferSize { get => this.Provider.ReadBufferSize; set => this.Provider.ReadBufferSize = value; }
-
-        public void SetActiveSetting(UsbClientMode mode, ushort productId, ushort vendorId) => this.SetActiveSetting(mode, null, null, null, productId, vendorId);
-        public void SetActiveSetting(UsbClientMode mode, ushort productId, ushort vendorId, string guid) => this.SetActiveSetting(mode, null, null, null, productId, vendorId, guid);
-        public void SetActiveSetting(UsbClientMode mode, string manufactureName, string productName, string serialNumber, ushort productId, ushort vendorId) => this.SetActiveSetting(mode, manufactureName, productName, serialNumber, productId, vendorId, null);
-
-        public void SetActiveSetting(UsbClientMode mode, string manufactureName, string productName, string serialNumber, ushort productId, ushort vendorId, string guid) {
-            if (mode == UsbClientMode.WinUsb && guid == null)
-                throw new ArgumentNullException(nameof(guid));
-
-            this.Provider.SetActiveSetting(mode, manufactureName, productName, serialNumber, productId, vendorId, guid);
-        }
-
         public void Enable() => this.Provider.Enable();
         public void Disable() => this.Provider.Disable();
-        public int Read(byte[] data) => this.Read(data, 0, data.Length);
 
-        public int Read(byte[] data, int offset, int count) {
-            if (data == null) throw new ArgumentNullException(nameof(data));
-            if (offset < 0) throw new ArgumentOutOfRangeException(nameof(offset));
-            if (count <= 0) throw new ArgumentOutOfRangeException(nameof(count));
-            if (offset + count > data.Length) throw new ArgumentOutOfRangeException(nameof(data));
+        public void SendSetupPacket(byte requestType, byte request, ushort value, ushort index, byte[] data, int dataOffset, int dataCount) => this.Provider.SendSetupPacket(requestType, request, value, index, data, dataOffset, dataCount);
 
-            return this.Provider.Read(data, offset, count);
-        }
+        public void GetParameters(uint id, out ushort vendorId, out ushort productId, out byte port) => this.Provider.GetParameters(id, out vendorId, out productId, out port);
 
-        public int Write(byte[] data) => this.Write(data, 0, data.Length);
-        public int Write(byte[] data, int offset, int count) {
-            if (data == null) throw new ArgumentNullException(nameof(data));
-            if (offset < 0) throw new ArgumentOutOfRangeException(nameof(offset));
-            if (count <= 0) throw new ArgumentOutOfRangeException(nameof(count));
-            if (offset + count > data.Length) throw new ArgumentOutOfRangeException(nameof(data));
+        public int Transfer(byte[] buffer, int offset, int count, int transferTimeout) => this.Provider.Transfer(buffer, offset, count, transferTimeout);
 
-            return this.Provider.Write(data, offset, count);
-        }
+        public UsbHostDeviceState DeviceState => this.Provider.DeviceState;
+        private void OnDeviceStateChanged(UsbHostController sender, UsbHostDeviceState state) => this.deviceStateChangedCallbacks?.Invoke(this, state);
 
-        public void ClearReadBuffer() => this.Provider.ClearReadBuffer();
-        public void ClearWriteBuffer() => this.Provider.ClearWriteBuffer();
-        public void Flush() => this.Provider.Flush();
-
-        public DeviceState DeviceState => this.Provider.DeviceState;
-
-        private void OnDataReceived(UsbClientController sender, uint count) => this.dataReceivedCallbacks?.Invoke(this, count);
-        private void OnDeviceStateChanged(UsbClientController sender, DeviceState state) => this.deviceStateChangedCallbacks?.Invoke(this, state);
-
-        public event DataReceivedEventHandler DataReceived {
-            add {
-                if (this.dataReceivedCallbacks == null)
-                    this.Provider.DataReceived += this.OnDataReceived;
-
-                this.dataReceivedCallbacks += value;
-            }
-            remove {
-                this.dataReceivedCallbacks -= value;
-
-                if (this.dataReceivedCallbacks == null)
-                    this.Provider.DataReceived -= this.OnDataReceived;
-            }
-        }
 
         public event DeviceStateChangedEventHandler DeviceStateChanged {
             add {
@@ -120,72 +64,41 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
     }
 
     namespace Provider {
-        public interface IUsbClientControllerProvider : IDisposable {
-            int ByteToRead { get; }
-            int ByteToWrite { get; }
+        public interface IUsbHostControllerProvider : IDisposable {
 
-            int WriteBufferSize { get; set; }
-            int ReadBufferSize { get; set; }
-
-            DeviceState DeviceState { get; }
+            UsbHostDeviceState DeviceState { get; }
 
             void Enable();
             void Disable();
 
-            void SetActiveSetting(UsbClientMode mode, string manufactureName, string productName, string serialNumber, ushort productId, ushort vendorId, string guid);
+            void SendSetupPacket(byte requestType, byte request, ushort value, ushort index, byte[] data, int dataOffset, int dataCount);
 
-            int Read(byte[] data, int offset, int count);
-            int Write(byte[] data, int offset, int count);
+            void GetParameters(uint id, out ushort vendorId, out ushort productId, out byte port);
 
-            void ClearReadBuffer();
-            void ClearWriteBuffer();
+            int Transfer(byte[] buffer, int offset, int count, int transferTimeout);
 
-            void Flush();
-
-
-            event DataReceivedEventHandler DataReceived;
             event DeviceStateChangedEventHandler DeviceStateChanged;
         }
 
-        public sealed class UsbClientControllerApiWrapper : IUsbClientControllerProvider {
+        public sealed class UsbHostControllerApiWrapper : IUsbHostControllerProvider {
             private readonly IntPtr impl;
 
-            private readonly NativeEventDispatcher dataReceivedDispatcher;
             private readonly NativeEventDispatcher deviceStateChangedDispatcher;
 
-            private DataReceivedEventHandler dataReceivedCallbacks;
             private DeviceStateChangedEventHandler deviceStateChangedCallbacks;
 
             public NativeApi Api { get; }
 
-            public UsbClientControllerApiWrapper(NativeApi api) {
+            public UsbHostControllerApiWrapper(NativeApi api) {
                 this.Api = api;
 
                 this.impl = api.Implementation;
 
                 this.Acquire();
 
-                this.dataReceivedDispatcher = NativeEventDispatcher.GetDispatcher("GHIElectronics.TinyCLR.NativeEventNames.UsbHost.DataReceived");
-                this.dataReceivedDispatcher.OnInterrupt += (apiName, d0, d1, d2, d3, ts) => { if (this.Api.Name == apiName) this.dataReceivedCallbacks?.Invoke(null, (uint)d0); };
-
                 this.deviceStateChangedDispatcher = NativeEventDispatcher.GetDispatcher("GHIElectronics.TinyCLR.NativeEventNames.UsbHost.DeviceStateChanged");
-                this.deviceStateChangedDispatcher.OnInterrupt += (apiName, d0, d1, d2, d3, ts) => { if (this.Api.Name == apiName) this.deviceStateChangedCallbacks?.Invoke(null, (DeviceState)d0); };
+                this.deviceStateChangedDispatcher.OnInterrupt += (apiName, d0, d1, d2, d3, ts) => { if (this.Api.Name == apiName) this.deviceStateChangedCallbacks?.Invoke(null, (UsbHostDeviceState)d0); };
 
-            }
-
-            public event DataReceivedEventHandler DataReceived {
-                add {
-                    if (this.dataReceivedCallbacks == null)
-                        this.SetDataReceivedEventEnabled(true);
-
-                    this.dataReceivedCallbacks += value;
-                }
-                remove {
-                    this.dataReceivedCallbacks -= value;
-
-                    if (this.dataReceivedCallbacks == null)
-                        this.SetDataReceivedEventEnabled(false);
-                }
             }
 
             public event DeviceStateChangedEventHandler DeviceStateChanged {
@@ -205,10 +118,7 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
 
             public void Dispose() => this.Release();
 
-            public int ByteToRead => this.GetByteToRead();
-            public int ByteToWrite => this.GetByteToWrite();
-
-            public DeviceState DeviceState => this.GetDeviceState();
+            public UsbHostDeviceState DeviceState => this.GetDeviceState();
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             private extern void Acquire();
@@ -223,40 +133,19 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
             public extern void Disable();
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern void SetActiveSetting(UsbClientMode mode, string manufactureName, string productName, string serialNumber, ushort productId, ushort vendorId, string guid);
+            public extern void SendSetupPacket(byte requestType, byte request, ushort value, ushort index, byte[] data, int dataOffset, int dataCount);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern int Read(byte[] data, int offset, int count);
+            public extern void GetParameters(uint id, out ushort vendorId, out ushort productId, out byte port);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern int Write(byte[] data, int offset, int count);
+            public extern int Transfer(byte[] buffer, int offset, int count, int transferTimeout);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern void Flush();
-
-            [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern void ClearReadBuffer();
-
-            [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern void ClearWriteBuffer();
-
-            [MethodImpl(MethodImplOptions.InternalCall)]
-            private extern DeviceState GetDeviceState();
-
-            [MethodImpl(MethodImplOptions.InternalCall)]
-            private extern int GetByteToRead();
-
-            [MethodImpl(MethodImplOptions.InternalCall)]
-            private extern int GetByteToWrite();
-
-            [MethodImpl(MethodImplOptions.InternalCall)]
-            private extern void SetDataReceivedEventEnabled(bool enabled);
+            private extern UsbHostDeviceState GetDeviceState();
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             private extern void SetDataStateChangedEventEnabled(bool enabled);
-
-            public extern int WriteBufferSize { [MethodImpl(MethodImplOptions.InternalCall)] get; [MethodImpl(MethodImplOptions.InternalCall)] set; }
-            public extern int ReadBufferSize { [MethodImpl(MethodImplOptions.InternalCall)] get; [MethodImpl(MethodImplOptions.InternalCall)] set; }
 
         }
     }
