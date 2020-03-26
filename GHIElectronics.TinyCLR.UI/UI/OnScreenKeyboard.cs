@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Drawing;
 using GHIElectronics.TinyCLR.UI.Controls;
@@ -31,7 +31,8 @@ namespace GHIElectronics.TinyCLR.UI {
 
             this.input = new TextBox {
                 ForOnScreenKeyboard = true,
-                Font = OnScreenKeyboard.Font
+                Font = OnScreenKeyboard.Font,
+                Height = 2 * Font.Height
             };
 
             holder.Children.Add(this.input);
@@ -39,7 +40,7 @@ namespace GHIElectronics.TinyCLR.UI {
             this.image = new Controls.Image {
                 Source = null,
                 Width = WindowManager.Instance.ActualWidth,
-                Height = WindowManager.Instance.ActualHeight - OnScreenKeyboard.Font.Height,
+                Height = WindowManager.Instance.ActualHeight - this.input.Height,
                 Stretch = Stretch.Fill
             };
 
@@ -104,13 +105,13 @@ namespace GHIElectronics.TinyCLR.UI {
             this.scaleX = this.active.Image.Width / (double)this.image.Width;
             this.scaleY = this.active.Image.Height / (double)this.image.Height;
             this.offsetX = 0;
-            this.offsetY = OnScreenKeyboard.Font.Height;
+            this.offsetY = this.input.Height;
         }
 
         private void CreateView(KeyboardViewId id) {
-            var hf = 16;
-            var sz = 32;
-            var szh = 48;
+            var hf = 40;
+            var sz = 80;
+            var szh = 120;
             var full = new[] { sz, sz, sz, sz, sz, sz, sz, sz, sz, sz };
             var image = default(System.Drawing.Bitmap);
             var view = new KeyboardView { RowHeight = sz };
