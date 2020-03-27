@@ -1,7 +1,7 @@
-using Microsoft.SPOT;
+using System;
 using System.Runtime.CompilerServices;
 
-namespace GHI.Usb.Host {
+namespace GHIElectronics.TinyCLR.Devices.UsbHost {
 	/// <summary>Allows a usb device to be used as a keyboard.</summary>
 	/// <remarks>
 	/// The CharUp and CharDown events are only fired when a given key press has a corresponding ASCII key code. There is an internal thread that
@@ -73,7 +73,7 @@ namespace GHI.Usb.Host {
 			if (!this.CheckObjectState(false)) return;
 
 			byte key = 0, keyState = 0;
-			char ascii = '\0';
+			var ascii = '\0';
 
 			try {
 				if (!this.NativeGetState(out key, out ascii, out keyState)) {
@@ -111,39 +111,23 @@ namespace GHI.Usb.Host {
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		extern private bool NativeGetState(out byte key, out char ascii, out byte state);
 
-		private void OnKeyUp(KeyboardEventArgs e) {
-			var h = this.KeyUp;
-			if (h != null)
-				h(this, e);
-		}
+        private void OnKeyUp(KeyboardEventArgs e) => this.KeyUp?.Invoke(this, e);
 
-		private void OnKeyDown(KeyboardEventArgs e) {
-			var h = this.KeyDown;
-			if (h != null)
-				h(this, e);
-		}
+        private void OnKeyDown(KeyboardEventArgs e) => this.KeyDown?.Invoke(this, e);
 
-		private void OnCharUp(KeyboardEventArgs e) {
-			var h = this.CharUp;
-			if (h != null)
-				h(this, e);
-		}
+        private void OnCharUp(KeyboardEventArgs e) => this.CharUp?.Invoke(this, e);
 
-		private void OnCharDown(KeyboardEventArgs e) {
-			var h = this.CharDown;
-			if (h != null)
-				h(this, e);
-		}
-		/// <summary>Event arguments for the keyboard events.</summary>
-		public class KeyboardEventArgs : EventArgs {
+        private void OnCharDown(KeyboardEventArgs e) => this.CharDown?.Invoke(this, e);
+        /// <summary>Event arguments for the keyboard events.</summary>
+        public class KeyboardEventArgs : EventArgs {
 			private Key which;
 			private char ascii;
 
 			/// <summary>The Key associated with the event.</summary>
-			public Key Which { get { return this.which; } set { this.which = value; } }
+			public Key Which { get => this.which; set => this.which = value; }
 
-			/// <summary>The ASCII representation of the key, if available. Otherwise, this value is <b>0</b>.</summary>
-			public char ASCII { get { return this.ascii; } set { this.ascii = value; } }
-		}
+            /// <summary>The ASCII representation of the key, if available. Otherwise, this value is <b>0</b>.</summary>
+            public char ASCII { get => this.ascii; set => this.ascii = value; }
+        }
 	}
 }

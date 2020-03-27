@@ -1,6 +1,6 @@
 using System;
 
-namespace GHI.Usb {
+namespace GHIElectronics.TinyCLR.Devices.UsbHost {
 
 	/// <summary>Lists available mouse buttons.</summary>
 	[Flags]
@@ -418,28 +418,24 @@ namespace GHI.Usb {
 		private int z;
 
 		/// <summary>The X coordinate.</summary>
-		public int X { get { return this.x; } set { this.x = value; } }
+		public int X { get => this.x; set => this.x = value; }
 
-		/// <summary>The Y coordinate.</summary>
-		public int Y { get { return this.y; } set { this.y = value; } }
+        /// <summary>The Y coordinate.</summary>
+        public int Y { get => this.y; set => this.y = value; }
 
-		/// <summary>The Z coordinate.</summary>
-		public int Z { get { return this.z; } set { this.z = value; } }
+        /// <summary>The Z coordinate.</summary>
+        public int Z { get => this.z; set => this.z = value; }
 
-		/// <summary>Subtracts one position from another.</summary>
-		/// <param name="lhs">The position from which to subtract.</param>
-		/// <param name="rhs">The position to subtract.</param>
-		/// <returns>The new positon.</returns>
-		public static Position operator -(Position lhs, Position rhs) {
-			return new Position() { X = lhs.X - rhs.X, Y = lhs.Y - rhs.Y, Z = lhs.Z - rhs.Z };
-		}
+        /// <summary>Subtracts one position from another.</summary>
+        /// <param name="lhs">The position from which to subtract.</param>
+        /// <param name="rhs">The position to subtract.</param>
+        /// <returns>The new positon.</returns>
+        public static Position operator -(Position lhs, Position rhs) => new Position() { X = lhs.X - rhs.X, Y = lhs.Y - rhs.Y, Z = lhs.Z - rhs.Z };
 
-		/// <summary>Returns a string representation of the position.</summary>
-		/// <returns>The position.</returns>
-		public override string ToString() {
-			return "(" + this.X.ToString() + ", " + this.Y.ToString() + ", " + this.Z.ToString() + ")";
-		}
-	}
+        /// <summary>Returns a string representation of the position.</summary>
+        /// <returns>The position.</returns>
+        public override string ToString() => "(" + this.X.ToString() + ", " + this.Y.ToString() + ", " + this.Z.ToString() + ")";
+    }
 	/// <summary>The exception thrown when an operation times out.</summary>
 	[Serializable]
 	public class OperationTimedOutException : System.Exception {
