@@ -64,19 +64,13 @@ namespace GHIElectronics.TinyCLR.Devices.Spi {
 
     public sealed class SpiConnectionSettings {
         public SpiChipSelectType ChipSelectType { get; set; } = SpiChipSelectType.None;
-        public GpioPin ChipSelectLine { get; set; } = null;
+        public int ChipSelectLine { get; set; } = -1;
         public int ClockFrequency { get; set; } = 1_000_000;
         public int DataBitLength { get; set; } = 8;
-        public SpiDataFrame DataFrameFormat { get; set; } = SpiDataFrame.MsbFrist;
         public SpiMode Mode { get; set; } = SpiMode.Mode0;
         public TimeSpan ChipSelectSetupTime { get; set; } = TimeSpan.FromTicks(0);
         public TimeSpan ChipSelectHoldTime { get; set; } = TimeSpan.FromTicks(0);
-        public bool ChipSelectActiveState { get; set; } = false;       
-    }
-
-    public enum SpiDataFrame {
-        MsbFrist = 0,
-        LsbFirst = 1
+        public bool ChipSelectActiveState { get; set; } = false;
     }
 
     public enum SpiMode {
@@ -88,7 +82,8 @@ namespace GHIElectronics.TinyCLR.Devices.Spi {
 
     public enum SpiChipSelectType {
         None = 0,
-        Gpio = 1
+        Controller = 1,
+        Gpio = 2
     }
 
     namespace Provider {
@@ -184,7 +179,10 @@ namespace GHIElectronics.TinyCLR.Devices.Spi {
                 this.cs?.Dispose();
             }
 
-            public void SetActiveSettings(SpiConnectionSettings connectionSettings) {                
+            public void SetActiveSettings(SpiConnectionSettings connectionSettings) {
+                if (connectionSettings.DataBitLength != 8) throw new NotSupportedException();
+                if (connectionSettings.ChipSelectType == SpiChipSelectType.Controller) throw new NotSupportedException();
+
                 this.captureOnRisingEdge = ((((int)connectionSettings.Mode) & 0x01) == 0);
                 this.clockActiveState = (((int)connectionSettings.Mode) & 0x02) == 0 ? GpioPinValue.High : GpioPinValue.Low;
                 this.clockIdleState = this.clockActiveState == GpioPinValue.High ? GpioPinValue.Low : GpioPinValue.High;
@@ -194,7 +192,7 @@ namespace GHIElectronics.TinyCLR.Devices.Spi {
 
                 if (connectionSettings.ChipSelectType == SpiChipSelectType.Gpio) {
                     if (!this.chipSelects.Contains(connectionSettings.ChipSelectLine)) {
-                        var cs = connectionSettings.ChipSelectLine;
+                        var cs = this.gpioController.OpenPin(connectionSettings.ChipSelectLine);
 
                         this.chipSelects[connectionSettings.ChipSelectLine] = cs;
 
