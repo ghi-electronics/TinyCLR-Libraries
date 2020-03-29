@@ -36,6 +36,10 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         internal bool ForOnScreenKeyboard { get; set; }
 
         protected override void OnTouchUp(TouchEventArgs e) {
+            if (!this.IsEnabled) {
+                return;
+            }
+
             if (!this.ForOnScreenKeyboard)
                 Application.Current.ShowOnScreenKeyboardFor(this);
         }

@@ -44,6 +44,10 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         }
 
         protected override void OnTouchUp(TouchEventArgs e) {
+            if (!this.IsEnabled) {
+                return;
+            }
+
             var evt = new RoutedEvent("TouchUpEvent", RoutingStrategy.Bubble, typeof(RoutedEventHandler));
             var args = new RoutedEventArgs(evt, this);
 
@@ -58,6 +62,9 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         }
 
         protected override void OnTouchDown(TouchEventArgs e) {
+            if (!this.IsEnabled) {
+                return;
+            }
 
             var evt = new RoutedEvent("TouchDownEvent", RoutingStrategy.Bubble, typeof(RoutedEventHandler));
             var args = new RoutedEventArgs(evt, this);
