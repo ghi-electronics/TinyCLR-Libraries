@@ -23,6 +23,10 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         }
 
         protected override void OnTouchUp(TouchEventArgs e) {
+            if (!this.IsEnabled) {
+                return;
+            }
+
             if (this.IsSelectable) {
                 this._listBox.SelectedItem = this;
             }
