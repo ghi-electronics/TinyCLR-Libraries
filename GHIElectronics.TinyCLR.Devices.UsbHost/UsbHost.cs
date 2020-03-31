@@ -7,22 +7,23 @@ using GHIElectronics.TinyCLR.Devices.UsbHost.Provider;
 using GHIElectronics.TinyCLR.Native;
 
 namespace GHIElectronics.TinyCLR.Devices.UsbHost {
-    public enum UsbHostDeviceState {
+    public enum DeviceConnectionStatus {
         Disconnected = 0,
         Connected = 1,
         Bad = 2,
     };
 
 
-    public delegate void DeviceStateChangedEventHandler(UsbHostController sender, DeviceConnectedEventArgs e);
+    public delegate void OnConnectionChanged(UsbHostController sender, DeviceConnectionEventArgs e);
 
-    public class DeviceConnectedEventArgs : EventArgs {
-        private uint id;
-        private byte interfaceIndex;
-        private BaseDevice.DeviceType type;
-        private ushort vendorId;
-        private ushort productId;
-        private byte portNumber;
+    public class DeviceConnectionEventArgs : EventArgs {
+        private readonly uint id;
+        private readonly byte interfaceIndex;
+        private readonly BaseDevice.DeviceType type;
+        private readonly ushort vendorId;
+        private readonly ushort productId;
+        private readonly byte portNumber;
+        private readonly DeviceConnectionStatus deviceStatus;
 
         /// <summary>The device id.</summary>
         public uint Id => this.id;
@@ -42,18 +43,22 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
         /// <summary>The device's USB port number.</summary>
         public byte PortNumber => this.portNumber;
 
-        internal DeviceConnectedEventArgs(uint id, byte interfaceIndex, BaseDevice.DeviceType type, ushort vendorId, ushort productId, byte portNumber) {
+        public DeviceConnectionStatus DeviceStatus => this.deviceStatus;
+        
+
+        internal DeviceConnectionEventArgs(uint id, byte interfaceIndex, BaseDevice.DeviceType type, ushort vendorId, ushort productId, byte portNumber, DeviceConnectionStatus deviceStatus) {
             this.id = id;
             this.interfaceIndex = interfaceIndex;
             this.type = type;
             this.vendorId = vendorId;
             this.productId = productId;
             this.portNumber = portNumber;
+            this.deviceStatus = deviceStatus;
         }
     }
 
     public sealed class UsbHostController : IDisposable {
-        private DeviceStateChangedEventHandler deviceStateChangedCallbacks;
+        private OnConnectionChanged onConnectionChangedCallbacks;
 
         public IUsbHostControllerProvider Provider { get; }
 
@@ -68,28 +73,22 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
         public void Enable() => this.Provider.Enable();
         public void Disable() => this.Provider.Disable();
 
-        public void SendSetupPacket(byte requestType, byte request, ushort value, ushort index, byte[] data, int dataOffset, int dataCount) => this.Provider.SendSetupPacket(requestType, request, value, index, data, dataOffset, dataCount);
-
-        public void GetParameters(uint id, out ushort vendorId, out ushort productId, out byte port) => this.Provider.GetParameters(id, out vendorId, out productId, out port);
-
-        public int Transfer(byte[] buffer, int offset, int count, int transferTimeout) => this.Provider.Transfer(buffer, offset, count, transferTimeout);
-
-        public UsbHostDeviceState DeviceState => this.Provider.DeviceState;
-        private void OnDeviceStateChanged(UsbHostController sender, DeviceConnectedEventArgs e) => this.deviceStateChangedCallbacks?.Invoke(this, e);
+        public DeviceConnectionStatus DeviceStatus => this.Provider.DeviceStatus;
+        private void OnConnectionChangedCallBack(UsbHostController sender, DeviceConnectionEventArgs e) => this.onConnectionChangedCallbacks?.Invoke(this, e);
 
 
-        public event DeviceStateChangedEventHandler DeviceStateChanged {
+        public event OnConnectionChanged OnConnectionChangedEvent {
             add {
-                if (this.deviceStateChangedCallbacks == null)
-                    this.Provider.DeviceStateChanged += this.OnDeviceStateChanged;
+                if (this.onConnectionChangedCallbacks == null)
+                    this.Provider.OnConnectionChangedEvent += this.OnConnectionChangedCallBack;
 
-                this.deviceStateChangedCallbacks += value;
+                this.onConnectionChangedCallbacks += value;
             }
             remove {
-                this.deviceStateChangedCallbacks -= value;
+                this.onConnectionChangedCallbacks -= value;
 
-                if (this.deviceStateChangedCallbacks == null)
-                    this.Provider.DeviceStateChanged -= this.OnDeviceStateChanged;
+                if (this.onConnectionChangedCallbacks == null)
+                    this.Provider.OnConnectionChangedEvent -= this.OnConnectionChangedCallBack;
             }
         }
 
@@ -98,26 +97,21 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
     namespace Provider {
         public interface IUsbHostControllerProvider : IDisposable {
 
-            UsbHostDeviceState DeviceState { get; }
+            DeviceConnectionStatus DeviceStatus { get; }
 
             void Enable();
             void Disable();
+         
 
-            void SendSetupPacket(byte requestType, byte request, ushort value, ushort index, byte[] data, int dataOffset, int dataCount);
-
-            void GetParameters(uint id, out ushort vendorId, out ushort productId, out byte port);
-
-            int Transfer(byte[] buffer, int offset, int count, int transferTimeout);
-
-            event DeviceStateChangedEventHandler DeviceStateChanged;
+            event OnConnectionChanged OnConnectionChangedEvent;
         }
 
         public sealed class UsbHostControllerApiWrapper : IUsbHostControllerProvider {
             private readonly IntPtr impl;
 
-            private readonly NativeEventDispatcher deviceStateChangedDispatcher;
+            private readonly NativeEventDispatcher onConnectDispatcher;
 
-            private DeviceStateChangedEventHandler deviceStateChangedCallbacks;
+            private OnConnectionChanged onConnectionChangedCallbacks;
 
             public NativeApi Api { get; }
 
@@ -128,58 +122,44 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
 
                 this.Acquire();
 
-                this.deviceStateChangedDispatcher = NativeEventDispatcher.GetDispatcher("GHIElectronics.TinyCLR.NativeEventNames.UsbHost.DeviceStateChanged");
-                this.deviceStateChangedDispatcher.OnInterrupt += (apiName, d0, d1, d2, d3, ts) => { if (this.Api.Name == apiName) {
+                this.onConnectDispatcher = NativeEventDispatcher.GetDispatcher("GHIElectronics.TinyCLR.NativeEventNames.UsbHost.OnConnectionChanged");
+                this.onConnectDispatcher.OnInterrupt += (apiName, d0, d1, d2, d3, ts) => { if (this.Api.Name == apiName) {
 
-                        var connection = (UsbHostDeviceState)d2;
+                        var connection = (DeviceConnectionStatus)d2;
 
-                        if (connection == UsbHostDeviceState.Connected) {
-                            var interfaceIndex = (uint)d0;
-                            var deviceType = (BaseDevice.DeviceType)(d0 >> 8);
+                        var interfaceIndex = (uint)d0;
+                        var deviceType = (BaseDevice.DeviceType)(d0 >> 8);
 
-                            this.GetParameters(interfaceIndex, out var vendor, out var product, out var port);
+                        this.GetDeviceInformation(interfaceIndex, out var vendor, out var product, out var port);
 
-                            //var deviceType = BaseDevice.DeviceType.Unknown;
+                        var deviceConnectedEventArgs = new DeviceConnectionEventArgs(interfaceIndex, (byte)interfaceIndex, deviceType, vendor, product, port, connection);
 
-                            //if (d1 == (uint)(UsbHostDeviceClass.Hid))
-                            //    deviceType = (BaseDevice.DeviceType.HID);
 
-                            //if (d1 == (uint)(UsbHostDeviceClass.MassStorage))
-                            //    deviceType = (BaseDevice.DeviceType.MassStorage);
-
-                            var deviceConnectedEventArgs = new DeviceConnectedEventArgs(interfaceIndex, (byte)interfaceIndex, deviceType, vendor, product, port);
-
-                            this.deviceStateChangedCallbacks?.Invoke(null, deviceConnectedEventArgs);
-                        }
-                        else {
-                            var deviceConnectedEventArgs = new DeviceConnectedEventArgs(0, 0, 0, 0, 0, 0);
-
-                            this.deviceStateChangedCallbacks?.Invoke(null, deviceConnectedEventArgs);
-                        }
+                        this.onConnectionChangedCallbacks?.Invoke(null, deviceConnectedEventArgs);
                     }
                 };
 
 
             }
 
-            public event DeviceStateChangedEventHandler DeviceStateChanged {
+            public event OnConnectionChanged OnConnectionChangedEvent {
                 add {
-                    if (this.deviceStateChangedCallbacks == null)
-                        this.SetDataStateChangedEventEnabled(true);
+                    if (this.onConnectionChangedCallbacks == null)
+                        this.OnConnectionChangedEventEnabled(true);
 
-                    this.deviceStateChangedCallbacks += value;
+                    this.onConnectionChangedCallbacks += value;
                 }
                 remove {
-                    this.deviceStateChangedCallbacks -= value;
+                    this.onConnectionChangedCallbacks -= value;
 
-                    if (this.deviceStateChangedCallbacks == null)
-                        this.SetDataStateChangedEventEnabled(false);
+                    if (this.onConnectionChangedCallbacks == null)
+                        this.OnConnectionChangedEventEnabled(false);
                 }
             }
 
             public void Dispose() => this.Release();
 
-            public UsbHostDeviceState DeviceState => this.GetDeviceState();
+            public DeviceConnectionStatus DeviceStatus => this.GetDeviceStatus();
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             private extern void Acquire();
@@ -194,19 +174,13 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
             public extern void Disable();
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern void SendSetupPacket(byte requestType, byte request, ushort value, ushort index, byte[] data, int dataOffset, int dataCount);
+            private extern DeviceConnectionStatus GetDeviceStatus();
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern void GetParameters(uint id, out ushort vendorId, out ushort productId, out byte port);
+            private extern void GetDeviceInformation(uint id, out ushort vendor, out ushort product, out byte port);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern int Transfer(byte[] buffer, int offset, int count, int transferTimeout);
-
-            [MethodImpl(MethodImplOptions.InternalCall)]
-            private extern UsbHostDeviceState GetDeviceState();
-
-            [MethodImpl(MethodImplOptions.InternalCall)]
-            private extern void SetDataStateChangedEventEnabled(bool enabled);
+            private extern void OnConnectionChangedEventEnabled(bool enabled);
 
         }
     }

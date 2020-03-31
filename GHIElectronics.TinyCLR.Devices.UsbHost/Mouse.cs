@@ -1,8 +1,9 @@
-using Microsoft.SPOT;
+
+using System;
 using System.Runtime.CompilerServices;
 using System.Threading;
 
-namespace GHI.Usb.Host {
+namespace GHIElectronics.TinyCLR.Devices.UsbHost {
     /// <summary>Allows a usb device to be used a mouse.</summary>
     /// <remarks>
     /// By default, the reported range for position is between 0 and 512 and between -512 and 512 for delta values. There is an internal thread that
@@ -149,7 +150,7 @@ namespace GHI.Usb.Host {
             if (this.oldCursorPosition.X != this.currentCursorPosition.X || this.oldCursorPosition.Y != this.currentCursorPosition.Y)
                 this.OnCursorMoved(new CursorMovedEventArgs() { Delta = this.currentCursorPosition - this.oldCursorPosition, NewPosition = this.currentCursorPosition });
 
-            for (int i = 0; i < 5; i++)
+            for (var i = 0; i < 5; i++)
                 if (this.oldButtonState[i] != this.currentButtonState[i])
                     this.OnButtonChanged(new ButtonChangedEventArgs() { Which = (Buttons)(1 << i), State = this.currentButtonState[i] });
 
@@ -181,10 +182,8 @@ namespace GHI.Usb.Host {
             this.CheckObjectState();
 
             lock (this.syncRoot) {
-                uint newButtonState;
-                int newDeltaX, newDeltaY, newDeltaWheel, newX, newY;
 
-                if (!this.NativeGetPosition(out newDeltaX, out newDeltaY, out newDeltaWheel, out newX, out newY, out newButtonState))
+                if (!this.NativeGetPosition(out var newDeltaX, out var newDeltaY, out var newDeltaWheel, out var newX, out var newY, out var newButtonState))
                     return;
 
                 this.currentCursorPosition.X = newX;
@@ -192,38 +191,26 @@ namespace GHI.Usb.Host {
 
                 this.currentWheelPosition += newDeltaWheel;
 
-                for (int i = 0; i < 5; i++)
+                for (var i = 0; i < 5; i++)
                     this.currentButtonState[i] = (newButtonState & (1 << i)) != 0 ? ButtonState.Pressed : ButtonState.Released;
             }
         }
 
-        private void OnButtonChanged(ButtonChangedEventArgs e) {
-            var h = this.ButtonChanged;
-            if (h != null)
-                h(this, e);
-        }
+        private void OnButtonChanged(ButtonChangedEventArgs e) => this.ButtonChanged?.Invoke(this, e);
 
-        private void OnWheelMoved(WheelMovedEventArgs e) {
-            var h = this.WheelMoved;
-            if (h != null)
-                h(this, e);
-        }
+        private void OnWheelMoved(WheelMovedEventArgs e) => this.WheelMoved?.Invoke(this, e);
 
-        private void OnCursorMoved(CursorMovedEventArgs e) {
-            var h = this.CursorMoved;
-            if (h != null)
-                h(this, e);
-        }
+        private void OnCursorMoved(CursorMovedEventArgs e) => this.CursorMoved?.Invoke(this, e);
         /// <summary>The events args for the ButtonPressed and ButtonReleased events.</summary>
         public class ButtonChangedEventArgs : EventArgs {
             private Buttons which;
             private ButtonState state;
 
             /// <summary>Which button changed its state.</summary>
-            public Buttons Which { get { return this.which; } set { this.which = value; } }
+            public Buttons Which { get => this.which; set => this.which = value; }
 
             /// <summary>The new state of the button.</summary>
-            public ButtonState State { get { return this.state; } set { this.state = value; } }
+            public ButtonState State { get => this.state; set => this.state = value; }
         }
 
         /// <summary>The events args for the WheelMoved event.</summary>
@@ -232,10 +219,10 @@ namespace GHI.Usb.Host {
             private int delta;
 
             /// <summary>The new position of the wheel.</summary>
-            public int NewPosition { get { return this.newPosition; } set { this.newPosition = value; } }
+            public int NewPosition { get => this.newPosition; set => this.newPosition = value; }
 
             /// <summary>The change from the last position.</summary>
-            public int Delta { get { return this.delta; } set { this.delta = value; } }
+            public int Delta { get => this.delta; set => this.delta = value; }
         }
 
         /// <summary>The events args for the CursorMoved event.</summary>
@@ -244,10 +231,10 @@ namespace GHI.Usb.Host {
             private Position delta;
 
             /// <summary>The new state of the button.</summary>
-            public Position NewPosition { get { return this.newPosition; } set { this.newPosition = value; } }
+            public Position NewPosition { get => this.newPosition; set => this.newPosition = value; }
 
             /// <summary>The change from the last position.</summary>
-            public Position Delta { get { return this.delta; } set { this.delta = value; } }
+            public Position Delta { get => this.delta; set => this.delta = value; }
         }
     }
 }
