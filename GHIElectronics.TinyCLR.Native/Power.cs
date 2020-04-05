@@ -2,7 +2,7 @@ using System;
 using System.Runtime.CompilerServices;
 
 namespace GHIElectronics.TinyCLR.Native {
-    public enum PowerLevel : uint {
+    internal enum PowerLevel : uint {
         Active = 0,
         Idle = 1,
         Off = 2,
@@ -13,7 +13,7 @@ namespace GHIElectronics.TinyCLR.Native {
     }
 
     [Flags]
-    public enum PowerWakeSource : ulong {
+    internal enum PowerWakeSource : ulong {
         Interrupt = 1,
         Gpio = 2,
         Rtc = 4,
@@ -37,17 +37,43 @@ namespace GHIElectronics.TinyCLR.Native {
     }
 
     public static class Power {
+
         public static void Reset() => Power.Reset(true);
 
-        public static void Hibernate() => SetLevel(PowerLevel.Sleep3, PowerWakeSource.Gpio, 0);
+        public static void Sleep() => SetLevel(PowerLevel.Sleep3, PowerWakeSource.Gpio, 0);
 
-        public static void Shutdown(bool activeState) => SetLevel(PowerLevel.Off, PowerWakeSource.Gpio, activeState == false ? 0UL : 1);
+        public static void Sleep(DateTime wakeupTime) {
+            var wakeupSource = PowerWakeSource.Gpio;
+            var time = 0UL;
+
+            if (wakeupTime != DateTime.MaxValue) {
+                wakeupSource |= PowerWakeSource.Rtc;
+                time = (ulong)wakeupTime.Ticks;
+            }
+
+            SetLevel(PowerLevel.Sleep3, wakeupSource, time);
+        }
+
+        public static void Shutdown(bool wakeupPin, DateTime wakeupTime) {
+            PowerWakeSource wakeupSource = 0;
+            var time = 0UL;
+
+            if (wakeupTime != DateTime.MaxValue) {
+                wakeupSource |= PowerWakeSource.Rtc;
+                time = (ulong)wakeupTime.Ticks;
+            }
+
+            if (wakeupPin)
+                wakeupSource |= PowerWakeSource.Gpio;
+
+            SetLevel(PowerLevel.Off, wakeupSource, time);
+        }
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         public static extern void Reset(bool runCoreAfter);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public static extern void SetLevel(PowerLevel powerLevel, PowerWakeSource wakeSource, ulong data);
+        private static extern void SetLevel(PowerLevel powerLevel, PowerWakeSource wakeSource, ulong data);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         public static extern ResetSource GetResetSource();

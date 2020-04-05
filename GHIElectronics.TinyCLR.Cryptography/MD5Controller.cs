@@ -111,10 +111,7 @@ namespace GHIElectronics.TinyCLR.Cryptography {
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void NativeClear();
-
-            [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern byte[] NativeComputeHash(Stream inputStream);
-
+            
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern byte[] NativeComputeHash(byte[] buffer, int offset, int count);
 

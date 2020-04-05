@@ -13,7 +13,8 @@ namespace GHIElectronics.TinyCLR.UI {
         public DisplayController DisplayController { get; }
 
         private WindowManager(DisplayController displayController) {
-            this.DisplayController = displayController;
+
+            this.DisplayController = displayController ?? DisplayController.FromProvider(null);
 
             //
             // initially measure and arrange ourselves.

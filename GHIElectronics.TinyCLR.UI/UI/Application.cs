@@ -33,7 +33,7 @@ namespace GHIElectronics.TinyCLR.UI {
     public class Application : DispatcherObject {
         private readonly DisplayController display;
 
-        public InputProvider InputProvider { get; }
+        public InputProvider InputProvider { get; private set; }
 
         //------------------------------------------------------
         //
@@ -50,8 +50,27 @@ namespace GHIElectronics.TinyCLR.UI {
         /// <summary>
         ///     Application constructor
         /// </summary>
+        public Application(int width, int height) {
+            var d = DisplayController.FromProvider(null);
+
+            d.SetConfiguration(new DisplayControllerSettings() { Width = width, Height = height });
+
+            this.display = d;
+
+            this.Initialize();
+
+        }
+
+        /// <summary>
+        ///     Application constructor
+        /// </summary>
         public Application(DisplayController display) {
             this.display = display ?? throw new ArgumentException();
+
+            this.Initialize();
+        }
+
+        private void Initialize() {
 
             WindowManager.EnsureInstance(this.display);
 

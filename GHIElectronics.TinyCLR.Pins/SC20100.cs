@@ -161,10 +161,6 @@ namespace GHIElectronics.TinyCLR.Pins {
                 public const string Id = STM32H7.AdcChannel.Adc1;
 
                 /// <summary>ADC pin.</summary>
-                public const int PA0 = STM32H7.AdcChannel.Channel0;
-                /// <summary>ADC pin.</summary>
-                public const int PA1 = STM32H7.AdcChannel.Channel1;
-                /// <summary>ADC pin.</summary>
                 public const int PA6 = STM32H7.AdcChannel.Channel3;
                 /// <summary>ADC pin.</summary>
                 public const int PB1 = STM32H7.AdcChannel.Channel5;
@@ -175,7 +171,11 @@ namespace GHIElectronics.TinyCLR.Pins {
                 /// <summary>ADC pin.</summary>
                 public const int PC0 = STM32H7.AdcChannel.Channel10;
                 /// <summary>ADC pin.</summary>
+                public const int PC1 = STM32H7.AdcChannel.Channel11;
+                /// <summary>ADC pin.</summary>
                 public const int PA3 = STM32H7.AdcChannel.Channel15;
+                /// <summary>ADC pin.</summary>
+                public const int PA0 = STM32H7.AdcChannel.Channel16;
                 /// <summary>ADC pin.</summary>
                 public const int PA4 = STM32H7.AdcChannel.Channel18;
                 /// <summary>ADC pin.</summary>
@@ -203,6 +203,18 @@ namespace GHIElectronics.TinyCLR.Pins {
             public const int PA4 = STM32H7.DacChannel.Channel1;
             /// <summary>DAC channel.</summary>
             public const int PA5 = STM32H7.DacChannel.Channel2;
+        }
+
+        /// <summary>Network controller definitions.</summary>
+        public static class NetworkController {
+            /// <summary>Enc28j60 id.</summary>
+            public const string Enc28j60 = "GHIElectronics.TinyCLR.NativeApis.ENC28J60.NetworkController";
+
+            /// <summary>AT Winc15x0 id.</summary>
+            public const string ATWinc15x0 = "GHIElectronics.TinyCLR.NativeApis.ATWINC15xx.NetworkController";
+
+            /// <summary>PPP id.</summary>
+            public const string Ppp = "GHIElectronics.TinyCLR.NativeApis.Ppp.NetworkController";
         }
 
         /// <summary>PWM pin definitions.</summary>
@@ -395,6 +407,7 @@ namespace GHIElectronics.TinyCLR.Pins {
             /// <summary>API id.</summary>
             public const string SdCard = STM32H7.StorageController.SdCard;
             public const string UsbHostMassStorage = STM32H7.StorageController.UsbHostMassStorage;
+            public const string QuadSpi = STM32H7.StorageController.QuadSpi;
         }
 
         /// <summary>RTC controller definitions.</summary>
