@@ -301,31 +301,6 @@ namespace System.Net
     /// </summary>
     internal class HttpProtocolUtils
     {
-        private static string[] days = new[] {
-                "Jan",
-                "Feb",
-                "Mar",
-                "Apr",
-                "May",
-                "Jun",
-                "Jul",
-                "Aug",
-                "Sep",
-                "Oct",
-                "Nov",
-                "Dec",
-            };
-
-        private static string[] months = new[] {
-                "Sun",
-                "Mon",
-                "Tue",
-                "Wed",
-                "Thu",
-                "Fri",
-                "Sat",
-            };
-
         private HttpProtocolUtils()
         {
         }
@@ -350,10 +325,7 @@ namespace System.Net
 
         }
 
-        internal static string DateToRFC1123String(DateTime d) {
-            var utc = d.ToUniversalTime();
-            return $"{days[(int)utc.DayOfWeek]} {utc.Day:D2}-{months[utc.Month]}-{utc.Year} {utc.Hour:D2}:{utc.Minute:D2}:{utc.Second:D2} GMT";
-        }
+        internal static string DateToRFC1123String(DateTime d) => d.ToUniversalTime().ToString(CultureInfo.InvariantCulture.DateTimeFormat.RFC1123Pattern);
     }
 
 } // namespace System.Net
