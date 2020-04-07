@@ -36,6 +36,10 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         internal bool ForOnScreenKeyboard { get; set; }
 
         protected override void OnTouchUp(TouchEventArgs e) {
+            if (!this.IsEnabled) {
+                return;
+            }
+
             if (!this.ForOnScreenKeyboard)
                 Application.Current.ShowOnScreenKeyboardFor(this);
         }
@@ -53,7 +57,8 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
             var txt = this.text;
             var diff = this._renderWidth - this.width;
-            var y = this._font.Height / 2;
+            // Place the centerline of the font at the center of the textbox
+            var y = (this.ActualHeight - this._font.Height) / 2;
 
             if (diff > 0) {
                 dc.DrawText(ref txt, this._font, b.Color, 0, y, this._renderWidth, this._font.Height, this.TextAlign, TextTrimming.CharacterEllipsis);

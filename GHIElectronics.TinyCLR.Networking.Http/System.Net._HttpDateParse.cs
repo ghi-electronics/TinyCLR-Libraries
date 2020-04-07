@@ -272,7 +272,7 @@ namespace System.Net
             var fRet = true;
             var lpInputBuffer = DateString.ToCharArray();
 
-            dtOut = new DateTime(0);
+            dtOut = DateTime.MinValue;
 
             //
             // Date Parsing v2 (1 more to go), and here is how it works...
