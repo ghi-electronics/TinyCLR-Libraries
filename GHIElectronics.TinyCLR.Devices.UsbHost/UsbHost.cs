@@ -44,7 +44,7 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
         public byte PortNumber => this.portNumber;
 
         public DeviceConnectionStatus DeviceStatus => this.deviceStatus;
-        
+
 
         internal DeviceConnectionEventArgs(uint id, byte interfaceIndex, BaseDevice.DeviceType type, ushort vendorId, ushort productId, byte portNumber, DeviceConnectionStatus deviceStatus) {
             this.id = id;
@@ -58,11 +58,23 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
     }
 
     public sealed class UsbHostController : IDisposable {
+
+        private static bool started;
+        private static ArrayList devices;
+        private static object listLock;
+
+
         private OnConnectionChanged onConnectionChangedCallbacks;
 
         public IUsbHostControllerProvider Provider { get; }
 
-        private UsbHostController(IUsbHostControllerProvider provider) => this.Provider = provider;
+        private UsbHostController(IUsbHostControllerProvider provider) {
+            this.Provider = provider;
+
+            devices = new ArrayList();
+            started = false;
+            listLock = new object();
+        }
 
         public static UsbHostController GetDefault() => NativeApi.GetDefaultFromCreator(NativeApiType.UsbHostController) is UsbHostController c ? c : UsbHostController.FromName(NativeApi.GetDefaultName(NativeApiType.UsbHostController));
         public static UsbHostController FromName(string name) => UsbHostController.FromProvider(new UsbHostControllerApiWrapper(NativeApi.Find(name, NativeApiType.UsbHostController)));
@@ -70,11 +82,57 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
 
         public void Dispose() => this.Provider.Dispose();
 
-        public void Enable() => this.Provider.Enable();
-        public void Disable() => this.Provider.Disable();
+        public void Enable() {
+            this.Provider.Enable();
+            started = true;
+        }
+        public void Disable() {
+            started = false;
+            this.Provider.Disable();
+
+        }
 
         public DeviceConnectionStatus DeviceStatus => this.Provider.DeviceStatus;
-        private void OnConnectionChangedCallBack(UsbHostController sender, DeviceConnectionEventArgs e) => this.onConnectionChangedCallbacks?.Invoke(this, e);
+
+        public static BaseDevice[] GetConnectedDevices() {
+            if (started == false)
+                return null;
+
+            lock (listLock)
+                return (BaseDevice[])devices.ToArray(typeof(BaseDevice));
+        }
+
+        internal static void RegisterDevice(BaseDevice device) {
+            lock (listLock)
+                devices.Add(device);
+        }
+
+        private static void OnDisconnect(object sender, DeviceConnectionEventArgs e) {
+            lock (listLock) {
+                var newList = new ArrayList();
+
+                foreach (BaseDevice d in devices) {
+                    if (d.Id == e.Id) {
+                        d.OnDisconnected();
+                        d.Dispose();
+                    }
+                    else {
+                        newList.Add(d);
+                    }
+                }
+
+                devices = newList;
+            }
+        }
+      
+
+        private void OnConnectionChangedCallBack(UsbHostController sender, DeviceConnectionEventArgs e) {
+            if (e.DeviceStatus == DeviceConnectionStatus.Disconnected) {
+                OnDisconnect(sender, e);
+            }
+
+            this.onConnectionChangedCallbacks?.Invoke(this, e);
+        }
 
 
         public event OnConnectionChanged OnConnectionChangedEvent {
@@ -101,7 +159,7 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
 
             void Enable();
             void Disable();
-         
+
 
             event OnConnectionChanged OnConnectionChangedEvent;
         }
@@ -123,16 +181,17 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
                 this.Acquire();
 
                 this.onConnectDispatcher = NativeEventDispatcher.GetDispatcher("GHIElectronics.TinyCLR.NativeEventNames.UsbHost.OnConnectionChanged");
-                this.onConnectDispatcher.OnInterrupt += (apiName, d0, d1, d2, d3, ts) => { if (this.Api.Name == apiName) {
+                this.onConnectDispatcher.OnInterrupt += (apiName, d0, d1, d2, d3, ts) => {
+                    if (this.Api.Name == apiName) {
 
-                        var connection = (DeviceConnectionStatus)d2;
+                        var id = (uint)d0;
+                        var interfaceIndex = (byte)d1;
+                        var connection = (DeviceConnectionStatus)d3;
+                        var deviceType = (BaseDevice.DeviceType)d2;
 
-                        var interfaceIndex = (uint)d0;
-                        var deviceType = (BaseDevice.DeviceType)(d0 >> 8);
+                        this.GetDeviceInformation(id, out var vendor, out var product, out var port);
 
-                        this.GetDeviceInformation(interfaceIndex, out var vendor, out var product, out var port);
-
-                        var deviceConnectedEventArgs = new DeviceConnectionEventArgs(interfaceIndex, (byte)interfaceIndex, deviceType, vendor, product, port, connection);
+                        var deviceConnectedEventArgs = new DeviceConnectionEventArgs(id, interfaceIndex, deviceType, vendor, product, port, connection);
 
 
                         this.onConnectionChangedCallbacks?.Invoke(null, deviceConnectedEventArgs);

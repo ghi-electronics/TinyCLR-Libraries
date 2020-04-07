@@ -130,7 +130,7 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
 		}
 
 		internal BaseDevice(uint id, byte interfaceIndex, DeviceType type, ushort vendorId, ushort productId, byte portNumber) {
-			//Controller.RegisterDevice(this);
+            UsbHostController.RegisterDevice(this);
 
 			this.id = id;
 			this.interfaceIndex = interfaceIndex;
