@@ -89,6 +89,9 @@ namespace GHIElectronics.TinyCLR.Data.Json
                     else
                     {
                         method = type.GetMethod("get_" + prop.Name);
+                        if (method == null) {
+                            continue;
+                        }
                         itemType = method.ReturnType;
                         method = type.GetMethod("set_" + prop.Name);
                     }
