@@ -268,14 +268,12 @@ namespace GHIElectronics.TinyCLR.Data.Json
             return result;
         }
 
-        public static object FromBson(byte[] buffer, Type resultType, InstanceFactory factory = null)
-        {
-            int offset = 0;
-            int len = (Int32)SerializationUtilities.Unmarshall(buffer, ref offset, TypeCode.Int32);
+        public static JToken FromBson(byte[] buffer, InstanceFactory factory = null) {
+            var offset = 0;
+            var len = (Int32)SerializationUtilities.Unmarshall(buffer, ref offset, TypeCode.Int32);
 
             JToken dserResult = null;
-            while (offset < buffer.Length - 1)
-            {
+            while (offset < buffer.Length - 1) {
                 var bsonType = (BsonTypes)buffer[offset++];
 
                 // eat the empty ename
@@ -285,8 +283,7 @@ namespace GHIElectronics.TinyCLR.Data.Json
                 var ename = JToken.ConvertToString(buffer, offset, idxNul - offset);
                 offset = idxNul + 1;
 
-                switch (bsonType)
-                {
+                switch (bsonType) {
                     case BsonTypes.BsonDocument:
                         dserResult = JObject.FromBson(buffer, ref offset, factory);
                         break;
@@ -299,7 +296,12 @@ namespace GHIElectronics.TinyCLR.Data.Json
             }
             if (buffer[offset++] != 0)
                 throw new Exception("bad format - missing trailing null on bson document");
-            return PopulateObject(dserResult, resultType, "/", factory);
+            return dserResult;
+        }
+
+        public static object FromBson(byte[] buffer, Type resultType, InstanceFactory factory = null) {
+            var jtoken = FromBson(buffer);
+            return PopulateObject(jtoken, resultType, "/", factory);
         }
 
         private static JObject ParseObject(StreamReader sr, ref LexToken token)
