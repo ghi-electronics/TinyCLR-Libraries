@@ -324,6 +324,8 @@ namespace System.Net
             }
 
         }
+
+        internal static string DateToRFC1123String(DateTime d) => d.ToUniversalTime().ToString(CultureInfo.InvariantCulture.DateTimeFormat.RFC1123Pattern);
     }
 
 } // namespace System.Net
