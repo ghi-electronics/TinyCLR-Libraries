@@ -815,12 +815,8 @@ namespace System.Net {
                 return HttpProtocolUtils.string2date(ifmodHeaderValue);
             }
 
-            // Set is not supported at this moment.  It is needed for server.
-            //set
-            //{
-            //    SetSpecialHeaders(HttpKnownHeaderNames.IfModifiedSince,
-            //                      HttpProtocolUtils.date2string(value));
-            //}
+            set => this.SetSpecialHeaders(HttpKnownHeaderNames.IfModifiedSince,
+                                  HttpProtocolUtils.DateToRFC1123String(value));
         }
 
         /// <summary>
