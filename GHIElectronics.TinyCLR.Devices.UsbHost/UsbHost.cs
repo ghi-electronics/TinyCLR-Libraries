@@ -92,8 +92,6 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
 
         }
 
-        public DeviceConnectionStatus DeviceStatus => this.Provider.DeviceStatus;
-
         public static BaseDevice[] GetConnectedDevices() {
             if (started == false)
                 return null;
@@ -154,9 +152,6 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
 
     namespace Provider {
         public interface IUsbHostControllerProvider : IDisposable {
-
-            DeviceConnectionStatus DeviceStatus { get; }
-
             void Enable();
             void Disable();
 
@@ -218,8 +213,6 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
 
             public void Dispose() => this.Release();
 
-            public DeviceConnectionStatus DeviceStatus => this.GetDeviceStatus();
-
             [MethodImpl(MethodImplOptions.InternalCall)]
             private extern void Acquire();
 
@@ -231,9 +224,6 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void Disable();
-
-            [MethodImpl(MethodImplOptions.InternalCall)]
-            private extern DeviceConnectionStatus GetDeviceStatus();
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             private extern void GetDeviceInformation(uint id, out ushort vendor, out ushort product, out byte port);

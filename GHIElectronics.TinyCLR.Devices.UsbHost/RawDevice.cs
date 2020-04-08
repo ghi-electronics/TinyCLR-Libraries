@@ -183,19 +183,9 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
 
 				this.device.CheckObjectState();
 
-				var sent = 0;
+                return this.NativeTransfer(buffer, offset, count, this.TransferTimeout);
 
-				do {
-					sent += this.NativeTransfer(buffer, offset + sent, count - sent, this.TransferTimeout);
-
-					if ((sent % this.Endpoint.MaximumPacketSize) != 0)
-						break;
-
-					Thread.Sleep(0);
-				} while (sent < count);
-
-				return sent;
-			}
+            }
 
 			/// <summary>Disconnects and disposes the device.</summary>
 			public void Dispose() {
