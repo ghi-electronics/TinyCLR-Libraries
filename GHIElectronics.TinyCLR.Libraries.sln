@@ -81,6 +81,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Cryp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Media", "GHIElectronics.TinyCLR.Media\GHIElectronics.TinyCLR.Media.csproj", "{C1D12B50-AD07-4DC9-B96D-D747F2AE3EE4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Devices.UsbHost", "GHIElectronics.TinyCLR.Devices.UsbHost\GHIElectronics.TinyCLR.Devices.UsbHost.csproj", "{3BC840C4-5502-465D-BC29-15B570BFFDA1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -215,6 +217,10 @@ Global
 		{C1D12B50-AD07-4DC9-B96D-D747F2AE3EE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C1D12B50-AD07-4DC9-B96D-D747F2AE3EE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C1D12B50-AD07-4DC9-B96D-D747F2AE3EE4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3BC840C4-5502-465D-BC29-15B570BFFDA1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3BC840C4-5502-465D-BC29-15B570BFFDA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3BC840C4-5502-465D-BC29-15B570BFFDA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3BC840C4-5502-465D-BC29-15B570BFFDA1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
