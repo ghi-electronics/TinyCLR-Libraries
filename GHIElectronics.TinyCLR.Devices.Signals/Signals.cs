@@ -82,7 +82,7 @@ namespace GHIElectronics.TinyCLR.Devices.Signals {
 
         public bool DisableInterrupts { get; set; } = false;
         public bool GenerateCarrierFrequency { get; set; } = false;
-        public long CarrierFrequency { get; set; } = 0;
+        public long CarrierFrequency { get; } = 38000;
         public GpioPinValue IdleValue { get => this.idleValue; set => this.pin.Write(this.idleValue = value); }
 
         public SignalGenerator(int pinNumber) : this(GpioController.GetDefault(), pinNumber) {
