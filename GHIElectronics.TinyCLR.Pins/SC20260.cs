@@ -117,6 +117,12 @@ namespace GHIElectronics.TinyCLR.Pins {
             /// <summary>GPIO pin.</summary>
             public const int PD10 = STM32H7.GpioPin.PD10;
             /// <summary>GPIO pin.</summary>
+            public const int PD11 = STM32H7.GpioPin.PD11;
+            /// <summary>GPIO pin.</summary>
+            public const int PD12 = STM32H7.GpioPin.PD12;
+            /// <summary>GPIO pin.</summary>
+            public const int PD13 = STM32H7.GpioPin.PD13;
+            /// <summary>GPIO pin.</summary>
             public const int PD14 = STM32H7.GpioPin.PD14;
             /// <summary>GPIO pin.</summary>
             public const int PD15 = STM32H7.GpioPin.PD15;
@@ -124,6 +130,8 @@ namespace GHIElectronics.TinyCLR.Pins {
             public const int PE0 = STM32H7.GpioPin.PE0;
             /// <summary>GPIO pin.</summary>
             public const int PE1 = STM32H7.GpioPin.PE1;
+            /// <summary>GPIO pin.</summary>
+            public const int PE2 = STM32H7.GpioPin.PE2;
             /// <summary>GPIO pin.</summary>
             public const int PE3 = STM32H7.GpioPin.PE3;
             /// <summary>GPIO pin.</summary>
