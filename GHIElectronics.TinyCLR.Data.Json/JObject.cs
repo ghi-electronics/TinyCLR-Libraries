@@ -20,7 +20,7 @@ namespace GHIElectronics.TinyCLR.Data.Json
 			}
 		}
 
-        public bool Contains(string name) => this._members.Contains(name);
+        public bool Contains(string name) => this._members.Contains(name.ToLower());
 
         public ICollection Members
 		{
