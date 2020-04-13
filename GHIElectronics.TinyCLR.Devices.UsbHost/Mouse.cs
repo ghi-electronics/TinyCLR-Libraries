@@ -75,8 +75,8 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
         /// <param name="vendorId">The device vendor id.</param>
         /// <param name="productId">The device product id.</param>
         /// <param name="portNumber">The device port number.</param>
-        public Mouse(uint id, byte interfaceIndex, ushort vendorId, ushort productId, byte portNumber)
-            : base(id, interfaceIndex, DeviceType.Mouse, vendorId, productId, portNumber) {
+        public Mouse(uint id)
+            : base(id) {
             this.NativeConstructor(this.Id, this.InterfaceIndex);
 
             this.syncRoot = new object();
