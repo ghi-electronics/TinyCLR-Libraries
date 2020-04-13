@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using GHIElectronics.TinyCLR.Devices.UsbHost.Provider;
 using GHIElectronics.TinyCLR.Native;
+using static GHIElectronics.TinyCLR.Devices.UsbHost.BaseDevice;
 
 namespace GHIElectronics.TinyCLR.Devices.UsbHost {
     public enum DeviceConnectionStatus {
@@ -122,7 +123,7 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
                 devices = newList;
             }
         }
-      
+
 
         private void OnConnectionChangedCallBack(UsbHostController sender, DeviceConnectionEventArgs e) {
             if (e.DeviceStatus == DeviceConnectionStatus.Disconnected) {
@@ -180,11 +181,11 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
                     if (this.Api.Name == apiName) {
 
                         var id = (uint)d0;
-                        var interfaceIndex = (byte)d1;
-                        var connection = (DeviceConnectionStatus)d3;
-                        var deviceType = (BaseDevice.DeviceType)d2;
 
-                        this.GetDeviceInformation(id, out var vendor, out var product, out var port);
+                        var connection = (DeviceConnectionStatus)d3;
+
+
+                        GetDeviceInformation(id, out var interfaceIndex, out var deviceType, out var vendor, out var product, out var port);
 
                         var deviceConnectedEventArgs = new DeviceConnectionEventArgs(id, interfaceIndex, deviceType, vendor, product, port, connection);
 
@@ -226,7 +227,7 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
             public extern void Disable();
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            private extern void GetDeviceInformation(uint id, out ushort vendor, out ushort product, out byte port);
+            internal static extern void GetDeviceInformation(uint id, out byte interfaceIndex, out DeviceType type, out ushort vendor, out ushort product, out byte port);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             private extern void OnConnectionChangedEventEnabled(bool enabled);
