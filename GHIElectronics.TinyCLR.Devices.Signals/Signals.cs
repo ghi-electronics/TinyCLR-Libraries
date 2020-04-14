@@ -11,69 +11,66 @@ namespace GHIElectronics.TinyCLR.Devices.Signals {
 
     public sealed class PulseFeedback : IDisposable {
         private readonly PulseFeedbackMode mode;
-        private readonly IntPtr gpioApi;
-        private readonly int pulsePinNumber;
-        private readonly int echoPinNumber;
+
         private readonly GpioPin pulsePin;
         private readonly GpioPin echoPin;
+
+        private readonly int pulsePinNumber;
+        private readonly int echoPinNumber;
 
         public bool DisableInterrupts { get; set; }
         public TimeSpan Timeout { get; set; }
         public TimeSpan PulseLength { get; set; }
-        public GpioPinValue PulsePinValue { get; set; }
-        public GpioPinValue EchoPinValue { get; set; }
+        public GpioPinValue PulseValue { get; set; }
+        public GpioPinValue EchoValue { get; set; }
 
-        public PulseFeedback(int pinNumber, PulseFeedbackMode mode)
-            : this(GpioController.GetDefault(), pinNumber, mode) {
-
+        public PulseFeedback(GpioPin pin, PulseFeedbackMode mode)
+            : this(pin, null, mode) {
         }
 
-        public PulseFeedback(int pulsePinNumber, int echoPinNumber, PulseFeedbackMode mode)
-            : this(GpioController.GetDefault(), pulsePinNumber, echoPinNumber, mode) {
-
-        }
-
-        public PulseFeedback(GpioController gpioController, int pinNumber, PulseFeedbackMode mode)
-            : this(gpioController, pinNumber, pinNumber, mode) {
-
-        }
-
-        public PulseFeedback(GpioController gpioController, int pulsePinNumber, int echoPinNumber, PulseFeedbackMode mode) {
-            if (!(gpioController.Provider is Gpio.Provider.GpioControllerApiWrapper p)) throw new NotSupportedException();
+        public PulseFeedback(GpioPin pulsePin, GpioPin echoPin, PulseFeedbackMode mode) {
 
             this.DisableInterrupts = false;
             this.Timeout = TimeSpan.FromMilliseconds(100);
             this.PulseLength = TimeSpan.FromMilliseconds(20);
-            this.PulsePinValue = GpioPinValue.High;
-            this.EchoPinValue = GpioPinValue.High;
+            this.PulseValue = GpioPinValue.High;
+            this.EchoValue = GpioPinValue.High;
 
             this.mode = mode;
-            this.gpioApi = p.Api.Implementation;
-            this.pulsePinNumber = pulsePinNumber;
-            this.echoPinNumber = echoPinNumber;
 
-            this.pulsePin = gpioController.OpenPin(pulsePinNumber);
+            this.pulsePin = pulsePin;
+            this.echoPin = echoPin;
 
-            if (this.pulsePinNumber != this.echoPinNumber)
-                this.echoPin = gpioController.OpenPin(echoPinNumber);
+            this.pulsePinNumber = pulsePin.PinNumber;
+            this.echoPinNumber = echoPin != null ? echoPin.PinNumber : -1;
+
+            if (mode == PulseFeedbackMode.DrainDuration) {
+                if (this.echoPin != null || this.pulsePin == null)
+                    throw new ArgumentException();
+            }
+            else {
+                if (this.echoPin == null || this.pulsePin == null) {
+                    throw new ArgumentException();
+                }
+            }
 
             this.pulsePin.SetDriveMode(GpioPinDriveMode.Input);
             this.echoPin?.SetDriveMode(GpioPinDriveMode.Input);
         }
 
         public void Dispose() {
-            this.pulsePin.Dispose();
-            this.echoPin?.Dispose();
+            this.pulsePin.SetDriveMode(GpioPinDriveMode.Input);
+            this.echoPin?.SetDriveMode(GpioPinDriveMode.Input);
         }
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public extern TimeSpan GeneratePulse();
+        public extern TimeSpan Trigger();
     }
 
     public sealed class SignalGenerator : IDisposable {
-        private readonly IntPtr gpioApi;
-        private readonly int pinNumber;
         private readonly GpioPin pin;
+        private readonly int pinNumber;
+
         private GpioPinValue idleValue;
 
         public bool DisableInterrupts { get; set; } = false;
@@ -81,23 +78,18 @@ namespace GHIElectronics.TinyCLR.Devices.Signals {
         public long CarrierFrequency { get; } = 38000;
         public GpioPinValue IdleValue { get => this.idleValue; set => this.pin.Write(this.idleValue = value); }
 
-        public SignalGenerator(int pinNumber) : this(GpioController.GetDefault(), pinNumber) {
+        public SignalGenerator(GpioPin pin) {
 
-        }
+            this.pin = pin;
 
-        public SignalGenerator(GpioController gpioController, int pinNumber) {
-            if (!(gpioController.Provider is Gpio.Provider.GpioControllerApiWrapper p)) throw new NotSupportedException();
-
-            this.gpioApi = p.Api.Implementation;
-            this.pinNumber = pinNumber;
-            this.pin = gpioController.OpenPin(pinNumber);
+            this.pinNumber = pin.PinNumber;
 
             this.pin.SetDriveMode(GpioPinDriveMode.Output);
 
             this.IdleValue = GpioPinValue.Low;
         }
 
-        public void Dispose() => this.pin.Dispose();
+        public void Dispose() => this.pin.SetDriveMode(GpioPinDriveMode.Input);
 
         public void Write(GpioPinValue value) => this.pin.Write(value);
 
@@ -108,29 +100,22 @@ namespace GHIElectronics.TinyCLR.Devices.Signals {
     }
 
     public sealed class SignalCapture : IDisposable {
-        private readonly IntPtr gpioApi;
-        private readonly int pinNumber;
         private readonly GpioPin pin;
+        private readonly int pinNumber;
 
         public bool DisableInterrupts { get; set; } = false;
         public TimeSpan Timeout { get; set; } = TimeSpan.MaxValue;
         public GpioPinDriveMode DriveMode { get => this.pin.GetDriveMode(); set => this.pin.SetDriveMode(value); }
 
-        public SignalCapture(int pinNumber) : this(GpioController.GetDefault(), pinNumber) {
+        public SignalCapture(GpioPin pin) {
 
-        }
-
-        public SignalCapture(GpioController gpioController, int pinNumber) {
-            if (!(gpioController.Provider is Gpio.Provider.GpioControllerApiWrapper p)) throw new NotSupportedException();
-
-            this.gpioApi = p.Api.Implementation;
-            this.pinNumber = pinNumber;
-            this.pin = gpioController.OpenPin(pinNumber);
+            this.pin = pin;
+            this.pinNumber = pin.PinNumber;
 
             this.DriveMode = GpioPinDriveMode.Input;
         }
 
-        public void Dispose() => this.pin.Dispose();
+        public void Dispose() => this.pin.SetDriveMode(GpioPinDriveMode.Input);
 
         public GpioPinValue Read() => this.pin.Read();
 
