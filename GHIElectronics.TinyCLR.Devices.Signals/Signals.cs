@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.CompilerServices;
 using GHIElectronics.TinyCLR.Devices.Gpio;
 
@@ -22,8 +22,6 @@ namespace GHIElectronics.TinyCLR.Devices.Signals {
         public TimeSpan PulseLength { get; set; }
         public GpioPinValue PulsePinValue { get; set; }
         public GpioPinValue EchoPinValue { get; set; }
-        public GpioPinDriveMode PulsePinDriveMode { get; set; }
-        public GpioPinDriveMode EchoPinDriveMode { get; set; }
 
         public PulseFeedback(int pinNumber, PulseFeedbackMode mode)
             : this(GpioController.GetDefault(), pinNumber, mode) {
@@ -48,8 +46,6 @@ namespace GHIElectronics.TinyCLR.Devices.Signals {
             this.PulseLength = TimeSpan.FromMilliseconds(20);
             this.PulsePinValue = GpioPinValue.High;
             this.EchoPinValue = GpioPinValue.High;
-            this.PulsePinDriveMode = GpioPinDriveMode.Input;
-            this.EchoPinDriveMode = GpioPinDriveMode.Input;
 
             this.mode = mode;
             this.gpioApi = p.Api.Implementation;
