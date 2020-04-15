@@ -83,8 +83,7 @@ namespace System.Net.Sockets {
             set {
                 if (value < System.Threading.Timeout.Infinite) throw new ArgumentOutOfRangeException();
 
-                // desktop implementation treats 0 as infinite
-                this.m_recvTimeout = ((value == 0) ? System.Threading.Timeout.Infinite : value);
+                this.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReceiveTimeout, value);
             }
         }
 
@@ -94,8 +93,7 @@ namespace System.Net.Sockets {
             set {
                 if (value < System.Threading.Timeout.Infinite) throw new ArgumentOutOfRangeException();
 
-                // desktop implementation treats 0 as infinite
-                this.m_sendTimeout = ((value == 0) ? System.Threading.Timeout.Infinite : value);
+                this.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.SendTimeout, value);
             }
         }
 
@@ -270,10 +268,12 @@ namespace System.Net.Sockets {
 
             switch (optionName) {
                 case SocketOptionName.SendTimeout:
-                    this.m_sendTimeout = optionValue;
+                    // desktop implementation treats 0 as infinite
+                    this.m_sendTimeout = ((optionValue == 0) ? System.Threading.Timeout.Infinite : optionValue);
                     break;
                 case SocketOptionName.ReceiveTimeout:
-                    this.m_recvTimeout = optionValue;
+                    // desktop implementation treats 0 as infinite
+                    this.m_recvTimeout = ((optionValue == 0) ? System.Threading.Timeout.Infinite : optionValue);
                     break;
             }
 
