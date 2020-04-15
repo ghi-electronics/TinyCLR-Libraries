@@ -531,6 +531,17 @@ namespace GHIElectronics.TinyCLR.Pins {
                 public const int PF9 = STM32H7.PwmChannel.Channel0;
             }
 
+            public static class Controller15 {
+                /// <summary>API id.</summary>
+                public const string Id = STM32H7.PwmChannel.Tim15;
+
+                /// <summary>PWM pin.</summary>
+                public const int PE5 = STM32H7.PwmChannel.Channel0;
+
+                /// <summary>PWM pin.</summary>
+                public const int PE6 = STM32H7.PwmChannel.Channel1;
+            }
+
             public static class Controller16
             {
                 /// <summary>API id.</summary>
