@@ -35,8 +35,8 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
         /// <param name="vendorId">The device vendor id.</param>
         /// <param name="productId">The device product id.</param>
         /// <param name="portNumber">The device port number.</param>
-        public Keyboard(uint id)
-            : base(id) {
+        public Keyboard(uint id, byte interfaceIndex)
+            : base(id, interfaceIndex, DeviceType.Keyboard) {
             this.NativeConstructor(this.Id, this.InterfaceIndex);
 
             this.WorkerInterval = 10;

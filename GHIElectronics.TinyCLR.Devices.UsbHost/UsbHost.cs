@@ -183,9 +183,10 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
                         var id = (uint)d0;
 
                         var connection = (DeviceConnectionStatus)d3;
+                        var interfaceIndex = (byte)d1;
+                        var deviceType = (DeviceType)d2;
 
-
-                        GetDeviceInformation(id, out var interfaceIndex, out var deviceType, out var vendor, out var product, out var port);
+                        GetDeviceInformation(id, out var vendor, out var product, out var port);
 
                         var deviceConnectedEventArgs = new DeviceConnectionEventArgs(id, interfaceIndex, deviceType, vendor, product, port, connection);
 
@@ -227,7 +228,7 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
             public extern void Disable();
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            internal static extern void GetDeviceInformation(uint id, out byte interfaceIndex, out DeviceType type, out ushort vendor, out ushort product, out byte port);
+            internal static extern void GetDeviceInformation(uint id, out ushort vendor, out ushort product, out byte port);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             private extern void OnConnectionChangedEventEnabled(bool enabled);

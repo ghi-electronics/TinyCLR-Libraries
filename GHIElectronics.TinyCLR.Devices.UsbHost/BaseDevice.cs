@@ -130,9 +130,9 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
             //Webcam,
         }
 
-        internal BaseDevice(uint id) {
+        internal BaseDevice(uint id, byte interfaceIndex, DeviceType type) {
             UsbHostController.RegisterDevice(this);
-            UsbHostControllerApiWrapper.GetDeviceInformation(id, out var interfaceIndex, out var type, out var vendor, out var product, out var port);
+            UsbHostControllerApiWrapper.GetDeviceInformation(id, out var vendor, out var product, out var port);
 
             this.id = id;
             this.interfaceIndex = interfaceIndex;
