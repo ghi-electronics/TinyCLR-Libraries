@@ -20,8 +20,8 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
         /// <param name="productId">The device product id.</param>
         /// <param name="portNumber">The device port number.</param>
         /// <param name="deviceType">The device type.</param>
-        public RawDevice(uint id)
-            : base(id) {
+        public RawDevice(uint id, byte interfaceIndex, DeviceType type)
+            : base(id, interfaceIndex, type) {
             this.NativeConstructor(this.Id);
 
             this.configIndex = 0;
