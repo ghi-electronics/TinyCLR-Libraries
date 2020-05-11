@@ -8,24 +8,24 @@ namespace GHIElectronics.TinyCLR.Native {
 
         public static bool IsEnabledExternalFlash() => NativeIsEnabledExternalFlash();
 
-        public static int OTP_Write(byte[] data, int sourceIndex, int destinationIndex, int length) {
+        public static int OtpWrite(byte[] data, uint sourceIndex, uint destinationIndex, uint length) {
             if (data == null)
                 throw new ArgumentNullException();
 
             if (sourceIndex + length > data.Length)
                 throw new ArgumentOutOfRangeException();
 
-            return NativeOTP_Write(data, sourceIndex, destinationIndex, length);
+            return NativeOtpWrite(data, sourceIndex, destinationIndex, length);
         }
 
-        public static int OTP_Read(byte[] data, int sourceIndex, int destinationIndex, int length) {
+        public static int OtpRead(byte[] data, uint sourceIndex, uint destinationIndex, uint length) {
             if (data == null)
                 throw new ArgumentNullException();
 
             if (sourceIndex + length > data.Length)
                 throw new ArgumentOutOfRangeException();
 
-            return NativeOTP_Read(data, sourceIndex, destinationIndex, length);
+            return NativeOtpRead(data, sourceIndex, destinationIndex, length);
         }
 
 
@@ -36,10 +36,10 @@ namespace GHIElectronics.TinyCLR.Native {
         static extern bool NativeIsEnabledExternalFlash();
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        static extern int NativeOTP_Write(byte[] data, int sourceIndex, int destinationIndex, int length);
+        static extern int NativeOtpWrite(byte[] data, uint sourceIndex, uint destinationIndex, uint length);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        static extern int NativeOTP_Read(byte[] data, int sourceIndex, int destinationIndex, int length);
+        static extern int NativeOtpRead(byte[] data, uint sourceIndex, uint destinationIndex, uint length);
 
 
     }
