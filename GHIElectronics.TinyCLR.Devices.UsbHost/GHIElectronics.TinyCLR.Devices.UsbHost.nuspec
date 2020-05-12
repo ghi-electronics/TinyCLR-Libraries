@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>GHIElectronics.TinyCLR.Devices.UsbHost</id>
+    <version>2.0.0-preview5</version>
+    <authors>GHI Electronics, LLC</authors>
+    <owners>GHI Electronics, LLC</owners>
+    <projectUrl>https://ghielectronics.com/</projectUrl>
+    <iconUrl>http://files.ghielectronics.com/downloads/Logos/GHIElectronicsTinyCLRNuGet.png</iconUrl>
+    <licenseUrl>http://files.ghielectronics.com/downloads/TinyCLR/License.txt</licenseUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>The UsbHost library for TinyCLR OS.</description>
+    <copyright>Copyright GHI Electronics, LLC 2020</copyright>
+    <tags>TinyCLR TinyCLROS</tags>
+    <dependencies>
+      <dependency id="GHIElectronics.TinyCLR.Core" version="2.0.0-preview5" />
+      <dependency id="GHIElectronics.TinyCLR.Native" version="2.0.0-preview5" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.UsbHost.dll" target="lib\net452" />
+  </files>
+</package>

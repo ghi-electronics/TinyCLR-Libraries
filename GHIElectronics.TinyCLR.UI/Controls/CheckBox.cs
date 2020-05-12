@@ -10,6 +10,8 @@ using GHIElectronics.TinyCLR.UI.Media.Imaging;
 namespace GHIElectronics.TinyCLR.UI.Controls {
     public class CheckBox : ContentControl {
         public event RoutedEventHandler Click;
+        public event RoutedEventHandler Checked;
+        public event RoutedEventHandler Unchecked;
 
         private BitmapImage bitmapImageCheckboxOn;
         private BitmapImage bitmapImageCheckboxOff;
@@ -19,7 +21,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         public string Name { get; set; } = string.Empty;
         public ushort Alpha { get; set; } = 0xC8;
         public ushort RadiusBorder { get; set; } = 5;
-        
+
 
         private void InitResource() {
             this.bitmapImageCheckboxOn = BitmapImage.FromGraphics(Graphics.FromImage(Resources.GetBitmap(Resources.BitmapResources.CheckBox_On)));
@@ -44,6 +46,10 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         }
 
         protected override void OnTouchUp(TouchEventArgs e) {
+            if (!this.IsEnabled) {
+                return;
+            }
+
             var evt = new RoutedEvent("TouchUpEvent", RoutingStrategy.Bubble, typeof(RoutedEventHandler));
             var args = new RoutedEventArgs(evt, this);
 
@@ -51,13 +57,25 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
             e.Handled = args.Handled;
 
-            this.Checked = !this.Checked;
+            this.IsChecked = !this.IsChecked;
+
+            evt = new RoutedEvent(this.isChecked ? "CheckedEvent" : "UncheckedEvent", RoutingStrategy.Bubble, typeof(RoutedEventHandler));
+            args = new RoutedEventArgs(evt, this);
+            if (this.isChecked) {
+                this.Checked?.Invoke(this, args);
+            }
+            else {
+                this.Unchecked?.Invoke(this, args);
+            }
 
             if (this.Parent != null)
                 this.Invalidate();
         }
 
         protected override void OnTouchDown(TouchEventArgs e) {
+            if (!this.IsEnabled) {
+                return;
+            }
 
             var evt = new RoutedEvent("TouchDownEvent", RoutingStrategy.Bubble, typeof(RoutedEventHandler));
             var args = new RoutedEventArgs(evt, this);
@@ -70,8 +88,8 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                 this.Invalidate();
         }
 
-       
-        public bool Checked {
+
+        public bool IsChecked {
             get => this.isChecked;
             set {
                 if (this.isChecked != value) {

@@ -36,6 +36,8 @@ namespace GHIElectronics.TinyCLR.Data.Json
                     return "\"" + this.Value.ToString() + "\"";
                 else if (type == typeof(DateTime))
                     return "\"" + DateTimeExtensions.ToIso8601(((DateTime)this.Value)) + "\"";
+                else if (type == typeof(bool))
+                    return this.Value.ToString().ToLower();
                 else
                     return this.Value.ToString();
             }
