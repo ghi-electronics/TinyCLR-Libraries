@@ -32,7 +32,7 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
         public QoSLevel LastWillQos { get; set; } = QoSLevel.LeastOnce;
         public string LastWillMessage { get; set; }
         public bool LastWillRetain { get; set; }
-        public int KeepAliveTimeout { get; set; }
+        public int KeepAliveTimeout { get; set; } = 60;
     }
 
     public class MqttClientSetting {
