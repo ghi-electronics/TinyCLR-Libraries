@@ -33,10 +33,10 @@ namespace GHIElectronics.TinyCLR.Native {
         public long FreeBytes { get { this.GetStats(out _, out var free); return free.ToInt64(); } }
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public static extern void EnableExternalHeap();
+        public static extern void ExtendHeap();
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public static extern bool IsEnabledExternalHeap();
+        public static extern bool IsExtendedHeap();
     }
 
     public enum UnmanagedBufferLocation {
