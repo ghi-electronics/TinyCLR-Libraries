@@ -3,7 +3,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>GHIElectronics.TinyCLR.Devices.Uart</id>
-    <version>2.0.0-preview5</version>
+    <version>2.0.0-preview6</version>
     <authors>GHI Electronics, LLC</authors>
     <owners>GHI Electronics, LLC</owners>
     <projectUrl>https://ghielectronics.com/</projectUrl>
@@ -14,8 +14,8 @@
     <copyright>Copyright GHI Electronics, LLC 2020</copyright>
     <tags>TinyCLR TinyCLROS</tags>
     <dependencies>
-      <dependency id="GHIElectronics.TinyCLR.Core" version="2.0.0-preview5" />
-      <dependency id="GHIElectronics.TinyCLR.Native" version="2.0.0-preview5" />
+      <dependency id="GHIElectronics.TinyCLR.Core" version="2.0.0-preview6" />
+      <dependency id="GHIElectronics.TinyCLR.Native" version="2.0.0-preview6" />
     </dependencies>
   </metadata>
   <files>
