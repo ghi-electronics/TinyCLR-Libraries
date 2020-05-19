@@ -5,29 +5,42 @@ namespace GHIElectronics.TinyCLR.Native {
     public static class Flash {
         public static void EnableExternalFlash() => NativeEnableExternalFlash();
 
-
         public static bool IsEnabledExternalFlash() => NativeIsEnabledExternalFlash();
 
-        public static int OtpWrite(byte[] data, uint sourceIndex, uint destinationIndex, uint length) {
+        public const byte BLOCK_SIZE = 0x20;
+
+        public static int OtpWrite(uint blockIndex, byte[] data) {
             if (data == null)
                 throw new ArgumentNullException();
 
-            if (sourceIndex + length > data.Length)
+            if (data.Length != BLOCK_SIZE)
                 throw new ArgumentOutOfRangeException();
 
-            return NativeOtpWrite(data, sourceIndex, destinationIndex, length);
+            return NativeOtpWrite(blockIndex, data);
         }
 
-        public static int OtpRead(byte[] data, uint sourceIndex, uint destinationIndex, uint length) {
+        public static int OtpRead(uint blockIndex, byte[] data) {
             if (data == null)
                 throw new ArgumentNullException();
 
-            if (sourceIndex + length > data.Length)
+            if (data.Length != BLOCK_SIZE)
                 throw new ArgumentOutOfRangeException();
 
-            return NativeOtpRead(data, sourceIndex, destinationIndex, length);
+            return NativeOtpRead(blockIndex, data);
         }
 
+        public static bool OtpIsBlank(uint blockIndex) {
+            var data = new byte[BLOCK_SIZE];
+
+            var read = NativeOtpRead(blockIndex, data);
+
+            for (var i = 0; i < data.Length; i++) {
+                if (data[i] != 0xFF)
+                    return false;
+            }
+
+            return read == BLOCK_SIZE;
+        }
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         static extern void NativeEnableExternalFlash();
@@ -36,10 +49,10 @@ namespace GHIElectronics.TinyCLR.Native {
         static extern bool NativeIsEnabledExternalFlash();
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        static extern int NativeOtpWrite(byte[] data, uint sourceIndex, uint destinationIndex, uint length);
+        static extern int NativeOtpWrite(uint blockIndex, byte[] data);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        static extern int NativeOtpRead(byte[] data, uint sourceIndex, uint destinationIndex, uint length);
+        static extern int NativeOtpRead(uint blockIndex, byte[] data);
 
 
     }
