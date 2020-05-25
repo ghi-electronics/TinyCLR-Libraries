@@ -207,7 +207,7 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
         public GpioPin InterruptPin { get; set; }
         public GpioPinEdge InterruptEdge { get; set; }
         public GpioPinDriveMode InterruptDriveMode { get; set; }
-    }   
+    }
 
     public class UartNetworkCommunicationInterfaceSettings : NetworkCommunicationInterfaceSettings {
         public string ApiName { get; set; }
@@ -401,10 +401,10 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
             public extern void Listen(int socket, int backlog);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern int Accept(int socket);
+            public extern void NativeAccept(int socket, long evenId);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern void Connect(int socket, SocketAddress address);
+            public extern void NativeConnect(int socket, SocketAddress address, long evenId);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern int Available(int socket);
@@ -413,16 +413,16 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
             public extern bool Poll(int socket, int microSeconds, SelectMode mode);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern int Send(int socket, byte[] buffer, int offset, int count, SocketFlags flags);
+            public extern void NativeSend(int socket, byte[] buffer, int offset, int count, SocketFlags flags, long eventId);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern int Receive(int socket, byte[] buffer, int offset, int count, SocketFlags flags);
+            public extern void NativeReceive(int socket, byte[] buffer, int offset, int count, SocketFlags flags, long eventId);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern int SendTo(int socket, byte[] buffer, int offset, int count, SocketFlags flags, SocketAddress address);
+            public extern void NativeSendTo(int socket, byte[] buffer, int offset, int count, SocketFlags flags, SocketAddress address, long eventId);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern int ReceiveFrom(int socket, byte[] buffer, int offset, int count, SocketFlags flags, ref SocketAddress address);
+            public extern void NativeReceiveFrom(int socket, byte[] buffer, int offset, int count, SocketFlags flags, long eventId);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void GetRemoteAddress(int socket, out SocketAddress address);
@@ -437,19 +437,159 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
             public extern void SetOption(int socket, SocketOptionLevel optionLevel, SocketOptionName optionName, byte[] optionValue);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern int AuthenticateAsClient(int socketHandle, string targetHost, X509Certificate caCertificate, X509Certificate clientCertificate, SslProtocols sslProtocols, SslVerification sslVerification);
+            public extern void NativeAuthenticateAsClient(int socketHandle, string targetHost, X509Certificate caCertificate, X509Certificate clientCertificate, SslProtocols sslProtocols, SslVerification sslVerification, long eventId);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern int AuthenticateAsServer(int socketHandle, X509Certificate certificate, SslProtocols sslProtocols);
+            public extern void NativeAuthenticateAsServer(int socketHandle, X509Certificate certificate, SslProtocols sslProtocols, long eventId);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern int SecureRead(int handle, byte[] buffer, int offset, int count);
+            public extern void NativeSecureRead(int handle, byte[] buffer, int offset, int count, long eventId);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern int SecureWrite(int handle, byte[] buffer, int offset, int count);
+            public extern void NativeSecureWrite(int handle, byte[] buffer, int offset, int count, long eventId);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void GetHostByName(string name, out string canonicalName, out SocketAddress[] addresses);
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            private extern bool WaitForEvent(int socket, EventType type, long evenId, out int result, ref SocketAddress address);
+
+            private bool WaitForEvent(int socket, EventType type, long evenId, out int result) {
+                SocketAddress address = null;
+
+                return this.WaitForEvent(socket, type, evenId, out result, ref address);
+            }
+
+            private enum EventType {
+                Connect = 1,
+                Accept = 2,
+                Send = 3,
+                SendTo = 4,
+                Receive = 5,
+                ReceiveFrom = 6,
+                NativeAuthenticateAsClient = 7,
+                NativeAuthenticateAsServer = 8,
+                NativeSecureRead = 9,
+                NativeSecureWrite = 10,
+
+            }
+
+            public void Connect(int socket, SocketAddress address) {
+                var now = DateTime.Now.Ticks;
+
+                this.NativeConnect(socket, address, now);
+
+                while (!this.WaitForEvent(socket, EventType.Connect, now, out var obj)) ;
+            }
+
+            public int Accept(int socket) {
+                var now = DateTime.Now.Ticks;
+
+                this.NativeAccept(socket, now);
+
+                int sock;
+
+                while (!this.WaitForEvent(socket, EventType.Accept, now, out sock)) ;
+
+                return sock;
+            }
+
+            public int Send(int socket, byte[] buffer, int offset, int count, SocketFlags flags) {
+                var now = DateTime.Now.Ticks;
+
+                this.NativeSend(socket, buffer, offset, count, flags, now);
+
+                int sent;
+
+                while (!this.WaitForEvent(socket, EventType.Send, now, out sent)) ;
+
+                return sent;
+            }
+
+            public int Receive(int socket, byte[] buffer, int offset, int count, SocketFlags flags) {
+                var now = DateTime.Now.Ticks;
+
+                this.NativeReceive(socket, buffer, offset, count, flags, now);
+
+                int rec;
+
+                while (!this.WaitForEvent(socket, EventType.Receive, now, out rec)) ;
+
+                return rec;
+            }
+
+            public int SendTo(int socket, byte[] buffer, int offset, int count, SocketFlags flags, SocketAddress address) {
+                var now = DateTime.Now.Ticks;
+
+                this.NativeSendTo(socket, buffer, offset, count, flags, address, now);
+
+                int sent;
+
+                while (!this.WaitForEvent(socket, EventType.SendTo, now, out sent)) ;
+
+                return sent;
+            }
+
+            public int ReceiveFrom(int socket, byte[] buffer, int offset, int count, SocketFlags flags, ref SocketAddress address) {
+                var now = DateTime.Now.Ticks;
+
+                this.NativeReceiveFrom(socket, buffer, offset, count, flags, now);
+
+                int rec;
+
+                while (!this.WaitForEvent(socket, EventType.ReceiveFrom, now, out rec, ref address)) ;
+
+                return rec;
+            }
+
+            public int AuthenticateAsClient(int socketHandle, string targetHost, X509Certificate caCertificate, X509Certificate clientCertificate, SslProtocols sslProtocols, SslVerification sslVerification) {
+                var now = DateTime.Now.Ticks;
+
+                this.NativeAuthenticateAsClient(socketHandle, targetHost, caCertificate, clientCertificate, sslProtocols, sslVerification, now);
+
+                int aut;
+
+                while (!this.WaitForEvent(socketHandle, EventType.NativeAuthenticateAsClient, now, out aut)) ;
+
+                return aut;
+            }
+
+            public int AuthenticateAsServer(int socketHandle, X509Certificate certificate, SslProtocols sslProtocols) {
+                var now = DateTime.Now.Ticks;
+
+                this.NativeAuthenticateAsServer(socketHandle, certificate, sslProtocols, now);
+
+                int aut;
+
+                while (!this.WaitForEvent(socketHandle, EventType.NativeAuthenticateAsServer, now, out aut)) ;
+
+                return aut;
+            }
+
+            public int SecureRead(int handle, byte[] buffer, int offset, int count) {
+                var now = DateTime.Now.Ticks;
+
+                this.NativeSecureRead(handle, buffer, offset, count, now);
+
+                int read;
+
+                while (!this.WaitForEvent(handle, EventType.NativeSecureRead, now, out read)) ;
+
+                return read;
+            }
+
+            public int SecureWrite(int handle, byte[] buffer, int offset, int count) {
+                var now = DateTime.Now.Ticks;
+
+                this.NativeSecureWrite(handle, buffer, offset, count, now);
+
+                int write;
+
+                while (!this.WaitForEvent(handle, EventType.NativeSecureWrite, now, out write)) ;
+
+                return write;
+            }
+
         }
     }
 }
