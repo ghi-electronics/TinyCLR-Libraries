@@ -115,7 +115,9 @@ namespace System.Net.Sockets {
             this.ni.Connect(this.m_Handle, remoteEP.Serialize());
 
             if (this.m_fBlocking) {
-                this.Poll(-1, SelectMode.SelectWrite);
+                if (this.Poll(this.m_sendTimeout, SelectMode.SelectWrite) == false) {
+                    throw new SocketException(SocketError.SocketError);
+                }
             }
         }
 
