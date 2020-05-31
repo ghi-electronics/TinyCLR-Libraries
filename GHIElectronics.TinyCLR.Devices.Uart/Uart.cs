@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.CompilerServices;
 using GHIElectronics.TinyCLR.Devices.Uart.Provider;
 using GHIElectronics.TinyCLR.Native;
@@ -7,6 +7,7 @@ namespace GHIElectronics.TinyCLR.Devices.Uart {
     public sealed class UartController : IDisposable {
         private ClearToSendChangedEventHandler clearToSendChangedCallbacks;
         private DataReceivedEventHandler dataReceivedCallbacks;
+        private BreakDetectedEventHandler breakDetectedCallbacks;
         private ErrorReceivedEventHandler errorReceivedCallbacks;
 
         public IUartControllerProvider Provider { get; }
@@ -22,7 +23,7 @@ namespace GHIElectronics.TinyCLR.Devices.Uart {
         public void Enable() => this.Provider.Enable();
         public void Disable() => this.Provider.Disable();
 
-        public void SetActiveSettings(int baudRate, int dataBits, UartParity parity, UartStopBitCount stopBits, UartHandshake handshaking) => this.Provider.SetActiveSettings(baudRate, dataBits, parity, stopBits, handshaking);
+        public void SetActiveSettings(int baudRate, int dataBits, UartParity parity, UartStopBitCount stopBits, UartHandshake handshaking, UartBreakDetectLength breakDetectLength = UartBreakDetectLength.None) => this.Provider.SetActiveSettings(baudRate, dataBits, parity, stopBits, handshaking, breakDetectLength);
         public void Flush() => this.Provider.Flush();
 
         public int Read(byte[] buffer) => this.Read(buffer, 0, buffer.Length);
@@ -30,6 +31,8 @@ namespace GHIElectronics.TinyCLR.Devices.Uart {
 
         public int Write(byte[] buffer) => this.Write(buffer, 0, buffer.Length);
         public int Write(byte[] buffer, int offset, int length) => this.Provider.Write(buffer, offset, length);
+
+        public void SendBreak() => this.Provider.SendBreak();
 
         public void ClearWriteBuffer() => this.Provider.ClearWriteBuffer();
         public void ClearReadBuffer() => this.Provider.ClearReadBuffer();
@@ -44,6 +47,8 @@ namespace GHIElectronics.TinyCLR.Devices.Uart {
 
         private void OnClearToSendChanged(UartController sender, ClearToSendChangedEventArgs e) => this.clearToSendChangedCallbacks?.Invoke(this, e);
         private void OnDataReceived(UartController sender, DataReceivedEventArgs e) => this.dataReceivedCallbacks?.Invoke(this, e);
+
+        private void OnBreakDetected(UartController sender, BreakDetectedEventArgs e) => this.breakDetectedCallbacks?.Invoke(this, e);
         private void OnErrorReceived(UartController sender, ErrorReceivedEventArgs e) => this.errorReceivedCallbacks?.Invoke(this, e);
 
         public event ClearToSendChangedEventHandler ClearToSendChanged {
@@ -73,6 +78,21 @@ namespace GHIElectronics.TinyCLR.Devices.Uart {
 
                 if (this.dataReceivedCallbacks == null)
                     this.Provider.DataReceived -= this.OnDataReceived;
+            }
+        }
+
+        public event BreakDetectedEventHandler BreakDetected {
+            add {
+                if (this.breakDetectedCallbacks == null)
+                    this.Provider.BreakDetected += this.OnBreakDetected;
+
+                this.breakDetectedCallbacks += value;
+            }
+            remove {
+                this.breakDetectedCallbacks -= value;
+
+                if (this.breakDetectedCallbacks == null)
+                    this.Provider.BreakDetected -= this.OnBreakDetected;
             }
         }
 
@@ -120,9 +140,16 @@ namespace GHIElectronics.TinyCLR.Devices.Uart {
         ReceiveParity = 3,
     }
 
+    public enum UartBreakDetectLength {
+        None = 0,
+        TenBit = 1,
+        ElevenBit = 2
+    }
+
     public delegate void ClearToSendChangedEventHandler(UartController sender, ClearToSendChangedEventArgs e);
     public delegate void DataReceivedEventHandler(UartController sender, DataReceivedEventArgs e);
     public delegate void ErrorReceivedEventHandler(UartController sender, ErrorReceivedEventArgs e);
+    public delegate void BreakDetectedEventHandler(UartController sender, BreakDetectedEventArgs e);
 
     public sealed class ClearToSendChangedEventArgs {
         public bool State { get; }
@@ -144,6 +171,11 @@ namespace GHIElectronics.TinyCLR.Devices.Uart {
         }
     }
 
+    public sealed class BreakDetectedEventArgs {
+        public DateTime Timestamp { get; }
+
+        internal BreakDetectedEventArgs(DateTime timestamp) => this.Timestamp = timestamp;
+    }
     public sealed class ErrorReceivedEventArgs {
         public UartError Error { get; }
         public DateTime Timestamp { get; }
@@ -159,10 +191,12 @@ namespace GHIElectronics.TinyCLR.Devices.Uart {
             void Enable();
             void Disable();
 
-            void SetActiveSettings(int baudRate, int dataBits, UartParity parity, UartStopBitCount stopBits, UartHandshake handshaking);
+            void SetActiveSettings(int baudRate, int dataBits, UartParity parity, UartStopBitCount stopBits, UartHandshake handshaking, UartBreakDetectLength breakDetectLength);
             void Flush();
             int Read(byte[] buffer, int offset, int length);
             int Write(byte[] buffer, int offset, int length);
+
+            void SendBreak();
 
             void ClearWriteBuffer();
             void ClearReadBuffer();
@@ -177,6 +211,7 @@ namespace GHIElectronics.TinyCLR.Devices.Uart {
 
             event ClearToSendChangedEventHandler ClearToSendChanged;
             event DataReceivedEventHandler DataReceived;
+            event BreakDetectedEventHandler BreakDetected;
             event ErrorReceivedEventHandler ErrorReceived;
         }
 
@@ -184,9 +219,11 @@ namespace GHIElectronics.TinyCLR.Devices.Uart {
             private readonly IntPtr impl;
             private readonly NativeEventDispatcher clearToSendChangedDispatcher;
             private readonly NativeEventDispatcher dataReceivedDispatcher;
+            private readonly NativeEventDispatcher breakDetectedDispatcher;
             private readonly NativeEventDispatcher errorReceivedDispatcher;
             private ClearToSendChangedEventHandler clearToSendChangedCallbacks;
             private DataReceivedEventHandler dataReceivedCallbacks;
+            private BreakDetectedEventHandler breakDetectedCallbacks;
             private ErrorReceivedEventHandler errorReceivedCallbacks;
 
             public NativeApi Api { get; }
@@ -201,10 +238,12 @@ namespace GHIElectronics.TinyCLR.Devices.Uart {
                 this.clearToSendChangedDispatcher = NativeEventDispatcher.GetDispatcher("GHIElectronics.TinyCLR.NativeEventNames.Uart.ClearToSendChanged");
                 this.dataReceivedDispatcher = NativeEventDispatcher.GetDispatcher("GHIElectronics.TinyCLR.NativeEventNames.Uart.DataReceived");
                 this.errorReceivedDispatcher = NativeEventDispatcher.GetDispatcher("GHIElectronics.TinyCLR.NativeEventNames.Uart.ErrorReceived");
+                this.breakDetectedDispatcher = NativeEventDispatcher.GetDispatcher("GHIElectronics.TinyCLR.NativeEventNames.Uart.BreakDetected");
 
                 this.clearToSendChangedDispatcher.OnInterrupt += (apiName, d0, d1, d2, d3, ts) => { if (this.Api.Name == apiName) this.clearToSendChangedCallbacks?.Invoke(null, new ClearToSendChangedEventArgs(d0 != 0, ts)); };
                 this.dataReceivedDispatcher.OnInterrupt += (apiName, d0, d1, d2, d3, ts) => { if (this.Api.Name == apiName) this.dataReceivedCallbacks?.Invoke(null, new DataReceivedEventArgs((int)d0, ts)); };
                 this.errorReceivedDispatcher.OnInterrupt += (apiName, d0, d1, d2, d3, ts) => { if (this.Api.Name == apiName) this.errorReceivedCallbacks?.Invoke(null, new ErrorReceivedEventArgs((UartError)d0, ts)); };
+                this.breakDetectedDispatcher.OnInterrupt += (apiName, d0, d1, d2, d3, ts) => { if (this.Api.Name == apiName) this.breakDetectedCallbacks?.Invoke(null, new BreakDetectedEventArgs(ts)); };
             }
 
             public event ClearToSendChangedEventHandler ClearToSendChanged {
@@ -234,6 +273,21 @@ namespace GHIElectronics.TinyCLR.Devices.Uart {
 
                     if (this.dataReceivedCallbacks == null)
                         this.SetDataReceivedEventEnabled(false);
+                }
+            }
+
+            public event BreakDetectedEventHandler BreakDetected {
+                add {
+                    if (this.breakDetectedCallbacks == null)
+                        this.SetBreakDetectedEventEnabled(true);
+
+                    this.breakDetectedCallbacks += value;
+                }
+                remove {
+                    this.breakDetectedCallbacks -= value;
+
+                    if (this.breakDetectedCallbacks == null)
+                        this.SetBreakDetectedEventEnabled(false);
                 }
             }
 
@@ -267,6 +321,9 @@ namespace GHIElectronics.TinyCLR.Devices.Uart {
             private extern void SetDataReceivedEventEnabled(bool enabled);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
+            private extern void SetBreakDetectedEventEnabled(bool enabled);
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
             private extern void SetErrorReceivedEventEnabled(bool enabled);
 
             public extern int WriteBufferSize { [MethodImpl(MethodImplOptions.InternalCall)] get; [MethodImpl(MethodImplOptions.InternalCall)] set; }
@@ -284,7 +341,7 @@ namespace GHIElectronics.TinyCLR.Devices.Uart {
             public extern void Disable();
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern void SetActiveSettings(int baudRate, int dataBits, UartParity parity, UartStopBitCount stopBits, UartHandshake handshaking);
+            public extern void SetActiveSettings(int baudRate, int dataBits, UartParity parity, UartStopBitCount stopBits, UartHandshake handshaking, UartBreakDetectLength breakDetectLength);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void Flush();
@@ -294,6 +351,9 @@ namespace GHIElectronics.TinyCLR.Devices.Uart {
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern int Write(byte[] buffer, int offset, int length);
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            public extern void SendBreak();
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void ClearWriteBuffer();
