@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("GHIElectronics.TinyCLR.Drawing")]
@@ -11,3 +12,4 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyVersion("2.0.0.0")]
 [assembly: AssemblyFileVersion("2.0.0.60000")]
 [assembly: AssemblyInformationalVersion("2.0.0-preview6")]
+[assembly: InternalsVisibleTo("GHIElectronics.TinyCLR.GlideX")]

@@ -218,6 +218,7 @@ namespace GHIElectronics.TinyCLR.UI {
             InvalidateMeasure();
         }
 
+        public string ID { get; set; }
         public int ActualWidth => this._renderWidth;
 
         public int ActualHeight => this._renderHeight;

@@ -12,7 +12,8 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
     public class TextBox : Control {
         private string text = string.Empty;
         private int width;
-
+        public bool IsPasswordBox { get; set; } = false;
+        public int MyProperty { get; set; }
         public TextBox() => this.Background = new SolidColorBrush(Colors.White);
 
         public event TextChangedEventHandler TextChanged;
@@ -55,7 +56,16 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
             base.OnRender(dc);
 
-            var txt = this.text;
+            var txt = string.Empty;
+            if (IsPasswordBox)
+            {
+                for (int i = 0; i < this.text.Length; i++)
+                    txt += "*";
+            }
+            else
+            {
+                txt = this.text;
+            }
             var diff = this._renderWidth - this.width;
             // Place the centerline of the font at the center of the textbox
             var y = (this.ActualHeight - this._font.Height) / 2;

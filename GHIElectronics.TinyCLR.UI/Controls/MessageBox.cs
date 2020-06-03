@@ -7,7 +7,7 @@ using GHIElectronics.TinyCLR.UI.Media;
 using GHIElectronics.TinyCLR.UI.Media.Imaging;
 
 namespace GHIElectronics.TinyCLR.UI.Controls {
-    public class MessageBox : StackPanel {        
+    public class MessageBox : StackPanel, IDisposable {        
         private BitmapImage backImage;
         private Button buttonLeft;
         private Button buttonRight;

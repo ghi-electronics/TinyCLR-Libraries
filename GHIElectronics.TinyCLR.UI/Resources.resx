@@ -130,6 +130,15 @@
   <data name="CheckBox_On" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\CheckBox_On.gif;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="DataGridIcon_Asc" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\DataGridIcon_Asc.gif;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="DataGridIcon_Desc" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\DataGridIcon_Desc.gif;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="droid_reg12" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\droid_reg12.tinyfnt;System.Byte[], mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
   <data name="DropdownButton_Down" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\DropdownButton_Down.gif;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>

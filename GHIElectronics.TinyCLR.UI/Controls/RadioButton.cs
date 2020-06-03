@@ -65,7 +65,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         }
     }
 
-    public class RadioButton : ContentControl {
+    public class RadioButton : ContentControl,IDisposable {
         public event RoutedEventHandler Click;
         private BitmapImage bitmapImageRadioButton;
         
