@@ -22,6 +22,7 @@ namespace GHIElectronics.TinyCLR.Devices.Can {
         public void Disable() => this.Provider.Disable();
 
         public bool WriteMessage(CanMessage message) => this.WriteMessages(new[] { message }, 0, 1) == 1;
+
         public int WriteMessages(CanMessage[] messages, int offset, int count) {
             if (offset + count > messages.Length) throw new ArgumentOutOfRangeException(nameof(count), "offset + count is beyond the end of the array");
 
@@ -31,7 +32,8 @@ namespace GHIElectronics.TinyCLR.Devices.Can {
         public bool ReadMessage(out CanMessage message) => this.ReadMessages(new[] { message = new CanMessage() }, 0, 1) == 1;
         public int ReadMessages(CanMessage[] messages, int offset, int count) => this.Provider.ReadMessages(messages, offset, count);
 
-        public void SetBitTiming(CanBitTiming bitTiming) => this.Provider.SetBitTiming(bitTiming);
+        public void SetNorminalBitTiming(CanBitTiming bitTiming) => this.Provider.SetNorminalBitTiming(bitTiming);
+        public void SetDataBitTiming(CanBitTiming bitTiming) => this.Provider.SetDataBitTiming(bitTiming);
         public void SetExplicitFilters(int[] filters) => this.Provider.SetExplicitFilters(filters);
         public void SetGroupFilters(int[] lowerBounds, int[] upperBounds) => this.Provider.SetGroupFilters(lowerBounds, upperBounds);
         public void ClearWriteBuffer() => this.Provider.ClearReadBuffer();
@@ -89,6 +91,11 @@ namespace GHIElectronics.TinyCLR.Devices.Can {
         Passive = 3,
     }
 
+    public enum ErrorStateIndicator {
+        Active = 0,
+        Passive = 1,
+    }
+
     public delegate void MessageReceivedEventHandler(CanController sender, MessageReceivedEventArgs e);
     public delegate void ErrorReceivedEventHandler(CanController sender, ErrorReceivedEventArgs e);
 
@@ -138,19 +145,55 @@ namespace GHIElectronics.TinyCLR.Devices.Can {
 
     public sealed class CanMessage {
         private byte[] data;
+        private bool remoteTransmissionRequest;
+        private bool fdCan;
+        private int length;
 
         public int ArbitrationId { get; set; }
-        public bool IsExtendedId { get; set; }
-        public bool IsRemoteTransmissionRequest { get; set; }
-        public int Length { get; set; }
+        public bool ExtendedId { get; set; }
         public DateTime Timestamp { get; set; }
+        public bool BitRateSwitch { get; set; }
+        public ErrorStateIndicator ErrorStateIndicator { get; }
+
+        public bool RemoteTransmissionRequest {
+            get => this.remoteTransmissionRequest;
+            set {
+                if (this.FdCan && value) throw new ArgumentException("No remote request in flexible data mode.");
+
+                this.remoteTransmissionRequest = value;
+            }
+        }
+        public int Length {
+            get => this.length;
+            set {
+
+                if (value > 8 && !this.FdCan)
+                    this.length = 8;
+                if (value > 8) {
+                    if (value != 12 && value != 16 && value != 20 && value != 24 && value != 32 && value != 48 && value != 64) {
+                        throw new ArgumentException("Length is invalid.");
+                    }
+                }
+
+                this.length = value;
+            }
+        }
+
+        public bool FdCan {
+            get => this.fdCan;
+            set {
+                if (this.RemoteTransmissionRequest && value) throw new ArgumentException("No remote request in flexible data mode.");
+
+                this.fdCan = value;
+            }
+        }
 
         public byte[] Data {
             get => this.data;
 
             set {
                 if (value == null) throw new ArgumentNullException(nameof(value));
-                if (value.Length != 8) throw new ArgumentException("value must be eight bytes in length.", nameof(value));
+                if (value.Length > 64) throw new ArgumentException("value must be between 0 and 64 bytes in length.", nameof(value));
 
                 this.data = value;
             }
@@ -172,19 +215,30 @@ namespace GHIElectronics.TinyCLR.Devices.Can {
             : this(arbitrationId, data, offset, count, false, false) {
         }
 
-        public CanMessage(int arbitrationId, byte[] data, int offset, int count, bool isRemoteTransmissionRequesti, bool isExtendedId) {
-            if (count < 0 || count > 8) throw new ArgumentOutOfRangeException(nameof(count), "count must be between zero and eight.");
+        public CanMessage(int arbitrationId, byte[] data, int offset, int count, bool isRemoteTransmissionRequesti, bool isExtendedId)
+           : this(arbitrationId, data, offset, count, isRemoteTransmissionRequesti, isExtendedId, false, false) {
+        }
+
+        public CanMessage(int arbitrationId, byte[] data, int offset, int count, bool isRemoteTransmissionRequesti, bool isExtendedId, bool isFdCan)
+           : this(arbitrationId, data, offset, count, isRemoteTransmissionRequesti, isExtendedId, isFdCan, false) {
+        }
+
+        public CanMessage(int arbitrationId, byte[] data, int offset, int count, bool isRemoteTransmissionRequesti, bool isExtendedId, bool isFdCan, bool isBitRateSwitch) {
+            if (count < 0 || count > 64) throw new ArgumentOutOfRangeException(nameof(count), "count must be between 0 and 64.");
+
             if (data == null && count != 0) throw new ArgumentOutOfRangeException(nameof(count), "count must be zero when data is null.");
             if (count != 0 && offset + count > data.Length) throw new ArgumentOutOfRangeException(nameof(data), "data.Length must be at least offset + count.");
             if (isExtendedId && arbitrationId > 0x1FFFFFFF) throw new ArgumentOutOfRangeException(nameof(arbitrationId), "arbitrationId must not exceed 29 bits when using an Extended ID.");
             if (!isExtendedId && arbitrationId > 0x7FF) throw new ArgumentOutOfRangeException(nameof(arbitrationId), "arbitrationId must not exceed 11 bits when not using an Extended ID.");
 
             this.ArbitrationId = arbitrationId;
-            this.IsRemoteTransmissionRequest = isRemoteTransmissionRequesti;
-            this.IsExtendedId = isExtendedId;
+            this.RemoteTransmissionRequest = isRemoteTransmissionRequesti;
+            this.ExtendedId = isExtendedId;
             this.Timestamp = DateTime.Now;
             this.Length = count;
-            this.data = new byte[8];
+            this.data = new byte[64];
+            this.FdCan = isFdCan;
+            this.BitRateSwitch = isBitRateSwitch;
 
             if (count != 0)
                 Array.Copy(data, offset, this.data, 0, count);
@@ -199,7 +253,8 @@ namespace GHIElectronics.TinyCLR.Devices.Can {
             int WriteMessages(CanMessage[] messages, int offset, int count);
             int ReadMessages(CanMessage[] messages, int offset, int count);
 
-            void SetBitTiming(CanBitTiming bitTiming);
+            void SetNorminalBitTiming(CanBitTiming bitTiming);
+            void SetDataBitTiming(CanBitTiming bitTiming);
             void SetExplicitFilters(int[] filters);
             void SetGroupFilters(int[] lowerBounds, int[] upperBounds);
             void ClearWriteBuffer();
@@ -311,7 +366,10 @@ namespace GHIElectronics.TinyCLR.Devices.Can {
             public extern int ReadMessages(CanMessage[] messages, int offset, int count);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern void SetBitTiming(CanBitTiming bitTiming);
+            public extern void SetNorminalBitTiming(CanBitTiming bitTiming);
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            public extern void SetDataBitTiming(CanBitTiming bitTiming);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void SetExplicitFilters(int[] filters);
