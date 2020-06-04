@@ -34,8 +34,9 @@ namespace GHIElectronics.TinyCLR.Devices.Can {
 
         public void SetNorminalBitTiming(CanBitTiming bitTiming) => this.Provider.SetNorminalBitTiming(bitTiming);
         public void SetDataBitTiming(CanBitTiming bitTiming) => this.Provider.SetDataBitTiming(bitTiming);
-        public void SetExplicitFilters(int[] filters) => this.Provider.SetExplicitFilters(filters);
-        public void SetGroupFilters(int[] lowerBounds, int[] upperBounds) => this.Provider.SetGroupFilters(lowerBounds, upperBounds);
+        public void AddRangeFilter(IdType idType, uint startId, uint endId) => this.Provider.AddFilter(idType, FilterType.Range, startId, endId);
+        public void AddMaskFilter(IdType idType, uint compare, uint mask) => this.Provider.AddFilter(idType, FilterType.Mask, compare, mask);
+        public void EnableRejectRemoteFrameFilter(IdType idType) => this.Provider.EnableRejectRemoteFrameFilter(idType);
         public void ClearWriteBuffer() => this.Provider.ClearReadBuffer();
         public void ClearReadBuffer() => this.Provider.ClearReadBuffer();
 
@@ -94,6 +95,16 @@ namespace GHIElectronics.TinyCLR.Devices.Can {
     public enum ErrorStateIndicator {
         Active = 0,
         Passive = 1,
+    }
+
+    public enum IdType {
+        Standard = 0,
+        Extended = 1,
+    }
+
+    public enum FilterType {
+        Range = 0,
+        Mask = 1,
     }
 
     public delegate void MessageReceivedEventHandler(CanController sender, MessageReceivedEventArgs e);
@@ -255,8 +266,10 @@ namespace GHIElectronics.TinyCLR.Devices.Can {
 
             void SetNorminalBitTiming(CanBitTiming bitTiming);
             void SetDataBitTiming(CanBitTiming bitTiming);
-            void SetExplicitFilters(int[] filters);
-            void SetGroupFilters(int[] lowerBounds, int[] upperBounds);
+
+            void AddFilter(IdType idType, FilterType filterType, uint id1, uint id2);
+            void EnableRejectRemoteFrameFilter(IdType idType);
+
             void ClearWriteBuffer();
             void ClearReadBuffer();
 
@@ -372,16 +385,16 @@ namespace GHIElectronics.TinyCLR.Devices.Can {
             public extern void SetDataBitTiming(CanBitTiming bitTiming);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern void SetExplicitFilters(int[] filters);
-
-            [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern void SetGroupFilters(int[] lowerBounds, int[] upperBounds);
-
-            [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void ClearWriteBuffer();
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void ClearReadBuffer();
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            public extern void AddFilter(IdType idType, FilterType filterType, uint id1, uint id2);
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            public extern void EnableRejectRemoteFrameFilter(IdType idType);
         }
     }
 }
