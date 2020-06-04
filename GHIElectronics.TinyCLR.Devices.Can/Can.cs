@@ -10,7 +10,11 @@ namespace GHIElectronics.TinyCLR.Devices.Can {
 
         public ICanControllerProvider Provider { get; }
 
-        private CanController(ICanControllerProvider provider) => this.Provider = provider;
+        private CanController(ICanControllerProvider provider) {
+            this.Provider = provider;
+
+            this.Filter = new Filter(this.Provider);
+        }
 
         public static CanController GetDefault() => NativeApi.GetDefaultFromCreator(NativeApiType.CanController) is CanController c ? c : CanController.FromName(NativeApi.GetDefaultName(NativeApiType.CanController));
         public static CanController FromName(string name) => CanController.FromProvider(new CanControllerApiWrapper(NativeApi.Find(name, NativeApiType.CanController)));
@@ -34,9 +38,6 @@ namespace GHIElectronics.TinyCLR.Devices.Can {
 
         public void SetNorminalBitTiming(CanBitTiming bitTiming) => this.Provider.SetNorminalBitTiming(bitTiming);
         public void SetDataBitTiming(CanBitTiming bitTiming) => this.Provider.SetDataBitTiming(bitTiming);
-        public void AddRangeFilter(IdType idType, uint startId, uint endId) => this.Provider.AddFilter(idType, FilterType.Range, startId, endId);
-        public void AddMaskFilter(IdType idType, uint compare, uint mask) => this.Provider.AddFilter(idType, FilterType.Mask, compare, mask);
-        public void EnableRejectRemoteFrameFilter(IdType idType) => this.Provider.EnableRejectRemoteFrameFilter(idType);
         public void ClearWriteBuffer() => this.Provider.ClearReadBuffer();
         public void ClearReadBuffer() => this.Provider.ClearReadBuffer();
 
@@ -83,6 +84,29 @@ namespace GHIElectronics.TinyCLR.Devices.Can {
                     this.Provider.ErrorReceived -= this.OnErrorReceived;
             }
         }
+
+        public Filter Filter { get; }
+    }
+
+    public sealed class Filter {
+        public enum IdType {
+            Standard = 0,
+            Extended = 1,
+        }
+
+        public enum FilterType {
+            Range = 0,
+            Mask = 1,
+        }
+       
+        private readonly ICanControllerProvider provider;
+
+        internal Filter(ICanControllerProvider provider) => this.provider = provider;
+
+        public void AddRangeFilter(IdType idType, uint startId, uint endId) => this.provider.AddFilter(idType, FilterType.Range, startId, endId);
+        public void AddMaskFilter(IdType idType, uint compare, uint mask) => this.provider.AddFilter(idType, FilterType.Mask, compare, mask);       
+        public void RejectRemoteFrame(IdType idType) => this.provider.RejectRemoteFrame(idType);
+        public void Clear() => this.provider.ClearFilter();
     }
 
     public enum CanError {
@@ -95,16 +119,6 @@ namespace GHIElectronics.TinyCLR.Devices.Can {
     public enum ErrorStateIndicator {
         Active = 0,
         Passive = 1,
-    }
-
-    public enum IdType {
-        Standard = 0,
-        Extended = 1,
-    }
-
-    public enum FilterType {
-        Range = 0,
-        Mask = 1,
     }
 
     public delegate void MessageReceivedEventHandler(CanController sender, MessageReceivedEventArgs e);
@@ -267,8 +281,9 @@ namespace GHIElectronics.TinyCLR.Devices.Can {
             void SetNorminalBitTiming(CanBitTiming bitTiming);
             void SetDataBitTiming(CanBitTiming bitTiming);
 
-            void AddFilter(IdType idType, FilterType filterType, uint id1, uint id2);
-            void EnableRejectRemoteFrameFilter(IdType idType);
+            void AddFilter(Filter.IdType idType, Filter.FilterType filterType, uint id1, uint id2);
+            void RejectRemoteFrame(Filter.IdType idType);
+            void ClearFilter();
 
             void ClearWriteBuffer();
             void ClearReadBuffer();
@@ -391,10 +406,13 @@ namespace GHIElectronics.TinyCLR.Devices.Can {
             public extern void ClearReadBuffer();
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern void AddFilter(IdType idType, FilterType filterType, uint id1, uint id2);
+            public extern void AddFilter(Filter.IdType idType, Filter.FilterType filterType, uint id1, uint id2);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern void EnableRejectRemoteFrameFilter(IdType idType);
+            public extern void RejectRemoteFrame(Filter.IdType idType);
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            public extern void ClearFilter();
         }
     }
 }
