@@ -25,6 +25,18 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
     public delegate void DataReceivedEventHandler(UsbClientController sender, uint count);
     public delegate void DeviceStateChangedEventHandler(UsbClientController sender, DeviceState state);
 
+    public sealed class UsbClientSetting {
+        public UsbClientMode Mode { get; set; }
+
+        public string ManufactureName { get; set; }
+        public string ProductName { get; set; }
+        public string SerialNumber { get; set; }
+        public string Guid { get; set; }
+
+        public ushort ProductId { get; set; }
+        public ushort VendorId { get; set; }
+    }
+
     public sealed class UsbClientController : IDisposable {
         private DataReceivedEventHandler dataReceivedCallbacks;
         private DeviceStateChangedEventHandler deviceStateChangedCallbacks;
@@ -44,15 +56,11 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
         public int WriteBufferSize { get => this.Provider.WriteBufferSize; set => this.Provider.WriteBufferSize = value; }
         public int ReadBufferSize { get => this.Provider.ReadBufferSize; set => this.Provider.ReadBufferSize = value; }
 
-        public void SetActiveSetting(UsbClientMode mode, ushort productId, ushort vendorId) => this.SetActiveSetting(mode, null, null, null, productId, vendorId);
-        public void SetActiveSetting(UsbClientMode mode, ushort productId, ushort vendorId, string guid) => this.SetActiveSetting(mode, null, null, null, productId, vendorId, guid);
-        public void SetActiveSetting(UsbClientMode mode, string manufactureName, string productName, string serialNumber, ushort productId, ushort vendorId) => this.SetActiveSetting(mode, manufactureName, productName, serialNumber, productId, vendorId, null);
+        public void SetActiveSetting(UsbClientSetting setting) {
+            if (setting.Mode == UsbClientMode.WinUsb && setting.Guid == null)
+                throw new ArgumentNullException(nameof(setting.Guid));
 
-        public void SetActiveSetting(UsbClientMode mode, string manufactureName, string productName, string serialNumber, ushort productId, ushort vendorId, string guid) {
-            if (mode == UsbClientMode.WinUsb && guid == null)
-                throw new ArgumentNullException(nameof(guid));
-
-            this.Provider.SetActiveSetting(mode, manufactureName, productName, serialNumber, productId, vendorId, guid);
+            this.Provider.SetActiveSetting(setting.Mode, setting.ManufactureName, setting.ProductName, setting.SerialNumber, setting.ProductId, setting.VendorId, setting.Guid);
         }
 
         public void Enable() => this.Provider.Enable();
