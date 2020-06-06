@@ -44,13 +44,7 @@ namespace GHIElectronics.TinyCLR.UI.Glide
         {
             this.g = g;
             this.surface = BitmapHelper.Extract(g);
-            /*
-            Assembly assembly = Assembly.LoadFrom("mytest.dll");
-            object mc = assembly.CreateInstance("MyTest.MyClass");
-            Type t = mc.GetType();
-            BindingFlags bf = BindingFlags.Instance | BindingFlags.NonPublic;
-            MethodInfo mi = t.GetMethod("MyMethod", bf);
-            mi.Invoke(mc, null);*/
+            
         }
 
         private static System.Drawing.Internal.Bitmap Extract(Graphics g)

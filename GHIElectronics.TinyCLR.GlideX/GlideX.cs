@@ -7,14 +7,14 @@
 using System;
 using System.Collections;
 using System.Drawing;
-using GHI.GlideX.Geom;
+using GHIElectronics.TinyCLR.GlideX.Geom;
 using GHIElectronics.TinyCLR.Devices.Display;
 using GHIElectronics.TinyCLR.UI;
 using GHIElectronics.TinyCLR.UI.Controls;
 using GHIElectronics.TinyCLR.GlideX.Properties;
 using GHIElectronics.TinyCLR.UI.Glide;
 
-namespace GHI.GlideX
+namespace GHIElectronics.TinyCLR.GlideX
 {
     /// <summary>
     /// The Glide class provides core functionality.

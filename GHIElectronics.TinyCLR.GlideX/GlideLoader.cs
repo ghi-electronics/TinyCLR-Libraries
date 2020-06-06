@@ -14,9 +14,9 @@ using GHIElectronics.TinyCLR.GlideX.Properties;
 using GHIElectronics.TinyCLR.UI;
 using GHIElectronics.TinyCLR.UI.Controls;
 using GHIElectronics.TinyCLR.UI.Media;
-using GHI.GlideX.Display;
+using GHIElectronics.TinyCLR.GlideX.Display;
 
-namespace GHI.GlideX
+namespace GHIElectronics.TinyCLR.GlideX
 {
     /// <summary>
     /// The GlideLoader class parses XML into components.

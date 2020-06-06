@@ -54,6 +54,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="GHIElectronics.TinyCLR.GlideX.nuspec">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
     <None Include="Resources\droid_reg08.tinyfnt" />
     <None Include="Resources\droid_reg09.tinyfnt" />

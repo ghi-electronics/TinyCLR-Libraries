@@ -6,7 +6,7 @@
 
 using System;
 
-namespace GHI.GlideX.Geom
+namespace GHIElectronics.TinyCLR.GlideX.Geom
 {
     /// <summary>
     /// The Point object represents a location in a two-dimensional coordinate system.

@@ -4,7 +4,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-using GHI.GlideX;
+using GHIElectronics.TinyCLR.GlideX;
 using GHIElectronics.TinyCLR.UI;
 using GHIElectronics.TinyCLR.UI.Media;
 using System;
@@ -12,7 +12,7 @@ using System.Collections;
 using System.Drawing;
 using GHIElectronics.TinyCLR.GlideX.Ext;
 
-namespace GHI.GlideX
+namespace GHIElectronics.TinyCLR.GlideX
 {
     /// <summary>
     /// The Utils class contains utility methods that help other classes.

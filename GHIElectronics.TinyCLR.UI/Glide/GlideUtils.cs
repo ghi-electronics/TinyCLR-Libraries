@@ -55,13 +55,13 @@ namespace GHIElectronics.TinyCLR.UI.Glide
                 switch (alignment.ToUpper())
                 {
                     case "LEFT":
-                        return Bitmaps.DT_AlignmentLeft;
+                        return Bitmap.DT_AlignmentLeft;
                     case "CENTER":
-                        return Bitmaps.DT_AlignmentCenter;
+                        return Bitmap.DT_AlignmentCenter;
                     case "RIGHT":
-                        return Bitmaps.DT_AlignmentRight;
+                        return Bitmap.DT_AlignmentRight;
                     default:
-                        return Bitmaps.DT_AlignmentRight;
+                        return Bitmap.DT_AlignmentRight;
                 }
             }
 
