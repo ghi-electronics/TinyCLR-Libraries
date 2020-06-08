@@ -1,6 +1,6 @@
 using System;
 
-namespace System.Xml
+namespace GHIElectronics.TinyCLR.Data.Xml
 {
     internal abstract class Utility
     {

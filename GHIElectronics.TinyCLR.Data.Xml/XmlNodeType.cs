@@ -2,7 +2,7 @@
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-namespace System.Xml
+namespace GHIElectronics.TinyCLR.Data.Xml
 {
     // <devdoc>
     //    Specifies the type of node.
@@ -179,7 +179,7 @@ namespace System.Xml
         EndElement,
         // <devdoc>
         //    <para>Returned when XmlReader gets to the end of the entity
-        //       replacement as a result of a call to <see cref='System.Xml.XmlReader.ResolveEntity'/>
+        //       replacement as a result of a call to <see cref='GHIElectronics.TinyCLR.Data.Xml.XmlReader.ResolveEntity'/>
         //       .</para>
         // </devdoc>
         EndEntity,

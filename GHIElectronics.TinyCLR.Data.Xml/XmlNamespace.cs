@@ -1,10 +1,10 @@
 using System;
 using System.Collections;
-using System.Xml;
+using GHIElectronics.TinyCLR.Data.Xml;
 using System.Text;
 using System.Diagnostics;
 
-namespace System.Xml
+namespace GHIElectronics.TinyCLR.Data.Xml
 {
 
     // Summary:

@@ -7,8 +7,9 @@ using System.Text;
 using System.Collections;
 using System.Globalization;
 using System.Diagnostics;
+using System;
 
-namespace System.Xml
+namespace GHIElectronics.TinyCLR.Data.Xml
 {
 
     // Represents a reader that provides fast, non-cached forward only stream access to XML data.

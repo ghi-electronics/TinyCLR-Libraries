@@ -4,9 +4,9 @@
 
 using System;
 using System.Diagnostics;
-using System.Xml;
+using GHIElectronics.TinyCLR.Data.Xml;
 
-namespace System.Xml
+namespace GHIElectronics.TinyCLR.Data.Xml
 {
 
     // <summary>

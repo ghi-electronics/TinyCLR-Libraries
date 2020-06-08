@@ -4,7 +4,7 @@
 
 using System;
 
-namespace System.Xml
+namespace GHIElectronics.TinyCLR.Data.Xml
 {
 
     // <devdoc>

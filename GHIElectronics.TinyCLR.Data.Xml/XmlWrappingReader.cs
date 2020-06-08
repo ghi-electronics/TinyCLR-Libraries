@@ -3,17 +3,17 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 using System;
-using System.Xml;
+using GHIElectronics.TinyCLR.Data.Xml;
 using System.Diagnostics;
 #if SCHEMA_VALIDATION
-using System.Xml.Schema;
+using GHIElectronics.TinyCLR.Data.Xml.Schema;
 #endif //SCHEMA_VALIDATION
 using System.Collections;
 #if XML_SECURITY
 using System.Security.Policy;
 #endif
 
-namespace System.Xml
+namespace GHIElectronics.TinyCLR.Data.Xml
 {
 
     internal class XmlWrappingReader : XmlReader, IXmlLineInfo 

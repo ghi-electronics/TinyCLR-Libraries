@@ -20,7 +20,7 @@ namespace System.Text
 }
 
 /////////////////////////////////
-namespace System.Xml
+namespace GHIElectronics.TinyCLR.Data.Xml
 {
 
     public class XmlTextReader : XmlReader, IXmlLineInfo

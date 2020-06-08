@@ -2,7 +2,7 @@
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-namespace System.Xml
+namespace GHIElectronics.TinyCLR.Data.Xml
 {
     using System;
     using System.IO;
@@ -164,6 +164,6 @@ namespace System.Xml
         internal static ArgumentException CreateInvalidNameArgumentException(string name, string argumentName) => (name == null) ? new ArgumentNullException(argumentName) : new ArgumentException(Res.GetString(Res.Xml_EmptyName), argumentName);
     }
 
-} // namespace System.Xml
+} // namespace GHIElectronics.TinyCLR.Data.Xml
 
 

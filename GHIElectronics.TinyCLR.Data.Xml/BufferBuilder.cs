@@ -4,11 +4,12 @@
 
 //#define BUFFER_BUILDER_TRACING
 
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
 
-namespace System.Xml
+namespace GHIElectronics.TinyCLR.Data.Xml
 {
     //
     //  Buffer Builder

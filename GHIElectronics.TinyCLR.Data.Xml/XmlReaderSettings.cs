@@ -2,13 +2,14 @@
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-using System.Xml;
+using System;
+using GHIElectronics.TinyCLR.Data.Xml;
 
 #if SCHEMA_VALIDATION
-using System.Xml.Schema;
+using GHIElectronics.TinyCLR.Data.Xml.Schema;
 #endif //SCHEMA_VALIDATION
 
-namespace System.Xml
+namespace GHIElectronics.TinyCLR.Data.Xml
 {
 
     // XmlReaderSettings class specifies features of an XmlReader.

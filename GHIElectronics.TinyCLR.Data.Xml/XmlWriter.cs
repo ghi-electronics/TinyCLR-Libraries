@@ -1,11 +1,12 @@
 using System.IO;
 using System.Text;
 using System.Collections;
+using System;
 
-namespace System.Xml
+namespace GHIElectronics.TinyCLR.Data.Xml
 {
     // Summary:
-    //     Specifies the state of the System.Xml.XmlWriter.
+    //     Specifies the state of the GHIElectronics.TinyCLR.Data.Xml.XmlWriter.
     internal enum WriteState
     {
         // Summary:
@@ -29,14 +30,14 @@ namespace System.Xml
         Content = 4,
         //
         // Summary:
-        //     The System.Xml.XmlWriter.Close() method has been called.
+        //     The GHIElectronics.TinyCLR.Data.Xml.XmlWriter.Close() method has been called.
         Closed = 5,
         //
         // Summary:
-        //     An exception has been thrown, which has left the System.Xml.XmlWriter in
-        //     an invalid state. You may call the System.Xml.XmlWriter.Close() method to
-        //     put the System.Xml.XmlWriter in the System.Xml.WriteState.Closed state. Any
-        //     other System.Xml.XmlWriter method calls results in an System.InvalidOperationException
+        //     An exception has been thrown, which has left the GHIElectronics.TinyCLR.Data.Xml.XmlWriter in
+        //     an invalid state. You may call the GHIElectronics.TinyCLR.Data.Xml.XmlWriter.Close() method to
+        //     put the GHIElectronics.TinyCLR.Data.Xml.XmlWriter in the GHIElectronics.TinyCLR.Data.Xml.WriteState.Closed state. Any
+        //     other GHIElectronics.TinyCLR.Data.Xml.XmlWriter method calls results in an System.InvalidOperationException
         //     being thrown.
         Error = 6,
     }
@@ -109,7 +110,7 @@ namespace System.Xml
         private int _Position = 0;
 
         // Summary:
-        //     Initializes a new instance of the System.Xml.XmlWriter class.
+        //     Initializes a new instance of the GHIElectronics.TinyCLR.Data.Xml.XmlWriter class.
         protected XmlWriter()
         {
             this._Buffer = new byte[this._DefaultBufferSize];
@@ -118,7 +119,7 @@ namespace System.Xml
         }
 
         // Summary:
-        //     Initializes a new instance of the System.Xml.XmlWriter class using supplied stream.
+        //     Initializes a new instance of the GHIElectronics.TinyCLR.Data.Xml.XmlWriter class using supplied stream.
         protected XmlWriter(Stream output)
         {
             this._Buffer = new byte[this._DefaultBufferSize];
@@ -151,15 +152,15 @@ namespace System.Xml
 
         //
         // Summary:
-        //     Creates a new System.Xml.XmlWriter instance using the specified stream.
+        //     Creates a new GHIElectronics.TinyCLR.Data.Xml.XmlWriter instance using the specified stream.
         //
         // Parameters:
         //   output:
-        //     The stream to which you want to write. The System.Xml.XmlWriter writes XML
+        //     The stream to which you want to write. The GHIElectronics.TinyCLR.Data.Xml.XmlWriter writes XML
         //     1.0 text syntax and appends it to the specified stream.
         //
         // Returns:
-        //     An System.Xml.XmlWriter object.
+        //     An GHIElectronics.TinyCLR.Data.Xml.XmlWriter object.
         //
         // Exceptions:
         //   System.ArgumentNullException:
@@ -175,7 +176,7 @@ namespace System.Xml
 
         //
         // Summary:
-        //     Releases the unmanaged resources used by the System.Xml.XmlWriter and optionally
+        //     Releases the unmanaged resources used by the GHIElectronics.TinyCLR.Data.Xml.XmlWriter and optionally
         //     releases the managed resources.
         //
         // Parameters:
@@ -589,7 +590,7 @@ namespace System.Xml
 
         //
         // Summary:
-        //     When overridden in a derived class, closes the previous System.Xml.XmlWriter.WriteStartAttribute(System.String,System.String)
+        //     When overridden in a derived class, closes the previous GHIElectronics.TinyCLR.Data.Xml.XmlWriter.WriteStartAttribute(System.String,System.String)
         //     call.
         public void WriteEndAttribute()
         {
@@ -652,7 +653,7 @@ namespace System.Xml
         //   System.ArgumentException:
         //     The text would result in a non-well formed XML document.name is either null
         //     or String.Empty.This method is being used to create an XML declaration after
-        //     System.Xml.XmlWriter.WriteStartDocument() has already been called.
+        //     GHIElectronics.TinyCLR.Data.Xml.XmlWriter.WriteStartDocument() has already been called.
         public void WriteProcessingInstruction(string name, string text)
         {
             if (name == null || name.Length == 0)

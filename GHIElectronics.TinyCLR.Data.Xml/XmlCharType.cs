@@ -9,7 +9,7 @@
 using System.Diagnostics;
 using System.Threading;
 
-namespace System.Xml
+namespace GHIElectronics.TinyCLR.Data.Xml
 {
 
     /// <internalonly/>

@@ -1,6 +1,6 @@
 using System;
 
-namespace System.Xml
+namespace GHIElectronics.TinyCLR.Data.Xml
 {
     /// <summary>
     /// Summary description for Res.
