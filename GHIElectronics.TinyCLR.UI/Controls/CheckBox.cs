@@ -8,7 +8,7 @@ using GHIElectronics.TinyCLR.UI.Media;
 using GHIElectronics.TinyCLR.UI.Media.Imaging;
 
 namespace GHIElectronics.TinyCLR.UI.Controls {
-    public class CheckBox : ContentControl {
+    public class CheckBox : ContentControl, IDisposable {
         public event RoutedEventHandler Click;
         public event RoutedEventHandler Checked;
         public event RoutedEventHandler Unchecked;
