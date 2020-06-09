@@ -7,6 +7,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
     public class Button : ContentControl {
         public ushort Alpha { get; set; } = 0xC8;
         public int RadiusBorder { get; set; } = 5;
+        private bool isTouchParentAssigned = false;
 
         public Button() {
             this.InitResource();
@@ -22,7 +23,14 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
         private void InitResource() {
             this.bitmapImageButtonDown = BitmapImage.FromGraphics(Graphics.FromImage(Resources.GetBitmap(Resources.BitmapResources.Button_Down)));
-            this.bitmapImageButtonUp = BitmapImage.FromGraphics(Graphics.FromImage(Resources.GetBitmap(Resources.BitmapResources.Button_Up)));            
+            this.bitmapImageButtonUp = BitmapImage.FromGraphics(Graphics.FromImage(Resources.GetBitmap(Resources.BitmapResources.Button_Up)));
+        }
+
+        private void OnParentTouchUp(object sender, TouchEventArgs e) {
+            if (this.isPressed) {
+                this.isPressed = false;
+                this.Invalidate();
+            }
         }
 
         protected override void OnTouchUp(TouchEventArgs e) {
@@ -48,6 +56,13 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                 return;
             }
 
+            if (!this.isTouchParentAssigned) {
+                if (this.Parent != null) {
+                    this.Parent.TouchUp += this.OnParentTouchUp;
+                    this.isTouchParentAssigned = true;
+                }
+            }
+
             var evt = new RoutedEvent("TouchDownEvent", RoutingStrategy.Bubble, typeof(RoutedEventHandler));
             var args = new RoutedEventArgs(evt, this);
 
@@ -59,6 +74,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
             if (this.Parent != null)
                 this.Invalidate();
+
         }
 
         public override void OnRender(DrawingContext dc) {
@@ -73,6 +89,10 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         public void Dispose() {
             this.bitmapImageButtonDown.graphics.Dispose();
             this.bitmapImageButtonUp.graphics.Dispose();
+
+            if (this.Parent != null && this.isTouchParentAssigned) {
+                this.Parent.TouchUp -= this.OnParentTouchUp;
+            }
         }
     }
 }
