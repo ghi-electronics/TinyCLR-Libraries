@@ -87,13 +87,29 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                 dc.Scale9Image(0, 0, this.Width, this.Height, this.bitmapImageButtonUp, this.RadiusBorder, this.RadiusBorder, this.RadiusBorder, this.RadiusBorder, alpha);
         }
 
-        public void Dispose() {
-            this.bitmapImageButtonDown.graphics.Dispose();
-            this.bitmapImageButtonUp.graphics.Dispose();
+        private bool disposed;
 
-            if (this.Parent != null && this.isTouchParentAssigned) {
-                this.Parent.TouchUp -= this.OnParentTouchUp;
+        public void Dispose() {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing) {
+            if (!this.disposed) {
+
+                this.bitmapImageButtonDown.graphics.Dispose();
+                this.bitmapImageButtonUp.graphics.Dispose();
+
+                if (this.Parent != null && this.isTouchParentAssigned) {
+                    this.Parent.TouchUp -= this.OnParentTouchUp;
+                }
+
+                this.disposed = true;
             }
+        }
+
+        ~Button() {
+            this.Dispose(false);
         }
     }
 }

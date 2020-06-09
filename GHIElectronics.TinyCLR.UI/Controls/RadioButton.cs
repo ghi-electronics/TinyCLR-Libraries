@@ -187,10 +187,28 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
-        public void Dispose() => this.bitmapImageRadioButton.graphics.Dispose();
-
         public GHIElectronics.TinyCLR.UI.Media.Color OutlineUnselectColor { get; set; } = GHIElectronics.TinyCLR.UI.Media.Color.FromRgb(0xb8, 0xb8, 0xb8);
         public GHIElectronics.TinyCLR.UI.Media.Color SelectedOutlineColor { get; set; } = GHIElectronics.TinyCLR.UI.Media.Color.FromRgb(0x00, 0x2d, 0xff);
         public GHIElectronics.TinyCLR.UI.Media.Color SelectedColor { get; set; } = GHIElectronics.TinyCLR.UI.Media.Color.FromRgb(0x35, 0x8b, 0xf6);
+
+        private bool disposed;
+
+        public void Dispose() {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing) {
+            if (!this.disposed) {
+
+                this.bitmapImageRadioButton.graphics.Dispose();
+
+                this.disposed = true;
+            }
+        }
+
+        ~RadioButton() {
+            this.Dispose(false);
+        }
     }
 }

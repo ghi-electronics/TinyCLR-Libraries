@@ -122,11 +122,27 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
+        private bool disposed;
+
         public void Dispose() {
-            this.dropdownTextUp.graphics.Dispose();
-            this.dropdownTextDown.graphics.Dispose();
-            this.dropdownButtonUp.graphics.Dispose();
-            this.dropdownButtonDown.graphics.Dispose();
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing) {
+            if (!this.disposed) {
+
+                this.dropdownTextUp.graphics.Dispose();
+                this.dropdownTextDown.graphics.Dispose();
+                this.dropdownButtonUp.graphics.Dispose();
+                this.dropdownButtonDown.graphics.Dispose();
+
+                this.disposed = true;
+            }
+        }
+
+        ~Dropdown() {
+            this.Dispose(false);
         }
     }
 }

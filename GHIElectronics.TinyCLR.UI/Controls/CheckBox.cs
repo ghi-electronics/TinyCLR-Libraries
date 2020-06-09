@@ -98,9 +98,25 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
+        private bool disposed;
+
         public void Dispose() {
-            this.bitmapImageCheckboxOn.graphics.Dispose();
-            this.bitmapImageCheckboxOff.graphics.Dispose();
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing) {
+            if (!this.disposed) {
+
+                this.bitmapImageCheckboxOn.graphics.Dispose();
+                this.bitmapImageCheckboxOff.graphics.Dispose();
+
+                this.disposed = true;
+            }
+        }
+
+        ~CheckBox() {
+            this.Dispose(false);
         }
 
     }
