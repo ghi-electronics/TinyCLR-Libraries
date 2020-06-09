@@ -36,7 +36,7 @@ namespace GHIElectronics.TinyCLR.Devices.Can {
         public bool ReadMessage(out CanMessage message) => this.ReadMessages(new[] { message = new CanMessage() }, 0, 1) == 1;
         public int ReadMessages(CanMessage[] messages, int offset, int count) => this.Provider.ReadMessages(messages, offset, count);
 
-        public void SetNorminalBitTiming(CanBitTiming bitTiming) => this.Provider.SetNorminalBitTiming(bitTiming);
+        public void SetNominalBitTiming(CanBitTiming bitTiming) => this.Provider.SetNominalBitTiming(bitTiming);
         public void SetDataBitTiming(CanBitTiming bitTiming) => this.Provider.SetDataBitTiming(bitTiming);
         public void ClearWriteBuffer() => this.Provider.ClearReadBuffer();
         public void ClearReadBuffer() => this.Provider.ClearReadBuffer();
@@ -278,7 +278,7 @@ namespace GHIElectronics.TinyCLR.Devices.Can {
             int WriteMessages(CanMessage[] messages, int offset, int count);
             int ReadMessages(CanMessage[] messages, int offset, int count);
 
-            void SetNorminalBitTiming(CanBitTiming bitTiming);
+            void SetNominalBitTiming(CanBitTiming bitTiming);
             void SetDataBitTiming(CanBitTiming bitTiming);
 
             void AddFilter(Filter.IdType idType, Filter.FilterType filterType, uint id1, uint id2);
@@ -394,7 +394,7 @@ namespace GHIElectronics.TinyCLR.Devices.Can {
             public extern int ReadMessages(CanMessage[] messages, int offset, int count);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern void SetNorminalBitTiming(CanBitTiming bitTiming);
+            public extern void SetNominalBitTiming(CanBitTiming bitTiming);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void SetDataBitTiming(CanBitTiming bitTiming);
