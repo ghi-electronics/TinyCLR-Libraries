@@ -14,7 +14,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         Down
     }
 
-    public class ProgressBar : Image {
+    public class ProgressBar : Image, IDisposable {
         private BitmapImage bitmapImageProgressBar;
         private BitmapImage bitmapImageProgressBarFill;
 
@@ -64,9 +64,25 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             dc.Scale9Image(x, y, width, height, this.bitmapImageProgressBarFill, this.Border, this.Border, this.Border, this.Border, this.Alpha);
         }
 
+        private bool disposed;
+
         public void Dispose() {
-            this.bitmapImageProgressBar.graphics.Dispose();
-            this.bitmapImageProgressBarFill.graphics.Dispose();
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing) {
+            if (!this.disposed) {
+
+                this.bitmapImageProgressBar.graphics.Dispose();
+                this.bitmapImageProgressBarFill.graphics.Dispose();
+
+                this.disposed = true;
+            }
+        }
+
+        ~ProgressBar() {
+            this.Dispose(false);
         }
 
     }

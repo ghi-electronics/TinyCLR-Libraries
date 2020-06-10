@@ -1,10 +1,11 @@
+using System;
 using System.Drawing;
 using GHIElectronics.TinyCLR.UI.Input;
 using GHIElectronics.TinyCLR.UI.Media;
 using GHIElectronics.TinyCLR.UI.Media.Imaging;
 
 namespace GHIElectronics.TinyCLR.UI.Controls {
-    public class Button : ContentControl {
+    public class Button : ContentControl, IDisposable {
         public ushort Alpha { get; set; } = 0xC8;
         public int RadiusBorder { get; set; } = 5;
         private bool isTouchParentAssigned = false;
@@ -86,13 +87,29 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                 dc.Scale9Image(0, 0, this.Width, this.Height, this.bitmapImageButtonUp, this.RadiusBorder, this.RadiusBorder, this.RadiusBorder, this.RadiusBorder, alpha);
         }
 
-        public void Dispose() {
-            this.bitmapImageButtonDown.graphics.Dispose();
-            this.bitmapImageButtonUp.graphics.Dispose();
+        private bool disposed;
 
-            if (this.Parent != null && this.isTouchParentAssigned) {
-                this.Parent.TouchUp -= this.OnParentTouchUp;
+        public void Dispose() {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing) {
+            if (!this.disposed) {
+
+                this.bitmapImageButtonDown.graphics.Dispose();
+                this.bitmapImageButtonUp.graphics.Dispose();
+
+                if (this.Parent != null && this.isTouchParentAssigned) {
+                    this.Parent.TouchUp -= this.OnParentTouchUp;
+                }
+
+                this.disposed = true;
             }
+        }
+
+        ~Button() {
+            this.Dispose(false);
         }
     }
 }
