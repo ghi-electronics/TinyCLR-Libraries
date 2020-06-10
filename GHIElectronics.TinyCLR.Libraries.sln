@@ -85,6 +85,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Devi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Data.Xml", "GHIElectronics.TinyCLR.Data.Xml\GHIElectronics.TinyCLR.Data.Xml.csproj", "{C591328A-97A3-4392-96B2-D3DB823E8CFF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Devices.SecureStorage", "GHIElectronics.TinyCLR.Devices.SecureStorage\GHIElectronics.TinyCLR.Devices.SecureStorage.csproj", "{6C3DCB70-9D91-41E5-81A3-09D652E5A2D9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -227,6 +229,10 @@ Global
 		{C591328A-97A3-4392-96B2-D3DB823E8CFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C591328A-97A3-4392-96B2-D3DB823E8CFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C591328A-97A3-4392-96B2-D3DB823E8CFF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6C3DCB70-9D91-41E5-81A3-09D652E5A2D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C3DCB70-9D91-41E5-81A3-09D652E5A2D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C3DCB70-9D91-41E5-81A3-09D652E5A2D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C3DCB70-9D91-41E5-81A3-09D652E5A2D9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
