@@ -129,4 +129,72 @@ namespace GHIElectronics.TinyCLR.Devices.Signals {
         [MethodImpl(MethodImplOptions.InternalCall)]
         public extern int Read(GpioPinValue waitForState, TimeSpan[] buffer, int offset, int count);
     }
+
+    internal class PulseCounter : IDisposable {
+
+        private int pinNumber;
+        private TimeSpan Timeout { get; set; } = TimeSpan.MaxValue;
+
+        public GpioPinEdge Edge { get; set; }
+
+        public PulseCounter(GpioPin pin, GpioPinEdge edge) {
+            this.pinNumber = pin.PinNumber;
+            this.Edge = edge;
+
+            this.NativeAcquire();
+        }
+
+        public void Dispose() => this.NativeRelease();
+
+        public TimeSpan Read(int counter) {
+
+            var end = DateTime.Now.Ticks + this.Timeout.Ticks;
+
+            this.NativeStartReading();
+
+            if (this.Timeout == TimeSpan.MaxValue)
+                while (this.NativeGetCount() < counter) ;
+            else {
+                while (this.NativeGetCount() < counter && DateTime.Now.Ticks < end) ;
+            }
+
+            this.NativeStopReading();
+
+            var duration = this.NativeGetDuration();
+
+            return duration;
+        }
+
+        public int Read(TimeSpan duration) {
+
+            var end = DateTime.Now.Ticks + duration.Ticks;
+
+            this.NativeStartReading();
+
+            while (DateTime.Now.Ticks < end) ;
+
+            this.NativeStopReading();
+
+            return this.NativeGetCount();
+        }
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private extern void NativeAcquire();
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private extern void NativeRelease();
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private extern void NativeStartReading();
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private extern TimeSpan NativeGetDuration();
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private extern int NativeGetCount();
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private extern void NativeStopReading();
+
+    }
 }

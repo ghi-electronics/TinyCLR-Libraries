@@ -1,8 +1,13 @@
-﻿#define DEBUG
+#define DEBUG
+
+using System.Runtime.CompilerServices;
 
 namespace System.Diagnostics {
     public static class Debug {
         public static TraceListenerCollection Listeners => Trace.Listeners;
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        extern static public void EnableGCMessages(bool enable);
 
         [Conditional("DEBUG")]
         public static void WriteLine(string message) {

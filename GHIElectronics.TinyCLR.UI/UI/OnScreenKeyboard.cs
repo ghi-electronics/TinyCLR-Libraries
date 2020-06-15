@@ -91,6 +91,10 @@ namespace GHIElectronics.TinyCLR.UI {
 
             Application.Current.CloseOnScreenKeyboard();
         }
+        private new void Cancel()
+        {
+            Application.Current.CloseOnScreenKeyboard();
+        }
 
         private void ShowView(KeyboardViewId id) {
             if (!this.views.Contains(id))
@@ -124,19 +128,19 @@ namespace GHIElectronics.TinyCLR.UI {
                         full,
                         new[] { sz, sz, sz, sz, sz, sz, sz, sz, sz },
                         new[] { szh, sz, sz, sz, sz, sz, sz, sz, szh },
-                        new[] { szh, sz, sz * 5, sz, szh }
+                        new[] { szh, sz, sz * 4, sz, sz, szh }
                     };
                     view.Keys = new[] {
                         new[] { 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p' },
                         new[] { 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l' },
                         new[] { '\0', 'z', 'x', 'c', 'v', 'b', 'n', 'm', '\0' },
-                        new[] { '\0', ',', ' ', '.', '\0' }
+                        new[] { '\0', ',', ' ', '.', '\0', '\0' }
                     };
                     view.SpecialKeys = new[] {
                         null,
                         null,
                         new Action[] { () => this.ShowView(KeyboardViewId.Uppercase), null, null, null, null, null, null, null, () => this.Backspace() },
-                        new Action[] { () => this.ShowView(KeyboardViewId.Numbers), null, null, null, () => this.Close() }
+                        new Action[] { () => this.ShowView(KeyboardViewId.Numbers), null, null, null, () => this.Cancel(), () => this.Close() }
                     };
 
                     break;
@@ -148,19 +152,19 @@ namespace GHIElectronics.TinyCLR.UI {
                         full,
                         new[] { sz, sz, sz, sz, sz, sz, sz, sz, sz },
                         new[] { szh, sz, sz, sz, sz, sz, sz, sz, szh },
-                        new[] { szh, sz, sz * 5, sz, szh }
+                        new[] { szh, sz, sz * 4, sz, sz, szh }
                     };
                     view.Keys = new[] {
                         new[] { 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P' },
                         new[] { 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L' },
                         new[] { '\0', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', '\0' },
-                        new[] { '\0', ',', ' ', '.', '\0' }
+                        new[] { '\0', ',', ' ', '.', '\0','\0' }
                     };
                     view.SpecialKeys = new[] {
                         null,
                         null,
                         new Action[] { () => this.ShowView(KeyboardViewId.Lowercase), null, null, null, null, null, null, null, () => this.Backspace() },
-                        new Action[] { () => this.ShowView(KeyboardViewId.Numbers), null, null, null, () => this.Close() }
+                        new Action[] { () => this.ShowView(KeyboardViewId.Numbers), null, null, null, () => this.Cancel(), () => this.Close() }
                     };
 
                     break;
@@ -172,19 +176,19 @@ namespace GHIElectronics.TinyCLR.UI {
                         full,
                         full,
                         new[] { szh, sz, sz, sz, sz, sz, sz, sz, szh },
-                        new[] { szh, sz, sz * 5, sz, szh }
+                        new[] { szh, sz, sz * 4, sz, sz, szh }
                     };
                     view.Keys = new[] {
                         new[] { '1', '2', '3', '4', '5', '6', '7', '8', '9', '0' },
                         new[] { '@', '#', '$', '%', '&', '*', '-', '+', '(', ')' },
                         new[] { '\0', '!', '"', '\'', ':', ';', '/', '?', '\0' },
-                        new[] { '\0', ',', ' ', '.', '\0' }
+                        new[] { '\0', ',', ' ', '.', '\0','\0' }
                     };
                     view.SpecialKeys = new[] {
                         null,
                         null,
                         new Action[] { () => this.ShowView(KeyboardViewId.Symbols), null, null, null, null, null, null, null, () => this.Backspace() },
-                        new Action[] { () => this.ShowView(KeyboardViewId.Lowercase), null, null, null, () => this.Close() }
+                        new Action[] { () => this.ShowView(KeyboardViewId.Lowercase), null, null, null, () => this.Cancel(), () => this.Close() }
                     };
 
                     break;
@@ -196,19 +200,19 @@ namespace GHIElectronics.TinyCLR.UI {
                         full,
                         full,
                         new[] { szh, sz, sz, sz, sz, sz, sz, sz, szh },
-                        new[] { szh, sz, sz * 5, sz, szh }
+                        new[] { szh, sz, sz * 4, sz, sz, szh }
                     };
                     view.Keys = new[] {
                         new[] { '~', '`', '|', '•', '√', 'π', '÷', '×', '{', '}' },
                         new[] { '\t', '£', '¢', '€', 'º', '^', '_', '=', '[', ']' },
                         new[] { '\0', '™', '®', '©', '¶', '\\', '<', '>', '\0' },
-                        new[] { '\0', ',', ' ', '.', '\0' }
+                        new[] { '\0', ',', ' ', '.', '\0','\0' }
                     };
                     view.SpecialKeys = new[] {
                         null,
                         null,
                         new Action[] { () => this.ShowView(KeyboardViewId.Numbers), null, null, null, null, null, null, null, () => this.Backspace() },
-                        new Action[] { () => this.ShowView(KeyboardViewId.Lowercase), null, null, null, () => this.Close() }
+                        new Action[] { () => this.ShowView(KeyboardViewId.Lowercase), null, null, null, () => this.Cancel(),() => this.Close() }
                     };
 
                     break;

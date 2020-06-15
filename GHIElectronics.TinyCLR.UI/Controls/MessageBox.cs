@@ -7,7 +7,7 @@ using GHIElectronics.TinyCLR.UI.Media;
 using GHIElectronics.TinyCLR.UI.Media.Imaging;
 
 namespace GHIElectronics.TinyCLR.UI.Controls {
-    public class MessageBox : StackPanel {        
+    public class MessageBox : StackPanel, IDisposable {        
         private BitmapImage backImage;
         private Button buttonLeft;
         private Button buttonRight;
@@ -87,8 +87,6 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             dc.DrawText(ref message, this.MessageFont, this.MessageColor, x + 10, y + 5, this.Width - 20, messageHeight - 10, TextAlignment.Left, TextTrimming.None);
         }
 
-        public void Dispose() => this.backImage.graphics.Dispose();
-
         public string Message { get; set; } = string.Empty;
         public Font MessageFont { get; set; }
         public Media.Color MessageColor { get; set; } = Colors.Black;
@@ -98,5 +96,25 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         public Media.Color TitleColor { get; set; } = Colors.Black;
         public int RadiusBorder { get; set; } = 5;
         public ushort Alpha { get; set; }  = 0xFF;
+
+        private bool disposed;
+
+        public void Dispose() {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing) {
+            if (!this.disposed) {
+
+                this.backImage.graphics.Dispose();
+
+                this.disposed = true;
+            }
+        }
+
+        ~MessageBox() {
+            this.Dispose(false);
+        }
     }
 }

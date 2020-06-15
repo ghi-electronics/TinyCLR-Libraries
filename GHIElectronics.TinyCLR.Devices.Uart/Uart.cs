@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.CompilerServices;
 using GHIElectronics.TinyCLR.Devices.Uart.Provider;
 using GHIElectronics.TinyCLR.Native;
@@ -22,14 +22,20 @@ namespace GHIElectronics.TinyCLR.Devices.Uart {
         public void Enable() => this.Provider.Enable();
         public void Disable() => this.Provider.Disable();
 
-        public void SetActiveSettings(int baudRate, int dataBits, UartParity parity, UartStopBitCount stopBits, UartHandshake handshaking) => this.Provider.SetActiveSettings(baudRate, dataBits, parity, stopBits, handshaking);
+        public void SetActiveSettings(UartSetting setting) => this.Provider.SetActiveSettings(setting.BaudRate, setting.DataBits, setting.Parity, setting.StopBits, setting.Handshaking, setting.EnableDePin, setting.InvertTxPolarity, setting.InvertRxPolarity, setting.InvertBinaryData, setting.SwapTxRxPin, setting.InvertDePolarity);
         public void Flush() => this.Provider.Flush();
 
         public int Read(byte[] buffer) => this.Read(buffer, 0, buffer.Length);
         public int Read(byte[] buffer, int offset, int length) => this.Provider.Read(buffer, offset, length);
 
         public int Write(byte[] buffer) => this.Write(buffer, 0, buffer.Length);
-        public int Write(byte[] buffer, int offset, int length) => this.Provider.Write(buffer, offset, length);
+        public int Write(byte[] buffer, int offset, int length) => this.Write(buffer, offset, length, TimeSpan.Zero);
+        public int Write(byte[] buffer, int offset, int length, TimeSpan breakDuration) {
+            if (this.BytesToWrite > 0)
+                throw new InvalidOperationException("Tx buffer must be empty.");
+
+            return this.Provider.Write(buffer, offset, length, breakDuration);
+        }
 
         public void ClearWriteBuffer() => this.Provider.ClearWriteBuffer();
         public void ClearReadBuffer() => this.Provider.ClearReadBuffer();
@@ -44,6 +50,7 @@ namespace GHIElectronics.TinyCLR.Devices.Uart {
 
         private void OnClearToSendChanged(UartController sender, ClearToSendChangedEventArgs e) => this.clearToSendChangedCallbacks?.Invoke(this, e);
         private void OnDataReceived(UartController sender, DataReceivedEventArgs e) => this.dataReceivedCallbacks?.Invoke(this, e);
+
         private void OnErrorReceived(UartController sender, ErrorReceivedEventArgs e) => this.errorReceivedCallbacks?.Invoke(this, e);
 
         public event ClearToSendChangedEventHandler ClearToSendChanged {
@@ -109,8 +116,6 @@ namespace GHIElectronics.TinyCLR.Devices.Uart {
     public enum UartHandshake {
         None = 0,
         RequestToSend = 1,
-        XOnXOff = 2,
-        RequestToSendXOnXOff = 3,
     }
 
     public enum UartError {
@@ -118,6 +123,23 @@ namespace GHIElectronics.TinyCLR.Devices.Uart {
         Overrun = 1,
         BufferFull = 2,
         ReceiveParity = 3,
+    }
+
+    public sealed class UartSetting {
+        public int BaudRate { get; set; }
+        public int DataBits { get; set; }
+        public UartParity Parity { get; set; }
+        public UartStopBitCount StopBits { get; set; }
+        public UartHandshake Handshaking { get; set; }
+
+        public bool EnableDePin { get; set; }
+
+        public bool InvertTxPolarity { get; set; }
+        public bool InvertRxPolarity { get; set; }
+        public bool InvertBinaryData { get; set; }
+        public bool SwapTxRxPin { get; set; }
+        public bool InvertDePolarity { get; set; }
+
     }
 
     public delegate void ClearToSendChangedEventHandler(UartController sender, ClearToSendChangedEventArgs e);
@@ -144,6 +166,11 @@ namespace GHIElectronics.TinyCLR.Devices.Uart {
         }
     }
 
+    public sealed class BreakDetectedEventArgs {
+        public DateTime Timestamp { get; }
+
+        internal BreakDetectedEventArgs(DateTime timestamp) => this.Timestamp = timestamp;
+    }
     public sealed class ErrorReceivedEventArgs {
         public UartError Error { get; }
         public DateTime Timestamp { get; }
@@ -159,10 +186,10 @@ namespace GHIElectronics.TinyCLR.Devices.Uart {
             void Enable();
             void Disable();
 
-            void SetActiveSettings(int baudRate, int dataBits, UartParity parity, UartStopBitCount stopBits, UartHandshake handshaking);
+            void SetActiveSettings(int baudRate, int dataBits, UartParity parity, UartStopBitCount stopBits, UartHandshake handshaking, bool enableDePin, bool invertTxPolarity, bool invertRxPolarity, bool invertBinaryData, bool swapTxRxPin, bool invertDePolarity);
             void Flush();
             int Read(byte[] buffer, int offset, int length);
-            int Write(byte[] buffer, int offset, int length);
+            int Write(byte[] buffer, int offset, int length, TimeSpan breakDuration);
 
             void ClearWriteBuffer();
             void ClearReadBuffer();
@@ -284,7 +311,7 @@ namespace GHIElectronics.TinyCLR.Devices.Uart {
             public extern void Disable();
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern void SetActiveSettings(int baudRate, int dataBits, UartParity parity, UartStopBitCount stopBits, UartHandshake handshaking);
+            public extern void SetActiveSettings(int baudRate, int dataBits, UartParity parity, UartStopBitCount stopBits, UartHandshake handshaking, bool enableDePin, bool invertTxPolarity, bool invertRxPolarity, bool invertBinaryData, bool swapTxRxPin, bool invertDePolarity);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void Flush();
@@ -293,7 +320,7 @@ namespace GHIElectronics.TinyCLR.Devices.Uart {
             public extern int Read(byte[] buffer, int offset, int length);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern int Write(byte[] buffer, int offset, int length);
+            public extern int Write(byte[] buffer, int offset, int length, TimeSpan breakDuration);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void ClearWriteBuffer();
