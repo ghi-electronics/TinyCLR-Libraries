@@ -36,10 +36,9 @@ namespace GHIElectronics.TinyCLR.Data.Xml
 
         //provided to meet the ECMA standards
         public XmlException(string message)
-            : this(message, ((Exception)null), 0, 0) =>
-#if DEBUG
-            Debug.Assert(message == null || message.Length < 4 || message.Substring(0, 4) != "Xml_", "Do not pass a resource here!");
-#endif
+            : this(message, ((Exception)null), 0, 0) {
+
+        }
 
 
         //provided to meet ECMA standards
