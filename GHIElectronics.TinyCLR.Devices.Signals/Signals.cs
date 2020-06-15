@@ -130,7 +130,7 @@ namespace GHIElectronics.TinyCLR.Devices.Signals {
         public extern int Read(GpioPinValue waitForState, TimeSpan[] buffer, int offset, int count);
     }
 
-    public sealed class PulseCounter : IDisposable {
+    internal class PulseCounter : IDisposable {
 
         private int pinNumber;
         private TimeSpan Timeout { get; set; } = TimeSpan.MaxValue;
