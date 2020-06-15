@@ -1,36 +1,14 @@
 ﻿using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-// General Information about an assembly is controlled through the following
-// set of attributes. Change these attribute values to modify the information
-// associated with an assembly.
 [assembly: AssemblyTitle("GHIElectronics.TinyCLR.Data.Xml")]
-[assembly: AssemblyDescription("")]
-[assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("GHIElectronics.TinyCLR.Data.Xml")]
-[assembly: AssemblyCopyright("Copyright ©  2020")]
-[assembly: AssemblyTrademark("")]
-[assembly: AssemblyCulture("")]
-
-// Setting ComVisible to false makes the types in this assembly not visible
-// to COM components.  If you need to access a type in this assembly from
-// COM, set the ComVisible attribute to true on that type.
+[assembly: AssemblyDescription("TinyCLR OS Xml library.")]
+[assembly: AssemblyCompany("GHI Electronics, LLC")]
+[assembly: AssemblyProduct("TinyCLR OS")]
+[assembly: AssemblyCopyright("Copyright © GHI Electronics, LLC 2020")]
 [assembly: ComVisible(false)]
+[assembly: Guid("C591328A-97A3-4392-96B2-D3DB823E8CFF")]
+[assembly: AssemblyVersion("2.0.0.0")]
+[assembly: AssemblyFileVersion("2.0.0.7000")]
+[assembly: AssemblyInformationalVersion("2.0.0-rc1")]
 
-// The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("c591328a-97a3-4392-96b2-d3db823e8cff")]
-
-// Version information for an assembly consists of the following four values:
-//
-//      Major Version
-//      Minor Version
-//      Build Number
-//      Revision
-//
-// You can specify all the values or you can default the Build and Revision Numbers
-// by using the '*' as shown below:
-// [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
