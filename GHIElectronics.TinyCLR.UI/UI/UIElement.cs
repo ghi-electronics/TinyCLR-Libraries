@@ -217,7 +217,7 @@ namespace GHIElectronics.TinyCLR.UI {
             this._marginBottom = bottom;
             InvalidateMeasure();
         }
-
+        public string ID { get; set; }
         public int ActualWidth => this._renderWidth;
 
         public int ActualHeight => this._renderHeight;
