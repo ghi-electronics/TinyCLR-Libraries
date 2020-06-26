@@ -31,8 +31,11 @@ namespace GHIElectronics.TinyCLR.Devices.Uart {
         public int Write(byte[] buffer) => this.Write(buffer, 0, buffer.Length);
         public int Write(byte[] buffer, int offset, int length) => this.Write(buffer, offset, length, TimeSpan.Zero);
         public int Write(byte[] buffer, int offset, int length, TimeSpan breakDuration) {
-            if (breakDuration != TimeSpan.Zero && this.BytesToWrite > 0)
-                throw new InvalidOperationException("Tx buffer must be empty.");
+            if (breakDuration != TimeSpan.Zero && this.BytesToWrite > 0) {
+                this.Flush();
+
+                System.Threading.Thread.Sleep(1);
+            }
 
             return this.Provider.Write(buffer, offset, length, breakDuration);
         }
