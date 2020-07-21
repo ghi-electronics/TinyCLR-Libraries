@@ -1456,6 +1456,13 @@ namespace GHIElectronics.TinyCLR.Data.Xml
                     if (this.ps.bytes.Length - this.ps.bytesUsed > 0)
                     {
                         var read = this.ps.stream.Read(this.ps.bytes, this.ps.bytesUsed, this.ps.bytes.Length - this.ps.bytesUsed);
+
+                        // Memory stream return 0: EOF
+                        // File stream return -1: EOF
+
+                        if (read < 0) 
+                            read = 0;
+
                         if (read == 0)
                         {
                             this.ps.isStreamEof = true;
