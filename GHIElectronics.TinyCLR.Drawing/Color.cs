@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace System.Drawing {
@@ -180,5 +181,22 @@ namespace System.Drawing {
 
             return false;
         }
+
+        public enum ColorFormat {
+            Rgb8888 = 0,
+            Rgb888 = 1,
+            Rgb565 = 2,
+            Rgb332 = 3
+        }
+
+        public static void Convert(byte[] inArray, ColorFormat inColorFormat, byte[] outArray, ColorFormat outColorFormat, byte alpha, bool swapRgb) {
+            if (inArray == null || outArray == null)
+                throw new ArgumentNullException();
+
+            NativeConvert(inArray, inColorFormat, outArray, outColorFormat, alpha, swapRgb);
+        }
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        extern static void NativeConvert(byte[] inArray, ColorFormat inColorFormat, byte[] outArray, ColorFormat outColorFormat, byte alpha, bool swapRgb);
     }
 }

@@ -10,6 +10,8 @@ namespace System.Drawing {
         public int Width => this.data.Width;
         public int Height => this.data.Height;
 
+        public byte[] GetBitmap() => this.data.GetBitmap();
+
         public object Clone() => throw new NotImplementedException();
 
         public static Image FromStream(Stream stream) => new Bitmap(stream);
@@ -77,7 +79,7 @@ namespace System.Drawing {
         }
 
         public void SetPixel(int x, int y, Color color) => this.data.SetPixel(x, y, (uint)color.ToArgb());
-        public Color GetPixel(int x, int y) => Color.FromArgb((int)this.data.GetPixel(x, y));
+        public Color GetPixel(int x, int y) => Color.FromArgb((int)this.data.GetPixel(x, y));        
     }
 
     namespace Imaging {

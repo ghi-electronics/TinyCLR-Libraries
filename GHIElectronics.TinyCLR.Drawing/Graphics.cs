@@ -2,26 +2,26 @@ using System;
 using System.Collections;
 using System.Drawing;
 using System.Runtime.CompilerServices;
-using GHIElectronics.TinyCLR.Drawing;
+//using GHIElectronics.TinyCLR.Drawing;
 using GHIElectronics.TinyCLR.Native;
 
-namespace GHIElectronics.TinyCLR.Drawing {
-    public interface IDrawTarget : IDisposable {
-        int Width { get; }
-        int Height { get; }
+//namespace GHIElectronics.TinyCLR.Drawing {
+//    public interface IDrawTarget : IDisposable {
+//        int Width { get; }
+//        int Height { get; }
 
-        void Clear(Color color);
-        void Flush();
+//        void Clear(Color color);
+//        void Flush();
 
-        Color GetPixel(int x, int y);
-        void SetPixel(int x, int y, Color color);
-        byte[] GetData();
-    }
+//        Color GetPixel(int x, int y);
+//        void SetPixel(int x, int y, Color color);
+//        byte[] GetData();
+//    }
 
-    public static class GraphicsManager {
-        public static IntPtr RegisterDrawTarget(IDrawTarget target) => System.Drawing.Graphics.RegisterDrawTarget(target);
-    }
-}
+//    public static class GraphicsManager {
+//        public static IntPtr RegisterDrawTarget(IDrawTarget target) => System.Drawing.Graphics.RegisterDrawTarget(target);
+//    }
+//}
 
 namespace System.Drawing {
     internal interface IGraphics : IDisposable {
@@ -41,6 +41,15 @@ namespace System.Drawing {
         void DrawText(string text, Font font, uint color, int x, int y);
         void DrawTextInRect(string text, int x, int y, int width, int height, uint dtFlags, Color color, Font font);
         void StretchImage(int xDst, int yDst, int widthDst, int heightDst, IGraphics image, int xSrc, int ySrc, int widthSrc, int heightSrc, ushort opacity);
+
+        void DrawImage(int xDst, int yDst, IGraphics image, int xSrc, int ySrc, int width, int height, ushort opacity);
+        void Flush(int x, int y, int width, int height);
+        void SetClippingRectangle(int x, int y, int width, int height);
+        bool DrawTextInRect(ref string text, ref int xRelStart, ref int yRelStart, int x, int y, int width, int height, uint dtFlags, uint color, Font font);
+        void RotateImage(int angle, int xDst, int yDst, IGraphics image, int xSrc, int ySrc, int width, int height, ushort opacity);
+        void MakeTransparent(uint color);        
+        void TileImage(int xDst, int yDst, IGraphics image, int width, int height, ushort opacity);
+        void Scale9Image(int xDst, int yDst, int widthDst, int heightDst, IGraphics image, int leftBorder, int topBorder, int rightBorder, int bottomBorder, ushort opacity);   
     }
 
     public sealed class Graphics : MarshalByRefObject, IDisposable {
@@ -54,15 +63,15 @@ namespace System.Drawing {
 
         public GraphicsUnit PageUnit { get; } = GraphicsUnit.Pixel;
 
-        private static Hashtable drawTargets = new Hashtable();
-        private static IntPtr nextHdc = IntPtr.Zero;
+        //private static Hashtable drawTargets = new Hashtable();
+        //private static IntPtr nextHdc = IntPtr.Zero;
 
-        internal static IntPtr RegisterDrawTarget(IDrawTarget target) {
-            Graphics.nextHdc = IntPtr.Add(Graphics.nextHdc, 1);
-            Graphics.drawTargets.Add(Graphics.nextHdc, target);
+        //internal static IntPtr RegisterDrawTarget(IDrawTarget target) {
+        //    Graphics.nextHdc = IntPtr.Add(Graphics.nextHdc, 1);
+        //    Graphics.drawTargets.Add(Graphics.nextHdc, target);
 
-            return Graphics.nextHdc;
-        }
+        //    return Graphics.nextHdc;
+        //}
 
         public uint GetPixel(int x, int y) => this.surface.GetPixel(x, y);
         public void SetPixel(int x, int y, uint color) => this.surface.SetPixel(x, y, color);
@@ -178,16 +187,11 @@ namespace System.Drawing {
         public static Graphics FromHdc(IntPtr hdc) {
             if (hdc == IntPtr.Zero) throw new ArgumentNullException(nameof(hdc));
 
-            if (!Graphics.drawTargets.Contains(hdc)) {
-                var res = Internal.Bitmap.GetSizeForLcdFromHdc(hdc, out var width, out var height);
+            var res = Internal.Bitmap.GetSizeForLcdFromHdc(hdc, out var width, out var height);
 
                 if (!res || width == 0 || height == 0) throw new InvalidOperationException("No screen configured.");
 
                 return new Graphics(width, height, hdc);
-            }
-            else {
-                throw new ArgumentException("Not supported");
-            }
         }
 
         public static Graphics FromImage(Image image) {
@@ -302,6 +306,17 @@ namespace System.Drawing {
                 throw new NotSupportedException();
             }
         }
+
+        public void DrawImage(int xDst, int yDst, Image image, int xSrc, int ySrc, int width, int height, ushort opacity) => this.surface.DrawImage(xDst, yDst, image.data.surface, xSrc, ySrc, width, height, opacity);
+        public void Flush(int x, int y, int width, int height) => this.surface.Flush(x, y, width, height);
+        public void SetClippingRectangle(int x, int y, int width, int height) => this.surface.SetClippingRectangle(x, y, width, height);
+        public bool DrawTextInRect(ref string text, ref int xRelStart, ref int yRelStart, int x, int y, int width, int height, uint dtFlags, uint color, Font font) => this.surface.DrawTextInRect(ref text, ref xRelStart, ref yRelStart, x, y, width, height, dtFlags, color, font);
+        public void RotateImage(int angle, int xDst, int yDst, Image image, int xSrc, int ySrc, int width, int height, ushort opacity) => this.surface.RotateImage(angle, xDst, yDst, image.data.surface, xSrc, ySrc, width, height, opacity);
+        public void MakeTransparent(uint color) => this.surface.MakeTransparent(color);
+        public void StretchImage(int xDst, int yDst, int widthDst, int heightDst, Image image, int xSrc, int ySrc, int widthSrc, int heightSrc, ushort opacity) => this.surface.StretchImage(xDst, yDst, widthDst, heightDst, image.data.surface, xSrc, ySrc, widthSrc, heightSrc, opacity);
+        public void TileImage(int xDst, int yDst, Image image, int width, int height, ushort opacity) => this.surface.TileImage(xDst, yDst, image.data.surface, width, height, opacity);
+        public void Scale9Image(int xDst, int yDst, int widthDst, int heightDst, Image image, int leftBorder, int topBorder, int rightBorder, int bottomBorder, ushort opacity) => this.surface.Scale9Image(xDst, yDst, widthDst, heightDst, image.data.surface, leftBorder, topBorder, rightBorder, bottomBorder, opacity);
+   
     }
 
     namespace Internal {
@@ -319,7 +334,7 @@ namespace System.Drawing {
             ~Bitmap() => this.Dispose(false);
 
             public extern int Width { [MethodImpl(MethodImplOptions.InternalCall)] get; }
-            public extern int Height { [MethodImpl(MethodImplOptions.InternalCall)] get; }
+            public extern int Height { [MethodImpl(MethodImplOptions.InternalCall)] get; }            
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public static extern bool GetSizeForLcdFromHdc(IntPtr hdc, out int width, out int height);
@@ -444,6 +459,26 @@ namespace System.Drawing {
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void Scale9Image(int xDst, int yDst, int widthDst, int heightDst, Bitmap bitmap, int leftBorder, int topBorder, int rightBorder, int bottomBorder, ushort opacity);
+
+            public void DrawImage(int xDst, int yDst, IGraphics bitmap, int xSrc, int ySrc, int width, int height, ushort opacity) {
+                if (bitmap is Bitmap b)
+                    this.DrawImage(xDst, yDst, b, xSrc, ySrc, width, height, opacity);
+            }
+
+            public void RotateImage(int angle, int xDst, int yDst, IGraphics bitmap, int xSrc, int ySrc, int width, int height, ushort opacity) {
+                if (bitmap is Bitmap b)
+                    this.RotateImage(angle, xDst, yDst, b, xSrc, ySrc, width, height, opacity);
+            }
+
+            public void TileImage(int xDst, int yDst, IGraphics bitmap, int width, int height, ushort opacity) {
+                if (bitmap is Bitmap b)
+                    this.TileImage(xDst, yDst, b, width, height, opacity);
+            }
+
+            public void Scale9Image(int xDst, int yDst, int widthDst, int heightDst, IGraphics bitmap, int leftBorder, int topBorder, int rightBorder, int bottomBorder, ushort opacity) {
+                if (bitmap is Bitmap b)
+                    this.Scale9Image(xDst, yDst, widthDst, heightDst, b, leftBorder, topBorder, rightBorder, bottomBorder, opacity);
+            }
         }
     }
 }
