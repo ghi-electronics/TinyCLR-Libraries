@@ -182,14 +182,14 @@ namespace System.Drawing {
             return false;
         }
 
-        public enum ColorFormat {
+        public enum RgbFormat {
             Rgb8888 = 0,
             Rgb888 = 1,
             Rgb565 = 2,
             Rgb332 = 3
         }
 
-        public static void Convert(byte[] inArray, ColorFormat inColorFormat, byte[] outArray, ColorFormat outColorFormat, byte alpha, bool swapRgb) {
+        public static void Convert(byte[] inArray, RgbFormat inColorFormat, byte[] outArray, RgbFormat outColorFormat, byte alpha, bool swapRgb) {
             if (inArray == null || outArray == null)
                 throw new ArgumentNullException();
 
@@ -197,6 +197,6 @@ namespace System.Drawing {
         }
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        extern static void NativeConvert(byte[] inArray, ColorFormat inColorFormat, byte[] outArray, ColorFormat outColorFormat, byte alpha, bool swapRgb);
+        extern static void NativeConvert(byte[] inArray, RgbFormat inColorFormat, byte[] outArray, RgbFormat outColorFormat, byte alpha, bool swapRgb);
     }
 }
