@@ -106,21 +106,21 @@ namespace System.Drawing {
         private uint ToFlags(StringFormat format, float height, bool ignoreHeight, bool truncateAtBottom) {
             var flags = 0U;
 
-            if (ignoreHeight || height == 0.0) flags |= Internal.Bitmap.DT_IgnoreHeight;
-            if (truncateAtBottom) flags |= Internal.Bitmap.DT_TruncateAtBottom;
+            if (ignoreHeight || height == 0.0) flags |= System.Drawing.Graphics.DT_IgnoreHeight;
+            if (truncateAtBottom) flags |= System.Drawing.Graphics.DT_TruncateAtBottom;
 
             if (format.FormatFlags != 0) throw new NotSupportedException();
 
             switch (format.Alignment) {
-                case StringAlignment.Center: flags |= Internal.Bitmap.DT_AlignmentCenter; break;
-                case StringAlignment.Far: flags |= Internal.Bitmap.DT_AlignmentRight; break;
-                case StringAlignment.Near: flags |= Internal.Bitmap.DT_AlignmentLeft; break;
+                case StringAlignment.Center: flags |= System.Drawing.Graphics.DT_AlignmentCenter; break;
+                case StringAlignment.Far: flags |= System.Drawing.Graphics.DT_AlignmentRight; break;
+                case StringAlignment.Near: flags |= System.Drawing.Graphics.DT_AlignmentLeft; break;
                 default: throw new ArgumentException();
             }
 
             switch (format.Trimming) {
-                case StringTrimming.EllipsisCharacter: flags |= Internal.Bitmap.DT_TrimmingCharacterEllipsis; break;
-                case StringTrimming.EllipsisWord: flags |= Internal.Bitmap.DT_WordWrap | Internal.Bitmap.DT_TrimmingWordEllipsis; break;
+                case StringTrimming.EllipsisCharacter: flags |= System.Drawing.Graphics.DT_TrimmingCharacterEllipsis; break;
+                case StringTrimming.EllipsisWord: flags |= System.Drawing.Graphics.DT_WordWrap | System.Drawing.Graphics.DT_TrimmingWordEllipsis; break;
                 case StringTrimming.None:
                     break;
 
@@ -288,6 +288,39 @@ namespace System.Drawing {
         public void TileImage(int xDst, int yDst, Image image, int width, int height, ushort opacity) => this.surface.TileImage(xDst, yDst, image.data.surface, width, height, opacity);
         public void Scale9Image(int xDst, int yDst, int widthDst, int heightDst, Image image, int leftBorder, int topBorder, int rightBorder, int bottomBorder, ushort opacity) => this.surface.Scale9Image(xDst, yDst, widthDst, heightDst, image.data.surface, leftBorder, topBorder, rightBorder, bottomBorder, opacity);
 
+        public const ushort OpacityOpaque = 0xFF;
+        public const ushort OpacityTransparent = 0;
+
+        public const int SRCCOPY = 0x00000001;
+        public const int PATINVERT = 0x00000002;
+        public const int DSTINVERT = 0x00000003;
+        public const int BLACKNESS = 0x00000004;
+        public const int WHITENESS = 0x00000005;
+        public const int DSTGRAY = 0x00000006;
+        public const int DSTLTGRAY = 0x00000007;
+        public const int DSTDKGRAY = 0x00000008;
+        public const int SINGLEPIXEL = 0x00000009;
+        public const int RANDOM = 0x0000000a;
+
+        //
+        // These have to be kept in sync with the CLR_GFX_Bitmap::c_DrawText_ flags.
+        //
+        public const uint DT_None = 0x00000000;
+        public const uint DT_WordWrap = 0x00000001;
+        public const uint DT_TruncateAtBottom = 0x00000004;
+        [Obsolete("Use DT_TrimmingWordEllipsis or DT_TrimmingCharacterEllipsis to specify the type of trimming needed.", false)]
+        public const uint DT_Ellipsis = 0x00000008;
+        public const uint DT_IgnoreHeight = 0x00000010;
+        public const uint DT_AlignmentLeft = 0x00000000;
+        public const uint DT_AlignmentCenter = 0x00000002;
+        public const uint DT_AlignmentRight = 0x00000020;
+        public const uint DT_AlignmentMask = 0x00000022;
+
+        public const uint DT_TrimmingNone = 0x00000000;
+        public const uint DT_TrimmingWordEllipsis = 0x00000008;
+        public const uint DT_TrimmingCharacterEllipsis = 0x00000040;
+        public const uint DT_TrimmingMask = 0x00000048;
+
     }
 
     namespace Internal {
@@ -348,39 +381,6 @@ namespace System.Drawing {
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void DrawRectangle(uint colorOutline, int thicknessOutline, int x, int y, int width, int height, int xCornerRadius, int yCornerRadius, uint colorGradientStart, int xGradientStart, int yGradientStart, uint colorGradientEnd, int xGradientEnd, int yGradientEnd, ushort opacity);
-
-            public const ushort OpacityOpaque = 0xFF;
-            public const ushort OpacityTransparent = 0;
-
-            public const int SRCCOPY = 0x00000001;
-            public const int PATINVERT = 0x00000002;
-            public const int DSTINVERT = 0x00000003;
-            public const int BLACKNESS = 0x00000004;
-            public const int WHITENESS = 0x00000005;
-            public const int DSTGRAY = 0x00000006;
-            public const int DSTLTGRAY = 0x00000007;
-            public const int DSTDKGRAY = 0x00000008;
-            public const int SINGLEPIXEL = 0x00000009;
-            public const int RANDOM = 0x0000000a;
-
-            //
-            // These have to be kept in sync with the CLR_GFX_Bitmap::c_DrawText_ flags.
-            //
-            public const uint DT_None = 0x00000000;
-            public const uint DT_WordWrap = 0x00000001;
-            public const uint DT_TruncateAtBottom = 0x00000004;
-            [Obsolete("Use DT_TrimmingWordEllipsis or DT_TrimmingCharacterEllipsis to specify the type of trimming needed.", false)]
-            public const uint DT_Ellipsis = 0x00000008;
-            public const uint DT_IgnoreHeight = 0x00000010;
-            public const uint DT_AlignmentLeft = 0x00000000;
-            public const uint DT_AlignmentCenter = 0x00000002;
-            public const uint DT_AlignmentRight = 0x00000020;
-            public const uint DT_AlignmentMask = 0x00000022;
-
-            public const uint DT_TrimmingNone = 0x00000000;
-            public const uint DT_TrimmingWordEllipsis = 0x00000008;
-            public const uint DT_TrimmingCharacterEllipsis = 0x00000040;
-            public const uint DT_TrimmingMask = 0x00000048;
 
             public void DrawTextInRect(string text, int x, int y, int width, int height, uint dtFlags, Color color, Font font) {
                 var xRelStart = 0;
