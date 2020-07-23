@@ -9,16 +9,16 @@ namespace GHIElectronics.TinyCLR.UI {
         public const ushort OpacityOpaque = 0xFF;
         public const ushort OpacityTransparent = 0;
 
-        public const uint DT_WordWrap = System.Drawing.Internal.Bitmap.DT_WordWrap;
-        public const uint DT_TruncateAtBottom = System.Drawing.Internal.Bitmap.DT_TruncateAtBottom;
-        public const uint DT_IgnoreHeight = System.Drawing.Internal.Bitmap.DT_IgnoreHeight;
+        public const uint DT_WordWrap = System.Drawing.Graphics.DT_WordWrap;
+        public const uint DT_TruncateAtBottom = System.Drawing.Graphics.DT_TruncateAtBottom;
+        public const uint DT_IgnoreHeight = System.Drawing.Graphics.DT_IgnoreHeight;
 
-        public const uint DT_AlignmentLeft = System.Drawing.Internal.Bitmap.DT_AlignmentLeft;
-        public const uint DT_AlignmentCenter = System.Drawing.Internal.Bitmap.DT_AlignmentCenter;
-        public const uint DT_AlignmentRight = System.Drawing.Internal.Bitmap.DT_AlignmentRight;
+        public const uint DT_AlignmentLeft = System.Drawing.Graphics.DT_AlignmentLeft;
+        public const uint DT_AlignmentCenter = System.Drawing.Graphics.DT_AlignmentCenter;
+        public const uint DT_AlignmentRight = System.Drawing.Graphics.DT_AlignmentRight;
 
-        public const uint DT_TrimmingWordEllipsis = System.Drawing.Internal.Bitmap.DT_TrimmingWordEllipsis;
-        public const uint DT_TrimmingCharacterEllipsis = System.Drawing.Internal.Bitmap.DT_TrimmingCharacterEllipsis;
+        public const uint DT_TrimmingWordEllipsis = System.Drawing.Graphics.DT_TrimmingWordEllipsis;
+        public const uint DT_TrimmingCharacterEllipsis = System.Drawing.Graphics.DT_TrimmingCharacterEllipsis;
 
         public int Height => this.g.Height;
         public int Width => this.g.Width;

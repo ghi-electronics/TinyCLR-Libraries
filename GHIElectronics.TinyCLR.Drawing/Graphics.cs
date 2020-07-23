@@ -2,26 +2,7 @@ using System;
 using System.Collections;
 using System.Drawing;
 using System.Runtime.CompilerServices;
-using GHIElectronics.TinyCLR.Drawing;
 using GHIElectronics.TinyCLR.Native;
-
-namespace GHIElectronics.TinyCLR.Drawing {
-    public interface IDrawTarget : IDisposable {
-        int Width { get; }
-        int Height { get; }
-
-        void Clear(Color color);
-        void Flush();
-
-        Color GetPixel(int x, int y);
-        void SetPixel(int x, int y, Color color);
-        byte[] GetData();
-    }
-
-    public static class GraphicsManager {
-        public static IntPtr RegisterDrawTarget(IDrawTarget target) => System.Drawing.Graphics.RegisterDrawTarget(target);
-    }
-}
 
 namespace System.Drawing {
     internal interface IGraphics : IDisposable {
@@ -30,6 +11,7 @@ namespace System.Drawing {
 
         void Clear();
         void Flush(IntPtr hdc);
+        void Flush(IntPtr hdc, int x, int y, int width, int height);
 
         uint GetPixel(int x, int y);
         void SetPixel(int x, int y, uint color);
@@ -41,6 +23,13 @@ namespace System.Drawing {
         void DrawText(string text, Font font, uint color, int x, int y);
         void DrawTextInRect(string text, int x, int y, int width, int height, uint dtFlags, Color color, Font font);
         void StretchImage(int xDst, int yDst, int widthDst, int heightDst, IGraphics image, int xSrc, int ySrc, int widthSrc, int heightSrc, ushort opacity);
+        void DrawImage(int xDst, int yDst, IGraphics image, int xSrc, int ySrc, int width, int height, ushort opacity);
+        void SetClippingRectangle(int x, int y, int width, int height);
+        bool DrawTextInRect(ref string text, ref int xRelStart, ref int yRelStart, int x, int y, int width, int height, uint dtFlags, uint color, Font font);
+        void RotateImage(int angle, int xDst, int yDst, IGraphics image, int xSrc, int ySrc, int width, int height, ushort opacity);
+        void MakeTransparent(uint color);
+        void TileImage(int xDst, int yDst, IGraphics image, int width, int height, ushort opacity);
+        void Scale9Image(int xDst, int yDst, int widthDst, int heightDst, IGraphics image, int leftBorder, int topBorder, int rightBorder, int bottomBorder, ushort opacity);
     }
 
     public sealed class Graphics : MarshalByRefObject, IDisposable {
@@ -54,58 +43,46 @@ namespace System.Drawing {
 
         public GraphicsUnit PageUnit { get; } = GraphicsUnit.Pixel;
 
-        private static Hashtable drawTargets = new Hashtable();
-        private static IntPtr nextHdc = IntPtr.Zero;
-
-        internal static IntPtr RegisterDrawTarget(IDrawTarget target) {
-            Graphics.nextHdc = IntPtr.Add(Graphics.nextHdc, 1);
-            Graphics.drawTargets.Add(Graphics.nextHdc, target);
-
-            return Graphics.nextHdc;
-        }
-
         public uint GetPixel(int x, int y) => this.surface.GetPixel(x, y);
         public void SetPixel(int x, int y, uint color) => this.surface.SetPixel(x, y, color);
         public byte[] GetBitmap() => this.surface.GetBitmap();
 
-        private static bool HasDrawing() {
-            foreach (var i in Interop.FindAll())
-                if (i.Name == "GHIElectronics.TinyCLR.Drawing")
-                    return true;
+        private static IGraphics CreateSurface(byte[] buffer) => CreateSurface(buffer, BitmapImageType.Bmp);
+        private static IGraphics CreateSurface(byte[] buffer, int width, int height) {
+            if (buffer == null)
+                throw new ArgumentNullException();
 
-            return false;
+            return new Internal.Bitmap(buffer, width, height);
         }
 
-        private static IGraphics CreateSurface(byte[] buffer) => CreateSurface(buffer, BitmapImageType.Bmp);
-
         private static IGraphics CreateSurface(byte[] buffer, BitmapImageType type) {
-            if (!Graphics.HasDrawing())
-                throw new NotSupportedException();
+            if (buffer == null)
+                throw new ArgumentNullException();
 
             return new Internal.Bitmap(buffer, type);
         }
 
         private static IGraphics CreateSurface(byte[] buffer, int offset, int count, BitmapImageType type) {
-            if (!Graphics.HasDrawing())
-                throw new NotSupportedException();
+            if (buffer == null)
+                throw new ArgumentNullException();
 
             return new Internal.Bitmap(buffer, offset, count, type);
         }
 
         private static IGraphics CreateSurface(int width, int height) {
-            if (!Graphics.HasDrawing()) {
-
-                throw new ArgumentException("Not supported");
-            }
+            if (width <= 0 || height <= 0)
+                throw new IndexOutOfRangeException();
 
             return new Internal.Bitmap(width, height);
         }
 
         internal Graphics(byte[] buffer) : this(Graphics.CreateSurface(buffer), IntPtr.Zero) { }
         internal Graphics(byte[] buffer, BitmapImageType type) : this(Graphics.CreateSurface(buffer, type), IntPtr.Zero) { }
-        internal Graphics(byte[] buffer,int offset, int count, BitmapImageType type) : this(Graphics.CreateSurface(buffer, offset, count, type), IntPtr.Zero) { }
+        internal Graphics(byte[] buffer, int offset, int count, BitmapImageType type) : this(Graphics.CreateSurface(buffer, offset, count, type), IntPtr.Zero) { }
         internal Graphics(int width, int height) : this(width, height, IntPtr.Zero) { }
-        private Graphics(int width, int height, IntPtr hdc) : this(Graphics.CreateSurface(width, height), hdc) { }
+        internal Graphics(int width, int height, IntPtr hdc) : this(Graphics.CreateSurface(width, height), hdc) { }
+        internal Graphics(byte[] buffer, int width, int height) : this(buffer, width, height, IntPtr.Zero) { }
+        internal Graphics(byte[] buffer, int width, int height, IntPtr hdc) : this(Graphics.CreateSurface(buffer, width, height), hdc) { }
 
         internal Graphics(IGraphics bmp, IntPtr hdc) {
             this.surface = bmp;
@@ -129,21 +106,21 @@ namespace System.Drawing {
         private uint ToFlags(StringFormat format, float height, bool ignoreHeight, bool truncateAtBottom) {
             var flags = 0U;
 
-            if (ignoreHeight || height == 0.0) flags |= Internal.Bitmap.DT_IgnoreHeight;
-            if (truncateAtBottom) flags |= Internal.Bitmap.DT_TruncateAtBottom;
+            if (ignoreHeight || height == 0.0) flags |= System.Drawing.Graphics.DT_IgnoreHeight;
+            if (truncateAtBottom) flags |= System.Drawing.Graphics.DT_TruncateAtBottom;
 
             if (format.FormatFlags != 0) throw new NotSupportedException();
 
             switch (format.Alignment) {
-                case StringAlignment.Center: flags |= Internal.Bitmap.DT_AlignmentCenter; break;
-                case StringAlignment.Far: flags |= Internal.Bitmap.DT_AlignmentRight; break;
-                case StringAlignment.Near: flags |= Internal.Bitmap.DT_AlignmentLeft; break;
+                case StringAlignment.Center: flags |= System.Drawing.Graphics.DT_AlignmentCenter; break;
+                case StringAlignment.Far: flags |= System.Drawing.Graphics.DT_AlignmentRight; break;
+                case StringAlignment.Near: flags |= System.Drawing.Graphics.DT_AlignmentLeft; break;
                 default: throw new ArgumentException();
             }
 
             switch (format.Trimming) {
-                case StringTrimming.EllipsisCharacter: flags |= Internal.Bitmap.DT_TrimmingCharacterEllipsis; break;
-                case StringTrimming.EllipsisWord: flags |= Internal.Bitmap.DT_WordWrap | Internal.Bitmap.DT_TrimmingWordEllipsis; break;
+                case StringTrimming.EllipsisCharacter: flags |= System.Drawing.Graphics.DT_TrimmingCharacterEllipsis; break;
+                case StringTrimming.EllipsisWord: flags |= System.Drawing.Graphics.DT_WordWrap | System.Drawing.Graphics.DT_TrimmingWordEllipsis; break;
                 case StringTrimming.None:
                     break;
 
@@ -178,16 +155,11 @@ namespace System.Drawing {
         public static Graphics FromHdc(IntPtr hdc) {
             if (hdc == IntPtr.Zero) throw new ArgumentNullException(nameof(hdc));
 
-            if (!Graphics.drawTargets.Contains(hdc)) {
-                var res = Internal.Bitmap.GetSizeForLcdFromHdc(hdc, out var width, out var height);
+            var res = Internal.Bitmap.GetSizeForLcdFromHdc(hdc, out var width, out var height);
 
-                if (!res || width == 0 || height == 0) throw new InvalidOperationException("No screen configured.");
+            if (!res || width == 0 || height == 0) throw new InvalidOperationException("No screen configured.");
 
-                return new Graphics(width, height, hdc);
-            }
-            else {
-                throw new ArgumentException("Not supported");
-            }
+            return new Graphics(width, height, hdc);
         }
 
         public static Graphics FromImage(Image image) {
@@ -302,6 +274,53 @@ namespace System.Drawing {
                 throw new NotSupportedException();
             }
         }
+
+        public void DrawImage(int xDst, int yDst, Image image, int xSrc, int ySrc, int width, int height, ushort opacity) => this.surface.DrawImage(xDst, yDst, image.data.surface, xSrc, ySrc, width, height, opacity);
+        public void Flush(int x, int y, int width, int height) {
+            if (this.hdc != IntPtr.Zero)
+                this.surface.Flush(this.hdc, x, y, width, height);
+        }
+        public void SetClippingRectangle(int x, int y, int width, int height) => this.surface.SetClippingRectangle(x, y, width, height);
+        public bool DrawTextInRect(ref string text, ref int xRelStart, ref int yRelStart, int x, int y, int width, int height, uint dtFlags, uint color, Font font) => this.surface.DrawTextInRect(ref text, ref xRelStart, ref yRelStart, x, y, width, height, dtFlags, color, font);
+        public void RotateImage(int angle, int xDst, int yDst, Image image, int xSrc, int ySrc, int width, int height, ushort opacity) => this.surface.RotateImage(angle, xDst, yDst, image.data.surface, xSrc, ySrc, width, height, opacity);
+        public void MakeTransparent(uint color) => this.surface.MakeTransparent(color);
+        public void StretchImage(int xDst, int yDst, int widthDst, int heightDst, Image image, int xSrc, int ySrc, int widthSrc, int heightSrc, ushort opacity) => this.surface.StretchImage(xDst, yDst, widthDst, heightDst, image.data.surface, xSrc, ySrc, widthSrc, heightSrc, opacity);
+        public void TileImage(int xDst, int yDst, Image image, int width, int height, ushort opacity) => this.surface.TileImage(xDst, yDst, image.data.surface, width, height, opacity);
+        public void Scale9Image(int xDst, int yDst, int widthDst, int heightDst, Image image, int leftBorder, int topBorder, int rightBorder, int bottomBorder, ushort opacity) => this.surface.Scale9Image(xDst, yDst, widthDst, heightDst, image.data.surface, leftBorder, topBorder, rightBorder, bottomBorder, opacity);
+
+        public const ushort OpacityOpaque = 0xFF;
+        public const ushort OpacityTransparent = 0;
+
+        public const int SRCCOPY = 0x00000001;
+        public const int PATINVERT = 0x00000002;
+        public const int DSTINVERT = 0x00000003;
+        public const int BLACKNESS = 0x00000004;
+        public const int WHITENESS = 0x00000005;
+        public const int DSTGRAY = 0x00000006;
+        public const int DSTLTGRAY = 0x00000007;
+        public const int DSTDKGRAY = 0x00000008;
+        public const int SINGLEPIXEL = 0x00000009;
+        public const int RANDOM = 0x0000000a;
+
+        //
+        // These have to be kept in sync with the CLR_GFX_Bitmap::c_DrawText_ flags.
+        //
+        public const uint DT_None = 0x00000000;
+        public const uint DT_WordWrap = 0x00000001;
+        public const uint DT_TruncateAtBottom = 0x00000004;
+        [Obsolete("Use DT_TrimmingWordEllipsis or DT_TrimmingCharacterEllipsis to specify the type of trimming needed.", false)]
+        public const uint DT_Ellipsis = 0x00000008;
+        public const uint DT_IgnoreHeight = 0x00000010;
+        public const uint DT_AlignmentLeft = 0x00000000;
+        public const uint DT_AlignmentCenter = 0x00000002;
+        public const uint DT_AlignmentRight = 0x00000020;
+        public const uint DT_AlignmentMask = 0x00000022;
+
+        public const uint DT_TrimmingNone = 0x00000000;
+        public const uint DT_TrimmingWordEllipsis = 0x00000008;
+        public const uint DT_TrimmingCharacterEllipsis = 0x00000040;
+        public const uint DT_TrimmingMask = 0x00000048;
+
     }
 
     namespace Internal {
@@ -337,6 +356,9 @@ namespace System.Drawing {
             public extern Bitmap(int width, int height);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
+            public extern Bitmap(byte[] data, int width, int height);
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void Clear();
 
             [MethodImpl(MethodImplOptions.InternalCall)]
@@ -360,39 +382,6 @@ namespace System.Drawing {
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void DrawRectangle(uint colorOutline, int thicknessOutline, int x, int y, int width, int height, int xCornerRadius, int yCornerRadius, uint colorGradientStart, int xGradientStart, int yGradientStart, uint colorGradientEnd, int xGradientEnd, int yGradientEnd, ushort opacity);
 
-            public const ushort OpacityOpaque = 0xFF;
-            public const ushort OpacityTransparent = 0;
-
-            public const int SRCCOPY = 0x00000001;
-            public const int PATINVERT = 0x00000002;
-            public const int DSTINVERT = 0x00000003;
-            public const int BLACKNESS = 0x00000004;
-            public const int WHITENESS = 0x00000005;
-            public const int DSTGRAY = 0x00000006;
-            public const int DSTLTGRAY = 0x00000007;
-            public const int DSTDKGRAY = 0x00000008;
-            public const int SINGLEPIXEL = 0x00000009;
-            public const int RANDOM = 0x0000000a;
-
-            //
-            // These have to be kept in sync with the CLR_GFX_Bitmap::c_DrawText_ flags.
-            //
-            public const uint DT_None = 0x00000000;
-            public const uint DT_WordWrap = 0x00000001;
-            public const uint DT_TruncateAtBottom = 0x00000004;
-            [Obsolete("Use DT_TrimmingWordEllipsis or DT_TrimmingCharacterEllipsis to specify the type of trimming needed.", false)]
-            public const uint DT_Ellipsis = 0x00000008;
-            public const uint DT_IgnoreHeight = 0x00000010;
-            public const uint DT_AlignmentLeft = 0x00000000;
-            public const uint DT_AlignmentCenter = 0x00000002;
-            public const uint DT_AlignmentRight = 0x00000020;
-            public const uint DT_AlignmentMask = 0x00000022;
-
-            public const uint DT_TrimmingNone = 0x00000000;
-            public const uint DT_TrimmingWordEllipsis = 0x00000008;
-            public const uint DT_TrimmingCharacterEllipsis = 0x00000040;
-            public const uint DT_TrimmingMask = 0x00000048;
-
             public void DrawTextInRect(string text, int x, int y, int width, int height, uint dtFlags, Color color, Font font) {
                 var xRelStart = 0;
                 var yRelStart = 0;
@@ -405,7 +394,7 @@ namespace System.Drawing {
             //public void DrawImage(int xDst, int yDst, Graphics bitmap, int xSrc, int ySrc, int width, int height) => DrawImage(xDst, yDst, bitmap, xSrc, ySrc, width, height, OpacityOpaque);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern void Flush(int x, int y, int width, int height);
+            public extern void Flush(IntPtr hdc, int x, int y, int width, int height);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void SetClippingRectangle(int x, int y, int width, int height);
@@ -444,6 +433,26 @@ namespace System.Drawing {
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void Scale9Image(int xDst, int yDst, int widthDst, int heightDst, Bitmap bitmap, int leftBorder, int topBorder, int rightBorder, int bottomBorder, ushort opacity);
+
+            public void DrawImage(int xDst, int yDst, IGraphics bitmap, int xSrc, int ySrc, int width, int height, ushort opacity) {
+                if (bitmap is Bitmap b)
+                    this.DrawImage(xDst, yDst, b, xSrc, ySrc, width, height, opacity);
+            }
+
+            public void RotateImage(int angle, int xDst, int yDst, IGraphics bitmap, int xSrc, int ySrc, int width, int height, ushort opacity) {
+                if (bitmap is Bitmap b)
+                    this.RotateImage(angle, xDst, yDst, b, xSrc, ySrc, width, height, opacity);
+            }
+
+            public void TileImage(int xDst, int yDst, IGraphics bitmap, int width, int height, ushort opacity) {
+                if (bitmap is Bitmap b)
+                    this.TileImage(xDst, yDst, b, width, height, opacity);
+            }
+
+            public void Scale9Image(int xDst, int yDst, int widthDst, int heightDst, IGraphics bitmap, int leftBorder, int topBorder, int rightBorder, int bottomBorder, ushort opacity) {
+                if (bitmap is Bitmap b)
+                    this.Scale9Image(xDst, yDst, widthDst, heightDst, b, leftBorder, topBorder, rightBorder, bottomBorder, opacity);
+            }
         }
     }
 }

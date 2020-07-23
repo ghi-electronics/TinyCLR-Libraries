@@ -40,6 +40,11 @@ namespace System.Drawing {
             GC.SuppressFinalize(this);
         }
 
+        public uint GetPixel(int x, int y) => this.data.GetPixel(x, y);
+        public void SetPixel(int x, int y, uint color) => this.data.SetPixel(x, y, color);
+        public byte[] GetBitmap() => this.data.GetBitmap();
+        public void MakeTransparent(uint color) => this.data.MakeTransparent(color);
+
         ~Image() => this.Dispose(false);
     }
 
@@ -53,6 +58,7 @@ namespace System.Drawing {
     public sealed class Bitmap : Image {
         private Bitmap(Internal.Bitmap bmp) => this.data = new Graphics(bmp, IntPtr.Zero);
         public Bitmap(int width, int height) => this.data = new Graphics(width, height);
+        public Bitmap(byte[] data, int width, int height) => this.data = new Graphics(data, width, height);
 
         public Bitmap(Stream stream) {
             if (stream == null) throw new ArgumentNullException(nameof(stream));
@@ -77,7 +83,7 @@ namespace System.Drawing {
         }
 
         public void SetPixel(int x, int y, Color color) => this.data.SetPixel(x, y, (uint)color.ToArgb());
-        public Color GetPixel(int x, int y) => Color.FromArgb((int)this.data.GetPixel(x, y));
+        public Color GetPixel(int x, int y) => Color.FromArgb((int)this.data.GetPixel(x, y));        
     }
 
     namespace Imaging {
