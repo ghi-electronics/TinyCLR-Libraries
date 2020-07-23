@@ -10,8 +10,6 @@ namespace System.Drawing {
         public int Width => this.data.Width;
         public int Height => this.data.Height;
 
-        public byte[] GetBitmap() => this.data.GetBitmap();
-
         public object Clone() => throw new NotImplementedException();
 
         public static Image FromStream(Stream stream) => new Bitmap(stream);
@@ -41,6 +39,11 @@ namespace System.Drawing {
             this.Dispose(true);
             GC.SuppressFinalize(this);
         }
+
+        public uint GetPixel(int x, int y) => this.data.GetPixel(x, y);
+        public void SetPixel(int x, int y, uint color) => this.data.SetPixel(x, y, color);
+        public byte[] GetBitmap() => this.data.GetBitmap();
+        public void MakeTransparent(uint color) => this.data.MakeTransparent(color);
 
         ~Image() => this.Dispose(false);
     }
