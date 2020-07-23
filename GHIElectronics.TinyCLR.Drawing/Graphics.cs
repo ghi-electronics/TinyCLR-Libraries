@@ -30,6 +30,7 @@ namespace System.Drawing {
 
         void Clear();
         void Flush(IntPtr hdc);
+        void Flush(IntPtr hdc, int x, int y, int width, int height);
 
         uint GetPixel(int x, int y);
         void SetPixel(int x, int y, uint color);
@@ -41,9 +42,7 @@ namespace System.Drawing {
         void DrawText(string text, Font font, uint color, int x, int y);
         void DrawTextInRect(string text, int x, int y, int width, int height, uint dtFlags, Color color, Font font);
         void StretchImage(int xDst, int yDst, int widthDst, int heightDst, IGraphics image, int xSrc, int ySrc, int widthSrc, int heightSrc, ushort opacity);
-
         void DrawImage(int xDst, int yDst, IGraphics image, int xSrc, int ySrc, int width, int height, ushort opacity);
-        void Flush(int x, int y, int width, int height);
         void SetClippingRectangle(int x, int y, int width, int height);
         bool DrawTextInRect(ref string text, ref int xRelStart, ref int yRelStart, int x, int y, int width, int height, uint dtFlags, uint color, Font font);
         void RotateImage(int angle, int xDst, int yDst, IGraphics image, int xSrc, int ySrc, int width, int height, ushort opacity);
@@ -296,7 +295,10 @@ namespace System.Drawing {
         }
 
         public void DrawImage(int xDst, int yDst, Image image, int xSrc, int ySrc, int width, int height, ushort opacity) => this.surface.DrawImage(xDst, yDst, image.data.surface, xSrc, ySrc, width, height, opacity);
-        public void Flush(int x, int y, int width, int height) => this.surface.Flush(x, y, width, height);
+        public void Flush(int x, int y, int width, int height) {
+            if (this.hdc != IntPtr.Zero)
+                this.surface.Flush(this.hdc, x, y, width, height);
+        }
         public void SetClippingRectangle(int x, int y, int width, int height) => this.surface.SetClippingRectangle(x, y, width, height);
         public bool DrawTextInRect(ref string text, ref int xRelStart, ref int yRelStart, int x, int y, int width, int height, uint dtFlags, uint color, Font font) => this.surface.DrawTextInRect(ref text, ref xRelStart, ref yRelStart, x, y, width, height, dtFlags, color, font);
         public void RotateImage(int angle, int xDst, int yDst, Image image, int xSrc, int ySrc, int width, int height, ushort opacity) => this.surface.RotateImage(angle, xDst, yDst, image.data.surface, xSrc, ySrc, width, height, opacity);
@@ -411,7 +413,7 @@ namespace System.Drawing {
             //public void DrawImage(int xDst, int yDst, Graphics bitmap, int xSrc, int ySrc, int width, int height) => DrawImage(xDst, yDst, bitmap, xSrc, ySrc, width, height, OpacityOpaque);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern void Flush(int x, int y, int width, int height);
+            public extern void Flush(IntPtr hdc, int x, int y, int width, int height);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void SetClippingRectangle(int x, int y, int width, int height);
