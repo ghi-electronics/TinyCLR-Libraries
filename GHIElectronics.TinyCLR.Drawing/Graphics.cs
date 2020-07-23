@@ -47,9 +47,9 @@ namespace System.Drawing {
         void SetClippingRectangle(int x, int y, int width, int height);
         bool DrawTextInRect(ref string text, ref int xRelStart, ref int yRelStart, int x, int y, int width, int height, uint dtFlags, uint color, Font font);
         void RotateImage(int angle, int xDst, int yDst, IGraphics image, int xSrc, int ySrc, int width, int height, ushort opacity);
-        void MakeTransparent(uint color);        
+        void MakeTransparent(uint color);
         void TileImage(int xDst, int yDst, IGraphics image, int width, int height, ushort opacity);
-        void Scale9Image(int xDst, int yDst, int widthDst, int heightDst, IGraphics image, int leftBorder, int topBorder, int rightBorder, int bottomBorder, ushort opacity);   
+        void Scale9Image(int xDst, int yDst, int widthDst, int heightDst, IGraphics image, int leftBorder, int topBorder, int rightBorder, int bottomBorder, ushort opacity);
     }
 
     public sealed class Graphics : MarshalByRefObject, IDisposable {
@@ -63,58 +63,46 @@ namespace System.Drawing {
 
         public GraphicsUnit PageUnit { get; } = GraphicsUnit.Pixel;
 
-        //private static Hashtable drawTargets = new Hashtable();
-        //private static IntPtr nextHdc = IntPtr.Zero;
-
-        //internal static IntPtr RegisterDrawTarget(IDrawTarget target) {
-        //    Graphics.nextHdc = IntPtr.Add(Graphics.nextHdc, 1);
-        //    Graphics.drawTargets.Add(Graphics.nextHdc, target);
-
-        //    return Graphics.nextHdc;
-        //}
-
         public uint GetPixel(int x, int y) => this.surface.GetPixel(x, y);
         public void SetPixel(int x, int y, uint color) => this.surface.SetPixel(x, y, color);
         public byte[] GetBitmap() => this.surface.GetBitmap();
 
-        private static bool HasDrawing() {
-            foreach (var i in Interop.FindAll())
-                if (i.Name == "GHIElectronics.TinyCLR.Drawing")
-                    return true;
+        private static IGraphics CreateSurface(byte[] buffer) => CreateSurface(buffer, BitmapImageType.Bmp);
+        private static IGraphics CreateSurface(byte[] buffer, int width, int height) {
+            if (buffer == null)
+                throw new ArgumentNullException();
 
-            return false;
+            return new Internal.Bitmap(buffer, width, height);
         }
 
-        private static IGraphics CreateSurface(byte[] buffer) => CreateSurface(buffer, BitmapImageType.Bmp);
-
         private static IGraphics CreateSurface(byte[] buffer, BitmapImageType type) {
-            if (!Graphics.HasDrawing())
-                throw new NotSupportedException();
+            if (buffer == null)
+                throw new ArgumentNullException();
 
             return new Internal.Bitmap(buffer, type);
         }
 
         private static IGraphics CreateSurface(byte[] buffer, int offset, int count, BitmapImageType type) {
-            if (!Graphics.HasDrawing())
-                throw new NotSupportedException();
+            if (buffer == null)
+                throw new ArgumentNullException();
 
             return new Internal.Bitmap(buffer, offset, count, type);
         }
 
         private static IGraphics CreateSurface(int width, int height) {
-            if (!Graphics.HasDrawing()) {
-
-                throw new ArgumentException("Not supported");
-            }
+            if (width <= 0 || height <= 0)
+                throw new IndexOutOfRangeException();
 
             return new Internal.Bitmap(width, height);
         }
 
         internal Graphics(byte[] buffer) : this(Graphics.CreateSurface(buffer), IntPtr.Zero) { }
         internal Graphics(byte[] buffer, BitmapImageType type) : this(Graphics.CreateSurface(buffer, type), IntPtr.Zero) { }
-        internal Graphics(byte[] buffer,int offset, int count, BitmapImageType type) : this(Graphics.CreateSurface(buffer, offset, count, type), IntPtr.Zero) { }
+        internal Graphics(byte[] buffer, int offset, int count, BitmapImageType type) : this(Graphics.CreateSurface(buffer, offset, count, type), IntPtr.Zero) { }
         internal Graphics(int width, int height) : this(width, height, IntPtr.Zero) { }
-        private Graphics(int width, int height, IntPtr hdc) : this(Graphics.CreateSurface(width, height), hdc) { }
+        internal Graphics(int width, int height, IntPtr hdc) : this(Graphics.CreateSurface(width, height), hdc) { }
+        internal Graphics(byte[] buffer, int width, int height) : this(buffer, width, height, IntPtr.Zero) { }
+        internal Graphics(byte[] buffer, int width, int height, IntPtr hdc) : this(Graphics.CreateSurface(buffer, width, height), hdc) { }
 
         internal Graphics(IGraphics bmp, IntPtr hdc) {
             this.surface = bmp;
@@ -189,9 +177,9 @@ namespace System.Drawing {
 
             var res = Internal.Bitmap.GetSizeForLcdFromHdc(hdc, out var width, out var height);
 
-                if (!res || width == 0 || height == 0) throw new InvalidOperationException("No screen configured.");
+            if (!res || width == 0 || height == 0) throw new InvalidOperationException("No screen configured.");
 
-                return new Graphics(width, height, hdc);
+            return new Graphics(width, height, hdc);
         }
 
         public static Graphics FromImage(Image image) {
@@ -316,7 +304,7 @@ namespace System.Drawing {
         public void StretchImage(int xDst, int yDst, int widthDst, int heightDst, Image image, int xSrc, int ySrc, int widthSrc, int heightSrc, ushort opacity) => this.surface.StretchImage(xDst, yDst, widthDst, heightDst, image.data.surface, xSrc, ySrc, widthSrc, heightSrc, opacity);
         public void TileImage(int xDst, int yDst, Image image, int width, int height, ushort opacity) => this.surface.TileImage(xDst, yDst, image.data.surface, width, height, opacity);
         public void Scale9Image(int xDst, int yDst, int widthDst, int heightDst, Image image, int leftBorder, int topBorder, int rightBorder, int bottomBorder, ushort opacity) => this.surface.Scale9Image(xDst, yDst, widthDst, heightDst, image.data.surface, leftBorder, topBorder, rightBorder, bottomBorder, opacity);
-   
+
     }
 
     namespace Internal {
@@ -334,7 +322,7 @@ namespace System.Drawing {
             ~Bitmap() => this.Dispose(false);
 
             public extern int Width { [MethodImpl(MethodImplOptions.InternalCall)] get; }
-            public extern int Height { [MethodImpl(MethodImplOptions.InternalCall)] get; }            
+            public extern int Height { [MethodImpl(MethodImplOptions.InternalCall)] get; }
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public static extern bool GetSizeForLcdFromHdc(IntPtr hdc, out int width, out int height);
@@ -350,6 +338,9 @@ namespace System.Drawing {
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern Bitmap(int width, int height);
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            public extern Bitmap(byte[] data, int width, int height);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void Clear();

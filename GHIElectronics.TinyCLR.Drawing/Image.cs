@@ -55,6 +55,7 @@ namespace System.Drawing {
     public sealed class Bitmap : Image {
         private Bitmap(Internal.Bitmap bmp) => this.data = new Graphics(bmp, IntPtr.Zero);
         public Bitmap(int width, int height) => this.data = new Graphics(width, height);
+        public Bitmap(byte[] data, int width, int height) => this.data = new Graphics(data, width, height);
 
         public Bitmap(Stream stream) {
             if (stream == null) throw new ArgumentNullException(nameof(stream));
