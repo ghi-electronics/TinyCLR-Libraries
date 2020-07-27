@@ -60,6 +60,7 @@ namespace GHIElectronics.TinyCLR.Devices.Rtc {
         }
 
         public void SetChargeMode(BatteryChargeMode chargeMode) => this.Provider.SetChargeMode(chargeMode);
+        public void Calibrate(int pulse) => this.Provider.Calibrate(pulse);
     }
 
     public struct RtcDateTime {
@@ -111,6 +112,7 @@ namespace GHIElectronics.TinyCLR.Devices.Rtc {
             void WriteBackupMemory(byte[] sourceData, uint sourceOffset, uint destinationOffset, int count);
             int ReadBackupMemory(byte[] destinationData, uint destinationOffset, uint sourceOffset, int count);
             void SetChargeMode(BatteryChargeMode chargeMode);
+            void Calibrate(int pulse);
         }
 
         public sealed class RtcControllerApiWrapper : IRtcControllerProvider {
@@ -152,6 +154,9 @@ namespace GHIElectronics.TinyCLR.Devices.Rtc {
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void SetChargeMode(BatteryChargeMode chargeMode);
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            public extern void Calibrate(int pulse);
         }
     }
 }
