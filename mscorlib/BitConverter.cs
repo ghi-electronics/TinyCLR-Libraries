@@ -102,6 +102,14 @@ namespace System {
         extern public static byte[] GetBytes(ushort value);
 
         /// <summary>
+        /// Organize an array with order from a pattern table
+        /// <param name="buffer">The source array.</param>
+        /// <param name="patternTable">The pattern table</param>
+        /// </summary>
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        extern public static byte[] GetBytes(byte[] buffer, byte[] patternTable);
+
+        /// <summary>
         /// Converts the specified 64-bit signed integer to a double-precision floating point number.
         /// </summary>
         /// <param name="value">The number to convert.</param>
