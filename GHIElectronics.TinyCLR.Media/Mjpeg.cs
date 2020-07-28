@@ -14,7 +14,7 @@ namespace GHIElectronics.TinyCLR.Media {
         //public event DataDecodedEventHandler Mp3DataDecodedEvent;
 
         private Stream stream;
-        private bool isDecoding;
+        public bool IsDecoding { get; internal set; }
         private int delayBetweenFrames;
         private Queue queue;
         private Setting setting;
@@ -67,7 +67,7 @@ namespace GHIElectronics.TinyCLR.Media {
         public void StartDecode(Stream stream) {
             this.stream = stream ?? throw new ArgumentNullException();
 
-            this.isDecoding = true;
+            this.IsDecoding = true;
 
             var pushThread = new Thread(this.Buffering);
 
@@ -78,7 +78,7 @@ namespace GHIElectronics.TinyCLR.Media {
             pop2Device.Start();
         }
 
-        public void StopDecode() => this.isDecoding = false;
+        public void StopDecode() => this.IsDecoding = false;
 
         private void Buffering() {
             var streamLength = this.stream.Length;
@@ -87,7 +87,7 @@ namespace GHIElectronics.TinyCLR.Media {
             while (i < streamLength) {
                 Thread.Sleep(1);
 
-                if (!this.isDecoding)
+                if (!this.IsDecoding)
                     break;
 
                 lock (this.queue) {
@@ -133,7 +133,7 @@ namespace GHIElectronics.TinyCLR.Media {
         private void Decoding() {
             var decodeHeader = true;
 
-            while (this.isDecoding) {
+            while (this.IsDecoding) {
                 Thread.Sleep(1);
 
                 lock (this.queue) {
@@ -149,7 +149,7 @@ namespace GHIElectronics.TinyCLR.Media {
 
                 for (var i = 0; i < this.setting.BufferSize - 4; i++) {
                     // Decode header
-                    var t1 = System.DateTime.Now.Ticks;
+                    var t1 = System.DateTime.Now;
                     var foundData = false;
 
                     if (decodeHeader) {
@@ -219,10 +219,10 @@ namespace GHIElectronics.TinyCLR.Media {
 
 
                     if (foundData) {
-                        var t2 = ((int)(System.DateTime.Now.Ticks - t1) / 10000) + 1;
+                        var now = (System.DateTime.Now - t1);
 
-                        if (t2 < this.delayBetweenFrames)
-                            Thread.Sleep(this.delayBetweenFrames - t2);
+                        if ((int)now.TotalMilliseconds < this.delayBetweenFrames)
+                            Thread.Sleep(this.delayBetweenFrames - (int)now.TotalMilliseconds);
 
                     }
                 }
@@ -230,7 +230,7 @@ namespace GHIElectronics.TinyCLR.Media {
         }
 
         public void Dispose() {
-            this.isDecoding = false;
+            this.IsDecoding = false;
             this.queue.Clear();
 
             if (this.unmanagedBuffer != null) {
