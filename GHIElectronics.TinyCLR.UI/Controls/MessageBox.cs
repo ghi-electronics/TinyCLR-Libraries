@@ -7,7 +7,7 @@ using GHIElectronics.TinyCLR.UI.Media;
 using GHIElectronics.TinyCLR.UI.Media.Imaging;
 
 namespace GHIElectronics.TinyCLR.UI.Controls {
-    public class MessageBox : StackPanel, IDisposable {        
+    public class MessageBox : StackPanel, IDisposable {
         private BitmapImage backImage;
         private Button buttonLeft;
         private Button buttonRight;
@@ -17,15 +17,17 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
         private void InitResource() => this.backImage = BitmapImage.FromGraphics(Graphics.FromImage(Resources.GetBitmap(Resources.BitmapResources.Modal)));
 
-        public MessageBox(int width, int height, int buttonWidth, int buttonHeight, string buttonLeftText, int buttonLeftMarginLeft, int buttonLeftMarginTop, string buttonRightText, int buttonRightMarginLeft, int buttonRightMarginTop, Font buttonFont) {
+        public MessageBox(int width, int height, string buttonLeftText, string buttonRightText, Font font) {
             this.InitResource();
 
             this.Orientation = Orientation.Horizontal;
 
             this.Width = width;
-            this.Height = height;            
+            this.Height = height;
+            this.TitlebarHeight = this.Height / 3;
+            this.Font = font;
 
-            var textButtonLeft = new Text(buttonFont, buttonLeftText) {
+            var textButtonLeft = new Text(font, buttonLeftText) {
                 ForeColor = Colors.Black,
                 HorizontalAlignment = GHIElectronics.TinyCLR.UI.HorizontalAlignment.Center,
                 VerticalAlignment = GHIElectronics.TinyCLR.UI.VerticalAlignment.Center,
@@ -34,36 +36,38 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
             this.buttonLeft = new Button() {
                 Child = textButtonLeft,
-                Width = buttonWidth,
-                Height = buttonHeight,
+                Width = width / 4,
+                Height = font.Height * 2,
             };
 
-            this.buttonLeft.SetMargin(buttonLeftMarginLeft, buttonLeftMarginTop, 0, 0);
-
-            var textButtonRight = new Text(buttonFont, buttonRightText) {
-                ForeColor = Colors.Black,
-                HorizontalAlignment = GHIElectronics.TinyCLR.UI.HorizontalAlignment.Center,
-                VerticalAlignment = GHIElectronics.TinyCLR.UI.VerticalAlignment.Center,
-
-            };
-
-            this.buttonRight = new Button() {
-                Child = textButtonRight,
-                Width = buttonWidth,
-                Height = buttonHeight,
-            };
-
-            this.buttonRight.SetMargin(buttonRightMarginLeft, buttonRightMarginTop, 0, 0);
+            if (buttonRightText != null) {
+                this.buttonLeft.SetMargin((width / 4 - this.buttonLeft.Width / 2), this.TitlebarHeight + font.Height * 2, 0, 0);
+            }
+            else {
+                this.buttonLeft.SetMargin((width / 2 - this.buttonLeft.Width / 2), this.TitlebarHeight + font.Height * 2, 0, 0);
+            }
 
             this.Children.Add(this.buttonLeft);
-            this.Children.Add(this.buttonRight);
-
             this.buttonLeft.Click += this.ButtonLeft_Click;
-            this.buttonRight.Click += this.ButtonRight_Click;
 
-            this.TitlebarHeight = this.Height / 3;
-            this.MessageFont = buttonFont;
-            this.TitleFont = buttonFont;
+            if (buttonRightText != null) {
+                var textButtonRight = new Text(font, buttonRightText) {
+                    ForeColor = Colors.Black,
+                    HorizontalAlignment = GHIElectronics.TinyCLR.UI.HorizontalAlignment.Center,
+                    VerticalAlignment = GHIElectronics.TinyCLR.UI.VerticalAlignment.Center,
+
+                };
+
+                this.buttonRight = new Button() {
+                    Child = textButtonRight,
+                    Width = width / 4,
+                    Height = font.Height * 2,
+                };
+
+                this.buttonRight.SetMargin(width / 2 - this.buttonRight.Width, this.TitlebarHeight + font.Height * 2, 0, 0);
+                this.Children.Add(this.buttonRight);
+                this.buttonRight.Click += this.ButtonRight_Click;
+            }
         }
 
         private void ButtonRight_Click(object sender, RoutedEventArgs e) => ButtonRightClick?.Invoke(sender, e);
@@ -71,8 +75,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         private void ButtonLeft_Click(object sender, RoutedEventArgs e) => ButtonLeftClick?.Invoke(sender, e);
 
         public override void OnRender(DrawingContext dc) {
-            var x = 0;
-            var y = this.TitlebarHeight;
+            var offsetX = 10;
 
             base.OnRender(dc);
 
@@ -80,26 +83,35 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             var message = this.Message;
 
             dc.Scale9Image(0, 0, this.Width, this.Height, this.backImage, this.RadiusBorder, this.RadiusBorder, this.RadiusBorder, this.RadiusBorder, this.Alpha);
-            dc.DrawText(ref tile, this.TitleFont, this.TitleColor, x + 10, 0 + ((this.TitlebarHeight - this.TitleFont.Height) / 2), this.Width - 20, this.TitleFont.Height, TextAlignment.Left, TextTrimming.None);
 
-            var messageHeight = this.Height - this.TitlebarHeight;
+            dc.DrawText(ref tile, this.Font, this.TitleColor, offsetX, (this.TitlebarHeight - this.Font.Height) / 2, this.Width, this.Font.Height, TextAlignment.Left, TextTrimming.None);
 
-            dc.DrawText(ref message, this.MessageFont, this.MessageColor, x + 10, y + 5, this.Width - 20, messageHeight - 10, TextAlignment.Left, TextTrimming.None);
+            dc.DrawText(ref message, this.Font, this.MessageColor, offsetX, this.TitlebarHeight, this.Width, this.Font.Height, TextAlignment.Left, TextTrimming.None);
         }
 
         public string Message { get; set; } = string.Empty;
-        public Font MessageFont { get; set; }
         public Media.Color MessageColor { get; set; } = Colors.Black;
-        public int TitlebarHeight  { get; set; } = 34;
+        public int TitlebarHeight { get; set; } = 34;
         public string Title { get; set; } = string.Empty;
-        public Font TitleFont { get; set; }
+        public Font Font { get; set; }
         public Media.Color TitleColor { get; set; } = Colors.Black;
         public int RadiusBorder { get; set; } = 5;
-        public ushort Alpha { get; set; }  = 0xFF;
+        public ushort Alpha { get; set; } = 0xFF;
 
         private bool disposed;
 
         public void Dispose() {
+            if (this.buttonLeft != null) {
+                this.buttonLeft.Click -= this.ButtonLeft_Click;
+            }
+
+            if (this.buttonRight != null) {
+                this.buttonRight.Click -= this.ButtonRight_Click;
+            }
+
+            if (this.Children != null)
+                this.Children.Clear();
+
             this.Dispose(true);
             GC.SuppressFinalize(this);
         }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.IO;
 using System.Threading;
 using GHIElectronics.TinyCLR.Native;
@@ -8,34 +9,25 @@ namespace GHIElectronics.TinyCLR.Media {
         const int BLOCK_SIZE = 4 * 1024;
 
         public delegate void DataDecodedEventHandler(byte[] data);
-        public event DataDecodedEventHandler FrameDecodedEvent;
+        public event DataDecodedEventHandler FrameReceived;
 
         //public event DataDecodedEventHandler Mp3DataDecodedEvent;
 
-        private Stream streamToBuffer;
-        private bool isDecoding;
-
+        private Stream stream;
+        public bool IsDecoding { get; internal set; }
         private int delayBetweenFrames;
+        private Queue queue;
+        private Setting setting;
 
         public class Setting {
             public int BufferSize { get; set; } = 2 * 1024 * 1024;
             public int BufferCount { get; set; } = 3;
-            public int DelayBetweenFrames { get; set; } = 1000 / 16;
+            public TimeSpan DelayBetweenFramesMilliseconds { get; set; } = TimeSpan.FromMilliseconds(1000 / 16);
         }
 
-        private class Fifo {
-            internal int bufferSize;
-            internal int bufferCount;
-
-            internal int fifoIn;
-            internal int fifoOut;
-            internal int fifoCount;
-
-            internal byte[][] buffer;
-            internal IntPtr[] unmanagedPtr;
-        }
-
-        private Fifo fifo;
+        private byte[][] buffer;
+        private UnmanagedBuffer[] unmanagedBuffer;
+        private uint currentBufferIdx;
 
         private class HeaderInfo {
             public int TimeBetweenFrames { get; internal set; }
@@ -49,71 +41,69 @@ namespace GHIElectronics.TinyCLR.Media {
         private HeaderInfo headerInfo;
 
         public Mjpeg(Setting setting) {
-            this.fifo = new Fifo {
-                bufferSize = setting.BufferSize,
-                bufferCount = setting.BufferCount
-            };
+            this.currentBufferIdx = 0;
+            this.queue = new Queue();
+            this.setting = setting;
+            this.headerInfo = new HeaderInfo();
+            this.delayBetweenFrames = (int)setting.DelayBetweenFramesMilliseconds.TotalMilliseconds;
 
-            this.fifo.buffer = new byte[this.fifo.bufferCount][];
-            this.fifo.unmanagedPtr = new IntPtr[this.fifo.bufferCount];
+            this.unmanagedBuffer = new UnmanagedBuffer[this.setting.BufferCount];
+            this.buffer = new byte[this.setting.BufferCount][];
 
-            for (var c = 0; c < this.fifo.bufferCount; c++) {
+            for (var c = 0; c < this.setting.BufferCount; c++) {
 
-                if (Memory.UnmanagedMemory.FreeBytes > this.fifo.bufferSize) {
-                    var ptr = Memory.UnmanagedMemory.Allocate(this.fifo.bufferSize);
-                    this.fifo.buffer[c] = Memory.UnmanagedMemory.ToBytes(ptr, this.fifo.bufferSize);
+                if (Memory.UnmanagedMemory.FreeBytes > this.setting.BufferSize) {
+                    this.unmanagedBuffer[c] = new UnmanagedBuffer(this.setting.BufferSize);
 
-                    this.fifo.unmanagedPtr[c] = ptr;
+                    this.buffer[c] = this.unmanagedBuffer[c].Bytes;
+
                 }
                 else {
-                    this.fifo.buffer[c] = new byte[this.fifo.bufferSize];
+                    this.buffer[c] = new byte[this.setting.BufferSize];
                 }
             }
-
-            this.headerInfo = new HeaderInfo();
-            this.delayBetweenFrames = setting.DelayBetweenFrames;
         }
 
         public void StartDecode(Stream stream) {
-            this.streamToBuffer = stream ?? throw new ArgumentNullException();
+            this.stream = stream ?? throw new ArgumentNullException();
 
-            this.isDecoding = true;
+            this.IsDecoding = true;
 
-            var pushThread = new Thread(this.PushStreamToBuffer);
+            var pushThread = new Thread(this.Buffering);
 
             pushThread.Start();
 
-            var pop2Device = new Thread(this.Pop2Device);
+            var pop2Device = new Thread(this.Decoding);
 
             pop2Device.Start();
         }
-        
-        public void StopDecode() => this.isDecoding = false;
 
-        private void PushStreamToBuffer() {
-            var streamLength = this.streamToBuffer.Length;
+        public void StopDecode() => this.IsDecoding = false;
+
+        private void Buffering() {
+            var streamLength = this.stream.Length;
             var i = 0;
 
             while (i < streamLength) {
                 Thread.Sleep(1);
 
-                if (!this.isDecoding)
+                if (!this.IsDecoding)
                     break;
 
-                if (this.fifo.fifoCount == this.fifo.bufferCount) {
-                    continue;
+                lock (this.queue) {
+                    if (this.queue.Count == this.setting.BufferCount)
+                        continue;
                 }
 
-                var lengthToBuffer = (int)((this.fifo.bufferSize < streamLength - i) ? this.fifo.bufferSize : (streamLength - i));
+                var lengthToBuffer = (int)((this.setting.BufferSize < streamLength - i) ? this.setting.BufferSize : (streamLength - i));
 
                 var block = lengthToBuffer / BLOCK_SIZE;
                 var remain = lengthToBuffer % BLOCK_SIZE;
 
                 var index = 0;
-                var id = this.fifo.fifoIn;
 
                 while (block > 0) {
-                    this.streamToBuffer.Read(this.fifo.buffer[id], index, BLOCK_SIZE);
+                    this.stream.Read(this.buffer[this.currentBufferIdx], index, BLOCK_SIZE);
                     index += BLOCK_SIZE;
                     block--;
 
@@ -123,66 +113,70 @@ namespace GHIElectronics.TinyCLR.Media {
                 }
 
                 if (remain > 0) {
-                    this.streamToBuffer.Read(this.fifo.buffer[id], index, remain);
+                    this.stream.Read(this.buffer[this.currentBufferIdx], index, remain);
 
                     i += remain;
                 }
 
-                lock (this.fifo) {
-                    this.fifo.fifoCount++;
+                lock (this.queue) {
+                    this.queue.Enqueue(this.buffer[this.currentBufferIdx]);
                 }
 
-                this.fifo.fifoIn++;
+                this.currentBufferIdx++;
 
-                if (this.fifo.fifoIn == this.fifo.bufferCount) {
-                    this.fifo.fifoIn = 0;
+                if (this.currentBufferIdx == this.setting.BufferCount) {
+                    this.currentBufferIdx = 0;
                 }
             }
-        }        
+        }
 
-        private void Pop2Device() {
+        private void Decoding() {
             var decodeHeader = true;
-            while (this.isDecoding) {
+
+            while (this.IsDecoding) {
                 Thread.Sleep(1);
 
-                lock (this.fifo) {
-                    if (this.fifo.fifoCount == 0) {
+                lock (this.queue) {
+                    if (this.queue.Count == 0)
                         continue;
-                    }
                 }
 
-                var id = this.fifo.fifoOut;
+                byte[] data;
 
-                for (var i = 0; i < this.fifo.bufferSize - 4; i++) {
+                lock (this.queue) {
+                    data = (byte[])this.queue.Dequeue();
+                }
+
+                for (var i = 0; i < this.setting.BufferSize - 4; i++) {
                     // Decode header
-                    var t1 = System.DateTime.Now.Ticks;
+                    var t1 = System.DateTime.Now;
                     var foundData = false;
 
-                    if (decodeHeader) {                        
-                        var riff = System.Text.Encoding.UTF8.GetString(this.fifo.buffer[id], 0, 4);
-                        var type = System.Text.Encoding.UTF8.GetString(this.fifo.buffer[id], 8, 4);
+                    if (decodeHeader) {
+                        var riff = System.Text.Encoding.UTF8.GetString(data, 0, 4);
+                        var type = System.Text.Encoding.UTF8.GetString(data, 8, 4);
 
                         if (riff.CompareTo("RIFF") == 0 || type.CompareTo("AVI ") == 0) {
 
                             i = 0x20; // fps
 
-                            this.headerInfo.TimeBetweenFrames = (this.fifo.buffer[id][i] | (this.fifo.buffer[id][i + 1] << 8) | (this.fifo.buffer[id][i + 2] << 16) | (this.fifo.buffer[id][i + 3] << 24)) / 1000;
+                            this.headerInfo.TimeBetweenFrames = (data[i] | (data[i + 1] << 8) | (data[i + 2] << 16) | (data[i + 3] << 24)) / 1000;
 
                             i += 4 * 4;
 
-                            this.headerInfo.TotalFrames = this.fifo.buffer[id][i] | (this.fifo.buffer[id][i + 1] << 8) | (this.fifo.buffer[id][i + 2] << 16) | (this.fifo.buffer[id][i + 3] << 24);
+                            this.headerInfo.TotalFrames = data[i] | (data[i + 1] << 8) | (data[i + 2] << 16) | (data[i + 3] << 24);
 
                             i += 3 * 4;
 
-                            this.headerInfo.SuggestedBufferSize = this.fifo.buffer[id][i] | (this.fifo.buffer[id][i + 1] << 8) | (this.fifo.buffer[id][i + 2] << 16) | (this.fifo.buffer[id][i + 3] << 24);
+                            this.headerInfo.SuggestedBufferSize = data[i] | (data[i + 1] << 8) | (data[i + 2] << 16) | (data[i + 3] << 24);
 
                             i += 4;
 
-                            this.headerInfo.Width = this.fifo.buffer[id][i] | (this.fifo.buffer[id][i + 1] << 8) | (this.fifo.buffer[id][i + 2] << 16) | (this.fifo.buffer[id][i + 3] << 24);
+                            this.headerInfo.Width = data[i] | (data[i + 1] << 8) | (data[i + 2] << 16) | (data[i + 3] << 24);
 
                             i += 4;
 
-                            this.headerInfo.Height = this.fifo.buffer[id][i] | (this.fifo.buffer[id][i + 1] << 8) | (this.fifo.buffer[id][i + 2] << 16) | (this.fifo.buffer[id][i + 3] << 24);
+                            this.headerInfo.Height = data[i] | (data[i + 1] << 8) | (data[i + 2] << 16) | (data[i + 3] << 24);
 
                             i += 4;
                         }
@@ -194,26 +188,26 @@ namespace GHIElectronics.TinyCLR.Media {
                     {
                         var jpegLength = 0;
 
-                        if (this.fifo.buffer[id][i] == (byte)'0'
-                        && this.fifo.buffer[id][i + 1] == (byte)'0'
-                        && this.fifo.buffer[id][i + 2] == (byte)'d'
-                        && this.fifo.buffer[id][i + 3] == (byte)'c') {
+                        if (data[i] == (byte)'0'
+                        && data[i + 1] == (byte)'0'
+                        && data[i + 2] == (byte)'d'
+                        && data[i + 3] == (byte)'c') {
                             i += 4;
 
-                            jpegLength = (this.fifo.buffer[id][i] | (this.fifo.buffer[id][i + 1] << 8) | (this.fifo.buffer[id][i + 2] << 16) | (this.fifo.buffer[id][i + 3] << 24));
+                            jpegLength = (data[i] | (data[i + 1] << 8) | (data[i + 2] << 16) | (data[i + 3] << 24));
 
                             i += 4;
 
-                            if (i + jpegLength > this.fifo.buffer[id].Length)
+                            if (i + jpegLength > data.Length)
                                 break;
 
                             if (jpegLength > 0) {
 
                                 var dataJpeg = new byte[jpegLength];
 
-                                Array.Copy(this.fifo.buffer[id], i, dataJpeg, 0, jpegLength);
+                                Array.Copy(data, i, dataJpeg, 0, jpegLength);
 
-                                FrameDecodedEvent?.Invoke(dataJpeg);
+                                FrameReceived?.Invoke(dataJpeg);
 
                                 i += (jpegLength - 1);
 
@@ -225,31 +219,23 @@ namespace GHIElectronics.TinyCLR.Media {
 
 
                     if (foundData) {
-                        var t2 = ((int)(System.DateTime.Now.Ticks - t1) / 10000) + 1;
+                        var now = (System.DateTime.Now - t1);
 
-                        if (t2 < this.delayBetweenFrames)
-                            Thread.Sleep(this.delayBetweenFrames - t2);
+                        if ((int)now.TotalMilliseconds < this.delayBetweenFrames)
+                            Thread.Sleep(this.delayBetweenFrames - (int)now.TotalMilliseconds);
 
                     }
                 }
-
-                lock (this.fifo) {
-                    this.fifo.fifoCount--;
-                }
-
-                this.fifo.fifoOut++;
-
-                if (this.fifo.fifoOut == this.fifo.bufferCount)
-                    this.fifo.fifoOut = 0;
             }
         }
 
         public void Dispose() {
-            this.isDecoding = false;
+            this.IsDecoding = false;
+            this.queue.Clear();
 
-            if (this.fifo.unmanagedPtr != null) {
-                for (var c = 0; c < this.fifo.bufferCount; c++) {
-                    Memory.UnmanagedMemory.Free(this.fifo.unmanagedPtr[c]);
+            if (this.unmanagedBuffer != null) {
+                for (var c = 0; c < this.setting.BufferCount; c++) {
+                    this.unmanagedBuffer[c].Dispose();
                 }
             }
         }
