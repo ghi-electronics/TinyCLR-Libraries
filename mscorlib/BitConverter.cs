@@ -107,7 +107,8 @@ namespace System {
         /// <param name="patternTable">The pattern table</param>
         /// </summary>
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        extern public static byte[] GetBytes(byte[] buffer, byte[] patternTable);
+        [CLSCompliant(false)]
+        extern public static byte[] GetBytes(byte[] buffer, uint[] patternTable);
 
         /// <summary>
         /// Converts the specified 64-bit signed integer to a double-precision floating point number.
