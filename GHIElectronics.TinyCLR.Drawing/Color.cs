@@ -189,14 +189,14 @@ namespace System.Drawing {
             Rgb332 = 3
         }
 
-        public static void Convert(byte[] inArray, RgbFormat inColorFormat, byte[] outArray, RgbFormat outColorFormat, byte alpha, bool swapRgb) {
+        public static void Convert(byte[] inArray, RgbFormat inColorFormat, byte[] outArray, RgbFormat outColorFormat, byte alpha, bool swapRgb, byte[] colorTable = null) {
             if (inArray == null || outArray == null)
                 throw new ArgumentNullException();
 
-            NativeConvert(inArray, inColorFormat, outArray, outColorFormat, alpha, swapRgb);
+            NativeConvert(inArray, inColorFormat, outArray, outColorFormat, alpha, swapRgb, colorTable);
         }
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        extern static void NativeConvert(byte[] inArray, RgbFormat inColorFormat, byte[] outArray, RgbFormat outColorFormat, byte alpha, bool swapRgb);
+        extern static void NativeConvert(byte[] inArray, RgbFormat inColorFormat, byte[] outArray, RgbFormat outColorFormat, byte alpha, bool swapRgb, byte[] colorTable);
     }
 }
