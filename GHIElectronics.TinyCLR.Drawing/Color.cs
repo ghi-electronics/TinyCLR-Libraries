@@ -186,17 +186,22 @@ namespace System.Drawing {
             Rgb8888 = 0,
             Rgb888 = 1,
             Rgb565 = 2,
-            Rgb332 = 3
+            Rgb323 = 3
         }
 
-        public static void Convert(byte[] inArray, RgbFormat inColorFormat, byte[] outArray, RgbFormat outColorFormat, byte alpha, bool swapRgb, byte[] colorTable = null) {
+        public static void Convert(byte[] inArray, RgbFormat inColorFormat, byte[] outArray, RgbFormat outColorFormat) => Convert(inArray, inColorFormat, outArray, outColorFormat, 0, false, false, null);
+        public static void Convert(byte[] inArray, RgbFormat inColorFormat, byte[] outArray, RgbFormat outColorFormat, byte alpha) => Convert(inArray, inColorFormat, outArray, outColorFormat, alpha, false, false, null);
+        public static void Convert(byte[] inArray, RgbFormat inColorFormat, byte[] outArray, RgbFormat outColorFormat, bool swapRedBlue) => Convert(inArray, inColorFormat, outArray, outColorFormat, 0, swapRedBlue, false, null);
+        public static void Convert(byte[] inArray, RgbFormat inColorFormat, byte[] outArray, RgbFormat outColorFormat, byte alpha, bool swapRedBlue) => Convert(inArray, inColorFormat, outArray, outColorFormat, alpha, swapRedBlue, false, null);
+
+        public static void Convert(byte[] inArray, RgbFormat inColorFormat, byte[] outArray, RgbFormat outColorFormat, byte alpha, bool swapRedBlue, bool swapRedGreen, byte[] colorTable) {
             if (inArray == null || outArray == null)
                 throw new ArgumentNullException();
 
-            NativeConvert(inArray, inColorFormat, outArray, outColorFormat, alpha, swapRgb, colorTable);
+            NativeConvert(inArray, inColorFormat, outArray, outColorFormat, alpha, swapRedBlue, swapRedGreen, colorTable);
         }
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        extern static void NativeConvert(byte[] inArray, RgbFormat inColorFormat, byte[] outArray, RgbFormat outColorFormat, byte alpha, bool swapRgb, byte[] colorTable);
+        extern static void NativeConvert(byte[] inArray, RgbFormat inColorFormat, byte[] outArray, RgbFormat outColorFormat, byte alpha, bool swapRedBlue, bool swapRedGreen, byte[] colorTable);
     }
 }
