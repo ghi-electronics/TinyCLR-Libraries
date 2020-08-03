@@ -40,7 +40,6 @@ namespace System.Drawing {
             GC.SuppressFinalize(this);
         }
 
-        public uint GetPixel(int x, int y) => this.data.GetPixel(x, y);
         public void SetPixel(int x, int y, uint color) => this.data.SetPixel(x, y, color);
         public byte[] GetBitmap() => this.data.GetBitmap();
         public void MakeTransparent(uint color) => this.data.MakeTransparent(color);
