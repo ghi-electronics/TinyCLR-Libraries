@@ -390,6 +390,12 @@ namespace GHIElectronics.TinyCLR.Pins {
                 public const int PF6 = STM32H7.AdcChannel.Channel8;
                 /// <summary>ADC pin.</summary>
                 public const int PH4 = STM32H7.AdcChannel.Channel15;
+                /// <summary>ADC pin.</summary>
+                public const int InternalReferenceVoltage = STM32H7.AdcChannel.Channel17;
+                /// <summary>ADC pin.</summary>
+                public const int InternalTemperatureSensor = STM32H7.AdcChannel.Channel18;
+                /// <summary>ADC pin.</summary>
+                public const int VBAT = STM32H7.AdcChannel.Channel19;
             }
         }
         
