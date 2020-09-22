@@ -39,7 +39,6 @@
     <Compile Include="FileSystemStructures.cs" />
     <Compile Include="IBlockDriver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="StorageDriver.cs" />
     <Compile Include="StringTable.cs" />
     <Compile Include="TinyFileStream.cs" />
     <Compile Include="TinyFileSystem.cs" />
@@ -51,6 +50,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\GHIElectronics.TinyCLR.Devices.Storage\GHIElectronics.TinyCLR.Devices.Storage.csproj">
+      <Project>{F3CD9D5A-75B4-4AD9-852D-4B0895ED3979}</Project>
+      <Name>GHIElectronics.TinyCLR.Devices.Storage</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GHIElectronics.TinyCLR.IO\GHIElectronics.TinyCLR.IO.csproj">
       <Project>{313AEC8E-2B47-4A1A-ACE2-A766D076B2AE}</Project>
       <Name>GHIElectronics.TinyCLR.IO</Name>
