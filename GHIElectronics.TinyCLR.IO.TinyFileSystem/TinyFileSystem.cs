@@ -56,7 +56,7 @@ namespace GHIElectronics.TinyCLR.IO.TinyFileSystem {
         /// Creates an instance of TinyFileSystem.
         /// </summary>
         
-        public TinyFileSystem(StorageController storage, int clusterSize)
+        public TinyFileSystem(StorageController storage, uint clusterSize)
         {
             this.blockDriver = new BlockDriver(storage, clusterSize);
 
