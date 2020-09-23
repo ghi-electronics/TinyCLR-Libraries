@@ -14,49 +14,50 @@
  */
 
 using GHIElectronics.TinyCLR.Devices.Storage;
+using GHIElectronics.TinyCLR.Devices.Storage.Provider;
 
 namespace GHIElectronics.TinyCLR.IO.TinyFileSystem {
     public partial class TinyFileSystem {
         private class BlockDriver : IBlockDriver {
-            private readonly StorageController storage;
+            private readonly IStorageControllerProvider storageProvider;
 
-            public BlockDriver(StorageController storage, uint clusterSize = 1024) {
-                if (storage == null || storage.Provider == null || storage.Descriptor == null || storage.Descriptor.RegionAddresses == null || storage.Descriptor.RegionSizes == null)
+            public BlockDriver(IStorageControllerProvider storageProvider, uint clusterSize = 1024) {
+                if (storageProvider == null || storageProvider.Descriptor == null || storageProvider.Descriptor.RegionAddresses == null || storageProvider.Descriptor.RegionSizes == null)
                     throw new System.ArgumentNullException();
 
-                if (storage.Descriptor.RegionAddresses.Length != 1
-                    || storage.Descriptor.RegionsContiguous == false
-                    || storage.Descriptor.RegionsEqualSized == false
-                    || storage.Descriptor.RegionSizes.Length != 1)
+                if (storageProvider.Descriptor.RegionAddresses.Length != 1
+                    || storageProvider.Descriptor.RegionsContiguous == false
+                    || storageProvider.Descriptor.RegionsEqualSized == false
+                    || storageProvider.Descriptor.RegionSizes.Length != 1)
 
                     throw new System.ArgumentException();
 
                 this.ClusterSize = (ushort)clusterSize;
-                this.storage = storage;
+                this.storageProvider = storageProvider;
             }
 
-            public void EraseChip() => this.storage.Provider.EraseAll(System.TimeSpan.MaxValue);
+            public void EraseChip() => this.storageProvider.EraseAll(System.TimeSpan.MaxValue);
 
             public void EraseSector(int sectorId) {
                 var address = sectorId * this.SectorSize;
 
-                if (!this.storage.Provider.IsErased(address, this.SectorSize))
-                    this.storage.Provider.Erase(address, this.SectorSize, System.TimeSpan.MaxValue);
+                if (!this.storageProvider.IsErased(address, this.SectorSize))
+                    this.storageProvider.Erase(address, this.SectorSize, System.TimeSpan.MaxValue);
             }
 
             public void Read(ushort clusterId, int clusterOffset, byte[] data, int index, int count) {
                 var address = (clusterId * this.ClusterSize) + clusterOffset;
-                this.storage.Provider.Read(address, count, data, clusterOffset, System.TimeSpan.MaxValue);
+                this.storageProvider.Read(address, count, data, clusterOffset, System.TimeSpan.MaxValue);
             }
 
             public void Write(ushort clusterId, int clusterOffset, byte[] data, int index, int count) {
                 var address = (clusterId * this.ClusterSize) + clusterOffset;
-                this.storage.Provider.Write(address, count, data, clusterOffset, System.TimeSpan.MaxValue);
+                this.storageProvider.Write(address, count, data, clusterOffset, System.TimeSpan.MaxValue);
             }
 
-            public int DeviceSize => this.storage.Provider.Descriptor.RegionCount * this.storage.Provider.Descriptor.RegionSizes[0];
+            public int DeviceSize => this.storageProvider.Descriptor.RegionCount * this.storageProvider.Descriptor.RegionSizes[0];
 
-            public int SectorSize => this.storage.Provider.Descriptor.RegionSizes[0];
+            public int SectorSize => this.storageProvider.Descriptor.RegionSizes[0];
 
             public ushort ClusterSize { get; }
         }
