@@ -24,16 +24,16 @@ namespace GHIElectronics.TinyCLR.Devices.Storage {
     }
 
     public sealed class StorageDescriptor {
-        public bool CanReadDirect { get; }
-        public bool CanWriteDirect { get; }
-        public bool CanExecuteDirect { get; }
-        public bool EraseBeforeWrite { get; }
-        public bool Removable { get; }
-        public bool RegionsContiguous { get; }
-        public bool RegionsEqualSized { get; }
-        public int RegionCount { get; }
-        public long[] RegionAddresses { get; }
-        public int[] RegionSizes { get; }
+        public bool CanReadDirect { get; set; }
+        public bool CanWriteDirect { get; set; }
+        public bool CanExecuteDirect { get; set; }
+        public bool EraseBeforeWrite { get; set; }
+        public bool Removable { get; set; }
+        public bool RegionsContiguous { get; set; }
+        public bool RegionsEqualSized { get; set; }
+        public int RegionCount { get; set; }
+        public long[] RegionAddresses { get; set; }
+        public int[] RegionSizes { get; set; }
     }
 
     namespace Provider {
@@ -46,6 +46,7 @@ namespace GHIElectronics.TinyCLR.Devices.Storage {
             int Write(long address, int count, byte[] buffer, int offset, TimeSpan timeout);
             int Erase(long address, int count, TimeSpan timeout);
             bool IsErased(long address, int count);
+            void EraseAll(TimeSpan timeout);
         }
 
         public sealed class StorageControllerApiWrapper : IStorageControllerProvider, IApiImplementation {
@@ -90,6 +91,9 @@ namespace GHIElectronics.TinyCLR.Devices.Storage {
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern bool IsErased(long address, int count);
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            public extern void EraseAll(TimeSpan timeout);
         }
     }
 }

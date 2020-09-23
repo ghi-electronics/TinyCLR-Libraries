@@ -20,13 +20,13 @@ namespace GHIElectronics.TinyCLR.IO.TinyFileSystem {
         private class BlockDriver : IBlockDriver {
             private readonly StorageController storage;
 
-            public BlockDriver(StorageController storage, uint clusterSize) {
+            public BlockDriver(StorageController storage, uint clusterSize = 1024) {
                 if (storage == null || storage.Provider == null || storage.Descriptor == null || storage.Descriptor.RegionAddresses == null || storage.Descriptor.RegionSizes == null)
                     throw new System.ArgumentNullException();
 
                 if (storage.Descriptor.RegionAddresses.Length != 1
                     || storage.Descriptor.RegionsContiguous == false
-                    || storage.Descriptor.RegionsEqualSized == false    
+                    || storage.Descriptor.RegionsEqualSized == false
                     || storage.Descriptor.RegionSizes.Length != 1)
 
                     throw new System.ArgumentException();
@@ -35,12 +35,7 @@ namespace GHIElectronics.TinyCLR.IO.TinyFileSystem {
                 this.storage = storage;
             }
 
-            public void EraseChip() {
-                var address = 0;
-
-                if (!this.storage.Provider.IsErased(address, this.DeviceSize))
-                    this.storage.Provider.Erase(address, this.DeviceSize, System.TimeSpan.MaxValue);
-            }
+            public void EraseChip() => this.storage.Provider.EraseAll(System.TimeSpan.MaxValue);
 
             public void EraseSector(int sectorId) {
                 var address = sectorId * this.SectorSize;
