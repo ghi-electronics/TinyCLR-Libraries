@@ -18,6 +18,7 @@ using System.Text;
 using System.Collections;
 using System.IO;
 using System.Diagnostics;
+using GHIElectronics.TinyCLR.Devices.Storage;
 
 namespace GHIElectronics.TinyCLR.IO.TinyFileSystem {
     /// <summary>
@@ -54,11 +55,10 @@ namespace GHIElectronics.TinyCLR.IO.TinyFileSystem {
         /// <summary>
         /// Creates an instance of TinyFileSystem.
         /// </summary>
-
-        //public TinyFileSystem(Storage memory, Int32 pagesPerCluster = 4)
-        public TinyFileSystem(StorageDriver storage)
+        
+        public TinyFileSystem(StorageController storage, uint clusterSize)
         {
-            this.blockDriver = new BlockDriver(storage, storage.PagesPerCluster);
+            this.blockDriver = new BlockDriver(storage, clusterSize);
 
             // Precalculate commonly used values based on the device parameters provided by the block driver.
             this.totalSectorCount = (ushort)(this.blockDriver.DeviceSize / this.blockDriver.SectorSize);
