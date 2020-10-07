@@ -36,6 +36,11 @@ namespace GHIElectronics.TinyCLR.Native {
         Other
     }
 
+    public enum SystemClock : uint {
+        High = 0,
+        Low = 1,
+    }
+
     public static class Power {
 
         public static void Reset() => Power.Reset(true);
@@ -68,6 +73,12 @@ namespace GHIElectronics.TinyCLR.Native {
 
             SetLevel(PowerLevel.Off, wakeupSource, time);
         }
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        public static extern void SetSystemClock(SystemClock clock);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        public static extern SystemClock GetSystemClock();
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         public static extern void Reset(bool runCoreAfter);
