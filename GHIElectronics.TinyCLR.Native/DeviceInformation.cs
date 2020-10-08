@@ -15,5 +15,7 @@ namespace GHIElectronics.TinyCLR.Native {
         public static string ManufacturerName { get; }
         public static ulong Version { get; }
         public static DebugInterface DebugInterface { get; }
+        public static byte[] UniqueId { get; }
+
     }
 }
