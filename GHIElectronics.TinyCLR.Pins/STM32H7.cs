@@ -421,7 +421,7 @@ namespace GHIElectronics.TinyCLR.Pins {
         }
 
         /// <summary>PWM pin definitions.</summary>
-        public static class PwmChannel {
+        public static class Timer {
             /// <summary>API id.</summary>
             public const string Tim1 = "GHIElectronics.TinyCLR.NativeApis.STM32H7.PwmController\\0";
             /// <summary>API id.</summary>
