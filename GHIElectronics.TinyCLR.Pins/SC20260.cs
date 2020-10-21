@@ -333,78 +333,78 @@ namespace GHIElectronics.TinyCLR.Pins {
         }
 
         /// <summary>ADC channel definitions.</summary>
-        public static class AdcChannel {
+        public static class Adc {
             /// <summary>ADC controller.</summary>
             public static class Controller1 {
                 /// <summary>API id.</summary>
-                public const string Id = STM32H7.AdcChannel.Adc1;
+                public const string Id = STM32H7.Adc.Adc1;
 
                 /// <summary>ADC pin.</summary>
-                public const int PA0C = STM32H7.AdcChannel.Channel0;
+                public const int PA0C = STM32H7.Adc.Channel0;
                 /// <summary>ADC pin.</summary>
-                public const int PA1C = STM32H7.AdcChannel.Channel1;
+                public const int PA1C = STM32H7.Adc.Channel1;
                 /// <summary>ADC pin.</summary>
-                public const int PA6 = STM32H7.AdcChannel.Channel3;
+                public const int PA6 = STM32H7.Adc.Channel3;
                 /// <summary>ADC pin.</summary>
-                public const int PB1 = STM32H7.AdcChannel.Channel5;
+                public const int PB1 = STM32H7.Adc.Channel5;
                 /// <summary>ADC pin.</summary>
-                public const int PA7 = STM32H7.AdcChannel.Channel7;
+                public const int PA7 = STM32H7.Adc.Channel7;
                 /// <summary>ADC pin.</summary>
-                public const int PB0 = STM32H7.AdcChannel.Channel9;
+                public const int PB0 = STM32H7.Adc.Channel9;
                 /// <summary>ADC pin.</summary>
-                public const int PC0 = STM32H7.AdcChannel.Channel10;
+                public const int PC0 = STM32H7.Adc.Channel10;
                 /// <summary>ADC pin.</summary>
-                public const int PC2 = STM32H7.AdcChannel.Channel12;
+                public const int PC2 = STM32H7.Adc.Channel12;
                 /// <summary>ADC pin.</summary>
-                public const int PC3 = STM32H7.AdcChannel.Channel13;
+                public const int PC3 = STM32H7.Adc.Channel13;
                 /// <summary>ADC pin.</summary>
-                public const int PA3 = STM32H7.AdcChannel.Channel15;
+                public const int PA3 = STM32H7.Adc.Channel15;
                 /// <summary>ADC pin.</summary>
-                public const int PA0 = STM32H7.AdcChannel.Channel16;
+                public const int PA0 = STM32H7.Adc.Channel16;
                 /// <summary>ADC pin.</summary>
-                public const int PA4 = STM32H7.AdcChannel.Channel18;
+                public const int PA4 = STM32H7.Adc.Channel18;
                 /// <summary>ADC pin.</summary>
-                public const int PA5 = STM32H7.AdcChannel.Channel19;
+                public const int PA5 = STM32H7.Adc.Channel19;
             }
             /// <summary>ADC controller.</summary>
             public static class Controller3 {
                 /// <summary>API id.</summary>
-                public const string Id = STM32H7.AdcChannel.Adc3;
+                public const string Id = STM32H7.Adc.Adc3;
 
                 /// <summary>ADC pin.</summary>
-                public const int PC2C = STM32H7.AdcChannel.Channel0;
+                public const int PC2C = STM32H7.Adc.Channel0;
                 /// <summary>ADC pin.</summary>
-                public const int PC3C = STM32H7.AdcChannel.Channel1;
+                public const int PC3C = STM32H7.Adc.Channel1;
                 /// <summary>ADC pin.</summary>
-                public const int PF9 = STM32H7.AdcChannel.Channel2;
+                public const int PF9 = STM32H7.Adc.Channel2;
                 /// <summary>ADC pin.</summary>
-                public const int PF7 = STM32H7.AdcChannel.Channel3;
+                public const int PF7 = STM32H7.Adc.Channel3;
                 /// <summary>ADC pin.</summary>
-                public const int PF10 = STM32H7.AdcChannel.Channel6;
+                public const int PF10 = STM32H7.Adc.Channel6;
                 /// <summary>ADC pin.</summary>
-                public const int PF8 = STM32H7.AdcChannel.Channel7;
+                public const int PF8 = STM32H7.Adc.Channel7;
                 /// <summary>ADC pin.</summary>
-                public const int PF6 = STM32H7.AdcChannel.Channel8;
+                public const int PF6 = STM32H7.Adc.Channel8;
                 /// <summary>ADC pin.</summary>
-                public const int PH4 = STM32H7.AdcChannel.Channel15;
+                public const int PH4 = STM32H7.Adc.Channel15;
                 /// <summary>ADC pin.</summary>
-                public const int InternalReferenceVoltage = STM32H7.AdcChannel.Channel17;
+                public const int InternalReferenceVoltage = STM32H7.Adc.Channel17;
                 /// <summary>ADC pin.</summary>
-                public const int InternalTemperatureSensor = STM32H7.AdcChannel.Channel18;
+                public const int InternalTemperatureSensor = STM32H7.Adc.Channel18;
                 /// <summary>ADC pin.</summary>
-                public const int VBAT = STM32H7.AdcChannel.Channel19;
+                public const int VBAT = STM32H7.Adc.Channel19;
             }
         }
 
         /// <summary>DAC channel definitions.</summary>
-        public static class DacChannel {
+        public static class Dac {
             /// <summary>API id.</summary>
-            public const string Id = STM32H7.DacChannel.Id;
+            public const string Id = STM32H7.Dac.Id;
 
             /// <summary>DAC channel.</summary>
-            public const int PA4 = STM32H7.DacChannel.Channel1;
+            public const int PA4 = STM32H7.Dac.Channel1;
             /// <summary>DAC channel.</summary>
-            public const int PA5 = STM32H7.DacChannel.Channel2;
+            public const int PA5 = STM32H7.Dac.Channel2;
         }
 
         /// <summary>Network controller definitions.</summary>

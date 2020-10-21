@@ -361,7 +361,7 @@ namespace GHIElectronics.TinyCLR.Pins {
         }
 
         /// <summary>ADC channel definitions.</summary>
-        public static class AdcChannel {
+        public static class Adc {
             /// <summary>API id.</summary>
             public const string Adc1 = "GHIElectronics.TinyCLR.NativeApis.STM32H7.AdcController\\0";
             /// <summary>API id.</summary>
@@ -410,7 +410,7 @@ namespace GHIElectronics.TinyCLR.Pins {
         }
 
         /// <summary>DAC channel definitions.</summary>
-        public static class DacChannel {
+        public static class Dac {
             /// <summary>API id.</summary>
             public const string Id = "GHIElectronics.TinyCLR.NativeApis.STM32H7.DacController\\0";
 
