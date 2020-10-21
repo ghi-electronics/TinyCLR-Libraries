@@ -163,8 +163,7 @@ namespace GHIElectronics.TinyCLR.Pins {
         /// <summary>ADC channel definitions.</summary>
         public static class AdcChannel {
             /// <summary>ADC controller.</summary>
-            public static class Controller1
-            { 
+            public static class Controller1 {
                 /// <summary>API id.</summary>
                 public const string Id = STM32H7.AdcChannel.Adc1;
 
@@ -190,8 +189,7 @@ namespace GHIElectronics.TinyCLR.Pins {
                 public const int PA5 = STM32H7.AdcChannel.Channel19;
             }
             /// <summary>ADC controller.</summary>
-            public static class Controller3
-            {
+            public static class Controller3 {
                 /// <summary>API id.</summary>
                 public const string Id = STM32H7.AdcChannel.Adc3;
 
@@ -207,7 +205,7 @@ namespace GHIElectronics.TinyCLR.Pins {
                 public const int VBAT = STM32H7.AdcChannel.Channel19;
             }
         }
-        
+
         /// <summary>DAC channel definitions.</summary>
         public static class DacChannel {
             /// <summary>API id.</summary>
@@ -231,113 +229,122 @@ namespace GHIElectronics.TinyCLR.Pins {
             public const string Ppp = "GHIElectronics.TinyCLR.NativeApis.Ppp.NetworkController";
         }
 
-        /// <summary>PWM pin definitions.</summary>
-        public static class PwmChannel {
-            /// <summary>PWM controller.</summary>
-            public static class Controller1 {
-                /// <summary>API id.</summary>
-                public const string Id = STM32H7.PwmChannel.Tim1;
+        public static class Timer {
+            /// <summary>PWM pin definitions.</summary>
+            public static class Pwm {
+                /// <summary>PWM controller.</summary>
+                public static class Controller1 {
+                    /// <summary>API id.</summary>
+                    public const string Id = STM32H7.Timer.Tim1;
 
-                /// <summary>PWM pin.</summary>
-                public const int PE9 = STM32H7.PwmChannel.Channel0;
-                /// <summary>PWM pin.</summary>
-                public const int PE11 = STM32H7.PwmChannel.Channel1;
-                /// <summary>PWM pin.</summary>
-                public const int PE13 = STM32H7.PwmChannel.Channel2;
-                /// <summary>PWM pin.</summary>
-                public const int PE14 = STM32H7.PwmChannel.Channel3;
+                    /// <summary>PWM pin.</summary>
+                    public const int PE9 = STM32H7.Timer.Channel0;
+                    /// <summary>PWM pin.</summary>
+                    public const int PE11 = STM32H7.Timer.Channel1;
+                    /// <summary>PWM pin.</summary>
+                    public const int PE13 = STM32H7.Timer.Channel2;
+                    /// <summary>PWM pin.</summary>
+                    public const int PE14 = STM32H7.Timer.Channel3;
+                }
+
+                /// <summary>PWM controller.</summary>
+                public static class Controller2 {
+                    /// <summary>API id.</summary>
+                    public const string Id = STM32H7.Timer.Tim2;
+
+                    /// <summary>PWM pin.</summary>
+                    public const int PA15 = STM32H7.Timer.Channel0;
+                    /// <summary>PWM pin.</summary>
+                    public const int PB3 = STM32H7.Timer.Channel1;
+                    /// <summary>PWM pin.</summary>
+                    public const int PA3 = STM32H7.Timer.Channel3;
+                }
+
+                /// <summary>PWM controller.</summary>
+                public static class Controller3 {
+                    /// <summary>API id.</summary>
+                    public const string Id = STM32H7.Timer.Tim3;
+
+                    /// <summary>PWM pin.</summary>
+                    public const int PC6 = STM32H7.Timer.Channel0;
+                    /// <summary>PWM pin.</summary>
+                    public const int PC7 = STM32H7.Timer.Channel1;
+                    /// <summary>PWM pin.</summary>
+                    public const int PB0 = STM32H7.Timer.Channel2;
+                    /// <summary>PWM pin.</summary>
+                    public const int PB1 = STM32H7.Timer.Channel3;
+                }
+
+                /// <summary>PWM controller.</summary>
+                public static class Controller4 {
+                    /// <summary>API id.</summary>
+                    public const string Id = STM32H7.Timer.Tim4;
+
+                    /// <summary>PWM pin.</summary>
+                    public const int PB7 = STM32H7.Timer.Channel1;
+
+                }
+
+                public static class Controller5 {
+                    /// <summary>API id.</summary>
+                    public const string Id = STM32H7.Timer.Tim5;
+
+                    /// <summary>PWM pin.</summary>
+                    public const int PA0 = STM32H7.Timer.Channel0;
+                }
+                public static class Controller13 {
+                    /// <summary>API id.</summary>
+                    public const string Id = STM32H7.Timer.Tim13;
+
+                    /// <summary>PWM pin.</summary>
+                    public const int PA6 = STM32H7.Timer.Channel0;
+                }
+                public static class Controller14 {
+                    /// <summary>API id.</summary>
+                    public const string Id = STM32H7.Timer.Tim14;
+
+                    /// <summary>PWM pin.</summary>
+                    public const int PA7 = STM32H7.Timer.Channel0;
+                }
+                public static class Controller15 {
+                    /// <summary>API id.</summary>
+                    public const string Id = STM32H7.Timer.Tim15;
+
+                    /// <summary>PWM pin.</summary>
+                    public const int PE5 = STM32H7.Timer.Channel0;
+                    /// <summary>PWM pin.</summary>
+                    public const int PE6 = STM32H7.Timer.Channel1;
+                }
+
+                public static class Controller16 {
+                    /// <summary>API id.</summary>
+                    public const string Id = STM32H7.Timer.Tim16;
+
+                    /// <summary>PWM pin.</summary>
+                    public const int PB8 = STM32H7.Timer.Channel0;
+                }
+
+                public static class Controller17 {
+                    /// <summary>API id.</summary>
+                    public const string Id = STM32H7.Timer.Tim17;
+
+                    /// <summary>PWM pin.</summary>
+                    public const int PB9 = STM32H7.Timer.Channel0;
+                }
             }
+            /// <summary>Capture pin definitions.</summary>
+            public static class Capture {
+                public static class Controller2 {
 
-            /// <summary>PWM controller.</summary>
-            public static class Controller2 {
-                /// <summary>API id.</summary>
-                public const string Id = STM32H7.PwmChannel.Tim2;
+                    /// <summary>Capture pin.</summary>
+                    public const int PA0 = GpioPin.PA0;
+                }
 
-                /// <summary>PWM pin.</summary>
-                public const int PA15 = STM32H7.PwmChannel.Channel0;
-                /// <summary>PWM pin.</summary>
-                public const int PB3 = STM32H7.PwmChannel.Channel1;
-                /// <summary>PWM pin.</summary>
-                public const int PA3 = STM32H7.PwmChannel.Channel3;
-            }
+                public static class Controller5 {
 
-            /// <summary>PWM controller.</summary>
-            public static class Controller3 {
-                /// <summary>API id.</summary>
-                public const string Id = STM32H7.PwmChannel.Tim3;
-
-                /// <summary>PWM pin.</summary>
-                public const int PC6 = STM32H7.PwmChannel.Channel0;
-                /// <summary>PWM pin.</summary>
-                public const int PC7 = STM32H7.PwmChannel.Channel1;
-                /// <summary>PWM pin.</summary>
-                public const int PB0 = STM32H7.PwmChannel.Channel2;
-                /// <summary>PWM pin.</summary>
-                public const int PB1 = STM32H7.PwmChannel.Channel3;
-            }
-
-            /// <summary>PWM controller.</summary>
-            public static class Controller4
-            {
-                /// <summary>API id.</summary>
-                public const string Id = STM32H7.PwmChannel.Tim4;
-
-                /// <summary>PWM pin.</summary>
-                public const int PB7 = STM32H7.PwmChannel.Channel1;
-
-            }
-
-            public static class Controller5
-            {
-                /// <summary>API id.</summary>
-                public const string Id = STM32H7.PwmChannel.Tim5;
-
-                /// <summary>PWM pin.</summary>
-                public const int PA0 = STM32H7.PwmChannel.Channel0;
-            }
-            public static class Controller13
-            {
-                /// <summary>API id.</summary>
-                public const string Id = STM32H7.PwmChannel.Tim13;
-
-                /// <summary>PWM pin.</summary>
-                public const int PA6 = STM32H7.PwmChannel.Channel0;
-            }
-            public static class Controller14
-            {
-                /// <summary>API id.</summary>
-                public const string Id = STM32H7.PwmChannel.Tim14;
-
-                /// <summary>PWM pin.</summary>
-                public const int PA7 = STM32H7.PwmChannel.Channel0;
-            }
-            public static class Controller15
-            {
-                /// <summary>API id.</summary>
-                public const string Id = STM32H7.PwmChannel.Tim15;
-
-                /// <summary>PWM pin.</summary>
-                public const int PE5 = STM32H7.PwmChannel.Channel0;
-                /// <summary>PWM pin.</summary>
-                public const int PE6 = STM32H7.PwmChannel.Channel1;
-            }
-
-            public static class Controller16
-            {
-                /// <summary>API id.</summary>
-                public const string Id = STM32H7.PwmChannel.Tim16;
-
-                /// <summary>PWM pin.</summary>
-                public const int PB8 = STM32H7.PwmChannel.Channel0;
-            }
-
-            public static class Controller17
-            {
-                /// <summary>API id.</summary>
-                public const string Id = STM32H7.PwmChannel.Tim17;
-
-                /// <summary>PWM pin.</summary>
-                public const int PB9 = STM32H7.PwmChannel.Channel0;
+                    /// <summary>Capture pin.</summary>
+                    public const int PB3 = GpioPin.PB3;
+                }
             }
         }
 
