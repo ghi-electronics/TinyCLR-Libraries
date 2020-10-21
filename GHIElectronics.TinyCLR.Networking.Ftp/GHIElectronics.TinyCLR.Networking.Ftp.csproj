@@ -1,0 +1,89 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildThisFileDirectory)..\mscorlib.props" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{7D5D449A-E1A6-4232-8132-C7C982187560}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>GHIElectronics.TinyCLR.Networking.Ftp</RootNamespace>
+    <AssemblyName>GHIElectronics.TinyCLR.Networking.Ftp</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{A1948822-69DD-4150-919B-F3F42EFB71CC};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Client\FTPCommand.cs" />
+    <Compile Include="Client\FTPWebRequest.cs" />
+    <Compile Include="Client\FtpWebRequestCreator.cs" />
+    <Compile Include="Client\FtpWebResponse.cs" />
+    <Compile Include="Client\WebRequestMethods.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Server\FilePath.cs" />
+    <Compile Include="Server\FtpCommand.cs" />
+    <Compile Include="Server\FtpListener.cs" />
+    <Compile Include="Server\FtpListenerContext.cs" />
+    <Compile Include="Server\FtpListenerManager.cs" />
+    <Compile Include="Server\FtpListenerRequest.cs" />
+    <Compile Include="Server\FtpListenerResponse.cs" />
+    <Compile Include="Server\FtpListenerSession.cs" />
+    <Compile Include="Server\FtpResponseStream.cs" />
+    <Compile Include="Server\Listeners\FtpDefaultListener.cs" />
+    <Compile Include="Server\Listeners\FtpFilesystemListener.cs" />
+    <Compile Include="Server\Listeners\FtpMemoryListener.cs" />
+    <Compile Include="Server\Logging.cs" />
+    <Compile Include="Server\PrefixList.cs" />
+    <Compile Include="Server\SessionPool.cs" />
+    <Compile Include="Server\Types.cs" />
+    <Compile Include="Server\Util.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="GHIElectronics.TinyCLR.Networking.Ftp.nuspec" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GHIElectronics.TinyCLR.IO\GHIElectronics.TinyCLR.IO.csproj">
+      <Project>{313AEC8E-2B47-4A1A-ACE2-A766D076B2AE}</Project>
+      <Name>GHIElectronics.TinyCLR.IO</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GHIElectronics.TinyCLR.Networking.Http\GHIElectronics.TinyCLR.Networking.Http.csproj">
+      <Project>{D89B51CA-0A2C-4A50-8312-D3B3F57F1096}</Project>
+      <Name>GHIElectronics.TinyCLR.Networking.Http</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GHIElectronics.TinyCLR.Networking\GHIElectronics.TinyCLR.Networking.csproj">
+      <Project>{1AFA3955-B36D-4A8A-8B7F-86F39FC2FDE3}</Project>
+      <Name>GHIElectronics.TinyCLR.Networking</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\GHIElectronics.Tools.NuGetPacker.1.0.3\build\GHIElectronics.Tools.NuGetPacker.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\GHIElectronics.Tools.NuGetPacker.1.0.3\build\GHIElectronics.Tools.NuGetPacker.targets'))" />
+    <Error Condition="'$(DoAssemblySign)'=='true' And !Exists('..\packages\GHIElectronics.Tools.AssemblySigner.1.0.3\build\GHIElectronics.Tools.AssemblySigner.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\GHIElectronics.Tools.AssemblySigner.1.0.3\build\GHIElectronics.Tools.AssemblySigner.targets'))" />
+  </Target>
+  <Import Project="..\packages\GHIElectronics.Tools.NuGetPacker.1.0.3\build\GHIElectronics.Tools.NuGetPacker.targets" Condition="Exists('..\packages\GHIElectronics.Tools.NuGetPacker.1.0.3\build\GHIElectronics.Tools.NuGetPacker.targets')" />
+  <Import Project="..\packages\GHIElectronics.Tools.AssemblySigner.1.0.3\build\GHIElectronics.Tools.AssemblySigner.targets" Condition="'$(DoAssemblySign)'=='true' And Exists('..\packages\GHIElectronics.Tools.AssemblySigner.1.0.3\build\GHIElectronics.Tools.AssemblySigner.targets')" />
+</Project>
