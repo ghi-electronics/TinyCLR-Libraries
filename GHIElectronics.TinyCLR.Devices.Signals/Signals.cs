@@ -147,7 +147,6 @@ namespace GHIElectronics.TinyCLR.Devices.Signals {
 
         public bool CanReadPulse => !this.isReading;
         public bool CanCapture => !this.isReading;
-        public uint SourceClock => this.NativeGetSourceClock();
 
         public DigitalSignal(GpioPin pin) {
             this.pinNumber = pin.PinNumber;
@@ -262,9 +261,6 @@ namespace GHIElectronics.TinyCLR.Devices.Signals {
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private extern bool NativeGetBuffer(uint[] data);
-
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        private extern uint NativeGetSourceClock();
 
     }
 }
