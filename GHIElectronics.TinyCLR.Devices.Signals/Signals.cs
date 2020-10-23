@@ -136,8 +136,8 @@ namespace GHIElectronics.TinyCLR.Devices.Signals {
         private int pinNumber;
         private readonly NativeEventDispatcher nativeEventDispatcher;
 
-        public delegate void PulseReadEventHandler(DigitalSignal sender, TimeSpan duration, uint count);
-        public delegate void PulseCaptureEventHandler(DigitalSignal sender, uint[] buffer, uint count);
+        public delegate void PulseReadEventHandler(DigitalSignal sender, TimeSpan duration, uint count, GpioPinValue initialState);
+        public delegate void PulseCaptureEventHandler(DigitalSignal sender, uint[] buffer, uint count, GpioPinValue initialState);
 
         private PulseReadEventHandler pulseReadCallback;
         private PulseCaptureEventHandler pulseCaptureCallback;
@@ -160,13 +160,13 @@ namespace GHIElectronics.TinyCLR.Devices.Signals {
                             var data = new uint[(int)d2];
 
                             if (this.NativeGetBuffer(data))
-                                this.pulseCaptureCallback?.Invoke(this, data, (uint)data.Length);
+                                this.pulseCaptureCallback?.Invoke(this, data, (uint)data.Length, ((int)d3 != 0) ? GpioPinValue.High : GpioPinValue.Low);
                         }
                         else
-                            this.pulseCaptureCallback?.Invoke(this, null, 0);
+                            this.pulseCaptureCallback?.Invoke(this, null, 0, GpioPinValue.Low);
                     }
                     else {
-                        this.pulseReadCallback?.Invoke(this, new TimeSpan(d1), (uint)d2);
+                        this.pulseReadCallback?.Invoke(this, new TimeSpan(d1), (uint)d2, ((int)d3 != 0) ? GpioPinValue.High : GpioPinValue.Low);
                     }
 
                 }
