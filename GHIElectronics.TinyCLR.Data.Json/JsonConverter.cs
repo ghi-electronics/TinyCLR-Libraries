@@ -89,7 +89,8 @@ namespace GHIElectronics.TinyCLR.Data.Json
                     else
                     {
                         method = type.GetMethod("get_" + prop.Name);
-                        if (method == null) {
+                        if (method == null)
+                        {
                             continue;
                         }
                         itemType = method.ReturnType;
@@ -113,55 +114,14 @@ namespace GHIElectronics.TinyCLR.Data.Json
                         }
                         else if (prop.Value is JValue)
                         {
+                            var scalarValue = ConvertScalar((JValue)prop.Value, itemType);
                             if (field != null)
                             {
-                                if (itemType == typeof(float))
-                                {
-                                    field.SetValue(instance, (float)((double)((JValue)prop.Value).Value));
-                                }
-                                else if (itemType != typeof(DateTime))
-                                {
-                                    field.SetValue(instance, ((JValue)prop.Value).Value);
-                                }
-                                else
-                                {
-                                    DateTime dt;
-                                    var sdtValue = ((JValue)prop.Value).Value;
-                                    if (sdtValue is DateTime)
-                                    {
-                                        dt = (DateTime)sdtValue;
-                                    }
-                                    else
-                                    {
-                                        var sdt = sdtValue.ToString();
-                                        if (sdt.Contains("Date("))
-                                            dt = DateTimeExtensions.FromASPNetAjax(sdt);
-                                        else
-                                            dt = DateTimeExtensions.FromIso8601(sdt);
-                                    }
-                                    field.SetValue(instance, dt);
-                                }
+                                field.SetValue(instance, scalarValue);
                             }
                             else
                             {
-                                if (itemType == typeof(float)) {
-                                    method.Invoke(instance, new object[] { (float)((double)((JValue)prop.Value).Value) });
-                                }
-                                else if (itemType != typeof(DateTime))
-                                {
-                                    method.Invoke(instance, new object[] { ((JValue)prop.Value).Value });
-                                }
-                                else
-                                {
-                                    DateTime dt;
-                                    var sdt = ((JValue)prop.Value).Value.ToString();
-                                    if (sdt.Contains("Date("))
-                                        dt = DateTimeExtensions.FromASPNetAjax(sdt);
-                                    else
-                                        dt = DateTimeExtensions.FromIso8601(sdt);
-
-                                    method.Invoke(instance, new object[] { dt });
-                                }
+                                method.Invoke(instance, new object[] { scalarValue });
                             }
                         }
                         else if (prop.Value is JArray)
@@ -173,21 +133,28 @@ namespace GHIElectronics.TinyCLR.Data.Json
                             var list = new ArrayList();
                             var array = (Array)factory(path, prop.Name, jarray.Length);
                             //var array = Array.CreateInstance(field.FieldType.GetElementType(), jarray.Length);
-                            foreach (var elem in jarray.Items)
+                            if (array != null)
                             {
-                                if (elem is JValue)
-                                    list.Add(((JValue)elem).Value);
-                                else
+                                var elemType = array.GetType().GetElementType();
+                                foreach (var elem in jarray.Items)
                                 {
-                                    var arrayObj = PopulateObject(elem, null, path + "/" + prop.Name, factory);
-                                    list.Add(arrayObj);
+                                    if (elem is JValue)
+                                    {
+                                        var scalarValue = ConvertScalar((JValue)elem, elemType);
+                                        list.Add(scalarValue);
+                                    }
+                                    else
+                                    {
+                                        var arrayObj = PopulateObject(elem, null, path + "/" + prop.Name, factory);
+                                        list.Add(arrayObj);
+                                    }
                                 }
+                                list.CopyTo(array);
+                                if (field != null)
+                                    field.SetValue(instance, array);
+                                else
+                                    method.Invoke(instance, new object[] { array });
                             }
-                            list.CopyTo(array);
-                            if (field != null)
-                                field.SetValue(instance, array);
-                            else
-                                method.Invoke(instance, new object[] { array });
                         }
                     }
                 }
@@ -223,6 +190,145 @@ namespace GHIElectronics.TinyCLR.Data.Json
             }
             return null;
         }
+
+        private static object ConvertScalar(JValue value, Type targetType)
+        {
+            object result = null;
+
+            // This is a matrix of conversions from the source (value) type to targetType.
+            // This is a bit long because the available Convert.ToXXXX functions are more
+            // limited than in .net, so we have to do the scalar conversions ourselves.
+            if (targetType == value.Value.GetType())
+            {
+                result = value.Value;
+            }
+            else if (targetType == typeof(DateTime))
+            {
+                DateTime dt;
+                var sdt = value.Value.ToString();
+                if (sdt.Contains("Date("))
+                    dt = DateTimeExtensions.FromASPNetAjax(sdt);
+                else
+                    dt = DateTimeExtensions.FromIso8601(sdt);
+
+                result = dt;
+            }
+            else
+            {
+                if (value.Value.GetType() == typeof(ulong))
+                {
+                    var source = (ulong)value.Value;
+                    if (targetType == typeof(float))
+                    {
+                        result = (float)source;
+                    }
+                    else if (targetType == typeof(double))
+                    {
+                        result = (double)source;
+                    }
+                    else if (targetType == typeof(long))
+                    {
+                        result = (long)source;
+                    }
+                    else if (targetType == typeof(short))
+                    {
+                        result = (short)source;
+                    }
+                    else if (targetType == typeof(ushort))
+                    {
+                        result = (ushort)source;
+                    }
+                    else if (targetType == typeof(int))
+                    {
+                        result = (int)source;
+                    }
+                    else if (targetType == typeof(uint))
+                    {
+                        result = (uint)source;
+                    }
+                    else
+                    {
+                        result = value.Value;
+                    }
+                }
+                else if (value.Value.GetType() == typeof(long))
+                {
+                    var source = (long)value.Value;
+                    if (targetType == typeof(float))
+                    {
+                        result = (float)source;
+                    }
+                    else if (targetType == typeof(double))
+                    {
+                        result = (double)source;
+                    }
+                    else if (targetType == typeof(ulong))
+                    {
+                        result = (ulong)source;
+                    }
+                    else if (targetType == typeof(short))
+                    {
+                        result = (short)source;
+                    }
+                    else if (targetType == typeof(ushort))
+                    {
+                        result = (ushort)source;
+                    }
+                    else if (targetType == typeof(int))
+                    {
+                        result = (int)source;
+                    }
+                    else if (targetType == typeof(uint))
+                    {
+                        result = (uint)source;
+                    }
+                    else
+                    {
+                        result = value.Value;
+                    }
+                }
+                else if (value.Value.GetType() == typeof(double))
+                {
+                    var source = (double)value.Value;
+                    if (targetType == typeof(float))
+                    {
+                        result = (float)source;
+                    }
+                    else if (targetType == typeof(long))
+                    {
+                        result = (long)source;
+                    }
+                    else if (targetType == typeof(ulong))
+                    {
+                        result = (ulong)source;
+                    }
+                    else if (targetType == typeof(short))
+                    {
+                        result = (short)source;
+                    }
+                    else if (targetType == typeof(ushort))
+                    {
+                        result = (ushort)source;
+                    }
+                    else if (targetType == typeof(int))
+                    {
+                        result = (int)source;
+                    }
+                    else if (targetType == typeof(uint))
+                    {
+                        result = (uint)source;
+                    }
+                    else
+                    {
+                        result = value.Value;
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        private static object ConvertScalar(JProperty prop, Type targetType) => ConvertScalar((JValue)prop.Value, targetType);
 
         public static JToken Deserialize(string sourceString)
         {
@@ -268,12 +374,14 @@ namespace GHIElectronics.TinyCLR.Data.Json
             return result;
         }
 
-        public static JToken FromBson(byte[] buffer, InstanceFactory factory = null) {
+        public static JToken FromBson(byte[] buffer, InstanceFactory factory = null)
+        {
             var offset = 0;
             var len = (Int32)SerializationUtilities.Unmarshall(buffer, ref offset, TypeCode.Int32);
 
             JToken dserResult = null;
-            while (offset < buffer.Length - 1) {
+            while (offset < buffer.Length - 1)
+            {
                 var bsonType = (BsonTypes)buffer[offset++];
 
                 // eat the empty ename
@@ -283,7 +391,8 @@ namespace GHIElectronics.TinyCLR.Data.Json
                 var ename = JToken.ConvertToString(buffer, offset, idxNul - offset);
                 offset = idxNul + 1;
 
-                switch (bsonType) {
+                switch (bsonType)
+                {
                     case BsonTypes.BsonDocument:
                         dserResult = JObject.FromBson(buffer, ref offset, factory);
                         break;
@@ -299,7 +408,8 @@ namespace GHIElectronics.TinyCLR.Data.Json
             return dserResult;
         }
 
-        public static object FromBson(byte[] buffer, Type resultType, InstanceFactory factory = null) {
+        public static object FromBson(byte[] buffer, Type resultType, InstanceFactory factory = null)
+        {
             var jtoken = FromBson(buffer);
             return PopulateObject(jtoken, resultType, "/", factory);
         }
@@ -370,10 +480,27 @@ namespace GHIElectronics.TinyCLR.Data.Json
                 return new JValue(token.TValue);
             else if (token.TType == TokenType.Number)
             {
-                if (token.TValue.IndexOfAny(new char[] { '.', 'e', 'E' }) != -1)
+                // If it looks like a double, use double as the underlying storage type
+                if (token.TValue.Length > 0 && (token.TValue[0] == 'E' || token.TValue[0] == 'e'))
+                {
+                    // exponent with no leading mantissa
+                    return new JValue(double.Parse("1" + token.TValue));
+                }
+                else if (token.TValue.IndexOfAny(new char[] { '.', 'e', 'E' }) != -1)
+                {
+                    // well-formed double, with or without E notation
                     return new JValue(double.Parse(token.TValue));
+                }
                 else
-                    return new JValue(int.Parse(token.TValue));
+                {
+                    // Otherwise, an int of some type
+                    // Use Int64 as the underlying storage type. If you don't see a minus
+                    // sign, then prefer UInt64 for maximum range.
+                    if (token.TValue.IndexOf('-') != -1)
+                        return new JValue(Int64.Parse(token.TValue));
+                    else
+                        return new JValue(UInt64.Parse(token.TValue));
+                }
             }
             else if (token.TType == TokenType.True)
                 return new JValue(true);
@@ -557,7 +684,7 @@ namespace GHIElectronics.TinyCLR.Data.Json
         // Legal first characters for numbers
         private static bool IsNumberIntroChar(char ch)
         {
-            return (ch == '-') || (ch == '+') || (ch == '.') || (ch >= '0' & ch <= '9');
+            return (ch == '-') || (ch == '+') || (ch == '.') || (ch >= '0' & ch <= '9') || (ch == 'e') || (ch == 'E');  // 'e' for exponential notation
         }
 
         // Legal chars for 2..n'th position of a number
