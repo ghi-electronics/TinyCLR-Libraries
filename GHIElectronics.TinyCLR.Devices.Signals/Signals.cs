@@ -1,6 +1,7 @@
 using System;
 using System.Runtime.CompilerServices;
 using GHIElectronics.TinyCLR.Devices.Gpio;
+using GHIElectronics.TinyCLR.Native;
 
 namespace GHIElectronics.TinyCLR.Devices.Signals {
     public enum PulseFeedbackMode {
@@ -130,52 +131,117 @@ namespace GHIElectronics.TinyCLR.Devices.Signals {
         public extern int Read(GpioPinValue waitForState, TimeSpan[] buffer, int offset, int count);
     }
 
-    internal class PulseCounter : IDisposable {
+    public class DigitalSignal : IDisposable {
 
         private int pinNumber;
-        private TimeSpan Timeout { get; set; } = TimeSpan.MaxValue;
+        private readonly NativeEventDispatcher nativeEventDispatcher;
 
-        public GpioPinEdge Edge { get; set; }
+        public delegate void PulseReadEventHandler(DigitalSignal sender, TimeSpan duration, uint count, GpioPinValue initialState);
+        public delegate void PulseCaptureEventHandler(DigitalSignal sender, uint[] buffer, uint count, GpioPinValue initialState);
 
-        public PulseCounter(GpioPin pin, GpioPinEdge edge) {
+        private PulseReadEventHandler pulseReadCallback;
+        private PulseCaptureEventHandler pulseCaptureCallback;
+
+        private bool isReading;
+        private bool isCapture;
+
+        public bool CanReadPulse => !this.isReading;
+        public bool CanCapture => !this.isReading;
+
+        public DigitalSignal(GpioPin pin) {
             this.pinNumber = pin.PinNumber;
-            this.Edge = edge;
+
+            this.nativeEventDispatcher = NativeEventDispatcher.GetDispatcher("GHIElectronics.TinyCLR.NativeEventNames.DigitalSignal.Event");
+
+            this.nativeEventDispatcher.OnInterrupt += (apiName, d0, d1, d2, d3, ts) => {
+                if (!this.disposed && this.isReading && d0 == this.pinNumber && apiName.CompareTo("DigitalSignal") == 0) {
+                    if (this.isCapture == true) {
+                        if (d2 > 0) {
+                            var data = new uint[(int)d2];
+
+                            if (this.NativeGetBuffer(data))
+                                this.pulseCaptureCallback?.Invoke(this, data, (uint)data.Length, ((int)d3 != 0) ? GpioPinValue.High : GpioPinValue.Low);
+                        }
+                        else
+                            this.pulseCaptureCallback?.Invoke(this, null, 0, GpioPinValue.Low);
+                    }
+                    else {
+                        this.pulseReadCallback?.Invoke(this, new TimeSpan(d1), (uint)d2, ((int)d3 != 0) ? GpioPinValue.High : GpioPinValue.Low);
+                    }
+
+                }
+
+                this.isReading = false;
+                this.isCapture = false;
+            };
 
             this.NativeAcquire();
+
+            this.isReading = false;
         }
 
-        public void Dispose() => this.NativeRelease();
+        private bool disposed;
 
-        public TimeSpan Read(int counter) {
+        public void Dispose() {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
 
-            var end = DateTime.Now.Ticks + this.Timeout.Ticks;
+        protected virtual void Dispose(bool disposing) {
+            if (!this.disposed) {
 
-            this.NativeStartReading();
+                this.NativeRelease();
 
-            if (this.Timeout == TimeSpan.MaxValue)
-                while (this.NativeGetCount() < counter) ;
-            else {
-                while (this.NativeGetCount() < counter && DateTime.Now.Ticks < end) ;
+                this.isReading = false;
+
+                this.disposed = true;
             }
-
-            this.NativeStopReading();
-
-            var duration = this.NativeGetDuration();
-
-            return duration;
         }
 
-        public int Read(TimeSpan duration) {
+        ~DigitalSignal() {
+            this.Dispose(false);
+        }
 
-            var end = DateTime.Now.Ticks + duration.Ticks;
+        public void ReadPulse(uint pulseNum, GpioPinEdge edge, bool waitForEdge) {
+            if (this.isReading)
+                new InvalidOperationException();
 
-            this.NativeStartReading();
+            this.isReading = true;
+            this.isCapture = false;
 
-            while (DateTime.Now.Ticks < end) ;
+            this.NativeRead(pulseNum, edge, waitForEdge);
+        }
 
-            this.NativeStopReading();
+        public void Capture(uint count, GpioPinEdge edge, bool waitForEdge, TimeSpan timeout) {
+            if (this.isReading)
+                new InvalidOperationException();
 
-            return this.NativeGetCount();
+            this.isReading = true;
+            this.isCapture = true;
+
+            this.NativeCapture(count, edge, waitForEdge, timeout);
+        }
+
+        public void Capture(uint bufferSize, GpioPinEdge edge, bool waitForEdge) => this.Capture(bufferSize, edge, waitForEdge, TimeSpan.Zero);
+
+        public void Abort() => this.NativeAbort();
+
+        public event PulseReadEventHandler OnReadPulseReady {
+            add {
+                this.pulseReadCallback += value;
+            }
+            remove {
+                this.pulseReadCallback -= value;
+            }
+        }
+
+        public event PulseCaptureEventHandler OnCaptureReady {
+            add {
+                this.pulseCaptureCallback += value;
+            }
+            remove {
+                this.pulseCaptureCallback -= value;
+            }
         }
 
         [MethodImpl(MethodImplOptions.InternalCall)]
@@ -185,16 +251,16 @@ namespace GHIElectronics.TinyCLR.Devices.Signals {
         private extern void NativeRelease();
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private extern void NativeStartReading();
+        private extern void NativeRead(uint count, GpioPinEdge edge, bool waitForEdge);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private extern TimeSpan NativeGetDuration();
+        private extern void NativeCapture(uint count, GpioPinEdge edge, bool waitForEdge, TimeSpan timeout);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private extern int NativeGetCount();
+        private extern void NativeAbort();
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private extern void NativeStopReading();
+        private extern bool NativeGetBuffer(uint[] data);
 
     }
 }

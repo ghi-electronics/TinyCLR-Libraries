@@ -243,7 +243,6 @@ namespace System {
         /// <param name="data">The array of bytes.</param>
         /// <param name="groupSize">Group of bytes to be swapped</param>
         /// </summary>
-        [CLSCompliant(false)]
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         extern public static void SwapEndianness(byte[] data, int groupSize);
     }

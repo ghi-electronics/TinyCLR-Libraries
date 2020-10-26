@@ -46,10 +46,11 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
     public class Mqtt {
         const int CONNECTION_TIMEOUT_DEFAULT = 60000;
         const int PING_TIMEOUT_DEFAULT = 5000;
+        const int RETRY_DEFAULT = 3;
 
-        public delegate void PublishReceivedEventHandler(object sender, MqttPacket packet);
+        public delegate void PublishReceivedEventHandler(object sender, string topic, byte[] data, bool duplicate, QoSLevel qosLevel, bool retain);
         public delegate void PublishedEventHandler(object sender, uint packetId, bool published);
-        public delegate void SubscribedEventHandler(object sender, MqttPacket packet);
+        public delegate void SubscribedEventHandler(object sender, uint packetId, QoSLevel[] grantedQoSLevels);
         public delegate void UnsubscribedEventHandler(object sender, uint packetId);
         public delegate void ConnectedEventHandler(object sender);
 
@@ -80,6 +81,7 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
         private readonly MqttStream stream;
 
         private readonly Queue packetQueue;
+        private readonly Queue internalPacketQueue;
         private readonly Queue eventQueue;
 
         private bool isConnectionClosed;
@@ -99,6 +101,7 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
 
             this.waitForPushPacketEvent = new AutoResetEvent(false);
             this.packetQueue = new Queue();
+            this.internalPacketQueue = new Queue();
 
             this.waitForPushEventEvent = new AutoResetEvent(false);
             this.eventQueue = new Queue();
@@ -184,9 +187,8 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
 
             this.autoPingReqEvent.Set();
 
-
-
             this.packetQueue.Clear();
+            this.internalPacketQueue.Clear();
             this.eventQueue.Clear();
 
             this.stream.Close();
@@ -206,7 +208,6 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
 
             }
 
-
             if (pingresp == null) {
                 this.CloseConnection();
 
@@ -225,7 +226,8 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
                 new MqttPacket(PacketType.Subscribe) {
                     PacketId = packetId,
                     Topics = topics,
-                    QosLevels = qosLevels
+                    QosLevels = qosLevels,
+                    LastWillQosLevel = QoSLevel.LeastOnce // Subcribe is always Qos1
                 };
 
             this.PushPacketToQueue(subscribe, PacketDirection.ToServer);
@@ -286,11 +288,11 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
             }
         }
 
-        private void OnTopicPublishReceived(MqttPacket packet) => this.PublishReceivedChanged?.Invoke(this, packet);
+        private void OnTopicPublishReceived(MqttPacket packet) => this.PublishReceivedChanged?.Invoke(this, packet.LastWillTopic, packet.Data, packet.IsDuplicated, packet.LastWillQosLevel, packet.LastWillRetain);
 
         private void OnTopicPublished(uint packetId, bool isPublished) => this.PublishedChanged?.Invoke(this, packetId, isPublished);
 
-        private void OnTopicSubscribed(MqttPacket packet) => this.SubscribedChanged?.Invoke(this, packet);
+        private void OnTopicSubscribed(MqttPacket packet) => this.SubscribedChanged?.Invoke(this, packet.PacketId, packet.QosLevels);
 
         private void OnTopicUnsubscribed(uint packetId) => this.UnsubscribedChanged?.Invoke(this, packetId);
         private void OnConnectedChanged() => this.ConnectedChanged?.Invoke(this);
@@ -338,6 +340,85 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
         }
 
         private MqttPacket SendReceive(MqttPacket packet, int timeout) => this.SendReceive(packet.CreatePacket(), timeout);
+
+        private bool PushPacketToInternalQueue(MqttPacket packet) {
+            var enqueue = packet != null;
+
+            if (packet.Type == PacketType.Suback ||
+                packet.Type == PacketType.PubAck ||
+                packet.Type == PacketType.Pubrec ||
+                packet.Type == PacketType.Pubrel ||
+                packet.Type == PacketType.PubComp ||
+                packet.Type == PacketType.Unsuback
+                ) {
+
+                if (packet.Type == PacketType.Pubrel) {
+                    lock (this.packetQueue) {
+
+                        foreach (var item in this.packetQueue) {
+                            var q = (MqttPacket)item;
+                            if (q.PacketId == packet.PacketId && q.Direction == PacketDirection.ToClient) {
+
+                                var pubcomp = q;
+                                pubcomp.Type = PacketType.PubComp;
+
+                                this.Send(pubcomp);
+
+                                enqueue = false;
+                                break;
+                            }
+                        }
+
+                    }
+                }
+
+                else if (packet.Type == PacketType.PubComp) {
+                    lock (this.packetQueue) {
+
+                        var found = false;
+                        foreach (var item in this.packetQueue) {
+                            var q = (MqttPacket)item;
+                            if (q.PacketId == packet.PacketId && q.Direction == PacketDirection.ToServer) {
+
+                                found = true;
+
+                                break;
+                            }
+                        }
+
+                        enqueue = found;
+
+                    }
+                }
+                else if (packet.Type == PacketType.Pubrec) {
+                    lock (this.packetQueue) {
+
+                        var found = false;
+                        foreach (var item in this.packetQueue) {
+                            var q = (MqttPacket)item;
+                            if (q.PacketId == packet.PacketId && q.Direction == PacketDirection.ToServer) {
+                                found = true;
+
+                                break;
+                            }
+                        }
+                        enqueue = found;
+                    }
+                }
+
+                if (enqueue) {
+                    lock (this.internalPacketQueue) {
+                        this.internalPacketQueue.Enqueue(packet);
+
+                        this.waitForPushPacketEvent.Set();
+                    }
+                }
+
+            }
+
+            return enqueue;
+        }
+
         private bool PushPacketToQueue(MqttPacket packet, PacketDirection dir) {
             var enqueue = packet != null;
 
@@ -350,7 +431,7 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
                             (q.PacketId == packet.PacketId) &&
                             q.Direction == PacketDirection.ToClient) {
 
-                            q.State = PacketState.WaitToPublish;
+                            q.State = PacketState.QueuedQos2;
                             q.Direction = PacketDirection.ToClient;
 
                             enqueue = false;
@@ -362,10 +443,30 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
             }
 
             if (enqueue) {
-                packet.State = PacketState.WaitToPublish;
+                packet.State = PacketState.QueuedQos0;
                 packet.Direction = dir;
                 packet.RetryCount = 0;
 
+                switch (packet.LastWillQosLevel) {
+                    case QoSLevel.MostOnce:
+                        packet.State = PacketState.QueuedQos0;
+                        break;
+
+                    case QoSLevel.LeastOnce:
+                        packet.State = PacketState.QueuedQos1;
+                        break;
+
+                    case QoSLevel.ExactlyOnce:
+                        packet.State = PacketState.QueuedQos2;
+                        break;
+                }
+
+                if (packet.Type == PacketType.Subscribe) {
+                    packet.State = PacketState.SendSubscribe;
+                }
+                else if (packet.Type == PacketType.Unsubscribe) {
+                    packet.State = PacketState.SendSubscribe;
+                }
 
                 lock (this.packetQueue) {
                     enqueue = (this.packetQueue.Count < int.MaxValue);
@@ -408,7 +509,7 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
                             case PacketType.Suback:
                                 var suback = this.DecodePacketTypeSubscribeAck(controlHeaderByte[0]);
 
-                                this.PushPacketToQueue(suback, PacketDirection.ToClient);
+                                this.PushPacketToInternalQueue(suback);
 
                                 break;
 
@@ -422,14 +523,38 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
                             case PacketType.PubAck:
                                 var puback = this.DecodePacketTypePublishAck(controlHeaderByte[0]);
 
-                                this.PushPacketToQueue(puback, PacketDirection.ToClient);
+                                this.PushPacketToInternalQueue(puback);
 
+                                break;
+
+                            case PacketType.Pubrec:
+                                var pubrec = this.DecodePacketTypePublishRec(controlHeaderByte[0]);
+
+                                this.PushPacketToInternalQueue(pubrec);
+                                break;
+
+                            case PacketType.Pubrel:
+                                var pubrel = this.DecodePacketTypePublishRel(controlHeaderByte[0]);
+
+                                this.PushPacketToInternalQueue(pubrel);
+                                break;
+
+                            case PacketType.PubComp:
+                                var pubcom = this.DecodePacketTypePublishComp(controlHeaderByte[0]);
+
+                                this.PushPacketToInternalQueue(pubcom);
+                                break;
+
+                            case PacketType.Unsuback:
+                                var pubUnsubAck = this.DecodePacketTypeUnsubAck(controlHeaderByte[0]);
+
+                                this.PushPacketToInternalQueue(pubUnsubAck);
                                 break;
 
 
 
                             default:
-                                // TODO
+
                                 throw new Exception("Unknown packet type.");
                         }
 
@@ -442,12 +567,8 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
                 catch {
 
                     this.isConnectAckReceivedSuccess = false;
+                    this.CloseConnection();
 
-                    var close = false;
-
-                    if (close) {
-                        this.CloseConnection();
-                    }
                 }
             }
         }
@@ -541,89 +662,64 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
 
         private void ProcessPacketsThread() {
             MqttPacket packetFromQueue = null;
-
+            var timeout = Timeout.Infinite;
             try {
                 while (this.isRunning) {
-                    this.waitForPushPacketEvent.WaitOne(CONNECTION_TIMEOUT_DEFAULT, false);
+                    this.waitForPushPacketEvent.WaitOne(timeout, false);
                     if (this.isRunning) {
                         lock (this.packetQueue) {
 
+                            var packetReceivedProcessed = false;
+                            var acknowledge = false;
+                            MqttPacket packetReceived = null;
+
+                            timeout = int.MaxValue;
+
                             var count = this.packetQueue.Count;
+
                             while (count > 0) {
                                 count--;
+
+                                acknowledge = false;
+                                packetReceived = null;
+
                                 if (!this.isRunning)
                                     break;
+
                                 packetFromQueue = (MqttPacket)this.packetQueue.Dequeue();
 
                                 switch (packetFromQueue.State) {
-                                    case PacketState.WaitToPublish:
-
-                                        if (packetFromQueue.LastWillQosLevel == QoSLevel.MostOnce) {
-                                            if (packetFromQueue.Direction == PacketDirection.ToServer) {
-                                                this.Send(packetFromQueue);
-                                            }
-                                            else if (packetFromQueue.Direction == PacketDirection.ToClient) {
-                                                packetFromQueue.IsPublished = false;
-                                                this.PushEventToQueue(packetFromQueue);
-                                            }
+                                    case PacketState.QueuedQos0:
+                                        if (packetFromQueue.Direction == PacketDirection.ToServer) {
+                                            this.Send(packetFromQueue);
                                         }
 
-                                        if (packetFromQueue.LastWillQosLevel == QoSLevel.LeastOnce) {
-                                            if (packetFromQueue.Direction == PacketDirection.ToServer) {
-                                                packetFromQueue.RetryCount++;
-                                                if (packetFromQueue.Type == PacketType.Publish) {
-
-                                                    packetFromQueue.State = PacketState.WaitForPublishAck;
-
-                                                    if (packetFromQueue.RetryCount > 1)
-                                                        packetFromQueue.IsDuplicated = true;
-                                                }
-                                                else if (packetFromQueue.Type == PacketType.Subscribe)
-                                                    packetFromQueue.State = PacketState.WaitForSubscribeAck;
-                                                else if (packetFromQueue.Type == PacketType.Unsubscribe)
-                                                    packetFromQueue.State = PacketState.WaitForUnsubscribeAck;
-
-                                                this.Send(packetFromQueue);
-
-                                                this.packetQueue.Enqueue(packetFromQueue);
-                                            }
-                                            else if (packetFromQueue.Direction == PacketDirection.ToClient) {
-                                                var puback = new MqttPacket(PacketType.PubAck) {
-                                                    PacketId = packetFromQueue.PacketId
-                                                };
-
-                                                this.Send(puback);
-
-                                                packetFromQueue.IsPublished = false;
-                                                this.PushEventToQueue(packetFromQueue);
-
-                                            }
-                                        }
-
-                                        if (packetFromQueue.LastWillQosLevel == QoSLevel.LeastOnce) {
-                                            // TODO
+                                        else if (packetFromQueue.Direction == PacketDirection.ToClient) {
+                                            packetFromQueue.IsPublished = false;
+                                            this.PushEventToQueue(packetFromQueue);
                                         }
 
                                         break;
-
+                                    case PacketState.QueuedQos1:
                                     case PacketState.SendSubscribe:
                                     case PacketState.SendUnsubscribe:
                                         if (packetFromQueue.Direction == PacketDirection.ToServer) {
+                                            packetFromQueue.Timestamp = DateTime.Now.Ticks;
                                             packetFromQueue.RetryCount++;
+
                                             if (packetFromQueue.Type == PacketType.Publish) {
-
-                                                packetFromQueue.State = PacketState.WaitForPublishAck;
-
+                                                packetFromQueue.State = PacketState.WaitForPubAck;
                                                 if (packetFromQueue.RetryCount > 1)
                                                     packetFromQueue.IsDuplicated = true;
                                             }
                                             else if (packetFromQueue.Type == PacketType.Subscribe)
-                                                packetFromQueue.State = PacketState.WaitForSubscribeAck;
+                                                packetFromQueue.State = PacketState.WaitForSubAck;
                                             else if (packetFromQueue.Type == PacketType.Unsubscribe)
-                                                packetFromQueue.State = PacketState.WaitForUnsubscribeAck;
+                                                packetFromQueue.State = PacketState.WaitForUnsubAck;
 
                                             this.Send(packetFromQueue);
 
+                                            timeout = (CONNECTION_TIMEOUT_DEFAULT < timeout) ? CONNECTION_TIMEOUT_DEFAULT : timeout;
                                             this.packetQueue.Enqueue(packetFromQueue);
                                         }
                                         else if (packetFromQueue.Direction == PacketDirection.ToClient) {
@@ -635,13 +731,273 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
 
                                             packetFromQueue.IsPublished = false;
                                             this.PushEventToQueue(packetFromQueue);
+                                        }
+                                        break;
 
+                                    case PacketState.QueuedQos2:
+                                        if (packetFromQueue.Direction == PacketDirection.ToServer) {
+                                            packetFromQueue.Timestamp = DateTime.Now.Ticks;
+                                            packetFromQueue.RetryCount++;
+                                            packetFromQueue.State = PacketState.WaitForPubRec;
+
+                                            if (packetFromQueue.RetryCount > 1)
+                                                packetFromQueue.IsDuplicated = true;
+
+                                            this.Send(packetFromQueue);
+
+                                            timeout = (CONNECTION_TIMEOUT_DEFAULT < timeout) ? CONNECTION_TIMEOUT_DEFAULT : timeout;
+
+                                            this.packetQueue.Enqueue(packetFromQueue);
+                                        }
+                                        else if (packetFromQueue.Direction == PacketDirection.ToClient) {
+                                            var pubrec = new MqttPacket(PacketType.Pubrec) {
+                                                PacketId = packetFromQueue.PacketId
+                                            };
+
+                                            packetFromQueue.State = PacketState.WaitForPubRel;
+
+                                            this.Send(pubrec);
+
+                                            this.packetQueue.Enqueue(packetFromQueue);
+                                        }
+                                        break;
+
+                                    case PacketState.WaitForPubAck:
+                                    case PacketState.WaitForSubAck:
+                                    case PacketState.WaitForUnsubAck:
+                                        if (packetFromQueue.Direction == PacketDirection.ToServer) {
+                                            acknowledge = false;
+                                            lock (this.internalPacketQueue) {
+                                                if (this.internalPacketQueue.Count > 0)
+                                                    packetReceived = (MqttPacket)this.internalPacketQueue.Peek();
+                                            }
+
+                                            if (packetReceived != null) {
+                                                if (((packetReceived.Type == PacketType.PubAck) && (packetFromQueue.Type == PacketType.Publish) && (packetReceived.PacketId == packetFromQueue.PacketId)) ||
+                                                    ((packetReceived.Type == PacketType.Suback) && (packetFromQueue.Type == PacketType.Subscribe) && (packetReceived.PacketId == packetFromQueue.PacketId)) ||
+                                                    ((packetReceived.Type == PacketType.Unsuback) && (packetFromQueue.Type == PacketType.Unsubscribe) && (packetReceived.PacketId == packetFromQueue.PacketId))) {
+                                                    lock (this.internalPacketQueue) {
+                                                        this.internalPacketQueue.Dequeue();
+                                                        acknowledge = true;
+                                                        packetReceivedProcessed = true;
+                                                    }
+
+                                                    if (packetReceived.Type == PacketType.PubAck) {
+                                                        packetReceived.IsPublished = true;
+                                                    }
+                                                    else {
+                                                        packetReceived.IsPublished = false;
+                                                    }
+
+                                                    this.PushEventToQueue(packetReceived);
+                                                }
+                                            }
+
+                                            if (!acknowledge) {
+                                                var delta = DateTime.Now.Ticks - packetFromQueue.Timestamp;
+
+                                                if (delta >= CONNECTION_TIMEOUT_DEFAULT) {
+
+                                                    if (packetFromQueue.RetryCount < RETRY_DEFAULT) {
+                                                        packetFromQueue.State = PacketState.QueuedQos1;
+
+                                                        this.packetQueue.Enqueue(packetFromQueue);
+
+                                                        timeout = 0;
+                                                    }
+                                                    else {
+                                                        if (packetFromQueue.Type == PacketType.Publish) {
+                                                            packetFromQueue.IsPublished = false;
+
+                                                            this.PushEventToQueue(packetFromQueue);
+                                                        }
+                                                    }
+                                                }
+                                                else {
+                                                    this.packetQueue.Enqueue(packetFromQueue);
+
+                                                    var msgTimeout = (CONNECTION_TIMEOUT_DEFAULT - delta);
+                                                    timeout = (msgTimeout < timeout) ? (int)msgTimeout : timeout;
+                                                }
+                                            }
+                                        }
+                                        break;
+
+                                    case PacketState.WaitForPubRec:
+                                        if (packetFromQueue.Direction == PacketDirection.ToServer) {
+                                            acknowledge = false;
+                                            lock (this.internalPacketQueue) {
+                                                if (this.internalPacketQueue.Count > 0)
+                                                    packetReceived = (MqttPacket)this.internalPacketQueue.Peek();
+                                            }
+
+                                            if ((packetReceived != null) && (packetReceived.Type == PacketType.Pubrec)) {
+                                                if (packetReceived.PacketId == packetFromQueue.PacketId) {
+                                                    lock (this.internalPacketQueue) {
+                                                        this.internalPacketQueue.Dequeue();
+                                                        acknowledge = true;
+                                                        packetReceivedProcessed = true;
+                                                    }
+
+                                                    var pubrel = new MqttPacket(PacketType.Pubrel) {
+                                                        PacketId = packetFromQueue.PacketId
+                                                    };
+
+                                                    packetFromQueue.State = PacketState.WaitForPubComp;
+                                                    packetFromQueue.Timestamp = DateTime.Now.Ticks;
+                                                    packetFromQueue.RetryCount = 1;
+
+                                                    this.Send(pubrel);
+
+                                                    timeout = (CONNECTION_TIMEOUT_DEFAULT < timeout) ? CONNECTION_TIMEOUT_DEFAULT : timeout;
+
+                                                    this.packetQueue.Enqueue(packetFromQueue);
+                                                }
+                                            }
+
+                                            if (!acknowledge) {
+                                                var delta = DateTime.Now.Ticks - packetFromQueue.Timestamp;
+
+                                                if (delta >= CONNECTION_TIMEOUT_DEFAULT) {
+                                                    if (packetFromQueue.RetryCount < RETRY_DEFAULT) {
+                                                        packetFromQueue.State = PacketState.QueuedQos2;
+
+                                                        this.packetQueue.Enqueue(packetFromQueue);
+
+                                                        timeout = 0;
+                                                    }
+                                                    else {
+                                                        packetFromQueue.IsPublished = false;
+                                                        this.PushEventToQueue(packetFromQueue);
+                                                    }
+                                                }
+                                                else {
+                                                    this.packetQueue.Enqueue(packetFromQueue);
+                                                    var msgTimeout = (CONNECTION_TIMEOUT_DEFAULT - delta);
+                                                    timeout = (msgTimeout < timeout) ? (int)msgTimeout : timeout;
+                                                }
+                                            }
+                                        }
+                                        break;
+
+                                    case PacketState.WaitForPubRel:
+                                        if (packetFromQueue.Direction == PacketDirection.ToClient) {
+                                            lock (this.internalPacketQueue) {
+                                                if (this.internalPacketQueue.Count > 0)
+                                                    packetReceived = (MqttPacket)this.internalPacketQueue.Peek();
+                                            }
+                                            if ((packetReceived != null) && (packetReceived.Type == PacketType.Pubrel)) {
+                                                if (packetReceived.PacketId == packetFromQueue.PacketId) {
+                                                    lock (this.internalPacketQueue) {
+                                                        this.internalPacketQueue.Dequeue();
+                                                        packetReceivedProcessed = true;
+                                                    }
+
+                                                    var pubcomp = new MqttPacket(PacketType.PubComp) {
+                                                        PacketId = packetFromQueue.PacketId
+                                                    };
+
+                                                    this.Send(pubcomp);
+
+                                                    this.PushEventToQueue(packetFromQueue);
+
+                                                }
+                                                else {
+                                                    this.packetQueue.Enqueue(packetFromQueue);
+                                                }
+                                            }
+                                            else {
+                                                this.packetQueue.Enqueue(packetFromQueue);
+                                            }
+                                        }
+                                        break;
+
+                                    case PacketState.WaitForPubComp:
+                                        if (packetFromQueue.Direction == PacketDirection.ToServer) {
+                                            acknowledge = false;
+                                            lock (this.internalPacketQueue) {
+                                                if (this.internalPacketQueue.Count > 0)
+                                                    packetReceived = (MqttPacket)this.internalPacketQueue.Peek();
+                                            }
+
+                                            if ((packetReceived != null) && (packetReceived.Type == PacketType.PubComp)) {
+                                                if (packetReceived.PacketId == packetFromQueue.PacketId) {
+                                                    lock (this.internalPacketQueue) {
+                                                        this.internalPacketQueue.Dequeue();
+                                                        acknowledge = true;
+                                                        packetReceivedProcessed = true;
+
+                                                    }
+
+                                                    packetReceived.IsPublished = true;
+                                                    this.PushEventToQueue(packetReceived);
+
+                                                }
+                                            }
+                                            else if ((packetReceived != null) && (packetReceived.Type == PacketType.Pubrec)) {
+                                                if (packetReceived.PacketId == packetFromQueue.PacketId) {
+                                                    lock (this.internalPacketQueue) {
+                                                        this.internalPacketQueue.Dequeue();
+                                                        acknowledge = true;
+                                                        packetReceivedProcessed = true;
+                                                        this.packetQueue.Enqueue(packetFromQueue);
+                                                    }
+                                                }
+                                            }
+
+                                            if (!acknowledge) {
+                                                var delta = DateTime.Now.Ticks - packetFromQueue.Timestamp;
+                                                if (delta >= CONNECTION_TIMEOUT_DEFAULT) {
+                                                    if (packetFromQueue.RetryCount < RETRY_DEFAULT) {
+                                                        packetFromQueue.State = PacketState.SendPubRel;
+                                                        this.packetQueue.Enqueue(packetFromQueue);
+
+                                                        timeout = 0;
+                                                    }
+                                                    else {
+                                                        packetFromQueue.IsPublished = false;
+                                                        this.PushEventToQueue(packetFromQueue);
+                                                    }
+                                                }
+                                                else {
+                                                    this.packetQueue.Enqueue(packetFromQueue);
+
+                                                    var msgTimeout = (CONNECTION_TIMEOUT_DEFAULT - delta);
+                                                    timeout = (msgTimeout < timeout) ? (int)msgTimeout : timeout;
+                                                }
+                                            }
+                                        }
+                                        break;
+                                    case PacketState.SendPubRel:
+                                        if (packetFromQueue.Direction == PacketDirection.ToServer) {
+                                            var pubrel = new MqttPacket(PacketType.Pubrel) {
+                                                PacketId = packetFromQueue.PacketId
+                                            };
+
+                                            packetFromQueue.State = PacketState.WaitForPubComp;
+                                            packetFromQueue.Timestamp = DateTime.Now.Ticks;
+                                            packetFromQueue.RetryCount++;
+
+                                            this.Send(pubrel);
+
+                                            timeout = (CONNECTION_TIMEOUT_DEFAULT < timeout) ? CONNECTION_TIMEOUT_DEFAULT : timeout;
+
+                                            this.packetQueue.Enqueue(packetFromQueue);
                                         }
                                         break;
 
                                     default:
                                         break;
                                 }
+
+                                if (timeout == int.MaxValue)
+                                    timeout = Timeout.Infinite;
+
+                                if ((packetReceived != null) && !packetReceivedProcessed) {
+                                    if (this.internalPacketQueue.Count > 0)
+                                        this.internalPacketQueue.Dequeue();
+                                }
+
                             }
                         }
                     }
@@ -650,6 +1006,7 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
             catch {
                 if (packetFromQueue != null)
                     this.packetQueue.Enqueue(packetFromQueue);
+
                 this.CloseConnection();
             }
         }
@@ -668,6 +1025,13 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
 
             packet.PacketId = (ushort)((buffer[index++] << 8) & 0xFF00);
             packet.PacketId |= (buffer[index++]);
+
+            packet.QosLevels = new QoSLevel[remainSize - 2];
+
+            var qosIdx = 0;
+            do {
+                packet.QosLevels[qosIdx++] = (QoSLevel)buffer[index++];
+            } while (index < remainSize);
 
             return packet;
         }
@@ -761,6 +1125,78 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
             var packet = new MqttPacket(PacketType.PubAck);
 
             EnsureValidFlag(controlHeaderByte, PACKET_PUBACK_FLAG_BITS);
+
+            var remainSize = RemainSizeFromStream(this.stream);
+            buffer = new byte[remainSize];
+
+            this.stream.Receive(buffer);
+
+            packet.PacketId = (ushort)((buffer[index++] << 8) & 0xFF00);
+            packet.PacketId |= (buffer[index++]);
+
+            return packet;
+        }
+
+        private MqttPacket DecodePacketTypePublishRec(byte controlHeaderByte) {
+            byte[] buffer;
+            var index = 0;
+            var packet = new MqttPacket(PacketType.Pubrec);
+
+            EnsureValidFlag(controlHeaderByte, PACKET_PUBREC_FLAG_BITS);
+
+            var remainSize = RemainSizeFromStream(this.stream);
+            buffer = new byte[remainSize];
+
+            this.stream.Receive(buffer);
+
+            packet.PacketId = (ushort)((buffer[index++] << 8) & 0xFF00);
+            packet.PacketId |= (buffer[index++]);
+
+            return packet;
+        }
+
+        private MqttPacket DecodePacketTypePublishRel(byte controlHeaderByte) {
+            byte[] buffer;
+            var index = 0;
+            var packet = new MqttPacket(PacketType.Pubrel);
+
+            EnsureValidFlag(controlHeaderByte, PACKET_PUBREL_FLAG_BITS);
+
+            var remainSize = RemainSizeFromStream(this.stream);
+            buffer = new byte[remainSize];
+
+            this.stream.Receive(buffer);
+
+            packet.PacketId = (ushort)((buffer[index++] << 8) & 0xFF00);
+            packet.PacketId |= (buffer[index++]);
+
+            return packet;
+        }
+
+        private MqttPacket DecodePacketTypePublishComp(byte controlHeaderByte) {
+            byte[] buffer;
+            var index = 0;
+            var packet = new MqttPacket(PacketType.PubComp);
+
+            EnsureValidFlag(controlHeaderByte, PACKET_PUBCOMP_FLAG_BITS);
+
+            var remainSize = RemainSizeFromStream(this.stream);
+            buffer = new byte[remainSize];
+
+            this.stream.Receive(buffer);
+
+            packet.PacketId = (ushort)((buffer[index++] << 8) & 0xFF00);
+            packet.PacketId |= (buffer[index++]);
+
+            return packet;
+        }
+
+        private MqttPacket DecodePacketTypeUnsubAck(byte controlHeaderByte) {
+            byte[] buffer;
+            var index = 0;
+            var packet = new MqttPacket(PacketType.Unsuback);
+
+            EnsureValidFlag(controlHeaderByte, PACKET_UNSUBACK_FLAG_BITS);
 
             var remainSize = RemainSizeFromStream(this.stream);
             buffer = new byte[remainSize];

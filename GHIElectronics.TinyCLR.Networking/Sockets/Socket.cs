@@ -3,6 +3,7 @@
 namespace System.Net.Sockets {
     using System.Net;
     using System.Runtime.CompilerServices;
+    using System.Threading;
     using GHIElectronics.TinyCLR.Networking;
 
     public class Socket : IDisposable {
@@ -332,13 +333,14 @@ namespace System.Net.Sockets {
 
             var expired = (microSeconds == -1) ? DateTime.MaxValue.Ticks : (DateTime.Now.Ticks + microSeconds * 10);
 
-            var poll = false;
+            while (DateTime.Now.Ticks < expired) {
+                if (this.ni.Poll(this.m_Handle, microSeconds, mode))
+                    return true;
 
-            while ((DateTime.Now.Ticks < expired) && !poll) {
-                poll = this.ni.Poll(this.m_Handle, microSeconds, mode);
+                Thread.Sleep(1);
             }
 
-            return poll;
+            return false;
         }
 
         [MethodImpl(MethodImplOptions.Synchronized)]

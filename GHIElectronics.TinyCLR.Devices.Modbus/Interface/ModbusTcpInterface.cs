@@ -242,7 +242,23 @@ namespace GHIElectronics.TinyCLR.Devices.Modbus.Interface {
         /// <summary>
         /// Gets if the connection is ok
         /// </summary>
-        public bool IsConnectionOk => this.socket != null && this.IsSocketConnected;
+
+        public bool IsConnectionOk {
+            get {
+                if (this.socket != null) {
+                    try {
+                        bool error = this.socket.Poll(0, SelectMode.SelectError);
+                        bool read = this.socket.Poll(0, SelectMode.SelectRead);
+                        return !error &&
+                           (!read || this.socket.Available > 0);
+                    }
+                    catch {
+                        // ignored
+                    }
+                }
+                return false;
+            }
+        }
 
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.

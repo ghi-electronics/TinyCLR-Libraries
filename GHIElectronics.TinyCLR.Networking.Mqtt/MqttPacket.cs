@@ -51,20 +51,24 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
         internal const byte PACKET_PINGRESP_FLAG_BITS = 0x00;
         internal const byte PACKET_DISCONNECT_FLAG_BITS = 0x00;
 
-
-
         internal enum PacketDirection {
             ToServer,
             ToClient
         }
 
         internal enum PacketState {
-            WaitToPublish,
-            WaitForPublishAck,
+            QueuedQos0,
+            QueuedQos1,
+            QueuedQos2,
+            WaitForPubAck,
+            WaitForPubRec,
+            WaitForPubRel,
+            WaitForPubComp,
+            SendPubRel,
             SendSubscribe,
             SendUnsubscribe,
-            WaitForSubscribeAck,
-            WaitForUnsubscribeAck
+            WaitForSubAck,
+            WaitForUnsubAck
         }
 
         internal ConnectReturnCode ReturnCode { get; set; }
@@ -112,6 +116,7 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
         internal string Username { get; set; }
         internal string Password { get; set; }
         internal int KeepAliveTimeout { get; set; } = 60;
+        internal long Timestamp { get; set; }
 
         internal MqttPacket(PacketType type) => this.Type = type;
 
@@ -129,7 +134,7 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
                 var usernameToBytes = ((this.Username != null) && (this.Username.Length > 0)) ? Encoding.UTF8.GetBytes(this.Username) : null;
                 var passwordToBytes = ((this.Password != null) && (this.Password.Length > 0)) ? Encoding.UTF8.GetBytes(this.Password) : null;
 
-                vheaderSize += 2;
+                vheaderSize += 2; //packet id 2 bytes;
 
                 vheaderSize += PROTOCOL_NAME_V3_1_1_SIZE;
 
@@ -397,6 +402,77 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
                 buffer[index++] = ((byte)PacketType.Disconnect << PACKET_TYPE_OFFSET) | PACKET_DISCONNECT_FLAG_BITS; // 3.1.1
 
                 buffer[index++] = 0x00;
+            }
+            else if (this.Type == PacketType.Pubrec) {
+                vheaderSize += 2; //packet id 2 bytes;
+
+                remainSize += (vheaderSize + payloadSize);
+
+                fheaderSize = 1;
+
+                var temp = remainSize;
+
+                do {
+                    fheaderSize++;
+                    temp = temp / 128;
+                } while (temp > 0);
+
+                buffer = new byte[fheaderSize + vheaderSize + payloadSize];
+
+                buffer[index++] = ((byte)PacketType.Pubrec << PACKET_TYPE_OFFSET) | PACKET_PUBREC_FLAG_BITS;
+
+                index = RemainingSizeToPacket(remainSize, buffer, index);
+
+                buffer[index++] = (byte)((this.PacketId >> 8) & 0x00FF);
+                buffer[index++] = (byte)(this.PacketId & 0x00FF);
+            }
+            else if (this.Type == PacketType.Pubrel) {
+                vheaderSize += 2; //packet id 2 bytes;
+
+                remainSize += (vheaderSize + payloadSize);
+
+                fheaderSize = 1;
+
+                var temp = remainSize;
+                do {
+                    fheaderSize++;
+                    temp = temp / 128;
+                } while (temp > 0);
+
+                buffer = new byte[fheaderSize + vheaderSize + payloadSize];
+
+                buffer[index++] = ((byte)PacketType.Pubrel << PACKET_TYPE_OFFSET) | PACKET_PUBREL_FLAG_BITS;
+
+                index = RemainingSizeToPacket(remainSize, buffer, index);
+
+                buffer[index++] = (byte)((this.PacketId >> 8) & 0x00FF);
+                buffer[index++] = (byte)(this.PacketId & 0x00FF);
+            }
+            else if (this.Type == PacketType.PubComp) {
+                vheaderSize += 2;//packet id 2 bytes;
+
+                remainSize += (vheaderSize + payloadSize);
+
+                fheaderSize = 1;
+
+                var temp = remainSize;
+
+                do {
+                    fheaderSize++;
+                    temp = temp / 128;
+                } while (temp > 0);
+
+                buffer = new byte[fheaderSize + vheaderSize + payloadSize];
+
+                buffer[index++] = ((byte)PacketType.PubComp << PACKET_TYPE_OFFSET) | PACKET_PUBCOMP_FLAG_BITS;
+
+                index = RemainingSizeToPacket(remainSize, buffer, index);
+
+                buffer[index++] = (byte)((this.PacketId >> 8) & 0x00FF);
+                buffer[index++] = (byte)(this.PacketId & 0x00FF);
+            }
+            else if (this.Type == PacketType.Suback) {
+                while (true) ;
             }
 
             return buffer;
