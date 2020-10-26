@@ -198,7 +198,11 @@ namespace GHIElectronics.TinyCLR.Data.Json
             // This is a matrix of conversions from the source (value) type to targetType.
             // This is a bit long because the available Convert.ToXXXX functions are more
             // limited than in .net, so we have to do the scalar conversions ourselves.
-            if (targetType == value.Value.GetType())
+            if (value.Value == null)
+            {
+                result = null;
+            }
+            else if (targetType == value.Value.GetType())
             {
                 result = value.Value;
             }
