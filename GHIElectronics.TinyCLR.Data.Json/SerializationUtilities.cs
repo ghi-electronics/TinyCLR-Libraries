@@ -12,6 +12,10 @@ namespace GHIElectronics.TinyCLR.Data.Json
             {
                 buffer[offset++] = (byte)arg;
             }
+            else if (type == typeof(bool))
+            {
+                buffer[offset++] = (byte)((bool)arg ? 1 : 0);
+            }
             else if (type == typeof(Int16))
             {
                 buffer[offset++] = (byte)(((Int16)arg) & 0xff);
@@ -115,6 +119,9 @@ namespace GHIElectronics.TinyCLR.Data.Json
                     break;
                 case TypeCode.Byte:
                     result = buffer[offset++];
+                    break;
+                case TypeCode.Boolean:
+                    result = (buffer[offset++] == 0 ? false : true);
                     break;
                 case TypeCode.Int16:
                     result = (Int16)(buffer[offset] | buffer[offset + 1] << 8);
