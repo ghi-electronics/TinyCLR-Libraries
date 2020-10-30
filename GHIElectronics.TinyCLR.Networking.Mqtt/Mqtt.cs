@@ -299,9 +299,10 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
 
         private void Send(byte[] packetBytes) {
             try {
-                this.stream.Send(packetBytes);
+                var sent = this.stream.Send(packetBytes);
 
-                this.lastCommunationInMilisecond = ToMillisecond(DateTime.Now.Ticks);
+                if (sent == packetBytes.Length)
+                    this.lastCommunationInMilisecond = ToMillisecond(DateTime.Now.Ticks);
 
             }
             catch {
@@ -585,7 +586,6 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
 
                     if (d > this.keepAliveTimeoutInMilisecond) {
 
-                        Thread.Sleep(5000); // make a delay 1 seconds
                         this.PingReq(PING_TIMEOUT_DEFAULT);
                         timeoutInMillisecond = this.keepAliveTimeoutInMilisecond;
 
