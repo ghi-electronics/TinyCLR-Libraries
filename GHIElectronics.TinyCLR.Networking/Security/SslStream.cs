@@ -134,6 +134,9 @@ namespace System.Net.Security {
             //while (DateTime.Now.Ticks < expired && totalBytesSent < size)
             totalBytesSent += this.ni.SecureWrite(this.sslHandle, buffer, offset + totalBytesSent, size - totalBytesSent);
 
+            if (totalBytesSent != size) 
+                throw new IOException();
+
         }
     }
 
