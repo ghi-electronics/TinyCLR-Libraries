@@ -163,9 +163,15 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
 
     }
 
+    public enum WiFiMode {
+        Station = 0,
+        AccessPoint = 1
+    }
     public class WiFiNetworkInterfaceSettings : NetworkInterfaceSettings {
         public string Ssid { get; set; }
         public string Password { get; set; }
+        public WiFiMode Mode { get; set; }
+        public uint Channel { get; set; }
     }
 
     public enum PppAuthenticationType {
