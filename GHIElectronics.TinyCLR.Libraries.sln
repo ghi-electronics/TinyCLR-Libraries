@@ -93,6 +93,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Netw
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.RegularExpressions", "GHIElectronics.TinyCLR.RegularExpressions\GHIElectronics.TinyCLR.RegularExpressions.csproj", "{4F7F4E0D-676E-42AC-AE13-991EDD5121E7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Networking.Dhcp", "GHIElectronics.TinyCLR.Networking.Dhcp\GHIElectronics.TinyCLR.Networking.Dhcp.csproj", "{C1BAA3BD-2B81-45CF-A142-DCEE6ACFC3F0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -251,6 +253,10 @@ Global
 		{4F7F4E0D-676E-42AC-AE13-991EDD5121E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4F7F4E0D-676E-42AC-AE13-991EDD5121E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4F7F4E0D-676E-42AC-AE13-991EDD5121E7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C1BAA3BD-2B81-45CF-A142-DCEE6ACFC3F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1BAA3BD-2B81-45CF-A142-DCEE6ACFC3F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C1BAA3BD-2B81-45CF-A142-DCEE6ACFC3F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C1BAA3BD-2B81-45CF-A142-DCEE6ACFC3F0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
