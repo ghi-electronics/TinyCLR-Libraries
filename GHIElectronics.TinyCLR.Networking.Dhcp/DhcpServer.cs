@@ -309,8 +309,10 @@ namespace GHIElectronics.TinyCLR.Networking.Dhcp {
                     if (s.ReceiveFrom(read, available, SocketFlags.None, ref ep) > 0)
                         this.ProcessMessage(read);
                 }
+                else {
 
-                Thread.Sleep(1);
+                    Thread.Sleep(1);
+                }
             }
         }
 
