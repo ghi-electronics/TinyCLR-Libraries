@@ -2,6 +2,8 @@
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+using System.Net.Sockets;
+
 namespace System.Net {
     /// <devdoc>
     ///    <para>Provides an internet protocol (IP) address.</para>
@@ -11,7 +13,11 @@ namespace System.Net {
 
         public static readonly IPAddress Any = new IPAddress(0x0000000000000000);
         public static readonly IPAddress Loopback = new IPAddress(0x000000000100007F);
+        public static readonly IPAddress Broadcast = new IPAddress(0x00000000FFFFFFFF);
+        public static readonly IPAddress None = Broadcast;
         internal long m_Address;
+
+        private AddressFamily m_Family = AddressFamily.InterNetwork;
 
         public IPAddress(long newAddress) {
             if (newAddress < 0 || newAddress > 0x00000000FFFFFFFF) {
@@ -136,6 +142,23 @@ namespace System.Net {
 
             return (isNegative) ? (-1 * result) : result;
         }
+
+        internal bool IsBroadcast
+        {
+            get
+            {
+                return m_Address == Broadcast.m_Address;
+            }
+        }
+
+        public AddressFamily AddressFamily
+        {
+            get
+            {
+                return m_Family;
+            }
+        }
+
     } // class IPAddress
 } // namespace System.Net
 
