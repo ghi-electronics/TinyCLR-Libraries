@@ -15,7 +15,6 @@ using GHIElectronics.TinyCLR.Networking;
 namespace GHIElectronics.TinyCLR.Devices.Network {
     public delegate void NetworkLinkConnectedChangedEventHandler(NetworkController sender, NetworkLinkConnectedChangedEventArgs e);
     public delegate void NetworkAddressChangedEventHandler(NetworkController sender, NetworkAddressChangedEventArgs e);
-    public delegate void NetworkAccessPointLinkConnectedChangedEventHandler(NetworkController sender, NetworkLinkConnectedChangedEventArgs e);
 
     public sealed class NetworkLinkConnectedChangedEventArgs : EventArgs {
         public bool Connected { get; }
@@ -70,16 +69,13 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
             if (this.InterfaceType == NetworkInterfaceType.WiFi) {
                 var setting = (WiFiNetworkInterfaceSettings)this.ActiveInterfaceSettings;
 
-                if (setting.Mode == WiFiMode.APDynamicClientAddress) {
-                    setting.dhcpServer.SourceIpAddress = this.ActiveInterfaceSettings.Address;
-                    setting.dhcpServer.Start();
-                }
-
-                if (setting.Mode == WiFiMode.APDynamicClientAddress || setting.Mode == WiFiMode.APStaticClientAddress) {
+                if (setting.Mode == WiFiMode.AccessPoint) {
                     setting.networkController = this;
                     setting.provider = this.Provider;
 
-                    new Thread(setting.AccessPointClientConnectionThread).Start();
+                    if (setting.IsDhcpEnabled)
+                        setting.dhcpServer.Start();
+
                 }
             }
         }
@@ -88,8 +84,9 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
             if (this.InterfaceType == NetworkInterfaceType.WiFi) {
                 var setting = (WiFiNetworkInterfaceSettings)this.ActiveInterfaceSettings;
 
-                if (setting.Mode == WiFiMode.APDynamicClientAddress) {
-                    setting.dhcpServer.Stop();
+                if (setting.Mode == WiFiMode.AccessPoint) {
+                    if (setting.IsDhcpEnabled)
+                        setting.dhcpServer.Stop();
                 }
             }
 
@@ -205,8 +202,7 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
 
     public enum WiFiMode {
         Station = 0,
-        APDynamicClientAddress = 1,
-        APStaticClientAddress = 2
+        AccessPoint = 1
     }
 
     public class WiFiNetworkInterfaceSettings : NetworkInterfaceSettings {
@@ -217,7 +213,7 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
         internal INetworkControllerProvider provider;
         internal NetworkController networkController;
 
-        public delegate void AccessPointClientLinkConnectedChangedEventHandler(NetworkController sender, NetworkLinkConnectedChangedEventArgs e);
+        public delegate void AccessPointClientLinkConnectedChangedEventHandler(NetworkController sender, IPAddress clientAddrres, string macAddress);
         public event AccessPointClientLinkConnectedChangedEventHandler AccessPointClientLinkConnectedChanged;
 
         public WiFiMode Mode {
@@ -226,32 +222,14 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
 
                 this.mode = value;
 
-                if (this.mode == WiFiMode.APDynamicClientAddress && this.dhcpServer == null) {
-                    this.dhcpServer = new DhcpServer();
+                if (this.mode == WiFiMode.AccessPoint && this.IsDhcpEnabled && this.dhcpServer == null) {
+                    this.dhcpServer = new DhcpServer(this);
                 }
             }
         }
 
         private WiFiMode mode;
 
-        internal void AccessPointClientConnectionThread() {
-            var connect = false;
-
-            while (this.networkController != null && this.networkController.enabled) {
-                var newConnect = this.provider.GetAccessPointClientLinkConnect(this);
-
-                if (newConnect != connect) {
-                    AccessPointClientLinkConnectedChanged?.Invoke(this.networkController, new NetworkLinkConnectedChangedEventArgs(newConnect, DateTime.Now));
-                    connect = newConnect;
-
-                    if (this.Mode == WiFiMode.APDynamicClientAddress)
-                        if (!connect)
-                            this.dhcpServer.Connected = false;
-                }
-
-                Thread.Sleep(1000);
-            }
-        }
 
         internal DhcpServer dhcpServer;
 
@@ -374,32 +352,15 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
             private Socket udpSocket;
             private IPEndPoint localEndpoint;
             internal bool Started { get; private set; }
-            internal bool Connected { get; set; }
+            internal bool ClientConnected { get; set; }
+            internal WiFiNetworkInterfaceSettings WifiNetworkInterfaceSetting { get; set; }
 
-            internal IPAddress SourceIpAddress {
-                get;
-                set;
-            } = new IPAddress(new byte[] { 192, 168, 1, 1 });
-
-            internal IPAddress SubnetMaskIpAddress {
-                get;
-                set;
-            } = new IPAddress(new byte[] { 255, 255, 255, 0 });
-
-            internal IPAddress DomainIpAddress {
-                get;
-                set;
-            } = new IPAddress(new byte[] { 0, 0, 0, 0 });
+            internal DhcpServer(WiFiNetworkInterfaceSettings setting) => this.WifiNetworkInterfaceSetting = setting;
 
             internal string DomainName {
                 get;
                 set;
             } = "SITCore";
-
-            internal IPAddress RouterIpAddress {
-                get;
-                set;
-            } = new IPAddress(new byte[] { 0, 0, 0, 0 });
 
             internal uint LeaseTime {
                 get;
@@ -422,7 +383,7 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
                 }
 
                 try {
-                    var ipAddress = this.SourceIpAddress;
+                    var ipAddress = this.WifiNetworkInterfaceSetting.Address;
 
                     this.localEndpoint = new IPEndPoint(ipAddress, (int)Port.Source);
 
@@ -431,7 +392,7 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
                     this.udpSocket.Bind(this.localEndpoint);
 
                     this.Started = true;
-                    this.Connected = false;
+                    this.ClientConnected = false;
 
                     new Thread(this.Run).Start();
                 }
@@ -447,7 +408,7 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
 
                 try {
                     this.Started = false;
-                    this.Connected = false;
+                    this.ClientConnected = false;
 
                     if (this.udpSocket != null)
                         this.udpSocket.Close();
@@ -464,8 +425,12 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
             private void Run() {
 
                 while (this.Started) {
+                    if (this.ClientConnected == true) {
+                        if (this.WifiNetworkInterfaceSetting.networkController.enabled == false ||
+                        this.WifiNetworkInterfaceSetting.provider.GetAccessPointClientLinkConnect(this.WifiNetworkInterfaceSetting) == false) {
+                            this.ClientConnected = false;
+                        }
 
-                    if (this.Connected == true) {
                         Thread.Sleep(100);
                         continue;
                     }
@@ -506,37 +471,46 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
 
                     var msgTypes = ParseOptionValue(MessageOption.DHCPMessageType, message);
 
-                    var offerDestinationAddress = this.SourceIpAddress.GetAddressBytes();
+                    var offerDestinationAddress = this.WifiNetworkInterfaceSetting.Address.GetAddressBytes();
 
                     offerDestinationAddress[3]++;
+
+                    if (offerDestinationAddress[3] == 255)
+                        offerDestinationAddress[3] = 0;
+
+                    var ipOffer = new IPAddress(offerDestinationAddress);
 
                     if (msgTypes != null) {
                         switch ((MessageType)msgTypes[0]) {
                             case MessageType.Discovery:
 
-                                message.messageOffer.ipAddress = new IPAddress(offerDestinationAddress).ToString();
-                                message.messageOffer.subnetMask = this.SubnetMaskIpAddress.ToString();
+                                message.messageOffer.ipAddress = ipOffer.ToString();
+                                message.messageOffer.subnetMask = this.WifiNetworkInterfaceSetting.SubnetMask.ToString();
                                 message.messageOffer.ipAddressLeaseTime = this.LeaseTime;
                                 message.messageOffer.domainName = this.DomainName;
-                                message.messageOffer.serverIdentifiderAddress = this.SourceIpAddress.ToString();
-                                message.messageOffer.rounterIpAddress = this.RouterIpAddress.ToString();
-                                message.messageOffer.domainIpAddress = this.DomainIpAddress.ToString();
+                                message.messageOffer.serverIdentifiderAddress = this.WifiNetworkInterfaceSetting.Address.ToString();
+                                message.messageOffer.rounterIpAddress = this.WifiNetworkInterfaceSetting.Address.ToString();
+                                message.messageOffer.domainIpAddress = this.WifiNetworkInterfaceSetting.DnsAddresses[0].ToString();
 
                                 this.Send(message, MessageType.Offer);
 
                                 break;
                             case MessageType.Request:
 
-                                message.messageOffer.ipAddress = new IPAddress(offerDestinationAddress).ToString();
-                                message.messageOffer.subnetMask = this.SubnetMaskIpAddress.ToString();
+                                message.messageOffer.ipAddress = ipOffer.ToString();
+                                message.messageOffer.subnetMask = this.WifiNetworkInterfaceSetting.SubnetMask.ToString();
                                 message.messageOffer.ipAddressLeaseTime = this.LeaseTime;
                                 message.messageOffer.domainName = this.DomainName;
-                                message.messageOffer.serverIdentifiderAddress = this.SourceIpAddress.ToString();
-                                message.messageOffer.rounterIpAddress = this.RouterIpAddress.ToString();
-                                message.messageOffer.domainIpAddress = this.DomainIpAddress.ToString();
+                                message.messageOffer.serverIdentifiderAddress = this.WifiNetworkInterfaceSetting.Address.ToString();
+                                message.messageOffer.rounterIpAddress = this.WifiNetworkInterfaceSetting.Address.ToString();
+                                message.messageOffer.domainIpAddress = this.WifiNetworkInterfaceSetting.DnsAddresses[0].ToString();
+
                                 this.Send(message, MessageType.Acknowledge);
 
-                                this.Connected = true;
+                                this.WifiNetworkInterfaceSetting.AccessPointClientLinkConnectedChanged?.Invoke(this.WifiNetworkInterfaceSetting.networkController, ipOffer, macAddress);
+
+                                this.ClientConnected = true;
+
                                 break;
 
                             default:
