@@ -559,13 +559,13 @@ namespace GHIElectronics.TinyCLR.Pins {
 
             /// <summary>Capture pin definitions.</summary>
             public static class Capture {
-                public static class Controller2 {
+                public static class Controller5 {
 
                     /// <summary>Capture pin.</summary>
                     public const int PA0 = GpioPin.PA0;
                 }
 
-                public static class Controller5 {
+                public static class Controller2 {
 
                     /// <summary>Capture pin.</summary>
                     public const int PB3 = GpioPin.PB3;
