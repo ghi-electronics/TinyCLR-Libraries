@@ -1,8 +1,5 @@
 using System;
-using System.Collections;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading;
 using GHIElectronics.TinyCLR.Devices.UsbClient.Provider;
 using GHIElectronics.TinyCLR.Native;
 
@@ -18,12 +15,15 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
     };
 
     public enum UsbClientMode {
-        Cdc = 0,
-        WinUsb = 1
+        RawDevice = 0, 
+        Cdc = 1,
+        WinUsb = 2,        
+        Keyboard = 3,
+        Mouse = 4
     }
 
-    public delegate void DataReceivedEventHandler(UsbClientController sender, uint count);
-    public delegate void DeviceStateChangedEventHandler(UsbClientController sender, DeviceState state);
+    public delegate void DataReceivedEventHandler(RawDevice sender, uint count);
+    public delegate void DeviceStateChangedEventHandler(RawDevice sender, DeviceState state);
 
     public sealed class UsbClientSetting {
         public UsbClientMode Mode { get; set; }
@@ -35,12 +35,13 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
 
         public ushort ProductId { get; set; }
         public ushort VendorId { get; set; }
+
+        public ushort Version { get; set; }
+        public ushort MaxPower { get; set; }
+        public string InterfaceName { get; set; }        
     }
 
-    public sealed class UsbClientController : IDisposable {
-        private DataReceivedEventHandler dataReceivedCallbacks;
-        private DeviceStateChangedEventHandler deviceStateChangedCallbacks;
-
+    public sealed class UsbClientController : IDisposable {        
         public IUsbClientControllerProvider Provider { get; }
 
         private UsbClientController(IUsbClientControllerProvider provider) => this.Provider = provider;
@@ -50,105 +51,37 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
         public static UsbClientController FromProvider(IUsbClientControllerProvider provider) => new UsbClientController(provider);
 
         public void Dispose() => this.Provider.Dispose();
-
-        public int ByteToRead => this.Provider.ByteToRead;
-        public int ByteToWrite => this.Provider.ByteToWrite;
-        public int WriteBufferSize { get => this.Provider.WriteBufferSize; set => this.Provider.WriteBufferSize = value; }
-        public int ReadBufferSize { get => this.Provider.ReadBufferSize; set => this.Provider.ReadBufferSize = value; }
-
-        public void SetActiveSetting(UsbClientSetting setting) {
-            if (setting.Mode == UsbClientMode.WinUsb && setting.Guid == null)
-                throw new ArgumentNullException(nameof(setting.Guid));
-
-            this.Provider.SetActiveSetting(setting.Mode, setting.ManufactureName, setting.ProductName, setting.SerialNumber, setting.ProductId, setting.VendorId, setting.Guid);
-        }
-
-        public void Enable() => this.Provider.Enable();
-        public void Disable() => this.Provider.Disable();
-        public int Read(byte[] data) => this.Read(data, 0, data.Length);
-
-        public int Read(byte[] data, int offset, int count) {
-            if (data == null) throw new ArgumentNullException(nameof(data));
-            if (offset < 0) throw new ArgumentOutOfRangeException(nameof(offset));
-            if (count <= 0) throw new ArgumentOutOfRangeException(nameof(count));
-            if (offset + count > data.Length) throw new ArgumentOutOfRangeException(nameof(data));
-
-            return this.Provider.Read(data, offset, count);
-        }
-
-        public int Write(byte[] data) => this.Write(data, 0, data.Length);
-        public int Write(byte[] data, int offset, int count) {
-            if (data == null) throw new ArgumentNullException(nameof(data));
-            if (offset < 0) throw new ArgumentOutOfRangeException(nameof(offset));
-            if (count <= 0) throw new ArgumentOutOfRangeException(nameof(count));
-            if (offset + count > data.Length) throw new ArgumentOutOfRangeException(nameof(data));
-
-            return this.Provider.Write(data, offset, count);
-        }
-
-        public void ClearReadBuffer() => this.Provider.ClearReadBuffer();
-        public void ClearWriteBuffer() => this.Provider.ClearWriteBuffer();
-        public void Flush() => this.Provider.Flush();
-
-        public DeviceState DeviceState => this.Provider.DeviceState;
-
-        private void OnDataReceived(UsbClientController sender, uint count) => this.dataReceivedCallbacks?.Invoke(this, count);
-        private void OnDeviceStateChanged(UsbClientController sender, DeviceState state) => this.deviceStateChangedCallbacks?.Invoke(this, state);
-
-        public event DataReceivedEventHandler DataReceived {
-            add {
-                if (this.dataReceivedCallbacks == null)
-                    this.Provider.DataReceived += this.OnDataReceived;
-
-                this.dataReceivedCallbacks += value;
-            }
-            remove {
-                this.dataReceivedCallbacks -= value;
-
-                if (this.dataReceivedCallbacks == null)
-                    this.Provider.DataReceived -= this.OnDataReceived;
-            }
-        }
-
-        public event DeviceStateChangedEventHandler DeviceStateChanged {
-            add {
-                if (this.deviceStateChangedCallbacks == null)
-                    this.Provider.DeviceStateChanged += this.OnDeviceStateChanged;
-
-                this.deviceStateChangedCallbacks += value;
-            }
-            remove {
-                this.deviceStateChangedCallbacks -= value;
-
-                if (this.deviceStateChangedCallbacks == null)
-                    this.Provider.DeviceStateChanged -= this.OnDeviceStateChanged;
-            }
-        }
-
     }
 
     namespace Provider {
         public interface IUsbClientControllerProvider : IDisposable {
-            int ByteToRead { get; }
-            int ByteToWrite { get; }
+            int ByteToRead(int streamIndex);
+            int ByteToWrite(int streamIndex);
 
             int WriteBufferSize { get; set; }
             int ReadBufferSize { get; set; }
 
             DeviceState DeviceState { get; }
-
+            
             void Enable();
             void Disable();
 
-            void SetActiveSetting(UsbClientMode mode, string manufactureName, string productName, string serialNumber, ushort productId, ushort vendorId, string guid);
+            void SetActiveSetting(UsbClientSetting setting);
+            void SetDeviceDescriptor(Configuration.DeviceDescriptor[] deviceDescriptor);
+            void SetConfigurationDescriptor(Configuration.ConfigurationDescriptor[] configurationDescriptor);
+            void SetStringDescriptor(Configuration.StringDescriptor[] stringDescriptor,  uint index);
+            void SetGenericDescriptor(Configuration.GenericDescriptor[] genericDescriptor);
 
-            int Read(byte[] data, int offset, int count);
-            int Write(byte[] data, int offset, int count);
+            int Read(int streamIndex, byte[] data, int offset, int count);
+            int Write(int streamIndex, byte[] data, int offset, int count);
 
-            void ClearReadBuffer();
-            void ClearWriteBuffer();
+            int GetMaxPacketSize();
+            ushort GetEndpointMap();
 
-            void Flush();
+            void ClearReadBuffer(int streamIndex);
+            void ClearWriteBuffer(int streamIndex);
+
+            void Flush(int streamIndex);
 
 
             event DataReceivedEventHandler DataReceived;
@@ -213,8 +146,8 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
 
             public void Dispose() => this.Release();
 
-            public int ByteToRead => this.GetByteToRead();
-            public int ByteToWrite => this.GetByteToWrite();
+            public int ByteToRead(int streamIndex) => this.GetByteToRead(streamIndex);
+            public int ByteToWrite(int streamIndex) => this.GetByteToWrite(streamIndex);
 
             public DeviceState DeviceState => this.GetDeviceState();
 
@@ -231,31 +164,31 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
             public extern void Disable();
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern void SetActiveSetting(UsbClientMode mode, string manufactureName, string productName, string serialNumber, ushort productId, ushort vendorId, string guid);
+            public extern void SetActiveSetting(UsbClientSetting setting);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern int Read(byte[] data, int offset, int count);
+            public extern int Read(int streamIndex, byte[] data, int offset, int count);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern int Write(byte[] data, int offset, int count);
+            public extern int Write(int streamIndex, byte[] data, int offset, int count);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern void Flush();
+            public extern void Flush(int streamIndex);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern void ClearReadBuffer();
+            public extern void ClearReadBuffer(int streamIndex);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern void ClearWriteBuffer();
+            public extern void ClearWriteBuffer(int streamIndex);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             private extern DeviceState GetDeviceState();
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            private extern int GetByteToRead();
+            private extern int GetByteToRead(int streamIndex);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            private extern int GetByteToWrite();
+            private extern int GetByteToWrite(int streamIndex);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             private extern void SetDataReceivedEventEnabled(bool enabled);
@@ -265,6 +198,27 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
 
             public extern int WriteBufferSize { [MethodImpl(MethodImplOptions.InternalCall)] get; [MethodImpl(MethodImplOptions.InternalCall)] set; }
             public extern int ReadBufferSize { [MethodImpl(MethodImplOptions.InternalCall)] get; [MethodImpl(MethodImplOptions.InternalCall)] set; }
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            public extern int GetMaxPacketSize();
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            public extern ushort GetEndpointMap();
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            internal static extern void InitializeStream(byte[] streamMap, uint[] interfaceMap);
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            public extern void SetDeviceDescriptor(Configuration.DeviceDescriptor[] deviceDescriptor);
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            public extern void SetConfigurationDescriptor(Configuration.ConfigurationDescriptor[] configurationDescriptor);
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            public extern void SetStringDescriptor(Configuration.StringDescriptor[] stringDescriptor, uint index);
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            public extern void SetGenericDescriptor(Configuration.GenericDescriptor[] genericDescriptor);
 
         }
     }
