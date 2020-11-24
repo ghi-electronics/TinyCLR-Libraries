@@ -77,6 +77,7 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
             MassStorage = 0xF002,
             Keyboard = 0xF004,
             Joystick = 0xF005,
+            WinUsb = 0xF006,
         }
 
         internal UsbClientController usbClientController;
@@ -209,10 +210,10 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
         }
 
         /// <summary>Sets this device as the active device on the USB client controller. The existing active device will be deactivated if present.</summary>
-        private void Initialize() {
+        private void Initialize() {            
             var deviceDescriptor = new Configuration.DeviceDescriptor(this.vendorId, this.productId, this.version) {
                 bMaxPacketSize0 = (byte)this.usbClientController.Provider.GetMaxPacketSize(),
-                bcdUSB = 0x110,
+                bcdUSB = this.usbClientSetting.Mode == UsbClientMode.WinUsb ? (ushort)0x200 : (ushort)0x110,
                 iManufacturer = RawDevice.MANUFACTURER_STRING_INDEX,
                 iProduct = RawDevice.PRODUCT_STRING_INDEX,
                 iSerialNumber = RawDevice.SERIAL_NUMBER_STRING_INDEX
