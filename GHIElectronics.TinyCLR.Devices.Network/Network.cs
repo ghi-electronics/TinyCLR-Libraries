@@ -208,7 +208,7 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
     public class WiFiNetworkInterfaceSettings : NetworkInterfaceSettings {
         public string Ssid { get; set; }
         public string Password { get; set; }
-        public uint Channel { get; set; }
+        public uint Channel { get; set; } = 1;
 
         internal INetworkControllerProvider provider;
         internal NetworkController networkController;
