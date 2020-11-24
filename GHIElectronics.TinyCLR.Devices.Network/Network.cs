@@ -4,6 +4,7 @@ using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
+using System.Threading;
 using GHIElectronics.TinyCLR.Devices.Gpio;
 using GHIElectronics.TinyCLR.Devices.Network.Provider;
 using GHIElectronics.TinyCLR.Devices.Spi;
@@ -51,10 +52,46 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
         public NetworkInterfaceType InterfaceType => this.Provider.InterfaceType;
         public NetworkCommunicationInterface CommunicationInterface => this.Provider.CommunicationInterface;
 
-        public void Dispose() => this.Provider.Dispose();
+        internal bool enabled;
 
-        public void Enable() => this.Provider.Enable();
-        public void Disable() => this.Provider.Disable();
+        public void Dispose() {
+            this.Provider.Dispose();
+
+            this.enabled = false;
+        }
+
+        public void Enable() {
+
+            this.Provider.Enable();
+
+            this.enabled = true;
+
+            if (this.InterfaceType == NetworkInterfaceType.WiFi) {
+                var setting = (WiFiNetworkInterfaceSettings)this.ActiveInterfaceSettings;
+
+                if (setting.Mode == WiFiMode.AccessPoint) {
+                    setting.networkController = this;
+                    setting.provider = this.Provider;
+
+                    if (setting.IsDhcpEnabled)
+                        setting.dhcpServer.Start();
+
+                }
+            }
+        }
+
+        public void Disable() {
+            if (this.InterfaceType == NetworkInterfaceType.WiFi) {
+                var setting = (WiFiNetworkInterfaceSettings)this.ActiveInterfaceSettings;
+
+                if (setting.Mode == WiFiMode.AccessPoint) {
+                    if (setting.IsDhcpEnabled)
+                        setting.dhcpServer.Stop();
+                }
+            }
+
+            this.Provider.Disable();
+        }
 
         public void Suspend() => this.Provider.Suspend();
         public void Resume() => this.Provider.Resume();
@@ -163,9 +200,555 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
 
     }
 
+    public enum WiFiMode {
+        Station = 0,
+        AccessPoint = 1
+    }
+
     public class WiFiNetworkInterfaceSettings : NetworkInterfaceSettings {
         public string Ssid { get; set; }
         public string Password { get; set; }
+        public uint Channel { get; set; } = 1;
+
+        internal INetworkControllerProvider provider;
+        internal NetworkController networkController;
+
+        public delegate void AccessPointClientLinkConnectedChangedEventHandler(NetworkController sender, IPAddress clientAddrres, string macAddress);
+        public event AccessPointClientLinkConnectedChangedEventHandler AccessPointClientLinkConnectedChanged;
+
+        public WiFiMode Mode {
+            get => this.mode;
+            set {
+
+                this.mode = value;
+
+                if (this.mode == WiFiMode.AccessPoint && this.IsDhcpEnabled && this.dhcpServer == null) {
+                    this.dhcpServer = new DhcpServer(this);
+                }
+            }
+        }
+
+        private WiFiMode mode;
+
+
+        internal DhcpServer dhcpServer;
+
+        internal class DhcpServer {
+            enum Port {
+                Source = 67,
+                Destination = 68,
+            }
+
+            enum MessageType {
+                Discovery = 1,
+                Offer = 2,
+                Request = 3,
+                Acknowledge = 5,
+            }
+
+            enum MessageOption {
+                SubnetMask = 1,
+                Router = 3,
+                DomainNameServers = 6,
+                DomainName = 15,
+                IPAddressLeaseTime = 51,
+                DHCPMessageType = 53,
+                DHCPServerIdentifier = 54,
+                ParameterRequestList = 55,
+                RenewalTimeValue = 58,
+                RebindingTimeValue = 59,
+            }
+
+            internal struct MessageOffer {
+                public string ipAddress;
+                public string subnetMask;
+
+                public string domainName;
+                public string serverIdentifiderAddress;
+                public string rounterIpAddress;
+                public string domainIpAddress;
+
+                public uint ipAddressLeaseTime;
+            }
+
+            internal struct MessageFrame {
+                public byte opcode;
+                public byte addressType;
+                public byte addressLength;
+                public byte options;
+                public byte[] transactionId;
+                public byte[] elapsedTime;
+                public byte[] flags;
+                public byte[] clientIpAddress;
+                public byte[] yourIpAddress;
+                public byte[] serverIpAddress;
+                public byte[] relayIpAddress;
+                public byte[] clientHardwareAddress;
+                public byte[] serverHostName;
+                public byte[] bootFileName;
+                public byte[] magicCode;
+                public byte[] dhcpOptions;
+            }
+
+            internal class Message {
+                internal MessageFrame messageFrame;
+                internal MessageOffer messageOffer;
+
+                internal Message(byte[] data) {
+                    using (var stream = new System.IO.MemoryStream(data, 0, data.Length)) {
+                        try {
+                            var data32 = new byte[4];
+                            var data16 = new byte[2];
+
+                            this.messageFrame.opcode = (byte)stream.ReadByte();
+                            this.messageFrame.addressType = (byte)stream.ReadByte();
+                            this.messageFrame.addressLength = (byte)stream.ReadByte();
+                            this.messageFrame.options = (byte)stream.ReadByte();
+
+                            this.messageFrame.transactionId = new byte[4];
+                            stream.Read(this.messageFrame.transactionId, 0, 4);
+
+                            this.messageFrame.elapsedTime = new byte[2];
+                            stream.Read(this.messageFrame.elapsedTime, 0, 2);
+
+                            this.messageFrame.flags = new byte[2];
+                            stream.Read(this.messageFrame.flags, 0, 2);
+
+                            this.messageFrame.clientIpAddress = new byte[4];
+                            stream.Read(this.messageFrame.clientIpAddress, 0, 4);
+
+                            this.messageFrame.yourIpAddress = new byte[4];
+                            stream.Read(this.messageFrame.yourIpAddress, 0, 4);
+
+                            this.messageFrame.serverIpAddress = new byte[4];
+                            stream.Read(this.messageFrame.serverIpAddress, 0, 4);
+
+                            this.messageFrame.relayIpAddress = new byte[4];
+                            stream.Read(this.messageFrame.relayIpAddress, 0, 4);
+
+                            this.messageFrame.clientHardwareAddress = new byte[16];
+                            stream.Read(this.messageFrame.clientHardwareAddress, 0, 16);
+
+                            this.messageFrame.serverHostName = new byte[64];
+                            stream.Read(this.messageFrame.serverHostName, 0, 64);
+
+                            this.messageFrame.bootFileName = new byte[128];
+                            stream.Read(this.messageFrame.bootFileName, 0, 128);
+
+                            this.messageFrame.magicCode = new byte[4];
+                            stream.Read(this.messageFrame.magicCode, 0, 4);
+
+                            // DHCP option start from 240
+                            this.messageFrame.dhcpOptions = new byte[data.Length - 240];
+                            stream.Read(this.messageFrame.dhcpOptions, 0, data.Length - 240);
+                        }
+                        catch {
+
+                        }
+                    }
+                }
+            }
+
+            private Socket udpSocket;
+            private IPEndPoint localEndpoint;
+            internal bool Started { get; private set; }
+            internal bool ClientConnected { get; set; }
+            internal WiFiNetworkInterfaceSettings WifiNetworkInterfaceSetting { get; set; }
+
+            internal DhcpServer(WiFiNetworkInterfaceSettings setting) => this.WifiNetworkInterfaceSetting = setting;
+
+            internal string DomainName {
+                get;
+                set;
+            } = "SITCore";
+
+            internal uint LeaseTime {
+                get;
+                set;
+            } = 5000;
+
+
+            internal void Dispose() => this.Dispose(true);
+
+            protected virtual void Dispose(bool disposing) {
+                if (disposing) {
+                    this.Stop();
+                    GC.SuppressFinalize(this);
+                }
+            }
+
+            internal void Start() {
+                if (this.Started) {
+                    return;
+                }
+
+                try {
+                    var ipAddress = this.WifiNetworkInterfaceSetting.Address;
+
+                    this.localEndpoint = new IPEndPoint(ipAddress, (int)Port.Source);
+
+                    this.udpSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+
+                    this.udpSocket.Bind(this.localEndpoint);
+
+                    this.Started = true;
+                    this.ClientConnected = false;
+
+                    new Thread(this.Run).Start();
+                }
+                catch {
+
+                }
+            }
+
+            internal void Stop() {
+                if (!this.Started) {
+                    return;
+                }
+
+                try {
+                    this.Started = false;
+                    this.ClientConnected = false;
+
+                    if (this.udpSocket != null)
+                        this.udpSocket.Close();
+
+                    this.udpSocket = null;
+                    this.localEndpoint = null;
+
+                }
+                catch {
+
+                }
+            }
+
+            private void Run() {
+
+                while (this.Started) {
+                    if (this.ClientConnected == true) {
+                        if (this.WifiNetworkInterfaceSetting.networkController.enabled == false ||
+                        this.WifiNetworkInterfaceSetting.provider.GetAccessPointClientLinkConnect(this.WifiNetworkInterfaceSetting) == false) {
+                            this.ClientConnected = false;
+                        }
+
+                        Thread.Sleep(100);
+                        continue;
+                    }
+
+
+                    if (this.udpSocket != null && this.udpSocket.Available > 0) {
+                        var s = this.udpSocket;
+
+                        EndPoint ep = new IPEndPoint(IPAddress.Any, 0);
+
+                        var available = this.udpSocket.Available;
+
+                        var read = new byte[available];
+
+                        if (s.ReceiveFrom(read, available, SocketFlags.None, ref ep) > 0)
+                            this.ProcessMessage(read);
+                    }
+                    else {
+
+                        Thread.Sleep(1);
+                    }
+                }
+            }
+
+            private void ProcessMessage(byte[] data) {
+                Message message;
+                var macAddress = string.Empty;
+
+                try {
+                    message = new Message(data);
+
+                    if (message == null)
+                        return;
+
+                    for (var i = 0; i < message.messageFrame.addressLength; i++) {
+                        macAddress += message.messageFrame.clientHardwareAddress[i].ToString("x2");
+                    }
+
+                    var msgTypes = ParseOptionValue(MessageOption.DHCPMessageType, message);
+
+                    var offerDestinationAddress = this.WifiNetworkInterfaceSetting.Address.GetAddressBytes();
+
+                    offerDestinationAddress[3]++;
+
+                    if (offerDestinationAddress[3] == 255)
+                        offerDestinationAddress[3] = 1;
+
+                    var ipOffer = new IPAddress(offerDestinationAddress);
+
+                    if (msgTypes != null) {
+                        switch ((MessageType)msgTypes[0]) {
+                            case MessageType.Discovery:
+
+                                message.messageOffer.ipAddress = ipOffer.ToString();
+                                message.messageOffer.subnetMask = this.WifiNetworkInterfaceSetting.SubnetMask.ToString();
+                                message.messageOffer.ipAddressLeaseTime = this.LeaseTime;
+                                message.messageOffer.domainName = this.DomainName;
+                                message.messageOffer.serverIdentifiderAddress = this.WifiNetworkInterfaceSetting.Address.ToString();
+                                message.messageOffer.rounterIpAddress = this.WifiNetworkInterfaceSetting.Address.ToString();
+                                message.messageOffer.domainIpAddress = this.WifiNetworkInterfaceSetting.DnsAddresses[0].ToString();
+
+                                this.Send(message, MessageType.Offer);
+
+                                break;
+                            case MessageType.Request:
+
+                                message.messageOffer.ipAddress = ipOffer.ToString();
+                                message.messageOffer.subnetMask = this.WifiNetworkInterfaceSetting.SubnetMask.ToString();
+                                message.messageOffer.ipAddressLeaseTime = this.LeaseTime;
+                                message.messageOffer.domainName = this.DomainName;
+                                message.messageOffer.serverIdentifiderAddress = this.WifiNetworkInterfaceSetting.Address.ToString();
+                                message.messageOffer.rounterIpAddress = this.WifiNetworkInterfaceSetting.Address.ToString();
+                                message.messageOffer.domainIpAddress = this.WifiNetworkInterfaceSetting.DnsAddresses[0].ToString();
+
+                                this.Send(message, MessageType.Acknowledge);
+
+                                this.WifiNetworkInterfaceSetting.AccessPointClientLinkConnectedChanged?.Invoke(this.WifiNetworkInterfaceSetting.networkController, ipOffer, macAddress);
+
+                                this.ClientConnected = true;
+
+                                break;
+
+                            default:
+
+                                break;
+                        }
+                    }
+
+                }
+                catch {
+
+                }
+            }
+
+            private void Send(byte[] data) {
+                try {
+                    var addresses = Dns.GetHostEntry(IPAddress.Broadcast.ToString()).AddressList;
+
+                    if (addresses == null)
+                        throw new ArgumentException("Invalid hostname");
+
+                    var i = 0;
+                    for (; i < addresses.Length && addresses[i].AddressFamily != AddressFamily.InterNetwork; i++) ;
+
+                    if (addresses.Length == 0 || i == addresses.Length) {
+                        throw new ArgumentException("Invalid hostname");
+                    }
+
+                    this.udpSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.Broadcast, 1);
+
+                    var ipEndPoint = new IPEndPoint(addresses[i], (int)Port.Destination);
+
+                    this.udpSocket.SendTo(data, 0, data.Length, SocketFlags.None, ipEndPoint);
+                }
+                catch {
+
+                }
+            }
+
+            private void Send(Message message, MessageType msgType) {
+                byte[] subnetMask, domainName;
+                try {
+                    //reply
+                    message.messageFrame.opcode = 0x02;
+
+                    //subnet
+                    subnetMask = IPAddress.Parse(message.messageOffer.subnetMask).GetAddressBytes();
+
+                    //create your ip address
+                    message.messageFrame.yourIpAddress = IPAddress.Parse(message.messageOffer.ipAddress).GetAddressBytes();
+
+                    //domainName
+                    domainName = System.Text.Encoding.UTF8.GetBytes(message.messageOffer.domainName);
+
+                    message = CreateOptions(msgType, message);
+
+                    //create option
+                    try {
+
+                        var options = AddOptionValue(new byte[] { message.messageFrame.opcode }, null);
+                        options = AddOptionValue(new byte[] { message.messageFrame.addressType }, options);
+                        options = AddOptionValue(new byte[] { message.messageFrame.addressLength }, options);
+                        options = AddOptionValue(new byte[] { message.messageFrame.options }, options);
+                        options = AddOptionValue(message.messageFrame.transactionId, options);
+                        options = AddOptionValue(message.messageFrame.elapsedTime, options);
+                        options = AddOptionValue(message.messageFrame.flags, options);
+                        options = AddOptionValue(message.messageFrame.clientIpAddress, options);
+                        options = AddOptionValue(message.messageFrame.yourIpAddress, options);
+                        options = AddOptionValue(message.messageFrame.serverIpAddress, options);
+                        options = AddOptionValue(message.messageFrame.relayIpAddress, options);
+                        options = AddOptionValue(message.messageFrame.clientHardwareAddress, options);
+                        options = AddOptionValue(message.messageFrame.serverHostName, options);
+                        options = AddOptionValue(message.messageFrame.bootFileName, options);
+                        options = AddOptionValue(message.messageFrame.magicCode, options);
+                        options = AddOptionValue(message.messageFrame.dhcpOptions, options);
+
+                        if (options != null)
+                            this.Send(options);
+                    }
+                    catch {
+
+                    }
+                }
+                catch {
+
+                }
+
+            }
+
+            private static byte[] ParseOptionValue(MessageOption option, Message message) {
+                byte messageId;
+                byte[] data;
+
+                try {
+                    var optionId = (int)option;
+
+                    for (var i = 0; i < message.messageFrame.dhcpOptions.Length; i++) {
+
+                        messageId = message.messageFrame.dhcpOptions[i];
+                        byte size;
+                        if (messageId == optionId) {
+                            size = message.messageFrame.dhcpOptions[i + 1];
+                            data = new byte[size];
+                            Array.Copy(message.messageFrame.dhcpOptions, i + 2, data, 0, size);
+                            return data;
+                        }
+                        else {
+                            size = message.messageFrame.dhcpOptions[i + 1];
+                            i += 1 + size;
+                        }
+                    }
+                }
+                catch {
+
+                }
+                return null;
+            }
+            private static Message CreateOptions(MessageType messageType, Message message) {
+                byte[] requests, parse, leaseTime, serverIdentifiderAddress;
+
+                try {
+
+                    requests = ParseOptionValue(MessageOption.ParameterRequestList, message);
+
+                    message.messageFrame.dhcpOptions = CreateOptionValue(MessageOption.DHCPMessageType, new byte[] { (byte)messageType }, null);
+
+                    serverIdentifiderAddress = IPAddress.Parse(message.messageOffer.serverIdentifiderAddress).GetAddressBytes();
+
+                    message.messageFrame.dhcpOptions = CreateOptionValue(MessageOption.DHCPServerIdentifier, serverIdentifiderAddress, message.messageFrame.dhcpOptions);
+
+                    foreach (var i in requests) {
+                        parse = null;
+                        switch ((MessageOption)i) {
+                            case MessageOption.SubnetMask:
+                                parse = IPAddress.Parse(message.messageOffer.subnetMask).GetAddressBytes();
+                                break;
+                            case MessageOption.Router:
+                                parse = IPAddress.Parse(message.messageOffer.rounterIpAddress).GetAddressBytes();
+                                break;
+                            case MessageOption.DomainNameServers:
+                                parse = IPAddress.Parse(message.messageOffer.domainIpAddress).GetAddressBytes();
+                                break;
+                            case MessageOption.DomainName:
+                                parse = System.Text.Encoding.UTF8.GetBytes(message.messageOffer.domainName);
+                                break;
+                            case MessageOption.DHCPServerIdentifier:
+                                parse = IPAddress.Parse(message.messageOffer.serverIdentifiderAddress).GetAddressBytes();
+                                break;
+
+                            default:
+                                break;
+
+                        }
+                        if (parse != null)
+                            message.messageFrame.dhcpOptions = CreateOptionValue((MessageOption)i, parse, message.messageFrame.dhcpOptions);
+                    }
+
+                    leaseTime = new byte[4];
+
+                    leaseTime[0] = (byte)(message.messageOffer.ipAddressLeaseTime >> 24);
+                    leaseTime[1] = (byte)(message.messageOffer.ipAddressLeaseTime >> 16);
+                    leaseTime[2] = (byte)(message.messageOffer.ipAddressLeaseTime >> 8);
+                    leaseTime[3] = (byte)(message.messageOffer.ipAddressLeaseTime);
+
+                    message.messageFrame.dhcpOptions = CreateOptionValue(MessageOption.IPAddressLeaseTime, leaseTime, message.messageFrame.dhcpOptions);
+                    message.messageFrame.dhcpOptions = CreateOptionValue(MessageOption.RenewalTimeValue, leaseTime, message.messageFrame.dhcpOptions);
+                    message.messageFrame.dhcpOptions = CreateOptionValue(MessageOption.RebindingTimeValue, leaseTime, message.messageFrame.dhcpOptions);
+
+                    var dataTmp = new byte[message.messageFrame.dhcpOptions.Length + 1];
+                    Array.Copy(message.messageFrame.dhcpOptions, dataTmp, message.messageFrame.dhcpOptions.Length);
+
+                    message.messageFrame.dhcpOptions = new byte[message.messageFrame.dhcpOptions.Length + 1];
+
+                    message.messageFrame.dhcpOptions[message.messageFrame.dhcpOptions.Length - 1] = 255; // mark option end.
+
+                    Array.Copy(dataTmp, message.messageFrame.dhcpOptions, dataTmp.Length);
+
+                }
+                catch {
+                    return null;
+                }
+
+                return message;
+            }
+
+            private static byte[] AddOptionValue(byte[] value, byte[] options) {
+                try {
+                    if (options != null) {
+                        var dataTmp = new byte[options.Length + value.Length];
+                        Array.Copy(options, dataTmp, options.Length);
+
+                        options = new byte[dataTmp.Length];
+                        Array.Copy(dataTmp, options, dataTmp.Length);
+                    }
+                    else {
+                        options = new byte[value.Length];
+                    }
+
+                    Array.Copy(value, 0, options, options.Length - value.Length, value.Length);
+                }
+                catch {
+                    return null;
+                }
+
+                return options;
+            }
+
+            private static byte[] CreateOptionValue(MessageOption optionCode, byte[] value, byte[] options) {
+                byte[] option;
+
+                try {
+                    option = new byte[value.Length + 2];
+
+                    option[0] = (byte)optionCode;
+                    option[1] = (byte)value.Length;
+
+                    Array.Copy(value, 0, option, 2, value.Length);
+
+                    if (options == null) {
+                        options = new byte[option.Length];
+                    }
+                    else {
+                        var dataTmp = new byte[options.Length + option.Length];
+
+                        Array.Copy(options, dataTmp, options.Length);
+
+                        options = new byte[dataTmp.Length];
+                        Array.Copy(dataTmp, options, dataTmp.Length);
+                    }
+                    Array.Copy(option, 0, options, options.Length - option.Length, option.Length);
+                }
+                catch {
+                    return null;
+                }
+
+                return options;
+            }
+        }
     }
 
     public enum PppAuthenticationType {
@@ -207,7 +790,7 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
         public GpioPin InterruptPin { get; set; }
         public GpioPinEdge InterruptEdge { get; set; }
         public GpioPinDriveMode InterruptDriveMode { get; set; }
-    }   
+    }
 
     public class UartNetworkCommunicationInterfaceSettings : NetworkCommunicationInterfaceSettings {
         public string ApiName { get; set; }
@@ -231,6 +814,8 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
             void Resume();
 
             bool GetLinkConnected();
+            bool GetAccessPointClientLinkConnect(WiFiNetworkInterfaceSettings settings);
+
             NetworkIPProperties GetIPProperties();
             NetworkInterfaceProperties GetInterfaceProperties();
 
@@ -361,6 +946,7 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
                 }
             }
 
+
             [MethodImpl(MethodImplOptions.InternalCall)]
             private extern void SetInterfaceSettings(EthernetNetworkInterfaceSettings settings);
 
@@ -381,12 +967,12 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern bool GetLinkConnected();
+
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern NetworkIPProperties GetIPProperties();
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern NetworkInterfaceProperties GetInterfaceProperties();
-
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern int Create(AddressFamily addressFamily, SocketType socketType, ProtocolType protocolType);
@@ -450,6 +1036,9 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void GetHostByName(string name, out string canonicalName, out SocketAddress[] addresses);
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            public extern bool GetAccessPointClientLinkConnect(WiFiNetworkInterfaceSettings settings);
         }
     }
 }
