@@ -55,10 +55,14 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
         public WinUsb(UsbClientController usbClientController, UsbClientSetting usbClientSetting)
             : base(usbClientController, usbClientSetting) {
 
-            var readEndpoint = this.ReserveNewEndpoint();
-            var writeEndpoint = this.ReserveNewEndpoint();
+            if (usbClientSetting.Guid == null || usbClientSetting.Guid.Length == 0)
+                throw new ArgumentException("Invalid Guid.");
 
-            usbClientSetting.Mode = UsbClientMode.WinUsb;
+            if (usbClientSetting.Mode != UsbClientMode.WinUsb)
+                throw new ArgumentException("Invalid Mode.");
+
+            var readEndpoint = this.ReserveNewEndpoint();
+            var writeEndpoint = this.ReserveNewEndpoint();            
 
             Configuration.Endpoint[] endpoints =
             {
@@ -67,8 +71,6 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
             };
 
             var usbInterface = new Configuration.UsbInterface(0, endpoints) { bInterfaceClass = 0xFF, bInterfaceSubClass = 0x01, bInterfaceProtocol = 0x01 };
-
-
 
             this.stream = (WinUsbStream)this.CreateStream(writeEndpoint, readEndpoint);
 

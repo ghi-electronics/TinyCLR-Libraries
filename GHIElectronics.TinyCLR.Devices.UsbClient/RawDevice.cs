@@ -100,7 +100,7 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
             this.stringDescriptors = new ArrayList();
             this.configuration = new Configuration();
 
-            this.vendorId = usbClientSetting.VendorId;
+            this.vendorId = usbClientSetting.VendorId == 0 ? GHI_VID : usbClientSetting.VendorId;
             this.productId = usbClientSetting.ProductId;
             this.version = usbClientSetting.Version;
             this.maximumPower = usbClientSetting.MaxPower;
@@ -310,28 +310,7 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
         /// <param name="index">The index of the stream</param>
         /// <param name="parent">The owning raw device.</param>
         /// <returns>The new stream.</returns>
-        protected virtual RawStream CreateStream(int index, RawDevice parent) => new RawStream(index, parent);
-
-        //[MethodImplAttribute(MethodImplOptions.InternalCall)]
-        //private extern static void NativeInitialize(byte[] streamMap, uint[] interfaceMap);
-
-        //[MethodImplAttribute(MethodImplOptions.InternalCall)]
-        //private extern static ushort NativeGetEndpointMap();
-
-        //[MethodImplAttribute(MethodImplOptions.InternalCall)]
-        //private extern static int NativeRead(int streamIndex, byte[] buffer, int offset, int count);
-
-        //[MethodImplAttribute(MethodImplOptions.InternalCall)]
-        //private extern static int NativeWrite(int streamIndex, byte[] buffer, int offset, int count);
-
-        //[MethodImplAttribute(MethodImplOptions.InternalCall)]
-        //private extern static void NativeFlush(int streamIndex);
-
-        //[MethodImplAttribute(MethodImplOptions.InternalCall)]
-        //private extern static int NativeBytesToRead(int streamIndex);
-
-        //[MethodImplAttribute(MethodImplOptions.InternalCall)]
-        //private extern static int NativeBytesToWrite(int streamIndex);
+        protected virtual RawStream CreateStream(int index, RawDevice parent) => new RawStream(index, parent);      
 
         /// <summary>USB stream for reading and writing data through two endpoints.</summary>
         public class RawStream : Stream {
