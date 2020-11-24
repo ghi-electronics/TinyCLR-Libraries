@@ -5,11 +5,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{B05CC69D-2285-4F85-978F-D1828B773150}</ProjectGuid>
+    <ProjectGuid>{A4ECB49A-99D0-4A25-9119-69966235EF60}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GHIElectronics.TinyCLR.Devices.UsbClient</RootNamespace>
-    <AssemblyName>GHIElectronics.TinyCLR.Devices.UsbClient</AssemblyName>
+    <RootNamespace>GHIElectronics.TinyCLR.Devices.Usb</RootNamespace>
+    <AssemblyName>GHIElectronics.TinyCLR.Devices.Usb</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A1948822-69DD-4150-919B-F3F42EFB71CC};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -34,27 +34,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Cdc.cs" />
-    <Compile Include="Configuration.cs" />
-    <Compile Include="Keyboard.cs" />
-    <Compile Include="Mouse.cs" />
+    <Compile Include="SharedTypes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RawDevice.cs" />
-    <Compile Include="UsbClient.cs" />
-    <Compile Include="WinUsb.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="GHIElectronics.TinyCLR.Devices.Usb.nuspec" />
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\GHIElectronics.TinyCLR.Devices.Usb\GHIElectronics.TinyCLR.Devices.Usb.csproj">
-      <Project>{A4ECB49A-99D0-4A25-9119-69966235EF60}</Project>
-      <Name>GHIElectronics.TinyCLR.Devices.Usb</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\GHIElectronics.TinyCLR.Native\GHIElectronics.TinyCLR.Native.csproj">
-      <Project>{B602474A-AEB0-491C-832B-7EAF0B4511C0}</Project>
-      <Name>GHIElectronics.TinyCLR.Native</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
