@@ -28,7 +28,7 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
         }
 
 
-        /// <summary>Creates a new CDC interface with default parameters.</summary>
+        /// <summary>Creates a new WinUsb interface with default parameters.</summary>
         public WinUsb(UsbClientController usbClientController)
             : this(usbClientController, new UsbClientSetting() {
                 VendorId = RawDevice.GHI_VID,
@@ -43,7 +43,7 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
             }) {
         }
 
-        /// <summary>Creates a new CDC interface.</summary>
+        /// <summary>Creates a new WinUsb interface.</summary>
         /// <param name="vendorId">The device vendor id.</param>
         /// <param name="productId">The device product id.</param>
         /// <param name="version">The device version.</param>
@@ -57,26 +57,18 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
 
             var readEndpoint = this.ReserveNewEndpoint();
             var writeEndpoint = this.ReserveNewEndpoint();
-            //var interruptEndpoint = this.ReserveNewEndpoint();
 
             usbClientSetting.Mode = UsbClientMode.WinUsb;
 
             Configuration.Endpoint[] endpoints =
             {
-                //new Configuration.Endpoint((byte)interruptEndpoint, Configuration.Endpoint.ATTRIB_Write | Configuration.Endpoint.ATTRIB_Interrupt) { wMaxPacketSize = 64, bInterval = 255 },
                 new Configuration.Endpoint((byte)writeEndpoint, Configuration.Endpoint.ATTRIB_Write | Configuration.Endpoint.ATTRIB_Bulk) { wMaxPacketSize = 64 },
                 new Configuration.Endpoint((byte)readEndpoint, Configuration.Endpoint.ATTRIB_Read | Configuration.Endpoint.ATTRIB_Bulk) { wMaxPacketSize = 64 },
             };
 
             var usbInterface = new Configuration.UsbInterface(0, endpoints) { bInterfaceClass = 0xFF, bInterfaceSubClass = 0x01, bInterfaceProtocol = 0x01 };
 
-            //usbInterface.classDescriptors = new Configuration.ClassDescriptor[]
-            //{
-            //    new Configuration.ClassDescriptor(0x24, Cdc.payload1),
-            //    new Configuration.ClassDescriptor(0x24, Cdc.payload2),
-            //    new Configuration.ClassDescriptor(0x24, Cdc.payload3),
-            //    new Configuration.ClassDescriptor(0x24, Cdc.payload4),
-            //};
+
 
             this.stream = (WinUsbStream)this.CreateStream(writeEndpoint, readEndpoint);
 
