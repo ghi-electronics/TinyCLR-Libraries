@@ -212,7 +212,7 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
         /// <summary>Sets this device as the active device on the USB client controller. The existing active device will be deactivated if present.</summary>
         private void Initialize() {            
             var deviceDescriptor = new Configuration.DeviceDescriptor(this.vendorId, this.productId, this.version) {
-                bMaxPacketSize0 = (byte)this.usbClientController.Provider.GetMaxPacketSize(),
+                bMaxPacketSize0 = (byte)this.usbClientController.Provider.GetControlPacketSize(),
                 bcdUSB = this.usbClientSetting.Mode == UsbClientMode.WinUsb ? (ushort)0x200 : (ushort)0x110,
                 iManufacturer = RawDevice.MANUFACTURER_STRING_INDEX,
                 iProduct = RawDevice.PRODUCT_STRING_INDEX,

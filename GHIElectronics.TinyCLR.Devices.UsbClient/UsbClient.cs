@@ -75,7 +75,7 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
             int Read(int streamIndex, byte[] data, int offset, int count);
             int Write(int streamIndex, byte[] data, int offset, int count);
 
-            int GetMaxPacketSize();
+            int GetControlPacketSize();
             ushort GetEndpointMap();
 
             void ClearReadBuffer(int streamIndex);
@@ -200,7 +200,7 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
             public extern int ReadBufferSize { [MethodImpl(MethodImplOptions.InternalCall)] get; [MethodImpl(MethodImplOptions.InternalCall)] set; }
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern int GetMaxPacketSize();
+            public extern int GetControlPacketSize();
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern ushort GetEndpointMap();
