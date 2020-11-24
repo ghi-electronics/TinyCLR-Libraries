@@ -476,7 +476,7 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
                     offerDestinationAddress[3]++;
 
                     if (offerDestinationAddress[3] == 255)
-                        offerDestinationAddress[3] = 0;
+                        offerDestinationAddress[3] = 1;
 
                     var ipOffer = new IPAddress(offerDestinationAddress);
 
