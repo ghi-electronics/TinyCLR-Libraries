@@ -81,16 +81,11 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
         }
 
         internal UsbClientController usbClientController;
-        internal UsbClientSetting usbClientSetting;       
+        internal UsbClientSetting usbClientSetting;
 
         /// <summary>Creates a new raw device.</summary>
-        /// <param name="vendorId">The device vendor id.</param>
-        /// <param name="productId">The device product id.</param>
-        /// <param name="version">The device version.</param>
-        /// <param name="maximumPower">The maximum power required from bus in milliamps.</param>
-        /// <param name="manufacturer">The manufacturer name.</param>
-        /// <param name="product">The product name.</param>
-        /// <param name="serialNumber">The device serial number.</param>
+        /// <param name="usbClientController">UsbClient controller.</param>
+        /// <param name="usbClientSetting">UsbClient setting</param>        
         public RawDevice(UsbClientController usbClientController, UsbClientSetting usbClientSetting) {
             this.usbClientController = usbClientController;
             this.usbClientSetting = usbClientSetting;

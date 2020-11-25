@@ -19,7 +19,8 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
         Cdc = 1,
         WinUsb = 2,        
         Keyboard = 3,
-        Mouse = 4
+        Mouse = 4,
+        Joystick = 5
     }
 
     public delegate void DataReceivedEventHandler(RawDevice sender, uint count);

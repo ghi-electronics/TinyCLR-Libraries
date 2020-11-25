@@ -45,14 +45,8 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
         }
 
         /// <summary>Creates a new keyboard.</summary>
-        /// <param name="vendorId">The device vendor id.</param>
-        /// <param name="productId">The device product id.</param>
-        /// <param name="version">The device version.</param>
-        /// <param name="maxPower">The maximum power required from bus in milliamps.</param>
-        /// <param name="manufacturer">The manufacturer name.</param>
-        /// <param name="product">The product name.</param>
-        /// <param name="serialNumber">The device serial number.</param>
-        /// <param name="interfaceName">The name of the interface.</param>
+        /// <param name="usbClientController">UsbClient controller.</param>
+        /// <param name="usbClientSetting">UsbClient setting</param>        
         public Keyboard(UsbClientController usbClientController, UsbClientSetting usbClientSetting)
             : base(usbClientController, usbClientSetting) {
             var endpoint = this.ReserveNewEndpoint();
