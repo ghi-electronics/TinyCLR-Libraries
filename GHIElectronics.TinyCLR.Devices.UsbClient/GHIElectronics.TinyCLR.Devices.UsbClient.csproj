@@ -36,6 +36,7 @@
   <ItemGroup>
     <Compile Include="Cdc.cs" />
     <Compile Include="Configuration.cs" />
+    <Compile Include="Joystick.cs" />
     <Compile Include="Keyboard.cs" />
     <Compile Include="Mouse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
