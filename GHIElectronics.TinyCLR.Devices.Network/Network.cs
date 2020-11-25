@@ -213,8 +213,8 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
         internal INetworkControllerProvider provider;
         internal NetworkController networkController;
 
-        public delegate void AccessPointClientLinkConnectedChangedEventHandler(NetworkController sender, IPAddress clientAddrres, string macAddress);
-        public event AccessPointClientLinkConnectedChangedEventHandler AccessPointClientLinkConnectedChanged;
+        public delegate void AccessPointClientConnectionChangedEventHandler(NetworkController sender, IPAddress clientAddrres, string macAddress);
+        public event AccessPointClientConnectionChangedEventHandler AccessPointClientConnectionChanged;
 
         public WiFiMode Mode {
             get => this.mode;
@@ -507,7 +507,7 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
 
                                 this.Send(message, MessageType.Acknowledge);
 
-                                this.WifiNetworkInterfaceSetting.AccessPointClientLinkConnectedChanged?.Invoke(this.WifiNetworkInterfaceSetting.networkController, ipOffer, macAddress);
+                                this.WifiNetworkInterfaceSetting.AccessPointClientConnectionChanged?.Invoke(this.WifiNetworkInterfaceSetting.networkController, ipOffer, macAddress);
 
                                 this.ClientConnected = true;
 
