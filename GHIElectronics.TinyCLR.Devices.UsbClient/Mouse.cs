@@ -46,7 +46,7 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
             0x09, 0x38, //Usage (W)
 
             0x16, 0x00, 0x80, //Logical Minimum (-32768)
-            0x26, 0x00, 0x80,//Logical Maximum (32768)
+            0x26, 0xFF, 0x7F,//Logical Maximum (32767)
             0x75, 0x10, //Report Size (16)
             0x95, 0x03, //Report Count (3)
             0x81, 0x06, //Input (Data, Variable, Relative)
