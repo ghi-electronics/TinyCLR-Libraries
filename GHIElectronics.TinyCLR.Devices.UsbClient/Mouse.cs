@@ -78,12 +78,12 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
         /// <summary>The current y coordinate of the cursor.</summary>
         public int CursorY => this.y;
 
-        /// <summary>The current wheel position.</summary>
+        /// <summary>Set true for absolute, false for relative mode.</summary>
         public bool AbsolutePosition {
             get => this.absolutePos;
             set {
                 if (this.Initialized)
-                    throw new Exception("Can not set after Enabled.");
+                    throw new Exception("Can not set after enabled.");
 
                 this.absolutePos = value;
 
