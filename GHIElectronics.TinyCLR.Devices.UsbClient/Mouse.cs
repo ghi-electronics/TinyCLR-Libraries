@@ -78,13 +78,11 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
         /// <summary>The current y coordinate of the cursor.</summary>
         public int CursorY => this.y;
 
-        /// <summary>Set true for absolute, false for relative mode.</summary>
+        /// <summary>Return true for absolute, false for relative mode.</summary>
         public bool AbsolutePosition {
             get => this.absolutePos;
-            set {
-                if (this.Initialized)
-                    throw new Exception("Can not set after enabled.");
 
+            private set {
                 this.absolutePos = value;
 
                 if (this.absolutePos == true) {
@@ -96,9 +94,10 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
             }
         }
 
-
-        /// <summary>Creates a new mouse with default parameters.</summary>
-        public Mouse(UsbClientController usbClientController)
+        /// <summary>Creates a new mouse.</summary>
+        /// <param name="usbClientController">UsbClient controller.</param>
+        /// <param name="absolutePositon">true for absolute position, false for relative </param>   
+        public Mouse(UsbClientController usbClientController, bool absolutePositon = false)
             : this(usbClientController, new UsbClientSetting() {
                 VendorId = RawDevice.GHI_VID,
                 ProductId = (ushort)RawDevice.PID.Keyboard,
@@ -109,13 +108,15 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
                 SerialNumber = "0",
                 InterfaceName = "Mouse",
                 Mode = UsbClientMode.Mouse
-            }
+            }, absolutePositon
             ) {
         }
+
         /// <summary>Creates a new mouse.</summary>
         /// <param name="usbClientController">UsbClient controller.</param>
-        /// <param name="usbClientSetting">UsbClient setting</param>        
-        public Mouse(UsbClientController usbClientController, UsbClientSetting usbClientSetting)
+        /// <param name="usbClientSetting">UsbClient setting</param>
+        /// <param name="absolutePositon">true for absolute position, false for relative </param>   
+        public Mouse(UsbClientController usbClientController, UsbClientSetting usbClientSetting, bool absolutePositon = false)
             : base(usbClientController, usbClientSetting) {
             this.report = new byte[7]; // 1 button state + 2 byteX + 2 byteY + 2 byteWheel
             this.x = 0;
@@ -142,6 +143,7 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
 
             this.stream = this.CreateStream(endpointNumber, RawDevice.RawStream.NullEndpoint);
             this.stream.WriteTimeout = 20;
+            this.AbsolutePosition = absolutePositon;
         }
 
         /// <summary>Whether or not the given button is pressed.</summary>
@@ -293,7 +295,7 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
         /// <summary>Moves the cursor's x and y coordinate to the given position.</summary>
         /// <param name="x">The new x position.</param>
         /// <param name="y">The new p position.</param>
-        public void Move(int x, int y) => this.MoveCursorTo(x, y, x > this.x ? 100 : -100, y > this.y ? 100 : -100);        
+        public void Move(int x, int y) => this.MoveCursorTo(x, y, x > this.x ? 100 : -100, y > this.y ? 100 : -100);
 
         /// <summary>Moves the cursor's x and y coordinate to the given position with the given step since each action can move at most 127 units.</summary>
         /// <param name="x">The new x position.</param>
