@@ -260,6 +260,9 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
         }
 
         private bool initialized = false;
+
+        internal bool Initialized { get => this.initialized; set => this.initialized = value; }
+
         public void Enable() {
             if (!this.initialized) {
                 this.Initialize();
