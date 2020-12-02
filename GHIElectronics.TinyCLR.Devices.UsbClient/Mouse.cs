@@ -10,8 +10,8 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
         private const byte HID_DESCRIPTOR_TYPE = 0x21;
         private const int REPORT_FIELD_MOUSE_BUTTON = 0;
         private const int REPORT_FIELD_MOUSE_X = 1;
-        private const int REPORT_FIELD_MOUSE_Y = 2;
-        private const int REPORT_FIELD_MOUSE_W = 3;
+        private const int REPORT_FIELD_MOUSE_Y = 3;
+        private const int REPORT_FIELD_MOUSE_W = 5;
 
         private static byte[] CLASS_DESCRIPTOR_PAYLOAD =
         {
@@ -19,10 +19,10 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
             0x00, //bCountryCode
             0x01, //bNumDescriptors
             0x22, //bDescriptorType
-            0x34, 0x00 //wItemLength
+            0x36, 0x00 //wItemLength
         };
 
-        private static byte[] REPORT_DESCRIPTOR_PAYLOAD =
+        private static byte[] reportDescriptorPayload =
         {
             0x05, 0x01, //Usage Page (Generic Desktop)
             0x09, 0x02, //Usage (Mouse)
@@ -44,11 +44,13 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
             0x09, 0x30, //Usage (X)
             0x09, 0x31, //Usage (Y)
             0x09, 0x38, //Usage (W)
-            0x15, 0x81, //Logical Minimum (-127)
-            0x25, 0x7f, //Logical Maximum (127)
-            0x75, 0x08, //Report Size (8)
+
+            0x16, 0x00, 0x80, //Logical Minimum (-32768)
+            0x26, 0x00, 0x80,//Logical Maximum (32768)
+            0x75, 0x10, //Report Size (16)
             0x95, 0x03, //Report Count (3)
             0x81, 0x06, //Input (Data, Variable, Relative)
+
             0xc0, // End Collection
             0xc0 // End Collection
         };
@@ -59,12 +61,13 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
         private int x;
         private int y;
         private int wheel;
+        private bool absolutePos;
 
         /// <summary>The maximum step amount for movement.</summary>
-        public static int MaxStep => 127;
+        public static int MaxStep => 32768;
 
         /// <summary>The minimum step amount for movement.</summary>
-        public static int MinStep => -127;
+        public static int MinStep => -32768;
 
         /// <summary>The current wheel position.</summary>
         public int WheelPosition => this.wheel;
@@ -74,6 +77,25 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
 
         /// <summary>The current y coordinate of the cursor.</summary>
         public int CursorY => this.y;
+
+        /// <summary>The current wheel position.</summary>
+        public bool AbsolutePosition {
+            get => this.absolutePos;
+            set {
+                if (this.Initialized)
+                    throw new Exception("Can not set after Enabled.");
+
+                this.absolutePos = value;
+
+                if (this.absolutePos == true) {
+                    reportDescriptorPayload[51] = 0x02;
+                }
+                else {
+                    reportDescriptorPayload[51] = 0x06;
+                }
+            }
+        }
+
 
         /// <summary>Creates a new mouse with default parameters.</summary>
         public Mouse(UsbClientController usbClientController)
@@ -95,7 +117,7 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
         /// <param name="usbClientSetting">UsbClient setting</param>        
         public Mouse(UsbClientController usbClientController, UsbClientSetting usbClientSetting)
             : base(usbClientController, usbClientSetting) {
-            this.report = new byte[4];
+            this.report = new byte[7]; // 1 button state + 2 byteX + 2 byteY + 2 byteWheel
             this.x = 0;
             this.y = 0;
             this.wheel = 0;
@@ -111,7 +133,7 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
             var usbInterface = new Configuration.UsbInterface(0, endpointDescriptor) { bInterfaceClass = Mouse.HID_INTERFACE_CLASS, bInterfaceSubClass = 0, bInterfaceProtocol = 0 };
             usbInterface.classDescriptors = new Configuration.ClassDescriptor[] { new Configuration.ClassDescriptor(Mouse.HID_DESCRIPTOR_TYPE, Mouse.CLASS_DESCRIPTOR_PAYLOAD) };
 
-            var reportDescriptor = new Configuration.GenericDescriptor(Configuration.GenericDescriptor.REQUEST_Standard | Configuration.GenericDescriptor.REQUEST_Interface | Configuration.GenericDescriptor.REQUEST_IN, 0x2200, Mouse.REPORT_DESCRIPTOR_PAYLOAD);
+            var reportDescriptor = new Configuration.GenericDescriptor(Configuration.GenericDescriptor.REQUEST_Standard | Configuration.GenericDescriptor.REQUEST_Interface | Configuration.GenericDescriptor.REQUEST_IN, 0x2200, Mouse.reportDescriptorPayload);
             var interfaceIndex = this.AddInterface(usbInterface, usbClientSetting.InterfaceName);
 
             this.AddDescriptor(reportDescriptor);
@@ -287,33 +309,44 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
         /// <param name="stepY">The amount by which to increment the y position each request.</param>
         /// <param name="stepDelay">How long to wait between each step.</param>
         public void MoveCursorTo(int x, int y, int stepX, int stepY, int stepDelay) {
-            if (stepX < Mouse.MinStep || stepX > Mouse.MaxStep) throw new ArgumentOutOfRangeException("stepX", "stepX must be between MIN_STEP and MAX_STEP.");
-            if (stepY < Mouse.MinStep || stepY > Mouse.MaxStep) throw new ArgumentOutOfRangeException("stepY", "stepY must be between MIN_STEP and MAX_STEP.");
-            if (x > this.x && stepX < 0) throw new ArgumentOutOfRangeException("x", "x must be positive when position is greater than CursorX.");
-            if (x < this.x && stepX > 0) throw new ArgumentOutOfRangeException("x", "x must be negative when position is less than CursorX.");
-            if (stepX == 0) throw new ArgumentOutOfRangeException("stepX", "stepX must not be 0.");
-            if (y > this.y && stepY < 0) throw new ArgumentOutOfRangeException("y", "y must be positive when position is greater than CursorY.");
-            if (y < this.y && stepY > 0) throw new ArgumentOutOfRangeException("y", "y must be negative when position is less than CursorY.");
-            if (stepY == 0) throw new ArgumentOutOfRangeException("stepX", "stepX must not be 0.");
-            if (stepDelay < 0) throw new ArgumentOutOfRangeException("stepDelay", "stepDelay must be non-negative.");
+            if (this.AbsolutePosition == false) {
+                if (stepX < Mouse.MinStep || stepX > Mouse.MaxStep) throw new ArgumentOutOfRangeException("stepX", "stepX must be between MIN_STEP and MAX_STEP.");
+                if (stepY < Mouse.MinStep || stepY > Mouse.MaxStep) throw new ArgumentOutOfRangeException("stepY", "stepY must be between MIN_STEP and MAX_STEP.");
+                if (x > this.x && stepX < 0) throw new ArgumentOutOfRangeException("x", "x must be positive when position is greater than CursorX.");
+                if (x < this.x && stepX > 0) throw new ArgumentOutOfRangeException("x", "x must be negative when position is less than CursorX.");
+                if (stepX == 0) throw new ArgumentOutOfRangeException("stepX", "stepX must not be 0.");
+                if (y > this.y && stepY < 0) throw new ArgumentOutOfRangeException("y", "y must be positive when position is greater than CursorY.");
+                if (y < this.y && stepY > 0) throw new ArgumentOutOfRangeException("y", "y must be negative when position is less than CursorY.");
+                if (stepY == 0) throw new ArgumentOutOfRangeException("stepX", "stepX must not be 0.");
+                if (stepDelay < 0) throw new ArgumentOutOfRangeException("stepDelay", "stepDelay must be non-negative.");
 
-            if (y == this.y || x == this.x)
-                return;
+                if (y == this.y || x == this.x)
+                    return;
 
-            while (true) {
-                if (x == this.x && y == this.y)
-                    break;
+                while (true) {
+                    if (x == this.x && y == this.y)
+                        break;
 
-                if (stepX > 0 && x - this.x < stepX) stepX = x - this.x;
-                if (stepY > 0 && y - this.y < stepY) stepY = y - this.y;
+                    if (stepX > 0 && x - this.x < stepX) stepX = x - this.x;
+                    if (stepY > 0 && y - this.y < stepY) stepY = y - this.y;
 
-                if (stepX < 0 && x - this.x > stepX) stepX = x - this.x;
-                if (stepY < 0 && y - this.y > stepY) stepY = y - this.y;
+                    if (stepX < 0 && x - this.x > stepX) stepX = x - this.x;
+                    if (stepY < 0 && y - this.y > stepY) stepY = y - this.y;
 
-                this.x += stepX;
-                this.y += stepY;
+                    this.x += stepX;
+                    this.y += stepY;
 
-                this.SendReport(stepX, stepY, 0, this.buttonState);
+                    this.SendReport(stepX, stepY, 0, this.buttonState);
+
+                    Thread.Sleep(stepDelay);
+                }
+            }
+            else {
+
+                this.x = x;
+                this.y = y;
+
+                this.SendReport(x, y, 0, this.buttonState);
 
                 Thread.Sleep(stepDelay);
             }
@@ -321,9 +354,12 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
 
         private void SendReport(int deltaX, int deltaY, int deltaWheel, Buttons buttonsState) {
             this.report[Mouse.REPORT_FIELD_MOUSE_BUTTON] = (byte)buttonsState;
-            this.report[Mouse.REPORT_FIELD_MOUSE_X] = (byte)deltaX;
-            this.report[Mouse.REPORT_FIELD_MOUSE_Y] = (byte)deltaY;
-            this.report[Mouse.REPORT_FIELD_MOUSE_W] = (byte)deltaWheel;
+            this.report[Mouse.REPORT_FIELD_MOUSE_X] = (byte)(deltaX & 0xFF);
+            this.report[Mouse.REPORT_FIELD_MOUSE_X + 1] = (byte)((deltaX >> 8) & 0xFF);
+            this.report[Mouse.REPORT_FIELD_MOUSE_Y] = (byte)(deltaY & 0xFF);
+            this.report[Mouse.REPORT_FIELD_MOUSE_Y + 1] = (byte)((deltaY >> 8) & 0xFF);
+            this.report[Mouse.REPORT_FIELD_MOUSE_W] = (byte)(deltaWheel & 0xFF);
+            this.report[Mouse.REPORT_FIELD_MOUSE_W + 1] = (byte)((deltaWheel >> 8) & 0xFF);
 
             this.stream.Write(this.report);
         }
