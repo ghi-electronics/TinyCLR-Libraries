@@ -293,14 +293,14 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
         /// <summary>Moves the cursor's x and y coordinate to the given position.</summary>
         /// <param name="x">The new x position.</param>
         /// <param name="y">The new p position.</param>
-        public void MoveCursorTo(int x, int y) => this.MoveCursorTo(x, y, x > this.x ? 100 : -100, y > this.y ? 100 : -100);
+        public void Move(int x, int y) => this.MoveCursorTo(x, y, x > this.x ? 100 : -100, y > this.y ? 100 : -100);        
 
         /// <summary>Moves the cursor's x and y coordinate to the given position with the given step since each action can move at most 127 units.</summary>
         /// <param name="x">The new x position.</param>
         /// <param name="y">The new p position.</param>
         /// <param name="stepX">The amount by which to increment the x position each request.</param>
         /// <param name="stepY">The amount by which to increment the y position each request.</param>
-        public void MoveCursorTo(int x, int y, int stepX, int stepY) => this.MoveCursorTo(x, y, stepX, stepY, 1);
+        private void MoveCursorTo(int x, int y, int stepX, int stepY) => this.MoveCursorTo(x, y, stepX, stepY, 1);
 
         /// <summary>Moves the cursor's x and y coordinate to the given position with the given step since each action can move at most 127 units.</summary>
         /// <param name="x">The new x position.</param>
@@ -308,7 +308,7 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
         /// <param name="stepX">The amount by which to increment the x position each request.</param>
         /// <param name="stepY">The amount by which to increment the y position each request.</param>
         /// <param name="stepDelay">How long to wait between each step.</param>
-        public void MoveCursorTo(int x, int y, int stepX, int stepY, int stepDelay) {
+        private void MoveCursorTo(int x, int y, int stepX, int stepY, int stepDelay) {
             if (this.AbsolutePosition == false) {
                 if (stepX < Mouse.MinStep || stepX > Mouse.MaxStep) throw new ArgumentOutOfRangeException("stepX", "stepX must be between MIN_STEP and MAX_STEP.");
                 if (stepY < Mouse.MinStep || stepY > Mouse.MaxStep) throw new ArgumentOutOfRangeException("stepY", "stepY must be between MIN_STEP and MAX_STEP.");
