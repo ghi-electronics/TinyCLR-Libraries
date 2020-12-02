@@ -16,9 +16,9 @@ namespace GHIElectronics.TinyCLR.Data.Json
 			{
 				if (name.ToLower() != value.Name.ToLower())
 					throw new ArgumentException("index value must match property name");
-				_members.Add(value.Name.ToLower(), value);
-			}
-		}
+                _members[value.Name.ToLower()] = value;
+            }
+        }
 
         public bool Contains(string name) => this._members.Contains(name.ToLower());
 
@@ -29,7 +29,7 @@ namespace GHIElectronics.TinyCLR.Data.Json
 
 		public void Add(string name, JToken value)
 		{
-			_members.Add(name.ToLower(), new JProperty(name, value));
+			_members[name.ToLower()] = new JProperty(name, value);
 		}
 
 		public static JObject Serialize(Type type, object oSource)

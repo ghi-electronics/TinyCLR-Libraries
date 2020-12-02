@@ -208,7 +208,7 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
     public class WiFiNetworkInterfaceSettings : NetworkInterfaceSettings {
         public string Ssid { get; set; }
         public string Password { get; set; }
-        public uint Channel { get; set; }
+        public uint Channel { get; set; } = 1;
 
         internal INetworkControllerProvider provider;
         internal NetworkController networkController;
@@ -476,7 +476,7 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
                     offerDestinationAddress[3]++;
 
                     if (offerDestinationAddress[3] == 255)
-                        offerDestinationAddress[3] = 0;
+                        offerDestinationAddress[3] = 1;
 
                     var ipOffer = new IPAddress(offerDestinationAddress);
 
