@@ -62,21 +62,25 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
         private int y;
         private int wheel;
         private bool absolutePos;
+        private int clickDelay = 10;
 
-        /// <summary>The maximum step amount for movement.</summary>
-        public static int MaxStep => 32768;
+        /// <summary>The maximum range for movement.</summary>
+        public static int MaxRange => 32767;
 
-        /// <summary>The minimum step amount for movement.</summary>
-        public static int MinStep => -32768;
+        /// <summary>The minimum range for movement.</summary>
+        public static int MinRange => -32768;
 
-        /// <summary>The current wheel position.</summary>
-        public int WheelPosition => this.wheel;
+        /// <summary>The mouse click delay in millisecond.</summary>
+        public int ClickButtonDelay {
+            get => this.clickDelay;
+            set {
+                if (value < 0) {
+                    throw new ArgumentOutOfRangeException("delay", "delay must be non-negative.");
+                }
+                this.clickDelay = value;
+            }
 
-        /// <summary>The current x coordinate of the cursor.</summary>
-        public int CursorX => this.x;
-
-        /// <summary>The current y coordinate of the cursor.</summary>
-        public int CursorY => this.y;
+        }
 
         /// <summary>Return true for absolute, false for relative mode.</summary>
         public bool AbsolutePosition {
@@ -149,28 +153,15 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
         /// <summary>Whether or not the given button is pressed.</summary>
         /// <param name="button">The button to check.</param>
         /// <returns>If it is pressed or not.</returns>
-        public bool IsPressed(Buttons button) => (this.buttonState & button) != 0;
+        public bool IsPressedButton(Buttons button) => (this.buttonState & button) != 0;
 
-        /// <summary>Sends mouse delta positions and button states to the host.</summary>
-        /// <param name="deltaX">Change in the x direction from -127 to 127.</param>
-        /// <param name="deltaY">Change in the y direction from -127 to 127.</param>
-        /// <param name="deltaWheel">Change in the mouse wheel position from -127 to 127.</param>
-        /// <param name="buttonsState">The currently pressed buttons.</param>
-        public void SendRawData(int deltaX, int deltaY, int deltaWheel, Buttons buttonsState) {
-            this.x += deltaX;
-            this.y += deltaY;
-            this.wheel += deltaWheel;
-            this.buttonState = buttonsState;
-
-            this.SendReport(deltaX, deltaY, deltaWheel, this.buttonState);
-        }
 
         /// <summary>Presses the given button.</summary>
         /// <param name="button">The button to press.</param>
         public void PressButton(Buttons button) {
             this.buttonState |= button;
 
-            this.SendReport(0, 0, 0, this.buttonState);
+            this.SendReport(this.x, this.y, this.wheel, this.buttonState);
         }
 
         /// <summary>Releases the given button.</summary>
@@ -178,190 +169,55 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
         public void ReleaseButton(Buttons button) {
             this.buttonState &= ~button;
 
-            this.SendReport(0, 0, 0, this.buttonState);
+            this.SendReport(this.x, this.y, this.wheel, this.buttonState);
         }
 
-        /// <summary>Presses then releases the given button.</summary>
-        /// <param name="button">The button to click.</param>
-        public void Click(Buttons button) => this.Click(button, 10);
 
         /// <summary>Presses then releases the given button with the given delay between the actions.</summary>
-        /// <param name="button">The button to click.</param>
-        /// <param name="delay">The delay between the actions.</param>
-        public void Click(Buttons button, int delay) {
-            if (delay < 0) throw new ArgumentOutOfRangeException("delay", "delay must be non-negative.");
-
+        /// <param name="button">The button to click.</param>       
+        public void Click(Buttons button) {
             this.PressButton(button);
-            Thread.Sleep(delay);
+            Thread.Sleep(this.clickDelay);
             this.ReleaseButton(button);
-        }
-
-        /// <summary>Presses then releases the given button twice.</summary>
-        /// <param name="button">The button to double click.</param>
-        public void DoubleClick(Buttons button) => this.DoubleClick(button, 10);
-
-        /// <summary>Presses then releases the given button twice with the given delay between the clicks.</summary>
-        /// <param name="delay">The delay between the clicks.</param>
-        /// <param name="button">The button to double click.</param>
-        public void DoubleClick(Buttons button, int delay) => this.DoubleClick(button, delay, 50);
-
-        /// <summary>Presses then releases the given button twice with the given delay between the clicks and the actions.</summary>
-        /// <param name="delay">The delay between the clicks.</param>
-        /// <param name="releaseDelay">The delay between the press and release of each click.</param>
-        /// <param name="button">The button to double click.</param>
-        public void DoubleClick(Buttons button, int delay, int releaseDelay) {
-            if (delay < 0) throw new ArgumentOutOfRangeException("delay", "delay must be non-negative.");
-            if (releaseDelay < 0) throw new ArgumentOutOfRangeException("releaseDelay", "releaseDelay must be non-negative.");
-
-            this.Click(button, releaseDelay);
-            Thread.Sleep(delay);
-            this.Click(button, releaseDelay);
         }
 
         /// <summary>Moves the wheel to the given position.</summary>
         /// <param name="position">The new position.</param>
-        public void MoveWheelTo(int position) => this.MoveWheelTo(position, position > this.wheel ? 100 : -100);
-
-        /// <summary>Moves the wheel to the given position with the given step since each action can move at most 127 units.</summary>
-        /// <param name="position">The new position.</param>
-        /// <param name="step">The amount by which to increment the position each request.</param>
-        public void MoveWheelTo(int position, int step) => this.MoveWheelTo(position, step, 1);
-
-        /// <summary>Moves the wheel to the given position with the given step since each action can move at most 127 units.</summary>
-        /// <param name="position">The new position.</param>
-        /// <param name="step">The amount by which to increment the position each request.</param>
-        /// <param name="stepDelay">How long to wait between each step.</param>
-        public void MoveWheelTo(int position, int step, int stepDelay) {
-            if (step < Mouse.MinStep || step > Mouse.MaxStep) throw new ArgumentOutOfRangeException("step", "step must be between MIN_STEP and MAX_STEP.");
-            if (position > this.wheel && step < 0) throw new ArgumentOutOfRangeException("step", "step must be positive when position is greater than WheelPosition.");
-            if (position < this.wheel && step > 0) throw new ArgumentOutOfRangeException("step", "step must be negative when position is less than WheelPosition.");
-            if (step == 0) throw new ArgumentOutOfRangeException("step", "step must not be 0.");
-            if (stepDelay < 0) throw new ArgumentOutOfRangeException("stepDelay", "stepDelay must be non-negative.");
-
+        public void MoveWheel(int position) {
             if (position == this.wheel)
                 return;
 
-            if (step > 0) {
-                while (this.wheel + step < position) {
-                    this.wheel += step;
-                    this.SendReport(0, 0, step, this.buttonState);
-                    Thread.Sleep(stepDelay);
-                }
-            }
-            else {
-                while (this.wheel + step > position) {
-                    this.wheel += step;
-                    this.SendReport(0, 0, step, this.buttonState);
-                    Thread.Sleep(stepDelay);
-                }
-            }
-
-            if (this.wheel != position) {
-                this.SendReport(0, 0, position - this.wheel, this.buttonState);
-                this.wheel = position;
-            }
+            this.SendReport(this.x, this.y, position, this.buttonState);
         }
-
-        /// <summary>Moves the cursor's x coordinate to the given position.</summary>
-        /// <param name="position">The new position.</param>
-        public void MoveXTo(int position) => this.MoveXTo(position, position > this.x ? 100 : -100);
-
-        /// <summary>Moves the cursor's x coordinate to the given position with the given step since each action can move at most 127 units.</summary>
-        /// <param name="position">The new position.</param>
-        /// <param name="step">The amount by which to increment the position each request.</param>
-        public void MoveXTo(int position, int step) => this.MoveXTo(position, step, 1);
-
-        /// <summary>Moves the cursor's x coordinate to the given position with the given step since each action can move at most 127 units.</summary>
-        /// <param name="position">The new position.</param>
-        /// <param name="step">The amount by which to increment the position each request.</param>
-        /// <param name="stepDelay">How long to wait between each step.</param>
-        public void MoveXTo(int position, int step, int stepDelay) => this.MoveCursorTo(position, this.y, step, 0, stepDelay);
-
-        /// <summary>Moves the cursor's y coordinate to the given position.</summary>
-        /// <param name="position">The new position.</param>
-        public void MoveYTo(int position) => this.MoveYTo(position, position > this.y ? 100 : -100);
-
-        /// <summary>Moves the cursor's y coordinate to the given position with the given step since each action can move at most 127 units.</summary>
-        /// <param name="position">The new position.</param>
-        /// <param name="step">The amount by which to increment the position each request.</param>
-        public void MoveYTo(int position, int step) => this.MoveYTo(position, step, 1);
-
-        /// <summary>Moves the cursor's y coordinate to the given position with the given step since each action can move at most 127 units.</summary>
-        /// <param name="position">The new position.</param>
-        /// <param name="step">The amount by which to increment the position each request.</param>
-        /// <param name="stepDelay">How long to wait between each step.</param>
-        public void MoveYTo(int position, int step, int stepDelay) => this.MoveCursorTo(this.x, position, 0, step, stepDelay);
 
         /// <summary>Moves the cursor's x and y coordinate to the given position.</summary>
         /// <param name="x">The new x position.</param>
         /// <param name="y">The new p position.</param>
-        public void Move(int x, int y) => this.MoveCursorTo(x, y, x > this.x ? 100 : -100, y > this.y ? 100 : -100);
+        public void MoveCursor(int x, int y) => this.SendReport(x, y, this.wheel, this.buttonState);
 
         /// <summary>Moves the cursor's x and y coordinate to the given position with the given step since each action can move at most 127 units.</summary>
         /// <param name="x">The new x position.</param>
         /// <param name="y">The new p position.</param>
-        /// <param name="stepX">The amount by which to increment the x position each request.</param>
-        /// <param name="stepY">The amount by which to increment the y position each request.</param>
-        private void MoveCursorTo(int x, int y, int stepX, int stepY) => this.MoveCursorTo(x, y, stepX, stepY, 1);
+        /// <param name="wheel">The new wheel position.</param>
+        /// <param name="buttonsState">The new buttonsState state.</param>          
+        private void SendReport(int x, int y, int wheel, Buttons buttonsState) {
+            if (x < Mouse.MinRange || x > Mouse.MaxRange) throw new ArgumentOutOfRangeException("X", "X must be between MinRange and MaxRange.");
+            if (y < Mouse.MinRange || y > Mouse.MaxRange) throw new ArgumentOutOfRangeException("Y", "Y must be between MinRange and MaxRange.");
+            if (wheel < Mouse.MinRange || wheel > Mouse.MaxRange) throw new ArgumentOutOfRangeException("Wheel", "Wheel must be between MinRange and MaxRange.");
 
-        /// <summary>Moves the cursor's x and y coordinate to the given position with the given step since each action can move at most 127 units.</summary>
-        /// <param name="x">The new x position.</param>
-        /// <param name="y">The new p position.</param>
-        /// <param name="stepX">The amount by which to increment the x position each request.</param>
-        /// <param name="stepY">The amount by which to increment the y position each request.</param>
-        /// <param name="stepDelay">How long to wait between each step.</param>
-        private void MoveCursorTo(int x, int y, int stepX, int stepY, int stepDelay) {
-            if (this.AbsolutePosition == false) {
-                if (stepX < Mouse.MinStep || stepX > Mouse.MaxStep) throw new ArgumentOutOfRangeException("stepX", "stepX must be between MIN_STEP and MAX_STEP.");
-                if (stepY < Mouse.MinStep || stepY > Mouse.MaxStep) throw new ArgumentOutOfRangeException("stepY", "stepY must be between MIN_STEP and MAX_STEP.");
-                if (x > this.x && stepX < 0) throw new ArgumentOutOfRangeException("x", "x must be positive when position is greater than CursorX.");
-                if (x < this.x && stepX > 0) throw new ArgumentOutOfRangeException("x", "x must be negative when position is less than CursorX.");
-                if (stepX == 0) throw new ArgumentOutOfRangeException("stepX", "stepX must not be 0.");
-                if (y > this.y && stepY < 0) throw new ArgumentOutOfRangeException("y", "y must be positive when position is greater than CursorY.");
-                if (y < this.y && stepY > 0) throw new ArgumentOutOfRangeException("y", "y must be negative when position is less than CursorY.");
-                if (stepY == 0) throw new ArgumentOutOfRangeException("stepX", "stepX must not be 0.");
-                if (stepDelay < 0) throw new ArgumentOutOfRangeException("stepDelay", "stepDelay must be non-negative.");
-
-                if (y == this.y || x == this.x)
-                    return;
-
-                while (true) {
-                    if (x == this.x && y == this.y)
-                        break;
-
-                    if (stepX > 0 && x - this.x < stepX) stepX = x - this.x;
-                    if (stepY > 0 && y - this.y < stepY) stepY = y - this.y;
-
-                    if (stepX < 0 && x - this.x > stepX) stepX = x - this.x;
-                    if (stepY < 0 && y - this.y > stepY) stepY = y - this.y;
-
-                    this.x += stepX;
-                    this.y += stepY;
-
-                    this.SendReport(stepX, stepY, 0, this.buttonState);
-
-                    Thread.Sleep(stepDelay);
-                }
-            }
-            else {
-
+            if (this.AbsolutePosition) {
                 this.x = x;
                 this.y = y;
-
-                this.SendReport(x, y, 0, this.buttonState);
-
-                Thread.Sleep(stepDelay);
+                this.wheel = wheel;
             }
-        }
 
-        private void SendReport(int deltaX, int deltaY, int deltaWheel, Buttons buttonsState) {
             this.report[Mouse.REPORT_FIELD_MOUSE_BUTTON] = (byte)buttonsState;
-            this.report[Mouse.REPORT_FIELD_MOUSE_X] = (byte)(deltaX & 0xFF);
-            this.report[Mouse.REPORT_FIELD_MOUSE_X + 1] = (byte)((deltaX >> 8) & 0xFF);
-            this.report[Mouse.REPORT_FIELD_MOUSE_Y] = (byte)(deltaY & 0xFF);
-            this.report[Mouse.REPORT_FIELD_MOUSE_Y + 1] = (byte)((deltaY >> 8) & 0xFF);
-            this.report[Mouse.REPORT_FIELD_MOUSE_W] = (byte)(deltaWheel & 0xFF);
-            this.report[Mouse.REPORT_FIELD_MOUSE_W + 1] = (byte)((deltaWheel >> 8) & 0xFF);
+            this.report[Mouse.REPORT_FIELD_MOUSE_X] = (byte)(x & 0xFF);
+            this.report[Mouse.REPORT_FIELD_MOUSE_X + 1] = (byte)((x >> 8) & 0xFF);
+            this.report[Mouse.REPORT_FIELD_MOUSE_Y] = (byte)(y & 0xFF);
+            this.report[Mouse.REPORT_FIELD_MOUSE_Y + 1] = (byte)((y >> 8) & 0xFF);
+            this.report[Mouse.REPORT_FIELD_MOUSE_W] = (byte)(wheel & 0xFF);
+            this.report[Mouse.REPORT_FIELD_MOUSE_W + 1] = (byte)((wheel >> 8) & 0xFF);
 
             this.stream.Write(this.report);
         }
