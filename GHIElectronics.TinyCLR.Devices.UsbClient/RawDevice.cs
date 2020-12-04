@@ -92,7 +92,7 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
             this.vendorId = usbClientSetting.VendorId == 0 ? GHI_VID : usbClientSetting.VendorId;
 
             if (this.vendorId == GHI_VID) {
-                switch (this.usbClientSetting.Mode) {
+                switch (usbClientSetting.Mode) {
                     case UsbClientMode.Cdc:
                         usbClientSetting.ProductId = (ushort)RawDevice.PID.CDC;
                         break;
