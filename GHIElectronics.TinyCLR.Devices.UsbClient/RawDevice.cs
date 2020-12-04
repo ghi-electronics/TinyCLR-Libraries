@@ -78,6 +78,7 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
             Keyboard = 0xF004,
             Joystick = 0xF005,
             WinUsb = 0xF006,
+            RawDevice = 0xF007,
         }
 
         internal UsbClientController usbClientController;
@@ -87,6 +88,37 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
         /// <param name="usbClientController">UsbClient controller.</param>
         /// <param name="usbClientSetting">UsbClient setting</param>        
         public RawDevice(UsbClientController usbClientController, UsbClientSetting usbClientSetting) {
+            // Check setting
+            this.vendorId = usbClientSetting.VendorId == 0 ? GHI_VID : usbClientSetting.VendorId;
+
+            if (this.vendorId == GHI_VID) {
+                switch (this.usbClientSetting.Mode) {
+                    case UsbClientMode.Cdc:
+                        usbClientSetting.ProductId = (ushort)RawDevice.PID.CDC;
+                        break;
+
+                    case UsbClientMode.Joystick:
+                        usbClientSetting.ProductId = (ushort)RawDevice.PID.Joystick;
+                        break;
+
+                    case UsbClientMode.Keyboard:
+                        usbClientSetting.ProductId = (ushort)RawDevice.PID.Keyboard;
+                        break;
+
+                    case UsbClientMode.Mouse:
+                        usbClientSetting.ProductId = (ushort)RawDevice.PID.Mouse;
+                        break;
+
+                    case UsbClientMode.WinUsb:
+                        usbClientSetting.ProductId = (ushort)RawDevice.PID.WinUsb;
+                        break;
+
+                    default:
+                        usbClientSetting.ProductId = (ushort)RawDevice.PID.RawDevice;
+                        break;                    
+                }
+            }
+
             this.usbClientController = usbClientController;
             this.usbClientSetting = usbClientSetting;
            
