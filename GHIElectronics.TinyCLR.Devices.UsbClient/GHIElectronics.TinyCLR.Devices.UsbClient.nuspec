@@ -15,6 +15,7 @@
     <tags>TinyCLR TinyCLROS</tags>
     <dependencies>
       <dependency id="GHIElectronics.TinyCLR.Core" version="2.1.0-preview2" />
+      <dependency id="GHIElectronics.TinyCLR.Devices.Usb" version="2.1.0-preview2" />
       <dependency id="GHIElectronics.TinyCLR.Native" version="2.1.0-preview2" />
     </dependencies>
   </metadata>
