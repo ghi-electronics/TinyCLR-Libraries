@@ -213,7 +213,7 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
         internal INetworkControllerProvider provider;
         internal NetworkController networkController;
 
-        public delegate void AccessPointClientConnectionChangedEventHandler(NetworkController sender, IPAddress clientAddrres, string macAddress);
+        public delegate void AccessPointClientConnectionChangedEventHandler(NetworkController sender, IPAddress clientAddress, string macAddress);
         public event AccessPointClientConnectionChangedEventHandler AccessPointClientConnectionChanged;
 
         public WiFiMode Mode {
