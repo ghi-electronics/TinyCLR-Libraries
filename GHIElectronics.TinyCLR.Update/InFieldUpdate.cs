@@ -19,23 +19,17 @@ namespace GHIElectronics.TinyCLR.Update {
 
         public byte[] ApplicationKey { get; set; }
 
-        private StorageController cacheStorage;
-        private bool useExternalFlash;
-
-        public static uint FirmwareAddressOffet { get; } = 0;
-        public static uint FirmwareMaxSize { get; } = 2 * 1024 * 1024;
-
-        public static uint ApplicationAddressOffet { get; } = FirmwareAddressOffet + FirmwareMaxSize;
-        public static uint ApplicationMaxSize { get; } = 6 * 1024 * 1024;
+        private StorageController externalStorageController;
+        private bool useExternalStorageController;
 
         private byte[] buffer;
+        private readonly uint bufferSize = 1024;
+
         private Stream firmwareStream;
         private Stream applicationStream;
-        private uint bufferSize;
 
-        public TimeSpan DataTimeOut { get; set; } = TimeSpan.FromSeconds(5);
+        public TimeSpan ReadDataTimeOut { get; set; } = TimeSpan.FromSeconds(5);
 
-        const uint BUFFER_SIZE = 1 * 1024;
 
         public InFieldUpdate(Stream applicationStream, bool useExternalFlash = false) : this(applicationStream, null, useExternalFlash) {
 
@@ -60,7 +54,7 @@ namespace GHIElectronics.TinyCLR.Update {
 
             this.firmwareStream = firmwareStream;
             this.applicationStream = applicationStream;
-            this.useExternalFlash = useExternalFlash;
+            this.useExternalStorageController = useExternalFlash;
 
             if (useExternalFlash) {
                 this.NativeInFieldUpdate(applicationStream, firmwareStream, useExternalFlash);
@@ -88,23 +82,20 @@ namespace GHIElectronics.TinyCLR.Update {
             }
 
             if (useExternalFlash) {
-                this.cacheStorage = StorageController.FromName(STM32H7.StorageController.QuadSpi);
+                this.externalStorageController = StorageController.FromName(STM32H7.StorageController.QuadSpi);
 
-                this.cacheStorage.Provider.Open();
-
-                this.bufferSize = BUFFER_SIZE;
+                this.externalStorageController.Provider.Open();
 
                 this.buffer = new byte[this.bufferSize];
             }
         }
 
-
         public void AuthenticateFirmware(out uint version) {
             if ((this.mode & Mode.Firmware) != Mode.Firmware)
                 throw new ArgumentNullException();
 
-            if (this.useExternalFlash) {
-                var totalBufferred = this.BufferingData(this.firmwareStream, FirmwareAddressOffet, FirmwareMaxSize);
+            if (this.useExternalStorageController) {
+                var totalBufferred = this.BufferingData(this.firmwareStream, FirmwareAddress, FirmwareMaxSize);
                 if (totalBufferred > 0)
                     this.NativeSetFirmwareSize((uint)totalBufferred);
                 else
@@ -120,8 +111,8 @@ namespace GHIElectronics.TinyCLR.Update {
             if ((this.mode & Mode.Application) != Mode.Application)
                 throw new ArgumentNullException();
 
-            if (this.useExternalFlash) {
-                var totalBufferred = this.BufferingData(this.applicationStream, ApplicationAddressOffet, ApplicationMaxSize);
+            if (this.useExternalStorageController) {
+                var totalBufferred = this.BufferingData(this.applicationStream, ApplicationAddress, ApplicationMaxSize);
 
                 if (totalBufferred > 0)
                     this.NativeSetApplicationSize((uint)totalBufferred);
@@ -135,7 +126,7 @@ namespace GHIElectronics.TinyCLR.Update {
         public void FlashAndReset() {
             if (this.mode != Mode.None) {
                 if ((this.mode & Mode.Firmware) == Mode.Firmware) {
-                    if (this.useExternalFlash) {
+                    if (this.useExternalStorageController) {
                         var fwVer = this.NativeAuthenticateFirmware();
                     }
                     else {
@@ -144,7 +135,7 @@ namespace GHIElectronics.TinyCLR.Update {
                 }
 
                 if ((this.mode & Mode.Application) == Mode.Application) {
-                    if (this.useExternalFlash) {
+                    if (this.useExternalStorageController) {
                         var appVer = this.NativeAuthenticateApplication(this.ApplicationKey);
                     }
                     else {
@@ -175,7 +166,7 @@ namespace GHIElectronics.TinyCLR.Update {
                     read += stream.Read(this.buffer, read, (int)this.bufferSize - read);
                     var delta = DateTime.Now.Ticks - t;
 
-                    if (read < 0 || (delta > this.DataTimeOut.Ticks)) {
+                    if (read < 0 || (delta > this.ReadDataTimeOut.Ticks)) {
                         doRead = false;
 
                         break;
@@ -186,16 +177,19 @@ namespace GHIElectronics.TinyCLR.Update {
                     totalRead += read;
 
                     if (totalRead > maxSize) {
-                        throw new ArgumentException("Invalid firmware.");
+                        throw new ArgumentOutOfRangeException("Data too large.");
                     }
 
-                    if (!this.cacheStorage.Provider.IsErased(address, read)) {
+                    if (!this.externalStorageController.Provider.IsErased(address, read)) {
+#if DEBUG
                         Debug.WriteLine("Erasing address: " + address);
-                        this.cacheStorage.Provider.Erase(address, read, this.DataTimeOut);
+#endif
+                        this.externalStorageController.Provider.Erase(address, read, this.ReadDataTimeOut);
                     }
-
+#if DEBUG
                     Debug.WriteLine("Writting address: " + address + ", size " + read);
-                    this.cacheStorage.Provider.Write(address, read, this.buffer, 0, this.DataTimeOut);
+#endif
+                    this.externalStorageController.Provider.Write(address, read, this.buffer, 0, this.ReadDataTimeOut);
 
                     address += (uint)read;
                 }
@@ -224,5 +218,10 @@ namespace GHIElectronics.TinyCLR.Update {
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private extern void NativeFlashAndReset();
+
+        private extern static uint FirmwareAddress { [MethodImpl(MethodImplOptions.InternalCall)] get; }
+        private extern static uint FirmwareMaxSize { [MethodImpl(MethodImplOptions.InternalCall)] get; }
+        private extern static uint ApplicationAddress { [MethodImpl(MethodImplOptions.InternalCall)] get; }
+        private extern static uint ApplicationMaxSize { [MethodImpl(MethodImplOptions.InternalCall)] get; }
     }
 }
