@@ -355,7 +355,22 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
             internal bool ClientConnected { get; set; }
             internal WiFiNetworkInterfaceSettings WifiNetworkInterfaceSetting { get; set; }
 
-            internal DhcpServer(WiFiNetworkInterfaceSettings setting) => this.WifiNetworkInterfaceSetting = setting;
+            internal DhcpServer(WiFiNetworkInterfaceSettings setting) {
+                this.WifiNetworkInterfaceSetting = setting;
+
+                if (this.WifiNetworkInterfaceSetting.Address == null)
+                    this.WifiNetworkInterfaceSetting.Address = new IPAddress(new byte[] { 192, 168, 1, 1 });
+
+                if (this.WifiNetworkInterfaceSetting.GatewayAddress == null)
+                    this.WifiNetworkInterfaceSetting.GatewayAddress = new IPAddress(new byte[] { 192, 168, 1, 1 });
+
+                if (this.WifiNetworkInterfaceSetting.SubnetMask == null)
+                    this.WifiNetworkInterfaceSetting.SubnetMask = IPAddress.Any;
+
+                if (this.WifiNetworkInterfaceSetting.DnsAddresses == null)
+                    this.WifiNetworkInterfaceSetting.DnsAddresses = new IPAddress[] { IPAddress.Any };
+            }
+
 
             internal string DomainName {
                 get;
