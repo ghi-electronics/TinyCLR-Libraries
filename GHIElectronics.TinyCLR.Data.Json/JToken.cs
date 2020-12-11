@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text;
 using System.Threading;
 
@@ -8,14 +8,19 @@ namespace GHIElectronics.TinyCLR.Data.Json
 	{
 		private bool _fOwnsContext;
 
-		protected void EnterSerialization()
+		protected void EnterSerialization(JsonSerializationOptions options = null)
 		{
+            if (options == null)
+            {
+                options = new JsonSerializationOptions();
+            }
+
 			lock (JsonConverter.SyncObj)
 			{
 				if (JsonConverter.SerializationContext == null)
 				{
-					JsonConverter.SerializationContext = new JsonConverter.SerializationCtx();
-					JsonConverter.SerializationContext.Indent = 0;
+					JsonConverter.SerializationContext = new JsonConverter.SerializationCtx(options);
+					JsonConverter.SerializationContext.IndentLevel = 0;
 					Monitor.Enter(JsonConverter.SerializationContext);
 					_fOwnsContext = true;
 				}
@@ -38,21 +43,26 @@ namespace GHIElectronics.TinyCLR.Data.Json
 
 		protected string Indent(bool incrementAfter = false)
 		{
+            if (!JsonConverter.SerializationContext.options.Indented)
+            {
+                return string.Empty;
+            }
+
 			StringBuilder sb = new StringBuilder();
 			string indent = "  ";
 			if (JsonConverter.SerializationContext != null)
 			{
-				for (int i = 0; i < JsonConverter.SerializationContext.Indent; ++i)
+				for (int i = 0; i < JsonConverter.SerializationContext.IndentLevel; ++i)
 					sb.Append(indent);
 				if (incrementAfter)
-					++JsonConverter.SerializationContext.Indent;
+					++JsonConverter.SerializationContext.IndentLevel;
 			}
 			return sb.ToString();
 		}
 
 		protected void Outdent()
 		{
-			--JsonConverter.SerializationContext.Indent;
+			--JsonConverter.SerializationContext.IndentLevel;
 		}
 
 		public byte[] ToBson()
@@ -129,5 +139,6 @@ namespace GHIElectronics.TinyCLR.Data.Json
             return -1;
         }
 
+        public abstract string ToString(JsonSerializationOptions options);
     }
 }

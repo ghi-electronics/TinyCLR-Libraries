@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text;
 
 namespace GHIElectronics.TinyCLR.Data.Json
@@ -19,15 +19,27 @@ namespace GHIElectronics.TinyCLR.Data.Json
 		public JToken Value { get; set; }
 
 		public override string ToString()
+        {
+            return this.ToString(null);
+        }
+
+        public override string ToString(JsonSerializationOptions options)
 		{
-			EnterSerialization();
+			EnterSerialization(options);
 			try
 			{
 				StringBuilder sb = new StringBuilder();
 				sb.Append('"');
 				sb.Append(this.Name);
-				sb.Append("\" : ");
-				sb.Append(this.Value.ToString());
+                if (JsonConverter.SerializationContext.options.Indented)
+                {
+                    sb.Append("\" : ");
+                }
+                else
+                {
+                    sb.Append("\":");
+                }
+                sb.Append(this.Value.ToString(options));
 				return sb.ToString();
 			}
 			finally

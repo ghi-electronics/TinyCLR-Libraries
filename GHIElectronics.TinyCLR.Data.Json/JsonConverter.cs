@@ -28,7 +28,13 @@ namespace GHIElectronics.TinyCLR.Data.Json
 
         public class SerializationCtx
         {
-            public int Indent;
+            public SerializationCtx(JsonSerializationOptions options)
+            {
+                this.options = options;
+            }
+
+            public readonly JsonSerializationOptions options;
+            public int IndentLevel;
         }
 
         public static SerializationCtx SerializationContext = null;
