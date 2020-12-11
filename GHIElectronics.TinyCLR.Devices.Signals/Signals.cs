@@ -137,7 +137,7 @@ namespace GHIElectronics.TinyCLR.Devices.Signals {
         private readonly NativeEventDispatcher nativeEventDispatcher;
 
         public delegate void PulseReadEventHandler(DigitalSignal sender, TimeSpan duration, uint count, GpioPinValue initialState);
-        public delegate void PulseCaptureEventHandler(DigitalSignal sender, uint[] buffer, uint count, GpioPinValue initialState);
+        public delegate void PulseCaptureEventHandler(DigitalSignal sender, double[] buffer, uint count, GpioPinValue initialState);
 
         private PulseReadEventHandler pulseReadCallback;
         private PulseCaptureEventHandler pulseCaptureCallback;
@@ -157,7 +157,7 @@ namespace GHIElectronics.TinyCLR.Devices.Signals {
                 if (!this.disposed && this.isReading && d0 == this.pinNumber && apiName.CompareTo("DigitalSignal") == 0) {
                     if (this.isCapture == true) {
                         if (d2 > 0) {
-                            var data = new uint[(int)d2];
+                            var data = new double[(int)d2];
 
                             if (this.NativeGetBuffer(data))
                                 this.pulseCaptureCallback?.Invoke(this, data, (uint)data.Length, ((int)d3 != 0) ? GpioPinValue.High : GpioPinValue.Low);
@@ -260,7 +260,7 @@ namespace GHIElectronics.TinyCLR.Devices.Signals {
         private extern void NativeAbort();
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private extern bool NativeGetBuffer(uint[] data);
+        private extern bool NativeGetBuffer(double[] data);
 
     }
 }
