@@ -16,6 +16,9 @@
     <dependencies>
       <dependency id="GHIElectronics.TinyCLR.Core" version="2.1.0-preview2" />
       <dependency id="GHIElectronics.TinyCLR.IO" version="2.1.0-preview2" />
+      <dependency id="GHIElectronics.TinyCLR.Devices.Storage" version="2.1.0-preview2" />
+      <dependency id="GHIElectronics.TinyCLR.Networking" version="2.1.0-preview2" />
+      <dependency id="GHIElectronics.TinyCLR.Pins" version="2.1.0-preview2" />
     </dependencies>
   </metadata>
   <files>
