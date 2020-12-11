@@ -393,21 +393,21 @@ namespace System.Net.Sockets
             if (count < 0 || count > buffer.Length - offset) throw new ArgumentOutOfRangeException();
 
             var bytesSent = 0;
+            do {
+                if (this._socketType == (int)SocketType.Stream) {
+                    bytesSent = this._socket.Send(buffer, offset, count, SocketFlags.None);
+                }
+                else if (this._socketType == (int)SocketType.Dgram) {
+                    bytesSent = this._socket.SendTo(buffer, offset, count, SocketFlags.None, this._socket.RemoteEndPoint);
+                }
+                else {
+                    throw new NotSupportedException();
+                }
+                count -= bytesSent;
+                offset += bytesSent;
+            } while (bytesSent != 0 && count > 0);
 
-            if (this._socketType == (int)SocketType.Stream)
-            {
-                bytesSent = this._socket.Send(buffer, offset, count, SocketFlags.None);
-            }
-            else if (this._socketType == (int)SocketType.Dgram)
-            {
-                bytesSent = this._socket.SendTo(buffer, offset, count, SocketFlags.None, this._socket.RemoteEndPoint);
-            }
-            else
-            {
-                throw new NotSupportedException();
-            }
-
-            if (bytesSent != count) throw new IOException();
+            if (count != 0) throw new IOException();
         }
     }
 }
