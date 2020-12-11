@@ -25,7 +25,12 @@ namespace GHIElectronics.TinyCLR.Data.Json
 
         public override string ToString()
         {
-            EnterSerialization();
+            return this.ToString(null);
+        }
+
+        public override string ToString(JsonSerializationOptions options)
+        {
+            EnterSerialization(options);
             try
             {
                 if (Value == null)
