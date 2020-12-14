@@ -168,16 +168,16 @@ namespace System.Drawing {
             return image.data;
         }
 
-        public delegate void OnFlushHandler(IntPtr hdc, byte[] data);
+        public delegate void OnFlushHandler(IntPtr hdc, byte[] data, int x, int y, int width, int height);
 
         static public event OnFlushHandler OnFlushEvent;
 
         public void Flush() {
             if (this.hdc != IntPtr.Zero) {
-                this.surface.Flush(this.hdc);
+                this.surface.Flush(this.hdc, 0, 0, this.surface.Width, this.surface.Height);
             }
 
-            OnFlushEvent?.Invoke(this.hdc, this.surface.GetBitmap());
+            OnFlushEvent?.Invoke(this.hdc, this.surface.GetBitmap(), 0, 0, this.surface.Width, this.surface.Height);
         }
 
         //Draws a portion of an image at a specified location.
@@ -276,10 +276,31 @@ namespace System.Drawing {
         }
 
         public void DrawImage(int xDst, int yDst, Image image, int xSrc, int ySrc, int width, int height, ushort opacity) => this.surface.DrawImage(xDst, yDst, image.data.surface, xSrc, ySrc, width, height, opacity);
+
         public void Flush(int x, int y, int width, int height) {
-            if (this.hdc != IntPtr.Zero)
+            if (this.hdc != IntPtr.Zero) {
                 this.surface.Flush(this.hdc, x, y, width, height);
+            }
+
+            if (OnFlushEvent != null && x == 0 && y == 0 && width == this.surface.Width && height == this.surface.Height) {
+                OnFlushEvent.Invoke(this.hdc, this.surface.GetBitmap(), x, y, width, height);
+            }
+            else if (OnFlushEvent != null) {
+                var buffer = new byte[(width * height) << 1];
+                var from = 0;
+                var to = 0;
+                var i = 0;
+
+                while (i < height) {
+                    from = (i + y) * (this.surface.Width << 1) + (x << 1);
+                    Array.Copy(this.surface.GetBitmap(), from, buffer, to, width << 1);
+                    i++;
+                    to += (width << 1);
+                }
+                OnFlushEvent.Invoke(this.hdc, buffer, x, y, width, height);
+            }
         }
+
         public void SetClippingRectangle(int x, int y, int width, int height) => this.surface.SetClippingRectangle(x, y, width, height);
         public bool DrawTextInRect(ref string text, ref int xRelStart, ref int yRelStart, int x, int y, int width, int height, uint dtFlags, uint color, Font font) => this.surface.DrawTextInRect(ref text, ref xRelStart, ref yRelStart, x, y, width, height, dtFlags, color, font);
         public void RotateImage(int angle, int xDst, int yDst, Image image, int xSrc, int ySrc, int width, int height, ushort opacity) => this.surface.RotateImage(angle, xDst, yDst, image.data.surface, xSrc, ySrc, width, height, opacity);
