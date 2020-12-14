@@ -56,8 +56,8 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
 
     namespace Provider {
         public interface IUsbClientControllerProvider : IDisposable {
-            int ByteToRead(int streamIndex);
-            int ByteToWrite(int streamIndex);
+            int BytesToRead(int streamIndex);
+            int BytesToWrite(int streamIndex);
 
             int WriteBufferSize { get; set; }
             int ReadBufferSize { get; set; }
@@ -147,8 +147,8 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
 
             public void Dispose() => this.Release();
 
-            public int ByteToRead(int streamIndex) => this.GetByteToRead(streamIndex);
-            public int ByteToWrite(int streamIndex) => this.GetByteToWrite(streamIndex);
+            public int BytesToRead(int streamIndex) => this.GetByteToRead(streamIndex);
+            public int BytesToWrite(int streamIndex) => this.GetByteToWrite(streamIndex);
 
             public DeviceState DeviceState => this.GetDeviceState();
 
