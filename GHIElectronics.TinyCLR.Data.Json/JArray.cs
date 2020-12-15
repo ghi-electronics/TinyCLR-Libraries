@@ -1,76 +1,81 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Text;
 
 namespace GHIElectronics.TinyCLR.Data.Json
 {
-	public class JArray : JToken
-	{
-		private readonly JToken[] _contents;
+    public class JArray : JToken
+    {
+        private readonly JToken[] _contents;
 
-		public JArray()
+        public JArray()
+        {
+        }
+
+        public JArray(JToken[] values)
+        {
+            _contents = values;
+        }
+
+        private JArray(Array source)
+        {
+            _contents = new JToken[source.Length];
+            for (int i = 0; i < source.Length; ++i)
+            {
+                var value = source.GetValue(i);
+                var fieldType = value.GetType();
+
+                if (value == null)
+                {
+                    _contents[i] = JValue.Serialize(fieldType, null);
+                }
+                else if (fieldType.IsValueType || fieldType == typeof(string))
+                {
+                    _contents[i] = JValue.Serialize(fieldType, value);
+                }
+                else
+                {
+                    if (fieldType.IsArray)
+                    {
+                        _contents[i] = JArray.Serialize(fieldType, value);
+                    }
+                    else
+                    {
+                        _contents[i] = JObject.Serialize(fieldType, value);
+                    }
+                }
+
+            }
+        }
+
+        public int Length
+        {
+            get { return _contents.Length; }
+        }
+
+        public JToken[] Items
+        {
+            get { return _contents; }
+        }
+
+        public static JArray Serialize(Type type, object oSource)
+        {
+            return new JArray((Array)oSource);
+        }
+
+        public JToken this[int i]
+        {
+            get { return _contents[i]; }
+        }
+
+        public override string ToString()
+        {
+            return this.ToString(null);
+        }
+
+        public override string ToString(JsonSerializationOptions options)
 		{
-		}
-
-		public JArray(JToken[] values)
-		{
-			_contents = values;
-		}
-
-		private JArray(Array source)
-		{
-			_contents = new JToken[source.Length];
-			for (int i = 0; i < source.Length; ++i)
-			{
-				var value = source.GetValue(i);
-				var fieldType = value.GetType();
-
-				if (value == null)
-				{
-					_contents[i] = JValue.Serialize(fieldType, null);
-				}
-				else if (fieldType.IsValueType || fieldType == typeof(string))
-				{
-					_contents[i] = JValue.Serialize(fieldType, value);
-				}
-				else
-				{
-					if (fieldType.IsArray)
-					{
-						_contents[i] = JArray.Serialize(fieldType, value);
-					}
-					else
-					{
-						_contents[i] = JObject.Serialize(fieldType, value); ;
-					}
-				}
-
-			}
-		}
-
-		public int Length
-		{
-			get { return _contents.Length; }
-		}
-
-		public JToken[] Items
-		{
-			get { return _contents; }
-		}
-
-		public static JArray Serialize(Type type, object oSource)
-		{
-			return new JArray((Array)oSource);
-		}
-
-		public JToken this[int i]
-		{
-			get { return _contents[i]; }
-		}
-
-		public override string ToString()
-		{
-			EnterSerialization();
+			EnterSerialization(options);
 			try
 			{
 				StringBuilder sb = new StringBuilder();
@@ -86,8 +91,10 @@ namespace GHIElectronics.TinyCLR.Data.Json
 					{
 						if (sb.Length - prefaceLength > 72)
 						{
-							sb.AppendLine(",");
-							prefaceLength = sb.Length;
+							sb.Append(",");
+                            if (JsonConverter.SerializationContext.options.Indented)
+                                sb.AppendLine();
+                            prefaceLength = sb.Length;
 						}
 						else
 						{

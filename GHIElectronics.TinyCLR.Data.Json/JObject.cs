@@ -106,23 +106,35 @@ namespace GHIElectronics.TinyCLR.Data.Json
 		}
 
 		public override string ToString()
+        {
+            return this.ToString(null);
+        }
+
+        public override string ToString(JsonSerializationOptions options)
 		{
-			EnterSerialization();
+			EnterSerialization(options);
 			try
 			{
 				StringBuilder sb = new StringBuilder();
 
-				sb.AppendLine(Indent(true) + "{");
-				bool first = true;
+                sb.Append(Indent(true) + "{");
+                if (JsonConverter.SerializationContext.options.Indented)
+                    sb.AppendLine();
+                bool first = true;
 				foreach (var member in _members.Values)
 				{
 					if (!first)
-						sb.AppendLine(",");
+                    {
+                        sb.Append(",");
+                        if (JsonConverter.SerializationContext.options.Indented)
+                            sb.AppendLine();
+                    }
 					first = false;
-					sb.Append(Indent() + ((JProperty)member).ToString());
+					sb.Append(Indent() + ((JProperty)member).ToString(options));
 				}
-				sb.AppendLine();
-				Outdent();
+                if (JsonConverter.SerializationContext.options.Indented)
+                    sb.AppendLine();
+                Outdent();
 				sb.Append(Indent() + "}");
 				return sb.ToString();
 			}
