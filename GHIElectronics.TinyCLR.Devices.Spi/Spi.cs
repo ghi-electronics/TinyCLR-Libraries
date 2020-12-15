@@ -67,7 +67,7 @@ namespace GHIElectronics.TinyCLR.Devices.Spi {
                 throw new ArgumentNullException("buffer");
             }
 
-            if ((x < 0) || (y < 0) || ((x + width) > originalWidth) || ((width * height * 2) > buffer.Length)) {
+            if ((x < 0) || (y < 0) || ((x + width) > originalWidth) || ((width * height * 2) > buffer.Length) || (columnMultiplier <= 0) || (rowMultiplier <= 0)) {
                 throw new ArgumentOutOfRangeException();
             }
 
