@@ -39,6 +39,7 @@
     <Compile Include="JObject.cs" />
     <Compile Include="JProperty.cs" />
     <Compile Include="JsonConverter.cs" />
+    <Compile Include="JsonSerializationOptions.cs" />
     <Compile Include="JToken.cs" />
     <Compile Include="JValue.cs" />
     <Compile Include="SerializationUtilities.cs" />
