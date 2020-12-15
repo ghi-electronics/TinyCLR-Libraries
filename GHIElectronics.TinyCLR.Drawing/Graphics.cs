@@ -168,7 +168,7 @@ namespace System.Drawing {
             return image.data;
         }
 
-        public delegate void OnFlushHandler(IntPtr hdc, byte[] data, int x, int y, int width, int height);
+        public delegate void OnFlushHandler(IntPtr hdc, byte[] data, int x, int y, int width, int height, int originalWidth);
 
         static public event OnFlushHandler OnFlushEvent;
 
@@ -177,7 +177,7 @@ namespace System.Drawing {
                 this.surface.Flush(this.hdc, 0, 0, this.surface.Width, this.surface.Height);
             }
 
-            OnFlushEvent?.Invoke(this.hdc, this.surface.GetBitmap(), 0, 0, this.surface.Width, this.surface.Height);
+            OnFlushEvent?.Invoke(this.hdc, this.surface.GetBitmap(), 0, 0, this.surface.Width, this.surface.Height, this.surface.Width);
         }
 
         //Draws a portion of an image at a specified location.
@@ -282,7 +282,7 @@ namespace System.Drawing {
                 this.surface.Flush(this.hdc, x, y, width, height);
             }
 
-            OnFlushEvent?.Invoke(this.hdc, this.surface.GetBitmap(), x, y, width, height);
+            OnFlushEvent?.Invoke(this.hdc, this.surface.GetBitmap(), x, y, width, height, this.surface.Width);
         }
 
         public void SetClippingRectangle(int x, int y, int width, int height) => this.surface.SetClippingRectangle(x, y, width, height);
