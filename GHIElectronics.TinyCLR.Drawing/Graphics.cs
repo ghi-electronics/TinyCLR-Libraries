@@ -282,23 +282,7 @@ namespace System.Drawing {
                 this.surface.Flush(this.hdc, x, y, width, height);
             }
 
-            if (OnFlushEvent != null && x == 0 && y == 0 && width == this.surface.Width && height == this.surface.Height) {
-                OnFlushEvent.Invoke(this.hdc, this.surface.GetBitmap(), x, y, width, height);
-            }
-            else if (OnFlushEvent != null) {
-                var buffer = new byte[(width * height) << 1];
-                var from = 0;
-                var to = 0;
-                var i = 0;
-
-                while (i < height) {
-                    from = (i + y) * (this.surface.Width << 1) + (x << 1);
-                    Array.Copy(this.surface.GetBitmap(), from, buffer, to, width << 1);
-                    i++;
-                    to += (width << 1);
-                }
-                OnFlushEvent.Invoke(this.hdc, buffer, x, y, width, height);
-            }
+            OnFlushEvent?.Invoke(this.hdc, this.surface.GetBitmap(), x, y, width, height);
         }
 
         public void SetClippingRectangle(int x, int y, int width, int height) => this.surface.SetClippingRectangle(x, y, width, height);
