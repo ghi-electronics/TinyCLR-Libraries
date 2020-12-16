@@ -93,9 +93,9 @@ namespace System.Drawing {
             GC.SuppressFinalize(this);
         }
 
-        public void SetPixel(int x, int y, uint color) => this.data.SetPixel(x, y, color);
+        public void SetPixel(int x, int y, Color color) => this.data.SetPixel(x, y, color);
         public byte[] GetBitmap() => this.data.GetBitmap();
-        public void MakeTransparent(uint color) => this.data.MakeTransparent(color);
+        public void MakeTransparent(Color color) => this.data.MakeTransparent(color);
 
         ~Image() => this.Dispose(false);
     }
@@ -134,7 +134,7 @@ namespace System.Drawing {
             this.data = new Graphics(buffer, offset, count, type);
         }
 
-        public void SetPixel(int x, int y, Color color) => this.data.SetPixel(x, y, (uint)color.ToArgb());
+        public void SetPixel(int x, int y, Color color) => this.data.SetPixel(x, y, color);
         public Color GetPixel(int x, int y) => Color.FromArgb((int)this.data.GetPixel(x, y));
     }
 
