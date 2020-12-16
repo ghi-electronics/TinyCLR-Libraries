@@ -9,16 +9,16 @@ namespace GHIElectronics.TinyCLR.UI {
         public const ushort OpacityOpaque = 0xFF;
         public const ushort OpacityTransparent = 0;
 
-        public const uint DT_WordWrap = System.Drawing.Graphics.DT_WordWrap;
-        public const uint DT_TruncateAtBottom = System.Drawing.Graphics.DT_TruncateAtBottom;
-        public const uint DT_IgnoreHeight = System.Drawing.Graphics.DT_IgnoreHeight;
+        public const uint DT_WordWrap = (uint)System.Drawing.Graphics.DrawTextAlignment.WordWrap;
+        public const uint DT_TruncateAtBottom = (uint)System.Drawing.Graphics.DrawTextAlignment.TruncateAtBottom;
+        public const uint DT_IgnoreHeight = (uint)System.Drawing.Graphics.DrawTextAlignment.IgnoreHeight;
 
-        public const uint DT_AlignmentLeft = System.Drawing.Graphics.DT_AlignmentLeft;
-        public const uint DT_AlignmentCenter = System.Drawing.Graphics.DT_AlignmentCenter;
-        public const uint DT_AlignmentRight = System.Drawing.Graphics.DT_AlignmentRight;
+        public const uint DT_AlignmentLeft = (uint)System.Drawing.Graphics.DrawTextAlignment.AlignmentLeft;
+        public const uint DT_AlignmentCenter = (uint)System.Drawing.Graphics.DrawTextAlignment.AlignmentCenter;
+        public const uint DT_AlignmentRight = (uint)System.Drawing.Graphics.DrawTextAlignment.AlignmentRight;
 
-        public const uint DT_TrimmingWordEllipsis = System.Drawing.Graphics.DT_TrimmingWordEllipsis;
-        public const uint DT_TrimmingCharacterEllipsis = System.Drawing.Graphics.DT_TrimmingCharacterEllipsis;
+        public const uint DT_TrimmingWordEllipsis = (uint)System.Drawing.Graphics.DrawTextAlignment.TrimmingWordEllipsis;
+        public const uint DT_TrimmingCharacterEllipsis = (uint)System.Drawing.Graphics.DrawTextAlignment.TrimmingCharacterEllipsis;
 
         public int Height => this.g.Height;
         public int Width => this.g.Width;
@@ -38,7 +38,7 @@ namespace GHIElectronics.TinyCLR.UI {
         public void Dispose() => this.g.Dispose();
 
         public void Clear() => this.g.Clear();
-        public void Flush(int x, int y, int width, int height) => this.g.Flush();
+        public void Flush(int x, int y, int width, int height) => this.g.Flush(x, y, width, height);
 
         internal void SetPixel(int x, int y, Color color) => this.surface.SetPixel(x, y, color.ToNativeColor());
         internal void SetClippingRectangle(int x, int y, int width, int height) => this.surface.SetClippingRectangle(x, y, width, height);
