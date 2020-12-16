@@ -2,6 +2,7 @@
 using System;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using GHIElectronics.TinyCLR.Devices.Usb;
 
 namespace GHIElectronics.TinyCLR.Devices.UsbHost {
     /// <summary>Allows a usb device to be used a mouse.</summary>
