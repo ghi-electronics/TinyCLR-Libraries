@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.CompilerServices;
+using GHIElectronics.TinyCLR.Devices.Usb;
 
 namespace GHIElectronics.TinyCLR.Devices.UsbHost {
     /// <summary>Allows a usb device to be used as a keyboard.</summary>
