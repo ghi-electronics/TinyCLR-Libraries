@@ -22,9 +22,6 @@ namespace GHIElectronics.TinyCLR.Update {
             FileStream = 3 //only application use this
         }
 
-        private bool applicationBuilt;
-        private bool firmwareBuilt;
-
         private readonly Mode mode = Mode.None;
 
         private StorageController externalStorageController;
@@ -42,8 +39,18 @@ namespace GHIElectronics.TinyCLR.Update {
 
         public TimeSpan ReadDataTimeOut { get; set; } = TimeSpan.FromSeconds(5);
 
-        public uint ApplicationVersion { get; private set; }
-        public uint FirmwareVersion { get; private set; }
+        private uint applicationVersion = 0xFFFFFFFF;
+        private uint firmwareVersion = 0xFFFFFFFF;
+
+        public string ApplicaltionVersion => this.applicationVersion != 0xFFFFFFFF ? ((this.applicationVersion >> 24) & 0xFF).ToString() + "."
+                                            + ((this.applicationVersion >> 16) & 0xFF).ToString() + "."
+                                            + ((this.applicationVersion >> 8) & 0xFF).ToString() + "."
+                                            + ((this.applicationVersion >> 0) & 0xFF).ToString() : "Invalid.";
+
+        public string FirmwareVersion => this.firmwareVersion != 0xFFFFFFFF ? ((this.firmwareVersion >> 24) & 0xFF).ToString() + "."
+                                            + ((this.firmwareVersion >> 16) & 0xFF).ToString() + "."
+                                            + ((this.firmwareVersion >> 8) & 0xFF).ToString() + "."
+                                            + ((this.firmwareVersion >> 0) & 0xFF).ToString() + "00" : "Invalid.";
 
         private Cache applicationCache = Cache.None;
         private Cache firmwareCache = Cache.None;
@@ -68,7 +75,15 @@ namespace GHIElectronics.TinyCLR.Update {
             this.useExternalStorageController = useExternalFlash;
 
             if (useExternalFlash) {
-                this.NativeInFieldUpdate(Cache.ExternalFlash, null, Cache.ExternalFlash, null, null);
+                if (applicationStream != null) {
+                    this.applicationCache = Cache.ExternalFlash;
+                }
+
+                if (firmwareStream != null) {
+                    this.firmwareCache = Cache.ExternalFlash;
+                }
+
+                this.NativeInFieldUpdate(this.firmwareCache, null, this.applicationCache, null, null);
             }
             else {
                 if (applicationStream != null) {
@@ -123,15 +138,19 @@ namespace GHIElectronics.TinyCLR.Update {
                 this.externalStorageController = StorageController.FromName(STM32H7.StorageController.QuadSpi);
 
                 this.externalStorageController.Provider.Open();
-
-                this.buffer = new byte[this.bufferSize];
             }
+
+            this.buffer = new byte[this.bufferSize];
         }
 
         public void Build(bool firmware, bool application) {
-            if (application) {
-                this.applicationBuilt = false;
+            if (firmware && ((this.mode & Mode.Firmware) != Mode.Firmware))
+                throw new ArgumentNullException("Firmware stream null.");
 
+            if (application && ((this.mode & Mode.Application) != Mode.Application))
+                throw new ArgumentNullException("Application stream null.");
+
+            if (application) {
                 if ((this.mode & Mode.Application) != Mode.Application)
                     throw new ArgumentNullException();
 
@@ -144,13 +163,10 @@ namespace GHIElectronics.TinyCLR.Update {
                         throw new InvalidOperationException("Application data not available.");
                 }
 
-                this.ApplicationVersion = this.NativeAuthenticateApplication(this.applicationKey);
-
-                this.applicationBuilt = true;
+                this.applicationVersion = this.NativeAuthenticateApplication(this.applicationKey);
             }
 
             if (firmware) {
-                this.firmwareBuilt = false;
 
                 if ((this.mode & Mode.Firmware) != Mode.Firmware)
                     throw new ArgumentNullException();
@@ -162,9 +178,7 @@ namespace GHIElectronics.TinyCLR.Update {
                 else
                     throw new InvalidOperationException("Firmware data not available.");
 
-                this.FirmwareVersion = this.NativeAuthenticateFirmware();
-
-                this.firmwareBuilt = true;
+                this.firmwareVersion = this.NativeAuthenticateFirmware();
             }
         }
 
@@ -172,20 +186,19 @@ namespace GHIElectronics.TinyCLR.Update {
         public void FlashAndReset() {
             if (this.mode != Mode.None) {
                 if ((this.mode & Mode.Firmware) == Mode.Firmware) {
-                    if (this.firmwareBuilt) {
-                        this.NativeAuthenticateFirmware();
+                    var v = this.NativeAuthenticateFirmware();
+
+                    if (v != this.firmwareVersion || this.firmwareVersion == 0xFFFFFFFF) {
+                        throw new InvalidOperationException("Detected corrupted data, need to call Build.");
                     }
-                    else {
-                        throw new InvalidOperationException("Require call Build firmware.");
-                    }
+
                 }
 
                 if ((this.mode & Mode.Application) == Mode.Application) {
-                    if (this.applicationBuilt) {
-                        this.NativeAuthenticateApplication(this.applicationKey);
-                    }
-                    else {
-                        throw new InvalidOperationException("Require call Build application.");
+                    var v = this.NativeAuthenticateApplication(this.applicationKey);
+
+                    if (v != this.applicationVersion || this.applicationVersion == 0xFFFFFFFF) {
+                        throw new InvalidOperationException("Detected corrupted data, need to call Build.");
                     }
                 }
 
@@ -213,7 +226,7 @@ namespace GHIElectronics.TinyCLR.Update {
                     read += stream.Read(this.buffer, read, (int)this.bufferSize - read);
                     var delta = DateTime.Now.Ticks - t;
 
-                    if (read < 0 || (delta > this.ReadDataTimeOut.Ticks)) {
+                    if (((stream is FileStream || stream is MemoryStream) && stream.Position == stream.Length && read == 0 && stream.Length > 0) || read < 0 || (delta > this.ReadDataTimeOut.Ticks)) {
                         doRead = false;
 
                         break;
@@ -256,7 +269,7 @@ namespace GHIElectronics.TinyCLR.Update {
                     read += stream.Read(this.buffer, read, (int)this.bufferSize - read);
                     var delta = DateTime.Now.Ticks - t;
 
-                    if (read < 0 || (delta > this.ReadDataTimeOut.Ticks)) {
+                    if (((stream is FileStream || stream is MemoryStream) && stream.Position == stream.Length && read == 0 && stream.Length > 0) || read < 0 || (delta > this.ReadDataTimeOut.Ticks)) {
                         doRead = false;
 
                         break;
