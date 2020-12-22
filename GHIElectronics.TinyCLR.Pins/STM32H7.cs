@@ -456,6 +456,8 @@ namespace GHIElectronics.TinyCLR.Pins {
             public const string Tim16 = "GHIElectronics.TinyCLR.NativeApis.STM32H7.PwmController\\15";
             /// <summary>API id.</summary>
             public const string Tim17 = "GHIElectronics.TinyCLR.NativeApis.STM32H7.PwmController\\16";
+            /// <summary>API id.</summary>
+            public const string SoftwarePwm = "GHIElectronics.TinyCLR.NativeApis.STM32H7.SoftwarePwmController";
 
             /// <summary>PWM pin.</summary>
             public const int Channel0 = 0;
