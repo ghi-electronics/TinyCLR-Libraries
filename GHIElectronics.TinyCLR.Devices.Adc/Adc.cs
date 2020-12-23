@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.CompilerServices;
 using GHIElectronics.TinyCLR.Devices.Adc.Provider;
 using GHIElectronics.TinyCLR.Native;
@@ -38,6 +38,7 @@ namespace GHIElectronics.TinyCLR.Devices.Adc {
     public sealed class AdcChannel : IDisposable {
         public int ChannelNumber { get; }
         public AdcController Controller { get; }
+        public TimeSpan SamplingTime { get; set; } = TimeSpan.FromTicks(1);
 
         internal AdcChannel(AdcController controller, int channelNumber) {
             this.ChannelNumber = channelNumber;
@@ -48,7 +49,7 @@ namespace GHIElectronics.TinyCLR.Devices.Adc {
 
         public void Dispose() => this.Controller.Provider.CloseChannel(this.ChannelNumber);
 
-        public int ReadValue() => this.Controller.Provider.Read(this.ChannelNumber);
+        public int ReadValue() => this.Controller.Provider.Read(this.ChannelNumber, this.SamplingTime);
         public double ReadRatio() => (this.ReadValue() - this.Controller.MinValue) / (double)(this.Controller.MaxValue - this.Controller.MinValue);
     }
 
@@ -66,7 +67,7 @@ namespace GHIElectronics.TinyCLR.Devices.Adc {
             void OpenChannel(int channel);
             void CloseChannel(int channel);
 
-            int Read(int channel);
+            int Read(int channel, TimeSpan samplingTime);
         }
 
         public sealed class AdcControllerApiWrapper : IAdcControllerProvider {
@@ -111,7 +112,7 @@ namespace GHIElectronics.TinyCLR.Devices.Adc {
             public extern void CloseChannel(int channel);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern int Read(int channel);
+            public extern int Read(int channel, TimeSpan samplingTime);
         }
     }
 }
