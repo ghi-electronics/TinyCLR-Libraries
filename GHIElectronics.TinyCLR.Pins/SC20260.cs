@@ -555,6 +555,11 @@ namespace GHIElectronics.TinyCLR.Pins {
                     /// <summary>PWM pin.</summary>
                     public const int PB9 = STM32H7.Timer.Channel0;
                 }
+
+                public static class Software {
+                    /// <summary>API id.</summary>
+                    public const string Id = STM32H7.Timer.SoftwarePwm;
+                }
             }
 
             /// <summary>Capture pin definitions.</summary>
