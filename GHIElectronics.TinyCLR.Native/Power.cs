@@ -75,7 +75,7 @@ namespace GHIElectronics.TinyCLR.Native {
         }
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        public static extern void SetSystemClock(SystemClock clock);
+        public static extern void SetSystemClock(SystemClock clock, bool persist);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         public static extern SystemClock GetSystemClock();
