@@ -91,6 +91,7 @@ namespace GHIElectronics.TinyCLR.Vnc {
                 }
             }
         }
+
         public void Start() {
 
             if (string.IsNullOrEmpty(this.ServerName))
@@ -129,6 +130,31 @@ namespace GHIElectronics.TinyCLR.Vnc {
         }
 
         public void Stop() => this.host.Close();
+
+        public void Pause() => this.host.Pause = true;
+
+        public void Resume() => this.host.Pause = false;
+
+        public void SetUpdateWindow(int x, int y, int width, int height) {
+            var w = this.fb.Width;
+            var h = this.fb.Height;
+
+            if ((x < 0) || (y < 0) || (width <= 0) || (height <= 0)) {
+                throw new ArgumentException();
+            }
+
+            if (x + width > w) {
+                throw new ArgumentException();
+            }
+
+            if (y + height > h) {
+                throw new ArgumentException();
+            }
+
+            throw new NotSupportedException();
+
+
+        }
 
     }
 }

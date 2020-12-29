@@ -5,7 +5,7 @@ namespace GHIElectronics.TinyCLR.Vnc {
 
     internal sealed class RawRectangle : EncodedRectangle {
 
-        public RawRectangle(FrameBuffer framebuffer) : base(framebuffer) {
+        public RawRectangle(FrameBuffer framebuffer, int x, int y, int width, int height) : base(framebuffer, x, y, width, height) {
             switch (this.framebuffer.BitsPerPixel) {
                 case 32:
                     this.pixels = new byte[this.Width * this.Height * 4];

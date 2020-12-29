@@ -10,13 +10,13 @@ namespace GHIElectronics.TinyCLR.Vnc {
         protected int height;
         protected int bitsPerPixel;
 
-        public EncodedRectangle(FrameBuffer framebuffer) {
+        public EncodedRectangle(FrameBuffer framebuffer, int x, int y, int width, int height) {
             this.framebuffer = framebuffer;
 
-            this.x = 0;
-            this.y = 0;
-            this.width = this.framebuffer.Width;
-            this.height = this.framebuffer.Height;
+            this.x = x;
+            this.y = y;
+            this.width = width;
+            this.height = height;
             this.bitsPerPixel = this.framebuffer.BitsPerPixel;
         }
 

@@ -54,6 +54,12 @@ namespace GHIElectronics.TinyCLR.Vnc {
         protected StreamWriter writer; // sent and received, so these handle this.                                               
 
         public bool isRunning;
+        public bool Pause { get; set; }
+
+        public int CurrentX { get; set; }
+        public int CurrentY { get; set; }
+        public int CurrentWidth { get; set; }
+        public int CurrentHeight { get; set; }
 
         public int Port { get; set; }
 
@@ -240,6 +246,11 @@ namespace GHIElectronics.TinyCLR.Vnc {
         }
 
         public FrameBuffer ReadSetPixelFormat(int w, int h) {
+            this.CurrentX = 0;
+            this.CurrentY = 0;
+            this.CurrentWidth = w;
+            this.CurrentHeight = h;
+
             FrameBuffer ret = null;
             try {
                 this.ReadPadding(3);
@@ -303,11 +314,11 @@ namespace GHIElectronics.TinyCLR.Vnc {
                 return;
             }
 
-            this.WriteFrameBufferUpdate(fb, x, y, width, height);
+            this.WriteFrameBufferUpdate(fb, incremental, x, y, width, height);
         }
 
 
-        public void WriteFrameBufferUpdate(FrameBuffer fb, int x, int y, int width, int height) {
+        public void WriteFrameBufferUpdate(FrameBuffer fb, bool incremental, int x, int y, int width, int height) {
 
 #if DEBUG
             var start = DateTime.Now;
@@ -316,11 +327,15 @@ namespace GHIElectronics.TinyCLR.Vnc {
             var frameCountUpdate = 1;
 
             Thread.Sleep(1); //Note: Note that there may be an indefinite period
-            //between the FramebufferUpdateRequest and the FramebufferUpdate.
+                             //between the FramebufferUpdateRequest and the FramebufferUpdate.
+
+            while (this.Pause) {
+                Thread.Sleep(1);
+            }
 
             // Any change below require cache rectangle again
-            if (this.endcodedRectangle == null || this.endcodedRectangle.BitsPerPixel != fb.BitsPerPixel || x != this.endcodedRectangle.X || y != this.endcodedRectangle.Y || width != this.endcodedRectangle.Width || height != this.endcodedRectangle.Height) {
-                this.endcodedRectangle = new RawRectangle(fb);
+            if (this.endcodedRectangle == null || this.endcodedRectangle.BitsPerPixel != fb.BitsPerPixel || this.endcodedRectangle.X != this.CurrentX || this.endcodedRectangle.Y != this.CurrentY || this.endcodedRectangle.Width != this.CurrentWidth || this.endcodedRectangle.Height != this.CurrentHeight) {
+                this.endcodedRectangle = new RawRectangle(fb, this.CurrentX, this.CurrentY, this.CurrentWidth, this.CurrentHeight);
             }
 
             this.endcodedRectangle.Encode();
@@ -341,17 +356,17 @@ namespace GHIElectronics.TinyCLR.Vnc {
             header[2] = (byte)(frameCountUpdate >> 8);  // frameCountUpdate
             header[3] = (byte)(frameCountUpdate >> 0); // frameCountUpdate
 
-            header[4] = (byte)(x >> 8);
-            header[5] = (byte)(x >> 0);
+            header[4] = (byte)(this.endcodedRectangle.X >> 8);
+            header[5] = (byte)(this.endcodedRectangle.X >> 0);
 
-            header[6] = (byte)(y >> 8);
-            header[7] = (byte)(y >> 0);
+            header[6] = (byte)(this.endcodedRectangle.Y >> 8);
+            header[7] = (byte)(this.endcodedRectangle.Y >> 0);
 
-            header[8] = (byte)(width >> 8);
-            header[9] = (byte)(width >> 0);
+            header[8] = (byte)(this.endcodedRectangle.Width >> 8);
+            header[9] = (byte)(this.endcodedRectangle.Width >> 0);
 
-            header[10] = (byte)(height >> 8); ;
-            header[11] = (byte)(height >> 0); ;
+            header[10] = (byte)(this.endcodedRectangle.Height >> 8); ;
+            header[11] = (byte)(this.endcodedRectangle.Height >> 0); ;
 
 
             header[12] = 0; // VncHost.Encoding.RawEncoding
@@ -475,6 +490,13 @@ namespace GHIElectronics.TinyCLR.Vnc {
                 Debug.WriteLine(ex.Message);
                 this.Close();
             }
+        }
+
+        public void SetUpdateWindow(int x, int y, int width, int height) {
+            this.CurrentX = x;
+            this.CurrentY = y;
+            this.CurrentWidth = width;
+            this.CurrentHeight = height;
         }
 
         public uint ReadUint32() => this.reader.ReadUInt32();
