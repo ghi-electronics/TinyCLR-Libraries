@@ -4,8 +4,10 @@ using System.Drawing;
 using System.Runtime.CompilerServices;
 using GHIElectronics.TinyCLR.Native;
 
-namespace System.Drawing {
-    internal interface IGraphics : IDisposable {
+namespace System.Drawing
+{
+    internal interface IGraphics : IDisposable
+    {
         int Width { get; }
         int Height { get; }
 
@@ -16,6 +18,7 @@ namespace System.Drawing {
         uint GetPixel(int x, int y);
         void SetPixel(int x, int y, uint color);
         byte[] GetBitmap();
+        byte[] GetBitmap(int x, int y, int width, int height);
 
         void DrawLine(uint color, int thickness, int x0, int y0, int x1, int y1);
         void DrawRectangle(uint colorOutline, int thicknessOutline, int x, int y, int width, int height, int xCornerRadius, int yCornerRadius, uint colorGradientStart, int xGradientStart, int yGradientStart, uint colorGradientEnd, int xGradientEnd, int yGradientEnd, ushort opacity);
@@ -32,7 +35,8 @@ namespace System.Drawing {
         void Scale9Image(int xDst, int yDst, int widthDst, int heightDst, IGraphics image, int leftBorder, int topBorder, int rightBorder, int bottomBorder, ushort opacity);
     }
 
-    public sealed class Graphics : MarshalByRefObject, IDisposable {
+    public sealed class Graphics : MarshalByRefObject, IDisposable
+    {
         public int Width => this.surface.Width;
         public int Height => this.surface.Height;
 
@@ -46,30 +50,35 @@ namespace System.Drawing {
         public uint GetPixel(int x, int y) => this.surface.GetPixel(x, y);
         public void SetPixel(int x, int y, Color color) => this.surface.SetPixel(x, y, (uint)color.ToArgb());
         public byte[] GetBitmap() => this.surface.GetBitmap();
+        public byte[] GetBitmap(int x, int y, int width, int height) => this.surface.GetBitmap(x, y, width, height);
 
         private static IGraphics CreateSurface(byte[] buffer) => CreateSurface(buffer, BitmapImageType.Bmp);
-        private static IGraphics CreateSurface(byte[] buffer, int width, int height) {
+        private static IGraphics CreateSurface(byte[] buffer, int width, int height)
+        {
             if (buffer == null)
                 throw new ArgumentNullException();
 
             return new Internal.Bitmap(buffer, width, height);
         }
 
-        private static IGraphics CreateSurface(byte[] buffer, BitmapImageType type) {
+        private static IGraphics CreateSurface(byte[] buffer, BitmapImageType type)
+        {
             if (buffer == null)
                 throw new ArgumentNullException();
 
             return new Internal.Bitmap(buffer, type);
         }
 
-        private static IGraphics CreateSurface(byte[] buffer, int offset, int count, BitmapImageType type) {
+        private static IGraphics CreateSurface(byte[] buffer, int offset, int count, BitmapImageType type)
+        {
             if (buffer == null)
                 throw new ArgumentNullException();
 
             return new Internal.Bitmap(buffer, offset, count, type);
         }
 
-        private static IGraphics CreateSurface(int width, int height) {
+        private static IGraphics CreateSurface(int width, int height)
+        {
             if (width <= 0 || height <= 0)
                 throw new IndexOutOfRangeException();
 
@@ -84,18 +93,22 @@ namespace System.Drawing {
         internal Graphics(byte[] buffer, int width, int height) : this(buffer, width, height, IntPtr.Zero) { }
         internal Graphics(byte[] buffer, int width, int height, IntPtr hdc) : this(Graphics.CreateSurface(buffer, width, height), hdc) { }
 
-        internal Graphics(IGraphics bmp, IntPtr hdc) {
+        internal Graphics(IGraphics bmp, IntPtr hdc)
+        {
             this.surface = bmp;
             this.hdc = hdc;
         }
 
-        public void Dispose() {
+        public void Dispose()
+        {
             this.Dispose(true);
             GC.SuppressFinalize(this);
         }
 
-        private void Dispose(bool disposing) {
-            if (!this.disposed && !this.callFromImage) {
+        private void Dispose(bool disposing)
+        {
+            if (!this.disposed && !this.callFromImage)
+            {
                 this.surface?.Dispose();
                 this.surface = null;
 
@@ -103,7 +116,8 @@ namespace System.Drawing {
             }
         }
 
-        private uint ToFlags(StringFormat format, float height, bool ignoreHeight, bool truncateAtBottom) {
+        private uint ToFlags(StringFormat format, float height, bool ignoreHeight, bool truncateAtBottom)
+        {
             var flags = 0U;
 
             if (ignoreHeight || height == 0.0) flags |= (uint)System.Drawing.Graphics.DrawTextAlignment.IgnoreHeight;
@@ -111,14 +125,16 @@ namespace System.Drawing {
 
             if (format.FormatFlags != 0) throw new NotSupportedException();
 
-            switch (format.Alignment) {
+            switch (format.Alignment)
+            {
                 case StringAlignment.Center: flags |= (uint)System.Drawing.Graphics.DrawTextAlignment.AlignmentCenter; break;
                 case StringAlignment.Far: flags |= (uint)System.Drawing.Graphics.DrawTextAlignment.AlignmentRight; break;
                 case StringAlignment.Near: flags |= (uint)System.Drawing.Graphics.DrawTextAlignment.AlignmentLeft; break;
                 default: throw new ArgumentException();
             }
 
-            switch (format.Trimming) {
+            switch (format.Trimming)
+            {
                 case StringTrimming.EllipsisCharacter: flags |= (uint)System.Drawing.Graphics.DrawTextAlignment.TrimmingCharacterEllipsis; break;
                 case StringTrimming.EllipsisWord: flags |= (uint)System.Drawing.Graphics.DrawTextAlignment.WordWrap | (uint)System.Drawing.Graphics.DrawTextAlignment.TrimmingWordEllipsis; break;
                 case StringTrimming.None:
@@ -138,13 +154,15 @@ namespace System.Drawing {
 
         ~Graphics() => this.Dispose(false);
 
-        public SizeF MeasureString(string text, Font font) {
+        public SizeF MeasureString(string text, Font font)
+        {
             font.ComputeExtent(text, out var width, out var height);
 
             return new SizeF(width, height);
         }
 
-        public SizeF MeasureString(string text, Font font, SizeF layoutArea, StringFormat stringFormat) {
+        public SizeF MeasureString(string text, Font font, SizeF layoutArea, StringFormat stringFormat)
+        {
             font.ComputeTextInRect(text, out var width, out var height, 0, 0, (int)layoutArea.Width, (int)layoutArea.Height, this.ToFlags(stringFormat, layoutArea.Height, false, false));
 
             return new SizeF(width, height);
@@ -152,7 +170,8 @@ namespace System.Drawing {
 
         public void Clear() => this.surface.Clear();
 
-        public static Graphics FromHdc(IntPtr hdc) {
+        public static Graphics FromHdc(IntPtr hdc)
+        {
             if (hdc == IntPtr.Zero) throw new ArgumentNullException(nameof(hdc));
 
             var res = Internal.Bitmap.GetSizeForLcdFromHdc(hdc, out var width, out var height);
@@ -162,7 +181,8 @@ namespace System.Drawing {
             return new Graphics(width, height, hdc);
         }
 
-        public static Graphics FromImage(Image image) {
+        public static Graphics FromImage(Image image)
+        {
             image.data.callFromImage = true;
 
             return image.data;
@@ -172,8 +192,10 @@ namespace System.Drawing {
 
         static public event OnFlushHandler OnFlushEvent;
 
-        public void Flush() {
-            if (this.hdc != IntPtr.Zero) {
+        public void Flush()
+        {
+            if (this.hdc != IntPtr.Zero)
+            {
                 this.surface.Flush(this.hdc, 0, 0, this.surface.Width, this.surface.Height);
             }
 
@@ -192,40 +214,49 @@ namespace System.Drawing {
         //Draws the specified portion of the specified Image at the specified location and with the specified size.
         public void DrawImage(Image image, Rectangle destRect, Rectangle srcRect, GraphicsUnit srcUnit) => this.surface.StretchImage(destRect.X, destRect.Y, destRect.Width, destRect.Height, image.data.surface, srcRect.X, srcRect.Y, srcRect.Width, srcRect.Height, 0xFF);
 
-        public void DrawLine(Pen pen, int x1, int y1, int x2, int y2) {
+        public void DrawLine(Pen pen, int x1, int y1, int x2, int y2)
+        {
             if (pen.Color.A != 0xFF) throw new NotSupportedException("Alpha not supported.");
 
             this.surface.DrawLine((uint)(pen.Color.value & 0x00FFFFFF), (int)pen.Width, x1, y1, x2, y2);
         }
 
-        public void DrawString(string s, Font font, Brush brush, float x, float y) {
-            if (brush is SolidBrush b) {
+        public void DrawString(string s, Font font, Brush brush, float x, float y)
+        {
+            if (brush is SolidBrush b)
+            {
                 if (b.Color.A != 0xFF) throw new NotSupportedException("Alpha not supported.");
 
                 this.surface.DrawText(s, font, (uint)(b.Color.value & 0x00FFFFFF), (int)x, (int)y);
             }
-            else {
+            else
+            {
                 throw new NotSupportedException();
             }
         }
 
-        public void DrawString(string s, Font font, Brush brush, RectangleF layoutRectangle) => this.DrawString(s, font, brush, layoutRectangle, new StringFormat {
+        public void DrawString(string s, Font font, Brush brush, RectangleF layoutRectangle) => this.DrawString(s, font, brush, layoutRectangle, new StringFormat
+        {
             Trimming = StringTrimming.EllipsisWord,
             Alignment = StringAlignment.Near
         });
 
-        public void DrawString(string s, Font font, Brush brush, RectangleF layoutRectangle, StringFormat format) {
-            if (brush is SolidBrush b) {
+        public void DrawString(string s, Font font, Brush brush, RectangleF layoutRectangle, StringFormat format)
+        {
+            if (brush is SolidBrush b)
+            {
                 if (b.Color.A != 0xFF) throw new NotSupportedException("Alpha not supported.");
 
                 this.surface.DrawTextInRect(s, (int)layoutRectangle.X, (int)layoutRectangle.Y, (int)layoutRectangle.Width, (int)layoutRectangle.Height, this.ToFlags(format, layoutRectangle.Height, false, false), b.Color, font);
             }
-            else {
+            else
+            {
                 throw new NotSupportedException();
             }
         }
 
-        public void DrawEllipse(Pen pen, int x, int y, int width, int height) {
+        public void DrawEllipse(Pen pen, int x, int y, int width, int height)
+        {
             if (pen.Color.A != 0xFF) throw new NotSupportedException("Alpha not supported.");
 
             var rgb = (uint)(pen.Color.ToArgb() & 0x00FFFFFF);
@@ -239,7 +270,8 @@ namespace System.Drawing {
             this.surface.DrawEllipse(rgb, (int)pen.Width, x, y, width, height, (uint)Color.Transparent.value, x, y, (uint)Color.Transparent.value, x + width * 2, y + height * 2, 0x00);
         }
 
-        public void DrawRectangle(Pen pen, int x, int y, int width, int height) {
+        public void DrawRectangle(Pen pen, int x, int y, int width, int height)
+        {
             if (pen.Color.A != 0xFF) throw new NotSupportedException("Alpha not supported.");
 
             var rgb = (uint)(pen.Color.ToArgb() & 0x00FFFFFF);
@@ -247,8 +279,10 @@ namespace System.Drawing {
             this.surface.DrawRectangle(rgb, (int)pen.Width, x, y, width, height, 0, 0, (uint)Color.Transparent.value, x, y, (uint)Color.Transparent.value, x + width, y + height, 0x00);
         }
 
-        public void FillEllipse(Brush brush, int x, int y, int width, int height) {
-            if (brush is SolidBrush b) {
+        public void FillEllipse(Brush brush, int x, int y, int width, int height)
+        {
+            if (brush is SolidBrush b)
+            {
                 var rgb = (uint)(b.Color.ToArgb() & 0x00FFFFFF);
 
                 width = (width - 1) / 2;
@@ -259,26 +293,32 @@ namespace System.Drawing {
 
                 this.surface.DrawEllipse(rgb, 0, x, y, width, height, rgb, x, y, rgb, x + width * 2, y + height * 2, b.Color.A);
             }
-            else {
+            else
+            {
                 throw new NotSupportedException();
             }
         }
 
-        public void FillRectangle(Brush brush, int x, int y, int width, int height) {
-            if (brush is SolidBrush b) {
+        public void FillRectangle(Brush brush, int x, int y, int width, int height)
+        {
+            if (brush is SolidBrush b)
+            {
                 var rgb = (uint)(b.Color.ToArgb() & 0x00FFFFFF);
 
                 this.surface.DrawRectangle(rgb, 0, x, y, width, height, 0, 0, rgb, x, y, rgb, x + width, y + height, b.Color.A);
             }
-            else {
+            else
+            {
                 throw new NotSupportedException();
             }
         }
 
         public void DrawImage(int xDst, int yDst, Image image, int xSrc, int ySrc, int width, int height, ushort opacity) => this.surface.DrawImage(xDst, yDst, image.data.surface, xSrc, ySrc, width, height, opacity);
 
-        public void Flush(int x, int y, int width, int height) {
-            if (this.hdc != IntPtr.Zero) {
+        public void Flush(int x, int y, int width, int height)
+        {
+            if (this.hdc != IntPtr.Zero)
+            {
                 this.surface.Flush(this.hdc, x, y, width, height);
             }
 
@@ -288,7 +328,8 @@ namespace System.Drawing {
         public void SetClippingRectangle(int x, int y, int width, int height) => this.surface.SetClippingRectangle(x, y, width, height);
         public void DrawTextInRect(string text, int x, int y, int width, int height, DrawTextAlignment dtFlags, Color color, Font font) => this.surface.DrawTextInRect(text, x, y, width, height, (uint)dtFlags, color, font);
         public bool DrawTextInRect(ref string text, ref int xRelStart, ref int yRelStart, int x, int y, int width, int height, DrawTextAlignment dtFlags, Color color, Font font) => this.surface.DrawTextInRect(ref text, ref xRelStart, ref yRelStart, x, y, width, height, (uint)dtFlags, (uint)color.ToArgb(), font);
-        public void RotateImage(int angle, int xDst, int yDst, Image image, int xSrc, int ySrc, int width, int height, ushort opacity) {
+        public void RotateImage(int angle, int xDst, int yDst, Image image, int xSrc, int ySrc, int width, int height, ushort opacity)
+        {
             if (image == null) throw new ArgumentNullException("image null.");
 
             if ((xSrc + width > image.Width) || (ySrc + height > image.Height))
@@ -304,7 +345,8 @@ namespace System.Drawing {
         //
         // These have to be kept in sync with the CLR_GFX_Bitmap::c_DrawText_ flags.
         //
-        public enum DrawTextAlignment : uint {
+        public enum DrawTextAlignment : uint
+        {
             None = 0x00000000,
             WordWrap = 0x00000001,
             TruncateAtBottom = 0x00000004,
@@ -322,14 +364,17 @@ namespace System.Drawing {
 
     }
 
-    namespace Internal {
+    namespace Internal
+    {
         //The name and namespace of this must match the definition in c_TypeIndexLookup in TypeSystem.cpp and ResourceManager.GetObject
-        internal class Bitmap : MarshalByRefObject, IDisposable, IGraphics {
+        internal class Bitmap : MarshalByRefObject, IDisposable, IGraphics
+        {
 #pragma warning disable CS0169 // The field is never used
             IntPtr implPtr;
 #pragma warning restore CS0169 // The field is never used
 
-            public void Dispose() {
+            public void Dispose()
+            {
                 this.Dispose(true);
                 GC.SuppressFinalize(this);
             }
@@ -338,6 +383,14 @@ namespace System.Drawing {
 
             public extern int Width { [MethodImpl(MethodImplOptions.InternalCall)] get; }
             public extern int Height { [MethodImpl(MethodImplOptions.InternalCall)] get; }
+
+            public byte[] GetBitmap(int x, int y, int width, int height)
+            {
+                if ((x < 0) || (y < 0) || (x + width > this.Width) || (y + height > this.Height))
+                    throw new ArgumentOutOfRangeException();
+
+                return this.NativeGetBitmap(x, y, width, height, this.Width);
+            }
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public static extern bool GetSizeForLcdFromHdc(IntPtr hdc, out int width, out int height);
@@ -381,7 +434,8 @@ namespace System.Drawing {
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void DrawRectangle(uint colorOutline, int thicknessOutline, int x, int y, int width, int height, int xCornerRadius, int yCornerRadius, uint colorGradientStart, int xGradientStart, int yGradientStart, uint colorGradientEnd, int xGradientEnd, int yGradientEnd, ushort opacity);
 
-            public void DrawTextInRect(string text, int x, int y, int width, int height, uint dtFlags, Color color, Font font) {
+            public void DrawTextInRect(string text, int x, int y, int width, int height, uint dtFlags, Color color, Font font)
+            {
                 var xRelStart = 0;
                 var yRelStart = 0;
 
@@ -420,9 +474,13 @@ namespace System.Drawing {
             public extern byte[] GetBitmap();
 
             [MethodImpl(MethodImplOptions.InternalCall)]
+            private extern byte[] NativeGetBitmap(int x, int y, int width, int height, int originalWidth);
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void StretchImage(int xDst, int yDst, int widthDst, int heightDst, Bitmap bitmap, int xSrc, int ySrc, int widthSrc, int heightSrc, ushort opacity);
 
-            public void StretchImage(int xDst, int yDst, int widthDst, int heightDst, IGraphics bitmap, int xSrc, int ySrc, int widthSrc, int heightSrc, ushort opacity) {
+            public void StretchImage(int xDst, int yDst, int widthDst, int heightDst, IGraphics bitmap, int xSrc, int ySrc, int widthSrc, int heightSrc, ushort opacity)
+            {
                 if (bitmap is Bitmap b)
                     this.StretchImage(xDst, yDst, widthDst, heightDst, b, xSrc, ySrc, widthSrc, heightSrc, opacity);
             }
@@ -433,22 +491,26 @@ namespace System.Drawing {
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void Scale9Image(int xDst, int yDst, int widthDst, int heightDst, Bitmap bitmap, int leftBorder, int topBorder, int rightBorder, int bottomBorder, ushort opacity);
 
-            public void DrawImage(int xDst, int yDst, IGraphics bitmap, int xSrc, int ySrc, int width, int height, ushort opacity) {
+            public void DrawImage(int xDst, int yDst, IGraphics bitmap, int xSrc, int ySrc, int width, int height, ushort opacity)
+            {
                 if (bitmap is Bitmap b)
                     this.DrawImage(xDst, yDst, b, xSrc, ySrc, width, height, opacity);
             }
 
-            public void RotateImage(int angle, int xDst, int yDst, IGraphics bitmap, int xSrc, int ySrc, int width, int height, ushort opacity) {
+            public void RotateImage(int angle, int xDst, int yDst, IGraphics bitmap, int xSrc, int ySrc, int width, int height, ushort opacity)
+            {
                 if (bitmap is Bitmap b)
                     this.RotateImage(angle, xDst, yDst, b, xSrc, ySrc, width, height, opacity);
             }
 
-            public void TileImage(int xDst, int yDst, IGraphics bitmap, int width, int height, ushort opacity) {
+            public void TileImage(int xDst, int yDst, IGraphics bitmap, int width, int height, ushort opacity)
+            {
                 if (bitmap is Bitmap b)
                     this.TileImage(xDst, yDst, b, width, height, opacity);
             }
 
-            public void Scale9Image(int xDst, int yDst, int widthDst, int heightDst, IGraphics bitmap, int leftBorder, int topBorder, int rightBorder, int bottomBorder, ushort opacity) {
+            public void Scale9Image(int xDst, int yDst, int widthDst, int heightDst, IGraphics bitmap, int leftBorder, int topBorder, int rightBorder, int bottomBorder, ushort opacity)
+            {
                 if (bitmap is Bitmap b)
                     this.Scale9Image(xDst, yDst, widthDst, heightDst, b, leftBorder, topBorder, rightBorder, bottomBorder, opacity);
             }
