@@ -1,3 +1,22 @@
+// TinyCLS OS VNC Server Library
+// Copyright (C) 2020 GHI Electronics
+//
+// This file is a heavy modified version from T1T4N, based on VncSharp project.
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
 using System;
 using System.IO;
 using System.Net;
@@ -335,7 +354,12 @@ namespace GHIElectronics.TinyCLR.Vnc {
 
             // Any change below require cache rectangle again
             if (this.endcodedRectangle == null || this.endcodedRectangle.BitsPerPixel != fb.BitsPerPixel || this.endcodedRectangle.X != this.CurrentX || this.endcodedRectangle.Y != this.CurrentY || this.endcodedRectangle.Width != this.CurrentWidth || this.endcodedRectangle.Height != this.CurrentHeight) {
-                this.endcodedRectangle = new RawRectangle(fb, this.CurrentX, this.CurrentY, this.CurrentWidth, this.CurrentHeight);
+                if (incremental == true) {
+                    this.endcodedRectangle = new RawRectangle(fb, this.CurrentX, this.CurrentY, this.CurrentWidth, this.CurrentHeight);
+                }
+                else {
+                    this.endcodedRectangle = new RawRectangle(fb, fb.X, fb.Y, fb.Width, fb.Height);
+                }
             }
 
             this.endcodedRectangle.Encode();
@@ -344,6 +368,7 @@ namespace GHIElectronics.TinyCLR.Vnc {
             var endcodeTime = DateTime.Now - start;
 
             Debug.WriteLine("Encode time " + endcodeTime.TotalMilliseconds);
+
 #endif
 
             var data = this.endcodedRectangle.Pixels;
@@ -376,7 +401,9 @@ namespace GHIElectronics.TinyCLR.Vnc {
 
 
             this.Write(header);
-
+#if DEBUG
+            start = DateTime.Now;
+#endif
 
             var blockSize = 1024;
             var block = data.Length / blockSize;
@@ -395,7 +422,7 @@ namespace GHIElectronics.TinyCLR.Vnc {
 
                 block--;
 
-                System.Threading.Thread.Sleep(1);
+                //System.Threading.Thread.Sleep(1);
             }
 #if DEBUG
             var sendingTime = DateTime.Now - start;
