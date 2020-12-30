@@ -23,6 +23,8 @@ namespace GHIElectronics.TinyCLR.Devices.Pwm {
 
         public double SetDesiredFrequency(double desiredFrequency) => this.ActualFrequency = this.Provider.SetDesiredFrequency(desiredFrequency);
 
+        public double SetDesiredFrequency(PwmChannel channel, double desiredFrequency) => this.Provider.SetDesiredFrequency(channel.ChannelNumber, desiredFrequency);
+
         public PwmChannel OpenChannel(int channelNumber) => new PwmChannel(this, channelNumber);
     }
 
@@ -98,6 +100,8 @@ namespace GHIElectronics.TinyCLR.Devices.Pwm {
 
             void SetPulseParameters(int channel, double dutyCycle, PwmPulsePolarity polarity);
             double SetDesiredFrequency(double frequency);
+
+            double SetDesiredFrequency(int channel, double frequency);
         }
 
         public sealed class PwmControllerApiWrapper : IPwmControllerProvider {
@@ -142,6 +146,9 @@ namespace GHIElectronics.TinyCLR.Devices.Pwm {
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern double SetDesiredFrequency(double frequency);
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            public extern double SetDesiredFrequency(int channel, double frequency);
         }
     }
 }

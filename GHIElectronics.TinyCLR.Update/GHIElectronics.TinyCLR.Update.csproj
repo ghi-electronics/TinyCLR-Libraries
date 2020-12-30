@@ -43,9 +43,21 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\GHIElectronics.TinyCLR.Devices.Storage\GHIElectronics.TinyCLR.Devices.Storage.csproj">
+      <Project>{F3CD9D5A-75B4-4AD9-852D-4B0895ED3979}</Project>
+      <Name>GHIElectronics.TinyCLR.Devices.Storage</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GHIElectronics.TinyCLR.IO\GHIElectronics.TinyCLR.IO.csproj">
       <Project>{313AEC8E-2B47-4A1A-ACE2-A766D076B2AE}</Project>
       <Name>GHIElectronics.TinyCLR.IO</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GHIElectronics.TinyCLR.Networking\GHIElectronics.TinyCLR.Networking.csproj">
+      <Project>{1AFA3955-B36D-4A8A-8B7F-86F39FC2FDE3}</Project>
+      <Name>GHIElectronics.TinyCLR.Networking</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GHIElectronics.TinyCLR.Pins\GHIElectronics.TinyCLR.Pins.csproj">
+      <Project>{2DCEEF58-5455-457C-B968-52D791605D07}</Project>
+      <Name>GHIElectronics.TinyCLR.Pins</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

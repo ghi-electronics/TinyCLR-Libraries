@@ -40,7 +40,6 @@
     <Compile Include="Mouse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RawDevice.cs" />
-    <Compile Include="SharedTypes.cs" />
     <Compile Include="UsbHost.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -50,6 +49,10 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\GHIElectronics.TinyCLR.Devices.Usb\GHIElectronics.TinyCLR.Devices.Usb.csproj">
+      <Project>{A4ECB49A-99D0-4A25-9119-69966235EF60}</Project>
+      <Name>GHIElectronics.TinyCLR.Devices.Usb</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GHIElectronics.TinyCLR.Native\GHIElectronics.TinyCLR.Native.csproj">
       <Project>{B602474A-AEB0-491C-832B-7EAF0B4511C0}</Project>
       <Name>GHIElectronics.TinyCLR.Native</Name>

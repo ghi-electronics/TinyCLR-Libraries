@@ -5,6 +5,7 @@
 
 
 using System.Net.Sockets;
+using System.Runtime.CompilerServices;
 
 namespace System.Net {
     public static class Dns {
@@ -44,6 +45,15 @@ namespace System.Net {
 
             return ipHostEntry;
         }
+    }
+
+    public static class MulticastDns {
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        public extern static void Start(string hostname, TimeSpan dnsTTL);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        public extern static void Stop();
+
     }
 }
 

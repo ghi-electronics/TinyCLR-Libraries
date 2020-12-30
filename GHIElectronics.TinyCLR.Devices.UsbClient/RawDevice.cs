@@ -410,10 +410,10 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
             }
 
             /// <summary>The number of bytes available to read.</summary>
-            public int BytesToRead => this.parent.usbClientController.Provider.ByteToRead(this.streamIndex);
+            public int BytesToRead => this.parent.usbClientController.Provider.BytesToRead(this.streamIndex);
 
             /// <summary>The number of bytes that are in the process of being written.</summary>
-            public int BytesToWrite => this.parent.usbClientController.Provider.ByteToWrite(this.streamIndex);
+            public int BytesToWrite => this.parent.usbClientController.Provider.BytesToWrite(this.streamIndex);
 
             internal RawStream(int streamIndex, RawDevice parent) {
                 this.disposed = false;

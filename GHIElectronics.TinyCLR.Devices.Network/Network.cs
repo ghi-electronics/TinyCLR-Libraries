@@ -73,7 +73,7 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
                     setting.networkController = this;
                     setting.provider = this.Provider;
 
-                    if (setting.IsDhcpEnabled)
+                    if (setting.DhcpEnable)
                         setting.dhcpServer.Start();
 
                 }
@@ -85,7 +85,7 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
                 var setting = (WiFiNetworkInterfaceSettings)this.ActiveInterfaceSettings;
 
                 if (setting.Mode == WiFiMode.AccessPoint) {
-                    if (setting.IsDhcpEnabled)
+                    if (setting.DhcpEnable)
                         setting.dhcpServer.Stop();
                 }
             }
@@ -191,9 +191,10 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
         public IPAddress GatewayAddress { get; set; }
         public IPAddress[] DnsAddresses { get; set; }
         public byte[] MacAddress { get; set; }
-        public bool IsDhcpEnabled { get; set; } = true;
-        public bool IsDynamicDnsEnabled { get; set; } = true;
+        public bool DhcpEnable { get; set; } = true;
+        public bool DynamicDnsEnable { get; set; } = true;
         public byte[] TlsEntropy { get; set; }
+        public bool MulticastDnsEnable { get; set; } = false;
     }
 
     public class EthernetNetworkInterfaceSettings : NetworkInterfaceSettings {
@@ -222,7 +223,7 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
 
                 this.mode = value;
 
-                if (this.mode == WiFiMode.AccessPoint && this.IsDhcpEnabled && this.dhcpServer == null) {
+                if (this.mode == WiFiMode.AccessPoint && this.DhcpEnable && this.dhcpServer == null) {
                     this.dhcpServer = new DhcpServer(this);
                 }
             }
@@ -355,7 +356,22 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
             internal bool ClientConnected { get; set; }
             internal WiFiNetworkInterfaceSettings WifiNetworkInterfaceSetting { get; set; }
 
-            internal DhcpServer(WiFiNetworkInterfaceSettings setting) => this.WifiNetworkInterfaceSetting = setting;
+            internal DhcpServer(WiFiNetworkInterfaceSettings setting) {
+                this.WifiNetworkInterfaceSetting = setting;
+
+                if (this.WifiNetworkInterfaceSetting.Address == null)
+                    this.WifiNetworkInterfaceSetting.Address = new IPAddress(new byte[] { 192, 168, 1, 1 });
+
+                if (this.WifiNetworkInterfaceSetting.GatewayAddress == null)
+                    this.WifiNetworkInterfaceSetting.GatewayAddress = new IPAddress(new byte[] { 192, 168, 1, 1 });
+
+                if (this.WifiNetworkInterfaceSetting.SubnetMask == null)
+                    this.WifiNetworkInterfaceSetting.SubnetMask = IPAddress.Any;
+
+                if (this.WifiNetworkInterfaceSetting.DnsAddresses == null)
+                    this.WifiNetworkInterfaceSetting.DnsAddresses = new IPAddress[] { IPAddress.Any };
+            }
+
 
             internal string DomainName {
                 get;

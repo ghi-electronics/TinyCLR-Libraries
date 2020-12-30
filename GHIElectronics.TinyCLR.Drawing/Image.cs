@@ -1,9 +1,11 @@
 using System.Drawing.Imaging;
 using System.IO;
 
-namespace System.Drawing {
+namespace System.Drawing
+{
     [Serializable]
-    public abstract class Image : MarshalByRefObject, ICloneable, IDisposable {
+    public abstract class Image : MarshalByRefObject, ICloneable, IDisposable
+    {
         internal Graphics data;
         private bool disposed;
 
@@ -14,18 +16,21 @@ namespace System.Drawing {
 
         public static Image FromStream(Stream stream) => new Bitmap(stream);
 
-        public void Save(Stream stream, ImageFormat format) {
+        public void Save(Stream stream, ImageFormat format)
+        {
             if (stream == null) throw new ArgumentNullException(nameof(stream));
             if (format == null) throw new ArgumentNullException(nameof(format));
             if (format != ImageFormat.RawBitmap && format != ImageFormat.Bmp) throw new ArgumentException("Only MemoryBmp and Bmp supported.");
 
             var buf = this.data.GetBitmap();
 
-            if (format != ImageFormat.Bmp) {
+            if (format != ImageFormat.Bmp)
+            {
                 stream.Seek(0, SeekOrigin.Begin);
                 stream.Write(buf, 0, buf.Length);
             }
-            else {
+            else
+            {
                 var header = new byte[] {
                     0x42, 0x4D,             // BM
                     0x00, 0x00, 0x00, 0x00, // size
@@ -66,8 +71,9 @@ namespace System.Drawing {
                 stream.Seek(0, SeekOrigin.Begin);
 
                 stream.Write(header, 0, header.Length);
-              
-                for (var i = (buf.Length - this.Width * 2); i >= 0; i -= this.Width * 2) {
+
+                for (var i = (buf.Length - this.Width * 2); i >= 0; i -= this.Width * 2)
+                {
 
                     Array.Copy(buf, i, width16bit, 0, this.Width * 2);
 
@@ -78,8 +84,10 @@ namespace System.Drawing {
             }
         }
 
-        protected virtual void Dispose(bool disposing) {
-            if (!this.disposed) {
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!this.disposed)
+            {
                 this.data.Dispose();
 
                 this.data.callFromImage = false;
@@ -88,31 +96,36 @@ namespace System.Drawing {
             }
         }
 
-        public void Dispose() {
+        public void Dispose()
+        {
             this.Dispose(true);
             GC.SuppressFinalize(this);
         }
 
-        public void SetPixel(int x, int y, uint color) => this.data.SetPixel(x, y, color);
+        public void SetPixel(int x, int y, Color color) => this.data.SetPixel(x, y, color);
         public byte[] GetBitmap() => this.data.GetBitmap();
-        public void MakeTransparent(uint color) => this.data.MakeTransparent(color);
+        public byte[] GetBitmap(int x, int y, int width, int height) => this.data.GetBitmap(x, y, width, height);
+        public void MakeTransparent(Color color) => this.data.MakeTransparent(color);
 
         ~Image() => this.Dispose(false);
     }
 
-    public enum BitmapImageType : byte {
+    public enum BitmapImageType : byte
+    {
         TinyCLRBitmap = 0,
         Gif = 1,
         Jpeg = 2,
         Bmp = 3 // The windows .bmp format
     }
 
-    public sealed class Bitmap : Image {
+    public sealed class Bitmap : Image
+    {
         private Bitmap(Internal.Bitmap bmp) => this.data = new Graphics(bmp, IntPtr.Zero);
         public Bitmap(int width, int height) => this.data = new Graphics(width, height);
         public Bitmap(byte[] data, int width, int height) => this.data = new Graphics(data, width, height);
 
-        public Bitmap(Stream stream) {
+        public Bitmap(Stream stream)
+        {
             if (stream == null) throw new ArgumentNullException(nameof(stream));
 
             var buffer = new byte[(int)stream.Length];
@@ -122,24 +135,28 @@ namespace System.Drawing {
             this.data = new Graphics(buffer);
         }
 
-        public Bitmap(byte[] buffer, BitmapImageType type) {
+        public Bitmap(byte[] buffer, BitmapImageType type)
+        {
             if (buffer == null) throw new ArgumentNullException(nameof(buffer));
 
             this.data = new Graphics(buffer, type);
         }
 
-        public Bitmap(byte[] buffer, int offset, int count, BitmapImageType type) {
+        public Bitmap(byte[] buffer, int offset, int count, BitmapImageType type)
+        {
             if (buffer == null) throw new ArgumentNullException(nameof(buffer));
 
             this.data = new Graphics(buffer, offset, count, type);
         }
 
-        public void SetPixel(int x, int y, Color color) => this.data.SetPixel(x, y, (uint)color.ToArgb());
+        public void SetPixel(int x, int y, Color color) => this.data.SetPixel(x, y, color);
         public Color GetPixel(int x, int y) => Color.FromArgb((int)this.data.GetPixel(x, y));
     }
 
-    namespace Imaging {
-        public sealed class ImageFormat {
+    namespace Imaging
+    {
+        public sealed class ImageFormat
+        {
             private static ImageFormat rawBitmap = new ImageFormat(new Guid(new byte[] { 170, 60, 107, 185, 40, 7, 211, 17, 157, 123, 0, 0, 248, 30, 243, 46 }));
             private static ImageFormat bmp = new ImageFormat(new Guid(new byte[] { 171, 60, 107, 185, 40, 7, 211, 17, 157, 123, 0, 0, 248, 30, 243, 46 }));
             private static ImageFormat emf = new ImageFormat(new Guid(new byte[] { 172, 60, 107, 185, 40, 7, 211, 17, 157, 123, 0, 0, 248, 30, 243, 46 }));
@@ -172,7 +189,8 @@ namespace System.Drawing {
 
             public override int GetHashCode() => this.Guid.GetHashCode();
 
-            public override string ToString() {
+            public override string ToString()
+            {
                 if (this == ImageFormat.rawBitmap) return "RawBitmap";
                 if (this == ImageFormat.bmp) return "Bmp";
                 if (this == ImageFormat.emf) return "Emf";

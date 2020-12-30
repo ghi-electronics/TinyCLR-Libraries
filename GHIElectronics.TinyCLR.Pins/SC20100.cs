@@ -331,6 +331,10 @@ namespace GHIElectronics.TinyCLR.Pins {
                     /// <summary>PWM pin.</summary>
                     public const int PB9 = STM32H7.Timer.Channel0;
                 }
+
+                public static class Software {
+                    public const string Id = STM32H7.Timer.SoftwarePwm;
+                }
             }
             /// <summary>Capture pin definitions.</summary>
             public static class Capture {
@@ -351,13 +355,13 @@ namespace GHIElectronics.TinyCLR.Pins {
         /// <summary>UART port definitions.</summary>
         public static class UartPort {
             /// <summary>UART port on PA9 (TX) and PA10 (RX).</summary>
-            public const string Usart1 = STM32H7.UartPort.Usart1;
+            public const string Uart1 = STM32H7.UartPort.Usart1;
 
             /// <summary>UART port on PD5 (TX) and PD6 (RX), PD3 (CTS) and PD4 (RTS).</summary>
-            public const string Usart2 = STM32H7.UartPort.Usart2;
+            public const string Uart2 = STM32H7.UartPort.Usart2;
 
             /// <summary>UART port on PD8 (TX) and PD9 (RX).</summary>
-            public const string Usart3 = STM32H7.UartPort.Usart3;
+            public const string Uart3 = STM32H7.UartPort.Usart3;
 
             /// <summary>UART port on PD0 (TX) and PD1 (RX), PB0 (CTS) and PA15 (RTS).</summary>
             public const string Uart4 = STM32H7.UartPort.Uart4;
@@ -366,7 +370,7 @@ namespace GHIElectronics.TinyCLR.Pins {
             public const string Uart5 = STM32H7.UartPort.Uart5;
 
             /// <summary>UART port on PC6 (TX) and PC7 (RX).</summary>
-            public const string Usart6 = STM32H7.UartPort.Usart6;
+            public const string Uart6 = STM32H7.UartPort.Usart6;
 
             /// <summary>UART port on PE8 (TX) and PE7 (RX), PE10 (CTS) and PE9 (RTS).</summary>
             public const string Uart7 = STM32H7.UartPort.Uart7;

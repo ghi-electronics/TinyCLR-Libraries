@@ -71,6 +71,7 @@ namespace System.IO {
                         // (Behavior verified on desktop .NET)
                         //
                         // Previous FileShare   Requested FileAccess    Requested FileShare
+                        // Read                 Read                    Read
                         // Read                 Read                    ReadWrite
                         // Write                Write                   ReadWrite
                         // ReadWrite            Read                    ReadWrite
@@ -80,7 +81,7 @@ namespace System.IO {
                         // The following check take advantage of the fact that the value for
                         // Read, Write, and ReadWrite in FileAccess enum and FileShare enum are
                         // identical.
-                        if ((share != FileShareReadWrite) ||
+                        if ((share != FileShareReadWrite && share != FileShareRead) ||
                            ((current.Share & access) != access))
                         {
                             throw new IOException("", (int)IOException.IOExceptionErrorCode.UnauthorizedAccess);

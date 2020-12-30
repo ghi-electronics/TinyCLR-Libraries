@@ -43,6 +43,7 @@ namespace GHIElectronics.TinyCLR.Devices.Spi {
 
         public void Read(byte[] buffer) => this.Read(buffer, 0, buffer.Length);
         public void Write(byte[] buffer) => this.Write(buffer, 0, buffer.Length);
+        public void Write(byte[] buffer, int xOffset, int yOffset, int width, int height, int originalWidth) => this.Write(buffer, xOffset, yOffset, width, height, originalWidth, 1, 1);
         public void TransferFullDuplex(byte[] writeBuffer, byte[] readBuffer) => this.TransferFullDuplex(writeBuffer, 0, writeBuffer.Length, readBuffer, 0, readBuffer.Length);
         public void TransferSequential(byte[] writeBuffer, byte[] readBuffer) => this.TransferSequential(writeBuffer, 0, writeBuffer.Length, readBuffer, 0, readBuffer.Length);
 
@@ -60,6 +61,25 @@ namespace GHIElectronics.TinyCLR.Devices.Spi {
 
             this.Controller.Provider.WriteRead(writeBuffer, writeOffset, writeLength, readBuffer, readOffset, readLength, deselectAfter);
         }
+
+        public void Write(byte[] buffer, int x, int y, int width, int height, int originalWidth, int columnMultiplier, int rowMultiplier) {
+            if (buffer == null) {
+                throw new ArgumentNullException("buffer");
+            }
+
+            if ((x < 0) || (y < 0) || ((x + width) > originalWidth) || ((width * height * 2) > buffer.Length) || (columnMultiplier <= 0) || (rowMultiplier <= 0)) {
+                throw new ArgumentOutOfRangeException();
+            }
+
+            var originalHeight = (buffer.Length / 2) / originalWidth;
+
+            if (y + height > originalHeight)
+                throw new ArgumentOutOfRangeException();
+
+            this.Controller.SetActive(this);
+
+            this.Controller.Provider.Write(buffer, x, y, width, height, originalWidth, columnMultiplier, rowMultiplier);
+        }
     }
 
     public sealed class SpiConnectionSettings {
@@ -71,7 +91,7 @@ namespace GHIElectronics.TinyCLR.Devices.Spi {
         public SpiMode Mode { get; set; } = SpiMode.Mode0;
         public TimeSpan ChipSelectSetupTime { get; set; } = TimeSpan.FromTicks(0);
         public TimeSpan ChipSelectHoldTime { get; set; } = TimeSpan.FromTicks(0);
-        public bool ChipSelectActiveState { get; set; } = false;       
+        public bool ChipSelectActiveState { get; set; } = false;
     }
 
     public enum SpiDataFrame {
@@ -99,6 +119,7 @@ namespace GHIElectronics.TinyCLR.Devices.Spi {
             int[] SupportedDataBitLengths { get; }
 
             void SetActiveSettings(SpiConnectionSettings connectionSettings);
+            void Write(byte[] writeBuffer, int xOffset, int yOffset, int width, int height, int originalWidth, int columnMultiplier, int rowMultiplier);
             void WriteRead(byte[] writeBuffer, int writeOffset, int writeLength, byte[] readBuffer, int readOffset, int readLength, bool deselectAfter);
         }
 
@@ -133,6 +154,10 @@ namespace GHIElectronics.TinyCLR.Devices.Spi {
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void WriteRead(byte[] writeBuffer, int writeOffset, int writeLength, byte[] readBuffer, int readOffset, int readLength, bool deselectAfter);
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            public extern void Write(byte[] writeBuffer, int xOffset, int yOffset, int width, int height, int originalWidth, int columnMultiplier, int rowMultiplier);
+
         }
 
         public sealed class SpiControllerSoftwareProvider : ISpiControllerProvider {
@@ -184,7 +209,7 @@ namespace GHIElectronics.TinyCLR.Devices.Spi {
                 this.cs?.Dispose();
             }
 
-            public void SetActiveSettings(SpiConnectionSettings connectionSettings) {                
+            public void SetActiveSettings(SpiConnectionSettings connectionSettings) {
                 this.captureOnRisingEdge = ((((int)connectionSettings.Mode) & 0x01) == 0);
                 this.clockActiveState = (((int)connectionSettings.Mode) & 0x02) == 0 ? GpioPinValue.High : GpioPinValue.Low;
                 this.clockIdleState = this.clockActiveState == GpioPinValue.High ? GpioPinValue.Low : GpioPinValue.High;
@@ -271,6 +296,8 @@ namespace GHIElectronics.TinyCLR.Devices.Spi {
                 if (deselectAfter)
                     this.cs?.Write(this.chipSelectActiveState ? GpioPinValue.Low : GpioPinValue.High);
             }
+
+            public void Write(byte[] writeBuffer, int xOffset, int yOffset, int width, int height, int originalWidth, int columnMultiplier, int rowMultiplier) => throw new Exception("SoftwareSpi does not support this feature.");
         }
     }
 }
