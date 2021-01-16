@@ -393,6 +393,7 @@ namespace System.Net.Sockets
             if (count < 0 || count > buffer.Length - offset) throw new ArgumentOutOfRangeException();
 
             var bytesSent = 0;
+            int retries = 5;
             do {
                 if (this._socketType == (int)SocketType.Stream) {
                     bytesSent = this._socket.Send(buffer, offset, count, SocketFlags.None);
@@ -405,7 +406,18 @@ namespace System.Net.Sockets
                 }
                 count -= bytesSent;
                 offset += bytesSent;
-            } while (bytesSent != 0 && count > 0);
+                if (bytesSent == 0 && count > 0)
+                {
+                    // last send was not successful - wait a bit for the buffers to flush
+                    Threading.Thread.Sleep(100);
+                    --retries;
+                }
+                else
+                {
+                    // last send was fully or partially successful - reduce the retries
+                    retries = 5;
+                }
+            } while (retries != 0 && count > 0);
 
             if (count != 0) throw new IOException();
         }
