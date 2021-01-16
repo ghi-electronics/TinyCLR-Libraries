@@ -414,7 +414,7 @@ namespace System.Net.Sockets
                 }
                 else
                 {
-                    // last send was fully or partially successful - reduce the retries
+                    // last send was fully or partially successful - reset the retries
                     retries = 5;
                 }
             } while (retries != 0 && count > 0);
