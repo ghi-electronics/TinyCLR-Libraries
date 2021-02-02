@@ -33,7 +33,10 @@ namespace GHIElectronics.TinyCLR.Native {
         System,
         PowerChanged,
         Watchdog,
-        Other
+        Other,
+        LowPowerRtc,
+        LowPowerWakeupPin,
+        ResetPin,
     }
 
     public enum SystemClock : uint {
@@ -41,11 +44,17 @@ namespace GHIElectronics.TinyCLR.Native {
         Low = 1,
     }
 
+    public enum WakeupEdge : uint {
+        Falling = 0,
+        Rising = 1,
+    }
+
     public static class Power {
+        public static WakeupEdge WakeupEdge;
 
         public static void Reset() => Power.Reset(true);
 
-        public static void Sleep() => SetLevel(PowerLevel.Sleep3, PowerWakeSource.Gpio, 0);
+        public static void Sleep() => SetLevel(PowerLevel.Sleep3, PowerWakeSource.Gpio, 0, 0);
 
         public static void Sleep(DateTime wakeupTime) {
             var wakeupSource = PowerWakeSource.Gpio;
@@ -56,7 +65,7 @@ namespace GHIElectronics.TinyCLR.Native {
                 time = (ulong)wakeupTime.Ticks;
             }
 
-            SetLevel(PowerLevel.Sleep3, wakeupSource, time);
+            SetLevel(PowerLevel.Sleep3, wakeupSource, time, 0);
         }
 
         public static void Shutdown(bool wakeupPin, DateTime wakeupTime) {
@@ -71,7 +80,7 @@ namespace GHIElectronics.TinyCLR.Native {
             if (wakeupPin)
                 wakeupSource |= PowerWakeSource.Gpio;
 
-            SetLevel(PowerLevel.Off, wakeupSource, time);
+            SetLevel(PowerLevel.Off, wakeupSource, time, WakeupEdge);
         }
 
         [MethodImpl(MethodImplOptions.InternalCall)]
@@ -84,7 +93,7 @@ namespace GHIElectronics.TinyCLR.Native {
         public static extern void Reset(bool runCoreAfter);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private static extern void SetLevel(PowerLevel powerLevel, PowerWakeSource wakeSource, ulong data);
+        private static extern void SetLevel(PowerLevel powerLevel, PowerWakeSource wakeSource, ulong rtcTime, WakeupEdge wakeupEdge);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         public static extern ResetSource GetResetSource();
