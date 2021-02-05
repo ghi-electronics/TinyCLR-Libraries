@@ -30,13 +30,14 @@ namespace GHIElectronics.TinyCLR.Native {
     }
 
     public enum ResetSource : uint {
-        System,
-        PowerChanged,
-        Watchdog,
-        Other,
-        LowPowerRtc,
-        LowPowerWakeupPin,
-        ResetPin,
+        Other = 0,
+        PowerOn = 1,
+        ResetPin = 2,
+        BrownoutReset = 4,
+        SystemReset = 8,
+        WatchdogReset = 16,
+        LowPowerRtc = 32,
+        LowPowerWakeupPin = 64
     }
 
     public enum SystemClock : uint {
