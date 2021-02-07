@@ -24,26 +24,21 @@ namespace GHIElectronics.TinyCLR.Vnc {
 
     internal sealed class RawRectangle : EncodedRectangle {
 
-        public RawRectangle(FrameBuffer framebuffer, int x, int y, int width, int height) : base(framebuffer, x, y, width, height) {
+        public RawRectangle(FrameBuffer framebuffer) : base(framebuffer) {
             switch (this.framebuffer.BitsPerPixel) {
                 case 32:
-                    this.pixels = new byte[this.Width * this.Height * 4];
+                    this.data = new byte[this.Width * this.Height * 4];
 
                     break;
 
                 case 16:
 
-                    if (x == 0 && y == 0 && width == framebuffer.Width && height == framebuffer.Height) {
-                        this.pixels = this.framebuffer.Screen.GetBitmap();
-                    }
-                    else {
-                        this.pixels = this.framebuffer.Screen.GetBitmap(x, y, width, height);
-                    }
+                    this.data = framebuffer.Data;
 
                     break;
 
                 case 8:
-                    this.pixels = new byte[this.Width * this.Height];
+                    this.data = new byte[this.Width * this.Height];
                     break;
             }
         }
@@ -69,19 +64,8 @@ namespace GHIElectronics.TinyCLR.Vnc {
                     break;
             }
 
-            if (this.framebuffer.BitsPerPixel != 16) {
-                if (this.framebuffer.Width * this.framebuffer.Height == this.pixels.Length / bytesPerBit) {
-                    var data = this.framebuffer.Screen.GetBitmap();
-                    Color.Convert(data, Color.RgbFormat.Rgb565, this.pixels, rgbFormat);
-                }
-                else {
-                    var data = this.framebuffer.Screen.GetBitmap(this.X, this.Y, this.Width, this.Height);
-                    Color.Convert(data, Color.RgbFormat.Rgb565, this.pixels, rgbFormat);
-                }
-            }
-
-
-            BitConverter.SwapEndianness(this.pixels, bytesPerBit);
+            Color.Convert(this.framebuffer.Data, Color.RgbFormat.Rgb565, this.data, rgbFormat);
+            BitConverter.SwapEndianness(this.data, bytesPerBit);
 
         }
     }
