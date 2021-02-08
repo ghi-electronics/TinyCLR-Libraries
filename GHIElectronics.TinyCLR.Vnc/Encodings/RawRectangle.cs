@@ -33,7 +33,7 @@ namespace GHIElectronics.TinyCLR.Vnc {
 
                 case 16:
 
-                    this.data = framebuffer.Data;
+                    this.data = new byte[this.Width * this.Height * 2];
 
                     break;
 
