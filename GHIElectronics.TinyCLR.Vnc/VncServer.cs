@@ -41,6 +41,7 @@ namespace GHIElectronics.TinyCLR.Vnc {
         public int Port { get; private set; }
         internal string Password { get; private set; }
         public string ServerName { get; private set; } = "Default";
+        public TimeSpan DelayBetweenFrame { get; set; } = TimeSpan.FromMilliseconds(10);
 
         private VncHost host;
         private readonly FrameBuffer frameBuffer;
@@ -104,7 +105,11 @@ namespace GHIElectronics.TinyCLR.Vnc {
 
                         this.host.WriteServerInit(this.frameBuffer);
 
+
+
                         while (this.host.isRunning) {
+                            var timeStart = DateTime.Now;
+
                             Thread.Sleep(1);
 
                             switch (this.host.ReadServerMessageType()) {
@@ -135,6 +140,13 @@ namespace GHIElectronics.TinyCLR.Vnc {
 
                                 case VncHost.ClientMessages.FramebufferUpdateRequest:
                                     this.host.ReadFrameBufferUpdateRequest(this.frameBuffer);
+
+                                    var now = (DateTime.Now - timeStart).TotalMilliseconds;
+
+                                    if (now < this.DelayBetweenFrame.TotalMilliseconds) {
+                                        Thread.Sleep((int)(this.DelayBetweenFrame.TotalMilliseconds - now));
+                                    }
+
                                     break;
 
                                 case VncHost.ClientMessages.KeyEvent:
