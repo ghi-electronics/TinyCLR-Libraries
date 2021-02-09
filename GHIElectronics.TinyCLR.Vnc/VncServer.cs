@@ -46,6 +46,9 @@ namespace GHIElectronics.TinyCLR.Vnc {
         private VncHost host;
         private readonly FrameBuffer frameBuffer;
 
+        private int Width { get; set; }
+        private int Height { get; set; }
+
         public VncServer(string serverName, int port, int width, int height) {
             this.Password = null;
             this.Port = port;
@@ -77,6 +80,10 @@ namespace GHIElectronics.TinyCLR.Vnc {
             this.host.FrameSentEvent += (a) => FrameSentEvent?.Invoke(a);
             this.host.ClientRequestUpdateEvent += (x, y, w, h) => ClientRequestUpdateEvent?.Invoke(x, y, w, h);
             this.host.ConnectionChangedEvent += (a) => ConnectionChangedEvent?.Invoke(a);
+
+            this.Width = width;
+            this.Height = height;
+
         }
 
         private bool isRunning = true;
@@ -181,6 +188,10 @@ namespace GHIElectronics.TinyCLR.Vnc {
         public void Send(byte[] data, int x, int y, int width, int height) {
             if (this.frameBuffer == null)
                 return;
+
+            if ((x != 0) || (y != 0) || ((x + width) != this.Width) || ((y + height) != this.Height)) {
+                throw new ArgumentException("Only full screen update is supported");
+            }
 
             this.frameBuffer.Data = data;
 
