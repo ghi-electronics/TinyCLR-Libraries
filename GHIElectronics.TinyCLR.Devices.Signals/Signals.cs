@@ -138,7 +138,7 @@ namespace GHIElectronics.TinyCLR.Devices.Signals {
 
         public delegate void PulseReadEventHandler(DigitalSignal sender, TimeSpan duration, uint count, GpioPinValue initialState);
         public delegate void PulseCaptureEventHandler(DigitalSignal sender, double[] buffer, uint count, GpioPinValue initialState);
-        public delegate void PulseWriteEventHandler(DigitalSignal sender);
+        public delegate void PulseWriteEventHandler(DigitalSignal sender, GpioPinValue endState);
 
         private PulseReadEventHandler pulseReadCallback;
         private PulseCaptureEventHandler pulseCaptureCallback;
@@ -170,7 +170,7 @@ namespace GHIElectronics.TinyCLR.Devices.Signals {
                             this.pulseCaptureCallback?.Invoke(this, null, 0, GpioPinValue.Low);
                     }
                     else if (this.isWriteMode == true) {
-                        this.pulseWriteCallback?.Invoke(this);
+                        this.pulseWriteCallback?.Invoke(this, ((int)d3 != 0) ? GpioPinValue.High : GpioPinValue.Low);
                     }
                     else {
                         this.pulseReadCallback?.Invoke(this, new TimeSpan(d1), (uint)d2, ((int)d3 != 0) ? GpioPinValue.High : GpioPinValue.Low);
