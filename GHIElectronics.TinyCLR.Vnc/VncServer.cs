@@ -190,7 +190,7 @@ namespace GHIElectronics.TinyCLR.Vnc {
                 return;
 
             if ((x != 0) || (y != 0) || ((x + width) != this.Width) || ((y + height) != this.Height)) {
-                throw new ArgumentException("No support custom size.");
+                throw new ArgumentException("Only full screen update is supported");
             }
 
             this.frameBuffer.Data = data;
