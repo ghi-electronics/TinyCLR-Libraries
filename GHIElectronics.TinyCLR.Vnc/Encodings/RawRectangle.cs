@@ -44,7 +44,7 @@ namespace GHIElectronics.TinyCLR.Vnc {
         }
 
         public override void Encode() {
-            var rgbFormat = Color.RgbFormat.Rgb8888;
+            var colorFormat = Color.ColorFormat.Rgb8888;
             var bytesPerBit = 4;
 
 
@@ -54,17 +54,17 @@ namespace GHIElectronics.TinyCLR.Vnc {
                     break;
 
                 case 16:
-                    rgbFormat = Color.RgbFormat.Rgb565;
+                    colorFormat = Color.ColorFormat.Rgb565;
                     bytesPerBit = 2;
                     break;
 
                 case 8:
-                    rgbFormat = Color.RgbFormat.Rgb323;
+                    colorFormat = Color.ColorFormat.Rgb332;
                     bytesPerBit = 1;
                     break;
             }
 
-            Color.Convert(this.framebuffer.Data, Color.RgbFormat.Rgb565, this.data, rgbFormat);
+            Color.Convert(this.framebuffer.Data, this.data, colorFormat);
             BitConverter.SwapEndianness(this.data, bytesPerBit);
 
         }

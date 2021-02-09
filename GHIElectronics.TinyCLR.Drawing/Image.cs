@@ -77,7 +77,7 @@ namespace System.Drawing
 
                     Array.Copy(buf, i, width16bit, 0, this.Width * 2);
 
-                    Color.Convert(width16bit, Color.RgbFormat.Rgb565, width24bit, Color.RgbFormat.Rgb888, 0, true);
+                    Color.Convert(width16bit, width24bit, Color.ColorFormat.Rgb888, Color.RgbFormat.Bgr);
 
                     stream.Write(width24bit, 0, this.Width * 3);
                 }
