@@ -563,7 +563,7 @@ namespace GHIElectronics.TinyCLR.Pins {
             }
 
             /// <summary>Capture pin definitions.</summary>
-            public static class Capture {
+            public static class DigitalSignal {
                 public static class Controller5 {
 
                     /// <summary>Capture pin.</summary>

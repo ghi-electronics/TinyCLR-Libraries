@@ -82,7 +82,7 @@ namespace GHIElectronics.TinyCLR.Vnc {
 
         public int Port { get; set; }
 
-        private EncodedRectangle endcodedRectangle;
+        private EncodedRectangle encodedRectangle;
 
         //Supported encodings
         public uint[] Encodings { get; private set; }
@@ -350,14 +350,14 @@ namespace GHIElectronics.TinyCLR.Vnc {
                 if (fb.Data != null) { // valid frame
 
 
-                    this.endcodedRectangle = new RawRectangle(fb);
+                    this.encodedRectangle = new RawRectangle(fb);
 
-                    this.endcodedRectangle.Encode();
+                    this.encodedRectangle.Encode();
 
 
                 }
                 else {
-                    this.endcodedRectangle = null;
+                    this.encodedRectangle = null;
                 }
 
 #if DEBUG
@@ -374,18 +374,18 @@ namespace GHIElectronics.TinyCLR.Vnc {
                 header[2] = (byte)(frameCountUpdate >> 8);  // frameCountUpdate
                 header[3] = (byte)(frameCountUpdate >> 0); // frameCountUpdate
 
-                if (this.endcodedRectangle != null) {
-                    header[4] = (byte)(this.endcodedRectangle.X >> 8);
-                    header[5] = (byte)(this.endcodedRectangle.X >> 0);
+                if (this.encodedRectangle != null) {
+                    header[4] = (byte)(this.encodedRectangle.X >> 8);
+                    header[5] = (byte)(this.encodedRectangle.X >> 0);
 
-                    header[6] = (byte)(this.endcodedRectangle.Y >> 8);
-                    header[7] = (byte)(this.endcodedRectangle.Y >> 0);
+                    header[6] = (byte)(this.encodedRectangle.Y >> 8);
+                    header[7] = (byte)(this.encodedRectangle.Y >> 0);
 
-                    header[8] = (byte)(this.endcodedRectangle.Width >> 8);
-                    header[9] = (byte)(this.endcodedRectangle.Width >> 0);
+                    header[8] = (byte)(this.encodedRectangle.Width >> 8);
+                    header[9] = (byte)(this.encodedRectangle.Width >> 0);
 
-                    header[10] = (byte)(this.endcodedRectangle.Height >> 8); ;
-                    header[11] = (byte)(this.endcodedRectangle.Height >> 0); ;
+                    header[10] = (byte)(this.encodedRectangle.Height >> 8); ;
+                    header[11] = (byte)(this.encodedRectangle.Height >> 0); ;
                 }
 
 
@@ -398,8 +398,8 @@ namespace GHIElectronics.TinyCLR.Vnc {
 #if DEBUG
                 start = DateTime.Now;
 #endif
-                if (this.endcodedRectangle != null) {
-                    var data = this.endcodedRectangle.Data;
+                if (this.encodedRectangle != null) {
+                    var data = this.encodedRectangle.Data;
 
                     var blockSize = 1024;
                     var block = data.Length / blockSize;
