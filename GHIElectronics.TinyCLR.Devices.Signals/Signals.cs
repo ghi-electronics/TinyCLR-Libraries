@@ -233,7 +233,9 @@ namespace GHIElectronics.TinyCLR.Devices.Signals {
             this.NativeCapture(count, edge, waitForEdge, timeout);
         }
 
-        public void Write(uint[] data, uint offset, uint count, uint multiplier, GpioPinValue polarity) {
+        public void Write(uint[] data, uint offset, uint count) => this.Write(data, offset, count, 100);
+
+        public void Write(uint[] data, uint offset, uint count, uint multiplier) {
             if (data == null)
                 new ArgumentNullException();
 
@@ -244,7 +246,7 @@ namespace GHIElectronics.TinyCLR.Devices.Signals {
             this.isCaptureMode = false;
             this.isWriteMode = true;
 
-            this.NativeWrite(data, offset, count, multiplier, polarity);
+            this.NativeWrite(data, offset, count, multiplier, GpioPinValue.High);
         }
 
         public void Abort() => this.NativeAbort();
