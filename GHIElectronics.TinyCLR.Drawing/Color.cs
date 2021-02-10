@@ -187,14 +187,14 @@ namespace System.Drawing {
             Rgb888 = 1,
             Rgb565 = 2,
             Rgb444 = 3,
-            Rgb332 = 4,
-            Rgb1bit = 5
+            Rgb332 = 4,            
         }
 
         public enum RgbFormat {
             Rgb = 0,
             Bgr = 1,
-            Grg = 2
+            Grg = 2,
+            Rbg = 3
         }
 
         public enum BitFormat {
