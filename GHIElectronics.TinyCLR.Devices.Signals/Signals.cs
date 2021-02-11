@@ -269,7 +269,7 @@ namespace GHIElectronics.TinyCLR.Devices.Signals {
             }
         }
 
-        public event PulseGenerateEventHandler OnWriteReady {
+        public event PulseGenerateEventHandler OnGenerateReady {
             add {
                 this.pulseGenerateCallback += value;
             }
