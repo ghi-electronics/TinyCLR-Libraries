@@ -4,6 +4,7 @@ using System.IO;
 using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using GHIElectronics.TinyCLR.Devices.Gpio;
 using GHIElectronics.TinyCLR.Devices.Storage;
 using GHIElectronics.TinyCLR.Pins;
 
@@ -36,8 +37,26 @@ namespace GHIElectronics.TinyCLR.Update {
 
         private readonly Stream firmwareStream;
         private readonly Stream applicationStream;
+        private GpioPin indicatorPin;
+        private int indicatorPinId = -1;
 
         public TimeSpan ReadDataTimeOut { get; set; } = TimeSpan.FromSeconds(5);
+        public GpioPin IndicatorPin {
+            get => this.indicatorPin;
+
+            set {
+                this.indicatorPin = value;
+
+                if (this.indicatorPin == null) {
+                    this.indicatorPinId = -1;
+                }
+                else {
+                    this.indicatorPin.SetDriveMode(GpioPinDriveMode.Output);
+                    this.indicatorPinId = this.indicatorPin.PinNumber;
+                }
+
+            }
+        }
 
         private uint applicationVersion = 0xFFFFFFFF;
         private uint firmwareVersion = 0xFFFFFFFF;
@@ -70,6 +89,7 @@ namespace GHIElectronics.TinyCLR.Update {
                 throw new ArgumentNullException();
             }
 
+            this.indicatorPinId = -1;
             this.firmwareStream = firmwareStream;
             this.applicationStream = applicationStream;
             this.useExternalStorageController = useExternalFlash;
@@ -163,7 +183,7 @@ namespace GHIElectronics.TinyCLR.Update {
                         throw new InvalidOperationException("Application data not available.");
                 }
 
-                this.applicationVersion = this.NativeAuthenticateApplication(this.applicationKey);
+                this.applicationVersion = this.NativeAuthenticateApplication(this.applicationKey, this.indicatorPinId);
             }
 
             if (firmware) {
@@ -178,15 +198,14 @@ namespace GHIElectronics.TinyCLR.Update {
                 else
                     throw new InvalidOperationException("Firmware data not available.");
 
-                this.firmwareVersion = this.NativeAuthenticateFirmware();
+                this.firmwareVersion = this.NativeAuthenticateFirmware(this.indicatorPinId);
             }
         }
-
 
         public void FlashAndReset() {
             if (this.mode != Mode.None) {
                 if ((this.mode & Mode.Firmware) == Mode.Firmware) {
-                    var v = this.NativeAuthenticateFirmware();
+                    var v = this.NativeAuthenticateFirmware(this.indicatorPinId);
 
                     if (v != this.firmwareVersion || this.firmwareVersion == 0xFFFFFFFF) {
                         throw new InvalidOperationException("Detected corrupted data, need to call Build.");
@@ -195,14 +214,14 @@ namespace GHIElectronics.TinyCLR.Update {
                 }
 
                 if ((this.mode & Mode.Application) == Mode.Application) {
-                    var v = this.NativeAuthenticateApplication(this.applicationKey);
+                    var v = this.NativeAuthenticateApplication(this.applicationKey, this.indicatorPinId);
 
                     if (v != this.applicationVersion || this.applicationVersion == 0xFFFFFFFF) {
                         throw new InvalidOperationException("Detected corrupted data, need to call Build.");
                     }
                 }
 
-                this.NativeFlashAndReset();
+                this.NativeFlashAndReset(this.indicatorPinId);
             }
 
             throw new ArgumentNullException();
@@ -248,6 +267,8 @@ namespace GHIElectronics.TinyCLR.Update {
 
                     address += read;
                 }
+
+                this.ToggleIndicatorPin();
             }
 
             return totalRead;
@@ -296,28 +317,32 @@ namespace GHIElectronics.TinyCLR.Update {
 
                     address += (uint)read;
                 }
+
+                this.ToggleIndicatorPin();
             }
 
             return totalRead;
         }
 
+        private void ToggleIndicatorPin() => this.IndicatorPin?.Write(this.IndicatorPin.Read() == GpioPinValue.High ? GpioPinValue.Low : GpioPinValue.High);
+
         [MethodImpl(MethodImplOptions.InternalCall)]
         private extern void NativeInFieldUpdate(Cache firmware, byte[] firmwareBuffer, Cache application, byte[] applicationBuffer, FileStream applicationFileStream);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private extern uint NativeAuthenticateFirmware();
+        private extern uint NativeAuthenticateFirmware(int indicatorPinId);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private extern void NativeSetFirmwareSize(uint size);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private extern uint NativeAuthenticateApplication(byte[] key);
+        private extern uint NativeAuthenticateApplication(byte[] key, int indicatorPinId);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private extern void NativeSetApplicationSize(uint size);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private extern void NativeFlashAndReset();
+        private extern void NativeFlashAndReset(int indicatorPin);
 
         private extern static uint FirmwareAddress { [MethodImpl(MethodImplOptions.InternalCall)] get; }
         private extern static uint FirmwareMaxSize { [MethodImpl(MethodImplOptions.InternalCall)] get; }
