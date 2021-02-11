@@ -10,15 +10,15 @@
     <iconUrl>http://files.ghielectronics.com/downloads/Logos/GHIElectronicsTinyCLRNuGet.png</iconUrl>
     <licenseUrl>http://files.ghielectronics.com/downloads/TinyCLR/License.txt</licenseUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
-    <description>The Vncr library for TinyCLR OS.</description>
+    <description>The Vnc library for TinyCLR OS.</description>
     <copyright>Copyright GHI Electronics, LLC 2020</copyright>
     <tags>TinyCLR TinyCLROS</tags>
     <dependencies>
       <dependency id="GHIElectronics.TinyCLR.Core" version="2.1.0-preview3" />
       <dependency id="GHIElectronics.TinyCLR.Drawing" version="2.1.0-preview3" />
+      <dependency id="GHIElectronics.TinyCLR.Devices.Network" version="2.1.0-preview3" />
       <dependency id="GHIElectronics.TinyCLR.Native" version="2.1.0-preview3" />
-      <dependency id="GHIElectronics.TinyCLR.Networking" version="2.1.0-preview3" />
-      <dependency id="GHIElectronics.TinyCLR.Network" version="2.1.0-preview3" />
+      <dependency id="GHIElectronics.TinyCLR.Networking" version="2.1.0-preview3" />      
     </dependencies>
   </metadata>
   <files>

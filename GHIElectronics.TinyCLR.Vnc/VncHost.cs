@@ -345,86 +345,87 @@ namespace GHIElectronics.TinyCLR.Vnc {
             }
 
             var frameCountUpdate = 1;
-            lock (fb) {
-
-                if (fb.Data != null) { // valid frame
 
 
+            if (fb.Data != null) { // valid frame
+
+                lock (fb) {
                     this.encodedRectangle = new RawRectangle(fb);
 
                     this.encodedRectangle.Encode();
-
-
-                }
-                else {
-                    this.encodedRectangle = null;
-                }
-
-#if DEBUG
-                var endcodeTime = DateTime.Now - start;
-
-                Debug.WriteLine("Encode time " + endcodeTime.TotalMilliseconds);
-
-#endif
-                var header = new byte[16];
-
-                header[0] = (byte)ServerMessages.FramebufferUpdate;
-                header[1] = 0; //pad
-
-                header[2] = (byte)(frameCountUpdate >> 8);  // frameCountUpdate
-                header[3] = (byte)(frameCountUpdate >> 0); // frameCountUpdate
-
-                if (this.encodedRectangle != null) {
-                    header[4] = (byte)(this.encodedRectangle.X >> 8);
-                    header[5] = (byte)(this.encodedRectangle.X >> 0);
-
-                    header[6] = (byte)(this.encodedRectangle.Y >> 8);
-                    header[7] = (byte)(this.encodedRectangle.Y >> 0);
-
-                    header[8] = (byte)(this.encodedRectangle.Width >> 8);
-                    header[9] = (byte)(this.encodedRectangle.Width >> 0);
-
-                    header[10] = (byte)(this.encodedRectangle.Height >> 8); ;
-                    header[11] = (byte)(this.encodedRectangle.Height >> 0); ;
                 }
 
 
-                header[12] = 0; // VncHost.Encoding.RawEncoding
-                header[13] = 0; // VncHost.Encoding.RawEncoding
-                header[14] = 0; // VncHost.Encoding.RawEncoding
-                header[15] = 0; // VncHost.Encoding.RawEncoding
-
-                this.Write(header);
-#if DEBUG
-                start = DateTime.Now;
-#endif
-                if (this.encodedRectangle != null) {
-                    var data = this.encodedRectangle.Data;
-
-                    var blockSize = 1024;
-                    var block = data.Length / blockSize;
-
-                    var offset = 0;
-                    var total = 0;
-
-                    while (block > 0) {
-
-                        var count = (data.Length - total) > blockSize ? blockSize : (data.Length - total);
-
-                        this.Write(data, offset, count);
-
-                        offset += count;
-                        total += count;
-
-                        block--;
-
-                        //System.Threading.Thread.Sleep(1);
-                    }
-                }
-
-                fb.Data = null;
-                FrameSentEvent?.Invoke(true);
             }
+            else {
+                this.encodedRectangle = null;
+            }
+
+#if DEBUG
+            var endcodeTime = DateTime.Now - start;
+
+            Debug.WriteLine("Encode time " + endcodeTime.TotalMilliseconds);
+
+#endif
+            var header = new byte[16];
+
+            header[0] = (byte)ServerMessages.FramebufferUpdate;
+            header[1] = 0; //pad
+
+            header[2] = (byte)(frameCountUpdate >> 8);  // frameCountUpdate
+            header[3] = (byte)(frameCountUpdate >> 0); // frameCountUpdate
+
+            if (this.encodedRectangle != null) {
+                header[4] = (byte)(this.encodedRectangle.X >> 8);
+                header[5] = (byte)(this.encodedRectangle.X >> 0);
+
+                header[6] = (byte)(this.encodedRectangle.Y >> 8);
+                header[7] = (byte)(this.encodedRectangle.Y >> 0);
+
+                header[8] = (byte)(this.encodedRectangle.Width >> 8);
+                header[9] = (byte)(this.encodedRectangle.Width >> 0);
+
+                header[10] = (byte)(this.encodedRectangle.Height >> 8); ;
+                header[11] = (byte)(this.encodedRectangle.Height >> 0); ;
+            }
+
+
+            header[12] = 0; // VncHost.Encoding.RawEncoding
+            header[13] = 0; // VncHost.Encoding.RawEncoding
+            header[14] = 0; // VncHost.Encoding.RawEncoding
+            header[15] = 0; // VncHost.Encoding.RawEncoding
+
+            this.Write(header);
+#if DEBUG
+            start = DateTime.Now;
+#endif
+            if (this.encodedRectangle != null) {
+                var data = this.encodedRectangle.Data;
+
+                var blockSize = 1024;
+                var block = data.Length / blockSize;
+
+                var offset = 0;
+                var total = 0;
+
+                while (block > 0) {
+
+                    var count = (data.Length - total) > blockSize ? blockSize : (data.Length - total);
+
+                    this.Write(data, offset, count);
+
+                    offset += count;
+                    total += count;
+
+                    block--;
+
+                    //System.Threading.Thread.Sleep(1);
+                }
+            }
+
+            fb.Data = null;
+            FrameSentEvent?.Invoke(true);
+
 
 #if DEBUG
             var sendingTime = DateTime.Now - start;
