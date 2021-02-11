@@ -251,7 +251,7 @@ namespace GHIElectronics.TinyCLR.Devices.Signals {
 
         public void Abort() => this.NativeAbort();
 
-        public event PulseReadEventHandler OnReadPulseReady {
+        public event PulseReadEventHandler OnReadPulseFinished {
             add {
                 this.pulseReadCallback += value;
             }
@@ -260,7 +260,7 @@ namespace GHIElectronics.TinyCLR.Devices.Signals {
             }
         }
 
-        public event PulseCaptureEventHandler OnCaptureReady {
+        public event PulseCaptureEventHandler OnCaptureFinished {
             add {
                 this.pulseCaptureCallback += value;
             }
@@ -269,7 +269,7 @@ namespace GHIElectronics.TinyCLR.Devices.Signals {
             }
         }
 
-        public event PulseGenerateEventHandler OnGenerateReady {
+        public event PulseGenerateEventHandler OnGenerateFinished {
             add {
                 this.pulseGenerateCallback += value;
             }
