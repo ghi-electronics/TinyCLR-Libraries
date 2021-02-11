@@ -150,7 +150,7 @@ namespace GHIElectronics.TinyCLR.Devices.Signals {
 
         public bool CanReadPulse => !this.isBusy;
         public bool CanCapture => !this.isBusy;
-        public bool CanWrite => !this.isBusy;
+        public bool CanGenerate => !this.isBusy;
 
         public DigitalSignal(GpioPin pin) {
             this.pinNumber = pin.PinNumber;
@@ -233,9 +233,9 @@ namespace GHIElectronics.TinyCLR.Devices.Signals {
             this.NativeCapture(count, edge, waitForEdge, timeout);
         }
 
-        public void Write(uint[] data, uint offset, uint count) => this.Write(data, offset, count, 100);
+        public void Generate(uint[] data, uint offset, uint count) => this.Generate(data, offset, count, 100);
 
-        public void Write(uint[] data, uint offset, uint count, uint multiplier) {
+        public void Generate(uint[] data, uint offset, uint count, uint multiplier) {
             if (data == null)
                 new ArgumentNullException();
 
