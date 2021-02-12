@@ -15,6 +15,9 @@ namespace System {
         public static extern void Copy(Array sourceArray, int sourceIndex, Array destinationArray, int destinationIndex, int length);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        public static extern void Copy2D(Array sourceArray, Array destinationArray, int x, int y, int width, int height, int originalWidth, int elementGroupSize);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public static extern void Clear(Array array, int index, int length);
 
         public object GetValue(int index) => ((IList)this)[index];
