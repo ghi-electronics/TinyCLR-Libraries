@@ -33,6 +33,7 @@ namespace System.Collections {
             }
             this._items = new object[count];
             c.CopyTo(this._items, 0);
+            this._size = count;
         }
 
         public virtual int Capacity {
