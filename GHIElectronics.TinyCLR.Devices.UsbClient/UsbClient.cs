@@ -37,7 +37,8 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
         public ushort ProductId { get; set; }
         public ushort VendorId { get; set; }
 
-        public ushort Version { get; set; }
+        public ushort BcdUsb { get; set; }
+        public ushort BcdDevice { get; set; }
         public ushort MaxPower { get; set; }
         public string InterfaceName { get; set; }        
     }
