@@ -102,7 +102,8 @@ namespace System.Drawing
             GC.SuppressFinalize(this);
         }
 
-        public void SetPixel(int x, int y, Color color) => this.data.SetPixel(x, y, color);
+        public virtual void SetPixel(int x, int y, Color color) => this.data.SetPixel(x, y, color);
+        public virtual Color GetPixel(int x, int y) => Color.FromArgb((int)this.data.GetPixel(x, y));
         public byte[] GetBitmap() => this.data.GetBitmap();
         public byte[] GetBitmap(int x, int y, int width, int height) => this.data.GetBitmap(x, y, width, height);
         public void MakeTransparent(Color color) => this.data.MakeTransparent(color);
@@ -149,8 +150,8 @@ namespace System.Drawing
             this.data = new Graphics(buffer, offset, count, type);
         }
 
-        public void SetPixel(int x, int y, Color color) => this.data.SetPixel(x, y, color);
-        public Color GetPixel(int x, int y) => Color.FromArgb((int)this.data.GetPixel(x, y));
+        public override void SetPixel(int x, int y, Color color) => this.data.SetPixel(x, y, color);
+        public override Color GetPixel(int x, int y) => Color.FromArgb((int)this.data.GetPixel(x, y));
     }
 
     namespace Imaging
