@@ -33,7 +33,8 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
             : this(usbClientController, new UsbClientSetting() {
                 VendorId = RawDevice.GHI_VID,
                 ProductId = (ushort)RawDevice.PID.WinUsb,
-                Version = 0x200,
+                BcdUsb = 0x200,
+                BcdDevice = 0x100,
                 MaxPower = RawDevice.MAX_POWER,
                 ManufactureName = "GHI Electronics",
                 ProductName = "WinUsb",
@@ -69,7 +70,7 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
             this.stream = (WinUsbStream)this.CreateStream(writeEndpoint, readEndpoint);
 
             var interfaceIndex = this.AddInterface(usbInterface, usbClientSetting.InterfaceName);
-            this.SetInterfaceMap(interfaceIndex, RawDevice.InterfaceMapType.CDC, 0, 0, 0);
+            this.SetInterfaceMap(interfaceIndex, 0, 0, 0);
         }
 
         /// <summary>Creates a new instance of a CDC stream.</summary>
