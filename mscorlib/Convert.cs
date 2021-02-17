@@ -1,7 +1,7 @@
 
 namespace System {
     //We don't want to implement this whole class, but VB needs an external function to convert any integer type to a Char.
-    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Never)]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Always)]
     public static class Convert {
         [CLSCompliant(false)]
         public static char ToChar(ushort value) => (char)value;
