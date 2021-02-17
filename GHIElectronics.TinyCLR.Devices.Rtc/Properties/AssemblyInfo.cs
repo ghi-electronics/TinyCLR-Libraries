@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyDescription("TinyCLR OS RTC library.")]
 [assembly: AssemblyCompany("GHI Electronics, LLC")]
 [assembly: AssemblyProduct("TinyCLR OS")]
-[assembly: AssemblyCopyright("Copyright © GHI Electronics, LLC 2020")]
+[assembly: AssemblyCopyright("Copyright © GHI Electronics, LLC 2021")]
 [assembly: ComVisible(false)]
 [assembly: Guid("6AC30771-0622-42C8-AD44-AD30D9DE2A97")]
 [assembly: AssemblyVersion("2.1.0.0")]
