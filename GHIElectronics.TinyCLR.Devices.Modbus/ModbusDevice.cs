@@ -118,7 +118,7 @@ namespace GHIElectronics.TinyCLR.Devices.Modbus {
                                                out var deviceAddress, out var fc,
                                                out var dataPos, out var dataLength);
                                             intf.PrepareWrite();
-                                            this.OnMessageReeived(intf, deviceAddress, (ModbusFunctionCode)fc);
+                                            this.OnMessageReceived(intf, deviceAddress, (ModbusFunctionCode)fc);
                                             var isBroadcast = deviceAddress == ModbusConst.BroadcastAddress;
                                             if (isBroadcast || this.deviceAddress == 248 || deviceAddress == this.deviceAddress) {
                                                 this.OnHandleTelegram(intf, deviceAddress, isBroadcast, telegramLength, telegramContext,
@@ -167,7 +167,7 @@ namespace GHIElectronics.TinyCLR.Devices.Modbus {
         /// <param name="modbusInterface">Interface by which the message was received</param>
         /// <param name="deviceAddress">Address to which device the message was sent</param>
         /// <param name="functionCode">Function code</param>
-        protected virtual void OnMessageReeived(IModbusInterface modbusInterface, byte deviceAddress, ModbusFunctionCode functionCode) { }
+        protected virtual void OnMessageReceived(IModbusInterface modbusInterface, byte deviceAddress, ModbusFunctionCode functionCode) { }
 
         /// <summary>
         /// Handles a received message.
