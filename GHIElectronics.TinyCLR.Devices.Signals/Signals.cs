@@ -138,15 +138,19 @@ namespace GHIElectronics.TinyCLR.Devices.Signals {
 
         public delegate void PulseReadEventHandler(DigitalSignal sender, TimeSpan duration, uint count, GpioPinValue initialState);
         public delegate void PulseCaptureEventHandler(DigitalSignal sender, double[] buffer, uint count, GpioPinValue initialState);
+        public delegate void PulseGenerateEventHandler(DigitalSignal sender, GpioPinValue endState);
 
         private PulseReadEventHandler pulseReadCallback;
         private PulseCaptureEventHandler pulseCaptureCallback;
+        private PulseGenerateEventHandler pulseGenerateCallback;
 
-        private bool isReading;
-        private bool isCapture;
+        private bool isBusy;
+        private bool isCaptureMode;
+        private bool isWriteMode;
 
-        public bool CanReadPulse => !this.isReading;
-        public bool CanCapture => !this.isReading;
+        public bool CanReadPulse => !this.isBusy;
+        public bool CanCapture => !this.isBusy;
+        public bool CanGenerate => !this.isBusy;
 
         public DigitalSignal(GpioPin pin) {
             this.pinNumber = pin.PinNumber;
@@ -154,8 +158,8 @@ namespace GHIElectronics.TinyCLR.Devices.Signals {
             this.nativeEventDispatcher = NativeEventDispatcher.GetDispatcher("GHIElectronics.TinyCLR.NativeEventNames.DigitalSignal.Event");
 
             this.nativeEventDispatcher.OnInterrupt += (apiName, d0, d1, d2, d3, ts) => {
-                if (!this.disposed && this.isReading && d0 == this.pinNumber && apiName.CompareTo("DigitalSignal") == 0) {
-                    if (this.isCapture == true) {
+                if (!this.disposed && this.isBusy && d0 == this.pinNumber && apiName.CompareTo("DigitalSignal") == 0) {
+                    if (this.isCaptureMode == true) {
                         if (d2 > 0) {
                             var data = new double[(int)d2];
 
@@ -165,19 +169,22 @@ namespace GHIElectronics.TinyCLR.Devices.Signals {
                         else
                             this.pulseCaptureCallback?.Invoke(this, null, 0, GpioPinValue.Low);
                     }
+                    else if (this.isWriteMode == true) {
+                        this.pulseGenerateCallback?.Invoke(this, ((int)d3 != 0) ? GpioPinValue.High : GpioPinValue.Low);
+                    }
                     else {
                         this.pulseReadCallback?.Invoke(this, new TimeSpan(d1), (uint)d2, ((int)d3 != 0) ? GpioPinValue.High : GpioPinValue.Low);
                     }
-
                 }
 
-                this.isReading = false;
-                this.isCapture = false;
+                this.isBusy = false;
+                this.isCaptureMode = false;
+                this.isWriteMode = false;
             };
 
             this.NativeAcquire();
 
-            this.isReading = false;
+            this.isBusy = false;
         }
 
         private bool disposed;
@@ -192,7 +199,7 @@ namespace GHIElectronics.TinyCLR.Devices.Signals {
 
                 this.NativeRelease();
 
-                this.isReading = false;
+                this.isBusy = false;
 
                 this.disposed = true;
             }
@@ -203,30 +210,48 @@ namespace GHIElectronics.TinyCLR.Devices.Signals {
         }
 
         public void ReadPulse(uint pulseNum, GpioPinEdge edge, bool waitForEdge) {
-            if (this.isReading)
+            if (this.isBusy)
                 new InvalidOperationException();
 
-            this.isReading = true;
-            this.isCapture = false;
+            this.isBusy = true;
+            this.isCaptureMode = false;
+            this.isWriteMode = false;
 
             this.NativeRead(pulseNum, edge, waitForEdge);
         }
 
+        public void Capture(uint bufferSize, GpioPinEdge edge, bool waitForEdge) => this.Capture(bufferSize, edge, waitForEdge, TimeSpan.Zero);
+
         public void Capture(uint count, GpioPinEdge edge, bool waitForEdge, TimeSpan timeout) {
-            if (this.isReading)
+            if (this.isBusy)
                 new InvalidOperationException();
 
-            this.isReading = true;
-            this.isCapture = true;
+            this.isBusy = true;
+            this.isCaptureMode = true;
+            this.isWriteMode = false;
 
             this.NativeCapture(count, edge, waitForEdge, timeout);
         }
 
-        public void Capture(uint bufferSize, GpioPinEdge edge, bool waitForEdge) => this.Capture(bufferSize, edge, waitForEdge, TimeSpan.Zero);
+        public void Generate(uint[] data, uint offset, uint count) => this.Generate(data, offset, count, 100);
+
+        public void Generate(uint[] data, uint offset, uint count, uint multiplier) {
+            if (data == null)
+                new ArgumentNullException();
+
+            if (offset + count > data.Length)
+                new ArgumentOutOfRangeException();
+
+            this.isBusy = true;
+            this.isCaptureMode = false;
+            this.isWriteMode = true;
+
+            this.NativeWrite(data, offset, count, multiplier, GpioPinValue.High);
+        }
 
         public void Abort() => this.NativeAbort();
 
-        public event PulseReadEventHandler OnReadPulseReady {
+        public event PulseReadEventHandler OnReadPulseFinished {
             add {
                 this.pulseReadCallback += value;
             }
@@ -235,12 +260,21 @@ namespace GHIElectronics.TinyCLR.Devices.Signals {
             }
         }
 
-        public event PulseCaptureEventHandler OnCaptureReady {
+        public event PulseCaptureEventHandler OnCaptureFinished {
             add {
                 this.pulseCaptureCallback += value;
             }
             remove {
                 this.pulseCaptureCallback -= value;
+            }
+        }
+
+        public event PulseGenerateEventHandler OnGenerateFinished {
+            add {
+                this.pulseGenerateCallback += value;
+            }
+            remove {
+                this.pulseGenerateCallback -= value;
             }
         }
 
@@ -261,6 +295,9 @@ namespace GHIElectronics.TinyCLR.Devices.Signals {
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private extern bool NativeGetBuffer(double[] data);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private extern void NativeWrite(uint[] data, uint offset, uint count, uint multiplier, GpioPinValue polarity);
 
     }
 }

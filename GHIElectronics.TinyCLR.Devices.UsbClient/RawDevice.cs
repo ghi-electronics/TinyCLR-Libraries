@@ -9,13 +9,13 @@ using GHIElectronics.TinyCLR.Devices.UsbClient.Provider;
 namespace GHIElectronics.TinyCLR.Devices.UsbClient {
     /// <summary>Represent a USB device.</summary>
 	public class RawDevice {
-        internal const ushort MAX_POWER = 250;
-        internal const ushort GHI_VID = 0x1B9F;
+        public const ushort MAX_POWER = 250;
+        public const ushort GHI_VID = 0x1B9F;
         private const int MAX_INTERFACE_COUNT = 10;
-        private const byte MANUFACTURER_STRING_INDEX = 10;
-        private const byte PRODUCT_STRING_INDEX = 11;
-        private const byte SERIAL_NUMBER_STRING_INDEX = 12;
-        private const byte START_STRING_INDEX = 13;
+        private const byte MANUFACTURER_STRING_INDEX = 1;
+        private const byte PRODUCT_STRING_INDEX = 2;
+        private const byte SERIAL_NUMBER_STRING_INDEX = 3;
+        private const byte START_STRING_INDEX = 4;
         private byte nextStringIndex;
         private byte currentInterfaceIndex;
 
@@ -33,7 +33,8 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
         private ushort vendorId;
         private ushort productId;
         private ushort maximumPower;
-        private ushort version;
+        private ushort bcdUsb;
+        private ushort bcdDevice;
         private object manufacturer;
         private object product;
         private object serialNumber;
@@ -51,7 +52,10 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
         public ushort ProductId => this.productId;
 
         /// <summary>The version of the device.</summary>
-        public ushort Version => this.version;
+        public ushort BcdUsb => this.bcdUsb;
+
+        /// <summary>The version of the device.</summary>
+        public ushort BcdDevice => this.bcdDevice;
 
         /// <summary>The maximum power the device might need.</summary>
         public ushort MaximumPower => this.maximumPower;
@@ -65,13 +69,7 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
         /// <summary>The serial number of the device.</summary>
         public string SerialNumber => (string)this.serialNumber;
 
-        internal enum InterfaceMapType : byte {
-            CDC = 0x01,
-            MassStorage = 0x02,
-            Debug = 0x03,
-        }
-
-        internal enum PID : ushort {
+        public enum PID : ushort {
             Mouse = 0xF000,
             CDC = 0xF001,
             MassStorage = 0xF002,
@@ -129,11 +127,13 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
 
             this.vendorId = usbClientSetting.VendorId == 0 ? GHI_VID : usbClientSetting.VendorId;
             this.productId = usbClientSetting.ProductId;
-            this.version = usbClientSetting.Version;
+            this.bcdUsb = usbClientSetting.BcdUsb;
+            this.bcdDevice = usbClientSetting.BcdDevice;
             this.maximumPower = usbClientSetting.MaxPower;
             this.manufacturer = usbClientSetting.ManufactureName;
             this.product = usbClientSetting.ProductName;
             this.serialNumber = usbClientSetting.SerialNumber;
+            
 
             if (this.manufacturer != null)
                 this.stringDescriptors.Add(new Configuration.StringDescriptor(RawDevice.MANUFACTURER_STRING_INDEX, usbClientSetting.ManufactureName));
@@ -141,7 +141,7 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
             if (this.product != null)
                 this.stringDescriptors.Add(new Configuration.StringDescriptor(RawDevice.PRODUCT_STRING_INDEX, usbClientSetting.ProductName));
 
-            this.stringDescriptors.Add(new Configuration.StringDescriptor(RawDevice.SERIAL_NUMBER_STRING_INDEX, (this.serialNumber == null) ? "0" : usbClientSetting.ProductName));
+            this.stringDescriptors.Add(new Configuration.StringDescriptor(RawDevice.SERIAL_NUMBER_STRING_INDEX, (this.serialNumber == null) ? "0" : usbClientSetting.SerialNumber));
 
             this.nextStringIndex = RawDevice.START_STRING_INDEX;
             this.currentInterfaceIndex = 0;
@@ -237,13 +237,18 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
         }
 
         /// <summary>Sets this device as the active device on the USB client controller. The existing active device will be deactivated if present.</summary>
-        private void Initialize() {            
-            var deviceDescriptor = new Configuration.DeviceDescriptor(this.vendorId, this.productId, this.version) {
+        private void Initialize() {
+            var deviceDescriptor = new Configuration.DeviceDescriptor(this.vendorId, this.productId, this.bcdUsb, this.bcdDevice) {
                 bMaxPacketSize0 = (byte)this.usbClientController.Provider.GetControlPacketSize(),
-                bcdUSB = this.usbClientSetting.Mode == UsbClientMode.WinUsb ? (ushort)0x200 : (ushort)0x110,
+                bcdUSB = this.bcdUsb,
+                bcdDevice = this.bcdDevice,
                 iManufacturer = RawDevice.MANUFACTURER_STRING_INDEX,
                 iProduct = RawDevice.PRODUCT_STRING_INDEX,
-                iSerialNumber = RawDevice.SERIAL_NUMBER_STRING_INDEX
+                iSerialNumber = RawDevice.SERIAL_NUMBER_STRING_INDEX, 
+                bDeviceClass = 0,
+                bDeviceSubClass = 0,
+                bDeviceProtocol = 0
+
             };
 
             var interfaceDescriptors = (Configuration.UsbInterface[])this.interfaceDescriptors.ToArray(typeof(Configuration.UsbInterface));
@@ -283,8 +288,6 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
                 else {
                     throw new Exception("Unknow descriptor.");
                 }
-
-
             }
 
             UsbClientControllerApiWrapper.InitializeStream(this.streamMap, this.interfaceMap);
@@ -334,7 +337,7 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
             this.streamMap[index] = 0;
         }
 
-        internal void SetInterfaceMap(byte interfaceIndex, RawDevice.InterfaceMapType type, byte data1, byte data2, byte data3) => this.interfaceMap[interfaceIndex] = (uint)(((byte)type) | (data1 << 8) | (data2 << 16) | (data3 << 24));
+        public void SetInterfaceMap(byte interfaceIndex, byte data1, byte data2, byte data3) => this.interfaceMap[interfaceIndex] = (uint)((data1 << 8) | (data2 << 16) | (data3 << 24));
 
         /// <summary>Creates a new instance of the stream type for this device type.</summary>
         /// <param name="index">The index of the stream</param>
@@ -415,7 +418,7 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
             /// <summary>The number of bytes that are in the process of being written.</summary>
             public int BytesToWrite => this.parent.usbClientController.Provider.BytesToWrite(this.streamIndex);
 
-            internal RawStream(int streamIndex, RawDevice parent) {
+            public RawStream(int streamIndex, RawDevice parent) {
                 this.disposed = false;
                 this.readTimeout = 0;
                 this.writeTimeout = 0;

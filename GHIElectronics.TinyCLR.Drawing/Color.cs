@@ -182,26 +182,48 @@ namespace System.Drawing {
             return false;
         }
 
-        public enum RgbFormat {
+        public enum ColorFormat {
             Rgb8888 = 0,
             Rgb888 = 1,
             Rgb565 = 2,
-            Rgb323 = 3
+            Rgb444 = 3,
+            Rgb332 = 4,            
         }
 
-        public static void Convert(byte[] inArray, RgbFormat inColorFormat, byte[] outArray, RgbFormat outColorFormat) => Convert(inArray, inColorFormat, outArray, outColorFormat, 0, false, false, null);
-        public static void Convert(byte[] inArray, RgbFormat inColorFormat, byte[] outArray, RgbFormat outColorFormat, byte alpha) => Convert(inArray, inColorFormat, outArray, outColorFormat, alpha, false, false, null);
-        public static void Convert(byte[] inArray, RgbFormat inColorFormat, byte[] outArray, RgbFormat outColorFormat, bool swapRedBlue) => Convert(inArray, inColorFormat, outArray, outColorFormat, 0, swapRedBlue, false, null);
-        public static void Convert(byte[] inArray, RgbFormat inColorFormat, byte[] outArray, RgbFormat outColorFormat, byte alpha, bool swapRedBlue) => Convert(inArray, inColorFormat, outArray, outColorFormat, alpha, swapRedBlue, false, null);
+        public enum RgbFormat {
+            Rgb = 0,
+            Bgr = 1,
+            Grg = 2,
+            Rbg = 3
+        }
 
-        public static void Convert(byte[] inArray, RgbFormat inColorFormat, byte[] outArray, RgbFormat outColorFormat, byte alpha, bool swapRedBlue, bool swapRedGreen, byte[] colorTable) {
+        public enum BitFormat {
+           Vertical = 0,
+           Horizontal = 1
+        }
+
+        public static void Convert(byte[] inArray, byte[] outArray, ColorFormat colorFormat) => Convert(inArray, outArray, colorFormat, RgbFormat.Rgb, 0, null);
+        public static void Convert(byte[] inArray, byte[] outArray, ColorFormat colorFormat, RgbFormat rgbFormat) => Convert(inArray, outArray, colorFormat, rgbFormat, 0, null);
+        public static void Convert(byte[] inArray, byte[] outArray, ColorFormat colorFormat, RgbFormat rgbFormat, byte alpha) => Convert(inArray, outArray, colorFormat, rgbFormat, alpha, null);
+        public static void Convert(byte[] inArray, byte[] outArray, ColorFormat colorFormat, RgbFormat rgbFormat, byte alpha, byte[] colorTable) {
             if (inArray == null || outArray == null)
                 throw new ArgumentNullException();
 
-            NativeConvert(inArray, inColorFormat, outArray, outColorFormat, alpha, swapRedBlue, swapRedGreen, colorTable);
+            NativeConvert(inArray, outArray, colorFormat, rgbFormat, alpha, colorTable);
         }
 
+        public static void ConvertTo1Bpp(byte[] inArray, byte[] outArray, uint width ) => ConvertTo1Bpp(inArray, outArray, width, BitFormat.Vertical);
+        public static void ConvertTo1Bpp(byte[] inArray, byte[] outArray, uint width, BitFormat bitFormat) {
+            if (inArray == null || outArray == null)
+                throw new ArgumentNullException();
+
+            NativeConvertTo1Bpp(inArray, outArray, bitFormat, width);
+        }
+
+        [MethodImpl(MethodImplOptions.InternalCall)]        
+        extern static void NativeConvert(byte[] inArray, byte[] outArray, ColorFormat colorFormat, RgbFormat rgbFormat, byte alpha, byte[] colorTable);
+
         [MethodImpl(MethodImplOptions.InternalCall)]
-        extern static void NativeConvert(byte[] inArray, RgbFormat inColorFormat, byte[] outArray, RgbFormat outColorFormat, byte alpha, bool swapRedBlue, bool swapRedGreen, byte[] colorTable);
+        extern static void NativeConvertTo1Bpp(byte[] inArray, byte[] outArray, BitFormat bitFormat, uint width);
     }
 }

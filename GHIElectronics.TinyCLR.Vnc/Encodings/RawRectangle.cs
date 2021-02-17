@@ -19,37 +19,34 @@
 
 using System;
 using System.Drawing;
+using GHIElectronics.TinyCLR.Native;
 
 namespace GHIElectronics.TinyCLR.Vnc {
 
-    internal sealed class RawRectangle : EncodedRectangle {
+    internal sealed class RawRectangle : EncodedRectangle, IDisposable {
+        private UnmanagedBuffer unmanagedBuffer;
 
-        public RawRectangle(FrameBuffer framebuffer, int x, int y, int width, int height) : base(framebuffer, x, y, width, height) {
-            switch (this.framebuffer.BitsPerPixel) {
-                case 32:
-                    this.pixels = new byte[this.Width * this.Height * 4];
+        public RawRectangle(FrameBuffer framebuffer) : base(framebuffer) {
+            if (Memory.UnmanagedMemory.FreeBytes > 0) { // Unmanaged memory ready
 
-                    break;
+                this.unmanagedBuffer = new UnmanagedBuffer(this.Width * this.Height * (this.framebuffer.BitsPerPixel / 8));
+                this.data = this.unmanagedBuffer.Bytes;
 
-                case 16:
+            }
+            else {
+                this.data = new byte[this.Width * this.Height * (this.framebuffer.BitsPerPixel / 8)];
+            }
+        }
 
-                    if (x == 0 && y == 0 && width == framebuffer.Width && height == framebuffer.Height) {
-                        this.pixels = this.framebuffer.Screen.GetBitmap();
-                    }
-                    else {
-                        this.pixels = this.framebuffer.Screen.GetBitmap(x, y, width, height);
-                    }
-
-                    break;
-
-                case 8:
-                    this.pixels = new byte[this.Width * this.Height];
-                    break;
+        public void Dispose() {
+            if (this.unmanagedBuffer != null ) {
+                this.data = null;
+                this.unmanagedBuffer.Dispose();
             }
         }
 
         public override void Encode() {
-            var rgbFormat = Color.RgbFormat.Rgb8888;
+            var colorFormat = Color.ColorFormat.Rgb8888;
             var bytesPerBit = 4;
 
 
@@ -59,30 +56,23 @@ namespace GHIElectronics.TinyCLR.Vnc {
                     break;
 
                 case 16:
-                    rgbFormat = Color.RgbFormat.Rgb565;
+                    colorFormat = Color.ColorFormat.Rgb565;
                     bytesPerBit = 2;
                     break;
 
                 case 8:
-                    rgbFormat = Color.RgbFormat.Rgb323;
+                    colorFormat = Color.ColorFormat.Rgb332;
                     bytesPerBit = 1;
                     break;
             }
 
-            if (this.framebuffer.BitsPerPixel != 16) {
-                if (this.framebuffer.Width * this.framebuffer.Height == this.pixels.Length / bytesPerBit) {
-                    var data = this.framebuffer.Screen.GetBitmap();
-                    Color.Convert(data, Color.RgbFormat.Rgb565, this.pixels, rgbFormat);
-                }
-                else {
-                    var data = this.framebuffer.Screen.GetBitmap(this.X, this.Y, this.Width, this.Height);
-                    Color.Convert(data, Color.RgbFormat.Rgb565, this.pixels, rgbFormat);
-                }
-            }
+            Color.Convert(this.framebuffer.Data, this.data, colorFormat);
+            BitConverter.SwapEndianness(this.data, bytesPerBit);
 
+        }
 
-            BitConverter.SwapEndianness(this.pixels, bytesPerBit);
-
+        ~RawRectangle() {
+            this.Dispose();
         }
     }
 }

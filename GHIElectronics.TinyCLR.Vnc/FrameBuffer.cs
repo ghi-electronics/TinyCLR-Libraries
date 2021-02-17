@@ -23,6 +23,7 @@ using System.Drawing;
 namespace GHIElectronics.TinyCLR.Vnc {
 
     internal class FrameBuffer {
+
         private string name;
 
         private int bpp;
@@ -36,32 +37,18 @@ namespace GHIElectronics.TinyCLR.Vnc {
         private int greenShift;
         private int blueShift;
 
-        private readonly int x;
-        private readonly int y;
-        private readonly int width;
-        private readonly int height;
-
-        private Graphics graphic;
+        internal int X { get; set; }
+        internal int Y { get; set; }
+        internal int Width { get; set; }
+        internal int Height { get; set; }
+        public byte[] Data { get; internal set; }
 
         public FrameBuffer(int width, int height) {
-            this.x = 0;
-            this.y = 0;
-            this.width = width;
-            this.height = height;
+            this.X = 0;
+            this.Y = 0;
+            this.Width = width;
+            this.Height = height;
         }
-
-        public Graphics Screen {
-            get => this.graphic;
-            set => this.graphic = value;
-        }
-
-        public int X => this.x;
-
-        public int Y => this.y;
-
-        public int Width => this.width;
-
-        public int Height => this.height;
 
         public int BitsPerPixel {
             get => this.bpp;

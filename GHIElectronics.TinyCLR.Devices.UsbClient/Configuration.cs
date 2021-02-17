@@ -12,19 +12,19 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
         }
 
         public class DeviceDescriptor : Descriptor {
-            public DeviceDescriptor(ushort Vendor, ushort Product, ushort DeviceVersion)
+            public DeviceDescriptor(ushort Vendor, ushort Product, ushort bcdUsb, ushort bcdDevice)
                 : base(0) {
                 this.idVendor = Vendor;
                 this.idProduct = Product;
-                this.bcdDevice = DeviceVersion;
+                this.bcdUSB = bcdUsb;
+                this.bcdDevice = bcdDevice;
                 this.iManufacturer = 0;        // Default to no Manufacturer string
                 this.iProduct = 0;        // Default to no Product string
                 this.iSerialNumber = 0;        // Default to no Serial Number string
                 this.bDeviceClass = 0;        // Default to no Device Class
                 this.bDeviceSubClass = 0;        // Default to no Device Sub Class
                 this.bDeviceProtocol = 0;        // Default to no Device Protocol
-                this.bMaxPacketSize0 = 8;        // Default to maximum control packet size of 8
-                this.bcdUSB = 0x0200;   // Default to USB version 2.00
+                this.bMaxPacketSize0 = 8;        // Default to maximum control packet size of 8                
             }
 
             public ushort idVendor;

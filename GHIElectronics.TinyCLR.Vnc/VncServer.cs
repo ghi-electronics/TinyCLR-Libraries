@@ -18,6 +18,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Threading;
 
@@ -26,93 +27,46 @@ namespace GHIElectronics.TinyCLR.Vnc {
 
         public delegate void PointerChangedEventHandler(int x, int y, bool pressed);
         public delegate void KeyChangedEventHandler(uint key, bool pressed);
+        public delegate void FrameSentEventHandler(bool success);
+        public delegate void ClientRequestUpdateEventHandler(int x, int y, int width, int height);
+        public delegate void ConnectionChanged(bool connected);
 
         public event PointerChangedEventHandler PointerChangedEvent;
         public event KeyChangedEventHandler KeyChangedEvent;
+        public event FrameSentEventHandler FrameSentEvent;
+        public event ClientRequestUpdateEventHandler ClientRequestUpdateEvent;
+        public event ConnectionChanged ConnectionChangedEvent;
+
 
         public int Port { get; private set; }
         internal string Password { get; private set; }
         public string ServerName { get; private set; } = "Default";
+        public TimeSpan DelayBetweenFrame { get; set; } = TimeSpan.FromMilliseconds(10);
 
         private VncHost host;
-        private FrameBuffer fb;
-        private Graphics screen;
+        private readonly FrameBuffer frameBuffer;
 
-        public Graphics Screen {
-            get => this.screen;
-            set {
-                this.screen = value;
+        private int Width { get; set; }
+        private int Height { get; set; }
 
-                this.fb = new FrameBuffer(this.screen.Width, this.screen.Height) {
-                    BitsPerPixel = 16,
-                    Depth = 16,
-                    BigEndian = false,
-                    TrueColor = false,
-                    RedShift = 11,
-                    GreenShift = 5,
-                    BlueShift = 0,
-                    BlueMax = 0x1F,
-                    GreenMax = 0x3F,
-                    RedMax = 0x1F,
-                    ServerName = string.IsNullOrEmpty(this.ServerName) ? "Default" : this.ServerName
-                };
-            }
-        }
-
-        public VncServer(string serverName, int port) {
+        public VncServer(string serverName, int port, int width, int height) {
             this.Password = null;
             this.Port = port;
             this.ServerName = serverName;
-        }
 
-        private void Run() {
-            while ((this.host.isRunning)) {
-                Thread.Sleep(1);
-                try {
-                    switch (this.host.ReadServerMessageType()) {
-                        case VncHost.ClientMessages.SetPixelFormat:
-
-                            var f = this.host.ReadSetPixelFormat(this.fb.Width, this.fb.Height);
-
-                            if (f != null) {
-                                this.fb = f;
-
-                                this.fb.Screen = this.Screen;
-                                this.fb.ServerName = this.ServerName;
-                            }
-                            break;
-                        case VncHost.ClientMessages.ReadColorMapEntries:
-                            this.host.Close();
-                            throw new NotSupportedException("Read ReadColorMapEntry");
-
-                        case VncHost.ClientMessages.SetEncodings:
-                            this.host.ReadSetEncodings();
-                            break;
-
-                        case VncHost.ClientMessages.FramebufferUpdateRequest:
-                            this.host.ReadFrameBufferUpdateRequest(this.fb);
-                            break;
-
-                        case VncHost.ClientMessages.KeyEvent:
-                            this.host.ReadKeyEvent();
-                            break;
-
-                        case VncHost.ClientMessages.PointerEvent:
-                            this.host.ReadPointerEvent();
-                            break;
-
-                        case VncHost.ClientMessages.ClientCutText:
-                            this.host.ReadClientCutText();
-                            break;
-                    }
-                }
-                catch {
-
-                }
-            }
-        }
-
-        public void Start() {
+            this.frameBuffer = new FrameBuffer(width, height) {
+                BitsPerPixel = 16,
+                Depth = 16,
+                BigEndian = false,
+                TrueColor = false,
+                RedShift = 11,
+                GreenShift = 5,
+                BlueShift = 0,
+                BlueMax = 0x1F,
+                GreenMax = 0x3F,
+                RedMax = 0x1F,
+                ServerName = string.IsNullOrEmpty(this.ServerName) ? "Default" : this.ServerName
+            };
 
             if (string.IsNullOrEmpty(this.ServerName))
                 throw new ArgumentNullException("Name", "The VNC Server Name cannot be empty.");
@@ -123,58 +77,128 @@ namespace GHIElectronics.TinyCLR.Vnc {
 
             this.host.KeyChangedEvent += (a, b) => KeyChangedEvent?.Invoke(a, b);
             this.host.PointerChangedEvent += (a, b, c) => PointerChangedEvent?.Invoke(a, b, c);
+            this.host.FrameSentEvent += (a) => FrameSentEvent?.Invoke(a);
+            this.host.ClientRequestUpdateEvent += (x, y, w, h) => ClientRequestUpdateEvent?.Invoke(x, y, w, h);
+            this.host.ConnectionChangedEvent += (a) => ConnectionChangedEvent?.Invoke(a);
 
-            this.host.Start();
+            this.Width = width;
+            this.Height = height;
 
-            this.host.WriteProtocolVersion();
+        }
 
-            this.host.ReadProtocolVersion();
+        private bool isRunning = true;
+        private void Run() {
 
-            if (!this.host.WriteAuthentication(this.Password)) {
-                this.host.Close();
-            }
-            else {
+            while (this.isRunning) {
+                try {
+                    this.host.Start();
 
-                var share = this.host.ReadClientInit();
+                    this.host.WriteProtocolVersion();
 
-                if (share == false) {
-                    this.host.Close();
+                    this.host.ReadProtocolVersion();
 
-                    throw new InvalidOperationException("Read client init failed.");
+                    if (!this.host.WriteAuthentication(this.Password)) {
+                        this.host.Close();
+                    }
+                    else {
+
+                        var share = this.host.ReadClientInit();
+
+                        if (share == false) {
+                            this.host.Close();
+
+                            throw new InvalidOperationException("Read client init failed.");
+                        }
+
+                        this.host.WriteServerInit(this.frameBuffer);
+
+
+
+                        while (this.host.isRunning) {
+                            var timeStart = DateTime.Now;
+
+                            Thread.Sleep(1);
+
+                            switch (this.host.ReadServerMessageType()) {
+                                case VncHost.ClientMessages.SetPixelFormat:
+
+                                    var fb = this.host.ReadSetPixelFormat(this.frameBuffer.Width, this.frameBuffer.Height);
+
+                                    if (fb != null) {
+                                        this.frameBuffer.BitsPerPixel = fb.BitsPerPixel;
+                                        this.frameBuffer.Depth = fb.Depth;
+                                        this.frameBuffer.BigEndian = fb.BigEndian;
+                                        this.frameBuffer.TrueColor = fb.TrueColor;
+                                        this.frameBuffer.RedMax = fb.RedMax;
+                                        this.frameBuffer.GreenMax = fb.GreenMax;
+                                        this.frameBuffer.BlueMax = fb.BlueMax;
+                                        this.frameBuffer.RedShift = fb.RedShift;
+                                        this.frameBuffer.GreenShift = fb.GreenShift;
+                                        this.frameBuffer.BlueShift = fb.BlueShift;
+                                    }
+                                    break;
+                                case VncHost.ClientMessages.ReadColorMapEntries:
+                                    this.host.Close();
+                                    throw new NotSupportedException("Read ReadColorMapEntry");
+
+                                case VncHost.ClientMessages.SetEncodings:
+                                    this.host.ReadSetEncodings();
+                                    break;
+
+                                case VncHost.ClientMessages.FramebufferUpdateRequest:
+                                    this.host.ReadFrameBufferUpdateRequest(this.frameBuffer);
+
+                                    var now = (DateTime.Now - timeStart).TotalMilliseconds;
+
+                                    if (now < this.DelayBetweenFrame.TotalMilliseconds) {
+                                        Thread.Sleep((int)(this.DelayBetweenFrame.TotalMilliseconds - now));
+                                    }
+
+                                    break;
+
+                                case VncHost.ClientMessages.KeyEvent:
+                                    this.host.ReadKeyEvent();
+                                    break;
+
+                                case VncHost.ClientMessages.PointerEvent:
+                                    this.host.ReadPointerEvent();
+                                    break;
+
+                                case VncHost.ClientMessages.ClientCutText:
+                                    this.host.ReadClientCutText();
+                                    break;
+                            }
+                        }
+
+                    }
                 }
-
-                this.host.WriteServerInit(this.fb);
-
-                new Thread(this.Run).Start();
+                catch {
+                    this.Stop();
+                }
             }
         }
 
-        public void Stop() => this.host.Close();
+        public void Start() => new Thread(this.Run).Start();
 
-        public void Pause() => this.host.Pause = true;
+        public void Stop() {
+            this.isRunning = false;
+            this.host.Close();
+        }
 
-        public void Resume() => this.host.Pause = false;
+        public void Send(byte[] data, int x, int y, int width, int height) {
+            if (this.frameBuffer == null)
+                return;
 
-        public void SetUpdateWindow(int x, int y, int width, int height) {
-            var w = this.fb.Width;
-            var h = this.fb.Height;
-
-            if ((x < 0) || (y < 0) || (width <= 0) || (height <= 0)) {
-                throw new ArgumentException();
+            if ((x != 0) || (y != 0) || ((x + width) != this.Width) || ((y + height) != this.Height)) {
+                throw new ArgumentException("Only full screen update is supported");
             }
 
-            if (x + width > w) {
-                throw new ArgumentException();
-            }
+            this.frameBuffer.Data = data;
 
-            if (y + height > h) {
-                throw new ArgumentException();
-            }
-
-            this.host.SetUpdateWindow(x, y, width, height);
-            //throw new NotSupportedException();
-
-
+            this.frameBuffer.X = x;
+            this.frameBuffer.Y = y;
+            this.frameBuffer.Width = width;
+            this.frameBuffer.Height = height;
         }
 
     }

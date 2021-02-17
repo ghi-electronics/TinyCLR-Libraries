@@ -31,9 +31,15 @@ namespace GHIElectronics.TinyCLR.Vnc {
 
         internal delegate void PointerChangedEventHandler(int x, int y, bool pressed);
         internal delegate void KeyChangedEventHandler(uint key, bool pressed);
+        internal delegate void FrameSentEventHandler(bool success);
+        internal delegate void ClientRequestUpdateEventHandler(int x, int y, int width, int height);
+        internal delegate void ConnectionChanged(bool connected);
 
         internal event PointerChangedEventHandler PointerChangedEvent;
         internal event KeyChangedEventHandler KeyChangedEvent;
+        internal event FrameSentEventHandler FrameSentEvent;
+        internal event ClientRequestUpdateEventHandler ClientRequestUpdateEvent;
+        internal event ConnectionChanged ConnectionChangedEvent;
 
         public enum Encoding : int {
             RawEncoding = 0,
@@ -73,16 +79,10 @@ namespace GHIElectronics.TinyCLR.Vnc {
         protected StreamWriter writer; // sent and received, so these handle this.                                               
 
         public bool isRunning;
-        public bool Pause { get; set; }
-
-        public int CurrentX { get; set; }
-        public int CurrentY { get; set; }
-        public int CurrentWidth { get; set; }
-        public int CurrentHeight { get; set; }
 
         public int Port { get; set; }
 
-        private EncodedRectangle endcodedRectangle;
+        private EncodedRectangle encodedRectangle;
 
         //Supported encodings
         public uint[] Encodings { get; private set; }
@@ -122,6 +122,8 @@ namespace GHIElectronics.TinyCLR.Vnc {
                 this.stream = new NetworkStream(this.localClient, true);
                 this.reader = new StreamReader(this.stream);
                 this.writer = new StreamWriter(this.stream);
+
+                ConnectionChangedEvent?.Invoke(true);
 
             }
             catch (Exception ex) {
@@ -265,10 +267,6 @@ namespace GHIElectronics.TinyCLR.Vnc {
         }
 
         public FrameBuffer ReadSetPixelFormat(int w, int h) {
-            this.CurrentX = 0;
-            this.CurrentY = 0;
-            this.CurrentWidth = w;
-            this.CurrentHeight = h;
 
             FrameBuffer ret = null;
             try {
@@ -342,27 +340,26 @@ namespace GHIElectronics.TinyCLR.Vnc {
 #if DEBUG
             var start = DateTime.Now;
 #endif
+            if (!incremental) {
+                ClientRequestUpdateEvent?.Invoke(x, y, width, height);
+            }
 
             var frameCountUpdate = 1;
 
-            Thread.Sleep(1); //Note: Note that there may be an indefinite period
-                             //between the FramebufferUpdateRequest and the FramebufferUpdate.
 
-            while (this.Pause) {
-                Thread.Sleep(1);
-            }
+            if (fb.Data != null) { // valid frame
 
-            // Any change below require cache rectangle again
-            if (this.endcodedRectangle == null || this.endcodedRectangle.BitsPerPixel != fb.BitsPerPixel || this.endcodedRectangle.X != this.CurrentX || this.endcodedRectangle.Y != this.CurrentY || this.endcodedRectangle.Width != this.CurrentWidth || this.endcodedRectangle.Height != this.CurrentHeight) {
-                if (incremental == true) {
-                    this.endcodedRectangle = new RawRectangle(fb, this.CurrentX, this.CurrentY, this.CurrentWidth, this.CurrentHeight);
+                lock (fb) {
+                    this.encodedRectangle = new RawRectangle(fb);
+
+                    this.encodedRectangle.Encode();
                 }
-                else {
-                    this.endcodedRectangle = new RawRectangle(fb, fb.X, fb.Y, fb.Width, fb.Height);
-                }
-            }
 
-            this.endcodedRectangle.Encode();
+
+            }
+            else {
+                this.encodedRectangle = null;
+            }
 
 #if DEBUG
             var endcodeTime = DateTime.Now - start;
@@ -370,9 +367,6 @@ namespace GHIElectronics.TinyCLR.Vnc {
             Debug.WriteLine("Encode time " + endcodeTime.TotalMilliseconds);
 
 #endif
-
-            var data = this.endcodedRectangle.Pixels;
-
             var header = new byte[16];
 
             header[0] = (byte)ServerMessages.FramebufferUpdate;
@@ -381,17 +375,19 @@ namespace GHIElectronics.TinyCLR.Vnc {
             header[2] = (byte)(frameCountUpdate >> 8);  // frameCountUpdate
             header[3] = (byte)(frameCountUpdate >> 0); // frameCountUpdate
 
-            header[4] = (byte)(this.endcodedRectangle.X >> 8);
-            header[5] = (byte)(this.endcodedRectangle.X >> 0);
+            if (this.encodedRectangle != null) {
+                header[4] = (byte)(this.encodedRectangle.X >> 8);
+                header[5] = (byte)(this.encodedRectangle.X >> 0);
 
-            header[6] = (byte)(this.endcodedRectangle.Y >> 8);
-            header[7] = (byte)(this.endcodedRectangle.Y >> 0);
+                header[6] = (byte)(this.encodedRectangle.Y >> 8);
+                header[7] = (byte)(this.encodedRectangle.Y >> 0);
 
-            header[8] = (byte)(this.endcodedRectangle.Width >> 8);
-            header[9] = (byte)(this.endcodedRectangle.Width >> 0);
+                header[8] = (byte)(this.encodedRectangle.Width >> 8);
+                header[9] = (byte)(this.encodedRectangle.Width >> 0);
 
-            header[10] = (byte)(this.endcodedRectangle.Height >> 8); ;
-            header[11] = (byte)(this.endcodedRectangle.Height >> 0); ;
+                header[10] = (byte)(this.encodedRectangle.Height >> 8); ;
+                header[11] = (byte)(this.encodedRectangle.Height >> 0); ;
+            }
 
 
             header[12] = 0; // VncHost.Encoding.RawEncoding
@@ -399,31 +395,38 @@ namespace GHIElectronics.TinyCLR.Vnc {
             header[14] = 0; // VncHost.Encoding.RawEncoding
             header[15] = 0; // VncHost.Encoding.RawEncoding
 
-
             this.Write(header);
 #if DEBUG
             start = DateTime.Now;
 #endif
+            if (this.encodedRectangle != null) {
+                var data = this.encodedRectangle.Data;
 
-            var blockSize = 1024;
-            var block = data.Length / blockSize;
+                var blockSize = 1024;
+                var block = data.Length / blockSize;
 
-            var offset = 0;
-            var total = 0;
+                var offset = 0;
+                var total = 0;
 
-            while (block > 0) {
+                while (block > 0) {
 
-                var count = (data.Length - total) > blockSize ? blockSize : (data.Length - total);
+                    var count = (data.Length - total) > blockSize ? blockSize : (data.Length - total);
 
-                this.Write(data, offset, count);
+                    this.Write(data, offset, count);
 
-                offset += count;
-                total += count;
+                    offset += count;
+                    total += count;
 
-                block--;
+                    block--;
 
-                //System.Threading.Thread.Sleep(1);
+                    //System.Threading.Thread.Sleep(1);
+                }
             }
+
+            fb.Data = null;
+            FrameSentEvent?.Invoke(true);
+
+
 #if DEBUG
             var sendingTime = DateTime.Now - start;
 
@@ -519,12 +522,6 @@ namespace GHIElectronics.TinyCLR.Vnc {
             }
         }
 
-        public void SetUpdateWindow(int x, int y, int width, int height) {
-            this.CurrentX = x;
-            this.CurrentY = y;
-            this.CurrentWidth = width;
-            this.CurrentHeight = height;
-        }
 
         public uint ReadUint32() => this.reader.ReadUInt32();
 
