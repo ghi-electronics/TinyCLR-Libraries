@@ -42,6 +42,7 @@ namespace GHIElectronics.TinyCLR.Vnc {
         internal string Password { get; private set; }
         public string ServerName { get; private set; } = "Default";
         public TimeSpan DelayBetweenFrame { get; set; } = TimeSpan.FromMilliseconds(10);
+        public bool Connected { get; private set; }
 
         private VncHost host;
         private readonly FrameBuffer frameBuffer;
@@ -112,7 +113,7 @@ namespace GHIElectronics.TinyCLR.Vnc {
 
                         this.host.WriteServerInit(this.frameBuffer);
 
-
+                        this.Connected = true;
 
                         while (this.host.isRunning) {
                             var timeStart = DateTime.Now;
@@ -182,6 +183,8 @@ namespace GHIElectronics.TinyCLR.Vnc {
 
         public void Stop() {
             this.isRunning = false;
+            this.Connected = false;
+
             this.host.Close();
         }
 
