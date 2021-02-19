@@ -1,7 +1,8 @@
-//------------------------------------------------------------------------------
-// <copyright file="WebUtility.cs" company="Microsoft">
-//     Copyright (c) Microsoft Corporation.  All rights reserved.
-// </copyright>
+//------------------------------------------------------------------------------ 
+// Copyright (C) 2021 GHI Electronics
+//
+// This file is a modified version from Microsoft.
+//
 //------------------------------------------------------------------------------
 
 using System;
