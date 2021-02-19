@@ -186,8 +186,7 @@ namespace System.Drawing {
             Rgb8888 = 0,
             Rgb888 = 1,
             Rgb565 = 2,
-            Rgb444 = 3,
-            Rgb332 = 4,            
+            Rgb332 = 3,
         }
 
         public enum RgbFormat {
@@ -198,8 +197,8 @@ namespace System.Drawing {
         }
 
         public enum BitFormat {
-           Vertical = 0,
-           Horizontal = 1
+            Vertical = 0,
+            Horizontal = 1
         }
 
         public static void Convert(byte[] inArray, byte[] outArray, ColorFormat colorFormat) => Convert(inArray, outArray, colorFormat, RgbFormat.Rgb, 0, null);
@@ -212,7 +211,7 @@ namespace System.Drawing {
             NativeConvert(inArray, outArray, colorFormat, rgbFormat, alpha, colorTable);
         }
 
-        public static void ConvertTo1Bpp(byte[] inArray, byte[] outArray, uint width ) => ConvertTo1Bpp(inArray, outArray, width, BitFormat.Vertical);
+        public static void ConvertTo1Bpp(byte[] inArray, byte[] outArray, uint width) => ConvertTo1Bpp(inArray, outArray, width, BitFormat.Vertical);
         public static void ConvertTo1Bpp(byte[] inArray, byte[] outArray, uint width, BitFormat bitFormat) {
             if (inArray == null || outArray == null)
                 throw new ArgumentNullException();
@@ -220,10 +219,21 @@ namespace System.Drawing {
             NativeConvertTo1Bpp(inArray, outArray, bitFormat, width);
         }
 
-        [MethodImpl(MethodImplOptions.InternalCall)]        
+        public static void ConvertTo12Bpp(byte[] inArray, byte[] outArray, uint width) => ConvertTo12Bpp(inArray, outArray, width, RgbFormat.Rgb);
+        public static void ConvertTo12Bpp(byte[] inArray, byte[] outArray, uint width, RgbFormat rgbFormat) {
+            if (inArray == null || outArray == null)
+                throw new ArgumentNullException();
+
+            NativeConvertTo12Bpp(inArray, outArray, width, rgbFormat);
+        }
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
         extern static void NativeConvert(byte[] inArray, byte[] outArray, ColorFormat colorFormat, RgbFormat rgbFormat, byte alpha, byte[] colorTable);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         extern static void NativeConvertTo1Bpp(byte[] inArray, byte[] outArray, BitFormat bitFormat, uint width);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        extern static void NativeConvertTo12Bpp(byte[] inArray, byte[] outArray, uint width, RgbFormat rgbFormat);
     }
 }
