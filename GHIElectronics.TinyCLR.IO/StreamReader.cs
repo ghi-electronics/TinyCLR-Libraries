@@ -369,7 +369,7 @@ namespace System.IO
 
                     var read = this.m_stream.Read(this.m_buffer, this.m_curBufLen, count);
 
-                    if (read == 0) break;
+                    if (read <= 0) break;
 
                     totalRead += read;
                     this.m_curBufLen += read;
