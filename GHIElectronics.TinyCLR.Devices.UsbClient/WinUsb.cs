@@ -61,8 +61,8 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
 
             Configuration.Endpoint[] endpoints =
             {
-                new Configuration.Endpoint((byte)writeEndpoint, Configuration.Endpoint.ATTRIB_Write | Configuration.Endpoint.ATTRIB_Bulk) { wMaxPacketSize = 64 },
-                new Configuration.Endpoint((byte)readEndpoint, Configuration.Endpoint.ATTRIB_Read | Configuration.Endpoint.ATTRIB_Bulk) { wMaxPacketSize = 64 },
+                new Configuration.Endpoint((byte)(writeEndpoint | Configuration.Endpoint.ATTRIB_Write), Configuration.Endpoint.ATTRIB_Bulk) { wMaxPacketSize = 64 },
+                new Configuration.Endpoint((byte)(readEndpoint | Configuration.Endpoint.ATTRIB_Read) , Configuration.Endpoint.ATTRIB_Bulk) { wMaxPacketSize = 64 },
             };
 
             var usbInterface = new Configuration.UsbInterface(0, endpoints) { bInterfaceClass = 0xFF, bInterfaceSubClass = 0x01, bInterfaceProtocol = 0x01 };

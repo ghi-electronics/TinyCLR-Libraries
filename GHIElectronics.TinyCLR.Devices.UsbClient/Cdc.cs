@@ -61,15 +61,16 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
             : base(usbClientController, usbClientSetting) {
             var readEndpoint = this.ReserveNewEndpoint();
             var writeEndpoint = this.ReserveNewEndpoint();
-            //var interruptEndpoint = this.ReserveNewEndpoint();
+            var interruptEndpoint = this.ReserveNewEndpoint();
 
-            usbClientSetting.Mode = UsbClientMode.Cdc;           
+            usbClientSetting.Mode = UsbClientMode.Cdc;
 
             Configuration.Endpoint[] endpoints =
             {
-                //new Configuration.Endpoint((byte)interruptEndpoint, Configuration.Endpoint.ATTRIB_Write | Configuration.Endpoint.ATTRIB_Interrupt) { wMaxPacketSize = 64, bInterval = 255 },
-                new Configuration.Endpoint((byte)writeEndpoint, Configuration.Endpoint.ATTRIB_Write | Configuration.Endpoint.ATTRIB_Bulk) { wMaxPacketSize = 64 },
-                new Configuration.Endpoint((byte)readEndpoint, Configuration.Endpoint.ATTRIB_Read | Configuration.Endpoint.ATTRIB_Bulk) { wMaxPacketSize = 64 },
+                new Configuration.Endpoint((byte)(interruptEndpoint | Configuration.Endpoint.ATTRIB_Write), Configuration.Endpoint.ATTRIB_Interrupt) { wMaxPacketSize = 64, bInterval = 255 },
+                new Configuration.Endpoint((byte)(writeEndpoint | Configuration.Endpoint.ATTRIB_Write), Configuration.Endpoint.ATTRIB_Bulk) { wMaxPacketSize = 64 },
+                new Configuration.Endpoint((byte)(readEndpoint | Configuration.Endpoint.ATTRIB_Read) ,   Configuration.Endpoint.ATTRIB_Bulk) { wMaxPacketSize = 64 },
+
             };
 
             var usbInterface = new Configuration.UsbInterface(0, endpoints) { bInterfaceClass = 0x02, bInterfaceSubClass = 0x02, bInterfaceProtocol = 0x01 };
@@ -86,7 +87,6 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
             var interfaceIndex = this.AddInterface(usbInterface, usbClientSetting.InterfaceName);
             this.SetInterfaceMap(interfaceIndex, 0, 0, 0);
 
-            
         }
 
         /// <summary>Creates a new instance of a CDC stream.</summary>
