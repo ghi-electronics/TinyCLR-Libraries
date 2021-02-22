@@ -186,7 +186,8 @@ namespace System.Drawing {
             Rgb8888 = 0,
             Rgb888 = 1,
             Rgb565 = 2,
-            Rgb332 = 3,
+            Rgb444 = 3,
+            Rgb332 = 4,
         }
 
         public enum RgbFormat {
@@ -219,21 +220,10 @@ namespace System.Drawing {
             NativeConvertTo1Bpp(inArray, outArray, bitFormat, width);
         }
 
-        public static void ConvertTo12Bpp(byte[] inArray, byte[] outArray, uint width) => ConvertTo12Bpp(inArray, outArray, width, RgbFormat.Rgb);
-        public static void ConvertTo12Bpp(byte[] inArray, byte[] outArray, uint width, RgbFormat rgbFormat) {
-            if (inArray == null || outArray == null)
-                throw new ArgumentNullException();
-
-            NativeConvertTo12Bpp(inArray, outArray, width, rgbFormat);
-        }
-
         [MethodImpl(MethodImplOptions.InternalCall)]
         extern static void NativeConvert(byte[] inArray, byte[] outArray, ColorFormat colorFormat, RgbFormat rgbFormat, byte alpha, byte[] colorTable);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        extern static void NativeConvertTo1Bpp(byte[] inArray, byte[] outArray, BitFormat bitFormat, uint width);
-
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        extern static void NativeConvertTo12Bpp(byte[] inArray, byte[] outArray, uint width, RgbFormat rgbFormat);
+        extern static void NativeConvertTo1Bpp(byte[] inArray, byte[] outArray, BitFormat bitFormat, uint width);        
     }
 }
