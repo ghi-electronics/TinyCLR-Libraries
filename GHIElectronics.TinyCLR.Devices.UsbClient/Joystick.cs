@@ -66,7 +66,7 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
             : this(usbClientController, new UsbClientSetting() {
                 VendorId = RawDevice.GHI_VID,
                 ProductId = (ushort)RawDevice.PID.Joystick,
-                BcdUsb = 0x100,
+                BcdUsb = 0x210,
                 BcdDevice = 0x100,
                 MaxPower = RawDevice.MAX_POWER,
                 ManufactureName = "GHI Electronics",
