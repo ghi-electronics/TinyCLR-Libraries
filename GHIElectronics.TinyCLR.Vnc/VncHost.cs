@@ -82,7 +82,7 @@ namespace GHIElectronics.TinyCLR.Vnc {
 
         public int Port { get; set; }
 
-        private EncodedRectangle encodedRectangle;
+        private RawRectangle encodedRectangle;
 
         //Supported encodings
         public uint[] Encodings { get; private set; }
@@ -350,6 +350,10 @@ namespace GHIElectronics.TinyCLR.Vnc {
             if (fb.Data != null) { // valid frame
 
                 lock (fb) {
+                    if (this.encodedRectangle != null) {
+                        this.encodedRectangle.Dispose();
+                    }
+
                     this.encodedRectangle = new RawRectangle(fb);
 
                     this.encodedRectangle.Encode();

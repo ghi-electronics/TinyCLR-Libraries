@@ -42,6 +42,7 @@ namespace GHIElectronics.TinyCLR.Vnc {
             if (this.unmanagedBuffer != null ) {
                 this.data = null;
                 this.unmanagedBuffer.Dispose();
+                this.unmanagedBuffer = null;
             }
         }
 
