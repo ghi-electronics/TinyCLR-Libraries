@@ -78,7 +78,7 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
         /// <param name="portNumber">The device port number.</param>
         public Mouse(uint id, byte interfaceIndex)
             : base(id, interfaceIndex, DeviceType.Mouse) {
-            this.NativeConstructor(this.Id, this.InterfaceIndex);
+            this.NativeConstructor(this.Id, this.InterfaceIndex, out var pollingInterval);
 
             this.syncRoot = new object();
 
@@ -90,7 +90,7 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
             this.oldCursorPosition = new Position();
             this.oldButtonState = new ButtonState[] { ButtonState.Released, ButtonState.Released, ButtonState.Released, ButtonState.Released, ButtonState.Released };
 
-            this.WorkerInterval = 50;
+            this.WorkerInterval = pollingInterval;
         }
 
         /// <summary>The finalizer.</summary>
@@ -162,7 +162,7 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
         }
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        extern private void NativeConstructor(uint id, byte interfaceIndex);
+        extern private void NativeConstructor(uint id, byte interfaceIndex, out byte pollingInterval);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         extern private void NativeFinalize();
