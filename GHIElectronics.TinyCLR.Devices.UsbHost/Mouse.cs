@@ -72,10 +72,7 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
 
         /// <summary>Creates a new mouse.</summary>
         /// <param name="id">The device id.</param>
-        /// <param name="interfaceIndex">The device interface index.</param>
-        /// <param name="vendorId">The device vendor id.</param>
-        /// <param name="productId">The device product id.</param>
-        /// <param name="portNumber">The device port number.</param>
+        /// <param name="interfaceIndex">The device interface index.</param>        
         public Mouse(uint id, byte interfaceIndex)
             : base(id, interfaceIndex, DeviceType.Mouse) {
             this.NativeConstructor(this.Id, this.InterfaceIndex, out var pollingInterval);

@@ -36,6 +36,7 @@
   <ItemGroup>
     <Compile Include="BaseDevice.cs" />
     <Compile Include="Descriptors.cs" />
+    <Compile Include="Joystick.cs" />
     <Compile Include="Keyboard.cs" />
     <Compile Include="Mouse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -33,9 +33,6 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
         /// <summary>Creates a new keyboard.</summary>
         /// <param name="id">The device id.</param>
         /// <param name="interfaceIndex">The device interface index.</param>
-        /// <param name="vendorId">The device vendor id.</param>
-        /// <param name="productId">The device product id.</param>
-        /// <param name="portNumber">The device port number.</param>
         public Keyboard(uint id, byte interfaceIndex)
             : base(id, interfaceIndex, DeviceType.Keyboard) {
 
