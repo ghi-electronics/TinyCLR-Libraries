@@ -38,9 +38,10 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
         /// <param name="portNumber">The device port number.</param>
         public Keyboard(uint id, byte interfaceIndex)
             : base(id, interfaceIndex, DeviceType.Keyboard) {
-            this.NativeConstructor(this.Id, this.InterfaceIndex);
 
-            this.WorkerInterval = 10;
+            this.NativeConstructor(this.Id, this.InterfaceIndex, out var pollingInterval);
+
+            this.WorkerInterval = pollingInterval;
         }
 
         /// <summary>The finalizer.</summary>
@@ -104,7 +105,7 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
         extern private int NativeGetKeyState(byte key);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        extern private void NativeConstructor(uint id, byte interfaceIndex);
+        extern private void NativeConstructor(uint id, byte interfaceIndex, out byte pollingInterval);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         extern private void NativeFinalize();
