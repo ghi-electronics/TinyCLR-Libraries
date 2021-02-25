@@ -15,7 +15,12 @@ namespace GHIElectronics.TinyCLR.Native {
         public static string ManufacturerName { get; }
         public static ulong Version { get; }
         public static DebugInterface DebugInterface { get; }
-        public static byte[] UniqueId { get; }
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        public static extern void SetPersistDeviceName(string name);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        public static extern byte[] GetUniqueId();
 
     }
 }
