@@ -181,17 +181,8 @@ namespace System.Net.Sockets {
 
                     totalSend += sent;
                 }
-                catch (Exception e) {
-                    var type = e.GetType();
+                catch {
 
-                    var field = type.GetField("m_HResult", (Reflection.BindingFlags)(0x7FFFFFFF));
-
-                    if (field != null) {
-                        var value = field.GetValue(e);
-
-                        if (value != null && (uint)value == 0xd4000000) // socket closed
-                            return totalSend;
-                    }
                 }
             }
 
@@ -227,17 +218,8 @@ namespace System.Net.Sockets {
 
                     totalSend += sent;
                 }
-                catch (Exception e) {
-                    var type = e.GetType();
+                catch {
 
-                    var field = type.GetField("m_HResult", (Reflection.BindingFlags)(0x7FFFFFFF));
-
-                    if (field != null) {
-                        var value = field.GetValue(e);
-
-                        if (value != null && (uint)value == 0xd4000000) // socket closed
-                            return totalSend;
-                    }
                 }
             }
 
