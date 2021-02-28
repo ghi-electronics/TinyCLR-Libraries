@@ -163,16 +163,41 @@ namespace System.Net.Sockets {
                 throw new ObjectDisposedException();
             }
 
-            //var expired = DateTime.MaxValue.Ticks;
+            var expired = DateTime.MaxValue.Ticks;
 
-            //if (this.SendTimeout != System.Threading.Timeout.Infinite) {
-            //    expired = DateTime.Now.Ticks + (this.SendTimeout * 10000L);
-            //}
+            if (this.SendTimeout != System.Threading.Timeout.Infinite) {
+                expired = DateTime.Now.Ticks + (this.SendTimeout * 10000L);
+            }
 
             var totalSend = 0;
 
-            //while (DateTime.Now.Ticks < expired && totalSend < size)
-            totalSend += this.ni.Send(this.m_Handle, buffer, offset + totalSend, size - totalSend, socketFlags);
+            while (DateTime.Now.Ticks < expired && totalSend < size) {
+
+                try {
+                    var sent = this.ni.Send(this.m_Handle, buffer, offset + totalSend, size - totalSend, socketFlags);
+
+                    if (sent == 0)
+                        break;
+
+                    totalSend += sent;
+                }
+                catch (Exception e) {
+                    var type = e.GetType();
+
+                    var field = type.GetField("m_HResult", (Reflection.BindingFlags)(0x7FFFFFFF));
+
+                    if (field != null) {
+                        var value = field.GetValue(e);
+
+                        if (value != null && (uint)value == 0xd4000000) // socket closed
+                            return totalSend;
+                    }
+                }
+            }
+
+            if (DateTime.Now.Ticks > expired) {
+                throw new Exception("Socket send timeout");
+            }
 
             return totalSend;
         }
@@ -184,16 +209,41 @@ namespace System.Net.Sockets {
 
             var address = remoteEP.Serialize();
 
-            //var expired = DateTime.MaxValue.Ticks;
+            var expired = DateTime.MaxValue.Ticks;
 
-            //if (this.SendTimeout != System.Threading.Timeout.Infinite) {
-            //    expired = DateTime.Now.Ticks + (this.SendTimeout * 10000L);
-            //}
+            if (this.SendTimeout != System.Threading.Timeout.Infinite) {
+                expired = DateTime.Now.Ticks + (this.SendTimeout * 10000L);
+            }
 
             var totalSend = 0;
 
-            //while (DateTime.Now.Ticks < expired && totalSend < size)
-            totalSend += this.ni.SendTo(this.m_Handle, buffer, offset + offset + totalSend, size - totalSend, socketFlags, address);
+            while (DateTime.Now.Ticks < expired && totalSend < size) {
+
+                try {
+                    var sent = this.ni.SendTo(this.m_Handle, buffer, offset + totalSend, size - totalSend, socketFlags, address);
+
+                    if (sent == 0) // socket closed
+                        break;
+
+                    totalSend += sent;
+                }
+                catch (Exception e) {
+                    var type = e.GetType();
+
+                    var field = type.GetField("m_HResult", (Reflection.BindingFlags)(0x7FFFFFFF));
+
+                    if (field != null) {
+                        var value = field.GetValue(e);
+
+                        if (value != null && (uint)value == 0xd4000000) // socket closed
+                            return totalSend;
+                    }
+                }
+            }
+
+            if (DateTime.Now.Ticks > expired) {
+                throw new Exception("Socket send timeout");
+            }
 
             return totalSend;
         }
@@ -215,16 +265,34 @@ namespace System.Net.Sockets {
                 throw new ObjectDisposedException();
             }
 
-            //var expired = DateTime.MaxValue.Ticks;
+            var expired = DateTime.MaxValue.Ticks;
 
-            //if (this.ReceiveTimeout != System.Threading.Timeout.Infinite) {
-            //    expired = DateTime.Now.Ticks + (this.ReceiveTimeout * 10000L);
-            //}
+            if (this.ReceiveTimeout != System.Threading.Timeout.Infinite) {
+                expired = DateTime.Now.Ticks + (this.ReceiveTimeout * 10000L);
+            }
 
             var totalBytesReceive = 0;
 
-            //while (DateTime.Now.Ticks < expired && totalBytesReceive < size)
-            totalBytesReceive += this.ni.Receive(this.m_Handle, buffer, offset + totalBytesReceive, size - totalBytesReceive, socketFlags);
+            while (DateTime.Now.Ticks < expired && totalBytesReceive < size) {
+                try {
+                    var read = this.ni.Receive(this.m_Handle, buffer, offset + totalBytesReceive, size - totalBytesReceive, socketFlags);
+
+                    // Socket closed or no more data => stop, no exception
+                    if (read == 0) {
+                        break;
+                    }
+
+                    totalBytesReceive += read;
+
+                }
+                catch {
+
+                }
+            }
+
+            if (DateTime.Now.Ticks > expired) {
+                throw new Exception("Socket receive timeout");
+            }
 
             return totalBytesReceive;
         }
@@ -237,14 +305,31 @@ namespace System.Net.Sockets {
             var address = remoteEP.Serialize();
             var totalBytesReceive = 0;
 
-            //var expired = DateTime.MaxValue.Ticks;
+            var expired = DateTime.MaxValue.Ticks;
 
-            //if (this.ReceiveTimeout != System.Threading.Timeout.Infinite) {
-            //    expired = DateTime.Now.Ticks + (this.ReceiveTimeout * 10000L);
-            //}
+            if (this.ReceiveTimeout != System.Threading.Timeout.Infinite) {
+                expired = DateTime.Now.Ticks + (this.ReceiveTimeout * 10000L);
+            }
 
-            //while (DateTime.Now.Ticks < expired && totalBytesReceive < size)
-            totalBytesReceive += this.ni.ReceiveFrom(this.m_Handle, buffer, offset + totalBytesReceive, size - totalBytesReceive, socketFlags, ref address);
+            while (DateTime.Now.Ticks < expired && totalBytesReceive < size) {
+                try {
+                    var read = this.ni.ReceiveFrom(this.m_Handle, buffer, offset + totalBytesReceive, size - totalBytesReceive, socketFlags, ref address);
+
+                    // Socket closed or no more data => stop, no exception
+                    if (read == 0) {
+                        break;
+                    }
+
+                    totalBytesReceive += read;
+                }
+                catch {
+
+                }
+            }
+
+            if (DateTime.Now.Ticks > expired) {
+                throw new Exception("Socket receive timeout");
+            }
 
             remoteEP = remoteEP.Create(address);
 
