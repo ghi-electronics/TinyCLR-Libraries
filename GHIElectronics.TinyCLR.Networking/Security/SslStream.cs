@@ -3,6 +3,7 @@ using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
+using System.Threading;
 using GHIElectronics.TinyCLR.Networking;
 
 namespace System.Net.Security {
@@ -94,15 +95,26 @@ namespace System.Net.Security {
                 throw new ArgumentOutOfRangeException();
             }
 
-            //var expired = DateTime.MaxValue.Ticks;
+            var expired = DateTime.MaxValue.Ticks;
             var totalBytesReceive = 0;
 
-            //if (this._socket.ReceiveTimeout != System.Threading.Timeout.Infinite) {
-            //    expired = DateTime.Now.Ticks + (this._socket.ReceiveTimeout * 10000L);
-            //}
+            if (this._socket.ReceiveTimeout != System.Threading.Timeout.Infinite) {
+                expired = DateTime.Now.Ticks + (this._socket.ReceiveTimeout * 10000L);
+            }
 
-            //while (DateTime.Now.Ticks < expired && totalBytesReceive < size)
-            totalBytesReceive += this.ni.SecureRead(this.sslHandle, buffer, offset + totalBytesReceive, size - totalBytesReceive);
+            while (DateTime.Now.Ticks < expired && totalBytesReceive < size) {
+                var read =  this.ni.SecureRead(this.sslHandle, buffer, offset + totalBytesReceive, size - totalBytesReceive);
+
+                if (read < 0) { // error
+                    break;
+                }
+                else if (read > 0) { // valid data
+                    totalBytesReceive += read;
+                    break;
+                }
+
+                Thread.Sleep(this._socket.DelayBetweenReceive);
+            }
 
             return totalBytesReceive;
         }
@@ -124,17 +136,38 @@ namespace System.Net.Security {
                 throw new ArgumentOutOfRangeException();
             }
 
-            //var expired = DateTime.MaxValue.Ticks;
-            var totalBytesSent = 0;
+            var expired = DateTime.MaxValue.Ticks;
+            var totalSent = 0;
 
-            //if (this._socket.SendTimeout != System.Threading.Timeout.Infinite) {
-            //    expired = DateTime.Now.Ticks + (this._socket.SendTimeout * 10000L);
-            //}
+            if (this._socket.SendTimeout != System.Threading.Timeout.Infinite) {
+                expired = DateTime.Now.Ticks + (this._socket.SendTimeout * 10000L);
+            }
 
-            //while (DateTime.Now.Ticks < expired && totalBytesSent < size)
-            totalBytesSent += this.ni.SecureWrite(this.sslHandle, buffer, offset + totalBytesSent, size - totalBytesSent);
+            while (DateTime.Now.Ticks < expired && totalSent < size) {
+                var sent = this.ni.SecureWrite(this.sslHandle, buffer, offset + totalSent, size - totalSent);
 
-            if (totalBytesSent != size) 
+                if (sent < 0) { // error, stop
+                    break;
+                }
+                else if (sent > 0) { // reset timeout
+
+                    if (this._socket.SendTimeout != System.Threading.Timeout.Infinite) {
+                        expired = DateTime.Now.Ticks + (this._socket.SendTimeout * 10000L);
+                    }
+                }
+
+                totalSent += sent;
+
+                if (totalSent < size) {
+                    Thread.Sleep(this._socket.DelayBetweenSend);
+                }              
+            }
+
+            if (DateTime.Now.Ticks > expired) {
+                throw new Exception("Socket error timeout.");
+            }
+
+            if (totalSent != size)
                 throw new IOException();
 
         }

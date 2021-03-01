@@ -15,6 +15,36 @@ namespace System.Net.Sockets {
 
         internal int m_Handle = -1;
 
+        public int DelayBetweenSend { get; set; } = 1;
+        public int DelayBetweenReceive { get; set; } = 1;
+
+        private int nativeSendTimeout = 50;
+        private int nativeReceiveTimeout = 50;
+
+        public int NativeSendTimeout {
+            get => this.nativeSendTimeout;
+
+            set {
+                if (value < System.Threading.Timeout.Infinite) throw new ArgumentOutOfRangeException();
+
+                this.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.SendTimeout, value);
+
+                this.nativeSendTimeout = value;
+            }
+        }
+
+        public int NativeReceiveTimeout {
+            get => this.nativeReceiveTimeout;
+
+            set {
+                if (value < System.Threading.Timeout.Infinite) throw new ArgumentOutOfRangeException();
+
+                this.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReceiveTimeout, value);
+
+                this.nativeReceiveTimeout = value;
+            }
+        }
+
         private readonly INetworkProvider ni;
         private bool m_fBlocking = true;
         private EndPoint m_localEndPoint = null;
@@ -84,7 +114,7 @@ namespace System.Net.Sockets {
             set {
                 if (value < System.Threading.Timeout.Infinite) throw new ArgumentOutOfRangeException();
 
-                this.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReceiveTimeout, value);
+                this.m_recvTimeout = value;
             }
         }
 
@@ -94,7 +124,7 @@ namespace System.Net.Sockets {
             set {
                 if (value < System.Threading.Timeout.Infinite) throw new ArgumentOutOfRangeException();
 
-                this.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.SendTimeout, value);
+                this.m_sendTimeout = value;
             }
         }
 
@@ -173,16 +203,22 @@ namespace System.Net.Sockets {
 
             while (DateTime.Now.Ticks < expired && totalSend < size) {
 
-                try {
-                    var sent = this.ni.Send(this.m_Handle, buffer, offset + totalSend, size - totalSend, socketFlags);
+                var sent = this.ni.Send(this.m_Handle, buffer, offset + totalSend, size - totalSend, socketFlags);
 
-                    if (sent == 0)
-                        break;
-
-                    totalSend += sent;
+                if (sent < 0) { // error, stop
+                    break;
                 }
-                catch {
+                else if (sent > 0) { // reset timeout
 
+                    if (this.SendTimeout != System.Threading.Timeout.Infinite) {
+                        expired = DateTime.Now.Ticks + (this.SendTimeout * 10000L);
+                    }
+                }
+
+                totalSend += sent;
+
+                if (totalSend < size) {
+                    Thread.Sleep(this.DelayBetweenSend);
                 }
             }
 
@@ -209,17 +245,22 @@ namespace System.Net.Sockets {
             var totalSend = 0;
 
             while (DateTime.Now.Ticks < expired && totalSend < size) {
+                var sent = this.ni.SendTo(this.m_Handle, buffer, offset + totalSend, size - totalSend, socketFlags, address);
 
-                try {
-                    var sent = this.ni.SendTo(this.m_Handle, buffer, offset + totalSend, size - totalSend, socketFlags, address);
-
-                    if (sent == 0) // socket closed
-                        break;
-
-                    totalSend += sent;
+                if (sent < 0) { // error, stop
+                    break;
                 }
-                catch {
+                else if (sent > 0) { // reset timeout
 
+                    if (this.SendTimeout != System.Threading.Timeout.Infinite) {
+                        expired = DateTime.Now.Ticks + (this.SendTimeout * 10000L);
+                    }
+                }
+
+                totalSend += sent;
+
+                if (totalSend < size) {
+                    Thread.Sleep(this.DelayBetweenSend);
                 }
             }
 
@@ -256,20 +297,17 @@ namespace System.Net.Sockets {
             var totalBytesReceive = 0;
 
             while (DateTime.Now.Ticks < expired && totalBytesReceive < size) {
-                try {
-                    var read = this.ni.Receive(this.m_Handle, buffer, offset + totalBytesReceive, size - totalBytesReceive, socketFlags);
+                var read = this.ni.Receive(this.m_Handle, buffer, offset + totalBytesReceive, size - totalBytesReceive, socketFlags);
 
-                    // Socket closed or no more data => stop, no exception
-                    if (read == 0) {
-                        break;
-                    }
-
+                if (read < 0) { // error
+                    break;
+                }
+                else if (read > 0) { // valid data
                     totalBytesReceive += read;
-
+                    break;
                 }
-                catch {
 
-                }
+                Thread.Sleep(this.DelayBetweenReceive);
             }
 
             if (DateTime.Now.Ticks > expired) {
@@ -294,19 +332,19 @@ namespace System.Net.Sockets {
             }
 
             while (DateTime.Now.Ticks < expired && totalBytesReceive < size) {
-                try {
-                    var read = this.ni.ReceiveFrom(this.m_Handle, buffer, offset + totalBytesReceive, size - totalBytesReceive, socketFlags, ref address);
 
-                    // Socket closed or no more data => stop, no exception
-                    if (read == 0) {
-                        break;
-                    }
+                var read = this.ni.ReceiveFrom(this.m_Handle, buffer, offset + totalBytesReceive, size - totalBytesReceive, socketFlags, ref address);
 
+                if (read < 0) { // error, or has data
+                    break;
+                }
+                else if (read > 0) { // error, or has data
                     totalBytesReceive += read;
+                    break;
                 }
-                catch {
 
-                }
+                Thread.Sleep(this.DelayBetweenReceive);
+
             }
 
             if (DateTime.Now.Ticks > expired) {
