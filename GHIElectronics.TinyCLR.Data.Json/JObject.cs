@@ -32,9 +32,14 @@ namespace GHIElectronics.TinyCLR.Data.Json
 			_members[name.ToLower()] = new JProperty(name, value);
 		}
 
-		public static JObject Serialize(Type type, object oSource)
+		public static JObject Serialize(Type type, object oSource, JsonSerializerSettings settings = null)
 		{
-			var result = new JObject();
+            if (settings == null)
+            {
+                settings = new JsonSerializerSettings();
+            }
+
+            var result = new JObject();
 			var methods = type.GetMethods();
 			foreach (var m in methods)
 			{
@@ -48,7 +53,7 @@ namespace GHIElectronics.TinyCLR.Data.Json
 					if (methodResult == null)
 						result._members.Add(name.ToLower(), new JProperty(name, JValue.Serialize(m.ReturnType, null)));
 					if (m.ReturnType.IsArray)
-						result._members.Add(name.ToLower(), new JProperty(name, JArray.Serialize(m.ReturnType, methodResult)));
+						result._members.Add(name.ToLower(), new JProperty(name, JArray.Serialize(m.ReturnType, methodResult, settings)));
 					else
                     {
                         if (m.ReturnType.IsValueType || m.ReturnType == typeof(string))
@@ -57,7 +62,15 @@ namespace GHIElectronics.TinyCLR.Data.Json
                         }
                         else
                         {
-                            result._members.Add(name.ToLower(), new JProperty(name, JObject.Serialize(m.ReturnType, methodResult)));
+                            var methodResultType = methodResult.GetType();
+                            var child = JObject.Serialize(methodResultType, methodResult, settings);
+                            if (settings.TypeNameHandling == TypeNameHandling.Objects ||
+                               (settings.TypeNameHandling == TypeNameHandling.Auto && methodResultType != m.ReturnType))
+                            {
+                                child.Add("$type", new JValue(methodResultType.FullName + ", " + methodResultType.Assembly.GetName().Name));
+                            }
+
+                            result._members.Add(name.ToLower(), new JProperty(name, child));
                         }
                     }
                 }
@@ -88,12 +101,12 @@ namespace GHIElectronics.TinyCLR.Data.Json
 							if (f.FieldType.IsArray)
 							{
 								result._members.Add(f.Name.ToLower(),
-									new JProperty(f.Name, JArray.Serialize(f.FieldType, value)));
+									new JProperty(f.Name, JArray.Serialize(f.FieldType, value, settings)));
 							}
 							else
 							{
 								result._members.Add(f.Name.ToLower(),
-									new JProperty(f.Name, JObject.Serialize(f.FieldType, value)));
+									new JProperty(f.Name, JObject.Serialize(f.FieldType, value, settings)));
 							}
 						}
 						break;
