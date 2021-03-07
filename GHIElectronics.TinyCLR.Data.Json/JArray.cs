@@ -17,8 +17,13 @@ namespace GHIElectronics.TinyCLR.Data.Json
             _contents = values;
         }
 
-        private JArray(Array source)
+        private JArray(Array source, JsonSerializerSettings settings = null)
         {
+            if (settings == null)
+            {
+                settings = new JsonSerializerSettings();
+            }
+
             _contents = new JToken[source.Length];
             for (int i = 0; i < source.Length; ++i)
             {
@@ -37,11 +42,11 @@ namespace GHIElectronics.TinyCLR.Data.Json
                 {
                     if (fieldType.IsArray)
                     {
-                        _contents[i] = JArray.Serialize(fieldType, value);
+                        _contents[i] = JArray.Serialize(fieldType, value, settings);
                     }
                     else
                     {
-                        _contents[i] = JObject.Serialize(fieldType, value);
+                        _contents[i] = JObject.Serialize(fieldType, value, settings);
                     }
                 }
 
@@ -58,9 +63,14 @@ namespace GHIElectronics.TinyCLR.Data.Json
             get { return _contents; }
         }
 
-        public static JArray Serialize(Type type, object oSource)
+        public static JArray Serialize(Type type, object oSource, JsonSerializerSettings settings = null)
         {
-            return new JArray((Array)oSource);
+            if (settings == null)
+            {
+                settings = new JsonSerializerSettings();
+            }
+
+            return new JArray((Array)oSource, settings);
         }
 
         public JToken this[int i]

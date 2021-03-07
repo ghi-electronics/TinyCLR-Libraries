@@ -40,13 +40,18 @@ namespace GHIElectronics.TinyCLR.Data.Json
         public static SerializationCtx SerializationContext = null;
         public static object SyncObj = new object();
 
-        public static JToken Serialize(object oSource)
+        public static JToken Serialize(object oSource, JsonSerializerSettings settings = null)
         {
+            if (settings == null)
+            {
+                settings = new JsonSerializerSettings();
+            }
+
             var type = oSource.GetType();
             if (type.IsArray)
-                return JArray.Serialize(type, oSource);
+                return JArray.Serialize(type, oSource, settings);
             else
-                return JObject.Serialize(type, oSource);
+                return JObject.Serialize(type, oSource, settings);
         }
 
         public static object DeserializeObject(string sourceString, Type type, InstanceFactory factory = null)
@@ -67,6 +72,43 @@ namespace GHIElectronics.TinyCLR.Data.Json
             return PopulateObject(dserResult, type, "/", factory);
         }
 
+        private static object DefaultInstanceFactory(string instancePath, JToken token, Type baseType, string fieldName, int length)
+        {
+            object instance = null;
+
+            if (length != -1)
+            {
+                return null; // we don't do typed or polymorphic arrays yet - use an instance factory
+            }
+
+            if (token is JObject jobj)
+            {
+                if (jobj.Contains("$type"))
+                {
+                    var typeDefn = jobj.Contains("$type") ? ((JValue)jobj["$type"].Value).Value.ToString() : string.Empty;
+                    if (!string.IsNullOrEmpty(typeDefn))
+                    {
+                        var idx = typeDefn.IndexOf(',');
+                        var typeName = typeDefn.Substring(0, idx).Trim();
+                        var typeAssy = typeDefn.Substring(idx + 1).Trim();
+                        try
+                        {
+                            instance = AppDomain.CurrentDomain.CreateInstanceAndUnwrap(typeAssy, typeName);
+                        }
+                        catch
+                        {
+                            instance = null;
+                        }
+                    }
+                }
+            }
+
+            if (baseType != null && instance == null)
+                instance = AppDomain.CurrentDomain.CreateInstanceAndUnwrap(baseType.Assembly.FullName, baseType.FullName);
+
+            return instance;
+        }
+
         private static object PopulateObject(JToken root, Type type, string path, InstanceFactory factory)
         {
             if (root is JObject)
@@ -81,11 +123,12 @@ namespace GHIElectronics.TinyCLR.Data.Json
                     }
                 }
 
-                if (type != null && instance == null)
-                    instance = AppDomain.CurrentDomain.CreateInstanceAndUnwrap(type.Assembly.FullName, type.FullName);
+                instance = DefaultInstanceFactory(path, root, type, null, -1);
 
                 if (instance == null)
                     throw new Exception("failed to create target instance");
+
+                var resolvedType = instance.GetType();
 
                 var jobj = (JObject)root;
                 foreach (var item in jobj.Members)
@@ -93,20 +136,20 @@ namespace GHIElectronics.TinyCLR.Data.Json
                     var prop = (JProperty)item;
                     MethodInfo method = null;
                     Type itemType = null;
-                    var field = type.GetField(prop.Name);
+                    var field = resolvedType.GetField(prop.Name);
                     if (field != null)
                     {
                         itemType = field.FieldType;
                     }
                     else
                     {
-                        method = type.GetMethod("get_" + prop.Name);
+                        method = resolvedType.GetMethod("get_" + prop.Name);
                         if (method == null)
                         {
                             continue;
                         }
                         itemType = method.ReturnType;
-                        method = type.GetMethod("set_" + prop.Name);
+                        method = resolvedType.GetMethod("set_" + prop.Name);
                     }
 
                     if (itemType != null)
@@ -144,6 +187,11 @@ namespace GHIElectronics.TinyCLR.Data.Json
                             var jarray = (JArray)prop.Value;
                             var list = new ArrayList();
                             var array = (Array)factory(path, prop.Value, field.FieldType.GetElementType(), prop.Name, jarray.Length);
+                            if (array == null)
+                            {
+                                instance = DefaultInstanceFactory(path, prop.Value, field.FieldType.GetElementType(), prop.Name, jarray.Length);
+                            }
+
                             //var array = Array.CreateInstance(field.FieldType.GetElementType(), jarray.Length);
                             if (array != null)
                             {
@@ -185,7 +233,13 @@ namespace GHIElectronics.TinyCLR.Data.Json
                 if (elemType != null)
                     array = Array.CreateInstance(elemType, jarray.Length);
                 else
+                {
                     array = (Array)factory(path, root, null, null, jarray.Length);
+                    if (array == null)
+                    {
+                        array = (Array)DefaultInstanceFactory(path, root, null, null, jarray.Length);
+                    }
+                }
 
                 foreach (var item in jarray.Items)
                 {
