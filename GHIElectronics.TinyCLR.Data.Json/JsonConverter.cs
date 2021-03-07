@@ -10,7 +10,7 @@ namespace GHIElectronics.TinyCLR.Data.Json
 {
     // The protocol mantra: Be strict in what you emit, and generous in what you accept.
 
-    public delegate object InstanceFactory(string instancePath, string fieldName, int length);
+    public delegate object InstanceFactory(string instancePath, JToken token, Type baseType, string fieldName, int length);
 
     public static class JsonConverter
     {
@@ -72,15 +72,21 @@ namespace GHIElectronics.TinyCLR.Data.Json
             if (root is JObject)
             {
                 object instance = null;
-                if (type == null)
+                if (factory!=null)
                 {
-                    instance = factory(path, null, -1);
-                    type = instance.GetType();
+                    instance = factory(path, root, type, null, -1);
+                    if (instance != null)
+                    {
+                        type = instance.GetType();
+                    }
                 }
-                if (instance == null)
+
+                if (type != null && instance == null)
                     instance = AppDomain.CurrentDomain.CreateInstanceAndUnwrap(type.Assembly.FullName, type.FullName);
+
                 if (instance == null)
                     throw new Exception("failed to create target instance");
+
                 var jobj = (JObject)root;
                 foreach (var item in jobj.Members)
                 {
@@ -137,7 +143,7 @@ namespace GHIElectronics.TinyCLR.Data.Json
 
                             var jarray = (JArray)prop.Value;
                             var list = new ArrayList();
-                            var array = (Array)factory(path, prop.Name, jarray.Length);
+                            var array = (Array)factory(path, prop.Value, field.FieldType.GetElementType(), prop.Name, jarray.Length);
                             //var array = Array.CreateInstance(field.FieldType.GetElementType(), jarray.Length);
                             if (array != null)
                             {
@@ -177,9 +183,9 @@ namespace GHIElectronics.TinyCLR.Data.Json
 
                 Array array;
                 if (elemType != null)
-                    array = Array.CreateInstance(type.GetElementType(), jarray.Length);
+                    array = Array.CreateInstance(elemType, jarray.Length);
                 else
-                    array = (Array)factory(path, null, jarray.Length);
+                    array = (Array)factory(path, root, null, null, jarray.Length);
 
                 foreach (var item in jarray.Items)
                 {

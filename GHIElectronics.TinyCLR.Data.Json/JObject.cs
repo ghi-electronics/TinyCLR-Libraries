@@ -57,7 +57,8 @@ namespace GHIElectronics.TinyCLR.Data.Json
                         }
                         else
                         {
-                            result._members.Add(name.ToLower(), new JProperty(name, JObject.Serialize(m.ReturnType, methodResult)));
+                            var methodResultType = methodResult.GetType();
+                            result._members.Add(name.ToLower(), new JProperty(name, JObject.Serialize(methodResultType, methodResult)));
                         }
                     }
                 }
