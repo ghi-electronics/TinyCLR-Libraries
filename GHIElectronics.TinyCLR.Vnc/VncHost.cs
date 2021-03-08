@@ -113,10 +113,6 @@ namespace GHIElectronics.TinyCLR.Vnc {
 
                 this.localClient = this.serverSocket.Accept();
 
-                this.localClient.SendTimeout = 0;
-
-                this.localClient.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReceiveTimeout, 1000);
-
                 var localIP = IPAddress.Parse(((IPEndPoint)this.localClient.RemoteEndPoint).Address.ToString());
 
                 this.stream = new NetworkStream(this.localClient, true);
