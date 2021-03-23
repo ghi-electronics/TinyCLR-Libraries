@@ -102,7 +102,7 @@ namespace GHIElectronics.TinyCLR.Media {
             }
             this.index += 4;
 
-            uint subchunk2Size = BitConverter.ToUInt16(wav, this.index);// Utility.ExtractValueFromArray(wav, index, 4);
+            uint subchunk2Size = BitConverter.ToUInt32(wav, this.index);// Utility.ExtractValueFromArray(wav, index, 4);
             this.index += 4;
 
             this.dataSize = (int)subchunk2Size;
