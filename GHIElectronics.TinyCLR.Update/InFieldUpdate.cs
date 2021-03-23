@@ -1,9 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Net.Sockets;
 using System.Runtime.CompilerServices;
-using System.Threading;
 using GHIElectronics.TinyCLR.Devices.Gpio;
 using GHIElectronics.TinyCLR.Devices.Storage;
 using GHIElectronics.TinyCLR.Pins;
@@ -23,7 +21,7 @@ namespace GHIElectronics.TinyCLR.Update {
             FileStream = 3 //only application use this
         }
 
-        private readonly Mode mode = Mode.None;
+        private Mode mode = Mode.None;
 
         private StorageController externalStorageController;
         private bool useExternalStorageController;
@@ -74,6 +72,17 @@ namespace GHIElectronics.TinyCLR.Update {
         private Cache applicationCache = Cache.None;
         private Cache firmwareCache = Cache.None;
 
+        private uint firmwareChunkIndex = 0;
+        private uint applicationChunkIndex = 0;
+        public InFieldUpdate(byte[] applicationKey) {
+            this.applicationKey = applicationKey;
+            this.buffer = new byte[this.bufferSize];
+            this.useExternalStorageController = true;
+
+            this.externalStorageController = StorageController.FromName(STM32H7.StorageController.QuadSpi);
+
+            this.externalStorageController.Provider.Open();
+        }
 
         public InFieldUpdate(Stream firmwareStream, Stream applicationStream, byte[] applicationKey, bool useExternalFlash) {
             if (firmwareStream != null) {
@@ -119,7 +128,7 @@ namespace GHIElectronics.TinyCLR.Update {
                             this.applicationCache = Cache.InternalMemory;
                         }
                         catch {
-                            if (applicationStream is NetworkStream) { // stop if not enough memoy for network stream
+                            if (!(applicationStream is FileStream)) { // stop if not enough memoy for network stream
                                 throw new OutOfMemoryException();
                             }
                         }
@@ -164,42 +173,113 @@ namespace GHIElectronics.TinyCLR.Update {
         }
 
         public void Build(bool firmware, bool application) {
-            if (firmware && ((this.mode & Mode.Firmware) != Mode.Firmware))
-                throw new ArgumentNullException("Firmware stream null.");
+            if (firmware && ((this.mode & Mode.Firmware) != Mode.Firmware)) {
+                throw new ArgumentNullException("Invalid firmware or stream is null.");
+            }
 
-            if (application && ((this.mode & Mode.Application) != Mode.Application))
-                throw new ArgumentNullException("Application stream null.");
+            if (application && ((this.mode & Mode.Application) != Mode.Application)) {
+                throw new ArgumentNullException("Invalid application or stream is null.");
+            }
 
-            if (application) {
-                if ((this.mode & Mode.Application) != Mode.Application)
-                    throw new ArgumentNullException();
-
-                if (this.applicationCache != Cache.FileStream) {
-                    var totalBufferred = this.useExternalStorageController ? this.BufferingToExternalFlash(this.applicationStream, ApplicationAddress, ApplicationMaxSize) : this.BufferingToMemory(this.applicationStream, ref this.applicationBuffer, ApplicationMaxSize);
-
-                    if (totalBufferred > 0)
-                        this.NativeSetApplicationSize((uint)totalBufferred);
-                    else
-                        throw new InvalidOperationException("Application data not available.");
+            if (this.applicationStream == null && this.firmwareStream == null && this.useExternalStorageController) { // data mode 
+                if (firmware && this.firmwareChunkIndex == 0) {
+                    throw new ArgumentNullException("Invalid firmware.");
                 }
 
-                this.applicationVersion = this.NativeAuthenticateApplication(this.applicationKey, this.activityPinId);
+                if (application && this.applicationChunkIndex == 0) {
+                    throw new ArgumentNullException("Invalid application.");
+                }
+
+                this.NativeInFieldUpdate(this.firmwareCache, null, this.applicationCache, null, null);
+
+                if (firmware && this.firmwareChunkIndex > 0) {
+                    this.NativeSetFirmwareSize((uint)this.firmwareChunkIndex);
+
+                    this.firmwareVersion = this.NativeAuthenticateFirmware(this.activityPinId);
+                }
+
+                if (application && this.applicationChunkIndex > 0) {
+                    this.NativeSetApplicationSize((uint)this.applicationChunkIndex);
+
+                    this.applicationVersion = this.NativeAuthenticateApplication(this.applicationKey, this.activityPinId);
+                }
             }
+            else { // stream mode
+                if (application && this.applicationStream != null) {
+                    if ((this.mode & Mode.Application) != Mode.Application)
+                        throw new ArgumentNullException();
 
-            if (firmware) {
+                    if (this.applicationCache != Cache.FileStream) {
+                        var totalBufferred = this.useExternalStorageController ? this.BufferingToExternalFlash(this.applicationStream, ApplicationAddress, ApplicationMaxSize) : this.BufferingToMemory(this.applicationStream, ref this.applicationBuffer, ApplicationMaxSize);
 
-                if ((this.mode & Mode.Firmware) != Mode.Firmware)
-                    throw new ArgumentNullException();
+                        if (totalBufferred > 0)
+                            this.NativeSetApplicationSize((uint)totalBufferred);
+                        else
+                            throw new InvalidOperationException("Application data not available.");
+                    }
 
-                var totalBufferred = this.useExternalStorageController ? this.BufferingToExternalFlash(this.firmwareStream, FirmwareAddress, FirmwareMaxSize) : this.BufferingToMemory(this.firmwareStream, ref this.firmwareBuffer, FirmwareMaxSize);
+                    this.applicationVersion = this.NativeAuthenticateApplication(this.applicationKey, this.activityPinId);
+                }
 
-                if (totalBufferred > 0)
-                    this.NativeSetFirmwareSize((uint)totalBufferred);
-                else
-                    throw new InvalidOperationException("Firmware data not available.");
+                if (firmware && this.firmwareStream != null) {
 
-                this.firmwareVersion = this.NativeAuthenticateFirmware(this.activityPinId);
+                    if ((this.mode & Mode.Firmware) != Mode.Firmware)
+                        throw new ArgumentNullException();
+
+                    var totalBufferred = this.useExternalStorageController ? this.BufferingToExternalFlash(this.firmwareStream, FirmwareAddress, FirmwareMaxSize) : this.BufferingToMemory(this.firmwareStream, ref this.firmwareBuffer, FirmwareMaxSize);
+
+                    if (totalBufferred > 0)
+                        this.NativeSetFirmwareSize((uint)totalBufferred);
+                    else
+                        throw new InvalidOperationException("Firmware data not available.");
+
+                    this.firmwareVersion = this.NativeAuthenticateFirmware(this.activityPinId);
+                }
             }
+        }
+
+        public int LoadApplicationChunk(byte[] data, uint offset, int size, bool resetChunk) {
+            if (resetChunk)
+                this.applicationChunkIndex = 0;
+
+            if (this.applicationChunkIndex >= ApplicationMaxSize)
+                throw new ArgumentOutOfRangeException("Application too large.");
+
+            if (this.applicationStream != null)
+                throw new InvalidOperationException("Detected application stream.");
+
+            var b = this.BufferingToExternalFlash(ApplicationAddress + this.applicationChunkIndex, data, offset, size);
+
+            this.applicationChunkIndex += (uint)b;
+
+            this.mode |= Mode.Application;
+            this.applicationCache = Cache.ExternalFlash;
+
+            this.ToggleActivityPin();
+
+            return b;
+        }
+
+        public int LoadFirmwareChunk(byte[] data, uint offset, int size, bool resetChunk) {
+            if (resetChunk)
+                this.firmwareChunkIndex = 0;
+
+            if (this.firmwareChunkIndex >= FirmwareMaxSize)
+                throw new ArgumentOutOfRangeException("Firmware too large.");
+
+            if (this.firmwareStream != null)
+                throw new InvalidOperationException("Detected firmware stream.");
+
+            var b = this.BufferingToExternalFlash(FirmwareAddress + this.firmwareChunkIndex, data, offset, size);
+
+            this.firmwareChunkIndex += (uint)b;
+
+            this.mode |= Mode.Firmware;
+            this.firmwareCache = Cache.ExternalFlash;
+
+            this.ToggleActivityPin();
+
+            return b;
         }
 
         public void FlashAndReset() {
@@ -250,6 +330,15 @@ namespace GHIElectronics.TinyCLR.Update {
 
                         break;
                     }
+
+                    // stream behavior:
+                    // return 0 when no more data, no need to wait
+                    // return < 0 when no more data of EOF, no need to wait
+                    if (read <= 0) {
+                        doRead = false;
+
+                        break;
+                    }
                 }
 
                 if (read > 0) {
@@ -295,6 +384,15 @@ namespace GHIElectronics.TinyCLR.Update {
 
                         break;
                     }
+
+                    // stream behavior:
+                    // return 0 when no more data, no need to wait
+                    // return < 0 when no more data of EOF, no need to wait
+                    if (read <= 0) {
+                        doRead = false;
+
+                        break;
+                    }
                 }
 
                 if (read > 0) {
@@ -306,12 +404,12 @@ namespace GHIElectronics.TinyCLR.Update {
 
                     if (!this.externalStorageController.Provider.IsErased(address, read)) {
 #if DEBUG
-                        Debug.WriteLine("Erasing flash: " + address);
+                        Debug.WriteLine("Erasing flash: 0x" + address.ToString("x8"));
 #endif
                         this.externalStorageController.Provider.Erase(address, read, this.ReadDataTimeOut);
                     }
 #if DEBUG
-                    Debug.WriteLine("Writting to flash: " + address + ", size " + read);
+                    Debug.WriteLine("Writting to flash: 0x" + address.ToString("x8") + ", size 0x" + read.ToString("x8"));
 #endif
                     this.externalStorageController.Provider.Write(address, read, this.buffer, 0, this.ReadDataTimeOut);
 
@@ -322,6 +420,32 @@ namespace GHIElectronics.TinyCLR.Update {
             }
 
             return totalRead;
+        }
+
+        private int BufferingToExternalFlash(uint address, byte[] data, uint offset, int size) {
+            if (data == null)
+                throw new ArgumentNullException("data null.");
+
+            if (offset + size > data.Length)
+                throw new ArgumentOutOfRangeException("Out of range.");
+
+
+            if (!this.externalStorageController.Provider.IsErased(address, size)) {
+#if DEBUG
+                Debug.WriteLine("Erasing flash: 0x" + address.ToString("x8"));
+#endif
+                this.externalStorageController.Provider.Erase(address, size, this.ReadDataTimeOut);
+            }
+#if DEBUG
+            Debug.WriteLine("Writting to flash: 0x" + address.ToString("x8") + ", size 0x" + size.ToString("x8"));
+#endif
+            if (this.externalStorageController.Provider.Write(address, size, data, 0, this.ReadDataTimeOut) != size) {
+                throw new InvalidOperationException("Writting error: 0x" + address.ToString("x8"));
+            }
+
+            this.ToggleActivityPin();
+
+            return size;
         }
 
         private void ToggleActivityPin() => this.ActivityPin?.Write(this.ActivityPin.Read() == GpioPinValue.High ? GpioPinValue.Low : GpioPinValue.High);
