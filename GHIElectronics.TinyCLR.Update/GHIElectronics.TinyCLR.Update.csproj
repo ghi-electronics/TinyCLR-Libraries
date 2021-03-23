@@ -55,10 +55,6 @@
       <Project>{313AEC8E-2B47-4A1A-ACE2-A766D076B2AE}</Project>
       <Name>GHIElectronics.TinyCLR.IO</Name>
     </ProjectReference>
-    <ProjectReference Include="..\GHIElectronics.TinyCLR.Networking\GHIElectronics.TinyCLR.Networking.csproj">
-      <Project>{1AFA3955-B36D-4A8A-8B7F-86F39FC2FDE3}</Project>
-      <Name>GHIElectronics.TinyCLR.Networking</Name>
-    </ProjectReference>
     <ProjectReference Include="..\GHIElectronics.TinyCLR.Pins\GHIElectronics.TinyCLR.Pins.csproj">
       <Project>{2DCEEF58-5455-457C-B968-52D791605D07}</Project>
       <Name>GHIElectronics.TinyCLR.Pins</Name>
