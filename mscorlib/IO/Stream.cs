@@ -99,6 +99,8 @@ namespace System.IO {
             oneByteArray[0] = value;
             Write(oneByteArray, 0, 1);
         }
+
+        public virtual bool DataAvailable => false;
     }
 }
 
