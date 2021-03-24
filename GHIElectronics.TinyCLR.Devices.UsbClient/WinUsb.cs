@@ -95,6 +95,8 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
                 if (count % 64 == 0)
                     base.Write(buffer, 0, 0);
             }
+
+            public override bool DataAvailable => this.BytesToRead > 0;
         }
     }
 }
