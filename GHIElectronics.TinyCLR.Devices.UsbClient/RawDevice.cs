@@ -456,19 +456,20 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
                 if (count <= 0) throw new ArgumentOutOfRangeException("count", "count must be positive.");
                 if (buffer.Length < offset + count) throw new ArgumentOutOfRangeException("buffer", "buffer.Length must be at least offset + count.");
 
-                var read = 0;
+                int read;
                 var endTime = DateTime.Now.AddMilliseconds(this.ReadTimeout);
 
                 while (true) {
-                    read += this.parent.usbClientController.Provider.Read(this.streamIndex, buffer, offset + read, count - read);
-
-                    if (read >= count)
-                        break;
+                    read = this.parent.usbClientController.Provider.Read(this.streamIndex, buffer, offset, count);
+                    
+                    if (read > 0)
+                        return read;
 
                     if (endTime < DateTime.Now && this.ReadTimeout != Timeout.Infinite)
                         break;
 
                     Thread.Sleep(5);
+
                 }
 
                 return read;
