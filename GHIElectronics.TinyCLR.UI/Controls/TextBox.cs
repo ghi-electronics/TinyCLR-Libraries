@@ -77,7 +77,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         protected override void MeasureOverride(int availableWidth, int availableHeight, out int desiredWidth, out int desiredHeight) {
             this._font.ComputeExtent(this.text, out desiredWidth, out desiredHeight);
 
-            desiredWidth = this._font.MaxWidth + (this.PaddingY * 2) + (this.BorderThickness * 2);
+            desiredWidth = this._font.MaxWidth + (this.PaddingX * 2) + (this.BorderThickness * 2);
             desiredHeight = this._font.Height + (this.PaddingY * 2) + (this.BorderThickness * 2);
         }
 
