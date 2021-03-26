@@ -35,9 +35,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SC13048.cs" />
     <Compile Include="SC20100.cs" />
     <Compile Include="SC20260.cs" />
     <Compile Include="STM32H7.cs" />
+    <Compile Include="STM32L4.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="GHIElectronics.TinyCLR.Pins.nuspec" />
