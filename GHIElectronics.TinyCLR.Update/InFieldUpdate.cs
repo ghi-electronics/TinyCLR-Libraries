@@ -4,7 +4,6 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using GHIElectronics.TinyCLR.Devices.Gpio;
 using GHIElectronics.TinyCLR.Devices.Storage;
-using GHIElectronics.TinyCLR.Pins;
 
 namespace GHIElectronics.TinyCLR.Update {
     public sealed class InFieldUpdate {
@@ -74,17 +73,17 @@ namespace GHIElectronics.TinyCLR.Update {
 
         private uint firmwareChunkIndex = 0;
         private uint applicationChunkIndex = 0;
-        public InFieldUpdate(byte[] applicationKey) {
+        public InFieldUpdate(byte[] applicationKey, string storageController) {
             this.applicationKey = applicationKey;
             this.buffer = new byte[this.bufferSize];
             this.useExternalStorageController = true;
 
-            this.externalStorageController = StorageController.FromName(STM32H7.StorageController.QuadSpi);
+            this.externalStorageController = StorageController.FromName(storageController);
 
             this.externalStorageController.Provider.Open();
         }
 
-        public InFieldUpdate(Stream firmwareStream, Stream applicationStream, byte[] applicationKey, bool useExternalFlash) {
+        public InFieldUpdate(Stream firmwareStream, Stream applicationStream, byte[] applicationKey, bool useExternalFlash, string storageController) {
             if (firmwareStream != null) {
                 this.mode |= Mode.Firmware;
             }
@@ -164,7 +163,7 @@ namespace GHIElectronics.TinyCLR.Update {
             }
 
             if (useExternalFlash) {
-                this.externalStorageController = StorageController.FromName(STM32H7.StorageController.QuadSpi);
+                this.externalStorageController = StorageController.FromName(storageController);
 
                 this.externalStorageController.Provider.Open();
             }
@@ -238,10 +237,7 @@ namespace GHIElectronics.TinyCLR.Update {
             }
         }
 
-        public int LoadApplicationChunk(byte[] data, uint offset, int size, bool resetChunk) {
-            if (resetChunk)
-                this.applicationChunkIndex = 0;
-
+        public int LoadApplicationChunk(byte[] data, uint offset, int size) {
             if (this.applicationChunkIndex >= ApplicationMaxSize)
                 throw new ArgumentOutOfRangeException("Application too large.");
 
@@ -260,10 +256,7 @@ namespace GHIElectronics.TinyCLR.Update {
             return b;
         }
 
-        public int LoadFirmwareChunk(byte[] data, uint offset, int size, bool resetChunk) {
-            if (resetChunk)
-                this.firmwareChunkIndex = 0;
-
+        public int LoadFirmwareChunk(byte[] data, uint offset, int size) {
             if (this.firmwareChunkIndex >= FirmwareMaxSize)
                 throw new ArgumentOutOfRangeException("Firmware too large.");
 
@@ -280,6 +273,14 @@ namespace GHIElectronics.TinyCLR.Update {
             this.ToggleActivityPin();
 
             return b;
+        }
+
+        public void Abort() {
+            this.firmwareChunkIndex = 0;
+            this.applicationChunkIndex = 0;
+
+            this.applicationVersion = 0xFFFFFFFF;
+            this.firmwareVersion = 0xFFFFFFFF;
         }
 
         public void FlashAndReset() {
@@ -402,11 +403,18 @@ namespace GHIElectronics.TinyCLR.Update {
                         throw new ArgumentOutOfRangeException("Data too large.");
                     }
 
-                    if (!this.externalStorageController.Provider.IsErased(address, read)) {
+                    var sectorSize = this.externalStorageController.Provider.Descriptor.RegionSizes[0];
+
+                    var sectorId = address / sectorSize;
+
+                    if (sectorId * sectorSize == address) { // check and erase only once when start of sector
+
+                        if (!this.externalStorageController.Provider.IsErased(sectorId * sectorSize, sectorSize)) {
 #if DEBUG
-                        Debug.WriteLine("Erasing flash: 0x" + address.ToString("x8"));
+                            Debug.WriteLine("Erasing flash: 0x" + address.ToString("x8"));
 #endif
-                        this.externalStorageController.Provider.Erase(address, read, this.ReadDataTimeOut);
+                            this.externalStorageController.Provider.Erase(sectorId * sectorSize, sectorSize, this.ReadDataTimeOut);
+                        }
                     }
 #if DEBUG
                     Debug.WriteLine("Writting to flash: 0x" + address.ToString("x8") + ", size 0x" + read.ToString("x8"));
@@ -424,17 +432,23 @@ namespace GHIElectronics.TinyCLR.Update {
 
         private int BufferingToExternalFlash(uint address, byte[] data, uint offset, int size) {
             if (data == null)
-                throw new ArgumentNullException("data null.");
+                throw new ArgumentNullException("Data null.");
 
             if (offset + size > data.Length)
                 throw new ArgumentOutOfRangeException("Out of range.");
 
+            var sectorSize = this.externalStorageController.Provider.Descriptor.RegionSizes[0];
 
-            if (!this.externalStorageController.Provider.IsErased(address, size)) {
+            var sectorId = address / sectorSize;
+
+            if (sectorId * sectorSize == address) { // check and erase only once when start of sector
+
+                if (!this.externalStorageController.Provider.IsErased(sectorId * sectorSize, sectorSize)) {
 #if DEBUG
-                Debug.WriteLine("Erasing flash: 0x" + address.ToString("x8"));
+                    Debug.WriteLine("Erasing flash: 0x" + address.ToString("x8"));
 #endif
-                this.externalStorageController.Provider.Erase(address, size, this.ReadDataTimeOut);
+                    this.externalStorageController.Provider.Erase(sectorId * sectorSize, sectorSize, this.ReadDataTimeOut);
+                }
             }
 #if DEBUG
             Debug.WriteLine("Writting to flash: 0x" + address.ToString("x8") + ", size 0x" + size.ToString("x8"));
