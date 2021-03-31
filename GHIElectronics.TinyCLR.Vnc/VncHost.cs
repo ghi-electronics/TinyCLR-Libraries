@@ -78,7 +78,7 @@ namespace GHIElectronics.TinyCLR.Vnc {
         protected StreamReader reader;	// Integral rather than Byte values are typically
         protected StreamWriter writer; // sent and received, so these handle this.                                               
 
-        public bool isRunning;
+        internal bool hostRunning;
 
         public int Port { get; set; }
 
@@ -94,7 +94,7 @@ namespace GHIElectronics.TinyCLR.Vnc {
         public float ServerVersion => (float)this.verMajor + (this.verMinor * 0.1f);
 
         public void Start() {
-            this.isRunning = true;
+            this.hostRunning = true;
             try {
 
                 var serverSocketEP = new IPEndPoint(IPAddress.Any, this.Port);
@@ -198,10 +198,18 @@ namespace GHIElectronics.TinyCLR.Vnc {
         }
 
         public void Close() {
-            this.isRunning = false;
+            this.hostRunning = false;
 
-            this.serverSocket.Close();
-            this.localClient.Close();
+            if (this.serverSocket != null) {
+                this.serverSocket.Close();
+                this.serverSocket = null;
+            }
+
+
+            if (this.localClient != null) {
+                this.localClient.Close();
+                this.localClient = null;
+            }
         }
 
 
