@@ -87,10 +87,10 @@ namespace GHIElectronics.TinyCLR.Vnc {
 
         }
 
-        private bool isRunning = true;
+        private bool serverRunning;
         private void Run() {
 
-            while (this.isRunning) {
+            while (this.serverRunning) {
                 try {
                     this.host.Start();
 
@@ -115,7 +115,7 @@ namespace GHIElectronics.TinyCLR.Vnc {
 
                         this.Connected = true;
 
-                        while (this.host.isRunning) {
+                        while (this.host.hostRunning) {
                             var timeStart = DateTime.Now;
 
                             Thread.Sleep(1);
@@ -174,17 +174,24 @@ namespace GHIElectronics.TinyCLR.Vnc {
                     }
                 }
                 catch {
-                    this.Stop();
+                    this.Connected = false;
+                    this.host.Close();
                 }
+
+                Thread.Sleep(1);
             }
+
         }
 
-        public void Start() => new Thread(this.Run).Start();
+        public void Start() {
+            this.Connected = false;
+            this.serverRunning = true;
+            new Thread(this.Run).Start();
+        }
 
         public void Stop() {
-            this.isRunning = false;
             this.Connected = false;
-
+            this.serverRunning = false;
             this.host.Close();
         }
 

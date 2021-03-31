@@ -215,6 +215,10 @@ namespace System.Net.Sockets {
                     }
                 }
 
+                if (this.m_Handle == -1) { // socket closed - stop
+                    break;
+                }
+
                 totalSend += sent;
 
                 if (totalSend < size) {
@@ -255,6 +259,10 @@ namespace System.Net.Sockets {
                     if (this.SendTimeout != System.Threading.Timeout.Infinite) {
                         expired = DateTime.Now.Ticks + (this.SendTimeout * 10000L);
                     }
+                }
+
+                if (this.m_Handle == -1) { // socket closed - stop
+                    break;
                 }
 
                 totalSend += sent;
@@ -307,6 +315,10 @@ namespace System.Net.Sockets {
                     break;
                 }
 
+                if (this.m_Handle == -1) { // socket closed - stop
+                    break;
+                }
+
                 Thread.Sleep(this.DelayBetweenReceive);
             }
 
@@ -340,6 +352,10 @@ namespace System.Net.Sockets {
                 }
                 else if (read > 0) { // error, or has data
                     totalBytesReceive += read;
+                    break;
+                }
+
+                if (this.m_Handle == -1) { // socket closed - stop
                     break;
                 }
 
@@ -441,6 +457,10 @@ namespace System.Net.Sockets {
             while (DateTime.Now.Ticks < expired) {
                 if (this.ni.Poll(this.m_Handle, microSeconds, mode))
                     return true;
+
+                if (this.m_Handle == -1) { // socket closed - stop
+                    break;
+                }
 
                 Thread.Sleep(1);
             }

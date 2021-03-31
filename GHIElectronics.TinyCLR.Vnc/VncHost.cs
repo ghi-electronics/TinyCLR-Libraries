@@ -78,7 +78,7 @@ namespace GHIElectronics.TinyCLR.Vnc {
         protected StreamReader reader;	// Integral rather than Byte values are typically
         protected StreamWriter writer; // sent and received, so these handle this.                                               
 
-        public bool isRunning;
+        internal bool hostRunning;
 
         public int Port { get; set; }
 
@@ -94,7 +94,7 @@ namespace GHIElectronics.TinyCLR.Vnc {
         public float ServerVersion => (float)this.verMajor + (this.verMinor * 0.1f);
 
         public void Start() {
-            this.isRunning = true;
+            this.hostRunning = true;
             try {
 
                 var serverSocketEP = new IPEndPoint(IPAddress.Any, this.Port);
@@ -112,6 +112,9 @@ namespace GHIElectronics.TinyCLR.Vnc {
             try {
 
                 this.localClient = this.serverSocket.Accept();
+
+                this.localClient.SendTimeout = 3000;
+
 
                 var localIP = IPAddress.Parse(((IPEndPoint)this.localClient.RemoteEndPoint).Address.ToString());
 
@@ -198,10 +201,22 @@ namespace GHIElectronics.TinyCLR.Vnc {
         }
 
         public void Close() {
-            this.isRunning = false;
+            this.hostRunning = false;
 
-            this.serverSocket.Close();
-            this.localClient.Close();
+            if (this.serverSocket != null) {
+                this.serverSocket.Close();
+                this.serverSocket = null;
+            }
+
+            if (this.localClient != null) {
+                this.localClient.Close();
+                this.localClient = null;
+            }
+
+            if (this.encodedRectangle != null) {
+                this.encodedRectangle.Dispose();
+                this.encodedRectangle = null;
+            }
         }
 
 
@@ -341,24 +356,18 @@ namespace GHIElectronics.TinyCLR.Vnc {
             }
 
             var frameCountUpdate = 1;
-
+            var validFrame = false;
 
             if (fb.Data != null) { // valid frame
 
                 lock (fb) {
-                    if (this.encodedRectangle != null) {
-                        this.encodedRectangle.Dispose();
+                    if (this.encodedRectangle == null) {
+                        this.encodedRectangle = new RawRectangle(fb);
                     }
 
-                    this.encodedRectangle = new RawRectangle(fb);
-
                     this.encodedRectangle.Encode();
+                    validFrame = true;
                 }
-
-
-            }
-            else {
-                this.encodedRectangle = null;
             }
 
 #if DEBUG
@@ -375,7 +384,7 @@ namespace GHIElectronics.TinyCLR.Vnc {
             header[2] = (byte)(frameCountUpdate >> 8);  // frameCountUpdate
             header[3] = (byte)(frameCountUpdate >> 0); // frameCountUpdate
 
-            if (this.encodedRectangle != null) {
+            if (validFrame) {
                 header[4] = (byte)(this.encodedRectangle.X >> 8);
                 header[5] = (byte)(this.encodedRectangle.X >> 0);
 
@@ -399,7 +408,7 @@ namespace GHIElectronics.TinyCLR.Vnc {
 #if DEBUG
             start = DateTime.Now;
 #endif
-            if (this.encodedRectangle != null) {
+            if (validFrame) {
                 var data = this.encodedRectangle.Data;
 
                 var blockSize = 1024;
@@ -409,6 +418,16 @@ namespace GHIElectronics.TinyCLR.Vnc {
                 var total = 0;
 
                 while (block > 0) {
+                    // Process mouse/key during sending frame.
+                    if (this.reader.DataAvailable) {                        
+                        var messageType = this.ReadServerMessageType();
+                        if (messageType == VncHost.ClientMessages.PointerEvent)
+                            this.ReadPointerEvent();
+                        else if (messageType == VncHost.ClientMessages.KeyEvent)
+                            this.ReadKeyEvent();
+                        else if (messageType == VncHost.ClientMessages.ClientCutText)
+                            this.ReadClientCutText();                       
+                    }
 
                     var count = (data.Length - total) > blockSize ? blockSize : (data.Length - total);
 
