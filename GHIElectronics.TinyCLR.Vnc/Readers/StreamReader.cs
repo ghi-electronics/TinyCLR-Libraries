@@ -92,5 +92,7 @@ namespace GHIElectronics.TinyCLR.Vnc {
         public override int Read(byte[] buffer, int offset, int count) => this.stream.Read(buffer, offset, count);
 
         public override void Write(byte[] buffer, int offset, int count) => this.stream.Write(buffer, offset, count);
+
+        public override bool DataAvailable => this.stream.DataAvailable;
     }
 }

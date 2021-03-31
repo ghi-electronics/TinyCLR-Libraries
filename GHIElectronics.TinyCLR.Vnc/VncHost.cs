@@ -418,6 +418,16 @@ namespace GHIElectronics.TinyCLR.Vnc {
                 var total = 0;
 
                 while (block > 0) {
+                    // Process mouse/key during sending frame.
+                    if (this.reader.DataAvailable) {                        
+                        var messageType = this.ReadServerMessageType();
+                        if (messageType == VncHost.ClientMessages.PointerEvent)
+                            this.ReadPointerEvent();
+                        else if (messageType == VncHost.ClientMessages.KeyEvent)
+                            this.ReadKeyEvent();
+                        else if (messageType == VncHost.ClientMessages.ClientCutText)
+                            this.ReadClientCutText();                       
+                    }
 
                     var count = (data.Length - total) > blockSize ? blockSize : (data.Length - total);
 
