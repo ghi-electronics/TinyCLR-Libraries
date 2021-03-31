@@ -113,6 +113,9 @@ namespace GHIElectronics.TinyCLR.Vnc {
 
                 this.localClient = this.serverSocket.Accept();
 
+                this.localClient.SendTimeout = 3000;
+
+
                 var localIP = IPAddress.Parse(((IPEndPoint)this.localClient.RemoteEndPoint).Address.ToString());
 
                 this.stream = new NetworkStream(this.localClient, true);
@@ -205,10 +208,14 @@ namespace GHIElectronics.TinyCLR.Vnc {
                 this.serverSocket = null;
             }
 
-
             if (this.localClient != null) {
                 this.localClient.Close();
                 this.localClient = null;
+            }
+
+            if (this.encodedRectangle != null) {
+                this.encodedRectangle.Dispose();
+                this.encodedRectangle = null;
             }
         }
 
@@ -349,24 +356,18 @@ namespace GHIElectronics.TinyCLR.Vnc {
             }
 
             var frameCountUpdate = 1;
-
+            var validFrame = false;
 
             if (fb.Data != null) { // valid frame
 
                 lock (fb) {
-                    if (this.encodedRectangle != null) {
-                        this.encodedRectangle.Dispose();
+                    if (this.encodedRectangle == null) {
+                        this.encodedRectangle = new RawRectangle(fb);
                     }
 
-                    this.encodedRectangle = new RawRectangle(fb);
-
                     this.encodedRectangle.Encode();
+                    validFrame = true;
                 }
-
-
-            }
-            else {
-                this.encodedRectangle = null;
             }
 
 #if DEBUG
@@ -383,7 +384,7 @@ namespace GHIElectronics.TinyCLR.Vnc {
             header[2] = (byte)(frameCountUpdate >> 8);  // frameCountUpdate
             header[3] = (byte)(frameCountUpdate >> 0); // frameCountUpdate
 
-            if (this.encodedRectangle != null) {
+            if (validFrame) {
                 header[4] = (byte)(this.encodedRectangle.X >> 8);
                 header[5] = (byte)(this.encodedRectangle.X >> 0);
 
@@ -407,7 +408,7 @@ namespace GHIElectronics.TinyCLR.Vnc {
 #if DEBUG
             start = DateTime.Now;
 #endif
-            if (this.encodedRectangle != null) {
+            if (validFrame) {
                 var data = this.encodedRectangle.Data;
 
                 var blockSize = 1024;
