@@ -225,6 +225,9 @@ namespace GHIElectronics.TinyCLR.Pins {
             /// <summary>AT Winc15x0 id.</summary>
             public const string ATWinc15x0 = "GHIElectronics.TinyCLR.NativeApis.ATWINC15xx.NetworkController";
 
+            /// <summary>EthernetEmac id.</summary>
+            public const string EthernetEmac = STM32H7.EthernetController.EthernetEmac;
+
             /// <summary>PPP id.</summary>
             public const string Ppp = "GHIElectronics.TinyCLR.NativeApis.Ppp.NetworkController";
         }
