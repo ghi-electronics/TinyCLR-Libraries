@@ -409,11 +409,11 @@ namespace GHIElectronics.TinyCLR.Update {
 
                     if (sectorId * sectorSize == address) { // check and erase only once when start of sector
 
-                        if (!this.externalStorageController.Provider.IsErased(sectorId * sectorSize, sectorSize)) {
+                        if (!this.externalStorageController.Provider.IsErased(sectorId * sectorSize, sectorSize > read ? sectorSize : read)) {
 #if DEBUG
                             Debug.WriteLine("Erasing flash: 0x" + address.ToString("x8"));
 #endif
-                            this.externalStorageController.Provider.Erase(sectorId * sectorSize, sectorSize, this.ReadDataTimeOut);
+                            this.externalStorageController.Provider.Erase(sectorId * sectorSize, sectorSize > read ? sectorSize : read, this.ReadDataTimeOut);
                         }
                     }
 #if DEBUG
@@ -443,11 +443,11 @@ namespace GHIElectronics.TinyCLR.Update {
 
             if (sectorId * sectorSize == address) { // check and erase only once when start of sector
 
-                if (!this.externalStorageController.Provider.IsErased(sectorId * sectorSize, sectorSize)) {
+                if (!this.externalStorageController.Provider.IsErased(sectorId * sectorSize, sectorSize > size ? sectorSize : size)) {
 #if DEBUG
                     Debug.WriteLine("Erasing flash: 0x" + address.ToString("x8"));
 #endif
-                    this.externalStorageController.Provider.Erase(sectorId * sectorSize, sectorSize, this.ReadDataTimeOut);
+                    this.externalStorageController.Provider.Erase(sectorId * sectorSize, sectorSize > size ? sectorSize : size, this.ReadDataTimeOut);
                 }
             }
 #if DEBUG
