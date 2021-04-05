@@ -415,7 +415,7 @@ namespace GHIElectronics.TinyCLR.Pins {
             /// <summary>Enc28j60 id.</summary>
             public const string Enc28j60 = "GHIElectronics.TinyCLR.NativeApis.ENC28J60.NetworkController";
 
-            /// <summary>Enc28j60 id.</summary>
+            /// <summary>EthernetEmac id.</summary>
             public const string EthernetEmac = STM32H7.EthernetController.EthernetEmac;
 
             /// <summary>PPP id.</summary>
