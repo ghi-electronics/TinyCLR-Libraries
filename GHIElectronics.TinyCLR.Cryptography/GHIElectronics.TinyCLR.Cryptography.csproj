@@ -35,6 +35,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Crc.cs" />
+    <Compile Include="HMACSHA1.cs" />
     <Compile Include="HMACSHA256.cs" />
     <Compile Include="MD5.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

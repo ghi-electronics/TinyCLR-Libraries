@@ -7,11 +7,9 @@ namespace GHIElectronics.TinyCLR.Cryptography {
          * It is interesting to ponder why the, apart from the extra IV, the other difference here from MD5
          * is the "endianness" of the word processing!
          */
-    public class SHA1 /*: GeneralDigest*/ {
+    public class SHA1 {
         private const int DigestLength = 20;
         private byte[] hash;
-        private int hashSize;
-
         private uint H1, H2, H3, H4, H5;
 
         private uint[] X = new uint[80];
@@ -23,7 +21,6 @@ namespace GHIElectronics.TinyCLR.Cryptography {
         private long byteCount;
 
         public byte[] Hash => this.hash;
-        public int HashSize => this.hashSize;
         private SHA1() {
             this.xBuf = new byte[4];
             this.hash = new byte[DigestLength];
@@ -32,8 +29,6 @@ namespace GHIElectronics.TinyCLR.Cryptography {
         }
 
         public static SHA1 Create() => new SHA1();
-
-        public string AlgorithmName => "SHA-1";
 
         internal void ProcessWord(
             byte[] input,
@@ -54,7 +49,7 @@ namespace GHIElectronics.TinyCLR.Cryptography {
             this.X[15] = (uint)((ulong)bitLength);
         }
 
-        private void Update(byte input) {
+        internal void Update(byte input) {
             this.xBuf[this.xBufOff++] = input;
 
             if (this.xBufOff == this.xBuf.Length) {
@@ -65,16 +60,25 @@ namespace GHIElectronics.TinyCLR.Cryptography {
             this.byteCount++;
         }
 
-        public byte[] ComputeHash(byte[] data) {
-            for (var i = 0; i < data.Length; i++)
-                this.Update(data[i]);
+        public byte[] ComputeHash(byte[] buffer) => this.ComputeHash(buffer, 0, buffer.Length);
 
-            this.hashSize = this.DoFinal(this.hash);
+        public byte[] ComputeHash(byte[] buffer, int offset, int count) {
+            if (buffer == null) {
+                throw new ArgumentNullException();
+            }
+
+            if (offset + count > buffer.Length) {
+                throw new ArgumentOutOfRangeException();
+            }
+
+            this.BlockUpdate(buffer, offset, count);
+
+            this.DoFinal(this.hash, 0);
 
             return this.hash;
         }
 
-        private void Finish() {
+        internal void Finish() {
             var bitLength = (this.byteCount << 3);
 
             //
@@ -88,18 +92,57 @@ namespace GHIElectronics.TinyCLR.Cryptography {
             this.ProcessLength(bitLength);
             this.ProcessBlock();
         }
-        private int DoFinal(byte[] output) {
+        internal int DoFinal(byte[] output, int outOff) {
             this.Finish();
 
-            UInt32_To_BE(this.H1, output, 0);
-            UInt32_To_BE(this.H2, output, 4);
-            UInt32_To_BE(this.H3, output, 8);
-            UInt32_To_BE(this.H4, output, 12);
-            UInt32_To_BE(this.H5, output, 16);
+            UInt32_To_BE(this.H1, output, outOff + 0);
+            UInt32_To_BE(this.H2, output, outOff + 4);
+            UInt32_To_BE(this.H3, output, outOff + 8);
+            UInt32_To_BE(this.H4, output, outOff + 12);
+            UInt32_To_BE(this.H5, output, outOff + 16);
 
             this.Clear();
 
             return DigestLength;
+        }
+
+        internal void BlockUpdate(
+            byte[] input,
+            int inOff,
+            int length) {
+            length = System.Math.Max(0, length);
+
+            //
+            // fill the current word
+            //
+            var i = 0;
+            if (this.xBufOff != 0) {
+                while (i < length) {
+                    this.xBuf[this.xBufOff++] = input[inOff + i++];
+                    if (this.xBufOff == 4) {
+                        this.ProcessWord(this.xBuf, 0);
+                        this.xBufOff = 0;
+                        break;
+                    }
+                }
+            }
+
+            //
+            // process whole words.
+            //
+            var limit = ((length - i) & ~3) + i;
+            for (; i < limit; i += 4) {
+                this.ProcessWord(input, inOff + i);
+            }
+
+            //
+            // load in the remainder.
+            //
+            while (i < length) {
+                this.xBuf[this.xBufOff++] = input[inOff + i++];
+            }
+
+            this.byteCount += length;
         }
 
         /**
