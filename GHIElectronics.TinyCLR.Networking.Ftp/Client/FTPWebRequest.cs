@@ -28,6 +28,11 @@ namespace System.Net {
             Unknown = 100
         }
 
+        public enum RepresentationType {
+            ASCII,
+            Image
+        }
+
         public string[] RequestPath = null;
         public IPAddress ServerIP = null;
         public int ServerPort = 21;
@@ -51,16 +56,15 @@ namespace System.Net {
         public bool DataSocketReady = false;            // indicates that the data transmission has started
         public bool TransmissionFinished = false;       // indicates that the data transmission has finished
 
-
         // Configuration Variables
         private bool m_IsClosed = false;                // whether the request has been closed
         private bool m_IsPassive = false;               // whether working under passive mode
+        private string m_Type = "A";                    // REPRESENTATION TYPE
         private int m_CommandTimeout = 1000;            // time for waiting a single ftp command
         private int m_DataTimeout = 5000;               // time for waiting a active data connection
         private bool m_IsStarted = false;               // make sure that the request can only be executed once (restricted by current version)   
         private string m_RenameTo = null;               // the new name towards the rename method
         private FTPStatusCode m_StatusCode = FTPStatusCode.Unknown; // the response status code
-
 
         // Properties
         internal FTPStatusCode StatusCode => m_StatusCode;
@@ -96,10 +100,29 @@ namespace System.Net {
             set;
         }
 
-        internal ArrayList ResponseStack {
-            get;
-            set;
+        public RepresentationType Type {
+            get {
+                if (m_Type == "I") {
+                    return RepresentationType.Image;
+                }
+                else {
+                    return RepresentationType.ASCII;
+                }
+            }
+            set {
+                if (value == RepresentationType.Image) {
+                    m_Type = "I";
+                }
+                else {
+                    m_Type = "A";
+                }
+            }
         }
+
+        //internal ArrayList ResponseStack {
+        //    get;
+        //    set;
+        //}
 
         /// <summary>
         /// Set ftp mode
@@ -133,11 +156,17 @@ namespace System.Net {
                     throw new ArgumentNullException("URI is not resolvable.");
                 }
 
-                if (uri.HostNameType != UriHostNameType.Dns && uri.HostNameType != UriHostNameType.IPv4) {
+                if (uri.HostNameType == UriHostNameType.Dns) {
+                    System.Diagnostics.Debug.WriteLine("Status: Resolving address of " + uri.Host);
+                    IPHostEntry iPHostEntry = Dns.GetHostEntry(uri.Host);    // throws InvalidOperationException
+                    ServerIP = iPHostEntry.AddressList[0];
+                }
+                else if (uri.HostNameType == UriHostNameType.IPv4) {
+                    ServerIP = IPAddress.Parse(uri.Host);   // throws ArgumentException
+                }
+                else {
                     throw new ArgumentException("HostNameType not supported.");
                 }
-
-                ServerIP = IPAddress.Parse(uri.Host);  // throws ArgumentException
 
                 ServerPort = uri.Port;
 
@@ -145,7 +174,7 @@ namespace System.Net {
 
                 // find the address for the device in case of active transmission mode
 
-                foreach (var item in System.Net.Dns.GetHostEntry("").AddressList) {
+                foreach (var item in Dns.GetHostEntry("").AddressList) {
                     if (null == item) continue;
 
                     byte[] addr = item.GetAddressBytes();
@@ -178,39 +207,47 @@ namespace System.Net {
             else if (Login() == 0 && !m_IsStarted) {      // login succeed
                 m_IsStarted = true;
                 switch (Method) {
+
                     case "NLST":
                         DaemonThread = new Thread(NLSTThread);
                         DaemonThread.Start();
                         m_StreamReady.WaitOne();
                         break;
+
                     case "LIST":
                         DaemonThread = new Thread(LISTThread);
                         DaemonThread.Start();
                         m_StreamReady.WaitOne();
                         break;
+
                     case "DELE":
                         DaemonThread = new Thread(DELEThread);
                         DaemonThread.Start();
                         break;
+
                     case "MKD":
                         DaemonThread = new Thread(MKDThread);
                         DaemonThread.Start();
                         break;
+
                     case "RMD":
                         DaemonThread = new Thread(RMDThread);
                         DaemonThread.Start();
                         break;
+
                     case "RENAME":
                         DaemonThread = new Thread(RenameThread);
                         DaemonThread.Start();
                         break;
+
                     case "RETR":
                         DaemonThread = new Thread(DownloadThread);
                         DaemonThread.Start();
                         m_StreamReady.WaitOne();
                         break;
+
                     default:
-                        throw new ArgumentException("FTP method " + Method + " does not implemented."); ;
+                        throw new NotImplementedException("FTP method " + Method + " not implemented."); ;
                 }
                 return m_FtpResponse;
             }
@@ -260,20 +297,26 @@ namespace System.Net {
 
                 // need to change directory
                 if (RequestPath.Length > 2) {
-                    command = "CWD ";
-                    for (int i = 0; i < RequestPath.Length - 2; i++) {
-                        command += RequestPath[i] + "/";
-                    }
-                    command += "\r\n";
-                    CommandSocket.Send(Encoding.UTF8.GetBytes(command));
-                    responseNumber = WaitResponse();
-                    if (responseNumber != 250) {
-                        // change directory failed
-                        m_StatusCode = FTPStatusCode.CommandFailed;
+                    //command = "CWD ";
+                    //for (int i = 0; i < RequestPath.Length - 2; i++) {
+                    //    command += RequestPath[i] + "/";
+                    //}
+                    //command += "\r\n";
+                    //System.Diagnostics.Debug.WriteLine("Command:\t" + command);
+                    //CommandSocket.Send(Encoding.UTF8.GetBytes(command));
+                    //responseNumber = WaitResponse();
+                    //if (responseNumber != 250) {
+                    //    // change directory failed
+                    //    m_StatusCode = FTPStatusCode.CommandFailed;
+                    //    return;
+                    //}
+
+                    if (!SendCWD(RequestPath.Length - 2)) {
                         return;
                     }
                 }
                 command = "MKD " + RequestPath[RequestPath.Length - 2] + "\r\n";
+                System.Diagnostics.Debug.WriteLine("Command:\tMKD " + RequestPath[RequestPath.Length - 2]);
                 CommandSocket.Send(Encoding.UTF8.GetBytes(command));
                 responseNumber = WaitResponse();
                 if (responseNumber != 257) {
@@ -304,20 +347,27 @@ namespace System.Net {
             try {
                 string command;
                 int responseNumber;
+
                 if (RequestPath.Length > 2) {
-                    command = "CWD ";
-                    for (int i = 0; i < RequestPath.Length - 2; i++) {
-                        command += RequestPath[i] + "/";
-                    }
-                    command += "\r\n";
-                    CommandSocket.Send(Encoding.UTF8.GetBytes(command));
-                    responseNumber = WaitResponse();
-                    if (responseNumber != 250) {
-                        // change directory failed
+                    //command = "CWD ";
+                    //for (int i = 0; i < RequestPath.Length - 2; i++) {
+                    //    command += RequestPath[i] + "/";
+                    //}
+                    //command += "\r\n";
+                    //System.Diagnostics.Debug.WriteLine("Command:\t" + command);
+                    //CommandSocket.Send(Encoding.UTF8.GetBytes(command));
+                    //responseNumber = WaitResponse();
+                    //if (responseNumber != 250) {
+                    //    // change directory failed
+                    //    return;
+                    //}
+
+                    if (!SendCWD(RequestPath.Length - 2)) {
                         return;
                     }
                 }
                 command = "RMD " + RequestPath[RequestPath.Length - 2] + "\r\n";
+                System.Diagnostics.Debug.WriteLine("Command:\tRMD " + RequestPath[RequestPath.Length - 2]);
                 CommandSocket.Send(Encoding.UTF8.GetBytes(command));
                 responseNumber = WaitResponse();
                 if (responseNumber != 250) {
@@ -347,19 +397,29 @@ namespace System.Net {
                 throw new ArgumentException("The path is a directory");
             }
             try {
-                string command = "CWD ";
-                for (int i = 0; i < RequestPath.Length - 1; i++) {
-                    command += RequestPath[i] + "/";
-                }
-                command += "\r\n";
-                CommandSocket.Send(Encoding.UTF8.GetBytes(command));
-                int responseNumber = WaitResponse();
-                if (responseNumber != 250) {
-                    // change directory failed
-                    m_StatusCode = FTPStatusCode.CommandFailed;
+                //string command = "CWD ";
+                //for (int i = 0; i < RequestPath.Length - 1; i++) {
+                //    command += RequestPath[i] + "/";
+                //}
+                //System.Diagnostics.Debug.WriteLine("Command:\t" + command);
+                //command += "\r\n";
+                //CommandSocket.Send(Encoding.UTF8.GetBytes(command));
+                //int responseNumber = WaitResponse();
+                //if (responseNumber != 250) {
+                //    // change directory failed
+                //    m_StatusCode = FTPStatusCode.CommandFailed;
+                //    return;
+                //}
+
+                string command;
+                int responseNumber;
+
+                if (!SendCWD(RequestPath.Length - 1)) {
                     return;
                 }
+
                 command = "DELE " + RequestPath[RequestPath.Length - 1] + "\r\n";
+                System.Diagnostics.Debug.WriteLine("Command:\tDELE " + RequestPath[RequestPath.Length - 1]);
                 CommandSocket.Send(Encoding.UTF8.GetBytes(command));
                 responseNumber = WaitResponse();
                 if (responseNumber != 250) {
@@ -394,20 +454,31 @@ namespace System.Net {
             else {
                 oldIndex = RequestPath.Length - 1;
             }
+
             try {
-                string command = "CWD ";
-                for (int i = 0; i < oldIndex; i++) {
-                    command += RequestPath[i] + "/";
-                }
-                command += "\r\n";
-                CommandSocket.Send(Encoding.UTF8.GetBytes(command));
-                int responseNumber = WaitResponse();
-                if (responseNumber != 250) {
-                    // change directory failed
-                    m_StatusCode = FTPStatusCode.CommandFailed;
+                string command;
+                int responseNumber;
+
+                //string command = "CWD ";
+                //for (int i = 0; i < oldIndex; i++) {
+                //    command += RequestPath[i] + "/";
+                //}
+                //command += "\r\n";
+                //System.Diagnostics.Debug.WriteLine("Command:\t" + command);
+                //CommandSocket.Send(Encoding.UTF8.GetBytes(command));
+                //int responseNumber = WaitResponse();
+                //if (responseNumber != 250) {
+                //    // change directory failed
+                //    m_StatusCode = FTPStatusCode.CommandFailed;
+                //    return;
+                //}
+
+                if (!SendCWD(oldIndex)) {
                     return;
                 }
+
                 command = "RNFR " + RequestPath[oldIndex] + "\r\n";
+                System.Diagnostics.Debug.WriteLine("Command:\tRNFR " + RequestPath[oldIndex]);
                 CommandSocket.Send(Encoding.UTF8.GetBytes(command));
                 responseNumber = WaitResponse();
                 if (responseNumber != 350) {
@@ -421,6 +492,7 @@ namespace System.Net {
                     return;
                 }
                 command = "RNTO " + RenameTo + "\r\n";
+                System.Diagnostics.Debug.WriteLine("Command:\tRNTO " + RenameTo);
                 CommandSocket.Send(Encoding.UTF8.GetBytes(command));
                 responseNumber = WaitResponse();
                 if (responseNumber != 250) {
@@ -465,24 +537,34 @@ namespace System.Net {
                 throw new ArgumentException("The path is a directory");
             }
             try {
-                string command = "CWD ";
+                //string command = "CWD ";
 
-                for (int i = 0; i < RequestPath.Length - 1; i++) {
-                    command += RequestPath[i] + "/";
-                }
-                command += "\r\n";
-                CommandSocket.Send(Encoding.UTF8.GetBytes(command));
-                int responseNumber = WaitResponse();
-                if (responseNumber != 250) {
-                    // change directory failed
-                    m_StatusCode = FTPStatusCode.CommandFailed;
+                //for (int i = 0; i < RequestPath.Length - 1; i++) {
+                //    command += RequestPath[i] + "/";
+                //}
+                //System.Diagnostics.Debug.WriteLine("Command:\t" + command);
+                //command += "\r\n";
+                //CommandSocket.Send(Encoding.UTF8.GetBytes(command));
+                //int responseNumber = WaitResponse();
+                //if (responseNumber != 250) {
+                //    // change directory failed
+                //    m_StatusCode = FTPStatusCode.CommandFailed;
+                //    return;
+                //}
+
+                if (!SendCWD(RequestPath.Length - 1)) {
                     return;
                 }
+
+                string command;
+                int responseNumber;
+
                 using (Socket listenSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)) {
                     ConfigureListenSocket(listenSocket);
 
                     FTPActivePort = (listenSocket.LocalEndPoint as IPEndPoint).Port;
                     command = "PORT " + FormatFTPAddress(FTPActiveAddress, FTPActivePort) + "\r\n";
+                    System.Diagnostics.Debug.WriteLine("Command:\tPORT " + FTPActiveAddress + ":" + FTPActivePort);
                     CommandSocket.Send(Encoding.UTF8.GetBytes(command));
                     responseNumber = WaitResponse();
                     while (responseNumber == 230) {
@@ -546,24 +628,41 @@ namespace System.Net {
                 throw new ArgumentException("The path is a directory");
             }
             try {
-                string command = "CWD ";
+                //string command = "CWD ";
 
-                for (int i = 0; i < RequestPath.Length - 1; i++) {
-                    command += RequestPath[i] + "/";
-                }
-                command += "\r\n";
-                CommandSocket.Send(Encoding.UTF8.GetBytes(command));
-                int responseNumber = WaitResponse();
-                if (responseNumber != 250) {
-                    // change directory failed
-                    m_StatusCode = FTPStatusCode.CommandFailed;
+                //for (int i = 0; i < RequestPath.Length - 1; i++) {
+                //    command += RequestPath[i] + "/";
+                //}
+                //System.Diagnostics.Debug.WriteLine("Command:\t" + command);
+                //command += "\r\n";
+                //CommandSocket.Send(Encoding.UTF8.GetBytes(command));
+                //int responseNumber = WaitResponse();
+                //if (responseNumber != 250) {
+                //    // change directory failed
+                //    m_StatusCode = FTPStatusCode.CommandFailed;
+                //    return;
+                //}
+
+                if (!SendCWD(RequestPath.Length - 1)) {
                     return;
                 }
+
+                string command;
+                int responseNumber;
+
+                System.Diagnostics.Debug.WriteLine("Command:\tTYPE " + m_Type);
+                CommandSocket.Send(Encoding.UTF8.GetBytes("TYPE " + m_Type + "\r\n"));
+                responseNumber = WaitResponse();
+                if (responseNumber != 200) {
+                    return;
+                }
+
                 using (Socket listenSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)) {
                     ConfigureListenSocket(listenSocket);
 
                     FTPActivePort = (listenSocket.LocalEndPoint as IPEndPoint).Port;
                     command = "PORT " + FormatFTPAddress(FTPActiveAddress, FTPActivePort) + "\r\n";
+                    System.Diagnostics.Debug.WriteLine("Command:\tPORT " + FTPActiveAddress + ":" + FTPActivePort);
                     CommandSocket.Send(Encoding.UTF8.GetBytes(command));
                     responseNumber = WaitResponse();
                     while (responseNumber == 230) {
@@ -574,6 +673,8 @@ namespace System.Net {
                         m_StatusCode = FTPStatusCode.CommandFailed;
                         return;
                     }
+
+                    System.Diagnostics.Debug.WriteLine("Command:\tSTOR " + RequestPath[RequestPath.Length - 1]);
                     CommandSocket.Send(Encoding.UTF8.GetBytes("STOR " + RequestPath[RequestPath.Length - 1] + "\r\n"));
                     responseNumber = WaitResponse();
                     if (!SetStatusCode(responseNumber)) {
@@ -620,23 +721,33 @@ namespace System.Net {
                 throw new ArgumentException("The path is not a directory");
             }
             try {
-                string command = "CWD ";
-                for (int i = 0; i < RequestPath.Length - 1; i++) {
-                    command += RequestPath[i] + "/";
-                }
-                command += "\r\n";
-                CommandSocket.Send(Encoding.UTF8.GetBytes(command));
-                int responseNumber = WaitResponse();
-                if (responseNumber != 250) {
-                    // change directory failed
-                    m_StatusCode = FTPStatusCode.CommandFailed;
+                //string command = "CWD ";
+                //for (int i = 0; i < RequestPath.Length - 1; i++) {
+                //    command += RequestPath[i] + "/";
+                //}
+                //System.Diagnostics.Debug.WriteLine("Command:\t" + command);
+                //command += "\r\n";
+                //CommandSocket.Send(Encoding.UTF8.GetBytes(command));
+                //int responseNumber = WaitResponse();
+                //if (responseNumber != 250) {
+                //    // change directory failed
+                //    m_StatusCode = FTPStatusCode.CommandFailed;
+                //    return;
+                //}
+
+                if (!SendCWD(RequestPath.Length - 1)) {
                     return;
                 }
+
+                string command;
+                int responseNumber;
+
                 using (Socket listenSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)) {
                     ConfigureListenSocket(listenSocket);
 
                     FTPActivePort = (listenSocket.LocalEndPoint as IPEndPoint).Port;
                     command = "PORT " + FormatFTPAddress(FTPActiveAddress, FTPActivePort) + "\r\n";
+                    System.Diagnostics.Debug.WriteLine("Command:\tPORT " + FTPActiveAddress + ":" + FTPActivePort);
                     CommandSocket.Send(Encoding.UTF8.GetBytes(command));
                     responseNumber = WaitResponse();
                     while (responseNumber == 230) {
@@ -694,23 +805,33 @@ namespace System.Net {
                 throw new ArgumentException("The path is not a directory");
             }
             try {
-                string command = "CWD ";
-                for (int i = 0; i < RequestPath.Length - 1; i++) {
-                    command += RequestPath[i] + "/";
-                }
-                command += "\r\n";
-                CommandSocket.Send(Encoding.UTF8.GetBytes(command));
-                int responseNumber = WaitResponse();
-                if (responseNumber != 250) {
-                    // change directory failed
-                    m_StatusCode = FTPStatusCode.CommandFailed;
+                //string command = "CWD ";
+                //for (int i = 0; i < RequestPath.Length - 1; i++) {
+                //    command += RequestPath[i] + "/";
+                //}
+                //System.Diagnostics.Debug.WriteLine("Command:\t" + command);
+                //command += "\r\n";
+                //CommandSocket.Send(Encoding.UTF8.GetBytes(command));
+                //int responseNumber = WaitResponse();
+                //if (responseNumber != 250) {
+                //    // change directory failed
+                //    m_StatusCode = FTPStatusCode.CommandFailed;
+                //    return;
+                //}
+
+                if (!SendCWD(RequestPath.Length - 1)) {
                     return;
                 }
+
+                string command;
+                int responseNumber;
+
                 using (Socket listenSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)) {
                     ConfigureListenSocket(listenSocket);
 
                     FTPActivePort = (listenSocket.LocalEndPoint as IPEndPoint).Port;
                     command = "PORT " + FormatFTPAddress(FTPActiveAddress, FTPActivePort) + "\r\n";
+                    System.Diagnostics.Debug.WriteLine("Command:\tPORT " + FTPActiveAddress + ":" + FTPActivePort);
                     CommandSocket.Send(Encoding.UTF8.GetBytes(command));
                     responseNumber = WaitResponse();
                     while (responseNumber == 230) {
@@ -758,6 +879,23 @@ namespace System.Net {
             }
         }
 
+        private bool SendCWD(int length) {
+            string command = "CWD ";
+            for (int i = 0; i < length; i++) {
+                command += RequestPath[i] + "/";
+            }
+            System.Diagnostics.Debug.WriteLine("Command:\t" + command);
+            command += "\r\n";
+            CommandSocket.Send(Encoding.UTF8.GetBytes(command));
+            int responseNumber = WaitResponse();
+            if (responseNumber == 250) {
+                return true;
+            }
+
+            m_StatusCode = FTPStatusCode.CommandFailed;
+            return false;
+        }
+
         /// <summary>
         /// construct endpoint in the form of (xxx,xxx,xxx,xxx,yyy,yyy)
         /// </summary>
@@ -795,9 +933,8 @@ namespace System.Net {
         /// <param name="timeout">specify the time to wait for a response</param>
         /// <returns></returns>
         private int WaitResponse(int timeout) {
-            byte[] buffer = null;
             string bufferString = "";                       // using string to manage the buffer
-            int readLength = 0;
+            int readLength;
             bool responseArrived = false;
 
             if (m_IsClosed) {
@@ -805,12 +942,12 @@ namespace System.Net {
                 ResponseMessage = "Class disposed.";
                 return ResponseCode;
             }
-            else if (ResponseStack == null) {
-                ResponseStack = new ArrayList();
-            }
-            else if (ResponseStack.Count > 0) {
-                ResponseStack.Clear();
-            }
+            //else if (ResponseStack == null) {
+            //    ResponseStack = new ArrayList();
+            //}
+            //else if (ResponseStack.Count > 0) {
+            //    ResponseStack.Clear();
+            //}
             while (!responseArrived) {
                 if (m_IsClosed) {
                     ResponseCode = 0;
@@ -818,18 +955,20 @@ namespace System.Net {
                     break;
                 }
                 // block the method until get something or throw a socket exception
-                if (CommandSocket.Poll(1000 * timeout, SelectMode.SelectRead)) {
+                //if (CommandSocket.Poll(1000 * timeout, SelectMode.SelectRead)) {
+                if (CommandSocket.Poll(-1, SelectMode.SelectRead)) {
                     if (CommandSocket.Available == 0) {
                         throw new SocketException(SocketError.SocketError);
                     }
-                    buffer = new byte[CommandSocket.Available];
+
+                    var buffer = new byte[CommandSocket.Available];
                     readLength = CommandSocket.Receive(buffer, buffer.Length, 0);
 
                     bufferString += new string(Encoding.UTF8.GetChars(buffer));
 
                     if (bufferString.IndexOf('\n') >= 0) {
                         string[] tempArray = bufferString.Split(new char[] { '\n' });
-                        int replyNumber = 0;
+                        int replyNumber;
                         int lastReplyNumber = 0;
                         for (int i = 0; i < tempArray.Length - 1; i++) {
                             replyNumber = ParseCommand(tempArray[i]);
@@ -844,10 +983,10 @@ namespace System.Net {
                             if (replyNumber > 0 && !responseArrived) {
                                 responseArrived = true;
                                 ResponseCode = replyNumber;
-                                ResponseMessage = tempArray[i].Substring(4);
+                                ResponseMessage = tempArray[i].Substring(4, tempArray[i].Length - 5);
                                 break;
                             }
-                            ResponseStack.Add(tempArray[i]);
+                            //ResponseStack.Add(tempArray[i]);
                         }
                         bufferString = tempArray[tempArray.Length - 1];
                     }
@@ -858,6 +997,7 @@ namespace System.Net {
                     throw new SocketException(SocketError.SocketError);
                 }
             }
+            System.Diagnostics.Debug.WriteLine("Response:\t" + ResponseCode + " " + ResponseMessage);
             return ResponseCode;
         }
 
@@ -935,37 +1075,51 @@ namespace System.Net {
         ///  >0: reply code tells why server rejects the login process 
         /// </returns>
         private int Login() {
-            string command = null;
-            byte[] dataBuffer = new byte[1000];
-            int responseNumber = 0;
+            string command;
+            int responseNumber;
             m_StatusCode = FTPStatusCode.NotLoggedIn;
             try {
                 CommandSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp) {
                     ReceiveTimeout = m_CommandTimeout
                 };
+
+                System.Diagnostics.Debug.WriteLine("Status: Connecting to " + ServerIP + ":" + ServerPort + "...");
                 CommandSocket.Connect(new IPEndPoint(ServerIP, ServerPort));
+                if (CommandSocket.LocalEndPoint != null) {  // throws InvalidOperationException
+                    System.Diagnostics.Debug.WriteLine("Status: Connection established, waiting for welcome message...");
+                }
+
                 responseNumber = WaitResponse();
                 if (responseNumber != 220) {
                     // server not ready for new user login
                     return responseNumber;
                 }
+
                 command = "USER " + m_Credential.UserName + "\r\n";
+                System.Diagnostics.Debug.WriteLine("Command:\tUSER " + m_Credential.UserName);
                 CommandSocket.Send(Encoding.UTF8.GetBytes(command));
                 responseNumber = WaitResponse();
                 if (responseNumber != 331) {
                     // user name is not allowed
                     return responseNumber;
                 }
+
                 command = "PASS " + m_Credential.Password + "\r\n";
+                System.Diagnostics.Debug.WriteLine("Command:\tPASS " + new string('*', m_Credential.Password.Length));
                 CommandSocket.Send(Encoding.UTF8.GetBytes(command));
                 responseNumber = WaitResponse();
                 if (responseNumber != 230) {
                     // password does not match
                     return responseNumber;
                 }
+
                 m_StatusCode = FTPStatusCode.LoggedInProceed;
                 responseNumber = 0;
 
+            }
+            catch (InvalidOperationException se) {
+                System.Diagnostics.Debug.WriteLine(se.Message);
+                throw new WebException("Login fail due to connection problem.");
             }
             catch (SocketException se) {
                 System.Diagnostics.Debug.WriteLine(se.Message);
@@ -974,29 +1128,29 @@ namespace System.Net {
             return responseNumber;
         }
 
-        private IPEndPoint GetEndPoint(string response) {
-            if (response == null) {
-                return null;
-            }
-            IPEndPoint result = null;
-            string[] responseArray = response.Split(new char[] { '(', ')' });
-            if (responseArray.Length < 2) {
-                return null;
-            }
-            string[] addrs = responseArray[1].Split(new char[] { ',' });
-            if (addrs.Length != 6) {
-                return null;
-            }
-            try {
-                IPAddress addr = IPAddress.Parse(addrs[0] + "." + addrs[1] + "." + addrs[2] + "." + addrs[3]);
-                int port = int.Parse(addrs[4]) * 256 + int.Parse(addrs[5]);
-                result = new IPEndPoint(addr, port);
-            }
-            catch (ArgumentException ae) {
-                System.Diagnostics.Debug.WriteLine("Parse error: " + ae.Message);
-            }
-            return result;
-        }
+        //private IPEndPoint GetEndPoint(string response) {
+        //    if (response == null) {
+        //        return null;
+        //    }
+        //    IPEndPoint result = null;
+        //    string[] responseArray = response.Split(new char[] { '(', ')' });
+        //    if (responseArray.Length < 2) {
+        //        return null;
+        //    }
+        //    string[] addrs = responseArray[1].Split(new char[] { ',' });
+        //    if (addrs.Length != 6) {
+        //        return null;
+        //    }
+        //    try {
+        //        IPAddress addr = IPAddress.Parse(addrs[0] + "." + addrs[1] + "." + addrs[2] + "." + addrs[3]);
+        //        int port = int.Parse(addrs[4]) * 256 + int.Parse(addrs[5]);
+        //        result = new IPEndPoint(addr, port);
+        //    }
+        //    catch (ArgumentException ae) {
+        //        System.Diagnostics.Debug.WriteLine("Parse error: " + ae.Message);
+        //    }
+        //    return result;
+        //}
 
         /// <summary>
         /// Timer callback

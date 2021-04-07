@@ -16,17 +16,11 @@ namespace System.Net
         /// <summary>
         /// Static constructor
         /// </summary>
-        static FTPWebRequestCreator()
-        {
-            WebRequest.RegisterPrefix("ftp:", new FTPWebRequestCreator());
-        }
+        static FTPWebRequestCreator() => WebRequest.RegisterPrefix("ftp:", new FTPWebRequestCreator());
 
         #region IWebRequestCreate Members
 
-        public WebRequest Create(Uri uri)
-        {
-            return new FtpWebRequest(uri);
-        }
+        public WebRequest Create(Uri uri) => new FtpWebRequest(uri);
 
         #endregion
     }
