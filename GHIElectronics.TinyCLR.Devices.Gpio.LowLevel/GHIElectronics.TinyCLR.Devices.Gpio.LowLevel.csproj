@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+   <Import Project="$(MSBuildThisFileDirectory)..\mscorlib.props" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{F86BE83A-AEEB-4BB7-87EB-FD3745B3F4D2}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>GHIElectronics.TinyCLR.Devices.Gpio.LowLevel</RootNamespace>
+    <AssemblyName>GHIElectronics.TinyCLR.Devices.Gpio.LowLevel</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{A1948822-69DD-4150-919B-F3F42EFB71CC};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="LowLevelController.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GHIElectronics.TinyCLR.Devices.Gpio\GHIElectronics.TinyCLR.Devices.Gpio.csproj">
+      <Project>{21FBFF15-D7C4-48A8-B3D1-CE70A288B3EA}</Project>
+      <Name>GHIElectronics.TinyCLR.Devices.Gpio</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GHIElectronics.TinyCLR.Native\GHIElectronics.TinyCLR.Native.csproj">
+      <Project>{B602474A-AEB0-491C-832B-7EAF0B4511C0}</Project>
+      <Name>GHIElectronics.TinyCLR.Native</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\GHIElectronics.Tools.NuGetPacker.1.0.3\build\GHIElectronics.Tools.NuGetPacker.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\GHIElectronics.Tools.NuGetPacker.1.0.3\build\GHIElectronics.Tools.NuGetPacker.targets'))" />
+    <Error Condition="'$(DoAssemblySign)'=='true' And !Exists('..\packages\GHIElectronics.Tools.AssemblySigner.1.0.3\build\GHIElectronics.Tools.AssemblySigner.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\GHIElectronics.Tools.AssemblySigner.1.0.3\build\GHIElectronics.Tools.AssemblySigner.targets'))" />
+  </Target>
+  <Import Project="..\packages\GHIElectronics.Tools.NuGetPacker.1.0.3\build\GHIElectronics.Tools.NuGetPacker.targets" Condition="Exists('..\packages\GHIElectronics.Tools.NuGetPacker.1.0.3\build\GHIElectronics.Tools.NuGetPacker.targets')" />
+  <Import Project="..\packages\GHIElectronics.Tools.AssemblySigner.1.0.3\build\GHIElectronics.Tools.AssemblySigner.targets" Condition="'$(DoAssemblySign)'=='true' And Exists('..\packages\GHIElectronics.Tools.AssemblySigner.1.0.3\build\GHIElectronics.Tools.AssemblySigner.targets')" />
+</Project>

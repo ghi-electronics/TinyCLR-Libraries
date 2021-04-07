@@ -165,6 +165,7 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio {
             void SetDriveMode(int pin, GpioPinDriveMode value);
             GpioPinValue Read(int pin);
             void Write(int pin, GpioPinValue value);
+            void TransferFeature(int pinSource, int pinDestination, uint mode, uint type, uint direction, uint speed, uint alternate);
         }
 
         public sealed class GpioControllerApiWrapper : IGpioControllerProvider {
@@ -265,6 +266,10 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio {
                 if (handler != null)
                     handler?.Invoke(null, new GpioPinValueChangedEventArgs(edge, ts));
             }
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            public extern void TransferFeature(int pinSource, int pinDestination, uint mode, uint type, uint direction, uint speed, uint alternate);
+            
         }
     }
 }
