@@ -28,22 +28,25 @@ namespace GHIElectronics.TinyCLR.Update {
             }
         }
 
-        public ApplicationdUpdate(Stream stream, byte[] key) {
+        public ApplicationdUpdate(Stream stream, byte[] key) {         
             this.stream = stream;
             this.key = key;
+
+            if (this.stream == null || this.key == null)
+                throw new ArgumentNullException();
 
             InFieldUpdate.NativeInitialize();
         }
 
         public string Verify() {
             InFieldUpdate.NativeSetApplicationSize((uint)this.stream.Length);
-            var v = InFieldUpdate.NativeAuthenticateApplication(null, this.stream, this.key, this.activityPinId);
+            var v = this.NativeAuthenticateApplication(this.stream, this.key, this.activityPinId);
             return InFieldUpdate.VersionConvertToString(v);
         }
 
         public void FlashAndReset() {
             InFieldUpdate.NativeSetApplicationSize((uint)this.stream.Length);
-            var v = InFieldUpdate.NativeAuthenticateApplication(null, this.stream, this.key, this.activityPinId);
+            var v = this.NativeAuthenticateApplication(this.stream, this.key, this.activityPinId);
             if (v == 0xFFFFFFFF) {
                 throw new Exception("Authenticate application failed.");
             }
@@ -52,6 +55,9 @@ namespace GHIElectronics.TinyCLR.Update {
 
             throw new InvalidOperationException("FlashAndReset failed.");
         }
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private extern uint NativeAuthenticateApplication(Stream stream, byte[] key, int indicatorPinId);
     }
 
     public sealed class InFieldUpdate:IDisposable {
@@ -207,7 +213,7 @@ namespace GHIElectronics.TinyCLR.Update {
         public string VerifyApplication() {
             NativeSetApplicationSize(this.applicationChunkIndex);
 
-            var v = NativeAuthenticateApplication(this.applicationBuffer, null, this.applicationKey, this.activityPinId);
+            var v = NativeAuthenticateApplication(this.applicationBuffer, this.applicationKey, this.activityPinId);
 
             return VersionConvertToString(v);
 
@@ -239,7 +245,7 @@ namespace GHIElectronics.TinyCLR.Update {
                 }
 
                 if ((this.mode & IfuMode.Application) == IfuMode.Application) {
-                    var v = NativeAuthenticateApplication(this.applicationBuffer, null, this.applicationKey, this.activityPinId);
+                    var v = NativeAuthenticateApplication(this.applicationBuffer, this.applicationKey, this.activityPinId);
 
                     if (v == 0xFFFFFFFF) {
                         throw new Exception("Authenticate application failed.");
@@ -343,7 +349,7 @@ namespace GHIElectronics.TinyCLR.Update {
         private static extern void NativeSetFirmwareSize(uint size);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        internal static extern uint NativeAuthenticateApplication(byte[] buffer, Stream stream, byte[] key, int indicatorPinId);
+        internal static extern uint NativeAuthenticateApplication(byte[] buffer, byte[] key, int indicatorPinId);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern void NativeSetApplicationSize(uint size);
