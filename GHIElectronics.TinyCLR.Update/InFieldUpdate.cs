@@ -54,7 +54,7 @@ namespace GHIElectronics.TinyCLR.Update {
         }
     }
 
-    public sealed class InFieldUpdate {
+    public sealed class InFieldUpdate:IDisposable {
         public enum CacheMode {
             Flash,
             Ram,
@@ -99,7 +99,8 @@ namespace GHIElectronics.TinyCLR.Update {
 
         private uint firmwareChunkIndex = 0;
         private uint applicationChunkIndex = 0;
-        private UnmanagedBuffer uBuffer;
+        private UnmanagedBuffer uAppBuffer;
+        private UnmanagedBuffer uFwBuffer;
 
         public InFieldUpdate() {
             this.cacheMode = CacheMode.Ram;
@@ -135,9 +136,9 @@ namespace GHIElectronics.TinyCLR.Update {
                 if (this.applicationChunkIndex == 0) {
                     if (this.applicationBuffer == null) {
                         if (Memory.UnmanagedMemory.FreeBytes > ApplicationMaxSize) {
-                            this.uBuffer = new UnmanagedBuffer((int)ApplicationMaxSize);
+                            this.uAppBuffer = new UnmanagedBuffer((int)ApplicationMaxSize);
 
-                            this.applicationBuffer = this.uBuffer.Bytes;
+                            this.applicationBuffer = this.uAppBuffer.Bytes;
                         }
                         else {
                             this.applicationBuffer = new byte[ApplicationMaxSize];
@@ -171,9 +172,9 @@ namespace GHIElectronics.TinyCLR.Update {
                 if (this.firmwareChunkIndex == 0) {
                     if (this.firmwareBuffer == null) {
                         if (Memory.UnmanagedMemory.FreeBytes > FirmwareMaxSize) {
-                            this.uBuffer = new UnmanagedBuffer((int)FirmwareMaxSize);
+                            this.uFwBuffer = new UnmanagedBuffer((int)FirmwareMaxSize);
 
-                            this.firmwareBuffer = this.uBuffer.Bytes;
+                            this.firmwareBuffer = this.uFwBuffer.Bytes;
                         }
                         else {
                             this.firmwareBuffer = new byte[FirmwareMaxSize];
@@ -191,7 +192,7 @@ namespace GHIElectronics.TinyCLR.Update {
                 b = this.BufferingToExternalFlash(FirmwareAddress + this.firmwareChunkIndex, data, offset, size);
             }
             else {
-                b = this.BufferingToMemory(this.firmwareChunkIndex, data, offset, size, false);
+                b = this.BufferingToMemory(this.firmwareChunkIndex, data, offset, size, true);
             }
 
             this.firmwareChunkIndex += (uint)b;
@@ -303,6 +304,26 @@ namespace GHIElectronics.TinyCLR.Update {
 
         private void ToggleActivityPin() => this.ActivityPin?.Write(this.ActivityPin.Read() == GpioPinValue.High ? GpioPinValue.Low : GpioPinValue.High);
 
+        private bool disposed = false;
+        public void Dispose() {
+            if (this.disposed)
+                return;
+
+            if (this.uAppBuffer != null) {
+                this.applicationBuffer = null;
+                this.uAppBuffer.Dispose();
+                this.uAppBuffer = null;
+            }
+
+            if (this.uFwBuffer != null) {
+                this.firmwareBuffer = null;
+                this.uFwBuffer.Dispose();
+                this.uFwBuffer = null;
+            }
+
+            this.disposed = true;
+        }
+
         public static string VersionConvertToString(uint version) {
             var v = version != 0xFFFFFFFF ? ((version >> 24) & 0xFF).ToString() + "."
                                             + ((version >> 16) & 0xFF).ToString() + "."
@@ -329,7 +350,7 @@ namespace GHIElectronics.TinyCLR.Update {
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         internal static extern void NativeFlashAndReset(int indicatorPin);
-
+        
         private extern static uint FirmwareAddress { [MethodImpl(MethodImplOptions.InternalCall)] get; }
         private extern static uint FirmwareMaxSize { [MethodImpl(MethodImplOptions.InternalCall)] get; }
         private extern static uint ApplicationAddress { [MethodImpl(MethodImplOptions.InternalCall)] get; }
