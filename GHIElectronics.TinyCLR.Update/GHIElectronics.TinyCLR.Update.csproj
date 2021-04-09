@@ -50,9 +50,9 @@
       <Project>{F3CD9D5A-75B4-4AD9-852D-4B0895ED3979}</Project>
       <Name>GHIElectronics.TinyCLR.Devices.Storage</Name>
     </ProjectReference>
-    <ProjectReference Include="..\GHIElectronics.TinyCLR.IO\GHIElectronics.TinyCLR.IO.csproj">
-      <Project>{313AEC8E-2B47-4A1A-ACE2-A766D076B2AE}</Project>
-      <Name>GHIElectronics.TinyCLR.IO</Name>
+    <ProjectReference Include="..\GHIElectronics.TinyCLR.Native\GHIElectronics.TinyCLR.Native.csproj">
+      <Project>{B602474A-AEB0-491C-832B-7EAF0B4511C0}</Project>
+      <Name>GHIElectronics.TinyCLR.Native</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
