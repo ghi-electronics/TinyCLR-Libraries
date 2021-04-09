@@ -1,15 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildThisFileDirectory)..\mscorlib.props" />
+   <Import Project="$(MSBuildThisFileDirectory)..\mscorlib.props" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{8686ED02-898F-4523-8434-67FB688E855F}</ProjectGuid>
+    <ProjectGuid>{F86BE83A-AEEB-4BB7-87EB-FD3745B3F4D2}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GHIElectronics.TinyCLR.Vnc</RootNamespace>
-    <AssemblyName>GHIElectronics.TinyCLR.Vnc</AssemblyName>
+    <RootNamespace>GHIElectronics.TinyCLR.Devices.Gpio.LowLevel</RootNamespace>
+    <AssemblyName>GHIElectronics.TinyCLR.Devices.Gpio.LowLevel</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A1948822-69DD-4150-919B-F3F42EFB71CC};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -24,7 +24,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -33,37 +32,22 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Encodings\EncodedRectangle.cs" />
-    <Compile Include="Encodings\RawRectangle.cs" />
-    <Compile Include="FrameBuffer.cs" />
+    <Compile Include="LowLevelController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Readers\StreamReader.cs" />
-    <Compile Include="VncHost.cs" />
-    <Compile Include="VncServer.cs" />
-    <Compile Include="Writers\StreamWriter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\GHIElectronics.TinyCLR.Devices.Network\GHIElectronics.TinyCLR.Devices.Network.csproj">
-      <Project>{C6722DB2-B687-44C4-B1A1-665C50F34AF1}</Project>
-      <Name>GHIElectronics.TinyCLR.Devices.Network</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\GHIElectronics.TinyCLR.Drawing\GHIElectronics.TinyCLR.Drawing.csproj">
-      <Project>{52A54E94-2FD8-4EEE-822C-C8C7F27AF423}</Project>
-      <Name>GHIElectronics.TinyCLR.Drawing</Name>
+    <ProjectReference Include="..\GHIElectronics.TinyCLR.Devices.Gpio\GHIElectronics.TinyCLR.Devices.Gpio.csproj">
+      <Project>{21FBFF15-D7C4-48A8-B3D1-CE70A288B3EA}</Project>
+      <Name>GHIElectronics.TinyCLR.Devices.Gpio</Name>
     </ProjectReference>
     <ProjectReference Include="..\GHIElectronics.TinyCLR.Native\GHIElectronics.TinyCLR.Native.csproj">
       <Project>{B602474A-AEB0-491C-832B-7EAF0B4511C0}</Project>
       <Name>GHIElectronics.TinyCLR.Native</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\GHIElectronics.TinyCLR.Networking\GHIElectronics.TinyCLR.Networking.csproj">
-      <Project>{1AFA3955-B36D-4A8A-8B7F-86F39FC2FDE3}</Project>
-      <Name>GHIElectronics.TinyCLR.Networking</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
