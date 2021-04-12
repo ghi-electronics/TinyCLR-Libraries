@@ -285,7 +285,75 @@ namespace GHIElectronics.TinyCLR.Data.Json
             }
             else
             {
-                if (value.Value.GetType() == typeof(ulong))
+                if (targetType.IsEnum)
+                {
+                    // This is broken in TinyCLR
+                    //var baseType = Enum.GetUnderlyingType(targetType);
+
+                    // But this is a substitute
+                    var fields = targetType.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+                    if (fields == null || fields.Length != 1)
+                        throw new Exception("Failed to get enum underlying type");
+
+                    var baseType = fields[0].FieldType;
+
+                    // explicit unboxing, because unboxing with casting fails
+                    var source = value.Value;
+                    ulong ulSource;
+                    var sourceType = value.Value.GetType();
+                    if (sourceType == typeof(ulong))
+                    {
+                        ulSource = (ulong)source;
+                    }
+                    else if (sourceType == typeof(int))
+                    {
+                        ulSource = (ulong)(int)source;
+                    }
+                    else if (sourceType == typeof(long))
+                    {
+                        ulSource = (ulong)(long)source;
+                    }
+                    else if (sourceType == typeof(short))
+                    {
+                        ulSource = (ulong)(ushort)source;
+                    }
+                    else if (sourceType == typeof(byte))
+                    {
+                        ulSource = (ulong)(byte)source;
+                    }
+                    else if (sourceType == typeof(sbyte))
+                    {
+                        ulSource = (ulong)(sbyte)source;
+                    }
+                    else
+                    {
+                        throw new Exception("Could not encode the source type for use in an enum");
+                    }
+
+                    if (baseType == typeof(int))
+                    {
+                        result = (int)ulSource;
+                    }
+                    else if (baseType == typeof(long)) {
+                        result = (long)ulSource;
+                    }
+                    else if (baseType == typeof(ulong)) {
+                        result = ulSource;
+                    }
+                    else if (baseType == typeof(short)) {
+                        result = (short)ulSource;
+                    }
+                    else if (baseType == typeof(ushort)) {
+                        result = (ushort)ulSource;
+                    }
+                    else if (baseType == typeof(byte)) {
+                        result = (byte)ulSource;
+                    }
+                    else if (baseType == typeof(sbyte)) {
+                        result = (sbyte)ulSource;
+                    }
+                }
+                else if (value.Value.GetType() == typeof(ulong))
                 {
                     var source = (ulong)value.Value;
                     if (targetType == typeof(float))
