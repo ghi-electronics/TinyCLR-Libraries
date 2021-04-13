@@ -63,6 +63,10 @@ namespace GHIElectronics.TinyCLR.Pins {
             /// <summary>GPIO pin.</summary>
             public const int PB13 = STM32H7.GpioPin.PB13;
             /// <summary>GPIO pin.</summary>
+            public const int PB14 = STM32H7.GpioPin.PB14;
+            /// <summary>GPIO pin.</summary>
+            public const int PB15 = STM32H7.GpioPin.PB15;
+            /// <summary>GPIO pin.</summary>
             public const int PC0 = STM32H7.GpioPin.PC0;
             /// <summary>GPIO pin.</summary>
             public const int PC1 = STM32H7.GpioPin.PC1;
