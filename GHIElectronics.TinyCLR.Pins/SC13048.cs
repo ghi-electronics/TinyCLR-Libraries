@@ -76,6 +76,8 @@ namespace GHIElectronics.TinyCLR.Pins {
             public const int PH0 = STM32L4.GpioPin.PH0;
             /// <summary>GPIO pin.</summary>
             public const int PH1 = STM32L4.GpioPin.PH1;
+            /// <summary>GPIO pin.</summary>
+            public const int PH3 = STM32L4.GpioPin.PH3;
         }
 
         /// <summary>ADC channel definitions.</summary>
