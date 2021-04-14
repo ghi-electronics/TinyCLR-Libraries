@@ -80,7 +80,9 @@ namespace GHIElectronics.TinyCLR.Pins {
             public const int PH0 = 0 + 112;
             /// <summary>GPIO pin.</summary>
             public const int PH1 = 1 + 112;
-            
+            /// <summary>GPIO pin.</summary>
+            public const int PH3 = 3 + 112;
+
         }
 
         /// <summary>ADC channel definitions.</summary>
