@@ -288,14 +288,7 @@ namespace GHIElectronics.TinyCLR.Data.Json
                 if (targetType.IsEnum)
                 {
                     // This is broken in TinyCLR
-                    //var baseType = Enum.GetUnderlyingType(targetType);
-
-                    // But this is a substitute
-                    var fields = targetType.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-                    if (fields == null || fields.Length != 1)
-                        throw new Exception("Failed to get enum underlying type");
-
-                    var baseType = fields[0].FieldType;
+                    var baseType = Enum.GetUnderlyingType(targetType);
 
                     // explicit unboxing, because unboxing with casting fails
                     var source = value.Value;

@@ -91,7 +91,7 @@ namespace GHIElectronics.TinyCLR.Data.Json
 			string second = (parts.Length > 5) ? parts[5] : "0";
 			string ms = (parts.Length > 6) ? parts[6] : "0";
 
-			DateTime dt = new DateTime(Convert.ToInt32(year), Convert.ToInt32(month), Convert.ToInt32(day), Convert.ToInt32(hour), Convert.ToInt32(minute), Convert.ToInt32(second), Convert.ToInt32(ms));
+			DateTime dt = new DateTime(Convert.ToInt32(year), Convert.ToInt32(month), Convert.ToInt32(day), Convert.ToInt32(hour), Convert.ToInt32(minute), Convert.ToInt32(second), (int)Math.Round(Convert.ToDouble("0." + ms) * 1000.0));
 
 			// If a time offset was specified instead of the UTC marker,
 			// add/subtract in the hours/minutes
@@ -102,21 +102,17 @@ namespace GHIElectronics.TinyCLR.Data.Json
 				string minuteOffset = (parts.Length > 8) ? parts[8] : "";
 				if (date.Contains("+"))
 				{
-					dt = dt.AddHours(Convert.ToDouble(hourOffset));
-					dt = dt.AddMinutes(Convert.ToDouble(minuteOffset));
-				}
-				else
+                    dt = dt.AddHours(-(Convert.ToDouble(hourOffset)));
+                    dt = dt.AddMinutes(-(Convert.ToDouble(minuteOffset)));
+                }
+                else
 				{
-					dt = dt.AddHours(-(Convert.ToDouble(hourOffset)));
-					dt = dt.AddMinutes(-(Convert.ToDouble(minuteOffset)));
-				}
-			}
+                    dt = dt.AddHours(Convert.ToDouble(hourOffset));
+                    dt = dt.AddMinutes(Convert.ToDouble(minuteOffset));
+                }
+            }
 
-			if (utc)
-			{
-				// Convert the Kind to DateTimeKind.Utc if string Z present
-				dt = new DateTime(dt.Ticks, DateTimeKind.Utc);
-			}
+        	dt = new DateTime(dt.Ticks, DateTimeKind.Utc);
 
 			return dt;
 		}
