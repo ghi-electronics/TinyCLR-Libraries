@@ -7,7 +7,7 @@ using GHIElectronics.TinyCLR.Devices.Storage;
 using GHIElectronics.TinyCLR.Native;
 
 namespace GHIElectronics.TinyCLR.Update {
-    public sealed class ApplicationdUpdate {
+    public sealed class ApplicationUpdate {
         private Stream stream;
         private byte[] key;
         private int activityPinId = -1;
@@ -28,7 +28,7 @@ namespace GHIElectronics.TinyCLR.Update {
             }
         }
 
-        public ApplicationdUpdate(Stream stream, byte[] key) {         
+        public ApplicationUpdate(Stream stream, byte[] key) {         
             this.stream = stream;
             this.key = key;
 
