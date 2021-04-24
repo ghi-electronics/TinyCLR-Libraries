@@ -186,10 +186,10 @@ namespace GHIElectronics.TinyCLR.Data.Json
 
                             var jarray = (JArray)prop.Value;
                             var list = new ArrayList();
-                            var array = (Array)factory(path, prop.Value, field.FieldType.GetElementType(), prop.Name, jarray.Length);
+                            var array = (Array)factory(path, prop.Value, itemType.GetElementType(), prop.Name, jarray.Length);
                             if (array == null)
                             {
-                                instance = DefaultInstanceFactory(path, prop.Value, field.FieldType.GetElementType(), prop.Name, jarray.Length);
+                                instance = DefaultInstanceFactory(path, prop.Value, itemType.GetElementType(), prop.Name, jarray.Length);
                             }
 
                             //var array = Array.CreateInstance(field.FieldType.GetElementType(), jarray.Length);
