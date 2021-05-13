@@ -212,8 +212,10 @@ namespace GHIElectronics.TinyCLR.Pins {
         public static class I2cBus {
             /// <summary>I2C bus on PB9 (SDA) and PB8 (SCL).</summary>
             public const string I2c1 = STM32L4.I2cBus.I2c1;
-            /// <summary>I2C bus on PB11 (SDA) and PB10 (SCL).</summary>
+            /// <summary>I2C bus on PB14 (SDA) and PB13 (SCL).</summary>
             public const string I2c2 = STM32L4.I2cBus.I2c2;
+            /// <summary>I2C bus on PB11 (SDA) and PB10 (SCL).</summary>
+            public const string I2c4 = STM32L4.I2cBus.I2c4;
         }
 
         /// <summary>SPI bus definitions.</summary>
@@ -244,18 +246,11 @@ namespace GHIElectronics.TinyCLR.Pins {
         //    public const string UhphsB = STM32L4.UsbHostPort.UhphsB;
         //    /// <summary>USB host port on USBH1 D- (DM) and USBH1 D+ (DP).</summary>
         //    public const string UhphsC = STM32L4.UsbHostPort.UhphsC;
-        //}
-
-        /// <summary>Display definitions.</summary>
-        public static class Display {
-            /// <summary>API id.</summary>
-            public const string Lcd = STM32L4.Display.Lcd;
-        }
+        //}        
 
         /// <summary>Storage controller definitions.</summary>
         public static class StorageController {
-            /// <summary>API id.</summary>
-            public const string UsbHostMassStorage = STM32L4.StorageController.UsbHostMassStorage;
+            /// <summary>API id.</summary>            
             public const string QuadSpi = STM32L4.StorageController.QuadSpi;
         }
 
