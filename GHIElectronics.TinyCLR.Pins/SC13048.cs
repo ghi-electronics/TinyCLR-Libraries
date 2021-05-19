@@ -105,7 +105,9 @@ namespace GHIElectronics.TinyCLR.Pins {
                 /// <summary>ADC pin.</summary>
                 public const int PB0 = STM32L4.Adc.Channel15;
                 /// <summary>ADC pin.</summary>
-                public const int PB1 = STM32L4.Adc.Channel16;
+                public const int PB1 = STM32L4.Adc.Channel16;                
+                /// <summary>ADC pin.</summary>                
+                public const int InternalTemperatureSensor = STM32L4.Adc.Channel17;                
             }          
         }
 
