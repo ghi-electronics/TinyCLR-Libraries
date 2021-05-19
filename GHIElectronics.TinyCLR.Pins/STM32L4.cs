@@ -108,7 +108,11 @@ namespace GHIElectronics.TinyCLR.Pins {
             /// <summary>ADC channel.</summary>
             public const int Channel15 = 15;
             /// <summary>ADC channel.</summary>
-            public const int Channel16 = 16;            
+            public const int Channel16 = 16;
+            /// <summary>ADC channel.</summary>
+            public const int Channel17 = 17;
+            /// <summary>ADC channel.</summary>
+            public const int Channel18 = 18;            
         }
 
         /// <summary>DAC channel definitions.</summary>
