@@ -242,8 +242,15 @@ namespace System {
         /// Swap endianness in byte
         /// <param name="data">The array of bytes.</param>
         /// <param name="groupSize">Group of bytes to be swapped</param>
-        /// </summary>
+        /// </summary>        
+        public static void SwapEndianness(byte[] data, int groupSize) => SwapEndianness(data, groupSize, 0, data.Length);
+
+        /// <summary>
+        /// Swap endianness in byte
+        /// <param name="data">The array of bytes.</param>
+        /// <param name="groupSize">Group of bytes to be swapped</param>
+        /// </summary>        
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        extern public static void SwapEndianness(byte[] data, int groupSize);
+        extern public static void SwapEndianness(byte[] data, int groupSize, int offset, int length);
     }
 }
