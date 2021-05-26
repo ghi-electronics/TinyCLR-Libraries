@@ -167,6 +167,8 @@ namespace GHIElectronics.TinyCLR.Pins {
             public const string I2c2 = "GHIElectronics.TinyCLR.NativeApis.STM32L4.I2cController\\1";
             /// <summary>I2C bus.</summary>
             public const string I2c4 = "GHIElectronics.TinyCLR.NativeApis.STM32L4.I2cController\\3";
+            /// <summary>I2C software.</summary>
+            public const string Software = "GHIElectronics.TinyCLR.NativeApis.SoftwareI2cController";
         }
 
         /// <summary>SPI bus definitions.</summary>
