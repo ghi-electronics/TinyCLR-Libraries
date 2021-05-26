@@ -49,10 +49,12 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
         public void Write(byte[] buffer, int offset, int length) => this.WriteRead(buffer, offset, length, null, 0, 0);
 
         public void WriteRead(byte[] writeBuffer, int writeOffset, int writeLength, byte[] readBuffer, int readOffset, int readLength) {
-            this.Controller.SetActive(this);
+            lock (this.Controller) {
+                this.Controller.SetActive(this);
 
-            if (this.Controller.Provider.WriteRead(writeBuffer, writeOffset, writeLength, readBuffer, readOffset, readLength, out _, out _) != I2cTransferStatus.FullTransfer)
-                throw new InvalidOperationException();
+                if (this.Controller.Provider.WriteRead(writeBuffer, writeOffset, writeLength, readBuffer, readOffset, readLength, out _, out _) != I2cTransferStatus.FullTransfer)
+                    throw new InvalidOperationException();
+            }
         }
 
         public I2cTransferResult ReadPartial(byte[] buffer) => this.WriteReadPartial(null, 0, 0, buffer, 0, buffer.Length);
@@ -63,11 +65,13 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
         public I2cTransferResult WritePartial(byte[] buffer, int offset, int length) => this.WriteReadPartial(buffer, offset, length, null, 0, 0);
 
         public I2cTransferResult WriteReadPartial(byte[] writeBuffer, int writeOffset, int writeLength, byte[] readBuffer, int readOffset, int readLength) {
-            this.Controller.SetActive(this);
+            lock (this.Controller) {
+                this.Controller.SetActive(this);
 
-            var res = this.Controller.Provider.WriteRead(writeBuffer, writeOffset, writeLength, readBuffer, readOffset, readLength, out var written, out var read);
+                var res = this.Controller.Provider.WriteRead(writeBuffer, writeOffset, writeLength, readBuffer, readOffset, readLength, out var written, out var read);
 
-            return new I2cTransferResult(res, written, read);
+                return new I2cTransferResult(res, written, read);
+            }
         }
     }
 
@@ -189,24 +193,23 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
                 read = 0;
 
                 try {
-                    lock (this) {
-                        var res = this.Write(writeBuffer, writeOffset, writeLength, true, readLength == 0);
+                    var res = this.Write(writeBuffer, writeOffset, writeLength, true, readLength == 0);
 
-                        written = res.BytesWritten;
-                        read = res.BytesRead;
+                    written = res.BytesWritten;
+                    read = res.BytesRead;
 
-                        if (res.Status == I2cTransferStatus.FullTransfer && readLength != 0) {
-                            res = this.Read(readBuffer, readOffset, readLength, true, true);
+                    if (res.Status == I2cTransferStatus.FullTransfer && readLength != 0) {
+                        res = this.Read(readBuffer, readOffset, readLength, true, true);
 
-                            written += res.BytesWritten;
-                            read += res.BytesRead;
-                        }
-
-                        this.ReleaseScl();
-                        this.ReleaseSda();
-
-                        return res.Status;
+                        written += res.BytesWritten;
+                        read += res.BytesRead;
                     }
+
+                    this.ReleaseScl();
+                    this.ReleaseSda();
+
+                    return res.Status;
+
                 }
                 catch (I2cClockStretchTimeoutException) {
                     return I2cTransferStatus.ClockStretchTimeout;
