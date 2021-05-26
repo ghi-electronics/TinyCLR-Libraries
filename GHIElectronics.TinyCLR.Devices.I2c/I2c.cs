@@ -11,7 +11,14 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
         private I2cController(II2cControllerProvider provider) => this.Provider = provider;
 
         public static I2cController GetDefault() => NativeApi.GetDefaultFromCreator(NativeApiType.I2cController) is I2cController c ? c : I2cController.FromName(NativeApi.GetDefaultName(NativeApiType.I2cController));
-        public static I2cController FromName(string name) => I2cController.FromProvider(new I2cControllerApiWrapper(NativeApi.Find(name, NativeApiType.I2cController)));
+        public static I2cController FromName(string name) => FromProvider(new I2cControllerApiWrapper(NativeApi.Find(name, NativeApiType.I2cController)));
+        public static I2cController FromName(string name, GpioPin sdaPin, GpioPin sclPin) => FromName(name, sdaPin, sclPin, false);
+        public static I2cController FromName(string name, GpioPin sdaPin, GpioPin sclPin, bool usePullups) {
+            if (name.CompareTo("GHIElectronics.TinyCLR.NativeApis.SoftwareI2cController") != 0)
+                throw new ArgumentException("Invalid controller.");
+
+            return FromProvider(new I2cControllerSoftwareProvider(sdaPin, sclPin, usePullups));
+        }
         public static I2cController FromProvider(II2cControllerProvider provider) => new I2cController(provider);
 
         public void Dispose() => this.Provider.Dispose();
@@ -44,7 +51,7 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
         public void WriteRead(byte[] writeBuffer, int writeOffset, int writeLength, byte[] readBuffer, int readOffset, int readLength) {
             this.Controller.SetActive(this);
 
-            if (this.Controller.Provider.WriteRead(writeBuffer, writeOffset, writeLength, readBuffer, readOffset, readLength, true, true, out _, out _) != I2cTransferStatus.FullTransfer)
+            if (this.Controller.Provider.WriteRead(writeBuffer, writeOffset, writeLength, readBuffer, readOffset, readLength, out _, out _) != I2cTransferStatus.FullTransfer)
                 throw new InvalidOperationException();
         }
 
@@ -58,7 +65,7 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
         public I2cTransferResult WriteReadPartial(byte[] writeBuffer, int writeOffset, int writeLength, byte[] readBuffer, int readOffset, int readLength) {
             this.Controller.SetActive(this);
 
-            var res = this.Controller.Provider.WriteRead(writeBuffer, writeOffset, writeLength, readBuffer, readOffset, readLength, true, true, out var written, out var read);
+            var res = this.Controller.Provider.WriteRead(writeBuffer, writeOffset, writeLength, readBuffer, readOffset, readLength, out var written, out var read);
 
             return new I2cTransferResult(res, written, read);
         }
@@ -113,7 +120,7 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
     namespace Provider {
         public interface II2cControllerProvider : IDisposable {
             void SetActiveSettings(I2cConnectionSettings connectionSettings);
-            I2cTransferStatus WriteRead(byte[] writeBuffer, int writeOffset, int writeLength, byte[] readBuffer, int readOffset, int readLength, bool sendStartCondition, bool sendStopCondition, out int written, out int read);
+            I2cTransferStatus WriteRead(byte[] writeBuffer, int writeOffset, int writeLength, byte[] readBuffer, int readOffset, int readLength, out int written, out int read);
         }
 
         public sealed class I2cControllerApiWrapper : II2cControllerProvider {
@@ -141,10 +148,10 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
             public extern void SetActiveSettings(I2cConnectionSettings connectionSettings);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            public extern I2cTransferStatus WriteRead(byte[] writeBuffer, int writeOffset, int writeLength, byte[] readBuffer, int readOffset, int readLength, bool sendStartCondition, bool sendStopCondition, out int written, out int read);
+            public extern I2cTransferStatus WriteRead(byte[] writeBuffer, int writeOffset, int writeLength, byte[] readBuffer, int readOffset, int readLength, out int written, out int read);
         }
 
-        public sealed class I2cControllerSoftwareProvider : II2cControllerProvider {
+        internal sealed class I2cControllerSoftwareProvider : II2cControllerProvider {
             private readonly bool usePullups;
             private readonly GpioPin sda;
             private readonly GpioPin scl;
@@ -152,17 +159,13 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
             private byte readAddress;
             private bool start;
 
-            public I2cControllerSoftwareProvider(int sdaPinNumber, int sclPinNumber) : this(sdaPinNumber, sclPinNumber, true) { }
-            public I2cControllerSoftwareProvider(int sdaPinNumber, int sclPinNumber, bool usePullups) : this(GpioController.GetDefault(), sdaPinNumber, sclPinNumber, usePullups) { }
-            public I2cControllerSoftwareProvider(GpioController controller, int sdaPinNumber, int sclPinNumber) : this(controller, sdaPinNumber, sclPinNumber, true) { }
+            public I2cControllerSoftwareProvider(GpioPin sdaPin, GpioPin sclPin) : this(sdaPin, sclPin, true) { }
 
-            public I2cControllerSoftwareProvider(GpioController controller, int sdaPinNumber, int sclPinNumber, bool usePullups) {
+            public I2cControllerSoftwareProvider(GpioPin sdaPin, GpioPin sclPin, bool usePullups) {
                 this.usePullups = usePullups;
 
-                var pins = controller.OpenPins(sdaPinNumber, sclPinNumber);
-
-                this.sda = pins[0];
-                this.scl = pins[1];
+                this.sda = sdaPin;
+                this.scl = sclPin;
             }
 
             public void Dispose() {
@@ -181,27 +184,29 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
                 this.ReleaseSda();
             }
 
-            public I2cTransferStatus WriteRead(byte[] writeBuffer, int writeOffset, int writeLength, byte[] readBuffer, int readOffset, int readLength, bool sendStartCondition, bool sendStopCondition, out int written, out int read) {
+            public I2cTransferStatus WriteRead(byte[] writeBuffer, int writeOffset, int writeLength, byte[] readBuffer, int readOffset, int readLength, out int written, out int read) {
                 written = 0;
                 read = 0;
 
                 try {
-                    var res = this.Write(writeBuffer, writeOffset, writeLength, true, readLength == 0);
+                    lock (this) {
+                        var res = this.Write(writeBuffer, writeOffset, writeLength, true, readLength == 0);
 
-                    written = res.BytesWritten;
-                    read = res.BytesRead;
+                        written = res.BytesWritten;
+                        read = res.BytesRead;
 
-                    if (res.Status == I2cTransferStatus.FullTransfer && readLength != 0) {
-                        res = this.Read(readBuffer, readOffset, readLength, true, true);
+                        if (res.Status == I2cTransferStatus.FullTransfer && readLength != 0) {
+                            res = this.Read(readBuffer, readOffset, readLength, true, true);
 
-                        written += res.BytesWritten;
-                        read += res.BytesRead;
+                            written += res.BytesWritten;
+                            read += res.BytesRead;
+                        }
+
+                        this.ReleaseScl();
+                        this.ReleaseSda();
+
+                        return res.Status;
                     }
-
-                    this.ReleaseScl();
-                    this.ReleaseSda();
-
-                    return res.Status;
                 }
                 catch (I2cClockStretchTimeoutException) {
                     return I2cTransferStatus.ClockStretchTimeout;

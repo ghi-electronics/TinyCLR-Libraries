@@ -392,6 +392,8 @@ namespace GHIElectronics.TinyCLR.Pins {
             public const string I2c1 = STM32H7.I2cBus.I2c1;
             /// <summary>I2C bus on PB11 (SDA) and PB10 (SCL).</summary>
             public const string I2c2 = STM32H7.I2cBus.I2c2;
+            /// <summary>I2C software.</summary>
+            public const string Software = STM32H7.I2cBus.Software;
         }
 
         /// <summary>SPI bus definitions.</summary>
