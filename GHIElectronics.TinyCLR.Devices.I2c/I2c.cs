@@ -29,6 +29,7 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
     }
 
     public sealed class I2cDevice : IDisposable {
+        private static object ojectLocker = new object();
         public I2cConnectionSettings ConnectionSettings { get; }
         public I2cController Controller { get; }
 
@@ -49,7 +50,7 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
         public void Write(byte[] buffer, int offset, int length) => this.WriteRead(buffer, offset, length, null, 0, 0);
 
         public void WriteRead(byte[] writeBuffer, int writeOffset, int writeLength, byte[] readBuffer, int readOffset, int readLength) {
-            lock (this.Controller) {
+            lock (ojectLocker) {
                 this.Controller.SetActive(this);
 
                 if (this.Controller.Provider.WriteRead(writeBuffer, writeOffset, writeLength, readBuffer, readOffset, readLength, out _, out _) != I2cTransferStatus.FullTransfer)
@@ -65,7 +66,7 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
         public I2cTransferResult WritePartial(byte[] buffer, int offset, int length) => this.WriteReadPartial(buffer, offset, length, null, 0, 0);
 
         public I2cTransferResult WriteReadPartial(byte[] writeBuffer, int writeOffset, int writeLength, byte[] readBuffer, int readOffset, int readLength) {
-            lock (this.Controller) {
+            lock (ojectLocker) {
                 this.Controller.SetActive(this);
 
                 var res = this.Controller.Provider.WriteRead(writeBuffer, writeOffset, writeLength, readBuffer, readOffset, readLength, out var written, out var read);
