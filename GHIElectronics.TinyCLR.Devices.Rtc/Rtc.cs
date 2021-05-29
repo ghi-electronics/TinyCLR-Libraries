@@ -11,7 +11,7 @@ namespace GHIElectronics.TinyCLR.Devices.Rtc {
     }
 
     public sealed class RtcController : IDisposable {
-        public IRtcControllerProvider Provider { get; }
+        public IRtcControllerProvider Provider { get; }        
 
         private RtcController(IRtcControllerProvider provider) => this.Provider = provider;
 
@@ -22,7 +22,7 @@ namespace GHIElectronics.TinyCLR.Devices.Rtc {
         public void Dispose() => this.Provider.Dispose();
 
         public bool IsValid => this.Provider.IsValid;
-
+        public bool InternalRC => this.Provider.InternalRC;
         public RtcDateTime GetTime() => this.IsValid ? this.Provider.GetTime() : throw new InvalidOperationException();
         public void SetTime(RtcDateTime value) => this.Provider.SetTime(value);
 
@@ -105,6 +105,8 @@ namespace GHIElectronics.TinyCLR.Devices.Rtc {
     namespace Provider {
         public interface IRtcControllerProvider : IDisposable {
             bool IsValid { get; }
+
+            bool InternalRC { get; }
             uint BackupMemorySize { get; }
 
             RtcDateTime GetTime();
@@ -143,6 +145,8 @@ namespace GHIElectronics.TinyCLR.Devices.Rtc {
             public extern void SetTime(RtcDateTime value);
 
             public extern bool IsValid { [MethodImpl(MethodImplOptions.InternalCall)] get; }
+
+            public extern bool InternalRC { [MethodImpl(MethodImplOptions.InternalCall)] get; }
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void WriteBackupMemory(byte[] sourceData, uint sourceOffset, uint destinationOffset, int count);

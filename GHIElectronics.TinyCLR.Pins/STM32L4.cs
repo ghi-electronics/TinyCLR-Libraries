@@ -108,7 +108,11 @@ namespace GHIElectronics.TinyCLR.Pins {
             /// <summary>ADC channel.</summary>
             public const int Channel15 = 15;
             /// <summary>ADC channel.</summary>
-            public const int Channel16 = 16;            
+            public const int Channel16 = 16;
+            /// <summary>ADC channel.</summary>
+            public const int Channel17 = 17;
+            /// <summary>ADC channel.</summary>
+            public const int Channel18 = 18;            
         }
 
         /// <summary>DAC channel definitions.</summary>
@@ -161,6 +165,10 @@ namespace GHIElectronics.TinyCLR.Pins {
             public const string I2c1 = "GHIElectronics.TinyCLR.NativeApis.STM32L4.I2cController\\0";
             /// <summary>I2C bus.</summary>
             public const string I2c2 = "GHIElectronics.TinyCLR.NativeApis.STM32L4.I2cController\\1";
+            /// <summary>I2C bus.</summary>
+            public const string I2c4 = "GHIElectronics.TinyCLR.NativeApis.STM32L4.I2cController\\3";
+            /// <summary>I2C software.</summary>
+            public const string Software = "GHIElectronics.TinyCLR.NativeApis.SoftwareI2cController";
         }
 
         /// <summary>SPI bus definitions.</summary>
