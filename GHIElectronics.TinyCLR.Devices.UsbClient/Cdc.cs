@@ -106,11 +106,27 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
             /// <param name="offset">The offset into the buffer at which to begin writing.</param>
             /// <param name="count">The number of bytes to write.</param>
             public override void Write(byte[] buffer, int offset, int count) {
-                base.Write(buffer, offset, count);
+                //base.Write(buffer, offset, count);
 
-                if (count % 64 == 0)
-                    //base.Write(buffer, 0, 0); //TinyCLR-Libraries/issues/1058???
-                    Thread.Sleep(1);
+                //if (count % 64 == 0)
+                //base.Write(buffer, 0, 0);
+
+                const int BlockSize = 63;
+
+                var block = count / BlockSize;
+                var remain = count % BlockSize;
+                var index = offset;
+
+                while (block > 0) {
+                    base.Write(buffer, index, BlockSize);
+                    index += BlockSize;
+                    block--;
+                }
+
+                if (remain > 0)
+                    base.Write(buffer, index, remain);
+
+
             }
 
             public override bool DataAvailable => this.BytesToRead > 0;
