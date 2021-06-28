@@ -109,7 +109,8 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
                 base.Write(buffer, offset, count);
 
                 if (count % 64 == 0)
-                    base.Write(buffer, 0, 0);
+                    //base.Write(buffer, 0, 0); //TinyCLR-Libraries/issues/1058???
+                    Thread.Sleep(1);
             }
 
             public override bool DataAvailable => this.BytesToRead > 0;
