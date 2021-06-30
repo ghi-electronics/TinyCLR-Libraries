@@ -7,8 +7,8 @@
     <authors>GHI Electronics, LLC</authors>
     <owners>GHI Electronics, LLC</owners>
     <projectUrl>https://ghielectronics.com/</projectUrl>
-    <iconUrl>http://files.ghielectronics.com/downloads/Logos/GHIElectronicsTinyCLRNuGet.png</iconUrl>
-    <licenseUrl>http://files.ghielectronics.com/downloads/TinyCLR/License.txt</licenseUrl>
+    <icon>http://files.ghielectronics.com/downloads/Logos/GHIElectronicsTinyCLRNuGet.png</icon>
+    <license>http://files.ghielectronics.com/downloads/TinyCLR/License.txt</license>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>The ADC library for TinyCLR OS.</description>
     <copyright>Copyright GHI Electronics, LLC 2021</copyright>
