@@ -11,7 +11,7 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio {
         public GpioPinEdge Edge { get; }
         public DateTime Timestamp { get; }
 
-        internal GpioPinValueChangedEventArgs(GpioPinEdge edge, DateTime timestamp) {
+        public GpioPinValueChangedEventArgs(GpioPinEdge edge, DateTime timestamp) {
             this.Edge = edge;
             this.Timestamp = timestamp;
         }
@@ -23,7 +23,6 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio {
         InputPullUp = 2,
         InputPullDown = 3,
         OutputOpenDrain = 4,
-
     }
 
     public enum GpioPinValue {
@@ -263,13 +262,11 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio {
                     if (this.pinMap.Contains(key))
                         handler = (GpioPinValueChangedEventHandler)this.pinMap[key];
 
-                if (handler != null)
-                    handler?.Invoke(null, new GpioPinValueChangedEventArgs(edge, ts));
+                handler?.Invoke(null, new GpioPinValueChangedEventArgs(edge, ts));
             }
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void TransferFeature(int pinSource, int pinDestination, uint mode, uint type, uint direction, uint speed, uint alternate);
-            
         }
     }
 }
