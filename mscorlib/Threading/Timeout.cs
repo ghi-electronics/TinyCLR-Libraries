@@ -8,6 +8,7 @@ namespace System.Threading {
     //This class has only static members and does not require serialization.
     public static class Timeout {
         public const int Infinite = -1;
+        public static readonly TimeSpan InfiniteTimeSpan = new TimeSpan(0, 0, 0, 0, -1);
     }
 
 }

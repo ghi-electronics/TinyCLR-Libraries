@@ -118,6 +118,8 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio {
 
         public void Write(GpioPinValue value) => this.Controller.Provider.Write(this.PinNumber, value);
 
+        public void Toggle() => this.Controller.Provider.Write(this.PinNumber, this.Controller.Provider.Read(this.PinNumber) == GpioPinValue.Low ? GpioPinValue.High : GpioPinValue.Low);
+
         public GpioPinEdge ValueChangedEdge {
             get => this.valueChangedEdge;
 
