@@ -43,7 +43,7 @@ namespace GHIElectronics.TinyCLR.Data.Json
 			var methods = type.GetMethods();
 			foreach (var m in methods)
 			{
-				if (!m.IsPublic)
+				if (!m.IsPublic || m.IsAbstract)
 					continue;
 
 				if (m.Name.IndexOf("get_") == 0)
