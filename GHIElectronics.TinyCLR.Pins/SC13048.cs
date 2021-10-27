@@ -118,19 +118,7 @@ namespace GHIElectronics.TinyCLR.Pins {
             /// <summary>DAC channel.</summary>
             public const int PA4 = STM32L4.Dac.Channel1;
         }
-
-        /// <summary>Network controller definitions.</summary>
-        public static class NetworkController {
-            /// <summary>Enc28j60 id.</summary>
-            public const string Enc28j60 = "GHIElectronics.TinyCLR.NativeApis.ENC28J60.NetworkController";
-
-            /// <summary>AT Winc15x0 id.</summary>
-            public const string ATWinc15x0 = "GHIElectronics.TinyCLR.NativeApis.ATWINC15xx.NetworkController";
-
-            /// <summary>PPP id.</summary>
-            public const string Ppp = "GHIElectronics.TinyCLR.NativeApis.Ppp.NetworkController";
-        }
-
+       
         public static class Timer {
             /// <summary>PWM pin definitions.</summary>
             public static class Pwm {
@@ -199,14 +187,11 @@ namespace GHIElectronics.TinyCLR.Pins {
         public static class UartPort {
             /// <summary>UART port on PA9 (TX) and PA10 (RX).</summary>
             public const string Uart1 = STM32L4.UartPort.Usart1;
-
-            /// <summary>UART port on PD5 (TX) and PD6 (RX), PD3 (CTS) and PD4 (RTS).</summary>
+            /// <summary>UART port on PA2 (TX) and PA3 (RX), PA1 (CTS) and PA0 (RTS).</summary>
             public const string Uart2 = STM32L4.UartPort.Usart2;
-
-            /// <summary>UART port on PD8 (TX) and PD9 (RX).</summary>
+            /// <summary>UART port on PB10 (TX) and PB11 (RX), PB1 (CTS) and PA6 (RTS).</summary>
             public const string Uart3 = STM32L4.UartPort.Usart3;
-
-            /// <summary>UART port on PD0 (TX) and PD1 (RX), PB0 (CTS) and PA15 (RTS).</summary>
+            /// <summary>UART port on PA0 (TX) and PA1 (RX).</summary>
             public const string Uart4 = STM32L4.UartPort.Uart4;
         }
 
