@@ -92,7 +92,7 @@ namespace GHIElectronics.TinyCLR.Devices.Jacdac
 
         byte[] header;
         byte[] data;
-        TimeSpan timestamp;
+        public TimeSpan Timestamp { get; set; }
         Device dev;
 
         public Packet() {

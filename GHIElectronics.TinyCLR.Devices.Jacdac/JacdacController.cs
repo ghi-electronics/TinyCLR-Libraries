@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using GHIElectronics.TinyCLR.Devices.Uart;
+using GHIElectronics.TinyCLR.Native;
 
 namespace GHIElectronics.TinyCLR.Devices.Jacdac {
 
@@ -25,6 +26,11 @@ namespace GHIElectronics.TinyCLR.Devices.Jacdac {
         private JacdacSetting jacdacSetting;
         private bool disposed;
 
+        private readonly NativeEventDispatcher nativeEventDispatcher;
+
+        public delegate void PacketReceivedEvent(JacdacController sender, Packet packet);
+
+        public event PacketReceivedEvent PacketReceived;
 
         public JacdacController(string uartPortName) : this(uartPortName, false) {
 
@@ -38,7 +44,23 @@ namespace GHIElectronics.TinyCLR.Devices.Jacdac {
             this.uartController = int.Parse(uartPortName.Substring(uartPortName.Length - 1, 1));
 
             this.Acquire();
-             
+
+            this.nativeEventDispatcher = NativeEventDispatcher.GetDispatcher("GHIElectronics.TinyCLR.NativeEventNames.JacdacController.Event");
+
+            this.nativeEventDispatcher.OnInterrupt += (apiName, d0, d1, d2, d3, ts) => {
+                if (apiName.CompareTo("JacdacController") == 0 && d0 == this.uartController) {
+                    var time = TimeSpan.FromTicks(d2);
+                    var data = new byte[(int)d1];
+
+                    this.NativeReadRawPacket(this.uartController, data, data.Length);
+
+                    var packet = Packet.FromBinary(data);
+
+                    packet.Timestamp = time;
+
+                    this.PacketReceived?.Invoke(this, packet);
+                }                    
+            };             
         }
 
         private void Acquire() => this.NativeAcquire(this.uartController);
@@ -49,7 +71,7 @@ namespace GHIElectronics.TinyCLR.Devices.Jacdac {
         }
 
         public void Enable() {
-            var startPulseDuration = this.jacdacSetting.StartDataGapDuration.Ticks;
+            var startPulseDuration = this.jacdacSetting.StartPulseDuration.Ticks;
             var startDataGapDuration = this.jacdacSetting.StartDataGapDuration.Ticks;
             var dataByteGapDuration = this.jacdacSetting.DataByteGapDuration.Ticks;
             var dataEndGapDuration = this.jacdacSetting.DataEndGapDuration.Ticks;
@@ -81,6 +103,9 @@ namespace GHIElectronics.TinyCLR.Devices.Jacdac {
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private extern void NativeSendRawPacket(int uartController, byte[] data, int offset, int count);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private extern int NativeReadRawPacket(int uartController, byte[] data, int count);
         public void Dispose() {
             if (!this.disposed) {
                 this.disposed = true;
