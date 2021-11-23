@@ -3,10 +3,8 @@ using System.Collections;
 using System.Text;
 using System.Threading;
 
-namespace GHIElectronics.TinyCLR.Devices.Jacdac
-{   
-    public class Packet
-    {
+namespace GHIElectronics.TinyCLR.Devices.Jacdac {
+    public class Packet {
         // Registers 0x001-0x07f - r/w common to all services
         // Registers 0x080-0x0ff - r/w defined per-service
         // Registers 0x100-0x17f - r/o common to all services
@@ -211,6 +209,15 @@ namespace GHIElectronics.TinyCLR.Devices.Jacdac
         public bool IsRegisterSet => (this.ServiceCommand >> 12) == (CMD_SET_REG >> 12) ? true : false;
         public bool IsRegisterGet => (this.ServiceCommand >> 12) == (CMD_GET_REG >> 12) ? true : false;
 
+        public byte[] Header {
+            get => this.header;
+            set {
+                if (value.Length > JD_SERIAL_HEADER_SIZE)
+                    throw new Exception("Too big");
+
+                this.header = value;
+            }
+        }
         public byte[] Data {
             get => this.data;
             set {

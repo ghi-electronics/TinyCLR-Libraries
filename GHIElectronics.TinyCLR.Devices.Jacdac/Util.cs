@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 
@@ -139,27 +140,32 @@ namespace GHIElectronics.TinyCLR.Devices.Jacdac {
             }
         }
 
-        public static ushort CRC(byte[] p) {
-            ushort crc = 0xffff;
-            for (var i = 0; i < p.Length; ++i) {
-                var data = p[i];
-                var x = (crc >> 8) ^ data;
-                x ^= x >> 4;
-                crc = (ushort)((crc << 8) ^ (x << 12) ^ (x << 5) ^ x);
-                crc &= 0xffff;
-            }
-            return crc;
-        }
-        public static ushort CRC(byte[] p, int start, int size) {
-            ushort crc = 0xffff;
-            for (var i = start; i < start + size; ++i) {
-                var data = p[i];
-                var x = (crc >> 8) ^ data;
-                x ^= x >> 4;
-                crc = (ushort)((crc << 8) ^ (x << 12) ^ (x << 5) ^ x);
-                crc &= 0xffff;
-            }
-            return crc;
-        }
+        public static ushort CRC(byte[] p) =>
+            //ushort crc = 0xffff;
+            //for (var i = 0; i < p.Length; ++i) {
+            //    var data = p[i];
+            //    var x = (crc >> 8) ^ data;
+            //    x ^= x >> 4;
+            //    crc = (ushort)((crc << 8) ^ (x << 12) ^ (x << 5) ^ x);
+            //    crc &= 0xffff;
+            //}
+            //return crc;
+
+            NativeCrc(p, 0, p.Length);
+        public static ushort CRC(byte[] p, int start, int size) =>
+            //ushort crc = 0xffff;
+            //for (var i = start; i < start + size; ++i) {
+            //    var data = p[i];
+            //    var x = (crc >> 8) ^ data;
+            //    x ^= x >> 4;
+            //    crc = (ushort)((crc << 8) ^ (x << 12) ^ (x << 5) ^ x);
+            //    crc &= 0xffff;
+            //}
+            //return crc;
+            NativeCrc(p, start, size);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private static extern ushort NativeCrc(byte[] data, int offset, int cout);
+
     }
 }
