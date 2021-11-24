@@ -165,6 +165,13 @@ namespace GHIElectronics.TinyCLR.Devices.Jacdac {
             Array.Copy(packet.Header, data, packet.Header.Length);
             Array.Copy(packet.Data, 0, data, packet.Header.Length, packet.Data.Length);
 
+            data[2] = (byte)(packet.Size + 4);
+
+            var crc = Util.CRC(data, 2, data.Length - 2);
+
+            data[0] = (byte)(crc >> 0);
+            data[1] = (byte)(crc >> 8);
+
             this.SendData(data);
         }
 
