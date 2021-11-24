@@ -78,11 +78,16 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
         private void InitResource() => this.bitmapImageRadioButton = BitmapImage.FromGraphics(Graphics.FromImage(Resources.GetBitmap(Resources.BitmapResources.RadioButton)));
 
-        public RadioButton() : base() {
+        public RadioButton() : this(string.Empty) {
+
+        }
+        public RadioButton(string groupName) : base() {
             this.InitResource();
 
             this.Width = this.bitmapImageRadioButton.Width;
             this.Height = this.bitmapImageRadioButton.Height;
+
+            this.GroupName = groupName;
 
             RadioButtonManager.AddButton(this);
         }
