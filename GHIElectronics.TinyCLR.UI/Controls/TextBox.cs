@@ -100,9 +100,9 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
             //var diff = this._renderWidth - this.width;
             // Place the centerline of the font at the center of the textbox
-            //var y = (this.ActualHeight - this._font.Height) / 2;
+            var y = (this.ActualHeight - this._font.Height) / 2;
             var x = this.BorderThickness + this.PaddingX;
-            var y = this.BorderThickness + this.PaddingY;
+            //var y = this.BorderThickness + this.PaddingY;
             var w = this.width - (this.BorderThickness * 2) - (this.PaddingX * 2);
 
             if (this.BorderThickness > 0) {
