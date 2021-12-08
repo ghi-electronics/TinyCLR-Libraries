@@ -65,8 +65,6 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
         private BitmapImage headers;
         private BitmapImage items;
-        //private BitmapImage dataGridIcon_Asc = BitmapImage.FromGraphics(Graphics.FromImage(Resources.GetBitmap(Resources.BitmapResources.DataGridIcon_Asc)));
-        //private BitmapImage dataGridIcon_Desc = BitmapImage.FromGraphics(Graphics.FromImage(Resources.GetBitmap(Resources.BitmapResources.DataGridIcon_Desc)));
 
         private System.Drawing.Bitmap dataGridIcon_Asc = Resources.GetBitmap(Resources.BitmapResources.DataGridIcon_Asc);
         private System.Drawing.Bitmap dataGridIcon_Desc = Resources.GetBitmap(Resources.BitmapResources.DataGridIcon_Desc);
@@ -85,7 +83,6 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         private int lastListY;
         private int lastTouchY;
         private int ignoredTouchMoves;
-        private int maxIgnoredTouchMoves;
 
         private bool showHeaders;
         private int rowCount;
@@ -94,27 +91,18 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         private DataGridItemComparer comparer = new DataGridItemComparer();
         private Order order;
 
-        public string Name { get; set; }
-        public ushort Alpha { get; set; }
-
         private int posX;
         private int posY;
+        private bool disposed;
 
         /// <summary>
         /// Creates a new DataGrid component.
-        /// </summary>
-        /// <param name="name">name</param>
-        /// <param name="alpha">alpha</param>
-        /// <param name="x">x</param>
-        /// <param name="y">y</param>
+        /// </summary>      
         /// <param name="width">width</param>
         /// <param name="rowHeight">rowHeight</param>
         /// <param name="rowCount">rowCount</param>
-        public DataGrid(string name, ushort alpha, int x, int y, int width, int rowHeight, int rowCount, Font font) {
-            this.Name = name;
-            this.Alpha = 255;
-            this.posX = x;
-            this.posY = y;
+        /// <param name="font">font</param>
+        public DataGrid(int width, int rowHeight, int rowCount, Font font) {
             this.Width = width;
             this.RowHeight = rowHeight;
             // Setting the RowCount changes the Height.
@@ -127,7 +115,24 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             this.headers = BitmapImage.FromGraphics(new Graphics(this.Width, this.RowHeight));
             this.Font = font;
 
+            this.dataGridIcon_Asc = Resources.GetBitmap(Resources.BitmapResources.DataGridIcon_Asc);
+            this.dataGridIcon_Desc = Resources.GetBitmap(Resources.BitmapResources.DataGridIcon_Desc);
+
             this.Clear();
+        }
+
+        public void Dispose() {
+            if (!this.disposed) {
+
+                this.dataGridIcon_Asc.Dispose();
+                this.dataGridIcon_Desc.Dispose();
+
+                this.disposed = true;
+            }
+        }
+
+        ~DataGrid() {
+            this.Dispose();
         }
 
         // Events
@@ -147,9 +152,10 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         private void RenderHeaders() {
             var x = 0;
 
-            var headersBackColorPen = new System.Drawing.Pen(System.Drawing.Color.FromArgb(this.HeadersBackColor.R, this.HeadersBackColor.G, this.HeadersBackColor.B));
+            using (var headersBackColorBrush = new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(this.HeadersBackColor.R, this.HeadersBackColor.G, this.HeadersBackColor.B))) {
 
-            this.headers.graphics.DrawRectangle(headersBackColorPen, x, 0, this.Width, this.headers.Height);
+                this.headers.graphics.FillRectangle(headersBackColorBrush, x, 0, this.Width, this.headers.Height);
+            }
 
             DataGridColumn dataGridColumn;
             for (var j = 0; j < this.columns_.Count; j++) {
@@ -160,17 +166,10 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
                 // If we're on the selected column draw the icon.
                 if (j == this.selectedDataGridColumnIndex) {
-                    this.Font.ComputeExtent(dataGridColumn.label, out var width, out var height);
-
-                    //if (dataGridColumn.order == Order.ASC)
-                    //    this.headers.graphics.DrawImage(this.dataGridIcon_Asc, x + 10 + width, 5, this.dataGridIcon_Asc.Width, this.dataGridIcon_Asc.Height);
-                    //else
-                    //    this.headers.graphics.DrawImage(this.dataGridIcon_Desc, x + 10 + width, 5, this.dataGridIcon_Desc.Width, this.dataGridIcon_Desc.Height);
-
                     if (dataGridColumn.order == Order.ASC)
-                        this.headers.graphics.DrawImage(this.dataGridIcon_Asc, x + 10 + width, 5, this.dataGridIcon_Asc.Width, this.dataGridIcon_Asc.Height);
+                        this.headers.graphics.DrawImage(this.dataGridIcon_Asc, this.columns_.Count / 2 * dataGridColumn.width, 5, this.dataGridIcon_Asc.Width, this.dataGridIcon_Asc.Height);
                     else
-                        this.headers.graphics.DrawImage(this.dataGridIcon_Desc, x + 10 + width, 5, this.dataGridIcon_Desc.Width, this.dataGridIcon_Desc.Height);
+                        this.headers.graphics.DrawImage(this.dataGridIcon_Desc, this.columns_.Count / 2 * dataGridColumn.width, 5, this.dataGridIcon_Desc.Width, this.dataGridIcon_Desc.Height);
                 }
 
                 x += dataGridColumn.width;
@@ -185,17 +184,10 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                 this.RenderItem(this.selectedIndex, ((DataGridItem)this.rows_[index]).data, this.SelectedItemBackColor, this.SelectedItemFontColor);
             else {
                 if (index % 2 == 0) {
-                    //var itemsBackColorBrush = new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(this.ItemsBackColor.R, this.ItemsBackColor.G, this.ItemsBackColor.B));
-
-                    //this.items.graphics.FillRectangle(itemsBackColorBrush, 0 , index * this.RowHeight, this.items.Width, this.RowHeight);
 
                     this.RenderItem(index, ((DataGridItem)this.rows_[index]).data, this.ItemsBackColor, this.ItemsFontColor);
                 }
                 else {
-
-                    //var itemsBackColorBrush = new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(this.ItemsAltBackColor.R, this.ItemsAltBackColor.G, this.ItemsAltBackColor.B));
-
-                    //this.items.graphics.FillRectangle(itemsBackColorBrush, 0, index * this.RowHeight, this.items.Width, this.RowHeight);
 
                     this.RenderItem(index, ((DataGridItem)this.rows_[index]).data, this.ItemsAltBackColor, this.ItemsFontColor);
                 }
@@ -206,55 +198,46 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             var x = 0;
             var y = index * this.RowHeight;
 
-            var backColorPen = new System.Drawing.Pen(System.Drawing.Color.FromArgb(backColor.R, backColor.G, backColor.B));
-            var gridColorPen = new System.Drawing.Pen(System.Drawing.Color.FromArgb(this.GridColor.R, this.GridColor.G, this.GridColor.B));
+            using (var gridColorPen = new System.Drawing.Pen(System.Drawing.Color.FromArgb(this.GridColor.R, this.GridColor.G, this.GridColor.B))) {
 
-            var itemsBackColorBrush = new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(backColor.R, backColor.G, backColor.B));
+                using (var itemsBackColorBrush = new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(backColor.R, backColor.G, backColor.B))) {
 
-            this.items.graphics.FillRectangle(itemsBackColorBrush, 0, index * this.RowHeight, this.items.Width, this.RowHeight);
+                    this.items.graphics.FillRectangle(itemsBackColorBrush, 0, index * this.RowHeight, this.items.Width, this.RowHeight);
+                }
 
-            this.items.graphics.DrawRectangle(backColorPen, x, y, this.Width, this.RowHeight);
+                DataGridColumn dataGridColumn;
 
-            DataGridColumn dataGridColumn;
-            for (var i = 0; i < this.columns_.Count; i++) {
-                dataGridColumn = (DataGridColumn)this.columns_[i];
+                for (var i = 0; i < this.columns_.Count; i++) {
+                    dataGridColumn = (DataGridColumn)this.columns_[i];
 
-                this.items.graphics.DrawTextInRect(data[i].ToString(), x + 5, y + (this.RowHeight - this.Font.Height) / 2, dataGridColumn.width, this.RowHeight, 0, System.Drawing.Color.FromArgb(fontColor.R, fontColor.G, fontColor.B), this.Font);
-                this.items.graphics.DrawLine(gridColorPen, x, y, x, y + this.RowHeight);
+                    this.items.graphics.DrawTextInRect(data[i].ToString(), x + 5, y + (this.RowHeight - this.Font.Height) / 2, dataGridColumn.width, this.RowHeight, 0, System.Drawing.Color.FromArgb(fontColor.R, fontColor.G, fontColor.B), this.Font);
+                    this.items.graphics.DrawLine(gridColorPen, x, y, x, y + this.RowHeight);
 
-                x += dataGridColumn.width;
+                    x += dataGridColumn.width;
+                }
             }
         }
 
         private void RenderItemClear(int index) {
-            // HACK: This is done to prevent image/color retention.
-            //this.items.graphics.DrawRectangle(0, 0, 0, index * this.RowHeight, this.Width, this.RowHeight, 0, 0, 0, 0, 0, 0, 0, 0, 255);
-
-            //var itemsBackColorBrush = new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(this.ItemsBackColor.R, this.ItemsBackColor.G, this.ItemsBackColor.B));
-
-            //this.items.graphics.FillRectangle(itemsBackColorBrush, 0, index * this.RowHeight, this.Width, this.RowHeight);
-
-            var blackColorPen = new System.Drawing.Pen(System.Drawing.Color.FromArgb(0, 0, 0));
-
-            this.items.graphics.DrawRectangle(blackColorPen, 0, index * this.RowHeight, this.Width, this.RowHeight);
+            using (var blackColorColorBrush = new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(0, 0, 0))) {
+                this.headers.graphics.FillRectangle(blackColorColorBrush, 0, index * this.RowHeight, this.Width, this.RowHeight);
+            }
         }
 
         private void RenderEmpty() {
 
-            //var itemsBackColorBrush = new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(this.ItemsBackColor.R, this.ItemsBackColor.G, this.ItemsBackColor.B));
+            using (var itemsBackColoBrush = new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(this.ItemsBackColor.R, this.ItemsBackColor.G, this.ItemsBackColor.B))) {
 
-            //this.items.graphics.FillRectangle(itemsBackColorBrush, 0, 0, this.Width, this.RowHeight);
+                this.items.graphics.FillRectangle(itemsBackColoBrush, 0, 0, this.items.Width, this.items.Height);
+            }
 
-            var itemsBackColorPen = new System.Drawing.Pen(System.Drawing.Color.FromArgb(this.ItemsBackColor.R, this.ItemsBackColor.G, this.ItemsBackColor.B));
+            using (var gridColorPen = new System.Drawing.Pen(System.Drawing.Color.FromArgb(this.GridColor.R, this.GridColor.G, this.GridColor.B))) {
 
-            this.items.graphics.DrawRectangle(itemsBackColorPen, 0, 0, this.items.Width, this.items.Height);
-
-            var gridColorPen = new System.Drawing.Pen(System.Drawing.Color.FromArgb(this.GridColor.R, this.GridColor.G, this.GridColor.B));
-
-            var x = 0;
-            for (var i = 0; i < this.columns_.Count; i++) {
-                this.items.graphics.DrawLine(gridColorPen, x, 0, x, this.items.Height);
-                x += ((DataGridColumn)this.columns_[i]).width;
+                var x = 0;
+                for (var i = 0; i < this.columns_.Count; i++) {
+                    this.items.graphics.DrawLine(gridColorPen, x, 0, x, this.items.Height);
+                    x += ((DataGridColumn)this.columns_[i]).width;
+                }
             }
         }
 
@@ -263,7 +246,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         /// </summary>
         public override void OnRender(DrawingContext dc) {
             if (this.ShowHeaders && this.renderHeaders) {
-                this.renderHeaders = false;
+                //this.renderHeaders = false; TODO
                 this.RenderHeaders();
             }
 
@@ -278,13 +261,13 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
                     if (this.rows_.Count < this.rowCount) {
 
-                        //this.items = new Bitmap(this.Width, this.rowCount * this.RowHeight);
                         this.items = BitmapImage.FromGraphics(new Graphics(this.Width, this.rowCount * this.RowHeight));
 
-                        //TQD
-                        var itemsBackColorBrush = new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(this.ItemsBackColor.R, this.ItemsBackColor.G, this.ItemsBackColor.B));
+                        //TODO
+                        using (var itemsBackColorBrush = new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(this.ItemsBackColor.R, this.ItemsBackColor.G, this.ItemsBackColor.B))) {
 
-                        this.items.graphics.FillRectangle(itemsBackColorBrush, 0, 0, this.items.Width, this.items.Height);
+                            this.items.graphics.FillRectangle(itemsBackColorBrush, 0, 0, this.items.Width, this.items.Height);
+                        }
 
                         this.RenderEmpty();
                     }
@@ -292,20 +275,21 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                         //this.items = new Bitmap(this.Width, this.rows_.Count * this.RowHeight);
                         this.items = BitmapImage.FromGraphics(new Graphics(this.Width, this.rows_.Count * this.RowHeight));
 
-                        //TQD
-                        var itemsBackColorBrush = new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(this.ItemsBackColor.R, this.ItemsBackColor.G, this.ItemsBackColor.B));
+                        //TODO
+                        using (var itemsBackColorBrush = new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(this.ItemsBackColor.R, this.ItemsBackColor.G, this.ItemsBackColor.B))) {
 
-                        this.items.graphics.FillRectangle(itemsBackColorBrush, 0, 0, this.items.Width, this.items.Height);
+                            this.items.graphics.FillRectangle(itemsBackColorBrush, 0, 0, this.items.Width, this.items.Height);
+                        }
                     }
 
 
 
                 }
                 else {
-                    var blackColorPen = new System.Drawing.Pen(System.Drawing.Color.FromArgb(0, 0, 0));
+                    using (var blackColorBush = new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(0, 0, 0))) {
+                        this.items.graphics.FillRectangle(blackColorBush, 0, 0, this.items.Width, this.items.Height);
+                    }
 
-                    //this.items.graphics.DrawRectangle(0, 0, 0, 0, this.Width, this.items.Height, 0, 0, 0, 0, 0, 0, 0, 0, 255);
-                    this.items.graphics.DrawRectangle(blackColorPen, 0, 0, this.Width, this.items.Height);
                 }
 
 
@@ -316,17 +300,14 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                 }
             }
 
-            var x = 0;// this.Parent.X + this.X;
-            var y = 0;// this.Parent.Y + this.Y;
+            var x = 0;
+            var y = 0;
 
             if (this.showHeaders) {
-                //this.Parent.Graphics.DrawImage(x, y, this.headers, 0, 0, this.Width, this.RowHeight);
                 dc.DrawImage(this.headers, x, y, 0, 0, this.Width, this.RowHeight);
                 y += this.RowHeight;
             }
 
-
-            //this.Parent.Graphics.DrawImage(x, y, this.items, 0, this.listY, this.Width, this.rowCount * this.RowHeight);
             dc.DrawImage(this.items, x, y, 0, this.listY, this.Width, this.rowCount * this.RowHeight);
 
             if (this.ShowScrollbar) {
@@ -341,10 +322,8 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                 this.scrollbarHeight = this.Height - ((this.rows_.Count - this.rowCount) * this.scrollbarTick);
 
                 x += this.Width - this.ScrollbarWidth;
-                //y = this.Parent.Y + this.Y;
                 y = 0 + this.posY;
 
-                //this.Parent.Graphics.DrawRectangle(0, 0, x, y, this.ScrollbarWidth, this.Height, 0, 0, this.ScrollbarBackColor, 0, 0, 0, 0, 0, 255);
                 var scrollbarBackColorPen = new Media.Pen(this.ScrollbarBackColor);
                 var scrollbarBackColorBrush = new Media.SolidColorBrush(this.ScrollbarBackColor);
 
@@ -352,11 +331,9 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
                 // Only show the scrollbar scrubber if it's smaller than the Height
                 if (this.scrollbarHeight < this.Height) {
-                    //this.Parent.Graphics.DrawRectangle(0, 0, x, y + (this.scrollIndex * this.scrollbarTick), this.ScrollbarWidth, this.scrollbarHeight, 0, 0, this.ScrollbarScrubberColor, 0, 0, 0, 0, 0, 255);
 
                     var scrollbarScrubberColorBrush = new Media.SolidColorBrush(this.ScrollbarScrubberColor);
                     var scrollbarScrubberColorPen = new Media.Pen(this.ScrollbarScrubberColor);
-
 
                     dc.DrawRectangle(scrollbarScrubberColorBrush, scrollbarScrubberColorPen, x, y + (this.scrollIndex * this.scrollbarTick), this.ScrollbarWidth, this.scrollbarHeight);
                 }
@@ -382,7 +359,6 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                 this.posY = 0;
 
                 this.PointToScreen(ref this.posX, ref this.posY);
-                //e.StopPropagation();
             }
 
             //return e;
@@ -401,8 +377,8 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             var isContained = false;
 
             if (!this.moving) {
-                var x = this.posX;//  this.Parent.X + this.X;
-                var y = this.posX; // this.Parent.Y + this.Y;
+                var x = this.posX;
+                var y = this.posX;
 
                 var index = ((this.listY + touchPoint.Y) - y) / this.RowHeight;
                 var rowIndex = index;
@@ -412,16 +388,14 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
                 var columnIndex = 0;
                 DataGridColumn dataGridColumn;
-                //Rectangle rect;
 
                 for (var i = 0; i < this.columns_.Count; i++) {
                     dataGridColumn = (DataGridColumn)this.columns_[i];
-                    //rect = new Rectangle(x, y, dataGridColumn.width, this.Height);
 
                     if (IsContains(touchPoint, x, y, dataGridColumn.width, this.Height)) {
                         columnIndex = i;
 
-                        isContained = true; //TQD
+                        isContained = true;
                         break;
                     }
 
@@ -443,7 +417,6 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             this.pressed = false;
             this.moving = false;
             this.ignoredTouchMoves = 0;
-            //return e;
         }
 
         /// <summary>
@@ -456,7 +429,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                 return;
 
             if (!this.moving) {
-                if (this.ignoredTouchMoves < this.maxIgnoredTouchMoves)
+                if (this.ignoredTouchMoves < this.MaxIgnoredTouchMoves)
                     this.ignoredTouchMoves++;
                 else {
                     this.ignoredTouchMoves = 0;
@@ -472,10 +445,8 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                 this.scrollIndex = (int)System.Math.Ceiling(this.listY / this.RowHeight);
 
                 this.Invalidate();
-                //e.StopPropagation();
             }
 
-            //return e;
         }
 
         private bool RowIndexIsValid(int index) => (this.rows_.Count > 0 && index > -1 && index < this.rows_.Count);
@@ -740,7 +711,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             this.listY = 0;
             this.listMaxY = 0;
             this.ignoredTouchMoves = 0;
-            this.maxIgnoredTouchMoves = 1;
+            this.MaxIgnoredTouchMoves = 10;
 
             this.SelectedIndex = -1;
 
@@ -846,7 +817,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
         /// <summary>
         /// Headers background color.
-        /// </summary>
+        /// </summary>        
         public Media.Color HeadersBackColor { get; set; } = Colors.Black;
 
         /// <summary>
@@ -903,6 +874,11 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         /// Scrollbar scrubber color.
         /// </summary>
         public Media.Color ScrollbarScrubberColor { get; set; } = Colors.Black;
+
+        /// <summary>
+        /// Touch senstitive.
+        /// </summary>
+        public int MaxIgnoredTouchMoves { get; set; } = 1;
 
         /// <summary>
         /// The order in which rows are sorted.
