@@ -33,6 +33,7 @@ namespace GHIElectronics.TinyCLR.UI
         internal enum BitmapResources : short
         {
             DropdownButton_Down = -31110,
+            DataGridIcon_Desc = -27556,
             Button_Down = -18532,
             Keyboard_Numbers = -14062,
             Button_Up = -12892,
@@ -47,6 +48,7 @@ namespace GHIElectronics.TinyCLR.UI
             ProgressBar = 15350,
             Keyboard_Uppercase = 21332,
             CheckBox_Off = 23409,
+            DataGridIcon_Asc = 27566,
             CheckBox_On = 27788,
         }
     }
