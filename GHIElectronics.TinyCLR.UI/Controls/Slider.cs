@@ -8,20 +8,21 @@ using GHIElectronics.TinyCLR.UI.Media;
 using GHIElectronics.TinyCLR.UI.Media.Imaging;
 
 namespace GHIElectronics.TinyCLR.UI.Controls {
+    public class Point {
+        public int X { get; set; }
+        public int Y { get; set; }
+        public Point(int x, int y) {
+
+            this.X = x;
+            this.Y = y;
+        }
+
+    }
+
     /// <summary>
     /// The Slider component lets users select a value by sliding a knob along a track.
     /// </summary>
     public class Slider : ContentControl {
-        private class Point {
-            public int X { get; set; }
-            public int Y { get; set; }
-            public Point(int x, int y) {
-
-                this.X = x;
-                this.Y = y;
-            }
-
-        }
 
         public class ValueChangedEventArgs : EventArgs {
             public readonly double Value;
