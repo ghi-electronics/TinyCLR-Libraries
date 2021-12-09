@@ -21,6 +21,8 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         private Button buttonRight;
         private MessageBoxButtons messageBoxButton;
         private int messageLines;
+        public UIElement Owner { get; set; }
+
         public class MessageBoxRoutedEventArgs {
             public MessageBoxRoutedEventArgs() {
 
@@ -30,7 +32,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             public DialogResult DialogResult { get; internal set; }
         }
 
-        static bool isAtived = false;
+        private bool isAtived = false;
         public enum MessageBoxButtons {
             OK = 0,
             Cancel = 1,
@@ -44,15 +46,13 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             Yes = 2,
             No = 3,
         }
-        public MessageBox() {
 
-        }
-        public void Show(string message, string caption, MessageBoxButtons messageBoxButton) {
+        public MessageBox(Font font) => this.Font = font;
+        public void Show(string message, string caption, MessageBoxButtons messageBoxButton) => this.Show(null, message, caption, messageBoxButton);
+        public void Show(UIElement owner, string message, string caption, MessageBoxButtons messageBoxButton) {
 
-            if (isAtived)
+            if (this.isAtived)
                 return;
-
-            isAtived = true;
 
             if (this.Font == null)
                 throw new ArgumentNullException(nameof(message));
@@ -60,10 +60,27 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             if (message == null || message.Length == 0)
                 throw new ArgumentNullException(nameof(message));
 
-            var windowWidth = Application.Current.MainWindow.Width;
-            var windowHeight = Application.Current.MainWindow.Height;
+            this.Owner = owner;
 
+            var windowWidth = 0;
+            var windowHeight = 0;
 
+            var alignToOwner = false;
+
+            if (owner != null) {
+                try {
+
+                    windowWidth = this.Owner.ActualWidth;
+                    windowHeight = this.Owner.ActualHeight;
+
+                    alignToOwner = windowWidth > 0 && windowHeight > 0;
+                }
+                catch {
+                }
+            }
+
+            windowWidth = windowWidth == 0 ? Application.Current.MainWindow.Width : windowWidth;
+            windowHeight = windowHeight == 0 ? Application.Current.MainWindow.Height : windowHeight;
 
             this.captionBarHeight = (this.Font.Height * 3 / 2);
             this.Width = (windowWidth * 2) / 3;
@@ -214,15 +231,32 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             this.Width = Math.Min(this.Width, windowWidth);
             this.Height = Math.Min(this.Height, windowHeight);
 
-            this.SetMargin(windowWidth / 2 - this.Width / 2, windowHeight / 2 - this.Height / 2, 0, 0);
+            if (alignToOwner)
+                this.SetMargin(windowWidth / 2 - this.Width / 2, windowHeight / 2 - this.Height / 2, 0, 0);
+            else {
+                SetLeft(this, windowWidth / 2 - this.Width / 2);
+                SetTop(this, windowHeight / 2 - this.Height / 2);
+            }
 
-            Application.Current.MainWindow.Child._logicalChildren.Add(this);
+
+            if (this.Owner != null && !this.Owner._logicalChildren.Contains(this))
+                this.Owner._logicalChildren.Add(this);
+            else if (!Application.Current.MainWindow.Child._logicalChildren.Contains(this))
+                Application.Current.MainWindow.Child._logicalChildren.Add(this);
+
+            this.isAtived = true;
         }
         private void Button_Click(object sender, RoutedEventArgs e) {
 
-            Application.Current.MainWindow.Child._logicalChildren.Remove(this);
+            if (this.Owner != null && this.Owner._logicalChildren.Contains(this)) {
+                this.Owner._logicalChildren.Remove(this);
+            }
+            else {
+                if (Application.Current.MainWindow.Child._logicalChildren.Contains(this))
+                    Application.Current.MainWindow.Child._logicalChildren.Remove(this);
+            }
 
-            isAtived = false;
+            this.isAtived = false;
 
             var e1 = new MessageBoxRoutedEventArgs() {
                 RoutedEventArgs = e
@@ -295,6 +329,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
         public void Dispose() {
             this.Dispose(true);
+            this.isAtived = false;
             GC.SuppressFinalize(this);
         }
 
@@ -302,8 +337,16 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             if (!this.disposed) {
                 this.disposed = true;
 
-                if (this.Children != null)
-                    this.Children.Clear();
+                if (disposing) {
+
+                    if (this.Owner != null && this.Owner._logicalChildren.Contains(this)) {
+                        this.Owner._logicalChildren.Remove(this);
+                    }
+                    else {
+                        if (Application.Current.MainWindow.Child._logicalChildren.Contains(this))
+                            Application.Current.MainWindow.Child._logicalChildren.Remove(this);
+                    }
+                }
             }
         }
 
