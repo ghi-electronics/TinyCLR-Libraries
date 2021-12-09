@@ -36,11 +36,16 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Controls\CheckBox.cs" />
+    <Compile Include="Controls\DataGrid.cs" />
+    <Compile Include="Controls\DataGridColumn.cs" />
+    <Compile Include="Controls\DataGridItem.cs" />
+    <Compile Include="Controls\DataGridItemComparer.cs" />
     <Compile Include="Controls\Dropdown.cs" />
     <Compile Include="Controls\ListBoxItemHighlightable.cs" />
     <Compile Include="Controls\MessageBox.cs" />
     <Compile Include="Controls\ProgressBar.cs" />
     <Compile Include="Controls\RadioButton.cs" />
+    <Compile Include="Controls\Slider.cs" />
     <Compile Include="Controls\TextBox.cs" />
     <Compile Include="Controls\Button.cs" />
     <Compile Include="Input\InputProvider.cs" />
@@ -216,6 +221,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\RadioButton.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\DataGridIcon_Desc.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\DataGridIcon_Asc.gif" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
