@@ -353,21 +353,24 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                 this.colorPen = new Media.Pen(this.color); ;
             }
         }
+		
+		public void Dispose() {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
 
-
-        public void Dispose() {
+        protected virtual void Dispose(bool disposing) {
             if (!this.disposed) {
 
                 this.bitmapImageButtonDown.graphics.Dispose();
-                this.bitmapImageButtonUp.graphics.Dispose();
-
+                this.bitmapImageButtonUp.graphics.Dispose();                
 
                 this.disposed = true;
             }
         }
 
         ~Slider() {
-            this.Dispose();
+            this.Dispose(false);
         }
     }
 }

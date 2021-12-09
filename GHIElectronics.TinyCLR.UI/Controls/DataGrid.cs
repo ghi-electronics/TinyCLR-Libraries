@@ -122,6 +122,11 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         }
 
         public void Dispose() {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing) {
             if (!this.disposed) {
 
                 this.dataGridIcon_Asc.Dispose();
@@ -132,7 +137,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         }
 
         ~DataGrid() {
-            this.Dispose();
+            this.Dispose(false);
         }
 
         // Events
