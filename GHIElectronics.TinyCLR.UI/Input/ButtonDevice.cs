@@ -4,6 +4,7 @@
 #define TRACK_BUTTON_STATE
 
 using System;
+using System.Collections;
 
 namespace GHIElectronics.TinyCLR.UI.Input {
     /// <summary>
@@ -80,39 +81,74 @@ namespace GHIElectronics.TinyCLR.UI.Input {
         ///     Returns the state of the specified button.
         /// </summary>
         public ButtonState GetButtonState(HardwareButton button) {
-#if TRACK_BUTTON_STATE
+#if TRACK_BUTTON_STATE         
 
-            if ((int)HardwareButton.LastSystemDefinedButton <= (int)button || (int)button <= 0)
-                throw new ArgumentOutOfRangeException("button", "invalid enum");
+            if (this._buttonStateList.Count != 0) {
 
-            var index = (int)button / 4;
-            var state = (this._buttonState[index] >> ((int)button % 4)) & 0x3;
+                foreach (var bt in this._buttonStateList) {
+                    var hardwareButtonState = bt as HardwareButtonState;
 
-            return (ButtonState)state;
+                    if (hardwareButtonState.Button == button) {
+
+                        return hardwareButtonState.State;
+
+                    }
+                }
+
+            }
+            return ButtonState.None;
 #else
             return ButtonState.None;
 #endif
         }
 
 #if TRACK_BUTTON_STATE
+
+        private class HardwareButtonState {
+            public HardwareButton Button { get; }
+            public ButtonState State { get; set; }
+            public HardwareButtonState(HardwareButton button, ButtonState state) {
+                this.Button = button;
+                this.State = state;
+            }
+
+        }
         internal void SetButtonState(HardwareButton button, ButtonState state) {
             //If the PreNotifyInput event sent by the InputManager is always sent by the
             //correct thread, this is redundant. Also, why is this function 'internal'
             //when we only access it from inside this class?
-            VerifyAccess();
+            VerifyAccess();            
 
-            if ((int)HardwareButton.LastSystemDefinedButton <= (int)button || (int)button <= 0)
-                throw new ArgumentOutOfRangeException("button", "invalid enum");
+            var foundButton = false;
 
-            var index = (int)button / 4;
-            var shift = ((int)button % 4);
+            foreach (var bt in this._buttonStateList) {
+                var hardwareButtonState = bt as HardwareButtonState;
 
-            var newState = this._buttonState[index];
+                if (hardwareButtonState.Button == button) {
 
-            newState &= (byte)(~((byte)(0x3 << shift)));
-            newState |= (byte)((int)state << shift);
+                    foundButton = true;
+                    break;
 
-            this._buttonState[index] = newState;
+                }
+            }
+
+            if (!foundButton) {
+
+                var hardwareButtonState = new HardwareButtonState(button, state);
+                this._buttonStateList.Add(hardwareButtonState);
+            }
+
+            foreach (var bt in this._buttonStateList) {
+                var hardwareButtonState = bt as HardwareButtonState;
+
+                if (hardwareButtonState.Button == button) {
+
+                    hardwareButtonState.State = state;
+
+                    break;
+
+                }
+            }
         }
 
 #endif
@@ -196,8 +232,16 @@ REFACTOR --
 
 #if TRACK_BUTTON_STATE
                     // Clear out our key state storage.
-                    for (var i = 0; i < this._buttonState.Length; i++) {
-                        this._buttonState[i] = 0;
+                    //for (var i = 0; i < this._buttonState.Length; i++) {
+                    //    this._buttonState[i] = 0;
+                    //}
+
+                    foreach (var bt in this._buttonStateList) {
+                        var hardwareButtonState = bt as HardwareButtonState;
+
+                        hardwareButtonState.State = ButtonState.None;
+
+
                     }
 
 #endif
@@ -436,7 +480,8 @@ REFACTOR --
 
 #if TRACK_BUTTON_STATE
         // Device state we track
-        private byte[] _buttonState = new byte[(int)HardwareButton.LastSystemDefinedButton / 4];
+
+        private ArrayList _buttonStateList = new ArrayList(); //new byte[(int)HardwareButton.LastSystemDefinedButton / 4];
 #endif
 
         // Data tags for information we pass around the staging area.

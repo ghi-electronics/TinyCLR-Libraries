@@ -21,6 +21,8 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
         public TextAlignment TextAlign { get; set; } = TextAlignment.Left;
 
+        public char PasswordChar { get; set; } = char.MinValue;
+
         public string Text {
             get => this.text;
             set {
@@ -91,12 +93,16 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
             base.OnRender(dc);
 
-            var txt = this.text;
+            var txt = string.Empty;
+
+            for (var i = 0; i < this.text.Length; i++) {
+                txt += this.PasswordChar == char.MinValue ? this.text[i] : this.PasswordChar;
+            }
             //var diff = this._renderWidth - this.width;
             // Place the centerline of the font at the center of the textbox
-            //var y = (this.ActualHeight - this._font.Height) / 2;
+            var y = (this.ActualHeight - this._font.Height) / 2;
             var x = this.BorderThickness + this.PaddingX;
-            var y = this.BorderThickness + this.PaddingY;
+            //var y = this.BorderThickness + this.PaddingY;
             var w = this.width - (this.BorderThickness * 2) - (this.PaddingX * 2);
 
             if (this.BorderThickness > 0) {
@@ -109,7 +115,9 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             //else {
             //    dc.DrawText(ref txt, this._font, b.Color, diff, y, this._renderWidth + this.width, this._font.Height, this.TextAlign, TextTrimming.CharacterEllipsis);
             //}
-            dc.DrawText(ref txt, this._font, b.Color, x, y, w, this._font.Height, this.TextAlign, TextTrimming.CharacterEllipsis);
+
+            if (txt != string.Empty)
+                dc.DrawText(ref txt, this._font, b.Color, x, y, w, this._font.Height, this.TextAlign, TextTrimming.CharacterEllipsis);
         }
     }
 }

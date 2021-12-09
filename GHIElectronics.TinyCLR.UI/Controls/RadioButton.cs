@@ -68,12 +68,12 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
     public class RadioButton : ContentControl, IDisposable {
         public event RoutedEventHandler Click;
         private BitmapImage bitmapImageRadioButton;
-        
+
         private bool isChecked = false;
         private string value = string.Empty;
 
         public string Name { get; set; } = string.Empty;
-        public ushort Alpha { get; set; } = 0xC8;        
+        public ushort Alpha { get; set; } = 0xC8;
         public int RadiusBorder { get; set; } = 5;
 
         private void InitResource() => this.bitmapImageRadioButton = BitmapImage.FromGraphics(Graphics.FromImage(Resources.GetBitmap(Resources.BitmapResources.RadioButton)));
@@ -131,9 +131,12 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             var evt = new RoutedEvent("TouchUpEvent", RoutingStrategy.Bubble, typeof(RoutedEventHandler));
             var args = new RoutedEventArgs(evt, this);
 
-            this.Click?.Invoke(this, args);
+            try {
+                this.Click?.Invoke(this, args);
+            }
+            catch { }
 
-            e.Handled = args.Handled;            
+            e.Handled = args.Handled;
 
             this.Toggle();
 
@@ -149,9 +152,12 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             var evt = new RoutedEvent("TouchDownEvent", RoutingStrategy.Bubble, typeof(RoutedEventHandler));
             var args = new RoutedEventArgs(evt, this);
 
-            this.Click?.Invoke(this, args);
+            try {
+                this.Click?.Invoke(this, args);
+            }
+            catch { }
 
-            e.Handled = args.Handled;            
+            e.Handled = args.Handled;
 
             if (this.Parent != null)
                 this.Invalidate();
@@ -186,7 +192,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             var groupCount = RadioButtonManager.GetCount(this.GroupName);
 
             // Only allow change if this button is alone or in a group and not selected
-            if (groupCount <= 1 || (groupCount > 1 && !this.Checked)) {                
+            if (groupCount <= 1 || (groupCount > 1 && !this.Checked)) {
                 this.Checked = !this.Checked;
                 RadioButtonManager.TriggerTapEvent(this);
             }
