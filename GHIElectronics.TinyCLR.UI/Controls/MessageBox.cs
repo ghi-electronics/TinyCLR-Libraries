@@ -294,10 +294,6 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         private bool disposed;
 
         public void Dispose() {
-
-            if (this.Children != null)
-                this.Children.Clear();
-
             this.Dispose(true);
             GC.SuppressFinalize(this);
         }
@@ -305,6 +301,9 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         protected virtual void Dispose(bool disposing) {
             if (!this.disposed) {
                 this.disposed = true;
+
+                if (this.Children != null)
+                    this.Children.Clear();
             }
         }
 
