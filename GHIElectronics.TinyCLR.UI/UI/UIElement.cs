@@ -1393,6 +1393,25 @@ namespace GHIElectronics.TinyCLR.UI {
                     uiElement = uiElement._parent;
 
                 } while (uiElement != null);
+
+
+                // Uncomment below to fixed #810
+                //uiElement = this;
+
+                //if (uiElement._logicalChildren != null) {
+                //    foreach (var child in uiElement._logicalChildren) {
+                //        var element = child as UIElement;
+
+                //        // Protect against infinite loops by limiting the number of elements
+                //        // that we will process.
+                //        if (cElements++ > MAX_ELEMENTS_IN_ROUTE) {
+                //            throw new InvalidOperationException(/*SR.Get(SRID.TreeLoop) */);
+                //        }
+
+                //        element.AddToEventRouteImpl(route, args);
+                //    }
+                //}
+                // End fixed #810
             }
 
             route.InvokeHandlers(this, args);

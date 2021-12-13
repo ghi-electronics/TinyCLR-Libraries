@@ -53,7 +53,10 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             var evt = new RoutedEvent("TouchUpEvent", RoutingStrategy.Bubble, typeof(RoutedEventHandler));
             var args = new RoutedEventArgs(evt, this);
 
-            this.Click?.Invoke(this, args);
+            try {
+                this.Click?.Invoke(this, args);
+            }
+            catch { }
 
             e.Handled = args.Handled;
 
@@ -80,7 +83,10 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             var evt = new RoutedEvent("TouchDownEvent", RoutingStrategy.Bubble, typeof(RoutedEventHandler));
             var args = new RoutedEventArgs(evt, this);
 
-            this.Click?.Invoke(this, args);
+            try {
+                this.Click?.Invoke(this, args);
+            }
+            catch { }
 
             e.Handled = args.Handled;
 

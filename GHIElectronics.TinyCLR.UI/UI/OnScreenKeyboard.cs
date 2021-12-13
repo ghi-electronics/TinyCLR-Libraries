@@ -62,8 +62,9 @@ namespace GHIElectronics.TinyCLR.UI {
         }
 
         private void OnTouchUp(object sender, TouchEventArgs e) {
-            var x = (int)(e.Touches[0].X * this.scaleX - this.offsetX);
-            var y = (int)(e.Touches[0].Y * this.scaleY - this.offsetY);
+            var x = (int)((e.Touches[0].X - this.offsetX) * this.scaleX);
+            var y = (int)((e.Touches[0].Y - this.offsetY) * this.scaleY);
+
             var row = y / this.active.RowHeight;
             var column = 0;
             var columnWidth = this.active.ColumnWidth[row];

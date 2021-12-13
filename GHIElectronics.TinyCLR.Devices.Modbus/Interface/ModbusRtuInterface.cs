@@ -189,7 +189,8 @@ namespace GHIElectronics.TinyCLR.Devices.Modbus.Interface {
                         nextRead = DateTime.Now.Ticks + 6 * this.halfCharLength;
                     }
                     else {
-                        telegramLength = (short)n;
+                        Thread.Sleep(0); // ghi-electronics/TinyCLR-Libraries/issues/1099
+						telegramLength = (short)n;
                         return true;
                     }
                 }

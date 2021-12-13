@@ -1,4 +1,4 @@
-﻿namespace GHIElectronics.TinyCLR.UI.Input {
+namespace GHIElectronics.TinyCLR.UI.Input {
     public enum HardwareButton {
         None,
         Down,
@@ -7,7 +7,6 @@
         Right,
         Select,
         Back,
-        Home,
-        LastSystemDefinedButton
+        Home        
     }
 }
