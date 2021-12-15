@@ -20,10 +20,19 @@ namespace GHIElectronics.TinyCLR.Devices.Jacdac.Transport {
         public int ReadBufferSize { get; set; } = 32;
     }
 
-    public enum JacdacSerialWireError {
-        Frame = 0,
-        Overrun = 1,
-        BufferFull = 2,
+    public enum JacdacSerialWireError : uint {
+        NoError = 0x00000000,
+        Overrun = 0x00000001,
+        BufferFull = 0x00000002,
+        Frame = 0x80000000,
+        Frame_MaxData = 0x80000001,
+        Frame_NoPayload = 0x80000002,
+        Frame_A = 0x80000004,
+        Frame_B = 0x80000008,
+        Frame_C = 0x80000010,
+        Frame_D = 0x80000020,
+        Frame_E = 0x80000040,
+        Frame_F = 0x80000080
     }
 
     public class ErrorReceivedEventArgs {
@@ -254,12 +263,19 @@ namespace GHIElectronics.TinyCLR.Devices.Jacdac.Transport {
         private extern static ushort NativeCrc(byte[] data, int offset, int count);
 
         public void Dispose() {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        protected virtual void Dispose(bool disposing) {
             if (!this.disposed) {
-                this.disposed = true;
 
                 this.Release();
 
+                this.disposed = true;
             }
+        }
+        ~JacdacSerialWireController() {
+            this.Dispose(false);
         }
     }
 
