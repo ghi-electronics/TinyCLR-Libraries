@@ -26,14 +26,13 @@ namespace GHIElectronics.TinyCLR.Devices.Jacdac.Transport {
         BufferFull = 0x00000002,
         Frame = 0x80000000,
         Frame_MaxData = 0x80000001,
-        Frame_NoPayload = 0x80000002,
-        Frame_Busy = 0x80000004,
-        Frame_A = 0x80000008,
-        Frame_B = 0x80000010,
-        Frame_C = 0x80000020,
-        Frame_D = 0x80000040,
-        Frame_E = 0x80000080,
-        Frame_F = 0x80000100
+        Frame_Busy = 0x80000002,
+        Frame_A = 0x80000004,
+        Frame_B = 0x80000008,
+        Frame_C = 0x80000010,
+        Frame_D = 0x80000020,
+        Frame_E = 0x80000040,
+        Frame_F = 0x80000080
     }
 
     public class ErrorReceivedEventArgs {
