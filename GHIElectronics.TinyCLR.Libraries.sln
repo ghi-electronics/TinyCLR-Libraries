@@ -95,7 +95,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Devi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Devices.Gpio.LowLevel", "GHIElectronics.TinyCLR.Devices.Gpio.LowLevel\GHIElectronics.TinyCLR.Devices.Gpio.LowLevel.csproj", "{F86BE83A-AEEB-4BB7-87EB-FD3745B3F4D2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Devices.Jacdac", "GHIElectronics.TinyCLR.Devices.Jacdac\GHIElectronics.TinyCLR.Devices.Jacdac.csproj", "{FEAE5AA6-08FC-449E-8CE1-6F3697211323}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Devices.Jacdac.Transport", "GHIElectronics.TinyCLR.Devices.Jacdac.Transport\GHIElectronics.TinyCLR.Devices.Jacdac.Transport.csproj", "{4B27EA71-16CF-4E6B-912B-C4F14A33B28F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -259,10 +259,10 @@ Global
 		{F86BE83A-AEEB-4BB7-87EB-FD3745B3F4D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F86BE83A-AEEB-4BB7-87EB-FD3745B3F4D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F86BE83A-AEEB-4BB7-87EB-FD3745B3F4D2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FEAE5AA6-08FC-449E-8CE1-6F3697211323}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FEAE5AA6-08FC-449E-8CE1-6F3697211323}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FEAE5AA6-08FC-449E-8CE1-6F3697211323}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FEAE5AA6-08FC-449E-8CE1-6F3697211323}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B27EA71-16CF-4E6B-912B-C4F14A33B28F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B27EA71-16CF-4E6B-912B-C4F14A33B28F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B27EA71-16CF-4E6B-912B-C4F14A33B28F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B27EA71-16CF-4E6B-912B-C4F14A33B28F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
