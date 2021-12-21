@@ -166,7 +166,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                 };
 
                 this.Height = this.captionBarHeight + (this.messageLines + 2) * this.Font.Height + this.buttonCenter.Height + this.Font.Height;
-                this.Width = Math.Max(this.Width, this.buttonCenter.Height * 4);
+                this.Width = Math.Max(this.Width, this.buttonCenter.Width * 4);
 
                 this.buttonCenter.SetMargin(this.Width / 2 - this.buttonCenter.Width / 2, this.Height - (this.buttonCenter.Height + this.Font.Height), 0, 0);
                 this.buttonCenter.Click += this.Button_Click;
@@ -205,7 +205,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                 };
 
                 this.Height = this.captionBarHeight + (this.messageLines + 2) * this.Font.Height + this.buttonLeft.Height + this.Font.Height;
-                this.Width = Math.Max(this.Width, this.buttonLeft.Height * 4);
+                this.Width = Math.Max(this.Width, this.buttonLeft.Width * 4);
 
                 this.buttonLeft.SetMargin(this.Width / 2 - this.buttonLeft.Width * 3 / 2, this.Height - (this.buttonLeft.Height + this.Font.Height), 0, 0);
 
@@ -221,7 +221,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
                 this.buttonRight.SetMargin(this.Width / 2 + this.buttonRight.Width / 2, this.Height - (this.buttonLeft.Height + this.Font.Height), 0, 0);
 
-                this.Width = Math.Max(this.Width, this.buttonRight.Height * 4);
+                this.Width = Math.Max(this.Width, this.buttonRight.Width * 4);
 
 
                 this.buttonRight.Click += this.Button_Click;
