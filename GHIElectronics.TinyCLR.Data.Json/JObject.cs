@@ -63,6 +63,11 @@ namespace GHIElectronics.TinyCLR.Data.Json
                         else
                         {
                             var methodResultType = methodResult.GetType();
+
+                            if (methodResultType != null && methodResultType.FullName != null && methodResultType.FullName.IndexOf("System.Collections.ArrayList") >= 0) {
+                                throw new Exception("Not supported " + methodResultType.FullName);
+                            }
+
                             var child = JObject.Serialize(methodResultType, methodResult, settings);
                             if (settings.TypeNameHandling == TypeNameHandling.Objects ||
                                (settings.TypeNameHandling == TypeNameHandling.Auto && methodResultType != m.ReturnType))
