@@ -11,8 +11,8 @@
     <licenseUrl>http://files.ghielectronics.com/downloads/TinyCLR/License.txt</licenseUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>The Jacdac transport library for TinyCLR OS.</description>
-    <copyright>Copyright GHI Electronics, LLC 2021</copyright>
-    <tags>TinyCLR TinyCLROS</tags>
+    <copyright>Copyright GHI Electronics, LLC 2022</copyright>
+    <tags>TinyCLR TinyCLROS Jacdac</tags>
     <dependencies>
       <dependency id="GHIElectronics.TinyCLR.Core" version="2.1.0" />
       <dependency id="GHIElectronics.TinyCLR.Native" version="2.1.0" />
