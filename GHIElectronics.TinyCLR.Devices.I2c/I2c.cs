@@ -8,6 +8,11 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
     public sealed class I2cController : IDisposable {
         public II2cControllerProvider Provider { get; }
 
+        public TimeSpan Timeout {
+            get => this.Provider.Timeout;
+            set => this.Provider.Timeout = value;
+        }
+
         private I2cController(II2cControllerProvider provider) => this.Provider = provider;
 
         public static I2cController GetDefault() => NativeApi.GetDefaultFromCreator(NativeApiType.I2cController) is I2cController c ? c : I2cController.FromName(NativeApi.GetDefaultName(NativeApiType.I2cController));
@@ -19,19 +24,53 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
 
             return FromProvider(new I2cControllerSoftwareProvider(sdaPin, sclPin, usePullups));
         }
-        public static I2cController FromProvider(II2cControllerProvider provider) => new I2cController(provider);
+        public static I2cController FromProvider(II2cControllerProvider provider) {
+            var c = new I2cController(provider) {
+                Timeout = TimeSpan.FromSeconds(2)
+            };
+
+            return c;
+        }
 
         public void Dispose() => this.Provider.Dispose();
 
-        public I2cDevice GetDevice(I2cConnectionSettings connectionSettings) => new I2cDevice(this, connectionSettings);
+        public I2cDevice GetDevice(I2cConnectionSettings connectionSettings) {
+            var device = new I2cDevice(this, connectionSettings);
+
+            if (connectionSettings.Mode == I2cMode.Slave) {
+
+                this.Provider.SetActiveSettings(device.ConnectionSettings);
+
+                if (this.Provider.ReadBufferSize == 0)
+                    this.Provider.ReadBufferSize = 256;
+                if (this.Provider.WriteBufferSize == 0)
+                    this.Provider.WriteBufferSize = 256;
+            }
+
+            return device;
+        }
 
         internal void SetActive(I2cDevice device) => this.Provider.SetActiveSettings(device.ConnectionSettings);
+
+        public void ClearWriteBuffer() => this.Provider.ClearWriteBuffer();
+        public void ClearReadBuffer() => this.Provider.ClearReadBuffer();
+
+        public int WriteBufferSize { get => this.Provider.WriteBufferSize; set => this.Provider.WriteBufferSize = value; }
+        public int ReadBufferSize { get => this.Provider.ReadBufferSize; set => this.Provider.ReadBufferSize = value; }
+        public int BytesToWrite => this.Provider.BytesToWrite;
+        public int BytesToRead => this.Provider.BytesToRead;
+
+
+        internal static string MasterNotSupported = "Not supported in master mode.";
     }
 
     public sealed class I2cDevice : IDisposable {
         private static object ojectLocker = new object();
         public I2cConnectionSettings ConnectionSettings { get; }
         public I2cController Controller { get; }
+
+        private FrameReceivedEventHandler frameReceivedCallbacks;
+        private ErrorReceivedEventHandler errorReceivedCallbacks;
 
         internal I2cDevice(I2cController controller, I2cConnectionSettings connectionSettings) {
             this.ConnectionSettings = connectionSettings;
@@ -45,7 +84,6 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
         public void Read(byte[] buffer) => this.WriteRead(null, 0, 0, buffer, 0, buffer.Length);
         public void Write(byte[] buffer) => this.WriteRead(buffer, 0, buffer.Length, null, 0, 0);
         public void WriteRead(byte[] writeBuffer, byte[] readBuffer) => this.WriteRead(writeBuffer, 0, writeBuffer.Length, readBuffer, 0, readBuffer.Length);
-
         public void Read(byte[] buffer, int offset, int length) => this.WriteRead(null, 0, 0, buffer, offset, length);
         public void Write(byte[] buffer, int offset, int length) => this.WriteRead(buffer, offset, length, null, 0, 0);
 
@@ -54,18 +92,47 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
                 this.Controller.SetActive(this);
 
                 if (this.Controller.Provider.WriteRead(writeBuffer, writeOffset, writeLength, readBuffer, readOffset, readLength, out _, out _) != I2cTransferStatus.FullTransfer)
-                    throw new InvalidOperationException();
+                    if (this.ConnectionSettings.Mode != I2cMode.Slave)
+                        throw new InvalidOperationException();
             }
         }
 
-        public I2cTransferResult ReadPartial(byte[] buffer) => this.WriteReadPartial(null, 0, 0, buffer, 0, buffer.Length);
-        public I2cTransferResult WritePartial(byte[] buffer) => this.WriteReadPartial(buffer, 0, buffer.Length, null, 0, 0);
-        public I2cTransferResult WriteReadPartial(byte[] writeBuffer, byte[] readBuffer) => this.WriteReadPartial(writeBuffer, 0, writeBuffer.Length, readBuffer, 0, readBuffer.Length);
+        public I2cTransferResult ReadPartial(byte[] buffer) {
+            if (this.ConnectionSettings.Mode != I2cMode.Slave)
+                throw new NotSupportedException(I2cController.MasterNotSupported);
 
-        public I2cTransferResult ReadPartial(byte[] buffer, int offset, int length) => this.WriteReadPartial(null, 0, 0, buffer, offset, length);
-        public I2cTransferResult WritePartial(byte[] buffer, int offset, int length) => this.WriteReadPartial(buffer, offset, length, null, 0, 0);
+            return this.WriteReadPartial(null, 0, 0, buffer, 0, buffer.Length);
+        }
+        public I2cTransferResult WritePartial(byte[] buffer) {
+            if (this.ConnectionSettings.Mode != I2cMode.Slave)
+                throw new NotSupportedException(I2cController.MasterNotSupported);
+
+            return this.WriteReadPartial(buffer, 0, buffer.Length, null, 0, 0);
+        }
+        public I2cTransferResult WriteReadPartial(byte[] writeBuffer, byte[] readBuffer) {
+            if (this.ConnectionSettings.Mode != I2cMode.Slave)
+                throw new NotSupportedException(I2cController.MasterNotSupported);
+
+            return this.WriteReadPartial(writeBuffer, 0, writeBuffer.Length, readBuffer, 0, readBuffer.Length);
+        }
+
+        public I2cTransferResult ReadPartial(byte[] buffer, int offset, int length) {
+            if (this.ConnectionSettings.Mode != I2cMode.Slave)
+                throw new NotSupportedException(I2cController.MasterNotSupported);
+
+            return this.WriteReadPartial(null, 0, 0, buffer, offset, length);
+        }
+        public I2cTransferResult WritePartial(byte[] buffer, int offset, int length) {
+            if (this.ConnectionSettings.Mode != I2cMode.Slave)
+                throw new NotSupportedException(I2cController.MasterNotSupported);
+
+            return this.WriteReadPartial(buffer, offset, length, null, 0, 0);
+        }
 
         public I2cTransferResult WriteReadPartial(byte[] writeBuffer, int writeOffset, int writeLength, byte[] readBuffer, int readOffset, int readLength) {
+            if (this.ConnectionSettings.Mode != I2cMode.Slave)
+                throw new NotSupportedException(I2cController.MasterNotSupported);
+
             lock (ojectLocker) {
                 this.Controller.SetActive(this);
 
@@ -74,12 +141,64 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
                 return new I2cTransferResult(res, written, read);
             }
         }
+
+        private void OnFrameReceived(I2cDevice sender, FrameReceivedEventArgs e) {
+            if (e.Address == this.ConnectionSettings.SlaveAddress)
+                this.frameReceivedCallbacks?.Invoke(this, e);
+        }
+        private void OnErrorReceived(I2cDevice sender, ErrorReceivedEventArgs e) {
+            if (e.Address == this.ConnectionSettings.SlaveAddress)
+                this.errorReceivedCallbacks?.Invoke(this, e);
+        }
+
+        public event FrameReceivedEventHandler FrameReceived {
+            add {
+                if (this.ConnectionSettings.Mode != I2cMode.Slave)
+                    throw new NotSupportedException(I2cController.MasterNotSupported);
+
+                if (this.frameReceivedCallbacks == null)
+                    this.Controller.Provider.FrameReceived += this.OnFrameReceived;
+
+                this.frameReceivedCallbacks += value;
+            }
+            remove {
+                if (this.ConnectionSettings.Mode != I2cMode.Slave)
+                    throw new NotSupportedException(I2cController.MasterNotSupported);
+
+                this.frameReceivedCallbacks -= value;
+
+                if (this.frameReceivedCallbacks == null)
+                    this.Controller.Provider.FrameReceived -= this.OnFrameReceived;
+            }
+        }
+
+        public event ErrorReceivedEventHandler ErrorReceived {
+            add {
+                if (this.ConnectionSettings.Mode != I2cMode.Slave)
+                    throw new NotSupportedException(I2cController.MasterNotSupported);
+
+                if (this.errorReceivedCallbacks == null)
+                    this.Controller.Provider.ErrorReceived += this.OnErrorReceived;
+
+                this.errorReceivedCallbacks += value;
+            }
+            remove {
+                if (this.ConnectionSettings.Mode != I2cMode.Slave)
+                    throw new NotSupportedException(I2cController.MasterNotSupported);
+
+                this.errorReceivedCallbacks -= value;
+
+                if (this.errorReceivedCallbacks == null)
+                    this.Controller.Provider.ErrorReceived -= this.OnErrorReceived;
+            }
+        }
     }
 
     public sealed class I2cConnectionSettings {
         public int SlaveAddress { get; set; }
         public I2cAddressFormat AddressFormat { get; set; }
         public uint BusSpeed { get; set; }
+        public I2cMode Mode { get; set; }
 
         public I2cConnectionSettings(int slaveAddress) : this(slaveAddress, I2cAddressFormat.SevenBit) {
 
@@ -89,10 +208,15 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
 
         }
 
-        public I2cConnectionSettings(int slaveAddress, I2cAddressFormat addressFormat, uint busSpeed = 100000) {
+        public I2cConnectionSettings(int slaveAddress, I2cAddressFormat addressFormat, uint busSpeed = 100000) : this(slaveAddress, addressFormat, I2cMode.Master, busSpeed) {
+
+        }
+
+        public I2cConnectionSettings(int slaveAddress, I2cAddressFormat addressFormat, I2cMode mode, uint busSpeed = 100000) {
             this.SlaveAddress = slaveAddress;
             this.AddressFormat = addressFormat;
             this.BusSpeed = busSpeed;
+            this.Mode = mode;
         }
     }
 
@@ -101,11 +225,48 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
         TenBit = 1,
     }
 
+    public enum I2cMode {
+        Master = 0,
+        Slave = 1
+    }
+
     public enum I2cTransferStatus {
         FullTransfer = 0,
         PartialTransfer = 1,
         SlaveAddressNotAcknowledged = 2,
         ClockStretchTimeout = 3,
+    }
+
+    public enum I2cError {
+        Overrun = 0,
+        Bus = 1,
+        ArbitrationLoss = 2,
+        BufferFull = 3
+    }
+
+    public sealed class FrameReceivedEventArgs {
+        public DateTime Timestamp { get; }
+        public uint DataCount { get; }
+
+        public uint Address { get; }
+
+        internal FrameReceivedEventArgs(uint address, uint count, DateTime timestamp) {
+            this.Address = address;
+            this.DataCount = count;
+            this.Timestamp = timestamp;
+        }
+    }
+
+    public sealed class ErrorReceivedEventArgs {
+        public DateTime Timestamp { get; }
+        public I2cError Error { get; }
+
+        public uint Address { get; }
+        internal ErrorReceivedEventArgs(uint address, I2cError error, DateTime timestamp) {
+            this.Address = address;
+            this.Error = error;
+            this.Timestamp = timestamp;
+        }
     }
 
     public struct I2cTransferResult {
@@ -122,10 +283,24 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
         }
     }
 
+    public delegate void FrameReceivedEventHandler(I2cDevice sender, FrameReceivedEventArgs e);
+    public delegate void ErrorReceivedEventHandler(I2cDevice sender, ErrorReceivedEventArgs e);
+
     namespace Provider {
         public interface II2cControllerProvider : IDisposable {
+            int WriteBufferSize { get; set; }
+            int ReadBufferSize { get; set; }
+            int BytesToWrite { get; }
+            int BytesToRead { get; }
+            void ClearWriteBuffer();
+            void ClearReadBuffer();
             void SetActiveSettings(I2cConnectionSettings connectionSettings);
             I2cTransferStatus WriteRead(byte[] writeBuffer, int writeOffset, int writeLength, byte[] readBuffer, int readOffset, int readLength, out int written, out int read);
+
+            event FrameReceivedEventHandler FrameReceived;
+            event ErrorReceivedEventHandler ErrorReceived;
+
+            TimeSpan Timeout { get; set; }
         }
 
         public sealed class I2cControllerApiWrapper : II2cControllerProvider {
@@ -133,15 +308,57 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
 
             public NativeApi Api { get; }
 
+            private FrameReceivedEventHandler frameReceivedCallbacks;
+            private ErrorReceivedEventHandler errorReceivedCallbacks;
+
+            private readonly NativeEventDispatcher frameReceivedDispatcher;
+            private readonly NativeEventDispatcher errorReceivedDispatcher;
+
             public I2cControllerApiWrapper(NativeApi api) {
                 this.Api = api;
 
                 this.impl = api.Implementation;
 
                 this.Acquire();
+
+                this.frameReceivedDispatcher = NativeEventDispatcher.GetDispatcher("GHIElectronics.TinyCLR.NativeEventNames.I2c.FrameReceived");
+                this.errorReceivedDispatcher = NativeEventDispatcher.GetDispatcher("GHIElectronics.TinyCLR.NativeEventNames.I2c.ErrorReceived");
+
+                this.frameReceivedDispatcher.OnInterrupt += (apiName, d0, d1, d2, d3, ts) => { if (this.Api.Name == apiName) this.frameReceivedCallbacks?.Invoke(null, new FrameReceivedEventArgs((uint)d0, (uint)d1, ts)); };
+                this.errorReceivedDispatcher.OnInterrupt += (apiName, d0, d1, d2, d3, ts) => { if (this.Api.Name == apiName) this.errorReceivedCallbacks?.Invoke(null, new ErrorReceivedEventArgs((uint)d0, (I2cError)d1, ts)); };
             }
 
             public void Dispose() => this.Release();
+
+            public event FrameReceivedEventHandler FrameReceived {
+                add {
+                    if (this.frameReceivedCallbacks == null)
+                        this.SetFrameReceivedEventEnabled(true);
+
+                    this.frameReceivedCallbacks += value;
+                }
+                remove {
+                    this.frameReceivedCallbacks -= value;
+
+                    if (this.frameReceivedCallbacks == null)
+                        this.SetFrameReceivedEventEnabled(false);
+                }
+            }
+
+            public event ErrorReceivedEventHandler ErrorReceived {
+                add {
+                    if (this.errorReceivedCallbacks == null)
+                        this.SetErrorReceivedEventEnabled(true);
+
+                    this.errorReceivedCallbacks += value;
+                }
+                remove {
+                    this.errorReceivedCallbacks -= value;
+
+                    if (this.errorReceivedCallbacks == null)
+                        this.SetErrorReceivedEventEnabled(false);
+                }
+            }
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             private extern void Acquire();
@@ -154,6 +371,28 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern I2cTransferStatus WriteRead(byte[] writeBuffer, int writeOffset, int writeLength, byte[] readBuffer, int readOffset, int readLength, out int written, out int read);
+
+            public extern int WriteBufferSize { [MethodImpl(MethodImplOptions.InternalCall)]  get; [MethodImpl(MethodImplOptions.InternalCall)]  set; }
+
+            public extern int ReadBufferSize { [MethodImpl(MethodImplOptions.InternalCall)]  get; [MethodImpl(MethodImplOptions.InternalCall)]  set; }
+
+            public extern int BytesToWrite { [MethodImpl(MethodImplOptions.InternalCall)]  get; }
+
+            public extern int BytesToRead { [MethodImpl(MethodImplOptions.InternalCall)]  get; }
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            public extern void ClearWriteBuffer();
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            public extern void ClearReadBuffer();
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            private extern void SetFrameReceivedEventEnabled(bool enabled);
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            private extern void SetErrorReceivedEventEnabled(bool enabled);
+
+            public TimeSpan Timeout { [MethodImpl(MethodImplOptions.InternalCall)] get; [MethodImpl(MethodImplOptions.InternalCall)] set; }
+
         }
 
         internal sealed class I2cControllerSoftwareProvider : II2cControllerProvider {
@@ -163,6 +402,23 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
             private byte writeAddress;
             private byte readAddress;
             private bool start;
+
+            public event ErrorReceivedEventHandler ErrorReceived {
+                add {
+                    throw new NotSupportedException(I2cController.MasterNotSupported);
+                }
+                remove {
+                    throw new NotSupportedException(I2cController.MasterNotSupported);
+                }
+            }
+            public event FrameReceivedEventHandler FrameReceived {
+                add {
+                    throw new NotSupportedException(I2cController.MasterNotSupported);
+                }
+                remove {
+                    throw new NotSupportedException(I2cController.MasterNotSupported);
+                }
+            }
 
             public I2cControllerSoftwareProvider(GpioPin sdaPin, GpioPin sclPin) : this(sdaPin, sclPin, true) { }
 
@@ -180,6 +436,7 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
 
             public void SetActiveSettings(I2cConnectionSettings connectionSettings) {
                 if (connectionSettings.AddressFormat != I2cAddressFormat.SevenBit) throw new NotSupportedException();
+                if (connectionSettings.Mode == I2cMode.Slave) throw new NotSupportedException();
 
                 this.writeAddress = (byte)(connectionSettings.SlaveAddress << 1);
                 this.readAddress = (byte)((connectionSettings.SlaveAddress << 1) | 1);
@@ -384,6 +641,16 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
             private class I2cClockStretchTimeoutException : Exception {
 
             }
+
+            public int WriteBufferSize { get => throw new NotSupportedException(I2cController.MasterNotSupported); set => throw new NotSupportedException(I2cController.MasterNotSupported); }
+            public int ReadBufferSize { get => throw new NotSupportedException(I2cController.MasterNotSupported); set => throw new NotSupportedException(I2cController.MasterNotSupported); }
+            public int BytesToWrite => throw new NotSupportedException(I2cController.MasterNotSupported);
+            public int BytesToRead => throw new NotSupportedException(I2cController.MasterNotSupported);
+
+            public TimeSpan Timeout { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+            public void ClearWriteBuffer() => throw new NotSupportedException(I2cController.MasterNotSupported);
+            public void ClearReadBuffer() => throw new NotSupportedException(I2cController.MasterNotSupported);
         }
     }
 }
