@@ -142,7 +142,7 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
             }
         }
 
-        private void OnFrameReceived(I2cDevice sender, FrameReceivedEventArgs e) {
+        private void OnFrameReceived(I2cDevice sender, FrameEventArgs e) {
             if (e.Address == this.ConnectionSettings.SlaveAddress)
                 this.frameReceivedCallbacks?.Invoke(this, e);
         }
@@ -192,6 +192,53 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
                     this.Controller.Provider.ErrorReceived -= this.OnErrorReceived;
             }
         }
+
+        public void ClearWriteBuffer() {
+            if (this.ConnectionSettings.Mode != I2cMode.Slave)
+                throw new NotSupportedException(I2cController.MasterNotSupported);
+
+            this.Controller.Provider.ClearWriteBuffer();
+        }
+        public void ClearReadBuffer() {
+            if (this.ConnectionSettings.Mode != I2cMode.Slave)
+                throw new NotSupportedException(I2cController.MasterNotSupported);
+
+            this.Controller.Provider.ClearReadBuffer();
+        }
+
+        public int WriteBufferSize {
+            get {
+                if (this.ConnectionSettings.Mode != I2cMode.Slave)
+                    throw new NotSupportedException(I2cController.MasterNotSupported);
+
+                return this.Controller.Provider.WriteBufferSize;
+            }
+        }
+        public int ReadBufferSize {
+            get {
+                if (this.ConnectionSettings.Mode != I2cMode.Slave)
+                    throw new NotSupportedException(I2cController.MasterNotSupported);
+
+                return this.Controller.Provider.ReadBufferSize;
+            }
+        }
+        public int BytesToWrite {
+            get {
+                if (this.ConnectionSettings.Mode != I2cMode.Slave)
+                    throw new NotSupportedException(I2cController.MasterNotSupported);
+
+                return this.Controller.Provider.BytesToWrite;
+            }
+        }
+
+        public int BytesToRead {
+            get {
+                if (this.ConnectionSettings.Mode != I2cMode.Slave)
+                    throw new NotSupportedException(I2cController.MasterNotSupported);
+
+                return this.Controller.Provider.BytesToRead;
+            }
+        }
     }
 
     public sealed class I2cConnectionSettings {
@@ -199,6 +246,8 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
         public I2cAddressFormat AddressFormat { get; set; }
         public uint BusSpeed { get; set; }
         public I2cMode Mode { get; set; }
+
+        public bool EnableClockStretching { get; set; }
 
         public I2cConnectionSettings(int slaveAddress) : this(slaveAddress, I2cAddressFormat.SevenBit) {
 
@@ -208,15 +257,24 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
 
         }
 
-        public I2cConnectionSettings(int slaveAddress, I2cAddressFormat addressFormat, uint busSpeed = 100000) : this(slaveAddress, addressFormat, I2cMode.Master, busSpeed) {
+        public I2cConnectionSettings(int slaveAddress, I2cAddressFormat addressFormat, uint busSpeed = 100000) : this(slaveAddress, I2cMode.Master, addressFormat, busSpeed) {
 
         }
 
-        public I2cConnectionSettings(int slaveAddress, I2cAddressFormat addressFormat, I2cMode mode, uint busSpeed = 100000) {
+        public I2cConnectionSettings(int slaveAddress, I2cMode mode) : this(slaveAddress, mode, I2cAddressFormat.SevenBit) {
+
+        }
+
+        public I2cConnectionSettings(int slaveAddress, I2cMode mode, I2cAddressFormat addressFormat, uint busSpeed = 100000) : this(slaveAddress, mode, addressFormat, busSpeed, false) {
+
+        }
+
+        public I2cConnectionSettings(int slaveAddress, I2cMode mode, I2cAddressFormat addressFormat, uint busSpeed, bool enableClockStretching = false) {
             this.SlaveAddress = slaveAddress;
             this.AddressFormat = addressFormat;
             this.BusSpeed = busSpeed;
             this.Mode = mode;
+            this.EnableClockStretching = enableClockStretching;
         }
     }
 
@@ -244,16 +302,25 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
         BufferFull = 3
     }
 
-    public sealed class FrameReceivedEventArgs {
+    public enum I2cTransaction {
+        MasterWrite = 0,
+        MasterRead = 1,
+        MasterStop = 2
+    }
+
+    public sealed class FrameEventArgs {
         public DateTime Timestamp { get; }
         public uint DataCount { get; }
 
         public uint Address { get; }
 
-        internal FrameReceivedEventArgs(uint address, uint count, DateTime timestamp) {
+        public I2cTransaction Event { get; }
+
+        internal FrameEventArgs(I2cTransaction e, uint address, uint count, DateTime timestamp) {
             this.Address = address;
             this.DataCount = count;
             this.Timestamp = timestamp;
+            this.Event = e;
         }
     }
 
@@ -283,7 +350,7 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
         }
     }
 
-    public delegate void FrameReceivedEventHandler(I2cDevice sender, FrameReceivedEventArgs e);
+    public delegate void FrameReceivedEventHandler(I2cDevice sender, FrameEventArgs e);
     public delegate void ErrorReceivedEventHandler(I2cDevice sender, ErrorReceivedEventArgs e);
 
     namespace Provider {
@@ -324,7 +391,7 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
                 this.frameReceivedDispatcher = NativeEventDispatcher.GetDispatcher("GHIElectronics.TinyCLR.NativeEventNames.I2c.FrameReceived");
                 this.errorReceivedDispatcher = NativeEventDispatcher.GetDispatcher("GHIElectronics.TinyCLR.NativeEventNames.I2c.ErrorReceived");
 
-                this.frameReceivedDispatcher.OnInterrupt += (apiName, d0, d1, d2, d3, ts) => { if (this.Api.Name == apiName) this.frameReceivedCallbacks?.Invoke(null, new FrameReceivedEventArgs((uint)d0, (uint)d1, ts)); };
+                this.frameReceivedDispatcher.OnInterrupt += (apiName, d0, d1, d2, d3, ts) => { if (this.Api.Name == apiName) this.frameReceivedCallbacks?.Invoke(null, new FrameEventArgs((I2cTransaction)d0, (uint)d1, (uint)d2, ts)); };
                 this.errorReceivedDispatcher.OnInterrupt += (apiName, d0, d1, d2, d3, ts) => { if (this.Api.Name == apiName) this.errorReceivedCallbacks?.Invoke(null, new ErrorReceivedEventArgs((uint)d0, (I2cError)d1, ts)); };
             }
 
