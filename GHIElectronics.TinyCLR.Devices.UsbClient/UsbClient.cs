@@ -15,12 +15,13 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
     };
 
     public enum UsbClientMode {
-        RawDevice = 0, 
+        RawDevice = 0,
         Cdc = 1,
-        WinUsb = 2,        
+        WinUsb = 2,
         Keyboard = 3,
         Mouse = 4,
-        Joystick = 5
+        Joystick = 5,
+        MassStorage = 6
     }
 
     public delegate void DataReceivedEventHandler(RawDevice sender, uint count);
@@ -40,10 +41,10 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
         public ushort BcdUsb { get; set; } = 0x210;
         public ushort BcdDevice { get; set; }
         public ushort MaxPower { get; set; }
-        public string InterfaceName { get; set; }        
+        public string InterfaceName { get; set; }
     }
 
-    public sealed class UsbClientController : IDisposable {        
+    public sealed class UsbClientController : IDisposable {
         public IUsbClientControllerProvider Provider { get; }
 
         private UsbClientController(IUsbClientControllerProvider provider) => this.Provider = provider;
@@ -64,14 +65,14 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
             int ReadBufferSize { get; set; }
 
             DeviceState DeviceState { get; }
-            
+
             void Enable();
             void Disable();
 
             void SetActiveSetting(UsbClientSetting setting);
             void SetDeviceDescriptor(Configuration.DeviceDescriptor[] deviceDescriptor);
             void SetConfigurationDescriptor(Configuration.ConfigurationDescriptor[] configurationDescriptor);
-            void SetStringDescriptor(Configuration.StringDescriptor[] stringDescriptor,  uint index);
+            void SetStringDescriptor(Configuration.StringDescriptor[] stringDescriptor, uint index);
             void SetGenericDescriptor(Configuration.GenericDescriptor[] genericDescriptor);
 
             int Read(int streamIndex, byte[] data, int offset, int count);
