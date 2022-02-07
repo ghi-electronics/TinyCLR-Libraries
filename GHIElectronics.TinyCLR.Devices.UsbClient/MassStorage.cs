@@ -18,6 +18,8 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
         private static int nextLogicalUnitNumber;
         private RawDevice.RawStream stream;
         private int logicalUnitCount;
+        private static bool enabled;
+        private static IntPtr storage;
 
         /// <summary>The maximum number of logical units that any mass storage can support.</summary>
         public static int MaximumSupportedLogicalUnits => MassStorage.maxSupportLogicaUnits;
@@ -47,30 +49,13 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
             }) {
         }
 
-        /// <summary>Creates a new mass storage.</summary>
-        /// <param name="vendorId">The device vendor id.</param>
-        /// <param name="productId">The device product id.</param>
-        /// <param name="version">The device version.</param>
-        /// <param name="maxPower">The maximum power required from bus in milliamps.</param>
-        /// <param name="manufacturer">The manufacturer name.</param>
-        /// <param name="product">The product name.</param>
-        /// <param name="serialNumber">The device serial number.</param>
-        /// <param name="interfaceName">The name of the interface.</param>
-        /// <param name="logicalUnitCount">The number of logical units in this device.</param>
-        //public MassStorage(ushort vendorId, ushort productId, ushort version, ushort maxPower, string manufacturer, string product, string serialNumber, string interfaceName, int logicalUnitCount)
-        //    : base(vendorId, productId, version, maxPower, manufacturer, product, serialNumber) {
         public MassStorage(UsbClientController usbClientController, UsbClientSetting usbClientSetting)
             : base(usbClientController, usbClientSetting) {
 
-            var vendorId = usbClientSetting.VendorId;
-            var productId = usbClientSetting.ProductId;
-            var version = usbClientSetting.BcdDevice;
-            var maxPower = usbClientSetting.MaxPower;
-            var manufacturer = usbClientSetting.ManufactureName;
-            var product = usbClientSetting.ProductName;
-            var serialNumber = usbClientSetting.SerialNumber;
             var interfaceName = usbClientSetting.InterfaceName;
             var logicalUnitCount = 1;
+
+            this.usbClientSetting = usbClientSetting;
 
 
             if (logicalUnitCount < 0 || logicalUnitCount > MassStorage.MaximumSupportedLogicalUnits) throw new ArgumentOutOfRangeException("number", "number must be non-negative and less than MassStorage.MaximumSupportedLogicalUnits.");
@@ -91,65 +76,85 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
             this.stream = this.CreateStream(writeEndpoint, readEndpoint);
 
             this.SetInterfaceMap(interfaceIndex, /*RawDevice.InterfaceMapType.MassStorage,*/ (byte)this.logicalUnitCount, (byte)this.stream.StreamIndex, 0);
+
         }
 
         /// <summary>Attaches a removable storage device.</summary>
         /// <param name="storage">The storage device to attach.</param>
         /// <returns>The number associated with the new logical unit</returns>
-        public int AttachLogicalUnit(IntPtr storage) {
-            var number = MassStorage.nextLogicalUnitNumber++;
+        public void AttachLogicalUnit(IntPtr storage) {
+            if (MassStorage.nextLogicalUnitNumber >= 1 || MassStorage.enabled) {
+                throw new IndexOutOfRangeException("Support one Logical Unit only!");
+            }
 
-            this.AttachLogicalUnit(storage, number);
-
-            return number;
+            MassStorage.nextLogicalUnitNumber++;
+            MassStorage.storage = storage;
         }
 
-        /// <summary>Attaches a removable storage device to a logical unit.</summary>
-        /// <param name="storage">The storage device to attach.</param>
-        /// <param name="number">The logical unit number.</param>
-        public void AttachLogicalUnit(IntPtr storage, int number) => this.AttachLogicalUnit(storage, number, " ", " ");
+        public void RemoveLogicalUnit(IntPtr storage) {
+            if (MassStorage.storage != storage || MassStorage.nextLogicalUnitNumber == 0) {
+                throw new InvalidOperationException("Hdc not found.");
+            }
 
-        /// <summary>Attaches a removable storage device to a logical unit.</summary>
-        /// <param name="storage">The storage device to attach.</param>
-        /// <param name="number">The logical unit number.</param>
-        /// <param name="vendor">The vendor name.</param>
-        /// <param name="product">The product name.</param>
-        public void AttachLogicalUnit(IntPtr storage, int number, string vendor, string product) {
-            if (number < 0 || number > 255) throw new ArgumentOutOfRangeException("number", "number must be non-negative and less than 256.");
-            if (number >= this.logicalUnitCount) throw new ArgumentOutOfRangeException("number", "number must be less than LogicalUnitCount.");
-            //if (storage == null) throw new ArgumentNullException("storage");
-            if (vendor == null) throw new ArgumentNullException("vendor");
-            if (product == null) throw new ArgumentNullException("product");
+            if (MassStorage.enabled)
+                throw new IndexOutOfRangeException("MassStorage is in used.");
 
-            //storage.ForceInitialization();
-
-            MassStorage.NativeAttachLogicalUnit((byte)number, storage, vendor, product);
+            MassStorage.nextLogicalUnitNumber--;
         }
+        public override void Enable() {
+            if (MassStorage.enabled) {
+                throw new InvalidOperationException("Already enabled.");
+            }
+
+            if (MassStorage.nextLogicalUnitNumber == 0) {
+                throw new InvalidOperationException("No LogicalUnit found.");
+            }
+
+            this.EnableLogicalUnit(MassStorage.storage, MassStorage.nextLogicalUnitNumber - 1, " ", this.usbClientSetting.ProductName);
+
+            base.Enable();
+
+            MassStorage.enabled = true;
+        }
+
+        public override void Disable() {
+            if (!MassStorage.enabled) {
+                throw new InvalidOperationException("Already disabled.");
+            }
+
+            if (MassStorage.nextLogicalUnitNumber == 0) {
+                throw new InvalidOperationException("No LogicalUnit found.");
+            }
+
+            this.DisableLogicalUnit(MassStorage.storage, MassStorage.nextLogicalUnitNumber - 1);
+
+            base.Disable();
+
+            MassStorage.enabled = false;
+        }
+
 
         /// <summary>Enables the logical unit associated with the given number.</summary>
         /// <param name="number">The logical unit number.</param>
-        public void EnableLogicalUnit(int number) {
+        private void EnableLogicalUnit(IntPtr storage, int number, string vendor, string product) {
             if (number < 0 || number > 255) throw new ArgumentOutOfRangeException("number", "number must be non-negative and less than 256.");
 
-            MassStorage.NativeEnableLogicalUnit((byte)number);
+            MassStorage.NativeEnableLogicalUnit(storage, (byte)number, vendor, product);
         }
 
         /// <summary>Disables the logical unit associated with the given number.</summary>
         /// <param name="number">The logical unit number.</param>
-        public void DisableLogicalUnit(int number) {
+        private void DisableLogicalUnit(IntPtr storage, int number) {
             if (number < 0 || number > 255) throw new ArgumentOutOfRangeException("number", "number must be non-negative and less than 256.");
 
-            MassStorage.NativeDisableLogicalUnit((byte)number);
+            MassStorage.NativeDisableLogicalUnit(storage, (byte)number);
         }
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        extern private static void NativeEnableLogicalUnit(byte number);
+        extern private static void NativeEnableLogicalUnit(IntPtr storage, byte number, string vendor, string product);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        extern private static void NativeDisableLogicalUnit(byte number);
-
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        extern private static void NativeAttachLogicalUnit(byte number, IntPtr storageId, string vendor, string product);
+        extern private static void NativeDisableLogicalUnit(IntPtr storage, byte number);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         extern private static byte NativeGetMaxLogicalUnits();
