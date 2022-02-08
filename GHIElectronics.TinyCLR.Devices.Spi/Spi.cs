@@ -7,7 +7,7 @@ using GHIElectronics.TinyCLR.Devices.Spi.Provider;
 using GHIElectronics.TinyCLR.Native;
 
 namespace GHIElectronics.TinyCLR.Devices.Spi {
-    public sealed class SpiController : IDisposable {
+    public class SpiController : IDisposable {
         public ISpiControllerProvider Provider { get; }
 
         private SpiController(ISpiControllerProvider provider) => this.Provider = provider;
@@ -28,7 +28,7 @@ namespace GHIElectronics.TinyCLR.Devices.Spi {
         internal void SetActive(SpiDevice device) => this.Provider.SetActiveSettings(device.ConnectionSettings);
     }
 
-    public sealed class SpiDevice : IDisposable {
+    public class SpiDevice : IDisposable {
         public SpiConnectionSettings ConnectionSettings { get; }
         public SpiController Controller { get; }
 
@@ -82,7 +82,7 @@ namespace GHIElectronics.TinyCLR.Devices.Spi {
         }
     }
 
-    public sealed class SpiConnectionSettings {
+    public class SpiConnectionSettings {
         public SpiChipSelectType ChipSelectType { get; set; } = SpiChipSelectType.None;
         public GpioPin ChipSelectLine { get; set; } = null;
         public int ClockFrequency { get; set; } = 1_000_000;

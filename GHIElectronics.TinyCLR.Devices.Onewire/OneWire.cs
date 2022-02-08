@@ -6,7 +6,7 @@ using System.Threading;
 using GHIElectronics.TinyCLR.Devices.Gpio;
 
 namespace GHIElectronics.TinyCLR.Devices.Onewire {
-    public sealed class OneWireController :IDisposable {
+    public class OneWireController :IDisposable {
         private GpioPin pin;
 
         public OneWireController(int pinNumber) : this(GpioController.GetDefault(), pinNumber) {

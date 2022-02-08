@@ -27,7 +27,7 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
     public delegate void DataReceivedEventHandler(RawDevice sender, uint count);
     public delegate void DeviceStateChangedEventHandler(RawDevice sender, DeviceState state);
 
-    public sealed class UsbClientSetting {
+    public class UsbClientSetting {
         public UsbClientMode Mode { get; set; }
 
         public string ManufactureName { get; set; }
@@ -44,7 +44,7 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
         public string InterfaceName { get; set; }
     }
 
-    public sealed class UsbClientController : IDisposable {
+    public class UsbClientController : IDisposable {
         public IUsbClientControllerProvider Provider { get; }
 
         private UsbClientController(IUsbClientControllerProvider provider) => this.Provider = provider;

@@ -4,7 +4,7 @@ using GHIElectronics.TinyCLR.Devices.Pwm.Provider;
 using GHIElectronics.TinyCLR.Native;
 
 namespace GHIElectronics.TinyCLR.Devices.Pwm {
-    public sealed class PwmController : IDisposable {
+    public class PwmController : IDisposable {
         public IPwmControllerProvider Provider { get; }
 
         private PwmController(IPwmControllerProvider provider) => this.Provider = provider;
@@ -28,7 +28,7 @@ namespace GHIElectronics.TinyCLR.Devices.Pwm {
         public PwmChannel OpenChannel(int channelNumber) => new PwmChannel(this, channelNumber);
     }
 
-    public sealed class PwmChannel : IDisposable {
+    public class PwmChannel : IDisposable {
         private PwmPulsePolarity polarity;
         private double dutyCycle;
 

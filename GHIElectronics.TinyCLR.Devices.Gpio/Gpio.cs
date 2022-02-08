@@ -7,7 +7,7 @@ using GHIElectronics.TinyCLR.Native;
 namespace GHIElectronics.TinyCLR.Devices.Gpio {
     public delegate void GpioPinValueChangedEventHandler(GpioPin sender, GpioPinValueChangedEventArgs e);
 
-    public sealed class GpioPinValueChangedEventArgs : EventArgs {
+    public class GpioPinValueChangedEventArgs : EventArgs {
         public GpioPinEdge Edge { get; }
         public DateTime Timestamp { get; }
 
@@ -36,7 +36,7 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio {
         RisingEdge = 2,
     }
 
-    public sealed class GpioController : IDisposable {
+    public class GpioController : IDisposable {
         public IGpioControllerProvider Provider { get; }
 
         private GpioController(IGpioControllerProvider provider) => this.Provider = provider;
@@ -91,7 +91,7 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio {
         }
     }
 
-    public sealed class GpioPin : IDisposable {
+    public class GpioPin : IDisposable {
         private GpioPinValueChangedEventHandler callbacks;
         private GpioPinEdge valueChangedEdge = GpioPinEdge.FallingEdge | GpioPinEdge.RisingEdge;
 
