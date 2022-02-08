@@ -8,7 +8,7 @@ using GHIElectronics.TinyCLR.Native;
 
 namespace GHIElectronics.TinyCLR.Devices.Watchdog
 {
-    public sealed class WatchdogController : IDisposable {
+    public class WatchdogController : IDisposable {
         public IWatchdogControllerProvider Provider { get; }
 
         private WatchdogController(IWatchdogControllerProvider provider) => this.Provider = provider;

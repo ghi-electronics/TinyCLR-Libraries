@@ -4,7 +4,7 @@ using GHIElectronics.TinyCLR.Devices.Can.Provider;
 using GHIElectronics.TinyCLR.Native;
 
 namespace GHIElectronics.TinyCLR.Devices.Can {
-    public sealed class CanController : IDisposable {
+    public class CanController : IDisposable {
         private MessageReceivedEventHandler messageReceivedCallbacks;
         private ErrorReceivedEventHandler errorReceivedCallbacks;
 
@@ -88,7 +88,7 @@ namespace GHIElectronics.TinyCLR.Devices.Can {
         public Filter Filter { get; }
     }
 
-    public sealed class Filter {
+    public class Filter {
         public enum IdType {
             Standard = 0,
             Extended = 1,
@@ -124,7 +124,7 @@ namespace GHIElectronics.TinyCLR.Devices.Can {
     public delegate void MessageReceivedEventHandler(CanController sender, MessageReceivedEventArgs e);
     public delegate void ErrorReceivedEventHandler(CanController sender, ErrorReceivedEventArgs e);
 
-    public sealed class MessageReceivedEventArgs {
+    public class MessageReceivedEventArgs {
         public int Count { get; }
         public DateTime Timestamp { get; }
 
@@ -134,7 +134,7 @@ namespace GHIElectronics.TinyCLR.Devices.Can {
         }
     }
 
-    public sealed class ErrorReceivedEventArgs {
+    public class ErrorReceivedEventArgs {
         public CanError Error { get; }
         public DateTime Timestamp { get; }
 
@@ -144,7 +144,7 @@ namespace GHIElectronics.TinyCLR.Devices.Can {
         }
     }
 
-    public sealed class CanBitTiming {
+    public class CanBitTiming {
         public int Phase1 { get; set; }
         public int Phase2 { get; set; }
         public int BaudratePrescaler { get; set; }
@@ -168,7 +168,7 @@ namespace GHIElectronics.TinyCLR.Devices.Can {
         }
     }
 
-    public sealed class CanMessage {
+    public class CanMessage {
         private byte[] data;
         private bool remoteTransmissionRequest;
         private bool fdCan;

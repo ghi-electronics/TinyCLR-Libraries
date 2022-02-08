@@ -4,7 +4,7 @@ using GHIElectronics.TinyCLR.Devices.Camera.Provider;
 using GHIElectronics.TinyCLR.Native;
 
 namespace GHIElectronics.TinyCLR.Devices.Camera {
-    public sealed class CameraController : IDisposable {        
+    public class CameraController : IDisposable {        
 
         public ICameraControllerProvider Provider { get; }
 

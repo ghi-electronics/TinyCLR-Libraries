@@ -7,7 +7,7 @@ using GHIElectronics.TinyCLR.Devices.Storage;
 using GHIElectronics.TinyCLR.Native;
 
 namespace GHIElectronics.TinyCLR.Update {
-    public sealed class ApplicationUpdate {
+    public class ApplicationUpdate {
         private Stream stream;
         private byte[] key;
         private int activityPinId = -1;
@@ -60,7 +60,7 @@ namespace GHIElectronics.TinyCLR.Update {
         private extern uint NativeAuthenticateApplication(Stream stream, byte[] key, int indicatorPinId);
     }
 
-    public sealed class InFieldUpdate:IDisposable {
+    public class InFieldUpdate:IDisposable {
         public enum CacheMode {
             Flash,
             Ram,

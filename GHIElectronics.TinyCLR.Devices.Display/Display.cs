@@ -4,7 +4,7 @@ using GHIElectronics.TinyCLR.Devices.Display.Provider;
 using GHIElectronics.TinyCLR.Native;
 
 namespace GHIElectronics.TinyCLR.Devices.Display {
-    public sealed class DisplayController : IDisposable {
+    public class DisplayController : IDisposable {
         public IDisplayControllerProvider Provider { get; }
 
         private DisplayController(IDisplayControllerProvider provider) => this.Provider = provider;

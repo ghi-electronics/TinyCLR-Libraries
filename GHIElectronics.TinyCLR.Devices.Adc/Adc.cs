@@ -9,7 +9,7 @@ namespace GHIElectronics.TinyCLR.Devices.Adc {
         Differential = 1
     }
 
-    public sealed class AdcController : IDisposable {
+    public class AdcController : IDisposable {
         public IAdcControllerProvider Provider { get; }
 
         private AdcController(IAdcControllerProvider provider) => this.Provider = provider;
@@ -35,7 +35,7 @@ namespace GHIElectronics.TinyCLR.Devices.Adc {
         public AdcChannel OpenChannel(int channelNumber) => new AdcChannel(this, channelNumber);
     }
 
-    public sealed class AdcChannel : IDisposable {
+    public class AdcChannel : IDisposable {
         public int ChannelNumber { get; }
         public AdcController Controller { get; }
         public TimeSpan SamplingTime { get; set; } = TimeSpan.FromTicks(1);

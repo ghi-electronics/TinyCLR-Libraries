@@ -5,7 +5,7 @@ using GHIElectronics.TinyCLR.Devices.I2c.Provider;
 using GHIElectronics.TinyCLR.Native;
 
 namespace GHIElectronics.TinyCLR.Devices.I2c {
-    public sealed class I2cController : IDisposable {
+    public class I2cController : IDisposable {
         public II2cControllerProvider Provider { get; }
 
         public TimeSpan Timeout {
@@ -64,7 +64,7 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
         internal static string MasterNotSupported = "Not supported in master mode.";
     }
 
-    public sealed class I2cDevice : IDisposable {
+    public class I2cDevice : IDisposable {
         private static object ojectLocker = new object();
         public I2cConnectionSettings ConnectionSettings { get; }
         public I2cController Controller { get; }
