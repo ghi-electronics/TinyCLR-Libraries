@@ -10,8 +10,7 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
 	/// works by exposing the storage connected to this device, such as SD card or USB sticks, to the host.
 	/// </summary>
 	/// <remarks>
-	/// Only one mass storage interface can be used, but multiple logical units are supported. Each logical unit will appear as a separate device on
-	/// your host PC.
+	/// Only one mass storage interface can be used, and one logical unit is supported. 
 	/// </remarks>
 	public class MassStorage : RawDevice {
         private static int maxSupportLogicaUnits;
@@ -29,12 +28,11 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
 
         static MassStorage() {
             MassStorage.nextLogicalUnitNumber = 0;
-            MassStorage.maxSupportLogicaUnits = MassStorage.NativeGetMaxLogicalUnits();
+            MassStorage.maxSupportLogicaUnits = 1;
         }
 
         /// <summary>Creates a new mass storage with default parameters.</summary>
         public MassStorage(UsbClientController usbClientController)
-            //: this(RawDevice.GHI_VID, (ushort)RawDevice.PID.MassStorage, 0x100, RawDevice.MAX_POWER, "GHI Electronics", "Mass Storage", "0", "Mass Storage", 1) {
             : this(usbClientController, new UsbClientSetting() {
                 VendorId = RawDevice.GHI_VID,
                 ProductId = (ushort)RawDevice.PID.MassStorage,
@@ -49,6 +47,9 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
             }) {
         }
 
+        /// <summary>Creates a new mass storage.</summary>
+        /// <param name="usbClientController">USBClient controller.</param>
+        /// <param name="usbClientSetting">USBClient setting.</param>
         public MassStorage(UsbClientController usbClientController, UsbClientSetting usbClientSetting)
             : base(usbClientController, usbClientSetting) {
 
@@ -80,8 +81,7 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
         }
 
         /// <summary>Attaches a removable storage device.</summary>
-        /// <param name="storage">The storage device to attach.</param>
-        /// <returns>The number associated with the new logical unit</returns>
+        /// <param name="storage">The storage device (hdc )to attach.</param>        
         public void AttachLogicalUnit(IntPtr storage) {
             if (MassStorage.nextLogicalUnitNumber >= 1 || MassStorage.enabled) {
                 throw new IndexOutOfRangeException("Support one Logical Unit only!");
@@ -91,6 +91,8 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
             MassStorage.storage = storage;
         }
 
+        /// <summary>Remove a removable storage device.</summary>
+        /// <param name="storage">The storage device (hdc )to attach.</param>    
         public void RemoveLogicalUnit(IntPtr storage) {
             if (MassStorage.storage != storage || MassStorage.nextLogicalUnitNumber == 0) {
                 throw new InvalidOperationException("Hdc not found.");
@@ -101,6 +103,8 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
 
             MassStorage.nextLogicalUnitNumber--;
         }
+
+        /// <summary>Enable a removable storage device.</summary>          
         public override void Enable() {
             if (MassStorage.enabled) {
                 throw new InvalidOperationException("Already enabled.");
@@ -117,6 +121,7 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
             MassStorage.enabled = true;
         }
 
+        /// <summary>Disable a removable storage device.</summary>         
         public override void Disable() {
             if (!MassStorage.enabled) {
                 throw new InvalidOperationException("Already disabled.");
@@ -135,7 +140,10 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
 
 
         /// <summary>Enables the logical unit associated with the given number.</summary>
+        /// <param name="storage">Storage Hdc of storage controller.</param>
         /// <param name="number">The logical unit number.</param>
+        /// <param name="vendor">vendor.</param>
+        /// <param name="product">product.</param>
         private void EnableLogicalUnit(IntPtr storage, int number, string vendor, string product) {
             if (number < 0 || number > 255) throw new ArgumentOutOfRangeException("number", "number must be non-negative and less than 256.");
 
@@ -143,6 +151,7 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
         }
 
         /// <summary>Disables the logical unit associated with the given number.</summary>
+        /// <param name="storage">Storage Hdc of storage controller.</param>
         /// <param name="number">The logical unit number.</param>
         private void DisableLogicalUnit(IntPtr storage, int number) {
             if (number < 0 || number > 255) throw new ArgumentOutOfRangeException("number", "number must be non-negative and less than 256.");
@@ -156,7 +165,5 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         extern private static void NativeDisableLogicalUnit(IntPtr storage, byte number);
 
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        extern private static byte NativeGetMaxLogicalUnits();
     }
 }
