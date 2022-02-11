@@ -41,5 +41,11 @@ namespace System.Diagnostics {
                 Debugger.Break();
             }
         }
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        extern static public void EnableCpuUsageStatistic(bool enable);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        extern static public void GetCpuUsageStatistic(out long cycleCounter, out long sleepCounter);
     }
 }
