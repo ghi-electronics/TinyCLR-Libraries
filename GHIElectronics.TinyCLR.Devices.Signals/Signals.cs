@@ -10,7 +10,7 @@ namespace GHIElectronics.TinyCLR.Devices.Signals {
         DurationUntilEcho
     }
 
-    public sealed class PulseFeedback : IDisposable {
+    public class PulseFeedback : IDisposable {
         private readonly PulseFeedbackMode mode;
 
         private readonly GpioPin pulsePin;
@@ -68,7 +68,7 @@ namespace GHIElectronics.TinyCLR.Devices.Signals {
         public extern TimeSpan Trigger();
     }
 
-    public sealed class SignalGenerator : IDisposable {
+    public class SignalGenerator : IDisposable {
         private readonly GpioPin pin;
         private readonly int pinNumber;
 
@@ -100,7 +100,7 @@ namespace GHIElectronics.TinyCLR.Devices.Signals {
         public extern void Write(TimeSpan[] buffer, int offset, int count);
     }
 
-    public sealed class SignalCapture : IDisposable {
+    public class SignalCapture : IDisposable {
         private readonly GpioPin pin;
         private readonly int pinNumber;
 

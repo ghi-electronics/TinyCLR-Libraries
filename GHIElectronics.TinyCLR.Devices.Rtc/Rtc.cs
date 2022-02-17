@@ -10,7 +10,7 @@ namespace GHIElectronics.TinyCLR.Devices.Rtc {
         Slow = 2
     }
 
-    public sealed class RtcController : IDisposable {
+    public class RtcController : IDisposable {
         public IRtcControllerProvider Provider { get; }        
 
         private RtcController(IRtcControllerProvider provider) => this.Provider = provider;

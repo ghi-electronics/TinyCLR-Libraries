@@ -27,5 +27,9 @@ namespace GHIElectronics.TinyCLR.Native {
         public static extern void SetDeviceName(string name);
         [MethodImpl(MethodImplOptions.InternalCall)]
         public static extern byte[] GetUniqueId();
+
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        extern static public double GetCpuUsageStatistic();
     }
 }

@@ -16,7 +16,7 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
     public delegate void NetworkLinkConnectedChangedEventHandler(NetworkController sender, NetworkLinkConnectedChangedEventArgs e);
     public delegate void NetworkAddressChangedEventHandler(NetworkController sender, NetworkAddressChangedEventArgs e);
 
-    public sealed class NetworkLinkConnectedChangedEventArgs : EventArgs {
+    public class NetworkLinkConnectedChangedEventArgs : EventArgs {
         public bool Connected { get; }
         public DateTime Timestamp { get; }
 
@@ -26,13 +26,13 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
         }
     }
 
-    public sealed class NetworkAddressChangedEventArgs : EventArgs {
+    public class NetworkAddressChangedEventArgs : EventArgs {
         public DateTime Timestamp { get; }
 
         internal NetworkAddressChangedEventArgs(DateTime timestamp) => this.Timestamp = timestamp;
     }
 
-    public sealed class NetworkController : IDisposable {
+    public class NetworkController : IDisposable {
         private NetworkLinkConnectedChangedEventHandler networkLinkConnectedChangedCallbacks;
         private NetworkAddressChangedEventHandler networkAddressChangedCallbacks;
 

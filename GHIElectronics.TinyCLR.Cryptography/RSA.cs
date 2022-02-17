@@ -7,7 +7,7 @@ using System.Threading;
 using GHIElectronics.TinyCLR.Cryptography.CryptoServiceProvider;
 
 namespace GHIElectronics.TinyCLR.Cryptography {
-    public sealed class RSACryptoServiceProvider : IDisposable {
+    public class RSACryptoServiceProvider : IDisposable {
         public ICryptoServiceProvider Provider { get; }
 
         public RSACryptoServiceProvider() => this.Provider = new CryptoServiceApiWrapper(1024);
