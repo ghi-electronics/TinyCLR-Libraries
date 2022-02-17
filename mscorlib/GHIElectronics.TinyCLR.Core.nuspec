@@ -11,7 +11,7 @@
     <licenseUrl>http://files.ghielectronics.com/downloads/TinyCLR/License.txt</licenseUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>The mscorlib library for TinyCLR OS.</description>
-    <copyright>Copyright GHI Electronics, LLC 2021</copyright>
+    <copyright>Copyright GHI Electronics, LLC 2022</copyright>
     <tags>TinyCLR TinyCLROS</tags>
   </metadata>
   <files>

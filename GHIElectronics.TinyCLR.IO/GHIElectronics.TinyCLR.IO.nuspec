@@ -11,7 +11,7 @@
     <licenseUrl>http://files.ghielectronics.com/downloads/TinyCLR/License.txt</licenseUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>The IO library for TinyCLR OS.</description>
-    <copyright>Copyright GHI Electronics, LLC 2021</copyright>
+    <copyright>Copyright GHI Electronics, LLC 2022</copyright>
     <tags>TinyCLR TinyCLROS</tags>
     <dependencies>
       <dependency id="GHIElectronics.TinyCLR.Core" version="2.2.0-preview2" />
