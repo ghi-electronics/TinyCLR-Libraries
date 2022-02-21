@@ -35,12 +35,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Controls\Chart.cs" />
     <Compile Include="Controls\CheckBox.cs" />
     <Compile Include="Controls\DataGrid.cs" />
     <Compile Include="Controls\DataGridColumn.cs" />
     <Compile Include="Controls\DataGridItem.cs" />
     <Compile Include="Controls\DataGridItemComparer.cs" />
     <Compile Include="Controls\Dropdown.cs" />
+    <Compile Include="Controls\Gauge.cs" />
     <Compile Include="Controls\ListBoxItemHighlightable.cs" />
     <Compile Include="Controls\MessageBox.cs" />
     <Compile Include="Controls\ProgressBar.cs" />
