@@ -31,9 +31,10 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         private System.Drawing.Image backgroundImg;
         private Rectangle rectImg;
         System.Drawing.Bitmap bmp;
-        private Font Font { get; }
+
 
         #endregion
+        public Font Font { get; set; }
         public bool EnableDigitalNumber { get; set; }
         public bool EnableThresold { get; set; }
 
@@ -47,10 +48,9 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             public float Y { get; set; }
         }
 
-        public Gauge(int radius, Font font) : base() {
+        public Gauge(int radius) : base() {
             this.Width = radius;
             this.Height = radius;
-            this.Font = font;
 
             this.noOfDivisions = 10;
             this.noOfSubDivisions = 3;
@@ -788,6 +788,9 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         }
 
         public override void OnRender(DrawingContext dc) {
+            if (this.Font == null)
+                throw new ArgumentNullException("Font null!");
+
             var x = 0;
             var y = 0;
 
