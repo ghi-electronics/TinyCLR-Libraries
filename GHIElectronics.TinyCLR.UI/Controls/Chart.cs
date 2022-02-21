@@ -181,11 +181,12 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
 
             foreach (PointModel pointModel in ellipsePoints) {
+                var textSize = graph.MeasureString(pointModel.Value.ToString(), this.Font);
+
                 graph.FillEllipse(this.EllipseColor, pointModel.Point.X - this.RadiusPoint / 2,
                     pointModel.Point.Y - this.RadiusPoint / 2, this.RadiusPoint, this.RadiusPoint);
                 graph.DrawString($"({pointModel.Value})", this.Font, this.TextColor,
-                    pointModel.Point.X -
-                    this.Font.Height * pointModel.Value.ToString().Length,
+                    pointModel.Point.X - textSize.Width / 2,
                     pointModel.Point.Y - this.Font.Height - (int)Scale(15, SCALE_FROM_HEIGHT, this.Height));
             }
 
@@ -269,7 +270,9 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                     this.pStart.Y - (int)pixelYValue, commonX + divisionWidth,
                     this.pStart.Y - BorderWidth);
 
-                graph.DrawString(itemValue.ToString(), this.Font, this.TextColor, commonX,
+                var textSize = graph.MeasureString(itemValue.ToString(), this.Font);
+
+                graph.DrawString(itemValue.ToString(), this.Font, this.TextColor, commonX + (divisionWidth - textSize.Width)/2,
                     this.pStart.Y - (int)pixelYValue - this.Font.Height - BorderWidth);
             }
             #endregion
