@@ -21,6 +21,8 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
 
         private object syncRoot;
 
+        private bool absolutePosition;
+
 #pragma warning disable 0169
         private uint nativePointer;
 #pragma warning restore 0169
@@ -73,7 +75,7 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
         /// <summary>Creates a new mouse.</summary>
         /// <param name="id">The device id.</param>
         /// <param name="interfaceIndex">The device interface index.</param>        
-        public Mouse(uint id, byte interfaceIndex)
+        public Mouse(uint id, byte interfaceIndex, bool absolutePosition = false)
             : base(id, interfaceIndex, DeviceType.Mouse) {
             this.NativeConstructor(this.Id, this.InterfaceIndex, out var pollingInterval);
 
@@ -88,12 +90,16 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
             this.oldButtonState = new ButtonState[] { ButtonState.Released, ButtonState.Released, ButtonState.Released, ButtonState.Released, ButtonState.Released };
 
             this.WorkerInterval = pollingInterval;
+            this.absolutePosition = absolutePosition;
         }
 
         /// <summary>The finalizer.</summary>
         ~Mouse() {
             this.Dispose(false);
         }
+
+        /// <summary>Return true for absolute, false for relative mode.</summary>
+        public bool AbsolutePosition => this.absolutePosition;
 
         /// <summary>Scales the x, y, and wheel delta values.</summary>
         /// <param name="scale">The value by which to scale the data.</param>
@@ -186,6 +192,11 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
 
                 this.currentCursorPosition.X = newX;
                 this.currentCursorPosition.Y = newY;
+
+                if (this.absolutePosition) {
+                    this.currentCursorPosition.X = newDeltaX;
+                    this.currentCursorPosition.Y = newDeltaY;
+                }
 
                 this.currentWheelPosition += newDeltaWheel;
 
