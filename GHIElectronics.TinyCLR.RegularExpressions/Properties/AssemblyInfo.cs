@@ -8,6 +8,6 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCopyright("Copyright © GHI Electronics, LLC 2022")]
 [assembly: ComVisible(false)]
 [assembly: Guid("4F7F4E0D-676E-42AC-AE13-991EDD5121E7")]
-[assembly: AssemblyVersion("2.2.0.2000")]
-[assembly: AssemblyFileVersion("2.2.0.2000")]
+[assembly: AssemblyVersion("2.2.0.2100")]
+[assembly: AssemblyFileVersion("2.2.0.2100")]
 [assembly: AssemblyInformationalVersion("2.2.0-rc1")]
