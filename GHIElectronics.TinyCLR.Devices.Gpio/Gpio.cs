@@ -7,7 +7,7 @@ using GHIElectronics.TinyCLR.Native;
 namespace GHIElectronics.TinyCLR.Devices.Gpio {
     public delegate void GpioPinValueChangedEventHandler(GpioPin sender, GpioPinValueChangedEventArgs e);
 
-    public sealed class GpioPinValueChangedEventArgs : EventArgs {
+    public class GpioPinValueChangedEventArgs : EventArgs {
         public GpioPinEdge Edge { get; }
         public DateTime Timestamp { get; }
 
@@ -36,7 +36,7 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio {
         RisingEdge = 2,
     }
 
-    public sealed class GpioController : IDisposable {
+    public class GpioController : IDisposable {
         public IGpioControllerProvider Provider { get; }
 
         private GpioController(IGpioControllerProvider provider) => this.Provider = provider;
@@ -91,7 +91,7 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio {
         }
     }
 
-    public sealed class GpioPin : IDisposable {
+    public class GpioPin : IDisposable {
         private GpioPinValueChangedEventHandler callbacks;
         private GpioPinEdge valueChangedEdge = GpioPinEdge.FallingEdge | GpioPinEdge.RisingEdge;
 
@@ -117,6 +117,8 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio {
         public GpioPinValue Read() => this.Controller.Provider.Read(this.PinNumber);
 
         public void Write(GpioPinValue value) => this.Controller.Provider.Write(this.PinNumber, value);
+		
+		public void Toggle() => this.Controller.Provider.Write(this.PinNumber, this.Controller.Provider.Read(this.PinNumber) == GpioPinValue.Low ? GpioPinValue.High : GpioPinValue.Low);
 
         public GpioPinEdge ValueChangedEdge {
             get => this.valueChangedEdge;

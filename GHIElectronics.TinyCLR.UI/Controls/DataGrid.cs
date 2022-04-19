@@ -383,7 +383,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
             if (!this.moving) {
                 var x = this.posX;
-                var y = this.posX;
+                var y = this.posY;
 
                 var index = ((this.listY + touchPoint.Y) - y) / this.RowHeight;
                 var rowIndex = index;

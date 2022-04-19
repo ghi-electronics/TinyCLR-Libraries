@@ -10,6 +10,12 @@ namespace System.Diagnostics {
         extern static public void EnableGCMessages(bool enable);
 
         [Conditional("DEBUG")]
+        public static void Write(string message) {
+            foreach (var listener in Debug.Listeners)
+                ((TraceListener)listener).Write(message);
+        }
+		
+		[Conditional("DEBUG")]
         public static void WriteLine(string message) {
             foreach (var listener in Debug.Listeners)
                 ((TraceListener)listener).WriteLine(message);

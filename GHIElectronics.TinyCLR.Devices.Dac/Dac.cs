@@ -4,7 +4,7 @@ using GHIElectronics.TinyCLR.Devices.Dac.Provider;
 using GHIElectronics.TinyCLR.Native;
 
 namespace GHIElectronics.TinyCLR.Devices.Dac {
-    public sealed class DacController : IDisposable {
+    public class DacController : IDisposable {
         public IDacControllerProvider Provider { get; }
 
         private DacController(IDacControllerProvider provider) => this.Provider = provider;
@@ -23,7 +23,7 @@ namespace GHIElectronics.TinyCLR.Devices.Dac {
         public DacChannel OpenChannel(int channelNumber) => new DacChannel(this, channelNumber);
     }
 
-    public sealed class DacChannel : IDisposable {
+    public class DacChannel : IDisposable {
         public int ChannelNumber { get; }
         public DacController Controller { get; }
 

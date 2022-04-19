@@ -58,7 +58,7 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
         }
     }
 
-    public sealed class UsbHostController : IDisposable {
+    public class UsbHostController : IDisposable {
 
         private static bool started;
         private static ArrayList devices;

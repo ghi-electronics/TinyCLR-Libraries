@@ -298,7 +298,8 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
 
         internal bool Initialized { get => this.initialized; set => this.initialized = value; }
 
-        public void Enable() {
+        public virtual void Enable() {
+            
             if (!this.initialized) {
                 this.Initialize();
 
@@ -308,7 +309,7 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
             this.usbClientController.Provider.SetActiveSetting(this.usbClientSetting);
             this.usbClientController.Provider.Enable();
         }
-        public void Disable() => this.usbClientController.Provider.Disable();        
+        public virtual void Disable() => this.usbClientController.Provider.Disable();        
         public void Dispose() => this.usbClientController.Dispose();
         public DeviceState DeviceState => this.usbClientController.Provider.DeviceState;
 

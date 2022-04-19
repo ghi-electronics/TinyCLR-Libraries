@@ -4,7 +4,7 @@ using GHIElectronics.TinyCLR.Devices.Storage.Provider;
 using GHIElectronics.TinyCLR.Native;
 
 namespace GHIElectronics.TinyCLR.Devices.Storage {
-    public sealed class StorageController : IDisposable {
+    public class StorageController : IDisposable {
         public IStorageControllerProvider Provider { get; }
 
         private StorageController(IStorageControllerProvider provider) => this.Provider = provider;
@@ -23,7 +23,7 @@ namespace GHIElectronics.TinyCLR.Devices.Storage {
         public StorageDescriptor Descriptor => this.Provider.Descriptor;
     }
 
-    public sealed class StorageDescriptor {
+    public class StorageDescriptor {
         public bool CanReadDirect { get; set; }
         public bool CanWriteDirect { get; set; }
         public bool CanExecuteDirect { get; set; }

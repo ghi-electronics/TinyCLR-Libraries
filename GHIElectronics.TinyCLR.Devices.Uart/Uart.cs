@@ -4,7 +4,7 @@ using GHIElectronics.TinyCLR.Devices.Uart.Provider;
 using GHIElectronics.TinyCLR.Native;
 
 namespace GHIElectronics.TinyCLR.Devices.Uart {
-    public sealed class UartController : IDisposable {
+    public class UartController : IDisposable {
         private ClearToSendChangedEventHandler clearToSendChangedCallbacks;
         private DataReceivedEventHandler dataReceivedCallbacks;
         private ErrorReceivedEventHandler errorReceivedCallbacks;
@@ -128,7 +128,7 @@ namespace GHIElectronics.TinyCLR.Devices.Uart {
         ReceiveParity = 3,
     }
 
-    public sealed class UartSetting {
+    public class UartSetting {
         public int BaudRate { get; set; }
         public int DataBits { get; set; }
         public UartParity Parity { get; set; }
@@ -159,7 +159,7 @@ namespace GHIElectronics.TinyCLR.Devices.Uart {
         }
     }
 
-    public sealed class DataReceivedEventArgs {
+    public class DataReceivedEventArgs {
         public int Count { get; }
         public DateTime Timestamp { get; }
 
@@ -169,12 +169,12 @@ namespace GHIElectronics.TinyCLR.Devices.Uart {
         }
     }
 
-    public sealed class BreakDetectedEventArgs {
+    public class BreakDetectedEventArgs {
         public DateTime Timestamp { get; }
 
         internal BreakDetectedEventArgs(DateTime timestamp) => this.Timestamp = timestamp;
     }
-    public sealed class ErrorReceivedEventArgs {
+    public class ErrorReceivedEventArgs {
         public UartError Error { get; }
         public DateTime Timestamp { get; }
 

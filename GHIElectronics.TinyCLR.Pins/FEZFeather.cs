@@ -245,6 +245,8 @@ namespace GHIElectronics.TinyCLR.Pins {
             public const string Spi4 = STM32H7.SpiBus.Spi4;
             /// <summary>SPI bus on PA7 (MOSI), PA6 (MISO), and PA5 (SCK).</summary>
             public const string Spi6 = STM32H7.SpiBus.Spi6;
+            /// <summary>SPI bus.</summary>
+            public const string WiFi = STM32H7.SpiBus.Spi3;
         }
 
         /// <summary>CAN bus definitions.</summary>

@@ -105,29 +105,7 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
             /// <param name="buffer">The buffer from which to write.</param>
             /// <param name="offset">The offset into the buffer at which to begin writing.</param>
             /// <param name="count">The number of bytes to write.</param>
-            public override void Write(byte[] buffer, int offset, int count) {
-                //base.Write(buffer, offset, count);
-
-                //if (count % 64 == 0)
-                //base.Write(buffer, 0, 0);
-
-                const int BlockSize = 63;
-
-                var block = count / BlockSize;
-                var remain = count % BlockSize;
-                var index = offset;
-
-                while (block > 0) {
-                    base.Write(buffer, index, BlockSize);
-                    index += BlockSize;
-                    block--;
-                }
-
-                if (remain > 0)
-                    base.Write(buffer, index, remain);
-
-
-            }
+            public override void Write(byte[] buffer, int offset, int count) => base.Write(buffer, offset, count); // No need send zpl. Native will detect one end of data if multiple of 64
 
             public override bool DataAvailable => this.BytesToRead > 0;
         }
