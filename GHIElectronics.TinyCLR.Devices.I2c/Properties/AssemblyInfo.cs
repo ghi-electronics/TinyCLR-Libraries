@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("GHIElectronics.TinyCLR.Devices.I2c")]
@@ -8,6 +8,6 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCopyright("Copyright © GHI Electronics, LLC 2022")]
 [assembly: ComVisible(false)]
 [assembly: Guid("670AD403-A7C6-4C0A-A9A3-82767B3FCBB2")]
-[assembly: AssemblyVersion("2.2.0.4000")]
-[assembly: AssemblyFileVersion("2.2.0.4000")]
-[assembly: AssemblyInformationalVersion("2.2.0.4000")]
+[assembly: AssemblyVersion("2.2.0.4100")]
+[assembly: AssemblyFileVersion("2.2.0.4100")]
+[assembly: AssemblyInformationalVersion("2.2.0.4100")]
