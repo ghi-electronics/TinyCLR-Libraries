@@ -97,41 +97,42 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
             }
         }
 
-        public I2cTransferResult ReadPartial(byte[] buffer) {
-            if (this.ConnectionSettings.Mode != I2cMode.Slave)
-                throw new NotSupportedException(I2cController.MasterNotSupported);
+        public I2cTransferResult ReadPartial(byte[] buffer) =>
+            // GHI Changed: 5/5/2022 ???
+            // if (this.ConnectionSettings.Mode != I2cMode.Slave)
+            //    throw new NotSupportedException(I2cController.MasterNotSupported);
 
-            return this.WriteReadPartial(null, 0, 0, buffer, 0, buffer.Length);
-        }
-        public I2cTransferResult WritePartial(byte[] buffer) {
-            if (this.ConnectionSettings.Mode != I2cMode.Slave)
-                throw new NotSupportedException(I2cController.MasterNotSupported);
+            this.WriteReadPartial(null, 0, 0, buffer, 0, buffer.Length);
+        public I2cTransferResult WritePartial(byte[] buffer) =>
+            // GHI Changed: 5/5/2022 ???
+            // if (this.ConnectionSettings.Mode != I2cMode.Slave)
+            //    throw new NotSupportedException(I2cController.MasterNotSupported);
 
-            return this.WriteReadPartial(buffer, 0, buffer.Length, null, 0, 0);
-        }
-        public I2cTransferResult WriteReadPartial(byte[] writeBuffer, byte[] readBuffer) {
-            if (this.ConnectionSettings.Mode != I2cMode.Slave)
-                throw new NotSupportedException(I2cController.MasterNotSupported);
+            this.WriteReadPartial(buffer, 0, buffer.Length, null, 0, 0);
+        public I2cTransferResult WriteReadPartial(byte[] writeBuffer, byte[] readBuffer) =>
+            // GHI Changed: 5/5/2022 ???
+            // if (this.ConnectionSettings.Mode != I2cMode.Slave)
+            //    throw new NotSupportedException(I2cController.MasterNotSupported);
 
-            return this.WriteReadPartial(writeBuffer, 0, writeBuffer.Length, readBuffer, 0, readBuffer.Length);
-        }
+            this.WriteReadPartial(writeBuffer, 0, writeBuffer.Length, readBuffer, 0, readBuffer.Length);
 
-        public I2cTransferResult ReadPartial(byte[] buffer, int offset, int length) {
-            if (this.ConnectionSettings.Mode != I2cMode.Slave)
-                throw new NotSupportedException(I2cController.MasterNotSupported);
+        public I2cTransferResult ReadPartial(byte[] buffer, int offset, int length) =>
+            // GHI Changed: 5/5/2022 ???
+            // if (this.ConnectionSettings.Mode != I2cMode.Slave)
+            //    throw new NotSupportedException(I2cController.MasterNotSupported);
 
-            return this.WriteReadPartial(null, 0, 0, buffer, offset, length);
-        }
-        public I2cTransferResult WritePartial(byte[] buffer, int offset, int length) {
-            if (this.ConnectionSettings.Mode != I2cMode.Slave)
-                throw new NotSupportedException(I2cController.MasterNotSupported);
+            this.WriteReadPartial(null, 0, 0, buffer, offset, length);
+        public I2cTransferResult WritePartial(byte[] buffer, int offset, int length) =>
+            // GHI Changed: 5/5/2022 ???
+            // if (this.ConnectionSettings.Mode != I2cMode.Slave)
+            //    throw new NotSupportedException(I2cController.MasterNotSupported);
 
-            return this.WriteReadPartial(buffer, offset, length, null, 0, 0);
-        }
+            this.WriteReadPartial(buffer, offset, length, null, 0, 0);
 
         public I2cTransferResult WriteReadPartial(byte[] writeBuffer, int writeOffset, int writeLength, byte[] readBuffer, int readOffset, int readLength) {
-            if (this.ConnectionSettings.Mode != I2cMode.Slave)
-                throw new NotSupportedException(I2cController.MasterNotSupported);
+            // GHI Changed: 5/5/2022 ???
+            // if (this.ConnectionSettings.Mode != I2cMode.Slave)
+            //    throw new NotSupportedException(I2cController.MasterNotSupported);
 
             lock (ojectLocker) {
                 this.Controller.SetActive(this);
