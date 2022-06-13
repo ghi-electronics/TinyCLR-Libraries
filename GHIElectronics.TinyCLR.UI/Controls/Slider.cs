@@ -49,6 +49,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         private int posX;
         private int posY;
         private bool disposed;
+        private bool isRenderKnob;
 
         public delegate void ValueChangedEventHandler(object sender, ValueChangedEventArgs args);
 
@@ -73,7 +74,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             this.TickInterval = 10;
             this.Minimum = 0;
             this.Maximum = 100;
-            this.Value = 0;
+            this.value = 0;
 
             this.bitmapImageButtonUp = BitmapImage.FromGraphics(Graphics.FromImage(Resources.GetBitmap(Resources.BitmapResources.Button_Up)));
             this.bitmapImageButtonDown = BitmapImage.FromGraphics(Graphics.FromImage(Resources.GetBitmap(Resources.BitmapResources.Button_Down)));
@@ -98,6 +99,8 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
         private void RenderKnob(Point globalPoint) {
             var localPoint = new Point(globalPoint.X, globalPoint.Y);
+
+            this.isRenderKnob = true;
 
             if (this.direction == Orientation.Horizontal) {
                 var half = this.knob.Width / 2;
@@ -137,6 +140,8 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
 
             this.Invalidate();
+
+            this.isRenderKnob = false;
         }
 
         /// <summary>
@@ -341,6 +346,19 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                     var args = new ValueChangedEventArgs(this.value);
 
                     this.TriggerValueChanged?.Invoke(this, args);
+
+                    // if value change by set value from user directly
+                    if (this.isRenderKnob == false) {
+                        if (this.direction == Orientation.Horizontal) {
+                            this.knob.X = (int)(this.value * this.pixelsPerValue);
+                        }
+                        else {
+
+                            if (this.pixelsPerValue != 0) {
+                                this.knob.Y = (int)((this.max - this.value) / this.pixelsPerValue);
+                            }
+                        }
+                    }
                 }
             }
         }
