@@ -22,6 +22,8 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         private BitmapImage bitmapImageButtonUp;
         private bool isPressed;
 
+        public bool IsPressed => this.isPressed;
+
         private void InitResource() {
             this.bitmapImageButtonDown = BitmapImage.FromGraphics(Graphics.FromImage(Resources.GetBitmap(Resources.BitmapResources.Button_Down)));
             this.bitmapImageButtonUp = BitmapImage.FromGraphics(Graphics.FromImage(Resources.GetBitmap(Resources.BitmapResources.Button_Up)));
