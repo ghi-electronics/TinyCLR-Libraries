@@ -8,6 +8,7 @@ namespace GHIElectronics.TinyCLR.Data.Json
 	public class JObject : JToken
 	{
 		private readonly Hashtable _members = new Hashtable();
+        private readonly ArrayList _orderedMembers = new ArrayList();
 
 		public JProperty this[string name]
 		{
@@ -16,23 +17,17 @@ namespace GHIElectronics.TinyCLR.Data.Json
 			{
 				if (name.ToLower() != value.Name.ToLower())
 					throw new ArgumentException("index value must match property name");
-                _members[value.Name.ToLower()] = value;
+                this.AddOrUpdateMember(value.Name.ToLower(), value);
             }
         }
 
         public bool Contains(string name) => this._members.Contains(name.ToLower());
 
-        public ICollection Members
-		{
-			get { return _members.Values; }
-		}
+        public ICollection Members => this._orderedMembers;
 
-		public void Add(string name, JToken value)
-		{
-			_members[name.ToLower()] = new JProperty(name, value);
-		}
+        public void Add(string name, JToken value) => this.AddOrUpdateMember(name, new JProperty(name, value));
 
-		public static JObject Serialize(Type type, object oSource, JsonSerializerSettings settings = null)
+        public static JObject Serialize(Type type, object oSource, JsonSerializerSettings settings = null)
 		{
             if (settings == null)
             {
@@ -40,6 +35,7 @@ namespace GHIElectronics.TinyCLR.Data.Json
             }
 
             var result = new JObject();
+
 			var methods = type.GetMethods();
 			foreach (var m in methods)
 			{
@@ -51,14 +47,14 @@ namespace GHIElectronics.TinyCLR.Data.Json
 					var name = m.Name.Substring(4);
 					var methodResult = m.Invoke(oSource, null);
 					if (methodResult == null)
-						result._members.Add(name.ToLower(), new JProperty(name, JValue.Serialize(m.ReturnType, null)));
+						result.AddOrUpdateMember(name.ToLower(), new JProperty(name, JValue.Serialize(m.ReturnType, null)));
 					if (m.ReturnType.IsArray)
-						result._members.Add(name.ToLower(), new JProperty(name, JArray.Serialize(m.ReturnType, methodResult, settings)));
+						result.AddOrUpdateMember(name.ToLower(), new JProperty(name, JArray.Serialize(m.ReturnType, methodResult, settings)));
 					else
                     {
                         if (m.ReturnType.IsValueType || m.ReturnType == typeof(string))
                         {
-                            result._members.Add(name.ToLower(), new JProperty(name, JValue.Serialize(m.ReturnType, methodResult)));
+                            result.AddOrUpdateMember(name.ToLower(), new JProperty(name, JValue.Serialize(m.ReturnType, methodResult)));
                         }
                         else
                         {
@@ -75,7 +71,7 @@ namespace GHIElectronics.TinyCLR.Data.Json
                                 child.Add("$type", new JValue(methodResultType.FullName + ", " + methodResultType.Assembly.GetName().Name));
                             }
 
-                            result._members.Add(name.ToLower(), new JProperty(name, child));
+                            result.AddOrUpdateMember(name.ToLower(), new JProperty(name, child));
                         }
                     }
                 }
@@ -94,23 +90,23 @@ namespace GHIElectronics.TinyCLR.Data.Json
 						var value = f.GetValue(oSource);
 						if (value == null)
 						{
-							result._members.Add(f.Name, new JProperty(f.Name, JValue.Serialize(f.FieldType, null)));
+							result.AddOrUpdateMember(f.Name, new JProperty(f.Name, JValue.Serialize(f.FieldType, null)));
 						}
 						else if (f.FieldType.IsValueType || f.FieldType == typeof(string))
 						{
-							result._members.Add(f.Name.ToLower(),
+							result.AddOrUpdateMember(f.Name.ToLower(),
 								new JProperty(f.Name, JValue.Serialize(f.FieldType, value)));
 						}
 						else
 						{
 							if (f.FieldType.IsArray)
 							{
-								result._members.Add(f.Name.ToLower(),
+								result.AddOrUpdateMember(f.Name.ToLower(),
 									new JProperty(f.Name, JArray.Serialize(f.FieldType, value, settings)));
 							}
 							else
 							{
-								result._members.Add(f.Name.ToLower(),
+								result.AddOrUpdateMember(f.Name.ToLower(),
 									new JProperty(f.Name, JObject.Serialize(f.FieldType, value, settings)));
 							}
 						}
@@ -139,7 +135,7 @@ namespace GHIElectronics.TinyCLR.Data.Json
                 if (JsonConverter.SerializationContext.options.Indented)
                     sb.AppendLine();
                 bool first = true;
-				foreach (var member in _members.Values)
+				foreach (var member in this._orderedMembers)
 				{
 					if (!first)
                     {
@@ -181,9 +177,9 @@ namespace GHIElectronics.TinyCLR.Data.Json
             // leave space for the size
             offset += 4;
 
-            foreach (DictionaryEntry member in _members)
+            foreach (var member in this._orderedMembers)
             {
-                ((JProperty)member.Value).ToBson(((JProperty)member.Value).Name, buffer, ref offset);
+                ((JProperty)member).ToBson(((JProperty)member).Name, buffer, ref offset);
             }
 
             // Write the trailing nul
@@ -249,5 +245,20 @@ namespace GHIElectronics.TinyCLR.Data.Json
             return result;
         }
 
+        private void AddOrUpdateMember(string name, JProperty prop) {
+            if (this._members.Contains(name)) {
+                var old = this._members[name];
+                var idx = this._orderedMembers.IndexOf(old);
+                if (idx != -1) {
+                    this._orderedMembers[idx] = prop;
+                } else {
+                    this._orderedMembers.Add(prop);
+                }
+                this._members[name] = prop;
+            } else {
+                this._orderedMembers.Add(prop);
+                this._members[name] = prop;
+            }
+        }
     }
 }
