@@ -138,51 +138,6 @@ namespace System.Net
                 return this.m_ResponseToClient;
             }
         }
-
-        public void Close() => Close(-2);
-
-        /// <summary>
-        /// Closes the stream attached to this listener context. 
-        /// </summary>
-        public void Close(int lingerValue)
-        {
-            try
-            {  
-                if (this.m_clientOutputStream != null)
-                {
-                    try
-                    {
-                        if(this.m_clientOutputStream.m_Socket != null)
-                        {
-                            this.m_clientOutputStream.m_Socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.Linger, lingerValue);
-                        }
-                    }
-                    catch{}
-                }
-                
-                if (this.m_ResponseToClient != null)
-                {
-                    this.m_ResponseToClient.Close();
-                    this.m_ResponseToClient = null;
-                }
-                
-                // Close the underlying stream
-                if (this.m_clientOutputStream != null)
-                {
-                    this.m_clientOutputStream.Dispose();
-                    this.m_clientOutputStream = null;
-                }
-                
-                if (this.m_clientInputStream != null)
-                {
-                    this.m_clientInputStream.Dispose();
-                    this.m_clientInputStream = null;
-                }
-            }
-            catch
-            {
-            }
-        }
     }
 }
 
