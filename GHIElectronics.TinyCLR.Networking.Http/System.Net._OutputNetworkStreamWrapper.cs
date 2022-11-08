@@ -119,8 +119,6 @@ namespace System.Net
             }
 
             this.m_Stream.Close();
-            this.m_Stream = null;
-            this.m_Socket = null;
         }
 
         /// <summary>
