@@ -283,7 +283,7 @@ namespace System.Net
         /// bytes sent by the client in the body of the request.  This property
         /// returns <itemref>Null</itemref> if no data is sent with the request.
         /// </value>
-        public Stream InputStream => this.m_clientStream;
+        public Stream InputStream => this.m_clientStream.CloneStream();
 
         /// <summary>
         /// Gets a Boolean value that indicates whether the client sending this
