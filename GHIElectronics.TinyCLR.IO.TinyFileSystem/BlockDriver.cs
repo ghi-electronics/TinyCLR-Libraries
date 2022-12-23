@@ -13,6 +13,7 @@
  * either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 
+using System;
 using GHIElectronics.TinyCLR.Devices.Storage;
 using GHIElectronics.TinyCLR.Devices.Storage.Provider;
 
@@ -60,6 +61,27 @@ namespace GHIElectronics.TinyCLR.IO.TinyFileSystem {
             public int SectorSize => this.storageProvider.Descriptor.RegionSizes[0];
 
             public ushort ClusterSize { get; }
+
+            private bool disposed = false;
+
+            ~BlockDriver() {
+                this.Dispose(disposing: false);
+            }
+
+            protected void Dispose(bool disposing) {
+                if (this.disposed)
+                    return;
+
+                if (disposing) {
+                    this.storageProvider.Dispose();
+                }
+
+                this.disposed = true;
+            }
+            public void Dispose() {
+                this.Dispose(true);
+                GC.SuppressFinalize(this);
+            }
         }
     }
 }
