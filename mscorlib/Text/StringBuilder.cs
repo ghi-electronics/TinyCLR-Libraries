@@ -559,7 +559,7 @@ namespace System.Text {
             }
             var chunkPrevious = this;
             var num2 = startIndex + length;
-            var result = new char[this.Length];
+            var result = new char[length];
             var num3 = length;
             while (num3 > 0) {
                 var chunkLength = num2 - chunkPrevious.m_ChunkOffset;
@@ -580,7 +580,7 @@ namespace System.Text {
                         if ((((charCount + num3)) > length) || ((charCount + index) > chunkChars.Length)) {
                             throw new ArgumentOutOfRangeException("chunkCount");
                         }
-                        System.Array.Copy(chunkChars, index, result, 0, charCount);
+                        System.Array.Copy(chunkChars, index, result, num3, charCount);
                     }
                 }
                 chunkPrevious = chunkPrevious.m_ChunkPrevious;
