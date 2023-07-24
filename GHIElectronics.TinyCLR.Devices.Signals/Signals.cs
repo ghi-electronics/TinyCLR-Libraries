@@ -157,34 +157,36 @@ namespace GHIElectronics.TinyCLR.Devices.Signals {
 
             this.nativeEventDispatcher = NativeEventDispatcher.GetDispatcher("GHIElectronics.TinyCLR.NativeEventNames.DigitalSignal.Event");
 
-            this.nativeEventDispatcher.OnInterrupt += (apiName, d0, d1, d2, d3, ts) => {
-                if (!this.disposed && this.isBusy && d0 == this.pinNumber && apiName.CompareTo("DigitalSignal") == 0) {
-                    if (this.isCaptureMode == true) {
-                        if (d2 > 0) {
-                            var data = new double[(int)d2];
-
-                            if (this.NativeGetBuffer(data))
-                                this.pulseCaptureCallback?.Invoke(this, data, (uint)data.Length, ((int)d3 != 0) ? GpioPinValue.High : GpioPinValue.Low);
-                        }
-                        else
-                            this.pulseCaptureCallback?.Invoke(this, null, 0, GpioPinValue.Low);
-                    }
-                    else if (this.isWriteMode == true) {
-                        this.pulseGenerateCallback?.Invoke(this, ((int)d3 != 0) ? GpioPinValue.High : GpioPinValue.Low);
-                    }
-                    else {
-                        this.pulseReadCallback?.Invoke(this, new TimeSpan(d1), (uint)d2, ((int)d3 != 0) ? GpioPinValue.High : GpioPinValue.Low);
-                    }
-                }
-
-                this.isBusy = false;
-                this.isCaptureMode = false;
-                this.isWriteMode = false;
-            };
+            this.nativeEventDispatcher.OnInterrupt += this.OnInterruptEventHandler;
 
             this.NativeAcquire();
 
             this.isBusy = false;
+        }
+
+        void OnInterruptEventHandler(string apiName, long d0, long d1, long d2, IntPtr d3, DateTime ts) {
+            if (!this.disposed && this.isBusy && d0 == this.pinNumber && apiName.CompareTo("DigitalSignal") == 0) {
+                if (this.isCaptureMode == true) {
+                    if (d2 > 0) {
+                        var data = new double[(int)d2];
+
+                        if (this.NativeGetBuffer(data))
+                            this.pulseCaptureCallback?.Invoke(this, data, (uint)data.Length, ((int)d3 != 0) ? GpioPinValue.High : GpioPinValue.Low);
+                    }
+                    else
+                        this.pulseCaptureCallback?.Invoke(this, null, 0, GpioPinValue.Low);
+                }
+                else if (this.isWriteMode == true) {
+                    this.pulseGenerateCallback?.Invoke(this, ((int)d3 != 0) ? GpioPinValue.High : GpioPinValue.Low);
+                }
+                else {
+                    this.pulseReadCallback?.Invoke(this, new TimeSpan(d1), (uint)d2, ((int)d3 != 0) ? GpioPinValue.High : GpioPinValue.Low);
+                }
+            }
+
+            this.isBusy = false;
+            this.isCaptureMode = false;
+            this.isWriteMode = false;
         }
 
         private bool disposed;
@@ -197,6 +199,7 @@ namespace GHIElectronics.TinyCLR.Devices.Signals {
         protected virtual void Dispose(bool disposing) {
             if (!this.disposed) {
 
+                this.nativeEventDispatcher.OnInterrupt -= this.OnInterruptEventHandler;
                 this.NativeRelease();
 
                 this.isBusy = false;
