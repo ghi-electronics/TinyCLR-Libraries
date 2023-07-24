@@ -19,6 +19,6 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="$TargetDir$GHIElectronics.TinyCLR.Drawing.dll" target="lib\net452" />
+    <file src="$TargetDir$GHIElectronics.TinyCLR.Drawing.dll" target="lib\net48" />
   </files>
 </package>

@@ -15,7 +15,7 @@
     <tags>TinyCLR TinyCLROS</tags>
   </metadata>
   <files>
-    <file src="$TargetDir$mscorlib.dll" target="lib\net452" />
+    <file src="$TargetDir$mscorlib.dll" target="lib\net48" />
     <file src="$ProjectDir$GHIElectronics.TinyCLR.Core.props" target="build\net452" />
   </files>
 </package>
