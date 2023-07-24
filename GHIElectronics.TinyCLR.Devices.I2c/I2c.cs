@@ -715,7 +715,7 @@ namespace GHIElectronics.TinyCLR.Devices.I2c {
             public int BytesToWrite => throw new NotSupportedException(I2cController.MasterNotSupported);
             public int BytesToRead => throw new NotSupportedException(I2cController.MasterNotSupported);
 
-            public TimeSpan Timeout { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+            public TimeSpan Timeout { get ; set ; }
 
             public void ClearWriteBuffer() => throw new NotSupportedException(I2cController.MasterNotSupported);
             public void ClearReadBuffer() => throw new NotSupportedException(I2cController.MasterNotSupported);
