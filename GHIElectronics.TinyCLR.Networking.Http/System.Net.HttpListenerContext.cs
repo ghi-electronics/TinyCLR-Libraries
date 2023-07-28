@@ -85,6 +85,10 @@ namespace System.Net
             this.m_IsHTTPRequestParsed = false;
         }
 
+        ~HttpListenerContext() {
+            Response.Close();
+        }
+
         public void Reset()
         {
             this.m_IsHTTPRequestParsed = false;
