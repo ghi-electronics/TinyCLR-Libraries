@@ -137,6 +137,7 @@ namespace GHIElectronics.TinyCLR.Cryptography {
 
             public string NativeKeyExchangeAlgorithm { [MethodImpl(MethodImplOptions.InternalCall)] get; }
 
-        }        
+        } 
+		
     }
 }
