@@ -8,6 +8,11 @@ using GHIElectronics.TinyCLR.Cryptography.CryptoServiceProvider;
 
 namespace GHIElectronics.TinyCLR.Cryptography {
     public class RSACryptoServiceProvider : IDisposable {
+
+        public enum RSAMode {
+            Public = 0,
+            Private = 1,
+        }
         public ICryptoServiceProvider Provider { get; }
 
         public RSACryptoServiceProvider() => this.Provider = new CryptoServiceApiWrapper(1024);
@@ -27,18 +32,35 @@ namespace GHIElectronics.TinyCLR.Cryptography {
             if (data == null)
                 throw new ArgumentNullException();
 
-            return this.Encrypt(data, 0, data.Length);
+            return this.Encrypt(data, 0, data.Length, RSAMode.Public);
         }
         public byte[] Decrypt(byte[] data) {
             if (data == null)
                 throw new ArgumentNullException();
 
-            return this.Decrypt(data, 0, data.Length);
+            return this.Decrypt(data, 0, data.Length, RSAMode.Private);
         }
 
-        public byte[] Encrypt(byte[] data, int offset, int count) => this.Provider.Encrypt(data, offset, count);
+        public byte[] SignData(byte[] data, bool sha256 = false) {
+            if (data == null)
+                throw new ArgumentNullException();
 
-        public byte[] Decrypt(byte[] data, int offset, int count) => this.Provider.Decrypt(data, offset, count);
+            return this.SignData(data, 0, data.Length, sha256);
+        }
+        public bool VerifyData(byte[] data, byte[] signedData, bool sha256 = false) {
+            if (data == null)
+                throw new ArgumentNullException();
+
+            return this.VerifyData(data, 0, data.Length, signedData, 0, signedData.Length, sha256);
+        }
+
+        public byte[] Encrypt(byte[] data, int offset, int count, RSAMode mode = RSAMode.Public) => this.Provider.Encrypt(data, offset, count, (int)mode);
+
+        public byte[] Decrypt(byte[] data, int offset, int count, RSAMode mode = RSAMode.Private) => this.Provider.Decrypt(data, offset, count, (int)mode);
+
+        public byte[] SignData(byte[] data, int offset, int count, bool sha256 = false, RSAMode mode = RSAMode.Private ) => this.Provider.SignData(data, offset, count, (int)mode, sha256);
+
+        public bool VerifyData(byte[] data, int offset, int count, byte[] signedData, int signedDataOffset, int signedDataLength, bool sha256 = false, RSAMode mode = RSAMode.Public) => this.Provider.VerifyData(data, offset, count, signedData, signedDataOffset, signedDataLength, (int)mode, sha256);
     }
 
     namespace CryptoServiceProvider {
@@ -51,9 +73,13 @@ namespace GHIElectronics.TinyCLR.Cryptography {
 
             void ImportParameters(RSAParameters parameters);
 
-            byte[] Encrypt(byte[] data, int offset, int count);
+            byte[] Encrypt(byte[] data, int offset, int count, int mode);
 
-            byte[] Decrypt(byte[] data, int offset, int count);
+            byte[] Decrypt(byte[] data, int offset, int count, int mode);
+
+            byte[] SignData(byte[] data, int offset, int count, int mode, bool sha256);
+
+            bool VerifyData(byte[] data, int offset, int count, byte[] signedData, int signedDataOffset, int signedDataLength, int mode, bool sha256);
 
         }
 
@@ -77,9 +103,13 @@ namespace GHIElectronics.TinyCLR.Cryptography {
 
             public void ImportParameters(RSAParameters parameters) => this.NativeImportParameters(parameters);
 
-            public byte[] Encrypt(byte[] data, int offset, int count) => this.NativeEncrypt(data, offset, count);
+            public byte[] Encrypt(byte[] data, int offset, int count, int mode) => this.NativeEncrypt(data, offset, count, mode );
 
-            public byte[] Decrypt(byte[] data,int offset, int count) => this.NativeDecrypt(data, offset, count);
+            public byte[] Decrypt(byte[] data,int offset, int count, int mode) => this.NativeDecrypt(data, offset, count, mode);
+
+            public byte[] SignData(byte[] data, int offset, int count, int mode, bool sha256) => this.NativeSignData(data, offset, count, mode, sha256);
+
+            public bool VerifyData(byte[] data, int offset, int count, byte[] signedData, int signedDataOffset, int signedDataLength, int mode, bool sha256) => this.NativeVerifyData(data, offset, count, signedData, signedDataOffset, signedDataLength, mode, sha256);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             private extern void NativeAcquire(int dwKeySize);
@@ -88,11 +118,17 @@ namespace GHIElectronics.TinyCLR.Cryptography {
             private extern void NativeRelase();
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            private extern byte[] NativeEncrypt(byte[] data, int offset, int count);
+            private extern byte[] NativeEncrypt(byte[] data, int offset, int count, int mode);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
-            private extern byte[] NativeDecrypt(byte[] data, int offset, int count);
-            
+            private extern byte[] NativeDecrypt(byte[] data, int offset, int count, int mode);
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            private extern byte[] NativeSignData(byte[] data, int offset, int count, int mode, bool sha256);
+
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            private extern bool NativeVerifyData(byte[] data, int offset, int count, byte[] signedData, int signedDataOffset, int signedDataLength, int mode, bool sha256);
+
             [MethodImpl(MethodImplOptions.InternalCall)]
             private extern RSAParameters NativeExportParameters(bool includePrivateParameters);
 
