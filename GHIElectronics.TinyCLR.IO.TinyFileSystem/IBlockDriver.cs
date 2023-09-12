@@ -13,13 +13,15 @@
  * either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 
+using System;
+
 namespace GHIElectronics.TinyCLR.IO.TinyFileSystem {
     public partial class TinyFileSystem
     {
         /// <summary>
         /// Interface to abstract the file system from the physical device.
         /// </summary>
-        public interface IBlockDriver
+        public interface IBlockDriver : IDisposable
         {
             /// <summary>
             /// Completely erases the memory chip (fills it with 0xFF, in reality, as it is a Flash memory).

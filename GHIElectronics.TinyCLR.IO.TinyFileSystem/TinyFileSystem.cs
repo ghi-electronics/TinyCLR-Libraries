@@ -26,7 +26,7 @@ namespace GHIElectronics.TinyCLR.IO.TinyFileSystem {
     /// Tiny File System provides a basic file system which can be overlayed on any device providing
     /// a concrete implementation of the IBlockDriver interface.
     /// </summary>
-    public sealed partial class TinyFileSystem
+    public partial class TinyFileSystem : IDisposable
     {
         #region Private state variables
         private readonly IBlockDriver blockDriver;
@@ -1204,6 +1204,25 @@ namespace GHIElectronics.TinyCLR.IO.TinyFileSystem {
             // Update the orphaned cluster counter.
             this.orphanedClusterCount++;
             this.orphanedPerSector[clusterId / this.clustersPerSector]++;
+        }
+
+        private bool disposed = false;
+        protected void Dispose(bool disposing) {
+            if (this.disposed)
+                return;
+
+            if (disposing)
+            {
+                if (this.blockDriver != null) {
+                    this.blockDriver.Dispose();
+                }
+            }
+
+            this.disposed = true;
+        }
+        public void Dispose() {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }
