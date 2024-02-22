@@ -155,7 +155,7 @@ namespace GHIElectronics.TinyCLR.Devices.Signals {
         public DigitalSignal(GpioPin pin) {
             this.pinNumber = pin.PinNumber;
 
-            this.nativeEventDispatcher = NativeEventDispatcher.GetDispatcher("GHIElectronics.TinyCLR.NativeEventNames.DigitalSignal.Event");
+            this.nativeEventDispatcher = NativeEventDispatcher.GetDispatcher($"GHIElectronics.TinyCLR.NativeEventNames.DigitalSignal.Event{pin.PinNumber}");
 
             this.nativeEventDispatcher.OnInterrupt += this.OnInterruptEventHandler;
 
@@ -255,30 +255,18 @@ namespace GHIElectronics.TinyCLR.Devices.Signals {
         public void Abort() => this.NativeAbort();
 
         public event PulseReadEventHandler OnReadPulseFinished {
-            add {
-                this.pulseReadCallback += value;
-            }
-            remove {
-                this.pulseReadCallback -= value;
-            }
+            add => this.pulseReadCallback += value;
+            remove => this.pulseReadCallback -= value;
         }
 
         public event PulseCaptureEventHandler OnCaptureFinished {
-            add {
-                this.pulseCaptureCallback += value;
-            }
-            remove {
-                this.pulseCaptureCallback -= value;
-            }
+            add => this.pulseCaptureCallback += value;
+            remove => this.pulseCaptureCallback -= value;
         }
 
         public event PulseGenerateEventHandler OnGenerateFinished {
-            add {
-                this.pulseGenerateCallback += value;
-            }
-            remove {
-                this.pulseGenerateCallback -= value;
-            }
+            add => this.pulseGenerateCallback += value;
+            remove => this.pulseGenerateCallback -= value;
         }
 
         [MethodImpl(MethodImplOptions.InternalCall)]
