@@ -66,31 +66,33 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
 
             this.enabled = true;
 
-            if (this.InterfaceType == NetworkInterfaceType.WiFi) {
-                var setting = (WiFiNetworkInterfaceSettings)this.ActiveInterfaceSettings;
+            //if (this.InterfaceType == NetworkInterfaceType.WiFi) {
+            //    var setting = (WiFiNetworkInterfaceSettings)this.ActiveInterfaceSettings;
 
-                if (setting.Mode == WiFiMode.AccessPoint) {
-                    setting.networkController = this;
-                    setting.provider = this.Provider;
+            //    if (setting.Mode == WiFiMode.AccessPoint) {
+            //        setting.networkController = this;
+            //        setting.provider = this.Provider;
 
-                    if (setting.DhcpEnable)
-                        setting.dhcpServer.Start();
+            //        if (setting.DhcpEnable)
+            //            setting.dhcpServer.Start();
 
-                }
-            }
+            //    }
+            //}
         }
 
         public void Disable() {
-            if (this.InterfaceType == NetworkInterfaceType.WiFi) {
-                var setting = (WiFiNetworkInterfaceSettings)this.ActiveInterfaceSettings;
+            //if (this.InterfaceType == NetworkInterfaceType.WiFi) {
+            //    var setting = (WiFiNetworkInterfaceSettings)this.ActiveInterfaceSettings;
 
-                if (setting.Mode == WiFiMode.AccessPoint) {
-                    if (setting.DhcpEnable)
-                        setting.dhcpServer.Stop();
-                }
-            }
+            //    if (setting.Mode == WiFiMode.AccessPoint) {
+            //        if (setting.DhcpEnable)
+            //            setting.dhcpServer.Stop();
+            //    }
+            //}
 
-            this.Provider.Disable();
+            this.Provider.Disable(); ;
+
+            this.enabled = false ;
         }
 
         public void Suspend() => this.Provider.Suspend();
@@ -203,7 +205,7 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
 
     public enum WiFiMode {
         Station = 0,
-        AccessPoint = 1
+        //AccessPoint = 1
     }
 
     public class WiFiNetworkInterfaceSettings : NetworkInterfaceSettings {
@@ -214,18 +216,18 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
         internal INetworkControllerProvider provider;
         internal NetworkController networkController;
 
-        public delegate void AccessPointClientConnectionChangedEventHandler(NetworkController sender, IPAddress clientAddress, string macAddress);
-        public event AccessPointClientConnectionChangedEventHandler AccessPointClientConnectionChanged;
+        internal delegate void AccessPointClientConnectionChangedEventHandler(NetworkController sender, IPAddress clientAddress, string macAddress);
+        internal event AccessPointClientConnectionChangedEventHandler AccessPointClientConnectionChanged;
 
         public WiFiMode Mode {
             get => this.mode;
             set {
 
-                this.mode = value;
+                this.mode = value; ;
 
-                if (this.mode == WiFiMode.AccessPoint && this.DhcpEnable && this.dhcpServer == null) {
-                    this.dhcpServer = new DhcpServer(this);
-                }
+                //if (this.mode == WiFiMode.AccessPoint && this.DhcpEnable && this.dhcpServer == null) {
+                //    this.dhcpServer = new DhcpServer(this);
+                //}
             }
         }
 
