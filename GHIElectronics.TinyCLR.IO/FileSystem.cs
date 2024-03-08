@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.IO;
 using System.Runtime.CompilerServices;
@@ -37,6 +37,11 @@ namespace GHIElectronics.TinyCLR.IO {
 
         public static void Flush(IntPtr hdc) => FileSystem.FlushAll(hdc);
 
+        public static bool Format(IntPtr hdc, string volume, uint parameter, bool force = false) {
+
+            return NativeFormat(hdc, volume, parameter, force); ;
+        }
+
         [MethodImpl(MethodImplOptions.InternalCall)]
         private extern static void FlushAll(IntPtr nativeProvider);
 
@@ -45,6 +50,9 @@ namespace GHIElectronics.TinyCLR.IO {
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private extern static bool Uninitialize(IntPtr nativeProvider);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private extern static bool NativeFormat(IntPtr nativeProvider, string volume, uint parameter, bool force);
 
         private class NativeDriveProvider : IDriveProvider {
             private bool initialized;
