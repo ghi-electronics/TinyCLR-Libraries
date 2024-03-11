@@ -15,11 +15,18 @@ namespace GHIElectronics.TinyCLR.IO {
 
             var provider = DriveInfo.RegisterDriveProvider(drive);
 
-            FileSystem.Initialize(hdc, provider.Name);
+            try {
+                FileSystem.Initialize(hdc, provider.Name);
 
-            mounted[hdc] = drive;
+                mounted[hdc] = drive;
 
-            return drive;
+                return drive;
+            }
+            catch {
+                DriveInfo.DeregisterDriveProvider(drive);
+            }
+
+            return null;
         }
 
         public static bool Unmount(IntPtr hdc) {
@@ -37,7 +44,7 @@ namespace GHIElectronics.TinyCLR.IO {
 
         public static void Flush(IntPtr hdc) => FileSystem.FlushAll(hdc);
 
-        public static bool Format(IntPtr hdc, string volume, uint parameter, bool force = false) {
+        public static bool Format(IntPtr hdc, string volume = null, uint parameter = 0, bool force = false) {
 
             return NativeFormat(hdc, volume, parameter, force); ;
         }
