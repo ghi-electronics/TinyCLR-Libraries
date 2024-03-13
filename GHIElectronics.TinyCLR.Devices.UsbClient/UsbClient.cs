@@ -91,7 +91,7 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
             event DeviceStateChangedEventHandler DeviceStateChanged;
         }
 
-        public sealed class UsbClientControllerApiWrapper : IUsbClientControllerProvider {
+        public class UsbClientControllerApiWrapper : IUsbClientControllerProvider {
             private readonly IntPtr impl;
 
             private readonly NativeEventDispatcher dataReceivedDispatcher;
@@ -110,11 +110,21 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
                 this.Acquire();
 
                 this.dataReceivedDispatcher = NativeEventDispatcher.GetDispatcher("GHIElectronics.TinyCLR.NativeEventNames.UsbClient.DataReceived");
-                this.dataReceivedDispatcher.OnInterrupt += (apiName, d0, d1, d2, d3, ts) => { if (this.Api.Name == apiName) this.dataReceivedCallbacks?.Invoke(null, (uint)d0); };
+                this.dataReceivedDispatcher.OnInterrupt += this.OnDataReceivedEventHandler;
 
                 this.deviceStateChangedDispatcher = NativeEventDispatcher.GetDispatcher("GHIElectronics.TinyCLR.NativeEventNames.UsbClient.DeviceStateChanged");
-                this.deviceStateChangedDispatcher.OnInterrupt += (apiName, d0, d1, d2, d3, ts) => { if (this.Api.Name == apiName) this.deviceStateChangedCallbacks?.Invoke(null, (DeviceState)d0); };
+                this.deviceStateChangedDispatcher.OnInterrupt += this.OnDeviceStateChangedEventHandler;
 
+            }
+
+            void OnDataReceivedEventHandler(string apiName, long d0, long d1, long d2, IntPtr d3, DateTime ts) {
+                if (this.Api.Name == apiName)
+                    this.dataReceivedCallbacks?.Invoke(null, (uint)d0);
+            }
+
+            void OnDeviceStateChangedEventHandler(string apiName, long d0, long d1, long d2, IntPtr d3, DateTime ts) {
+                if (this.Api.Name == apiName)
+                    this.deviceStateChangedCallbacks?.Invoke(null, (DeviceState)d0);
             }
 
             public event DataReceivedEventHandler DataReceived {
@@ -147,7 +157,27 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
                 }
             }
 
-            public void Dispose() => this.Release();
+            private bool disposed = false;
+
+            public void Dispose() {
+                this.Dispose(true);
+                GC.SuppressFinalize(this);
+            }
+
+            protected virtual void Dispose(bool disposing) {
+                if (!this.disposed) {
+
+                    this.dataReceivedDispatcher.OnInterrupt -= this.OnDataReceivedEventHandler; ;
+                    this.deviceStateChangedDispatcher.OnInterrupt -= this.OnDeviceStateChangedEventHandler;
+                    this.Release();
+
+                    this.disposed = true;
+                }
+            }
+
+            ~UsbClientControllerApiWrapper() {
+                this.Dispose(false);
+            }
 
             public int BytesToRead(int streamIndex) => this.GetByteToRead(streamIndex);
             public int BytesToWrite(int streamIndex) => this.GetByteToWrite(streamIndex);
