@@ -119,7 +119,7 @@ namespace System.Drawing
         Bmp = 3 // The windows .bmp format
     }
 
-    public sealed class Bitmap : Image
+    public class Bitmap : Image
     {
         private Bitmap(Internal.Bitmap bmp) => this.data = new Graphics(bmp, IntPtr.Zero);
         public Bitmap(int width, int height) => this.data = new Graphics(width, height);

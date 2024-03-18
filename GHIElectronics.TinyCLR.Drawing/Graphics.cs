@@ -35,7 +35,7 @@ namespace System.Drawing
         void Scale9Image(int xDst, int yDst, int widthDst, int heightDst, IGraphics image, int leftBorder, int topBorder, int rightBorder, int bottomBorder, ushort opacity);
     }
 
-    public sealed class Graphics : MarshalByRefObject, IDisposable
+    public class Graphics : MarshalByRefObject, IDisposable
     {
         public int Width => this.surface.Width;
         public int Height => this.surface.Height;
