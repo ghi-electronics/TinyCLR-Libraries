@@ -248,45 +248,6 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         }
 
         public void Close() {
-            if (this.isAtived) {
-                if (this.Owner != null && this.Owner._logicalChildren.Contains(this)) {
-                    this.Owner._logicalChildren.Remove(this);
-                }
-                else {
-                    if (Application.Current.MainWindow.Child._logicalChildren.Contains(this))
-                        Application.Current.MainWindow.Child._logicalChildren.Remove(this);
-                }
-
-                if (this.buttonLeft != null) {
-
-                    this.buttonLeft.Click -= this.Button_Click;
-                    this.Children.Remove(this.buttonLeft);
-                    this.buttonLeft.Dispose();
-                    this.buttonLeft = null;
-                }
-
-                if (this.buttonRight != null) {
-
-                    this.buttonRight.Click -= this.Button_Click;
-                    this.Children.Remove(this.buttonRight);
-                    this.buttonRight.Dispose();
-                    this.buttonRight = null;
-                }
-
-                if (this.buttonCenter != null) {
-
-                    this.buttonCenter.Click -= this.Button_Click;
-                    this.Children.Remove(this.buttonCenter);
-                    this.buttonCenter.Dispose();
-                    this.buttonCenter = null;
-                }
-
-                this.isAtived = false;
-            }
-
-        }
-        private void Button_Click(object sender, RoutedEventArgs e) {
-
             if (this.Owner != null && this.Owner._logicalChildren.Contains(this)) {
                 this.Owner._logicalChildren.Remove(this);
             }
@@ -294,6 +255,44 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                 if (Application.Current.MainWindow.Child._logicalChildren.Contains(this))
                     Application.Current.MainWindow.Child._logicalChildren.Remove(this);
             }
+
+            if (this.buttonLeft != null) {
+
+                this.buttonLeft.Click -= this.Button_Click;
+                this.Children.Remove(this.buttonLeft);
+                this.buttonLeft.Dispose();
+                this.buttonLeft = null;
+            }
+
+            if (this.buttonRight != null) {
+
+                this.buttonRight.Click -= this.Button_Click;
+                this.Children.Remove(this.buttonRight);
+                this.buttonRight.Dispose();
+                this.buttonRight = null;
+            }
+
+            if (this.buttonCenter != null) {
+
+                this.buttonCenter.Click -= this.Button_Click;
+                this.Children.Remove(this.buttonCenter);
+                this.buttonCenter.Dispose();
+                this.buttonCenter = null;
+            }
+
+            this.isAtived = false;
+
+
+        }
+        private void Button_Click(object sender, RoutedEventArgs e) {
+
+            //if (this.Owner != null && this.Owner._logicalChildren.Contains(this)) {
+            //    this.Owner._logicalChildren.Remove(this);
+            //}
+            //else {
+            //    if (Application.Current.MainWindow.Child._logicalChildren.Contains(this))
+            //        Application.Current.MainWindow.Child._logicalChildren.Remove(this);
+            //}
 
             this.isAtived = false;
 
@@ -328,6 +327,8 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
 
             ButtonClick?.Invoke(sender, e1);
+
+            this.Close();
 
         }
 
