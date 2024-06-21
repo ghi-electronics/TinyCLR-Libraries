@@ -10,6 +10,7 @@ using System.Net.Sockets;
 using System.Reflection;
 using System.Text;
 using System.Threading;
+using GHIElectronics.TinyCLR.Devices.Network;
 //using System.Threading.Tasks;
 
 namespace GHIElectronics.Endpoint.Drivers.EthernetIP
@@ -181,18 +182,23 @@ namespace GHIElectronics.Endpoint.Drivers.EthernetIP
         /// List and identify potential targets. This command shall be sent as braodcast massage using UDP.
         /// </summary>
         /// <returns>List<Encapsulation.CIPIdentityItem> contains the received informations from all devices </returns>	
-        public Encapsulation.CIPIdentityItem FindDevice(System.Net.IPAddress ip) {
+        public Encapsulation.CIPIdentityItem[] ListIdentity(NetworkController networkController, TimeSpan timeout) {
 
             this.returnList = new ArrayList();
 
             this.returnList.Clear();
 
+            var mask = networkController.GetIPProperties().SubnetMask;
+            var address = networkController.GetIPProperties().Address;
+
+            var multicastAddress = (address.GetAddressBytes()[0] | (~(mask.GetAddressBytes()[0])) & 0xFF).ToString() + "." + (address.GetAddressBytes()[1] | (~(mask.GetAddressBytes()[1])) & 0xFF).ToString() + "." + (address.GetAddressBytes()[2] | (~(mask.GetAddressBytes()[2])) & 0xFF).ToString() + "." + (address.GetAddressBytes()[3] | (~(mask.GetAddressBytes()[3])) & 0xFF).ToString();
+
             var sendData = new byte[24];
             sendData[0] = 0x63;               //Command for "ListIdentity"
             var udpClient = new System.Net.Sockets.UdpClient();
 
-            var endPoint = new System.Net.IPEndPoint(ip, 44818);
-
+            var endPoint = new System.Net.IPEndPoint(System.Net.IPAddress.Parse(multicastAddress), 44818);
+      
             udpClient.Send(sendData, sendData.Length, endPoint);
 
             var s = new UdpState {
@@ -200,15 +206,27 @@ namespace GHIElectronics.Endpoint.Drivers.EthernetIP
                 u = udpClient
             };
 
+          
+            var expired = DateTime.Now + timeout;
+
             while (udpClient.Available == 0) {
+                if (timeout != TimeSpan.Zero) {
+                    if (DateTime.Now > expired)
+                        break;
+
+                }
+
                 Thread.Sleep(1);
             }
 
             this.ReceiveCallback(s);
 
             if (this.returnList.Count > 0) {
-    
-                return (Encapsulation.CIPIdentityItem)this.returnList.ToArray()[0];
+                var devices = new Encapsulation.CIPIdentityItem[this.returnList.Count];
+                for ( var i = 0; i < this.returnList.Count;i++) {
+                    devices[i] = (Encapsulation.CIPIdentityItem)this.returnList.ToArray()[i];
+                }
+                return devices;
             }
 
             return null;
@@ -904,7 +922,7 @@ namespace GHIElectronics.Endpoint.Drivers.EthernetIP
 
             while (!this.udpClientReceiveClosed) {
 
-                while (u.Available == 0) {
+                while (u.Available == 0 && !this.udpClientReceiveClosed) {
                     Thread.Sleep(1);
                 }
 
