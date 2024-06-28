@@ -144,7 +144,7 @@ namespace GHIElectronics.TinyCLR.Pins {
                 public static class Controller5 {
 
                     /// <summary>Capture pin.</summary>
-                    public const int P2 = STM32H7.GpioPin.PA0;
+                    public const int PA0 = STM32H7.GpioPin.PA0;
                 }
             }
         }
