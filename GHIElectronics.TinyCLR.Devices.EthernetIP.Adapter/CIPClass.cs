@@ -8,17 +8,40 @@ using static GHIElectronics.TinyCLR.Devices.EthernetIP.Adapter.AdapterController
 namespace GHIElectronics.TinyCLR.Devices.EthernetIP.Adapter {
     public class CIPClass {
 
-        private IntPtr impl;
+        private IntPtr impl = IntPtr.Zero;
         public IntPtr Impl {
             get => this.impl;
-            set => this.impl = value;
+            internal set => this.impl = value;
         }
+
+        public ClassId ClassCode { get; }
+        public int NumberClassAttributes { get; }
+        public uint HighestClassAttributeNumber { get; }
+        public int NumberClassServices { get; }
+        public int NumberInstanceAttributes { get; }
+        public uint HighestInstanceAttributeNumber { get; }
+        public int NumberInstanceServices { get; }
+        public uint NumberInstances { get; }
+        public string Name { get; }
+        public ushort Revision { get; }
+        public bool DefaultInitialize { get; } = true;
 
         public CIPClass(ClassId classCode, int numberClassAttributes, uint highestClassAttributeNumber, int numberClassServices, int numberInstanceAttributes, uint highestInstanceAttributeNumber, int numberInstanceServices, uint numberInstances, string name, ushort revision, bool defaultInitialize = true) {
-            this.impl = this.CreateCipClass((uint) classCode, numberClassAttributes, highestClassAttributeNumber, numberClassServices, numberInstanceAttributes,  highestInstanceAttributeNumber,  numberInstanceServices,  numberInstances,  name,  revision, defaultInitialize); ;
+            this.ClassCode = classCode;
+            this.NumberClassAttributes = numberClassAttributes;
+            this.HighestClassAttributeNumber = highestClassAttributeNumber;
+            this.NumberClassServices = numberClassServices;
+            this.NumberInstanceAttributes = numberInstanceAttributes;
+            this.HighestInstanceAttributeNumber = highestInstanceAttributeNumber;
+            this.NumberInstanceServices = numberInstanceServices;
+            this.Name = name;
+            this.Revision = revision;
+            this.DefaultInitialize = defaultInitialize;
+
+            //this.impl = this.CreateCipClass((uint) classCode, numberClassAttributes, highestClassAttributeNumber, numberClassServices, numberInstanceAttributes,  highestInstanceAttributeNumber,  numberInstanceServices,  numberInstances,  name,  revision, defaultInitialize); ;
         }
 
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        private extern IntPtr CreateCipClass(uint classCode, int numberClassAttributes, uint highestClassAttributeNumber, int numberClassServices, int numberInstanceAttributes, uint highestInstanceAttributeNumber, int numberInstanceServices, uint numberInstances, string name, ushort revision, bool defaultInitialize);
+        //[MethodImpl(MethodImplOptions.InternalCall)]
+        //private extern IntPtr CreateCipClass(uint classCode, int numberClassAttributes, uint highestClassAttributeNumber, int numberClassServices, int numberInstanceAttributes, uint highestInstanceAttributeNumber, int numberInstanceServices, uint numberInstances, string name, ushort revision, bool defaultInitialize);
     }
 }

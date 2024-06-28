@@ -37,31 +37,27 @@ namespace GHIElectronics.TinyCLR.Devices.EthernetIP.Adapter
             this.NativeSetDeviceProductCode(deviceProductCode);
             this.NativeSetDeviceSerialNumber(deviceSerialNumber);
             this.NativeSetDeviceRevision(deviceMajorRevision, deviceMinorRevision);
-            
-            
-            
         }
 
+        public void AddCipClass(CIPClass cipClass) {
 
+            var cip = cipClass;
 
-        public static CIPClass CreateCipClass(ClassId classCode, int numberClassAttributes, uint highestClassAttributeNumber, int numberClassServices, int numberInstanceAttributes, uint highestInstanceAttributeNumber, int numberInstanceServices, uint numberInstances, string name, ushort revision, bool defaultInitialize = true) {
+            cip.Impl = this.NativeCreateCipClass((uint)cipClass.ClassCode, cipClass.NumberClassAttributes, cipClass.HighestClassAttributeNumber, cipClass.NumberClassServices, cipClass.NumberInstanceAttributes, cipClass.HighestInstanceAttributeNumber, cipClass.NumberInstanceServices, cipClass.NumberInstances, cipClass.Name, cipClass.Revision, cipClass.DefaultInitialize);
 
-            var cipClass = new CIPClass(classCode, numberClassAttributes, highestClassAttributeNumber, numberClassServices, numberInstanceAttributes, highestInstanceAttributeNumber, numberInstanceServices, numberInstances, name, revision, defaultInitialize);
-
-            //this.cipClassesList.Add(cipClass);
-
-            return cipClass;
+            this.cipClassesList.Add(cip);            
         }
 
-        public static AssemblyObject CreateAssemblyObject(int instanceId, byte[] data, ushort size) {
-            var assemblyObject = new AssemblyObject(instanceId, data, size);
+        public void AddAssemblyObject(AssemblyObject asmObject) {
 
-            //this.assemblyObjectsList.Add(assemblyObject);
+            var obj = asmObject;
 
-            return assemblyObject;
+            obj.Impl = this.NativeCreateAssemblyObject(obj.InstanceId, obj.Data, obj.Size);
+
+            this.assemblyObjectsList.Add(obj);
         }
 
-        public void SetDeviceSerialNumber(uint serialNumber) => this.NativeSetDeviceSerialNumber(serialNumber);
+        //public void SetDeviceSerialNumber(uint serialNumber) => this.NativeSetDeviceSerialNumber(serialNumber);
         public void ConfigureExclusiveOwnerConnectionPoint(uint connectionNumber, uint outputAssemblyId, uint inputAssemblyId, uint configurationAssemblyId) => this.NativeConfigureExclusiveOwnerConnectionPoint(connectionNumber, outputAssemblyId, inputAssemblyId, configurationAssemblyId);
         public void ConfigureInputOnlyConnectionPoint(uint connectionNumber, uint outputAssemblyId, uint inputAssemblyId, uint configurationAssemblyId) => this.NativeConfigureInputOnlyConnectionPoint(connectionNumber, outputAssemblyId, inputAssemblyId, configurationAssemblyId);
         public void ConfigureListenOnlyConnectionPoint(uint connectionNumber, uint outputAssemblyId, uint inputAssemblyId, uint configurationAssemblyId) => this.NativeConfigureListenOnlyConnectionPoint(connectionNumber, outputAssemblyId, inputAssemblyId, configurationAssemblyId);
@@ -97,7 +93,6 @@ namespace GHIElectronics.TinyCLR.Devices.EthernetIP.Adapter
         public void Start() => this.NativeStart();
 
         //////////////////////////////// Native code //////////////////////////////
-
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private extern void Acquire(string deviceName, uint deviceVendorID, uint deviceType, uint deviceProductCode, uint deviceSerialNumber, uint deviceMajorRevision, uint deviceMinorRevision);
@@ -146,6 +141,12 @@ namespace GHIElectronics.TinyCLR.Devices.EthernetIP.Adapter
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private extern void NativeSetDeviceProductName(string name);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private extern IntPtr NativeCreateCipClass(uint classCode, int numberClassAttributes, uint highestClassAttributeNumber, int numberClassServices, int numberInstanceAttributes, uint highestInstanceAttributeNumber, int numberInstanceServices, uint numberInstances, string name, ushort revision, bool defaultInitialize);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private extern IntPtr NativeCreateAssemblyObject(int instanceId, byte[] data, ushort size);
 
         //////////////////////////////// Test code //////////////////////////////
         public void DoTest() {
