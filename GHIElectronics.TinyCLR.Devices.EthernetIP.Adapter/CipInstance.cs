@@ -9,15 +9,15 @@ namespace GHIElectronics.TinyCLR.Devices.EthernetIP.Adapter {
             get => this.impl;
             set => this.impl = value;
         }
-        public static CipInstance GetCipInstance(CIPClass cipClass, uint instanceNumber) {
-            var instance = new CipInstance {
-                impl = NativeGetCipInstance(cipClass.Impl, instanceNumber)
-            };
+        //public static CipInstance GetCipInstance(CIPClass cipClass, uint instanceNumber) {
+        //    var instance = new CipInstance {
+        //        impl = NativeGetCipInstance(cipClass.Impl, instanceNumber)
+        //    };
 
-            return instance;
-        }
+        //    return instance;
+        //}
 
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        extern static IntPtr NativeGetCipInstance(IntPtr cipClassPtr, uint instanceNumber);
+        //[MethodImpl(MethodImplOptions.InternalCall)]
+        //extern static IntPtr NativeGetCipInstance(IntPtr cipClassPtr, uint instanceNumber);
     }
 }

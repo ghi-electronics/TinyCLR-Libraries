@@ -1,8 +1,10 @@
 using System;
 using System.Collections;
+using System.Net;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
+using GHIElectronics.TinyCLR.Native;
 
 namespace GHIElectronics.TinyCLR.Devices.EthernetIP.Adapter
 {
@@ -19,6 +21,22 @@ namespace GHIElectronics.TinyCLR.Devices.EthernetIP.Adapter
 
         private ArrayList cipClassesList;
         private ArrayList assemblyObjectsList;
+
+        private readonly NativeEventDispatcher nedReceivedExplictTcpData;
+        public delegate void ReceivedExplictTcpDataHandler(ushort commandCode, IPAddress ipAdrress);
+        private ReceivedExplictTcpDataHandler eventReceivedExplictTcpDataHandler;
+
+        private readonly NativeEventDispatcher nedReceivedExplictUdpData;
+        public delegate void ReceivedExplictUdpDataHandler(ushort commandCode, IPAddress ipAdrress, bool unicast);
+        private ReceivedExplictUdpDataHandler eventReceivedExplictUdpDataHandler;
+
+        private readonly NativeEventDispatcher nedNotifyClass;
+        public delegate void NotifyClassHandler(uint classCode, ushort instanceNumbber, ushort attributeNumber, IPAddress ipAdrress);
+        private NotifyClassHandler eventNotifyClassHandler;
+
+        private readonly NativeEventDispatcher nedAssemblyConnectedDataReceived;
+        public delegate void AssemblyConnectedDataReceived(AdapterController adapter, ushort instanceNumbber, uint receivedLength);
+        private AssemblyConnectedDataReceived eventAssemblyConnectedDataReceivedHandler;
         public AdapterController(string deviceName, uint deviceVendorID, ushort deviceType, ushort deviceProductCode, uint deviceSerialNumber, byte deviceMajorRevision, byte deviceMinorRevision) {
             this.deviceName = deviceName;
             this.deviceVendorID = deviceVendorID;
@@ -37,24 +55,103 @@ namespace GHIElectronics.TinyCLR.Devices.EthernetIP.Adapter
             this.NativeSetDeviceProductCode(deviceProductCode);
             this.NativeSetDeviceSerialNumber(deviceSerialNumber);
             this.NativeSetDeviceRevision(deviceMajorRevision, deviceMinorRevision);
+
+            this.nedReceivedExplictTcpData = NativeEventDispatcher.GetDispatcher("EthernetIP.Adapter.ReceivedExplictTcpData");
+            this.nedReceivedExplictTcpData.OnInterrupt += this.NedReceivedExplictTcpData_OnInterrupt;
+
+            this.nedReceivedExplictUdpData = NativeEventDispatcher.GetDispatcher("EthernetIP.Adapter.ReceivedExplictUdpData");
+            this.nedReceivedExplictUdpData.OnInterrupt += this.NedReceivedExplictUdpData_OnInterrupt;
+
+            this.nedNotifyClass = NativeEventDispatcher.GetDispatcher("EthernetIP.Adapter.HandleNotifyClass");
+            this.nedNotifyClass.OnInterrupt += this.NedNotifyClass_OnInterrupt;
+
+            this.nedAssemblyConnectedDataReceived = NativeEventDispatcher.GetDispatcher("EthernetIP.Adapter.AssemblyConnectedDataReceived");
+            this.nedAssemblyConnectedDataReceived.OnInterrupt += this.NedAssemblyConnectedDataReceived_OnInterrupt;
+        }
+
+        private void NedAssemblyConnectedDataReceived_OnInterrupt(string data0, long data1, long data2, long data3, IntPtr data4, DateTime timestamp) {
+          
+            var instanceNumber = (ushort)(data1);
+            var received = (uint)(data2);
+
+            this.eventAssemblyConnectedDataReceivedHandler?.Invoke(this, instanceNumber, received);
+            ;
+
+        }
+
+        private void NedNotifyClass_OnInterrupt(string data0, long data1, long data2, long data3, IntPtr data4, DateTime timestamp) {
+            var originator_address = IPAddress.None;
+            var classCode = (uint)data1;
+            var instanceNumber = (ushort)(data2 >> 16);
+            var attributeNumber = (ushort)(data2 >> 0);
+
+            if (data3 != 0)
+                originator_address = new IPAddress(data3);
+
+            this.eventNotifyClassHandler?.Invoke(classCode, instanceNumber, attributeNumber, originator_address);
+            ;
+        }
+
+        private void NedReceivedExplictUdpData_OnInterrupt(string data0, long data1, long data2, long data3, IntPtr data4, DateTime timestamp) {
+            var from_address = IPAddress.None;
+
+            if (data2 != 0)
+                from_address = new IPAddress(data2);
+
+            this.eventReceivedExplictUdpDataHandler?.Invoke((ushort)data1, from_address, data3 != 0 ? true : false);
+            ;
+        }
+
+        private void NedReceivedExplictTcpData_OnInterrupt(string data0, long data1, long data2, long data3, IntPtr data4, DateTime timestamp) {
+            var originator_address = IPAddress.None;
+
+            if (data2 != 0)
+                originator_address = new IPAddress(data2);
+
+            this.eventReceivedExplictTcpDataHandler?.Invoke((ushort)data1, originator_address);
+            ;
+        }
+
+        public event ReceivedExplictTcpDataHandler EventReceivedExplictTcpDataHandler {
+
+            add => this.eventReceivedExplictTcpDataHandler += value;
+            remove => this.eventReceivedExplictTcpDataHandler -= value;
+        }
+
+        public event ReceivedExplictUdpDataHandler EventReceivedExplictUdpDataHandler {
+
+            add => this.eventReceivedExplictUdpDataHandler += value;
+            remove => this.eventReceivedExplictUdpDataHandler -= value;
+        }
+
+        public event NotifyClassHandler EventNotifyClassHandler {
+
+            add => this.eventNotifyClassHandler += value;
+            remove => this.eventNotifyClassHandler -= value;
+        }
+
+        public event AssemblyConnectedDataReceived EventAssemblyConnectedDataReceivedHandler {
+
+            add => this.eventAssemblyConnectedDataReceivedHandler += value;
+            remove => this.eventAssemblyConnectedDataReceivedHandler -= value;
         }
 
         public void AddCipClass(CIPClass cipClass) {
 
-            var cip = cipClass;
+            //var cip = cipClass;
 
-            cip.Impl = this.NativeCreateCipClass((uint)cipClass.ClassCode, cipClass.NumberClassAttributes, cipClass.HighestClassAttributeNumber, cipClass.NumberClassServices, cipClass.NumberInstanceAttributes, cipClass.HighestInstanceAttributeNumber, cipClass.NumberInstanceServices, cipClass.NumberInstances, cipClass.Name, cipClass.Revision, cipClass.DefaultInitialize);
-
-            this.cipClassesList.Add(cip);            
+            cipClass.Impl = this.NativeCreateCipClass((uint)cipClass.ClassCode, cipClass.NumberClassAttributes, cipClass.HighestClassAttributeNumber, cipClass.NumberClassServices, cipClass.NumberInstanceAttributes, cipClass.HighestInstanceAttributeNumber, cipClass.NumberInstanceServices, cipClass.NumberInstances, cipClass.Name, cipClass.Revision, cipClass.DefaultInitialize);
+            ;
+            //this.cipClassesList.Add(cip);            
         }
 
         public void AddAssemblyObject(AssemblyObject asmObject) {
 
-            var obj = asmObject;
+            //var obj = asmObject;
 
-            obj.Impl = this.NativeCreateAssemblyObject(obj.InstanceId, obj.Data, obj.Size);
+            asmObject.Impl = this.NativeCreateAssemblyObject(asmObject.InstanceId, asmObject.Data, asmObject.Size); ;
 
-            this.assemblyObjectsList.Add(obj);
+            //this.assemblyObjectsList.Add(obj);
         }
 
         //public void SetDeviceSerialNumber(uint serialNumber) => this.NativeSetDeviceSerialNumber(serialNumber);
@@ -91,6 +188,48 @@ namespace GHIElectronics.TinyCLR.Devices.EthernetIP.Adapter
         public void Open() => this.NativeOpen();
 
         public void Start() => this.NativeStart();
+
+        public CipInstance AddCipInstance(CIPClass cipClass, uint instanceId) {
+            var instance = new CipInstance {
+                Impl = this.NativeAddCipInstance(cipClass.Impl, instanceId)
+            };
+
+            return instance;
+        }
+
+        public CipInstance AddCipInstances(CIPClass cipClass, uint instanceId) {
+            var instance = new CipInstance {
+                Impl = this.NativeAddCipInstances(cipClass.Impl, instanceId)
+            };
+
+            return instance;
+        }
+
+        public void AllocateAttributeMasks(CIPClass targetClass) => this.NativeAllocateAttributeMasks(targetClass.Impl);
+        public void CalculateIndex(ushort attributeNumber) => this.NativeCalculateIndex(attributeNumber);
+
+        public CipAttribute GetCipAttribute(CipInstance cipInstance, ushort attributeNumber) {
+
+            var attribute = new CipAttribute {
+                Impl = this.NativeGetCipAttribute(cipInstance.Impl, attributeNumber)
+            };
+
+            return attribute;
+        }
+
+        public CIPClass GetCipClass(ushort classId) {
+
+            var cipclass = new CIPClass { Impl = this.NativeGetCipClass(classId) };
+
+            return cipclass;
+        }
+
+        public CipInstance GetCipInstance(CIPClass cipClass, uint instanceNumber) {
+
+            var cipinstance = new CipInstance { Impl = this.NativeGetCipInstance(cipClass.Impl, instanceNumber) };
+
+            return cipinstance;
+        }
 
         //////////////////////////////// Native code //////////////////////////////
 
@@ -147,6 +286,27 @@ namespace GHIElectronics.TinyCLR.Devices.EthernetIP.Adapter
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private extern IntPtr NativeCreateAssemblyObject(int instanceId, byte[] data, ushort size);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private extern IntPtr NativeAddCipInstance(IntPtr cipClassImpl, uint instanceId);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private extern IntPtr NativeAddCipInstances(IntPtr cipClassImpl, uint instanceId);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private extern void NativeAllocateAttributeMasks(IntPtr cipClassImpl);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private extern IntPtr NativeCalculateIndex(ushort attributeNumber);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private extern IntPtr NativeGetCipAttribute(IntPtr cipinstance, uint attributeNumber);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private extern IntPtr NativeGetCipClass(ushort classId);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private extern IntPtr NativeGetCipInstance(IntPtr cipClass, uint instanceNumber);
 
         //////////////////////////////// Test code //////////////////////////////
         public void DoTest() {

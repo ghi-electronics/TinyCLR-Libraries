@@ -36,6 +36,7 @@
   <ItemGroup>
     <Compile Include="AdapterController.cs" />
     <Compile Include="AssemblyObject.cs" />
+    <Compile Include="CipAttribute.cs" />
     <Compile Include="CipAttributeDecodeFromMessage.cs" />
     <Compile Include="CIPAttributeFlag.cs" />
     <Compile Include="CIPClass.cs" />
@@ -48,6 +49,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GHIElectronics.TinyCLR.Native\GHIElectronics.TinyCLR.Native.csproj">
+      <Project>{B602474A-AEB0-491C-832B-7EAF0B4511C0}</Project>
+      <Name>GHIElectronics.TinyCLR.Native</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GHIElectronics.TinyCLR.Networking\GHIElectronics.TinyCLR.Networking.csproj">
+      <Project>{1AFA3955-B36D-4A8A-8B7F-86F39FC2FDE3}</Project>
+      <Name>GHIElectronics.TinyCLR.Networking</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

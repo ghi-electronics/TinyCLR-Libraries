@@ -26,6 +26,8 @@ namespace GHIElectronics.TinyCLR.Devices.EthernetIP.Adapter {
         public ushort Revision { get; }
         public bool DefaultInitialize { get; } = true;
 
+        public CIPClass() {
+        }
         public CIPClass(ClassId classCode, int numberClassAttributes, uint highestClassAttributeNumber, int numberClassServices, int numberInstanceAttributes, uint highestInstanceAttributeNumber, int numberInstanceServices, uint numberInstances, string name, ushort revision, bool defaultInitialize = true) {
             this.ClassCode = classCode;
             this.NumberClassAttributes = numberClassAttributes;
