@@ -36,6 +36,7 @@ namespace GHIElectronics.TinyCLR.Devices.EthernetIP.Adapter {
             this.NumberInstanceAttributes = numberInstanceAttributes;
             this.HighestInstanceAttributeNumber = highestInstanceAttributeNumber;
             this.NumberInstanceServices = numberInstanceServices;
+            this.NumberInstances = numberInstances;
             this.Name = name;
             this.Revision = revision;
             this.DefaultInitialize = defaultInitialize;

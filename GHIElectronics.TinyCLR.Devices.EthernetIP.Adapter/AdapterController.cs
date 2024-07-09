@@ -67,6 +67,8 @@ namespace GHIElectronics.TinyCLR.Devices.EthernetIP.Adapter
 
             this.nedAssemblyConnectedDataReceived = NativeEventDispatcher.GetDispatcher("EthernetIP.Adapter.AssemblyConnectedDataReceived");
             this.nedAssemblyConnectedDataReceived.OnInterrupt += this.NedAssemblyConnectedDataReceived_OnInterrupt;
+
+            this.InitCipStack(false);
         }
 
         private void NedAssemblyConnectedDataReceived_OnInterrupt(string data0, long data1, long data2, long data3, IntPtr data4, DateTime timestamp) {
@@ -170,7 +172,7 @@ namespace GHIElectronics.TinyCLR.Devices.EthernetIP.Adapter
 
             this.NativeInsertAttribute(ptr, attributeNumber, (byte)cipType, (uint)encodeFunctionCode, (uint)decodeFunctionCode, data, (byte)cipFlags);
         }
-
+        
         //public void SetDeviceRevision(byte major, byte minor) => this.NativeSetDeviceRevision(major, minor);
 
         //public void SetDeviceType(ushort type) => this.NativeSetDeviceType(type);
@@ -181,7 +183,6 @@ namespace GHIElectronics.TinyCLR.Devices.EthernetIP.Adapter
 
         //public void SetDeviceVendorId(uint vendorId) => this.NativeSetDeviceVendorId(vendorId);
 
-        
 
         public void InitCipStackDefault() => this.NativeInitCipStackDefault();
 
@@ -189,20 +190,24 @@ namespace GHIElectronics.TinyCLR.Devices.EthernetIP.Adapter
 
         public void Start() => this.NativeStart();
 
-        public CipInstance AddCipInstance(CIPClass cipClass, uint instanceId) {
-            var instance = new CipInstance {
-                Impl = this.NativeAddCipInstance(cipClass.Impl, instanceId)
-            };
+        public void AddCipInstance(CIPClass cipClass, uint instanceId) {
+            //var instance = new CipInstance {
+            //    Impl = this.NativeAddCipInstance(cipClass.Impl, instanceId)
+            //};
 
-            return instance;
+            //return instance;
+
+            this.NativeAddCipInstance(cipClass.Impl, instanceId); ;
         }
 
-        public CipInstance AddCipInstances(CIPClass cipClass, uint instanceId) {
-            var instance = new CipInstance {
-                Impl = this.NativeAddCipInstances(cipClass.Impl, instanceId)
-            };
+        public void AddCipInstances(CIPClass cipClass, uint instanceId) {
+            //var instance = new CipInstance {
+            //    Impl = this.NativeAddCipInstances(cipClass.Impl, instanceId)
+            //};
 
-            return instance;
+            //return instance;
+
+            this.NativeAddCipInstances(cipClass.Impl, instanceId); ;
         }
 
         public void AllocateAttributeMasks(CIPClass targetClass) => this.NativeAllocateAttributeMasks(targetClass.Impl);
@@ -228,7 +233,31 @@ namespace GHIElectronics.TinyCLR.Devices.EthernetIP.Adapter
 
             var cipinstance = new CipInstance { Impl = this.NativeGetCipInstance(cipClass.Impl, instanceNumber) };
 
+            if (((uint)cipinstance.Impl) == 0) {
+                return null;
+            }
+
             return cipinstance;
+        }
+
+        private void InitCipStack(bool useDefault) => this.NativeInitCipStack(useDefault);
+
+        private void MessageRouterInit(CIPClass cipClass) {
+            this.AddCipClass(cipClass);
+            this.NativeMessageRouterInit(cipClass.Impl, cipClass.NumberClassAttributes, cipClass.HighestClassAttributeNumber, cipClass.NumberClassServices, cipClass.NumberInstanceAttributes, cipClass.HighestInstanceAttributeNumber, cipClass.NumberInstanceServices, cipClass.NumberInstances, cipClass.Name, cipClass.Revision, false);
+
+        }
+
+        private void IdentityInit(CIPClass cipClass) {
+            this.AddCipClass(cipClass);
+            this.NativeIdentityInit(cipClass.Impl, cipClass.NumberClassAttributes, cipClass.HighestClassAttributeNumber, cipClass.NumberClassServices, cipClass.NumberInstanceAttributes, cipClass.HighestInstanceAttributeNumber, cipClass.NumberInstanceServices, cipClass.NumberInstances, cipClass.Name, cipClass.Revision, false);
+
+        }
+
+        private void ConnectionManagerInit(CIPClass cipClass) {
+            this.AddCipClass(cipClass);
+            this.NativeConnectionManagerInit(cipClass.Impl, cipClass.NumberClassAttributes, cipClass.HighestClassAttributeNumber, cipClass.NumberClassServices, cipClass.NumberInstanceAttributes, cipClass.HighestInstanceAttributeNumber, cipClass.NumberInstanceServices, cipClass.NumberInstances, cipClass.Name, cipClass.Revision, false);
+
         }
 
         //////////////////////////////// Native code //////////////////////////////
@@ -307,6 +336,20 @@ namespace GHIElectronics.TinyCLR.Devices.EthernetIP.Adapter
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private extern IntPtr NativeGetCipInstance(IntPtr cipClass, uint instanceNumber);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private extern void NativeInitCipStack(bool useDefault);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private extern void NativeMessageRouterInit(IntPtr cipClass, int numberClassAttributes, uint highestClassAttributeNumber, int numberClassServices, int numberInstanceAttributes, uint highestInstanceAttributeNumber, int numberInstanceServices, uint numberInstances, string name, ushort revision, bool defaultInitialize);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private extern void NativeIdentityInit(IntPtr cipClass, int numberClassAttributes, uint highestClassAttributeNumber, int numberClassServices, int numberInstanceAttributes, uint highestInstanceAttributeNumber, int numberInstanceServices, uint numberInstances, string name, ushort revision, bool defaultInitialize);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private extern void NativeConnectionManagerInit(IntPtr cipClass, int numberClassAttributes, uint highestClassAttributeNumber, int numberClassServices, int numberInstanceAttributes, uint highestInstanceAttributeNumber, int numberInstanceServices, uint numberInstances, string name, ushort revision, bool defaultInitialize);
+
+
 
         //////////////////////////////// Test code //////////////////////////////
         public void DoTest() {

@@ -11,6 +11,8 @@ namespace GHIElectronics.TinyCLR.Devices.EthernetIP.Adapter {
             DeviceNet = 0x03,
             Assembly = 0x04,
             Connection = 0x05,
+            ConnectionManager = 0x06,
+            //TcpIpInterface = 0xF5,
         }
 
         public enum CIPServiceCode : uint {

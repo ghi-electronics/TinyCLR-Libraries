@@ -8,6 +8,7 @@ namespace GHIElectronics.TinyCLR.Devices.EthernetIP.Adapter {
     public partial class AdapterController {
 
         public enum CipAttributeEncodeInMessage : uint {
+            None = 0,
             EncodeCipBool = 0x01,
             EncodeCipByte = 0x02,
             EncodeCipWord = 0x4,
