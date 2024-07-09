@@ -4,7 +4,7 @@ using System;
 using System.Text;
 //using System.Threading.Tasks;
 
-namespace GHIElectronics.Endpoint.Drivers.EthernetIP.ObjectLibrary
+namespace GHIElectronics.TinyCLR.Drivers.EthernetIP.ObjectLibrary
 {
     /// <summary>
     /// Identity Object - Class Code: 01 Hex

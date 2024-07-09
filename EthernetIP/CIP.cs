@@ -1,7 +1,7 @@
 
 using System;
 
-namespace GHIElectronics.Endpoint.Drivers.EthernetIP
+namespace GHIElectronics.TinyCLR.Drivers.EthernetIP
 {
 
     /// <summary>

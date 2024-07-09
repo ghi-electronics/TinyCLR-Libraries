@@ -13,7 +13,7 @@ using System.Threading;
 using GHIElectronics.TinyCLR.Devices.Network;
 //using System.Threading.Tasks;
 
-namespace GHIElectronics.Endpoint.Drivers.EthernetIP
+namespace GHIElectronics.TinyCLR.Drivers.EthernetIP
 {
     public class EthernetIPClient
     {
@@ -603,9 +603,12 @@ namespace GHIElectronics.Endpoint.Drivers.EthernetIP
             var sendThread = new System.Threading.Thread(this.sendUDP);
             sendThread.Start();
 
-            new System.Threading.Thread(() => {
-                this.ReceiveCallbackClass1(s);                
-            }).Start();
+            this.receiveUdpState = s;
+            var receiveThread = new System.Threading.Thread(this.ReceiveCallbackClass1);
+            receiveThread.Start();
+            //new System.Threading.Thread(() => {
+            //    this.ReceiveCallbackClass1(s);
+            //}).Start();
 
             //var asyncResult = this.udpClientReceive.BeginReceive(new AsyncCallback(this.ReceiveCallbackClass1), s);
         }
@@ -910,10 +913,11 @@ namespace GHIElectronics.Endpoint.Drivers.EthernetIP
 
         }
 
-        private void ReceiveCallbackClass1(UdpState state)
+        UdpState receiveUdpState;
+        private void ReceiveCallbackClass1()
         {
-            var u = state.u;
-            var e = state.e;
+            var u = this.receiveUdpState.u;
+            var e = this.receiveUdpState.e;
 
             //if (this.udpClientReceiveClosed)
             //    return;
@@ -1026,7 +1030,7 @@ namespace GHIElectronics.Endpoint.Drivers.EthernetIP
 
 
             //----------------CIP Command "Get Attribute Single"
-            commonPacketFormat.Data.Add((byte)GHIElectronics.Endpoint.Drivers.EthernetIP.CIPCommonServices.Get_Attribute_Single);
+            commonPacketFormat.Data.Add((byte)GHIElectronics.TinyCLR.Drivers.EthernetIP.CIPCommonServices.Get_Attribute_Single);
             //----------------CIP Command "Get Attribute Single"
 
             //----------------Requested Path size (number of 16 bit words)
@@ -1111,7 +1115,7 @@ namespace GHIElectronics.Endpoint.Drivers.EthernetIP
 
 
             //----------------CIP Command "Get Attribute All"
-            commonPacketFormat.Data.Add((byte)GHIElectronics.Endpoint.Drivers.EthernetIP.CIPCommonServices.Get_Attributes_All);
+            commonPacketFormat.Data.Add((byte)GHIElectronics.TinyCLR.Drivers.EthernetIP.CIPCommonServices.Get_Attributes_All);
             //----------------CIP Command "Get Attribute All"
 
             //----------------Requested Path size
@@ -1185,7 +1189,7 @@ namespace GHIElectronics.Endpoint.Drivers.EthernetIP
 
 
             //----------------CIP Command "Set Attribute Single"
-            commonPacketFormat.Data.Add((byte)GHIElectronics.Endpoint.Drivers.EthernetIP.CIPCommonServices.Set_Attribute_Single);
+            commonPacketFormat.Data.Add((byte)GHIElectronics.TinyCLR.Drivers.EthernetIP.CIPCommonServices.Set_Attribute_Single);
             //----------------CIP Command "Set Attribute Single"
 
             //----------------Requested Path size (number of 16 bit words)
