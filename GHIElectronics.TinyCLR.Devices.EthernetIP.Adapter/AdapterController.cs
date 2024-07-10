@@ -47,6 +47,14 @@ namespace GHIElectronics.TinyCLR.Devices.EthernetIP.Adapter
         private RegisterSessionHandler eventRegisterSessionHandler;
         private RegisterSessionHandler eventUnregisterSessionHandler;
 
+        private readonly NativeEventDispatcher nedForwardOpen;
+        public delegate void ForwardOpenHandler(AdapterController adapter, IPAddress ipAdrress, bool large);
+        private ForwardOpenHandler eventForwardOpenHandler;
+
+        private readonly NativeEventDispatcher nedForwardClose;
+        public delegate void ForwardCloseHandler(AdapterController adapter, IPAddress ipAdrress);
+        private ForwardCloseHandler eventForwardCloseHandler;
+
         public AdapterController(string deviceName, uint deviceVendorID, ushort deviceType, ushort deviceProductCode, uint deviceSerialNumber, byte deviceMajorRevision, byte deviceMinorRevision) {
             this.deviceName = deviceName;
             this.deviceVendorID = deviceVendorID;
@@ -81,7 +89,32 @@ namespace GHIElectronics.TinyCLR.Devices.EthernetIP.Adapter
             this.nedBeforeAssemblyDataSend = NativeEventDispatcher.GetDispatcher("EthernetIP.Adapter.BeforeAssemblyDataSend");
             this.nedBeforeAssemblyDataSend.OnInterrupt += this.NedBeforeAssemblyDataSend_OnInterrupt;
 
+            this.nedForwardOpen = NativeEventDispatcher.GetDispatcher("EthernetIP.Adapter.ForwardOpen");
+            this.nedForwardOpen.OnInterrupt += this.NedForwardOpen_OnInterrupt;
+
+            this.nedForwardClose = NativeEventDispatcher.GetDispatcher("EthernetIP.Adapter.ForwardClose");
+            this.nedForwardClose.OnInterrupt += this.NedForwardClose_OnInterrupt;
+
             this.InitCipStack(false);
+        }
+
+        private void NedForwardOpen_OnInterrupt(string data0, long data1, long data2, long data3, IntPtr data4, DateTime timestamp) {
+            var originator_address = IPAddress.None;
+
+
+            if (data1 != 0)
+                originator_address = new IPAddress(data1);
+
+            this.eventForwardOpenHandler?.Invoke(this, originator_address, data2 != 0 ? true: false);
+        }
+        private void NedForwardClose_OnInterrupt(string data0, long data1, long data2, long data3, IntPtr data4, DateTime timestamp) {
+            var originator_address = IPAddress.None;
+
+
+            if (data1 != 0)
+                originator_address = new IPAddress(data1);
+
+            this.eventForwardCloseHandler?.Invoke(this, originator_address);
         }
 
         private void NedBeforeAssemblyDataSend_OnInterrupt(string data0, long data1, long data2, long data3, IntPtr data4, DateTime timestamp) {
@@ -181,6 +214,18 @@ namespace GHIElectronics.TinyCLR.Devices.EthernetIP.Adapter
 
             add => this.eventUnregisterSessionHandler += value;
             remove => this.eventUnregisterSessionHandler -= value;
+        }
+
+        public event ForwardOpenHandler ForwardOpenDetected {
+
+            add => this.eventForwardOpenHandler += value;
+            remove => this.eventForwardOpenHandler -= value;
+        }
+
+        public event ForwardCloseHandler ForwardCloseDetected {
+
+            add => this.eventForwardCloseHandler += value;
+            remove => this.eventForwardCloseHandler -= value;
         }
 
         public void AddCipClass(CIPClass cipClass) {
