@@ -22,6 +22,9 @@ namespace GHIElectronics.TinyCLR.Devices.EthernetIP.Adapter
         private ArrayList cipClassesList;
         private ArrayList assemblyObjectsList;
 
+        static bool isEnabled = false;   
+        static bool isInitialized = false;   
+
         private readonly NativeEventDispatcher nedReceivedExplictTcpData;
         public delegate void ReceivedExplictTcpDataHandler(AdapterController adapter, ushort commandCode, IPAddress ipAdrress);
         private ReceivedExplictTcpDataHandler eventReceivedExplictTcpDataHandler;
@@ -56,6 +59,11 @@ namespace GHIElectronics.TinyCLR.Devices.EthernetIP.Adapter
         private ForwardCloseHandler eventForwardCloseHandler;
 
         public AdapterController(string deviceName, uint deviceVendorID, ushort deviceType, ushort deviceProductCode, uint deviceSerialNumber, byte deviceMajorRevision, byte deviceMinorRevision) {
+            if (isInitialized) {
+                throw new Exception("The controller is initialized already.");
+            }
+            
+
             this.deviceName = deviceName;
             this.deviceVendorID = deviceVendorID;
             this.deviceType = deviceType;
@@ -96,6 +104,8 @@ namespace GHIElectronics.TinyCLR.Devices.EthernetIP.Adapter
             this.nedForwardClose.OnInterrupt += this.NedForwardClose_OnInterrupt;
 
             this.InitCipStack(false);
+
+            isInitialized = true;
         }
 
         private void NedForwardOpen_OnInterrupt(string data0, long data1, long data2, long data3, IntPtr data4, DateTime timestamp) {
@@ -286,7 +296,21 @@ namespace GHIElectronics.TinyCLR.Devices.EthernetIP.Adapter
 
         private void Open() => this.NativeOpen();// for testing only
 
-        public void Enable() => this.NativeStart();
+
+        public void Enable() {
+            if (isEnabled) {
+                throw new Exception("The controller is enabled already.");
+            }
+            
+            isEnabled = true;
+
+            this.NativeEnable();
+        }
+
+        public void Disable() {
+            // TODO not implemented
+            throw new NotImplementedException(); ;
+        }
 
         public void AddCipInstance(CIPClass cipClass, uint instanceId) {
             //var instance = new CipInstance {
@@ -406,7 +430,10 @@ namespace GHIElectronics.TinyCLR.Devices.EthernetIP.Adapter
         private extern void NativeInitCipStackDefault();
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private extern void NativeStart();
+        private extern void NativeEnable();
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private extern void NativeDisable();
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private extern void NativeSetDeviceProductName(string name);
