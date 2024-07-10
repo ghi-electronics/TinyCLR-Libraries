@@ -45,6 +45,7 @@
     <Compile Include="CIPServiceCode.cs" />
     <Compile Include="CipServiceFunction.cs" />
     <Compile Include="CipAttributeEncodeInMessage.cs" />
+    <Compile Include="EncapsulationCommand.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -41,6 +41,12 @@ namespace GHIElectronics.TinyCLR.Devices.EthernetIP.Adapter
         private readonly NativeEventDispatcher nedBeforeAssemblyDataSend;
         public delegate void BeforeAssemblyDataSendHandler(AdapterController adapter, ushort instanceNumbber);
         private BeforeAssemblyDataSendHandler eventBeforeAssemblyDataSendHandler;
+
+
+        public delegate void RegisterSessionHandler(AdapterController adapter, IPAddress ipAdrress);
+        private RegisterSessionHandler eventRegisterSessionHandler;
+        private RegisterSessionHandler eventUnregisterSessionHandler;
+
         public AdapterController(string deviceName, uint deviceVendorID, ushort deviceType, ushort deviceProductCode, uint deviceSerialNumber, byte deviceMajorRevision, byte deviceMinorRevision) {
             this.deviceName = deviceName;
             this.deviceVendorID = deviceVendorID;
@@ -124,7 +130,15 @@ namespace GHIElectronics.TinyCLR.Devices.EthernetIP.Adapter
                 originator_address = new IPAddress(data2);
 
             this.eventReceivedExplictTcpDataHandler?.Invoke(this, (ushort)data1, originator_address);
-            ;
+
+            if (data1 == (long)EncapsulationCommand.RegisterSession) {
+                this.eventRegisterSessionHandler?.Invoke(this, originator_address);
+            }
+
+            else if (data1 == (long)EncapsulationCommand.UnregisterSession) {
+                this.eventUnregisterSessionHandler?.Invoke(this, originator_address);
+            }
+
         }
 
         public event ReceivedExplictTcpDataHandler ReceivedExplictTcpData {
@@ -155,6 +169,18 @@ namespace GHIElectronics.TinyCLR.Devices.EthernetIP.Adapter
 
             add => this.eventBeforeAssemblyDataSendHandler += value;
             remove => this.eventBeforeAssemblyDataSendHandler -= value;
+        }
+
+        public event RegisterSessionHandler RegisterSessionDetected {
+
+            add => this.eventRegisterSessionHandler += value;
+            remove => this.eventRegisterSessionHandler -= value;
+        }
+
+        public event RegisterSessionHandler UnregisterSessionDetected {
+
+            add => this.eventUnregisterSessionHandler += value;
+            remove => this.eventUnregisterSessionHandler -= value;
         }
 
         public void AddCipClass(CIPClass cipClass) {
