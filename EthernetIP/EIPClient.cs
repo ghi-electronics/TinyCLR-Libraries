@@ -24,6 +24,7 @@ namespace GHIElectronics.TinyCLR.Drivers.EthernetIP
         uint connectionID_T_O;
         uint multicastAddress;
         ushort connectionSerialNumber;
+		const int BUFFER_SIZE = 1024;  
         /// <summary>
         /// TCP-Port of the Server
         /// </summary>
@@ -72,11 +73,11 @@ namespace GHIElectronics.TinyCLR.Drivers.EthernetIP
         /// <summary>
         /// The maximum size in bytes (only pure data without sequence count and 32-Bit Real Time Header (if present)) from Originator -> Target for Implicit Messaging (Default: 505)
         /// </summary>
-        public ushort O_T_Length { get; set; } = 505;                //For Forward Open - Max 505
+        public ushort O_T_Length { get; set; } = BUFFER_SIZE;                //For Forward Open - Max 505
         /// <summary>
         /// The maximum size in bytes (only pure data woithout sequence count and 32-Bit Real Time Header (if present)) from Target -> Originator for Implicit Messaging (Default: 505)
         /// </summary>
-        public ushort T_O_Length { get; set; } = 505;                //For Forward Open - Max 505
+        public ushort T_O_Length { get; set; } = BUFFER_SIZE;                //For Forward Open - Max 505
         /// <summary>
         /// Connection Type Originator -> Target for Implicit Messaging (Default: ConnectionType.Point_to_Point)
         /// </summary>
@@ -106,11 +107,11 @@ namespace GHIElectronics.TinyCLR.Drivers.EthernetIP
         /// <summary>
         /// Provides Access to the Class 1 Real-Time IO-Data Originator -> Target for Implicit Messaging    
         /// </summary>
-        public byte[] O_T_IOData = new byte[505];   //Class 1 Real-Time IO-Data O->T   
+        public byte[] O_T_IOData = new byte[BUFFER_SIZE];   //Class 1 Real-Time IO-Data O->T   
         /// <summary>
         /// Provides Access to the Class 1 Real-Time IO-Data Target -> Originator for Implicit Messaging
         /// </summary>
-        public byte[] T_O_IOData = new byte[505];    //Class 1 Real-Time IO-Data T->O  
+        public byte[] T_O_IOData = new byte[BUFFER_SIZE];    //Class 1 Real-Time IO-Data T->O  
         /// <summary>
         /// Used Real-Time Format Originator -> Target for Implicit Messaging (Default: RealTimeFormat.Header32Bit)
         /// Possible Values: RealTimeFormat.Header32Bit; RealTimeFormat.Heartbeat; RealTimeFormat.ZeroLength; RealTimeFormat.Modeless
@@ -130,14 +131,32 @@ namespace GHIElectronics.TinyCLR.Drivers.EthernetIP
         /// </summary>
         public byte ConfigurationAssemblyInstanceID { get; set; } = 0x01;
         /// <summary>
+        /// ConfigurationAssemblyInstanceID is the InstanceID of the configuration Instance in the Assembly Object Class (Standard: 0x01)
+        /// </summary>
+        public byte[] ConfigurationAssemblyData = new byte[500];
+        /// <summary>
+        /// ConfigurationAssemblyDataLength max 500
+        /// </summary>
+        public ushort ConfigurationAssemblyDataLength = 0;
+        /// <summary>
         /// Returns the Date and Time when the last Implicit Message has been received fŕom The Target Device
         /// Could be used to determine a Timeout
         /// </summary>        
         public DateTime LastReceivedImplicitMessage { get; set; }
-    
-        public EthernetIPClient()
+
+        /// <summary>
+        /// VendorID        
+        /// </summary>
+        public ushort VendorID { get; }
+
+        /// <summary>
+        /// VendorID        
+        /// </summary>
+        public uint SerialNumber { get; }
+        public EthernetIPClient(ushort vendorId, uint serialNumber)
         {
-            
+            this.VendorID = vendorId;
+            this.SerialNumber = serialNumber;   
         }
 
         private void ReceiveCallback(UdpState state)
@@ -330,6 +349,22 @@ namespace GHIElectronics.TinyCLR.Drivers.EthernetIP
         bool udpClientReceiveClosed = false;
         public void ForwardOpen(bool largeForwardOpen)
         {
+            if (this.O_T_Length > BUFFER_SIZE) {
+                throw new Exception(string.Format("O_T_Length is larger than {0}", BUFFER_SIZE));
+            }
+
+            if (this.T_O_Length > BUFFER_SIZE) {
+                throw new Exception(string.Format("T_O_Length is larger than {0}", BUFFER_SIZE));
+            }
+
+            if (!largeForwardOpen && (this.O_T_Length > 511 - 2  || this.T_O_Length > 511 - 6)) {
+                throw new Exception(string.Format("Data too larger for ForwardOpen. Try to use Large ForwardOpen."));
+            }
+
+            if (this.ConfigurationAssemblyDataLength > 500) {
+                throw new Exception(string.Format("Max ConfigurationAssemblyDataLength is {0}", this.ConfigurationAssemblyData.Length));
+            }
+
             this.udpClientReceiveClosed = false;
             ushort o_t_headerOffset = 2;                    //Zählt den Sequencecount und evtl 32bit header zu der Länge dazu
             if (this.O_T_RealTimeFormat == RealTimeFormat.Header32Bit)
@@ -371,7 +406,12 @@ namespace GHIElectronics.TinyCLR.Drivers.EthernetIP
 
 
             commonPacketFormat.DataItem = 0xB2;
-            commonPacketFormat.DataLength = (ushort)(41 + (ushort)lengthOffset);
+
+            if (this.ConfigurationAssemblyDataLength > 0)
+                commonPacketFormat.DataLength = (ushort)(41 + (ushort)lengthOffset + (this.ConfigurationAssemblyDataLength + 2));
+            else
+                commonPacketFormat.DataLength = (ushort)(41 + (ushort)lengthOffset); 
+
             if (largeForwardOpen)
                 commonPacketFormat.DataLength = (ushort)(commonPacketFormat.DataLength + 4);
 
@@ -427,15 +467,15 @@ namespace GHIElectronics.TinyCLR.Drivers.EthernetIP
             commonPacketFormat.Data.Add((byte)(this.connectionSerialNumber >> 8));
 
             //----------------Originator Vendor ID
-            commonPacketFormat.Data.Add(0xFF);
-            commonPacketFormat.Data.Add(0);
+            commonPacketFormat.Data.Add((this.VendorID >> 0) & 0xFF);
+            commonPacketFormat.Data.Add((this.VendorID >> 8) & 0xFF);
             //----------------Originaator Vendor ID
 
             //----------------Originator Serial Number
-            commonPacketFormat.Data.Add(0xFF);
-            commonPacketFormat.Data.Add(0xFF);
-            commonPacketFormat.Data.Add(0xFF);
-            commonPacketFormat.Data.Add(0xFF);
+            commonPacketFormat.Data.Add((this.SerialNumber >> 0) & 0xFF);
+            commonPacketFormat.Data.Add((this.SerialNumber >> 8) & 0xFF);
+            commonPacketFormat.Data.Add((this.SerialNumber >> 16) & 0xFF);
+            commonPacketFormat.Data.Add((this.SerialNumber >> 24) & 0xFF);
             //----------------Originator Serial Number
 
             //----------------Timeout Multiplier
@@ -486,7 +526,7 @@ namespace GHIElectronics.TinyCLR.Drivers.EthernetIP
             connectionType = (byte)this.T_O_ConnectionType; //1=Multicast, 2=P2P
             priority = (byte)this.T_O_Priority;
             variableLength = this.T_O_VariableLength == false ? 0 : 1;
-            connectionSize = (byte)(this.T_O_Length + t_o_headerOffset);
+            connectionSize = (ushort)(this.T_O_Length + t_o_headerOffset);
             NetworkConnectionParameters = (ushort)((ushort)(connectionSize & 0x1FF) | (((ushort)(variableLength)) << 9) | ((priority & 0x03) << 10) | ((connectionType & 0x03) << 13) | (((ushort)(redundantOwner)) << 15));
             if (largeForwardOpen)
                 NetworkConnectionParameters = (uint)((uint)(connectionSize & 0xFFFF) | (((uint)(variableLength)) << 25) | (uint)((priority & 0x03) << 26) | (uint)((connectionType & 0x03) << 29) | (((uint)(redundantOwner)) << 31));
@@ -505,7 +545,17 @@ namespace GHIElectronics.TinyCLR.Drivers.EthernetIP
             //----XXXX = Transport class, 0 = Class 0, 1 = Class 1, 2 = Class 2, 3 = Class 3
             //----------------Transport Type Trigger
             //Connection Path size 
-            commonPacketFormat.Data.Add((byte)((0x2) + (this.O_T_ConnectionType == ConnectionType.Null ? 0 : 1) + (this.T_O_ConnectionType == ConnectionType.Null ? 0 : 1)));
+            //commonPacketFormat.Data.Add((byte)((0x2) + (O_T_ConnectionType == ConnectionType.Null ? 0 : 1) + (T_O_ConnectionType == ConnectionType.Null ? 0 : 1) ));
+
+            var connectionPathSize = (byte)((0x2) + (O_T_ConnectionType == ConnectionType.Null ? 0 : 1) + (T_O_ConnectionType == ConnectionType.Null ? 0 : 1));
+            
+            if (this.ConfigurationAssemblyDataLength > 0)
+            {
+                connectionPathSize += (byte)((this.ConfigurationAssemblyDataLength + 2) / 2) ;    // +2 = below            
+            }
+
+            commonPacketFormat.Data.Add(connectionPathSize);
+
             //Verbindugspfad
             commonPacketFormat.Data.Add((byte)(0x20));
             commonPacketFormat.Data.Add((byte)(this.AssemblyObjectClass));
@@ -518,6 +568,18 @@ namespace GHIElectronics.TinyCLR.Drivers.EthernetIP
             if (this.T_O_ConnectionType != ConnectionType.Null) {
                 commonPacketFormat.Data.Add((byte)(0x2C));
                 commonPacketFormat.Data.Add((byte)(this.T_O_InstanceID));
+            }
+            
+            // GHI add config
+            if (this.ConfigurationAssemblyDataLength > 0)
+            {
+                commonPacketFormat.Data.Add((byte)(0x80));
+                commonPacketFormat.Data.Add((byte)(this.ConfigurationAssemblyDataLength / 2 + this.ConfigurationAssemblyDataLength % 2));
+
+                for (var i = 0; i < this.ConfigurationAssemblyDataLength; i++)
+                {
+                    commonPacketFormat.Data.Add((byte)(this.ConfigurationAssemblyData[i]));
+                }
             }
 
             //AddSocket Addrress Item O->T
@@ -547,7 +609,7 @@ namespace GHIElectronics.TinyCLR.Drivers.EthernetIP
             //encapsulation.tobytes();
 
             this.stream.Write(dataToWrite, 0, dataToWrite.Length);
-            var data = new byte[564];
+            var data = new byte[BUFFER_SIZE + 64];
 
             var bytes = this.stream.Read(data, 0, data.Length);
 
@@ -789,7 +851,7 @@ namespace GHIElectronics.TinyCLR.Drivers.EthernetIP
             catch (Exception e) {
                 //Handle Exception  to allow Forward close if the connection was closed by the Remote Device before
             }
-            var data = new byte[564];
+            var data = new byte[BUFFER_SIZE + 64];
 
             try {
                 var bytes = this.stream.Read(data, 0, data.Length);
@@ -826,7 +888,7 @@ namespace GHIElectronics.TinyCLR.Drivers.EthernetIP
 
             while (!this.stopUDP)
             {
-                var o_t_IOData = new byte[564];
+                var o_t_IOData = new byte[BUFFER_SIZE + 64];
                 var endPointsend = new System.Net.IPEndPoint(System.Net.IPAddress.Parse(this.IPAddress), this.TargetUDPPort);
                
                 var send = new UdpState();
@@ -1057,7 +1119,7 @@ namespace GHIElectronics.TinyCLR.Drivers.EthernetIP
             encapsulation.Tobytes();
 
             this.stream.Write(dataToWrite, 0, dataToWrite.Length);
-            var data = new byte[564];
+            var data = new byte[BUFFER_SIZE + 64];
 
             var bytes = this.stream.Read(data, 0, data.Length);
 
@@ -1138,7 +1200,7 @@ namespace GHIElectronics.TinyCLR.Drivers.EthernetIP
 
 
             this.stream.Write(dataToWrite, 0, dataToWrite.Length);
-            var data = new byte[564];
+            var data = new byte[BUFFER_SIZE + 64];
 
             var bytes = this.stream.Read(data, 0, data.Length);
             //--------------------------BEGIN Error?
@@ -1222,7 +1284,7 @@ namespace GHIElectronics.TinyCLR.Drivers.EthernetIP
             encapsulation.Tobytes();
 
             this.stream.Write(dataToWrite, 0, dataToWrite.Length);
-            var data = new byte[564];
+            var data = new byte[BUFFER_SIZE + 64];
 
             var bytes = this.stream.Read(data, 0, data.Length);
 
