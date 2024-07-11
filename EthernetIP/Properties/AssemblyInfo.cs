@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("GHIElectronics.TinyCLR.Drivers.EthernetIP")]
+[assembly: AssemblyTitle("GHIElectronics.TinyCLR.Device.EthernetIP.Scanner")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("GHIElectronics.TinyCLR.Drivers.EthernetIP")]
+[assembly: AssemblyProduct("GHIElectronics.TinyCLR.Device.EthernetIP.Scanner")]
 [assembly: AssemblyCopyright("Copyright ©  2024")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

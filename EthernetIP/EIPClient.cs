@@ -13,7 +13,7 @@ using System.Threading;
 using GHIElectronics.TinyCLR.Devices.Network;
 //using System.Threading.Tasks;
 
-namespace GHIElectronics.TinyCLR.Drivers.EthernetIP
+namespace GHIElectronics.TinyCLR.Device.EthernetIP.Scanner
 {
     public class EthernetIPClient
     {
@@ -1092,7 +1092,7 @@ namespace GHIElectronics.TinyCLR.Drivers.EthernetIP
 
 
             //----------------CIP Command "Get Attribute Single"
-            commonPacketFormat.Data.Add((byte)GHIElectronics.TinyCLR.Drivers.EthernetIP.CIPCommonServices.Get_Attribute_Single);
+            commonPacketFormat.Data.Add((byte)GHIElectronics.TinyCLR.Device.EthernetIP.Scanner.CIPCommonServices.Get_Attribute_Single);
             //----------------CIP Command "Get Attribute Single"
 
             //----------------Requested Path size (number of 16 bit words)
@@ -1177,7 +1177,7 @@ namespace GHIElectronics.TinyCLR.Drivers.EthernetIP
 
 
             //----------------CIP Command "Get Attribute All"
-            commonPacketFormat.Data.Add((byte)GHIElectronics.TinyCLR.Drivers.EthernetIP.CIPCommonServices.Get_Attributes_All);
+            commonPacketFormat.Data.Add((byte)GHIElectronics.TinyCLR.Device.EthernetIP.Scanner.CIPCommonServices.Get_Attributes_All);
             //----------------CIP Command "Get Attribute All"
 
             //----------------Requested Path size
@@ -1251,7 +1251,7 @@ namespace GHIElectronics.TinyCLR.Drivers.EthernetIP
 
 
             //----------------CIP Command "Set Attribute Single"
-            commonPacketFormat.Data.Add((byte)GHIElectronics.TinyCLR.Drivers.EthernetIP.CIPCommonServices.Set_Attribute_Single);
+            commonPacketFormat.Data.Add((byte)GHIElectronics.TinyCLR.Device.EthernetIP.Scanner.CIPCommonServices.Set_Attribute_Single);
             //----------------CIP Command "Set Attribute Single"
 
             //----------------Requested Path size (number of 16 bit words)

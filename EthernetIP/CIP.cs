@@ -1,7 +1,7 @@
 
 using System;
 
-namespace GHIElectronics.TinyCLR.Drivers.EthernetIP
+namespace GHIElectronics.TinyCLR.Device.EthernetIP.Scanner
 {
 
     /// <summary>

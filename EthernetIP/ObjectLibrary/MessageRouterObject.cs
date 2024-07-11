@@ -4,7 +4,7 @@ using System;
 using System.Text;
 //using System.Threading.Tasks;
 
-namespace GHIElectronics.TinyCLR.Drivers.EthernetIP.ObjectLibrary
+namespace GHIElectronics.TinyCLR.Device.EthernetIP.Scanner.ObjectLibrary
 {
     public class MessageRouterObject
     {
