@@ -467,15 +467,15 @@ namespace GHIElectronics.TinyCLR.Device.EthernetIP.Scanner
             commonPacketFormat.Data.Add((byte)(this.connectionSerialNumber >> 8));
 
             //----------------Originator Vendor ID
-            commonPacketFormat.Data.Add((this.VendorID >> 0) & 0xFF);
-            commonPacketFormat.Data.Add((this.VendorID >> 8) & 0xFF);
+            commonPacketFormat.Data.Add(0xFF);
+            commonPacketFormat.Data.Add(0);
             //----------------Originaator Vendor ID
 
             //----------------Originator Serial Number
-            commonPacketFormat.Data.Add((this.SerialNumber >> 0) & 0xFF);
-            commonPacketFormat.Data.Add((this.SerialNumber >> 8) & 0xFF);
-            commonPacketFormat.Data.Add((this.SerialNumber >> 16) & 0xFF);
-            commonPacketFormat.Data.Add((this.SerialNumber >> 24) & 0xFF);
+            commonPacketFormat.Data.Add(0xFF);
+            commonPacketFormat.Data.Add(0xFF);
+            commonPacketFormat.Data.Add(0xFF);
+            commonPacketFormat.Data.Add(0xFF);
             //----------------Originator Serial Number
 
             //----------------Timeout Multiplier
@@ -870,6 +870,7 @@ namespace GHIElectronics.TinyCLR.Device.EthernetIP.Scanner
 
             //Close the Socket for Receive
             this.udpClientReceiveClosed = true;
+            Thread.Sleep(1); // Wait for the thread using udpClientReceive close
             this.udpClientReceive.Close();
 
 
@@ -986,41 +987,50 @@ namespace GHIElectronics.TinyCLR.Device.EthernetIP.Scanner
 
             //u.BeginReceive(new AsyncCallback(this.ReceiveCallbackClass1), (UdpState)(ar.AsyncState));
 
+
             while (!this.udpClientReceiveClosed) {
 
-                while (u.Available == 0 && !this.udpClientReceiveClosed) {
-                    Thread.Sleep(1);
-                }
+                try {
+                    while (u.Available == 0 && !this.udpClientReceiveClosed) {
+                        Thread.Sleep(1);
+                    }
 
-                lock (this) {
-                    IPEndPoint recEndpoint = null;
+                    if (this.udpClientReceiveClosed)
+                        return;
 
-                    var receivebytes = u.Receive(ref recEndpoint);
+                    lock (this) {
+                        IPEndPoint recEndpoint = null;
 
-
-                    // EndReceive worked and we have received data and remote endpoint
-
-                    if (receivebytes.Length > 20) {
-                        //Get the connection ID
-                        var connectionID = (uint)(receivebytes[6] | receivebytes[7] << 8 | receivebytes[8] << 16 | receivebytes[9] << 24);
+                        var receivebytes = u.Receive(ref recEndpoint);
 
 
-                        if (connectionID == this.connectionID_T_O) {
-                            ushort headerOffset = 0;
-                            if (this.T_O_RealTimeFormat == RealTimeFormat.Header32Bit)
-                                headerOffset = 4;
-                            if (this.T_O_RealTimeFormat == RealTimeFormat.Heartbeat)
-                                headerOffset = 0;
-                            for (var i = 0; i < receivebytes.Length - 20 - headerOffset; i++) {
-                                this.T_O_IOData[i] = receivebytes[20 + i + headerOffset];
+                        // EndReceive worked and we have received data and remote endpoint
+
+                        if (receivebytes.Length > 20) {
+                            //Get the connection ID
+                            var connectionID = (uint)(receivebytes[6] | receivebytes[7] << 8 | receivebytes[8] << 16 | receivebytes[9] << 24);
+
+
+                            if (connectionID == this.connectionID_T_O) {
+                                ushort headerOffset = 0;
+                                if (this.T_O_RealTimeFormat == RealTimeFormat.Header32Bit)
+                                    headerOffset = 4;
+                                if (this.T_O_RealTimeFormat == RealTimeFormat.Heartbeat)
+                                    headerOffset = 0;
+                                for (var i = 0; i < receivebytes.Length - 20 - headerOffset; i++) {
+                                    this.T_O_IOData[i] = receivebytes[20 + i + headerOffset];
+                                }
+
+
+
                             }
-
-
-
                         }
                     }
+                    this.LastReceivedImplicitMessage = DateTime.Now;
                 }
-                this.LastReceivedImplicitMessage = DateTime.Now;
+                catch {
+
+                }
             }
         }
 
