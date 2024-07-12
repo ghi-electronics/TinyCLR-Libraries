@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="F:\Examples\Tinyclr\TinyCLR\EthernetIP\TestEthernetIP\packages\GHIElectronics.TinyCLR.Core.2.2.2.1000\build\net48\GHIElectronics.TinyCLR.Core.props" Condition="Exists('F:\Examples\Tinyclr\TinyCLR\EthernetIP\TestEthernetIP\packages\GHIElectronics.TinyCLR.Core.2.2.2.1000\build\net48\GHIElectronics.TinyCLR.Core.props')" />
+  <Import Project="F:\Examples\Tinyclr\TinyCLR\EthernetIP\TestEthernetIP\packages\GHIElectronics.TinyCLR.Core.2.2.3.1000\build\net48\GHIElectronics.TinyCLR.Core.props" Condition="Exists('F:\Examples\Tinyclr\TinyCLR\EthernetIP\TestEthernetIP\packages\GHIElectronics.TinyCLR.Core.2.2.3.1000\build\net48\GHIElectronics.TinyCLR.Core.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
