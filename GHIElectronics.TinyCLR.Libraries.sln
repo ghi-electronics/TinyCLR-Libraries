@@ -95,9 +95,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Devi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Devices.Gpio.LowLevel", "GHIElectronics.TinyCLR.Devices.Gpio.LowLevel\GHIElectronics.TinyCLR.Devices.Gpio.LowLevel.csproj", "{F86BE83A-AEEB-4BB7-87EB-FD3745B3F4D2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Device.EthernetIP.Scanner", "GHIElectronics.TinyCLR.Device.EthernetIP.Scanner\GHIElectronics.TinyCLR.Device.EthernetIP.Scanner.csproj", "{F3A97896-9634-47E6-BDB7-AD3F2C268E78}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.EthernetIP.Scanner", "GHIElectronics.TinyCLR.EthernetIP.Scanner\GHIElectronics.TinyCLR.EthernetIP.Scanner.csproj", "{F3A97896-9634-47E6-BDB7-AD3F2C268E78}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Devices.EthernetIP.Adapter", "GHIElectronics.TinyCLR.Devices.EthernetIP.Adapter\GHIElectronics.TinyCLR.Devices.EthernetIP.Adapter.csproj", "{5A184B9A-A5D7-4599-B433-4F4C760B1EFD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.EthernetIP.Adapter", "GHIElectronics.TinyCLR.EthernetIP.Adapter\GHIElectronics.TinyCLR.EthernetIP.Adapter.csproj", "{5A184B9A-A5D7-4599-B433-4F4C760B1EFD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
