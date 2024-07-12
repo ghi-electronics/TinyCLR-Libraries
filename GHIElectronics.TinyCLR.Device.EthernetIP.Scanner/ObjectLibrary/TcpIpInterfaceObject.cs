@@ -5,7 +5,7 @@ using System;
 using System.Text;
 
 
-namespace GHIElectronics.TinyCLR.Device.EthernetIP.Scanner.ObjectLibrary
+namespace GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary
 {
     public class TcpIpInterfaceObject
     {

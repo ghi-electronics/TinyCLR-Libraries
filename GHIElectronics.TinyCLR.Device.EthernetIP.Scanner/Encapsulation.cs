@@ -6,7 +6,7 @@ using System.Collections;
 using System.Text;
 
 
-namespace GHIElectronics.TinyCLR.Device.EthernetIP.Scanner
+namespace GHIElectronics.TinyCLR.EthernetIP.Scanner
 {
     public class Encapsulation
     {

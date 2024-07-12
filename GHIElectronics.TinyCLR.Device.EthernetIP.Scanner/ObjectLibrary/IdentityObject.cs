@@ -4,7 +4,7 @@
 using System;
 using System.Text;
 
-namespace GHIElectronics.TinyCLR.Device.EthernetIP.Scanner.ObjectLibrary
+namespace GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary
 {
     /// <summary>
     /// Identity Object - Class Code: 01 Hex

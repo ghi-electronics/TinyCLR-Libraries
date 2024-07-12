@@ -9,7 +9,7 @@ using System.Threading;
 using GHIElectronics.TinyCLR.Devices.Network;
 
 
-namespace GHIElectronics.TinyCLR.Device.EthernetIP.Scanner
+namespace GHIElectronics.TinyCLR.EthernetIP.Scanner
 {
     public class EthernetIPClient
     {
@@ -876,7 +876,7 @@ namespace GHIElectronics.TinyCLR.Device.EthernetIP.Scanner
             try {
                 this.stream.Write(dataToWrite, 0, dataToWrite.Length);
             }
-            catch (Exception e) {
+            catch  {
                 //Handle Exception  to allow Forward close if the connection was closed by the Remote Device before
             }
             var data = new byte[BUFFER_SIZE + 64];
@@ -1125,7 +1125,7 @@ namespace GHIElectronics.TinyCLR.Device.EthernetIP.Scanner
 
 
             //----------------CIP Command "Get Attribute Single"
-            commonPacketFormat.Data.Add((byte)GHIElectronics.TinyCLR.Device.EthernetIP.Scanner.CIPCommonServices.Get_Attribute_Single);
+            commonPacketFormat.Data.Add((byte)GHIElectronics.TinyCLR.EthernetIP.Scanner.CIPCommonServices.Get_Attribute_Single);
             //----------------CIP Command "Get Attribute Single"
 
             //----------------Requested Path size (number of 16 bit words)
@@ -1210,7 +1210,7 @@ namespace GHIElectronics.TinyCLR.Device.EthernetIP.Scanner
 
 
             //----------------CIP Command "Get Attribute All"
-            commonPacketFormat.Data.Add((byte)GHIElectronics.TinyCLR.Device.EthernetIP.Scanner.CIPCommonServices.Get_Attributes_All);
+            commonPacketFormat.Data.Add((byte)GHIElectronics.TinyCLR.EthernetIP.Scanner.CIPCommonServices.Get_Attributes_All);
             //----------------CIP Command "Get Attribute All"
 
             //----------------Requested Path size
@@ -1284,7 +1284,7 @@ namespace GHIElectronics.TinyCLR.Device.EthernetIP.Scanner
 
 
             //----------------CIP Command "Set Attribute Single"
-            commonPacketFormat.Data.Add((byte)GHIElectronics.TinyCLR.Device.EthernetIP.Scanner.CIPCommonServices.Set_Attribute_Single);
+            commonPacketFormat.Data.Add((byte)GHIElectronics.TinyCLR.EthernetIP.Scanner.CIPCommonServices.Set_Attribute_Single);
             //----------------CIP Command "Set Attribute Single"
 
             //----------------Requested Path size (number of 16 bit words)

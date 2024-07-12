@@ -2,7 +2,7 @@
 // Modified by GHI Electronics LLC 
 using System;
 
-namespace GHIElectronics.TinyCLR.Device.EthernetIP.Scanner
+namespace GHIElectronics.TinyCLR.EthernetIP.Scanner
 {
 
     /// <summary>
