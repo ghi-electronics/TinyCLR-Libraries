@@ -1,17 +1,11 @@
 using System;
 using System.Collections;
-using System.Diagnostics;
 using System.Net;
-
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Net.NetworkInformation;
 using System.Net.Sockets;
-using System.Reflection;
 using System.Text;
 using System.Threading;
 using GHIElectronics.TinyCLR.Devices.Network;
-//using System.Threading.Tasks;
+
 
 namespace GHIElectronics.TinyCLR.Device.EthernetIP.Scanner
 {
@@ -195,7 +189,7 @@ namespace GHIElectronics.TinyCLR.Device.EthernetIP.Scanner
 
         }
 
-        ArrayList returnList;// = new List<Encapsulation.CIPIdentityItem>();
+        ArrayList returnList;
 
         /// <summary>
         /// List and identify potential targets. This command shall be sent as braodcast massage using UDP.
@@ -337,7 +331,7 @@ namespace GHIElectronics.TinyCLR.Device.EthernetIP.Scanner
             {
                 //Handle Exception to allow to Close the Stream if the connection was closed by Remote Device
             }
-            var data = new byte[256];
+
             this.client.Close();
             this.stream.Close();
             this.sessionHandle = 0;
@@ -366,13 +360,13 @@ namespace GHIElectronics.TinyCLR.Device.EthernetIP.Scanner
             }
 
             this.udpClientReceiveClosed = false;
-            ushort o_t_headerOffset = 2;                    //Zählt den Sequencecount und evtl 32bit header zu der Länge dazu
+            ushort o_t_headerOffset = 2;                    
             if (this.O_T_RealTimeFormat == RealTimeFormat.Header32Bit)
                 o_t_headerOffset = 6;
             if (this.O_T_RealTimeFormat == RealTimeFormat.Heartbeat)
                 o_t_headerOffset = 0;
 
-            ushort t_o_headerOffset = 2;                    //Zählt den Sequencecount und evtl 32bit header zu der Länge dazu
+            ushort t_o_headerOffset = 2;                    
             if (this.T_O_RealTimeFormat == RealTimeFormat.Header32Bit)
                 t_o_headerOffset = 6;
             if (this.T_O_RealTimeFormat == RealTimeFormat.Heartbeat)
@@ -600,8 +594,8 @@ namespace GHIElectronics.TinyCLR.Device.EthernetIP.Scanner
             else
                 commonPacketFormat.SocketaddrInfo_O_T.SIN_Address = 0;
 
-            encapsulation.Length = (ushort)(commonPacketFormat.Tobytes().Length + 6);//(ushort)(57 + (ushort)lengthOffset);
-            //20 04 24 01 2C 65 2C 6B
+            encapsulation.Length = (ushort)(commonPacketFormat.Tobytes().Length + 6);
+
 
             var dataToWrite = new byte[encapsulation.Tobytes().Length + commonPacketFormat.Tobytes().Length];
             Array.Copy(encapsulation.Tobytes(), 0, dataToWrite, 0, encapsulation.Tobytes().Length);
@@ -610,6 +604,18 @@ namespace GHIElectronics.TinyCLR.Device.EthernetIP.Scanner
 
             this.stream.Write(dataToWrite, 0, dataToWrite.Length);
             var data = new byte[BUFFER_SIZE + 64];
+            // GHI changed
+            data[42] = 0xFF; // set error 
+
+            // wait a bit for data ready
+            var to = 0;
+            while (!this.stream.DataAvailable) {
+                to++;
+                Thread.Sleep(1);
+
+                if (to >= 10)
+                    break;
+            }
 
             var bytes = this.stream.Read(data, 0, data.Length);
 
@@ -745,6 +751,10 @@ namespace GHIElectronics.TinyCLR.Device.EthernetIP.Scanner
 
             this.stopUDP = true;
 
+            var max_delay = (this.RequestedPacketRate_O_T > this.RequestedPacketRate_T_O) ? this.RequestedPacketRate_O_T : this.RequestedPacketRate_T_O;
+            max_delay /= 1000;
+            Thread.Sleep((int)max_delay + 1); // wait to make sure thread stopUDP stop
+
 
             var lengthOffset = (5 + (this.O_T_ConnectionType == ConnectionType.Null ? 0 : 2) + (this.T_O_ConnectionType == ConnectionType.Null ? 0 : 2));
 
@@ -826,8 +836,6 @@ namespace GHIElectronics.TinyCLR.Device.EthernetIP.Scanner
             commonPacketFormat.Data.Add(0);
             //Reserved
 
-
-            //Verbindugspfad
             commonPacketFormat.Data.Add((byte)(0x20));
             commonPacketFormat.Data.Add(this.AssemblyObjectClass);
             commonPacketFormat.Data.Add((byte)(0x24));
@@ -965,8 +973,6 @@ namespace GHIElectronics.TinyCLR.Device.EthernetIP.Scanner
                 //---------------Write data
 
 
-
-
                 udpClientsend.Send(o_t_IOData, this.O_T_Length +20+headerOffset, endPointsend);
                 System.Threading.Thread.Sleep((int)this.RequestedPacketRate_O_T /1000);
 
@@ -982,10 +988,7 @@ namespace GHIElectronics.TinyCLR.Device.EthernetIP.Scanner
             var u = this.receiveUdpState.u;
             var e = this.receiveUdpState.e;
 
-            //if (this.udpClientReceiveClosed)
-            //    return;
-
-            //u.BeginReceive(new AsyncCallback(this.ReceiveCallbackClass1), (UdpState)(ar.AsyncState));
+           
 
 
             while (!this.udpClientReceiveClosed) {
