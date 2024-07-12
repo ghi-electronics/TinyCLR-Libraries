@@ -3,9 +3,9 @@ using System.Collections;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
-using static GHIElectronics.TinyCLR.Devices.EthernetIP.Adapter.AdapterController;
+using static GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController;
 
-namespace GHIElectronics.TinyCLR.Devices.EthernetIP.Adapter {
+namespace GHIElectronics.TinyCLR.EthernetIP.Adapter {
     public class CIPClass {
 
         private IntPtr impl = IntPtr.Zero;

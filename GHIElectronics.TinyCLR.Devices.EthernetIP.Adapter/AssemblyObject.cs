@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 
-namespace GHIElectronics.TinyCLR.Devices.EthernetIP.Adapter {
+namespace GHIElectronics.TinyCLR.EthernetIP.Adapter {
     public class AssemblyObject {
 
         private IntPtr impl = IntPtr.Zero;

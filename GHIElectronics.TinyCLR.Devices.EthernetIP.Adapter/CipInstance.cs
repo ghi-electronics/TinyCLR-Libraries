@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.CompilerServices;
 
-namespace GHIElectronics.TinyCLR.Devices.EthernetIP.Adapter {
+namespace GHIElectronics.TinyCLR.EthernetIP.Adapter {
     public class CipInstance {
 
         private IntPtr impl;

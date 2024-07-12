@@ -3,7 +3,7 @@ using System.Collections;
 using System.Text;
 using System.Threading;
 
-namespace GHIElectronics.TinyCLR.Devices.EthernetIP.Adapter {
+namespace GHIElectronics.TinyCLR.EthernetIP.Adapter {
     public partial class AdapterController {
 
         public enum CipAttributeDecodeFromMessage : uint {

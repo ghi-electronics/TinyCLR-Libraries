@@ -3,7 +3,7 @@ using System.Collections;
 using System.Text;
 using System.Threading;
 
-namespace GHIElectronics.TinyCLR.Devices.EthernetIP.Adapter {
+namespace GHIElectronics.TinyCLR.EthernetIP.Adapter {
     public partial class AdapterController {
         public enum CIPDataType : byte {
             kCipAny = 0x00, /**< data type that can not be directly encoded */

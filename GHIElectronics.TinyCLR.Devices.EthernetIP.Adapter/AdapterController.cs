@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading;
 using GHIElectronics.TinyCLR.Native;
 
-namespace GHIElectronics.TinyCLR.Devices.EthernetIP.Adapter
+namespace GHIElectronics.TinyCLR.EthernetIP.Adapter
 {
     
     public partial class AdapterController
