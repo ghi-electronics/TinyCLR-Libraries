@@ -39,6 +39,7 @@
     <Compile Include="FEZDuino.cs" />
     <Compile Include="FEZFeather.cs" />
     <Compile Include="FEZFlea.cs" />
+    <Compile Include="FEZPico.cs" />
     <Compile Include="FEZPortal.cs" />
     <Compile Include="FEZStick.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

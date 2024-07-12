@@ -47,6 +47,7 @@
     <Compile Include="Net\SocketAddress.cs" />
     <Compile Include="Security\SslStream.cs" />
     <Compile Include="NetworkProvider.cs" />
+    <Compile Include="Sockets\MulticastOption.cs" />
     <Compile Include="Sockets\SocketException.cs" />
     <Compile Include="Sockets\AddressFamily.cs" />
     <Compile Include="Sockets\NetworkStream.cs" />
@@ -60,6 +61,8 @@
     <Compile Include="Sockets\SocketOptionName.cs" />
     <Compile Include="Sockets\SocketType.cs" />
     <Compile Include="SystemInfo.cs" />
+    <Compile Include="Tcp\TcpClient.cs" />
+    <Compile Include="Udp\UDPClient.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="GHIElectronics.TinyCLR.Networking.nuspec" />
