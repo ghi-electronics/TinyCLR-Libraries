@@ -1,5 +1,5 @@
 // Copyright (c) 2020 Rossmann Engineering
-// Modified by GHI Electronics LLC 
+// Modified by GHI Electronics, LLC
 
 namespace GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary
 {
