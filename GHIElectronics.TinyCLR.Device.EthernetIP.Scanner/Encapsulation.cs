@@ -1,11 +1,10 @@
+// Copyright (c) 2020 Rossmann Engineering
+// Modified by GHI Electronics LLC
+
 using System;
 using System.Collections;
-
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Net.NetworkInformation;
 using System.Text;
-//using System.Threading.Tasks;
+
 
 namespace GHIElectronics.TinyCLR.Device.EthernetIP.Scanner
 {

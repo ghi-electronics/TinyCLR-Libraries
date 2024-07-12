@@ -1,3 +1,5 @@
+// Copyright (c) 2020 Rossmann Engineering
+// Modified by GHI Electronics LLC 
 using System;
 using System.Collections;
 using System.Net;
@@ -67,11 +69,23 @@ namespace GHIElectronics.TinyCLR.Device.EthernetIP.Scanner
         /// <summary>
         /// The maximum size in bytes (only pure data without sequence count and 32-Bit Real Time Header (if present)) from Originator -> Target for Implicit Messaging (Default: 505)
         /// </summary>
-        public ushort O_T_Length { get; set; } = BUFFER_SIZE;                //For Forward Open - Max 505
+        public ushort O_T_Length {
+            get  {
+                if (this.O_T_IOData == null)
+                    return 0;
+                return (ushort)this.O_T_IOData.Length;
+            }
+        }                  //For Forward Open - Max 505
         /// <summary>
         /// The maximum size in bytes (only pure data woithout sequence count and 32-Bit Real Time Header (if present)) from Target -> Originator for Implicit Messaging (Default: 505)
         /// </summary>
-        public ushort T_O_Length { get; set; } = BUFFER_SIZE;                //For Forward Open - Max 505
+        public ushort T_O_Length {
+            get {
+                if (this.T_O_IOData == null)
+                    return 0;
+                return (ushort)this.T_O_IOData.Length;
+            }
+        }                 //For Forward Open - Max 505
         /// <summary>
         /// Connection Type Originator -> Target for Implicit Messaging (Default: ConnectionType.Point_to_Point)
         /// </summary>
@@ -91,21 +105,21 @@ namespace GHIElectronics.TinyCLR.Device.EthernetIP.Scanner
         /// </summary>
         public Priority T_O_Priority { get; set; } = Priority.Scheduled;
         /// <summary>
-        /// Class Assembly (Consuming IO-Path - Outputs) Originator -> Target for Implicit Messaging (Default: 0x64)
+        /// Class Assembly (Consuming IO-Path - Outputs) Originator -> Target for Implicit Messaging 
         /// </summary>
-        public byte O_T_InstanceID { get; set; } = 0x64;               //Ausgänge
+        public byte O_T_InstanceID { get; set; } 
         /// <summary>
-        /// Class Assembly (Producing IO-Path - Inputs) Target -> Originator for Implicit Messaging (Default: 0x64)
+        /// Class Assembly (Producing IO-Path - Inputs) Target -> Originator for Implicit Messaging 
         /// </summary>
-        public byte T_O_InstanceID { get; set; } = 0x65;               //Eingänge
+        public byte T_O_InstanceID { get; set; } 
         /// <summary>
         /// Provides Access to the Class 1 Real-Time IO-Data Originator -> Target for Implicit Messaging    
         /// </summary>
-        public byte[] O_T_IOData = new byte[BUFFER_SIZE];   //Class 1 Real-Time IO-Data O->T   
+        public byte[] O_T_IOData { get; set; }   //Class 1 Real-Time IO-Data O->T   
         /// <summary>
         /// Provides Access to the Class 1 Real-Time IO-Data Target -> Originator for Implicit Messaging
         /// </summary>
-        public byte[] T_O_IOData = new byte[BUFFER_SIZE];    //Class 1 Real-Time IO-Data T->O  
+        public byte[] T_O_IOData { get; set; }    //Class 1 Real-Time IO-Data T->O  
         /// <summary>
         /// Used Real-Time Format Originator -> Target for Implicit Messaging (Default: RealTimeFormat.Header32Bit)
         /// Possible Values: RealTimeFormat.Header32Bit; RealTimeFormat.Heartbeat; RealTimeFormat.ZeroLength; RealTimeFormat.Modeless
@@ -127,11 +141,17 @@ namespace GHIElectronics.TinyCLR.Device.EthernetIP.Scanner
         /// <summary>
         /// ConfigurationAssemblyInstanceID is the InstanceID of the configuration Instance in the Assembly Object Class (Standard: 0x01)
         /// </summary>
-        public byte[] ConfigurationAssemblyData = new byte[500];
+        public byte[] ConfigurationAssembly_Data { get; set; } 
         /// <summary>
         /// ConfigurationAssemblyDataLength max 500
         /// </summary>
-        public ushort ConfigurationAssemblyDataLength = 0;
+        public ushort ConfigurationAssemblyData_Length {
+            get {
+                if (this.ConfigurationAssembly_Data == null)
+                    return 0;
+                return (ushort)this.ConfigurationAssembly_Data.Length;
+            }
+        }
         /// <summary>
         /// Returns the Date and Time when the last Implicit Message has been received fŕom The Target Device
         /// Could be used to determine a Timeout
@@ -355,8 +375,8 @@ namespace GHIElectronics.TinyCLR.Device.EthernetIP.Scanner
                 throw new Exception(string.Format("Data too larger for ForwardOpen. Try to use Large ForwardOpen."));
             }
 
-            if (this.ConfigurationAssemblyDataLength > 500) {
-                throw new Exception(string.Format("Max ConfigurationAssemblyDataLength is {0}", this.ConfigurationAssemblyData.Length));
+            if (this.ConfigurationAssemblyData_Length > 500) {
+                throw new Exception(string.Format("Max ConfigurationAssemblyDataLength is {0}", this.ConfigurationAssembly_Data.Length));
             }
 
             this.udpClientReceiveClosed = false;
@@ -401,8 +421,8 @@ namespace GHIElectronics.TinyCLR.Device.EthernetIP.Scanner
 
             commonPacketFormat.DataItem = 0xB2;
 
-            if (this.ConfigurationAssemblyDataLength > 0)
-                commonPacketFormat.DataLength = (ushort)(41 + (ushort)lengthOffset + (this.ConfigurationAssemblyDataLength + 2));
+            if (this.ConfigurationAssemblyData_Length > 0)
+                commonPacketFormat.DataLength = (ushort)(41 + (ushort)lengthOffset + (this.ConfigurationAssemblyData_Length + 2));
             else
                 commonPacketFormat.DataLength = (ushort)(41 + (ushort)lengthOffset); 
 
@@ -543,9 +563,9 @@ namespace GHIElectronics.TinyCLR.Device.EthernetIP.Scanner
 
             var connectionPathSize = (byte)((0x2) + (O_T_ConnectionType == ConnectionType.Null ? 0 : 1) + (T_O_ConnectionType == ConnectionType.Null ? 0 : 1));
             
-            if (this.ConfigurationAssemblyDataLength > 0)
+            if (this.ConfigurationAssemblyData_Length > 0)
             {
-                connectionPathSize += (byte)((this.ConfigurationAssemblyDataLength + 2) / 2) ;    // +2 = below            
+                connectionPathSize += (byte)((this.ConfigurationAssemblyData_Length + 2) / 2) ;    // +2 = below            
             }
 
             commonPacketFormat.Data.Add(connectionPathSize);
@@ -565,14 +585,14 @@ namespace GHIElectronics.TinyCLR.Device.EthernetIP.Scanner
             }
             
             // GHI add config
-            if (this.ConfigurationAssemblyDataLength > 0)
+            if (this.ConfigurationAssemblyData_Length > 0)
             {
                 commonPacketFormat.Data.Add((byte)(0x80));
-                commonPacketFormat.Data.Add((byte)(this.ConfigurationAssemblyDataLength / 2 + this.ConfigurationAssemblyDataLength % 2));
+                commonPacketFormat.Data.Add((byte)(this.ConfigurationAssemblyData_Length / 2 + this.ConfigurationAssemblyData_Length % 2));
 
-                for (var i = 0; i < this.ConfigurationAssemblyDataLength; i++)
+                for (var i = 0; i < this.ConfigurationAssemblyData_Length; i++)
                 {
-                    commonPacketFormat.Data.Add((byte)(this.ConfigurationAssemblyData[i]));
+                    commonPacketFormat.Data.Add((byte)(this.ConfigurationAssembly_Data[i]));
                 }
             }
 

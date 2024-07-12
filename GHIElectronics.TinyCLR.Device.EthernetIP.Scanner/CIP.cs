@@ -1,4 +1,5 @@
-
+// Copyright (c) 2020 Rossmann Engineering
+// Modified by GHI Electronics LLC 
 using System;
 
 namespace GHIElectronics.TinyCLR.Device.EthernetIP.Scanner
