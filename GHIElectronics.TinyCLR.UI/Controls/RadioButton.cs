@@ -75,6 +75,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         public string Name { get; set; } = string.Empty;
         public ushort Alpha { get; set; } = 0xC8;
         public int RadiusBorder { get; set; } = 5;
+        public bool ShowBackground { get; set; } = true;
 
         private void InitResource() => this.bitmapImageRadioButton = BitmapImage.FromGraphics(Graphics.FromImage(Resources.GetBitmap(Resources.BitmapResources.RadioButton)));
 
@@ -98,7 +99,8 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
             var alpha = (this.IsEnabled) ? this.Alpha : (ushort)(this.Alpha / 2);
 
-            dc.Scale9Image(x, y, this.Width, this.Height, this.bitmapImageRadioButton, this.RadiusBorder, this.RadiusBorder, this.RadiusBorder, this.RadiusBorder, alpha);
+            if (ShowBackground)
+                dc.Scale9Image(x, y, this.Width, this.Height, this.bitmapImageRadioButton, this.RadiusBorder, this.RadiusBorder, this.RadiusBorder, this.RadiusBorder, alpha);
 
             x += (this.Width / 2) - 1;
             y += (this.Height / 2) - 1;
