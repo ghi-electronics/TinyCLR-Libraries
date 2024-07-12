@@ -15,12 +15,12 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary
     /// </remarks>
     public class IdentityObject
     {
-        public EthernetIPClient eeipClient;
+        public ScannerController eeipClient;
 
         /// <summary>
         /// Constructor. </summary>
         /// <param name="eeipClient"> EthernetIPClient Object</param>
-        public IdentityObject(EthernetIPClient eeipClient) => this.eeipClient = eeipClient;
+        public IdentityObject(ScannerController eeipClient) => this.eeipClient = eeipClient;
 
         /// <summary>
         /// gets the Vendor ID / Read "Identity Object" Class Code 0x01 - Attribute ID 1

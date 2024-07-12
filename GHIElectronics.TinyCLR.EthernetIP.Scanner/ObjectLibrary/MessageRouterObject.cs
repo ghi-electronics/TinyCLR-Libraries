@@ -8,12 +8,12 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary
 {
     public class MessageRouterObject
     {
-        public EthernetIPClient eeipClient;
+        public ScannerController eeipClient;
 
         /// <summary>
         /// Constructor. </summary>
         /// <param name="eeipClient"> EthernetIPClient Object</param>
-        public MessageRouterObject(EthernetIPClient eeipClient) => this.eeipClient = eeipClient;
+        public MessageRouterObject(ScannerController eeipClient) => this.eeipClient = eeipClient;
 
         public struct ObjectListStruct
         {

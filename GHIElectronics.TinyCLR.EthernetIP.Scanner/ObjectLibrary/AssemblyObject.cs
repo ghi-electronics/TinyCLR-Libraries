@@ -5,12 +5,12 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary
 {
     public class AssemblyObject
     {
-        public EthernetIPClient eeipClient;
+        public ScannerController eeipClient;
 
         /// <summary>
         /// Constructor. </summary>
         /// <param name="eeipClient"> EthernetIPClient Object</param>
-        public AssemblyObject(EthernetIPClient eeipClient) => this.eeipClient = eeipClient;
+        public AssemblyObject(ScannerController eeipClient) => this.eeipClient = eeipClient;
 
         /// <summary>
         /// Reads the Instance of the Assembly Object (Instance 101 returns the bytes of the class ID 101)

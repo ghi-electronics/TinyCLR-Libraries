@@ -11,7 +11,7 @@ using GHIElectronics.TinyCLR.Devices.Network;
 
 namespace GHIElectronics.TinyCLR.EthernetIP.Scanner
 {
-    public class EthernetIPClient
+    public class ScannerController
     {
         TcpClient client;
         NetworkStream stream;
@@ -73,6 +73,7 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner
             get  {
                 if (this.O_T_IOData == null)
                     return 0;
+
                 return (ushort)this.O_T_IOData.Length;
             }
         }                  //For Forward Open - Max 505
@@ -149,29 +150,23 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner
             get {
                 if (this.ConfigurationAssembly_Data == null)
                     return 0;
+
+                if (this.ConfigurationAssembly_Data.Length > 500)
+                    throw new Exception("Configuration max 500");
+
                 return (ushort)this.ConfigurationAssembly_Data.Length;
             }
         }
+        /// <summary>
+        /// ConfigurationAssemblyDataLength max 500
+        /// </summary>
+        public bool WriteConfiguration { get; set; } = false;
+        
         /// <summary>
         /// Returns the Date and Time when the last Implicit Message has been received fŕom The Target Device
         /// Could be used to determine a Timeout
         /// </summary>        
         public DateTime LastReceivedImplicitMessage { get; set; }
-
-        /// <summary>
-        /// VendorID        
-        /// </summary>
-        public ushort VendorID { get; }
-
-        /// <summary>
-        /// VendorID        
-        /// </summary>
-        public uint SerialNumber { get; }
-        public EthernetIPClient(ushort vendorId, uint serialNumber)
-        {
-            this.VendorID = vendorId;
-            this.SerialNumber = serialNumber;   
-        }
 
         private void ReceiveCallback(UdpState state)
         {
@@ -605,7 +600,7 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner
                 var addressInbytes = System.Net.IPAddress.Parse(this.IPAddress).GetAddressBytes();
                 var address = (uint)(addressInbytes[3] << 24 | addressInbytes[2] << 16 | addressInbytes[1] << 8 | addressInbytes[0]);
 
-                var multicastResponseAddress = EthernetIPClient.GetMulticastAddress(address);
+                var multicastResponseAddress = ScannerController.GetMulticastAddress(address);
 
                 commonPacketFormat.SocketaddrInfo_O_T.SIN_Address = (multicastResponseAddress);
 

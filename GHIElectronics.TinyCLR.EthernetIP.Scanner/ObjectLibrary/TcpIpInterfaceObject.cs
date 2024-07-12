@@ -9,12 +9,12 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary
 {
     public class TcpIpInterfaceObject
     {
-        public EthernetIPClient eeipClient;
+        public ScannerController eeipClient;
 
         /// <summary>
         /// Constructor. </summary>
         /// <param name="eeipClient"> EthernetIPClient Object</param>
-        public TcpIpInterfaceObject(EthernetIPClient eeipClient) => this.eeipClient = eeipClient;
+        public TcpIpInterfaceObject(ScannerController eeipClient) => this.eeipClient = eeipClient;
 
         /// <summary>
         /// gets the Status / Read "TCP/IP Interface Object" Class Code 0xF5 - Attribute ID 1
