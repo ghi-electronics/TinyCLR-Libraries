@@ -120,6 +120,9 @@ namespace System.Net
         /// </summary>
         internal void ParseHTTPRequest()
         {
+            if (!this.m_clientStream.CanRead)
+                return;
+
             // This is the request line.
             this.m_RequestString = this.m_clientStream.Read_HTTP_Line(HttpWebRequest.maxHTTPLineLength).Trim();
 

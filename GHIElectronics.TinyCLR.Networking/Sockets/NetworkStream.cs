@@ -101,7 +101,7 @@ namespace System.Net.Sockets
         // Returns:
         //     true if data can be read from the stream; otherwise, false. The default value
         //     is true.
-        public override bool CanRead => true;
+        public override bool CanRead => this._socket != null && this._socket.m_Handle != -1 && !this._disposed;
 
         //
         // Summary:
@@ -129,7 +129,7 @@ namespace System.Net.Sockets
         // Returns:
         //     true if data can be written to the System.Net.Sockets.NetworkStream; otherwise,
         //     false. The default value is true.
-        public override bool CanWrite => true;
+        public override bool CanWrite => this._socket != null && this._socket.m_Handle != -1 && !this._disposed;
 
         public override int ReadTimeout {
             get => this._socket.ReceiveTimeout;
@@ -162,7 +162,7 @@ namespace System.Net.Sockets
         {
             get
             {
-                if (this._disposed) return 0; // throw new ObjectDisposedException();
+                if (this._disposed) return 0;// throw new ObjectDisposedException();
                 if (this._socket.m_Handle == -1) throw new IOException();
 
                 return this._socket.Available;
@@ -291,7 +291,9 @@ namespace System.Net.Sockets
         //     socket. See the Remarks section for more information.
         public override int Read(byte[] buffer, int offset, int count)
         {
-            if (this._disposed) return 0; // throw new ObjectDisposedException();
+            if (this._disposed)
+                return 0;// throw new ObjectDisposedException();
+
             if (this._socket.m_Handle == -1) throw new IOException();
             if (buffer == null) throw new ArgumentNullException();
             if (offset < 0 || offset > buffer.Length) throw new ArgumentOutOfRangeException();
@@ -386,7 +388,9 @@ namespace System.Net.Sockets
         //     buffer is null.
         public override void Write(byte[] buffer, int offset, int count)
         {
-            if (this._disposed) throw new ObjectDisposedException();
+            if (this._disposed)
+                return;
+                //throw new ObjectDisposedException();
             if (this._socket.m_Handle == -1) throw new IOException();
             if (buffer == null) throw new ArgumentNullException();
             if (offset < 0 || offset > buffer.Length) throw new ArgumentOutOfRangeException();
@@ -417,9 +421,10 @@ namespace System.Net.Sockets
                     // last send was fully or partially successful - reset the retries
                     retries = 5;
                 }
-            } while (retries != 0 && count > 0);
+            } while (retries != 0 && count > 0 && !this._disposed);
 
-            if (count != 0) throw new IOException();
+            if (count != 0)
+                throw new IOException();
         }
 
         public bool WriteHeaderOnClose(byte[] buffer, int offset, int count) {
@@ -452,7 +457,7 @@ namespace System.Net.Sockets
                     // last send was fully or partially successful - reset the retries
                     retries = 5;
                 }
-            } while (retries != 0 && count > 0);
+            } while (retries != 0 && count > 0 && !this._disposed);
 
             if (count != 0) return false;
 

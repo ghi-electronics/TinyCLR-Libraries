@@ -73,7 +73,8 @@ namespace System.Net
         /// <summary>
         /// Return true if stream support writing. It should be true, as this is output stream.
         /// </summary>
-        public override bool CanWrite => true;
+        public override bool CanWrite => this.m_Socket != null && this.m_Stream != null && this.m_Stream.CanWrite;
+
 
         /// <summary>
         /// Gets the length of the data available on the stream.

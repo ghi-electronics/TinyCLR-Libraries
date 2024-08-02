@@ -137,8 +137,10 @@ namespace System.Net
                 expired = DateTime.Now.Ticks + (this.ReadTimeout * 10000L);
             }
 
-            while (DateTime.Now.Ticks < expired && this.m_dataEnd == 0)
+            while (DateTime.Now.Ticks < expired && this.m_dataEnd == 0 && this.m_Stream.CanRead) {                
                 this.m_dataEnd += this.m_Stream.Read(this.m_readBuffer, 0, readCount - this.m_dataEnd);
+
+            }
 
             return this.m_dataEnd;
         }
