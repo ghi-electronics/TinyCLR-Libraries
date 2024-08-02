@@ -86,7 +86,12 @@ namespace System.Net
         }
 
         ~HttpListenerContext() {
-            Response.Close();
+			try {
+				Response.Close();
+			}
+			catch {
+				
+			}
         }
 
         public void Reset()

@@ -162,7 +162,7 @@ namespace System.Net.Sockets
         {
             get
             {
-                if (this._disposed) throw new ObjectDisposedException();
+                if (this._disposed) return 0; // throw new ObjectDisposedException();
                 if (this._socket.m_Handle == -1) throw new IOException();
 
                 return this._socket.Available;
@@ -190,7 +190,7 @@ namespace System.Net.Sockets
         {
             get
             {
-                if (this._disposed) throw new ObjectDisposedException();
+                if (this._disposed) return false; // throw new ObjectDisposedException();
                 if (this._socket.m_Handle == -1) throw new IOException();
 
                 return (this._socket.Available > 0);
@@ -291,7 +291,7 @@ namespace System.Net.Sockets
         //     socket. See the Remarks section for more information.
         public override int Read(byte[] buffer, int offset, int count)
         {
-            if (this._disposed) throw new ObjectDisposedException();
+            if (this._disposed) return 0; // throw new ObjectDisposedException();
             if (this._socket.m_Handle == -1) throw new IOException();
             if (buffer == null) throw new ArgumentNullException();
             if (offset < 0 || offset > buffer.Length) throw new ArgumentOutOfRangeException();
