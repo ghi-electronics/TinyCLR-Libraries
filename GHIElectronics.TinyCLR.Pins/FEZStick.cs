@@ -108,130 +108,130 @@ namespace GHIElectronics.TinyCLR.Pins {
                 /// <summary>ADC pin.</summary>
                 public const int VBAT = STM32H7.Adc.Channel19;
             }
+        }
+        public static class Timer {
+            /// <summary>PWM pin definitions.</summary>
+            public static class Pwm {
+                /// <summary>PWM controller.</summary>
+                public static class Controller1 {
+                    /// <summary>API id.</summary>
+                    public const string Id = STM32H7.Timer.Tim1;
 
-            public static class Timer {
-                /// <summary>PWM pin definitions.</summary>
-                public static class Pwm {
-                    /// <summary>PWM controller.</summary>
-                    public static class Controller1 {
-                        /// <summary>API id.</summary>
-                        public const string Id = STM32H7.Timer.Tim1;
-
-                        /// <summary>Led pin.</summary>
-                        public const int Led = STM32H7.Timer.Channel1;
-                        /// <summary>PWM pin.</summary>
-                        public const int PE13 = STM32H7.Timer.Channel2;
-                        /// <summary>PWM pin.</summary>
-                        public const int PE14 = STM32H7.Timer.Channel3;
-                    }
-
-                    /// <summary>PWM controller.</summary>
-                    public static class Controller2 {
-                        /// <summary>API id.</summary>
-                        public const string Id = STM32H7.Timer.Tim2;
-
-
-                        /// <summary>PWM pin.</summary>
-                        public const int PB3 = STM32H7.Timer.Channel1;
-                        /// <summary>PWM pin.</summary>
-                        public const int PA3 = STM32H7.Timer.Channel3;
-                    }
-
-
-                    /// <summary>PWM controller.</summary>
-                    public static class Controller4 {
-                        /// <summary>API id.</summary>
-                        public const string Id = STM32H7.Timer.Tim4;
-
-                        /// <summary>PWM pin.</summary>
-                        public const int PB7 = STM32H7.Timer.Channel1;
-
-                    }
-
-
-
-                    public static class Controller15 {
-                        /// <summary>API id.</summary>
-                        public const string Id = STM32H7.Timer.Tim15;
-
-                        /// <summary>PWM pin.</summary>
-                        public const int PE5 = STM32H7.Timer.Channel0;
-
-                    }
-
-                    public static class Controller16 {
-                        /// <summary>API id.</summary>
-                        public const string Id = STM32H7.Timer.Tim16;
-
-                        /// <summary>PWM pin.</summary>
-                        public const int PB8 = STM32H7.Timer.Channel0;
-                    }
-
-                    public static class Controller17 {
-                        /// <summary>API id.</summary>
-                        public const string Id = STM32H7.Timer.Tim17;
-
-                        /// <summary>PWM pin.</summary>
-                        public const int PB9 = STM32H7.Timer.Channel0;
-                    }
-
-                    public static class Software {
-                        public const string Id = STM32H7.Timer.SoftwarePwm;
-                    }
+                    /// <summary>Led pin.</summary>
+                    public const int Led = STM32H7.Timer.Channel1;
+                    /// <summary>PWM pin.</summary>
+                    public const int PE13 = STM32H7.Timer.Channel2;
+                    /// <summary>PWM pin.</summary>
+                    public const int PE14 = STM32H7.Timer.Channel3;
                 }
-                /// <summary>Capture pin definitions.</summary>
-                public static class DigitalSignal {
-                    public static class Controller2 {
 
-                        /// <summary>Capture pin.</summary>
-                        public const int PB3 = STM32H7.GpioPin.PB3;
-                    }
+                /// <summary>PWM controller.</summary>
+                public static class Controller2 {
+                    /// <summary>API id.</summary>
+                    public const string Id = STM32H7.Timer.Tim2;
+
+
+                    /// <summary>PWM pin.</summary>
+                    public const int PB3 = STM32H7.Timer.Channel1;
+                    /// <summary>PWM pin.</summary>
+                    public const int PA3 = STM32H7.Timer.Channel3;
+                }
+
+
+                /// <summary>PWM controller.</summary>
+                public static class Controller4 {
+                    /// <summary>API id.</summary>
+                    public const string Id = STM32H7.Timer.Tim4;
+
+                    /// <summary>PWM pin.</summary>
+                    public const int PB7 = STM32H7.Timer.Channel1;
+
+                }
+
+
+
+                public static class Controller15 {
+                    /// <summary>API id.</summary>
+                    public const string Id = STM32H7.Timer.Tim15;
+
+                    /// <summary>PWM pin.</summary>
+                    public const int PE5 = STM32H7.Timer.Channel0;
+
+                }
+
+                public static class Controller16 {
+                    /// <summary>API id.</summary>
+                    public const string Id = STM32H7.Timer.Tim16;
+
+                    /// <summary>PWM pin.</summary>
+                    public const int PB8 = STM32H7.Timer.Channel0;
+                }
+
+                public static class Controller17 {
+                    /// <summary>API id.</summary>
+                    public const string Id = STM32H7.Timer.Tim17;
+
+                    /// <summary>PWM pin.</summary>
+                    public const int PB9 = STM32H7.Timer.Channel0;
+                }
+
+                public static class Software {
+                    public const string Id = STM32H7.Timer.SoftwarePwm;
                 }
             }
+            /// <summary>Capture pin definitions.</summary>
+            public static class DigitalSignal {
+                public static class Controller2 {
 
-            /// <summary>UART port definitions.</summary>
-            public static class UartPort {
-                /// <summary>UART port on PA9 (TX) and PA10 (RX).</summary>
-                public const string Uart1 = STM32H7.UartPort.Usart1;
-
-                /// <summary>UART port on PB13 (TX) and PB12 (RX), PC9 (CTS) and PC8 (RTS).</summary>
-                public const string Uart5 = STM32H7.UartPort.Uart5;
-            }
-
-            /// <summary>I2C bus definitions.</summary>
-            public static class I2cBus {
-                /// <summary>I2C bus on PB9 (SDA) and PB8 (SCL).</summary>
-                public const string I2c1 = STM32H7.I2cBus.I2c1;
-                /// <summary>I2C bus on PB11 (SDA) and PB10 (SCL).</summary>
-                public const string I2c2 = STM32H7.I2cBus.I2c2;
-                /// <summary>I2C software.</summary>
-                public const string Software = STM32H7.I2cBus.Software;
-            }
-
-            /// <summary>SPI bus definitions.</summary>
-            public static class SpiBus {
-                /// <summary>SPI bus on PB5 (MOSI), PB4 (MISO), and PB3 (SCK).</summary>
-                public const string Spi3 = STM32H7.SpiBus.Spi3;
-                /// <summary>SPI bus on PE14 (MOSI), PE13 (MISO), and PE12 (SCK).</summary>
-                public const string Spi4 = STM32H7.SpiBus.Spi4;
-            }
-
-            /// <summary>CAN bus definitions.</summary>
-            public static class CanBus {
-                /// <summary>CAN bus on PB13 (TX) and PB12 (RX).</summary>
-                public const string Can2 = STM32H7.CanBus.Can2;
-            }
-
-            /// <summary>Storage controller definitions.</summary>
-            public static class StorageController {
-                public const string UsbHostMassStorage = STM32H7.StorageController.UsbHostMassStorage;
-            }
-
-            /// <summary>RTC controller definitions.</summary>
-            public static class RtcController {
-                /// <summary>API id.</summary>
-                public const string Id = STM32H7.RtcController.Id;
+                    /// <summary>Capture pin.</summary>
+                    public const int PB3 = STM32H7.GpioPin.PB3;
+                }
             }
         }
+
+        /// <summary>UART port definitions.</summary>
+        public static class UartPort {
+            /// <summary>UART port on PA9 (TX) and PA10 (RX).</summary>
+            public const string Uart1 = STM32H7.UartPort.Usart1;
+
+            /// <summary>UART port on PB13 (TX) and PB12 (RX), PC9 (CTS) and PC8 (RTS).</summary>
+            public const string Uart5 = STM32H7.UartPort.Uart5;
+        }
+
+        /// <summary>I2C bus definitions.</summary>
+        public static class I2cBus {
+            /// <summary>I2C bus on PB9 (SDA) and PB8 (SCL).</summary>
+            public const string I2c1 = STM32H7.I2cBus.I2c1;
+            /// <summary>I2C bus on PB11 (SDA) and PB10 (SCL).</summary>
+            public const string I2c2 = STM32H7.I2cBus.I2c2;
+            /// <summary>I2C software.</summary>
+            public const string Software = STM32H7.I2cBus.Software;
+        }
+
+        /// <summary>SPI bus definitions.</summary>
+        public static class SpiBus {
+            /// <summary>SPI bus on PB5 (MOSI), PB4 (MISO), and PB3 (SCK).</summary>
+            public const string Spi3 = STM32H7.SpiBus.Spi3;
+            /// <summary>SPI bus on PE14 (MOSI), PE13 (MISO), and PE12 (SCK).</summary>
+            public const string Spi4 = STM32H7.SpiBus.Spi4;
+        }
+
+        /// <summary>CAN bus definitions.</summary>
+        public static class CanBus {
+            /// <summary>CAN bus on PB13 (TX) and PB12 (RX).</summary>
+            public const string Can2 = STM32H7.CanBus.Can2;
+        }
+
+        /// <summary>Storage controller definitions.</summary>
+        public static class StorageController {
+            public const string UsbHostMassStorage = STM32H7.StorageController.UsbHostMassStorage;
+        }
+
+        /// <summary>RTC controller definitions.</summary>
+        public static class RtcController {
+            /// <summary>API id.</summary>
+            public const string Id = STM32H7.RtcController.Id;
+        }
+
     }
 }
