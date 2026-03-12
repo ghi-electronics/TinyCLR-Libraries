@@ -43,6 +43,7 @@ namespace GHIElectronics.TinyCLR.Native {
     public enum SystemClock : uint {
         High = 0,
         Low = 1,
+        Overclock=2,
     }
 
     public enum WakeupEdge : uint {
