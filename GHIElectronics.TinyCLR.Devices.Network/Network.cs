@@ -52,6 +52,8 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
         public NetworkInterfaceType InterfaceType => this.Provider.InterfaceType;
         public NetworkCommunicationInterface CommunicationInterface => this.Provider.CommunicationInterface;
 
+        public bool IsEnable => this.enabled;
+
         internal bool enabled;
 
         public void Dispose() {
@@ -73,8 +75,9 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
                     setting.networkController = this;
                     setting.provider = this.Provider;
 
-                    if (setting.DhcpEnable)
-                        setting.dhcpServer.Start();
+                    if (setting.DhcpEnable) {
+                        setting.dhcpServer.Start(setting);
+                    }
 
                 }
             }
@@ -208,6 +211,12 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
         AccessPoint = 1
     }
 
+    public enum WiFiSecurityMode {
+        Open,
+        WEP,
+        WPA_WPA2
+    }
+
     public class WiFiNetworkInterfaceSettings : NetworkInterfaceSettings {
         public string Ssid { get; set; }
         public string Password { get; set; }
@@ -226,15 +235,16 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
                 this.mode = value;
 
                 if (this.mode == WiFiMode.AccessPoint && this.DhcpEnable && this.dhcpServer == null) {
-                    this.dhcpServer = new DhcpServer(this);
+                    this.dhcpServer = new DhcpServer();
                 }
             }
         }
-
-        private WiFiMode mode;
-
+        
+        private WiFiMode mode;        
 
         internal DhcpServer dhcpServer;
+
+        public WiFiSecurityMode SecurityMode { get; set; }
 
         internal class DhcpServer {
             enum Port {
@@ -358,20 +368,8 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
             internal bool ClientConnected { get; set; }
             internal WiFiNetworkInterfaceSettings WifiNetworkInterfaceSetting { get; set; }
 
-            internal DhcpServer(WiFiNetworkInterfaceSettings setting) {
-                this.WifiNetworkInterfaceSetting = setting;
-
-                if (this.WifiNetworkInterfaceSetting.Address == null)
-                    this.WifiNetworkInterfaceSetting.Address = new IPAddress(new byte[] { 192, 168, 1, 1 });
-
-                if (this.WifiNetworkInterfaceSetting.GatewayAddress == null)
-                    this.WifiNetworkInterfaceSetting.GatewayAddress = new IPAddress(new byte[] { 192, 168, 1, 1 });
-
-                if (this.WifiNetworkInterfaceSetting.SubnetMask == null)
-                    this.WifiNetworkInterfaceSetting.SubnetMask = IPAddress.Any;
-
-                if (this.WifiNetworkInterfaceSetting.DnsAddresses == null)
-                    this.WifiNetworkInterfaceSetting.DnsAddresses = new IPAddress[] { IPAddress.Any };
+            internal DhcpServer() {
+                
             }
 
 
@@ -395,10 +393,12 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
                 }
             }
 
-            internal void Start() {
+            internal void Start(WiFiNetworkInterfaceSettings setting) {
                 if (this.Started) {
                     return;
                 }
+
+                this.WifiNetworkInterfaceSetting = setting;
 
                 try {
                     var ipAddress = this.WifiNetworkInterfaceSetting.Address;
