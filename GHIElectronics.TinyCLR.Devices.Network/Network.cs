@@ -52,6 +52,8 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
         public NetworkInterfaceType InterfaceType => this.Provider.InterfaceType;
         public NetworkCommunicationInterface CommunicationInterface => this.Provider.CommunicationInterface;
 
+        public bool IsEnable => this.enabled;
+
         internal bool enabled;
 
         public void Dispose() {
