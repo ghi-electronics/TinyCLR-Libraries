@@ -57,6 +57,7 @@
     <Compile Include="CLSCompliantAttribute.cs" />
     <Compile Include="Collections\ArrayList.cs" />
     <Compile Include="Collections\DictionaryEntry.cs" />
+    <Compile Include="Collections\Generic\List.cs" />
     <Compile Include="Collections\HashTable.cs" />
     <Compile Include="Collections\ICollection.cs" />
     <Compile Include="Collections\IComparer.cs" />
