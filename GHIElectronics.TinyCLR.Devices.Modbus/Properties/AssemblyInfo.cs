@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("GHIElectronics.TinyCLR.Devices.Modbus")]
@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCopyright("Copyright © GHI Electronics, LLC 2022")]
 [assembly: ComVisible(false)]
 [assembly: Guid("19886B6D-0A32-42B4-94A0-82614B34ACEF")]
-[assembly: AssemblyVersion("2.4.0.1000")]
-[assembly: AssemblyFileVersion("2.4.0.1000")]
-[assembly: AssemblyInformationalVersion("2.4.0.1000")]
+[assembly: AssemblyVersion("2.5.0.1000")]
+[assembly: AssemblyFileVersion("2.5.0.1000")]
+[assembly: AssemblyInformationalVersion("2.5.0.1000")]
 
