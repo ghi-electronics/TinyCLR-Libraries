@@ -54,6 +54,7 @@
     <Compile Include="Boolean.cs" />
     <Compile Include="Byte.cs" />
     <Compile Include="Char.cs" />
+    <Compile Include="Console.cs" />
     <Compile Include="CLSCompliantAttribute.cs" />
     <Compile Include="Collections\ArrayList.cs" />
     <Compile Include="Collections\DictionaryEntry.cs" />
