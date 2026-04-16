@@ -34,6 +34,15 @@ namespace System {
             }
         }
 
+        // Explicit override so virtual dispatch in FindVirtualMethodDef resolves at Int32
+        // directly, without needing to walk up to ValueType.Equals via IsInstanceOf matching.
+        // Needed for List<int>.IndexOf / Remove, which call Object.Equals(object, object) ->
+        // callvirt objA.Equals(objB) on a boxed Int32.
+        public override bool Equals(object obj) {
+            if (!(obj is int)) return false;
+            return m_value == (int)(Int32)obj;
+        }
+
     }
 }
 

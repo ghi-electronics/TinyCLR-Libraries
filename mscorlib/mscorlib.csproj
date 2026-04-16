@@ -65,6 +65,11 @@
     <Compile Include="Collections\IEnumerator.cs" />
     <Compile Include="Collections\IEqualityComparer.cs" />
     <Compile Include="Collections\IList.cs" />
+    <Compile Include="Collections\Generic\ICollection.cs" />
+    <Compile Include="Collections\Generic\IEnumerable.cs" />
+    <Compile Include="Collections\Generic\IEnumerator.cs" />
+    <Compile Include="Collections\Generic\IList.cs" />
+    <Compile Include="Collections\Generic\List.cs" />
     <Compile Include="Collections\Queue.cs" />
     <Compile Include="Collections\Stack.cs" />
     <Compile Include="ComponentModel\EditorBrowsableAttribute.cs" />
