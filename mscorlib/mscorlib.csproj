@@ -216,6 +216,7 @@
     <Compile Include="Threading\Tasks\Task.cs" />
     <Compile Include="Threading\Tasks\TaskStatus.cs" />
     <Compile Include="TimeSpan.cs" />
+    <Compile Include="Tuple.cs" />
     <Compile Include="TimeZone.cs" />
     <Compile Include="Type.cs" />
     <Compile Include="TypeCode.cs" />
