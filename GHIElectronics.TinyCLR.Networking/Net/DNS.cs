@@ -6,13 +6,38 @@
 
 using System.Net.Sockets;
 using System.Runtime.CompilerServices;
+using System.Threading;
 
 namespace System.Net {
     public static class Dns {
+        // Serialize callers so the non-blocking native state machine only ever
+        // services one query at a time (otherwise a late-waking thread could
+        // pick up another thread's resolved IP).
+        private static readonly object dnsLock = new object();
+
+        // Overall managed-side timeout for a single DNS resolution.
+        private const int DnsTimeoutMs = 15000;
+        private const int DnsPollMs = 50;
+
         public static IPHostEntry GetHostEntry(string hostNameOrAddress) {
             var dns = Sockets.Socket.DefaultProvider;
 
-            dns.GetHostByName(hostNameOrAddress, out var canonicalName, out var addresses);
+            string canonicalName;
+            SocketAddress[] addresses;
+
+            lock (dnsLock) {
+                // Poll the native non-blocking resolver. While we sleep between
+                // polls, the interpreter runs other managed threads (UI etc.).
+                var elapsed = 0;
+                while (true) {
+                    dns.GetHostByName(hostNameOrAddress, out canonicalName, out addresses);
+                    if (addresses != null && addresses.Length > 0) break;
+                    if (elapsed >= DnsTimeoutMs)
+                        throw new Exception("DNS resolution timed out for \"" + hostNameOrAddress + "\"");
+                    Thread.Sleep(DnsPollMs);
+                    elapsed += DnsPollMs;
+                }
+            }
 
             var cAddresses = addresses.Length;
             var ipAddresses = new IPAddress[cAddresses];
