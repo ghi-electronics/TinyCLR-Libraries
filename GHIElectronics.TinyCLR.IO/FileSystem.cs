@@ -44,9 +44,15 @@ namespace GHIElectronics.TinyCLR.IO {
 
         public static void Flush(IntPtr hdc) => FileSystem.FlushAll(hdc);
 
-        public static bool Format(IntPtr hdc, string volume = null, uint parameter = 0, bool force = false) {
+        // forceSize:
+        //   0 = full volume (100%)
+        //   1 = format only first 75% of the volume; remaining 25% left untouched (raw-access only).
+        //   2 = format only first 50% of the volume; remaining 50% left untouched.
+        public static bool Format(IntPtr hdc, string volume = null, uint parameter = 0, byte forceSize = 0) {
+            if (forceSize > 2)
+                throw new ArgumentOutOfRangeException("forceSize", "Valid values: 0 (100%), 1 (75%), 2 (50%).");
 
-            return NativeFormat(hdc, volume, parameter, force); ;
+            return NativeFormat(hdc, volume, parameter, forceSize);
         }
 
         [MethodImpl(MethodImplOptions.InternalCall)]
@@ -59,7 +65,7 @@ namespace GHIElectronics.TinyCLR.IO {
         private extern static bool Uninitialize(IntPtr nativeProvider);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private extern static bool NativeFormat(IntPtr nativeProvider, string volume, uint parameter, bool force);
+        private extern static bool NativeFormat(IntPtr nativeProvider, string volume, uint parameter, byte forceSize);
 
         private class NativeDriveProvider : IDriveProvider {
             private bool initialized;
