@@ -92,6 +92,45 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
             }
         }
 
+        // Non-blocking variant of Enable. Returns immediately while the
+        // slow PHY autonegotiation / WiFi firmware boot runs in a native
+        // RTOS task. The CLR scheduler stays free to run other managed
+        // threads — including ones that drive UI, other peripherals, or
+        // a second NetworkController being brought up in parallel.
+        //
+        // The interface is NOT ready when this returns. Subscribe to
+        // NetworkLinkConnectedChanged (link becomes physical-up) and
+        // NetworkAddressChanged (DHCP / static IP assigned) to know when
+        // it is. Calls that depend on the controller being registered
+        // (notably SetAsDefaultController) should run from those event
+        // handlers rather than immediately after EnableAsync.
+        //
+        // Call EnableAsync at most once per controller per boot — the
+        // background task it spawns lives until reset. For a synchronous
+        // bring-up that blocks until ready, use Enable() instead.
+        public void EnableAsync() {
+
+            if (this.Provider is NetworkControllerApiWrapper wrapper)
+                wrapper.EnableAsync();
+            else
+                this.Provider.Enable();   // fallback for non-native providers
+
+            this.enabled = true;
+
+            if (this.InterfaceType == NetworkInterfaceType.WiFi) {
+                var setting = (WiFiNetworkInterfaceSettings)this.ActiveInterfaceSettings;
+
+                if (setting.Mode == WiFiMode.AccessPoint) {
+                    setting.networkController = this;
+                    setting.provider = this.Provider;
+
+                    if (setting.DhcpEnable) {
+                        setting.dhcpServer.Start(setting);
+                    }
+                }
+            }
+        }
+
         public void Disable() {
             if (this.InterfaceType == NetworkInterfaceType.WiFi) {
                 var setting = (WiFiNetworkInterfaceSettings)this.ActiveInterfaceSettings;
@@ -943,6 +982,15 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void Enable();
+
+            // Non-blocking variant of Enable. Spawns a native RTOS task that
+            // runs the slow driver Enable in the background and returns
+            // immediately, so the CLR scheduler stays free to run other
+            // managed threads. The interface comes up later — subscribe to
+            // NetworkLinkConnectedChanged / NetworkAddressChanged on the
+            // owning NetworkController to learn when it is actually ready.
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            public extern void EnableAsync();
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void Disable();
