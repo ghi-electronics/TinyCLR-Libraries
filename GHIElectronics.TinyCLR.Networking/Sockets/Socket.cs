@@ -11,6 +11,14 @@ namespace System.Net.Sockets {
 * The m_Handle field MUST be the first field in the Socket class; it is expected by
 * the SPOT.NET.this.ni class.
 */
+        // Provider used by every new Socket() to dispatch its InternalCalls.
+        // With multiple network controllers (Ethernet + WiFi) Enable()d
+        // simultaneously, all providers ultimately share the same lwIP
+        // socket pool — the underlying socket is routed by destination
+        // netmask, not by which provider's wrapper invoked Create().
+        // Switching DefaultProvider therefore only changes which native
+        // API table new sockets dispatch through; existing sockets keep
+        // their captured provider and continue working unaffected.
         internal static INetworkProvider DefaultProvider { get; set; }
 
         internal int m_Handle = -1;

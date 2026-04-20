@@ -62,6 +62,15 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
             this.enabled = false;
         }
 
+        // Multi-interface coexistence: multiple controllers (e.g. Ethernet
+        // and WiFi) may be Enable()d at the same time. The native lwIP
+        // wrapper registers each as its own netif and routes outbound
+        // traffic by destination netmask (longest-prefix match). For
+        // destinations not covered by any interface's subnet (e.g. public
+        // internet), the controller most recently passed to
+        // SetAsDefaultController() owns the route. As a fallback, the
+        // most-recently-Enable()d interface becomes the initial default
+        // until something explicitly chooses one.
         public void Enable() {
 
             this.Provider.Enable();
@@ -117,10 +126,28 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
             this.ActiveCommunicationInterfaceSettings = settings;
         }
 
+        // Makes this controller the default across all layers:
+        //   1. NetworkController.DefaultController — the public managed reference
+        //   2. Socket.DefaultProvider — which provider new Socket() dispatches through
+        //   3. lwIP's netif_default — the firmware-level route used for
+        //      destinations not matching any enabled interface's subnet
+        //
+        // The lwIP-level update (#3) only fires when this controller is
+        // already Enable()d, because the firmware slot table is populated
+        // by Enable. Calling SetAsDefaultController BEFORE Enable still
+        // updates managed state (#1, #2) but does not touch lwIP routing —
+        // re-call after Enable to make this interface own the default route.
+        //
+        // With multiple interfaces enabled, traffic to subnets covered by
+        // either netif still routes by netmask (longest-prefix match); only
+        // unmatched-route traffic (e.g. public internet) follows the default.
         public void SetAsDefaultController() {
             NetworkController.DefaultController = this;
 
             Socket.DefaultProvider = this.Provider;
+
+            if (this.enabled && this.Provider is NetworkControllerApiWrapper wrapper)
+                wrapper.SetAsDefault();
         }
 
         private void OnNetworkLinkConnectedChanged(NetworkController sender, NetworkLinkConnectedChangedEventArgs e) => this.networkLinkConnectedChangedCallbacks?.Invoke(this, e);
@@ -925,6 +952,14 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void Resume();
+
+            // Promotes this controller's netif to lwIP's default route at
+            // the firmware level. Counterpart to SetAsDefaultController on
+            // the public NetworkController class — without this, switching
+            // the managed default would leave lwIP routing unmatched
+            // destinations through whichever interface was Enable()d last.
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            public extern void SetAsDefault();
 
             public void SetInterfaceSettings(NetworkInterfaceSettings settings) {
                 switch (this.InterfaceType) {
