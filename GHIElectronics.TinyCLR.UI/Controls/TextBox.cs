@@ -1,4 +1,6 @@
 using System;
+using System.Reflection;
+using GHIElectronics.TinyCLR.UI;
 using GHIElectronics.TinyCLR.UI.Input;
 using GHIElectronics.TinyCLR.UI.Media;
 
@@ -15,7 +17,15 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         private ushort borderthickness = 1, paddingx, paddingy;
         private int width, height;
 
-        public TextBox() => this.Background = new SolidColorBrush(Colors.White);
+        private object _bindSource;
+        private string _bindPropertyName;
+        private bool _bindTwoWay;
+        private bool _suppressBindPush;
+
+        public TextBox() {
+            this.Background = Theme.TextBoxFillBrush;
+            this.bordercolor = Theme.Border;
+        }
 
         public event TextChangedEventHandler TextChanged;
 
@@ -30,10 +40,81 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
                 this.InvalidateMeasure();
 
+                if (!this._suppressBindPush) {
+                    this.PushTextToBinding();
+                }
+
                 var evt = new RoutedEvent("TextChangedEvent", RoutingStrategy.Bubble, typeof(TextChangedEventHandler));
                 var args = new TextChangedEventArgs(evt, this);
 
                 this.TextChanged?.Invoke(this, args);
+            }
+        }
+
+        /// <summary>
+        /// One-way or two-way bind <see cref="Text"/> to a CLR property on <paramref name="source"/> using reflection.
+        /// For change notifications implement <see cref="INotifyBindablePropertyChanged"/> on the source.
+        /// </summary>
+        public void SetTextBinding(object source, string propertyName, bool twoWay = true) {
+            this.ClearTextBinding();
+            if (source == null || propertyName == null) {
+                throw new ArgumentNullException();
+            }
+
+            this._bindSource = source;
+            this._bindPropertyName = propertyName;
+            this._bindTwoWay = twoWay;
+            this.PullTextFromBinding();
+            if (source is INotifyBindablePropertyChanged n) {
+                n.BindablePropertyChanged += this.OnBindablePropertyChanged;
+            }
+        }
+
+        public void ClearTextBinding() {
+            if (this._bindSource is INotifyBindablePropertyChanged n) {
+                n.BindablePropertyChanged -= this.OnBindablePropertyChanged;
+            }
+
+            this._bindSource = null;
+            this._bindPropertyName = null;
+        }
+
+        private void OnBindablePropertyChanged(object sender, string propertyName) {
+            if (propertyName == null || propertyName.Length == 0 || propertyName == this._bindPropertyName) {
+                this.PullTextFromBinding();
+            }
+        }
+
+        private void PullTextFromBinding() {
+            if (this._bindSource == null || this._bindPropertyName == null) {
+                return;
+            }
+
+            try {
+                var v = this._bindSource.GetType().InvokeMember(this._bindPropertyName, BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.Instance, null, this._bindSource, null);
+                var s = v == null ? string.Empty : v.ToString();
+                this._suppressBindPush = true;
+                try {
+                    this.text = s;
+                    this.InvalidateMeasure();
+                }
+                finally {
+                    this._suppressBindPush = false;
+                }
+            }
+            catch {
+            }
+        }
+
+        private void PushTextToBinding() {
+            if (!this._bindTwoWay || this._bindSource == null || this._bindPropertyName == null) {
+                return;
+            }
+
+            try {
+                this._bindSource.GetType().InvokeMember(this._bindPropertyName, BindingFlags.SetProperty | BindingFlags.Public | BindingFlags.Instance, null, this._bindSource, new object[] { this.text });
+            }
+            catch {
             }
         }
 

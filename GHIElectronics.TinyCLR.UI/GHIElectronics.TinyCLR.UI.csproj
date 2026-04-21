@@ -43,6 +43,7 @@
     <Compile Include="Controls\DataGridItem.cs" />
     <Compile Include="Controls\DataGridItemComparer.cs" />
     <Compile Include="Controls\Dropdown.cs" />
+    <Compile Include="Controls\Grid.cs" />
     <Compile Include="Controls\Gauge.cs" />
     <Compile Include="Controls\ListBoxItemHighlightable.cs" />
     <Compile Include="Controls\MessageBox.cs" />
@@ -52,6 +53,7 @@
     <Compile Include="Controls\TextBox.cs" />
     <Compile Include="Controls\Button.cs" />
     <Compile Include="Input\InputProvider.cs" />
+    <Compile Include="Input\FocusNavigator.cs" />
     <Compile Include="Media\Color.cs" />
     <Compile Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -105,6 +107,7 @@
     <Compile Include="Controls\StackPanel.cs" />
     <Compile Include="Controls\Text.cs" />
     <Compile Include="Controls\TextFlow.cs" />
+    <Compile Include="Controls\VirtualizingListBox.cs" />
     <Compile Include="Controls\TextRun.cs" />
     <Compile Include="Controls\TextRunCollection.cs" />
     <Compile Include="Input\HardwareButton.cs" />
@@ -138,6 +141,8 @@
     <Compile Include="UI\WindowManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UI\Application.cs" />
+    <Compile Include="UI\DataBinding.cs" />
+    <Compile Include="UI\Theme.cs" />
     <Compile Include="UI\EventHandler.cs" />
     <Compile Include="UI\EventRoute.cs" />
     <Compile Include="UI\PropertyChangedEventArgs.cs" />

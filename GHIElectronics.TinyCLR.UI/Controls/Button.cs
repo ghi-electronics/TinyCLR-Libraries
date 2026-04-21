@@ -1,5 +1,6 @@
 using System;
 using System.Drawing;
+using GHIElectronics.TinyCLR.UI;
 using GHIElectronics.TinyCLR.UI.Input;
 using GHIElectronics.TinyCLR.UI.Media;
 using GHIElectronics.TinyCLR.UI.Media.Imaging;
@@ -13,7 +14,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         public Button() {
             this.InitResource();
 
-            this.Background = new SolidColorBrush(Colors.Gray);
+            this.Background = Theme.ControlSurfaceBrush;
         }
 
         public event RoutedEventHandler Click;

@@ -33,7 +33,7 @@ namespace GHIElectronics.TinyCLR.UI {
 
             this._windowManager = WindowManager.Instance;
 
-            this._background = new SolidColorBrush(Colors.White);
+            this._background = Theme.WindowBackgroundBrush;
             //
             // dependency property initialization.
             // we don't have them, so we just update the properties on the base class,
@@ -42,6 +42,8 @@ namespace GHIElectronics.TinyCLR.UI {
             // Visibility HAS to be set to Collapsed prior to adding this child to the
             // window manager, otherwise the window manager sets the focus to this window
             this.Visibility = Visibility.Collapsed;
+            this.IsTabStop = false;
+            this.ShowFocusVisual = false;
 
             // register us with the window manager, like a good little boy
             this._windowManager.Children.Add(this);

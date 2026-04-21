@@ -18,5 +18,11 @@ namespace GHIElectronics.TinyCLR.UI.Input {
         }
 
         public void RaiseTouch(int x, int y, TouchMessages which, DateTime time) => Application.Current.OnEvent(new TouchEvent() { Time = time, EventMessage = (byte)which, Touches = new[] { new TouchInput() { X = x, Y = y } } });
+
+        /// <summary>
+        /// Moves focus between tab stops (map hardware keys or UART keys to this for PC-style navigation).
+        /// </summary>
+        public void RaiseFocusNavigation(bool forward) =>
+            this.application.Dispatcher.BeginInvoke(_ => FocusNavigator.TryMoveFocus(forward), null);
     }
 }
