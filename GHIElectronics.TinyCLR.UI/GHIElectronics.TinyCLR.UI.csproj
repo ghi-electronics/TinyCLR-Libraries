@@ -237,6 +237,21 @@
     <None Include="Resources\DataGridIcon_Asc.gif" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <TcuiBuildTasksProject>$(MSBuildThisFileDirectory)..\..\TinyCLR-SDK\GHIElectronics.TinyCLR.UI.BuildTasks\GHIElectronics.TinyCLR.UI.BuildTasks.csproj</TcuiBuildTasksProject>
+    <TcuiCodegenPayloadDir>$(MSBuildThisFileDirectory)build\net48\</TcuiCodegenPayloadDir>
+  </PropertyGroup>
+  <Target Name="StageTcuiCodegenPayload" BeforeTargets="BeforeBuild;PackNuGet" Condition="Exists('$(TcuiBuildTasksProject)')">
+    <MSBuild Projects="$(TcuiBuildTasksProject)" Targets="Restore;Build" Properties="Configuration=$(Configuration)" />
+    <PropertyGroup>
+      <_TcuiTasksOutDir>$(MSBuildThisFileDirectory)..\..\TinyCLR-SDK\GHIElectronics.TinyCLR.UI.BuildTasks\bin\$(Configuration)\net472\</_TcuiTasksOutDir>
+    </PropertyGroup>
+    <ItemGroup>
+      <_TcuiCodegenBinaries Include="$(_TcuiTasksOutDir)GHIElectronics.TinyCLR.UI.BuildTasks.dll" />
+      <_TcuiCodegenBinaries Include="$(_TcuiTasksOutDir)Newtonsoft.Json.dll" />
+    </ItemGroup>
+    <Copy SourceFiles="@(_TcuiCodegenBinaries)" DestinationFolder="$(TcuiCodegenPayloadDir)" SkipUnchangedFiles="true" />
+  </Target>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>

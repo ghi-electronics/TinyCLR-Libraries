@@ -21,5 +21,9 @@
   </metadata>
   <files>
     <file src="$TargetDir$GHIElectronics.TinyCLR.UI.dll" target="lib\net48" />
+    <file src="build\net48\GHIElectronics.TinyCLR.UI.props" target="build\net48" />
+    <file src="build\net48\GHIElectronics.TinyCLR.UI.targets" target="build\net48" />
+    <file src="build\net48\GHIElectronics.TinyCLR.UI.BuildTasks.dll" target="build\net48" />
+    <file src="build\net48\Newtonsoft.Json.dll" target="build\net48" />
   </files>
 </package>
