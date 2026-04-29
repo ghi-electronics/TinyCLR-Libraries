@@ -42,10 +42,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="GHIElectronics.TinyCLR.Cryptography">
-      <HintPath>..\GHIElectronics.TinyCLR.Cryptography\bin\$(Configuration)\GHIElectronics.TinyCLR.Cryptography.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
+    <ProjectReference Include="..\GHIElectronics.TinyCLR.Cryptography\GHIElectronics.TinyCLR.Cryptography.csproj">
+      <Project>{7082C1DA-1E6C-4DDB-B54A-9609BB79F60F}</Project>
+      <Name>GHIElectronics.TinyCLR.Cryptography</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

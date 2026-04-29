@@ -51,10 +51,13 @@ namespace GHIElectronics.TinyCLR.Cryptography {
         }
 
         public sealed class HashAlgorithmApiWrapper : IHashAlgorithmProvider {
-            private readonly IntPtr impl;
+            private readonly IntPtr impl = IntPtr.Zero;
             private byte[] hashValue;
 
-            public HashAlgorithmApiWrapper() => this.Acquire();
+            public HashAlgorithmApiWrapper() {
+                this.Acquire();
+                _ = this.impl; // Backing field is initialized by native side.
+            }
 
             public void Dispose() => this.Release();
 

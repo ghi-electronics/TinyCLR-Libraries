@@ -879,7 +879,7 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner
             try {
                 var bytes = this.stream.Read(data, 0, data.Length);
             }
-            catch (Exception e) {
+            catch (Exception) {
                 //Handle Exception  to allow Forward close if the connection was closed by the Remote Device before
             }
 

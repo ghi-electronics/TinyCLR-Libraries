@@ -92,7 +92,7 @@ namespace GHIElectronics.TinyCLR.UI {
 
             Application.Current.CloseOnScreenKeyboard();
         }
-        private new void Cancel()
+        private void Cancel()
         {
             Application.Current.CloseOnScreenKeyboard();
         }

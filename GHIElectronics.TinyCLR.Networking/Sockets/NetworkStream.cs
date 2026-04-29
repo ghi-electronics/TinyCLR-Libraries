@@ -186,7 +186,7 @@ namespace System.Net.Sockets
             set => throw new NotSupportedException();
         }
 
-        public virtual bool DataAvailable
+        public override bool DataAvailable
         {
             get
             {

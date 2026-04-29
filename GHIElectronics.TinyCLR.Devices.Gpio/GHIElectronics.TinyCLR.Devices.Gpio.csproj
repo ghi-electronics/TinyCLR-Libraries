@@ -49,7 +49,7 @@
     </ProjectReference>
   </ItemGroup>
   <Target Name="BuildGpioCompatAssembly" AfterTargets="Build">
-    <MSBuild Projects="..\GHIElectronics.TinyCLR.System.Device.Gpio\GHIElectronics.TinyCLR.System.Device.Gpio.csproj" Targets="Build" Properties="Configuration=$(Configuration);Platform=$(Platform)" />
+    <MSBuild Projects="..\GHIElectronics.TinyCLR.System.Device.Gpio\GHIElectronics.TinyCLR.System.Device.Gpio.csproj" Targets="Build" Properties="Configuration=$(Configuration);Platform=$(Platform);BuildProjectReferences=false" />
     <Copy SourceFiles="..\GHIElectronics.TinyCLR.System.Device.Gpio\bin\$(Configuration)\System.Device.Gpio.dll" DestinationFolder="$(TargetDir)" SkipUnchangedFiles="true" />
   </Target>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

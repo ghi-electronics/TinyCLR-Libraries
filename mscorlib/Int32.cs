@@ -43,6 +43,8 @@ namespace System {
             return m_value == (int)(Int32)obj;
         }
 
+        public override int GetHashCode() => this.m_value;
+
     }
 }
 

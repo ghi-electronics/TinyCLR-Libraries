@@ -54,7 +54,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="BuildSpiCompatAssembly" AfterTargets="Build">
-    <MSBuild Projects="..\GHIElectronics.TinyCLR.System.Device.Spi\GHIElectronics.TinyCLR.System.Device.Spi.csproj" Targets="Build" Properties="Configuration=$(Configuration);Platform=$(Platform)" />
+    <MSBuild Projects="..\GHIElectronics.TinyCLR.System.Device.Spi\GHIElectronics.TinyCLR.System.Device.Spi.csproj" Targets="Build" Properties="Configuration=$(Configuration);Platform=$(Platform);BuildProjectReferences=false" />
     <Copy SourceFiles="..\GHIElectronics.TinyCLR.System.Device.Spi\bin\$(Configuration)\System.Device.Spi.dll" DestinationFolder="$(TargetDir)" SkipUnchangedFiles="true" />
   </Target>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

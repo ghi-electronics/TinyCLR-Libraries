@@ -194,7 +194,7 @@ namespace GHIElectronics.TinyCLR.Cryptography {
 
         public sealed class CryptoServiceApiWrapper : ICryptoServiceProvider {
 
-            private IntPtr impl;
+            private IntPtr impl = IntPtr.Zero;
 
             public int KeySize  { get;  }
 
@@ -204,6 +204,7 @@ namespace GHIElectronics.TinyCLR.Cryptography {
                 this.KeySize = dwKeySize;
 
                 this.NativeAcquire(dwKeySize);
+                _ = this.impl; // Backing field is initialized by native side.
             }
 
             public void Dispose() => this.NativeRelase();            

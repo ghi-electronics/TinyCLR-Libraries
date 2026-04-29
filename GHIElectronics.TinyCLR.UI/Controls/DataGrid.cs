@@ -739,7 +739,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         /// <summary>
         /// Font used by the text.
         /// </summary>
-        public Font Font { get; set; }//= Resources.GetFont(Resources.FontResources.droid_reg12);
+        public new Font Font { get; set; }//= Resources.GetFont(Resources.FontResources.droid_reg12);
 
         /// <summary>
         /// Row height.

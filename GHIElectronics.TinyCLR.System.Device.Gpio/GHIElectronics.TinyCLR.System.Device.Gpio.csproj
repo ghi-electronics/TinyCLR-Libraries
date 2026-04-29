@@ -42,10 +42,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="GHIElectronics.TinyCLR.Devices.Gpio">
-      <HintPath>..\GHIElectronics.TinyCLR.Devices.Gpio\bin\$(Configuration)\GHIElectronics.TinyCLR.Devices.Gpio.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
+    <ProjectReference Include="..\GHIElectronics.TinyCLR.Devices.Gpio\GHIElectronics.TinyCLR.Devices.Gpio.csproj">
+      <Project>{21FBFF15-D7C4-48A8-B3D1-CE70A288B3EA}</Project>
+      <Name>GHIElectronics.TinyCLR.Devices.Gpio</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
