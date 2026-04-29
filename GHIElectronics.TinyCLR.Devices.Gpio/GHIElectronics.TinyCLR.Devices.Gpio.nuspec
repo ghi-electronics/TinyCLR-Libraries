@@ -20,5 +20,6 @@
   </metadata>
   <files>
     <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.Gpio.dll" target="lib\net48" />
+    <file src="$TargetDir$System.Device.Gpio.dll" target="lib\net48" />
   </files>
 </package>

@@ -43,13 +43,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Devi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Devices.Gpio", "GHIElectronics.TinyCLR.Devices.Gpio\GHIElectronics.TinyCLR.Devices.Gpio.csproj", "{21FBFF15-D7C4-48A8-B3D1-CE70A288B3EA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System.Device.Gpio", "System.Device.Gpio\System.Device.Gpio.csproj", "{8532DE22-C53A-4A6C-A4EC-B1DFD309E31A}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System.Device.Gpio.Drivers", "System.Device.Gpio.Drivers\System.Device.Gpio.Drivers.csproj", "{91F284C3-3D4B-4F92-9B26-8EC1A5A54EEC}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System.IO.Ports", "System.IO.Ports\System.IO.Ports.csproj", "{881860AF-25E5-4A76-B18E-4A0DB9C4BB10}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System.Device.Pwm", "System.Device.Pwm\System.Device.Pwm.csproj", "{161554A0-AB82-4504-89B9-B83E68E25286}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.System.Device.Gpio", "GHIElectronics.TinyCLR.System.Device.Gpio\GHIElectronics.TinyCLR.System.Device.Gpio.csproj", "{8532DE22-C53A-4A6C-A4EC-B1DFD309E31A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Devices.I2c", "GHIElectronics.TinyCLR.Devices.I2c\GHIElectronics.TinyCLR.Devices.I2c.csproj", "{670AD403-A7C6-4C0A-A9A3-82767B3FCBB2}"
 EndProject
@@ -169,18 +163,6 @@ Global
 		{8532DE22-C53A-4A6C-A4EC-B1DFD309E31A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8532DE22-C53A-4A6C-A4EC-B1DFD309E31A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8532DE22-C53A-4A6C-A4EC-B1DFD309E31A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{91F284C3-3D4B-4F92-9B26-8EC1A5A54EEC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{91F284C3-3D4B-4F92-9B26-8EC1A5A54EEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{91F284C3-3D4B-4F92-9B26-8EC1A5A54EEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{91F284C3-3D4B-4F92-9B26-8EC1A5A54EEC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{881860AF-25E5-4A76-B18E-4A0DB9C4BB10}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{881860AF-25E5-4A76-B18E-4A0DB9C4BB10}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{881860AF-25E5-4A76-B18E-4A0DB9C4BB10}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{881860AF-25E5-4A76-B18E-4A0DB9C4BB10}.Release|Any CPU.Build.0 = Release|Any CPU
-		{161554A0-AB82-4504-89B9-B83E68E25286}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{161554A0-AB82-4504-89B9-B83E68E25286}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{161554A0-AB82-4504-89B9-B83E68E25286}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{161554A0-AB82-4504-89B9-B83E68E25286}.Release|Any CPU.Build.0 = Release|Any CPU
 		{670AD403-A7C6-4C0A-A9A3-82767B3FCBB2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{670AD403-A7C6-4C0A-A9A3-82767B3FCBB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{670AD403-A7C6-4C0A-A9A3-82767B3FCBB2}.Release|Any CPU.ActiveCfg = Release|Any CPU

@@ -1,4 +1,3 @@
-using GHIElectronics.TinyCLR.Devices.Pwm;
 using GHIElectronics.TinyCLR.Native;
 using System;
 using System.Reflection;
@@ -17,7 +16,6 @@ namespace System.Device.Pwm {
         public int Channel { get; }
         public int Controller {
             get {
-                // TinyCLR does not expose a numeric controller index in managed API.
                 return 0;
             }
         }
@@ -97,15 +95,12 @@ namespace System.Device.Pwm {
             if (string.IsNullOrEmpty(deviceName))
                 throw new InvalidOperationException("DeviceInformation.DeviceName is not available.");
 
-            // Resolve exact ID from GHIElectronics.TinyCLR.Pins:
-            // <DeviceName>.Timer.Pwm.Controller{N}.Id
-            // Example: SC20260.Timer.Pwm.Controller8.Id
             var controllerName = $"GHIElectronics.TinyCLR.NativeApis.STM32H7.PwmController\\{chip}";
 
             if (deviceName.CompareTo("SC13") == 0) {
                 controllerName = $"GHIElectronics.TinyCLR.NativeApis.STM32L4.PwmController\\{chip}";
             }
-            
+
             return GHIElectronics.TinyCLR.Devices.Pwm.PwmController.FromName(controllerName);
         }
 

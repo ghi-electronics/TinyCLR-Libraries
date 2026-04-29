@@ -1,4 +1,3 @@
-using GHIElectronics.TinyCLR.Devices.Uart;
 using System;
 using System.Text;
 using System.Threading;
@@ -70,7 +69,7 @@ namespace System.IO.Ports {
     }
 
     public class SerialPort : IDisposable {
-        private UartController controller;
+        private GHIElectronics.TinyCLR.Devices.Uart.UartController controller;
         private readonly object sync;
         private bool disposed;
         private bool isOpen;
@@ -153,7 +152,7 @@ namespace System.IO.Ports {
 
             this.controller = this.CreateController(this.PortName);
 
-            var settings = new UartSetting {
+            var settings = new GHIElectronics.TinyCLR.Devices.Uart.UartSetting {
                 BaudRate = this.BaudRate,
                 DataBits = this.DataBits,
                 Parity = this.MapParity(this.Parity),
@@ -337,8 +336,8 @@ namespace System.IO.Ports {
                     break;
 
                 if (timeoutMs != InfiniteTimeout && DateTime.Now.Ticks - start > timeoutTicks) {
-                if (total == 0)
-                    throw CreateTimeoutException();
+                    if (total == 0)
+                        throw CreateTimeoutException();
                     break;
                 }
 
@@ -348,40 +347,38 @@ namespace System.IO.Ports {
             return total;
         }
 
-        private UartController CreateController(string portName) {
-            // Full .NET uses COMx names; TinyCLR uses native API names.
-            // If caller passes "COMx", try default controller as a fallback.
+        private GHIElectronics.TinyCLR.Devices.Uart.UartController CreateController(string portName) {
             if (StartsWithCom(portName))
-                return UartController.GetDefault();
+                return GHIElectronics.TinyCLR.Devices.Uart.UartController.GetDefault();
 
-            return UartController.FromName(portName);
+            return GHIElectronics.TinyCLR.Devices.Uart.UartController.FromName(portName);
         }
 
-        private UartParity MapParity(Parity parity) {
+        private GHIElectronics.TinyCLR.Devices.Uart.UartParity MapParity(Parity parity) {
             switch (parity) {
-                case Parity.None: return UartParity.None;
-                case Parity.Odd: return UartParity.Odd;
-                case Parity.Even: return UartParity.Even;
-                case Parity.Mark: return UartParity.Mark;
-                case Parity.Space: return UartParity.Space;
+                case Parity.None: return GHIElectronics.TinyCLR.Devices.Uart.UartParity.None;
+                case Parity.Odd: return GHIElectronics.TinyCLR.Devices.Uart.UartParity.Odd;
+                case Parity.Even: return GHIElectronics.TinyCLR.Devices.Uart.UartParity.Even;
+                case Parity.Mark: return GHIElectronics.TinyCLR.Devices.Uart.UartParity.Mark;
+                case Parity.Space: return GHIElectronics.TinyCLR.Devices.Uart.UartParity.Space;
                 default: throw new ArgumentOutOfRangeException(nameof(parity));
             }
         }
 
-        private UartStopBitCount MapStopBits(StopBits stopBits) {
+        private GHIElectronics.TinyCLR.Devices.Uart.UartStopBitCount MapStopBits(StopBits stopBits) {
             switch (stopBits) {
-                case StopBits.One: return UartStopBitCount.One;
-                case StopBits.OnePointFive: return UartStopBitCount.OnePointFive;
-                case StopBits.Two: return UartStopBitCount.Two;
+                case StopBits.One: return GHIElectronics.TinyCLR.Devices.Uart.UartStopBitCount.One;
+                case StopBits.OnePointFive: return GHIElectronics.TinyCLR.Devices.Uart.UartStopBitCount.OnePointFive;
+                case StopBits.Two: return GHIElectronics.TinyCLR.Devices.Uart.UartStopBitCount.Two;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(stopBits));
             }
         }
 
-        private UartHandshake MapHandshake(Handshake handshake) {
+        private GHIElectronics.TinyCLR.Devices.Uart.UartHandshake MapHandshake(Handshake handshake) {
             switch (handshake) {
-                case Handshake.None: return UartHandshake.None;
-                case Handshake.RequestToSend: return UartHandshake.RequestToSend;
+                case Handshake.None: return GHIElectronics.TinyCLR.Devices.Uart.UartHandshake.None;
+                case Handshake.RequestToSend: return GHIElectronics.TinyCLR.Devices.Uart.UartHandshake.RequestToSend;
                 case Handshake.XOnXOff:
                 case Handshake.RequestToSendXOnXOff:
                     throw CreateTodoNotSupportedException("XOnXOff handshaking");
@@ -390,27 +387,27 @@ namespace System.IO.Ports {
             }
         }
 
-        private SerialError MapError(UartError error) {
+        private SerialError MapError(GHIElectronics.TinyCLR.Devices.Uart.UartError error) {
             switch (error) {
-                case UartError.Frame: return SerialError.Frame;
-                case UartError.Overrun: return SerialError.Overrun;
-                case UartError.BufferFull: return SerialError.RXOver;
-                case UartError.ReceiveParity: return SerialError.RXParity;
+                case GHIElectronics.TinyCLR.Devices.Uart.UartError.Frame: return SerialError.Frame;
+                case GHIElectronics.TinyCLR.Devices.Uart.UartError.Overrun: return SerialError.Overrun;
+                case GHIElectronics.TinyCLR.Devices.Uart.UartError.BufferFull: return SerialError.RXOver;
+                case GHIElectronics.TinyCLR.Devices.Uart.UartError.ReceiveParity: return SerialError.RXParity;
                 default: return SerialError.RXOver;
             }
         }
 
-        private void OnTinyClrDataReceived(UartController sender, DataReceivedEventArgs e) {
+        private void OnTinyClrDataReceived(GHIElectronics.TinyCLR.Devices.Uart.UartController sender, GHIElectronics.TinyCLR.Devices.Uart.DataReceivedEventArgs e) {
             this.bytesToReadCache = sender.BytesToRead;
 
             if (this.DataReceived != null && sender.BytesToRead >= this.ReceivedBytesThreshold)
                 this.DataReceived(this, new SerialDataReceivedEventArgs(SerialData.Chars));
         }
 
-        private void OnTinyClrErrorReceived(UartController sender, ErrorReceivedEventArgs e) =>
+        private void OnTinyClrErrorReceived(GHIElectronics.TinyCLR.Devices.Uart.UartController sender, GHIElectronics.TinyCLR.Devices.Uart.ErrorReceivedEventArgs e) =>
             this.ErrorReceived?.Invoke(this, new SerialErrorReceivedEventArgs(this.MapError(e.Error)));
 
-        private void OnTinyClrClearToSendChanged(UartController sender, ClearToSendChangedEventArgs e) =>
+        private void OnTinyClrClearToSendChanged(GHIElectronics.TinyCLR.Devices.Uart.UartController sender, GHIElectronics.TinyCLR.Devices.Uart.ClearToSendChangedEventArgs e) =>
             this.PinChanged?.Invoke(this, new SerialPinChangedEventArgs(SerialPin.CtsChanged));
 
         private void ThrowIfDisposed() {

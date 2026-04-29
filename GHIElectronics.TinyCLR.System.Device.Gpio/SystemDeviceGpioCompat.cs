@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using GHIElectronics.TinyCLR.Devices.Gpio;
 
 namespace System.Device.Gpio {
     [Flags]
@@ -124,10 +123,10 @@ namespace System.Device.Gpio {
         protected internal override PinMode GetPinMode(int pinNumber) => ToPinMode(this.GetTinyClrPin(pinNumber).GetDriveMode());
 
         protected internal override PinValue Read(int pinNumber) =>
-            this.GetTinyClrPin(pinNumber).Read() == GpioPinValue.High ? PinValue.High : PinValue.Low;
+            this.GetTinyClrPin(pinNumber).Read() == GHIElectronics.TinyCLR.Devices.Gpio.GpioPinValue.High ? PinValue.High : PinValue.Low;
 
         protected internal override void Write(int pinNumber, PinValue value) =>
-            this.GetTinyClrPin(pinNumber).Write(value == PinValue.High ? GpioPinValue.High : GpioPinValue.Low);
+            this.GetTinyClrPin(pinNumber).Write(value == PinValue.High ? GHIElectronics.TinyCLR.Devices.Gpio.GpioPinValue.High : GHIElectronics.TinyCLR.Devices.Gpio.GpioPinValue.Low);
 
         protected internal override void AddCallbackForPinValueChangedEvent(int pinNumber, PinEventTypes eventTypes, PinChangeEventHandler callback) {
             if (callback == null)
@@ -180,39 +179,39 @@ namespace System.Device.Gpio {
         private static long GetCallbackKey(int pinNumber, PinChangeEventHandler callback) =>
             ((long)pinNumber << 32) | (uint)callback.GetHashCode();
 
-        private static GpioPinDriveMode ToTinyClrDriveMode(PinMode mode) {
+        private static GHIElectronics.TinyCLR.Devices.Gpio.GpioPinDriveMode ToTinyClrDriveMode(PinMode mode) {
             switch (mode) {
-                case PinMode.Input: return GpioPinDriveMode.Input;
-                case PinMode.Output: return GpioPinDriveMode.Output;
-                case PinMode.InputPullUp: return GpioPinDriveMode.InputPullUp;
-                case PinMode.InputPullDown: return GpioPinDriveMode.InputPullDown;
-                case PinMode.OutputOpenDrain: return GpioPinDriveMode.OutputOpenDrain;
+                case PinMode.Input: return GHIElectronics.TinyCLR.Devices.Gpio.GpioPinDriveMode.Input;
+                case PinMode.Output: return GHIElectronics.TinyCLR.Devices.Gpio.GpioPinDriveMode.Output;
+                case PinMode.InputPullUp: return GHIElectronics.TinyCLR.Devices.Gpio.GpioPinDriveMode.InputPullUp;
+                case PinMode.InputPullDown: return GHIElectronics.TinyCLR.Devices.Gpio.GpioPinDriveMode.InputPullDown;
+                case PinMode.OutputOpenDrain: return GHIElectronics.TinyCLR.Devices.Gpio.GpioPinDriveMode.OutputOpenDrain;
                 default: throw new NotSupportedException("Unsupported pin mode.");
             }
         }
 
-        private static PinMode ToPinMode(GpioPinDriveMode mode) {
+        private static PinMode ToPinMode(GHIElectronics.TinyCLR.Devices.Gpio.GpioPinDriveMode mode) {
             switch (mode) {
-                case GpioPinDriveMode.Input: return PinMode.Input;
-                case GpioPinDriveMode.Output: return PinMode.Output;
-                case GpioPinDriveMode.InputPullUp: return PinMode.InputPullUp;
-                case GpioPinDriveMode.InputPullDown: return PinMode.InputPullDown;
-                case GpioPinDriveMode.OutputOpenDrain: return PinMode.OutputOpenDrain;
+                case GHIElectronics.TinyCLR.Devices.Gpio.GpioPinDriveMode.Input: return PinMode.Input;
+                case GHIElectronics.TinyCLR.Devices.Gpio.GpioPinDriveMode.Output: return PinMode.Output;
+                case GHIElectronics.TinyCLR.Devices.Gpio.GpioPinDriveMode.InputPullUp: return PinMode.InputPullUp;
+                case GHIElectronics.TinyCLR.Devices.Gpio.GpioPinDriveMode.InputPullDown: return PinMode.InputPullDown;
+                case GHIElectronics.TinyCLR.Devices.Gpio.GpioPinDriveMode.OutputOpenDrain: return PinMode.OutputOpenDrain;
                 default: throw new NotSupportedException("Unsupported drive mode.");
             }
         }
 
-        private static GpioPinEdge ToTinyClrEdge(PinEventTypes eventTypes) {
-            var edge = (GpioPinEdge)0;
-            if ((eventTypes & PinEventTypes.Rising) != 0) edge |= GpioPinEdge.RisingEdge;
-            if ((eventTypes & PinEventTypes.Falling) != 0) edge |= GpioPinEdge.FallingEdge;
+        private static GHIElectronics.TinyCLR.Devices.Gpio.GpioPinEdge ToTinyClrEdge(PinEventTypes eventTypes) {
+            var edge = (GHIElectronics.TinyCLR.Devices.Gpio.GpioPinEdge)0;
+            if ((eventTypes & PinEventTypes.Rising) != 0) edge |= GHIElectronics.TinyCLR.Devices.Gpio.GpioPinEdge.RisingEdge;
+            if ((eventTypes & PinEventTypes.Falling) != 0) edge |= GHIElectronics.TinyCLR.Devices.Gpio.GpioPinEdge.FallingEdge;
             return edge;
         }
 
-        private static PinEventTypes ToPinEventTypes(GpioPinEdge edge) {
+        private static PinEventTypes ToPinEventTypes(GHIElectronics.TinyCLR.Devices.Gpio.GpioPinEdge edge) {
             var types = (PinEventTypes)0;
-            if ((edge & GpioPinEdge.RisingEdge) != 0) types |= PinEventTypes.Rising;
-            if ((edge & GpioPinEdge.FallingEdge) != 0) types |= PinEventTypes.Falling;
+            if ((edge & GHIElectronics.TinyCLR.Devices.Gpio.GpioPinEdge.RisingEdge) != 0) types |= PinEventTypes.Rising;
+            if ((edge & GHIElectronics.TinyCLR.Devices.Gpio.GpioPinEdge.FallingEdge) != 0) types |= PinEventTypes.Falling;
             return types;
         }
     }
@@ -296,5 +295,25 @@ namespace System.Device.Gpio {
 
         public void UnregisterCallbackForPinValueChangedEvent(int pinNumber, PinChangeEventHandler callback) =>
             this.Driver.RemoveCallbackForPinValueChangedEvent(pinNumber, callback);
+    }
+}
+
+namespace System.Device.Gpio.Drivers {
+    public sealed class LibGpiodDriver : System.Device.Gpio.TinyClrGpioDriver {
+        public int ChipNumber { get; }
+
+        public LibGpiodDriver(int chipNumber) : base(CalculatePinBase(chipNumber)) {
+            this.ChipNumber = chipNumber;
+        }
+
+        private static int CalculatePinBase(int chipNumber) {
+            if (chipNumber < 0)
+                throw new ArgumentOutOfRangeException(nameof(chipNumber));
+
+            if (chipNumber > int.MaxValue / 16)
+                throw new ArgumentOutOfRangeException(nameof(chipNumber));
+
+            return chipNumber * 16;
+        }
     }
 }
