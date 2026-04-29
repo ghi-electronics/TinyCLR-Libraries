@@ -19,5 +19,6 @@
   </metadata>
   <files>
     <file src="$TargetDir$GHIElectronics.TinyCLR.Cryptography.dll" target="lib\net48" />
+    <file src="$TargetDir$System.Security.Cryptography.dll" target="lib\net48" />
   </files>
 </package>

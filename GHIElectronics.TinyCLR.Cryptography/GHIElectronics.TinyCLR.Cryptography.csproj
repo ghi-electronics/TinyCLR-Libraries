@@ -49,6 +49,10 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <Target Name="BuildCryptoCompatAssembly" AfterTargets="Build">
+    <MSBuild Projects="..\GHIElectronics.TinyCLR.System.Security.Cryptography\GHIElectronics.TinyCLR.System.Security.Cryptography.csproj" Targets="Build" Properties="Configuration=$(Configuration);Platform=$(Platform)" />
+    <Copy SourceFiles="..\GHIElectronics.TinyCLR.System.Security.Cryptography\bin\$(Configuration)\System.Security.Cryptography.dll" DestinationFolder="$(TargetDir)" SkipUnchangedFiles="true" />
+  </Target>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
