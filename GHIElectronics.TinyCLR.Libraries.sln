@@ -49,6 +49,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System.Device.Gpio.Drivers"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System.IO.Ports", "System.IO.Ports\System.IO.Ports.csproj", "{881860AF-25E5-4A76-B18E-4A0DB9C4BB10}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System.Device.Pwm", "System.Device.Pwm\System.Device.Pwm.csproj", "{161554A0-AB82-4504-89B9-B83E68E25286}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Devices.I2c", "GHIElectronics.TinyCLR.Devices.I2c\GHIElectronics.TinyCLR.Devices.I2c.csproj", "{670AD403-A7C6-4C0A-A9A3-82767B3FCBB2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Devices.Pwm", "GHIElectronics.TinyCLR.Devices.Pwm\GHIElectronics.TinyCLR.Devices.Pwm.csproj", "{ED1377EE-A8C8-4EC0-9CAD-F32E5AD9AD30}"
@@ -175,6 +177,10 @@ Global
 		{881860AF-25E5-4A76-B18E-4A0DB9C4BB10}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{881860AF-25E5-4A76-B18E-4A0DB9C4BB10}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{881860AF-25E5-4A76-B18E-4A0DB9C4BB10}.Release|Any CPU.Build.0 = Release|Any CPU
+		{161554A0-AB82-4504-89B9-B83E68E25286}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{161554A0-AB82-4504-89B9-B83E68E25286}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{161554A0-AB82-4504-89B9-B83E68E25286}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{161554A0-AB82-4504-89B9-B83E68E25286}.Release|Any CPU.Build.0 = Release|Any CPU
 		{670AD403-A7C6-4C0A-A9A3-82767B3FCBB2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{670AD403-A7C6-4C0A-A9A3-82767B3FCBB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{670AD403-A7C6-4C0A-A9A3-82767B3FCBB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
