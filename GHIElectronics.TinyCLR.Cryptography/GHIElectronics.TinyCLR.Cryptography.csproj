@@ -43,6 +43,7 @@
     <Compile Include="RSA.cs" />
     <Compile Include="RSAParameters.cs" />
     <Compile Include="SHA1.cs" />
+    <Compile Include="SHA256.cs" />
     <Compile Include="Xtea.cs" />
   </ItemGroup>
   <ItemGroup>
