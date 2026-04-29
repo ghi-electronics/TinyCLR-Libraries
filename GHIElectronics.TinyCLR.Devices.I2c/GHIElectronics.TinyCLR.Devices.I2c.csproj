@@ -53,6 +53,10 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="BuildI2cCompatAssembly" AfterTargets="Build">
+    <MSBuild Projects="..\GHIElectronics.TinyCLR.System.Device.I2c\GHIElectronics.TinyCLR.System.Device.I2c.csproj" Targets="Build" Properties="Configuration=$(Configuration);Platform=$(Platform)" />
+    <Copy SourceFiles="..\GHIElectronics.TinyCLR.System.Device.I2c\bin\$(Configuration)\System.Device.I2c.dll" DestinationFolder="$(TargetDir)" SkipUnchangedFiles="true" />
+  </Target>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
