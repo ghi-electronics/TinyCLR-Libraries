@@ -21,5 +21,6 @@
   </metadata>
   <files>
     <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.Spi.dll" target="lib\net48" />
+    <file src="$TargetDir$System.Device.Spi.dll" target="lib\net48" />
   </files>
 </package>
