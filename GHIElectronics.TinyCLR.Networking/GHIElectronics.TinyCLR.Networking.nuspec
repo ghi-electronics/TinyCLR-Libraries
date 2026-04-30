@@ -18,6 +18,25 @@
     </dependencies>
   </metadata>
   <files>
+    <!-- lib/net48/ : the TinyCLR-IMPL DLL.
+         NuGet's classic packages.config consumption AUTO-REFERENCES this
+         for compile (so user code sees TinyCLR's API) and AUTO-COPIES it
+         to bin\Debug\. The compile path uses this. -->
     <file src="$TargetDir$GHIElectronics.TinyCLR.Networking.dll" target="lib\net48" />
+
+    <!-- desktop-shim/ : the Desktop SHIM DLL (TypeForwardedTo to framework
+         System.dll). The .props file's <None Include> copies this to
+         bin\Debug\ AFTER NuGet's auto-copy of the impl, OVERWRITING it.
+         Result: bin\Debug\ has the shim at Desktop runtime, which forwards
+         type lookups to framework System.dll. -->
+    <file src="..\GHIElectronics.TinyCLR.Networking.Desktop\bin\Debug\GHIElectronics.TinyCLR.Networking.dll" target="desktop-shim" />
+
+    <!-- tinyclr/ : the TinyCLR-IMPL DLL again (same content as lib/net48/).
+         The deploy step (DebugServer / VS Code extension) reads from this
+         folder, MMP-processes the DLL into a .pe, sends to device. -->
+    <file src="$TargetDir$GHIElectronics.TinyCLR.Networking.dll" target="tinyclr" />
+
+    <!-- Consumer-side props: imported via NuGet package convention. -->
+    <file src="$ProjectDir$GHIElectronics.TinyCLR.Networking.props" target="build\net48" />
   </files>
 </package>
