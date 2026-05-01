@@ -19,7 +19,21 @@
     </dependencies>
   </metadata>
   <files>
+    <!-- lib/net48/ : TinyCLR-IMPL DLL (auto-referenced for compile). -->
     <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.Gpio.dll" target="lib\net48" />
+
+    <!-- System.Device.Gpio compat DLL (Microsoft-style API), shipped as before.
+         Not dual-moded yet — TODO when/if we tackle System.Device.Gpio. -->
     <file src="$TargetDir$System.Device.Gpio.dll" target="lib\net48" />
+
+    <!-- desktop-shim/ : Desktop SHIM DLL (no-op safe defaults). Copied to
+         bin\Debug\ at AfterBuild via the .props file's Target. -->
+    <file src="..\GHIElectronics.TinyCLR.Devices.Gpio.Desktop\bin\Debug\GHIElectronics.TinyCLR.Devices.Gpio.dll" target="desktop-shim" />
+
+    <!-- tinyclr/ : TinyCLR-IMPL DLL again (deploy artifact for the IDE). -->
+    <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.Gpio.dll" target="tinyclr" />
+
+    <!-- Consumer-side props. -->
+    <file src="$ProjectDir$GHIElectronics.TinyCLR.Devices.Gpio.props" target="build\net48" />
   </files>
 </package>

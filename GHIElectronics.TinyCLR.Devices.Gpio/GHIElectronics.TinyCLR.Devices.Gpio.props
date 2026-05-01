@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Consumer-side props imported by user projects via the NuGet package
+     mechanism. See the Networking / Native equivalents for full rationale. -->
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Reference Include="GHIElectronics.TinyCLR.Devices.Gpio">
+      <HintPath>$(MSBuildThisFileDirectory)..\..\lib\net48\GHIElectronics.TinyCLR.Devices.Gpio.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <_TinyCLRGpioShimSource>$(MSBuildThisFileDirectory)..\..\desktop-shim\GHIElectronics.TinyCLR.Devices.Gpio.dll</_TinyCLRGpioShimSource>
+  </PropertyGroup>
+  <Target Name="CopyTinyCLRGpioDesktopShim" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRGpioShimSource)')">
+    <Copy SourceFiles="$(_TinyCLRGpioShimSource)"
+          DestinationFiles="$(OutDir)GHIElectronics.TinyCLR.Devices.Gpio.dll"
+          OverwriteReadOnlyFiles="true"
+          SkipUnchangedFiles="false" />
+  </Target>
+</Project>
