@@ -7,7 +7,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Pins", "GHIElectronics.TinyCLR.Pins\GHIElectronics.TinyCLR.Pins.csproj", "{2DCEEF58-5455-457C-B968-52D791605D07}"
 	ProjectSection(ProjectDependencies) = postProject
 		{AA751E21-9220-42CE-8180-516BB59E4555} = {AA751E21-9220-42CE-8180-516BB59E4555}
+		{8A3B5C7D-9E0F-4A1B-8C2D-3E4F5A6B7C8D} = {8A3B5C7D-9E0F-4A1B-8C2D-3E4F5A6B7C8D}
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Pins.Desktop", "GHIElectronics.TinyCLR.Pins.Desktop\GHIElectronics.TinyCLR.Pins.Desktop.csproj", "{8A3B5C7D-9E0F-4A1B-8C2D-3E4F5A6B7C8D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Drawing", "GHIElectronics.TinyCLR.Drawing\GHIElectronics.TinyCLR.Drawing.csproj", "{52A54E94-2FD8-4EEE-822C-C8C7F27AF423}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -70,14 +73,43 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Devices.Signals", "GHIElectronics.TinyCLR.Devices.Signals\GHIElectronics.TinyCLR.Devices.Signals.csproj", "{ACC9F6AC-DB1E-4A48-95A2-08F521B8A9CD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Devices.Spi", "GHIElectronics.TinyCLR.Devices.Spi\GHIElectronics.TinyCLR.Devices.Spi.csproj", "{6CF1CBC7-B597-4BB7-8149-289B849ED283}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5D7F9C2A-3E4B-4F2C-9D6E-7A8B1C3D4E5F} = {5D7F9C2A-3E4B-4F2C-9D6E-7A8B1C3D4E5F}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Devices.Spi.Desktop", "GHIElectronics.TinyCLR.Devices.Spi.Desktop\GHIElectronics.TinyCLR.Devices.Spi.Desktop.csproj", "{5D7F9C2A-3E4B-4F2C-9D6E-7A8B1C3D4E5F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3F8E6C5A-1D2B-4E9A-9C7F-8A5D2E7B4C13} = {3F8E6C5A-1D2B-4E9A-9C7F-8A5D2E7B4C13}
+		{4A9D7C2E-6B8F-4F1D-A3B5-9C2E7D4F8B61} = {4A9D7C2E-6B8F-4F1D-A3B5-9C2E7D4F8B61}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.System.Device.Spi", "GHIElectronics.TinyCLR.System.Device.Spi\GHIElectronics.TinyCLR.System.Device.Spi.csproj", "{5D459B8C-E710-433F-BCC8-2E7F7D03A79A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Devices.Storage", "GHIElectronics.TinyCLR.Devices.Storage\GHIElectronics.TinyCLR.Devices.Storage.csproj", "{F3CD9D5A-75B4-4AD9-852D-4B0895ED3979}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Devices.Uart", "GHIElectronics.TinyCLR.Devices.Uart\GHIElectronics.TinyCLR.Devices.Uart.csproj", "{D4456808-26EE-49D9-99ED-A11F5FF78EB9}"
+	ProjectSection(ProjectDependencies) = postProject
+		{6E2A8B4C-7D3F-4E1A-9C5B-2D3F4E5A6B7C} = {6E2A8B4C-7D3F-4E1A-9C5B-2D3F4E5A6B7C}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Devices.Uart.Desktop", "GHIElectronics.TinyCLR.Devices.Uart.Desktop\GHIElectronics.TinyCLR.Devices.Uart.Desktop.csproj", "{6E2A8B4C-7D3F-4E1A-9C5B-2D3F4E5A6B7C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3F8E6C5A-1D2B-4E9A-9C7F-8A5D2E7B4C13} = {3F8E6C5A-1D2B-4E9A-9C7F-8A5D2E7B4C13}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Devices.Network", "GHIElectronics.TinyCLR.Devices.Network\GHIElectronics.TinyCLR.Devices.Network.csproj", "{C6722DB2-B687-44C4-B1A1-665C50F34AF1}"
+	ProjectSection(ProjectDependencies) = postProject
+		{7F1A2B3C-4D5E-6F7A-8B9C-0D1E2F3A4B5C} = {7F1A2B3C-4D5E-6F7A-8B9C-0D1E2F3A4B5C}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Devices.Network.Desktop", "GHIElectronics.TinyCLR.Devices.Network.Desktop\GHIElectronics.TinyCLR.Devices.Network.Desktop.csproj", "{7F1A2B3C-4D5E-6F7A-8B9C-0D1E2F3A4B5C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{2C4D8A1F-9E5B-4D7F-AE6C-1B3D5E7F9B82} = {2C4D8A1F-9E5B-4D7F-AE6C-1B3D5E7F9B82}
+		{3F8E6C5A-1D2B-4E9A-9C7F-8A5D2E7B4C13} = {3F8E6C5A-1D2B-4E9A-9C7F-8A5D2E7B4C13}
+		{4A9D7C2E-6B8F-4F1D-A3B5-9C2E7D4F8B61} = {4A9D7C2E-6B8F-4F1D-A3B5-9C2E7D4F8B61}
+		{5D7F9C2A-3E4B-4F2C-9D6E-7A8B1C3D4E5F} = {5D7F9C2A-3E4B-4F2C-9D6E-7A8B1C3D4E5F}
+		{6E2A8B4C-7D3F-4E1A-9C5B-2D3F4E5A6B7C} = {6E2A8B4C-7D3F-4E1A-9C5B-2D3F4E5A6B7C}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Data.SQLite", "GHIElectronics.TinyCLR.Data.SQLite\GHIElectronics.TinyCLR.Data.SQLite.csproj", "{212BDB85-A7EF-43FB-94B8-07B9259350C1}"
 EndProject
@@ -135,6 +167,10 @@ Global
 		{2DCEEF58-5455-457C-B968-52D791605D07}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2DCEEF58-5455-457C-B968-52D791605D07}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2DCEEF58-5455-457C-B968-52D791605D07}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8A3B5C7D-9E0F-4A1B-8C2D-3E4F5A6B7C8D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A3B5C7D-9E0F-4A1B-8C2D-3E4F5A6B7C8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A3B5C7D-9E0F-4A1B-8C2D-3E4F5A6B7C8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A3B5C7D-9E0F-4A1B-8C2D-3E4F5A6B7C8D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{52A54E94-2FD8-4EEE-822C-C8C7F27AF423}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{52A54E94-2FD8-4EEE-822C-C8C7F27AF423}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{52A54E94-2FD8-4EEE-822C-C8C7F27AF423}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -219,6 +255,10 @@ Global
 		{6CF1CBC7-B597-4BB7-8149-289B849ED283}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6CF1CBC7-B597-4BB7-8149-289B849ED283}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6CF1CBC7-B597-4BB7-8149-289B849ED283}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5D7F9C2A-3E4B-4F2C-9D6E-7A8B1C3D4E5F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5D7F9C2A-3E4B-4F2C-9D6E-7A8B1C3D4E5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5D7F9C2A-3E4B-4F2C-9D6E-7A8B1C3D4E5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5D7F9C2A-3E4B-4F2C-9D6E-7A8B1C3D4E5F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5D459B8C-E710-433F-BCC8-2E7F7D03A79A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5D459B8C-E710-433F-BCC8-2E7F7D03A79A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5D459B8C-E710-433F-BCC8-2E7F7D03A79A}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -231,10 +271,18 @@ Global
 		{D4456808-26EE-49D9-99ED-A11F5FF78EB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D4456808-26EE-49D9-99ED-A11F5FF78EB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D4456808-26EE-49D9-99ED-A11F5FF78EB9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E2A8B4C-7D3F-4E1A-9C5B-2D3F4E5A6B7C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E2A8B4C-7D3F-4E1A-9C5B-2D3F4E5A6B7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E2A8B4C-7D3F-4E1A-9C5B-2D3F4E5A6B7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E2A8B4C-7D3F-4E1A-9C5B-2D3F4E5A6B7C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C6722DB2-B687-44C4-B1A1-665C50F34AF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C6722DB2-B687-44C4-B1A1-665C50F34AF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C6722DB2-B687-44C4-B1A1-665C50F34AF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C6722DB2-B687-44C4-B1A1-665C50F34AF1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7F1A2B3C-4D5E-6F7A-8B9C-0D1E2F3A4B5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F1A2B3C-4D5E-6F7A-8B9C-0D1E2F3A4B5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F1A2B3C-4D5E-6F7A-8B9C-0D1E2F3A4B5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F1A2B3C-4D5E-6F7A-8B9C-0D1E2F3A4B5C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{212BDB85-A7EF-43FB-94B8-07B9259350C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{212BDB85-A7EF-43FB-94B8-07B9259350C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{212BDB85-A7EF-43FB-94B8-07B9259350C1}.Release|Any CPU.ActiveCfg = Release|Any CPU

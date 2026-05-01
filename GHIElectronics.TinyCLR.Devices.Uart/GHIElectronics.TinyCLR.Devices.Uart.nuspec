@@ -20,5 +20,8 @@
   </metadata>
   <files>
     <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.Uart.dll" target="lib\net48" />
+    <file src="..\GHIElectronics.TinyCLR.Devices.Uart.Desktop\bin\Debug\GHIElectronics.TinyCLR.Devices.Uart.dll" target="desktop-shim" />
+    <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.Uart.dll" target="tinyclr" />
+    <file src="$ProjectDir$GHIElectronics.TinyCLR.Devices.Uart.props" target="build\net48" />
   </files>
 </package>

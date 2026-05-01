@@ -41,12 +41,19 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="GHIElectronics.TinyCLR.Devices.Uart.nuspec" />
+    <None Include="GHIElectronics.TinyCLR.Devices.Uart.props" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GHIElectronics.TinyCLR.Native\GHIElectronics.TinyCLR.Native.csproj">
       <Project>{B602474A-AEB0-491C-832B-7EAF0B4511C0}</Project>
       <Name>GHIElectronics.TinyCLR.Native</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GHIElectronics.TinyCLR.Devices.Uart.Desktop\GHIElectronics.TinyCLR.Devices.Uart.Desktop.csproj">
+      <Project>{6E2A8B4C-7D3F-4E1A-9C5B-2D3F4E5A6B7C}</Project>
+      <Name>GHIElectronics.TinyCLR.Devices.Uart.Desktop</Name>
+      <ReferenceOutputAssembly>False</ReferenceOutputAssembly>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

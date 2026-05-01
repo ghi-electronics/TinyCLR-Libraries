@@ -24,5 +24,8 @@
   </metadata>
   <files>
     <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.Network.dll" target="lib\net48" />
+    <file src="..\GHIElectronics.TinyCLR.Devices.Network.Desktop\bin\Debug\GHIElectronics.TinyCLR.Devices.Network.dll" target="desktop-shim" />
+    <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.Network.dll" target="tinyclr" />
+    <file src="$ProjectDir$GHIElectronics.TinyCLR.Devices.Network.props" target="build\net48" />
   </files>
 </package>

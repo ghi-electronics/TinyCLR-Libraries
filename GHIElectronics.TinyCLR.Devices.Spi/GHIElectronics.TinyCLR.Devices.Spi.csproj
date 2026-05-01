@@ -40,6 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="GHIElectronics.TinyCLR.Devices.Spi.nuspec" />
+    <None Include="GHIElectronics.TinyCLR.Devices.Spi.props" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -50,6 +51,13 @@
     <ProjectReference Include="..\GHIElectronics.TinyCLR.Native\GHIElectronics.TinyCLR.Native.csproj">
       <Project>{B602474A-AEB0-491C-832B-7EAF0B4511C0}</Project>
       <Name>GHIElectronics.TinyCLR.Native</Name>
+    </ProjectReference>
+    <!-- Build-order dependency on Desktop sister so PackNuGet sees the shim. -->
+    <ProjectReference Include="..\GHIElectronics.TinyCLR.Devices.Spi.Desktop\GHIElectronics.TinyCLR.Devices.Spi.Desktop.csproj">
+      <Project>{5D7F9C2A-3E4B-4F2C-9D6E-7A8B1C3D4E5F}</Project>
+      <Name>GHIElectronics.TinyCLR.Devices.Spi.Desktop</Name>
+      <ReferenceOutputAssembly>False</ReferenceOutputAssembly>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
