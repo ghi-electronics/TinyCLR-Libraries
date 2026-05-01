@@ -18,8 +18,9 @@ namespace System.Net.Sockets
         private Socket _clientSocket = null; // initialized by helper called from ctor
         private NetworkStream _dataStream;
         private int _disposed;
+        // _active means "Connect/Accept has been called" — distinct from
+        // Connected which tracks the live link state. Mirrors full .NET.
         private bool _active;
-        private bool _isConnected;
 
         private bool Disposed => this._disposed != 0;
 
@@ -103,7 +104,12 @@ namespace System.Net.Sockets
             }
         }
 
-        public bool Connected => this._isConnected;
+        // Delegates to the Socket so we have a single source of truth.
+        // Previously stored in a separate _isConnected bool that the
+        // accept-ctor forgot to set, causing GetStream to throw "not
+        // connected" on accepted clients. Socket.Connected already covers
+        // both Connect()-set and accept-ctor-set cases via m_isConnected.
+        public bool Connected => this._clientSocket != null && this._clientSocket.Connected;
 
         //public bool ExclusiveAddressUse
         //{
@@ -133,8 +139,6 @@ namespace System.Net.Sockets
             this.Client.Connect(remoteEndPoint);
             this._family = AddressFamily.InterNetwork;
             this._active = true;
-            this._isConnected = true;
-
         }
 
         // Connects the Client to the specified port on the specified host.
@@ -162,7 +166,6 @@ namespace System.Net.Sockets
             this.Client.Connect(remoteEP);
             this._family = AddressFamily.InterNetwork;
             this._active = true;
-            this._isConnected = true;
         }
 
         public void Connect(IPAddress[] ipAddresses, int port)
@@ -171,7 +174,6 @@ namespace System.Net.Sockets
             this.Client.Connect(remoteEndPoint);
             this._family = AddressFamily.InterNetwork;
             this._active = true;
-            this._isConnected = true;
         }
 
         //public Task ConnectAsync(IPAddress address, int port) =>

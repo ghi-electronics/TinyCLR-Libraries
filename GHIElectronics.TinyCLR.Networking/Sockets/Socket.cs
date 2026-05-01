@@ -239,13 +239,19 @@ namespace System.Net.Sockets {
                 throw new ObjectDisposedException();
             }
 
+            // The firmware's TinyCLR_Lwip_SocketAccept inherits the listen
+            // socket's SO_RCVTIMEO (default 50ms) and returns -1 (sentinel)
+            // on each timeout, mirroring how Receive returns 0 on timeout.
+            // Real errors still surface as InvalidOperationException via the
+            // extern. Loop until a real client arrives or the listener is
+            // closed (Stop()/Dispose() sets m_Handle = -1).
             int socketHandle;
-
-            if (this.m_fBlocking) {
-                this.Poll(-1, SelectMode.SelectRead);
+            while (true) {
+                if (this.m_Handle == -1) throw new ObjectDisposedException();
+                socketHandle = this.ni.Accept(this.m_Handle);
+                if (socketHandle != -1) break;
+                Thread.Sleep(1);
             }
-
-            socketHandle = this.ni.Accept(this.m_Handle);
 
             var socket = new Socket(socketHandle) {
                 m_localEndPoint = this.m_localEndPoint
@@ -522,6 +528,14 @@ namespace System.Net.Sockets {
         public bool Poll(int microSeconds, SelectMode mode) {
             if (this.m_Handle == -1) {
                 throw new ObjectDisposedException();
+            }
+
+            // microSeconds == 0 is a non-blocking probe (matches .NET).
+            // Special-case it: the polling loop below would otherwise compute
+            // expired == Now and skip the firmware call entirely, since the
+            // first 'Now < expired' check trips immediately.
+            if (microSeconds == 0) {
+                return this.ni.Poll(this.m_Handle, 0, mode);
             }
 
             var expired = (microSeconds == -1) ? DateTime.MaxValue.Ticks : (DateTime.Now.Ticks + microSeconds * 10);
