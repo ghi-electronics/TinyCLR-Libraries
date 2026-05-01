@@ -21,5 +21,8 @@
   </metadata>
   <files>
     <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.UsbClient.dll" target="lib\net48" />
+    <file src="..\GHIElectronics.TinyCLR.Devices.UsbClient.Desktop\bin\Debug\GHIElectronics.TinyCLR.Devices.UsbClient.dll" target="desktop-shim" />
+    <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.UsbClient.dll" target="tinyclr" />
+    <file src="$ProjectDir$GHIElectronics.TinyCLR.Devices.UsbClient.props" target="build\net48" />
   </files>
 </package>

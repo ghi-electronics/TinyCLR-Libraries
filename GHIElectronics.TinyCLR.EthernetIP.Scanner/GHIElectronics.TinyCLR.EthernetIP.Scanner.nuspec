@@ -21,5 +21,8 @@
   </metadata>
   <files>
     <file src="$TargetDir$GHIElectronics.TinyCLR.EthernetIP.Scanner.dll" target="lib\net48" />
+    <file src="..\GHIElectronics.TinyCLR.EthernetIP.Scanner.Desktop\bin\Debug\GHIElectronics.TinyCLR.EthernetIP.Scanner.dll" target="desktop-shim" />
+    <file src="$TargetDir$GHIElectronics.TinyCLR.EthernetIP.Scanner.dll" target="tinyclr" />
+    <file src="$ProjectDir$GHIElectronics.TinyCLR.EthernetIP.Scanner.props" target="build\net48" />
   </files>
 </package>

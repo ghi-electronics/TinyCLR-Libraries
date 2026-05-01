@@ -40,7 +40,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="GHIElectronics.TinyCLR.Devices.Usb.nuspec" />
+    <None Include="GHIElectronics.TinyCLR.Devices.Usb.props" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GHIElectronics.TinyCLR.Devices.Usb.Desktop\GHIElectronics.TinyCLR.Devices.Usb.Desktop.csproj">
+      <Project>{B3C4D5E6-F7A8-4B9C-1D2E-3F4A5B6C7D8E}</Project>
+      <Name>GHIElectronics.TinyCLR.Devices.Usb.Desktop</Name>
+      <ReferenceOutputAssembly>False</ReferenceOutputAssembly>
+      <Private>False</Private>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

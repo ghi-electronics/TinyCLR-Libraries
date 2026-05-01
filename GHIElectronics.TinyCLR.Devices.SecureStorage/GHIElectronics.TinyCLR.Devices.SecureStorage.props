@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Reference Include="GHIElectronics.TinyCLR.Devices.SecureStorage">
+      <HintPath>$(MSBuildThisFileDirectory)..\..\lib\net48\GHIElectronics.TinyCLR.Devices.SecureStorage.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <_TinyCLRSecureStorageShimSource>$(MSBuildThisFileDirectory)..\..\desktop-shim\GHIElectronics.TinyCLR.Devices.SecureStorage.dll</_TinyCLRSecureStorageShimSource>
+    <_TinyCLRSecureStorageImplSource>$(MSBuildThisFileDirectory)..\..\tinyclr\GHIElectronics.TinyCLR.Devices.SecureStorage.dll</_TinyCLRSecureStorageImplSource>
+  </PropertyGroup>
+  <Target Name="CopyTinyCLRSecureStorageDesktopShim" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRSecureStorageShimSource)')">
+    <Copy SourceFiles="$(_TinyCLRSecureStorageShimSource)" DestinationFiles="$(OutDir)GHIElectronics.TinyCLR.Devices.SecureStorage.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
+  </Target>
+  <Target Name="CopyTinyCLRSecureStorageImplForDebugger" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRSecureStorageImplSource)')">
+    <Copy SourceFiles="$(_TinyCLRSecureStorageImplSource)" DestinationFiles="$(OutDir)pe\GHIElectronics.TinyCLR.Devices.SecureStorage.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
+  </Target>
+</Project>

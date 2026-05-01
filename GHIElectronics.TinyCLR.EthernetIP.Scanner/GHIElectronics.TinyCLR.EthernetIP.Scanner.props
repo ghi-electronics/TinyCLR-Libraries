@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Reference Include="GHIElectronics.TinyCLR.EthernetIP.Scanner">
+      <HintPath>$(MSBuildThisFileDirectory)..\..\lib\net48\GHIElectronics.TinyCLR.EthernetIP.Scanner.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <_TinyCLREipScannerShimSource>$(MSBuildThisFileDirectory)..\..\desktop-shim\GHIElectronics.TinyCLR.EthernetIP.Scanner.dll</_TinyCLREipScannerShimSource>
+    <_TinyCLREipScannerImplSource>$(MSBuildThisFileDirectory)..\..\tinyclr\GHIElectronics.TinyCLR.EthernetIP.Scanner.dll</_TinyCLREipScannerImplSource>
+  </PropertyGroup>
+  <Target Name="CopyTinyCLREipScannerDesktopShim" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLREipScannerShimSource)')">
+    <Copy SourceFiles="$(_TinyCLREipScannerShimSource)" DestinationFiles="$(OutDir)GHIElectronics.TinyCLR.EthernetIP.Scanner.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
+  </Target>
+  <Target Name="CopyTinyCLREipScannerImplForDebugger" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLREipScannerImplSource)')">
+    <Copy SourceFiles="$(_TinyCLREipScannerImplSource)" DestinationFiles="$(OutDir)pe\GHIElectronics.TinyCLR.EthernetIP.Scanner.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
+  </Target>
+</Project>
