@@ -40,12 +40,19 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="GHIElectronics.TinyCLR.Devices.Dac.nuspec" />
+    <None Include="GHIElectronics.TinyCLR.Devices.Dac.props" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GHIElectronics.TinyCLR.Native\GHIElectronics.TinyCLR.Native.csproj">
       <Project>{B602474A-AEB0-491C-832B-7EAF0B4511C0}</Project>
       <Name>GHIElectronics.TinyCLR.Native</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GHIElectronics.TinyCLR.Devices.Dac.Desktop\GHIElectronics.TinyCLR.Devices.Dac.Desktop.csproj">
+      <Project>{6E4A9F2D-1B7C-4E5A-9D8F-3A4B6C7D8E9F}</Project>
+      <Name>GHIElectronics.TinyCLR.Devices.Dac.Desktop</Name>
+      <ReferenceOutputAssembly>False</ReferenceOutputAssembly>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

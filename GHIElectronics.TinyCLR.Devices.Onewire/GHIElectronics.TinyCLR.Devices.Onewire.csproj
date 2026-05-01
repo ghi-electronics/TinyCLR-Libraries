@@ -39,6 +39,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="GHIElectronics.TinyCLR.Devices.Onewire.nuspec" />
+    <None Include="GHIElectronics.TinyCLR.Devices.Onewire.props" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -49,6 +51,12 @@
     <ProjectReference Include="..\GHIElectronics.TinyCLR.Native\GHIElectronics.TinyCLR.Native.csproj">
       <Project>{B602474A-AEB0-491C-832B-7EAF0B4511C0}</Project>
       <Name>GHIElectronics.TinyCLR.Native</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GHIElectronics.TinyCLR.Devices.Onewire.Desktop\GHIElectronics.TinyCLR.Devices.Onewire.Desktop.csproj">
+      <Project>{9F1A2B3C-4D5E-4F6A-8B7C-9D2E1F3A4B5C}</Project>
+      <Name>GHIElectronics.TinyCLR.Devices.Onewire.Desktop</Name>
+      <ReferenceOutputAssembly>False</ReferenceOutputAssembly>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

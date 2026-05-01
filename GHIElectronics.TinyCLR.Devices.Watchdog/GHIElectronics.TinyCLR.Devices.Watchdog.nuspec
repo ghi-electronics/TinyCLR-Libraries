@@ -20,5 +20,8 @@
   </metadata>
   <files>
     <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.Watchdog.dll" target="lib\net48" />
+    <file src="..\GHIElectronics.TinyCLR.Devices.Watchdog.Desktop\bin\Debug\GHIElectronics.TinyCLR.Devices.Watchdog.dll" target="desktop-shim" />
+    <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.Watchdog.dll" target="tinyclr" />
+    <file src="$ProjectDir$GHIElectronics.TinyCLR.Devices.Watchdog.props" target="build\net48" />
   </files>
 </package>

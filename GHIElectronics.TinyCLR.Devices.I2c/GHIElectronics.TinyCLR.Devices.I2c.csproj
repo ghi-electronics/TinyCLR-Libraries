@@ -40,6 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="GHIElectronics.TinyCLR.Devices.I2c.nuspec" />
+    <None Include="GHIElectronics.TinyCLR.Devices.I2c.props" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -50,6 +51,12 @@
     <ProjectReference Include="..\GHIElectronics.TinyCLR.Native\GHIElectronics.TinyCLR.Native.csproj">
       <Project>{B602474A-AEB0-491C-832B-7EAF0B4511C0}</Project>
       <Name>GHIElectronics.TinyCLR.Native</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GHIElectronics.TinyCLR.Devices.I2c.Desktop\GHIElectronics.TinyCLR.Devices.I2c.Desktop.csproj">
+      <Project>{7C8B5D3F-2E1A-4F9B-8D6E-5A2B1C4D7E3F}</Project>
+      <Name>GHIElectronics.TinyCLR.Devices.I2c.Desktop</Name>
+      <ReferenceOutputAssembly>False</ReferenceOutputAssembly>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

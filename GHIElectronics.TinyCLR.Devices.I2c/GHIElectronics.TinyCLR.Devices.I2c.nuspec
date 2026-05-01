@@ -22,5 +22,8 @@
   <files>
     <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.I2c.dll" target="lib\net48" />
     <file src="$TargetDir$System.Device.I2c.dll" target="lib\net48" />
+    <file src="..\GHIElectronics.TinyCLR.Devices.I2c.Desktop\bin\Debug\GHIElectronics.TinyCLR.Devices.I2c.dll" target="desktop-shim" />
+    <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.I2c.dll" target="tinyclr" />
+    <file src="$ProjectDir$GHIElectronics.TinyCLR.Devices.I2c.props" target="build\net48" />
   </files>
 </package>
