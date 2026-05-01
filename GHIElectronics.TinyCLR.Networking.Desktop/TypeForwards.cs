@@ -29,9 +29,11 @@ using System.Runtime.CompilerServices;
 [assembly: TypeForwardedTo(typeof(System.Net.Sockets.SocketOptionLevel))]
 [assembly: TypeForwardedTo(typeof(System.Net.Sockets.SocketOptionName))]
 [assembly: TypeForwardedTo(typeof(System.Net.Sockets.SelectMode))]
+[assembly: TypeForwardedTo(typeof(System.Net.Sockets.SocketShutdown))]
 [assembly: TypeForwardedTo(typeof(System.Net.Sockets.MulticastOption))]
 [assembly: TypeForwardedTo(typeof(System.Net.Sockets.NetworkStream))]
 [assembly: TypeForwardedTo(typeof(System.Net.Sockets.TcpClient))]
+[assembly: TypeForwardedTo(typeof(System.Net.Sockets.TcpListener))]
 [assembly: TypeForwardedTo(typeof(System.Net.Sockets.UdpClient))]
 
 // System.Net.Security (in System.dll on .NET Framework 4.8)

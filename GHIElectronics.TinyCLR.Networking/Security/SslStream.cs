@@ -33,7 +33,7 @@ namespace System.Net.Security {
 
         public void AuthenticateAsClient(string targetHost, X509Certificate caCertificate, X509Certificate clientCertificate) => this.AuthenticateAsClient(targetHost, caCertificate, clientCertificate, SslProtocols.None);
 
-        public void AuthenticateAsClient(string targetHost, X509Certificate caCertificate, X509Certificate clientCertificate, SslProtocols sslProtocols) => this.AuthenticateAsClient(targetHost, caCertificate, clientCertificate, SslProtocols.None, SslVerification.Optional);
+        public void AuthenticateAsClient(string targetHost, X509Certificate caCertificate, X509Certificate clientCertificate, SslProtocols sslProtocols) => this.AuthenticateAsClient(targetHost, caCertificate, clientCertificate, sslProtocols, SslVerification.Optional);
 
         public void AuthenticateAsClient(string targetHost, X509Certificate caCertificate, X509Certificate clientCertificate, SslProtocols sslProtocols, SslVerification sslVerification) => this.sslHandle = this.ni.AuthenticateAsClient(this._socket.m_Handle, targetHost, caCertificate, clientCertificate, sslProtocols, sslVerification);
 
@@ -164,7 +164,7 @@ namespace System.Net.Security {
             }
 
             if (DateTime.Now.Ticks > expired) {
-                throw new Exception("Socket error timeout.");
+                throw new IOException("SSL write timed out.");
             }
 
             if (totalSent != size)

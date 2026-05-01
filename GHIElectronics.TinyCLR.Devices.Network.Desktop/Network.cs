@@ -343,6 +343,7 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
             // only matter if user code instantiates a TinyCLR socket directly.
             public int Create(AddressFamily addressFamily, SocketType socketType, ProtocolType protocolType) => 0;
             public void Close(int socket) { }
+            public void Shutdown(int socket, SocketShutdown how) { }
             public void Bind(int socket, SocketAddress address) { }
             public void Listen(int socket, int backlog) { }
             public int Accept(int socket) => 0;

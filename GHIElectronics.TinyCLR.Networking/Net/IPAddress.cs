@@ -34,7 +34,7 @@ namespace System.Net {
         public override bool Equals(object obj) {
             var addr = obj as IPAddress;
 
-            if (obj == null) return false;
+            if (addr == null) return false;
 
             return this.m_Address == addr.m_Address;
         }
@@ -46,6 +46,17 @@ namespace System.Net {
                 (byte)(this.m_Address >> 16),
                 (byte)(this.m_Address >> 24)
             };
+
+        public static bool TryParse(string ipString, out IPAddress address) {
+            try {
+                address = Parse(ipString);
+                return true;
+            }
+            catch {
+                address = null;
+                return false;
+            }
+        }
 
         public static IPAddress Parse(string ipString) {
             if (ipString == null)
@@ -80,6 +91,32 @@ namespace System.Net {
         }
 
         public override int GetHashCode() => unchecked((int)this.m_Address);
+
+        // ----------------------------------------------------------------
+        // Static helpers — match full .NET surface so binary-protocol code
+        // (port packing, raw socket payloads) ports without conditionals.
+        // ----------------------------------------------------------------
+
+        public static bool IsLoopback(IPAddress address) {
+            if (address == null) throw new ArgumentNullException(nameof(address));
+            // 127.0.0.0/8. Match any address whose first octet is 127.
+            return ((byte)address.m_Address) == 127;
+        }
+
+        public static short HostToNetworkOrder(short host) =>
+            unchecked((short)((host & 0xFF) << 8 | (host >> 8) & 0xFF));
+
+        public static int HostToNetworkOrder(int host) =>
+            unchecked((int)(((uint)HostToNetworkOrder((short)host) & 0xFFFF) << 16
+                         | ((uint)HostToNetworkOrder((short)(host >> 16)) & 0xFFFF)));
+
+        public static long HostToNetworkOrder(long host) =>
+            unchecked(((long)HostToNetworkOrder((int)host) & 0xFFFFFFFFL) << 32
+                   | ((long)HostToNetworkOrder((int)(host >> 32)) & 0xFFFFFFFFL));
+
+        public static short NetworkToHostOrder(short network) => HostToNetworkOrder(network);
+        public static int NetworkToHostOrder(int network) => HostToNetworkOrder(network);
+        public static long NetworkToHostOrder(long network) => HostToNetworkOrder(network);
 
         public override string ToString() => ((byte)(this.m_Address)).ToString() +
                     "." +

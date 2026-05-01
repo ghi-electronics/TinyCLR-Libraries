@@ -11,6 +11,9 @@
     <AssemblyName>GHIElectronics.TinyCLR.Devices.Network</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <!-- CS0067 / CS0649: shim events / fields are kept for ABI parity with
+         impl but never raised / assigned in the no-op Desktop body. -->
+    <NoWarn>CS0067;CS0649</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>

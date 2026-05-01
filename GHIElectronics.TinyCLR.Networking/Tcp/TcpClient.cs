@@ -274,21 +274,23 @@ namespace System.Net.Sockets
                         // still be there and needs to be closed. In the case in which
                         // we are bound to a local IPEndPoint this will remove the
                         // binding and free up the IPEndPoint for later uses.
-                        //Socket chkClientSocket = Volatile.Read(ref this._clientSocket);
-                        //if (chkClientSocket != null)
-                        //{
-                        //    try
-                        //    {
-                        //        chkClientSocket.InternalShutdown(SocketShutdown.Both);
-                        //    }
-                        //    finally
-                        //    {
-                        //        chkClientSocket.Close();
-                        //    }
-                        //}
+                        // Match full .NET: graceful half-close in both
+                        // directions before close. lwIP delivers a FIN to the
+                        // peer so a remote side sees a clean shutdown rather
+                        // than RST. Best-effort — Shutdown errors are
+                        // ignored; the Close() below cleans up regardless.
+                        var chk = this._clientSocket;
+                        if (chk != null) {
+                            try {
+                                chk.Shutdown(SocketShutdown.Both);
+                            }
+                            catch { /* swallow */ }
+                            try {
+                                chk.Close();
+                            }
+                            catch { /* swallow */ }
+                        }
 
-                        this.Client.Close();    
-                        
                     }
 
                     GC.SuppressFinalize(this);

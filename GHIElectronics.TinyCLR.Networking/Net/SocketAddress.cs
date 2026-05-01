@@ -33,6 +33,40 @@ namespace System.Net {
             set => this.m_Buffer[offset] = value;
         }
 
+        public override bool Equals(object comparand) {
+            var other = comparand as SocketAddress;
+            if (other == null || this.Size != other.Size) return false;
+            for (var i = 0; i < this.Size; i++) {
+                if (this[i] != other[i]) return false;
+            }
+            return true;
+        }
+
+        public override int GetHashCode() {
+            // FNV-1a over the buffer. Stable across runs; cheap on embedded.
+            var hash = unchecked((int)2166136261);
+            for (var i = 0; i < this.m_Buffer.Length; i++) {
+                hash = unchecked((hash ^ this.m_Buffer[i]) * 16777619);
+            }
+            return hash;
+        }
+
+        public override string ToString() {
+            // Matches full .NET shape: "Family:Size:{b2,b3,...}" — skips the
+            // 2 leading family bytes since those are already shown.
+            var sb = new System.Text.StringBuilder();
+            sb.Append(this.Family.ToString());
+            sb.Append(":");
+            sb.Append(this.Size.ToString());
+            sb.Append(":{");
+            for (var i = 2; i < this.Size; i++) {
+                if (i > 2) sb.Append(",");
+                sb.Append(this.m_Buffer[i].ToString());
+            }
+            sb.Append("}");
+            return sb.ToString();
+        }
+
     } // class SocketAddress
 } // namespace System.Net
 

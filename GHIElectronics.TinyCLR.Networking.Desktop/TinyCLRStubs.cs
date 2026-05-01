@@ -15,6 +15,7 @@ namespace GHIElectronics.TinyCLR.Networking {
     public interface INetworkProvider {
         int Create(AddressFamily addressFamily, SocketType socketType, ProtocolType protocolType);
         void Close(int socket);
+        void Shutdown(int socket, SocketShutdown how);
         void Bind(int socket, SocketAddress address);
         void Listen(int socket, int backlog);
         int Accept(int socket);

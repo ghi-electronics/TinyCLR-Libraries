@@ -19,6 +19,10 @@ namespace System.Net
     [Serializable]
     public abstract class EndPoint
     {
+        // Default returns Unspecified, matching full .NET. Concrete subclasses
+        // (e.g. IPEndPoint) override to surface their actual family.
+        public virtual AddressFamily AddressFamily => AddressFamily.Unspecified;
+
         public abstract SocketAddress Serialize();
         public abstract EndPoint Create(SocketAddress socketAddress);
 

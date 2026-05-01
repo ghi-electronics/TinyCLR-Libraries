@@ -11,6 +11,12 @@
     <AssemblyName>GHIElectronics.TinyCLR.Devices.Uart</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <!-- CS0436: SystemIoPortsCompat.cs redefines System.IO.Ports.* types
+         that also live in framework System.dll. The compiler picks our
+         types (matches impl-side identity); runtime works.
+         CS0067 / CS0649: shim events / fields are kept for ABI parity but
+         never raised / assigned in the no-op Desktop body. -->
+    <NoWarn>CS0436;CS0067;CS0649</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>

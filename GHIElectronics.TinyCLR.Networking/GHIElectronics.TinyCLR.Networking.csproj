@@ -59,9 +59,11 @@
     <Compile Include="Sockets\SocketFlags.cs" />
     <Compile Include="Sockets\SocketOptionLevel.cs" />
     <Compile Include="Sockets\SocketOptionName.cs" />
+    <Compile Include="Sockets\SocketShutdown.cs" />
     <Compile Include="Sockets\SocketType.cs" />
     <Compile Include="SystemInfo.cs" />
     <Compile Include="Tcp\TcpClient.cs" />
+    <Compile Include="Tcp\TcpListener.cs" />
     <Compile Include="Udp\UDPClient.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -78,6 +80,12 @@
       <Name>GHIElectronics.TinyCLR.Networking.Desktop</Name>
       <ReferenceOutputAssembly>False</ReferenceOutputAssembly>
       <Private>False</Private>
+    </ProjectReference>
+    <!-- Compile-only reference to Native for Dns.GetHostName() — uses
+         DeviceInformation.DeviceName as the device's "host name". -->
+    <ProjectReference Include="..\GHIElectronics.TinyCLR.Native\GHIElectronics.TinyCLR.Native.csproj">
+      <Project>{B602474A-AEB0-491C-832B-7EAF0B4511C0}</Project>
+      <Name>GHIElectronics.TinyCLR.Native</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
