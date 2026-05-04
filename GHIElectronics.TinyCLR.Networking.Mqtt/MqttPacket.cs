@@ -95,7 +95,7 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
         internal const byte CLEAN_SESSION_FLAG_OFFSET = 0x01;
 
         // public
-        public byte[] Data { get; internal set; }
+        public byte[] Payload { get; internal set; }
         public uint PacketId { get; internal set; }
         public bool IsPublished { get; internal set; }
 
@@ -109,10 +109,10 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
         internal PacketDirection Direction { get; set; }
         internal int RetryCount { get; set; }
         internal string ClientId { get; set; }
-        internal bool LastWillRetain { get; set; }
+        internal bool Retain { get; set; }
         internal bool CleanSession { get; set; }
-        internal QoSLevel LastWillQosLevel { get; set; }
-        internal string LastWillTopic { get; set; }
+        internal QoSLevel QosLevel { get; set; }
+        internal string Topic { get; set; }
         internal string Username { get; set; }
         internal string Password { get; set; }
         internal int KeepAliveTimeout { get; set; } = 60;
@@ -178,7 +178,7 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
 
                 connectFlags |= (usernameToBytes != null) ? (byte)(1 << USERNAME_FLAG_OFFSET) : (byte)0x00;
                 connectFlags |= (passwordToBytes != null) ? (byte)(1 << PASSWORD_FLAG_OFFSET) : (byte)0x00;
-                connectFlags |= (this.LastWillRetain) ? (byte)(1 << LASTWILLRETAIN_FLAG_OFFSET) : (byte)0x00;
+                connectFlags |= (this.Retain) ? (byte)(1 << LASTWILLRETAIN_FLAG_OFFSET) : (byte)0x00;
 
                 connectFlags |= (this.CleanSession) ? (byte)(1 << CLEAN_SESSION_FLAG_OFFSET) : (byte)0x00;
                 buffer[index++] = connectFlags;
@@ -260,17 +260,17 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
                 buffer[index++] = (byte)(this.PacketId & 0x00FF);
             }
             else if (this.Type == PacketType.Publish) {
-                var topicToBytes = Encoding.UTF8.GetBytes(this.LastWillTopic);
+                var topicToBytes = Encoding.UTF8.GetBytes(this.Topic);
 
                 vheaderSize += topicToBytes.Length + 2;
 
-                if ((this.LastWillQosLevel == QoSLevel.LeastOnce) ||
-                    (this.LastWillQosLevel == QoSLevel.ExactlyOnce)) {
+                if ((this.QosLevel == QoSLevel.LeastOnce) ||
+                    (this.QosLevel == QoSLevel.ExactlyOnce)) {
                     vheaderSize += 2; //packet id 2 bytes;
                 }
 
-                if (this.Data != null)
-                    payloadSize += this.Data.Length;
+                if (this.Payload != null)
+                    payloadSize += this.Payload.Length;
 
                 remainSize += (vheaderSize + payloadSize);
                 fheaderSize = 1;
@@ -285,9 +285,9 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
                 buffer = new byte[fheaderSize + vheaderSize + payloadSize];
 
                 buffer[index] = (byte)(((byte)PacketType.Publish << PACKET_TYPE_OFFSET) |
-                                       ((byte)this.LastWillQosLevel << QOS_LEVEL_OFFSET));
+                                       ((byte)this.QosLevel << QOS_LEVEL_OFFSET));
                 buffer[index] |= this.IsDuplicated ? (byte)(1 << DUPLICATE_FLAG_OFFSET) : (byte)0x00;
-                buffer[index] |= this.LastWillRetain ? (byte)(1 << RETAIN_FLAG_OFFSET) : (byte)0x00;
+                buffer[index] |= this.Retain ? (byte)(1 << RETAIN_FLAG_OFFSET) : (byte)0x00;
                 index++;
 
                 index = RemainingSizeToPacket(remainSize, buffer, index);
@@ -297,8 +297,8 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
                 Array.Copy(topicToBytes, 0, buffer, index, topicToBytes.Length);
                 index += topicToBytes.Length;
 
-                if ((this.LastWillQosLevel == QoSLevel.LeastOnce) ||
-                    (this.LastWillQosLevel == QoSLevel.ExactlyOnce)) {
+                if ((this.QosLevel == QoSLevel.LeastOnce) ||
+                    (this.QosLevel == QoSLevel.ExactlyOnce)) {
                     if (this.PacketId == 0)
                         throw new Exception("PacketId cannot be 0.");
 
@@ -306,8 +306,8 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
                     buffer[index++] = (byte)(this.PacketId & 0x00FF);
                 }
 
-                if (this.Data != null) {
-                    Array.Copy(this.Data, 0, buffer, index, this.Data.Length);
+                if (this.Payload != null) {
+                    Array.Copy(this.Payload, 0, buffer, index, this.Payload.Length);
                 }
             }
 
@@ -448,31 +448,11 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
                 buffer[index++] = (byte)((this.PacketId >> 8) & 0x00FF);
                 buffer[index++] = (byte)(this.PacketId & 0x00FF);
             }
-            else if (this.Type == PacketType.PubComp) {
-                vheaderSize += 2;//packet id 2 bytes;
-
-                remainSize += (vheaderSize + payloadSize);
-
-                fheaderSize = 1;
-
-                var temp = remainSize;
-
-                do {
-                    fheaderSize++;
-                    temp = temp / 128;
-                } while (temp > 0);
-
-                buffer = new byte[fheaderSize + vheaderSize + payloadSize];
-
-                buffer[index++] = ((byte)PacketType.PubComp << PACKET_TYPE_OFFSET) | PACKET_PUBCOMP_FLAG_BITS;
-
-                index = RemainingSizeToPacket(remainSize, buffer, index);
-
-                buffer[index++] = (byte)((this.PacketId >> 8) & 0x00FF);
-                buffer[index++] = (byte)(this.PacketId & 0x00FF);
-            }
             else if (this.Type == PacketType.Suback) {
-                while (true) ;
+                // Server-to-client only. Reaching here means a Suback got
+                // queued for send, which is a programming error. Don't lock
+                // up the firmware â€” surface it.
+                throw new InvalidOperationException("Suback packets are server-to-client only and cannot be encoded for send.");
             }
 
             return buffer;

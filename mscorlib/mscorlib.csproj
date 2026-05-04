@@ -212,6 +212,7 @@
     <Compile Include="Threading\ThreadStart.cs" />
     <Compile Include="Threading\ThreadState.cs" />
     <Compile Include="Threading\Timeout.cs" />
+    <Compile Include="TimeoutException.cs" />
     <Compile Include="Threading\Timer.cs" />
     <Compile Include="Threading\WaitHandle.cs" />
     <Compile Include="Threading\Tasks\Task.cs" />
