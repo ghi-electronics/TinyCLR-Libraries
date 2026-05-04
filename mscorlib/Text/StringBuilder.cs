@@ -803,6 +803,16 @@ namespace System.Text {
         /// </summary>
         public StringBuilder AppendLine() => this.Append(Environment.NewLine);
 
+        public StringBuilder AppendFormat(string format, object arg0) => this.Append(string.Format(format, arg0));
+
+        public StringBuilder AppendFormat(string format, object arg0, object arg1) => this.Append(string.Format(format, arg0, arg1));
+
+        public StringBuilder AppendFormat(string format, object arg0, object arg1, object arg2) => this.Append(string.Format(format, arg0, arg1, arg2));
+
+        public StringBuilder AppendFormat(string format, params object[] args) => this.Append(string.Format(format, args));
+
+        public StringBuilder AppendFormat(IFormatProvider provider, string format, params object[] args) => this.Append(string.Format(provider, format, args));
+
         #endregion
 
         #region Internals
