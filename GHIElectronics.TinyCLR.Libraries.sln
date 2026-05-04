@@ -317,6 +317,11 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.IO.TinyFileSystem", "GHIElectronics.TinyCLR.IO.TinyFileSystem\GHIElectronics.TinyCLR.IO.TinyFileSystem.csproj", "{7E6353A4-B6DF-4742-95BC-2C0182FD9A3C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Networking.Ftp", "GHIElectronics.TinyCLR.Networking.Ftp\GHIElectronics.TinyCLR.Networking.Ftp.csproj", "{7D5D449A-E1A6-4232-8132-C7C982187560}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A6B7C8D9-E1F2-4A3B-8C4D-5E6F7A8B9C2D} = {A6B7C8D9-E1F2-4A3B-8C4D-5E6F7A8B9C2D}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Networking.Ftp.Desktop", "GHIElectronics.TinyCLR.Networking.Ftp.Desktop\GHIElectronics.TinyCLR.Networking.Ftp.Desktop.csproj", "{A6B7C8D9-E1F2-4A3B-8C4D-5E6F7A8B9C2D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.RegularExpressions", "GHIElectronics.TinyCLR.RegularExpressions\GHIElectronics.TinyCLR.RegularExpressions.csproj", "{4F7F4E0D-676E-42AC-AE13-991EDD5121E7}"
 EndProject
@@ -650,6 +655,10 @@ Global
 		{7D5D449A-E1A6-4232-8132-C7C982187560}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7D5D449A-E1A6-4232-8132-C7C982187560}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7D5D449A-E1A6-4232-8132-C7C982187560}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A6B7C8D9-E1F2-4A3B-8C4D-5E6F7A8B9C2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6B7C8D9-E1F2-4A3B-8C4D-5E6F7A8B9C2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A6B7C8D9-E1F2-4A3B-8C4D-5E6F7A8B9C2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A6B7C8D9-E1F2-4A3B-8C4D-5E6F7A8B9C2D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4F7F4E0D-676E-42AC-AE13-991EDD5121E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4F7F4E0D-676E-42AC-AE13-991EDD5121E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4F7F4E0D-676E-42AC-AE13-991EDD5121E7}.Release|Any CPU.ActiveCfg = Release|Any CPU

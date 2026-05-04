@@ -1,5 +1,10 @@
+extern alias ours;
+using WebRequest = ours::System.Net.WebRequest;
+using WebResponse = ours::System.Net.WebResponse;
+using NetworkCredential = ours::System.Net.NetworkCredential;
 using System.Collections;
 using System.IO;
+using System.Net.Security;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
@@ -48,8 +53,14 @@ namespace System.Net {
 
         private AutoResetEvent m_StreamReady = new AutoResetEvent(false);   // event to indicate that data connection has been established
 
-        private NetworkStream m_DataStream = null;      // data connnection stream
+        private Stream m_DataStream = null;             // data connection stream (NetworkStream or SslStream)
         private FtpWebResponse m_FtpResponse = null;    // the ftp response
+
+        // FTPS state. m_CommandStream is set to an SslStream wrapping CommandSocket
+        // after a successful AUTH TLS handshake; null until then. All command I/O
+        // routes through SendCommand/ReceiveCommand below so the same code path
+        // handles plaintext (Socket.Send/Receive) and TLS (m_CommandStream).
+        private SslStream m_CommandStream = null;
 
         internal bool DataSocketReady = false;          // indicates that the data transmission has started
         internal bool TransmissionFinished = false;     // indicates that the data transmission has finished
@@ -135,12 +146,7 @@ namespace System.Net {
         /// </summary>
         public bool EnableSsl {
             get => m_EnableSsl;
-            set {
-                if (value && !m_EnableSsl) {
-                    throw new NotSupportedException("FTPS (EnableSsl) is not supported on TinyCLR.");
-                }
-                m_EnableSsl = value;
-            }
+            set => m_EnableSsl = value;
         }
 
         /// <summary>
@@ -356,7 +362,7 @@ namespace System.Net {
                     //}
                     //command += "\r\n";
                     //System.Diagnostics.Debug.WriteLine("Command:\t" + command);
-                    //CommandSocket.Send(Encoding.UTF8.GetBytes(command));
+                    //SendCommand(Encoding.UTF8.GetBytes(command));
                     //responseNumber = WaitResponse();
                     //if (responseNumber != 250) {
                     //    // change directory failed
@@ -370,7 +376,7 @@ namespace System.Net {
                 }
                 command = "MKD " + RequestPath[RequestPath.Length - 2] + "\r\n";
                 System.Diagnostics.Debug.WriteLine("Command:\tMKD " + RequestPath[RequestPath.Length - 2]);
-                CommandSocket.Send(Encoding.UTF8.GetBytes(command));
+                SendCommand(Encoding.UTF8.GetBytes(command));
                 responseNumber = WaitResponse();
                 if (responseNumber != 257) {
                     System.Diagnostics.Debug.WriteLine("cannot create directory with wrong number: " + responseNumber.ToString());
@@ -408,7 +414,7 @@ namespace System.Net {
                     //}
                     //command += "\r\n";
                     //System.Diagnostics.Debug.WriteLine("Command:\t" + command);
-                    //CommandSocket.Send(Encoding.UTF8.GetBytes(command));
+                    //SendCommand(Encoding.UTF8.GetBytes(command));
                     //responseNumber = WaitResponse();
                     //if (responseNumber != 250) {
                     //    // change directory failed
@@ -421,7 +427,7 @@ namespace System.Net {
                 }
                 command = "RMD " + RequestPath[RequestPath.Length - 2] + "\r\n";
                 System.Diagnostics.Debug.WriteLine("Command:\tRMD " + RequestPath[RequestPath.Length - 2]);
-                CommandSocket.Send(Encoding.UTF8.GetBytes(command));
+                SendCommand(Encoding.UTF8.GetBytes(command));
                 responseNumber = WaitResponse();
                 if (responseNumber != 250) {
                     System.Diagnostics.Debug.WriteLine("cannot remove directory with wrong number: " + responseNumber.ToString());
@@ -456,7 +462,7 @@ namespace System.Net {
                 //}
                 //System.Diagnostics.Debug.WriteLine("Command:\t" + command);
                 //command += "\r\n";
-                //CommandSocket.Send(Encoding.UTF8.GetBytes(command));
+                //SendCommand(Encoding.UTF8.GetBytes(command));
                 //int responseNumber = WaitResponse();
                 //if (responseNumber != 250) {
                 //    // change directory failed
@@ -473,7 +479,7 @@ namespace System.Net {
 
                 command = "DELE " + RequestPath[RequestPath.Length - 1] + "\r\n";
                 System.Diagnostics.Debug.WriteLine("Command:\tDELE " + RequestPath[RequestPath.Length - 1]);
-                CommandSocket.Send(Encoding.UTF8.GetBytes(command));
+                SendCommand(Encoding.UTF8.GetBytes(command));
                 responseNumber = WaitResponse();
                 if (responseNumber != 250) {
                     System.Diagnostics.Debug.WriteLine("deletion fail with wrong number: " + responseNumber.ToString());
@@ -518,7 +524,7 @@ namespace System.Net {
                 //}
                 //command += "\r\n";
                 //System.Diagnostics.Debug.WriteLine("Command:\t" + command);
-                //CommandSocket.Send(Encoding.UTF8.GetBytes(command));
+                //SendCommand(Encoding.UTF8.GetBytes(command));
                 //int responseNumber = WaitResponse();
                 //if (responseNumber != 250) {
                 //    // change directory failed
@@ -532,7 +538,7 @@ namespace System.Net {
 
                 command = "RNFR " + RequestPath[oldIndex] + "\r\n";
                 System.Diagnostics.Debug.WriteLine("Command:\tRNFR " + RequestPath[oldIndex]);
-                CommandSocket.Send(Encoding.UTF8.GetBytes(command));
+                SendCommand(Encoding.UTF8.GetBytes(command));
                 responseNumber = WaitResponse();
                 if (responseNumber != 350) {
                     System.Diagnostics.Debug.WriteLine("REFR fail with wrong number: " + responseNumber.ToString());
@@ -546,7 +552,7 @@ namespace System.Net {
                 }
                 command = "RNTO " + RenameTo + "\r\n";
                 System.Diagnostics.Debug.WriteLine("Command:\tRNTO " + RenameTo);
-                CommandSocket.Send(Encoding.UTF8.GetBytes(command));
+                SendCommand(Encoding.UTF8.GetBytes(command));
                 responseNumber = WaitResponse();
                 if (responseNumber != 250) {
                     System.Diagnostics.Debug.WriteLine("RETO fail with wrong number: " + responseNumber.ToString());
@@ -597,7 +603,7 @@ namespace System.Net {
                 //}
                 //System.Diagnostics.Debug.WriteLine("Command:\t" + command);
                 //command += "\r\n";
-                //CommandSocket.Send(Encoding.UTF8.GetBytes(command));
+                //SendCommand(Encoding.UTF8.GetBytes(command));
                 //int responseNumber = WaitResponse();
                 //if (responseNumber != 250) {
                 //    // change directory failed
@@ -618,7 +624,7 @@ namespace System.Net {
                     FTPActivePort = (listenSocket.LocalEndPoint as IPEndPoint).Port;
                     command = "PORT " + FormatFTPAddress(FTPActiveAddress, FTPActivePort) + "\r\n";
                     System.Diagnostics.Debug.WriteLine("Command:\tPORT " + FTPActiveAddress + ":" + FTPActivePort);
-                    CommandSocket.Send(Encoding.UTF8.GetBytes(command));
+                    SendCommand(Encoding.UTF8.GetBytes(command));
                     responseNumber = WaitResponse();
                     while (responseNumber == 230) {
                         responseNumber = WaitResponse();
@@ -628,7 +634,7 @@ namespace System.Net {
                         m_StatusCode = FTPStatusCode.CommandFailed;
                         return;
                     }
-                    CommandSocket.Send(Encoding.UTF8.GetBytes("RETR " + RequestPath[RequestPath.Length - 1] + "\r\n"));
+                    SendCommand(Encoding.UTF8.GetBytes("RETR " + RequestPath[RequestPath.Length - 1] + "\r\n"));
                     responseNumber = WaitResponse();
                     if (!SetStatusCode(responseNumber)) {
                         return;
@@ -638,7 +644,7 @@ namespace System.Net {
                         DataSocket = listenSocket.Accept();
                     }
 
-                    m_DataStream = new NetworkStream(DataSocket);
+                    m_DataStream = WrapDataStream(DataSocket, false);
                     m_FtpResponse = new FtpWebResponse(m_DataStream);
 
                     DataSocketReady = true;
@@ -688,7 +694,7 @@ namespace System.Net {
                 //}
                 //System.Diagnostics.Debug.WriteLine("Command:\t" + command);
                 //command += "\r\n";
-                //CommandSocket.Send(Encoding.UTF8.GetBytes(command));
+                //SendCommand(Encoding.UTF8.GetBytes(command));
                 //int responseNumber = WaitResponse();
                 //if (responseNumber != 250) {
                 //    // change directory failed
@@ -704,7 +710,7 @@ namespace System.Net {
                 int responseNumber;
 
                 System.Diagnostics.Debug.WriteLine("Command:\tTYPE " + TypeCode);
-                CommandSocket.Send(Encoding.UTF8.GetBytes("TYPE " + TypeCode + "\r\n"));
+                SendCommand(Encoding.UTF8.GetBytes("TYPE " + TypeCode + "\r\n"));
                 responseNumber = WaitResponse();
                 if (responseNumber != 200) {
                     return;
@@ -716,7 +722,7 @@ namespace System.Net {
                     FTPActivePort = (listenSocket.LocalEndPoint as IPEndPoint).Port;
                     command = "PORT " + FormatFTPAddress(FTPActiveAddress, FTPActivePort) + "\r\n";
                     System.Diagnostics.Debug.WriteLine("Command:\tPORT " + FTPActiveAddress + ":" + FTPActivePort);
-                    CommandSocket.Send(Encoding.UTF8.GetBytes(command));
+                    SendCommand(Encoding.UTF8.GetBytes(command));
                     responseNumber = WaitResponse();
                     while (responseNumber == 230) {
                         responseNumber = WaitResponse();
@@ -728,7 +734,7 @@ namespace System.Net {
                     }
 
                     System.Diagnostics.Debug.WriteLine("Command:\tSTOR " + RequestPath[RequestPath.Length - 1]);
-                    CommandSocket.Send(Encoding.UTF8.GetBytes("STOR " + RequestPath[RequestPath.Length - 1] + "\r\n"));
+                    SendCommand(Encoding.UTF8.GetBytes("STOR " + RequestPath[RequestPath.Length - 1] + "\r\n"));
                     responseNumber = WaitResponse();
                     if (!SetStatusCode(responseNumber)) {
                         return;
@@ -738,7 +744,7 @@ namespace System.Net {
                         DataSocket = listenSocket.Accept();
                     }
 
-                    m_DataStream = new NetworkStream(DataSocket, true);
+                    m_DataStream = WrapDataStream(DataSocket, true);
                     m_FtpResponse = new FtpWebResponse(m_DataStream);
                     DataSocketReady = true;
 
@@ -780,7 +786,7 @@ namespace System.Net {
                 //}
                 //System.Diagnostics.Debug.WriteLine("Command:\t" + command);
                 //command += "\r\n";
-                //CommandSocket.Send(Encoding.UTF8.GetBytes(command));
+                //SendCommand(Encoding.UTF8.GetBytes(command));
                 //int responseNumber = WaitResponse();
                 //if (responseNumber != 250) {
                 //    // change directory failed
@@ -801,7 +807,7 @@ namespace System.Net {
                     FTPActivePort = (listenSocket.LocalEndPoint as IPEndPoint).Port;
                     command = "PORT " + FormatFTPAddress(FTPActiveAddress, FTPActivePort) + "\r\n";
                     System.Diagnostics.Debug.WriteLine("Command:\tPORT " + FTPActiveAddress + ":" + FTPActivePort);
-                    CommandSocket.Send(Encoding.UTF8.GetBytes(command));
+                    SendCommand(Encoding.UTF8.GetBytes(command));
                     responseNumber = WaitResponse();
                     while (responseNumber == 230) {
                         responseNumber = WaitResponse();
@@ -811,7 +817,7 @@ namespace System.Net {
                         m_StatusCode = FTPStatusCode.CommandFailed;
                         return;
                     }
-                    CommandSocket.Send(Encoding.UTF8.GetBytes("NLST\r\n"));
+                    SendCommand(Encoding.UTF8.GetBytes("NLST\r\n"));
                     responseNumber = WaitResponse();
                     if (!SetStatusCode(responseNumber)) {
                         return;
@@ -822,7 +828,7 @@ namespace System.Net {
                     }
 
                     DataSocketReady = true;
-                    m_DataStream = new NetworkStream(DataSocket);
+                    m_DataStream = WrapDataStream(DataSocket, false);
                     m_FtpResponse = new FtpWebResponse(m_DataStream);
                     m_StreamReady.Set();
 
@@ -864,7 +870,7 @@ namespace System.Net {
                 //}
                 //System.Diagnostics.Debug.WriteLine("Command:\t" + command);
                 //command += "\r\n";
-                //CommandSocket.Send(Encoding.UTF8.GetBytes(command));
+                //SendCommand(Encoding.UTF8.GetBytes(command));
                 //int responseNumber = WaitResponse();
                 //if (responseNumber != 250) {
                 //    // change directory failed
@@ -885,7 +891,7 @@ namespace System.Net {
                     FTPActivePort = (listenSocket.LocalEndPoint as IPEndPoint).Port;
                     command = "PORT " + FormatFTPAddress(FTPActiveAddress, FTPActivePort) + "\r\n";
                     System.Diagnostics.Debug.WriteLine("Command:\tPORT " + FTPActiveAddress + ":" + FTPActivePort);
-                    CommandSocket.Send(Encoding.UTF8.GetBytes(command));
+                    SendCommand(Encoding.UTF8.GetBytes(command));
                     responseNumber = WaitResponse();
                     while (responseNumber == 230) {
                         responseNumber = WaitResponse();
@@ -895,7 +901,7 @@ namespace System.Net {
                         m_StatusCode = FTPStatusCode.CommandFailed;
                         return;
                     }
-                    CommandSocket.Send(Encoding.UTF8.GetBytes("LIST\r\n"));
+                    SendCommand(Encoding.UTF8.GetBytes("LIST\r\n"));
                     responseNumber = WaitResponse();
                     if (!SetStatusCode(responseNumber)) {
                         return;
@@ -906,7 +912,7 @@ namespace System.Net {
                     }
 
                     DataSocketReady = true;
-                    m_DataStream = new NetworkStream(DataSocket);
+                    m_DataStream = WrapDataStream(DataSocket, false);
                     m_FtpResponse = new FtpWebResponse(m_DataStream);
                     m_StreamReady.Set();
 
@@ -939,7 +945,7 @@ namespace System.Net {
             }
             System.Diagnostics.Debug.WriteLine("Command:\t" + command);
             command += "\r\n";
-            CommandSocket.Send(Encoding.UTF8.GetBytes(command));
+            SendCommand(Encoding.UTF8.GetBytes(command));
             int responseNumber = WaitResponse();
             if (responseNumber == 250) {
                 return true;
@@ -985,6 +991,40 @@ namespace System.Net {
         /// </summary>
         /// <param name="timeout">specify the time to wait for a response</param>
         /// <returns></returns>
+        // Send a command on the control connection - uses TLS if AUTH TLS upgraded.
+        private void SendCommand(byte[] bytes) {
+            if (m_CommandStream != null) {
+                m_CommandStream.Write(bytes, 0, bytes.Length);
+                m_CommandStream.Flush();
+            }
+            else {
+                CommandSocket.Send(bytes);
+            }
+        }
+
+        // Read a chunk from the control connection. With SslStream, Read() blocks
+        // until decrypted bytes arrive, so we don't pre-poll. Without SSL, retain
+        // the existing Poll/Available pattern so callers can detect socket errors.
+        private int ReceiveCommand(byte[] buffer) {
+            if (m_CommandStream != null) {
+                return m_CommandStream.Read(buffer, 0, buffer.Length);
+            }
+            return CommandSocket.Receive(buffer, buffer.Length, 0);
+        }
+
+        // Build the data-channel stream. Plain NetworkStream when EnableSsl=false;
+        // an SslStream wrapping it when EnableSsl=true (after PBSZ 0 / PROT P
+        // negotiation has succeeded in Login).
+        private Stream WrapDataStream(Socket dataSocket, bool ownsSocket) {
+            if (m_EnableSsl) {
+                var ns = new NetworkStream(dataSocket, ownsSocket);
+                var ssl = new SslStream(ns, leaveInnerStreamOpen: false);
+                ssl.AuthenticateAsClient(m_RequestUri.Host);
+                return ssl;
+            }
+            return new NetworkStream(dataSocket, ownsSocket);
+        }
+
         private int WaitResponse(int timeout) {
             string bufferString = "";                       // using string to manage the buffer
             int readLength;
@@ -995,27 +1035,42 @@ namespace System.Net {
                 ResponseMessage = "Class disposed.";
                 return ResponseCode;
             }
-            //else if (ResponseStack == null) {
-            //    ResponseStack = new ArrayList();
-            //}
-            //else if (ResponseStack.Count > 0) {
-            //    ResponseStack.Clear();
-            //}
             while (!responseArrived) {
                 if (m_IsClosed) {
                     ResponseCode = 0;
                     ResponseMessage = "Class disposed.";
                     break;
                 }
-                // block the method until get something or throw a socket exception
-                //if (CommandSocket.Poll(1000 * timeout, SelectMode.SelectRead)) {
-                if (CommandSocket.Poll(-1, SelectMode.SelectRead)) {
-                    if (CommandSocket.Available == 0) {
-                        throw new SocketException(SocketError.SocketError);
-                    }
 
-                    var buffer = new byte[CommandSocket.Available];
-                    readLength = CommandSocket.Receive(buffer, buffer.Length, 0);
+                int avail;
+                if (m_CommandStream != null) {
+                    // SslStream framing means socket-level Available isn't accurate.
+                    // Use a fixed read buffer; Read() blocks until decrypted data arrives.
+                    avail = 4096;
+                }
+                else {
+                    if (!CommandSocket.Poll(-1, SelectMode.SelectRead)) {
+                        ResponseCode = -1;
+                        ResponseMessage = "Command socket polling error.";
+                        throw new SocketException((int)SocketError.SocketError);
+                    }
+                    if (CommandSocket.Available == 0) {
+                        throw new SocketException((int)SocketError.SocketError);
+                    }
+                    avail = CommandSocket.Available;
+                }
+
+                {
+                    var buffer = new byte[avail];
+                    readLength = ReceiveCommand(buffer);
+                    if (readLength <= 0) {
+                        throw new SocketException((int)SocketError.SocketError);
+                    }
+                    if (readLength != buffer.Length) {
+                        var trimmed = new byte[readLength];
+                        Array.Copy(buffer, trimmed, readLength);
+                        buffer = trimmed;
+                    }
 
                     bufferString += new string(Encoding.UTF8.GetChars(buffer));
 
@@ -1043,11 +1098,6 @@ namespace System.Net {
                         }
                         bufferString = tempArray[tempArray.Length - 1];
                     }
-                }
-                else {
-                    ResponseCode = -1;
-                    ResponseMessage = "Command socket polling error.";
-                    throw new SocketException(SocketError.SocketError);
                 }
             }
             System.Diagnostics.Debug.WriteLine("Response:\t" + ResponseCode + " " + ResponseMessage);
@@ -1148,9 +1198,24 @@ namespace System.Net {
                     return responseNumber;
                 }
 
+                // FTPS Explicit (FTPES): upgrade the control connection to TLS
+                // before sending credentials. Server replies 234 to AUTH TLS.
+                if (m_EnableSsl) {
+                    System.Diagnostics.Debug.WriteLine("Command:\tAUTH TLS");
+                    SendCommand(Encoding.UTF8.GetBytes("AUTH TLS\r\n"));
+                    responseNumber = WaitResponse();
+                    if (responseNumber != 234) {
+                        return responseNumber;
+                    }
+                    var ns = new NetworkStream(CommandSocket, ownsSocket: false);
+                    var ssl = new SslStream(ns, leaveInnerStreamOpen: false);
+                    ssl.AuthenticateAsClient(m_RequestUri.Host);
+                    m_CommandStream = ssl;
+                }
+
                 command = "USER " + m_Credential.UserName + "\r\n";
                 System.Diagnostics.Debug.WriteLine("Command:\tUSER " + m_Credential.UserName);
-                CommandSocket.Send(Encoding.UTF8.GetBytes(command));
+                SendCommand(Encoding.UTF8.GetBytes(command));
                 responseNumber = WaitResponse();
                 if (responseNumber != 331) {
                     // user name is not allowed
@@ -1159,11 +1224,27 @@ namespace System.Net {
 
                 command = "PASS " + m_Credential.Password + "\r\n";
                 System.Diagnostics.Debug.WriteLine("Command:\tPASS " + new string('*', m_Credential.Password.Length));
-                CommandSocket.Send(Encoding.UTF8.GetBytes(command));
+                SendCommand(Encoding.UTF8.GetBytes(command));
                 responseNumber = WaitResponse();
                 if (responseNumber != 230) {
                     // password does not match
                     return responseNumber;
+                }
+
+                // After login, on FTPS, set the protection-buffer size to 0
+                // (stream mode) and request a private (encrypted) data channel.
+                // Servers that don't honor PBSZ/PROT will reply >=400; the data
+                // transfer would then fail open, so treat both as login failure.
+                if (m_EnableSsl) {
+                    System.Diagnostics.Debug.WriteLine("Command:\tPBSZ 0");
+                    SendCommand(Encoding.UTF8.GetBytes("PBSZ 0\r\n"));
+                    responseNumber = WaitResponse();
+                    if (responseNumber != 200) return responseNumber;
+
+                    System.Diagnostics.Debug.WriteLine("Command:\tPROT P");
+                    SendCommand(Encoding.UTF8.GetBytes("PROT P\r\n"));
+                    responseNumber = WaitResponse();
+                    if (responseNumber != 200) return responseNumber;
                 }
 
                 m_StatusCode = FTPStatusCode.LoggedInProceed;
@@ -1229,13 +1310,23 @@ namespace System.Net {
                     DataSocket = null;
                 }
                 if (CommandSocket != null) {
-                    int length = CommandSocket.Available;
-                    if (length > 0) {
-                        // clean up the command socket
-                        CommandSocket.Receive(new byte[length]);
+                    if (m_CommandStream == null) {
+                        // Plaintext path: drain stale bytes and check the socket
+                        // is alive before sending QUIT. With SSL, Available is
+                        // not meaningful at the socket level.
+                        int length = CommandSocket.Available;
+                        if (length > 0) {
+                            CommandSocket.Receive(new byte[length]);
+                        }
+                        if (!CommandSocket.Poll(1000, SelectMode.SelectError)) {
+                            SendCommand(Encoding.UTF8.GetBytes("QUIT\r\n"));
+                        }
                     }
-                    if (!CommandSocket.Poll(1000, SelectMode.SelectError))
-                        CommandSocket.Send(Encoding.UTF8.GetBytes("QUIT\r\n"));
+                    else {
+                        try { SendCommand(Encoding.UTF8.GetBytes("QUIT\r\n")); } catch { }
+                        try { m_CommandStream.Close(); } catch { }
+                        m_CommandStream = null;
+                    }
                     CommandSocket.Close();
                     CommandSocket = null;
                 }

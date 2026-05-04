@@ -42,9 +42,29 @@ namespace System.Net
         // does this via machine.config <webRequestModules> — TinyCLR has no config file, so
         // we register here.
         static WebRequest() {
-            var creator = new HttpRequestCreator();
-            RegisterPrefix("http://", creator);
-            RegisterPrefix("https://", creator);
+            var http = new HttpRequestCreator();
+            RegisterPrefix("http://", http);
+            RegisterPrefix("https://", http);
+
+            // ftp:// is auto-registered if GHIElectronics.TinyCLR.Networking.Ftp is
+            // referenced by the consumer. Found via reflection so this assembly
+            // doesn't take a hard dependency on the FTP lib. The Ftp creator's
+            // static ctor self-registers; we just need to invoke any static
+            // method on it to trigger the type initializer (TinyCLR mscorlib
+            // has no Activator, so we go through MethodInfo.Invoke).
+            try {
+                var ftpAsm = System.Reflection.Assembly.Load("GHIElectronics.TinyCLR.Networking.Ftp");
+                if (ftpAsm != null) {
+                    var creatorType = ftpAsm.GetType("System.Net.FTPWebRequestCreator");
+                    if (creatorType != null) {
+                        var register = creatorType.GetMethod("Register");
+                        if (register != null) register.Invoke(null, null);
+                    }
+                }
+            }
+            catch {
+                // Ftp lib not referenced. Caller can still register manually.
+            }
         }
 
         /// <summary>
@@ -172,6 +192,11 @@ namespace System.Net
 
             set => throw new NotSupportedException();
         }
+
+        /// <summary>
+        /// When overridden in a descendant class, aborts the request.
+        /// </summary>
+        public virtual void Abort() => throw new NotSupportedException();
 
         /// <summary>
         /// Gets or sets the global HTTP proxy.

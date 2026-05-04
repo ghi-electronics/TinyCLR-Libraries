@@ -62,6 +62,15 @@
   <ItemGroup>
     <None Include="GHIElectronics.TinyCLR.Networking.Ftp.nuspec" />
     <None Include="packages.config" />
+    <None Include="GHIElectronics.TinyCLR.Networking.Ftp.props" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GHIElectronics.TinyCLR.Networking.Ftp.Desktop\GHIElectronics.TinyCLR.Networking.Ftp.Desktop.csproj">
+      <Project>{A6B7C8D9-E1F2-4A3B-8C4D-5E6F7A8B9C2D}</Project>
+      <Name>GHIElectronics.TinyCLR.Networking.Ftp.Desktop</Name>
+      <ReferenceOutputAssembly>False</ReferenceOutputAssembly>
+      <Private>False</Private>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GHIElectronics.TinyCLR.IO\GHIElectronics.TinyCLR.IO.csproj">

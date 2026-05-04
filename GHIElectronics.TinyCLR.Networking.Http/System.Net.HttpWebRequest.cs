@@ -508,7 +508,7 @@ namespace System.Net {
         /// and releases the underlying socket. Subsequent calls to <c>GetResponse</c> /
         /// <c>GetRequestStream</c> on this instance throw.
         /// </summary>
-        public void Abort() {
+        public override void Abort() {
             var stream = this.m_requestStream;
             if (stream != null) {
                 try { stream.Close(); } catch { }
