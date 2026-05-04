@@ -47,6 +47,15 @@
   <ItemGroup>
     <None Include="GHIElectronics.TinyCLR.Devices.Camera.nuspec" />
     <None Include="packages.config" />
+    <None Include="GHIElectronics.TinyCLR.Devices.Camera.props" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GHIElectronics.TinyCLR.Devices.Camera.Desktop\GHIElectronics.TinyCLR.Devices.Camera.Desktop.csproj">
+      <Project>{F5A6B7C8-D9E1-4F2A-3B4C-5D6E7F8A9B1C}</Project>
+      <Name>GHIElectronics.TinyCLR.Devices.Camera.Desktop</Name>
+      <ReferenceOutputAssembly>False</ReferenceOutputAssembly>
+      <Private>False</Private>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

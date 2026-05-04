@@ -63,6 +63,7 @@
   <Target Name="BuildI2cCompatAssembly" AfterTargets="Build">
     <MSBuild Projects="..\GHIElectronics.TinyCLR.System.Device.I2c\GHIElectronics.TinyCLR.System.Device.I2c.csproj" Targets="Build" Properties="Configuration=$(Configuration);Platform=$(Platform);BuildProjectReferences=false" />
     <Copy SourceFiles="..\GHIElectronics.TinyCLR.System.Device.I2c\bin\$(Configuration)\System.Device.I2c.dll" DestinationFolder="$(TargetDir)" SkipUnchangedFiles="true" />
+    <MSBuild Projects="..\GHIElectronics.TinyCLR.System.Device.I2c.Desktop\GHIElectronics.TinyCLR.System.Device.I2c.Desktop.csproj" Targets="Build" Properties="Configuration=$(Configuration);Platform=$(Platform);BuildProjectReferences=false" />
   </Target>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
