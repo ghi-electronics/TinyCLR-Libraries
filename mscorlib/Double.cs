@@ -113,6 +113,40 @@ namespace System {
         //     true if d evaluates to System.Double.PositiveInfinity; otherwise, false.
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public static extern bool IsPositiveInfinity(double d);
+
+        public bool Equals(double obj) {
+            if (IsNaN(obj) && IsNaN(this.m_value)) {
+                return true;
+            }
+
+            return this.m_value == obj;
+        }
+
+        public override bool Equals(object obj) {
+            if (obj == null) {
+                return false;
+            }
+
+            if (!(obj is double)) {
+                return false;
+            }
+
+            return Equals((double)obj);
+        }
+
+        public override int GetHashCode() {
+            long bits = BitConverter.DoubleToInt64Bits(this.m_value);
+            return (int)bits ^ (int)(bits >> 32);
+        }
+
+        public static bool operator ==(Double left, Double right) {
+            return left.m_value == right.m_value;
+        }
+
+        public static bool operator !=(Double left, Double right) {
+            return left.m_value != right.m_value;
+        }
+
         //
         // Summary:
         //     Converts the string representation of a number in a specified style and culture-specific
