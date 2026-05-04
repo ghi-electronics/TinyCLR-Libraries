@@ -2,7 +2,7 @@ using System;
 using System.IO;
 
 namespace GHIElectronics.TinyCLR.Cryptography {
-    public class SHA256 : IDisposable {
+    internal class SHA256 : IDisposable {
         private const int DigestLength = 32;
         public int HashSize => 256;
         private readonly byte[] hash;

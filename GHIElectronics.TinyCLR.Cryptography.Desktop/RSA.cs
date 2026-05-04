@@ -6,7 +6,7 @@ using BclRSASignaturePadding = System.Security.Cryptography.RSASignaturePadding;
 using BclRSAEncryptionPadding = System.Security.Cryptography.RSAEncryptionPadding;
 
 namespace GHIElectronics.TinyCLR.Cryptography {
-    public class RSACryptoServiceProvider : IDisposable {
+    internal class RSACryptoServiceProvider : IDisposable {
 
         public enum RSAMode {
             Public = 0,
@@ -147,7 +147,7 @@ namespace GHIElectronics.TinyCLR.Cryptography {
     }
 
     namespace CryptoServiceProvider {
-        public interface ICryptoServiceProvider : IDisposable {
+        internal interface ICryptoServiceProvider : IDisposable {
             int KeySize { get; }
 
             string KeyExchangeAlgorithm { get; }

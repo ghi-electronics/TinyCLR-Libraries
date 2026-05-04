@@ -7,7 +7,7 @@ using System.Threading;
 using GHIElectronics.TinyCLR.Cryptography.Provider;
 
 namespace GHIElectronics.TinyCLR.Cryptography {
-    public class MD5 : IDisposable {
+    internal class MD5 : IDisposable {
 
         public IHashAlgorithmProvider Provider { get; }
 
@@ -41,7 +41,7 @@ namespace GHIElectronics.TinyCLR.Cryptography {
     }
 
     namespace Provider {
-        public interface IHashAlgorithmProvider : IDisposable {
+        internal interface IHashAlgorithmProvider : IDisposable {
             int HashSize { get; }
             byte[] Hash { get; }
 

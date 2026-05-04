@@ -1,5 +1,8 @@
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+
+[assembly: InternalsVisibleTo("System.Security.Cryptography")]
 
 [assembly: AssemblyTitle("GHIElectronics.TinyCLR.Cryptography")]
 [assembly: AssemblyDescription("TinyCLR OS Cryptography library.")]

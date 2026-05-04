@@ -3,7 +3,7 @@ using System.IO;
 using BclMD5 = System.Security.Cryptography.MD5;
 
 namespace GHIElectronics.TinyCLR.Cryptography {
-    public class MD5 : IDisposable {
+    internal class MD5 : IDisposable {
         public Provider.IHashAlgorithmProvider Provider { get; }
 
         private MD5(Provider.IHashAlgorithmProvider provider) => this.Provider = provider;
@@ -36,7 +36,7 @@ namespace GHIElectronics.TinyCLR.Cryptography {
     }
 
     namespace Provider {
-        public interface IHashAlgorithmProvider : IDisposable {
+        internal interface IHashAlgorithmProvider : IDisposable {
             int HashSize { get; }
             byte[] Hash { get; }
 

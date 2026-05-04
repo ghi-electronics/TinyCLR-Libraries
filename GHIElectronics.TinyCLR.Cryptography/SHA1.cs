@@ -8,7 +8,7 @@ namespace GHIElectronics.TinyCLR.Cryptography {
          * It is interesting to ponder why the, apart from the extra IV, the other difference here from MD5
          * is the "endianness" of the word processing!
          */
-    public class SHA1 : IDisposable {
+    internal class SHA1 : IDisposable {
         private const int DigestLength = 20;
         public int HashSize => 160;
         private byte[] hash;

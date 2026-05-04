@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading;
 
 namespace GHIElectronics.TinyCLR.Cryptography {
-    public class HMACSHA1 : IDisposable {
+    internal class HMACSHA1 : IDisposable {
         private const byte IPAD = 0x36;
         private const byte OPAD = 0x5C;
 

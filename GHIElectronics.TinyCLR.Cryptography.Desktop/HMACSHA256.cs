@@ -3,7 +3,7 @@ using System.IO;
 using BclHMACSHA256 = System.Security.Cryptography.HMACSHA256;
 
 namespace GHIElectronics.TinyCLR.Cryptography {
-    public class HMACSHA256 : IDisposable {
+    internal class HMACSHA256 : IDisposable {
 
         public byte[] Key { get; set; }
         public byte[] Hash { get; internal set; }

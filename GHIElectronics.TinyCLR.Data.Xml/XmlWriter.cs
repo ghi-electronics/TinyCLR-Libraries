@@ -681,6 +681,25 @@ namespace GHIElectronics.TinyCLR.Data.Xml
             this._Stream.Write(b, 0, b.Length);
         }
 
+        // Writes the XML declaration with version "1.0".
+        public void WriteStartDocument() => this.WriteRaw("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
+
+        // Writes the XML declaration with version "1.0" and the standalone attribute.
+        public void WriteStartDocument(bool standalone) =>
+            this.WriteRaw("<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"" + (standalone ? "yes" : "no") + "\"?>");
+
+        // Closes any open elements or attributes and puts the writer back into the Start state.
+        public void WriteEndDocument() {
+            while (this._ElementStack.Count > 0)
+                this.WriteEndElement();
+        }
+
+        // Writes an end element tag in long form (e.g. </foo>) regardless of whether the element is empty.
+        public void WriteFullEndElement() => this.WriteEndElement();
+
+        // Writes out a <![CDATA[...]]> block containing the specified text.
+        public void WriteCData(string text) => this.WriteRaw("<![CDATA[" + (text ?? string.Empty) + "]]>");
+
         //
         // Summary:
         //     When overridden in a derived class, writes raw markup manually from a character

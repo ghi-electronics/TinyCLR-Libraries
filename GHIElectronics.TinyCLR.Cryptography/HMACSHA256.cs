@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading;
 
 namespace GHIElectronics.TinyCLR.Cryptography {
-    public class HMACSHA256 : IDisposable {
+    internal class HMACSHA256 : IDisposable {
 
         public byte[] Key { get; set; }
         public byte[] Hash { get; internal set; }
