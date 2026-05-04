@@ -1,8 +1,10 @@
 using System;
+using System.IO;
 
 namespace GHIElectronics.TinyCLR.Cryptography {
-    public class SHA256 {
+    public class SHA256 : IDisposable {
         private const int DigestLength = 32;
+        public int HashSize => 256;
         private readonly byte[] hash;
         private readonly uint[] x = new uint[64];
         private readonly byte[] xBuf;
@@ -34,8 +36,25 @@ namespace GHIElectronics.TinyCLR.Cryptography {
 
             this.BlockUpdate(buffer, offset, count);
             this.DoFinal(this.hash, 0);
-            return this.hash;
+            return (byte[])this.hash.Clone();
         }
+
+        public byte[] ComputeHash(Stream inputStream) {
+            if (inputStream == null) throw new ArgumentNullException();
+
+            var buffer = new byte[64];
+            int read;
+            while ((read = inputStream.Read(buffer, 0, buffer.Length)) > 0) {
+                this.BlockUpdate(buffer, 0, read);
+            }
+
+            this.DoFinal(this.hash, 0);
+            return (byte[])this.hash.Clone();
+        }
+
+        public void Initialize() => this.Clear();
+
+        public void Dispose() { }
 
         public void Clear() {
             this.byteCount = 0;

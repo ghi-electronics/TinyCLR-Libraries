@@ -192,7 +192,7 @@ namespace GHIElectronics.TinyCLR.Cryptography {
 
         }
 
-        public sealed class CryptoServiceApiWrapper : ICryptoServiceProvider {
+        internal sealed class CryptoServiceApiWrapper : ICryptoServiceProvider {
 
             private IntPtr impl = IntPtr.Zero;
 

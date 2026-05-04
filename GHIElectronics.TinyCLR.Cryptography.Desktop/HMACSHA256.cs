@@ -1,12 +1,14 @@
 using System;
+using System.IO;
 using BclHMACSHA256 = System.Security.Cryptography.HMACSHA256;
 
 namespace GHIElectronics.TinyCLR.Cryptography {
-    public class HMACSHA256 {
+    public class HMACSHA256 : IDisposable {
 
-        public byte[] Key { get; internal set; }
+        public byte[] Key { get; set; }
         public byte[] Hash { get; internal set; }
-        public string HashName { get; internal set; }
+        public string HashName { get; set; }
+        public int HashSize => 256;
 
         public HMACSHA256() : this(GenerateRandomKey(32)) { }
 
@@ -30,8 +32,22 @@ namespace GHIElectronics.TinyCLR.Cryptography {
                 this.Hash = hmac.ComputeHash(buffer, offset, count);
             }
 
-            return this.Hash;
+            return (byte[])this.Hash.Clone();
         }
+
+        public byte[] ComputeHash(Stream inputStream) {
+            if (inputStream == null) throw new ArgumentNullException();
+            using (var hmac = new BclHMACSHA256(this.Key)) {
+                this.Hash = hmac.ComputeHash(inputStream);
+            }
+            return (byte[])this.Hash.Clone();
+        }
+
+        public void Initialize() {
+            this.Hash = new byte[32];
+        }
+
+        public void Dispose() { }
 
         private static byte[] GenerateRandomKey(int size) {
             var key = new byte[size];

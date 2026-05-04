@@ -23,6 +23,8 @@ namespace GHIElectronics.TinyCLR.Cryptography {
 
         public void Clear() => this.Provider.Clear();
 
+        public void Initialize() => this.Provider.Clear();
+
         public byte[] ComputeHash(Stream stream) => this.Provider.ComputeHash(stream);
 
         public byte[] ComputeHash(byte[] buffer, int offset, int count) {
@@ -50,7 +52,7 @@ namespace GHIElectronics.TinyCLR.Cryptography {
             byte[] ComputeHash(byte[] buffer, int offset, int count);
         }
 
-        public sealed class HashAlgorithmApiWrapper : IHashAlgorithmProvider {
+        internal sealed class HashAlgorithmApiWrapper : IHashAlgorithmProvider {
             private readonly IntPtr impl = IntPtr.Zero;
             private byte[] hashValue;
 

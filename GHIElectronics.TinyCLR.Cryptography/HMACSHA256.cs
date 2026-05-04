@@ -1,15 +1,17 @@
 using System;
 using System.Collections;
+using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 
 namespace GHIElectronics.TinyCLR.Cryptography {
-    public class HMACSHA256 {
+    public class HMACSHA256 : IDisposable {
 
-        public byte[] Key { get; internal set; }
+        public byte[] Key { get; set; }
         public byte[] Hash { get; internal set; }
-        public string HashName { get; internal set; }
+        public string HashName { get; set; }
+        public int HashSize => 256;
 
         public HMACSHA256() {
             this.Key = GenerateRandomKey(32);
@@ -42,8 +44,31 @@ namespace GHIElectronics.TinyCLR.Cryptography {
 
             this.NativeComputeHash(buffer, offset, count, this.Key, this.Hash);
 
-            return this.Hash;
+            return (byte[])this.Hash.Clone();
         }
+
+        // The native HMACSHA256 path is single-shot (key + buffer in, hash out), so
+        // streaming requires reading the whole stream first. Acceptable for typical
+        // small payloads; large streams should be chunked by the caller.
+        public byte[] ComputeHash(Stream inputStream) {
+            if (inputStream == null) throw new ArgumentNullException();
+
+            using (var ms = new MemoryStream()) {
+                var buf = new byte[4096];
+                int read;
+                while ((read = inputStream.Read(buf, 0, buf.Length)) > 0) {
+                    ms.Write(buf, 0, read);
+                }
+                return this.ComputeHash(ms.ToArray());
+            }
+        }
+
+        public void Initialize() {
+            // Single-shot HMAC has no incremental state; reset Hash buffer for parity.
+            this.Hash = new byte[32];
+        }
+
+        public void Dispose() { }
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private extern void NativeComputeHash(byte[] buffer, int offset, int count, byte[] key, byte[] hash);

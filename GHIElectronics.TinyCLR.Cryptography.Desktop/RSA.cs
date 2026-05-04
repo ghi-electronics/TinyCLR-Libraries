@@ -165,7 +165,7 @@ namespace GHIElectronics.TinyCLR.Cryptography {
             bool VerifyData(byte[] data, int offset, int count, byte[] signedData, int signedDataOffset, int signedDataLength, int mode, bool sha256);
         }
 
-        public sealed class CryptoServiceApiWrapper : ICryptoServiceProvider {
+        internal sealed class CryptoServiceApiWrapper : ICryptoServiceProvider {
             private BclRSA inner;
 
             public int KeySize { get; }
