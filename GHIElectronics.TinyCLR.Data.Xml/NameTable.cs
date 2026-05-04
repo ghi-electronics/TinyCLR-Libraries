@@ -12,7 +12,7 @@ namespace GHIElectronics.TinyCLR.Data.Xml
     //       XmlNameTable implemented as a simple hash table.
     //    </para>
     // </devdoc>
-    public class NameTable : XmlNameTable
+    internal class NameTable : XmlNameTable
     {
         //
         // Private types

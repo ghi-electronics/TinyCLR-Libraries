@@ -46,7 +46,7 @@
     <Compile Include="System.Net.HttpWebRequest.cs" />
     <Compile Include="System.Net._OutputNetworkStreamWrapper.cs" />
     <Compile Include="System.Net._InputNetworkStreamWrapper.cs" />
-    <Compile Include="..\GHIElectronics.TinyCLR.Networking.Http\**\*.cs" Exclude="..\GHIElectronics.TinyCLR.Networking.Http\Properties\**\*.cs;..\GHIElectronics.TinyCLR.Networking.Http\obj\**\*.cs;..\GHIElectronics.TinyCLR.Networking.Http\bin\**\*.cs;..\GHIElectronics.TinyCLR.Networking.Http\System.Net.HttpListener.cs;..\GHIElectronics.TinyCLR.Networking.Http\System.Net.HttpWebRequest.cs;..\GHIElectronics.TinyCLR.Networking.Http\System.Net._OutputNetworkStreamWrapper.cs;..\GHIElectronics.TinyCLR.Networking.Http\System.Net._InputNetworkStreamWrapper.cs">
+    <Compile Include="..\GHIElectronics.TinyCLR.Networking.Http\**\*.cs" Exclude="..\GHIElectronics.TinyCLR.Networking.Http\Properties\**\*.cs;..\GHIElectronics.TinyCLR.Networking.Http\obj\**\*.cs;..\GHIElectronics.TinyCLR.Networking.Http\bin\**\*.cs;..\GHIElectronics.TinyCLR.Networking.Http\System.Net.HttpListener.cs;..\GHIElectronics.TinyCLR.Networking.Http\System.Net.HttpWebRequest.cs;..\GHIElectronics.TinyCLR.Networking.Http\System.Net._OutputNetworkStreamWrapper.cs;..\GHIElectronics.TinyCLR.Networking.Http\System.Net._InputNetworkStreamWrapper.cs;..\GHIElectronics.TinyCLR.Networking.Http\System.Uri.cs">
       <Link>%(RecursiveDir)%(Filename)%(Extension)</Link>
     </Compile>
   </ItemGroup>

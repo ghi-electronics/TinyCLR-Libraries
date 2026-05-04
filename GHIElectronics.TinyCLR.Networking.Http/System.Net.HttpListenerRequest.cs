@@ -340,10 +340,23 @@ namespace System.Net
         public IPEndPoint RemoteEndPoint => (IPEndPoint)this.m_clientStream.m_Socket.RemoteEndPoint;
 
         /// <summary>
-        /// Gets the Uri object requested by the client.  Not currently
-        /// supported.
+        /// Gets the Uri object requested by the client. Built from the request's
+        /// scheme + Host header + raw URL, matching .NET BCL's
+        /// HttpListenerRequest.Url shape (absolute URI).
         /// </summary>
-        public Uri Url => new Uri(this.m_rawURL, UriKind.Relative);
+        public Uri Url {
+            get {
+                var host = this.m_httpRequestHeaders[HttpKnownHeaderNames.Host];
+                if (string.IsNullOrEmpty(host)) {
+                    var local = (IPEndPoint)this.m_clientStream.m_Socket.LocalEndPoint;
+                    host = local.Address + ":" + local.Port;
+                }
+                var scheme = "http"; // HTTPS detection isn't available here; HttpListener wraps both.
+                var raw = this.m_rawURL;
+                if (string.IsNullOrEmpty(raw) || raw[0] != '/') raw = "/" + raw;
+                return new Uri(scheme + "://" + host + raw, UriKind.Absolute);
+            }
+        }
 
         /// <summary>
         /// Gets the user agent presented by the client.
@@ -367,7 +380,7 @@ namespace System.Net
         /// client.
         /// </summary>
         /// <value>A String value that contains the text of the request's Host header.</value>
-        public string UserHostName => this.m_httpRequestHeaders[HttpKnownHeaderNames.UserAgent];
+        public string UserHostName => this.m_httpRequestHeaders[HttpKnownHeaderNames.Host];
 
         /// <summary>
         /// Return NetworkCredential if user have send user name and password.

@@ -56,7 +56,7 @@ namespace GHIElectronics.TinyCLR.Data.Xml
         public bool IsEmpty = true;
     }
 
-    public class XmlMemoryWriter : XmlWriter
+    internal class XmlMemoryWriter : XmlWriter
     {
         MemoryStream _Stream;
 
@@ -85,7 +85,7 @@ namespace GHIElectronics.TinyCLR.Data.Xml
     // Summary:
     //     Represents a writer that provides a fast, non-cached, forward-only means
     //     of generating streams or files containing XML data.
-    public class XmlWriter : IDisposable
+    internal class XmlWriter : IDisposable
     {
         // Fields
         //private XmlWriterSettings _Settings;

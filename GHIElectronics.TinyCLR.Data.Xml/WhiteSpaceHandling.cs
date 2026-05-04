@@ -5,7 +5,7 @@
 namespace GHIElectronics.TinyCLR.Data.Xml
 {
     // Specifies how whitespace is handled in XmlTextReader.
-    public enum WhitespaceHandling
+    internal enum WhitespaceHandling
     {
         // Return all Whitespace and SignificantWhitespace nodes. This is the default.
         All = 0,

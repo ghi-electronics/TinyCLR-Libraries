@@ -124,12 +124,12 @@ namespace System.Net {
             switch (prefix.ToLower()) {
                 case "http": {
                         this.m_IsHttpsConnection = false;
-                        this.m_Port = Uri.HttpDefaultPort;
+                        this.m_Port = 80;
                         break;
                     }
                 case "https": {
                         this.m_IsHttpsConnection = true;
-                        this.m_Port = Uri.HttpsDefaultPort;
+                        this.m_Port = 443;
                         break;
                     }
                 default: throw new ArgumentException("Prefix should be http or https");
@@ -550,10 +550,62 @@ namespace System.Net {
             }
         }
 
+        private AuthenticationSchemes m_authSchemes = AuthenticationSchemes.Anonymous;
+        private string m_realm;
+        private bool m_ignoreWriteExceptions;
+
         /// <summary>
-        /// The certificate used if <b>HttpListener</b> implements an https
-        /// server.
+        /// Gets or sets the scheme used to authenticate clients.
         /// </summary>
+        /// <remarks>
+        /// .NET-shape property. TinyCLR's <c>HttpListener</c> currently only handles
+        /// anonymous (no-auth) requests; setting this to anything other than
+        /// <see cref="System.Net.AuthenticationSchemes.Anonymous"/> is accepted for
+        /// source-compat but has no behavioral effect.
+        /// </remarks>
+        public AuthenticationSchemes AuthenticationSchemes {
+            get => this.m_authSchemes;
+            set => this.m_authSchemes = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the realm associated with this listener.
+        /// </summary>
+        /// <remarks>No behavioral effect on TinyCLR; settable for source-compat.</remarks>
+        public string Realm {
+            get => this.m_realm;
+            set => this.m_realm = value;
+        }
+
+        /// <summary>
+        /// Gets or sets a value that indicates whether this listener silently swallows
+        /// exceptions thrown when sending the response to the client.
+        /// </summary>
+        /// <remarks>No behavioral effect on TinyCLR; settable for source-compat.</remarks>
+        public bool IgnoreWriteExceptions {
+            get => this.m_ignoreWriteExceptions;
+            set => this.m_ignoreWriteExceptions = value;
+        }
+
+        /// <summary>
+        /// Indicates whether <see cref="HttpListener"/> can be used with the current
+        /// runtime. Always returns true on TinyCLR.
+        /// </summary>
+        public static bool IsSupported => true;
+
+        /// <summary>
+        /// The certificate used if <b>HttpListener</b> implements an https server.
+        /// </summary>
+        /// <remarks>
+        /// <b>TinyCLR-only extension.</b> The .NET Framework <c>HttpListener</c> binds
+        /// HTTPS certificates out-of-band via the Windows certificate store and
+        /// <c>netsh http add sslcert ipport=...</c>. That model assumes Windows
+        /// infrastructure (HTTP.sys, registry-bound port↔cert mappings, cert store)
+        /// which doesn't exist on embedded MCUs, so TinyCLR exposes the certificate
+        /// directly on the listener object instead. Code that uses this property is
+        /// not portable to a plain .NET Framework Windows app — it will throw on
+        /// Desktop dual-mode runs that hit the HTTPS code path.
+        /// </remarks>
         public X509Certificate HttpsCert {
             get => this.m_httpsCert;
             set => this.m_httpsCert = value;

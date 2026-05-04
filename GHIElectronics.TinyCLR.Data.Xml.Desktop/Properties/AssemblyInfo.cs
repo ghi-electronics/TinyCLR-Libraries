@@ -1,5 +1,8 @@
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+
+[assembly: InternalsVisibleTo("System.Xml")]
 
 [assembly: AssemblyTitle("GHIElectronics.TinyCLR.Data.Xml")]
 [assembly: AssemblyDescription("TinyCLR OS Xml library.")]

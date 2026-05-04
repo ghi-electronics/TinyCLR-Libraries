@@ -25,9 +25,11 @@ namespace System.Net
 
         /// <summary>
         /// Actual network or SSL stream connected to the server.
-        /// It could be SSL stream, so NetworkStream is not exact type, m_Stream would be derived from NetworkStream
+        /// On Desktop dual-mode, this can be either a NetworkStream (plain HTTP) or
+        /// a System.Net.Security.SslStream (HTTPS). BCL's SslStream inherits from
+        /// AuthenticatedStream, NOT NetworkStream, so the field type must be Stream.
         /// </summary>
-        internal NetworkStream m_Stream;
+        internal Stream m_Stream;
 
         /// <summary>
         /// Last time this stream was used ( used to timeout idle connections ).
@@ -118,16 +120,14 @@ namespace System.Net
 #endif
             //  m_dataStart should be equal to m_dataEnd. Purge buffered data.
             this.m_dataStart = this.m_dataEnd = 0;
-            // Read up to read_buffer_size, but less data can be read.
-            // This function does not try to block, so it reads available data or 1 byte at least.
-            var readCount = (int)this.m_Stream.Length;
-            if ( readCount > read_buffer_size )
-            {
+            // Desktop dual-mode: BCL NetworkStream/SslStream don't support .Length (throws
+            // NotSupportedException — they're not seekable). The TinyCLR convention is
+            // "Length == available bytes", which on Desktop maps to Socket.Available. If
+            // nothing is buffered yet, ask for read_buffer_size and let Stream.Read block
+            // until at least 1 byte arrives (standard BCL semantics).
+            var readCount = this.m_Socket != null ? this.m_Socket.Available : 0;
+            if (readCount > read_buffer_size || readCount == 0) {
                 readCount = read_buffer_size;
-            }
-            else if (readCount == 0)
-            {
-                readCount = 1;
             }
 
             //this.m_dataEnd = this.m_Stream.Read(this.m_readBuffer, 0, readCount);
@@ -165,7 +165,7 @@ namespace System.Net
         /// <param name="socket">TBD</param>
         /// <param name="ownsSocket">TBD</param>
         /// <param name="rmAddrAndPort">TBD</param>
-        internal InputNetworkStreamWrapper( NetworkStream stream, Socket socket, bool ownsSocket, string rmAddrAndPort)
+        internal InputNetworkStreamWrapper( Stream stream, Socket socket, bool ownsSocket, string rmAddrAndPort)
         {
             this.m_Stream = stream;
             this.m_Socket = socket;
@@ -404,7 +404,11 @@ namespace System.Net
         /// </summary>
         /// <returns>The length of the data available on the stream.
         /// Add data cached in the stream buffer to available on socket</returns>
-        public override long Length => this.m_EnableChunkedDecoding && this.m_chunk != null ? this.m_chunk.m_Size : this.m_Stream.Length + this.m_dataEnd - this.m_dataStart;
+        public override long Length => this.m_EnableChunkedDecoding && this.m_chunk != null
+            ? this.m_chunk.m_Size
+            // Desktop: m_Stream.Length isn't supported on BCL NetworkStream/SslStream;
+            // use Socket.Available + buffered bytes instead.
+            : (this.m_Socket != null ? this.m_Socket.Available : 0) + this.m_dataEnd - this.m_dataStart;
 
         /// <summary>
         /// Position is not supported for NetworkStream

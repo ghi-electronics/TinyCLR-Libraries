@@ -36,6 +36,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="System.Net.AuthenticationSchemes.cs" />
     <Compile Include="System.Net.AuthenticationType.cs" />
     <Compile Include="System.Net.HttpListener.cs" />
     <Compile Include="System.Net.HttpListenerContext.cs" />

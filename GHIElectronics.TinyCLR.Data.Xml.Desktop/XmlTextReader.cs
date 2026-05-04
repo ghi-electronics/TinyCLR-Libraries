@@ -25,7 +25,7 @@ namespace GHIElectronics.TinyCLR.Data.Xml
     using TextReader = System.Text.TextReader;
 
 
-    public class XmlTextReader : XmlReader, IXmlLineInfo
+    internal class XmlTextReader : XmlReader, IXmlLineInfo
     {
         //
         // Private helper types

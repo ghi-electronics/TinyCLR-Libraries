@@ -23,9 +23,11 @@ namespace System.Net
 
         /// <summary>
         /// Actual network or SSL stream connected to the client.
-        /// It could be SSL stream, so NetworkStream is not exact type, m_Stream would be derived from NetworkStream
+        /// On Desktop dual-mode, this can be either a NetworkStream (plain HTTP) or
+        /// a System.Net.Security.SslStream (HTTPS). BCL's SslStream inherits from
+        /// AuthenticatedStream, NOT NetworkStream, so the field type must be Stream.
         /// </summary>
-        internal NetworkStream m_Stream;
+        internal Stream m_Stream;
 
         /// <summary>
         /// Type definition of delegate for sending of HTTP headers.

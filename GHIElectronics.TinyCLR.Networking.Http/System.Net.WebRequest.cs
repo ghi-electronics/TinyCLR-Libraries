@@ -37,6 +37,16 @@ namespace System.Net
 
         private static IWebProxy s_defaultProxy = null;
 
+        // Auto-register http:// and https:// prefixes so that WebRequest.Create("http://...")
+        // works without the user having to call RegisterPrefix manually. .NET Framework BCL
+        // does this via machine.config <webRequestModules> — TinyCLR has no config file, so
+        // we register here.
+        static WebRequest() {
+            var creator = new HttpRequestCreator();
+            RegisterPrefix("http://", creator);
+            RegisterPrefix("https://", creator);
+        }
+
         /// <summary>
         /// Initializes a new instance of the
         /// <see cref="System.Net.WebRequest"/> class.
