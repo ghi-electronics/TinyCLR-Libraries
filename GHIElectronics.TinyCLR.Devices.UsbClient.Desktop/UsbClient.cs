@@ -184,30 +184,35 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
 
             public DeviceState DeviceState => this.GetDeviceState();
 
-            private void Acquire() => throw new System.NotSupportedException("TODO - Not supported");
-            private void Release() => throw new System.NotSupportedException("TODO - Not supported");
-            public void Enable() => throw new System.NotSupportedException("TODO - Not supported");
-            public void Disable() => throw new System.NotSupportedException("TODO - Not supported");
-            public void SetActiveSetting(UsbClientSetting setting) => throw new System.NotSupportedException("TODO - Not supported");
-            public int Read(int streamIndex, byte[] data, int offset, int count) => throw new System.NotSupportedException("TODO - Not supported");
-            public int Write(int streamIndex, byte[] data, int offset, int count) => throw new System.NotSupportedException("TODO - Not supported");
-            public void Flush(int streamIndex) => throw new System.NotSupportedException("TODO - Not supported");
-            public void ClearReadBuffer(int streamIndex) => throw new System.NotSupportedException("TODO - Not supported");
-            public void ClearWriteBuffer(int streamIndex) => throw new System.NotSupportedException("TODO - Not supported");
-            private DeviceState GetDeviceState() => throw new System.NotSupportedException("TODO - Not supported");
-            private int GetByteToRead(int streamIndex) => throw new System.NotSupportedException("TODO - Not supported");
-            private int GetByteToWrite(int streamIndex) => throw new System.NotSupportedException("TODO - Not supported");
-            private void SetDataReceivedEventEnabled(bool enabled) => throw new System.NotSupportedException("TODO - Not supported");
-            private void SetDataStateChangedEventEnabled(bool enabled) => throw new System.NotSupportedException("TODO - Not supported");
-            public int WriteBufferSize { get => throw new System.NotSupportedException("TODO - Not supported"); set => throw new System.NotSupportedException("TODO - Not supported"); }
-            public int ReadBufferSize { get => throw new System.NotSupportedException("TODO - Not supported"); set => throw new System.NotSupportedException("TODO - Not supported"); }
-            public int GetControlPacketSize() => throw new System.NotSupportedException("TODO - Not supported");
-            public ushort GetEndpointMap() => throw new System.NotSupportedException("TODO - Not supported");
-            internal static void InitializeStream(byte[] streamMap, uint[] interfaceMap) => throw new System.NotSupportedException("TODO - Not supported");
-            public void SetDeviceDescriptor(Configuration.DeviceDescriptor[] deviceDescriptor) => throw new System.NotSupportedException("TODO - Not supported");
-            public void SetConfigurationDescriptor(Configuration.ConfigurationDescriptor[] configurationDescriptor) => throw new System.NotSupportedException("TODO - Not supported");
-            public void SetStringDescriptor(Configuration.StringDescriptor[] stringDescriptor, uint index) => throw new System.NotSupportedException("TODO - Not supported");
-            public void SetGenericDescriptor(Configuration.GenericDescriptor[] genericDescriptor) => throw new System.NotSupportedException("TODO - Not supported");
+            // Desktop: USB hardware doesn't exist. All methods are safe no-ops so
+            // app code can boot and exercise non-USB paths without crashing.
+            // Reads return 0 (no bytes available), writes accept all data silently,
+            // state queries return Detached, events never fire.
+            // Apps that need real USB testing should run on the device.
+            private void Acquire() { }
+            private void Release() { }
+            public void Enable() { }
+            public void Disable() { }
+            public void SetActiveSetting(UsbClientSetting setting) { }
+            public int Read(int streamIndex, byte[] data, int offset, int count) => 0;
+            public int Write(int streamIndex, byte[] data, int offset, int count) => count;
+            public void Flush(int streamIndex) { }
+            public void ClearReadBuffer(int streamIndex) { }
+            public void ClearWriteBuffer(int streamIndex) { }
+            private DeviceState GetDeviceState() => DeviceState.Detached;
+            private int GetByteToRead(int streamIndex) => 0;
+            private int GetByteToWrite(int streamIndex) => 0;
+            private void SetDataReceivedEventEnabled(bool enabled) { }
+            private void SetDataStateChangedEventEnabled(bool enabled) { }
+            public int WriteBufferSize { get; set; }
+            public int ReadBufferSize { get; set; }
+            public int GetControlPacketSize() => 64;
+            public ushort GetEndpointMap() => 0;
+            internal static void InitializeStream(byte[] streamMap, uint[] interfaceMap) { }
+            public void SetDeviceDescriptor(Configuration.DeviceDescriptor[] deviceDescriptor) { }
+            public void SetConfigurationDescriptor(Configuration.ConfigurationDescriptor[] configurationDescriptor) { }
+            public void SetStringDescriptor(Configuration.StringDescriptor[] stringDescriptor, uint index) { }
+            public void SetGenericDescriptor(Configuration.GenericDescriptor[] genericDescriptor) { }
         }
     }
 }

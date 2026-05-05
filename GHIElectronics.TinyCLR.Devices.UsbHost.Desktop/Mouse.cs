@@ -164,12 +164,18 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
             this.oldWheelPosition = this.currentWheelPosition;
         }
 
-        private void NativeConstructor(uint id, byte interfaceIndex, out byte pollingInterval) => throw new System.NotSupportedException("TODO - Not supported");
-        private void NativeFinalize() => throw new System.NotSupportedException("TODO - Not supported");
-        private void NativeSetScale(float value) => throw new System.NotSupportedException("TODO - Not supported");
-        private void NativeSetCursorBounds(int minimumX, int maximumX, int minimumY, int maximumY) => throw new System.NotSupportedException("TODO - Not supported");
-        private void NativeSetCursorPosition(int x, int y) => throw new System.NotSupportedException("TODO - Not supported");
-        private bool NativeGetPosition(out int deltaX, out int deltaY, out int deltaWheel, out int newX, out int newY, out uint button) => throw new System.NotSupportedException("TODO - Not supported");
+        // Desktop: no real USB Host mouse. No-ops; NativeGetPosition reports nothing.
+        private void NativeConstructor(uint id, byte interfaceIndex, out byte pollingInterval) {
+            pollingInterval = 0;
+        }
+        private void NativeFinalize() { }
+        private void NativeSetScale(float value) { }
+        private void NativeSetCursorBounds(int minimumX, int maximumX, int minimumY, int maximumY) { }
+        private void NativeSetCursorPosition(int x, int y) { }
+        private bool NativeGetPosition(out int deltaX, out int deltaY, out int deltaWheel, out int newX, out int newY, out uint button) {
+            deltaX = 0; deltaY = 0; deltaWheel = 0; newX = 0; newY = 0; button = 0;
+            return false;
+        }
         private void RefreshData() {
             this.CheckObjectState();
 

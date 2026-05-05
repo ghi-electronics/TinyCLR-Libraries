@@ -215,12 +215,18 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
 
             public void Dispose() => this.Release();
 
-            private void Acquire() => throw new System.NotSupportedException("TODO - Not supported");
-            private void Release() => throw new System.NotSupportedException("TODO - Not supported");
-            public void Enable() => throw new System.NotSupportedException("TODO - Not supported");
-            public void Disable() => throw new System.NotSupportedException("TODO - Not supported");
-            internal static void GetDeviceInformation(uint id, out ushort vendor, out ushort product, out byte port) => throw new System.NotSupportedException("TODO - Not supported");
-            private void OnConnectionChangedEventEnabled(bool enabled) => throw new System.NotSupportedException("TODO - Not supported");
+            // Desktop: no real USB Host hardware. Safe no-ops; no devices ever
+            // connect, events never fire. App boots and exercises non-USB paths.
+            private void Acquire() { }
+            private void Release() { }
+            public void Enable() { }
+            public void Disable() { }
+            internal static void GetDeviceInformation(uint id, out ushort vendor, out ushort product, out byte port) {
+                vendor = 0;
+                product = 0;
+                port = 0;
+            }
+            private void OnConnectionChangedEventEnabled(bool enabled) { }
         }
     }
 }

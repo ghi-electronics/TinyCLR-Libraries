@@ -98,10 +98,16 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
             }
         }
 
-        private int NativeGetKeyState(byte key) => throw new System.NotSupportedException("TODO - Not supported");
-        private void NativeConstructor(uint id, byte interfaceIndex, out byte pollingInterval) => throw new System.NotSupportedException("TODO - Not supported");
-        private void NativeFinalize() => throw new System.NotSupportedException("TODO - Not supported");
-        private bool NativeGetState(out byte key, out char ascii, out byte state) => throw new System.NotSupportedException("TODO - Not supported");
+        // Desktop: no real USB Host keyboard. No-ops; NativeGetState reports nothing.
+        private int NativeGetKeyState(byte key) => 0;
+        private void NativeConstructor(uint id, byte interfaceIndex, out byte pollingInterval) {
+            pollingInterval = 0;
+        }
+        private void NativeFinalize() { }
+        private bool NativeGetState(out byte key, out char ascii, out byte state) {
+            key = 0; ascii = (char)0; state = 0;
+            return false;
+        }
         private void OnKeyUp(KeyboardEventArgs e) => this.KeyUp?.Invoke(this, e);
 
         private void OnKeyDown(KeyboardEventArgs e) => this.KeyDown?.Invoke(this, e);

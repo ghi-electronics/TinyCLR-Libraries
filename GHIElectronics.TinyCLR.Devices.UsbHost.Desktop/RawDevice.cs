@@ -111,10 +111,11 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
             base.Dispose(disposing);
         }
 
-        private void NativeConstructor(uint id) => throw new System.NotSupportedException("TODO - Not supported");
-        private void NativeDispose() => throw new System.NotSupportedException("TODO - Not supported");
-        private void NativeSendSetupPacket(byte requestType, byte request, ushort value, ushort index) => throw new System.NotSupportedException("TODO - Not supported");
-        private void NativeSendSetupPacket(byte requestType, byte request, ushort value, ushort index, byte[] data, int dataOffset, int dataCount) => throw new System.NotSupportedException("TODO - Not supported");
+        // Desktop: no real USB Host. No-ops; setup packets do nothing.
+        private void NativeConstructor(uint id) { }
+        private void NativeDispose() { }
+        private void NativeSendSetupPacket(byte requestType, byte request, ushort value, ushort index) { }
+        private void NativeSendSetupPacket(byte requestType, byte request, ushort value, ushort index, byte[] data, int dataOffset, int dataCount) { }
         /// <summary>A USB communication pipe.</summary>
         public class Pipe : IDisposable {
             private bool disposed;
@@ -197,9 +198,10 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
                 this.disposed = true;
             }
 
-            private int NativeTransfer(byte[] buffer, int offset, int count, int transferTimeout) => throw new System.NotSupportedException("TODO - Not supported");
-            private void NativeConstructor(byte configIndex, uint deviceId, byte ep) => throw new System.NotSupportedException("TODO - Not supported");
-            private void NativeFinalize() => throw new System.NotSupportedException("TODO - Not supported");
+            // Desktop: no real USB Host pipe. Transfer reports zero bytes.
+            private int NativeTransfer(byte[] buffer, int offset, int count, int transferTimeout) => 0;
+            private void NativeConstructor(byte configIndex, uint deviceId, byte ep) { }
+            private void NativeFinalize() { }
         }
     }
 }

@@ -159,7 +159,8 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
             MassStorage.NativeDisableLogicalUnit(storage, (byte)number);
         }
 
-        private static void NativeEnableLogicalUnit(IntPtr storage, byte number, string vendor, string product) => throw new System.NotSupportedException("TODO - Not supported");
-        private static void NativeDisableLogicalUnit(IntPtr storage, byte number) => throw new System.NotSupportedException("TODO - Not supported");
+        // Desktop: no real USB. No-op.
+        private static void NativeEnableLogicalUnit(IntPtr storage, byte number, string vendor, string product) { }
+        private static void NativeDisableLogicalUnit(IntPtr storage, byte number) { }
     }
 }

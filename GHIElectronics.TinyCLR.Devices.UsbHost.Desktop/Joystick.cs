@@ -177,11 +177,17 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
             this.oldHatSwitchDirection = this.currentHatSwitchDirection;
         }
 
-        private void NativeConstructor(uint id, byte interfaceIndex, out byte pollingInterval) => throw new System.NotSupportedException("TODO - Not supported");
-        private void NativeFinalize() => throw new System.NotSupportedException("TODO - Not supported");
-        private int NativeGetButtonState(int buttonNumber) => throw new System.NotSupportedException("TODO - Not supported");
-        private void NativeSetCursorBounds(int cursor, int minX, int maxX, int minY, int maxY) => throw new System.NotSupportedException("TODO - Not supported");
-        private bool NativeGetPosition(out int x, out int y, out int x2, out int y2, out byte hatswitch, out uint button) => throw new System.NotSupportedException("TODO - Not supported");
+        // Desktop: no real USB Host joystick. No-ops; NativeGetPosition reports nothing.
+        private void NativeConstructor(uint id, byte interfaceIndex, out byte pollingInterval) {
+            pollingInterval = 0;
+        }
+        private void NativeFinalize() { }
+        private int NativeGetButtonState(int buttonNumber) => 0;
+        private void NativeSetCursorBounds(int cursor, int minX, int maxX, int minY, int maxY) { }
+        private bool NativeGetPosition(out int x, out int y, out int x2, out int y2, out byte hatswitch, out uint button) {
+            x = 0; y = 0; x2 = 0; y2 = 0; hatswitch = 0; button = 0;
+            return false;
+        }
         private void RefreshData() {
             this.CheckObjectState();
 
