@@ -46,24 +46,35 @@ namespace System.Net
             RegisterPrefix("http://", http);
             RegisterPrefix("https://", http);
 
-            // ftp:// is auto-registered if GHIElectronics.TinyCLR.Networking.Ftp is
-            // referenced by the consumer. Found via reflection so this assembly
-            // doesn't take a hard dependency on the FTP lib. The Ftp creator's
-            // static ctor self-registers; we just need to invoke any static
-            // method on it to trigger the type initializer (TinyCLR mscorlib
-            // has no Activator, so we go through MethodInfo.Invoke).
+            // ftp:// is auto-registered if GHIElectronics.TinyCLR.Networking.Ftp
+            // is referenced by the consumer. We walk already-loaded assemblies
+            // instead of calling Assembly.Load - on TinyCLR, Assembly.Load of a
+            // missing assembly throws ArgumentException from inside a native
+            // call, and the cctor's try/catch does NOT reliably catch it
+            // (the exception escapes the static ctor and the whole WebRequest
+            // type fails to initialize). GetAssemblies never throws for missing
+            // names; the loop just doesn't find anything and we move on. The
+            // Ftp creator's static ctor self-registers; we just need to invoke
+            // any static method on it to trigger the type initializer (TinyCLR
+            // mscorlib has no Activator, so we use MethodInfo.Invoke).
             try {
-                var ftpAsm = System.Reflection.Assembly.Load("GHIElectronics.TinyCLR.Networking.Ftp");
-                if (ftpAsm != null) {
-                    var creatorType = ftpAsm.GetType("System.Net.FTPWebRequestCreator");
+                foreach (var asm in System.AppDomain.CurrentDomain.GetAssemblies()) {
+                    if (asm == null) continue;
+                    if (asm.GetName().Name != "GHIElectronics.TinyCLR.Networking.Ftp") continue;
+
+                    var creatorType = asm.GetType("System.Net.FTPWebRequestCreator");
                     if (creatorType != null) {
                         var register = creatorType.GetMethod("Register");
                         if (register != null) register.Invoke(null, null);
                     }
+                    break;
                 }
             }
             catch {
-                // Ftp lib not referenced. Caller can still register manually.
+                // Defensive only - GetAssemblies / GetType / GetMethod / Invoke
+                // shouldn't throw for "lib not present" on either runtime, but
+                // we'd rather suppress any surprise here than fail WebRequest's
+                // type initializer.
             }
         }
 
