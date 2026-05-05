@@ -20,5 +20,8 @@
   </metadata>
   <files>
     <file src="$TargetDir$GHIElectronics.TinyCLR.Data.SQLite.dll" target="lib\net48" />
+    <file src="..\GHIElectronics.TinyCLR.Data.SQLite.Desktop\bin\Debug\GHIElectronics.TinyCLR.Data.SQLite.dll" target="desktop-shim" />
+    <file src="$TargetDir$GHIElectronics.TinyCLR.Data.SQLite.dll" target="tinyclr" />
+    <file src="$ProjectDir$GHIElectronics.TinyCLR.Data.SQLite.props" target="build\net48" />
   </files>
 </package>

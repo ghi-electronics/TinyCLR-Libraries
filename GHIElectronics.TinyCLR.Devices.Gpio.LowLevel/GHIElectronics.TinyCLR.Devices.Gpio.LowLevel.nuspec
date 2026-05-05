@@ -20,5 +20,8 @@
   </metadata>
   <files>
     <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.Gpio.LowLevel.dll" target="lib\net48" />
+    <file src="..\GHIElectronics.TinyCLR.Devices.Gpio.LowLevel.Desktop\bin\Debug\GHIElectronics.TinyCLR.Devices.Gpio.LowLevel.dll" target="desktop-shim" />
+    <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.Gpio.LowLevel.dll" target="tinyclr" />
+    <file src="$ProjectDir$GHIElectronics.TinyCLR.Devices.Gpio.LowLevel.props" target="build\net48" />
   </files>
 </package>

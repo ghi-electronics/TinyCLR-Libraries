@@ -12,7 +12,7 @@ namespace GHIElectronics.TinyCLR.Data.Xml
     //    <see langword='abstract'/>
     //    .</para>
     // </devdoc>
-    public abstract class XmlNameTable
+    internal abstract class XmlNameTable
     {
         // <devdoc>
         //    <para>Gets the atomized String object containing the same

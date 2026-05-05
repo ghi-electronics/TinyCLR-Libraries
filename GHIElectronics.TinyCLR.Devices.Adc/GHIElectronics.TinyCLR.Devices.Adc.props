@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Consumer-side props imported by user projects via the NuGet package
+     mechanism. See the Networking / Native equivalents for full rationale. -->
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Reference Include="GHIElectronics.TinyCLR.Devices.Adc">
+      <HintPath>$(MSBuildThisFileDirectory)..\..\lib\net48\GHIElectronics.TinyCLR.Devices.Adc.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <_TinyCLRAdcShimSource>$(MSBuildThisFileDirectory)..\..\desktop-shim\GHIElectronics.TinyCLR.Devices.Adc.dll</_TinyCLRAdcShimSource>
+    <_TinyCLRAdcImplSource>$(MSBuildThisFileDirectory)..\..\tinyclr\GHIElectronics.TinyCLR.Devices.Adc.dll</_TinyCLRAdcImplSource>
+  </PropertyGroup>
+  <Target Name="CopyTinyCLRAdcDesktopShim" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRAdcShimSource)')">
+    <Copy SourceFiles="$(_TinyCLRAdcShimSource)"
+          DestinationFiles="$(OutDir)GHIElectronics.TinyCLR.Devices.Adc.dll"
+          OverwriteReadOnlyFiles="true"
+          SkipUnchangedFiles="false" />
+  </Target>
+  <!-- The TinyCLR debugger reads CLR metadata from $(OutDir)pe\<asm>.dll first.
+       With the shim now sitting at $(OutDir)<asm>.dll for Desktop runtime,
+       we copy the IMPL here so variable hover on Adc types reads the right
+       metadata. See TinyCLR_DualMode_Plan.txt "Lessons learned" #1. -->
+  <Target Name="CopyTinyCLRAdcImplForDebugger" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRAdcImplSource)')">
+    <Copy SourceFiles="$(_TinyCLRAdcImplSource)"
+          DestinationFiles="$(OutDir)pe\GHIElectronics.TinyCLR.Devices.Adc.dll"
+          OverwriteReadOnlyFiles="true"
+          SkipUnchangedFiles="false" />
+  </Target>
+</Project>

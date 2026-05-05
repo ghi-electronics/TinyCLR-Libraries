@@ -7,7 +7,7 @@ namespace GHIElectronics.TinyCLR.Data.Xml
     // <devdoc>
     //    Specifies the type of node.
     // </devdoc>
-    public enum XmlNodeType
+    internal enum XmlNodeType
     {
         // <devdoc>
         //    For XPathNavigator, cursor is not positioned

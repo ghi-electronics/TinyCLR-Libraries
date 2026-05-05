@@ -39,6 +39,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="GHIElectronics.TinyCLR.Devices.Gpio.LowLevel.nuspec" />
+    <None Include="GHIElectronics.TinyCLR.Devices.Gpio.LowLevel.props" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -49,6 +51,12 @@
     <ProjectReference Include="..\GHIElectronics.TinyCLR.Native\GHIElectronics.TinyCLR.Native.csproj">
       <Project>{B602474A-AEB0-491C-832B-7EAF0B4511C0}</Project>
       <Name>GHIElectronics.TinyCLR.Native</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GHIElectronics.TinyCLR.Devices.Gpio.LowLevel.Desktop\GHIElectronics.TinyCLR.Devices.Gpio.LowLevel.Desktop.csproj">
+      <Project>{A2B3C4D5-E6F7-4A8B-9C1D-2E3F4A5B6C7D}</Project>
+      <Name>GHIElectronics.TinyCLR.Devices.Gpio.LowLevel.Desktop</Name>
+      <ReferenceOutputAssembly>False</ReferenceOutputAssembly>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

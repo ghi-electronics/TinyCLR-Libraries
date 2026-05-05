@@ -6,7 +6,11 @@ namespace System {
      */
     [Serializable, CLSCompliant(false)]
     public struct UInt64 : IFormattable {
+        // Native storage written by the runtime, not from managed code —
+        // CS0649 ("never assigned") is a false positive here.
+#pragma warning disable CS0649
         private ulong m_value;
+#pragma warning restore CS0649
 
         public const ulong MaxValue = (ulong)0xffffffffffffffffL;
         public const ulong MinValue = 0x0;

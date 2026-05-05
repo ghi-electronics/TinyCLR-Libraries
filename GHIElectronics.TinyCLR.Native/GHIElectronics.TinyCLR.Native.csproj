@@ -50,6 +50,18 @@
     <None Include="GHIElectronics.TinyCLR.Native.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
+  <!-- Build-order dependency: PackNuGet target reads the Desktop SHIM DLL from
+       ..\GHIElectronics.TinyCLR.Native.Desktop\bin\Debug\. ReferenceOutputAssembly=False
+       and Private=False ensure msbuild builds the sister project first WITHOUT making
+       the shim a compile/runtime reference of this TinyCLR-impl assembly. -->
+  <ItemGroup>
+    <ProjectReference Include="..\GHIElectronics.TinyCLR.Native.Desktop\GHIElectronics.TinyCLR.Native.Desktop.csproj">
+      <Project>{3F8E6C5A-1D2B-4E9A-9C7F-8A5D2E7B4C13}</Project>
+      <Name>GHIElectronics.TinyCLR.Native.Desktop</Name>
+      <ReferenceOutputAssembly>False</ReferenceOutputAssembly>
+      <Private>False</Private>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

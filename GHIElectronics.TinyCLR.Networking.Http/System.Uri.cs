@@ -95,16 +95,6 @@ namespace System
         }
 
         /// <summary>
-        /// Default port for http protocol - 80
-        /// </summary>
-        public const int HttpDefaultPort = 80;
-
-        /// <summary>
-        /// Default port for https protocol - 443
-        /// </summary>
-        public const int HttpsDefaultPort = 443;
-
-        /// <summary>
         /// Constant to indicate that port for this protocol is unknown
         /// </summary>
         protected const int UnknownPort = -1;
@@ -916,6 +906,82 @@ namespace System
                     throw new InvalidOperationException();
                 return this.m_AbsolutePath;
             }
+        }
+
+        /// <summary>
+        /// Gets any query information included in the specified URI, including the
+        /// leading '?' character. Returns an empty string if no query is present.
+        /// </summary>
+        public string Query
+        {
+            get
+            {
+                if (this.m_isAbsoluteUri == false)
+                    throw new InvalidOperationException();
+                var s = this.m_OriginalUriString;
+                if (s == null) return string.Empty;
+                var q = s.IndexOf('?');
+                if (q < 0) return string.Empty;
+                var f = s.IndexOf('#', q);
+                return f < 0 ? s.Substring(q) : s.Substring(q, f - q);
+            }
+        }
+
+        /// <summary>
+        /// Gets any URI fragment, including the leading '#' character.
+        /// Returns an empty string if no fragment is present.
+        /// </summary>
+        public string Fragment
+        {
+            get
+            {
+                if (this.m_isAbsoluteUri == false)
+                    throw new InvalidOperationException();
+                var s = this.m_OriginalUriString;
+                if (s == null) return string.Empty;
+                var f = s.IndexOf('#');
+                return f < 0 ? string.Empty : s.Substring(f);
+            }
+        }
+
+        /// <summary>
+        /// Determines whether the specified host name is a valid DNS name, an IPv4
+        /// address, an IPv6 address, or otherwise unknown. Matches .NET BCL shape.
+        /// </summary>
+        public static UriHostNameType CheckHostName(string name)
+        {
+            if (string.IsNullOrEmpty(name)) return UriHostNameType.Unknown;
+            if (name.IndexOf(':') >= 0) return UriHostNameType.IPv6;
+
+            // IPv4 detection: 4 dot-separated octets, each 0..255
+            var parts = name.Split('.');
+            if (parts.Length == 4)
+            {
+                var allOctets = true;
+                for (var i = 0; i < 4; i++)
+                {
+                    var p = parts[i];
+                    if (p.Length == 0 || p.Length > 3) { allOctets = false; break; }
+                    var v = 0;
+                    for (var j = 0; j < p.Length; j++)
+                    {
+                        var c = p[j];
+                        if (c < '0' || c > '9') { allOctets = false; break; }
+                        v = v * 10 + (c - '0');
+                    }
+                    if (!allOctets || v > 255) { allOctets = false; break; }
+                }
+                if (allOctets) return UriHostNameType.IPv4;
+            }
+
+            // DNS detection: must contain only letters, digits, '-', '.'; first char alphanumeric.
+            for (var i = 0; i < name.Length; i++)
+            {
+                var c = name[i];
+                var ok = (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '-' || c == '.';
+                if (!ok) return UriHostNameType.Unknown;
+            }
+            return UriHostNameType.Dns;
         }
 
         /// <summary>

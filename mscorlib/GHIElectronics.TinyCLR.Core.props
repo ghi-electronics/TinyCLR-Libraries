@@ -13,4 +13,100 @@
     <AddAdditionalExplicitAssemblyReferences>false</AddAdditionalExplicitAssemblyReferences>
     <DisableHandlePackageFileConflicts>true</DisableHandlePackageFileConflicts>
   </PropertyGroup>
+
+  <!--
+    Dual-mode resource rewriter.
+
+    TinyCLR's resource code generator emits Resources.Designer.cs that calls
+    `ResourceManager.GetObject((short)id)` (Int16-keyed). On TinyCLR's mscorlib
+    that overload exists; on Desktop's BCL mscorlib it does not, and the IL
+    call throws MissingMethodException at first dispatch.
+
+    This task rewrites a copy of each Resources.Designer.cs into
+    $(IntermediateOutputPath)PostProcessedResources/ before CoreCompile, wrapping
+    the GetBytes body in try/catch with a string-keyed fallback. The enum member
+    name (e.g. "GlobalSign") matches the .resx key, so on Desktop the BCL
+    ResourceManager returns the real embedded resource bytes - not a no-op null.
+
+    The user's original Designer.cs on disk is never modified; only a copy in
+    obj/ is rewritten and that copy is what gets compiled. Idempotent across
+    rebuilds (always reads from the unmodified source).
+  -->
+  <UsingTask TaskName="TinyCLRRewriteResourcesDesignerCs"
+             TaskFactory="RoslynCodeTaskFactory"
+             AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+    <ParameterGroup>
+      <Source ParameterType="System.String" Required="true" />
+      <Destination ParameterType="System.String" Required="true" />
+    </ParameterGroup>
+    <Task>
+      <Using Namespace="System.IO" />
+      <Using Namespace="System.Text.RegularExpressions" />
+      <Code Type="Fragment" Language="cs"><![CDATA[
+        var src = File.ReadAllText(Source);
+
+        var isTinyCLRPattern =
+            Regex.IsMatch(src, @"BinaryResources\s*:\s*short")
+            && src.IndexOf("ResourceManager.GetObject") >= 0
+            && src.IndexOf("(short)") >= 0;
+
+        if (isTinyCLRPattern) {
+            // Match the standard one-line return inside GetBytes:
+            //   return ((byte[])(ResourceManager.GetObject(((short)(id)))));
+            // Capture group 1 = the parameter name (typically "id").
+            //
+            // CRITICAL: We CANNOT emit a direct callvirt to GetObject(short) in
+            // the IL, even inside a try block. The CLR JIT validates all method
+            // tokens when JITting the method, and a missing token causes the
+            // ENTIRE method to fail to JIT - the caller sees MissingMethodException
+            // at the call site of GetBytes, never reaching our try/catch.
+            //
+            // Solution: use reflection for BOTH paths. The IL only references
+            // Type.GetMethod / MethodInfo.Invoke (which exist on both runtimes),
+            // so nothing for the JIT to fail on. Try the short-keyed overload
+            // first (TinyCLR - dispatches to the native lookup); if not present,
+            // fall back to the string-keyed overload (BCL - returns embedded
+            // resource bytes via the .resx string key, which equals the enum
+            // member name).
+            var rx = new Regex(@"return\s*\(\s*\(\s*byte\s*\[\s*\]\s*\)\s*\(\s*ResourceManager\.GetObject\s*\(\s*\(\s*\(\s*short\s*\)\s*\(\s*(\w+)\s*\)\s*\)\s*\)\s*\)\s*\)\s*;");
+            src = rx.Replace(src,
+                "var __t = typeof(System.Resources.ResourceManager); " +
+                "var __miShort = __t.GetMethod(\"GetObject\", new System.Type[] { typeof(short) }); " +
+                "if (__miShort != null) return (byte[])__miShort.Invoke(ResourceManager, new object[] { (short)$1 }); " +
+                "var __miStr = __t.GetMethod(\"GetObject\", new System.Type[] { typeof(string) }); " +
+                "if (__miStr != null) return (byte[])__miStr.Invoke(ResourceManager, new object[] { $1.ToString() }); " +
+                "return null;");
+        }
+
+        Directory.CreateDirectory(Path.GetDirectoryName(Destination));
+        File.WriteAllText(Destination, src);
+      ]]></Code>
+    </Task>
+  </UsingTask>
+
+  <Target Name="TinyCLRRewriteResourcesDesigner" BeforeTargets="CoreCompile">
+    <ItemGroup>
+      <_TinyCLRDesignerCandidate Include="@(Compile)"
+                                 Condition="'%(Filename)' == 'Resources.Designer'" />
+    </ItemGroup>
+    <PropertyGroup>
+      <_TinyCLRPostProcDir>$(IntermediateOutputPath)PostProcessedResources\</_TinyCLRPostProcDir>
+    </PropertyGroup>
+    <MakeDir Directories="$(_TinyCLRPostProcDir)"
+             Condition="'@(_TinyCLRDesignerCandidate)' != ''" />
+    <TinyCLRRewriteResourcesDesignerCs
+        Source="%(_TinyCLRDesignerCandidate.FullPath)"
+        Destination="$(_TinyCLRPostProcDir)%(_TinyCLRDesignerCandidate.Filename)%(_TinyCLRDesignerCandidate.Extension)"
+        Condition="'@(_TinyCLRDesignerCandidate)' != ''" />
+    <ItemGroup>
+      <Compile Remove="@(_TinyCLRDesignerCandidate)" />
+      <Compile Include="$(_TinyCLRPostProcDir)%(_TinyCLRDesignerCandidate.Filename)%(_TinyCLRDesignerCandidate.Extension)"
+               Condition="'@(_TinyCLRDesignerCandidate)' != ''">
+        <Link>%(_TinyCLRDesignerCandidate.RelativeDir)%(_TinyCLRDesignerCandidate.Filename)%(_TinyCLRDesignerCandidate.Extension)</Link>
+        <DependentUpon>%(_TinyCLRDesignerCandidate.DependentUpon)</DependentUpon>
+        <AutoGen>%(_TinyCLRDesignerCandidate.AutoGen)</AutoGen>
+        <DesignTime>%(_TinyCLRDesignerCandidate.DesignTime)</DesignTime>
+      </Compile>
+    </ItemGroup>
+  </Target>
 </Project>

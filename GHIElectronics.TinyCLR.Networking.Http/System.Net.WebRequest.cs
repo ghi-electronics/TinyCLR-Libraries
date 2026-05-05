@@ -37,6 +37,47 @@ namespace System.Net
 
         private static IWebProxy s_defaultProxy = null;
 
+        // Auto-register http:// and https:// prefixes so that WebRequest.Create("http://...")
+        // works without the user having to call RegisterPrefix manually. .NET Framework BCL
+        // does this via machine.config <webRequestModules> — TinyCLR has no config file, so
+        // we register here.
+        static WebRequest() {
+            var http = new HttpRequestCreator();
+            RegisterPrefix("http://", http);
+            RegisterPrefix("https://", http);
+
+            // ftp:// is auto-registered if GHIElectronics.TinyCLR.Networking.Ftp
+            // is referenced by the consumer. We walk already-loaded assemblies
+            // instead of calling Assembly.Load - on TinyCLR, Assembly.Load of a
+            // missing assembly throws ArgumentException from inside a native
+            // call, and the cctor's try/catch does NOT reliably catch it
+            // (the exception escapes the static ctor and the whole WebRequest
+            // type fails to initialize). GetAssemblies never throws for missing
+            // names; the loop just doesn't find anything and we move on. The
+            // Ftp creator's static ctor self-registers; we just need to invoke
+            // any static method on it to trigger the type initializer (TinyCLR
+            // mscorlib has no Activator, so we use MethodInfo.Invoke).
+            try {
+                foreach (var asm in System.AppDomain.CurrentDomain.GetAssemblies()) {
+                    if (asm == null) continue;
+                    if (asm.GetName().Name != "GHIElectronics.TinyCLR.Networking.Ftp") continue;
+
+                    var creatorType = asm.GetType("System.Net.FTPWebRequestCreator");
+                    if (creatorType != null) {
+                        var register = creatorType.GetMethod("Register");
+                        if (register != null) register.Invoke(null, null);
+                    }
+                    break;
+                }
+            }
+            catch {
+                // Defensive only - GetAssemblies / GetType / GetMethod / Invoke
+                // shouldn't throw for "lib not present" on either runtime, but
+                // we'd rather suppress any surprise here than fail WebRequest's
+                // type initializer.
+            }
+        }
+
         /// <summary>
         /// Initializes a new instance of the
         /// <see cref="System.Net.WebRequest"/> class.
@@ -162,6 +203,11 @@ namespace System.Net
 
             set => throw new NotSupportedException();
         }
+
+        /// <summary>
+        /// When overridden in a descendant class, aborts the request.
+        /// </summary>
+        public virtual void Abort() => throw new NotSupportedException();
 
         /// <summary>
         /// Gets or sets the global HTTP proxy.

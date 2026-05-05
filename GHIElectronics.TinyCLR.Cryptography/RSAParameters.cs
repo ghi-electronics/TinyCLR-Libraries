@@ -5,7 +5,7 @@ using System.Threading;
 
 namespace GHIElectronics.TinyCLR.Cryptography {
     [Serializable]
-    public struct RSAParameters {
+    internal struct RSAParameters {
         public byte[] Exponent;
         public byte[] Modulus;
 

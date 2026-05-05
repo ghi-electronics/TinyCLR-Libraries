@@ -10,7 +10,7 @@ namespace System.Net.Sockets {
     // The System.Net.Sockets.UdpClient class provides access to UDP services at a higher abstraction
     // level than the System.Net.Sockets.Socket class. System.Net.Sockets.UdpClient is used to
     // connect to a remote host and to receive connections from a remote client.
-    public partial class UdpClient : IDisposable {
+    public class UdpClient : IDisposable {
         private const int MaxUDPSize = 0x10000;
 
         private Socket _clientSocket = null; // initialized by helper called from ctor
@@ -161,12 +161,13 @@ namespace System.Net.Sockets {
 
                 var chkClientSocket = this._clientSocket;
                 if (chkClientSocket != null) {
-                    // If the NetworkStream wasn't retrieved, the Socket might
-                    // still be there and needs to be closed to release the effect
-                    // of the Bind() call and free the bound IPEndPoint.
-                    //chkClientSocket.InternalShutdown(SocketShutdown.Both);
-                    //chkClientSocket.Dispose();
-
+                    // Match full .NET: half-close before close to deliver a
+                    // graceful end signal where applicable (UDP shutdown is
+                    // a no-op at the wire level, but lwIP still tracks state).
+                    try {
+                        chkClientSocket.Shutdown(SocketShutdown.Both);
+                    }
+                    catch { /* swallow — best-effort */ }
                     chkClientSocket.Close();
                     this._clientSocket = null;
                 }

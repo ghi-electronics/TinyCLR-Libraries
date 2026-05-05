@@ -20,17 +20,6 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
 
         private SslStream sslStream;
 
-        public bool DataAvailable {
-            get {
-
-                if (this.sslProtocol != SslProtocols.None)
-                    return this.sslStream.DataAvailable;
-                else
-                    return (this.socket.Available > 0);
-
-            }
-        }
-
         public MqttStream(string hostName, int port, X509Certificate caCert, X509Certificate clientCert, SslProtocols sslProtocol) {
             IPAddress remoteIpAddress = null;
 
@@ -91,7 +80,9 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
                 }
 
                 while (idx < buffer.Length && DateTime.Now.Ticks < expired) {
-                    idx += this.sslStream.Read(buffer, idx, buffer.Length - idx);
+                    var n = this.sslStream.Read(buffer, idx, buffer.Length - idx);
+                    if (n <= 0) break; // broker closed connection - don't spin on EOF
+                    idx += n;
                 }
             }
             else {
@@ -100,7 +91,9 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
                 }
 
                 while (idx < buffer.Length && DateTime.Now.Ticks < expired) {
-                    idx += this.socket.Receive(buffer, idx, buffer.Length - idx, SocketFlags.None);
+                    var n = this.socket.Receive(buffer, idx, buffer.Length - idx, SocketFlags.None);
+                    if (n <= 0) break;
+                    idx += n;
                 }
             }
 

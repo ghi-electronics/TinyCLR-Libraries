@@ -325,7 +325,7 @@ namespace GHIElectronics.TinyCLR.IO.TinyFileSystem {
             {
                 this.CheckState();
                 var srcFile = this.GetFileRef(sourceFileName);
-                if (srcFile == null) throw new IOException(StringTable.Error_FileNotFound, (int)IOException.IOExceptionErrorCode.FileNotFound);
+                if (srcFile == null) throw new IOException(StringTable.Error_FileNotFound, unchecked((int)0xE2000000));
 
                 var destFile = this.GetFileRef(destFileName);
                 if (destFile != null)
@@ -336,7 +336,7 @@ namespace GHIElectronics.TinyCLR.IO.TinyFileSystem {
                     }
                     else
                     {
-                        throw new IOException(StringTable.Error_FileAlreadyExists, (int)IOException.IOExceptionErrorCode.PathAlreadyExists);
+                        throw new IOException(StringTable.Error_FileAlreadyExists, unchecked((int)0xE8000000));
                     }
                 }
 
@@ -402,7 +402,7 @@ namespace GHIElectronics.TinyCLR.IO.TinyFileSystem {
             {
                 this.CheckState();
                 var file = this.GetFileRef(fileName);
-                if (file == null) throw new IOException(StringTable.Error_FileNotFound, (int)IOException.IOExceptionErrorCode.FileNotFound);
+                if (file == null) throw new IOException(StringTable.Error_FileNotFound, unchecked((int)0xE2000000));
                 this.Delete(file);
             }
         }
@@ -435,7 +435,7 @@ namespace GHIElectronics.TinyCLR.IO.TinyFileSystem {
             {
                 this.CheckState();
                 var sourceFile = this.GetFileRef(sourceFileName);
-                if (this.GetFileRef(destFileName) != null) throw new IOException(StringTable.Error_FileAlreadyExists, (int)IOException.IOExceptionErrorCode.PathAlreadyExists);
+                if (this.GetFileRef(destFileName) != null) throw new IOException(StringTable.Error_FileAlreadyExists, unchecked((int)0xE8000000));
 
                 var fileClusterId = sourceFile.blocks[0];
 
@@ -486,12 +486,12 @@ namespace GHIElectronics.TinyCLR.IO.TinyFileSystem {
                             break;
 
                         case FileMode.CreateNew:
-                            if (fs != null) throw new IOException(StringTable.Error_FileAlreadyExists, (int)IOException.IOExceptionErrorCode.PathAlreadyExists);
+                            if (fs != null) throw new IOException(StringTable.Error_FileAlreadyExists, unchecked((int)0xE8000000));
                             fs = this.CreateStream(fileName);
                             break;
 
                         case FileMode.Open:
-                            if (fs == null) throw new IOException(StringTable.Error_FileNotFound, (int)IOException.IOExceptionErrorCode.FileNotFound);
+                            if (fs == null) throw new IOException(StringTable.Error_FileNotFound, unchecked((int)0xE2000000));
                             break;
 
                         case FileMode.OpenOrCreate:
@@ -583,7 +583,7 @@ namespace GHIElectronics.TinyCLR.IO.TinyFileSystem {
             {
                 this.CheckState();
                 var file = this.GetFileRef(fileName);
-                if (file == null) throw new IOException(StringTable.Error_FileNotFound, (int)IOException.IOExceptionErrorCode.FileNotFound);
+                if (file == null) throw new IOException(StringTable.Error_FileNotFound, unchecked((int)0xE2000000));
                 return file.fileSize;
             }
         }
@@ -599,7 +599,7 @@ namespace GHIElectronics.TinyCLR.IO.TinyFileSystem {
             {
                 this.CheckState();
                 var file = this.GetFileRef(fileName);
-                if (file == null) throw new IOException(StringTable.Error_FileNotFound, (int)IOException.IOExceptionErrorCode.FileNotFound);
+                if (file == null) throw new IOException(StringTable.Error_FileNotFound, unchecked((int)0xE2000000));
                 this.blockDriver.Read(file.blocks[0], 0, this.cluster, 0, ClusterBuffer.FileClusterHeaderSize);
                 return this.cluster.GetCreationTime();
             }
@@ -737,7 +737,7 @@ namespace GHIElectronics.TinyCLR.IO.TinyFileSystem {
         {
             lock (this.syncLock)
             {
-                if (filePosition > file.fileSize) throw new IOException(StringTable.Error_WritePastEnd, (int)IOException.IOExceptionErrorCode.Others);
+                if (filePosition > file.fileSize) throw new IOException(StringTable.Error_WritePastEnd, unchecked((int)0xE0000000));
 
                 ushort firstBlockId;
                 ushort clusterDataOffset;
@@ -884,7 +884,7 @@ namespace GHIElectronics.TinyCLR.IO.TinyFileSystem {
         {
             lock (this.syncLock)
             {
-                if (filePosition > file.fileSize) throw new IOException(StringTable.Error_WritePastEnd, (int)IOException.IOExceptionErrorCode.Others);
+                if (filePosition > file.fileSize) throw new IOException(StringTable.Error_WritePastEnd, unchecked((int)0xE0000000));
 
                 ushort firstBlockId;
                 ushort dataOffset;

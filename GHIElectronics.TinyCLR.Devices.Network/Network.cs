@@ -1140,6 +1140,12 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
 
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern bool GetAccessPointClientLinkConnect(WiFiNetworkInterfaceSettings settings);
+
+            // Half-close (lwIP shutdown). Appended at end so the metadata
+            // token order — and therefore the firmware interop dispatch
+            // table indices — for existing methods stay unchanged.
+            [MethodImpl(MethodImplOptions.InternalCall)]
+            public extern void Shutdown(int socket, SocketShutdown how);
         }
     }
 }

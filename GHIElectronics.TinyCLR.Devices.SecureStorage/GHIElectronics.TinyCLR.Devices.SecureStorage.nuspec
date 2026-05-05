@@ -20,5 +20,8 @@
   </metadata>
   <files>
     <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.SecureStorage.dll" target="lib\net48" />
+    <file src="..\GHIElectronics.TinyCLR.Devices.SecureStorage.Desktop\bin\Debug\GHIElectronics.TinyCLR.Devices.SecureStorage.dll" target="desktop-shim" />
+    <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.SecureStorage.dll" target="tinyclr" />
+    <file src="$ProjectDir$GHIElectronics.TinyCLR.Devices.SecureStorage.props" target="build\net48" />
   </files>
 </package>

@@ -42,6 +42,14 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\GHIElectronics.TinyCLR.System.Security.Cryptography.Desktop\GHIElectronics.TinyCLR.System.Security.Cryptography.Desktop.csproj">
+      <Project>{D8E9F1A2-B3C4-4D5E-6F7A-8B9C1D2E3F41}</Project>
+      <Name>GHIElectronics.TinyCLR.System.Security.Cryptography.Desktop</Name>
+      <ReferenceOutputAssembly>False</ReferenceOutputAssembly>
+      <Private>False</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\GHIElectronics.TinyCLR.Cryptography\GHIElectronics.TinyCLR.Cryptography.csproj">
       <Project>{7082C1DA-1E6C-4DDB-B54A-9609BB79F60F}</Project>
       <Name>GHIElectronics.TinyCLR.Cryptography</Name>

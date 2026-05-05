@@ -15,18 +15,34 @@ namespace System.Net {
         private int m_Port;
 
         public IPEndPoint(long address, int port) {
+            if (port < MinPort || port > MaxPort) throw new ArgumentOutOfRangeException(nameof(port));
+
             this.m_Port = port;
             this.m_Address = new IPAddress(address);
         }
 
         public IPEndPoint(IPAddress address, int port) {
+            if (address == null) throw new ArgumentNullException(nameof(address));
+            if (port < MinPort || port > MaxPort) throw new ArgumentOutOfRangeException(nameof(port));
+
             this.m_Port = port;
             this.m_Address = address;
         }
 
-        public IPAddress Address => this.m_Address;
+        public override AddressFamily AddressFamily => this.m_Address != null ? this.m_Address.AddressFamily : AddressFamily.InterNetwork;
 
-        public int Port => this.m_Port;
+        public IPAddress Address {
+            get => this.m_Address;
+            set => this.m_Address = value ?? throw new ArgumentNullException(nameof(value));
+        }
+
+        public int Port {
+            get => this.m_Port;
+            set {
+                if (value < MinPort || value > MaxPort) throw new ArgumentOutOfRangeException(nameof(value));
+                this.m_Port = value;
+            }
+        }
 
         public override SocketAddress Serialize() {
             // create a new SocketAddress
@@ -84,6 +100,47 @@ namespace System.Net {
         }
 
         public override int GetHashCode() => this.m_Address.GetHashCode() ^ this.m_Port;
+
+        // ----------------------------------------------------------------
+        // Parse / TryParse — added in .NET Core 3.0+ and very useful for
+        // config strings ("192.168.1.10:8080"). IPv4-only on TinyCLR.
+        // ----------------------------------------------------------------
+
+        public static IPEndPoint Parse(string s) {
+            if (s == null) throw new ArgumentNullException(nameof(s));
+
+            var colonIdx = s.LastIndexOf(':');
+            if (colonIdx < 0) throw new FormatException("Endpoint string must contain ':' separating address from port.");
+
+            var addrPart = s.Substring(0, colonIdx);
+            var portPart = s.Substring(colonIdx + 1);
+
+            var address = IPAddress.Parse(addrPart);
+
+            // Parse port manually — TinyCLR's int.Parse is available but we
+            // already do hand-rolled parsing in this lib, stay consistent.
+            if (portPart.Length == 0) throw new FormatException("Missing port.");
+            var port = 0;
+            for (var i = 0; i < portPart.Length; i++) {
+                var c = portPart[i];
+                if (c < '0' || c > '9') throw new FormatException("Port must be numeric.");
+                port = port * 10 + (c - '0');
+                if (port > MaxPort) throw new FormatException("Port out of range.");
+            }
+
+            return new IPEndPoint(address, port);
+        }
+
+        public static bool TryParse(string s, out IPEndPoint result) {
+            try {
+                result = Parse(s);
+                return true;
+            }
+            catch {
+                result = null;
+                return false;
+            }
+        }
     } // class IPEndPoint
 } // namespace System.Net
 

@@ -47,6 +47,8 @@
     <Compile Include="WinUsb.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="GHIElectronics.TinyCLR.Devices.UsbClient.nuspec" />
+    <None Include="GHIElectronics.TinyCLR.Devices.UsbClient.props" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -57,6 +59,12 @@
     <ProjectReference Include="..\GHIElectronics.TinyCLR.Native\GHIElectronics.TinyCLR.Native.csproj">
       <Project>{B602474A-AEB0-491C-832B-7EAF0B4511C0}</Project>
       <Name>GHIElectronics.TinyCLR.Native</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GHIElectronics.TinyCLR.Devices.UsbClient.Desktop\GHIElectronics.TinyCLR.Devices.UsbClient.Desktop.csproj">
+      <Project>{C1D2E3F4-A5B6-4C7D-8E9F-1A2B3C4D5E6F}</Project>
+      <Name>GHIElectronics.TinyCLR.Devices.UsbClient.Desktop</Name>
+      <ReferenceOutputAssembly>False</ReferenceOutputAssembly>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

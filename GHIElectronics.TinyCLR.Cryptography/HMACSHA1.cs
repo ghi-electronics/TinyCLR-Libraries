@@ -1,10 +1,11 @@
 using System;
 using System.Collections;
+using System.IO;
 using System.Text;
 using System.Threading;
 
 namespace GHIElectronics.TinyCLR.Cryptography {
-    public class HMACSHA1 {
+    internal class HMACSHA1 : IDisposable {
         private const byte IPAD = 0x36;
         private const byte OPAD = 0x5C;
 
@@ -17,8 +18,17 @@ namespace GHIElectronics.TinyCLR.Cryptography {
         private const int BYTE_LENGTH = 64;
 
         private byte[] hash;
+        private byte[] _key;
+
         public byte[] Hash => this.hash;
-        public byte[] Key { get; internal set; }
+        public int HashSize => 160;
+        public byte[] Key {
+            get => this._key;
+            set {
+                this._key = value ?? throw new ArgumentNullException();
+                this.Initialize(this._key);
+            }
+        }
         public string HashName => "SHA1";
 
         public HMACSHA1() : this(null) {
@@ -31,14 +41,8 @@ namespace GHIElectronics.TinyCLR.Cryptography {
             this.inputPad = new byte[this.blockLength];
             this.outputBuf = new byte[this.blockLength + this.digestSize];
 
-            if (key != null) {
-                this.Key = key;
-            }
-            else {
-                this.Key = GenerateRandomKey(64);
-            }
-
-            this.Initialize(this.Key);
+            // Setting Key triggers Initialize internally; null key generates a random one.
+            this.Key = key ?? GenerateRandomKey(64);
         }
 
         private void Initialize(byte[] key) {
@@ -79,8 +83,26 @@ namespace GHIElectronics.TinyCLR.Cryptography {
 
             this.DoFinal(this.hash, 0);
 
-            return this.hash;
+            return (byte[])this.hash.Clone();
         }
+
+        public byte[] ComputeHash(Stream inputStream) {
+            if (inputStream == null) throw new ArgumentNullException();
+
+            var buf = new byte[64];
+            int read;
+            while ((read = inputStream.Read(buf, 0, buf.Length)) > 0) {
+                this.BlockUpdate(buf, 0, read);
+            }
+
+            this.DoFinal(this.hash, 0);
+            return (byte[])this.hash.Clone();
+        }
+
+        // .NET HMAC.Initialize() resets internal state without re-deriving from key.
+        public void Initialize() => this.Reset();
+
+        public void Dispose() { }
 
         private void BlockUpdate(byte[] input, int inOff, int len) => this.digest.BlockUpdate(input, inOff, len);
 

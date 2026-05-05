@@ -151,23 +151,10 @@ namespace System.Net.Sockets
 
         //
         // Summary:
-        //     Gets the length of the data available on the stream.
-        //
-        // Returns:
-        //     The length of the data available on the stream.
-        //
-        // Exceptions:
-        //     InvalidOperationException - when socket is disposed.
-        public override long Length
-        {
-            get
-            {
-                if (this._disposed) return 0;// throw new ObjectDisposedException();
-                if (this._socket.m_Handle == -1) throw new IOException();
-
-                return this._socket.Available;
-            }
-        }
+        //     Length is not supported on a NetworkStream — matches full .NET
+        //     behaviour. Use DataAvailable / Socket.Available to query unread
+        //     bytes.
+        public override long Length => throw new NotSupportedException();
 
         //
         // Summary:
@@ -427,7 +414,10 @@ namespace System.Net.Sockets
                 throw new IOException();
         }
 
-        public bool WriteHeaderOnClose(byte[] buffer, int offset, int count) {
+        // TinyCLR-internal helper used by HTTP server response close path. Not
+        // part of the public Stream surface in full .NET — keep internal so we
+        // don't pollute the public API.
+        internal bool WriteHeaderOnClose(byte[] buffer, int offset, int count) {
             if (this._disposed) return false;
             if (this._socket.m_Handle == -1) return false;
             if (buffer == null) return false;

@@ -21,5 +21,8 @@
   </metadata>
   <files>
     <file src="$TargetDir$GHIElectronics.TinyCLR.UI.dll" target="lib\net48" />
+    <file src="..\GHIElectronics.TinyCLR.UI.Desktop\bin\Debug\GHIElectronics.TinyCLR.UI.dll" target="desktop-shim" />
+    <file src="$TargetDir$GHIElectronics.TinyCLR.UI.dll" target="tinyclr" />
+    <file src="$ProjectDir$GHIElectronics.TinyCLR.UI.props" target="build\net48" />
   </files>
 </package>

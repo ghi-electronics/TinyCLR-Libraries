@@ -59,14 +59,34 @@
     <Compile Include="Sockets\SocketFlags.cs" />
     <Compile Include="Sockets\SocketOptionLevel.cs" />
     <Compile Include="Sockets\SocketOptionName.cs" />
+    <Compile Include="Sockets\SocketShutdown.cs" />
     <Compile Include="Sockets\SocketType.cs" />
     <Compile Include="SystemInfo.cs" />
     <Compile Include="Tcp\TcpClient.cs" />
+    <Compile Include="Tcp\TcpListener.cs" />
     <Compile Include="Udp\UDPClient.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="GHIElectronics.TinyCLR.Networking.nuspec" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <!-- Build-order dependency: PackNuGet target reads the Desktop SHIM DLL from
+       ..\GHIElectronics.TinyCLR.Networking.Desktop\bin\Debug\. ReferenceOutputAssembly=False
+       and Private=False ensure msbuild builds the sister project first WITHOUT making
+       the shim a compile/runtime reference of this TinyCLR-impl assembly. -->
+  <ItemGroup>
+    <ProjectReference Include="..\GHIElectronics.TinyCLR.Networking.Desktop\GHIElectronics.TinyCLR.Networking.Desktop.csproj">
+      <Project>{2C4D8A1F-9E5B-4D7F-AE6C-1B3D5E7F9B82}</Project>
+      <Name>GHIElectronics.TinyCLR.Networking.Desktop</Name>
+      <ReferenceOutputAssembly>False</ReferenceOutputAssembly>
+      <Private>False</Private>
+    </ProjectReference>
+    <!-- Compile-only reference to Native for Dns.GetHostName() — uses
+         DeviceInformation.DeviceName as the device's "host name". -->
+    <ProjectReference Include="..\GHIElectronics.TinyCLR.Native\GHIElectronics.TinyCLR.Native.csproj">
+      <Project>{B602474A-AEB0-491C-832B-7EAF0B4511C0}</Project>
+      <Name>GHIElectronics.TinyCLR.Native</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

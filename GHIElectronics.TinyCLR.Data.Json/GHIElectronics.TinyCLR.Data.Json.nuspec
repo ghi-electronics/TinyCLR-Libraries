@@ -20,5 +20,8 @@
   </metadata>
   <files>
     <file src="$TargetDir$GHIElectronics.TinyCLR.Data.Json.dll" target="lib\net48" />
+    <file src="..\GHIElectronics.TinyCLR.Data.Json.Desktop\bin\Debug\GHIElectronics.TinyCLR.Data.Json.dll" target="desktop-shim" />
+    <file src="$TargetDir$GHIElectronics.TinyCLR.Data.Json.dll" target="tinyclr" />
+    <file src="$ProjectDir$GHIElectronics.TinyCLR.Data.Json.props" target="build\net48" />
   </files>
 </package>

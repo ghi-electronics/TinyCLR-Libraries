@@ -7,7 +7,7 @@ using System.Threading;
 using GHIElectronics.TinyCLR.Cryptography.CryptoServiceProvider;
 
 namespace GHIElectronics.TinyCLR.Cryptography {
-    public class RSACryptoServiceProvider : IDisposable {
+    internal class RSACryptoServiceProvider : IDisposable {
 
         public enum RSAMode {
             Public = 0,
@@ -173,7 +173,7 @@ namespace GHIElectronics.TinyCLR.Cryptography {
     }
 
     namespace CryptoServiceProvider {
-        public interface ICryptoServiceProvider : IDisposable {
+        internal interface ICryptoServiceProvider : IDisposable {
             int KeySize { get;  }
 
             string KeyExchangeAlgorithm { get; }
@@ -192,7 +192,7 @@ namespace GHIElectronics.TinyCLR.Cryptography {
 
         }
 
-        public sealed class CryptoServiceApiWrapper : ICryptoServiceProvider {
+        internal sealed class CryptoServiceApiWrapper : ICryptoServiceProvider {
 
             private IntPtr impl = IntPtr.Zero;
 

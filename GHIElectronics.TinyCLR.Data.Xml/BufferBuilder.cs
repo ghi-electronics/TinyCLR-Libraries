@@ -34,7 +34,7 @@ namespace GHIElectronics.TinyCLR.Data.Xml
     // in case memory-pressure situation happens.
 
 #if BUFFER_BUILDER_TRACING
-    public class BufferBuilder {
+    internal class BufferBuilder {
 #else
     internal class BufferBuilder
     {

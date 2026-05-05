@@ -40,12 +40,23 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="GHIElectronics.TinyCLR.Devices.Adc.nuspec" />
+    <None Include="GHIElectronics.TinyCLR.Devices.Adc.props" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GHIElectronics.TinyCLR.Native\GHIElectronics.TinyCLR.Native.csproj">
       <Project>{B602474A-AEB0-491C-832B-7EAF0B4511C0}</Project>
       <Name>GHIElectronics.TinyCLR.Native</Name>
+    </ProjectReference>
+    <!-- Build-order dependency: PackNuGet target reads the Desktop SHIM DLL from
+         ..\GHIElectronics.TinyCLR.Devices.Adc.Desktop\bin\Debug\.
+         ReferenceOutputAssembly=False so the shim is NOT a compile/runtime
+         reference of this TinyCLR-impl assembly. -->
+    <ProjectReference Include="..\GHIElectronics.TinyCLR.Devices.Adc.Desktop\GHIElectronics.TinyCLR.Devices.Adc.Desktop.csproj">
+      <Project>{5B3C8D1E-9F2A-4E8B-A4C6-7D1F3E5B9C82}</Project>
+      <Name>GHIElectronics.TinyCLR.Devices.Adc.Desktop</Name>
+      <ReferenceOutputAssembly>False</ReferenceOutputAssembly>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Reference Include="GHIElectronics.TinyCLR.Data.Json">
+      <HintPath>$(MSBuildThisFileDirectory)..\..\lib\net48\GHIElectronics.TinyCLR.Data.Json.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <_TinyCLRDataJsonShimSource>$(MSBuildThisFileDirectory)..\..\desktop-shim\GHIElectronics.TinyCLR.Data.Json.dll</_TinyCLRDataJsonShimSource>
+    <_TinyCLRDataJsonImplSource>$(MSBuildThisFileDirectory)..\..\tinyclr\GHIElectronics.TinyCLR.Data.Json.dll</_TinyCLRDataJsonImplSource>
+  </PropertyGroup>
+  <Target Name="CopyTinyCLRDataJsonDesktopShim" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRDataJsonShimSource)')">
+    <Copy SourceFiles="$(_TinyCLRDataJsonShimSource)" DestinationFiles="$(OutDir)GHIElectronics.TinyCLR.Data.Json.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
+  </Target>
+  <Target Name="CopyTinyCLRDataJsonImplForDebugger" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRDataJsonImplSource)')">
+    <Copy SourceFiles="$(_TinyCLRDataJsonImplSource)" DestinationFiles="$(OutDir)pe\GHIElectronics.TinyCLR.Data.Json.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
+  </Target>
+</Project>

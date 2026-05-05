@@ -4,7 +4,7 @@
 
 namespace GHIElectronics.TinyCLR.Data.Xml
 {
-    public interface IXmlLineInfo
+    internal interface IXmlLineInfo
     {
         bool HasLineInfo();
         int LineNumber { get; }

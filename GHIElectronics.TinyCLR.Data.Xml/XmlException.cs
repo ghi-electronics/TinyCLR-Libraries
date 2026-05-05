@@ -17,7 +17,7 @@ namespace GHIElectronics.TinyCLR.Data.Xml
     //    <para>Returns detailed information about the last parse error, including the error
     //       number, line number, character position, and a text description.</para>
     // </devdoc>
-    public class XmlException : Exception
+    internal class XmlException : Exception
     {
         int res;
         int lineNumber;

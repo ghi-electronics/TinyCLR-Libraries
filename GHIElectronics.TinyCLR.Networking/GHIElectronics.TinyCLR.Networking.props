@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Consumer-side props imported by user projects via the NuGet package
+     mechanism.
+
+     Layout in the .nupkg:
+       lib/net48/        : TinyCLR-impl DLL (real type definitions; used at
+                           compile-time so user code sees TinyCLR's API).
+       desktop-shim/     : Desktop SHIM DLL (TypeForwardedTo to framework
+                           System.dll; copied to bin\Debug\ for runtime).
+       tinyclr/          : TinyCLR-impl DLL again (read by deploy step,
+                           MMP-processed into a .pe and pushed to device).
+
+     Compile-time:
+       <Reference HintPath="...lib/net48/impl.dll" /> — user code sees the
+       TinyCLR API surface. Private=False so the impl is NOT copied to bin.
+
+     Runtime:
+       AfterBuild target copies desktop-shim/<asm>.dll to $(OutDir) as the
+       final <asm>.dll. At Desktop run time, type lookups (e.g.
+       System.Net.Dns) follow TypeForwardedTo to the framework's System.dll.
+
+     Why a Target instead of <None Include>?
+       MSBuild's ResolveAssemblyReferences searches {CandidateAssemblyFiles}
+       (None/Content items) BEFORE {HintPathFromItem}. A None Include for
+       the shim with the same assembly name would override the HintPath at
+       compile time, causing the compiler to see the shim (TypeForwardedTo
+       only, no usable namespace exports) instead of the impl. Copying the
+       shim via an AfterBuild target sidesteps RAR entirely.
+
+     Debug-time:
+       The TinyCLR debugger reads CLR metadata via FindAssemblyOnDisk in
+       CorDebugAssembly.cs. Its first-tried path is "next to the .pdbx" —
+       i.e. $(OutDir)pe\<asm>.dll. With dual-mode, the .dll in $(OutDir) is
+       the SHIM (TypeForwardedTo to System.dll) — reading metadata from it
+       follows the forward to the framework's Socket type, whose fields do
+       not match the deployed .pe. Variable hover then silently fails. Copy
+       the impl DLL to $(OutDir)pe\ so the debugger reads the same metadata
+       MMP processed into the .pe. -->
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Reference Include="GHIElectronics.TinyCLR.Networking">
+      <HintPath>$(MSBuildThisFileDirectory)..\..\lib\net48\GHIElectronics.TinyCLR.Networking.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <_TinyCLRNetworkingShimSource>$(MSBuildThisFileDirectory)..\..\desktop-shim\GHIElectronics.TinyCLR.Networking.dll</_TinyCLRNetworkingShimSource>
+    <_TinyCLRNetworkingImplSource>$(MSBuildThisFileDirectory)..\..\tinyclr\GHIElectronics.TinyCLR.Networking.dll</_TinyCLRNetworkingImplSource>
+  </PropertyGroup>
+  <Target Name="CopyTinyCLRNetworkingDesktopShim" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRNetworkingShimSource)')">
+    <Copy SourceFiles="$(_TinyCLRNetworkingShimSource)"
+          DestinationFiles="$(OutDir)GHIElectronics.TinyCLR.Networking.dll"
+          OverwriteReadOnlyFiles="true"
+          SkipUnchangedFiles="false" />
+  </Target>
+  <Target Name="CopyTinyCLRNetworkingImplForDebugger" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRNetworkingImplSource)')">
+    <Copy SourceFiles="$(_TinyCLRNetworkingImplSource)"
+          DestinationFiles="$(OutDir)pe\GHIElectronics.TinyCLR.Networking.dll"
+          OverwriteReadOnlyFiles="true"
+          SkipUnchangedFiles="false" />
+  </Target>
+</Project>

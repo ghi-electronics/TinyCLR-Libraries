@@ -45,6 +45,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="GHIElectronics.TinyCLR.EthernetIP.Scanner.nuspec" />
+    <None Include="GHIElectronics.TinyCLR.EthernetIP.Scanner.props" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -55,6 +57,12 @@
     <ProjectReference Include="..\GHIElectronics.TinyCLR.Networking\GHIElectronics.TinyCLR.Networking.csproj">
       <Project>{1AFA3955-B36D-4A8A-8B7F-86F39FC2FDE3}</Project>
       <Name>GHIElectronics.TinyCLR.Networking</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GHIElectronics.TinyCLR.EthernetIP.Scanner.Desktop\GHIElectronics.TinyCLR.EthernetIP.Scanner.Desktop.csproj">
+      <Project>{A8B9C1D2-E3F4-4A5B-6C7D-8E9F1A2B3C4D}</Project>
+      <Name>GHIElectronics.TinyCLR.EthernetIP.Scanner.Desktop</Name>
+      <ReferenceOutputAssembly>False</ReferenceOutputAssembly>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

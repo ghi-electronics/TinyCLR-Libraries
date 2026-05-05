@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Reference Include="GHIElectronics.TinyCLR.Drawing">
+      <HintPath>$(MSBuildThisFileDirectory)..\..\lib\net48\GHIElectronics.TinyCLR.Drawing.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <_TinyCLRDrawingShimSource>$(MSBuildThisFileDirectory)..\..\desktop-shim\GHIElectronics.TinyCLR.Drawing.dll</_TinyCLRDrawingShimSource>
+    <_TinyCLRDrawingImplSource>$(MSBuildThisFileDirectory)..\..\tinyclr\GHIElectronics.TinyCLR.Drawing.dll</_TinyCLRDrawingImplSource>
+  </PropertyGroup>
+  <Target Name="CopyTinyCLRDrawingDesktopShim" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRDrawingShimSource)')">
+    <Copy SourceFiles="$(_TinyCLRDrawingShimSource)" DestinationFiles="$(OutDir)GHIElectronics.TinyCLR.Drawing.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
+  </Target>
+  <Target Name="CopyTinyCLRDrawingImplForDebugger" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRDrawingImplSource)')">
+    <Copy SourceFiles="$(_TinyCLRDrawingImplSource)" DestinationFiles="$(OutDir)pe\GHIElectronics.TinyCLR.Drawing.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
+  </Target>
+</Project>

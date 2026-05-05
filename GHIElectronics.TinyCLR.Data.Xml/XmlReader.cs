@@ -13,7 +13,7 @@ namespace GHIElectronics.TinyCLR.Data.Xml
 {
 
     // Represents a reader that provides fast, non-cached forward only stream access to XML data.
-    public abstract class XmlReader : IDisposable
+    internal abstract class XmlReader : IDisposable
     {
 
         static private uint IsTextualNodeBitmap = 0x6018; // 00 0110 0000 0001 1000

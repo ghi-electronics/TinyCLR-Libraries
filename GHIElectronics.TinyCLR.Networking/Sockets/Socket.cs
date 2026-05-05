@@ -1,4 +1,6 @@
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("GHIElectronics.TinyCLR.Devices.Network")]
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("GHIElectronics.TinyCLR.Networking.Http")]
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("GHIElectronics.TinyCLR.Networking.Ftp")]
 
 namespace System.Net.Sockets {
     using System.Net;
@@ -66,9 +68,30 @@ namespace System.Net.Sockets {
         static object socketCountObject = new object();
 
         public static int SocketInUsed => socketInUsedCount;
+
+        // .NET-parity: track the address family / socket type / protocol type
+        // the Socket was created with so callers don't need to remember them.
+        private readonly AddressFamily m_AddressFamily;
+        private readonly SocketType m_SocketType;
+        private readonly ProtocolType m_ProtocolType;
+        private bool m_isConnected;
+
+        public AddressFamily AddressFamily => this.m_AddressFamily;
+        public SocketType SocketType => this.m_SocketType;
+        public ProtocolType ProtocolType => this.m_ProtocolType;
+
+        // True once Connect() / Accept() succeeded; false after Dispose/Close
+        // or before connection. Matches full .NET semantics for a TCP socket;
+        // for UDP this stays false unless Connect() (associate a remote) was
+        // called, also matching .NET.
+        public bool Connected => this.m_Handle != -1 && this.m_isConnected;
+
         public Socket(AddressFamily addressFamily, SocketType socketType, ProtocolType protocolType) {
             this.ni = Socket.DefaultProvider;
             this.m_Handle = this.ni.Create(addressFamily, socketType, protocolType);
+            this.m_AddressFamily = addressFamily;
+            this.m_SocketType = socketType;
+            this.m_ProtocolType = protocolType;
 
             lock(socketCountObject) {
 
@@ -79,6 +102,13 @@ namespace System.Net.Sockets {
         private Socket(int handle) {
             this.ni = Socket.DefaultProvider;
             this.m_Handle = handle;
+            // Accepted sockets inherit the family/type/protocol of the listener.
+            // We don't have native getters yet, so initialize to plausible TCP
+            // defaults — accepted sockets are Connected by definition.
+            this.m_AddressFamily = AddressFamily.InterNetwork;
+            this.m_SocketType = SocketType.Stream;
+            this.m_ProtocolType = ProtocolType.Tcp;
+            this.m_isConnected = true;
 
             lock(socketCountObject) {
 
@@ -168,14 +198,33 @@ namespace System.Net.Sockets {
 
             this.ni.Connect(this.m_Handle, remoteEP.Serialize());
 
+            // .NET's blocking Connect waits indefinitely for the handshake;
+            // Poll's argument is microseconds — passing m_sendTimeout (which
+            // holds milliseconds via the SendTimeout property) would cap a
+            // 5000ms connect at 5ms. Use -1 (infinite) to match .NET / NETMF.
             if (this.m_fBlocking) {
-                if (this.Poll(this.m_sendTimeout, SelectMode.SelectWrite) == false) {
+                if (this.Poll(-1, SelectMode.SelectWrite) == false) {
                     throw new SocketException(SocketError.SocketError);
                 }
             }
+
+            this.m_isConnected = true;
         }
 
         public void Close() => ((IDisposable)this).Dispose();
+
+        // Disables sends and/or receives on this Socket without closing it.
+        // Mirrors System.Net.Sockets.Socket.Shutdown.
+        // - Send  : peer sees a graceful FIN on TCP; subsequent local sends fail.
+        // - Receive: subsequent local Receives return 0.
+        // - Both  : full half-close in both directions.
+        public void Shutdown(SocketShutdown how) {
+            if (this.m_Handle == -1) {
+                throw new ObjectDisposedException();
+            }
+
+            this.ni.Shutdown(this.m_Handle, how);
+        }
 
         public void Listen(int backlog) {
             if (this.m_Handle == -1) {
@@ -190,13 +239,19 @@ namespace System.Net.Sockets {
                 throw new ObjectDisposedException();
             }
 
+            // The firmware's TinyCLR_Lwip_SocketAccept inherits the listen
+            // socket's SO_RCVTIMEO (default 50ms) and returns -1 (sentinel)
+            // on each timeout, mirroring how Receive returns 0 on timeout.
+            // Real errors still surface as InvalidOperationException via the
+            // extern. Loop until a real client arrives or the listener is
+            // closed (Stop()/Dispose() sets m_Handle = -1).
             int socketHandle;
-
-            if (this.m_fBlocking) {
-                this.Poll(-1, SelectMode.SelectRead);
+            while (true) {
+                if (this.m_Handle == -1) throw new ObjectDisposedException();
+                socketHandle = this.ni.Accept(this.m_Handle);
+                if (socketHandle != -1) break;
+                Thread.Sleep(1);
             }
-
-            socketHandle = this.ni.Accept(this.m_Handle);
 
             var socket = new Socket(socketHandle) {
                 m_localEndPoint = this.m_localEndPoint
@@ -250,7 +305,7 @@ namespace System.Net.Sockets {
             }
 
             if (DateTime.Now.Ticks > expired) {
-                throw new Exception("Socket send timeout");
+                throw new SocketException(SocketError.TimedOut);
             }
 
             return totalSend;
@@ -296,7 +351,7 @@ namespace System.Net.Sockets {
             }
 
             if (DateTime.Now.Ticks > expired) {
-                throw new Exception("Socket send timeout");
+                throw new SocketException(SocketError.TimedOut);
             }
 
             return totalSend;
@@ -346,7 +401,7 @@ namespace System.Net.Sockets {
             }
 
             if (DateTime.Now.Ticks > expired) {
-                throw new Exception("Socket receive timeout");
+                throw new SocketException(SocketError.TimedOut);
             }
 
             return totalBytesReceive;
@@ -387,7 +442,7 @@ namespace System.Net.Sockets {
             }
 
             if (DateTime.Now.Ticks > expired) {
-                throw new Exception("Socket receive timeout");
+                throw new SocketException(SocketError.TimedOut);
             }
 
             remoteEP = remoteEP.Create(address);
@@ -475,6 +530,14 @@ namespace System.Net.Sockets {
                 throw new ObjectDisposedException();
             }
 
+            // microSeconds == 0 is a non-blocking probe (matches .NET).
+            // Special-case it: the polling loop below would otherwise compute
+            // expired == Now and skip the firmware call entirely, since the
+            // first 'Now < expired' check trips immediately.
+            if (microSeconds == 0) {
+                return this.ni.Poll(this.m_Handle, 0, mode);
+            }
+
             var expired = (microSeconds == -1) ? DateTime.MaxValue.Ticks : (DateTime.Now.Ticks + microSeconds * 10);
 
             while (DateTime.Now.Ticks < expired) {
@@ -502,6 +565,7 @@ namespace System.Net.Sockets {
 
                 this.ni.Close(this.m_Handle);
                 this.m_Handle = -1;
+                this.m_isConnected = false;
             }
         }
 

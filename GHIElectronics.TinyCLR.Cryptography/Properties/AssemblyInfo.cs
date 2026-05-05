@@ -1,5 +1,11 @@
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+
+// .NET-overlap algorithms (SHA1/SHA256/MD5/HMACSHA1/HMACSHA256/RSACryptoServiceProvider/RSAParameters)
+// are internal here; their public surface lives in the System.Security.Cryptography compat assembly,
+// which delegates back via friend-assembly access.
+[assembly: InternalsVisibleTo("System.Security.Cryptography")]
 
 [assembly: AssemblyTitle("GHIElectronics.TinyCLR.Cryptography")]
 [assembly: AssemblyDescription("TinyCLR OS Cryptography library.")]

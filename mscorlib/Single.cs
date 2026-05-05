@@ -43,6 +43,38 @@ namespace System {
         }
 
         public string ToString(string format, IFormatProvider provider) => Number.Format(this.m_value, false, format, NumberFormatInfo.GetInstance(provider));
+
+        public bool Equals(float obj) {
+            if (Double.IsNaN(obj) && Double.IsNaN(this.m_value)) {
+                return true;
+            }
+
+            return this.m_value == obj;
+        }
+
+        public override bool Equals(object obj) {
+            if (obj == null) {
+                return false;
+            }
+
+            if (!(obj is float)) {
+                return false;
+            }
+
+            return Equals((float)obj);
+        }
+
+        public override int GetHashCode() {
+            return BitConverter.ToInt32(BitConverter.GetBytes(this.m_value), 0);
+        }
+
+        public static bool operator ==(Single left, Single right) {
+            return left.m_value == right.m_value;
+        }
+
+        public static bool operator !=(Single left, Single right) {
+            return left.m_value != right.m_value;
+        }
     }
 }
 

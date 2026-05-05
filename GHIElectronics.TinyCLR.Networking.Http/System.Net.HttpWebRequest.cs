@@ -324,10 +324,19 @@ namespace System.Net {
         }
 
         /// <summary>
-        /// Gets or sets the array of certificates used to authenticate https
-        /// servers.  These certificates are used only for https connections;
-        /// http connections do not require them.
+        /// Gets or sets the array of certificates used to authenticate https servers.
+        /// These certificates are used only for https connections; http connections
+        /// do not require them.
         /// </summary>
+        /// <remarks>
+        /// <b>TinyCLR-only extension.</b> The .NET Framework equivalent is
+        /// <c>HttpWebRequest.ClientCertificates</c> (an <c>X509CertificateCollection</c>)
+        /// plus <c>ServicePointManager.ServerCertificateValidationCallback</c> for
+        /// server-cert validation. That model relies on Windows-side cert plumbing
+        /// which doesn't exist on embedded MCUs, so TinyCLR accepts the certificate
+        /// array directly on the request. Not portable to a plain .NET Framework
+        /// Windows app.
+        /// </remarks>
         public X509Certificate[] HttpsAuthentCerts {
             get => this.m_caCerts;
             set => this.m_caCerts = value;
@@ -461,22 +470,94 @@ namespace System.Net {
             set => this.m_continueDelegate = value;
         }
 
-        /// <summary>
-        /// Gets  a value that indicates whether the request should follow
-        /// redirection responses.  This value is always
-        /// <itemref>false</itemref>, because Autodirect isn't supported.
-        /// </summary>
-        /// <value>This value is always <itemref>false</itemref>, because
-        /// Autodirect isn't supported.</value>
-        public bool AllowAutoRedirect => false;
+        private bool m_allowAutoRedirect;
+        private int m_maxAutoRedirects;
+        private string m_mediaType;
 
         /// <summary>
-        /// Gets the maximum number of automatic redirections.  This value is
-        /// always zero, because auto-redirection isn't supported.
+        /// Gets or sets a value that indicates whether the request should follow redirection responses.
         /// </summary>
-        /// <value>This value is always zero, because auto-redirection isn't
-        /// supported.</value>
-        public int MaximumAutomaticRedirections => 0;
+        /// <remarks>
+        /// Auto-redirect is currently not implemented in TinyCLR — the property is settable
+        /// for source-compatibility with .NET Framework code, but its value has no effect on
+        /// request behavior. To follow a 3xx response, inspect <c>HttpWebResponse.StatusCode</c>
+        /// and the <c>Location</c> header manually and issue a new request.
+        /// </remarks>
+        public bool AllowAutoRedirect {
+            get => this.m_allowAutoRedirect;
+            set => this.m_allowAutoRedirect = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the maximum number of redirects that the request follows.
+        /// </summary>
+        /// <remarks>
+        /// Same as <see cref="AllowAutoRedirect"/>: settable for source-compatibility but has
+        /// no effect because TinyCLR does not implement automatic redirection.
+        /// </remarks>
+        public int MaximumAutomaticRedirections {
+            get => this.m_maxAutoRedirects;
+            set {
+                if (value < 1) throw new ArgumentOutOfRangeException(nameof(value));
+                this.m_maxAutoRedirects = value;
+            }
+        }
+
+        /// <summary>
+        /// Cancels a request to an Internet resource. Closes any open request/response stream
+        /// and releases the underlying socket. Subsequent calls to <c>GetResponse</c> /
+        /// <c>GetRequestStream</c> on this instance throw.
+        /// </summary>
+        public override void Abort() {
+            var stream = this.m_requestStream;
+            if (stream != null) {
+                try { stream.Close(); } catch { }
+                this.m_requestStream = null;
+            }
+            this.m_responseComplete = true;
+        }
+
+        /// <summary>Gets or sets the value of the <c>Connection</c> HTTP header.</summary>
+        public string Connection {
+            get => this.m_httpRequestHeaders[HttpKnownHeaderNames.Connection];
+            set => this.m_httpRequestHeaders.Set(HttpKnownHeaderNames.Connection, value);
+        }
+
+        /// <summary>Gets or sets the value of the <c>Host</c> HTTP header.</summary>
+        public string Host {
+            get => this.m_httpRequestHeaders[HttpKnownHeaderNames.Host];
+            set => this.m_httpRequestHeaders.Set(HttpKnownHeaderNames.Host, value);
+        }
+
+        /// <summary>
+        /// Gets or sets the <c>Date</c> HTTP header.
+        /// </summary>
+        /// <remarks>
+        /// Returns <see cref="DateTime.MinValue"/> if the header is not set or unparseable.
+        /// Set values are formatted as RFC 1123.
+        /// </remarks>
+        public DateTime Date {
+            get {
+                var raw = this.m_httpRequestHeaders[HttpKnownHeaderNames.Date];
+                if (string.IsNullOrEmpty(raw)) return DateTime.MinValue;
+                try { return HttpProtocolUtils.string2date(raw); }
+                catch { return DateTime.MinValue; }
+            }
+            set => this.m_httpRequestHeaders.Set(HttpKnownHeaderNames.Date,
+                HttpProtocolUtils.DateToRFC1123String(value));
+        }
+
+        /// <summary>
+        /// Gets or sets the media type of the request.
+        /// </summary>
+        /// <remarks>
+        /// .NET-shape property; not transmitted as a separate header. Most code uses
+        /// <see cref="ContentType"/> instead. Stored as a request-level metadata string.
+        /// </remarks>
+        public string MediaType {
+            get => this.m_mediaType;
+            set => this.m_mediaType = value;
+        }
 
         /// <summary>
         /// Gets or sets the HTTP method of this request.
@@ -913,6 +994,31 @@ namespace System.Net {
         /// "bytes".</param>
         /// <param name="range">The range value.</param>
         public void AddRange(string rangeSpecifier, int range) {
+            if (!AddRange(rangeSpecifier, range.ToString(), (range >= 0) ? "" : null)) {
+                throw new InvalidOperationException();
+            }
+        }
+
+        // ----- .NET 4.0+ long overloads (large-file range support) -----
+
+        /// <summary>Adds a byte range header for ranges that may exceed Int32.MaxValue.</summary>
+        public void AddRange(long from, long to) => AddRange("bytes", from, to);
+
+        /// <summary>Adds a byte range header for a range that may exceed Int32.MaxValue.</summary>
+        public void AddRange(long range) => AddRange("bytes", range);
+
+        /// <summary>Adds a range header to a request for a specified range, with long endpoints.</summary>
+        public void AddRange(string rangeSpecifier, long from, long to) {
+            if (rangeSpecifier == null) throw new ArgumentNullException(nameof(rangeSpecifier));
+            if (from < 0 || to < 0) throw new ArgumentOutOfRangeException();
+            if (from > to) throw new ArgumentOutOfRangeException();
+            if (!AddRange(rangeSpecifier, from.ToString(), to.ToString())) {
+                throw new InvalidOperationException();
+            }
+        }
+
+        /// <summary>Adds a range header to a request from the beginning or end of the data, with a long range value.</summary>
+        public void AddRange(string rangeSpecifier, long range) {
             if (!AddRange(rangeSpecifier, range.ToString(), (range >= 0) ? "" : null)) {
                 throw new InvalidOperationException();
             }
