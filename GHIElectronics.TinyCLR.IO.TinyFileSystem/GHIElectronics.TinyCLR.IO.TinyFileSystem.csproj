@@ -49,6 +49,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="GHIElectronics.TinyCLR.IO.TinyFileSystem.nuspec" />
+    <None Include="GHIElectronics.TinyCLR.IO.TinyFileSystem.props" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GHIElectronics.TinyCLR.IO.TinyFileSystem.Desktop\GHIElectronics.TinyCLR.IO.TinyFileSystem.Desktop.csproj">
+      <Project>{E9F1A2B3-C4D5-4E6F-7A8B-9C1D2E3F4152}</Project>
+      <Name>GHIElectronics.TinyCLR.IO.TinyFileSystem.Desktop</Name>
+      <ReferenceOutputAssembly>False</ReferenceOutputAssembly>
+      <Private>False</Private>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GHIElectronics.TinyCLR.Devices.Storage\GHIElectronics.TinyCLR.Devices.Storage.csproj">

@@ -53,6 +53,15 @@
   <ItemGroup>
     <None Include="GHIElectronics.TinyCLR.Data.Json.nuspec" />
     <None Include="packages.config" />
+    <None Include="GHIElectronics.TinyCLR.Data.Json.props" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GHIElectronics.TinyCLR.Data.Json.Desktop\GHIElectronics.TinyCLR.Data.Json.Desktop.csproj">
+      <Project>{B5C6D7E8-F9A1-4B2C-3D4E-5F6A7B8C9D1E}</Project>
+      <Name>GHIElectronics.TinyCLR.Data.Json.Desktop</Name>
+      <ReferenceOutputAssembly>False</ReferenceOutputAssembly>
+      <Private>False</Private>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GHIElectronics.TinyCLR.IO\GHIElectronics.TinyCLR.IO.csproj">

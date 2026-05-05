@@ -5,16 +5,28 @@
       <HintPath>$(MSBuildThisFileDirectory)..\..\lib\net48\GHIElectronics.TinyCLR.Cryptography.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="System.Security.Cryptography">
+      <HintPath>$(MSBuildThisFileDirectory)..\..\lib\net48\System.Security.Cryptography.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
   </ItemGroup>
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
     <_TinyCLRCryptographyShimSource>$(MSBuildThisFileDirectory)..\..\desktop-shim\GHIElectronics.TinyCLR.Cryptography.dll</_TinyCLRCryptographyShimSource>
     <_TinyCLRCryptographyImplSource>$(MSBuildThisFileDirectory)..\..\tinyclr\GHIElectronics.TinyCLR.Cryptography.dll</_TinyCLRCryptographyImplSource>
+    <_TinyCLRSysCryptoShimSource>$(MSBuildThisFileDirectory)..\..\desktop-shim\System.Security.Cryptography.dll</_TinyCLRSysCryptoShimSource>
+    <_TinyCLRSysCryptoImplSource>$(MSBuildThisFileDirectory)..\..\tinyclr\System.Security.Cryptography.dll</_TinyCLRSysCryptoImplSource>
   </PropertyGroup>
   <Target Name="CopyTinyCLRCryptographyDesktopShim" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRCryptographyShimSource)')">
     <Copy SourceFiles="$(_TinyCLRCryptographyShimSource)" DestinationFiles="$(OutDir)GHIElectronics.TinyCLR.Cryptography.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
   </Target>
   <Target Name="CopyTinyCLRCryptographyImplForDebugger" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRCryptographyImplSource)')">
     <Copy SourceFiles="$(_TinyCLRCryptographyImplSource)" DestinationFiles="$(OutDir)pe\GHIElectronics.TinyCLR.Cryptography.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
+  </Target>
+  <Target Name="CopyTinyCLRSysCryptoDesktopShim" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRSysCryptoShimSource)')">
+    <Copy SourceFiles="$(_TinyCLRSysCryptoShimSource)" DestinationFiles="$(OutDir)System.Security.Cryptography.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
+  </Target>
+  <Target Name="CopyTinyCLRSysCryptoImplForDebugger" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRSysCryptoImplSource)')">
+    <Copy SourceFiles="$(_TinyCLRSysCryptoImplSource)" DestinationFiles="$(OutDir)pe\System.Security.Cryptography.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
   </Target>
 </Project>

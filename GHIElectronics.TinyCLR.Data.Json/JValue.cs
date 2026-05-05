@@ -1,9 +1,53 @@
 using System;
+using System.Text;
 
 namespace GHIElectronics.TinyCLR.Data.Json
 {
     public class JValue : JToken
     {
+        // JSON string escape per RFC 8259 section 7. Wraps in double quotes
+        // and escapes the six required chars (", \, /, control chars), plus
+        // emits \uXXXX for any char below 0x20.
+        internal static string EscapeJsonString(string s) {
+            var sb = new StringBuilder(s.Length + 2);
+            sb.Append('"');
+            for (var i = 0; i < s.Length; i++) {
+                var c = s[i];
+                switch (c) {
+                    case '"':  sb.Append("\\\""); break;
+                    case '\\': sb.Append("\\\\"); break;
+                    case '\b': sb.Append("\\b"); break;
+                    case '\f': sb.Append("\\f"); break;
+                    case '\n': sb.Append("\\n"); break;
+                    case '\r': sb.Append("\\r"); break;
+                    case '\t': sb.Append("\\t"); break;
+                    default:
+                        if (c < 0x20) {
+                            sb.Append("\\u");
+                            var hex = ((int)c).ToString();
+                            // Manual zero-pad to 4 hex digits without String.Format
+                            // (TinyCLR mscorlib doesn't support format specifiers everywhere).
+                            var hexHi = ((c >> 12) & 0xF);
+                            var hexMh = ((c >> 8) & 0xF);
+                            var hexMl = ((c >> 4) & 0xF);
+                            var hexLo = (c & 0xF);
+                            sb.Append(HexDigit(hexHi));
+                            sb.Append(HexDigit(hexMh));
+                            sb.Append(HexDigit(hexMl));
+                            sb.Append(HexDigit(hexLo));
+                        }
+                        else {
+                            sb.Append(c);
+                        }
+                        break;
+                }
+            }
+            sb.Append('"');
+            return sb.ToString();
+        }
+
+        private static char HexDigit(int n) => (char)(n < 10 ? '0' + n : 'a' + (n - 10));
+
         public JValue()
         {
         }
@@ -37,12 +81,20 @@ namespace GHIElectronics.TinyCLR.Data.Json
                     return "null";
 
                 var type = this.Value.GetType();
-                if (type == typeof(string) || type == typeof(char))
-                    return "\"" + this.Value.ToString() + "\"";
+                if (type == typeof(string))
+                    return EscapeJsonString((string)this.Value);
+                else if (type == typeof(char))
+                    return EscapeJsonString(this.Value.ToString());
                 else if (type == typeof(DateTime))
                     return "\"" + DateTimeExtensions.ToIso8601(((DateTime)this.Value)) + "\"";
                 else if (type == typeof(bool))
                     return this.Value.ToString().ToLower();
+                else if (type.IsEnum)
+                    // Default policy: serialize enums as quoted string of the
+                    // member name. Without quoting, ToString() returns "Foo"
+                    // unquoted -> invalid JSON. Caller can opt into integer
+                    // form by casting to the underlying type before wrapping.
+                    return EscapeJsonString(this.Value.ToString());
                 else
                     return this.Value.ToString();
             }

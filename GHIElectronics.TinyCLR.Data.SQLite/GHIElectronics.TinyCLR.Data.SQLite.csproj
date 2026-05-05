@@ -43,6 +43,15 @@
   <ItemGroup>
     <None Include="GHIElectronics.TinyCLR.Data.SQLite.nuspec" />
     <None Include="packages.config" />
+    <None Include="GHIElectronics.TinyCLR.Data.SQLite.props" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GHIElectronics.TinyCLR.Data.SQLite.Desktop\GHIElectronics.TinyCLR.Data.SQLite.Desktop.csproj">
+      <Project>{F1A2B3C4-D5E6-4F7A-8B9C-1D2E3F415263}</Project>
+      <Name>GHIElectronics.TinyCLR.Data.SQLite.Desktop</Name>
+      <ReferenceOutputAssembly>False</ReferenceOutputAssembly>
+      <Private>False</Private>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GHIElectronics.TinyCLR.IO\GHIElectronics.TinyCLR.IO.csproj">

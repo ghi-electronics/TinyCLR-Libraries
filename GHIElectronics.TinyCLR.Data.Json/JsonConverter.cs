@@ -130,26 +130,31 @@ namespace GHIElectronics.TinyCLR.Data.Json
 
                 var resolvedType = instance.GetType();
 
+                // Case-insensitive lookup so JSON `name` populates C# `Name`.
+                // Common interop need - the original case-sensitive logic
+                // silently dropped data when the JSON casing didn't match.
+                const BindingFlags ciFlags = BindingFlags.IgnoreCase | BindingFlags.Instance | BindingFlags.Public;
+
                 var jobj = (JObject)root;
                 foreach (var item in jobj.Members)
                 {
                     var prop = (JProperty)item;
                     MethodInfo method = null;
                     Type itemType = null;
-                    var field = resolvedType.GetField(prop.Name);
+                    var field = resolvedType.GetField(prop.Name, ciFlags);
                     if (field != null)
                     {
                         itemType = field.FieldType;
                     }
                     else
                     {
-                        method = resolvedType.GetMethod("get_" + prop.Name);
+                        method = resolvedType.GetMethod("get_" + prop.Name, ciFlags);
                         if (method == null)
                         {
                             continue;
                         }
                         itemType = method.ReturnType;
-                        method = resolvedType.GetMethod("set_" + prop.Name);
+                        method = resolvedType.GetMethod("set_" + prop.Name, ciFlags);
                     }
 
                     if (itemType != null)
@@ -673,7 +678,8 @@ namespace GHIElectronics.TinyCLR.Data.Json
             {
                 ch = (char)sourceReader.Read();
 
-                // Handle json escapes
+                // Handle json escapes per RFC 8259. Note: \' is non-standard but
+                // we accept it for backward compat with the original port.
                 bool escaped = false;
                 if (ch == '\\')
                 {
@@ -681,23 +687,35 @@ namespace GHIElectronics.TinyCLR.Data.Json
                     ch = (char)sourceReader.Read();
                     if (ch == (char)0xffff)
                         return EndToken(sb);
-                    //TODO: replace with a mapping array? This switch is really incomplete.
                     switch (ch)
                     {
-                        case '\'':
-                            ch = '\'';
-                            break;
-                        case '"':
-                            ch = '"';
-                            break;
-                        case 't':
-                            ch = '\t';
-                            break;
-                        case 'r':
-                            ch = '\r';
-                            break;
-                        case 'n':
-                            ch = '\n';
+                        case '\'': ch = '\''; break;
+                        case '"':  ch = '"';  break;
+                        case '\\': ch = '\\'; break;
+                        case '/':  ch = '/';  break;
+                        case 'b':  ch = '\b'; break;
+                        case 'f':  ch = '\f'; break;
+                        case 't':  ch = '\t'; break;
+                        case 'r':  ch = '\r'; break;
+                        case 'n':  ch = '\n'; break;
+                        case 'u':
+                            // \uXXXX - 4 hex digits, big-endian, BMP code point.
+                            // We don't currently decode surrogate pairs (😀);
+                            // each \uXXXX is emitted as one char and the caller's UTF-16
+                            // surrogate is preserved if both halves are present.
+                            int code = 0;
+                            for (var i = 0; i < 4; i++) {
+                                var hex = (char)sourceReader.Read();
+                                if (hex == (char)0xffff)
+                                    return EndToken(sb);
+                                int d;
+                                if (hex >= '0' && hex <= '9') d = hex - '0';
+                                else if (hex >= 'a' && hex <= 'f') d = 10 + (hex - 'a');
+                                else if (hex >= 'A' && hex <= 'F') d = 10 + (hex - 'A');
+                                else throw new Exception("invalid \\u hex digit");
+                                code = (code << 4) | d;
+                            }
+                            ch = (char)code;
                             break;
                         default:
                             throw new Exception("unsupported escape");
@@ -765,7 +783,7 @@ namespace GHIElectronics.TinyCLR.Data.Json
                             return EndToken(sb);
                         default:
                             // try to collect a token
-                            switch (ch.ToLower())
+                            switch (char.ToLower(ch))
                             {
                                 case 't':
                                     Expect(sourceReader, 'r');
@@ -793,7 +811,7 @@ namespace GHIElectronics.TinyCLR.Data.Json
 
         private static void Expect(StreamReader sr, char ch)
         {
-            if (((char)sr.Read()).ToLower() != ch)
+            if (char.ToLower((char)sr.Read()) != ch)
                 throw new Exception("unexpected character during json lexical parse");
         }
 

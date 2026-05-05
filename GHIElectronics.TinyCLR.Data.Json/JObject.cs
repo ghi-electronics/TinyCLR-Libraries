@@ -25,7 +25,7 @@ namespace GHIElectronics.TinyCLR.Data.Json
 
         public ICollection Members => this._orderedMembers;
 
-        public void Add(string name, JToken value) => this.AddOrUpdateMember(name, new JProperty(name, value));
+        public void Add(string name, JToken value) => this.AddOrUpdateMember(name.ToLower(), new JProperty(name, value));
 
         public static JObject Serialize(Type type, object oSource, JsonSerializerSettings settings = null)
 		{
@@ -48,7 +48,7 @@ namespace GHIElectronics.TinyCLR.Data.Json
 					var methodResult = m.Invoke(oSource, null);
 					if (methodResult == null)
 						result.AddOrUpdateMember(name.ToLower(), new JProperty(name, JValue.Serialize(m.ReturnType, null)));
-					if (m.ReturnType.IsArray)
+					else if (m.ReturnType.IsArray)
 						result.AddOrUpdateMember(name.ToLower(), new JProperty(name, JArray.Serialize(m.ReturnType, methodResult, settings)));
 					else
                     {
@@ -90,7 +90,7 @@ namespace GHIElectronics.TinyCLR.Data.Json
 						var value = f.GetValue(oSource);
 						if (value == null)
 						{
-							result.AddOrUpdateMember(f.Name, new JProperty(f.Name, JValue.Serialize(f.FieldType, null)));
+							result.AddOrUpdateMember(f.Name.ToLower(), new JProperty(f.Name, JValue.Serialize(f.FieldType, null)));
 						}
 						else if (f.FieldType.IsValueType || f.FieldType == typeof(string))
 						{
