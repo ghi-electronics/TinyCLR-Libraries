@@ -22,6 +22,7 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
         private Format[] supportedFormats;
         private Format activeFormat;
         private bool streaming;
+        private bool processingFrame;  // re-entrancy guard for CheckEvents
 
         /// <summary>Delegate fired when a new frame is ready.</summary>
         public delegate void FrameAvailableEventHandler(Webcam sender, EventArgs e);
@@ -32,6 +33,10 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
 
         /// <summary>True while the camera is streaming.</summary>
         public bool IsStreaming => this.streaming;
+
+        /// <summary>True if the active stream is MJPEG (caller must JPEG-decode); false for YUY2 (use <see cref="ConvertYuy2ToRgb565"/>).</summary>
+        /// <remarks>Returns false until MJPEG support is implemented; YUY2 is the only currently-streamable format.</remarks>
+        public bool IsMjpeg => this.activeFormat != null && this.activeFormat.Kind == FormatKind.Mjpeg;
 
         /// <summary>The negotiated frame width in pixels (valid while streaming).</summary>
         public int Width => this.activeFormat == null ? 0 : this.activeFormat.Width;
@@ -71,14 +76,28 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
 
         /// <summary>Starts streaming the chosen format. Allocates the device-side double buffer.</summary>
         /// <param name="format">One of the entries from <see cref="SupportedFormats"/>.</param>
-        public void StartStreaming(Format format) {
+        /// <param name="fps">
+        /// Requested frame rate. <c>0</c> (default) = use the camera's default rate
+        /// (typically 30 fps). Non-zero values request that frame rate from the camera —
+        /// the camera will round to its nearest supported value.
+        ///
+        /// <para>Use this to throttle a camera that produces faster than your application
+        /// can consume: cheap UVC cameras often have an internal FIFO and produce at their
+        /// max rate regardless. If you can render at 10 fps but the camera produces at 30,
+        /// 20 fps of frames pile up in its FIFO per second, manifesting as a several-second
+        /// "playback delayed behind reality" lag. Setting <paramref name="fps"/> to match
+        /// your app's processing rate keeps producer and consumer aligned and eliminates
+        /// the lag.</para>
+        /// </param>
+        public void StartStreaming(Format format, int fps = 0) {
             this.CheckObjectState();
 
             if (format == null) throw new ArgumentNullException(nameof(format));
+            if (fps < 0) throw new ArgumentOutOfRangeException(nameof(fps));
             if (this.streaming) throw new InvalidOperationException("Already streaming.");
 
             this.NativeStartStreaming(format.FormatType, format.BFormatIndex, format.BFrameIndex,
-                                       format.Width, format.Height);
+                                       format.Width, format.Height, fps);
 
             this.activeFormat = format;
             this.streaming = true;
@@ -103,15 +122,40 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
             return this.NativeIsNewFrameAvailable();
         }
 
-        /// <summary>Copies the most recently completed frame into <paramref name="buffer"/> as RGB565 bytes.</summary>
-        /// <param name="buffer">Destination buffer. Must be at least <see cref="FrameSize"/> bytes.</param>
-        public void GetFrame(byte[] buffer) {
+        /// <summary>Copies the most recently completed frame into <paramref name="buffer"/> as raw bytes.</summary>
+        /// <param name="buffer">Destination buffer. Must be at least <see cref="FrameSize"/> bytes (which is the upper bound; actual size returned).</param>
+        /// <returns>Actual number of bytes written. For YUY2 always <c>Width*Height*2</c>. For MJPEG, varies per frame.</returns>
+        /// <remarks>
+        /// Returned bytes are the camera's raw stream:
+        /// <list type="bullet">
+        /// <item>For YUY2 (<see cref="IsMjpeg"/> == false): YUYV-packed pixels (Y1 U Y2 V tuples). Use <see cref="ConvertYuy2ToRgb565"/> to convert.</item>
+        /// <item>For MJPEG (<see cref="IsMjpeg"/> == true): a complete JPEG-encoded frame. Decode with your JPEG decoder.</item>
+        /// </list>
+        /// The driver does not pre-convert pixel formats — application controls conversion timing/threading.
+        /// </remarks>
+        public int GetFrame(byte[] buffer) {
             this.CheckObjectState();
 
             if (buffer == null) throw new ArgumentNullException(nameof(buffer));
             if (!this.streaming) throw new InvalidOperationException("Not streaming.");
 
-            this.NativeGetFrame(buffer);
+            return this.NativeGetFrame(buffer);
+        }
+
+        /// <summary>Converts a YUY2 (YUYV-packed) buffer to RGB565 in place into <paramref name="rgb565"/>.</summary>
+        /// <param name="yuy2">Source buffer with YUY2-packed pixels (Y1 U Y2 V tuples).</param>
+        /// <param name="rgb565">Destination buffer for RGB565 pixels (2 bytes per pixel).</param>
+        /// <remarks>
+        /// Output byte count equals input byte count (4 source bytes -> 2 RGB565 pixels = 4 dest bytes).
+        /// Internally the byte count is rounded down to a multiple of 4. Uses BT.601 conversion math
+        /// performed in native code.
+        /// </remarks>
+        public static void ConvertYuy2ToRgb565(byte[] yuy2, byte[] rgb565) {
+            if (yuy2 == null) throw new ArgumentNullException(nameof(yuy2));
+            if (rgb565 == null) throw new ArgumentNullException(nameof(rgb565));
+            if (rgb565.Length < yuy2.Length) throw new ArgumentException("rgb565 buffer must be at least yuy2.Length bytes.", nameof(rgb565));
+
+            NativeConvertYuy2ToRgb565(yuy2, rgb565, yuy2.Length);
         }
 
         /// <summary>Disposes the webcam, stopping any active stream.</summary>
@@ -129,16 +173,33 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
         }
 
         /// <summary>Polled by BaseDevice's worker; raises FrameAvailable when a new frame lands.</summary>
+        /// <remarks>
+        /// The handler is invoked synchronously here, so a slow event handler (e.g. JPEG decode
+        /// taking longer than the timer's polling interval) would otherwise let timer callbacks
+        /// queue up — every cycle adds (handler_time − interval) of backlog, producing a
+        /// multi-second offset between the camera's view and what's rendered. The
+        /// <c>processingFrame</c> guard makes CheckEvents return immediately while a previous
+        /// invocation is still running. The native double-buffer keeps only the most recent
+        /// frame anyway, so dropping intermediates preserves real-time playback at the cost
+        /// of an occasionally-skipped frame on slow handlers.
+        /// </remarks>
         protected override void CheckEvents(object sender) {
             if (!this.CheckObjectState(false)) return;
             if (!this.streaming) return;
 
-            bool ready;
-            try { ready = this.NativeIsNewFrameAvailable(); }
-            catch { return; }
+            if (this.processingFrame) return;
+            this.processingFrame = true;
+            try {
+                bool ready;
+                try { ready = this.NativeIsNewFrameAvailable(); }
+                catch { return; }
 
-            if (ready)
-                this.FrameAvailable?.Invoke(this, EventArgs.Empty);
+                if (ready)
+                    this.FrameAvailable?.Invoke(this, EventArgs.Empty);
+            }
+            finally {
+                this.processingFrame = false;
+            }
         }
 
         private Format[] QuerySupportedFormats() {
@@ -174,7 +235,7 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         extern private void NativeStartStreaming(byte formatType, byte bFormatIndex, byte bFrameIndex,
-                                                 int width, int height);
+                                                 int width, int height, int fps);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         extern private void NativeStopStreaming();
@@ -186,7 +247,10 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
         extern private void NativeGetFrameSize(out int size);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        extern private void NativeGetFrame(byte[] buffer);
+        extern private int NativeGetFrame(byte[] buffer);
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        extern private static void NativeConvertYuy2ToRgb565(byte[] yuy2, byte[] rgb565, int length);
 
         /// <summary>The on-the-wire pixel encoding for a UVC stream.</summary>
         public enum FormatKind : byte {
