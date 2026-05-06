@@ -35,7 +35,7 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
         /// <summary>The device's type.</summary>
         public BaseDevice.DeviceType Type => this.type;
 
-        /// <summary>The devic's vendor id.</summary>
+        /// <summary>The device's vendor id.</summary>
         public ushort VendorId => this.vendorId;
 
         /// <summary>The device's product id.</summary>

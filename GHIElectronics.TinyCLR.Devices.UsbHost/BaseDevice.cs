@@ -41,7 +41,7 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
         /// <summary>The device's type.</summary>
         public DeviceType Type => this.type;
 
-        /// <summary>The devic's vendor id.</summary>
+        /// <summary>The device's vendor id.</summary>
         /// <remarks>This is unique per company.</remarks>
         public ushort VendorId => this.vendorId;
 
@@ -128,9 +128,12 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
 
             /// <summary>USB webcam (USB Video Class with a camera input terminal).</summary>
             Webcam,
+
+            /// <summary>User-defined custom device class. Use this when implementing a driver that doesn't fit any of the predefined types.</summary>
+            Custom,
         }
 
-        internal BaseDevice(uint id, byte interfaceIndex, DeviceType type) {
+        protected BaseDevice(uint id, byte interfaceIndex, DeviceType type) {
             UsbHostController.RegisterDevice(this);
             UsbHostControllerApiWrapper.GetDeviceInformation(id, out var vendor, out var product, out var port);
 
