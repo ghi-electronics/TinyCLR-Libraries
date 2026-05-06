@@ -58,9 +58,18 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
         /// <summary>Constructs a webcam wrapper for a connected UVC camera.</summary>
         /// <param name="id">Device id from the connection event.</param>
         /// <param name="interfaceIndex">VideoControl interface index from the connection event.</param>
+        /// <exception cref="NotSupportedException">
+        /// Thrown when no standard UVC VideoStreaming interface is found on the device.
+        /// </exception>
         public Webcam(uint id, byte interfaceIndex)
             : base(id, interfaceIndex, DeviceType.Webcam) {
-            this.NativeConstructor(this.Id, this.InterfaceIndex);
+            try {
+                this.NativeConstructor(this.Id, this.InterfaceIndex);
+            }
+            catch (NotSupportedException) {
+                throw new NotSupportedException(
+                    "No standard streaming interface found. It cannot be streamed via UVC.");
+            }
 
             this.streaming = false;
             this.activeFormat = null;
