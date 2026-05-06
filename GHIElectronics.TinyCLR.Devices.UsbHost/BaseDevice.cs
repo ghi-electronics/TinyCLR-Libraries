@@ -123,11 +123,11 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
             [Obsolete()]
             SierraInstaller,
 
-            /// <summary>Video device.</summary>
-            //Video,
+            /// <summary>Video device (USB Video Class, non-camera).</summary>
+            Video,
 
-            /// <summary>Webcamera.</summary>
-            //Webcam,
+            /// <summary>USB webcam (USB Video Class with a camera input terminal).</summary>
+            Webcam,
         }
 
         internal BaseDevice(uint id, byte interfaceIndex, DeviceType type) {
