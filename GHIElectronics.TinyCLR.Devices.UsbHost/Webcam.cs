@@ -77,9 +77,11 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
         /// <summary>Starts streaming the chosen format. Allocates the device-side double buffer.</summary>
         /// <param name="format">One of the entries from <see cref="SupportedFormats"/>.</param>
         /// <param name="fps">
-        /// Requested frame rate. <c>0</c> (default) = use the camera's default rate
-        /// (typically 30 fps). Non-zero values request that frame rate from the camera —
-        /// the camera will round to its nearest supported value.
+        /// Requested frame rate. Default is <c>15</c> — the slowest rate that virtually every
+        /// UVC camera supports, so it's the broadest-compatibility starting point. Pass <c>0</c>
+        /// to use the camera's own default rate (typically 30 fps) from the frame descriptor.
+        /// Any other value asks the camera for that rate; the camera rounds to its nearest
+        /// supported value (visible in the PROBE GET_CUR exchange).
         ///
         /// <para>Use this to throttle a camera that produces faster than your application
         /// can consume: cheap UVC cameras often have an internal FIFO and produce at their
@@ -87,9 +89,10 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
         /// 20 fps of frames pile up in its FIFO per second, manifesting as a several-second
         /// "playback delayed behind reality" lag. Setting <paramref name="fps"/> to match
         /// your app's processing rate keeps producer and consumer aligned and eliminates
-        /// the lag.</para>
+        /// the lag. When the camera refuses to go below its minimum supported rate, use
+        /// <see cref="Resync"/> periodically to flush its internal FIFO instead.</para>
         /// </param>
-        public void StartStreaming(Format format, int fps = 0) {
+        public void StartStreaming(Format format, int fps = 15) {
             this.CheckObjectState();
 
             if (format == null) throw new ArgumentNullException(nameof(format));
@@ -101,6 +104,31 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
 
             this.activeFormat = format;
             this.streaming = true;
+        }
+
+        /// <summary>Flushes any frames the camera has queued in its internal sensor->encoder FIFO.</summary>
+        /// <param name="soft">
+        /// <c>false</c> (default) — hard flush via streaming alt-setting toggle. Definitive on
+        /// every UVC camera but ~500-1000 ms blackout because the camera reboots its sensor
+        /// pipeline.
+        /// <para><c>true</c> — soft flush, replays the previously negotiated SET_CUR (Commit)
+        /// only. ~20 ms blackout. Camera-dependent: some cameras flush their FIFO on
+        /// commit-during-streaming, others ignore it and the call is effectively a no-op.
+        /// Try once on your specific camera and fall back to <c>false</c> if the lag
+        /// doesn't drop.</para>
+        /// </param>
+        /// <remarks>
+        /// Some UVC cameras capture internally faster than they can ship over USB and accumulate
+        /// the difference in an internal FIFO, producing a "screen lags real life" effect that
+        /// grows over time. Calling <c>Resync</c> drops the camera's internal queue so the next
+        /// frame the application receives reflects the moment of the call rather than several
+        /// seconds ago. Application chooses the cadence. Throws if not currently streaming.
+        /// </remarks>
+        public void Resync(bool soft = false) {
+            this.CheckObjectState();
+            if (!this.streaming) throw new InvalidOperationException("Not streaming.");
+
+            this.NativeResync(soft);
         }
 
         /// <summary>Stops streaming and frees device-side buffers.</summary>
@@ -239,6 +267,9 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         extern private void NativeStopStreaming();
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        extern private void NativeResync(bool soft);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         extern private bool NativeIsNewFrameAvailable();
