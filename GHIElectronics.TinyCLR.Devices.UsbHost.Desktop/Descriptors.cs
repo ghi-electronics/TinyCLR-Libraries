@@ -55,8 +55,8 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors {
         /// <summary>The subclass code.</summary>
         public byte SubclassCode { get; set; }
 
-        /// <summary>The protocal code.</summary>
-        public byte ProtocalCode { get; set; }
+        /// <summary>The protocol code.</summary>
+        public byte ProtocolCode { get; set; }
 
         /// <summary>The max packet size for endpoint zero.</summary>
         public byte MaximumPacketSize { get; set; }
@@ -99,7 +99,7 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors {
 			this.UsbSpecificationNumber = (ushort)(buffer[offset + 2] | (buffer[offset + 3] << 8));
 			this.ClassCode = buffer[offset + 4];
 			this.SubclassCode = buffer[offset + 5];
-			this.ProtocalCode = buffer[offset + 6];
+			this.ProtocolCode = buffer[offset + 6];
 			this.MaximumPacketSize = buffer[offset + 7];
 			this.VendorId = (ushort)(buffer[offset + 8] | (buffer[offset + 9] << 8));
 			this.ProductId = (ushort)(buffer[offset + 10] | (buffer[offset + 11] << 8));
@@ -173,7 +173,10 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors {
 			: base(DescriptorType.Configuration, Configuration.LENGTH) {
 		}
 
-		internal void FillChildren(byte[] bytes, int offset) {
+		/// <summary>Walks a config-descriptor blob from <paramref name="offset"/> to the end and fills <see cref="Interfaces"/>, the nested endpoints, and <see cref="AuxiliaryDescriptors"/>.</summary>
+		/// <param name="bytes">The full configuration-descriptor blob (length = <see cref="TotalLength"/>).</param>
+		/// <param name="offset">Byte offset to start parsing children — typically <see cref="LENGTH"/> when the blob starts with the configuration header.</param>
+		public void FillChildren(byte[] bytes, int offset) {
 			var auxiliaries = new ArrayList();
 			var interfaces = new ArrayList();
 
