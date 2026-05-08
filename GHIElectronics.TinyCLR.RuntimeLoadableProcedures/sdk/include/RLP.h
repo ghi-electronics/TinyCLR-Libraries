@@ -85,13 +85,23 @@ typedef enum {
  * handler mode. Safe to call other RLP_* helpers from here. */
 typedef void (*RLP_GpioIsr)(uint32_t pin, uint32_t state, void* param);
 
+/* Pack edge (low 16 bits) and resistor (high 16 bits) into a single uint32_t
+ * argument for RLP_Gpio_EnableInterruptInput. Keeps the helper to 4
+ * arguments so all pass in r0..r3 with no stack arg. A stack arg in this
+ * helper would require the kernel SVC trampoline to recover it from the
+ * user's PSP-saved frame, but the offset depends on whether the user
+ * thread had FP context active (basic 32-byte vs extended 104-byte
+ * exception frame) plus STKALIGN — which is impractical to detect
+ * reliably from the trampoline. Packing avoids the whole problem. */
+#define RLP_GPIO_PACK_EDGE_RESISTOR(edge, resistor) \
+    (((uint32_t)(resistor) << 16) | (uint32_t)(edge))
+
 /* Returns: 0 on success, non-zero on failure (pin reserved by firmware,
  * invalid pin number, etc.). */
 extern uint32_t RLP_Gpio_EnableOutput(uint32_t pin, uint32_t initialState);
 extern uint32_t RLP_Gpio_EnableInput(uint32_t pin, RLP_GpioResistor resistor);
 extern uint32_t RLP_Gpio_EnableInterruptInput(uint32_t pin,
-                                              RLP_GpioEdge edge,
-                                              RLP_GpioResistor resistor,
+                                              uint32_t edgeAndResistor,
                                               RLP_GpioIsr isr,
                                               void* param);
 extern uint32_t RLP_Gpio_Read(uint32_t pin);
