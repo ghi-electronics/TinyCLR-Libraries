@@ -65,6 +65,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Nati
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Native.Desktop", "GHIElectronics.TinyCLR.Native.Desktop\GHIElectronics.TinyCLR.Native.Desktop.csproj", "{3F8E6C5A-1D2B-4E9A-9C7F-8A5D2E7B4C13}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.RuntimeLoadableProcedures", "GHIElectronics.TinyCLR.RuntimeLoadableProcedures\GHIElectronics.TinyCLR.RuntimeLoadableProcedures.csproj", "{C9D5B821-7E4F-4B6A-9D8C-1F3A2E5B7C9D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D8E6C932-8F5E-4C7B-AE9D-2A4B3F6C8DAE} = {D8E6C932-8F5E-4C7B-AE9D-2A4B3F6C8DAE}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.RuntimeLoadableProcedures.Desktop", "GHIElectronics.TinyCLR.RuntimeLoadableProcedures.Desktop\GHIElectronics.TinyCLR.RuntimeLoadableProcedures.Desktop.csproj", "{D8E6C932-8F5E-4C7B-AE9D-2A4B3F6C8DAE}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Devices.Adc", "GHIElectronics.TinyCLR.Devices.Adc\GHIElectronics.TinyCLR.Devices.Adc.csproj", "{F37DE4C9-9C6E-4FE3-BABB-2B815FADD162}"
 	ProjectSection(ProjectDependencies) = postProject
 		{5B3C8D1E-9F2A-4E8B-A4C6-7D1F3E5B9C82} = {5B3C8D1E-9F2A-4E8B-A4C6-7D1F3E5B9C82}
@@ -456,6 +463,14 @@ Global
 		{3F8E6C5A-1D2B-4E9A-9C7F-8A5D2E7B4C13}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3F8E6C5A-1D2B-4E9A-9C7F-8A5D2E7B4C13}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3F8E6C5A-1D2B-4E9A-9C7F-8A5D2E7B4C13}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C9D5B821-7E4F-4B6A-9D8C-1F3A2E5B7C9D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C9D5B821-7E4F-4B6A-9D8C-1F3A2E5B7C9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C9D5B821-7E4F-4B6A-9D8C-1F3A2E5B7C9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C9D5B821-7E4F-4B6A-9D8C-1F3A2E5B7C9D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D8E6C932-8F5E-4C7B-AE9D-2A4B3F6C8DAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8E6C932-8F5E-4C7B-AE9D-2A4B3F6C8DAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8E6C932-8F5E-4C7B-AE9D-2A4B3F6C8DAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8E6C932-8F5E-4C7B-AE9D-2A4B3F6C8DAE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F37DE4C9-9C6E-4FE3-BABB-2B815FADD162}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F37DE4C9-9C6E-4FE3-BABB-2B815FADD162}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F37DE4C9-9C6E-4FE3-BABB-2B815FADD162}.Release|Any CPU.ActiveCfg = Release|Any CPU

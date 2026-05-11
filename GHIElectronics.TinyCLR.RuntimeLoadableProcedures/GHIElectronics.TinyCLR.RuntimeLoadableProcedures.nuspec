@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>GHIElectronics.TinyCLR.RuntimeLoadableProcedures</id>
+    <version>2.5.0.1000</version>
+    <authors>GHI Electronics, LLC</authors>
+    <owners>GHI Electronics, LLC</owners>
+    <projectUrl>https://ghielectronics.com/</projectUrl>
+    <iconUrl>http://files.ghielectronics.com/downloads/Logos/GHIElectronicsTinyCLRNuGet.png</iconUrl>
+    <licenseUrl>http://files.ghielectronics.com/downloads/TinyCLR/License.txt</licenseUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>Runtime Loadable Procedures (RLP) for TinyCLR OS. Load user-supplied compiled C/C++ code at runtime for performance-critical paths. User code is isolated by the MPU: GPIO is the only peripheral accessible from RLP code; flash, FLASH controller, system registers, DMA, SPI/I2C/UART/TIMER, etc. are blocked.</description>
+    <copyright>Copyright GHI Electronics, LLC 2026</copyright>
+    <tags>TinyCLR TinyCLROS RLP Native</tags>
+    <dependencies>
+      <dependency id="GHIElectronics.TinyCLR.Core" version="2.5.0.1000" />
+      <dependency id="GHIElectronics.TinyCLR.Native" version="2.5.0.1000" />
+    </dependencies>
+  </metadata>
+  <files>
+    <!-- lib/net48/ : TinyCLR-IMPL DLL. Auto-referenced for compile by classic
+         packages.config NuGet. Compile-time only — .props sets Private=False
+         so it does NOT end up in bin\Debug\. -->
+    <file src="$TargetDir$GHIElectronics.TinyCLR.RuntimeLoadableProcedures.dll" target="lib\net48" />
+
+    <!-- desktop-shim/ : Desktop SHIM DLL (no-op safe defaults). Copied to
+         bin\Debug\ at AfterBuild via a Target in the .props file. -->
+    <file src="..\GHIElectronics.TinyCLR.RuntimeLoadableProcedures.Desktop\bin\Debug\GHIElectronics.TinyCLR.RuntimeLoadableProcedures.dll" target="desktop-shim" />
+
+    <!-- tinyclr/ : TinyCLR-IMPL DLL again. Read by the deploy step
+         (DebugServer / VS extension), MMP'd into a .pe and pushed to device. -->
+    <file src="$TargetDir$GHIElectronics.TinyCLR.RuntimeLoadableProcedures.dll" target="tinyclr" />
+
+    <!-- Consumer-side props: imported via NuGet package convention. -->
+    <file src="$ProjectDir$GHIElectronics.TinyCLR.RuntimeLoadableProcedures.props" target="build\net48" />
+  </files>
+</package>
