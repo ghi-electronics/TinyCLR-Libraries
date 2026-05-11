@@ -5,16 +5,15 @@ namespace GHIElectronics.TinyCLR.RuntimeLoadableProcedures {
     // Desktop: ElfImage stores the byte[] but performs no real load; symbol
     // lookups return 0; NativeFunction.Invoke returns 0; NativeEvent never
     // fires. Lets dual-mode app code construct and use the API without
-    // throwing on PC.
+    // throwing on PC — including for null/invalid arguments that would
+    // throw on device. Dual-mode contract: PC runs to completion.
     public static class RuntimeLoadableProcedures {
 
         public delegate void NativeEventHandler(uint data);
 
+#pragma warning disable 0067
         public static event NativeEventHandler NativeEvent;
-
-        // Reference the field once so the compiler doesn't strip it.
-        // Never invoked because Desktop has no native event source.
-        private static void Touch() => RuntimeLoadableProcedures.NativeEvent?.Invoke(0);
+#pragma warning restore 0067
 
 
         public sealed class ElfImage : IDisposable {
@@ -33,10 +32,7 @@ namespace GHIElectronics.TinyCLR.RuntimeLoadableProcedures {
             public uint Size => 0;
             public uint RegionCount => 0;
 
-            public ElfImage(byte[] elfImageData) {
-                if (elfImageData == null) throw new ArgumentNullException(nameof(elfImageData));
-                this.imageData = elfImageData;
-            }
+            public ElfImage(byte[] elfImageData) => this.imageData = elfImageData;
 
             ~ElfImage() => this.Dispose(false);
 
@@ -51,22 +47,13 @@ namespace GHIElectronics.TinyCLR.RuntimeLoadableProcedures {
                 this.disposed = true;
             }
 
-            public uint FindSymbolAddress(string name, SymbolType type) {
-                if (name == null) throw new ArgumentNullException(nameof(name));
-                return 0;
-            }
+            public uint FindSymbolAddress(string name, SymbolType type) => 0;
 
-            public NativeFunction FindFunction(string name) {
-                if (name == null) throw new ArgumentNullException(nameof(name));
-                return new NativeFunction(0);
-            }
+            public NativeFunction FindFunction(string name) => new NativeFunction(0);
 
             public void InitializeBssRegion() { }
 
-            public void InitializeBssRegion(string startSymbolName, string endSymbolName) {
-                if (startSymbolName == null) throw new ArgumentNullException(nameof(startSymbolName));
-                if (endSymbolName == null) throw new ArgumentNullException(nameof(endSymbolName));
-            }
+            public void InitializeBssRegion(string startSymbolName, string endSymbolName) { }
 
             public void ZeroRegion(uint address, uint length) { }
         }
