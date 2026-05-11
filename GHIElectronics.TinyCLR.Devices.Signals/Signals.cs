@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using GHIElectronics.TinyCLR.Devices.Gpio;
 using GHIElectronics.TinyCLR.Native;
 
@@ -144,15 +145,24 @@ namespace GHIElectronics.TinyCLR.Devices.Signals {
         private PulseCaptureEventHandler pulseCaptureCallback;
         private PulseGenerateEventHandler pulseGenerateCallback;
 
-        private bool isBusy;
-        private bool isCaptureMode;
-        private bool isWriteMode;
+        // Single state field replacing the previous isBusy / isCaptureMode /
+        // isWriteMode trio. Transitions go through Interlocked.CompareExchange
+        // so the busy-check and mode-set can't tear and the IRQ handler can't
+        // observe a half-set mode pair.
+        private const int StateIdle = 0;
+        private const int StateRead = 1;
+        private const int StateCapture = 2;
+        private const int StateGenerate = 3;
+        private int state;
 
-        public bool CanReadPulse => !this.isBusy;
-        public bool CanCapture => !this.isBusy;
-        public bool CanGenerate => !this.isBusy;
+        public bool CanReadPulse => this.state == StateIdle;
+        public bool CanCapture => this.state == StateIdle;
+        public bool CanGenerate => this.state == StateIdle;
 
         public DigitalSignal(GpioPin pin) {
+            if (pin == null)
+                throw new ArgumentNullException(nameof(pin));
+
             this.pinNumber = pin.PinNumber;
 
             if (this.pinNumber == 0) {
@@ -164,39 +174,47 @@ namespace GHIElectronics.TinyCLR.Devices.Signals {
             else if (this.pinNumber == 19) {
                 this.nativeEventDispatcher = NativeEventDispatcher.GetDispatcher("GHIElectronics.TinyCLR.NativeEventNames.DigitalSignal.Event19");
             }
-
-            //this.nativeEventDispatcher = NativeEventDispatcher.GetDispatcher($"GHIElectronics.TinyCLR.NativeEventNames.DigitalSignal.Event{pin.PinNumber}");
+            else {
+                // Native driver only raises events for pins 0, 1, 19. Reject
+                // other pins explicitly instead of NRE'ing on the OnInterrupt
+                // subscribe below.
+                throw new NotSupportedException("DigitalSignal pin not supported on this target.");
+            }
 
             this.nativeEventDispatcher.OnInterrupt += this.OnInterruptEventHandler;
 
             this.NativeAcquire();
 
-            this.isBusy = false;
+            this.state = StateIdle;
         }
 
         void OnInterruptEventHandler(string apiName, long d0, long d1, long d2, IntPtr d3, DateTime ts) {
-            if (!this.disposed && this.isBusy && d0 == this.pinNumber && apiName.CompareTo("DigitalSignal") == 0) {
-                if (this.isCaptureMode == true) {
-                    if (d2 > 0) {
-                        var data = new double[(int)d2];
+            // Snapshot the active mode atomically and reset to idle in one
+            // step, then dispatch from the snapshot. This avoids a window
+            // where the IRQ could see (busy=true, mode=stale).
+            var currentState = Interlocked.Exchange(ref this.state, StateIdle);
 
-                        if (this.NativeGetBuffer(data))
-                            this.pulseCaptureCallback?.Invoke(this, data, (uint)data.Length, ((int)d3 != 0) ? GpioPinValue.High : GpioPinValue.Low);
-                    }
-                    else
-                        this.pulseCaptureCallback?.Invoke(this, null, 0, GpioPinValue.Low);
+            if (this.disposed || currentState == StateIdle || d0 != this.pinNumber || apiName.CompareTo("DigitalSignal") != 0)
+                return;
+
+            if (currentState == StateCapture) {
+                if (d2 > 0) {
+                    var data = new double[(int)d2];
+
+                    if (this.NativeGetBuffer(data))
+                        this.pulseCaptureCallback?.Invoke(this, data, (uint)data.Length, ((int)d3 != 0) ? GpioPinValue.High : GpioPinValue.Low);
                 }
-                else if (this.isWriteMode == true) {
-                    this.pulseGenerateCallback?.Invoke(this, ((int)d3 != 0) ? GpioPinValue.High : GpioPinValue.Low);
-                }
-                else {
-                    this.pulseReadCallback?.Invoke(this, new TimeSpan(d1), (uint)d2, ((int)d3 != 0) ? GpioPinValue.High : GpioPinValue.Low);
-                }
+                else
+                    // Native still reads the pin level when zero edges
+                    // were captured; pass it through instead of hardcoding Low.
+                    this.pulseCaptureCallback?.Invoke(this, null, 0, ((int)d3 != 0) ? GpioPinValue.High : GpioPinValue.Low);
             }
-
-            this.isBusy = false;
-            this.isCaptureMode = false;
-            this.isWriteMode = false;
+            else if (currentState == StateGenerate) {
+                this.pulseGenerateCallback?.Invoke(this, ((int)d3 != 0) ? GpioPinValue.High : GpioPinValue.Low);
+            }
+            else {
+                this.pulseReadCallback?.Invoke(this, new TimeSpan(d1), (uint)d2, ((int)d3 != 0) ? GpioPinValue.High : GpioPinValue.Low);
+            }
         }
 
         private bool disposed;
@@ -212,7 +230,7 @@ namespace GHIElectronics.TinyCLR.Devices.Signals {
                 this.nativeEventDispatcher.OnInterrupt -= this.OnInterruptEventHandler;
                 this.NativeRelease();
 
-                this.isBusy = false;
+                this.state = StateIdle;
 
                 this.disposed = true;
             }
@@ -223,43 +241,54 @@ namespace GHIElectronics.TinyCLR.Devices.Signals {
         }
 
         public void ReadPulse(uint pulseNum, GpioPinEdge edge, bool waitForEdge) {
-            if (this.isBusy)
-                new InvalidOperationException();
-
-            this.isBusy = true;
-            this.isCaptureMode = false;
-            this.isWriteMode = false;
+            // Atomic transition idle -> Read. If we lose the race (another
+            // op already armed), CompareExchange returns the prior state.
+            if (Interlocked.CompareExchange(ref this.state, StateRead, StateIdle) != StateIdle)
+                throw new InvalidOperationException();
 
             this.NativeRead(pulseNum, edge, waitForEdge);
         }
 
         public void Capture(uint bufferSize, GpioPinEdge edge, bool waitForEdge) => this.Capture(bufferSize, edge, waitForEdge, TimeSpan.Zero);
 
+        /// <summary>
+        /// Capture timestamps of `count` edges on the pin.
+        /// </summary>
+        /// <remarks>
+        /// The returned buffer holds inter-edge intervals in nanoseconds:
+        /// - When <paramref name="waitForEdge"/> is true the timer starts on the
+        ///   first edge, so buffer[0] is the interval between the first and
+        ///   second edges, buffer[i] the interval from edge i+1 to edge i+2,
+        ///   and the returned length is <c>count - 1</c>.
+        /// - When <paramref name="waitForEdge"/> is false the timer starts
+        ///   immediately. buffer[0] is the time from timer-start to the first
+        ///   edge (and includes ~150 ns of counter-vs-DMA startup latency);
+        ///   for high-frequency signals discard buffer[0].
+        /// </remarks>
         public void Capture(uint count, GpioPinEdge edge, bool waitForEdge, TimeSpan timeout) {
-            if (this.isBusy)
-                new InvalidOperationException();
-
-            this.isBusy = true;
-            this.isCaptureMode = true;
-            this.isWriteMode = false;
+            if (Interlocked.CompareExchange(ref this.state, StateCapture, StateIdle) != StateIdle)
+                throw new InvalidOperationException();
 
             this.NativeCapture(count, edge, waitForEdge, timeout);
         }
 
-        public void Generate(uint[] data, uint offset, uint count) => this.Generate(data, offset, count, 100);
+        public void Generate(uint[] data, uint offset, uint count) => this.Generate(data, offset, count, 100, GpioPinValue.High);
 
-        public void Generate(uint[] data, uint offset, uint count, uint multiplier) {
+        public void Generate(uint[] data, uint offset, uint count, uint multiplier) => this.Generate(data, offset, count, multiplier, GpioPinValue.High);
+
+        public void Generate(uint[] data, uint offset, uint count, uint multiplier, GpioPinValue startingPolarity) {
             if (data == null)
-                new ArgumentNullException();
+                throw new ArgumentNullException(nameof(data));
 
-            if (offset + count > data.Length)
-                new ArgumentOutOfRangeException();
+            // Compare as long to avoid uint+uint wrap (offset+count could
+            // overflow back to a small value and pass a naive uint compare).
+            if ((long)offset + (long)count > data.Length)
+                throw new ArgumentOutOfRangeException();
 
-            this.isBusy = true;
-            this.isCaptureMode = false;
-            this.isWriteMode = true;
+            if (Interlocked.CompareExchange(ref this.state, StateGenerate, StateIdle) != StateIdle)
+                throw new InvalidOperationException();
 
-            this.NativeWrite(data, offset, count, multiplier, GpioPinValue.High);
+            this.NativeWrite(data, offset, count, multiplier, startingPolarity);
         }
 
         public void Abort() => this.NativeAbort();
