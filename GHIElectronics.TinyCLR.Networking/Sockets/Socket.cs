@@ -28,8 +28,19 @@ namespace System.Net.Sockets {
         public int DelayBetweenSend { get; set; } = 1;
         public int DelayBetweenReceive { get; set; } = 1;
 
-        private int nativeSendTimeout = 50;
-        private int nativeReceiveTimeout = 50;
+        // Mirrors the native default in DEFAULT_*_TIMEOUT_IN_MILLISECOND. Used as
+        // the native blocking-poll quantum; the user-visible Send/ReceiveTimeout
+        // (m_sendTimeout / m_recvTimeout) is layered on top in managed code.
+        private int nativeSendTimeout = 250;
+        private int nativeReceiveTimeout = 250;
+
+        // Sentinel values returned by the native Send/Receive layer.
+        // Kept in sync with TINYCLR_LWIP_*_SENTINEL in tinyclr_lwip.h.
+        //   0  : graceful close (peer FIN) - Receive only
+        //   -2 : SO_RCVTIMEO/SO_SNDTIMEO expired with no data - retry
+        //   -1 : real socket error - throw with SO_ERROR
+        private const int NativeTimeoutSentinel = -2;
+        private const int NativeErrorSentinel = -1;
 
         public int NativeSendTimeout {
             get => this.nativeSendTimeout;
@@ -267,91 +278,79 @@ namespace System.Net.Sockets {
         public int Send(byte[] buffer) => this.Send(buffer, 0, buffer != null ? buffer.Length : 0, SocketFlags.None);
 
         public int Send(byte[] buffer, int offset, int size, SocketFlags socketFlags) {
-            if (this.m_Handle == -1) {
-                throw new ObjectDisposedException();
-            }
+            if (this.m_Handle == -1) throw new ObjectDisposedException();
 
             var expired = DateTime.MaxValue.Ticks;
-
             if (this.SendTimeout != System.Threading.Timeout.Infinite) {
                 expired = DateTime.Now.Ticks + (this.SendTimeout * 10000L);
             }
 
             var totalSend = 0;
 
-            while (DateTime.Now.Ticks < expired && totalSend < size) {
+            while (totalSend < size) {
+                if (this.m_Handle == -1) throw new ObjectDisposedException();
 
                 var sent = this.ni.Send(this.m_Handle, buffer, offset + totalSend, size - totalSend, socketFlags);
 
-                if (sent < 0) { // error, stop
-                    break;
-                }
-                else if (sent > 0) { // reset timeout
-
+                if (sent > 0) {
+                    totalSend += sent;
                     if (this.SendTimeout != System.Threading.Timeout.Infinite) {
                         expired = DateTime.Now.Ticks + (this.SendTimeout * 10000L);
                     }
+                    if (totalSend < size && this.DelayBetweenSend > 0)
+                        Thread.Sleep(this.DelayBetweenSend);
+                    continue;
                 }
-
-                if (this.m_Handle == -1) { // socket closed - stop
-                    break;
+                if (sent == NativeTimeoutSentinel) {
+                    // Send buffer was full (EAGAIN). Honour SendTimeout.
+                    if (DateTime.Now.Ticks >= expired)
+                        throw new SocketException(SocketError.TimedOut);
+                    if (this.DelayBetweenSend > 0)
+                        Thread.Sleep(this.DelayBetweenSend);
+                    continue;
                 }
-
-                totalSend += sent;
-
-                if (totalSend < size) {
-                    Thread.Sleep(this.DelayBetweenSend);
-                }
-            }
-
-            if (DateTime.Now.Ticks > expired) {
-                throw new SocketException(SocketError.TimedOut);
+                // sent == 0 is not normally reachable for a non-zero-byte send
+                // on stream/dgram sockets. If it happens, treat as error.
+                throw new SocketException(ReadSocketErrorOrGeneric());
             }
 
             return totalSend;
         }
 
         public int SendTo(byte[] buffer, int offset, int size, SocketFlags socketFlags, EndPoint remoteEP) {
-            if (this.m_Handle == -1) {
-                throw new ObjectDisposedException();
-            }
+            if (this.m_Handle == -1) throw new ObjectDisposedException();
 
             var address = remoteEP.Serialize();
 
             var expired = DateTime.MaxValue.Ticks;
-
             if (this.SendTimeout != System.Threading.Timeout.Infinite) {
                 expired = DateTime.Now.Ticks + (this.SendTimeout * 10000L);
             }
 
             var totalSend = 0;
 
-            while (DateTime.Now.Ticks < expired && totalSend < size) {
+            while (totalSend < size) {
+                if (this.m_Handle == -1) throw new ObjectDisposedException();
+
                 var sent = this.ni.SendTo(this.m_Handle, buffer, offset + totalSend, size - totalSend, socketFlags, address);
 
-                if (sent < 0) { // error, stop
-                    break;
-                }
-                else if (sent > 0) { // reset timeout
-
+                if (sent > 0) {
+                    totalSend += sent;
                     if (this.SendTimeout != System.Threading.Timeout.Infinite) {
                         expired = DateTime.Now.Ticks + (this.SendTimeout * 10000L);
                     }
+                    if (totalSend < size && this.DelayBetweenSend > 0)
+                        Thread.Sleep(this.DelayBetweenSend);
+                    continue;
                 }
-
-                if (this.m_Handle == -1) { // socket closed - stop
-                    break;
+                if (sent == NativeTimeoutSentinel) {
+                    if (DateTime.Now.Ticks >= expired)
+                        throw new SocketException(SocketError.TimedOut);
+                    if (this.DelayBetweenSend > 0)
+                        Thread.Sleep(this.DelayBetweenSend);
+                    continue;
                 }
-
-                totalSend += sent;
-
-                if (totalSend < size) {
-                    Thread.Sleep(this.DelayBetweenSend);
-                }
-            }
-
-            if (DateTime.Now.Ticks > expired) {
-                throw new SocketException(SocketError.TimedOut);
+                throw new SocketException(ReadSocketErrorOrGeneric());
             }
 
             return totalSend;
@@ -370,84 +369,86 @@ namespace System.Net.Sockets {
         public int Receive(byte[] buffer) => this.Receive(buffer, 0, buffer != null ? buffer.Length : 0, SocketFlags.None);
 
         public int Receive(byte[] buffer, int offset, int size, SocketFlags socketFlags) {
-            if (this.m_Handle == -1) {
-                throw new ObjectDisposedException();
-            }
+            if (this.m_Handle == -1) throw new ObjectDisposedException();
 
             var expired = DateTime.MaxValue.Ticks;
-
             if (this.ReceiveTimeout != System.Threading.Timeout.Infinite) {
                 expired = DateTime.Now.Ticks + (this.ReceiveTimeout * 10000L);
             }
 
-            var totalBytesReceive = 0;
+            while (true) {
+                if (this.m_Handle == -1) throw new ObjectDisposedException();
 
-            while (DateTime.Now.Ticks < expired && totalBytesReceive < size) {
-                var read = this.ni.Receive(this.m_Handle, buffer, offset + totalBytesReceive, size - totalBytesReceive, socketFlags);
+                var read = this.ni.Receive(this.m_Handle, buffer, offset, size, socketFlags);
 
-                if (read < 0) { // error
-                    break;
+                if (read > 0) {
+                    return read; // .NET parity: return as soon as any data arrives
                 }
-                else if (read > 0) { // valid data
-                    totalBytesReceive += read;
-                    break;
+                if (read == 0) {
+                    // Peer FIN-closed gracefully. .NET returns 0 immediately.
+                    this.m_isConnected = false;
+                    return 0;
                 }
-
-                if (this.m_Handle == -1) { // socket closed - stop
-                    break;
+                if (read == NativeTimeoutSentinel) {
+                    if (DateTime.Now.Ticks >= expired)
+                        throw new SocketException(SocketError.TimedOut);
+                    if (this.DelayBetweenReceive > 0)
+                        Thread.Sleep(this.DelayBetweenReceive);
+                    continue;
                 }
-
-                Thread.Sleep(this.DelayBetweenReceive);
+                // Real error. Pull SO_ERROR for a specific code if available.
+                throw new SocketException(ReadSocketErrorOrGeneric());
             }
+        }
 
-            if (DateTime.Now.Ticks > expired) {
-                throw new SocketException(SocketError.TimedOut);
+        // Best-effort: read SO_ERROR after a native -1 sentinel. lwIP errno
+        // values are POSIX-style integers (not Winsock); callers can still
+        // catch SocketException, but SocketErrorCode won't always map cleanly.
+        // Falls back to the generic SocketError code if the option read fails.
+        private int ReadSocketErrorOrGeneric() {
+            try {
+                return (int)this.GetSocketOption(SocketOptionLevel.Socket, SocketOptionName.Error);
             }
-
-            return totalBytesReceive;
+            catch {
+                return (int)SocketError.SocketError;
+            }
         }
 
         public int ReceiveFrom(byte[] buffer, int offset, int size, SocketFlags socketFlags, ref EndPoint remoteEP) {
-            if (this.m_Handle == -1) {
-                throw new ObjectDisposedException();
-            }
+            if (this.m_Handle == -1) throw new ObjectDisposedException();
 
             var address = remoteEP.Serialize();
-            var totalBytesReceive = 0;
 
             var expired = DateTime.MaxValue.Ticks;
-
             if (this.ReceiveTimeout != System.Threading.Timeout.Infinite) {
                 expired = DateTime.Now.Ticks + (this.ReceiveTimeout * 10000L);
             }
 
-            while (DateTime.Now.Ticks < expired && totalBytesReceive < size) {
+            while (true) {
+                if (this.m_Handle == -1) throw new ObjectDisposedException();
 
-                var read = this.ni.ReceiveFrom(this.m_Handle, buffer, offset + totalBytesReceive, size - totalBytesReceive, socketFlags, ref address);
+                var read = this.ni.ReceiveFrom(this.m_Handle, buffer, offset, size, socketFlags, ref address);
 
-                if (read < 0) { // error, or has data
-                    break;
+                if (read > 0) {
+                    remoteEP = remoteEP.Create(address);
+                    return read;
                 }
-                else if (read > 0) { // error, or has data
-                    totalBytesReceive += read;
-                    break;
+                if (read == 0) {
+                    // For SOCK_DGRAM this is a legitimate zero-length datagram
+                    // (not a close, since UDP has no FIN). Surface as 0 bytes
+                    // with the source address.
+                    remoteEP = remoteEP.Create(address);
+                    return 0;
                 }
-
-                if (this.m_Handle == -1) { // socket closed - stop
-                    break;
+                if (read == NativeTimeoutSentinel) {
+                    if (DateTime.Now.Ticks >= expired)
+                        throw new SocketException(SocketError.TimedOut);
+                    if (this.DelayBetweenReceive > 0)
+                        Thread.Sleep(this.DelayBetweenReceive);
+                    continue;
                 }
-
-                Thread.Sleep(this.DelayBetweenReceive);
-
+                throw new SocketException(ReadSocketErrorOrGeneric());
             }
-
-            if (DateTime.Now.Ticks > expired) {
-                throw new SocketException(SocketError.TimedOut);
-            }
-
-            remoteEP = remoteEP.Create(address);
-
-            return totalBytesReceive;
         }
 
         public int ReceiveFrom(byte[] buffer, int size, SocketFlags socketFlags, ref EndPoint remoteEP) => this.ReceiveFrom(buffer, 0, size, socketFlags, ref remoteEP);

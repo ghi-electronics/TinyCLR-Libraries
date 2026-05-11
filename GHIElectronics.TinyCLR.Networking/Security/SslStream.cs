@@ -96,27 +96,28 @@ namespace System.Net.Security {
             }
 
             var expired = DateTime.MaxValue.Ticks;
-            var totalBytesReceive = 0;
 
             if (this._socket.ReceiveTimeout != System.Threading.Timeout.Infinite) {
                 expired = DateTime.Now.Ticks + (this._socket.ReceiveTimeout * 10000L);
             }
 
-            while (DateTime.Now.Ticks < expired && totalBytesReceive < size) {
-                var read =  this.ni.SecureRead(this.sslHandle, buffer, offset + totalBytesReceive, size - totalBytesReceive);
+            // Sentinels from native SecureRead (see Socket.NativeTimeoutSentinel).
+            while (true) {
+                var read = this.ni.SecureRead(this.sslHandle, buffer, offset, size);
 
-                if (read < 0) { // error
-                    break;
+                if (read > 0) return read;
+                if (read == 0) return 0; // TLS close_notify / peer close — match .NET
+                if (read == -2) {
+                    // WANT_READ / WANT_WRITE: handshake or record fragment in flight.
+                    if (DateTime.Now.Ticks >= expired)
+                        throw new IOException("SSL read timed out.");
+                    if (this._socket.DelayBetweenReceive > 0)
+                        Thread.Sleep(this._socket.DelayBetweenReceive);
+                    continue;
                 }
-                else if (read > 0) { // valid data
-                    totalBytesReceive += read;
-                    break;
-                }
-
-                Thread.Sleep(this._socket.DelayBetweenReceive);
+                // Real TLS / transport error.
+                throw new IOException("SSL read failed.");
             }
-
-            return totalBytesReceive;
         }
 
         public override void Write(byte[] buffer, int offset, int size) {
@@ -143,33 +144,29 @@ namespace System.Net.Security {
                 expired = DateTime.Now.Ticks + (this._socket.SendTimeout * 10000L);
             }
 
-            while (DateTime.Now.Ticks < expired && totalSent < size) {
+            while (totalSent < size) {
                 var sent = this.ni.SecureWrite(this.sslHandle, buffer, offset + totalSent, size - totalSent);
 
-                if (sent < 0) { // error, stop
-                    break;
-                }
-                else if (sent > 0) { // reset timeout
-
+                if (sent > 0) {
+                    totalSent += sent;
                     if (this._socket.SendTimeout != System.Threading.Timeout.Infinite) {
                         expired = DateTime.Now.Ticks + (this._socket.SendTimeout * 10000L);
                     }
+                    if (totalSent < size && this._socket.DelayBetweenSend > 0)
+                        Thread.Sleep(this._socket.DelayBetweenSend);
+                    continue;
                 }
-
-                totalSent += sent;
-
-                if (totalSent < size) {
-                    Thread.Sleep(this._socket.DelayBetweenSend);
-                }              
+                if (sent == -2) {
+                    // WANT_READ / WANT_WRITE — transient, retry.
+                    if (DateTime.Now.Ticks >= expired)
+                        throw new IOException("SSL write timed out.");
+                    if (this._socket.DelayBetweenSend > 0)
+                        Thread.Sleep(this._socket.DelayBetweenSend);
+                    continue;
+                }
+                // sent == 0 or other negative: TLS error or peer close mid-write.
+                throw new IOException("SSL write failed.");
             }
-
-            if (DateTime.Now.Ticks > expired) {
-                throw new IOException("SSL write timed out.");
-            }
-
-            if (totalSent != size)
-                throw new IOException();
-
         }
     }
 

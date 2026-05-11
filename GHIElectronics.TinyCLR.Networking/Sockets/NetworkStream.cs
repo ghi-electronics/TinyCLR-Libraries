@@ -286,27 +286,29 @@ namespace System.Net.Sockets
             if (offset < 0 || offset > buffer.Length) throw new ArgumentOutOfRangeException();
             if (count < 0 || count > buffer.Length - offset) throw new ArgumentOutOfRangeException();
 
-            var available = this._socket.Available;
+            // Previously this method consulted Socket.Available and shrank
+            // `count` to whatever was visible right now. That caused every Read
+            // to be one syscall per packet boundary even when the caller asked
+            // for a large buffer. .NET's NetworkStream.Read passes count through
+            // to the kernel and lets it decide how much it can return in one
+            // shot. We do the same now that Socket.Receive correctly returns:
+            //   N>0 immediately, 0 on FIN, or throws on real error / timeout.
 
-            // we will need to read using thr timeout specified
-            // if there is data available we can return with that data only
-            // the underlying socket infrastructure will handle the timeout
-            if (count > available && available > 0)
-            {
-                count = available;
+            try {
+                if (this._socketType == (int)SocketType.Stream) {
+                    return this._socket.Receive(buffer, offset, count, SocketFlags.None);
+                }
+                else if (this._socketType == (int)SocketType.Dgram) {
+                    return this._socket.ReceiveFrom(buffer, offset, count, SocketFlags.None, ref this._remoteEndPoint);
+                }
+                else {
+                    throw new NotSupportedException();
+                }
             }
-
-            if (this._socketType == (int)SocketType.Stream)
-            {
-                return this._socket.Receive(buffer, offset, count, SocketFlags.None);
-            }
-            else if (this._socketType == (int)SocketType.Dgram)
-            {
-                return this._socket.ReceiveFrom(buffer, offset, count, SocketFlags.None, ref this._remoteEndPoint);
-            }
-            else
-            {
-                throw new NotSupportedException();
+            catch (SocketException ex) {
+                // .NET parity: NetworkStream surfaces SocketException as IOException
+                // (with the SocketException as InnerException).
+                throw new IOException(ex.Message, ex);
             }
         }
 
@@ -383,35 +385,28 @@ namespace System.Net.Sockets
             if (offset < 0 || offset > buffer.Length) throw new ArgumentOutOfRangeException();
             if (count < 0 || count > buffer.Length - offset) throw new ArgumentOutOfRangeException();
 
-            var bytesSent = 0;
-            int retries = 5;
-            do {
+            // Socket.Send now loops until all bytes are sent, throws on real
+            // error, and throws TimedOut on SendTimeout. We only need to call
+            // it once and let it do the work. Wrap SocketException as IOException
+            // for .NET-compatible exception surface.
+            try {
+                int sent;
                 if (this._socketType == (int)SocketType.Stream) {
-                    bytesSent = this._socket.Send(buffer, offset, count, SocketFlags.None);
+                    sent = this._socket.Send(buffer, offset, count, SocketFlags.None);
                 }
                 else if (this._socketType == (int)SocketType.Dgram) {
-                    bytesSent = this._socket.SendTo(buffer, offset, count, SocketFlags.None, this._socket.RemoteEndPoint);
+                    sent = this._socket.SendTo(buffer, offset, count, SocketFlags.None, this._socket.RemoteEndPoint);
                 }
                 else {
                     throw new NotSupportedException();
                 }
-                count -= bytesSent;
-                offset += bytesSent;
-                if (bytesSent == 0 && count > 0)
-                {
-                    // last send was not successful - wait a bit for the buffers to flush
-                    Threading.Thread.Sleep(100);
-                    --retries;
-                }
-                else
-                {
-                    // last send was fully or partially successful - reset the retries
-                    retries = 5;
-                }
-            } while (retries != 0 && count > 0 && !this._disposed);
 
-            if (count != 0)
-                throw new IOException();
+                if (sent != count)
+                    throw new IOException();
+            }
+            catch (SocketException ex) {
+                throw new IOException(ex.Message, ex);
+            }
         }
 
         // TinyCLR-internal helper used by HTTP server response close path. Not
