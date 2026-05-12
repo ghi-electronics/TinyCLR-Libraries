@@ -48,7 +48,7 @@ namespace System {
     [Serializable()]
 #pragma warning disable CS0659 // Type overrides Object.Equals(object o) but does not override Object.GetHashCode()
 #pragma warning disable CS0661 // Type defines operator == or operator != but does not override Object.GetHashCode()
-    public struct DateTime : IFormattable
+    public struct DateTime : IFormattable, IComparable, IComparable<DateTime>
 #pragma warning restore CS0661 // Type defines operator == or operator != but does not override Object.GetHashCode()
 #pragma warning restore CS0659 // Type overrides Object.Equals(object o) but does not override Object.GetHashCode()
     {
@@ -173,6 +173,13 @@ namespace System {
 
             return DateTime.Compare(this, (DateTime)val);
         }
+
+        // Strongly-typed companion for IComparable<DateTime>.
+        public int CompareTo(DateTime value) => DateTime.Compare(this, value);
+
+        // Hash from the ticks field so Dictionary<DateTime, ...> works.
+        public override int GetHashCode() =>
+            unchecked((int)this.m_ticks) ^ (int)(this.m_ticks >> 32);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public extern static int DaysInMonth(int year, int month);

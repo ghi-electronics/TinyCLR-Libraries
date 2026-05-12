@@ -8,6 +8,10 @@ namespace System.Collections.Generic {
 
         private T[] _items;
         private int _size;
+        // Bumped on every structural mutation so live enumerators can detect
+        // "collection modified during enumeration" and throw rather than
+        // silently corrupting. Matches the .NET BCL pattern.
+        private int _version;
 
         // Keep in-sync with c_DefaultCapacity in CLR_RT_HeapBlock_ArrayList in TinyCLR_Runtime__HeapBlock.h
         private const int _defaultCapacity = 4;
@@ -53,12 +57,14 @@ namespace System.Collections.Generic {
             set {
                 if ((uint)index >= (uint)_size) throw new ArgumentOutOfRangeException();
                 _items[index] = value;
+                _version++;
             }
         }
 
         public void Add(T item) {
             if (_size == _items.Length) EnsureCapacity(_size + 1);
             _items[_size++] = item;
+            _version++;
         }
 
         public void AddRange(IEnumerable<T> collection) => InsertRange(_size, collection);
@@ -68,6 +74,7 @@ namespace System.Collections.Generic {
                 Array.Clear(_items, 0, _size);
                 _size = 0;
             }
+            _version++;
         }
 
         public bool Contains(T item) => IndexOf(item) >= 0;
@@ -92,6 +99,7 @@ namespace System.Collections.Generic {
             if (index < _size) Array.Copy(_items, index, _items, index + 1, _size - index);
             _items[index] = item;
             _size++;
+            _version++;
         }
 
         public void InsertRange(int index, IEnumerable<T> collection) {
@@ -116,6 +124,7 @@ namespace System.Collections.Generic {
             _size--;
             if (index < _size) Array.Copy(_items, index + 1, _items, index, _size - index);
             _items[_size] = default(T);
+            _version++;
         }
 
         public void RemoveRange(int index, int count) {
@@ -127,6 +136,7 @@ namespace System.Collections.Generic {
                 if (index < newSize) Array.Copy(_items, index + count, _items, index, newSize - index);
                 Array.Clear(_items, newSize, count);
                 _size = newSize;
+                _version++;
             }
         }
 
@@ -177,16 +187,22 @@ namespace System.Collections.Generic {
 
         private class Enumerator : IEnumerator<T>, IEnumerator, IDisposable {
             private readonly List<T> _list;
+            private readonly int _version;
             private int _index;
             private T _current;
 
             internal Enumerator(List<T> list) {
                 _list = list;
+                _version = list._version;
                 _index = -1;
                 _current = default(T);
             }
 
             public bool MoveNext() {
+                // Fail-fast if the list mutated since this enumerator was
+                // created. Previously the enumerator would silently keep going
+                // on a moving target and return wrong elements.
+                if (_version != _list._version) throw new InvalidOperationException();
                 _index++;
                 if (_index < _list._size) {
                     _current = _list._items[_index];
@@ -201,6 +217,7 @@ namespace System.Collections.Generic {
             object IEnumerator.Current => _current;
 
             public void Reset() {
+                if (_version != _list._version) throw new InvalidOperationException();
                 _index = -1;
                 _current = default(T);
             }

@@ -18,11 +18,20 @@ namespace System {
     [Serializable]
 #pragma warning disable CS0659 // Type overrides Object.Equals(object o) but does not override Object.GetHashCode()
 #pragma warning disable CS0661 // Type defines operator == or operator != but does not override Object.GetHashCode()
-    public struct TimeSpan : IFormattable
+    public struct TimeSpan : IFormattable, IComparable, IComparable<TimeSpan>
 #pragma warning restore CS0661 // Type defines operator == or operator != but does not override Object.GetHashCode()
 #pragma warning restore CS0659 // Type overrides Object.Equals(object o) but does not override Object.GetHashCode()
     {
         internal long m_ticks;
+
+        // Strongly-typed companion for IComparable<TimeSpan>; delegates to the
+        // existing tick-based comparison since TimeSpan is a thin wrapper
+        // around a long.
+        public int CompareTo(TimeSpan value) =>
+            this.m_ticks < value.m_ticks ? -1 : (this.m_ticks > value.m_ticks ? 1 : 0);
+
+        public override int GetHashCode() =>
+            unchecked((int)this.m_ticks) ^ (int)(this.m_ticks >> 32);
 
         public const long TicksPerMillisecond = 10000;
         private const double MillisecondsPerTick = 1.0 / TicksPerMillisecond;

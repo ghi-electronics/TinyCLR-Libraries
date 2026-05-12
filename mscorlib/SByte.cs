@@ -7,7 +7,7 @@ namespace System {
      * @version
      */
     [Serializable, CLSCompliant(false)]
-    public struct SByte : IFormattable {
+    public struct SByte : IFormattable, IComparable, IComparable<sbyte> {
 #pragma warning disable CS0649 // Field is never assigned to, and will always have its default value
         private sbyte m_value;
 #pragma warning restore CS0649 // Field is never assigned to, and will always have its default value
@@ -49,6 +49,15 @@ namespace System {
             }
         }
 
+        public int CompareTo(sbyte value) => this.m_value < value ? -1 : (this.m_value > value ? 1 : 0);
+        public int CompareTo(object obj) {
+            if (obj == null) return 1;
+            if (!(obj is sbyte)) throw new ArgumentException();
+            return this.CompareTo((sbyte)obj);
+        }
+
+        public override int GetHashCode() => this.m_value ^ (this.m_value << 8);
+        public override bool Equals(object obj) => obj is sbyte b && b == this.m_value;
     }
 }
 

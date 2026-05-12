@@ -7,7 +7,7 @@ namespace System {
      * @version
      */
     [Serializable]
-    public struct Byte : IFormattable {
+    public struct Byte : IFormattable, IComparable, IComparable<byte> {
 #pragma warning disable CS0649 // Field is never assigned to, and will always have its default value
         private byte m_value;
 #pragma warning restore CS0649 // Field is never assigned to, and will always have its default value
@@ -48,6 +48,16 @@ namespace System {
                 return false;
             }
         }
+
+        public int CompareTo(byte value) => this.m_value < value ? -1 : (this.m_value > value ? 1 : 0);
+        public int CompareTo(object obj) {
+            if (obj == null) return 1;
+            if (!(obj is byte)) throw new ArgumentException();
+            return this.CompareTo((byte)obj);
+        }
+
+        public override int GetHashCode() => this.m_value;
+        public override bool Equals(object obj) => obj is byte b && b == this.m_value;
     }
 }
 

@@ -6,7 +6,7 @@ namespace System {
     // specified component.
 
 #pragma warning disable CS0659 // Type overrides Object.Equals(object o) but does not override Object.GetHashCode()
-    public sealed class Version // : ICloneable, IComparable, IComparable<Version>, IEquatable<Version>
+    public sealed class Version : IComparable, IComparable<Version> // ICloneable, IEquatable<Version> still deferred
 #pragma warning restore CS0659 // Type overrides Object.Equals(object o) but does not override Object.GetHashCode()
     {
         // AssemblyName depends on the order staying the same
@@ -73,6 +73,24 @@ namespace System {
             }
 
             return retStr;
+        }
+
+        // Lexicographic compare on (Major, Minor, Build, Revision). Matches
+        // .NET BCL behavior: unspecified (-1) components compare less than
+        // any specified component.
+        public int CompareTo(Version value) {
+            if ((object)value == null) return 1;
+            if (this._Major != value._Major) return this._Major < value._Major ? -1 : 1;
+            if (this._Minor != value._Minor) return this._Minor < value._Minor ? -1 : 1;
+            if (this._Build != value._Build) return this._Build < value._Build ? -1 : 1;
+            if (this._Revision != value._Revision) return this._Revision < value._Revision ? -1 : 1;
+            return 0;
+        }
+
+        public int CompareTo(object version) {
+            if (version == null) return 1;
+            if (!(version is Version v)) throw new ArgumentException();
+            return this.CompareTo(v);
         }
     }
 }

@@ -5,7 +5,7 @@ namespace System {
      * * Wrapper for unsigned 32 bit integers.
      */
     [Serializable, CLSCompliant(false)]
-    public struct UInt32 : IFormattable {
+    public struct UInt32 : IFormattable, IComparable, IComparable<uint> {
 #pragma warning disable CS0649 // Field is never assigned to, and will always have its default value
         private uint m_value;
 #pragma warning restore CS0649 // Field is never assigned to, and will always have its default value
@@ -40,6 +40,15 @@ namespace System {
             }
         }
 
+        public int CompareTo(uint value) => this.m_value < value ? -1 : (this.m_value > value ? 1 : 0);
+        public int CompareTo(object obj) {
+            if (obj == null) return 1;
+            if (!(obj is uint)) throw new ArgumentException();
+            return this.CompareTo((uint)obj);
+        }
+
+        public override int GetHashCode() => (int)this.m_value;
+        public override bool Equals(object obj) => obj is uint u && u == this.m_value;
     }
 }
 

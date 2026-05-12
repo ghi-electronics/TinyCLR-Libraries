@@ -3,7 +3,7 @@ namespace System {
     using System.Runtime.CompilerServices;
 
     [Serializable]
-    public struct Double : IFormattable {
+    public struct Double : IFormattable, IComparable, IComparable<double> {
 #pragma warning disable CS0649 // Field is never assigned to, and will always have its default value
         internal double m_value;
 #pragma warning restore CS0649 // Field is never assigned to, and will always have its default value
@@ -145,6 +145,26 @@ namespace System {
 
         public static bool operator !=(Double left, Double right) {
             return left.m_value != right.m_value;
+        }
+
+        // Instance form matching .NET BCL IComparable<double>. NaN is checked
+        // BEFORE the </>= operators because TinyCLR's float-comparison
+        // operators may not follow strict IEEE semantics (returning true for
+        // some comparisons with NaN, which would shortcut past my NaN
+        // handling and produce the wrong sign).
+        public int CompareTo(double value) {
+            // NaN sorts before any non-NaN per .NET BCL; NaN == NaN.
+            if (IsNaN(this.m_value)) return IsNaN(value) ? 0 : -1;
+            if (IsNaN(value)) return 1;
+            if (this.m_value < value) return -1;
+            if (this.m_value > value) return 1;
+            return 0;
+        }
+
+        public int CompareTo(object obj) {
+            if (obj == null) return 1;
+            if (!(obj is double)) throw new ArgumentException();
+            return this.CompareTo((double)obj);
         }
 
         //
