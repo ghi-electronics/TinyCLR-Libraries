@@ -30,5 +30,8 @@
         public static Color Yellow { get; } = Color.FromArgb(0xFF, 0xFF, 0xFF, 0x00);
         public static Color Purple { get; } = Color.FromArgb(0xFF, 0x80, 0x00, 0x80);
         public static Color Teal { get; } = Color.FromArgb(0xFF, 0x00, 0x80, 0x80);
+        /// <summary>Default focus ring / accent (PC-style highlight).</summary>
+        public static Color CornflowerBlue { get; } = Color.FromArgb(0xFF, 0x64, 0x95, 0xED);
+        public static Color LightGray { get; } = Color.FromArgb(0xFF, 0xD3, 0xD3, 0xD3);
     }
 }

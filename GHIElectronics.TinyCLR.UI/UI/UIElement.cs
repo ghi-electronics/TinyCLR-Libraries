@@ -304,7 +304,7 @@ namespace GHIElectronics.TinyCLR.UI {
             height = this._renderHeight;
         }
 
-        protected UIElementCollection LogicalChildren {
+        protected internal UIElementCollection LogicalChildren {
             get {
                 VerifyAccess();
 

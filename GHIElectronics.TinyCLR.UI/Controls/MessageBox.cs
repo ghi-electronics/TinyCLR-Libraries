@@ -1,10 +1,8 @@
 using System;
 using System.Collections;
 using System.Drawing;
-using System.Text;
-using System.Threading;
+using GHIElectronics.TinyCLR.UI;
 using GHIElectronics.TinyCLR.UI.Media;
-using GHIElectronics.TinyCLR.UI.Media.Imaging;
 
 namespace GHIElectronics.TinyCLR.UI.Controls {
 
@@ -32,7 +30,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             public DialogResult DialogResult { get; internal set; }
         }
 
-        private bool isAtived = false;
+        private bool _isShown;
         public enum MessageBoxButtons {
             OK = 0,
             Cancel = 1,
@@ -51,14 +49,17 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         public void Show(string message, string caption, MessageBoxButtons messageBoxButton) => this.Show(null, message, caption, messageBoxButton);
         public void Show(UIElement owner, string message, string caption, MessageBoxButtons messageBoxButton) {
 
-            if (this.isAtived)
+            if (this._isShown) {
                 return;
+            }
 
-            if (this.Font == null)
-                throw new ArgumentNullException(nameof(message));
+            if (this.Font == null) {
+                throw new ArgumentNullException(nameof(Font));
+            }
 
-            if (message == null || message.Length == 0)
+            if (message == null) {
                 throw new ArgumentNullException(nameof(message));
+            }
 
             this.Owner = owner;
 
@@ -110,10 +111,12 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             for (var i = 0; i < this.messageList.Count; i++) {
                 var str = this.messageList[i] as string;
 
-                this.Font.ComputeExtent(str, out var w, out var h);
+                this.Font.ComputeExtent(str, out var w, out var _);
 
                 maxWith = Math.Max(maxWith, w);
-                maxAverageWith = Math.Max(maxAverageWith, w / str.Length);
+                if (str != null && str.Length > 0) {
+                    maxAverageWith = Math.Max(maxAverageWith, w / str.Length);
+                }
             }
 
             this.Width = maxWith + maxAverageWith * 2;
@@ -156,7 +159,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                 };
 
                 this.Font.ComputeExtent(buttonCenterMessage, out var w, out var h);
-                var averageChar = w / buttonCenterMessage.Length;
+                var averageChar = buttonCenterMessage.Length > 0 ? w / buttonCenterMessage.Length : 0;
 
                 this.buttonCenter = new Button() {
                     Child = textButtonCenter,
@@ -189,10 +192,10 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                 };
 
                 this.Font.ComputeExtent(buttonLeftMessage, out var w1, out var h1);
-                var averageChar1 = w1 / buttonLeftMessage.Length;
+                var averageChar1 = buttonLeftMessage.Length > 0 ? w1 / buttonLeftMessage.Length : 0;
 
                 this.Font.ComputeExtent(buttonRightMessage, out var w2, out var h2);
-                var averageChar2 = w1 / buttonRightMessage.Length;
+                var averageChar2 = buttonRightMessage.Length > 0 ? w2 / buttonRightMessage.Length : 0;
 
                 var averageChar = Math.Max(averageChar1, averageChar2);
                 var w = Math.Max(w1, w2);
@@ -244,7 +247,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             else if (!Application.Current.MainWindow.Child._logicalChildren.Contains(this))
                 Application.Current.MainWindow.Child._logicalChildren.Add(this);
 
-            this.isAtived = true;
+            this._isShown = true;
         }
 
         public void Close() {
@@ -280,7 +283,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                 this.buttonCenter = null;
             }
 
-            this.isAtived = false;
+            this._isShown = false;
 
 
         }
@@ -294,7 +297,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             //        Application.Current.MainWindow.Child._logicalChildren.Remove(this);
             //}
 
-            this.isAtived = false;
+            this._isShown = false;
 
             var e1 = new MessageBoxRoutedEventArgs() {
                 RoutedEventArgs = e
@@ -338,27 +341,37 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
             base.OnRender(dc);
 
-            if (this.caption != null && this.caption.Length > 0)
+            if (this.caption != null && this.caption.Length > 0) {
                 dc.DrawRectangle(this.brushCaption, this.penCaption, 0, 0, this.Width, this.captionBarHeight);
+            }
 
-            dc.DrawRectangle(this.brushMessage, this.penMessage, 0, this.captionBarHeight, this.Width, this.Width - this.Font.Height * 2);
+            var buttonRow = this.buttonCenter != null
+                ? this.buttonCenter.Height + this.Font.Height
+                : this.buttonLeft != null ? this.buttonLeft.Height + this.Font.Height : this.Font.Height * 2;
+            var messageBodyHeight = this.Height - this.captionBarHeight - buttonRow;
+            if (messageBodyHeight < this.Font.Height) {
+                messageBodyHeight = this.Font.Height;
+            }
 
-            if (this.caption != null && this.caption.Length > 0)
-                dc.DrawText(ref this.caption, this.Font, Colors.Black, offsetX, (this.captionBarHeight - this.Font.Height) / 2, this.Width, this.Font.Height, TextAlignment.Left, TextTrimming.None);
+            dc.DrawRectangle(this.brushMessage, this.penMessage, 0, this.captionBarHeight, this.Width, messageBodyHeight);
+
+            if (this.caption != null && this.caption.Length > 0) {
+                dc.DrawText(ref this.caption, this.Font, Theme.TextPrimary, offsetX, (this.captionBarHeight - this.Font.Height) / 2, this.Width, this.Font.Height, TextAlignment.Left, TextTrimming.None);
+            }
 
             for (var i = 0; i < this.messageList.Count; i++) {
                 var msg = this.messageList[i] as string;
 
-                dc.DrawText(ref msg, this.Font, Colors.Black, offsetX, offsetY, this.Width, this.Font.Height, TextAlignment.Left, TextTrimming.WordEllipsis);
+                dc.DrawText(ref msg, this.Font, Theme.TextPrimary, offsetX, offsetY, this.Width - offsetX * 2, this.Font.Height, TextAlignment.Left, TextTrimming.WordEllipsis);
                 offsetY += (this.Font.Height * 3) / 2;
             }
         }
 
-        private Media.Pen penCaption = new Media.Pen(Media.Color.FromRgb(240, 240, 240));
-        private SolidColorBrush brushCaption = new SolidColorBrush(Media.Color.FromRgb(240, 240, 240));
+        private readonly Media.Pen penCaption = new Media.Pen(Theme.Border, 1);
+        private readonly SolidColorBrush brushCaption = new SolidColorBrush(Theme.ControlSurface);
 
-        private Media.Pen penMessage = new Media.Pen(Colors.White);
-        private SolidColorBrush brushMessage = new SolidColorBrush(Colors.White);
+        private readonly Media.Pen penMessage = new Media.Pen(Theme.Border, 1);
+        private readonly SolidColorBrush brushMessage = new SolidColorBrush(Theme.TextBoxFill);
 
         private ArrayList messageList;
         private string caption = string.Empty;
@@ -369,7 +382,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
         public void Dispose() {
             this.Dispose(true);
-            this.isAtived = false;
+            this._isShown = false;
             GC.SuppressFinalize(this);
         }
 
