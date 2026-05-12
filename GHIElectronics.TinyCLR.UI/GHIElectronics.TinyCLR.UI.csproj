@@ -43,6 +43,7 @@
     <Compile Include="Controls\DataGridItem.cs" />
     <Compile Include="Controls\DataGridItemComparer.cs" />
     <Compile Include="Controls\Dropdown.cs" />
+    <Compile Include="Controls\Grid.cs" />
     <Compile Include="Controls\Gauge.cs" />
     <Compile Include="Controls\ListBoxItemHighlightable.cs" />
     <Compile Include="Controls\MessageBox.cs" />
@@ -52,6 +53,7 @@
     <Compile Include="Controls\TextBox.cs" />
     <Compile Include="Controls\Button.cs" />
     <Compile Include="Input\InputProvider.cs" />
+    <Compile Include="Input\FocusNavigator.cs" />
     <Compile Include="Media\Color.cs" />
     <Compile Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -105,6 +107,7 @@
     <Compile Include="Controls\StackPanel.cs" />
     <Compile Include="Controls\Text.cs" />
     <Compile Include="Controls\TextFlow.cs" />
+    <Compile Include="Controls\VirtualizingListBox.cs" />
     <Compile Include="Controls\TextRun.cs" />
     <Compile Include="Controls\TextRunCollection.cs" />
     <Compile Include="Input\HardwareButton.cs" />
@@ -138,6 +141,8 @@
     <Compile Include="UI\WindowManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UI\Application.cs" />
+    <Compile Include="UI\DataBinding.cs" />
+    <Compile Include="UI\Theme.cs" />
     <Compile Include="UI\EventHandler.cs" />
     <Compile Include="UI\EventRoute.cs" />
     <Compile Include="UI\PropertyChangedEventArgs.cs" />
@@ -239,6 +244,21 @@
     <None Include="Resources\DataGridIcon_Asc.gif" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <TcuiBuildTasksProject>$(MSBuildThisFileDirectory)..\..\TinyCLR-SDK\GHIElectronics.TinyCLR.UI.BuildTasks\GHIElectronics.TinyCLR.UI.BuildTasks.csproj</TcuiBuildTasksProject>
+    <TcuiCodegenPayloadDir>$(MSBuildThisFileDirectory)build\net48\</TcuiCodegenPayloadDir>
+  </PropertyGroup>
+  <Target Name="StageTcuiCodegenPayload" BeforeTargets="BeforeBuild;PackNuGet" Condition="Exists('$(TcuiBuildTasksProject)')">
+    <MSBuild Projects="$(TcuiBuildTasksProject)" Targets="Restore;Build" Properties="Configuration=$(Configuration)" />
+    <PropertyGroup>
+      <_TcuiTasksOutDir>$(MSBuildThisFileDirectory)..\..\TinyCLR-SDK\GHIElectronics.TinyCLR.UI.BuildTasks\bin\$(Configuration)\net472\</_TcuiTasksOutDir>
+    </PropertyGroup>
+    <ItemGroup>
+      <_TcuiCodegenBinaries Include="$(_TcuiTasksOutDir)GHIElectronics.TinyCLR.UI.BuildTasks.dll" />
+      <_TcuiCodegenBinaries Include="$(_TcuiTasksOutDir)Newtonsoft.Json.dll" />
+    </ItemGroup>
+    <Copy SourceFiles="@(_TcuiCodegenBinaries)" DestinationFolder="$(TcuiCodegenPayloadDir)" SkipUnchangedFiles="true" />
+  </Target>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
