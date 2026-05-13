@@ -148,7 +148,7 @@ namespace GHIElectronics.TinyCLR.UI.Media {
                     flags |= Bitmap.DT_AlignmentRight;
                     break;
                 default:
-                    throw new NotSupportedException();
+                    throw new NotSupportedException("TextAlignment value " + alignment + " is not supported.");
             }
 
             // Trimming

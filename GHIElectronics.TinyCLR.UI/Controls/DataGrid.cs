@@ -129,8 +129,14 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         protected virtual void Dispose(bool disposing) {
             if (!this.disposed) {
 
-                this.dataGridIcon_Asc.Dispose();
-                this.dataGridIcon_Desc.Dispose();
+                this.dataGridIcon_Asc?.Dispose();
+                this.dataGridIcon_Desc?.Dispose();
+
+                // BitmapImage doesn't declare IDisposable; reach the wrapped
+                // Graphics through the internal field. Font is owned by the
+                // caller (passed via constructor), so we don't touch it.
+                this.headers?.graphics?.Dispose();
+                this.items?.graphics?.Dispose();
 
                 this.disposed = true;
             }

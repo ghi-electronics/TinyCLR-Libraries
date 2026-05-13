@@ -9,7 +9,21 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
     public class Button : ContentControl, IDisposable {
         public ushort Alpha { get; set; } = 0xC8;
         public int RadiusBorder { get; set; } = 5;
-        private bool isTouchParentAssigned = false;
+
+        // Cached events - allocated once per AppDomain, not per click. Each
+        // click still needs a fresh RoutedEventArgs, but the event identity
+        // is constant.
+        private static readonly RoutedEvent TouchDownRoutedEvent =
+            new RoutedEvent("TouchDownEvent", RoutingStrategy.Bubble, typeof(RoutedEventHandler));
+        private static readonly RoutedEvent TouchUpRoutedEvent =
+            new RoutedEvent("TouchUpEvent", RoutingStrategy.Bubble, typeof(RoutedEventHandler));
+
+        // Track the parent we actually subscribed to (not just a bool) so that
+        // if the button is re-parented at runtime we unsubscribe from the
+        // ORIGINAL parent, not whatever this.Parent happens to return now.
+        // Without this, moving a button between containers leaks the handler
+        // on the old parent.
+        private UIElement subscribedParent;
 
         public Button() {
             this.InitResource();
@@ -37,13 +51,27 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
+        // Re-syncs the parent TouchUp subscription if the button has been
+        // re-parented since the last touch. Called from OnTouchDown.
+        private void EnsureParentSubscription() {
+            var current = this.Parent;
+            if (this.subscribedParent == current) return;
+
+            if (this.subscribedParent != null)
+                this.subscribedParent.TouchUp -= this.OnParentTouchUp;
+
+            this.subscribedParent = current;
+
+            if (this.subscribedParent != null)
+                this.subscribedParent.TouchUp += this.OnParentTouchUp;
+        }
+
         protected override void OnTouchUp(TouchEventArgs e) {
             if (!this.IsEnabled) {
                 return;
             }
 
-            var evt = new RoutedEvent("TouchUpEvent", RoutingStrategy.Bubble, typeof(RoutedEventHandler));
-            var args = new RoutedEventArgs(evt, this);
+            var args = new RoutedEventArgs(TouchUpRoutedEvent, this);
 
             try {
                 this.Click?.Invoke(this, args);
@@ -65,15 +93,9 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                 return;
             }
 
-            if (!this.isTouchParentAssigned) {
-                if (this.Parent != null) {
-                    this.Parent.TouchUp += this.OnParentTouchUp;
-                    this.isTouchParentAssigned = true;
-                }
-            }
+            this.EnsureParentSubscription();
 
-            var evt = new RoutedEvent("TouchDownEvent", RoutingStrategy.Bubble, typeof(RoutedEventHandler));
-            var args = new RoutedEventArgs(evt, this);
+            var args = new RoutedEventArgs(TouchDownRoutedEvent, this);
 
             try {
                 this.Click?.Invoke(this, args);
@@ -112,11 +134,14 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         protected virtual void Dispose(bool disposing) {
             if (!this.disposed) {
 
-                this.bitmapImageButtonDown.graphics.Dispose();
-                this.bitmapImageButtonUp.graphics.Dispose();
+                this.bitmapImageButtonDown?.graphics?.Dispose();
+                this.bitmapImageButtonUp?.graphics?.Dispose();
 
-                if (this.Parent != null && this.isTouchParentAssigned) {
-                    this.Parent.TouchUp -= this.OnParentTouchUp;
+                // Unsubscribe from the parent we ACTUALLY subscribed to, not
+                // this.Parent (which may have changed via re-parenting).
+                if (this.subscribedParent != null) {
+                    this.subscribedParent.TouchUp -= this.OnParentTouchUp;
+                    this.subscribedParent = null;
                 }
 
                 this.disposed = true;

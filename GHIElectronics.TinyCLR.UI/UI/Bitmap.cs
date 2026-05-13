@@ -32,7 +32,7 @@ namespace GHIElectronics.TinyCLR.UI {
             if (g.surface is System.Drawing.Internal.Bitmap b)
                 return b;
 
-            throw new NotSupportedException();
+            throw new NotSupportedException("UI.Bitmap can only wrap a Graphics backed by a System.Drawing.Internal.Bitmap surface.");
         }
 
         public void Dispose() => this.g.Dispose();
