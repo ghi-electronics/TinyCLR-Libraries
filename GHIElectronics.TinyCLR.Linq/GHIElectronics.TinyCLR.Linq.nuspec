@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>GHIElectronics.TinyCLR.Linq</id>
+    <version>2.5.0.1000</version>
+    <authors>GHI Electronics, LLC</authors>
+    <owners>GHI Electronics, LLC</owners>
+    <projectUrl>https://ghielectronics.com/</projectUrl>
+    <iconUrl>http://files.ghielectronics.com/downloads/Logos/GHIElectronicsTinyCLRNuGet.png</iconUrl>
+    <licenseUrl>http://files.ghielectronics.com/downloads/TinyCLR/License.txt</licenseUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>LINQ (System.Linq.Enumerable subset) for TinyCLR OS. Mirrors .NET Framework's System.Core.dll split: ship LINQ as a separate NuGet rather than baking it into mscorlib.</description>
+    <copyright>Copyright GHI Electronics, LLC 2022</copyright>
+    <tags>TinyCLR TinyCLROS LINQ</tags>
+    <dependencies>
+      <dependency id="GHIElectronics.TinyCLR.Core" version="2.5.0.1000" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="$TargetDir$GHIElectronics.TinyCLR.Linq.dll" target="lib\net48" />
+    <file src="$TargetDir$GHIElectronics.TinyCLR.Linq.dll" target="tinyclr" />
+    <file src="$ProjectDir$GHIElectronics.TinyCLR.Linq.props" target="build\net48" />
+  </files>
+</package>
