@@ -3,16 +3,17 @@
   <ItemGroup>
     <Reference Include="GHIElectronics.TinyCLR.Linq">
       <HintPath>$(MSBuildThisFileDirectory)..\..\lib\net48\GHIElectronics.TinyCLR.Linq.dll</HintPath>
-      <Private>True</Private>
+      <Private>False</Private>
     </Reference>
   </ItemGroup>
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <_TinyCLRLinqShimSource>$(MSBuildThisFileDirectory)..\..\desktop-shim\GHIElectronics.TinyCLR.Linq.dll</_TinyCLRLinqShimSource>
     <_TinyCLRLinqImplSource>$(MSBuildThisFileDirectory)..\..\tinyclr\GHIElectronics.TinyCLR.Linq.dll</_TinyCLRLinqImplSource>
   </PropertyGroup>
-  <!-- No desktop-shim in v1: System.Linq.Enumerable in real .NET (System.Core.dll)
-       overlaps our type names. Dual-mode users should reference System.Core
-       directly on Desktop and this NuGet only on TinyCLR. -->
+  <Target Name="CopyTinyCLRLinqDesktopShim" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRLinqShimSource)')">
+    <Copy SourceFiles="$(_TinyCLRLinqShimSource)" DestinationFiles="$(OutDir)GHIElectronics.TinyCLR.Linq.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
+  </Target>
   <Target Name="CopyTinyCLRLinqImplForDebugger" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRLinqImplSource)')">
     <Copy SourceFiles="$(_TinyCLRLinqImplSource)" DestinationFiles="$(OutDir)pe\GHIElectronics.TinyCLR.Linq.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
   </Target>
