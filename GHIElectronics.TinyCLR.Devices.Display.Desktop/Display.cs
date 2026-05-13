@@ -98,13 +98,17 @@ namespace GHIElectronics.TinyCLR.Devices.Display {
 
             public void Dispose() => this.Release();
 
-            private void Acquire() => throw new System.NotSupportedException("TODO - Not supported");
-            private void Release() => throw new System.NotSupportedException("TODO - Not supported");
-            public void Enable() => throw new System.NotSupportedException("TODO - Not supported");
-            public void Disable() => throw new System.NotSupportedException("TODO - Not supported");
-            public void DrawBuffer(int targetX, int targetY, int sourceX, int sourceY, int width, int height, int originalWidth, byte[] data, int offset) => throw new System.NotSupportedException("TODO - Not supported");
-            public void DrawPixel(int x, int y, long color) => throw new System.NotSupportedException("TODO - Not supported");
-            public void DrawString(string value) => throw new System.NotSupportedException("TODO - Not supported");
+            // Safe no-op on Desktop: no parallel-RGB display hardware exists, so
+            // Acquire/Release succeed silently, Enable/Disable do nothing, and
+            // all draw calls discard their input. The display "is enabled" as
+            // far as user code can tell - it just doesn't show anything.
+            private void Acquire() { }
+            private void Release() { }
+            public void Enable() { }
+            public void Disable() { }
+            public void DrawBuffer(int targetX, int targetY, int sourceX, int sourceY, int width, int height, int originalWidth, byte[] data, int offset) { }
+            public void DrawPixel(int x, int y, long color) { }
+            public void DrawString(string value) { }
             public void SetConfiguration(DisplayControllerSettings configuration) {
                 if (configuration is ParallelDisplayControllerSettings pcfg) {
                     this.SetConfiguration(pcfg);
@@ -114,7 +118,7 @@ namespace GHIElectronics.TinyCLR.Devices.Display {
                 }
             }
 
-            private void SetConfiguration(ParallelDisplayControllerSettings settings) => throw new System.NotSupportedException("TODO - Not supported");
+            private void SetConfiguration(ParallelDisplayControllerSettings settings) { }
         }
     }
 }

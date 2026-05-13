@@ -25,11 +25,17 @@ namespace GHIElectronics.TinyCLR.UI
                 return Resources.manager;
             }
         }
-        internal static System.Drawing.Bitmap GetBitmap(Resources.BitmapResources id)
-        {
-            // Desktop shim: TinyCLR's ResourceManager.GetObject takes short ID;
-            // .NET Framework's takes string. TODO - Not supported.
-            throw new System.NotSupportedException("TODO - Not supported");
+        // Safe no-op: TinyCLR's ResourceManager.GetObject takes a short ID and
+        // returns the embedded image; .NET Framework's takes a string. Since
+        // the Desktop sister doesn't ship the .resx, return a 1x1 placeholder
+        // bitmap so callers (Button, Keyboard, DataGrid, etc.) construct
+        // successfully and downstream layout doesn't divide-by-zero on Width
+        // or Height. Visual output is intentionally absent on Desktop.
+        private static System.Drawing.Bitmap _placeholderBitmap;
+        internal static System.Drawing.Bitmap GetBitmap(Resources.BitmapResources id) {
+            if (_placeholderBitmap == null)
+                _placeholderBitmap = new System.Drawing.Bitmap(1, 1);
+            return _placeholderBitmap;
         }
         [System.SerializableAttribute()]
         internal enum BitmapResources : short
