@@ -67,6 +67,8 @@
     <Compile Include="Collections\IEnumerator.cs" />
     <Compile Include="Collections\IEqualityComparer.cs" />
     <Compile Include="Collections\IList.cs" />
+    <Compile Include="Collections\Generic\IAsyncEnumerable.cs" />
+    <Compile Include="Collections\Generic\IAsyncEnumerator.cs" />
     <Compile Include="Collections\Generic\ICollection.cs" />
     <Compile Include="Collections\Generic\Comparer.cs" />
     <Compile Include="Collections\Generic\Dictionary.cs" />
@@ -89,6 +91,8 @@
     <Compile Include="DBNull.cs" />
     <Compile Include="Decimal.cs" />
     <Compile Include="Delegate.cs" />
+    <Compile Include="Diagnostics\CodeAnalysis\ExperimentalAttribute.cs" />
+    <Compile Include="Diagnostics\CodeAnalysis\SetsRequiredMembersAttribute.cs" />
     <Compile Include="Diagnostics\CodeAnalysis\SuppressMessageAttribute.cs" />
     <Compile Include="Diagnostics\ConditionalAttribute.cs" />
     <Compile Include="Diagnostics\DefaultTraceListener.cs" />
@@ -122,15 +126,19 @@
       <DependentUpon>CultureInfo.resx</DependentUpon>
     </Compile>
     <Compile Include="Guid.cs" />
+    <Compile Include="IAsyncDisposable.cs" />
     <Compile Include="IAsyncResult.cs" />
     <Compile Include="ICloneable.cs" />
     <Compile Include="IComparable.cs" />
     <Compile Include="IComparable_Generic.cs" />
     <Compile Include="ICustomFormatter.cs" />
     <Compile Include="IDisposable.cs" />
+    <Compile Include="IEquatable.cs" />
     <Compile Include="IFormatProvider.cs" />
     <Compile Include="IFormattable.cs" />
+    <Compile Include="Index.cs" />
     <Compile Include="IndexOutOfRangeException.cs" />
+    <Compile Include="Range.cs" />
     <Compile Include="Int16.cs" />
     <Compile Include="Int32.cs" />
     <Compile Include="Int64.cs" />
@@ -187,15 +195,23 @@
     <Compile Include="RuntimeType.cs" />
     <Compile Include="RuntimeTypeHandle.cs" />
     <Compile Include="Runtime\CompilerServices\AccessedThroughPropertyAttribute.cs" />
+    <Compile Include="Runtime\CompilerServices\AsyncMethodBuilderAttribute.cs" />
     <Compile Include="Runtime\CompilerServices\AsyncTaskMethodBuilder.cs" />
+    <Compile Include="Runtime\CompilerServices\CallerArgumentExpressionAttribute.cs" />
+    <Compile Include="Runtime\CompilerServices\CompilerFeatureRequiredAttribute.cs" />
     <Compile Include="Runtime\CompilerServices\CompilerGeneratedAttribute.cs" />
     <Compile Include="Runtime\CompilerServices\ExtensionAttribute.cs" />
     <Compile Include="Runtime\CompilerServices\FormattableStringFactory.cs" />
     <Compile Include="Runtime\CompilerServices\IAsyncStateMachine.cs" />
     <Compile Include="Runtime\CompilerServices\INotifyCompletion.cs" />
     <Compile Include="Runtime\CompilerServices\IndexerNameAttribute.cs" />
+    <Compile Include="Runtime\CompilerServices\InterceptsLocationAttribute.cs" />
     <Compile Include="Runtime\CompilerServices\InternalsVisibleToAttribute.cs" />
+    <Compile Include="Runtime\CompilerServices\IsExternalInit.cs" />
     <Compile Include="Runtime\CompilerServices\MethodImplAttribute.cs" />
+    <Compile Include="Runtime\CompilerServices\ModuleInitializerAttribute.cs" />
+    <Compile Include="Runtime\CompilerServices\OverloadResolutionPriorityAttribute.cs" />
+    <Compile Include="Runtime\CompilerServices\RequiredMemberAttribute.cs" />
     <Compile Include="Runtime\CompilerServices\RuntimeHelpers.cs" />
     <Compile Include="Runtime\CompilerServices\TaskAwaiter.cs" />
     <Compile Include="Runtime\CompilerServices\TupleElementNamesAttribute.cs" />
