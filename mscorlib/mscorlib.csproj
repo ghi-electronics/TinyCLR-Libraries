@@ -106,6 +106,7 @@
     <Compile Include="FlagsAttribute.cs" />
     <Compile Include="FormatException.cs" />
     <Compile Include="Comparison.cs" />
+    <Compile Include="Converter.cs" />
     <Compile Include="FormattableString.cs" />
     <Compile Include="Func.cs" />
     <Compile Include="GC.cs" />
@@ -197,6 +198,7 @@
     <Compile Include="Runtime\CompilerServices\MethodImplAttribute.cs" />
     <Compile Include="Runtime\CompilerServices\RuntimeHelpers.cs" />
     <Compile Include="Runtime\CompilerServices\TaskAwaiter.cs" />
+    <Compile Include="Runtime\CompilerServices\TupleElementNamesAttribute.cs" />
     <Compile Include="Runtime\InteropServices\Attributes.cs" />
     <Compile Include="Runtime\InteropServices\CharSet.cs" />
     <Compile Include="Runtime\InteropServices\LayoutKind.cs" />
@@ -216,6 +218,7 @@
     <Compile Include="Text\UTF8Encoding.cs" />
     <Compile Include="ThreadAttributes.cs" />
     <Compile Include="Threading\AutoResetEvent.cs" />
+    <Compile Include="Threading\CancellationToken.cs" />
     <Compile Include="Threading\Interlocked.cs" />
     <Compile Include="Threading\ManualResetEvent.cs" />
     <Compile Include="Threading\Monitor.cs" />
@@ -232,6 +235,7 @@
     <Compile Include="Threading\Tasks\TaskStatus.cs" />
     <Compile Include="TimeSpan.cs" />
     <Compile Include="Tuple.cs" />
+    <Compile Include="ValueTuple.cs" />
     <Compile Include="TimeZone.cs" />
     <Compile Include="Type.cs" />
     <Compile Include="TypeCode.cs" />
