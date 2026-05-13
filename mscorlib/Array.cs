@@ -1,9 +1,21 @@
 using System.Collections;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
 namespace System {
     [Serializable]
-    public abstract class Array : ICloneable, IList {
+    // IList<object> is declared (not IList<T> for actual element T) because TinyCLR
+    // uses full generic-type erasure: the MMP linker maps every generic VAR/MVAR to
+    // DATATYPE_OBJECT, and the runtime's GENERICINST signature parser resolves to
+    // the open TypeDef ignoring type args. So at runtime dispatch, IList<int>,
+    // IList<string>, etc. all resolve to the same erased IList<T>, which IList<object>'s
+    // metadata matches. The C# language spec separately guarantees SZ arrays of T are
+    // assignable to IList<T>/IEnumerable<T>/etc. without checking the metadata, so the
+    // compiler accepts `IEnumerable<int> e = new int[5];` regardless of what Array
+    // declares here. This change makes the runtime dispatch find a matching method
+    // for generic-interface callvirts on arrays, which is what was previously failing
+    // with CLR_E_WRONG_TYPE.
+    public abstract class Array : ICloneable, IList, IList<object> {
         internal const int MaxByteArrayLength = 0x7FFFFFC7;
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
@@ -27,13 +39,26 @@ namespace System {
             get;
         }
 
-        int ICollection.Count => this.Length;
+        // Members that are signature-identical between non-generic IList/ICollection
+        // and IList<object>/ICollection<object> are declared as PUBLIC (implicit interface
+        // implementation). Explicit-interface impls have qualified method names in
+        // metadata that TinyCLR's runtime virtual-dispatch lookup doesn't match against
+        // the erased open generic form, so callvirt on `IList<T>::get_Item` etc. would
+        // fail. Public-implicit names ("get_Item", "Count", ...) match both interfaces
+        // after erasure. See [[tinyclr-generic-erasure]] memory.
+        //
+        // Members with differing signatures (Add: int vs void, Remove: void vs bool,
+        // CopyTo: Array vs object[]) stay split between explicit IList.X and explicit
+        // ICollection<object>.X / IList<object>.X impls.
+
+        public int Count => this.Length;
 
         public object SyncRoot => this;
         public bool IsReadOnly => false;
         public bool IsFixedSize => true;
         public bool IsSynchronized => false;
-        extern object IList.this[int index] {
+
+        public extern object this[int index] {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
             get;
 
@@ -43,17 +68,17 @@ namespace System {
 
         int IList.Add(object value) => throw new NotSupportedException();
 
-        bool IList.Contains(object value) => Array.IndexOf(this, value) >= 0;
+        public bool Contains(object value) => Array.IndexOf(this, value) >= 0;
 
-        void IList.Clear() => Array.Clear(this, 0, this.Length);
+        public void Clear() => Array.Clear(this, 0, this.Length);
 
-        int IList.IndexOf(object value) => Array.IndexOf(this, value);
+        public int IndexOf(object value) => Array.IndexOf(this, value);
 
-        void IList.Insert(int index, object value) => throw new NotSupportedException();
+        public void Insert(int index, object value) => throw new NotSupportedException();
 
         void IList.Remove(object value) => throw new NotSupportedException();
 
-        void IList.RemoveAt(int index) => throw new NotSupportedException();
+        public void RemoveAt(int index) => throw new NotSupportedException();
 
         public object Clone() {
             var length = this.Length;
@@ -100,7 +125,28 @@ namespace System {
 
         public void CopyTo(Array array, int index) => Array.Copy(this, 0, array, index, this.Length);
 
-        public IEnumerator GetEnumerator() => new SZArrayEnumerator(this);
+        // Public method returns IEnumerator<object>, so plain-name vtable lookup
+        // on Array finds a signature-matching GetEnumerator for both
+        // IEnumerable.GetEnumerator (return type contravariance: IEnumerator<object>
+        // IS an IEnumerator) AND IEnumerable<T>::GetEnumerator (erased return type
+        // matches IEnumerator<object>'s erased return). Explicit interface impls
+        // get qualified method names in metadata, which the runtime's plain-name
+        // lookup doesn't find, so we need this implicit form for the LINQ-on-arrays
+        // dispatch path.
+        public IEnumerator<object> GetEnumerator() => new SZArrayEnumerator(this);
+
+        IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
+
+        // --- ICollection<object> / IList<object> members with signatures that differ
+        //     from the non-generic IList equivalents (Add returns void vs int, Remove
+        //     returns bool vs void, CopyTo takes object[] vs Array). These must stay
+        //     as explicit interface impls. ---
+
+        void ICollection<object>.Add(object item) => throw new NotSupportedException();
+
+        void ICollection<object>.CopyTo(object[] array, int arrayIndex) => Array.Copy(this, 0, array, arrayIndex, this.Length);
+
+        bool ICollection<object>.Remove(object item) => throw new NotSupportedException();
 
         public static int IndexOf(Array array, object value) => IndexOf(array, value, 0, array.Length);
 
@@ -131,7 +177,12 @@ namespace System {
         // This is the underlying Enumerator for all of our array-based data structures (Array, ArrayList, Stack, and Queue)
         // It supports enumerating over an array, a part of an array, and also will wrap around when the endIndex
         // specified is larger than the size of the array (to support Queue's internal circular array)
-        internal class SZArrayEnumerator : IEnumerator {
+        // Implements IEnumerator<object> too: after MMP erasure that satisfies
+        // IEnumerator<T> for any T returned by Array's IEnumerable<object> impl
+        // above. Value-type elements are returned boxed via Array.GetValue, and
+        // user code's `unbox.any T` (emitted by the C# compiler after `e.Current`)
+        // unboxes back to the static element type.
+        internal class SZArrayEnumerator : IEnumerator<object> {
             private Array _array;
             private int _index;
             private int _endIndex;
@@ -177,6 +228,8 @@ namespace System {
             public object Current => this._array.GetValue(this._index % this._arrayLength);
 
             public void Reset() => this._index = this._startIndex - 1;
+
+            public void Dispose() { }
         }
     }
 }

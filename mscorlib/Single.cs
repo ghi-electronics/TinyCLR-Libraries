@@ -3,7 +3,7 @@ namespace System {
     using System.Globalization;
 
     [Serializable()]
-    public struct Single : IFormattable {
+    public struct Single : IFormattable, IComparable, IComparable<float> {
 #pragma warning disable CS0649 // Field is never assigned to, and will always have its default value
         internal float m_value;
 #pragma warning restore CS0649 // Field is never assigned to, and will always have its default value
@@ -74,6 +74,23 @@ namespace System {
 
         public static bool operator !=(Single left, Single right) {
             return left.m_value != right.m_value;
+        }
+
+        // NaN check first - TinyCLR's float comparison operators may not
+        // follow IEEE strictly with NaN, so we can't rely on </>= falling
+        // through to the NaN handling below.
+        public int CompareTo(float value) {
+            if (Double.IsNaN(this.m_value)) return Double.IsNaN(value) ? 0 : -1;
+            if (Double.IsNaN(value)) return 1;
+            if (this.m_value < value) return -1;
+            if (this.m_value > value) return 1;
+            return 0;
+        }
+
+        public int CompareTo(object obj) {
+            if (obj == null) return 1;
+            if (!(obj is float)) throw new ArgumentException();
+            return this.CompareTo((float)obj);
         }
     }
 }

@@ -2,7 +2,7 @@ namespace System {
     using System.Globalization;
 
     [Serializable]
-    public struct Int32 : IFormattable {
+    public struct Int32 : IFormattable, IComparable, IComparable<int> {
         internal int m_value;
 
         public const int MaxValue = 0x7fffffff;
@@ -45,6 +45,12 @@ namespace System {
 
         public override int GetHashCode() => this.m_value;
 
+        public int CompareTo(int value) => this.m_value < value ? -1 : (this.m_value > value ? 1 : 0);
+        public int CompareTo(object obj) {
+            if (obj == null) return 1;
+            if (!(obj is int)) throw new ArgumentException();
+            return this.CompareTo((int)obj);
+        }
     }
 }
 

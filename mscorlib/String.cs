@@ -17,11 +17,7 @@ namespace System {
 * @version
 */
     [Serializable]
-#pragma warning disable CS0659 // Type overrides Object.Equals(object o) but does not override Object.GetHashCode()
-#pragma warning disable CS0661 // Type defines operator == or operator != but does not override Object.GetHashCode()
-    public sealed class String : IComparable
-#pragma warning restore CS0661 // Type defines operator == or operator != but does not override Object.GetHashCode()
-#pragma warning restore CS0659 // Type overrides Object.Equals(object o) but does not override Object.GetHashCode()
+    public sealed class String : IComparable, IComparable<string>
     {
         public static readonly string Empty = "";
         public override bool Equals(object obj) {
@@ -30,6 +26,31 @@ namespace System {
             }
 
             return false;
+        }
+
+        // Content-based hash so Dictionary<string,...> and Hashtable lookups
+        // work. Without this, Object.GetHashCode (identity-based on TinyCLR)
+        // would let "a" inserted == "a" looked-up return different hashes,
+        // and the entry would never be found.
+        //
+        // Implementation note: routed through a static helper because
+        // accessing `this.Length` / `this[i]` directly emits `call instance`
+        // (non-virtual) which the TinyCLR runtime mis-dispatches for extern
+        // InternalCall members - the native handler sees a null receiver.
+        // The static helper takes the string as a parameter, which Roslyn
+        // compiles to `callvirt` (the pattern existing String methods like
+        // `IsNullOrEmpty` and the static `Equals(string,string)` already use).
+        public override int GetHashCode() => ComputeHashCode(this);
+
+        private static int ComputeHashCode(string s) {
+            unchecked {
+                int h = 17;
+                int len = s.Length;
+                for (int i = 0; i < len; i++) {
+                    h = (h * 31) + s[i];
+                }
+                return h;
+            }
         }
 
         public static bool IsNullOrEmpty(string value) => value == null || value.Length == 0;

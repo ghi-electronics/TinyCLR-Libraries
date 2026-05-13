@@ -2,7 +2,7 @@ using System.ComponentModel;
 
 namespace System {
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public struct Decimal : IFormattable {
+    public struct Decimal : IFormattable, IComparable, IComparable<decimal> {
         [CLSCompliant(false)]
         public Decimal(uint value) { }
 
@@ -18,5 +18,11 @@ namespace System {
 
         public string ToString(string format) => string.Empty;
         public string ToString(string format, IFormatProvider formatProvider) => string.Empty;
+
+        // Decimal is a placeholder type in TinyCLR (all members no-op). These
+        // stubs satisfy IComparable<T> shape so generic code targeting decimal
+        // compiles; they always return 0.
+        public int CompareTo(decimal value) => 0;
+        public int CompareTo(object value) => value == null ? 1 : 0;
     }
 }

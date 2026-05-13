@@ -1,6 +1,6 @@
 namespace System {
     [Serializable]
-    public struct Guid : IFormattable {
+    public struct Guid : IFormattable, IComparable, IComparable<Guid> {
         internal int[] m_data;
 
 
@@ -94,13 +94,17 @@ namespace System {
                 throw new ArgumentException();
             }
 
-            var other = ((Guid)value).m_data;
+            return this.CompareTo((Guid)value);
+        }
+
+        // Strongly-typed companion for IComparable<Guid>.
+        public int CompareTo(Guid value) {
+            var other = value.m_data;
             for (var i = 0; i < 4; i++) {
                 if (this.m_data[i] != other[i]) {
                     return this.m_data[i] - other[i];
                 }
             }
-
             return 0;
         }
 

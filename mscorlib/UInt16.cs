@@ -5,7 +5,7 @@ namespace System {
      * Wrapper for unsigned 16 bit integers.
      */
     [Serializable, CLSCompliant(false)]
-    public struct UInt16 : IFormattable {
+    public struct UInt16 : IFormattable, IComparable, IComparable<ushort> {
 #pragma warning disable CS0649 // Field is never assigned to, and will always have its default value
         private ushort m_value;
 #pragma warning restore CS0649 // Field is never assigned to, and will always have its default value
@@ -40,6 +40,15 @@ namespace System {
             }
         }
 
+        public int CompareTo(ushort value) => this.m_value < value ? -1 : (this.m_value > value ? 1 : 0);
+        public int CompareTo(object obj) {
+            if (obj == null) return 1;
+            if (!(obj is ushort)) throw new ArgumentException();
+            return this.CompareTo((ushort)obj);
+        }
+
+        public override int GetHashCode() => this.m_value | (this.m_value << 16);
+        public override bool Equals(object obj) => obj is ushort u && u == this.m_value;
     }
 }
 
