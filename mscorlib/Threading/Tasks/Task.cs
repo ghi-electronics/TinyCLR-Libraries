@@ -5,21 +5,17 @@ namespace System.Threading.Tasks {
         internal Exception _exception;
         internal TaskStatus _status = TaskStatus.RanToCompletion;
 
-        // NOTE: Real async/await with timer-driven Task.Delay is not yet
-        // supported. Two TinyCLR runtime gaps prevent it:
-        //   (1) `ldobj !!T` / `box !!T` for VAR/MVAR-typed params don't
-        //       actually value-copy / box a struct — they just slot-copy an
-        //       object reference, which is garbage for a struct on stack.
-        //   (2) Even with AsyncTaskMethodBuilder as a class (fixing the
-        //       builder's interior-pointer issue), the state machine STRUCT
-        //       captured at the first await cannot be resumed correctly from
-        //       the Timer thread because its `this` reference becomes stale.
-        // Until MMP can rewrite async state machines from struct to class (or
-        // the interpreter learns to handle these cases), Task.Delay stays a
-        // synchronous Thread.Sleep and `await` over a non-completed Task is
-        // broken. The flow that DID work pre-2026-05-13 (sync Delay, inline
-        // continuation, awaiter.IsCompleted always true at the check) is
-        // preserved.
+        // NOTE: `await Task.Delay(N)` blocks the calling thread for N ms via
+        // Thread.Sleep, rather than yielding control via a Timer-based async
+        // resume. Other threads (system threads, user-spawned threads, ISRs,
+        // peripherals) are unaffected. End-to-end timing of `await`-using code
+        // is identical to "real" async — only the semantics of "what does the
+        // thread do during the wait" differ. For embedded targets where you'd
+        // spawn a Thread for parallel work anyway, this is functionally
+        // equivalent and avoids the deep runtime work needed to make struct
+        // state-machine resume safe under TinyCLR's generic-type erasure.
+        // See [[task-async-state-machine-limitation]] memory for the
+        // investigation that arrived at this trade-off.
 
         public TaskStatus Status => this._status;
         public bool IsCompleted => this._status == TaskStatus.RanToCompletion || this._status == TaskStatus.Faulted || this._status == TaskStatus.Canceled;

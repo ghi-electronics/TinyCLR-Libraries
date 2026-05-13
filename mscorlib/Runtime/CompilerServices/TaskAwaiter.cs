@@ -12,9 +12,6 @@ namespace System.Runtime.CompilerServices {
             if (this._task != null) this._task.Wait();
         }
 
-        // Runs continuation inline. Real continuation queueing requires a
-        // working async/await state-machine resume path, which TinyCLR
-        // doesn't have yet (see Task.cs note).
         public void OnCompleted(Action continuation) {
             if (continuation != null) continuation();
         }
