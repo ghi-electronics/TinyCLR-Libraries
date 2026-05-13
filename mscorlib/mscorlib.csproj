@@ -208,6 +208,7 @@
     <Compile Include="Runtime\CompilerServices\InterceptsLocationAttribute.cs" />
     <Compile Include="Runtime\CompilerServices\InternalsVisibleToAttribute.cs" />
     <Compile Include="Runtime\CompilerServices\IsExternalInit.cs" />
+    <Compile Include="Runtime\CompilerServices\IsVolatile.cs" />
     <Compile Include="Runtime\CompilerServices\MethodImplAttribute.cs" />
     <Compile Include="Runtime\CompilerServices\ModuleInitializerAttribute.cs" />
     <Compile Include="Runtime\CompilerServices\OverloadResolutionPriorityAttribute.cs" />
