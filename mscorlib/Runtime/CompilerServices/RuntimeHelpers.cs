@@ -43,6 +43,19 @@ namespace System.Runtime.CompilerServices {
             [MethodImplAttribute(MethodImplOptions.InternalCall)]
             get;
         }
+
+        // C# 8 indices/ranges: the compiler emits a call to this helper for
+        // `arr[range]` where arr is a single-dimension array. Pure managed -
+        // resolves the Range against the array length and copies a fresh slice.
+        public static T[] GetSubArray<T>(T[] array, Range range) {
+            if (array == null) throw new ArgumentNullException();
+            var ol = range.GetOffsetAndLength(array.Length);
+            var offset = ol.Item1;
+            var length = ol.Item2;
+            var dest = new T[length];
+            if (length > 0) Array.Copy(array, offset, dest, 0, length);
+            return dest;
+        }
     }
 }
 

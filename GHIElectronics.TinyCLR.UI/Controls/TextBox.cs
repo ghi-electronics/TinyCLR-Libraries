@@ -12,6 +12,11 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
     }
 
     public class TextBox : Control {
+        // Cached once per AppDomain so every Text-change doesn't allocate a
+        // fresh RoutedEvent object.
+        private static readonly RoutedEvent TextChangedRoutedEvent =
+            new RoutedEvent("TextChangedEvent", RoutingStrategy.Bubble, typeof(TextChangedEventHandler));
+
         private string text = string.Empty;
         private Color bordercolor = Colors.Black;
         private ushort borderthickness = 1, paddingx, paddingy;
@@ -44,8 +49,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                     this.PushTextToBinding();
                 }
 
-                var evt = new RoutedEvent("TextChangedEvent", RoutingStrategy.Bubble, typeof(TextChangedEventHandler));
-                var args = new TextChangedEventArgs(evt, this);
+                var args = new TextChangedEventArgs(TextChangedRoutedEvent, this);
 
                 this.TextChanged?.Invoke(this, args);
             }
@@ -170,7 +174,8 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         }
 
         public override void OnRender(DrawingContext dc) {
-            if (!(this.Foreground is SolidColorBrush b)) throw new NotSupportedException();
+            if (this.Foreground is not SolidColorBrush b)
+                throw new NotSupportedException("TextBox.Foreground must be a SolidColorBrush; gradient or image brushes are not supported.");
 
             base.OnRender(dc);
 

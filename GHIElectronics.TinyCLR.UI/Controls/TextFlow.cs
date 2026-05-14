@@ -324,7 +324,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                         break;
 
                     default:
-                        throw new NotSupportedException();
+                        throw new NotSupportedException("TextAlignment value " + this._alignment + " is not supported.");
                 }
 
                 for (var i = 0; i < runs.Length; i++) {

@@ -12,7 +12,9 @@ namespace System.Drawing
         public int Width => this.data.Width;
         public int Height => this.data.Height;
 
-        public object Clone() => throw new NotImplementedException();
+        // Safe no-op on Desktop: return null; callers that actually need a
+        // cloned image should be on device. Most UI code does not clone.
+        public object Clone() => null;
 
         public static Image FromStream(Stream stream) => new Bitmap(stream);
 

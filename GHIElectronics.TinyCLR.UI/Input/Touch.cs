@@ -28,11 +28,12 @@ namespace GHIElectronics.TinyCLR.UI.Input {
                     throw new ArgumentException();
                 }
 
-                if (mode == CaptureMode.SubTree) {
-                    throw new NotImplementedException();
-                }
-
-                if (mode == CaptureMode.Element) {
+                // TinyCLR's touch dispatcher already routes by the captured
+                // element's rendered bounds (see Application.cs ProcessInput),
+                // so Element and SubTree modes produce the same observable
+                // behavior here - descendants within the captured element's
+                // bounds already receive events through the captured root.
+                if (mode == CaptureMode.SubTree || mode == CaptureMode.Element) {
                     _captureElement = element;
                 }
             }

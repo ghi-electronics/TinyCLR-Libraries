@@ -376,6 +376,12 @@ namespace System.Drawing
             IntPtr implPtr;
 #pragma warning restore CS0169 // The field is never used
 
+            // Safe no-op on Desktop: track the requested dimensions so UI layout
+            // code that reads Width/Height gets a sensible value (1x1 minimum if
+            // the parameterless / unknown-data constructor was used).
+            private int _width = 1;
+            private int _height = 1;
+
             public void Dispose()
             {
                 this.Dispose(true);
@@ -384,8 +390,8 @@ namespace System.Drawing
 
             ~Bitmap() => this.Dispose(false);
 
-            public int Width => throw new System.NotSupportedException("TODO - Not supported");
-            public int Height => throw new System.NotSupportedException("TODO - Not supported");
+            public int Width => this._width;
+            public int Height => this._height;
             public byte[] GetBitmap(int x, int y, int width, int height)
             {
                 if ((x < 0) || (y < 0) || (x + width > this.Width) || (y + height > this.Height))
@@ -394,20 +400,32 @@ namespace System.Drawing
                 return this.NativeGetBitmap(x, y, width, height, this.Width);
             }
 
-            public static bool GetSizeForLcdFromHdc(IntPtr hdc, out int width, out int height) => throw new System.NotSupportedException("TODO - Not supported");
-            private void CreateInstantFromResources(uint buffer, uint size, uint assembly) => throw new System.NotSupportedException("TODO - Not supported");
-            public Bitmap(byte[] imageData, BitmapImageType type) => throw new System.NotSupportedException("TODO - Not supported");
-            public Bitmap(byte[] imageData, int offset, int count, BitmapImageType type) => throw new System.NotSupportedException("TODO - Not supported");
-            public Bitmap(int width, int height) => throw new System.NotSupportedException("TODO - Not supported");
-            public Bitmap(byte[] data, int width, int height) => throw new System.NotSupportedException("TODO - Not supported");
-            public void Clear() => throw new System.NotSupportedException("TODO - Not supported");
-            public void Dispose(bool disposing) => throw new System.NotSupportedException("TODO - Not supported");
-            public void Flush(IntPtr hdc) => throw new System.NotSupportedException("TODO - Not supported");
-            public void DrawText(string text, Font font, uint color, int x, int y) => throw new System.NotSupportedException("TODO - Not supported");
-            public void DrawImage(int xDst, int yDst, Bitmap bitmap, int xSrc, int ySrc, int width, int height, ushort opacity) => throw new System.NotSupportedException("TODO - Not supported");
-            public void DrawEllipse(uint colorOutline, int thicknessOutline, int x, int y, int xRadius, int yRadius, uint colorGradientStart, int xGradientStart, int yGradientStart, uint colorGradientEnd, int xGradientEnd, int yGradientEnd, ushort opacity) => throw new System.NotSupportedException("TODO - Not supported");
-            public void DrawLine(uint color, int thickness, int x0, int y0, int x1, int y1) => throw new System.NotSupportedException("TODO - Not supported");
-            public void DrawRectangle(uint colorOutline, int thicknessOutline, int x, int y, int width, int height, int xCornerRadius, int yCornerRadius, uint colorGradientStart, int xGradientStart, int yGradientStart, uint colorGradientEnd, int xGradientEnd, int yGradientEnd, ushort opacity) => throw new System.NotSupportedException("TODO - Not supported");
+            // Safe no-op on Desktop: GetSize returns false (no LCD detected),
+            // constructors capture requested dimensions, draw methods discard
+            // input. Image data is accepted but never decoded.
+            public static bool GetSizeForLcdFromHdc(IntPtr hdc, out int width, out int height) {
+                width = 0; height = 0;
+                return false;
+            }
+            private void CreateInstantFromResources(uint buffer, uint size, uint assembly) { }
+            public Bitmap(byte[] imageData, BitmapImageType type) { }
+            public Bitmap(byte[] imageData, int offset, int count, BitmapImageType type) { }
+            public Bitmap(int width, int height) {
+                this._width = width > 0 ? width : 1;
+                this._height = height > 0 ? height : 1;
+            }
+            public Bitmap(byte[] data, int width, int height) {
+                this._width = width > 0 ? width : 1;
+                this._height = height > 0 ? height : 1;
+            }
+            public void Clear() { }
+            public void Dispose(bool disposing) { }
+            public void Flush(IntPtr hdc) { }
+            public void DrawText(string text, Font font, uint color, int x, int y) { }
+            public void DrawImage(int xDst, int yDst, Bitmap bitmap, int xSrc, int ySrc, int width, int height, ushort opacity) { }
+            public void DrawEllipse(uint colorOutline, int thicknessOutline, int x, int y, int xRadius, int yRadius, uint colorGradientStart, int xGradientStart, int yGradientStart, uint colorGradientEnd, int xGradientEnd, int yGradientEnd, ushort opacity) { }
+            public void DrawLine(uint color, int thickness, int x0, int y0, int x1, int y1) { }
+            public void DrawRectangle(uint colorOutline, int thicknessOutline, int x, int y, int width, int height, int xCornerRadius, int yCornerRadius, uint colorGradientStart, int xGradientStart, int yGradientStart, uint colorGradientEnd, int xGradientEnd, int yGradientEnd, ushort opacity) { }
             public void DrawTextInRect(string text, int x, int y, int width, int height, uint dtFlags, Color color, Font font)
             {
                 var xRelStart = 0;
@@ -420,25 +438,25 @@ namespace System.Drawing
             //
             //public void DrawImage(int xDst, int yDst, Graphics bitmap, int xSrc, int ySrc, int width, int height) => DrawImage(xDst, yDst, bitmap, xSrc, ySrc, width, height, OpacityOpaque);
 
-            public void Flush(IntPtr hdc, int x, int y, int width, int height) => throw new System.NotSupportedException("TODO - Not supported");
-            public void SetClippingRectangle(int x, int y, int width, int height) => throw new System.NotSupportedException("TODO - Not supported");
-            public bool DrawTextInRect(ref string text, ref int xRelStart, ref int yRelStart, int x, int y, int width, int height, uint dtFlags, uint color, Font font) => throw new System.NotSupportedException("TODO - Not supported");
-            public void RotateImage(int angle, int xDst, int yDst, Bitmap bitmap, int xSrc, int ySrc, int width, int height, ushort opacity) => throw new System.NotSupportedException("TODO - Not supported");
-            public void MakeTransparent(uint color) => throw new System.NotSupportedException("TODO - Not supported");
-            public void StretchImage(int xDst, int yDst, Bitmap bitmap, int width, int height, ushort opacity) => throw new System.NotSupportedException("TODO - Not supported");
-            public void SetPixel(int xPos, int yPos, uint color) => throw new System.NotSupportedException("TODO - Not supported");
-            public uint GetPixel(int xPos, int yPos) => throw new System.NotSupportedException("TODO - Not supported");
-            public byte[] GetBitmap() => throw new System.NotSupportedException("TODO - Not supported");
-            private byte[] NativeGetBitmap(int x, int y, int width, int height, int originalWidth) => throw new System.NotSupportedException("TODO - Not supported");
-            public void StretchImage(int xDst, int yDst, int widthDst, int heightDst, Bitmap bitmap, int xSrc, int ySrc, int widthSrc, int heightSrc, ushort opacity) => throw new System.NotSupportedException("TODO - Not supported");
+            public void Flush(IntPtr hdc, int x, int y, int width, int height) { }
+            public void SetClippingRectangle(int x, int y, int width, int height) { }
+            public bool DrawTextInRect(ref string text, ref int xRelStart, ref int yRelStart, int x, int y, int width, int height, uint dtFlags, uint color, Font font) => true;
+            public void RotateImage(int angle, int xDst, int yDst, Bitmap bitmap, int xSrc, int ySrc, int width, int height, ushort opacity) { }
+            public void MakeTransparent(uint color) { }
+            public void StretchImage(int xDst, int yDst, Bitmap bitmap, int width, int height, ushort opacity) { }
+            public void SetPixel(int xPos, int yPos, uint color) { }
+            public uint GetPixel(int xPos, int yPos) => 0;
+            public byte[] GetBitmap() => new byte[this._width * this._height * 4];
+            private byte[] NativeGetBitmap(int x, int y, int width, int height, int originalWidth) => new byte[width * height * 4];
+            public void StretchImage(int xDst, int yDst, int widthDst, int heightDst, Bitmap bitmap, int xSrc, int ySrc, int widthSrc, int heightSrc, ushort opacity) { }
             public void StretchImage(int xDst, int yDst, int widthDst, int heightDst, IGraphics bitmap, int xSrc, int ySrc, int widthSrc, int heightSrc, ushort opacity)
             {
                 if (bitmap is Bitmap b)
                     this.StretchImage(xDst, yDst, widthDst, heightDst, b, xSrc, ySrc, widthSrc, heightSrc, opacity);
             }
 
-            public void TileImage(int xDst, int yDst, Bitmap bitmap, int width, int height, ushort opacity) => throw new System.NotSupportedException("TODO - Not supported");
-            public void Scale9Image(int xDst, int yDst, int widthDst, int heightDst, Bitmap bitmap, int leftBorder, int topBorder, int rightBorder, int bottomBorder, ushort opacity) => throw new System.NotSupportedException("TODO - Not supported");
+            public void TileImage(int xDst, int yDst, Bitmap bitmap, int width, int height, ushort opacity) { }
+            public void Scale9Image(int xDst, int yDst, int widthDst, int heightDst, Bitmap bitmap, int leftBorder, int topBorder, int rightBorder, int bottomBorder, ushort opacity) { }
             public void DrawImage(int xDst, int yDst, IGraphics bitmap, int xSrc, int ySrc, int width, int height, ushort opacity)
             {
                 if (bitmap is Bitmap b)

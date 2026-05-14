@@ -106,7 +106,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                         flags |= Bitmap.DT_AlignmentCenter;
                         break;
                     default:
-                        throw new NotSupportedException();
+                        throw new NotSupportedException("TextAlignment value " + this._alignment + " is not supported.");
                 }
 
                 switch (this._trimming) {

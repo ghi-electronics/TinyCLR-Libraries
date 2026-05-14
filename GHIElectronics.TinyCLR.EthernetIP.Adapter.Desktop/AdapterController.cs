@@ -390,45 +390,48 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Adapter
         public void EnableHeaderT2O(bool on) => this.NativeRunIdleHeaderSetT2O(on);
 
         //////////////////////////////// Native code //////////////////////////////
+        // Safe no-op on Desktop: no real Ethernet/IP adapter hardware or CIP
+        // stack. void methods accept silently; methods returning IntPtr return
+        // IntPtr.Zero. Adapter "configures" but never sees real protocol traffic.
 
-        private void Acquire(string deviceName, uint deviceVendorID, uint deviceType, uint deviceProductCode, uint deviceSerialNumber, uint deviceMajorRevision, uint deviceMinorRevision) => throw new System.NotSupportedException("TODO - Not supported");
-        private void NativeSetDeviceSerialNumber(uint serialNumber) => throw new System.NotSupportedException("TODO - Not supported");
-        private void NativeConfigureExclusiveOwnerConnectionPoint(uint connectionNumber, uint outputAssemblyId, uint inputAssemblyId, uint configurationAssemblyId) => throw new System.NotSupportedException("TODO - Not supported");
-        private void NativeConfigureInputOnlyConnectionPoint(uint connectionNumber, uint outputAssemblyId, uint inputAssemblyId, uint configurationAssemblyId) => throw new System.NotSupportedException("TODO - Not supported");
-        private void NativeConfigureListenOnlyConnectionPoint(uint connectionNumber, uint outputAssemblyId, uint inputAssemblyId, uint configurationAssemblyId) => throw new System.NotSupportedException("TODO - Not supported");
-        private void NativeOpen() => throw new System.NotSupportedException("TODO - Not supported");
-        private void NativeInsertService(IntPtr cipClassPtr, uint serviceCode, uint functionCode, string serviceName) => throw new System.NotSupportedException("TODO - Not supported");
-        private void NativeInsertAttribute(IntPtr cipInstancePtr, ushort attributeNumber, byte cipType, uint encodeFunctionCode, uint decodeFunctionCode, byte[] data, uint cipFlags) => throw new System.NotSupportedException("TODO - Not supported");
-        private void NativeSetDeviceRevision(byte major, byte minor) => throw new System.NotSupportedException("TODO - Not supported");
-        private void NativeSetDeviceType(ushort type) => throw new System.NotSupportedException("TODO - Not supported");
-        private void NativeSetDeviceProductCode(ushort code) => throw new System.NotSupportedException("TODO - Not supported");
-         private void NativeSetDeviceStatus(uint status) => throw new System.NotSupportedException("TODO - Not supported");
-        private void NativeSetDeviceVendorId(uint vendorId) => throw new System.NotSupportedException("TODO - Not supported");
-        private void NativeInitCipStackDefault() => throw new System.NotSupportedException("TODO - Not supported");
-        private void NativeEnable() => throw new System.NotSupportedException("TODO - Not supported");
-        private void NativeDisable() => throw new System.NotSupportedException("TODO - Not supported");
-        private void NativeSetDeviceProductName(string name) => throw new System.NotSupportedException("TODO - Not supported");
-        private IntPtr NativeCreateCipClass(uint classCode, int numberClassAttributes, uint highestClassAttributeNumber, int numberClassServices, int numberInstanceAttributes, uint highestInstanceAttributeNumber, int numberInstanceServices, uint numberInstances, string name, ushort revision, bool defaultInitialize) => throw new System.NotSupportedException("TODO - Not supported");
-        private IntPtr NativeCreateAssemblyObject(int instanceId, byte[] data, ushort size) => throw new System.NotSupportedException("TODO - Not supported");
-        private IntPtr NativeAddCipInstance(IntPtr cipClassImpl, uint instanceId) => throw new System.NotSupportedException("TODO - Not supported");
-        private IntPtr NativeAddCipInstances(IntPtr cipClassImpl, uint instanceId) => throw new System.NotSupportedException("TODO - Not supported");
-        private void NativeAllocateAttributeMasks(IntPtr cipClassImpl) => throw new System.NotSupportedException("TODO - Not supported");
-        private IntPtr NativeCalculateIndex(ushort attributeNumber) => throw new System.NotSupportedException("TODO - Not supported");
-        private IntPtr NativeGetCipAttribute(IntPtr cipinstance, uint attributeNumber) => throw new System.NotSupportedException("TODO - Not supported");
-        private IntPtr NativeGetCipClass(ushort classId) => throw new System.NotSupportedException("TODO - Not supported");
-        private IntPtr NativeGetCipInstance(IntPtr cipClass, uint instanceNumber) => throw new System.NotSupportedException("TODO - Not supported");
-        private void NativeInitCipStack(bool useDefault) => throw new System.NotSupportedException("TODO - Not supported");
-        private void NativeMessageRouterInit(IntPtr cipClass, int numberClassAttributes, uint highestClassAttributeNumber, int numberClassServices, int numberInstanceAttributes, uint highestInstanceAttributeNumber, int numberInstanceServices, uint numberInstances, string name, ushort revision, bool defaultInitialize) => throw new System.NotSupportedException("TODO - Not supported");
-        private void NativeIdentityInit(IntPtr cipClass, int numberClassAttributes, uint highestClassAttributeNumber, int numberClassServices, int numberInstanceAttributes, uint highestInstanceAttributeNumber, int numberInstanceServices, uint numberInstances, string name, ushort revision, bool defaultInitialize) => throw new System.NotSupportedException("TODO - Not supported");
-        private void NativeConnectionManagerInit(IntPtr cipClass, int numberClassAttributes, uint highestClassAttributeNumber, int numberClassServices, int numberInstanceAttributes, uint highestInstanceAttributeNumber, int numberInstanceServices, uint numberInstances, string name, ushort revision, bool defaultInitialize) => throw new System.NotSupportedException("TODO - Not supported");
-        private IntPtr NativeCreateAssemblyClass(uint classCode, int numberClassAttributes, uint highestClassAttributeNumber, int numberClassServices, int numberInstanceAttributes, uint highestInstanceAttributeNumber, int numberInstanceServices, uint numberInstances, string name, ushort revision, bool defaultInitialize) => throw new System.NotSupportedException("TODO - Not supported");
-        private void NativeRunIdleHeaderSetO2T(bool on) => throw new System.NotSupportedException("TODO - Not supported");
-        private void NativeRunIdleHeaderSetT2O(bool on) => throw new System.NotSupportedException("TODO - Not supported");
+        private void Acquire(string deviceName, uint deviceVendorID, uint deviceType, uint deviceProductCode, uint deviceSerialNumber, uint deviceMajorRevision, uint deviceMinorRevision) { }
+        private void NativeSetDeviceSerialNumber(uint serialNumber) { }
+        private void NativeConfigureExclusiveOwnerConnectionPoint(uint connectionNumber, uint outputAssemblyId, uint inputAssemblyId, uint configurationAssemblyId) { }
+        private void NativeConfigureInputOnlyConnectionPoint(uint connectionNumber, uint outputAssemblyId, uint inputAssemblyId, uint configurationAssemblyId) { }
+        private void NativeConfigureListenOnlyConnectionPoint(uint connectionNumber, uint outputAssemblyId, uint inputAssemblyId, uint configurationAssemblyId) { }
+        private void NativeOpen() { }
+        private void NativeInsertService(IntPtr cipClassPtr, uint serviceCode, uint functionCode, string serviceName) { }
+        private void NativeInsertAttribute(IntPtr cipInstancePtr, ushort attributeNumber, byte cipType, uint encodeFunctionCode, uint decodeFunctionCode, byte[] data, uint cipFlags) { }
+        private void NativeSetDeviceRevision(byte major, byte minor) { }
+        private void NativeSetDeviceType(ushort type) { }
+        private void NativeSetDeviceProductCode(ushort code) { }
+        private void NativeSetDeviceStatus(uint status) { }
+        private void NativeSetDeviceVendorId(uint vendorId) { }
+        private void NativeInitCipStackDefault() { }
+        private void NativeEnable() { }
+        private void NativeDisable() { }
+        private void NativeSetDeviceProductName(string name) { }
+        private IntPtr NativeCreateCipClass(uint classCode, int numberClassAttributes, uint highestClassAttributeNumber, int numberClassServices, int numberInstanceAttributes, uint highestInstanceAttributeNumber, int numberInstanceServices, uint numberInstances, string name, ushort revision, bool defaultInitialize) => IntPtr.Zero;
+        private IntPtr NativeCreateAssemblyObject(int instanceId, byte[] data, ushort size) => IntPtr.Zero;
+        private IntPtr NativeAddCipInstance(IntPtr cipClassImpl, uint instanceId) => IntPtr.Zero;
+        private IntPtr NativeAddCipInstances(IntPtr cipClassImpl, uint instanceId) => IntPtr.Zero;
+        private void NativeAllocateAttributeMasks(IntPtr cipClassImpl) { }
+        private IntPtr NativeCalculateIndex(ushort attributeNumber) => IntPtr.Zero;
+        private IntPtr NativeGetCipAttribute(IntPtr cipinstance, uint attributeNumber) => IntPtr.Zero;
+        private IntPtr NativeGetCipClass(ushort classId) => IntPtr.Zero;
+        private IntPtr NativeGetCipInstance(IntPtr cipClass, uint instanceNumber) => IntPtr.Zero;
+        private void NativeInitCipStack(bool useDefault) { }
+        private void NativeMessageRouterInit(IntPtr cipClass, int numberClassAttributes, uint highestClassAttributeNumber, int numberClassServices, int numberInstanceAttributes, uint highestInstanceAttributeNumber, int numberInstanceServices, uint numberInstances, string name, ushort revision, bool defaultInitialize) { }
+        private void NativeIdentityInit(IntPtr cipClass, int numberClassAttributes, uint highestClassAttributeNumber, int numberClassServices, int numberInstanceAttributes, uint highestInstanceAttributeNumber, int numberInstanceServices, uint numberInstances, string name, ushort revision, bool defaultInitialize) { }
+        private void NativeConnectionManagerInit(IntPtr cipClass, int numberClassAttributes, uint highestClassAttributeNumber, int numberClassServices, int numberInstanceAttributes, uint highestInstanceAttributeNumber, int numberInstanceServices, uint numberInstances, string name, ushort revision, bool defaultInitialize) { }
+        private IntPtr NativeCreateAssemblyClass(uint classCode, int numberClassAttributes, uint highestClassAttributeNumber, int numberClassServices, int numberInstanceAttributes, uint highestInstanceAttributeNumber, int numberInstanceServices, uint numberInstances, string name, ushort revision, bool defaultInitialize) => IntPtr.Zero;
+        private void NativeRunIdleHeaderSetO2T(bool on) { }
+        private void NativeRunIdleHeaderSetT2O(bool on) { }
         //////////////////////////////// Test code //////////////////////////////
         public void DoTest() {
             this.DoNativeTest(); ;
         }
 
-        private void DoNativeTest() => throw new System.NotSupportedException("TODO - Not supported");
+        private void DoNativeTest() { }
     }
 }

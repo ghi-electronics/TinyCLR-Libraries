@@ -41,7 +41,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                         desiredHeight = this.Height;
                         break;
 
-                    default: throw new NotSupportedException();
+                    default: throw new NotSupportedException("Stretch value " + this.Stretch + " is not supported. Use Stretch.None or Stretch.Fill.");
                 }
             }
         }

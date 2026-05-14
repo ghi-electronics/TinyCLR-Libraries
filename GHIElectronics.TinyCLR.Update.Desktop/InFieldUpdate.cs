@@ -56,7 +56,12 @@ namespace GHIElectronics.TinyCLR.Update {
             throw new InvalidOperationException("FlashAndReset failed.");
         }
 
-        private uint NativeAuthenticateApplication(Stream stream, byte[] key, int indicatorPinId) => throw new System.NotSupportedException("TODO - Not supported");
+        // Safe no-op on Desktop: no flash to write to, no application image to
+        // authenticate. Auth returns 0 (success, version 0). The FlashAndReset
+        // caller then invokes NativeFlashAndReset (also no-op) and hits the
+        // post-flash "FlashAndReset failed" guard at line 56 - consistent
+        // behavior, since on a real device the reset never returns either.
+        private uint NativeAuthenticateApplication(Stream stream, byte[] key, int indicatorPinId) => 0;
     }
 
     public class InFieldUpdate:IDisposable {
@@ -338,15 +343,21 @@ namespace GHIElectronics.TinyCLR.Update {
             return v;
 
         }
-        internal static void NativeInitialize() => throw new System.NotSupportedException("TODO - Not supported");
-        private static uint NativeAuthenticateFirmware(byte[] buffer, int indicatorPinId) => throw new System.NotSupportedException("TODO - Not supported");
-        private static void NativeSetFirmwareSize(uint size) => throw new System.NotSupportedException("TODO - Not supported");
-        internal static uint NativeAuthenticateApplication(byte[] buffer, byte[] key, int indicatorPinId) => throw new System.NotSupportedException("TODO - Not supported");
-        internal static void NativeSetApplicationSize(uint size) => throw new System.NotSupportedException("TODO - Not supported");
-        internal static void NativeFlashAndReset(int indicatorPin) => throw new System.NotSupportedException("TODO - Not supported");
-        private static uint FirmwareAddress => throw new System.NotSupportedException("TODO - Not supported");
-        private static uint FirmwareMaxSize => throw new System.NotSupportedException("TODO - Not supported");
-        private static uint ApplicationAddress => throw new System.NotSupportedException("TODO - Not supported");
-        private static uint ApplicationMaxSize => throw new System.NotSupportedException("TODO - Not supported");
+        // Safe no-op on Desktop: no flash region, no firmware image to update.
+        // Auth methods return 0 (success); flash addresses report 0; setters
+        // accept silently. NativeFlashAndReset is empty - on a device this
+        // call resets the chip and never returns; the post-call guard in the
+        // public API at "throw new InvalidOperationException(...FlashAndReset failed)"
+        // still fires correctly for the Desktop path.
+        internal static void NativeInitialize() { }
+        private static uint NativeAuthenticateFirmware(byte[] buffer, int indicatorPinId) => 0;
+        private static void NativeSetFirmwareSize(uint size) { }
+        internal static uint NativeAuthenticateApplication(byte[] buffer, byte[] key, int indicatorPinId) => 0;
+        internal static void NativeSetApplicationSize(uint size) { }
+        internal static void NativeFlashAndReset(int indicatorPin) { }
+        private static uint FirmwareAddress => 0;
+        private static uint FirmwareMaxSize => 0;
+        private static uint ApplicationAddress => 0;
+        private static uint ApplicationMaxSize => 0;
     }
 }

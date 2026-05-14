@@ -46,27 +46,37 @@ namespace System.Drawing {
         internal int Size { get; }
         internal bool IsGHIMono8x5 { get; }
 
-        public object Clone() => throw new NotImplementedException();
+        // Safe no-op on Desktop: there's no real glyph data, but UI controls
+        // compute layout from these metrics and would divide-by-zero on Height=0.
+        // Defaults approximate a typical small bitmap font (~12px high, ~8px wide).
+        // Visual output is intentionally absent on Desktop; only layout math runs.
+        public object Clone() => new Font();
 
-        private int CharWidth(char c) => throw new System.NotSupportedException("TODO - Not supported");
+        private int CharWidth(char c) => 8;
         public GraphicsUnit Unit => GraphicsUnit.Pixel;
 
-        public int Height => throw new System.NotSupportedException("TODO - Not supported");
-        internal int AverageWidth => throw new System.NotSupportedException("TODO - Not supported");
-        internal int MaxWidth => throw new System.NotSupportedException("TODO - Not supported");
-        internal int Ascent => throw new System.NotSupportedException("TODO - Not supported");
-        internal int Descent => throw new System.NotSupportedException("TODO - Not supported");
-        internal int InternalLeading => throw new System.NotSupportedException("TODO - Not supported");
-        internal int ExternalLeading => throw new System.NotSupportedException("TODO - Not supported");
-        private void ComputeExtent(string text, out int width, out int height, int kerning) => throw new System.NotSupportedException("TODO - Not supported");
-        internal void ComputeTextInRect(string text, out int renderWidth, out int renderHeight, int xRelStart, int yRelStart, int availableWidth, int availableHeight, uint dtFlags) => throw new System.NotSupportedException("TODO - Not supported");
+        public int Height => 12;
+        internal int AverageWidth => 8;
+        internal int MaxWidth => 8;
+        internal int Ascent => 9;
+        internal int Descent => 3;
+        internal int InternalLeading => 0;
+        internal int ExternalLeading => 0;
+        private void ComputeExtent(string text, out int width, out int height, int kerning) {
+            width = (text?.Length ?? 0) * 8;
+            height = 12;
+        }
+        internal void ComputeTextInRect(string text, out int renderWidth, out int renderHeight, int xRelStart, int yRelStart, int availableWidth, int availableHeight, uint dtFlags) {
+            renderWidth = (text?.Length ?? 0) * 8;
+            renderHeight = 12;
+        }
         public void ComputeExtent(string text, out int width, out int height) => this.ComputeExtent(text, out width, out height, DefaultKerning);
         public void ComputeTextInRect(string text, out int renderWidth, out int renderHeight) => this.ComputeTextInRect(text, out renderWidth, out renderHeight, 0, 0, 65536, 0, (uint)System.Drawing.Graphics.DrawTextAlignment.IgnoreHeight | (uint)System.Drawing.Graphics.DrawTextAlignment.WordWrap);
         public void ComputeTextInRect(string text, out int renderWidth, out int renderHeight, int availableWidth) => this.ComputeTextInRect(text, out renderWidth, out renderHeight, 0, 0, availableWidth, 0, (uint)System.Drawing.Graphics.DrawTextAlignment.IgnoreHeight | (uint)System.Drawing.Graphics.DrawTextAlignment.WordWrap);
 
-        private void CreateInstantFromResources(uint buffer, uint size, uint assembly) => throw new System.NotSupportedException("TODO - Not supported");
-        private void CreateInstantFromBuffer(byte[] data, int offset, int size) => throw new System.NotSupportedException("TODO - Not supported");
-        public void Dispose() => throw new System.NotSupportedException("TODO - Not supported");
+        private void CreateInstantFromResources(uint buffer, uint size, uint assembly) { }
+        private void CreateInstantFromBuffer(byte[] data, int offset, int size) { }
+        public void Dispose() { }
     }
 }
 

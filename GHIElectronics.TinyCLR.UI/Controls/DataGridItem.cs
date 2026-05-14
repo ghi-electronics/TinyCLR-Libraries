@@ -34,11 +34,16 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         }
 
         /// <summary>
-        /// This is used to be compliant with IComparable.
+        /// IComparable contract. Compares this row against another DataGridItem
+        /// using column 0. For non-default column comparisons use the typed
+        /// CompareTo(DataGridItem, int) overload.
         /// </summary>
-        /// <param name="obj"></param>
-        /// <returns></returns>
-        public int CompareTo(object obj) => throw new NotImplementedException();
+        public int CompareTo(object obj) {
+            if (obj == null) return 1;
+            if (obj is not DataGridItem row)
+                throw new ArgumentException("Object must be of type DataGridItem.");
+            return this.CompareTo(row, 0);
+        }
 
         /// <summary>
         /// Compares this item's column to another DataGridItem's column.

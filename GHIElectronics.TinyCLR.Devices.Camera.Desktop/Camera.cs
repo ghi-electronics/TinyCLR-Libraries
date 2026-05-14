@@ -94,12 +94,15 @@ namespace GHIElectronics.TinyCLR.Devices.Camera {
 
             public void Disable() => this.NativeDisable();
 
-            private void Acquire() => throw new System.NotSupportedException("TODO - Not supported");
-            private void Release() => throw new System.NotSupportedException("TODO - Not supported");
-            private void NativeEnable() => throw new System.NotSupportedException("TODO - Not supported");
-            private void NativeDisable() => throw new System.NotSupportedException("TODO - Not supported");
-            private void NativeSetActiveSettings(CaptureRate captureRate, bool horizontalSyncPolarity, bool verticalSyncPolarity, bool pixelClockPolarity, SynchronizationMode synchronizationMode, ExtendedDataMode extendedDataMode, uint sourceClock) => throw new System.NotSupportedException("TODO - Not supported");
-            private int NativeCapture(byte[] data, int offset, int count, int timeoutMillisecond) => throw new System.NotSupportedException("TODO - Not supported");
+            // Safe no-op on Desktop: no real camera hardware, so Acquire/Release
+            // succeed silently, Enable/Disable do nothing, and Capture reports
+            // zero bytes captured. Apps boot and exercise non-camera code paths.
+            private void Acquire() { }
+            private void Release() { }
+            private void NativeEnable() { }
+            private void NativeDisable() { }
+            private void NativeSetActiveSettings(CaptureRate captureRate, bool horizontalSyncPolarity, bool verticalSyncPolarity, bool pixelClockPolarity, SynchronizationMode synchronizationMode, ExtendedDataMode extendedDataMode, uint sourceClock) { }
+            private int NativeCapture(byte[] data, int offset, int count, int timeoutMillisecond) => 0;
         }
     }
 }

@@ -220,7 +220,10 @@ namespace System.Drawing {
             NativeConvertTo1Bpp(inArray, outArray, bitFormat, width);
         }
 
-        static void NativeConvert(byte[] inArray, byte[] outArray, ColorFormat colorFormat, RgbFormat rgbFormat, byte alpha, byte[] colorTable) => throw new System.NotSupportedException("TODO - Not supported");
-        static void NativeConvertTo1Bpp(byte[] inArray, byte[] outArray, BitFormat bitFormat, uint width) => throw new System.NotSupportedException("TODO - Not supported");
+        // Safe no-op on Desktop: no native color-conversion library. Caller's
+        // outArray retains whatever it was initialized to (zeros by default).
+        // Apps that don't perform pixel-level conversion are unaffected.
+        static void NativeConvert(byte[] inArray, byte[] outArray, ColorFormat colorFormat, RgbFormat rgbFormat, byte alpha, byte[] colorTable) { }
+        static void NativeConvertTo1Bpp(byte[] inArray, byte[] outArray, BitFormat bitFormat, uint width) { }
     }
 }

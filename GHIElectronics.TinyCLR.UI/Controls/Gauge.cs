@@ -253,49 +253,46 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         /// <param name="e"></param>
         protected void PaintBackground(Graphics gfx) {
 
-            gfx.FillRectangle(new SolidBrush(this.backColor), 0, 0, this.Width, this.Height);
+            using (var bg = new SolidBrush(this.backColor))
+                gfx.FillRectangle(bg, 0, 0, this.Width, this.Height);
+
             if (this.backgroundImg == null)
                 this.backgroundImg = new System.Drawing.Bitmap(this.Width, this.Height);
 
             if (this.requiresRedraw) {
                 var g = Graphics.FromImage(this.backgroundImg);
-                g.FillRectangle(new SolidBrush(this.backColor), 0, 0, this.Width, this.Height);
+                using (var bg = new SolidBrush(this.backColor))
+                    g.FillRectangle(bg, 0, 0, this.Width, this.Height);
                 //g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
                 this.width = this.Width - this.x * 2;
                 this.height = this.Height - this.y * 2;
                 this.rectImg = new Rectangle(this.x, this.y, this.width, this.height);
 
                 //Draw background color
-                var backGroundBrush = new SolidBrush(this.dialColor);//new SolidBrush(Color.FromArgb(120, dialColor));
-                if (this.enableTransparentBackground) {
-                    float gg = this.width / 60;
-                    g.FillEllipse(new SolidBrush(this.backColor), (int)-gg, (int)-gg, (int)(this.Width + gg * 2), (int)(this.Height + gg * 2));
+                using (var backGroundBrush = new SolidBrush(this.dialColor)) {
+                    if (this.enableTransparentBackground) {
+                        float gg = this.width / 60;
+                        using (var tb = new SolidBrush(this.backColor))
+                            g.FillEllipse(tb, (int)-gg, (int)-gg, (int)(this.Width + gg * 2), (int)(this.Height + gg * 2));
+                    }
+                    g.FillEllipse(backGroundBrush, this.x, this.y, this.width, this.height);
                 }
-                g.FillEllipse(backGroundBrush, this.x, this.y, this.width, this.height);
 
                 //Draw Rim
-                var outlineBrush = new SolidBrush(System.Drawing.Color.FromArgb(112, 128, 144));//gray
-                var outline = new System.Drawing.Pen(outlineBrush, (float)(this.width * .03));
-                //g.DrawEllipse(outline, this.rectImg.X, this.rectImg.Y, this.rectImg.Width, this.rectImg.Height);
-                var darkRim = new System.Drawing.Pen(System.Drawing.Color.FromArgb(112, 128, 144));//gray
-                g.DrawEllipse(darkRim, this.x, this.y, this.width, this.height);
+                using (var darkRim = new System.Drawing.Pen(System.Drawing.Color.FromArgb(112, 128, 144)))//gray
+                    g.DrawEllipse(darkRim, this.x, this.y, this.width, this.height);
 
                 //Draw Callibration
                 this.DrawCalibration(g, this.rectImg, ((this.width) / 2) + this.x, ((this.height) / 2) + this.y);
 
                 if (this.EnableThresold) {
                     //Draw Colored Rim
-                    var colorPen = new System.Drawing.Pen(System.Drawing.Color.FromArgb(220, 220, 220), this.Width / 40);//new Pen(Color.FromArgb(190, Color.FromArgb(220, 220, 220)), this.Width / 40);
-                                                                                                                         //var blackPen = new System.Drawing.Pen(System.Drawing.Color.Black, this.Width / 200);//new Pen(Color.FromArgb(250, Color.Black), this.Width / 200);
                     var gap = (int)(this.Width * 0.01F);
                     var rectg = new Rectangle(this.rectImg.X + gap, this.rectImg.Y + gap, this.rectImg.Width - gap * 2, this.rectImg.Height - gap * 2);
-
-                    this.DrawArc(g, colorPen, rectg, 135, 270);
-
+                    using (var rimPen = new System.Drawing.Pen(System.Drawing.Color.FromArgb(220, 220, 220), this.Width / 40))
+                        this.DrawArc(g, rimPen, rectg, 135, 270);
 
                     //Draw Threshold
-                    colorPen = new System.Drawing.Pen(System.Drawing.Color.FromArgb(124, 252, 0), this.Width / 50);
-                    rectg = new Rectangle(this.rectImg.X + gap, this.rectImg.Y + gap, this.rectImg.Width - gap * 2, this.rectImg.Height - gap * 2);
                     var val = this.MaxValue - this.MinValue;
                     val = (100 * (this.recommendedValue - this.MinValue)) / val;
                     val = ((this.toAngle - this.fromAngle) * val) / 100;
@@ -304,7 +301,8 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                     if (stAngle <= 135) stAngle = 135;
                     var sweepAngle = ((270 * this.threshold) / 100);
                     if (stAngle + sweepAngle > 405) sweepAngle = 405 - stAngle;
-                    this.DrawArc(g, colorPen, rectg, stAngle, sweepAngle);
+                    using (var threshPen = new System.Drawing.Pen(System.Drawing.Color.FromArgb(124, 252, 0), this.Width / 50))
+                        this.DrawArc(g, threshPen, rectg, stAngle, sweepAngle);
                 }
 
 
@@ -313,14 +311,16 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                     //Draw Digital Value
                     var digiRect = new Rectangle((int)(this.Width / 2F - (int)this.width / 5F), (int)(this.height / 1.2F), (int)(this.width / 2.5F), (int)(this.Height / 9F));
                     var digiFRect = new Rectangle((int)(this.Width / 2 - this.width / 7), (int)(this.height / 1.18), (int)(this.width / 4), (int)(this.Height / 12));
-                    g.FillRectangle(new SolidBrush(System.Drawing.Color.Gray), digiRect.X, digiRect.Y, digiRect.Width, digiRect.Height);
+                    using (var grayBrush = new SolidBrush(System.Drawing.Color.Gray))
+                        g.FillRectangle(grayBrush, digiRect.X, digiRect.Y, digiRect.Width, digiRect.Height);
                     this.DisplayNumber(g, this.currentValue, digiFRect);
                 }
 
 
                 var textSize = g.MeasureString(this.dialText, this.Font);
                 var digiFRectText = new RectangleF(this.Width / 2 - textSize.Width / 2, (int)(this.height / 1.5), textSize.Width, textSize.Height);
-                g.DrawString(this.dialText, this.Font, new SolidBrush(this.foreColor), digiFRectText);
+                using (var fgBrush = new SolidBrush(this.foreColor))
+                    g.DrawString(this.dialText, this.Font, fgBrush, digiFRectText);
             }
             gfx.DrawImage(this.backgroundImg, this.rectImg.X, this.rectImg.Y);
         }
@@ -330,11 +330,15 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             var start_angle = ToRadians(startAngle);
             var end_angle = ToRadians(sweepAngle);
             var r = rect.Width / 2;
-            for (var i = start_angle; i < end_angle; i = i + 0.05) {
-                ax = rect.X + (int)(r + Math.Cos(i) * r);
-                ay = rect.Y + (int)(r + Math.Sin(i) * r);
-                var solid = new SolidBrush(pen.Color);
-                g.FillRectangle(solid, ax, ay, (int)pen.Width, (int)pen.Width); // center point is (x = 50, y = 100)
+            var w = (int)pen.Width;
+            // Hoist the brush out of the per-pixel loop - the color is constant
+            // for the duration of the arc, so one allocation, not one per step.
+            using (var solid = new SolidBrush(pen.Color)) {
+                for (var i = start_angle; i < end_angle; i = i + 0.05) {
+                    ax = rect.X + (int)(r + Math.Cos(i) * r);
+                    ay = rect.Y + (int)(r + Math.Sin(i) * r);
+                    g.FillRectangle(solid, ax, ay, w, w); // center point is (x = 50, y = 100)
+                }
             }
         }
 
@@ -377,8 +381,8 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             pts[3].X = (float)(cx + (this.Width * .09F) * Math.Cos(angle));
             pts[3].Y = (float)(cy + (this.Width * .09F) * Math.Sin(angle));
 
-            var pointer = new System.Drawing.SolidBrush(System.Drawing.Color.Black);
-            this.FillPolygon(g, pointer, pts);
+            using (var pointer = new System.Drawing.SolidBrush(System.Drawing.Color.Black))
+                this.FillPolygon(g, pointer, pts);
 
             var shinePts = new PointF[3];
             angle = this.GetRadian(val);
@@ -392,20 +396,21 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             shinePts[2].X = cx;
             shinePts[2].Y = cy;
 
-            var gpointer = new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(112, 128, 144)); //(shinePts[0], shinePts[2], Color.SlateGray, Color.Black);
-            this.FillPolygon(g, gpointer, shinePts);
+            using (var gpointer = new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(112, 128, 144))) //(shinePts[0], shinePts[2], Color.SlateGray, Color.Black);
+                this.FillPolygon(g, gpointer, shinePts);
 
             var rect = new Rectangle(this.x, this.y, this.width, this.height);
             this.DrawCenterPoint(g, rect, ((this.width) / 2) + this.x, ((this.height) / 2) + this.y);
         }
         void FillPolygon(Graphics g, System.Drawing.Brush brush, PointF[] points) {
             if (points.Length <= 1) return;
-            var pen = new System.Drawing.Pen(brush);
-            for (var i = 0; i < points.Length; i++) {
-                if (i + 1 < points.Length) {
-                    var src = points[i];
-                    var dst = points[i + 1];
-                    g.DrawLine(pen, (int)src.X, (int)src.Y, (int)dst.X, (int)dst.Y);
+            using (var pen = new System.Drawing.Pen(brush)) {
+                for (var i = 0; i < points.Length; i++) {
+                    if (i + 1 < points.Length) {
+                        var src = points[i];
+                        var dst = points[i + 1];
+                        g.DrawLine(pen, (int)src.X, (int)src.Y, (int)dst.X, (int)dst.Y);
+                    }
                 }
             }
         }
@@ -419,14 +424,8 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                this.y + (float)(this.height * 0.07),
                (float)(this.width * 0.80),
                (float)(this.height * 0.7));
-            var gradientBrush = new System.Drawing.SolidBrush(System.Drawing.Color.White);
-            /*
-            new LinearGradientBrush(glossRect,
-            Color.FromArgb((int)glossinessAlpha, Color.White),
-            Color.Transparent,
-            LinearGradientMode.Vertical);
-            */
-            g.FillEllipse(gradientBrush, (int)glossRect.X, (int)glossRect.Y, (int)glossRect.Width, (int)glossRect.Height);
+            using (var gradientBrush = new System.Drawing.SolidBrush(System.Drawing.Color.White))
+                g.FillEllipse(gradientBrush, (int)glossRect.X, (int)glossRect.Y, (int)glossRect.Width, (int)glossRect.Height);
 
             //TODO: Gradient from bottom
             glossRect = new RectangleF(
@@ -434,14 +433,8 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                this.y + (float)(this.height * 0.77),
                (float)(this.width * 0.50),
                (float)(this.height * 0.2));
-            var gloss = (int)(this.glossinessAlpha / 3);
-            gradientBrush = new SolidBrush(this.backColor);
-            /*
-                new LinearGradientBrush(glossRect,
-                Color.Transparent, Color.FromArgb(gloss, this.BackColor),
-                LinearGradientMode.Vertical);
-            */
-            g.FillEllipse(gradientBrush, (int)glossRect.X, (int)glossRect.Y, (int)glossRect.Width, (int)glossRect.Height);
+            using (var gradientBrush = new SolidBrush(this.backColor))
+                g.FillEllipse(gradientBrush, (int)glossRect.X, (int)glossRect.Y, (int)glossRect.Width, (int)glossRect.Height);
         }
 
         /// <summary>
@@ -454,13 +447,13 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         private void DrawCenterPoint(Graphics g, Rectangle rect, int cX, int cY) {
             float shift = this.Width / 5;
             var rectangle = new RectangleF(cX - (shift / 2), cY - (shift / 2), shift, shift);
-            var brush = new SolidBrush(this.dialColor); //LinearGradientBrush(rect, Color.Black, Color.FromArgb(100, this.dialColor), LinearGradientMode.Vertical);
-            g.FillEllipse(brush, (int)rectangle.X, (int)rectangle.Y, (int)rectangle.Width, (int)rectangle.Height);
+            using (var brush = new SolidBrush(this.dialColor)) //LinearGradientBrush(rect, Color.Black, Color.FromArgb(100, this.dialColor), LinearGradientMode.Vertical);
+                g.FillEllipse(brush, (int)rectangle.X, (int)rectangle.Y, (int)rectangle.Width, (int)rectangle.Height);
 
             shift = this.Width / 7;
             rectangle = new RectangleF(cX - (shift / 2), cY - (shift / 2), shift, shift);
-            brush = new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(112, 128, 144));//new LinearGradientBrush(rect, Color.SlateGray, Color.Black, LinearGradientMode.ForwardDiagonal);
-            g.FillEllipse(brush, (int)rectangle.X, (int)rectangle.Y, (int)rectangle.Width, (int)rectangle.Height);
+            using (var brush = new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(112, 128, 144)))//new LinearGradientBrush(rect, Color.SlateGray, Color.Black, LinearGradientMode.ForwardDiagonal);
+                g.FillEllipse(brush, (int)rectangle.X, (int)rectangle.Y, (int)rectangle.Width, (int)rectangle.Height);
         }
 
         /// <summary>
@@ -484,41 +477,44 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             var totalAngle = this.toAngle - this.fromAngle;
             var incr = this.GetRadian(((totalAngle) / ((noOfParts - 1) * (noOfIntermediates + 1))));
 
-            var thickPen = new System.Drawing.Pen(System.Drawing.Color.Black, this.Width / 50);
-            var thinPen = new System.Drawing.Pen(System.Drawing.Color.Black, this.Width / 100);
-            var rulerValue = this.MinValue;
-            for (var i = 0; i <= noOfParts; i++) {
-                //Draw Thick Line
-                x = (int)(cX + radius * Math.Cos(currentAngle));
-                y = (int)(cY + radius * Math.Sin(currentAngle));
-                x1 = (int)(cX + (radius - this.Width / 20) * Math.Cos(currentAngle));
-                y1 = (int)(cY + (radius - this.Width / 20) * Math.Sin(currentAngle));
-                g.DrawLine(thickPen, x, y, x1, y1);
-
-                //Draw Strings
-                var format = new StringFormat();
-                tx = (float)(cX + (radius - this.Width / 10) * Math.Cos(currentAngle));
-                ty = (float)(cY - shift + (radius - this.Width / 10) * Math.Sin(currentAngle));
-                var stringPen = new System.Drawing.SolidBrush(this.foreColor);
-
-                this.Font.ComputeTextInRect(rulerValue.ToString(), out var rulerValueWidth, out var height);
-
-                g.DrawString(rulerValue.ToString() + "", this.Font, stringPen, tx - rulerValueWidth / 2, ty + height / 2);
-
-                rulerValue += (float)((this.MaxValue - this.MinValue) / (noOfParts - 1));
-                rulerValue = (float)Math.Round(rulerValue);
-
-                //currentAngle += incr;
-                if (i == noOfParts - 1)
-                    break;
-                for (var j = 0; j <= noOfIntermediates; j++) {
-                    //Draw thin lines 
-                    currentAngle += incr;
+            // Hoist all pens/brush out of the tick loop - colors are constant
+            // for the whole calibration draw.
+            using (var thickPen = new System.Drawing.Pen(System.Drawing.Color.Black, this.Width / 50))
+            using (var thinPen = new System.Drawing.Pen(System.Drawing.Color.Black, this.Width / 100))
+            using (var stringPen = new System.Drawing.SolidBrush(this.foreColor)) {
+                var rulerValue = this.MinValue;
+                for (var i = 0; i <= noOfParts; i++) {
+                    //Draw Thick Line
                     x = (int)(cX + radius * Math.Cos(currentAngle));
                     y = (int)(cY + radius * Math.Sin(currentAngle));
-                    x1 = (int)(cX + (radius - this.Width / 50) * Math.Cos(currentAngle));
-                    y1 = (int)(cY + (radius - this.Width / 50) * Math.Sin(currentAngle));
-                    g.DrawLine(thinPen, x, y, x1, y1);
+                    x1 = (int)(cX + (radius - this.Width / 20) * Math.Cos(currentAngle));
+                    y1 = (int)(cY + (radius - this.Width / 20) * Math.Sin(currentAngle));
+                    g.DrawLine(thickPen, x, y, x1, y1);
+
+                    //Draw Strings
+                    tx = (float)(cX + (radius - this.Width / 10) * Math.Cos(currentAngle));
+                    ty = (float)(cY - shift + (radius - this.Width / 10) * Math.Sin(currentAngle));
+
+                    var rulerLabel = rulerValue.ToString();
+                    this.Font.ComputeTextInRect(rulerLabel, out var rulerValueWidth, out var height);
+
+                    g.DrawString(rulerLabel, this.Font, stringPen, tx - rulerValueWidth / 2, ty + height / 2);
+
+                    rulerValue += (float)((this.MaxValue - this.MinValue) / (noOfParts - 1));
+                    rulerValue = (float)Math.Round(rulerValue);
+
+                    //currentAngle += incr;
+                    if (i == noOfParts - 1)
+                        break;
+                    for (var j = 0; j <= noOfIntermediates; j++) {
+                        //Draw thin lines
+                        currentAngle += incr;
+                        x = (int)(cX + radius * Math.Cos(currentAngle));
+                        y = (int)(cY + radius * Math.Sin(currentAngle));
+                        x1 = (int)(cX + (radius - this.Width / 50) * Math.Cos(currentAngle));
+                        y1 = (int)(cY + (radius - this.Width / 50) * Math.Sin(currentAngle));
+                        g.DrawLine(thinPen, x, y, x1, y1);
+                    }
                 }
             }
         }
@@ -582,8 +578,8 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             float width;
             width = 10F * height / 13;
 
-            var outline = new System.Drawing.Pen(System.Drawing.Color.Black);//new Pen(Color.FromArgb(40, this.dialColor));
-            var fillPen = new System.Drawing.Pen(this.dialColor);
+            using var outline = new System.Drawing.Pen(System.Drawing.Color.Black);//new Pen(Color.FromArgb(40, this.dialColor));
+            using var fillPen = new System.Drawing.Pen(this.dialColor);
 
             #region Form Polygon Points
             //Segment A
