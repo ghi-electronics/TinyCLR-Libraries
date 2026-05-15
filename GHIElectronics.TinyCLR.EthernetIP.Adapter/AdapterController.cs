@@ -13,6 +13,37 @@ using GHIElectronics.TinyCLR.Native;
 namespace GHIElectronics.TinyCLR.EthernetIP.Adapter
 {
     
+    /// <summary>
+    /// Runs the device as an EtherNet/IP <b>Adapter</b> (the server side of EIP — what
+    /// a PLC scanner connects to). Wraps the native OpENer stack with a managed-C# API.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// <b>Singleton</b>: only one instance can exist at a time. Disposing or calling
+    /// <see cref="Disable"/> resets the singleton flag so a fresh controller can be
+    /// constructed.
+    /// </para>
+    /// <para>
+    /// <b>Typical bring-up</b> (full example in <c>README.md</c> and
+    /// <c>Test\TinyCLRApplication_EthernetIP\Program.cs</c>):
+    /// <code>
+    /// using (var adapter = new AdapterController("MyDev", 0x1234, 12, 100, 0x01020304, 1, 0)) {
+    ///     adapter.EnableHeaderO2T(true);                                  // for AB scanners
+    ///     adapter.AddAssemblyObject(new AssemblyObject(100, input,  32)); // T->O
+    ///     adapter.AddAssemblyObject(new AssemblyObject(150, output, 32)); // O->T
+    ///     adapter.AddAssemblyObject(new AssemblyObject(151, config, 10));
+    ///     adapter.ConfigureExclusiveOwnerConnectionPoint(0, 150, 100, 151);
+    ///     adapter.Enable();
+    ///     while (true) Thread.Sleep(10);   // your app produces / consumes IO
+    /// }   // Dispose() shuts down cleanly
+    /// </code>
+    /// </para>
+    /// <para>
+    /// <b>Identity, Message Router, Connection Manager, Assembly, and QoS classes are
+    /// auto-initialized</b> in <see cref="Enable"/> if user code didn't already register
+    /// them. So a minimal adapter that only adds Assembly objects works out-of-the-box.
+    /// </para>
+    /// </remarks>
     public partial class AdapterController : IDisposable
     {
         // Phase 3.5: storage widths now match CIP Identity attribute widths per ODVA Vol 1.
@@ -67,6 +98,23 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Adapter
         public delegate void ForwardCloseHandler(AdapterController adapter, IPAddress ipAddress);
         private ForwardCloseHandler eventForwardCloseHandler;
 
+        /// <summary>Construct the adapter. Identity values are set on the underlying CIP
+        /// Identity object but the network stack isn't started yet — call <see cref="Enable"/>
+        /// after wiring up assemblies and connection points.</summary>
+        /// <param name="deviceName">Human-readable product name (Identity attr 7). Must
+        /// match the <c>ProdName</c> field in your EDS file.</param>
+        /// <param name="deviceVendorID">ODVA-assigned vendor ID (CIP UINT). Must match
+        /// the <c>VendCode</c> field in your EDS file. ODVA values 1–99 are reserved for
+        /// specific companies.</param>
+        /// <param name="deviceType">CIP device type per Vol 1 Appendix A (e.g. 0x000C =
+        /// Generic Device).</param>
+        /// <param name="deviceProductCode">Vendor-assigned product code (Identity attr 3).</param>
+        /// <param name="deviceSerialNumber">32-bit serial number (Identity attr 6). Should
+        /// be unique per physical device — typically read from non-volatile storage.</param>
+        /// <param name="deviceMajorRevision">Major revision (USINT, 0–255).</param>
+        /// <param name="deviceMinorRevision">Minor revision (USINT, 0–255).</param>
+        /// <exception cref="System.Exception">Thrown if another <c>AdapterController</c> is
+        /// already constructed and hasn't been disposed (singleton enforcement).</exception>
         public AdapterController(string deviceName, ushort deviceVendorID, ushort deviceType, ushort deviceProductCode, uint deviceSerialNumber, byte deviceMajorRevision, byte deviceMinorRevision) {
             if (isInitialized) {
                 throw new Exception("The controller is initialized already.");
@@ -193,56 +241,78 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Adapter
 
         }
 
+        /// <summary>Fires for every explicit TCP encapsulation command received
+        /// (RegisterSession, UnregisterSession, SendRRData, SendUnitData, etc.).
+        /// Argument <c>commandCode</c> is an <see cref="EncapsulationCommand"/> value.
+        /// Mostly diagnostic; for real connection state, use the lifecycle-specific
+        /// events below.</summary>
         public event ReceivedExplicitTcpDataHandler ReceivedExplicitTcpData {
-
             add => this.eventReceivedExplicitTcpDataHandler += value;
             remove => this.eventReceivedExplicitTcpDataHandler -= value;
         }
 
+        /// <summary>Fires for every explicit UDP encapsulation command received
+        /// (ListIdentity, ListServices, ListInterfaces). <c>unicast</c> is true if
+        /// the request came via UDP unicast vs broadcast.</summary>
         public event ReceivedExplicitUdpDataHandler ReceivedExplicitUdpData {
-
             add => this.eventReceivedExplicitUdpDataHandler += value;
             remove => this.eventReceivedExplicitUdpDataHandler -= value;
         }
 
+        /// <summary>Fires when any CIP class on this device is accessed by a scanner.
+        /// Diagnostic — lets you log which class/instance/attribute the scanner
+        /// touched.</summary>
         public event NotifyClassHandler NotifyClass {
-
             add => this.eventNotifyClassHandler += value;
             remove => this.eventNotifyClassHandler -= value;
         }
 
+        /// <summary>Fires after a Class-1 implicit packet has been received and copied
+        /// into the assembly's data buffer. Use this hook to react to scanner-written
+        /// output values.</summary>
         public event AfterAssemblyDataReceivedHandler AfterAssemblyDataReceived {
-
             add => this.eventAfterAssemblyDataReceivedHandler += value;
             remove => this.eventAfterAssemblyDataReceivedHandler -= value;
         }
 
+        /// <summary>Fires immediately before a Class-1 implicit packet is sent.
+        /// Hook to refresh input-assembly values from your application state just
+        /// before the wire goes out.</summary>
         public event BeforeAssemblyDataSendHandler BeforeAssemblyDataSend {
-
             add => this.eventBeforeAssemblyDataSendHandler += value;
             remove => this.eventBeforeAssemblyDataSendHandler -= value;
         }
 
+        /// <summary>Fires when a scanner successfully registers an encapsulation
+        /// session (TCP RegisterSession command). Argument is the originator's IP.</summary>
         public event RegisterSessionHandler RegisterSessionDetected {
-
             add => this.eventRegisterSessionHandler += value;
             remove => this.eventRegisterSessionHandler -= value;
         }
 
+        /// <summary>Fires when a scanner closes its encapsulation session
+        /// (UnregisterSession command). Argument is the originator's IP.</summary>
         public event RegisterSessionHandler UnregisterSessionDetected {
-
             add => this.eventUnregisterSessionHandler += value;
             remove => this.eventUnregisterSessionHandler -= value;
         }
 
+        /// <summary>Fires when a Forward Open (regular or large) succeeds — a CIP
+        /// connection is now open. <c>large</c> argument is true for Large Forward
+        /// Open (service 0x5B), false for regular (service 0x54).
+        /// <para>
+        /// As of Phase 3.5 this only fires on <i>successful</i> Forward Opens; failed
+        /// attempts (resource exhaustion, electronic key mismatch, etc.) no longer
+        /// trigger a phantom event.
+        /// </para></summary>
         public event ForwardOpenHandler ForwardOpenDetected {
-
             add => this.eventForwardOpenHandler += value;
             remove => this.eventForwardOpenHandler -= value;
         }
 
+        /// <summary>Fires when a Forward Close completes — the named CIP connection
+        /// is being torn down.</summary>
         public event ForwardCloseHandler ForwardCloseDetected {
-
             add => this.eventForwardCloseHandler += value;
             remove => this.eventForwardCloseHandler -= value;
         }
@@ -256,6 +326,13 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Adapter
             //this.cipClassesList.Add(cip);            
         }
 
+        /// <summary>Register a Class 4 (Assembly) instance the scanner can read or write
+        /// via implicit (Class 1) or explicit messaging. Auto-creates the Assembly class
+        /// itself on first call if not already present.</summary>
+        /// <param name="asmObject">Assembly description. The backing <c>Data</c> byte[]
+        /// is held by raw pointer on the native side — keep it alive (static or long-lived
+        /// field) for the controller's lifetime, otherwise the GC may free it and the
+        /// next Class-1 send reads garbage.</param>
         public void AddAssemblyObject(AssemblyObject asmObject) {
 
             //var obj = asmObject;
@@ -266,8 +343,26 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Adapter
         }
 
         //public void SetDeviceSerialNumber(uint serialNumber) => this.NativeSetDeviceSerialNumber(serialNumber);
+        /// <summary>Register an <i>Exclusive Owner</i> connection point — the standard
+        /// bidirectional Class-1 I/O connection. Scanner writes the output assembly,
+        /// reads the input assembly, configures via the configuration assembly.</summary>
+        /// <param name="connectionNumber">0-based slot index. Up to
+        /// <c>OPENER_CIP_NUM_EXLUSIVE_OWNER_CONNS</c> exclusive-owner connections can
+        /// be defined (currently 1).</param>
+        /// <param name="outputAssemblyId">Instance ID of the O→T (output) assembly (scanner writes here).</param>
+        /// <param name="inputAssemblyId">Instance ID of the T→O (input) assembly (target produces here).</param>
+        /// <param name="configurationAssemblyId">Instance ID of the configuration assembly,
+        /// sent during Forward Open.</param>
         public void ConfigureExclusiveOwnerConnectionPoint(uint connectionNumber, uint outputAssemblyId, uint inputAssemblyId, uint configurationAssemblyId) => this.NativeConfigureExclusiveOwnerConnectionPoint(connectionNumber, outputAssemblyId, inputAssemblyId, configurationAssemblyId);
+
+        /// <summary>Register an <i>Input Only</i> connection point — scanner just reads
+        /// the input assembly with no outputs (a "heartbeat" connection sized 0 for
+        /// O→T).</summary>
         public void ConfigureInputOnlyConnectionPoint(uint connectionNumber, uint outputAssemblyId, uint inputAssemblyId, uint configurationAssemblyId) => this.NativeConfigureInputOnlyConnectionPoint(connectionNumber, outputAssemblyId, inputAssemblyId, configurationAssemblyId);
+
+        /// <summary>Register a <i>Listen Only</i> connection point — a secondary
+        /// scanner subscribes to the same multicast input data the Exclusive Owner is
+        /// receiving, without owning the connection.</summary>
         public void ConfigureListenOnlyConnectionPoint(uint connectionNumber, uint outputAssemblyId, uint inputAssemblyId, uint configurationAssemblyId) => this.NativeConfigureListenOnlyConnectionPoint(connectionNumber, outputAssemblyId, inputAssemblyId, configurationAssemblyId);
 
         // serviceCode: the CIP service number recorded on the class's service slot;
@@ -311,25 +406,39 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Adapter
         private void Open() => this.NativeOpen();// for testing only
 
 
+        /// <summary>Start the EtherNet/IP stack: opens the four CIP sockets (TCP 44818,
+        /// UDP 44818 unicast + broadcast, UDP 2222 for Class 1), spawns the OpENer
+        /// processing thread, and auto-creates any standard CIP class (Identity,
+        /// Message Router, Connection Manager, Assembly, QoS) that user code didn't
+        /// already register via <c>AddCipClass</c>.</summary>
+        /// <remarks>Idempotent guard: throws if already enabled. Use
+        /// <see cref="Dispose"/> (or <see cref="Disable"/>) to tear down before
+        /// re-enabling.</remarks>
+        /// <exception cref="System.Exception">Thrown if the controller is already
+        /// enabled.</exception>
         public void Enable() {
             if (isEnabled) {
                 throw new Exception("The controller is enabled already.");
             }
-            
+
             isEnabled = true;
 
             this.NativeEnable();
         }
 
-        // Phase 3.5: Disable() and Dispose() now do real teardown. Previously Disable
-        // threw NotImplementedException and there was no Dispose at all; the opener
-        // thread + its 8 KB stack stayed alive for the process lifetime.
-        //
-        // Disable() is kept as a synonym of Dispose() for API symmetry with Enable.
-        // Either one is safe to call multiple times.
+        /// <summary>Stop the EtherNet/IP stack. Equivalent to <see cref="Dispose"/>.
+        /// Idempotent — safe to call multiple times. Resets the singleton flag so a
+        /// fresh controller can be constructed afterwards.</summary>
         public void Disable() => this.Dispose();
 
         private bool disposed;
+
+        /// <summary>Tear down all native state cleanly: signals <c>g_end_stack=1</c>,
+        /// polls up to 1 s for the OpENer thread to terminate (during which it calls
+        /// <c>ShutdownCipStack</c> to close all CIP connections and delete every
+        /// registered class), frees the 8 KB thread stack, and resets the singleton
+        /// flags so a fresh <see cref="AdapterController"/> can be constructed.
+        /// Idempotent. Suitable for use in a <c>using</c> block.</summary>
         public void Dispose() {
             if (this.disposed) return;
             this.disposed = true;
@@ -420,7 +529,20 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Adapter
 
         }
 
+        /// <summary>Toggle the 32-bit Run/Idle header on O→T (output) Class-1 data.
+        /// <b>Must be true</b> when talking to Allen-Bradley ControlLogix/CompactLogix
+        /// scanners — they always prepend a Run/Idle header. False for most other
+        /// scanner brands (HMS Anybus, Codesys). Default: false.
+        /// <para>
+        /// Symptom of wrong setting: the first 4 bytes of your output assembly
+        /// oscillate between 0x00000000 and 0x00000001 every cycle instead of holding
+        /// real scanner-written data.
+        /// </para></summary>
         public void EnableHeaderO2T(bool on) => this.NativeRunIdleHeaderSetO2T(on);
+
+        /// <summary>Toggle the 32-bit Run/Idle header on T→O (input) Class-1 data.
+        /// Less commonly required than O2T; defaults to false. Enable if your scanner's
+        /// configuration expects it.</summary>
         public void EnableHeaderT2O(bool on) => this.NativeRunIdleHeaderSetT2O(on);
 
         //////////////////////////////// Native code //////////////////////////////

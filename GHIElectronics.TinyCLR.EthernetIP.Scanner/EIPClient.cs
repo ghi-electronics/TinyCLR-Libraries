@@ -11,6 +11,42 @@ using GHIElectronics.TinyCLR.Devices.Network;
 
 namespace GHIElectronics.TinyCLR.EthernetIP.Scanner
 {
+    /// <summary>
+    /// Runs the device as an EtherNet/IP <b>Scanner</b> (the client/originator side —
+    /// the role that talks to PLCs, motor drives, or other EIP adapters). Pure C#
+    /// implementation, no native interop.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// <b>Property-bag API</b>: configure the connection by setting properties
+    /// (<see cref="IPAddress"/>, <see cref="O_T_InstanceID"/>, <see cref="T_O_InstanceID"/>,
+    /// <see cref="RequestedPacketRate_O_T"/>, <see cref="O_T_RealTimeFormat"/>, etc.)
+    /// <i>before</i> calling <see cref="ForwardOpen()"/>. Changing properties after
+    /// the connection is up has no effect on the live session.
+    /// </para>
+    /// <para>
+    /// <b>Typical flow</b> (full example in <c>README.md</c> and
+    /// <c>Test\TinyCLRApplication_EthernetIP\Program.cs</c>):
+    /// <code>
+    /// using (var scanner = new ScannerController()) {
+    ///     var devices = scanner.ListIdentity(networkController, TimeSpan.FromSeconds(2));
+    ///     scanner.IPAddress = "192.168.1.100";
+    ///     scanner.O_T_InstanceID = 150; scanner.T_O_InstanceID = 100;
+    ///     scanner.O_T_IOData = new byte[32]; scanner.T_O_IOData = new byte[32];
+    ///     scanner.ImplicitDataReceived += (s, snapshot) =&gt; { /* use snapshot */ };
+    ///     scanner.RegisterSession();
+    ///     scanner.ForwardOpen();
+    ///     while (true) Thread.Sleep(10);   // implicit I/O runs on background threads
+    /// }   // Dispose() runs ForwardClose + UnRegisterSession automatically
+    /// </code>
+    /// </para>
+    /// <para>
+    /// <b>Thread safety</b>: <see cref="T_O_IOData"/> is written by the receive thread
+    /// while your application reads it (torn-read risk). New code should subscribe to
+    /// <see cref="ImplicitDataReceived"/> instead, which delivers a race-free byte[]
+    /// snapshot. <see cref="T_O_IOData"/> is kept for backwards compatibility.
+    /// </para>
+    /// </remarks>
     public class ScannerController : IDisposable
     {
         TcpClient client;
@@ -273,9 +309,19 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner
         ArrayList returnList;
 
         /// <summary>
-        /// List and identify potential targets. This command shall be sent as braodcast massage using UDP.
+        /// Broadcasts an EIP List Identity command and collects responses from every
+        /// EtherNet/IP device on the local subnet during the timeout window.
         /// </summary>
-        /// <returns>List<Encapsulation.CIPIdentityItem> contains the received informations from all devices </returns>	
+        /// <param name="networkController">The TinyCLR <c>NetworkController</c> whose
+        /// IP/mask is used to compute the broadcast address.</param>
+        /// <param name="timeout">How long to listen for responses. Spec says devices
+        /// reply within a random 0–2 s delay window, so use ≥ 2 s for reliable discovery.
+        /// Pass <c>TimeSpan.Zero</c> to wait indefinitely (not recommended).</param>
+        /// <returns>One <see cref="Encapsulation.CIPIdentityItem"/> per responding device,
+        /// or <c>null</c> if no device responded.</returns>
+        /// <remarks>Current implementation broadcasts to the <i>directed</i> subnet
+        /// address (e.g. 192.168.1.255 for a /24). Devices behind a router won't see
+        /// the request unless directed-broadcast forwarding is enabled.</remarks>
         public Encapsulation.CIPIdentityItem[] ListIdentity(NetworkController networkController, TimeSpan timeout) {
 
             this.returnList = new ArrayList();
@@ -363,11 +409,21 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner
         }
 
         /// <summary>
-        /// Sends a RegisterSession command to a target to initiate session
+        /// Opens a TCP connection to the target on port 44818 (0xAF12) and sends an EIP
+        /// RegisterSession command to establish an encapsulation session. Required before
+        /// any explicit-messaging service (GetAttributeSingle, ForwardOpen, etc.) can be sent.
         /// </summary>
-        /// <param name="address">IP-Address of the target device</param> 
-        /// <param name="port">Port of the target device (default should be 0xAF12)</param> 
-        /// <returns>Session Handle</returns>	
+        /// <param name="address">Target IP as a packed 32-bit value: top byte is the
+        /// first IPv4 octet (e.g. 192.168.1.1 = 0xC0A80101). Use the string overload
+        /// if you have a dotted-quad string.</param>
+        /// <param name="port">TCP port — typically 0xAF12 (44818, EIP standard). Pass
+        /// a non-standard port only if the target listens elsewhere.</param>
+        /// <returns>The 32-bit session handle assigned by the target. Stored internally;
+        /// you typically don't need to inspect it.</returns>
+        /// <remarks><b>This call blocks</b> until the TCP connect succeeds, fails, or the
+        /// OS-level timeout fires (typically 60–120 s for unreachable hosts). There is
+        /// no per-call timeout knob — if you might point at unreachable IPs, run this
+        /// on a thread you can abandon.</remarks>
         public uint RegisterSession(uint address, ushort port)
         {
             if (this.sessionHandle != 0)
@@ -397,8 +453,10 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner
         }
 
         /// <summary>
-        /// Sends a UnRegisterSession command to a target to terminate session
-        /// </summary> 
+        /// Sends an EIP UnregisterSession command to gracefully close the encapsulation
+        /// session, then closes the TCP connection. Idempotent — safe to call even if
+        /// the target has already dropped. <see cref="Dispose"/> calls this for you.
+        /// </summary>
         public void UnRegisterSession()
         {
             var encapsulation = new Encapsulation();
@@ -422,9 +480,11 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner
 
         private bool disposed;
 
-        // Cleans up an active session/connection. Safe to call from a using-block on any
-        // path (including before ForwardOpen). All sub-steps swallow their exceptions
-        // so Dispose itself doesn't throw (per the IDisposable contract).
+        /// <summary>Tears down the scanner cleanly: closes the Class-1 connection
+        /// (ForwardClose), unregisters the encapsulation session, closes all sockets.
+        /// Each sub-step swallows its own exceptions so Dispose itself never throws
+        /// (per the <see cref="IDisposable"/> contract). Idempotent and safe to call
+        /// from a <c>using</c> block on any code path including before <see cref="ForwardOpen()"/>.</summary>
         public void Dispose()
         {
             if (this.disposed) return;
@@ -453,10 +513,31 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner
             try { this.client?.Close(); }          catch { }
         }
 
+        /// <summary>Opens a Class-1 (implicit / cyclic I/O) connection to the target
+        /// using regular Forward Open (service 0x54). Configure all connection-related
+        /// properties (<see cref="IPAddress"/>, <see cref="O_T_InstanceID"/>,
+        /// <see cref="T_O_InstanceID"/>, <see cref="RequestedPacketRate_O_T"/>,
+        /// <see cref="O_T_RealTimeFormat"/>, etc.) before calling.</summary>
+        /// <remarks>Spawns two background threads — <c>sendUDP</c> producing O→T data
+        /// at the negotiated RPI, and a receive loop that fires
+        /// <see cref="ImplicitDataReceived"/> per T→O packet. Use Large Forward Open
+        /// (the overload below) for connection sizes > ~500 bytes.</remarks>
         public void ForwardOpen() => this.ForwardOpen(false);
 
         System.Net.Sockets.UdpClient udpClientReceive;
         bool udpClientReceiveClosed = false;
+
+        /// <summary>Opens a Class-1 implicit connection, choosing between regular Forward
+        /// Open (service 0x54) and Large Forward Open (service 0x5B) based on the
+        /// <paramref name="largeForwardOpen"/> flag. Large form is required when either
+        /// direction's payload exceeds ~500 bytes.</summary>
+        /// <param name="largeForwardOpen">true → use Large Forward Open (32-bit
+        /// connection parameters, allows up to ~65 KB per direction);
+        /// false → use regular Forward Open.</param>
+        /// <exception cref="System.Exception">Connection size exceeds buffer, missing
+        /// configuration, etc. See exception message.</exception>
+        /// <exception cref="CIPException">Target returned a CIP error status. Use
+        /// <c>data[42]</c> + extended status to diagnose.</exception>
         public void ForwardOpen(bool largeForwardOpen)
         {
             if (this.O_T_Length > BUFFER_SIZE) {
@@ -867,6 +948,10 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner
 
         }
 
+        /// <summary>Sends a Forward Close to tear down the Class-1 implicit connection,
+        /// stops the producer thread, waits for the producer to exit, then sends the
+        /// close request and closes the UDP receive socket. Safe to call from a
+        /// <c>using</c> block via <see cref="Dispose"/>.</summary>
         public void ForwardClose()
         {
             //First stop the Thread which send data
@@ -1238,6 +1323,18 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner
         /// <returns>Session Handle</returns>	
         public uint RegisterSession() => this.RegisterSession(this.IPAddress, this.TCPPort);
 
+        /// <summary>Sends a CIP Get_Attribute_Single (service 0x0E) to read one
+        /// attribute from the target. Auto-registers a session if not already open.
+        /// Blocks until the target replies or the underlying TCP read times out.</summary>
+        /// <param name="classID">CIP class code (e.g. 0x01 = Identity).</param>
+        /// <param name="instanceID">Instance number, 1-based.</param>
+        /// <param name="attributeID">Attribute ID within the instance.</param>
+        /// <returns>Raw attribute bytes. Endianness and structure depend on the
+        /// attribute's CIP type — use the <c>ToUshort</c>/<c>ToUint</c> helpers or
+        /// the strongly-typed accessors on <see cref="ObjectLibrary.IdentityObject"/>
+        /// etc. for common cases.</returns>
+        /// <exception cref="CIPException">Target returned a non-success CIP general
+        /// status (e.g. 0x14 Attribute Not Supported, 0x05 Path Destination Unknown).</exception>
         public byte[] GetAttributeSingle(int classID, int instanceID, int attributeID)
         {
             var requestedPath = this.GetEPath(classID, instanceID, attributeID);
@@ -1397,6 +1494,16 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner
             return returnData;
         }
 
+        /// <summary>Sends a CIP Set_Attribute_Single (service 0x10) to write one
+        /// attribute on the target. Auto-registers a session if not already open.</summary>
+        /// <param name="classID">CIP class code.</param>
+        /// <param name="instanceID">Instance number, 1-based.</param>
+        /// <param name="attributeID">Attribute ID within the instance.</param>
+        /// <param name="value">Raw bytes to write. Must match the attribute's CIP type
+        /// width and endianness — most types are little-endian on the wire.</param>
+        /// <returns>Any reply bytes the target included. Usually empty.</returns>
+        /// <exception cref="CIPException">Target returned a non-success status (e.g.
+        /// 0x0E Attribute Not Settable, 0x09 Invalid Attribute Value).</exception>
         public byte[] SetAttributeSingle(int classID, int instanceID, int attributeID, byte[] value)
         {
             var requestedPath = this.GetEPath(classID, instanceID, attributeID);
