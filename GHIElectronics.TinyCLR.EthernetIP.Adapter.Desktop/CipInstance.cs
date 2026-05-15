@@ -9,9 +9,10 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Adapter {
     public class CipInstance {
 
         private IntPtr impl;
+        // Phase 3.5: setter narrowed to internal — see device-side CipInstance.cs.
         public IntPtr Impl {
             get => this.impl;
-            set => this.impl = value;
+            internal set => this.impl = value;
         }
         //public static CipInstance GetCipInstance(CIPClass cipClass, uint instanceNumber) {
         //    var instance = new CipInstance {

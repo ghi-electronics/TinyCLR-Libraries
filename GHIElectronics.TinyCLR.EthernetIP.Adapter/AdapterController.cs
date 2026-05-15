@@ -13,13 +13,18 @@ using GHIElectronics.TinyCLR.Native;
 namespace GHIElectronics.TinyCLR.EthernetIP.Adapter
 {
     
-    public partial class AdapterController
+    public partial class AdapterController : IDisposable
     {
-        private uint deviceVendorID;
-        private uint deviceType;
-        private uint deviceProductCode;
-        private uint deviceMajorRevision;
-        private uint deviceMinorRevision;
+        // Phase 3.5: storage widths now match CIP Identity attribute widths per ODVA Vol 1.
+        // VendorID, DeviceType, ProductCode are UINT (16-bit). Major/Minor Revision are
+        // USINT (8-bit). SerialNumber stays UDINT (32-bit). Previously these were all
+        // `uint` storage, which silently allowed out-of-range values that the wire layer
+        // truncated.
+        private ushort deviceVendorID;
+        private ushort deviceType;
+        private ushort deviceProductCode;
+        private byte deviceMajorRevision;
+        private byte deviceMinorRevision;
         private string deviceName;
         private uint deviceSerialNumber;
 
@@ -29,40 +34,40 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Adapter
         static bool isEnabled = false;   
         static bool isInitialized = false;   
 
-        private readonly NativeEventDispatcher nedReceivedExplictTcpData;
-        public delegate void ReceivedExplictTcpDataHandler(AdapterController adapter, ushort commandCode, IPAddress ipAdrress);
-        private ReceivedExplictTcpDataHandler eventReceivedExplictTcpDataHandler;
+        private readonly NativeEventDispatcher nedReceivedExplicitTcpData;
+        public delegate void ReceivedExplicitTcpDataHandler(AdapterController adapter, ushort commandCode, IPAddress ipAddress);
+        private ReceivedExplicitTcpDataHandler eventReceivedExplicitTcpDataHandler;
 
-        private readonly NativeEventDispatcher nedReceivedExplictUdpData;
-        public delegate void ReceivedExplictUdpDataHandler(AdapterController adapter, ushort commandCode, IPAddress ipAdrress, bool unicast);
-        private ReceivedExplictUdpDataHandler eventReceivedExplictUdpDataHandler;
+        private readonly NativeEventDispatcher nedReceivedExplicitUdpData;
+        public delegate void ReceivedExplicitUdpDataHandler(AdapterController adapter, ushort commandCode, IPAddress ipAddress, bool unicast);
+        private ReceivedExplicitUdpDataHandler eventReceivedExplicitUdpDataHandler;
 
         private readonly NativeEventDispatcher nedNotifyClass;
-        public delegate void NotifyClassHandler(AdapterController adapter, uint classCode, ushort instanceNumbber, ushort attributeNumber, IPAddress ipAdrress);
+        public delegate void NotifyClassHandler(AdapterController adapter, uint classCode, ushort instanceNumber, ushort attributeNumber, IPAddress ipAddress);
         private NotifyClassHandler eventNotifyClassHandler;
 
         private readonly NativeEventDispatcher nedAfterAssemblyDataReceived;
-        public delegate void AfterAssemblyDataReceivedHandler(AdapterController adapter, ushort instanceNumbber);
+        public delegate void AfterAssemblyDataReceivedHandler(AdapterController adapter, ushort instanceNumber);
         private AfterAssemblyDataReceivedHandler eventAfterAssemblyDataReceivedHandler;
 
         private readonly NativeEventDispatcher nedBeforeAssemblyDataSend;
-        public delegate void BeforeAssemblyDataSendHandler(AdapterController adapter, ushort instanceNumbber);
+        public delegate void BeforeAssemblyDataSendHandler(AdapterController adapter, ushort instanceNumber);
         private BeforeAssemblyDataSendHandler eventBeforeAssemblyDataSendHandler;
 
 
-        public delegate void RegisterSessionHandler(AdapterController adapter, IPAddress ipAdrress);
+        public delegate void RegisterSessionHandler(AdapterController adapter, IPAddress ipAddress);
         private RegisterSessionHandler eventRegisterSessionHandler;
         private RegisterSessionHandler eventUnregisterSessionHandler;
 
         private readonly NativeEventDispatcher nedForwardOpen;
-        public delegate void ForwardOpenHandler(AdapterController adapter, IPAddress ipAdrress, bool large);
+        public delegate void ForwardOpenHandler(AdapterController adapter, IPAddress ipAddress, bool large);
         private ForwardOpenHandler eventForwardOpenHandler;
 
         private readonly NativeEventDispatcher nedForwardClose;
-        public delegate void ForwardCloseHandler(AdapterController adapter, IPAddress ipAdrress);
+        public delegate void ForwardCloseHandler(AdapterController adapter, IPAddress ipAddress);
         private ForwardCloseHandler eventForwardCloseHandler;
 
-        public AdapterController(string deviceName, uint deviceVendorID, ushort deviceType, ushort deviceProductCode, uint deviceSerialNumber, byte deviceMajorRevision, byte deviceMinorRevision) {
+        public AdapterController(string deviceName, ushort deviceVendorID, ushort deviceType, ushort deviceProductCode, uint deviceSerialNumber, byte deviceMajorRevision, byte deviceMinorRevision) {
             if (isInitialized) {
                 throw new Exception("The controller is initialized already.");
             }
@@ -86,11 +91,11 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Adapter
             this.NativeSetDeviceSerialNumber(deviceSerialNumber);
             this.NativeSetDeviceRevision(deviceMajorRevision, deviceMinorRevision);
 
-            this.nedReceivedExplictTcpData = NativeEventDispatcher.GetDispatcher("EthernetIP.Adapter.ReceivedExplictTcpData");
-            this.nedReceivedExplictTcpData.OnInterrupt += this.NedReceivedExplictTcpData_OnInterrupt;
+            this.nedReceivedExplicitTcpData = NativeEventDispatcher.GetDispatcher("EthernetIP.Adapter.ReceivedExplicitTcpData");
+            this.nedReceivedExplicitTcpData.OnInterrupt += this.NedReceivedExplicitTcpData_OnInterrupt;
 
-            this.nedReceivedExplictUdpData = NativeEventDispatcher.GetDispatcher("EthernetIP.Adapter.ReceivedExplictUdpData");
-            this.nedReceivedExplictUdpData.OnInterrupt += this.NedReceivedExplictUdpData_OnInterrupt;
+            this.nedReceivedExplicitUdpData = NativeEventDispatcher.GetDispatcher("EthernetIP.Adapter.ReceivedExplicitUdpData");
+            this.nedReceivedExplicitUdpData.OnInterrupt += this.NedReceivedExplicitUdpData_OnInterrupt;
 
             this.nedNotifyClass = NativeEventDispatcher.GetDispatcher("EthernetIP.Adapter.HandleNotifyClass");
             this.nedNotifyClass.OnInterrupt += this.NedNotifyClass_OnInterrupt;
@@ -160,23 +165,23 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Adapter
             ;
         }
 
-        private void NedReceivedExplictUdpData_OnInterrupt(string data0, long data1, long data2, long data3, IntPtr data4, DateTime timestamp) {
+        private void NedReceivedExplicitUdpData_OnInterrupt(string data0, long data1, long data2, long data3, IntPtr data4, DateTime timestamp) {
             var from_address = IPAddress.None;
 
             if (data2 != 0)
                 from_address = new IPAddress(data2);
 
-            this.eventReceivedExplictUdpDataHandler?.Invoke(this, (ushort)data1, from_address, data3 != 0 ? true : false);
+            this.eventReceivedExplicitUdpDataHandler?.Invoke(this, (ushort)data1, from_address, data3 != 0 ? true : false);
             ;
         }
 
-        private void NedReceivedExplictTcpData_OnInterrupt(string data0, long data1, long data2, long data3, IntPtr data4, DateTime timestamp) {
+        private void NedReceivedExplicitTcpData_OnInterrupt(string data0, long data1, long data2, long data3, IntPtr data4, DateTime timestamp) {
             var originator_address = IPAddress.None;
 
             if (data2 != 0)
                 originator_address = new IPAddress(data2);
 
-            this.eventReceivedExplictTcpDataHandler?.Invoke(this, (ushort)data1, originator_address);
+            this.eventReceivedExplicitTcpDataHandler?.Invoke(this, (ushort)data1, originator_address);
 
             if (data1 == (long)EncapsulationCommand.RegisterSession) {
                 this.eventRegisterSessionHandler?.Invoke(this, originator_address);
@@ -188,16 +193,16 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Adapter
 
         }
 
-        public event ReceivedExplictTcpDataHandler ReceivedExplictTcpData {
+        public event ReceivedExplicitTcpDataHandler ReceivedExplicitTcpData {
 
-            add => this.eventReceivedExplictTcpDataHandler += value;
-            remove => this.eventReceivedExplictTcpDataHandler -= value;
+            add => this.eventReceivedExplicitTcpDataHandler += value;
+            remove => this.eventReceivedExplicitTcpDataHandler -= value;
         }
 
-        public event ReceivedExplictUdpDataHandler ReceivedExplictUdpData {
+        public event ReceivedExplicitUdpDataHandler ReceivedExplicitUdpData {
 
-            add => this.eventReceivedExplictUdpDataHandler += value;
-            remove => this.eventReceivedExplictUdpDataHandler -= value;
+            add => this.eventReceivedExplicitUdpDataHandler += value;
+            remove => this.eventReceivedExplicitUdpDataHandler -= value;
         }
 
         public event NotifyClassHandler NotifyClass {
@@ -265,10 +270,15 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Adapter
         public void ConfigureInputOnlyConnectionPoint(uint connectionNumber, uint outputAssemblyId, uint inputAssemblyId, uint configurationAssemblyId) => this.NativeConfigureInputOnlyConnectionPoint(connectionNumber, outputAssemblyId, inputAssemblyId, configurationAssemblyId);
         public void ConfigureListenOnlyConnectionPoint(uint connectionNumber, uint outputAssemblyId, uint inputAssemblyId, uint configurationAssemblyId) => this.NativeConfigureListenOnlyConnectionPoint(connectionNumber, outputAssemblyId, inputAssemblyId, configurationAssemblyId);
 
-        public void InsertService(CIPClass cipClass, CIPServiceCode serviceCode, CipServiceFunctionCode funcCode, string serviceName) {
+        // serviceCode: the CIP service number recorded on the class's service slot;
+        // returned to the scanner in the reply-service byte.
+        // handlerCode: selects which native handler function (ForwardOpen, GetAttributeAll,
+        // ResetService, etc.) is bound to that slot. Usually equal to serviceCode but
+        // can differ when redirecting a service to a custom handler.
+        public void InsertService(CIPClass cipClass, CIPServiceCode serviceCode, CIPServiceCode handlerCode, string serviceName) {
             var ptr = cipClass.Impl;
 
-            this.NativeInsertService(ptr, (uint)serviceCode, (uint)funcCode, serviceName);
+            this.NativeInsertService(ptr, (uint)serviceCode, (uint)handlerCode, serviceName);
         }
 
         public void InsertAttribute(CipInstance cipInstance, ushort attributeNumber, CIPDataType cipType, CipAttributeEncodeInMessage encodeFunctionCode, CipAttributeDecodeFromMessage decodeFunctionCode, byte[] data, CIPAttributeFlag cipFlags) {
@@ -311,10 +321,34 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Adapter
             this.NativeEnable();
         }
 
-        public void Disable() {
-            // TODO not implemented
-            throw new NotImplementedException(); ;
+        // Phase 3.5: Disable() and Dispose() now do real teardown. Previously Disable
+        // threw NotImplementedException and there was no Dispose at all; the opener
+        // thread + its 8 KB stack stayed alive for the process lifetime.
+        //
+        // Disable() is kept as a synonym of Dispose() for API symmetry with Enable.
+        // Either one is safe to call multiple times.
+        public void Disable() => this.Dispose();
+
+        private bool disposed;
+        public void Dispose() {
+            if (this.disposed) return;
+            this.disposed = true;
+
+            // Native side signals g_end_stack=1, waits up to 1 s for the opener
+            // thread to terminate (during which the thread calls ShutdownCipStack
+            // to close connections + delete every registered CipClass), then
+            // frees the 8 KB thread stack.
+            this.NativeShutdown();
+
+            // Allow a fresh AdapterController to be constructed after this one is
+            // disposed. Without resetting these, the constructor's isInitialized
+            // guard would block the next `new AdapterController(...)`.
+            isEnabled = false;
+            isInitialized = false;
         }
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        private extern void NativeShutdown();
 
         public void AddCipInstance(CIPClass cipClass, uint instanceId) {
             //var instance = new CipInstance {
@@ -428,7 +462,7 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Adapter
         private extern void NativeSetDeviceStatus(uint status);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private extern void NativeSetDeviceVendorId(uint vendorId);
+        private extern void NativeSetDeviceVendorId(ushort vendorId);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private extern void NativeInitCipStackDefault();
@@ -489,13 +523,5 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Adapter
 
         [MethodImpl(MethodImplOptions.InternalCall)]
         private extern void NativeRunIdleHeaderSetT2O(bool on);
-
-        //////////////////////////////// Test code //////////////////////////////
-        public void DoTest() {
-            this.DoNativeTest(); ;
-        }
-
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        private extern void DoNativeTest();
     }
 }
