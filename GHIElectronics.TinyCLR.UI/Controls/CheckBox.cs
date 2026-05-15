@@ -9,6 +9,14 @@ using GHIElectronics.TinyCLR.UI.Media.Imaging;
 
 namespace GHIElectronics.TinyCLR.UI.Controls {
     public class CheckBox : ContentControl, IDisposable {
+        // Cached once per AppDomain so every toggle doesn't allocate fresh RoutedEvent objects.
+        private static readonly RoutedEvent ClickRoutedEvent =
+            new RoutedEvent("ClickEvent", RoutingStrategy.Bubble, typeof(RoutedEventHandler));
+        private static readonly RoutedEvent CheckedRoutedEvent =
+            new RoutedEvent("CheckedEvent", RoutingStrategy.Bubble, typeof(RoutedEventHandler));
+        private static readonly RoutedEvent UncheckedRoutedEvent =
+            new RoutedEvent("UncheckedEvent", RoutingStrategy.Bubble, typeof(RoutedEventHandler));
+
         public event RoutedEventHandler Click;
         public event RoutedEventHandler Checked;
         public event RoutedEventHandler Unchecked;
@@ -50,48 +58,45 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                 return;
             }
 
-            var evt = new RoutedEvent("TouchUpEvent", RoutingStrategy.Bubble, typeof(RoutedEventHandler));
-            var args = new RoutedEventArgs(evt, this);
-
-            try {
-                this.Click?.Invoke(this, args);
-            }
-            catch { }
-
-            e.Handled = args.Handled;
-
-            this.IsChecked = !this.IsChecked;
-
-            evt = new RoutedEvent(this.isChecked ? "CheckedEvent" : "UncheckedEvent", RoutingStrategy.Bubble, typeof(RoutedEventHandler));
-            args = new RoutedEventArgs(evt, this);
-            if (this.isChecked) {
-                this.Checked?.Invoke(this, args);
-            }
-            else {
-                this.Unchecked?.Invoke(this, args);
-            }
-
-            if (this.Parent != null)
-                this.Invalidate();
+            e.Handled = this.PerformClick();
         }
 
         protected override void OnTouchDown(TouchEventArgs e) {
-            if (!this.IsEnabled) {
+            // No-op. Toggling happens on TouchUp so that drag-off-and-release-elsewhere
+            // doesn't flip state, and Click fires exactly once per activation.
+        }
+
+        protected override void OnButtonUp(ButtonEventArgs e) {
+            if (!this.IsEnabled || e.Button != HardwareButton.Select) {
                 return;
             }
 
-            var evt = new RoutedEvent("TouchDownEvent", RoutingStrategy.Bubble, typeof(RoutedEventHandler));
-            var args = new RoutedEventArgs(evt, this);
+            e.Handled = this.PerformClick();
+        }
 
+        // Toggles checked state and raises Click + Checked/Unchecked.
+        // Returns the Click args.Handled flag so callers can forward it.
+        private bool PerformClick() {
+            var clickArgs = new RoutedEventArgs(ClickRoutedEvent, this);
             try {
-                this.Click?.Invoke(this, args);
+                this.Click?.Invoke(this, clickArgs);
             }
             catch { }
 
-            e.Handled = args.Handled;
+            this.IsChecked = !this.IsChecked;
+
+            var stateArgs = new RoutedEventArgs(this.isChecked ? CheckedRoutedEvent : UncheckedRoutedEvent, this);
+            if (this.isChecked) {
+                this.Checked?.Invoke(this, stateArgs);
+            }
+            else {
+                this.Unchecked?.Invoke(this, stateArgs);
+            }
 
             if (this.Parent != null)
                 this.Invalidate();
+
+            return clickArgs.Handled;
         }
 
 

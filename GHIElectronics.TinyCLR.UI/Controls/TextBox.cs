@@ -161,6 +161,21 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                 Application.Current.ShowOnScreenKeyboardFor(this);
         }
 
+        /// <summary>
+        /// Hardware button support: <see cref="HardwareButton.Select"/> opens the
+        /// on-screen keyboard, mirroring tap-to-edit behavior.
+        /// </summary>
+        protected override void OnButtonDown(ButtonEventArgs e) {
+            if (!this.IsEnabled || e.Button != HardwareButton.Select) {
+                return;
+            }
+
+            if (!this.ForOnScreenKeyboard) {
+                Application.Current.ShowOnScreenKeyboardFor(this);
+                e.Handled = true;
+            }
+        }
+
         protected override void MeasureOverride(int availableWidth, int availableHeight, out int desiredWidth, out int desiredHeight) {
             this._font.ComputeExtent(this.text, out desiredWidth, out desiredHeight);
 

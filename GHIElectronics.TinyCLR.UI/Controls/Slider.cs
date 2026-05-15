@@ -208,6 +208,61 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         }
 
         /// <summary>
+        /// Hardware button support: Left/Right step a horizontal slider,
+        /// Up/Down step a vertical slider. Step size is one <see cref="SnapInterval"/>
+        /// (or 1% of range when SnapInterval is 0).
+        /// </summary>
+        protected override void OnButtonDown(ButtonEventArgs e) {
+            if (!this.IsEnabled) {
+                return;
+            }
+
+            var step = this.GetKeyboardStep();
+            var newValue = this.value;
+
+            if (this.direction == Orientation.Horizontal) {
+                if (e.Button == HardwareButton.Right) {
+                    newValue = this.value + step;
+                }
+                else if (e.Button == HardwareButton.Left) {
+                    newValue = this.value - step;
+                }
+                else {
+                    return;
+                }
+            }
+            else {
+                // Vertical slider: visually, larger value is toward the top.
+                if (e.Button == HardwareButton.Up) {
+                    newValue = this.value + step;
+                }
+                else if (e.Button == HardwareButton.Down) {
+                    newValue = this.value - step;
+                }
+                else {
+                    return;
+                }
+            }
+
+            if (newValue < this.min) newValue = this.min;
+            if (newValue > this.max) newValue = this.max;
+
+            if (newValue != this.value) {
+                this.Value = newValue;
+                if (this.Parent != null) {
+                    this.Invalidate();
+                }
+            }
+            e.Handled = true;
+        }
+
+        private double GetKeyboardStep() {
+            var steps = this.snapInterval > 0 ? this.snapInterval : 100;
+            var range = this.max - this.min;
+            return range / steps;
+        }
+
+        /// <summary>
         /// Handles the touch up event.
         /// </summary>
         /// <param name="e">Touch event arguments.</param>

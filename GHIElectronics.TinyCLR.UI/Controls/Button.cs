@@ -13,10 +13,8 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         // Cached events - allocated once per AppDomain, not per click. Each
         // click still needs a fresh RoutedEventArgs, but the event identity
         // is constant.
-        private static readonly RoutedEvent TouchDownRoutedEvent =
-            new RoutedEvent("TouchDownEvent", RoutingStrategy.Bubble, typeof(RoutedEventHandler));
-        private static readonly RoutedEvent TouchUpRoutedEvent =
-            new RoutedEvent("TouchUpEvent", RoutingStrategy.Bubble, typeof(RoutedEventHandler));
+        private static readonly RoutedEvent ClickRoutedEvent =
+            new RoutedEvent("ClickEvent", RoutingStrategy.Bubble, typeof(RoutedEventHandler));
 
         // Track the parent we actually subscribed to (not just a bool) so that
         // if the button is re-parented at runtime we unsubscribe from the
@@ -71,21 +69,18 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                 return;
             }
 
-            var args = new RoutedEventArgs(TouchUpRoutedEvent, this);
-
-            try {
-                this.Click?.Invoke(this, args);
-            }
-            catch {
-
-            }
-
-            e.Handled = args.Handled;
-
+            // Only fire Click if the press actually started on this Button.
+            // OnParentTouchUp clears isPressed when the user releases off-button,
+            // so a press-then-drag-away-then-release-elsewhere yields no Click.
+            var wasPressed = this.isPressed;
             this.isPressed = false;
 
             if (this.Parent != null)
                 this.Invalidate();
+
+            if (wasPressed) {
+                e.Handled = this.PerformClick();
+            }
         }
 
         protected override void OnTouchDown(TouchEventArgs e) {
@@ -95,24 +90,51 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
             this.EnsureParentSubscription();
 
-            var args = new RoutedEventArgs(TouchDownRoutedEvent, this);
+            this.isPressed = true;
+            e.Handled = true;
 
-            try {
-                this.Click?.Invoke(this, args);
+            if (this.Parent != null)
+                this.Invalidate();
+        }
+
+        protected override void OnButtonDown(ButtonEventArgs e) {
+            if (!this.IsEnabled || e.Button != HardwareButton.Select) {
+                return;
             }
-            catch {
-
-            }
-
-
-
-            e.Handled = args.Handled;
 
             this.isPressed = true;
+            e.Handled = true;
+
+            if (this.Parent != null)
+                this.Invalidate();
+        }
+
+        protected override void OnButtonUp(ButtonEventArgs e) {
+            if (!this.IsEnabled || e.Button != HardwareButton.Select) {
+                return;
+            }
+
+            var wasPressed = this.isPressed;
+            this.isPressed = false;
 
             if (this.Parent != null)
                 this.Invalidate();
 
+            if (wasPressed) {
+                e.Handled = this.PerformClick();
+            }
+        }
+
+        // Fires Click. Returns the args.Handled flag so callers can propagate
+        // it to TouchEventArgs/ButtonEventArgs.Handled.
+        private bool PerformClick() {
+            var args = new RoutedEventArgs(ClickRoutedEvent, this);
+            try {
+                this.Click?.Invoke(this, args);
+            }
+            catch {
+            }
+            return args.Handled;
         }
 
         public override void OnRender(DrawingContext dc) {

@@ -49,7 +49,34 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                 this.Invalidate();
         }
 
-        private void Dropdown_TouchUp(object sender, TouchEventArgs e) {
+        private void Dropdown_TouchUp(object sender, TouchEventArgs e) => this.ToggleOpen();
+
+        /// <summary>
+        /// Hardware button support: <see cref="HardwareButton.Select"/> toggles the
+        /// dropdown open/closed (parity with touch). <see cref="HardwareButton.Back"/>
+        /// closes an open dropdown. Up/Down navigation comes free from <see cref="ListBox"/>.
+        /// </summary>
+        protected override void OnButtonDown(ButtonEventArgs e) {
+            if (e.Button == HardwareButton.Select) {
+                this.ToggleOpen();
+                e.Handled = true;
+                return;
+            }
+
+            if (e.Button == HardwareButton.Back && this.isOpened) {
+                this.ToggleOpen();
+                e.Handled = true;
+                return;
+            }
+
+            // Delegate Up/Down to the ListBox base only while open; collapsed dropdowns
+            // shouldn't eat navigation keys.
+            if (this.isOpened) {
+                base.OnButtonDown(e);
+            }
+        }
+
+        private void ToggleOpen() {
             if (!this.isOpened) {
                 if (this.options != null && this.options.Count > 0) {
                     this.Height = this.options.Count * this.originalHeight;
@@ -69,7 +96,6 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                 if (this.options != null && this.options.Count > 0) {
                     this.Height = this.originalHeight;
                 }
-
             }
 
             this.isOpened = !this.isOpened;

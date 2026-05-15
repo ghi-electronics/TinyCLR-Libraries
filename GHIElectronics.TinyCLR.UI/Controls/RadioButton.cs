@@ -66,6 +66,10 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
     }
 
     public class RadioButton : ContentControl, IDisposable {
+        // Cached once per AppDomain so every toggle doesn't allocate a fresh RoutedEvent.
+        private static readonly RoutedEvent ClickRoutedEvent =
+            new RoutedEvent("ClickEvent", RoutingStrategy.Bubble, typeof(RoutedEventHandler));
+
         public event RoutedEventHandler Click;
         private BitmapImage bitmapImageRadioButton;
 
@@ -130,39 +134,36 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                 return;
             }
 
-            var evt = new RoutedEvent("TouchUpEvent", RoutingStrategy.Bubble, typeof(RoutedEventHandler));
-            var args = new RoutedEventArgs(evt, this);
+            e.Handled = this.PerformClick();
+        }
 
+        protected override void OnTouchDown(TouchEventArgs e) {
+            // No-op. Click + Toggle now happen exactly once on TouchUp.
+        }
+
+        protected override void OnButtonUp(ButtonEventArgs e) {
+            if (!this.IsEnabled || e.Button != HardwareButton.Select) {
+                return;
+            }
+
+            e.Handled = this.PerformClick();
+        }
+
+        // Fires Click and toggles the radio group selection.
+        // Returns the Click args.Handled flag so callers can forward it.
+        private bool PerformClick() {
+            var args = new RoutedEventArgs(ClickRoutedEvent, this);
             try {
                 this.Click?.Invoke(this, args);
             }
             catch { }
-
-            e.Handled = args.Handled;
 
             this.Toggle();
 
             if (this.Parent != null)
                 this.Invalidate();
-        }
 
-        protected override void OnTouchDown(TouchEventArgs e) {
-            if (!this.IsEnabled) {
-                return;
-            }
-
-            var evt = new RoutedEvent("TouchDownEvent", RoutingStrategy.Bubble, typeof(RoutedEventHandler));
-            var args = new RoutedEventArgs(evt, this);
-
-            try {
-                this.Click?.Invoke(this, args);
-            }
-            catch { }
-
-            e.Handled = args.Handled;
-
-            if (this.Parent != null)
-                this.Invalidate();
+            return args.Handled;
         }
 
         public string Value {

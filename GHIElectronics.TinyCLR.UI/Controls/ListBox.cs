@@ -6,6 +6,10 @@ using GHIElectronics.TinyCLR.UI.Input;
 
 namespace GHIElectronics.TinyCLR.UI.Controls {
     public class ListBox : ContentControl {
+        // Cached once per AppDomain so each commit doesn't allocate a fresh RoutedEvent.
+        private static readonly RoutedEvent ClickRoutedEvent =
+            new RoutedEvent("ListBoxClickEvent", RoutingStrategy.Bubble, typeof(RoutedEventHandler));
+
         public ListBox() {
             this._panel = new StackPanel();
             this._scrollViewer = new ScrollViewer {
@@ -25,6 +29,13 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                 return this._items;
             }
         }
+
+        /// <summary>
+        /// Fires when the user commits the current selection — either by tapping a
+        /// ListBoxItem or by pressing <see cref="HardwareButton.Select"/> while the
+        /// ListBox has focus. The event source is the committed <see cref="ListBoxItem"/>.
+        /// </summary>
+        public event RoutedEventHandler Click;
 
         public event SelectionChangedEventHandler SelectionChanged {
             add {
@@ -135,6 +146,24 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                     e.Handled = true;
                 }
             }
+            else if (e.Button == HardwareButton.Select) {
+                var item = this.SelectedItem;
+                if (item != null) {
+                    e.Handled = this.RaiseClick(item);
+                }
+            }
+        }
+
+        // Raises Click with the supplied ListBoxItem as the event source.
+        // Used by ListBoxItem.OnTouchUp and by Select-button activation.
+        internal bool RaiseClick(ListBoxItem source) {
+            var args = new RoutedEventArgs(ClickRoutedEvent, source);
+            try {
+                this.Click?.Invoke(this, args);
+            }
+            catch {
+            }
+            return args.Handled;
         }
 
         //
