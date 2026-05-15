@@ -9,15 +9,18 @@ using System.Threading;
 
 namespace GHIElectronics.TinyCLR.EthernetIP.Adapter {
     public partial class AdapterController {
-        public enum EncapsulationCommand : ushort{
-            //NoOperation = 0x0000, /**< only allowed for TCP */
-            //ListServices = 0x0004, /**< allowed for both UDP and TCP */
-            //ListIdentity = 0x0063, /**< allowed for both UDP and TCP */
-            //ListInterfaces = 0x0064, /**< optional, allowed for both UDP and TCP */
-            RegisterSession = 0x0065, /**< only allowed for TCP */
-            UnregisterSession = 0x0066, /**< only allowed for TCP */
-            //SendRequestReplyData = 0x006F, /**< only allowed for TCP */
-            //SendUnitData = 0x0070 /**< only allowed for TCP */
+        // Full set of EtherNet/IP encapsulation commands per ENIP Vol 2 §2-3.2.
+        // Exposed so user event handlers can switch on the received command code from
+        // ReceivedExplict{Tcp,Udp}Data events.
+        public enum EncapsulationCommand : ushort {
+            NoOperation = 0x0000,           // TCP only
+            ListServices = 0x0004,          // TCP and UDP
+            ListIdentity = 0x0063,          // TCP and UDP
+            ListInterfaces = 0x0064,        // optional, TCP and UDP
+            RegisterSession = 0x0065,       // TCP only
+            UnregisterSession = 0x0066,     // TCP only
+            SendRequestReplyData = 0x006F,  // TCP only
+            SendUnitData = 0x0070,          // TCP only
         };
 
     }

@@ -15,12 +15,10 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary
     /// </remarks>
     public class IdentityObject
     {
-        public ScannerController eeipClient;
+        // Private read-only — see AssemblyObject for rationale.
+        private readonly ScannerController scanner;
 
-        /// <summary>
-        /// Constructor. </summary>
-        /// <param name="eeipClient"> EthernetIPClient Object</param>
-        public IdentityObject(ScannerController eeipClient) => this.eeipClient = eeipClient;
+        internal IdentityObject(ScannerController scanner) => this.scanner = scanner;
 
         /// <summary>
         /// gets the Vendor ID / Read "Identity Object" Class Code 0x01 - Attribute ID 1
@@ -29,7 +27,7 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary
         {
             get
             {
-                var byteArray = this.eeipClient.GetAttributeSingle(1, 1, 1);
+                var byteArray = this.scanner.GetAttributeSingle(1, 1, 1);
                 var returnValue = (ushort)(byteArray[1] << 8 | byteArray[0]);
                 return returnValue;
             }
@@ -42,7 +40,7 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary
         {
             get
             {
-                var byteArray = this.eeipClient.GetAttributeSingle(1, 1, 2);
+                var byteArray = this.scanner.GetAttributeSingle(1, 1, 2);
                 var returnValue = (ushort)(byteArray[1] << 8 | byteArray[0]);
                 return returnValue;
             }
@@ -56,7 +54,7 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary
         {
             get
             {
-                var byteArray = this.eeipClient.GetAttributeSingle(1, 1, 3);
+                var byteArray = this.scanner.GetAttributeSingle(1, 1, 3);
                 var returnValue = (ushort)(byteArray[1] << 8 | byteArray[0]);
                 return returnValue;
             }
@@ -71,7 +69,7 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary
             get
             {
 
-                var byteArray = this.eeipClient.GetAttributeSingle(1, 1, 4);
+                var byteArray = this.scanner.GetAttributeSingle(1, 1, 4);
                 var returnValue = new Revison();
                 returnValue.MajorRevision = (ushort)(byteArray[0]);
                 returnValue.MinorRevision = (ushort)(byteArray[1]);
@@ -92,7 +90,7 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary
         {
             get
             {
-                var byteArray = this.eeipClient.GetAttributeSingle(1, 1, 5);
+                var byteArray = this.scanner.GetAttributeSingle(1, 1, 5);
                 var returnValue = (ushort)(byteArray[1] << 8 | byteArray[0]);
                 return returnValue;
             }
@@ -105,7 +103,7 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary
         {
             get
             {
-                var byteArray = this.eeipClient.GetAttributeSingle(1, 1, 6);
+                var byteArray = this.scanner.GetAttributeSingle(1, 1, 6);
                 var returnValue = ((uint)byteArray[3] << 24 | (uint)byteArray[2] << 16 | (uint)byteArray[1] << 8 | (uint)byteArray[0]);
                 return returnValue;
             }
@@ -118,7 +116,7 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary
         {
             get
             {
-                var byteArray = this.eeipClient.GetAttributeSingle(1, 1, 7);
+                var byteArray = this.scanner.GetAttributeSingle(1, 1, 7);
                 var returnValue = Encoding.UTF8.GetString(byteArray);
                 return returnValue;
             }
@@ -142,7 +140,7 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary
         {
             get
             {
-                var byteArray = this.eeipClient.GetAttributeSingle(1, 1, 8);
+                var byteArray = this.scanner.GetAttributeSingle(1, 1, 8);
                 var returnValue = (StateEnum) byteArray[0];
                 return returnValue;
             }
@@ -155,7 +153,7 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary
         {
             get
             {
-                var byteArray = this.eeipClient.GetAttributeSingle(1, 1, 9);
+                var byteArray = this.scanner.GetAttributeSingle(1, 1, 9);
                 var returnValue = (ushort)(byteArray[1] << 8 | byteArray[0]);
                 return returnValue;
             }
@@ -168,7 +166,7 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary
         {
             get
             {
-                var byteArray = this.eeipClient.GetAttributeSingle(1, 1, 10);
+                var byteArray = this.scanner.GetAttributeSingle(1, 1, 10);
                 var returnValue = (byte)byteArray[0];
                 return returnValue;
             }
@@ -181,7 +179,7 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary
         {
             get
             {
-                var byteArray = this.eeipClient.GetAttributeSingle(1, 1, 12);
+                var byteArray = this.scanner.GetAttributeSingle(1, 1, 12);
                 var returnValue = new string[byteArray.Length / 3];
                 for (var i = 0; i < returnValue.Length; i++)
                 {
@@ -200,7 +198,7 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary
         {
             get
             {
-                var byteArray = this.eeipClient.GetAttributeAll(1, 0);
+                var byteArray = this.scanner.GetAttributeAll(1, 0);
                 ClassAttributesStruct returnValue;
                 returnValue.Revision = (ushort)(byteArray[1] << 8 | byteArray[0]);
                 returnValue.MaxInstance = (ushort)(byteArray[3] << 8 | byteArray[2]);
@@ -217,7 +215,7 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary
         {
             get
             {
-                var byteArray = this.eeipClient.GetAttributeAll(1, 1);
+                var byteArray = this.scanner.GetAttributeAll(1, 1);
                 InstanceAttributesStruct returnValue;
                 returnValue.VendorID = (ushort)(byteArray[1] << 8 | byteArray[0]);
                 returnValue.DeviceType = (ushort)(byteArray[3] << 8 | byteArray[2]);

@@ -8,12 +8,10 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary
 {
     public class MessageRouterObject
     {
-        public ScannerController eeipClient;
+        // Private read-only — see AssemblyObject for rationale.
+        private readonly ScannerController scanner;
 
-        /// <summary>
-        /// Constructor. </summary>
-        /// <param name="eeipClient"> EthernetIPClient Object</param>
-        public MessageRouterObject(ScannerController eeipClient) => this.eeipClient = eeipClient;
+        internal MessageRouterObject(ScannerController scanner) => this.scanner = scanner;
 
         public struct ObjectListStruct
         {
@@ -28,7 +26,7 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary
         {
             get
             {
-                var byteArray = this.eeipClient.GetAttributeSingle(2, 1, 1);
+                var byteArray = this.scanner.GetAttributeSingle(2, 1, 1);
                 ObjectListStruct returnValue;
                 returnValue.Number = (ushort)(byteArray[1] << 8 | byteArray[0]);
                 returnValue.Classes = new ushort[returnValue.Number];
@@ -47,7 +45,7 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary
         {
             get
             {
-                var byteArray = this.eeipClient.GetAttributeSingle(2, 2, 1);
+                var byteArray = this.scanner.GetAttributeSingle(2, 1, 2);
                 ushort returnValue;
                 returnValue = (ushort)(byteArray[1] << 8 | byteArray[0]);
                 return returnValue;
@@ -61,7 +59,7 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary
         {
             get
             {
-                var byteArray = this.eeipClient.GetAttributeSingle(2, 3, 1);
+                var byteArray = this.scanner.GetAttributeSingle(2, 1, 3);
                 ushort returnValue;
                 returnValue = (ushort)(byteArray[1] << 8 | byteArray[0]);
                 return returnValue;
@@ -75,7 +73,7 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary
         {
             get
             {
-                var byteArray = this.eeipClient.GetAttributeSingle(2, 4, 1);
+                var byteArray = this.scanner.GetAttributeSingle(2, 1, 4);
                 var returnValue = new ushort[byteArray.Length / 2];
                 for (var i = 0; i < returnValue.Length; i++)
                 {

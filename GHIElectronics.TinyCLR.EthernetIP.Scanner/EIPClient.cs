@@ -11,7 +11,43 @@ using GHIElectronics.TinyCLR.Devices.Network;
 
 namespace GHIElectronics.TinyCLR.EthernetIP.Scanner
 {
-    public class ScannerController
+    /// <summary>
+    /// Runs the device as an EtherNet/IP <b>Scanner</b> (the client/originator side —
+    /// the role that talks to PLCs, motor drives, or other EIP adapters). Pure C#
+    /// implementation, no native interop.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// <b>Property-bag API</b>: configure the connection by setting properties
+    /// (<see cref="IPAddress"/>, <see cref="O_T_InstanceID"/>, <see cref="T_O_InstanceID"/>,
+    /// <see cref="RequestedPacketRate_O_T"/>, <see cref="O_T_RealTimeFormat"/>, etc.)
+    /// <i>before</i> calling <see cref="ForwardOpen()"/>. Changing properties after
+    /// the connection is up has no effect on the live session.
+    /// </para>
+    /// <para>
+    /// <b>Typical flow</b> (full example in <c>README.md</c> and
+    /// <c>Test\TinyCLRApplication_EthernetIP\Program.cs</c>):
+    /// <code>
+    /// using (var scanner = new ScannerController()) {
+    ///     var devices = scanner.ListIdentity(networkController, TimeSpan.FromSeconds(2));
+    ///     scanner.IPAddress = "192.168.1.100";
+    ///     scanner.O_T_InstanceID = 150; scanner.T_O_InstanceID = 100;
+    ///     scanner.O_T_IOData = new byte[32]; scanner.T_O_IOData = new byte[32];
+    ///     scanner.ImplicitDataReceived += (s, snapshot) =&gt; { /* use snapshot */ };
+    ///     scanner.RegisterSession();
+    ///     scanner.ForwardOpen();
+    ///     while (true) Thread.Sleep(10);   // implicit I/O runs on background threads
+    /// }   // Dispose() runs ForwardClose + UnRegisterSession automatically
+    /// </code>
+    /// </para>
+    /// <para>
+    /// <b>Thread safety</b>: <see cref="T_O_IOData"/> is written by the receive thread
+    /// while your application reads it (torn-read risk). New code should subscribe to
+    /// <see cref="ImplicitDataReceived"/> instead, which delivers a race-free byte[]
+    /// snapshot. <see cref="T_O_IOData"/> is kept for backwards compatibility.
+    /// </para>
+    /// </remarks>
+    public class ScannerController : IDisposable
     {
         TcpClient client;
         NetworkStream stream;
@@ -20,7 +56,12 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner
         uint connectionID_T_O;
         uint multicastAddress;
         ushort connectionSerialNumber;
-		const int BUFFER_SIZE = 1024;  
+        // One Random per controller. Upstream EEIP.NET (and the original port) called
+        // `new Random()` three times back-to-back in ForwardOpen, which on platforms
+        // that seed Random from a low-resolution tick counter produced identical seeds
+        // and therefore identical "random" connection IDs and serial numbers.
+        readonly Random rng = new Random();
+		const int BUFFER_SIZE = 1024;
         /// <summary>
         /// TCP-Port of the Server
         /// </summary>
@@ -164,9 +205,72 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner
         
         /// <summary>
         /// Returns the Date and Time when the last Implicit Message has been received fŕom The Target Device
-        /// Could be used to determine a Timeout
-        /// </summary>        
+        /// Could be used to determine a Timeout.
+        /// <para>
+        /// NOTE: this is a wall-clock timestamp (DateTime.Now) and breaks if the system
+        /// clock jumps (NTP sync, DST, manual set). For timeout detection that must
+        /// survive clock changes, read <see cref="LastReceivedImplicitMessageTickCount"/>
+        /// instead and compare against <c>Environment.TickCount</c>.
+        /// </para>
+        /// </summary>
         public DateTime LastReceivedImplicitMessage { get; set; }
+
+        /// <summary>
+        /// Monotonic (clock-jump-safe) counterpart of <see cref="LastReceivedImplicitMessage"/>.
+        /// Stores <c>Environment.TickCount</c> at the moment the last Class-1 packet was
+        /// received from the target. Compare against a fresh <c>Environment.TickCount</c>
+        /// read to compute elapsed-since-last-implicit, e.g.
+        /// <c>(Environment.TickCount - scanner.LastReceivedImplicitMessageTickCount) > 5000</c>
+        /// for a 5-second watchdog. Unlike <see cref="LastReceivedImplicitMessage"/>, this
+        /// value is not affected by NTP sync, DST changes, or manual clock adjustment.
+        /// </summary>
+        public int LastReceivedImplicitMessageTickCount { get; private set; }
+
+        // ===========================================================================
+        // Phase 3.5 — Event surface
+        //
+        // Replaces the previous poll-only model where users had to watch
+        // LastReceivedImplicitMessage and T_O_IOData directly. The events fire on
+        // the same thread that read or processed the underlying network packet —
+        // handlers should be quick and non-blocking. To do heavy work, marshal to
+        // a worker thread.
+        //
+        // T_O_IOData remains public+mutable for now (backwards compat). The
+        // ImplicitDataReceived event delivers a fresh snapshot byte[] each time,
+        // so user code can avoid the torn-read race entirely by reading the event
+        // argument instead of the field. T_O_IOData becomes [Obsolete] in a future
+        // phase.
+        // ===========================================================================
+
+        /// <summary>Fired once after a successful ForwardOpen / LargeForwardOpen.</summary>
+        public event EventHandler ConnectionEstablished;
+
+        /// <summary>
+        /// Fired when the implicit producer (sendUDP) repeatedly fails to send, or when
+        /// the target stops producing for longer than the RPI watchdog. Not fired on a
+        /// user-initiated ForwardClose / Dispose.
+        /// </summary>
+        public event EventHandler ConnectionLost;
+
+        /// <summary>
+        /// Fired on every Class-1 packet received from the target. The byte[] argument
+        /// is a freshly-allocated snapshot of the payload — safe to retain, safe to
+        /// read off-thread. T_O_IOData is also updated, but the snapshot is the
+        /// race-free way to consume implicit input.
+        /// </summary>
+        public event ImplicitDataReceivedHandler ImplicitDataReceived;
+        public delegate void ImplicitDataReceivedHandler(ScannerController scanner, byte[] snapshot);
+
+        /// <summary>
+        /// Fired when an implicit packet arrives later than the negotiated RPI tolerance
+        /// (currently fires when the inter-arrival gap exceeds 4 * RPI). Diagnostic only;
+        /// the connection is not automatically closed.
+        /// </summary>
+        public event EventHandler RpiViolated;
+
+        // Track inter-arrival timing for RpiViolated detection. TickCount is monotonic;
+        // unlike DateTime.Now it isn't affected by wall-clock adjustments.
+        private int lastImplicitTickCount;
 
         private void ReceiveCallback(UdpState state)
         {
@@ -178,8 +282,6 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner
                 IPEndPoint recEndpoint = null;
 
                 var receiveBytes = u.Receive(ref recEndpoint);
-
-                var receiveString = Encoding.UTF8.GetString(receiveBytes);
 
                 if (receiveBytes.Length > 0) {
 
@@ -207,9 +309,19 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner
         ArrayList returnList;
 
         /// <summary>
-        /// List and identify potential targets. This command shall be sent as braodcast massage using UDP.
+        /// Broadcasts an EIP List Identity command and collects responses from every
+        /// EtherNet/IP device on the local subnet during the timeout window.
         /// </summary>
-        /// <returns>List<Encapsulation.CIPIdentityItem> contains the received informations from all devices </returns>	
+        /// <param name="networkController">The TinyCLR <c>NetworkController</c> whose
+        /// IP/mask is used to compute the broadcast address.</param>
+        /// <param name="timeout">How long to listen for responses. Spec says devices
+        /// reply within a random 0–2 s delay window, so use ≥ 2 s for reliable discovery.
+        /// Pass <c>TimeSpan.Zero</c> to wait indefinitely (not recommended).</param>
+        /// <returns>One <see cref="Encapsulation.CIPIdentityItem"/> per responding device,
+        /// or <c>null</c> if no device responded.</returns>
+        /// <remarks>Current implementation broadcasts to the <i>directed</i> subnet
+        /// address (e.g. 192.168.1.255 for a /24). Devices behind a router won't see
+        /// the request unless directed-broadcast forwarding is enabled.</remarks>
         public Encapsulation.CIPIdentityItem[] ListIdentity(NetworkController networkController, TimeSpan timeout) {
 
             this.returnList = new ArrayList();
@@ -235,19 +347,21 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner
             };
 
           
+            // List Identity is a broadcast — multiple devices respond, each at a
+            // random delay (per CIP spec 2 s default max). Loop over the full
+            // timeout window and collect every responder, not just the first.
             var expired = DateTime.Now + timeout;
-
-            while (udpClient.Available == 0) {
-                if (timeout != TimeSpan.Zero) {
-                    if (DateTime.Now > expired)
-                        break;
-
+            while (true) {
+                if (udpClient.Available > 0) {
+                    this.ReceiveCallback(s);
                 }
-
-                Thread.Sleep(1);
+                else if (timeout != TimeSpan.Zero && DateTime.Now >= expired) {
+                    break;
+                }
+                else {
+                    Thread.Sleep(1);
+                }
             }
-
-            this.ReceiveCallback(s);
 
             if (this.returnList.Count > 0) {
                 var devices = new Encapsulation.CIPIdentityItem[this.returnList.Count];
@@ -295,11 +409,21 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner
         }
 
         /// <summary>
-        /// Sends a RegisterSession command to a target to initiate session
+        /// Opens a TCP connection to the target on port 44818 (0xAF12) and sends an EIP
+        /// RegisterSession command to establish an encapsulation session. Required before
+        /// any explicit-messaging service (GetAttributeSingle, ForwardOpen, etc.) can be sent.
         /// </summary>
-        /// <param name="address">IP-Address of the target device</param> 
-        /// <param name="port">Port of the target device (default should be 0xAF12)</param> 
-        /// <returns>Session Handle</returns>	
+        /// <param name="address">Target IP as a packed 32-bit value: top byte is the
+        /// first IPv4 octet (e.g. 192.168.1.1 = 0xC0A80101). Use the string overload
+        /// if you have a dotted-quad string.</param>
+        /// <param name="port">TCP port — typically 0xAF12 (44818, EIP standard). Pass
+        /// a non-standard port only if the target listens elsewhere.</param>
+        /// <returns>The 32-bit session handle assigned by the target. Stored internally;
+        /// you typically don't need to inspect it.</returns>
+        /// <remarks><b>This call blocks</b> until the TCP connect succeeds, fails, or the
+        /// OS-level timeout fires (typically 60–120 s for unreachable hosts). There is
+        /// no per-call timeout knob — if you might point at unreachable IPs, run this
+        /// on a thread you can abandon.</remarks>
         public uint RegisterSession(uint address, ushort port)
         {
             if (this.sessionHandle != 0)
@@ -329,8 +453,10 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner
         }
 
         /// <summary>
-        /// Sends a UnRegisterSession command to a target to terminate session
-        /// </summary> 
+        /// Sends an EIP UnregisterSession command to gracefully close the encapsulation
+        /// session, then closes the TCP connection. Idempotent — safe to call even if
+        /// the target has already dropped. <see cref="Dispose"/> calls this for you.
+        /// </summary>
         public void UnRegisterSession()
         {
             var encapsulation = new Encapsulation();
@@ -352,10 +478,66 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner
             this.sessionHandle = 0;
         }
 
+        private bool disposed;
+
+        /// <summary>Tears down the scanner cleanly: closes the Class-1 connection
+        /// (ForwardClose), unregisters the encapsulation session, closes all sockets.
+        /// Each sub-step swallows its own exceptions so Dispose itself never throws
+        /// (per the <see cref="IDisposable"/> contract). Idempotent and safe to call
+        /// from a <c>using</c> block on any code path including before <see cref="ForwardOpen()"/>.</summary>
+        public void Dispose()
+        {
+            if (this.disposed) return;
+            this.disposed = true;
+
+            // 1. If a Class-1 connection is up, close it. ForwardClose signals stopUDP,
+            // sleeps long enough for the producer thread to exit, then sends a
+            // ForwardClose to the target. We only call it if ForwardOpen actually
+            // ran (udpClientReceive set then).
+            if (this.udpClientReceive != null && !this.udpClientReceiveClosed) {
+                try { this.ForwardClose(); }
+                catch { /* peer may have already dropped — best-effort teardown */ }
+            }
+
+            // 2. If an encapsulation session is registered, terminate it.
+            if (this.sessionHandle != 0) {
+                try { this.UnRegisterSession(); }
+                catch { /* see above */ }
+            }
+
+            // 3. Belt-and-suspenders: explicitly close anything still open. Both
+            // ForwardClose and UnRegisterSession close their own sockets, but if
+            // they threw before getting there, these calls plug the leak.
+            try { this.udpClientReceive?.Close(); } catch { }
+            try { this.stream?.Close(); }          catch { }
+            try { this.client?.Close(); }          catch { }
+        }
+
+        /// <summary>Opens a Class-1 (implicit / cyclic I/O) connection to the target
+        /// using regular Forward Open (service 0x54). Configure all connection-related
+        /// properties (<see cref="IPAddress"/>, <see cref="O_T_InstanceID"/>,
+        /// <see cref="T_O_InstanceID"/>, <see cref="RequestedPacketRate_O_T"/>,
+        /// <see cref="O_T_RealTimeFormat"/>, etc.) before calling.</summary>
+        /// <remarks>Spawns two background threads — <c>sendUDP</c> producing O→T data
+        /// at the negotiated RPI, and a receive loop that fires
+        /// <see cref="ImplicitDataReceived"/> per T→O packet. Use Large Forward Open
+        /// (the overload below) for connection sizes > ~500 bytes.</remarks>
         public void ForwardOpen() => this.ForwardOpen(false);
 
         System.Net.Sockets.UdpClient udpClientReceive;
         bool udpClientReceiveClosed = false;
+
+        /// <summary>Opens a Class-1 implicit connection, choosing between regular Forward
+        /// Open (service 0x54) and Large Forward Open (service 0x5B) based on the
+        /// <paramref name="largeForwardOpen"/> flag. Large form is required when either
+        /// direction's payload exceeds ~500 bytes.</summary>
+        /// <param name="largeForwardOpen">true → use Large Forward Open (32-bit
+        /// connection parameters, allows up to ~65 KB per direction);
+        /// false → use regular Forward Open.</param>
+        /// <exception cref="System.Exception">Connection size exceeds buffer, missing
+        /// configuration, etc. See exception message.</exception>
+        /// <exception cref="CIPException">Target returned a CIP error status. Use
+        /// <c>data[42]</c> + extended status to diagnose.</exception>
         public void ForwardOpen(bool largeForwardOpen)
         {
             if (this.O_T_Length > BUFFER_SIZE) {
@@ -458,8 +640,8 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner
             commonPacketFormat.Data.Add(0xfa);
             //----------------Timeout Ticks
 
-            this.connectionID_O_T = (uint)(new Random().Next(0xfffffff));
-            this.connectionID_T_O = (uint)(new Random().Next(0xfffffff) + 1);
+            this.connectionID_O_T = (uint)(this.rng.Next(0xfffffff));
+            this.connectionID_T_O = (uint)(this.rng.Next(0xfffffff) + 1);
             commonPacketFormat.Data.Add((byte)this.connectionID_O_T);
             commonPacketFormat.Data.Add((byte)(this.connectionID_O_T >> 8));
             commonPacketFormat.Data.Add((byte)(this.connectionID_O_T >> 16));
@@ -471,7 +653,7 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner
             commonPacketFormat.Data.Add((byte)(this.connectionID_T_O >> 16));
             commonPacketFormat.Data.Add((byte)(this.connectionID_T_O >> 24));
 
-            this.connectionSerialNumber = (ushort)(new Random().Next(0xFFFF) + 2);
+            this.connectionSerialNumber = (ushort)(this.rng.Next(0xFFFF) + 2);
             commonPacketFormat.Data.Add((byte)this.connectionSerialNumber);
             commonPacketFormat.Data.Add((byte)(this.connectionSerialNumber >> 8));
 
@@ -694,6 +876,12 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner
             //}).Start();
 
             //var asyncResult = this.udpClientReceive.BeginReceive(new AsyncCallback(this.ReceiveCallbackClass1), s);
+
+            // Phase 3.5: signal that the implicit producer + consumer threads are up
+            // and the target accepted our Forward Open. Fired after the threads start
+            // so handlers can safely read T_O_IOData / subscribe to ImplicitDataReceived.
+            this.lastImplicitTickCount = Environment.TickCount;
+            this.ConnectionEstablished?.Invoke(this, EventArgs.Empty);
         }
 
         public void LargeForwardOpen() => this.ForwardOpen(true);
@@ -760,6 +948,10 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner
 
         }
 
+        /// <summary>Sends a Forward Close to tear down the Class-1 implicit connection,
+        /// stops the producer thread, waits for the producer to exit, then sends the
+        /// close request and closes the UDP receive socket. Safe to call from a
+        /// <c>using</c> block via <see cref="Dispose"/>.</summary>
         public void ForwardClose()
         {
             //First stop the Thread which send data
@@ -909,6 +1101,11 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner
             this.stopUDP = false;
             uint sequenceCount = 0;
 
+            // Phase 3.5: ConnectionLost detection — count consecutive send failures.
+            // Reset to 0 on a successful Send. The connectionLostFired flag ensures the
+            // event raises once per connection, not on every subsequent failed tick.
+            int sendErrorStreak = 0;
+            bool connectionLostFired = false;
 
             while (!this.stopUDP)
             {
@@ -988,7 +1185,25 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner
                 //---------------Write data
 
 
-                udpClientsend.Send(o_t_IOData, this.O_T_Length +20+headerOffset, endPointsend);
+                try {
+                    udpClientsend.Send(o_t_IOData, this.O_T_Length + 20 + headerOffset, endPointsend);
+                    sendErrorStreak = 0;
+                }
+                catch {
+                    // Transient send failure (e.g. link briefly down, ARP miss, sendto EAGAIN).
+                    // Swallow and retry on next RPI tick — letting the exception escape would
+                    // kill the producer thread silently and leave ForwardOpen reporting
+                    // "established" while no data is being produced.
+                    //
+                    // Phase 3.5: count consecutive failures. If we miss >= 4 sends in a row
+                    // (which exceeds typical scanner watchdog of 4 * RPI), the target will
+                    // close the connection on its end anyway — surface ConnectionLost so
+                    // the application can react instead of polling LastReceivedImplicitMessage.
+                    if (++sendErrorStreak == 4 && !connectionLostFired) {
+                        connectionLostFired = true;
+                        this.ConnectionLost?.Invoke(this, EventArgs.Empty);
+                    }
+                }
                 System.Threading.Thread.Sleep((int)this.RequestedPacketRate_O_T /1000);
 
             }
@@ -1035,12 +1250,35 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner
                                     headerOffset = 4;
                                 if (this.T_O_RealTimeFormat == RealTimeFormat.Heartbeat)
                                     headerOffset = 0;
-                                for (var i = 0; i < receivebytes.Length - 20 - headerOffset; i++) {
-                                    this.T_O_IOData[i] = receivebytes[20 + i + headerOffset];
+
+                                // Phase 3.5: build the snapshot byte[] FIRST, then copy into
+                                // T_O_IOData (still public+mutable for backwards compat). The
+                                // snapshot is what the event delivers — handlers that use it
+                                // avoid the torn-read race entirely.
+                                var payloadLength = receivebytes.Length - 20 - headerOffset;
+                                var snapshot = new byte[payloadLength];
+                                for (var i = 0; i < payloadLength; i++) {
+                                    snapshot[i] = receivebytes[20 + i + headerOffset];
+                                    this.T_O_IOData[i] = snapshot[i];
                                 }
 
+                                // RpiViolated detection: TickCount is monotonic ms since boot,
+                                // safe from wall-clock changes (unlike DateTime.Now). Tolerance
+                                // is 4 * RPI (matches typical scanner timeout multiplier).
+                                var nowTicks = Environment.TickCount;
+                                var rpiMs = (int)(this.RequestedPacketRate_T_O / 1000);
+                                if (this.lastImplicitTickCount != 0 && rpiMs > 0
+                                    && (nowTicks - this.lastImplicitTickCount) > rpiMs * 4) {
+                                    this.RpiViolated?.Invoke(this, EventArgs.Empty);
+                                }
+                                this.lastImplicitTickCount = nowTicks;
+                                // Phase 3.5 (Item 3): expose the same monotonic value as a
+                                // public property so user code can poll without subscribing
+                                // to the RpiViolated event. Set after the violation check so
+                                // we don't observe "0 elapsed" the first time.
+                                this.LastReceivedImplicitMessageTickCount = nowTicks;
 
-
+                                this.ImplicitDataReceived?.Invoke(this, snapshot);
                             }
                         }
                     }
@@ -1085,6 +1323,18 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner
         /// <returns>Session Handle</returns>	
         public uint RegisterSession() => this.RegisterSession(this.IPAddress, this.TCPPort);
 
+        /// <summary>Sends a CIP Get_Attribute_Single (service 0x0E) to read one
+        /// attribute from the target. Auto-registers a session if not already open.
+        /// Blocks until the target replies or the underlying TCP read times out.</summary>
+        /// <param name="classID">CIP class code (e.g. 0x01 = Identity).</param>
+        /// <param name="instanceID">Instance number, 1-based.</param>
+        /// <param name="attributeID">Attribute ID within the instance.</param>
+        /// <returns>Raw attribute bytes. Endianness and structure depend on the
+        /// attribute's CIP type — use the <c>ToUshort</c>/<c>ToUint</c> helpers or
+        /// the strongly-typed accessors on <see cref="ObjectLibrary.IdentityObject"/>
+        /// etc. for common cases.</returns>
+        /// <exception cref="CIPException">Target returned a non-success CIP general
+        /// status (e.g. 0x14 Attribute Not Supported, 0x05 Path Destination Unknown).</exception>
         public byte[] GetAttributeSingle(int classID, int instanceID, int attributeID)
         {
             var requestedPath = this.GetEPath(classID, instanceID, attributeID);
@@ -1244,6 +1494,16 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner
             return returnData;
         }
 
+        /// <summary>Sends a CIP Set_Attribute_Single (service 0x10) to write one
+        /// attribute on the target. Auto-registers a session if not already open.</summary>
+        /// <param name="classID">CIP class code.</param>
+        /// <param name="instanceID">Instance number, 1-based.</param>
+        /// <param name="attributeID">Attribute ID within the instance.</param>
+        /// <param name="value">Raw bytes to write. Must match the attribute's CIP type
+        /// width and endianness — most types are little-endian on the wire.</param>
+        /// <returns>Any reply bytes the target included. Usually empty.</returns>
+        /// <exception cref="CIPException">Target returned a non-success status (e.g.
+        /// 0x0E Attribute Not Settable, 0x09 Invalid Attribute Value).</exception>
         public byte[] SetAttributeSingle(int classID, int instanceID, int attributeID, byte[] value)
         {
             var requestedPath = this.GetEPath(classID, instanceID, attributeID);
