@@ -23,15 +23,18 @@
          packages.config NuGet. Compile-time only — .props sets Private=False
          so it does NOT end up in bin\Debug\. -->
     <file src="$TargetDir$GHIElectronics.TinyCLR.RuntimeLoadableProcedures.dll" target="lib\net48" />
-
+
+    <file src="$TargetDir$GHIElectronics.TinyCLR.RuntimeLoadableProcedures.xml" target="lib\net48" />
     <!-- desktop-shim/ : Desktop SHIM DLL (no-op safe defaults). Copied to
          bin\Debug\ at AfterBuild via a Target in the .props file. -->
     <file src="..\GHIElectronics.TinyCLR.RuntimeLoadableProcedures.Desktop\bin\Debug\GHIElectronics.TinyCLR.RuntimeLoadableProcedures.dll" target="desktop-shim" />
-
+
+    <file src="$TargetDir$GHIElectronics.TinyCLR.RuntimeLoadableProcedures.xml" target="desktop-shim" />
     <!-- tinyclr/ : TinyCLR-IMPL DLL again. Read by the deploy step
          (DebugServer / VS extension), MMP'd into a .pe and pushed to device. -->
     <file src="$TargetDir$GHIElectronics.TinyCLR.RuntimeLoadableProcedures.dll" target="tinyclr" />
-
+
+    <file src="$TargetDir$GHIElectronics.TinyCLR.RuntimeLoadableProcedures.xml" target="tinyclr" />
     <!-- Consumer-side props: imported via NuGet package convention. -->
     <file src="$ProjectDir$GHIElectronics.TinyCLR.RuntimeLoadableProcedures.props" target="build\net48" />
   </files>

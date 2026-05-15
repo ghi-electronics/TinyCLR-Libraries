@@ -145,7 +145,7 @@ namespace GHIElectronics.TinyCLR.UI.Threading {
                     this._waitTimer = new Timer(new TimerCallback(this.OnTimeout),
                                            null,
                                            timeout,
-                                           new TimeSpan(-TimeSpan.TicksPerMillisecond)); /// Negative one (-1) milliseconds to disable periodic signaling.
+                                           new TimeSpan(-TimeSpan.TicksPerMillisecond)); // Negative one (-1) milliseconds to disable periodic signaling.
                 }
 
                 // Some other thread could have aborted the operation while we were

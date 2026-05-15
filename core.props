@@ -5,6 +5,10 @@
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
     <NoStdLib>true</NoStdLib>
     <AddAdditionalExplicitAssemblyReferences>false</AddAdditionalExplicitAssemblyReferences>
-    <DisableHandlePackageFileConflicts>true</DisableHandlePackageFileConflicts>  
+    <DisableHandlePackageFileConflicts>true</DisableHandlePackageFileConflicts>
+    <!-- Suppress CS1591 + the malformed-XML family so undocumented public
+         members don't flood the build log when doc generation is enabled
+         per-csproj via <DocumentationFile>. -->
+    <NoWarn>$(NoWarn);CS1591;CS1570;CS1572;CS1573;CS1574;CS1658</NoWarn>
   </PropertyGroup>
 </Project>

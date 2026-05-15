@@ -7,11 +7,17 @@ using GHIElectronics.TinyCLR.Devices.Storage;
 using GHIElectronics.TinyCLR.Native;
 
 namespace GHIElectronics.TinyCLR.Update {
+    /// <summary>
+    /// Applies an over-the-air application update from a stream. Verifies the
+    /// signature against <c>key</c>, then flashes and reboots into the new app.
+    /// </summary>
     public class ApplicationUpdate {
         private Stream stream;
         private byte[] key;
         private int activityPinId = -1;
         private GpioPin activityPin;
+
+        /// <summary>Optional pin to toggle during long-running update operations (visual progress LED).</summary>
         public GpioPin ActivityPin {
             get => this.activityPin;
 
@@ -28,6 +34,7 @@ namespace GHIElectronics.TinyCLR.Update {
             }
         }
 
+        /// <summary>Creates an updater that reads the new application image from <paramref name="stream"/> and verifies its signature against <paramref name="key"/>.</summary>
         public ApplicationUpdate(Stream stream, byte[] key) {         
             this.stream = stream;
             this.key = key;
@@ -38,12 +45,18 @@ namespace GHIElectronics.TinyCLR.Update {
             InFieldUpdate.NativeInitialize();
         }
 
+        /// <summary>Verifies the signature of the streamed image without flashing it.</summary>
+        /// <returns>Decoded version string (e.g. "2.5.0.1000") or "Invalid." if verification failed.</returns>
         public string Verify() {
             InFieldUpdate.NativeSetApplicationSize((uint)this.stream.Length);
             var v = this.NativeAuthenticateApplication(this.stream, this.key, this.activityPinId);
             return InFieldUpdate.VersionConvertToString(v);
         }
 
+        /// <summary>
+        /// Verifies the image, then writes it to the application region and resets
+        /// the device. Does not return on success.
+        /// </summary>
         public void FlashAndReset() {
             InFieldUpdate.NativeSetApplicationSize((uint)this.stream.Length);
             var v = this.NativeAuthenticateApplication(this.stream, this.key, this.activityPinId);
@@ -60,9 +73,18 @@ namespace GHIElectronics.TinyCLR.Update {
         private extern uint NativeAuthenticateApplication(Stream stream, byte[] key, int indicatorPinId);
     }
 
+    /// <summary>
+    /// In-Field Update — feed firmware and/or application bytes in chunks, verify
+    /// the signatures, then flash and reboot. Supports caching the chunks in RAM
+    /// (faster) or to an external <see cref="StorageController"/> (handles images
+    /// larger than free RAM).
+    /// </summary>
     public class InFieldUpdate:IDisposable {
+        /// <summary>Where the updater caches incoming chunks before flashing.</summary>
         public enum CacheMode {
+            /// <summary>Buffer to external flash via a <see cref="StorageController"/>.</summary>
             Flash,
+            /// <summary>Buffer in RAM.</summary>
             Ram,
         };
 
@@ -85,6 +107,7 @@ namespace GHIElectronics.TinyCLR.Update {
         private CacheMode cacheMode;
 
         private TimeSpan readDataTimeOut = TimeSpan.FromSeconds(5);
+        /// <summary>Optional pin to toggle during long-running update operations (visual progress LED).</summary>
         public GpioPin ActivityPin {
             get => this.activityPin;
 
@@ -108,6 +131,7 @@ namespace GHIElectronics.TinyCLR.Update {
         private UnmanagedBuffer uAppBuffer;
         private UnmanagedBuffer uFwBuffer;
 
+        /// <summary>Creates a RAM-cached updater.</summary>
         public InFieldUpdate() {
             this.cacheMode = CacheMode.Ram;
             this.activityPinId = -1;
@@ -118,6 +142,7 @@ namespace GHIElectronics.TinyCLR.Update {
             NativeInitialize();
         }
 
+        /// <summary>Creates a flash-cached updater backed by an external storage device. Use for images that don't fit in RAM.</summary>
         public InFieldUpdate(StorageController storageController) {
             this.storageController = storageController;
 
@@ -136,7 +161,11 @@ namespace GHIElectronics.TinyCLR.Update {
             NativeInitialize();
         }
 
+        /// <summary>Loads the public key used to verify the application image.</summary>
         public void LoadApplicationKey(byte[] key) => this.applicationKey = key;
+
+        /// <summary>Appends a chunk of bytes to the buffered application image.</summary>
+        /// <returns>Number of bytes accepted.</returns>
         public int LoadApplicationChunk(byte[] data, int offset, int size) {
             if (this.cacheMode == CacheMode.Ram) {
                 if (this.applicationChunkIndex == 0) {
@@ -173,6 +202,8 @@ namespace GHIElectronics.TinyCLR.Update {
             return b;
         }
 
+        /// <summary>Appends a chunk of bytes to the buffered firmware image.</summary>
+        /// <returns>Number of bytes accepted.</returns>
         public int LoadFirmwareChunk(byte[] data, int offset, int size) {
             if (this.cacheMode == CacheMode.Ram) {
                 if (this.firmwareChunkIndex == 0) {
@@ -210,6 +241,7 @@ namespace GHIElectronics.TinyCLR.Update {
             return b;
         }
 
+        /// <summary>Verifies the application signature without flashing. Returns the embedded version string, or "Invalid." on failure.</summary>
         public string VerifyApplication() {
             NativeSetApplicationSize(this.applicationChunkIndex);
 
@@ -219,6 +251,7 @@ namespace GHIElectronics.TinyCLR.Update {
 
         }
 
+        /// <summary>Verifies the firmware signature without flashing. Returns the embedded version string, or "Invalid." on failure.</summary>
         public string VerifyFirmware() {
             NativeSetFirmwareSize(this.firmwareChunkIndex);
 
@@ -228,12 +261,17 @@ namespace GHIElectronics.TinyCLR.Update {
 
         }
 
+        /// <summary>Discards every buffered chunk and rewinds both write indices to zero.</summary>
         public void ResetChunks() {
             this.firmwareChunkIndex = 0;
             this.applicationChunkIndex = 0;
 
         }
 
+        /// <summary>
+        /// Verifies any buffered images, writes them to their destination regions,
+        /// and resets the device. Does not return on success.
+        /// </summary>
         public void FlashAndReset() {
             if (this.mode != IfuMode.None) {
                 if ((this.mode & IfuMode.Firmware) == IfuMode.Firmware) {
@@ -311,6 +349,7 @@ namespace GHIElectronics.TinyCLR.Update {
         private void ToggleActivityPin() => this.ActivityPin?.Write(this.ActivityPin.Read() == GpioPinValue.High ? GpioPinValue.Low : GpioPinValue.High);
 
         private bool disposed = false;
+        /// <summary>Releases buffered memory (the unmanaged firmware/application buffers).</summary>
         public void Dispose() {
             if (this.disposed)
                 return;
@@ -330,6 +369,7 @@ namespace GHIElectronics.TinyCLR.Update {
             this.disposed = true;
         }
 
+        /// <summary>Formats a packed 32-bit version (major.minor.build.revision) as a dotted string.</summary>
         public static string VersionConvertToString(uint version) {
             var v = version != 0xFFFFFFFF ? ((version >> 24) & 0xFF).ToString() + "."
                                             + ((version >> 16) & 0xFF).ToString() + "."

@@ -9,6 +9,8 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>GHIElectronics.TinyCLR.Pins</RootNamespace>
     <AssemblyName>GHIElectronics.TinyCLR.Pins</AssemblyName>
+    <NoWarn>CS1591;CS1570;CS1572;CS1573;CS1574;CS1658</NoWarn>
+    <DocumentationFile>$(OutputPath)$(AssemblyName).xml</DocumentationFile>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

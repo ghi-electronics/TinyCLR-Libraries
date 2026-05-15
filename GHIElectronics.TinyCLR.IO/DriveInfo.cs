@@ -2,6 +2,7 @@ using System.Collections;
 using GHIElectronics.TinyCLR.IO;
 
 namespace System.IO {
+    /// <summary>Classification of a mounted volume.</summary>
     public enum DriveType {
         Unknown = 0,
         NoRootDirectory = 1,
@@ -12,6 +13,7 @@ namespace System.IO {
         Ram = 6
     }
 
+    /// <summary>Information about a mounted volume — total/available space, type, root path.</summary>
     public sealed class DriveInfo {
         private static readonly Hashtable driveProviders = new Hashtable();
         private static Stack driveNames;

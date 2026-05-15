@@ -1,4 +1,5 @@
 ﻿namespace System.Drawing {
+    /// <summary>An integer rectangle defined by upper-left corner (X,Y) and size (Width,Height).</summary>
     public struct Rectangle {
         public Rectangle(int x, int y, int width, int height) {
             this.X = x;
@@ -13,6 +14,7 @@
         public int Height { get; set; }
     }
 
+    /// <summary>A floating-point rectangle defined by upper-left corner (X,Y) and size (Width,Height).</summary>
     public struct RectangleF {
         public RectangleF(float x, float y, float width, float height) {
             this.X = x;

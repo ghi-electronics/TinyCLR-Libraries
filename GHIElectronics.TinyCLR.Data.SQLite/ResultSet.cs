@@ -2,6 +2,11 @@
 using System.Collections;
 
 namespace GHIElectronics.TinyCLR.Data.SQLite {
+    /// <summary>
+    /// Result of a SQL SELECT — rows × columns plus column-name metadata. Index by
+    /// <c>this[row]</c> for an ArrayList of cells in that row, or <c>this[row, column]</c>
+    /// for an individual cell.
+    /// </summary>
     public class ResultSet {
         private int rowCount;
         private int columnCount;

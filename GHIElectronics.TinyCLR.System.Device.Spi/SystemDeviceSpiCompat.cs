@@ -3,18 +3,27 @@ using System;
 using GHIElectronics.TinyCLR.Native;
 
 namespace System.Device.Spi {
+    /// <summary>Bit ordering within an SPI frame.</summary>
     public enum DataFlow {
+        /// <summary>Most-significant bit first.</summary>
         MsbFirst = 0,
+        /// <summary>Least-significant bit first.</summary>
         LsbFirst = 1
     }
 
+    /// <summary>Standard SPI mode — combinations of clock polarity and phase.</summary>
     public enum SpiMode {
+        /// <summary>CPOL=0, CPHA=0.</summary>
         Mode0 = 0,
+        /// <summary>CPOL=0, CPHA=1.</summary>
         Mode1 = 1,
+        /// <summary>CPOL=1, CPHA=0.</summary>
         Mode2 = 2,
+        /// <summary>CPOL=1, CPHA=1.</summary>
         Mode3 = 3
     }
 
+    /// <summary>Per-device SPI settings in the standard <c>System.Device.Spi</c> shape. TinyCLR maps these onto its native SPI driver via <see cref="SpiDevice.Create(SpiConnectionSettings)"/>.</summary>
     public sealed class SpiConnectionSettings {
         public int BusId { get; }
         public int ChipSelectLine { get; set; }
@@ -29,6 +38,10 @@ namespace System.Device.Spi {
         }
     }
 
+    /// <summary>
+    /// .NET-style SPI device. Standard surface (<c>Read</c> / <c>Write</c> / <c>TransferFullDuplex</c>);
+    /// internally TinyCLR routes calls through <see cref="GHIElectronics.TinyCLR.Devices.Spi.SpiController"/>.
+    /// </summary>
     public abstract class SpiDevice : IDisposable {
         public abstract SpiConnectionSettings ConnectionSettings { get; }
 

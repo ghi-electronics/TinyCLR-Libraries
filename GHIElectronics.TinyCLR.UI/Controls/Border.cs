@@ -42,7 +42,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         public void SetBorderThickness(int left, int top, int right, int bottom) {
             VerifyAccess();
 
-            /// Negative values are not valid (same behavior as desktop WPF).
+            // Negative values are not valid (same behavior as desktop WPF).
             if ((left < 0) || (right < 0) || (top < 0) || (bottom < 0)) {
                 var errorMessage = "'" + left.ToString() + "," + top.ToString() + "," + right.ToString() + "," + bottom.ToString() + "' is not a valid value 'BorderThickness'";
 

@@ -242,15 +242,20 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner
         // phase.
         // ===========================================================================
 
+        // Stand-in for System.EventHandler — TinyCLR's mscorlib doesn't define
+        // the non-generic delegate, so the Scanner declares its own with the
+        // same signature.
+        public delegate void EipEventHandler(object sender, EventArgs e);
+
         /// <summary>Fired once after a successful ForwardOpen / LargeForwardOpen.</summary>
-        public event EventHandler ConnectionEstablished;
+        public event EipEventHandler ConnectionEstablished;
 
         /// <summary>
         /// Fired when the implicit producer (sendUDP) repeatedly fails to send, or when
         /// the target stops producing for longer than the RPI watchdog. Not fired on a
         /// user-initiated ForwardClose / Dispose.
         /// </summary>
-        public event EventHandler ConnectionLost;
+        public event EipEventHandler ConnectionLost;
 
         /// <summary>
         /// Fired on every Class-1 packet received from the target. The byte[] argument
@@ -266,11 +271,16 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner
         /// (currently fires when the inter-arrival gap exceeds 4 * RPI). Diagnostic only;
         /// the connection is not automatically closed.
         /// </summary>
-        public event EventHandler RpiViolated;
+        public event EipEventHandler RpiViolated;
 
-        // Track inter-arrival timing for RpiViolated detection. TickCount is monotonic;
-        // unlike DateTime.Now it isn't affected by wall-clock adjustments.
+        // Track inter-arrival timing for RpiViolated detection.
         private int lastImplicitTickCount;
+
+        // Substitute for Environment.TickCount (missing in TinyCLR mscorlib).
+        // Truncating DateTime.UtcNow.Ticks/TicksPerMillisecond to int matches
+        // .NET's Environment.TickCount semantics — it wraps every ~24.8 days
+        // and unsigned-delta arithmetic on the wrapped values stays correct.
+        private static int MonotonicMs() => (int)(DateTime.UtcNow.Ticks / TimeSpan.TicksPerMillisecond);
 
         private void ReceiveCallback(UdpState state)
         {
@@ -880,7 +890,7 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner
             // Phase 3.5: signal that the implicit producer + consumer threads are up
             // and the target accepted our Forward Open. Fired after the threads start
             // so handlers can safely read T_O_IOData / subscribe to ImplicitDataReceived.
-            this.lastImplicitTickCount = Environment.TickCount;
+            this.lastImplicitTickCount = MonotonicMs();
             this.ConnectionEstablished?.Invoke(this, EventArgs.Empty);
         }
 
@@ -1262,10 +1272,11 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner
                                     this.T_O_IOData[i] = snapshot[i];
                                 }
 
-                                // RpiViolated detection: TickCount is monotonic ms since boot,
-                                // safe from wall-clock changes (unlike DateTime.Now). Tolerance
-                                // is 4 * RPI (matches typical scanner timeout multiplier).
-                                var nowTicks = Environment.TickCount;
+                                // RpiViolated detection: millisecond delta from a monotonically
+                                // increasing source. TinyCLR's mscorlib lacks Environment.TickCount,
+                                // so we derive ms from DateTime.UtcNow.Ticks (truncated to int — wraps
+                                // every ~24 days but the delta math still works for RPI tolerances).
+                                var nowTicks = MonotonicMs();
                                 var rpiMs = (int)(this.RequestedPacketRate_T_O / 1000);
                                 if (this.lastImplicitTickCount != 0 && rpiMs > 0
                                     && (nowTicks - this.lastImplicitTickCount) > rpiMs * 4) {

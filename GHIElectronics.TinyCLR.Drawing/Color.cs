@@ -3,6 +3,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace System.Drawing {
+    /// <summary>32-bit ARGB color value. Construct via <see cref="FromArgb(int, int, int)"/> / <see cref="FromArgb(int, int, int, int)"/>, or use one of the named static constants.</summary>
     [Serializable(), DebuggerDisplay("{NameAndARGBValue}")]
     public struct Color {
         public static readonly Color Empty = new Color();

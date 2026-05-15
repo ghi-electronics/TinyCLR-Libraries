@@ -3,6 +3,7 @@ using System.IO;
 
 namespace System.Drawing
 {
+    /// <summary>Abstract base for raster images. Concrete subclass: <see cref="Bitmap"/>.</summary>
     [Serializable]
     public abstract class Image : MarshalByRefObject, ICloneable, IDisposable
     {
@@ -119,6 +120,7 @@ namespace System.Drawing
         Bmp = 3 // The windows .bmp format
     }
 
+    /// <summary>A raster bitmap loaded from a resource or stream (BMP/JPEG/GIF; PNG and TIFF are not supported).</summary>
     public class Bitmap : Image
     {
         private Bitmap(Internal.Bitmap bmp) => this.data = new Graphics(bmp, IntPtr.Zero);

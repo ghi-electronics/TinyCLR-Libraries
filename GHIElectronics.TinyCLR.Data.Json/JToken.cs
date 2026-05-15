@@ -4,6 +4,11 @@ using System.Threading;
 
 namespace GHIElectronics.TinyCLR.Data.Json
 {
+	/// <summary>
+	/// Abstract base for every JSON value type: <see cref="JObject"/>, <see cref="JArray"/>,
+	/// <see cref="JValue"/>, and <see cref="JProperty"/>. Use <see cref="JsonConverter"/>
+	/// to parse JSON text into a token tree or serialize a tree back to text.
+	/// </summary>
 	public abstract class JToken
 	{
 		private bool _fOwnsContext;

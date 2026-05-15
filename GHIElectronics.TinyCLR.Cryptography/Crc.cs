@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 
 namespace GHIElectronics.TinyCLR.Cryptography {
+    /// <summary>CRC-16 hash. Computes a 16-bit CRC over a byte buffer, optionally with a non-zero seed.</summary>
     public class Crc16 {       
         public Crc16() {
 

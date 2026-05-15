@@ -5,6 +5,7 @@ using System.Collections;
 using GHIElectronics.TinyCLR.IO;
 
 namespace System.IO {
+    /// <summary>Static helpers for directory management — create, delete, enumerate, get current directory.</summary>
     public sealed class Directory {
 
         private Directory() {
@@ -19,8 +20,8 @@ namespace System.IO {
 
             path = Path.GetFullPath(path);
 
-            /// According to MSDN, Directory.CreateDirectory on an existing
-            /// directory is no-op.
+            // According to MSDN, Directory.CreateDirectory on an existing
+            // directory is no-op.
             DriveInfo.GetForPath(path).CreateDirectory(path);
 
             return new DirectoryInfo(path);
@@ -31,7 +32,7 @@ namespace System.IO {
 
             path = Path.GetFullPath(path);
 
-            /// Is this the absolute root? this always exists.
+            // Is this the absolute root? this always exists.
             if (path.Length == 3 && path[0] >= 'A' && path[0] <= 'Z' && path[1] == ':' && (path[2] == Path.DirectorySeparatorChar)) {
                 return true;
             }
@@ -39,13 +40,13 @@ namespace System.IO {
                 try {
                     var attributes = DriveInfo.GetForPath(path).GetAttributes(path);
 
-                    /// This is essentially file not found.
+                    // This is essentially file not found.
                     if ((uint)attributes == 0xFFFFFFFF)
                         return false;
 
-                    /// Need to make sure these are not FAT16 or FAT32 specific.
+                    // Need to make sure these are not FAT16 or FAT32 specific.
                     if ((((FileAttributes)attributes) & FileAttributes.Directory) == FileAttributes.Directory) {
-                        /// It is a directory.
+                        // It is a directory.
                         return true;
                     }
                 }
@@ -191,7 +192,7 @@ namespace System.IO {
 
                 if (((attributes & (FileAttributes.Directory)) == 0) ||
                     ((attributes & (FileAttributes.ReadOnly)) != 0)) {
-                    /// it's readonly or not a directory
+                    // it's readonly or not a directory
                     throw new IOException("", (int)IOException.IOExceptionErrorCode.UnauthorizedAccess);
                 }
 
@@ -234,8 +235,8 @@ namespace System.IO {
 
             var root = Path.GetPathRoot(path);
             if (false && string.Equals(root, path)) { //TODO check to see it always go here
-                /// This is special case. Return all the volumes.
-                /// Note this will not work, once we start having \\server\share like paths.
+                // This is special case. Return all the volumes.
+                // Note this will not work, once we start having \\server\share like paths.
 
                 if (isDirectory) {
                     var volumes = DriveInfo.GetDrives();

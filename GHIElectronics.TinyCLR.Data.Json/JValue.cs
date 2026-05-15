@@ -3,6 +3,7 @@ using System.Text;
 
 namespace GHIElectronics.TinyCLR.Data.Json
 {
+    /// <summary>A JSON primitive value — string, number, boolean, or null.</summary>
     public class JValue : JToken
     {
         // JSON string escape per RFC 8259 section 7. Wraps in double quotes

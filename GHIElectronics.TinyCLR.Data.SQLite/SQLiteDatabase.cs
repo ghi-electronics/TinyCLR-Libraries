@@ -4,6 +4,12 @@ using System.IO;
 using System.Runtime.CompilerServices;
 
 namespace GHIElectronics.TinyCLR.Data.SQLite {
+    /// <summary>
+    /// SQLite database handle. Open an in-memory database with the parameterless
+    /// constructor or a file-backed database via the path constructor. Use
+    /// <c>ExecuteNonQuery</c> for inserts/updates and <c>ExecuteQuery</c> for SELECTs
+    /// that return a <see cref="ResultSet"/>.
+    /// </summary>
     public class SQLiteDatabase : IDisposable {
         private const int SQLITE_OK = 0;
         private const int SQLITE_ROW = 100;

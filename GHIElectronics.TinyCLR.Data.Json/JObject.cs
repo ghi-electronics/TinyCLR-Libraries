@@ -5,6 +5,7 @@ using System.Text;
 
 namespace GHIElectronics.TinyCLR.Data.Json
 {
+	/// <summary>A JSON object — an unordered map of name/<see cref="JToken"/> pairs.</summary>
 	public class JObject : JToken
 	{
 		private readonly Hashtable _members = new Hashtable();

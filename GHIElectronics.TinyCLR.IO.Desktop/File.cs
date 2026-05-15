@@ -115,13 +115,13 @@ namespace System.IO {
             try
             {
                 var attributes = DriveInfo.GetForPath(path).GetAttributes(folderPath);
-                /// If the folder does not exist or invalid we throw DirNotFound Exception (same as desktop).
+                // If the folder does not exist or invalid we throw DirNotFound Exception (same as desktop).
                 if ((uint)attributes == 0xFFFFFFFF)
                 {
                     throw new IOException("", (int)0);
                 }
 
-                /// Folder exists, lets verify whether the file itself exists.
+                // Folder exists, lets verify whether the file itself exists.
                 attributes = DriveInfo.GetForPath(path).GetAttributes(path);
                 if ((uint)attributes == 0xFFFFFFFF)
                 {
@@ -131,7 +131,7 @@ namespace System.IO {
 
                 if ((attributes & (FileAttributes.Directory | FileAttributes.ReadOnly)) != 0)
                 {
-                    /// it's a readonly file or an directory
+                    // it's a readonly file or an directory
                     throw new IOException("", (int)0);
                 }
 
@@ -160,7 +160,7 @@ namespace System.IO {
 
                 path = Path.GetFullPath(path);
 
-                /// Is this the absolute root? this is not a file.
+                // Is this the absolute root? this is not a file.
                 var root = Path.GetPathRoot(path);
                 if (string.Equals(root, path))
                 {
@@ -170,22 +170,22 @@ namespace System.IO {
                 {
                     var attributes = DriveInfo.GetForPath(path).GetAttributes(path);
 
-                    /// This is essentially file not found.
+                    // This is essentially file not found.
                     if ((uint)attributes == 0xFFFFFFFF)
                         return false;
 
                     if ((attributes & FileAttributes.Directory) == 0)
                     {
-                        /// Not a directory, it must be a file.
+                        // Not a directory, it must be a file.
                         return true;
                     }
                 }
             }
             catch (Exception)
             {
-                /// Like desktop, exists here does not throw exception in
-                /// a number of cases, instead returns false. For more
-                /// details see MSDN.
+                // Like desktop, exists here does not throw exception in
+                // a number of cases, instead returns false. For more
+                // details see MSDN.
             }
 
             return false;

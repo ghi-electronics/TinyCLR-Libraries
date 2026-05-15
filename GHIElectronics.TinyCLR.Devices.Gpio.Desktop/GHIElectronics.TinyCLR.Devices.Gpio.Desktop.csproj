@@ -13,6 +13,9 @@
     <AssemblyName>GHIElectronics.TinyCLR.Devices.Gpio</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <!-- IntelliSense XML doc; CS1591/malformed-XML family suppressed. -->
+    <DocumentationFile>$(OutputPath)$(AssemblyName).xml</DocumentationFile>
+    <NoWarn>$(NoWarn);CS1591;CS1570;CS1572;CS1573;CS1574;CS1658</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>

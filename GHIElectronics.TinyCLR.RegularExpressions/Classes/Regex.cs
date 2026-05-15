@@ -420,7 +420,7 @@ namespace System.Text.RegularExpressions
             }
             set
             {
-                ///If the value is 0 then we must clear the cache
+                //If the value is 0 then we must clear the cache
                 if ((cacheSize = value) <= 0)
                 {
                     Regex.Cache.Clear();
@@ -2068,7 +2068,7 @@ namespace System.Text.RegularExpressions
         /// <returns>The result of splitting the input string against the Regexp</returns>
         public static string[] Split(Regex regex, string input, int count, int startat)
         {
-            ///Sanity checks
+            //Sanity checks
             if (count < 0) throw new ArgumentOutOfRangeException("count");
             if (startat < 0 || startat > input.Length) throw new ArgumentOutOfRangeException("startat");
             //The result of splitting a string is... the String

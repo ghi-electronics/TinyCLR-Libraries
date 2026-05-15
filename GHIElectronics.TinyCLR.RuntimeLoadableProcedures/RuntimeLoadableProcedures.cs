@@ -3,8 +3,15 @@ using System.Runtime.CompilerServices;
 using GHIElectronics.TinyCLR.Native;
 
 namespace GHIElectronics.TinyCLR.RuntimeLoadableProcedures {
+    /// <summary>
+    /// Runtime Loadable Procedures (RLP) — load a compiled ELF blob onto the
+    /// device at runtime, look up symbols by name, and call native C functions
+    /// from managed code. Useful for shipping hardware-accelerated routines
+    /// (DSP, image processing) without rebuilding the firmware.
+    /// </summary>
     public static class RuntimeLoadableProcedures {
 
+        /// <summary>Handler signature for <see cref="NativeEvent"/>. The argument is whatever the native code passed to <c>RLP_PostManagedEvent</c>.</summary>
         public delegate void NativeEventHandler(uint data);
 
         // Native code posts events via RLP_PostManagedEvent(data); the
@@ -18,6 +25,7 @@ namespace GHIElectronics.TinyCLR.RuntimeLoadableProcedures {
         private static NativeEventDispatcher s_dispatcher;
         private static NativeEventHandler s_userEvent;
 
+        /// <summary>Raised when native RLP code calls <c>RLP_PostManagedEvent</c>. Runs on a managed thread, never in ISR context.</summary>
         public static event NativeEventHandler NativeEvent {
             add {
                 if (s_dispatcher == null) {
@@ -38,12 +46,22 @@ namespace GHIElectronics.TinyCLR.RuntimeLoadableProcedures {
             => s_userEvent?.Invoke((uint)d0);
 
 
+        /// <summary>
+        /// A loaded ELF binary. Construct with the ELF bytes, look up symbols by
+        /// name, then build a <see cref="NativeFunction"/> from a function-symbol's
+        /// address to call it.
+        /// </summary>
         public sealed class ElfImage : IDisposable {
 
+            /// <summary>Classification of an ELF symbol.</summary>
             public enum SymbolType {
+                /// <summary>Untyped or section symbol.</summary>
                 None = 0,
+                /// <summary>Data symbol (variable, array).</summary>
                 Object = 1,
+                /// <summary>Code symbol (function).</summary>
                 Function = 2,
+                /// <summary>Section symbol.</summary>
                 Section = 3,
             }
 
@@ -55,10 +73,15 @@ namespace GHIElectronics.TinyCLR.RuntimeLoadableProcedures {
             private bool disposed;
 #pragma warning restore 0414
 
+            /// <summary>Start address of the loaded image in target memory.</summary>
             public uint Address => this.address;
+            /// <summary>Total size of the loaded image.</summary>
             public uint Size => this.size;
+            /// <summary>Number of distinct ELF regions loaded.</summary>
             public uint RegionCount => this.regionCount;
 
+            /// <summary>Loads an ELF image into device memory.</summary>
+            /// <param name="elfImageData">ELF binary bytes.</param>
             public ElfImage(byte[] elfImageData) {
                 if (elfImageData == null) throw new ArgumentNullException(nameof(elfImageData));
 
@@ -70,8 +93,10 @@ namespace GHIElectronics.TinyCLR.RuntimeLoadableProcedures {
                 this.NativeLoadElf(this.imageData);
             }
 
+            /// <summary>Finalizer; ensures the image is unloaded.</summary>
             ~ElfImage() => this.Dispose(false);
 
+            /// <summary>Unloads the image from device memory.</summary>
             public void Dispose() {
                 this.Dispose(true);
                 GC.SuppressFinalize(this);
@@ -85,20 +110,29 @@ namespace GHIElectronics.TinyCLR.RuntimeLoadableProcedures {
                 this.disposed = true;
             }
 
+            /// <summary>Looks up a symbol by name and type.</summary>
+            /// <param name="name">Symbol name.</param>
+            /// <param name="type">Symbol classification.</param>
+            /// <returns>Symbol's runtime address, or 0 if not found.</returns>
             public uint FindSymbolAddress(string name, SymbolType type) {
                 if (name == null) throw new ArgumentNullException(nameof(name));
 
                 return this.NativeFindSymbolAddress(this.imageData, name, type);
             }
 
+            /// <summary>Locates a function symbol and wraps it in a <see cref="NativeFunction"/>.</summary>
             public NativeFunction FindFunction(string name) {
                 if (name == null) throw new ArgumentNullException(nameof(name));
 
                 return new NativeFunction(this.FindSymbolAddress(name, SymbolType.Function));
             }
 
+            /// <summary>Zero-initializes the loaded image's BSS region using the standard <c>__bss_start__</c>/<c>__bss_end__</c> symbols.</summary>
             public void InitializeBssRegion() => this.InitializeBssRegion("__bss_start__", "__bss_end__");
 
+            /// <summary>Zero-initializes the region delimited by two symbols.</summary>
+            /// <param name="startSymbolName">Symbol marking the start of the region.</param>
+            /// <param name="endSymbolName">Symbol marking the end of the region.</param>
             public void InitializeBssRegion(string startSymbolName, string endSymbolName) {
                 if (startSymbolName == null) throw new ArgumentNullException(nameof(startSymbolName));
                 if (endSymbolName == null) throw new ArgumentNullException(nameof(endSymbolName));
@@ -109,6 +143,7 @@ namespace GHIElectronics.TinyCLR.RuntimeLoadableProcedures {
                 this.ZeroRegion(start, end - start);
             }
 
+            /// <summary>Zero-fills a span of <paramref name="length"/> bytes starting at <paramref name="address"/>.</summary>
             public void ZeroRegion(uint address, uint length) => this.NativeZeroRegion(address, length);
 
             [MethodImpl(MethodImplOptions.InternalCall)]
@@ -125,6 +160,12 @@ namespace GHIElectronics.TinyCLR.RuntimeLoadableProcedures {
         }
 
 
+        /// <summary>
+        /// Wraps a native function located at a known address. The first call to
+        /// <see cref="Invoke"/> fixes the argument count and types; subsequent calls
+        /// must match. Supported argument types: 8/16/32/64-bit integers (signed and
+        /// unsigned), float, double, bool, and arrays of those types.
+        /// </summary>
         public sealed class NativeFunction : IDisposable {
 
 #pragma warning disable 0414
@@ -137,8 +178,10 @@ namespace GHIElectronics.TinyCLR.RuntimeLoadableProcedures {
             private bool disposed;
 #pragma warning restore 0414
 
+            /// <summary>Runtime address of the function.</summary>
             public uint Address => this.address;
 
+            /// <summary>Constructs a <see cref="NativeFunction"/> pointing at the given address.</summary>
             public NativeFunction(uint address) {
                 this.address = address;
                 this.sizeSet = false;
@@ -148,8 +191,10 @@ namespace GHIElectronics.TinyCLR.RuntimeLoadableProcedures {
                 this.nativeIndex = 0;
             }
 
+            /// <summary>Finalizer; releases interop resources.</summary>
             ~NativeFunction() => this.Dispose(false);
 
+            /// <summary>Releases interop resources associated with this function.</summary>
             public void Dispose() {
                 this.Dispose(true);
                 GC.SuppressFinalize(this);
@@ -162,6 +207,13 @@ namespace GHIElectronics.TinyCLR.RuntimeLoadableProcedures {
                 this.disposed = true;
             }
 
+            /// <summary>
+            /// Calls the native function with the given arguments and returns its
+            /// 32-bit return value. The first invocation locks the argument count;
+            /// subsequent calls must pass the same number of arguments.
+            /// </summary>
+            /// <param name="arguments">Arguments to pass. Supported types: integer (any width, signed or unsigned), float, double, bool, and arrays of those.</param>
+            /// <returns>The function's int return value.</returns>
             public int Invoke(params object[] arguments) {
                 if (arguments == null) arguments = new object[0];
 

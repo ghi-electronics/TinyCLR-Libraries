@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 
 namespace GHIElectronics.TinyCLR.Cryptography {
+    /// <summary>XTEA (eXtended Tiny Encryption Algorithm) block cipher. 128-bit key, 64-bit blocks.</summary>
     public class Xtea {
         private readonly uint[] key;
 

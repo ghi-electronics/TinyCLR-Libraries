@@ -10,8 +10,16 @@ namespace GHIElectronics.TinyCLR.Data.Json
 {
     // The protocol mantra: Be strict in what you emit, and generous in what you accept.
 
+    /// <summary>
+    /// Hook invoked by <see cref="JsonConverter.DeserializeObject(string, Type, InstanceFactory)"/>
+    /// when a polymorphic field is deserialized — return the concrete instance to populate.
+    /// </summary>
     public delegate object InstanceFactory(string instancePath, JToken token, Type baseType, string fieldName, int length);
 
+    /// <summary>
+    /// Parses JSON text into a <see cref="JToken"/> tree and serializes objects back
+    /// to JSON. Strict-on-emit, generous-on-accept per RFC 8259.
+    /// </summary>
     public static class JsonConverter
     {
         private enum TokenType

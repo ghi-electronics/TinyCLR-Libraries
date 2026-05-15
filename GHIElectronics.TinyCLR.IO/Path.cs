@@ -4,6 +4,7 @@
 using System.Collections;
 
 namespace System.IO {
+    /// <summary>Static helpers for path-string manipulation — Combine, GetExtension, GetFileName, etc.</summary>
     /*
      * Provides methods for processing directory strings in an ideally
      * cross-platform manner.  Most of the methods don't do a complete
@@ -387,7 +388,7 @@ namespace System.IO {
             for (var e = 0; e < pathParts.Length; e++) {
                 pathPartLen = pathParts[e].Length;
                 if (pathPartLen == 0) {
-                    /// Do nothing. Apparently paths like c:\\folder\\\file.txt works fine in Windows.
+                    // Do nothing. Apparently paths like c:\\folder\\\file.txt works fine in Windows.
                     continue;
                 }
                 else if (pathPartLen >= FSMaxFilenameLength) {
@@ -402,9 +403,9 @@ namespace System.IO {
                         throw new ArgumentException();
                 }
 
-                /// verify whether pathParts[e] is all '.'s. If it is
-                /// we have some special cases. Also path with both dots
-                /// and spaces only are invalid.
+                // verify whether pathParts[e] is all '.'s. If it is
+                // we have some special cases. Also path with both dots
+                // and spaces only are invalid.
                 var length = pathParts[e].Length;
                 var spaceFound = false;
 
@@ -421,9 +422,9 @@ namespace System.IO {
 
                 if (i >= length) {
                     if (!spaceFound) {
-                        /// Dots only.
+                        // Dots only.
                         if (i == 1) {
-                            /// Stay in same directory.
+                            // Stay in same directory.
                         }
                         else if (i == 2) {
                             if (finalPathSegments.Count == 0)
@@ -436,7 +437,7 @@ namespace System.IO {
                         }
                     }
                     else {
-                        /// Just dots and spaces doesn't make the cut.
+                        // Just dots and spaces doesn't make the cut.
                         throw new ArgumentException();
                     }
                 }

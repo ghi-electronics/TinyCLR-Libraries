@@ -4,6 +4,7 @@ using System.Text;
 
 namespace GHIElectronics.TinyCLR.Data.Json
 {
+    /// <summary>A JSON array — an ordered sequence of <see cref="JToken"/> elements.</summary>
     public class JArray : JToken
     {
         private readonly JToken[] _contents;

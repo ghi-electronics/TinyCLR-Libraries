@@ -16,7 +16,7 @@ namespace GHIElectronics.TinyCLR.UI.Shapes {
         }
 
         public override void OnRender(Media.DrawingContext dc) {
-            /// Make room for cases when strokes are thick.
+            // Make room for cases when strokes are thick.
             var x = this._renderWidth / 2 + this.Stroke.Thickness - 1;
             var y = this._renderHeight / 2 + this.Stroke.Thickness - 1;
             var w = this._renderWidth / 2 - (this.Stroke.Thickness - 1) * 2;

@@ -12,6 +12,8 @@
          it in user's bin\Debug\. Identity (AssemblyName + Version + PKT)
          comes from AssemblyInfo.cs and MUST match TinyCLR-side. -->
     <AssemblyName>GHIElectronics.TinyCLR.Native</AssemblyName>
+    <NoWarn>CS1591;CS1570;CS1572;CS1573;CS1574;CS1658</NoWarn>
+    <DocumentationFile>$(OutputPath)$(AssemblyName).xml</DocumentationFile>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

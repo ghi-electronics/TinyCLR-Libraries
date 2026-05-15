@@ -22,8 +22,8 @@ namespace GHIElectronics.TinyCLR.UI.Input {
                     throw new ArgumentException();
                 }
 
-                /// Make sure the element is attached
-                /// to the MainWindow subtree.
+                // Make sure the element is attached
+                // to the MainWindow subtree.
                 if (!IsMainWindowChild(element)) {
                     throw new ArgumentException();
                 }

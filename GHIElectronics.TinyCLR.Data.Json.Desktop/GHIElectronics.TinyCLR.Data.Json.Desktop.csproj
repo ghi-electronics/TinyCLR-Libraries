@@ -9,10 +9,11 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>GHIElectronics.TinyCLR.Data.Json</RootNamespace>
     <AssemblyName>GHIElectronics.TinyCLR.Data.Json</AssemblyName>
+    <DocumentationFile>$(OutputPath)$(AssemblyName).xml</DocumentationFile>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <LangVersion>latest</LangVersion>
-    <NoWarn>CS0436;CS0067;CS0649;CS0114;CS0108;CS0162;CS0168;CS0169;CS0414;CS0219;CS0628;CS1591;CS0660;CS0661</NoWarn>
+    <NoWarn>CS0436;CS0067;CS0649;CS0114;CS0108;CS0162;CS0168;CS0169;CS0414;CS0219;CS0628;CS1591;CS0660;CS0661;CS1570;CS1572;CS1573;CS1574;CS1658</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
