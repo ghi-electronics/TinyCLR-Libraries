@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>GHIElectronics.TinyCLR.Data.SQLite</name>
+    </assembly>
+    <members>
+        <member name="T:GHIElectronics.TinyCLR.Data.SQLite.OpenException">
+            <summary>Thrown when a database file cannot be opened.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Data.SQLite.QueryExecutionException">
+            <summary>Thrown when SQLite returns an error during query execution.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Data.SQLite.QueryFinalizationException">
+            <summary>Thrown when SQLite fails to finalize (release) a prepared statement.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Data.SQLite.QueryPrepareException">
+            <summary>Thrown when SQLite cannot prepare (compile) a query.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Data.SQLite.ResultSet">
+            <summary>
+            Result of a SQL SELECT — rows × columns plus column-name metadata. Index by
+            <c>this[row]</c> for an ArrayList of cells in that row, or <c>this[row, column]</c>
+            for an individual cell.
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Data.SQLite.SQLiteDatabase">
+            <summary>
+            SQLite database handle. Open an in-memory database with the parameterless
+            constructor or a file-backed database via the path constructor. Use
+            <c>ExecuteNonQuery</c> for inserts/updates and <c>ExecuteQuery</c> for SELECTs
+            that return a <see cref="T:GHIElectronics.TinyCLR.Data.SQLite.ResultSet"/>.
+            </summary>
+        </member>
+    </members>
+</doc>

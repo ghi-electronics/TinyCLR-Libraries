@@ -1,0 +1,417 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>GHIElectronics.TinyCLR.Devices.UsbClient</name>
+    </assembly>
+    <members>
+        <member name="T:GHIElectronics.TinyCLR.Devices.UsbClient.Cdc">
+            <summary>This device emulates a CDC virtual COM port.</summary>
+            <remarks>
+            Your host operating system may need the driver located <a href="https://www.ghielectronics.com/downloads/src/CDC_Driver.zip">here</a>. If you
+            build a custom or composite device, you must change the driver to reflect the VID, PID, and interface number that you are using. Search for
+            the string USB\Vid_VVVV&amp;Pid_PPPP&amp;MI_II in the INF file and update VVVV to your VID, PPPP to your PID, and II to you interface index.
+            </remarks>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbClient.Cdc.Stream">
+            <summary>The stream for the CDC connection.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.Cdc.#ctor(GHIElectronics.TinyCLR.Devices.UsbClient.UsbClientController)">
+            <summary>Creates a new CDC interface with default parameters.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.Cdc.#ctor(GHIElectronics.TinyCLR.Devices.UsbClient.UsbClientController,GHIElectronics.TinyCLR.Devices.UsbClient.UsbClientSetting)">
+            <summary>Creates a new CDC interface.</summary>
+            <param name="usbClientController">UsbClient controller.</param>
+            <param name="usbClientSetting">UsbClient setting</param>        
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.Cdc.CreateStream(System.Int32,GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice)">
+            <summary>Creates a new instance of a CDC stream.</summary>
+            <param name="index">The index of the stream</param>
+            <param name="parent">The owning raw device.</param>
+            <returns>The new stream.</returns>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.UsbClient.Cdc.CdcStream">
+            <summary>Stream for reading and writing data over a CDC connection.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.Cdc.CdcStream.Write(System.Byte[],System.Int32,System.Int32)">
+            <summary>Writes data to the stream.</summary>
+            <param name="buffer">The buffer from which to write.</param>
+            <param name="offset">The offset into the buffer at which to begin writing.</param>
+            <param name="count">The number of bytes to write.</param>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.UsbClient.Joystick">
+            <summary>
+            This device emulates a joystick. You can set the x, y, and z axis values, the z axis rotation, the state of 32 buttons, and 8 hat swtich directions.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbClient.Joystick.X">
+            <summary>Sets the x axis position. It must be between –32,768 to +32,767.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbClient.Joystick.Y">
+            <summary>Sets the y axis position. It must be between –32,768 to +32,767.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbClient.Joystick.Z">
+            <summary>Sets the z axis position. It must be between –32,768 to +32,767.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbClient.Joystick.ZRotation">
+            <summary>Sets the z rotation. It must be between –32,768 to +32,767.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbClient.Joystick.HatSwitch">
+            <summary>Sets the hat switch direction.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.Joystick.#ctor(GHIElectronics.TinyCLR.Devices.UsbClient.UsbClientController)">
+            <summary>Creates a new joystick with default parameters.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.Joystick.#ctor(GHIElectronics.TinyCLR.Devices.UsbClient.UsbClientController,GHIElectronics.TinyCLR.Devices.UsbClient.UsbClientSetting)">
+            <summary>Creates a new joystick.</summary>
+            <param name="usbClientController">UsbClient controller.</param>
+            <param name="usbClientSetting">UsbClient setting</param>        
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.Joystick.SendRawData(System.Int32,System.Int32,System.Int32,System.Int32,System.UInt32,GHIElectronics.TinyCLR.Devices.Usb.HatSwitchDirection)">
+            <summary>Sends the given raw data directly to the host..</summary>
+            <param name="x">The new x position from -32,768 to 32,767.</param>
+            <param name="y">The new y position from -32,768 to 32,767.</param>
+            <param name="z">The new z position from -32,768 to 32,767.</param>
+            <param name="zRotation">The new z rotation from -32,768 to 32,767.</param>
+            <param name="buttons">
+            Sends the given uint as a bitfield where each 1 represents a button press for the button whose number is the bit number.
+            </param>
+            <param name="hatSwitch">The new direction of the hat switch.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.Joystick.IsButtonPressed(System.Int32)">
+            <summary>Whether or not the given button has been pressed.</summary>
+            <param name="index">The button to query.</param>
+            <returns>The button state.</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.Joystick.PressButton(System.Int32)">
+            <summary>Presses the given button.</summary>
+            <param name="index">The button to press.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.Joystick.ReleaseButton(System.Int32)">
+            <summary>Releases the given button.</summary>
+            <param name="index">The button to release.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.Joystick.ClickButton(System.Int32)">
+            <summary>Presses then releases the given button.</summary>
+            <param name="index">The button to click.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.Joystick.ClickButton(System.Int32,System.Int32)">
+            <summary>Presses then releases the given button with the given delay between the actions.</summary>
+            <param name="index">The button to click.</param>
+            <param name="delay">The delay between the actions.</param>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.UsbClient.Keyboard">
+            <summary>This device emulates a keyboard. You can set the state of any key, but only seven keys can be pressed at once.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.Keyboard.#ctor(GHIElectronics.TinyCLR.Devices.UsbClient.UsbClientController)">
+            <summary>Creates a new keyboard with default parameters.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.Keyboard.#ctor(GHIElectronics.TinyCLR.Devices.UsbClient.UsbClientController,GHIElectronics.TinyCLR.Devices.UsbClient.UsbClientSetting)">
+            <summary>Creates a new keyboard.</summary>
+            <param name="usbClientController">UsbClient controller.</param>
+            <param name="usbClientSetting">UsbClient setting</param>        
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.Keyboard.Stroke(GHIElectronics.TinyCLR.Devices.Usb.Key)">
+            <summary>Presses and then releases the key.</summary>
+            <param name="key">The key to press and release.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.Keyboard.Stroke(GHIElectronics.TinyCLR.Devices.Usb.Key,System.Int32)">
+            <summary>Presses and then releases the key.</summary>
+            <param name="key">The key to press and release.</param>
+            <param name="delay">How long to wait after the press before releasing.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.Keyboard.Release(GHIElectronics.TinyCLR.Devices.Usb.Key)">
+            <summary>Releases the given key.</summary>
+            <param name="key">The key to release.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.Keyboard.Press(GHIElectronics.TinyCLR.Devices.Usb.Key)">
+            <summary>Presses the given key.</summary>
+            <param name="key">The key to press.</param>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.UsbClient.MassStorage">
+            <summary>
+            This device emulates a mass storage. Your Micro Framework device will appear as a virtual mass storage device similar to a USB Drive. This
+            works by exposing the storage connected to this device, such as SD card or USB sticks, to the host.
+            </summary>
+            <remarks>
+            Only one mass storage interface can be used, and one logical unit is supported. 
+            </remarks>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbClient.MassStorage.MaximumSupportedLogicalUnits">
+            <summary>The maximum number of logical units that any mass storage can support.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbClient.MassStorage.LogicalUnitCount">
+            <summary>The number of logical units assocaited with this mass storage.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.MassStorage.#ctor(GHIElectronics.TinyCLR.Devices.UsbClient.UsbClientController)">
+            <summary>Creates a new mass storage with default parameters.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.MassStorage.#ctor(GHIElectronics.TinyCLR.Devices.UsbClient.UsbClientController,GHIElectronics.TinyCLR.Devices.UsbClient.UsbClientSetting)">
+            <summary>Creates a new mass storage.</summary>
+            <param name="usbClientController">USBClient controller.</param>
+            <param name="usbClientSetting">USBClient setting.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.MassStorage.AttachLogicalUnit(System.IntPtr)">
+            <summary>Attaches a removable storage device.</summary>
+            <param name="storage">The storage device (hdc )to attach.</param>        
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.MassStorage.RemoveLogicalUnit(System.IntPtr)">
+            <summary>Remove a removable storage device.</summary>
+            <param name="storage">The storage device (hdc )to attach.</param>    
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.MassStorage.Enable">
+            <summary>Enable a removable storage device.</summary>          
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.MassStorage.Disable">
+            <summary>Disable a removable storage device.</summary>         
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.MassStorage.EnableLogicalUnit(System.IntPtr,System.Int32,System.String,System.String)">
+            <summary>Enables the logical unit associated with the given number.</summary>
+            <param name="storage">Storage Hdc of storage controller.</param>
+            <param name="number">The logical unit number.</param>
+            <param name="vendor">vendor.</param>
+            <param name="product">product.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.MassStorage.DisableLogicalUnit(System.IntPtr,System.Int32)">
+            <summary>Disables the logical unit associated with the given number.</summary>
+            <param name="storage">Storage Hdc of storage controller.</param>
+            <param name="number">The logical unit number.</param>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbClient.Mouse.MaxRange">
+            <summary>The maximum range for movement.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbClient.Mouse.MinRange">
+            <summary>The minimum range for movement.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbClient.Mouse.ClickButtonDelay">
+            <summary>The mouse click delay in millisecond.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbClient.Mouse.AbsolutePosition">
+            <summary>Return true for absolute, false for relative mode.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.Mouse.#ctor(GHIElectronics.TinyCLR.Devices.UsbClient.UsbClientController,System.Boolean)">
+            <summary>Creates a new mouse.</summary>
+            <param name="usbClientController">UsbClient controller.</param>
+            <param name="absolutePositon">true for absolute position, false for relative </param>   
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.Mouse.#ctor(GHIElectronics.TinyCLR.Devices.UsbClient.UsbClientController,GHIElectronics.TinyCLR.Devices.UsbClient.UsbClientSetting,System.Boolean)">
+            <summary>Creates a new mouse.</summary>
+            <param name="usbClientController">UsbClient controller.</param>
+            <param name="usbClientSetting">UsbClient setting</param>
+            <param name="absolutePositon">true for absolute position, false for relative </param>   
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.Mouse.IsPressedButton(GHIElectronics.TinyCLR.Devices.Usb.Buttons)">
+            <summary>Whether or not the given button is pressed.</summary>
+            <param name="button">The button to check.</param>
+            <returns>If it is pressed or not.</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.Mouse.PressButton(GHIElectronics.TinyCLR.Devices.Usb.Buttons)">
+            <summary>Presses the given button.</summary>
+            <param name="button">The button to press.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.Mouse.ReleaseButton(GHIElectronics.TinyCLR.Devices.Usb.Buttons)">
+            <summary>Releases the given button.</summary>
+            <param name="button">The button to release.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.Mouse.Click(GHIElectronics.TinyCLR.Devices.Usb.Buttons)">
+            <summary>Presses then releases the given button with the given delay between the actions.</summary>
+            <param name="button">The button to click.</param>       
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.Mouse.MoveWheel(System.Int32)">
+            <summary>Moves the wheel to the given position.</summary>
+            <param name="position">The new position.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.Mouse.MoveCursor(System.Int32,System.Int32)">
+            <summary>Moves the cursor's x and y coordinate to the given position.</summary>
+            <param name="x">The new x position.</param>
+            <param name="y">The new p position.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.Mouse.SendReport(System.Int32,System.Int32,System.Int32,GHIElectronics.TinyCLR.Devices.Usb.Buttons)">
+            <summary>Moves the cursor's x and y coordinate to the given position with the given step since each action can move at most 127 units.</summary>
+            <param name="x">The new x position.</param>
+            <param name="y">The new p position.</param>
+            <param name="wheel">The new wheel position.</param>
+            <param name="buttonsState">The new buttonsState state.</param>          
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice">
+            <summary>Represent a USB device.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice.MaxEndpoint">
+            <summary>The maximum number of endpoints.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice.MaxStreams">
+            <summary>The maximum number of streams.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice.VendorId">
+            <summary>The vendor id of the device.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice.ProductId">
+            <summary>The product id of the device.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice.BcdUsb">
+            <summary>The version of the device.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice.BcdDevice">
+            <summary>The version of the device.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice.MaximumPower">
+            <summary>The maximum power the device might need.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice.Manufacturer">
+            <summary>The manufacturer of the device.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice.Product">
+            <summary>The product name.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice.SerialNumber">
+            <summary>The serial number of the device.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice.#ctor(GHIElectronics.TinyCLR.Devices.UsbClient.UsbClientController,GHIElectronics.TinyCLR.Devices.UsbClient.UsbClientSetting)">
+            <summary>Creates a new raw device.</summary>
+            <param name="usbClientController">UsbClient controller.</param>
+            <param name="usbClientSetting">UsbClient setting</param>        
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice.ReserveNewEndpoint">
+            <summary>Gets the next available endpoint.</summary>
+            <returns>The endpoint number.</returns>
+            <remarks>The number of available endpoints depends on your platform.</remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice.ReserveNewEndpoint(System.Int32)">
+            <summary>Reserves the given endpoint.</summary>
+            <param name="endpoint">The specific endpoint number to reserve.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice.AddDescriptor(GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.Descriptor)">
+            <summary>Adds a descriptor to the device.</summary>
+            <param name="descriptor">The descriptor to add.</param>
+            <remarks>This is for descriptors that are not part of the configuration descriptors that need a special request.</remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice.AddInterface(GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.UsbInterface,System.String)">
+            <summary>Adds an interface to the device.</summary>
+            <param name="usbInterface">The interface.</param>
+            <param name="interfaceString">The interface name.</param>
+            <returns>The assigned interface index.</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice.Initialize">
+            <summary>Sets this device as the active device on the USB client controller. The existing active device will be deactivated if present.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice.CreateStream(System.Int32,System.Int32)">
+            <summary>Creates a steam for reading and writing to the device.</summary>
+            <param name="writeEndpoint">The write endpoint. Use RawStream.NullEndpoint if not available.</param>
+            <param name="readEndpoint">The read endpoint. Use RawStream.NullEndpoint if not available.</param>
+            <returns>The new stream.</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice.CreateStream(System.Int32,GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice)">
+            <summary>Creates a new instance of the stream type for this device type.</summary>
+            <param name="index">The index of the stream</param>
+            <param name="parent">The owning raw device.</param>
+            <returns>The new stream.</returns>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice.RawStream">
+            <summary>USB stream for reading and writing data through two endpoints.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice.RawStream.NullEndpoint">
+            <summary>Represents no endpoint.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice.RawStream.StreamIndex">
+            <summary>The index of this stream.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice.RawStream.ReadTimeout">
+            <summary>How long to wait before timing out a read operation.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice.RawStream.WriteTimeout">
+            <summary>How long to wait before timing out a write operation.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice.RawStream.CanRead">
+            <summary>Whether or not read is allowed from the stream.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice.RawStream.CanSeek">
+            <summary>Whether or not seeking is allowed in the stream.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice.RawStream.CanWrite">
+            <summary>Whether or not writting is allowed to the stream.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice.RawStream.Length">
+            <summary>Not supported.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice.RawStream.Position">
+            <summary>Not supported.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice.RawStream.LastWritten">
+            <summary>The number of bytes successfully written in the last call to any Write function.</summary>
+            <remarks>
+            Since System.IO.Stream.Write returns void, we cannot return this information from our overload. We also are not updating Position or
+            Length because they are not well defined for a stream like this and they would require tracking the difference yourself.
+            </remarks>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice.RawStream.BytesToRead">
+            <summary>The number of bytes available to read.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice.RawStream.BytesToWrite">
+            <summary>The number of bytes that are in the process of being written.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice.RawStream.Finalize">
+            <summary>The finalizer.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice.RawStream.Seek(System.Int64,System.IO.SeekOrigin)">
+            <summary>Not supported.</summary>
+            <param name="offset">Not supported.</param>
+            <param name="origin">Not supported.</param>
+            <returns>Not supported.</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice.RawStream.SetLength(System.Int64)">
+            <summary>Not supported.</summary>
+            <param name="value">Not supported.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice.RawStream.Flush">
+            <summary>Flushs the USB write buffers.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice.RawStream.Read(System.Byte[],System.Int32,System.Int32)">
+            <summary>Reads data from the stream.</summary>
+            <param name="buffer">The buffer to read into.</param>
+            <param name="offset">The offset into the buffer at which to write the data.</param>
+            <param name="count">The number of bytes to read.</param>
+            <returns>The number of bytes read.</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice.RawStream.Write(System.Byte[],System.Int32,System.Int32)">
+            <summary>Writes data to the stream.</summary>
+            <param name="buffer">The buffer from which to write.</param>
+            <param name="offset">The offset into the buffer at which to begin writing.</param>
+            <param name="count">The number of bytes to write.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice.RawStream.Read(System.Byte[])">
+            <summary>Reads data from the stream.</summary>
+            <param name="buffer">The buffer into which to read.</param>
+            <returns>The number of bytes read.</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice.RawStream.Write(System.Byte[])">
+            <summary>Writes data to the stream.</summary>
+            <param name="buffer">The buffer from which to write.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice.RawStream.Dispose(System.Boolean)">
+            <summary>Disposes the object.</summary>
+            <param name="disposing">Whether or not this is called from Dispose.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.WinUsb.#ctor(GHIElectronics.TinyCLR.Devices.UsbClient.UsbClientController)">
+            <summary>Creates a new WinUsb interface with default parameters.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.WinUsb.#ctor(GHIElectronics.TinyCLR.Devices.UsbClient.UsbClientController,GHIElectronics.TinyCLR.Devices.UsbClient.UsbClientSetting)">
+            <summary>Creates a new WinUsb interface.</summary>
+            <param name="usbClientController">UsbClient controller.</param>
+            <param name="usbClientSetting">UsbClient setting</param>        
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.WinUsb.CreateStream(System.Int32,GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice)">
+            <summary>Creates a new instance of a CDC stream.</summary>
+            <param name="index">The index of the stream</param>
+            <param name="parent">The owning raw device.</param>
+            <returns>The new stream.</returns>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.UsbClient.WinUsb.WinUsbStream">
+            <summary>Stream for reading and writing data over a CDC connection.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.WinUsb.WinUsbStream.Write(System.Byte[],System.Int32,System.Int32)">
+            <summary>Writes data to the stream.</summary>
+            <param name="buffer">The buffer from which to write.</param>
+            <param name="offset">The offset into the buffer at which to begin writing.</param>
+            <param name="count">The number of bytes to write.</param>
+        </member>
+    </members>
+</doc>

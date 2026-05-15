@@ -1,0 +1,834 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>GHIElectronics.TinyCLR.Devices.UsbHost</name>
+    </assembly>
+    <members>
+        <member name="T:GHIElectronics.TinyCLR.Devices.UsbHost.BaseDevice">
+            <summary>Represents a USB device connected.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbHost.BaseDevice.disposed">
+            <summary>Whether or not the object has been disposed.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.UsbHost.BaseDevice.DisconnectedEventHandler">
+            <summary>The event handler type for when the device disconnects.</summary>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.Devices.UsbHost.BaseDevice.Disconnected">
+            <summary>The event is fired when the device disconnects.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.BaseDevice.Connected">
+            <summary>Whether or not the device is connected.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.BaseDevice.Id">
+            <summary>The device id.</summary>
+            <remarks>This is unique among the currently connected USB devices. It will be the same for a device with multiple interfaces.</remarks>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.BaseDevice.InterfaceIndex">
+            <summary>The logical device interface index.</summary>
+            <remarks>
+            Some USB devices might have multiple functions represented as multiple interfaces. If a device functions as a whole, this will be equal to NO_INTERFACE_ASSOCIATED.
+            </remarks>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.BaseDevice.Type">
+            <summary>The device's type.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.BaseDevice.VendorId">
+            <summary>The device's vendor id.</summary>
+            <remarks>This is unique per company.</remarks>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.BaseDevice.ProductId">
+            <summary>The device's product id.</summary>
+            <remarks>This is unique per product for a certain company.</remarks>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.BaseDevice.PortNumber">
+            <summary>The device's USB port number.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.BaseDevice.WorkerInterval">
+            <summary>How often the internal worker callback is called.</summary>
+            <remarks>Timeout.Infinite or 0 disable the internal worker.</remarks>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.UsbHost.BaseDevice.DeviceType">
+            <summary>Possible device types.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbHost.BaseDevice.DeviceType.Unknown">
+            <summary>The device is not recognized.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbHost.BaseDevice.DeviceType.Hub">
+            <summary>USB Hub.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbHost.BaseDevice.DeviceType.HID">
+            <summary>Human Interface Device.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbHost.BaseDevice.DeviceType.Mouse">
+            <summary>Mouse.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbHost.BaseDevice.DeviceType.Keyboard">
+            <summary>Keyboard.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbHost.BaseDevice.DeviceType.Joystick">
+            <summary>Joystick.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbHost.BaseDevice.DeviceType.MassStorage">
+            <summary>Mass Storage. This includes USB storage devices such as USB Thumbs drives and USB hard disks.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbHost.BaseDevice.DeviceType.Printer">
+            <summary>Printer.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbHost.BaseDevice.DeviceType.SerialFTDI">
+            <summary>USB to Serial device.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbHost.BaseDevice.DeviceType.SerialProlific">
+            <summary>USB to Serial device.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbHost.BaseDevice.DeviceType.SerialProlific2">
+            <summary>USB to Serial device.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbHost.BaseDevice.DeviceType.SerialSiLabs">
+            <summary>USB to Serial device.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbHost.BaseDevice.DeviceType.SerialCDC">
+            <summary>USB to Serial device.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbHost.BaseDevice.DeviceType.SerialSierraC885">
+            <summary>USB to Serial device.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbHost.BaseDevice.DeviceType.SierraInstaller">
+            <summary>Sierra Installer.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbHost.BaseDevice.DeviceType.Video">
+            <summary>Video device (USB Video Class, non-camera).</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbHost.BaseDevice.DeviceType.Webcam">
+            <summary>USB webcam (USB Video Class with a camera input terminal).</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbHost.BaseDevice.DeviceType.Custom">
+            <summary>User-defined custom device class. Use this when implementing a driver that doesn't fit any of the predefined types.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.BaseDevice.Dispose">
+            <summary>Disconnects and disposes the device.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.BaseDevice.CheckEvents(System.Object)">
+            <summary>Repeatedly called with a period defined by WorkerInterval. Used to poll the device for data and raise any desired events.</summary>
+            <param name="sender">Always null.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.BaseDevice.Dispose(System.Boolean)">
+            <summary>Disconnects and disposes the device.</summary>
+            <param name="disposing">Whether or not this is called from Dispose.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.BaseDevice.CheckObjectState(System.Boolean)">
+            <summary>Verifies that the object is connected and not disposed.</summary>
+            <param name="throwOnInvalid">If the object is connected or disposed, whether or not to throw an exception.</param>
+            <returns>True if the object is connected and not disposed, false otherwise.</returns>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.DescriptorType">
+            <summary>The possible types of descriptors.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.DescriptorType.Device">
+            <summary>The device descriptor type.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.DescriptorType.Configuration">
+            <summary>The configuration descriptor type.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.DescriptorType.String">
+            <summary>The string descriptor type.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.DescriptorType.Interface">
+            <summary>The interface descriptor type.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.DescriptorType.Endpoint">
+            <summary>The endpoint descriptor type.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.BaseDescriptor">
+            <summary>The base USB descriptor.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.BaseDescriptor.Length">
+            <summary>Length of descriptor in bytes.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.BaseDescriptor.Type">
+            <summary>The type of the descriptor.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.BaseDescriptor.#ctor(GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.DescriptorType,System.Byte)">
+            <summary>Creates a new base descriptor</summary>
+            <param name="type">The type of the derived descriptor</param>
+            <param name="length">The length of the descriptor.</param>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.Device">
+            <summary>Device descriptor.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.Device.LENGTH">
+            <summary>The length of the descriptor in bytes.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.Device.UsbSpecificationNumber">
+            <summary>USB specification number that the device implements as a BCD.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.Device.ClassCode">
+            <summary>The class code of the device.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.Device.SubclassCode">
+            <summary>The subclass code.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.Device.ProtocolCode">
+            <summary>The protocol code.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.Device.MaximumPacketSize">
+            <summary>The max packet size for endpoint zero.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.Device.VendorId">
+            <summary>The vendor id.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.Device.ProductId">
+            <summary>The product id.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.Device.ReleaseNumber">
+            <summary>The device release number as a BCD.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.Device.ManufacturerIndex">
+            <summary>The manufacturer string descriptor index.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.Device.ProductIndex">
+            <summary>The product string descriptor index.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.Device.SerialNumberIndex">
+            <summary>The serial number string descriptor index.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.Device.NumberOfConfigurations">
+            <summary>The number of possible configurations.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.Device.#ctor(System.Byte[])">
+            <summary>Constructs a new descriptor.</summary>
+            <param name="buffer">The buffer with which to populate the descriptor.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.Device.#ctor(System.Byte[],System.Int32)">
+            <summary>Constructs a new descriptor.</summary>
+            <param name="buffer">The buffer with which to populate the descriptor.</param>
+            <param name="offset">The offset into the buffer at which to start.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.Device.#ctor">
+            <summary>Constructs a new descriptor.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.Configuration">
+            <summary>Configuration descriptor.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.Configuration.LENGTH">
+            <summary>The length of the descriptor in bytes.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.Configuration.TotalLength">
+            <summary>Total length of the the data returned in bytes.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.Configuration.NumberOfInterfaces">
+            <summary>The number of interfaces.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.Configuration.Value">
+            <summary>The value to be used as an argument to select this configuration.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.Configuration.Index">
+            <summary>The configuration string descriptor index.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.Configuration.Attributes">
+            <summary>A bitmap representing the attributes of the device.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.Configuration.MaxPower">
+            <summary>The maximum power consumption in 2mA units.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.Configuration.AuxiliaryDescriptors">
+            <summary>Child auxiliary descriptors.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.Configuration.Interfaces">
+            <summary>Child interface descriptors.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.Configuration.#ctor(System.Byte[])">
+            <summary>Constructs a new descriptor.</summary>
+            <param name="buffer">The buffer with which to populate the descriptor.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.Configuration.#ctor(System.Byte[],System.Int32)">
+            <summary>Constructs a new descriptor.</summary>
+            <param name="buffer">The buffer with which to populate the descriptor.</param>
+            <param name="offset">The offset into the buffer at which to start.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.Configuration.#ctor">
+            <summary>Constructs a new descriptor.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.Configuration.FillChildren(System.Byte[],System.Int32)">
+            <summary>Walks a config-descriptor blob from <paramref name="offset"/> to the end and fills <see cref="P:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.Configuration.Interfaces"/>, the nested endpoints, and <see cref="P:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.Configuration.AuxiliaryDescriptors"/>.</summary>
+            <param name="bytes">The full configuration-descriptor blob (length = <see cref="P:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.Configuration.TotalLength"/>).</param>
+            <param name="offset">Byte offset to start parsing children — typically <see cref="F:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.Configuration.LENGTH"/> when the blob starts with the configuration header.</param>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.Interface">
+            <summary>Interface descriptor.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.Interface.LENGTH">
+            <summary>The length of the descriptor in bytes.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.Interface.Number">
+            <summary>The number of the interface.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.Interface.AlternateSetting">
+            <summary>The value used to select alternate settings.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.Interface.NumberEndpoints">
+            <summary>The number of endpoints for this interface.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.Interface.ClassCode">
+            <summary>The class code.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.Interface.SubclassCode">
+            <summary>The subclass code.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.Interface.ProtocolCode">
+            <summary>The protocal code.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.Interface.Index">
+            <summary>The interface string descriptor index.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.Interface.AuxiliaryDescriptors">
+            <summary>Child auxiliary descriptors.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.Interface.Endpoints">
+            <summary>Child endpoint descriptors.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.Interface.#ctor(System.Byte[])">
+            <summary>Constructs a new descriptor.</summary>
+            <param name="buffer">The buffer with which to populate the descriptor.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.Interface.#ctor(System.Byte[],System.Int32)">
+            <summary>Constructs a new descriptor.</summary>
+            <param name="buffer">The buffer with which to populate the descriptor.</param>
+            <param name="offset">The offset into the buffer at which to start.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.Interface.#ctor">
+            <summary>Constructs a new descriptor.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.Endpoint">
+            <summary>Endpoint descriptor.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.Endpoint.LENGTH">
+            <summary>The length of the descriptor in bytes.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.Endpoint.Address">
+            <summary>The endpoint address.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.Endpoint.Attributes">
+            <summary>The attributes of the endpoint.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.Endpoint.MaximumPacketSize">
+            <summary>The maximum packet size this endpoint can transmit.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.Endpoint.Interval">
+            <summary>The interval for data transfer pooling in frame counts.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.Endpoint.AuxiliaryDescriptors">
+            <summary>Child auxiliary descriptors.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.Endpoint.#ctor(System.Byte[])">
+            <summary>Constructs a new descriptor.</summary>
+            <param name="buffer">The buffer with which to populate the descriptor.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.Endpoint.#ctor(System.Byte[],System.Int32)">
+            <summary>Constructs a new descriptor.</summary>
+            <param name="buffer">The buffer with which to populate the descriptor.</param>
+            <param name="offset">The offset into the buffer at which to start.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.Endpoint.#ctor">
+            <summary>Constructs a new descriptor.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.Auxiliary">
+            <summary>Represents additional auxiliary descriptors.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.Auxiliary.Payload">
+            <summary>The payload of the descriptor excluding length and type.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.Auxiliary.#ctor(System.Byte[])">
+            <summary>Constructs a new descriptor.</summary>
+            <param name="buffer">The buffer with which to populate the descriptor.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.Auxiliary.#ctor(System.Byte[],System.Int32)">
+            <summary>Constructs a new descriptor.</summary>
+            <param name="buffer">The buffer with which to populate the descriptor.</param>
+            <param name="offset">The offset into the buffer at which to start.</param>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.UsbHost.Joystick">
+            <summary>Allows a usb device to be used as a joystick.</summary>
+            <remarks>By default, the reported range for position is between -512 and 512. There is an internal thread that processes the device events.</remarks>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.UsbHost.Joystick.ButtonChangedEventHandler">
+            <summary>The delegate for when one of the joystick's button is pressed or released.</summary>
+            <param name="sender">The joystick associated with this event.</param>
+            <param name="e">The event arguments.</param>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.UsbHost.Joystick.CursorMovedEventHandler">
+            <summary>The delegate for when one of the joystick's cursors moves.</summary>
+            <param name="sender">The joystick associated with this event.</param>
+            <param name="e">The event arguments.</param>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.UsbHost.Joystick.HatSwitchPressedEventHandler">
+            <summary>The delegate for when the joystick's hat switch is pressed.</summary>
+            <param name="sender">The joystick associated with this event.</param>
+            <param name="e">The event arguments.</param>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.Devices.UsbHost.Joystick.ButtonChanged">
+            <summary>The event fired when one of the joystick's buttons is pressed or released.</summary>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.Devices.UsbHost.Joystick.CursorMoved">
+            <summary>The event fired when the joystick's cursor has moved.</summary>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.Devices.UsbHost.Joystick.HatSwitchPressed">
+            <summary>The event fired when the joystick's hat switch has been pressed.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Joystick.Capabilities">
+            <summary>The capabilities of the joystick.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Joystick.CursorPosition">
+            <summary>The current position of the first cursor.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Joystick.Cursor2Position">
+            <summary>The current position of the second cursor.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Joystick.CurrentHatSwitchDirection">
+            <summary>The current direction of the hat switch.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.UsbHost.Joystick.DeviceCapabilities">
+            <summary>Joystick capabilities.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbHost.Joystick.DeviceCapabilities.CursorX">
+            <summary>Has X on cursor 1.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbHost.Joystick.DeviceCapabilities.CursorY">
+            <summary>Has Y on cursor 1.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbHost.Joystick.DeviceCapabilities.Cursor2X">
+            <summary>Has X on cursor 2.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbHost.Joystick.DeviceCapabilities.Cursor2Y">
+            <summary>Has Y on cursor 2.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbHost.Joystick.DeviceCapabilities.HatSwitch">
+            <summary>Has a hat switch.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbHost.Joystick.DeviceCapabilities.Buttons">
+            <summary>Has buttons.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.Joystick.#ctor(System.UInt32,System.Byte)">
+            <summary>Creates a new joystick.</summary>
+            <param name="id">The device id.</param>
+            <param name="interfaceIndex">The device interface index.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.Joystick.Finalize">
+            <summary>The finalizer.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.Joystick.SetCursorBounds(GHIElectronics.TinyCLR.Devices.Usb.Cursor,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>Sets the bounds for given cursor.</summary>
+            <param name="cursor">The cursor for which to set the bounds.</param>
+            <param name="minX">The minimum X value.</param>
+            <param name="maxX">The maximum X value.</param>
+            <param name="minY">The minimum Y value.</param>
+            <param name="maxY">The maximum Y value.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.Joystick.GetButtonState(System.Int32)">
+            <summary>Gets the current button state.</summary>
+            <param name="buttonNumber">The button number to query.</param>
+            <returns>The state of the button.</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.Joystick.Dispose(System.Boolean)">
+            <summary>Disposes the joystick.</summary>
+            <param name="disposing">Whether or not this is called from Dispose.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.Joystick.CheckEvents(System.Object)">
+            <summary>Repeatedly called with a period defined by WorkerInterval. Used to poll the device for data and raise any desired events.</summary>
+            <param name="sender">Always null.</param>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.UsbHost.Joystick.ButtonChangedEventArgs">
+            <summary>The events args for the ButtonPressed and ButtonReleased events.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Joystick.ButtonChangedEventArgs.Which">
+            <summary>The index of the changed button.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Joystick.ButtonChangedEventArgs.State">
+            <summary>The new state of the button.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.UsbHost.Joystick.CursorMovedEventArgs">
+            <summary>The events args for the CursorMoved event.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Joystick.CursorMovedEventArgs.Which">
+            <summary>The index of the changed button.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Joystick.CursorMovedEventArgs.NewPosition">
+            <summary>The new state of the button.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Joystick.CursorMovedEventArgs.Delta">
+            <summary>The change from the last position.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.UsbHost.Joystick.HatSwitchPressedEventArgs">
+            <summary>The events args for the HatSwitchPressed event.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Joystick.HatSwitchPressedEventArgs.Direction">
+            <summary>The new direction of the hat switch.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.UsbHost.Keyboard">
+            <summary>Allows a usb device to be used as a keyboard.</summary>
+            <remarks>
+            The CharUp and CharDown events are only fired when a given key press has a corresponding ASCII key code. There is an internal thread that
+            processes the device events.
+            </remarks>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.UsbHost.Keyboard.KeyboardEventHandler">
+            <summary>The handler for used for keyboard callbacks.</summary>
+            <param name="sender">The object associated with this event.</param>
+            <param name="args">The event arguments.</param>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.Devices.UsbHost.Keyboard.KeyUp">
+            <summary>Fired when a key is released.</summary>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.Devices.UsbHost.Keyboard.KeyDown">
+            <summary>Fired when a key is pressed.</summary>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.Devices.UsbHost.Keyboard.CharUp">
+            <summary>Fired when a key is released and it can be converted to ASCII.</summary>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.Devices.UsbHost.Keyboard.CharDown">
+            <summary>Fired when a key is pressed and it can be converted to ASCII.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.Keyboard.#ctor(System.UInt32,System.Byte)">
+            <summary>Creates a new keyboard.</summary>
+            <param name="id">The device id.</param>
+            <param name="interfaceIndex">The device interface index.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.Keyboard.Finalize">
+            <summary>The finalizer.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.Keyboard.IsKeyPressed(GHIElectronics.TinyCLR.Devices.Usb.Key)">
+            <summary>Gets the current state of a key.</summary>
+            <param name="key">The key to query.</param>
+            <returns>The state of the key.</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.Keyboard.Dispose(System.Boolean)">
+            <summary>Disposes the keyboard.</summary>
+            <param name="disposing">Whether or not this is called from Dispose.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.Keyboard.CheckEvents(System.Object)">
+            <summary>Repeatedly called with a period defined by WorkerInterval. Used to poll the device for data and raise any desired events.</summary>
+            <param name="sender">Always null.</param>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.UsbHost.Keyboard.KeyboardEventArgs">
+            <summary>Event arguments for the keyboard events.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Keyboard.KeyboardEventArgs.Which">
+            <summary>The Key associated with the event.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Keyboard.KeyboardEventArgs.ASCII">
+            <summary>The ASCII representation of the key, if available. Otherwise, this value is <b>0</b>.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.UsbHost.Mouse">
+            <summary>Allows a usb device to be used a mouse.</summary>
+            <remarks>
+            By default, the reported range for position is between 0 and 512 and between -512 and 512 for delta values. There is an internal thread that
+            processes the device events.
+            </remarks>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.UsbHost.Mouse.ButtonChangedEventHandler">
+            <summary>The delegate for when one of the mouse's button is pressed or released.</summary>
+            <param name="sender">The mouse associated with this event.</param>
+            <param name="e">The event arguments.</param>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.UsbHost.Mouse.WheelMovedEventHandler">
+            <summary>The delegate for when the mouse's wheel moves.</summary>
+            <param name="sender">The mouse associated with this event.</param>
+            <param name="e">The event arguments.</param>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.UsbHost.Mouse.CursorMovedEventHandler">
+            <summary>The delegate for when the mouse's cursor moves.</summary>
+            <param name="sender">The mouse associated with this event.</param>
+            <param name="e">The event arguments.</param>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.Devices.UsbHost.Mouse.ButtonChanged">
+            <summary>The event fired when one of the mouse's buttons is pressed or released.</summary>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.Devices.UsbHost.Mouse.WheelMoved">
+            <summary>The event fired when the mouse's wheel has moved.</summary>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.Devices.UsbHost.Mouse.CursorMoved">
+            <summary>The event fired when the mouse's cursor has moved.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Mouse.LeftButtonState">
+            <summary>The current state of the mouse's left button.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Mouse.RightButtonState">
+            <summary>The current state of the mouse's right button.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Mouse.MiddleButtonState">
+            <summary>The current state of the mouse's middle button.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Mouse.Extended1ButtonState">
+            <summary>The current state of the mouse's first extended button.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Mouse.Extended2ButtonState">
+            <summary>The current state of the mouse's second extended button.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Mouse.CursorPosition">
+            <summary>The current position of the cursor.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Mouse.WheelPosition">
+            <summary>The current position of the mouse wheel.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.Mouse.#ctor(System.UInt32,System.Byte,System.Boolean)">
+            <summary>Creates a new mouse.</summary>
+            <param name="id">The device id.</param>
+            <param name="interfaceIndex">The device interface index.</param>        
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.Mouse.Finalize">
+            <summary>The finalizer.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Mouse.AbsolutePosition">
+            <summary>Return true for absolute, false for relative mode.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.Mouse.SetScale(System.Single)">
+            <summary>Scales the x, y, and wheel delta values.</summary>
+            <param name="scale">The value by which to scale the data.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.Mouse.SetCursorBounds(GHIElectronics.TinyCLR.Devices.Usb.Position,GHIElectronics.TinyCLR.Devices.Usb.Position)">
+            <summary>Sets the cursor bounds.</summary>
+            <param name="minimum">The minimum bound.</param>
+            <param name="maximum">The maximum bound.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.Mouse.SetCursorPosition(GHIElectronics.TinyCLR.Devices.Usb.Position)">
+            <summary>Sets the cursor position.</summary>
+            <param name="newPosition">The new position of the cursor.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.Mouse.Dispose(System.Boolean)">
+            <summary>Disposes the mouse.</summary>
+            <param name="disposing">Whether or not this is called from Dispose.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.Mouse.CheckEvents(System.Object)">
+            <summary>Repeatedly called with a period defined by WorkerInterval. Used to poll the device for data and raise any desired events.</summary>
+            <param name="sender">Always null.</param>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.UsbHost.Mouse.ButtonChangedEventArgs">
+            <summary>The events args for the ButtonPressed and ButtonReleased events.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Mouse.ButtonChangedEventArgs.Which">
+            <summary>Which button changed its state.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Mouse.ButtonChangedEventArgs.State">
+            <summary>The new state of the button.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.UsbHost.Mouse.WheelMovedEventArgs">
+            <summary>The events args for the WheelMoved event.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Mouse.WheelMovedEventArgs.NewPosition">
+            <summary>The new position of the wheel.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Mouse.WheelMovedEventArgs.Delta">
+            <summary>The change from the last position.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.UsbHost.Mouse.CursorMovedEventArgs">
+            <summary>The events args for the CursorMoved event.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Mouse.CursorMovedEventArgs.NewPosition">
+            <summary>The new state of the button.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Mouse.CursorMovedEventArgs.Delta">
+            <summary>The change from the last position.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.UsbHost.RawDevice">
+            <summary>
+            Provides low level access functionalities for the connected USB device. This is useful if there is not already a predefined driver for that device.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.RawDevice.#ctor(System.UInt32,System.Byte,GHIElectronics.TinyCLR.Devices.UsbHost.BaseDevice.DeviceType)">
+            <summary>Creates a new raw device.</summary>
+            <param name="id">The device id.</param>
+            <param name="interfaceIndex">The device interface index.</param>
+            <param name="vendorId">The device vendor id.</param>
+            <param name="productId">The device product id.</param>
+            <param name="portNumber">The device port number.</param>
+            <param name="deviceType">The device type.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.RawDevice.Finalize">
+            <summary>The finalizer.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.RawDevice.OpenPipe(GHIElectronics.TinyCLR.Devices.UsbHost.Descriptors.Endpoint)">
+            <summary>Opens a new communication pipe.</summary>
+            <param name="endpoint">The descriptor for the communication endpoint.</param>
+            <returns>The new pipe.</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.RawDevice.SendSetupPacket(System.Byte,System.Byte,System.UInt16,System.UInt16)">
+            <summary>Sends a USB setup packet.</summary>
+            <param name="requestType">The request type, recipient, and direction.</param>
+            <param name="request">The request to make.</param>
+            <param name="value">The value of the request.</param>
+            <param name="index">The index of the request.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.RawDevice.SendSetupPacket(System.Byte,System.Byte,System.UInt16,System.UInt16,System.Byte[],System.Int32,System.Int32)">
+            <summary>Sends a USB setup packet.</summary>
+            <param name="requestType">The request type, recipient, and direction.</param>
+            <param name="request">The request to make.</param>
+            <param name="value">The value of the request.</param>
+            <param name="index">The index of the request.</param>
+            <param name="data">The data to receive.</param>
+            <param name="dataOffset">The offset into data at which to receive the data.</param>
+            <param name="dataCount">The number of bytes to receive into data starting at offset.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.RawDevice.GetDeviceDescriptor">
+            <summary>Gets the device descriptor.</summary>
+            <returns>The device descriptor.</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.RawDevice.GetConfigurationDescriptor(System.Byte)">
+            <summary>Gets the configuration descriptor.</summary>
+            <param name="configurationIndex">The configuration index.</param>
+            <returns>The configuration descriptor.</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.RawDevice.Dispose(System.Boolean)">
+            <summary>Disconnects and disposes the device.</summary>
+            <param name="disposing">Whether or not this is called from Dispose.</param>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.UsbHost.RawDevice.Pipe">
+            <summary>A USB communication pipe.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.RawDevice.Pipe.TransferTimeout">
+            <summary>The timeout for transfer operations. Defaults to 500ms.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.RawDevice.Pipe.Endpoint">
+            <summary>Endpoint associated with this pipe.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.RawDevice.Pipe.Finalize">
+            <summary>The finalizer.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.RawDevice.Pipe.Transfer(System.Byte[])">
+            <summary>Transfers data to/from the endpoint.</summary>
+            <param name="buffer">The transfer buffer.</param>
+            <returns>The number of bytes successfully transferred.</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.RawDevice.Pipe.Transfer(System.Byte[],System.Int32,System.Int32)">
+            <summary>Transfers data to/from the endpoint.</summary>
+            <param name="buffer">The transfer buffer.</param>
+            <param name="offset">The offset into the buffer.</param>
+            <param name="count">The amount to transfer starting at offset from the buffer.</param>
+            <returns>The number of bytes successfully transferred.</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.RawDevice.Pipe.Dispose">
+            <summary>Disconnects and disposes the device.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.RawDevice.Pipe.Dispose(System.Boolean)">
+            <summary>Disconnects and disposes the device.</summary>
+            <param name="disposing">Whether or not this is called from Dispose.</param>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.DeviceConnectionEventArgs.Id">
+            <summary>The device id.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.DeviceConnectionEventArgs.InterfaceIndex">
+            <summary>The logical device interface index.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.DeviceConnectionEventArgs.Type">
+            <summary>The device's type.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.DeviceConnectionEventArgs.VendorId">
+            <summary>The device's vendor id.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.DeviceConnectionEventArgs.ProductId">
+            <summary>The device's product id.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.DeviceConnectionEventArgs.PortNumber">
+            <summary>The device's USB port number.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.UsbHost.Webcam">
+            <summary>Allows a USB webcam (UVC class) to be used.</summary>
+            <remarks>
+            Streams raw video frames (YUY2 or MJPEG). The application chooses one of the camera's
+            supported formats via <see cref="M:GHIElectronics.TinyCLR.Devices.UsbHost.Webcam.StartStreaming(GHIElectronics.TinyCLR.Devices.UsbHost.Webcam.Format,System.Int32)"/> and either subscribes to the
+            <see cref="E:GHIElectronics.TinyCLR.Devices.UsbHost.Webcam.FrameAvailable"/> event or polls <see cref="M:GHIElectronics.TinyCLR.Devices.UsbHost.Webcam.IsNewFrameAvailable"/>.
+            </remarks>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.UsbHost.Webcam.FrameAvailableEventHandler">
+            <summary>Delegate fired when a new frame is ready.</summary>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.Devices.UsbHost.Webcam.FrameAvailable">
+            <summary>Raised on the BaseDevice worker thread when a new frame is available.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Webcam.IsStreaming">
+            <summary>True while the camera is streaming.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Webcam.IsMjpeg">
+            <summary>True if the active stream is MJPEG; false for YUY2.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Webcam.Width">
+            <summary>The negotiated frame width in pixels (valid while streaming).</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Webcam.Height">
+            <summary>The negotiated frame height in pixels (valid while streaming).</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Webcam.FrameSize">
+            <summary>Bytes per frame (= Width * Height * 2 for YUY2). Valid while streaming.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Webcam.SupportedFormats">
+            <summary>The camera's supported formats.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.Webcam.#ctor(System.UInt32,System.Byte)">
+            <summary>Constructs a webcam wrapper for a connected UVC camera.</summary>
+            <param name="id">Device id from the connection event.</param>
+            <param name="interfaceIndex">VideoControl interface index from the connection event.</param>
+            <exception cref="T:System.NotSupportedException">
+            Thrown when no standard UVC VideoStreaming interface is found on the device.
+            </exception>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.Webcam.Finalize">
+            <summary>Finalizer.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.Webcam.StartStreaming(GHIElectronics.TinyCLR.Devices.UsbHost.Webcam.Format,System.Int32)">
+            <summary>Starts streaming the chosen format.</summary>
+            <param name="format">One of the entries from <see cref="P:GHIElectronics.TinyCLR.Devices.UsbHost.Webcam.SupportedFormats"/>.</param>
+            <param name="fps">Requested frame rate. Default 15.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.Webcam.Resync(System.Boolean)">
+            <summary>Flushes any frames queued in the camera's internal FIFO.</summary>
+            <param name="soft">false = hard alt-toggle flush; true = soft SET_CUR(Commit) replay.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.Webcam.StopStreaming">
+            <summary>Stops streaming and frees device-side buffers.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.Webcam.IsNewFrameAvailable">
+            <summary>Returns true and clears the flag if a new frame is ready since the last call.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.Webcam.GetFrame(System.Byte[])">
+            <summary>Copies the most recently completed frame into <paramref name="buffer"/>.</summary>
+            <param name="buffer">Destination buffer.</param>
+            <returns>Actual number of bytes written.</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.Webcam.ConvertYuy2ToRgb565(System.Byte[],System.Byte[])">
+            <summary>Converts a YUY2 (YUYV-packed) buffer to RGB565 into <paramref name="rgb565"/>.</summary>
+            <param name="yuy2">Source buffer with YUY2-packed pixels (Y1 U Y2 V tuples).</param>
+            <param name="rgb565">Destination buffer for RGB565 pixels (2 bytes per pixel).</param>
+            <remarks>
+            Pure managed implementation on Desktop so PC test code matches device behavior.
+            BT.601 conversion math; identical formula to the native YUV2.cpp helper. Output byte
+            count equals input byte count (4 source bytes -> 2 RGB565 pixels = 4 dest bytes).
+            Internally rounded down to a multiple of 4.
+            </remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.Webcam.Dispose(System.Boolean)">
+            <summary>Disposes the webcam, stopping any active stream.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.Webcam.CheckEvents(System.Object)">
+            <summary>Polled by BaseDevice's worker; raises FrameAvailable when a new frame lands.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.UsbHost.Webcam.FormatKind">
+            <summary>The on-the-wire pixel encoding for a UVC stream.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbHost.Webcam.FormatKind.Yuy2">
+            <summary>Uncompressed 4:2:2 packed (YUYV).</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbHost.Webcam.FormatKind.Mjpeg">
+            <summary>Motion-JPEG.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.UsbHost.Webcam.Format">
+            <summary>A camera-supported video format / resolution combination.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Webcam.Format.Width">
+            <summary>Frame width in pixels.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Webcam.Format.Height">
+            <summary>Frame height in pixels.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Webcam.Format.Kind">
+            <summary>The pixel encoding (YUY2 or MJPEG).</summary>
+        </member>
+    </members>
+</doc>

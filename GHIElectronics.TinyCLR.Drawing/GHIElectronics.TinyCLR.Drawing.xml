@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>GHIElectronics.TinyCLR.Drawing</name>
+    </assembly>
+    <members>
+        <member name="T:System.Drawing.Brush">
+            <summary>Abstract base for objects that fill graphics shapes (rectangles, ellipses, paths).</summary>
+        </member>
+        <member name="T:System.Drawing.SolidBrush">
+            <summary>A brush that fills with a single solid <see cref="P:System.Drawing.SolidBrush.Color"/>.</summary>
+        </member>
+        <member name="T:System.Drawing.Color">
+            <summary>32-bit ARGB color value. Construct via <see cref="M:System.Drawing.Color.FromArgb(System.Int32,System.Int32,System.Int32)"/> / <see cref="M:System.Drawing.Color.FromArgb(System.Int32,System.Int32,System.Int32,System.Int32)"/>, or use one of the named static constants.</summary>
+        </member>
+        <member name="T:System.Drawing.GraphicsUnit">
+            <summary>Unit of measurement for text and graphics sizes.</summary>
+        </member>
+        <member name="T:System.Drawing.Font">
+            <summary>
+            A bitmap font loaded from a TinyCLR resource. Use the resource designer to
+            embed .tinyfnt files, then construct via <c>Resources.GetFont</c>.
+            </summary>
+        </member>
+        <member name="T:System.Drawing.Graphics">
+            <summary>
+            2-D drawing surface backed by a <see cref="T:System.Drawing.Bitmap"/>. Issue line, rectangle,
+            ellipse, text, and image draws against this surface, then push the result to
+            the display via <see cref="!:Flush(IntPtr)"/>.
+            </summary>
+        </member>
+        <member name="T:System.Drawing.Image">
+            <summary>Abstract base for raster images. Concrete subclass: <see cref="T:System.Drawing.Bitmap"/>.</summary>
+        </member>
+        <member name="T:System.Drawing.Bitmap">
+            <summary>A raster bitmap loaded from a resource or stream (BMP/JPEG/GIF; PNG and TIFF are not supported).</summary>
+        </member>
+        <member name="T:System.Drawing.Pen">
+            <summary>Defines an object used to draw lines and outlines — color, width, and brush.</summary>
+        </member>
+        <member name="T:System.Drawing.Rectangle">
+            <summary>An integer rectangle defined by upper-left corner (X,Y) and size (Width,Height).</summary>
+        </member>
+        <member name="T:System.Drawing.RectangleF">
+            <summary>A floating-point rectangle defined by upper-left corner (X,Y) and size (Width,Height).</summary>
+        </member>
+        <member name="T:System.Drawing.SizeF">
+            <summary>A floating-point width × height size.</summary>
+        </member>
+    </members>
+</doc>

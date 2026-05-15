@@ -1,0 +1,1248 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>mscorlib</name>
+    </assembly>
+    <members>
+        <member name="T:System.AttributeTargets">
+            Enum used to indicate all the elements of the
+            VOS it is valid to attach this element to.
+        </member>
+        <member name="P:System.BitConverter.IsLittleEndian">
+            <summary>
+            Indicates the byte order ("endianess") in which data is stored in this computer architecture.
+            </summary>
+        </member>
+        <member name="M:System.BitConverter.DoubleToInt64Bits(System.Double)">
+            <summary>
+            Converts the specified double-precision floating point number to a 64-bit signed integer.
+            </summary>
+            <param name="value">The number to convert.</param>
+            <returns></returns>
+        </member>
+        <member name="M:System.BitConverter.GetBytes(System.Boolean)">
+            <summary>
+            Returns the specified Boolean value as an array of bytes.
+            </summary>
+            <param name="value">A Boolean value.</param>
+            <returns>An array of bytes with length 1.</returns>
+        </member>
+        <member name="M:System.BitConverter.GetBytes(System.Char)">
+            <summary>
+            Returns the specified Unicode character value as an array of bytes.
+            </summary>
+            <param name="value">A character to convert.</param>
+            <returns>An array of bytes with length 2.</returns>
+        </member>
+        <member name="M:System.BitConverter.GetBytes(System.Double)">
+            <summary>
+            Returns the specified double-precision floating point value as an array of bytes.
+            </summary>
+            <param name="value">The number to convert.</param>
+            <returns>An array of bytes with length 8.</returns>
+        </member>
+        <member name="M:System.BitConverter.GetBytes(System.Single)">
+            <summary>
+            Returns the specified single-precision floating point value as an array of bytes.
+            </summary>
+            <param name="value">The number to convert.</param>
+            <returns>An array of bytes with length 4.</returns>
+        </member>
+        <member name="M:System.BitConverter.GetBytes(System.Int32)">
+            <summary>
+            Returns the specified 32-bit signed integer value as an array of bytes.
+            </summary>
+            <param name="value">The number to convert.</param>
+            <returns>An array of bytes with length 4.</returns>
+        </member>
+        <member name="M:System.BitConverter.GetBytes(System.Int64)">
+            <summary>
+            Returns the specified 64-bit signed integer value as an array of bytes.
+            </summary>
+            <param name="value">The number to convert.</param>
+            <returns>An array of bytes with length 8.</returns>
+        </member>
+        <member name="M:System.BitConverter.GetBytes(System.Int16)">
+            <summary>
+            Returns the specified 16-bit signed integer value as an array of bytes.
+            </summary>
+            <param name="value">The number to convert.</param>
+            <returns>An array of bytes with length 2.</returns>
+        </member>
+        <member name="M:System.BitConverter.GetBytes(System.UInt32)">
+            <summary>
+            Returns the specified 32-bit unsigned integer value as an array of bytes.
+            </summary>
+            <param name="value">The number to convert.</param>
+            <returns>An array of bytes with length 4.</returns>
+        </member>
+        <member name="M:System.BitConverter.GetBytes(System.UInt64)">
+            <summary>
+            Returns the specified 64-bit unsigned integer value as an array of bytes.
+            </summary>
+            <param name="value">The number to convert.</param>
+            <returns>An array of bytes with length 8.</returns>
+        </member>
+        <member name="M:System.BitConverter.GetBytes(System.UInt16)">
+            <summary>
+            Returns the specified 16-bit unsigned integer value as an array of bytes.
+            </summary>
+            <param name="value">The number to convert.</param>
+            <returns>An array of bytes with length 2.</returns>
+        </member>
+        <member name="M:System.BitConverter.GetBytes(System.Byte[],System.UInt32[])">
+            <summary>
+            Organize an array with order from a pattern table
+            <param name="buffer">The source array.</param>
+            <param name="patternTable">The pattern table</param>
+            </summary>
+        </member>
+        <member name="M:System.BitConverter.Int64BitsToDouble(System.Int64)">
+            <summary>
+            Converts the specified 64-bit signed integer to a double-precision floating point number.
+            </summary>
+            <param name="value">The number to convert.</param>
+            <returns>A double-precision floating point number whose value is equivalent to value.</returns>
+        </member>
+        <member name="M:System.BitConverter.ToBoolean(System.Byte[],System.Int32)">
+            <summary>
+            Returns a Boolean value converted from one byte at a specified position in a byte array.
+            </summary>
+            <param name="value">An array of bytes.</param>
+            <param name="startIndex">The starting position within value.</param>
+            <returns>true if the byte at startIndex in value is nonzero; otherwise, false.</returns>
+        </member>
+        <member name="M:System.BitConverter.ToChar(System.Byte[],System.Int32)">
+            <summary>
+            Returns a Unicode character converted from two bytes at a specified position in a byte array.
+            </summary>
+            <param name="value">An array of bytes.</param>
+            <param name="startIndex">The starting position within value.</param>
+            <returns>A character formed by two bytes beginning at startIndex.</returns>
+        </member>
+        <member name="M:System.BitConverter.ToDouble(System.Byte[],System.Int32)">
+            <summary>
+            Returns a double-precision floating point number converted from eight bytes at a specified position in a byte array.
+            </summary>
+            <param name="value">An array of bytes.</param>
+            <param name="startIndex">The starting position within value.</param>
+            <returns>A double precision floating point number formed by eight bytes beginning at startIndex.</returns>
+        </member>
+        <member name="M:System.BitConverter.ToInt16(System.Byte[],System.Int32)">
+            <summary>
+            Returns a 16-bit signed integer converted from two bytes at a specified position in a byte array.
+            </summary>
+            <param name="value">An array of bytes.</param>
+            <param name="startIndex">The starting position within value.</param>
+            <returns>A 16-bit signed integer formed by two bytes beginning at startIndex.</returns>
+        </member>
+        <member name="M:System.BitConverter.ToInt32(System.Byte[],System.Int32)">
+            <summary>
+            Returns a 32-bit signed integer converted from four bytes at a specified position in a byte array.
+            </summary>
+            <param name="value">An array of bytes.</param>
+            <param name="startIndex">The starting position within value.</param>
+            <returns>A 32-bit signed integer formed by four bytes beginning at startIndex.</returns>
+        </member>
+        <member name="M:System.BitConverter.ToInt64(System.Byte[],System.Int32)">
+            <summary>
+            Returns a 64-bit signed integer converted from eight bytes at a specified position in a byte array.
+            </summary>
+            <param name="value">An array of bytes.</param>
+            <param name="startIndex">The starting position within value.</param>
+            <returns>A 64-bit signed integer formed by eight bytes beginning at startIndex.</returns>
+        </member>
+        <member name="M:System.BitConverter.ToSingle(System.Byte[],System.Int32)">
+            <summary>
+            Returns a single-precision floating point number converted from four bytes at a specified position in a byte array.
+            </summary>
+            <param name="value">An array of bytes.</param>
+            <param name="startIndex">The starting position within value.</param>
+            <returns>A single-precision floating point number formed by four bytes beginning at startIndex.</returns>
+        </member>
+        <member name="M:System.BitConverter.ToString(System.Byte[])">
+            <summary>
+            Converts the numeric value of each element of a specified array of bytes to its equivalent hexadecimal string representation.
+            </summary>
+            <param name="value">An array of bytes.</param>
+            <returns>A String of hexadecimal pairs separated by hyphens, where each pair represents the corresponding element in value; for example, "7F-2C-4A".</returns>
+        </member>
+        <member name="M:System.BitConverter.ToString(System.Byte[],System.Int32)">
+            <summary>
+            Converts the numeric value of each element of a specified subarray of bytes to its equivalent hexadecimal string representation.
+            </summary>
+            <param name="value">An array of bytes.</param>
+            <param name="startIndex">The starting position within value.</param>
+            <returns>A String of hexadecimal pairs separated by hyphens, where each pair represents the corresponding element in a subarray of value; for example, "7F-2C-4A".</returns>
+        </member>
+        <member name="M:System.BitConverter.ToString(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Converts the numeric value of each element of a specified subarray of bytes to its equivalent hexadecimal string representation.
+            </summary>
+            <param name="value">An array of bytes.</param>
+            <param name="startIndex">The starting position within value.</param>
+            <param name="length">The number of array elements in value to convert.</param>
+            <returns>A String of hexadecimal pairs separated by hyphens, where each pair represents the corresponding element in a subarray of value; for example, "7F-2C-4A".</returns>
+        </member>
+        <member name="M:System.BitConverter.ToUInt16(System.Byte[],System.Int32)">
+            <summary>
+            Returns a 16-bit unsigned integer converted from two bytes at a specified position in a byte array.
+            </summary>
+            <param name="value">An array of bytes.</param>
+            <param name="startIndex">The starting position within value.</param>
+            <returns>A 16-bit unsigned integer formed by two bytes beginning at startIndex.</returns>
+        </member>
+        <member name="M:System.BitConverter.ToUInt32(System.Byte[],System.Int32)">
+            <summary>
+            Returns a 32-bit unsigned integer converted from two bytes at a specified position in a byte array.
+            </summary>
+            <param name="value">The array of bytes.</param>
+            <param name="startIndex">The starting position within value.</param>
+            <returns>A 32-bit unsigned integer formed by two bytes beginning at startIndex.</returns>
+        </member>
+        <member name="M:System.BitConverter.ToUInt64(System.Byte[],System.Int32)">
+            <summary>
+            Returns a 64-bit unsigned integer converted from two bytes at a specified position in a byte array.
+            </summary>
+            <param name="value">The array of bytes.</param>
+            <param name="startIndex">The starting position within value.</param>
+            <returns>A 64-bit unsigned integer formed by two bytes beginning at startIndex.</returns>
+        </member>
+        <member name="M:System.BitConverter.SwapEndianness(System.Byte[],System.Int32)">
+            <summary>
+            Swap endianness in byte
+            <param name="data">The array of bytes.</param>
+            <param name="groupSize">Group of bytes to be swapped</param>
+            </summary>        
+        </member>
+        <member name="M:System.BitConverter.SwapEndianness(System.Byte[],System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Swap endianness in byte
+            <param name="data">The array of bytes.</param>
+            <param name="groupSize">Group of bytes to be swapped</param>
+            </summary>        
+        </member>
+        <member name="T:System.Boolean">
+            A place holder class for boolean.
+            @author Jay Roxe (jroxe)
+            @version
+        </member>
+        <member name="T:System.Byte">
+            A place holder class for signed bytes.
+            @author Jay Roxe (jroxe)
+            @version
+        </member>
+        <member name="F:System.Byte.MaxValue">
+            The maximum value that a <code>Byte</code> may represent: 127.
+        </member>
+        <member name="F:System.Byte.MinValue">
+            The minimum value that a <code>Byte</code> may represent: -128.
+        </member>
+        <member name="F:System.Char.MaxValue">
+            The maximum character value.
+        </member>
+        <member name="F:System.Char.MinValue">
+            The minimum character value.
+        </member>
+        <member name="T:System.Collections.Hashtable">
+            <summary>
+            HashTable is an Associative Container.
+            Created in March 2010.
+            by Eric Harlow.
+            </summary>
+        </member>
+        <member name="M:System.Collections.Hashtable.#ctor">
+            <summary>
+            Initializes a new, empty instance of the Hashtable class using the default initial capacity and load factor.
+            </summary>
+        </member>
+        <member name="M:System.Collections.Hashtable.#ctor(System.Int32)">
+            <summary>
+            Initializes a new, empty instance of the Hashtable class using the specified initial capacity,
+            and the default load factor.
+            </summary>
+            <param name="capacity">The initial capacity of the HashTable</param>
+        </member>
+        <member name="M:System.Collections.Hashtable.#ctor(System.Int32,System.Int32)">
+            <summary>
+            Initializes a new, empty instance of the Hashtable class using the specified initial capacity,
+            load factor.
+            </summary>
+            <param name="capacity">The initial capacity of the HashTable</param>
+            <param name="maxLoadFactor">The load factor to cause a rehash</param>
+        </member>
+        <member name="P:System.Collections.Hashtable.MaxLoadFactor">
+            <summary>
+            MaxLoadFactor Property is the value used to trigger a rehash.
+            Default value is 2.
+            A higher number can decrease lookup performance for large collections.
+            While a value of 1 maintains a constant time complexity at the cost of increased memory requirements.
+            </summary>
+        </member>
+        <member name="P:System.Collections.Hashtable.GrowthFactor">
+            <summary>
+            GrowthFactor Property is a multiplier to increase the HashTable size by during a rehash.
+            Default value is 2.
+            </summary>
+        </member>
+        <member name="T:System.Collections.ICollection">
+            Base interface for all collections, defining enumerators, size, and
+            synchronization methods.
+        </member>
+        <member name="M:System.Collections.ICollection.CopyTo(System.Array,System.Int32)">
+             CopyTo copies a collection into an Array, starting at a particular
+             index into the array.
+            
+             @param array array to copy collection into
+             @param index Index into <var>array</var>.
+             @exception ArgumentNullException if <var>array</var> is null.
+        </member>
+        <member name="P:System.Collections.ICollection.Count">
+            Number of items in the collections.
+        </member>
+        <member name="T:System.Collections.IComparer">
+             The IComparer interface implements a method that compares two objects. It is
+             used in conjunction with the <i>Sort</i> and <i>BinarySearch</i> methods on
+             the <i>Array</i> and <i>List</i> classes.
+            
+             @see System.Array
+             @see System.Collections.List
+            
+             @author Anders Hejlsberg
+             @version 1.00 8/13/98
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:System.Collections.IComparer.Compare(System.Object,System.Object)" -->
+        <member name="P:System.Collections.IDictionary.Item(System.Object)">
+            <summary>
+            The Item property provides methods to read and edit entries in the Dictionary.
+            </summary>
+            <param name="key"></param>
+            <returns></returns>
+        </member>
+        <member name="M:System.Collections.IDictionary.Add(System.Object,System.Object)">
+            <summary>
+            Adds a key/value pair to the dictionary.  The exact position in the dictionary is
+            implementation-dependent. A hashtable will always hash the same key to the same position.
+            This position may be different if a different hash function is used.
+            </summary>
+            <param name="key"></param>
+        </member>
+        <member name="M:System.Collections.IDictionary.Clear">
+            <summary>
+            Removes all items from the dictionary.
+            </summary>
+        </member>
+        <member name="M:System.Collections.IDictionary.Contains(System.Object)">
+            <summary>
+            Returns whether the dictionary contains a particular item.
+            </summary>
+            <param name="key"></param>
+            <returns>True if found otherwise false</returns>
+        </member>
+        <member name="M:System.Collections.IDictionary.Remove(System.Object)">
+            <summary>
+            Removes an item from the dictionary.
+            </summary>
+            <param name="key"></param>
+        </member>
+        <member name="T:System.Collections.IEnumerable">
+            Implement this interface if you need to support VB's foreach semantics.
+            Also, COM classes that support an enumerator will also implement this interface.
+        </member>
+        <member name="M:System.Collections.IEnumerable.GetEnumerator">
+            Returns an IEnumerator for this enumerable Object.  The enumerator provides
+            a simple way to access all the contents of a collection.
+        </member>
+        <member name="T:System.Collections.IEnumerator">
+            Base interface for all enumerators, providing a simple approach
+            to iterating over a collection.
+        </member>
+        <member name="M:System.Collections.IEnumerator.MoveNext">
+             Advances the enumerator to the next element of the enumeration and
+             returns a boolean indicating whether an element is available. Upon
+             creation, an enumerator is conceptually positioned before the first
+             element of the enumeration, and the first call to <code>MoveNext</code>
+             brings the first element of the enumeration into view.
+            
+             @return true if the enumerator was succesfully advanced to the next
+             element, false if the enumeration has been completed.
+             @exception InvalidOperationException Thrown if the underlying set of objects
+             has been modified since this enumerator was created.
+        </member>
+        <member name="P:System.Collections.IEnumerator.Current">
+             Returns the current element of the enumeration. The returned value is
+             undefined before the first call to <code>MoveNext</code> and following a
+             call to <code>MoveNext</code> that returned false. Multiple calls to
+             <code>GetCurrent</code> with no intervening calls to <code>MoveNext</code>
+             will return the same object.
+            
+             @return The current element of the enumeration.
+             @exception InvalidOperationException Thrown if the underlying set of objects
+             has been modified since this enumerator was created, or if the Enumerator
+             is positioned before or after the valid range.
+        </member>
+        <member name="M:System.Collections.IEnumerator.Reset">
+             Resets the enumerator to the beginning of the enumeration, starting over.
+             The preferred behavior for Reset is to return the exact same enumeration.
+             This means if you modify the underlying collection then call Reset, your
+             IEnumerator will be invalid, just as it would have been if you had called
+             MoveNext or Current.
+            
+             @exception InvalidOperationException Thrown if the underlying set of
+             objects has been modified since this enumerator was created.
+        </member>
+        <member name="T:System.Collections.IList">
+            An IList is an ordered collection of objects.  The exact ordering
+            is up to the implementation of the list, ranging from a sorted
+            order to insertion order.
+        </member>
+        <member name="P:System.Collections.IList.Item(System.Int32)">
+            The Item property provides methods to read and edit entries in the List.
+        </member>
+        <member name="M:System.Collections.IList.Add(System.Object)">
+            Adds an item to the list.  The exact position in the list is
+            implementation-dependent, so while ArrayList may always insert
+            in the last available location, a SortedList most likely would not.
+            The return value is the position the new element was inserted in.
+        </member>
+        <member name="M:System.Collections.IList.Contains(System.Object)">
+            Returns whether the list contains a particular item.
+        </member>
+        <member name="M:System.Collections.IList.Clear">
+            Removes all items from the list.
+        </member>
+        <member name="M:System.Collections.IList.IndexOf(System.Object)">
+            Returns the index of a particular item, if it is in the list.
+            Returns -1 if the item isn't in the list.
+        </member>
+        <member name="M:System.Collections.IList.Insert(System.Int32,System.Object)">
+            Inserts <var>value</var> into the list at position <var>index</var>.
+            <var>index</var> must be non-negative and less than or equal to the
+            number of elements in the list.  If <var>index</var> equals the number
+            of items in the list, then <var>value</var> is appended to the end.
+        </member>
+        <member name="M:System.Collections.IList.Remove(System.Object)">
+            Removes an item from the list.
+        </member>
+        <member name="M:System.Collections.IList.RemoveAt(System.Int32)">
+            Removes the item at position <var>index</var>.
+        </member>
+        <member name="T:System.Collections.Generic.Comparer`1">
+            <summary>
+            Default comparer for <typeparamref name="T"/>. Falls back to
+            <see cref="T:System.IComparable`1"/> if implemented, then non-generic
+            <see cref="T:System.IComparable"/>, then a stable but uninformative
+            <c>0</c>/<c>-1</c>/<c>1</c> based on reference equality. Same boxing
+            trade-off as <see cref="T:System.Collections.Generic.EqualityComparer`1"/> for value types.
+            </summary>
+        </member>
+        <member name="M:System.Collections.Generic.Comparer`1.Create(System.Comparison{`0})">
+            <summary>Creates a comparer from a delegate.</summary>
+        </member>
+        <member name="T:System.Collections.Generic.Dictionary`2">
+            <summary>
+            Hash-table-based generic dictionary. Mirrors the .NET BCL surface for
+            the operations we ship in this subset. Chained collisions; capacity
+            grows to roughly 2x on overflow.
+            </summary>
+        </member>
+        <member name="T:System.Collections.Generic.EqualityComparer`1">
+            <summary>
+            Default equality comparer for <typeparamref name="T"/>. Falls back to
+            <c>object.Equals</c> / <c>object.GetHashCode</c>, which means value-type
+            arguments are boxed at the call site - acceptable cost for this BCL
+            subset (no per-primitive specializations).
+            </summary>
+        </member>
+        <member name="T:System.Collections.Queue">
+            <summary>
+            A circular-array implementation of a queue. Enqueue can be O(n).  Dequeue is O(1).
+            </summary>
+        </member>
+        <member name="M:System.Collections.Queue.#ctor">
+            <summary>
+            Initializes a new instance of the Queue class that is empty, has the default initial
+            capacity, and uses the default growth factor (2x).
+            </summary>
+        </member>
+        <member name="P:System.Collections.Queue.Count">
+            <summary>
+            Gets the number of elements contained in the Queue.
+            </summary>
+        </member>
+        <member name="M:System.Collections.Queue.Clone">
+            <summary>
+            Creates a shallow copy of the Queue.
+            </summary>
+            <returns>A shallow copy of the Queue.</returns>
+        </member>
+        <member name="P:System.Collections.Queue.IsSynchronized">
+            <summary>
+            Gets a value indicating whether access to the Queue is synchronized (thread safe).
+            Always return false.
+            </summary>
+        </member>
+        <member name="P:System.Collections.Queue.SyncRoot">
+            <summary>
+            Gets an object that can be used to synchronize access to the Queue.
+            </summary>
+        </member>
+        <member name="M:System.Collections.Queue.Clear">
+            <summary>
+            Removes all objects from the Queue.
+            </summary>
+        </member>
+        <member name="M:System.Collections.Queue.CopyTo(System.Array,System.Int32)">
+            <summary>
+            Copies the Queue elements to an existing one-dimensional Array, starting at
+            the specified array index.
+            </summary>
+            <param name="array">The one-dimensional Array that is the destination of the elements copied from Queue.</param>
+            <param name="index">The zero-based index in array at which copying begins.</param>
+        </member>
+        <member name="M:System.Collections.Queue.Enqueue(System.Object)">
+            <summary>
+            Adds an object to the end of the Queue.
+            </summary>
+            <param name="obj">The object to add to the Queue.</param>
+        </member>
+        <member name="M:System.Collections.Queue.GetEnumerator">
+            <summary>
+            Returns an enumerator that iterates through the Queue.
+            </summary>
+            <returns>An IEnumerator for the Queue.</returns>
+        </member>
+        <member name="M:System.Collections.Queue.Dequeue">
+            <summary>
+            Removes and returns the object at the beginning of the Queue.
+            </summary>
+            <returns>The object that is removed from the beginning of the Queue.</returns>
+        </member>
+        <member name="M:System.Collections.Queue.Peek">
+            <summary>
+            Returns the object at the beginning of the Queue without removing it.
+            </summary>
+            <returns>The object at the beginning of the Queue.</returns>
+        </member>
+        <member name="M:System.Collections.Queue.Contains(System.Object)">
+            <summary>
+            Determines whether an element is in the Queue.
+            </summary>
+            <param name="obj">The Object to locate in the Queue.</param>
+            <returns>true if obj is found in the Queue; otherwise, false.</returns>
+        </member>
+        <member name="M:System.Collections.Queue.ToArray">
+            <summary>
+            Copies the Queue elements to a new array. The order of the elements in the new
+            array is the same as the order of the elements from the beginning of the Queue
+            to its end.
+            </summary>
+            <returns>A new array containing elements copied from the Queue.</returns>
+        </member>
+        <member name="T:System.Collections.Stack">
+            <summary>
+            An array implementation of a stack. Push can be O(n). Pop is O(1).
+            </summary>
+        </member>
+        <member name="M:System.Collections.Stack.#ctor">
+            <summary>
+            Initializes a new instance of the Stack class that is empty and has the default initial capacity.
+            </summary>
+        </member>
+        <member name="P:System.Collections.Stack.Count">
+            <summary>
+            Size of the stack
+            </summary>
+        </member>
+        <member name="P:System.Collections.Stack.IsSynchronized">
+            <summary>
+            Returns whether the current stack is synchornized. Always return false.
+            </summary>
+        </member>
+        <member name="P:System.Collections.Stack.SyncRoot">
+            <summary>
+            Gets an object that can be used to synchronize access to the Stack.
+            </summary>
+        </member>
+        <member name="M:System.Collections.Stack.Clear">
+            <summary>
+            Removes all Objects from the Stack.
+            </summary>
+        </member>
+        <member name="M:System.Collections.Stack.Clone">
+            <summary>
+            Creates a shallow copy of the Stack.
+            </summary>
+            <returns>A shallow copy of the Stack.</returns>
+        </member>
+        <member name="M:System.Collections.Stack.Contains(System.Object)">
+            <summary>
+            Determines whether an element is in the Stack.
+            </summary>
+            <param name="obj">The Object to locate in the Stack.</param>
+            <returns>true, if obj is found in the Stack; otherwise, false</returns>
+        </member>
+        <member name="M:System.Collections.Stack.CopyTo(System.Array,System.Int32)">
+            <summary>
+            Copies the Stack to an existing one-dimensional Array, starting at the specified array index.
+            </summary>
+            <param name="array">The one-dimensional Array that is the destination of the elements copied from Stack.</param>
+            <param name="index">The zero-based index in array at which copying begins.</param>
+        </member>
+        <member name="M:System.Collections.Stack.GetEnumerator">
+            <summary>
+            Returns an IEnumerator for this Stack.
+            </summary>
+            <returns>An IEnumerator for the Stack.</returns>
+        </member>
+        <member name="M:System.Collections.Stack.Peek">
+            <summary>
+            Returns the object at the top of the Stack without removing it.
+            </summary>
+            <returns>The Object at the top of the Stack.</returns>
+        </member>
+        <member name="M:System.Collections.Stack.Pop">
+            <summary>
+            Removes and returns the object at the top of the Stack.
+            </summary>
+            <returns>The Object removed from the top of the Stack.</returns>
+        </member>
+        <member name="M:System.Collections.Stack.Push(System.Object)">
+            <summary>
+            Inserts an object at the top of the Stack.
+            </summary>
+            <param name="obj">The Object to push onto the Stack.</param>
+        </member>
+        <member name="M:System.Collections.Stack.ToArray">
+            <summary>
+            Copies the Stack to a new array, in the same order Pop would return the items.
+            </summary>
+            <returns>A new array containing copies of the elements of the Stack.</returns>
+        </member>
+        <member name="T:System.ComponentModel.EditorBrowsableAttribute">
+            Custom attribute to indicate that a specified object
+            should be hidden from the editor. (i.e Intellisence filtering)
+        </member>
+        <member name="F:System.Convert.s_rgchBase64EncodingDefault">
+            <summary>
+            Conversion array from 6 bit of value into base64 encoded character.
+            </summary>
+        </member>
+        <member name="M:System.Convert.ToBase64String(System.Byte[])">
+            <summary>
+            Converts an array of 8-bit unsigned integers to its equivalent String representation encoded with base 64 digits.
+            </summary>
+            <param name="inArray">An array of 8-bit unsigned integers. </param>
+            <returns>The String representation, in base 64, of the contents of inArray.</returns>
+        </member>
+        <member name="M:System.Convert.FromBase64String(System.String)">
+            <summary>
+            Converts the specified String, which encodes binary data as base 64 digits, to an equivalent 8-bit unsigned integer array.
+            </summary>
+            <param name="inString">Base64 encoded string to convert</param>
+            <returns>An array of 8-bit unsigned integers equivalent to s.</returns>
+            <remarks>s is composed of base 64 digits, white space characters, and trailing padding characters.
+            The base 64 digits in ascending order from zero are the uppercase characters 'A' to 'Z',
+            lowercase characters 'a' to 'z', numerals '0' to '9', and the symbols '+' and '/'.
+            An arbitrary number of white space characters can appear in s because all white space characters are ignored.
+            The valueless character, '=', is used for trailing padding. The end of s can consist of zero, one, or two padding characters.
+            </remarks>
+        </member>
+        <!-- Badly formed XML comment ignored for member "T:System.DateTime" -->
+        <member name="P:System.DateTime.Hour">
+            Reduce size by calling a single method?
+        </member>
+        <member name="F:System.DateTime.ticksAtOrigin">
+            Our origin is at 1601/01/01:00:00:00.000
+            While desktop CLR's origin is at 0001/01/01:00:00:00.000.
+            There are 504911232000000000 ticks between them which we are subtracting.
+            See DeviceCode\PAL\time_decl.h for explanation of why we are taking
+            year 1601 as origin for our HAL, PAL, and CLR.
+        </member>
+        <member name="T:System.FlagsAttribute">
+            Custom attribute to indicate that the enum
+            should be treated as a bitfield (or set of flags).
+            An IDE may use this information to provide a richer
+            development experince.
+        </member>
+        <member name="T:System.Globalization.DaylightTime">
+            This class represents a starting/ending time for a period of daylight saving time.
+        </member>
+        <member name="P:System.Globalization.DaylightTime.Start">
+            The start date of a daylight saving period.
+        </member>
+        <member name="P:System.Globalization.DaylightTime.End">
+            The end date of a daylight saving period.
+        </member>
+        <member name="P:System.Globalization.DaylightTime.Delta">
+            Delta to stardard offset in ticks.
+        </member>
+        <member name="F:System.Guid.Empty">
+            <summary>
+            A read-only instance of the Guid class which consists of all zeros.
+            </summary>
+        </member>
+        <member name="M:System.Guid.#ctor(System.Int32,System.Int16,System.Int16,System.Byte,System.Byte,System.Byte,System.Byte,System.Byte,System.Byte,System.Byte,System.Byte)">
+            <summary>
+            Initializes an instanace of the Guid class.
+            </summary>
+            <param name="a">The first 4 bytes of the Guid.</param>
+            <param name="b">The next 2 bytes of the Guid.</param>
+            <param name="c">The next 2 bytes of the Guid.</param>
+            <param name="d">The next byte of the Guid.</param>
+            <param name="e">The next byte of the Guid.</param>
+            <param name="f">The next byte of the Guid.</param>
+            <param name="g">The next byte of the Guid.</param>
+            <param name="h">The next byte of the Guid.</param>
+            <param name="i">The next byte of the Guid.</param>
+            <param name="j">The next byte of the Guid.</param>
+            <param name="k">The next byte of the Guid.</param>
+        </member>
+        <member name="M:System.Guid.#ctor(System.UInt32,System.UInt16,System.UInt16,System.Byte,System.Byte,System.Byte,System.Byte,System.Byte,System.Byte,System.Byte,System.Byte)">
+            <summary>
+            Initializes an instanace of the Guid class.
+            </summary>
+            <param name="a">The first 4 bytes of the Guid.</param>
+            <param name="b">The next 2 bytes of the Guid.</param>
+            <param name="c">The next 2 bytes of the Guid.</param>
+            <param name="d">The next byte of the Guid.</param>
+            <param name="e">The next byte of the Guid.</param>
+            <param name="f">The next byte of the Guid.</param>
+            <param name="g">The next byte of the Guid.</param>
+            <param name="h">The next byte of the Guid.</param>
+            <param name="i">The next byte of the Guid.</param>
+            <param name="j">The next byte of the Guid.</param>
+            <param name="k">The next byte of the Guid.</param>
+        </member>
+        <member name="M:System.Guid.#ctor(System.Byte[])">
+            <summary>
+            Initializes an instance of the Guid class
+            </summary>
+            <param name="b">A 16 element byte array containing the values with which to initialize the Guid.</param>
+        </member>
+        <member name="M:System.Guid.CompareTo(System.Object)">
+            <summary>
+            Compares this instance to another Guid instance and returns an indication of their relative values
+            </summary>
+            <param name="value">Guid instance to compare, or null.</param>
+            <returns>Indication of the relative values (0 = equal, -1 = this instance less, +1 = this instance greater)</returns>
+        </member>
+        <member name="M:System.Guid.ToByteArray">
+            <summary>
+            Gets the instance value as a byte array
+            </summary>
+            <returns>16 element byte array containing the value of the Guid instance.</returns>
+        </member>
+        <member name="M:System.Guid.Equals(System.Object)">
+            <summary>
+            Overriden. Compares this instance to another Guid and returns whether they are equal or not.
+            </summary>
+        </member>
+        <member name="M:System.Guid.GetHashCode">
+            <summary>
+            Overriden. Returns a hash value for the Guid instance.
+            </summary>
+        </member>
+        <member name="T:System.ICloneable">
+             Defines an interface indicating that an object may be cloned.  Only objects
+             that implement <i>ICloneable</i> may be cloned. The interface defines a single
+             method which is called to create a clone of the object.   Object defines a method
+             <i>MemberwiseClone</i> to support default clone operations.
+            
+             @see System.Object
+        </member>
+        <member name="M:System.ICloneable.Clone">
+             Make a new object which is a copy of the object instanced.  This object may be either
+             deep copy or a shallow copy depending on the implementation of clone.  The default
+             Object support for clone does a shallow copy.
+            
+             @return A new object that represents a clone of the object.
+        </member>
+        <member name="T:System.IComparable">
+             The <i>IComparable</i> interface is implemented by classes that support an
+             <i>ordering</i> of instances of the class. The ordering represented by
+             <i>IComparable</i> can be used to sort arrays and collections of objects
+             that implement the interface.
+            
+             @see System.Array#Sort
+             @see System.Array#BinarySearch
+             @see System.List#Sort
+             @see System.List#BinarySearch
+             @see System.SortedList
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:System.IComparable.CompareTo(System.Object)" -->
+        <member name="P:System.Reflection.FieldInfo.MemberType">
+            The Member type Field.
+        </member>
+        <member name="T:System.Reflection.MemberTypes">
+            This Enum matchs the CorTypeAttr defined in CorHdr.h
+        </member>
+        <member name="T:System.Reflection.MethodImplAttributes">
+            This Enum matchs the CorMethodImpl defined in CorHdr.h
+        </member>
+        <member name="F:System.Reflection.MethodImplAttributes.OPTIL">
+            <internalonly/>
+        </member>
+        <member name="T:System.Object">
+             The <i>Object</i> is the root class for all object in the CLR System. <i>Object</i>
+             is the super class for all other CLR objects and provide a set of methods and low level
+             services to subclasses.  These services include object synchronization and support for clone
+             operations.
+            
+             @see System.ICloneable
+        </member>
+        <member name="T:System.ObsoleteAttribute">
+             This attribute is attached to members that are not to be used any longer.
+             Message is some human readable explanation of what to use
+             Error indicates if the compiler should treat usage of such a method as an
+               error. (this would be used if the actual implementation of the obsolete
+               method's implementation had changed).
+            
+             Issue: do we need to be able to localize this message string?
+            
+        </member>
+        <member name="T:System.Random">
+            <summary>
+            Represents a pseudo-random number generator, a device that produces a
+            sequence of numbers that meet certain statistical requirements for
+            randomness.
+            </summary>
+        </member>
+        <member name="M:System.Random.#ctor">
+            <summary>
+            Initializes a new instance of the Random class, using a time-
+            dependent default seed value.
+            </summary>
+        </member>
+        <member name="M:System.Random.#ctor(System.Int32)">
+            <summary>
+            Initializes a new instance of the Random class, using the specified
+            seed value.
+            </summary>
+            <param name="seed">A number used to calculate a starting value for
+            the pseudo-random number sequence.</param>
+        </member>
+        <member name="M:System.Random.Next">
+            <summary>
+            Returns a nonnegative random number.
+            </summary>
+            <returns>A 32-bit signed integer greater than or equal to zero and
+            less than MaxValue.</returns>
+        </member>
+        <member name="M:System.Random.Next(System.Int32)">
+            <summary>
+            Returns a nonnegative random number less than the specified maximum.
+            </summary>
+            <param name="maxValue">The exclusive upper bound of the random number
+            to be generated. maxValue must be greater than or equal to zero.</param>
+            <returns>A 32-bit signed integer greater than or equal to zero, and
+            less than maxValue.</returns>
+        </member>
+        <member name="M:System.Random.NextDouble">
+            <summary>
+            Returns a random number between 0.0 and 1.0.
+            </summary>
+            <returns>A double-precision floating point number greater than or equal
+            to 0.0, and less than 1.0.</returns>
+        </member>
+        <member name="M:System.Random.NextBytes(System.Byte[])">
+            <summary>
+            Fills the elements of a specified array of bytes with random numbers.
+            </summary>
+            <param name="buffer">An array of bytes to contain random numbers.</param>
+        </member>
+        <member name="T:System.RuntimeArgumentHandle">
+              This value type is used for constructing System.ArgIterator.
+            
+              SECURITY : m_ptr cannot be set to anything other than null by untrusted
+              code.
+            
+              This corresponds to EE VARARGS cookie.
+        </member>
+        <member name="T:System.RuntimeFieldHandle">
+              This value type is used for making classlib type safe.
+            
+              SECURITY : m_ptr cannot be set to anything other than null by untrusted
+              code.
+            
+              This corresponds to EE FieldDesc.
+        </member>
+        <member name="T:System.RuntimeMethodHandle">
+              This value type is used for making classlib type safe.
+            
+              SECURITY : m_ptr cannot be set to anything other than null by untrusted
+              code.
+            
+              This corresponds to EE MethodDesc.
+        </member>
+        <member name="T:System.RuntimeTypeHandle">
+              This value type is used for making Type.GetTypeFromHandle() type safe.
+            
+              SECURITY : m_ptr cannot be set to anything other than null by untrusted
+              code.
+            
+              This corresponds to EE TypeHandle.
+        </member>
+        <member name="T:System.Runtime.CompilerServices.MethodImplOptions">
+            This Enum matchs the miImpl flags defined in corhdr.h. It is used to specify
+            certain method properties.
+        </member>
+        <member name="F:System.Runtime.CompilerServices.MethodCodeType.OPTIL">
+            <internalonly/>
+        </member>
+        <member name="T:System.Runtime.CompilerServices.MethodImplAttribute">
+            Custom attribute to specify additional method properties.
+        </member>
+        <member name="M:System.Runtime.CompilerServices.RuntimeHelpers.GetObjectValue(System.Object)">
+             GetObjectValue is intended to allow value classes to be manipulated as 'Object'
+             but have aliasing behavior of a value class.  The intent is that you would use
+             this function just before an assignment to a variable of type 'Object'.  If the
+             value being assigned is a mutable value class, then a shallow copy is returned
+             (because value classes have copy semantics), but otherwise the object itself
+             is returned.
+            
+             Note: VB calls this method when they're about to assign to an Object
+             or pass it as a parameter.  The goal is to make sure that boxed
+             value types work identical to unboxed value types - ie, they get
+             cloned when you pass them around, and are always passed by value.
+             Of course, reference types are not cloned.  -- BrianGru  7/12/2001
+            
+             @param obj The object that is about to be assigned.
+             @return a shallow copy of 'obj' if it is a value class, 'obj' itself otherwise
+        </member>
+        <member name="M:System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(System.RuntimeTypeHandle)">
+             RunClassConstructor causes the class constructor for the given type to be triggered
+             in the current domain.  After this call returns, the class constructor is guaranteed to
+             have at least been started by some thread.  In the absence of class constructor
+             deadlock conditions, the call is further guaranteed to have completed.
+            
+             This call will generate an exception if the specified class constructor threw an
+             exception when it ran.
+        </member>
+        <member name="T:System.Runtime.InteropServices.CharSet">
+            Use this in P/Direct function prototypes to specify
+            which character set to use when marshalling Strings.
+            Using Ansi will marshal the strings as 1 byte char*'s.
+            Using Unicode will marshal the strings as 2 byte wchar*'s.
+            Generally you probably want to use Auto, which does the
+            right thing 99% of the time.
+        </member>
+        <member name="T:System.Runtime.InteropServices.LayoutKind">
+            Used in the StructLayoutAttribute class
+            
+        </member>
+        <member name="T:System.SByte">
+            A place holder class for signed bytes.
+            @author Jay Roxe (jroxe)
+            @version
+        </member>
+        <member name="F:System.SByte.MaxValue">
+            The maximum value that a <code>Byte</code> may represent: 127.
+        </member>
+        <member name="F:System.SByte.MinValue">
+            The minimum value that a <code>Byte</code> may represent: -128.
+        </member>
+        <!-- Badly formed XML comment ignored for member "T:System.String" -->
+        <member name="T:System.Text.StringBuilder">
+            <summary>
+            A Micro Framework port of the Full Framework StringBuilder. Contributed by Julius Friedman.
+            </summary>
+        </member>
+        <member name="P:System.Text.StringBuilder.MaxCapacity">
+            <summary>
+            Gets the maximum capacity of this instance.
+            </summary>
+        </member>
+        <member name="P:System.Text.StringBuilder.Item(System.Int32)">
+            <summary>
+            Gets or sets a character from the underlying buffer
+            </summary>
+            <param name="index"></param>
+            <returns></returns>
+        </member>
+        <member name="P:System.Text.StringBuilder.Capacity">
+            <summary>
+            Gets or sets the maximum number of characters that can be contained in the memory allocated by the current instance.
+            </summary>
+        </member>
+        <member name="P:System.Text.StringBuilder.Length">
+            <summary>
+            Gets or sets the length of the current StringBuilder object.
+            </summary>
+        </member>
+        <member name="M:System.Text.StringBuilder.#ctor(System.String,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Initializes a new instance of the StringBuilder class from the specified substring and capacity.
+            </summary>
+            <param name="value"></param>
+            <param name="startIndex"></param>
+            <param name="length"></param>
+            <param name="capacity"></param>
+        </member>
+        <member name="M:System.Text.StringBuilder.#ctor(System.String,System.Int32)">
+            <summary>
+            Initializes a new instance of the StringBuilder class using the specified string and capacity.
+            </summary>
+            <param name="value"></param>
+            <param name="capacity"></param>
+        </member>
+        <member name="M:System.Text.StringBuilder.#ctor(System.Int32,System.Int32)">
+            <summary>
+            Initializes a new instance of the StringBuilder class that starts with a specified capacity and can grow to a specified maximum.
+            </summary>
+            <param name="capacity"></param>
+            <param name="maxCapacity"></param>
+        </member>
+        <member name="M:System.Text.StringBuilder.#ctor(System.Int32)">
+            <summary>
+            Initializes a new instance of the StringBuilder class using the specified capacity.
+            </summary>
+            <param name="capacity"></param>
+        </member>
+        <member name="M:System.Text.StringBuilder.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the StringBuilder class using the specified string.
+            </summary>
+            <param name="value"></param>
+        </member>
+        <member name="M:System.Text.StringBuilder.#ctor">
+            <summary>
+            Initializes a new instance of the StringBuilder class.
+            </summary>
+        </member>
+        <member name="M:System.Text.StringBuilder.Clear">
+            <summary>
+            Removes all characters from the current StringBuilder instance.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:System.Text.StringBuilder.Append(System.Boolean)">
+            <summary>
+            Appends the string representation of a specified Boolean value to this instance.
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:System.Text.StringBuilder.Append(System.Byte)">
+            <summary>
+            Appends the string representation of a specified 8-bit unsigned integer to this instance.
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:System.Text.StringBuilder.Append(System.Char)">
+            <summary>
+            Appends the string representation of a specified Unicode character to this instance.
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:System.Text.StringBuilder.Append(System.Double)">
+            <summary>
+            Appends the string representation of a specified double-precision floating-point number to this instance.
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:System.Text.StringBuilder.Append(System.Int16)">
+            <summary>
+            Appends the string representation of a specified 16-bit signed integer to this instance.
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:System.Text.StringBuilder.Append(System.Char[])">
+            <summary>
+            Appends the string representation of the Unicode characters in a specified array to this instance.
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:System.Text.StringBuilder.Append(System.Int32)">
+            <summary>
+            Appends the string representation of a specified 32-bit signed integer to this instance.
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:System.Text.StringBuilder.Append(System.Int64)">
+            <summary>
+            Appends the string representation of a specified 64-bit unsigned integer to this instance.
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:System.Text.StringBuilder.Append(System.Object)">
+            <summary>
+            Appends the string representation of a specified object to this instance.
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:System.Text.StringBuilder.Append(System.SByte)">
+            <summary>
+            Appends the string representation of a specified 8-bit signed integer to this instance.
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:System.Text.StringBuilder.Append(System.Single)">
+            <summary>
+            Appends the string representation of a specified double-precision floating-point number to this instance.
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:System.Text.StringBuilder.Append(System.UInt16)">
+            <summary>
+            Appends the string representation of a specified 16-bit unsigned integer to this instance.
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:System.Text.StringBuilder.Append(System.UInt32)">
+            <summary>
+            Appends the string representation of a specified 32-bit unsigned integer to this instance.
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:System.Text.StringBuilder.Append(System.UInt64)">
+            <summary>
+            Appends the string representation of a specified 64-bit unsigned integer to this instance.
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:System.Text.StringBuilder.Append(System.String,System.Int32,System.Int32)">
+            <summary>
+            Appends a copy of a specified substring to this instance.
+            </summary>
+            <param name="value"></param>
+            <param name="startIndex"></param>
+            <param name="count"></param>
+            <returns></returns>
+        </member>
+        <member name="M:System.Text.StringBuilder.Append(System.Char[],System.Int32,System.Int32)">
+            <summary>
+            Appends the string representation of a specified subarray of Unicode characters to this instance
+            </summary>
+            <param name="value"></param>
+            <param name="startIndex"></param>
+            <param name="charCount"></param>
+            <returns></returns>
+        </member>
+        <member name="M:System.Text.StringBuilder.Append(System.Char,System.Int32)">
+            <summary>
+            Appends a specified number of copies of the string representation of a Unicode character to this instance.
+            </summary>
+            <param name="value"></param>
+            <param name="repeatCount"></param>
+            <returns></returns>
+        </member>
+        <member name="M:System.Text.StringBuilder.Remove(System.Int32,System.Int32)">
+            <summary>
+            Removes the specified range of characters from this instance.
+            </summary>
+            <param name="startIndex"></param>
+            <param name="length"></param>
+            <returns></returns>
+        </member>
+        <member name="M:System.Text.StringBuilder.ToString">
+            <summary>
+            Converts the value of this instance to a String. (Overrides Object.ToString().)
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:System.Text.StringBuilder.ToString(System.Int32,System.Int32)">
+            <summary>
+            Converts the value of a substring of this instance to a String.
+            </summary>
+            <param name="startIndex"></param>
+            <param name="length"></param>
+            <returns></returns>
+        </member>
+        <member name="M:System.Text.StringBuilder.Insert(System.Int32,System.String,System.Int32)">
+            <summary>
+            Inserts one or more copies of a specified string into this instance at the specified character position.
+            </summary>
+            <param name="index"></param>
+            <param name="value"></param>
+            <param name="count"></param>
+            <returns></returns>
+        </member>
+        <member name="M:System.Text.StringBuilder.Insert(System.Int32,System.Char[],System.Int32,System.Int32)">
+            <summary>
+            Inserts the string representation of a specified subarray of Unicode characters into this instance at the specified character position.
+            </summary>
+            <param name="index"></param>
+            <param name="value"></param>
+            <param name="startIndex"></param>
+            <param name="charCount"></param>
+            <returns></returns>
+        </member>
+        <member name="M:System.Text.StringBuilder.Replace(System.Char,System.Char,System.Int32,System.Int32)">
+            <summary>
+            Replaces, within a substring of this instance, all occurrences of a specified character with another specified character.
+            </summary>
+            <param name="oldChar"></param>
+            <param name="newChar"></param>
+            <param name="startIndex"></param>
+            <param name="count"></param>
+            <returns></returns>
+        </member>
+        <member name="M:System.Text.StringBuilder.Replace(System.Char,System.Char)">
+            <summary>
+            Replaces all occurrences of a specified character in this instance with another specified character.
+            </summary>
+            <param name="oldChar"></param>
+            <param name="newChar"></param>
+            <returns></returns>
+        </member>
+        <member name="M:System.Text.StringBuilder.Replace(System.String,System.String,System.Int32,System.Int32)">
+            <summary>
+            Replaces, within a substring of this instance, all occurrences of a specified string with another specified string.
+            </summary>
+            <param name="oldValue"></param>
+            <param name="newValue"></param>
+            <param name="startIndex"></param>
+            <param name="count"></param>
+            <returns></returns>
+        </member>
+        <member name="M:System.Text.StringBuilder.Replace(System.String,System.String)">
+            <summary>
+            Replaces all occurrences of a specified string in this instance with another specified string.
+            </summary>
+            <param name="oldValue"></param>
+            <param name="newValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:System.Text.StringBuilder.AppendLine(System.String)">
+            <summary>
+            Append the provided line along with a new line.
+            </summary>
+            <param name="str"></param>
+        </member>
+        <member name="M:System.Text.StringBuilder.AppendLine">
+            <summary>
+            Appends a NewLine onto the String
+            </summary>
+        </member>
+        <member name="T:System.Threading.Timeout">
+             A constant used by methods that take a timeout (Object.Wait, Thread.Sleep
+             etc) to indicate that no timeout should occur.
+            
+             this should become an enum.
+        </member>
+        <!-- Badly formed XML comment ignored for member "T:System.TimeSpan" -->
+        <member name="T:System.UInt16">
+            Wrapper for unsigned 16 bit integers.
+        </member>
+        <member name="T:System.UInt32">
+            * Wrapper for unsigned 32 bit integers.
+        </member>
+        <member name="T:System.UInt64">
+            Wrapper for unsigned 64 bit integers.
+        </member>
+    </members>
+</doc>

@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>GHIElectronics.TinyCLR.IO</name>
+    </assembly>
+    <members>
+        <member name="T:System.IO.Directory">
+            <summary>Static helpers for directory management — create, delete, enumerate, get current directory.</summary>
+        </member>
+        <member name="T:System.IO.File">
+            <summary>
+            Static helpers for file management — copy, move, delete, exists, open. Mirrors
+            the .NET BCL <c>System.IO.File</c> API for the file-system mount points
+            registered via <see cref="T:GHIElectronics.TinyCLR.IO.FileSystem"/>.
+            </summary>
+        </member>
+        <member name="M:System.IO.File.Copy(System.String,System.String,System.Boolean,System.Boolean)">
+            Experiment on desktop shows 2k-4k is ideal size perfwise.
+        </member>
+        <member name="T:System.IO.FileStream">
+            <summary>A read/write stream backed by a file on a mounted file system. Construct via <see cref="M:System.IO.File.OpenRead(System.String)"/> / <see cref="M:System.IO.File.OpenWrite(System.String)"/> / <see cref="M:System.IO.File.Create(System.String)"/>.</summary>
+        </member>
+        <member name="T:System.IO.DriveType">
+            <summary>Classification of a mounted volume.</summary>
+        </member>
+        <member name="T:System.IO.DriveInfo">
+            <summary>Information about a mounted volume — total/available space, type, root path.</summary>
+        </member>
+        <member name="T:System.IO.Path">
+            <summary>Static helpers for path-string manipulation — Combine, GetExtension, GetFileName, etc.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.IO.FileSystem">
+            <summary>
+            Mounts and unmounts file systems on top of a <see cref="!:GHIElectronics.TinyCLR.Devices.Storage.StorageController"/>.
+            Pass the controller's <c>Hdc</c> to <see cref="M:GHIElectronics.TinyCLR.IO.FileSystem.Mount(System.IntPtr)"/> to make its
+            content accessible via <see cref="T:System.IO.File"/> / <see cref="T:System.IO.Directory"/>.
+            </summary>
+        </member>
+    </members>
+</doc>

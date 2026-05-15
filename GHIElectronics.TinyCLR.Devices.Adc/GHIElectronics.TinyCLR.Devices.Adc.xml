@@ -1,0 +1,188 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>GHIElectronics.TinyCLR.Devices.Adc</name>
+    </assembly>
+    <members>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Adc.AdcChannelMode">
+            <summary>How an ADC channel sees its input.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Adc.AdcChannelMode.SingleEnded">
+            <summary>Channel input is referenced to ground.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Adc.AdcChannelMode.Differential">
+            <summary>Channel input is the difference between two pins.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Adc.AdcController">
+            <summary>
+            Represents an ADC peripheral. Open a channel via <see cref="M:GHIElectronics.TinyCLR.Devices.Adc.AdcController.OpenChannel(System.Int32)"/>
+            to take samples; use <see cref="P:GHIElectronics.TinyCLR.Devices.Adc.AdcController.MinValue"/>/<see cref="P:GHIElectronics.TinyCLR.Devices.Adc.AdcController.MaxValue"/> to know
+            the raw-code range for the configured resolution.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Adc.AdcController.Provider">
+            <summary>The low-level provider backing this controller.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Adc.AdcController.GetDefault">
+            <summary>Returns the default ADC controller for this device.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Adc.AdcController.FromName(System.String)">
+            <summary>Returns an ADC controller identified by its native API name.</summary>
+            <param name="name">Native API name.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Adc.AdcController.FromProvider(GHIElectronics.TinyCLR.Devices.Adc.Provider.IAdcControllerProvider)">
+            <summary>Creates a controller from a custom <see cref="T:GHIElectronics.TinyCLR.Devices.Adc.Provider.IAdcControllerProvider"/>.</summary>
+            <param name="provider">Provider implementing the channel operations.</param>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Adc.AdcController.ChannelCount">
+            <summary>Number of channels exposed by this controller.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Adc.AdcController.ResolutionInBits">
+            <summary>Sample width in bits. Determines the spread between <see cref="P:GHIElectronics.TinyCLR.Devices.Adc.AdcController.MinValue"/> and <see cref="P:GHIElectronics.TinyCLR.Devices.Adc.AdcController.MaxValue"/>.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Adc.AdcController.MinValue">
+            <summary>Smallest raw value <see cref="M:GHIElectronics.TinyCLR.Devices.Adc.AdcChannel.ReadValue"/> can return.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Adc.AdcController.MaxValue">
+            <summary>Largest raw value <see cref="M:GHIElectronics.TinyCLR.Devices.Adc.AdcChannel.ReadValue"/> can return.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Adc.AdcController.ChannelMode">
+            <summary>
+            Controller-wide channel mode (single-ended or differential). Not every
+            mode is supported on every controller — check with <see cref="M:GHIElectronics.TinyCLR.Devices.Adc.AdcController.IsChannelModeSupported(GHIElectronics.TinyCLR.Devices.Adc.AdcChannelMode)"/>.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Adc.AdcController.IsChannelModeSupported(GHIElectronics.TinyCLR.Devices.Adc.AdcChannelMode)">
+            <summary>Tests whether the controller supports a given channel mode.</summary>
+            <param name="mode">The mode to test.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Adc.AdcController.Dispose">
+            <summary>Releases the underlying provider.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Adc.AdcController.OpenChannel(System.Int32)">
+            <summary>Opens a channel for sampling.</summary>
+            <param name="channelNumber">Controller-relative channel index.</param>
+            <returns>An <see cref="T:GHIElectronics.TinyCLR.Devices.Adc.AdcChannel"/>; dispose it to release the channel.</returns>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Adc.AdcChannel">
+            <summary>
+            A single ADC channel opened from an <see cref="T:GHIElectronics.TinyCLR.Devices.Adc.AdcController"/>. Call
+            <see cref="M:GHIElectronics.TinyCLR.Devices.Adc.AdcChannel.ReadValue"/> for raw codes or <see cref="M:GHIElectronics.TinyCLR.Devices.Adc.AdcChannel.ReadRatio"/> for a
+            0.0–1.0 normalized reading.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Adc.AdcChannel.ChannelNumber">
+            <summary>Controller-relative channel index this object represents.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Adc.AdcChannel.Controller">
+            <summary>The <see cref="T:GHIElectronics.TinyCLR.Devices.Adc.AdcController"/> that owns this channel.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Adc.AdcChannel.SamplingTime">
+            <summary>
+            Sample-and-hold time the controller is asked to use. Longer times
+            reduce noise on high-impedance sources but slow conversion.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Adc.AdcChannel.Dispose">
+            <summary>Releases the channel so another caller can open it.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Adc.AdcChannel.ReadValue">
+            <summary>Performs a conversion and returns the raw integer code.</summary>
+            <returns>An integer in the range [<see cref="P:GHIElectronics.TinyCLR.Devices.Adc.AdcController.MinValue"/>, <see cref="P:GHIElectronics.TinyCLR.Devices.Adc.AdcController.MaxValue"/>].</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Adc.AdcChannel.ReadRatio">
+            <summary>Performs a conversion and returns a 0.0..1.0 normalized reading.</summary>
+            <returns>The raw code mapped to [0.0, 1.0] using the controller's <see cref="P:GHIElectronics.TinyCLR.Devices.Adc.AdcController.MinValue"/>/<see cref="P:GHIElectronics.TinyCLR.Devices.Adc.AdcController.MaxValue"/>.</returns>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Adc.Provider.IAdcControllerProvider">
+            <summary>
+            Provider contract for an ADC controller. Most users call
+            <see cref="T:GHIElectronics.TinyCLR.Devices.Adc.AdcController"/> / <see cref="T:GHIElectronics.TinyCLR.Devices.Adc.AdcChannel"/> directly; implement
+            this interface only when supplying a custom or virtual ADC.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Adc.Provider.IAdcControllerProvider.ChannelCount">
+            <summary>Total number of channels exposed by this controller.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Adc.Provider.IAdcControllerProvider.ResolutionInBits">
+            <summary>Sample width in bits.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Adc.Provider.IAdcControllerProvider.MinValue">
+            <summary>Smallest raw value <see cref="M:GHIElectronics.TinyCLR.Devices.Adc.Provider.IAdcControllerProvider.Read(System.Int32,System.TimeSpan)"/> can return.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Adc.Provider.IAdcControllerProvider.MaxValue">
+            <summary>Largest raw value <see cref="M:GHIElectronics.TinyCLR.Devices.Adc.Provider.IAdcControllerProvider.Read(System.Int32,System.TimeSpan)"/> can return.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Adc.Provider.IAdcControllerProvider.IsChannelModeSupported(GHIElectronics.TinyCLR.Devices.Adc.AdcChannelMode)">
+            <summary>Tests whether the controller supports the given channel mode.</summary>
+            <param name="mode">The mode to test.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Adc.Provider.IAdcControllerProvider.GetChannelMode">
+            <summary>Returns the controller's current channel mode.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Adc.Provider.IAdcControllerProvider.SetChannelMode(GHIElectronics.TinyCLR.Devices.Adc.AdcChannelMode)">
+            <summary>Sets the controller's channel mode.</summary>
+            <param name="value">New channel mode.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Adc.Provider.IAdcControllerProvider.OpenChannel(System.Int32)">
+            <summary>Acquires exclusive access to the specified channel.</summary>
+            <param name="channel">Controller-relative channel index.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Adc.Provider.IAdcControllerProvider.CloseChannel(System.Int32)">
+            <summary>Releases a previously opened channel.</summary>
+            <param name="channel">Controller-relative channel index.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Adc.Provider.IAdcControllerProvider.Read(System.Int32,System.TimeSpan)">
+            <summary>Performs a conversion on the channel and returns the raw code.</summary>
+            <param name="channel">Controller-relative channel index.</param>
+            <param name="samplingTime">Requested sample-and-hold time.</param>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Adc.Provider.AdcControllerApiWrapper">
+            <summary>
+            Concrete <see cref="T:GHIElectronics.TinyCLR.Devices.Adc.Provider.IAdcControllerProvider"/> backed by the native
+            TinyCLR ADC HAL. Constructed internally by <see cref="T:GHIElectronics.TinyCLR.Devices.Adc.AdcController"/>;
+            you don't normally need to use this type directly.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Adc.Provider.AdcControllerApiWrapper.Api">
+            <summary>The underlying native API descriptor.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Adc.Provider.AdcControllerApiWrapper.#ctor(GHIElectronics.TinyCLR.Native.NativeApi)">
+            <summary>Wraps the given native API as a provider.</summary>
+            <param name="api">The native ADC API to bind to.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Adc.Provider.AdcControllerApiWrapper.Dispose">
+            <summary>Releases the native controller.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Adc.Provider.AdcControllerApiWrapper.ChannelCount">
+            <inheritdoc/>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Adc.Provider.AdcControllerApiWrapper.ResolutionInBits">
+            <inheritdoc/>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Adc.Provider.AdcControllerApiWrapper.MinValue">
+            <inheritdoc/>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Adc.Provider.AdcControllerApiWrapper.MaxValue">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Adc.Provider.AdcControllerApiWrapper.IsChannelModeSupported(GHIElectronics.TinyCLR.Devices.Adc.AdcChannelMode)">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Adc.Provider.AdcControllerApiWrapper.GetChannelMode">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Adc.Provider.AdcControllerApiWrapper.SetChannelMode(GHIElectronics.TinyCLR.Devices.Adc.AdcChannelMode)">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Adc.Provider.AdcControllerApiWrapper.OpenChannel(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Adc.Provider.AdcControllerApiWrapper.CloseChannel(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Adc.Provider.AdcControllerApiWrapper.Read(System.Int32,System.TimeSpan)">
+            <inheritdoc/>
+        </member>
+    </members>
+</doc>

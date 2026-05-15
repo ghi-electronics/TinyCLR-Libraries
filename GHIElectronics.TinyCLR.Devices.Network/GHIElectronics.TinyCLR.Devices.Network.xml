@@ -1,0 +1,363 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>GHIElectronics.TinyCLR.Devices.Network</name>
+    </assembly>
+    <members>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Network.NetworkLinkConnectedChangedEventHandler">
+            <summary>Handler signature for <see cref="E:GHIElectronics.TinyCLR.Devices.Network.NetworkController.NetworkLinkConnectedChanged"/>.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Network.NetworkAddressChangedEventHandler">
+            <summary>Handler signature for <see cref="E:GHIElectronics.TinyCLR.Devices.Network.NetworkController.NetworkAddressChanged"/>.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Network.NetworkLinkConnectedChangedEventArgs">
+            <summary>Arguments for <see cref="E:GHIElectronics.TinyCLR.Devices.Network.NetworkController.NetworkLinkConnectedChanged"/>.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Network.NetworkLinkConnectedChangedEventArgs.Connected">
+            <summary>True when the physical link is up.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Network.NetworkLinkConnectedChangedEventArgs.Timestamp">
+            <summary>Driver-captured time of the transition.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Network.NetworkAddressChangedEventArgs">
+            <summary>Arguments for <see cref="E:GHIElectronics.TinyCLR.Devices.Network.NetworkController.NetworkAddressChanged"/>.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Network.NetworkAddressChangedEventArgs.Timestamp">
+            <summary>Driver-captured time of the address change.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Network.NetworkController">
+            <summary>
+            Represents a network interface — Ethernet, WiFi (station or AP), or PPP.
+            Configure the interface settings, optionally the underlying communication
+            interface (built-in MAC, SPI, or UART), then <see cref="M:GHIElectronics.TinyCLR.Devices.Network.NetworkController.Enable"/> the
+            controller. Subscribe to <see cref="E:GHIElectronics.TinyCLR.Devices.Network.NetworkController.NetworkLinkConnectedChanged"/> and
+            <see cref="E:GHIElectronics.TinyCLR.Devices.Network.NetworkController.NetworkAddressChanged"/> for status. Use <see cref="M:GHIElectronics.TinyCLR.Devices.Network.NetworkController.SetAsDefaultController"/>
+            to choose which interface handles outbound traffic when multiple are up.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Network.NetworkController.DefaultController">
+            <summary>The controller most recently selected via <see cref="M:GHIElectronics.TinyCLR.Devices.Network.NetworkController.SetAsDefaultController"/>.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Network.NetworkController.Provider">
+            <summary>The low-level provider backing this controller.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Network.NetworkController.GetDefault">
+            <summary>Returns the default network controller for this device.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Network.NetworkController.FromName(System.String)">
+            <summary>Returns a network controller identified by its native API name.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Network.NetworkController.FromProvider(GHIElectronics.TinyCLR.Devices.Network.Provider.INetworkControllerProvider)">
+            <summary>Creates a controller from a custom <see cref="T:GHIElectronics.TinyCLR.Devices.Network.Provider.INetworkControllerProvider"/>.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Network.NetworkController.ActiveInterfaceSettings">
+            <summary>The settings most recently applied via <see cref="M:GHIElectronics.TinyCLR.Devices.Network.NetworkController.SetInterfaceSettings(GHIElectronics.TinyCLR.Devices.Network.NetworkInterfaceSettings)"/>.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Network.NetworkController.ActiveCommunicationInterfaceSettings">
+            <summary>The settings most recently applied via <see cref="M:GHIElectronics.TinyCLR.Devices.Network.NetworkController.SetCommunicationInterfaceSettings(GHIElectronics.TinyCLR.Devices.Network.NetworkCommunicationInterfaceSettings)"/>.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Network.NetworkController.InterfaceType">
+            <summary>Interface type — Ethernet, WiFi, or PPP.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Network.NetworkController.CommunicationInterface">
+            <summary>Physical bus carrying the interface — built-in MAC, SPI, or UART.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Network.NetworkController.IsEnable">
+            <summary>True once <see cref="M:GHIElectronics.TinyCLR.Devices.Network.NetworkController.Enable"/> has been called and the controller is still enabled.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Network.NetworkController.Dispose">
+            <summary>Releases the underlying provider.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Network.NetworkController.Enable">
+            <summary>
+            Brings the interface up synchronously. Blocks until the PHY/WiFi firmware
+            is ready; for non-blocking bring-up use <see cref="M:GHIElectronics.TinyCLR.Devices.Network.NetworkController.EnableAsync"/>.
+            </summary>
+            <remarks>
+            Multi-interface coexistence: multiple controllers (e.g. Ethernet and WiFi)
+            may be enabled at the same time. The native lwIP wrapper registers each as
+            its own netif and routes outbound traffic by destination netmask
+            (longest-prefix match). For destinations not covered by any interface's
+            subnet (e.g. public internet), the controller most recently passed to
+            <see cref="M:GHIElectronics.TinyCLR.Devices.Network.NetworkController.SetAsDefaultController"/> owns the route.
+            </remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Network.NetworkController.EnableAsync">
+            <summary>
+            Non-blocking variant of <see cref="M:GHIElectronics.TinyCLR.Devices.Network.NetworkController.Enable"/>. Returns immediately while
+            the slow PHY autonegotiation / WiFi firmware boot runs in a native RTOS
+            task. The interface is NOT ready when this returns — subscribe to
+            <see cref="E:GHIElectronics.TinyCLR.Devices.Network.NetworkController.NetworkLinkConnectedChanged"/> (link becomes physical-up) and
+            <see cref="E:GHIElectronics.TinyCLR.Devices.Network.NetworkController.NetworkAddressChanged"/> (DHCP / static IP assigned) to learn
+            when it is. Call at most once per controller per boot.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Network.NetworkController.Disable">
+            <summary>Brings the interface down.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Network.NetworkController.Suspend">
+            <summary>Suspends the interface (low-power state with state preserved).</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Network.NetworkController.Resume">
+            <summary>Resumes a previously <see cref="M:GHIElectronics.TinyCLR.Devices.Network.NetworkController.Suspend"/>ed interface.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Network.NetworkController.GetLinkConnected">
+            <summary>True when the physical link is currently up.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Network.NetworkController.GetIPProperties">
+            <summary>Returns the current IP address, subnet, gateway, and DNS servers.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Network.NetworkController.GetInterfaceProperties">
+            <summary>Returns interface-specific properties (MAC address and friends).</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Network.NetworkController.SetInterfaceSettings(GHIElectronics.TinyCLR.Devices.Network.NetworkInterfaceSettings)">
+            <summary>Applies <see cref="T:GHIElectronics.TinyCLR.Devices.Network.NetworkInterfaceSettings"/> (IP address, DHCP, DNS).</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Network.NetworkController.SetCommunicationInterfaceSettings(GHIElectronics.TinyCLR.Devices.Network.NetworkCommunicationInterfaceSettings)">
+            <summary>Applies the underlying physical-bus settings (built-in MAC, SPI, or UART).</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Network.NetworkController.SetAsDefaultController">
+            <summary>
+            Makes this controller the default across all layers — managed
+            <see cref="P:GHIElectronics.TinyCLR.Devices.Network.NetworkController.DefaultController"/>, <see cref="!:Sockets.Socket.DefaultProvider"/>,
+            and lwIP's netif_default. The lwIP-level update only fires when the
+            controller is already enabled, so call after <see cref="M:GHIElectronics.TinyCLR.Devices.Network.NetworkController.Enable"/> to
+            make this interface own the default route.
+            </summary>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.Devices.Network.NetworkController.NetworkLinkConnectedChanged">
+            <summary>Raised when the physical link goes up or down.</summary>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.Devices.Network.NetworkController.NetworkAddressChanged">
+            <summary>Raised when the IP address, gateway, or DNS servers change (e.g. on DHCP lease assignment).</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Network.NetworkIPProperties">
+            <summary>IP-level interface properties.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Network.NetworkIPProperties.Address">
+            <summary>Current IP address.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Network.NetworkIPProperties.SubnetMask">
+            <summary>Subnet mask.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Network.NetworkIPProperties.GatewayAddress">
+            <summary>Default gateway.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Network.NetworkIPProperties.DnsAddresses">
+            <summary>DNS servers in order of preference.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Network.NetworkInterfaceProperties">
+            <summary>Common interface properties. Cast via <see cref="M:GHIElectronics.TinyCLR.Devices.Network.NetworkInterfaceProperties.GetEthernetProperties"/> / <see cref="M:GHIElectronics.TinyCLR.Devices.Network.NetworkInterfaceProperties.GetWiFiProperties"/> / <see cref="M:GHIElectronics.TinyCLR.Devices.Network.NetworkInterfaceProperties.GetPppProperties"/> for transport-specific fields.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Network.NetworkInterfaceProperties.MacAddress">
+            <summary>The interface's MAC address (6 bytes for Ethernet/WiFi).</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Network.NetworkInterfaceProperties.GetEthernetProperties">
+            <summary>Returns Ethernet-specific properties, or null if this is not an Ethernet interface.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Network.NetworkInterfaceProperties.GetWiFiProperties">
+            <summary>Returns WiFi-specific properties, or null if this is not a WiFi interface.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Network.NetworkInterfaceProperties.GetPppProperties">
+            <summary>Returns PPP-specific properties, or null if this is not a PPP interface.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Network.EthernetNetworkInterfaceProperties">
+            <summary>Ethernet-specific interface properties.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Network.WiFiNetworkInterfaceProperties">
+            <summary>WiFi-specific interface properties.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Network.PppNetworkInterfaceProperties">
+            <summary>PPP-specific interface properties.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Network.NetworkInterfaceType">
+            <summary>Transport type of a network interface.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Network.NetworkInterfaceType.Ethernet">
+            <summary>Wired Ethernet.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Network.NetworkInterfaceType.WiFi">
+            <summary>WiFi (Station or AP).</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Network.NetworkInterfaceType.Ppp">
+            <summary>Point-to-Point Protocol (e.g. cellular modem).</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Network.NetworkInterfaceSettings">
+            <summary>Common interface settings — IP/DHCP/DNS/MAC. Subclass per transport for additional fields.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Network.NetworkInterfaceSettings.Address">
+            <summary>Static IP address (used when <see cref="P:GHIElectronics.TinyCLR.Devices.Network.NetworkInterfaceSettings.DhcpEnable"/> is false).</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Network.NetworkInterfaceSettings.SubnetMask">
+            <summary>Subnet mask for the static address.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Network.NetworkInterfaceSettings.GatewayAddress">
+            <summary>Default gateway for the static address.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Network.NetworkInterfaceSettings.DnsAddresses">
+            <summary>DNS servers in order of preference.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Network.NetworkInterfaceSettings.MacAddress">
+            <summary>MAC address for the interface (6 bytes).</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Network.NetworkInterfaceSettings.DhcpEnable">
+            <summary>When true, IP/gateway/DNS are obtained via DHCP and the static fields above are ignored.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Network.NetworkInterfaceSettings.DynamicDnsEnable">
+            <summary>When true, the controller registers a Dynamic-DNS hostname.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Network.NetworkInterfaceSettings.TlsEntropy">
+            <summary>Seed entropy for the TLS RNG. Optional; if null, the stack supplies a default.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Network.NetworkInterfaceSettings.MulticastDnsEnable">
+            <summary>When true, the controller responds to mDNS / Bonjour queries.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Network.EthernetNetworkInterfaceSettings">
+            <summary>Ethernet interface settings.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Network.WiFiMode">
+            <summary>WiFi role for a WiFi interface.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Network.WiFiMode.Station">
+            <summary>Connect to an external access point.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Network.WiFiMode.AccessPoint">
+            <summary>Act as an access point that other stations join.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Network.WiFiSecurityMode">
+            <summary>WiFi security protocol.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Network.WiFiSecurityMode.Open">
+            <summary>No encryption.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Network.WiFiSecurityMode.WEP">
+            <summary>WEP (legacy, insecure).</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Network.WiFiSecurityMode.WPA_WPA2">
+            <summary>WPA or WPA2.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Network.WiFiNetworkInterfaceSettings">
+            <summary>WiFi-specific interface settings.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Network.WiFiNetworkInterfaceSettings.Ssid">
+            <summary>Network SSID. In Station mode, the AP to join; in AccessPoint mode, the SSID to broadcast.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Network.WiFiNetworkInterfaceSettings.Password">
+            <summary>Pre-shared key for WPA/WPA2 / WEP.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Network.WiFiNetworkInterfaceSettings.Channel">
+            <summary>AP channel (1..13). AccessPoint mode only.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Network.WiFiNetworkInterfaceSettings.AccessPointClientConnectionChangedEventHandler">
+            <summary>Handler signature for <see cref="E:GHIElectronics.TinyCLR.Devices.Network.WiFiNetworkInterfaceSettings.AccessPointClientConnectionChanged"/>.</summary>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.Devices.Network.WiFiNetworkInterfaceSettings.AccessPointClientConnectionChanged">
+            <summary>Raised when a station connects to this access point.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Network.WiFiNetworkInterfaceSettings.Mode">
+            <summary>WiFi role — Station or AccessPoint.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Network.WiFiNetworkInterfaceSettings.SecurityMode">
+            <summary>Encryption protocol for the WiFi connection.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Network.PppAuthenticationType">
+            <summary>PPP authentication protocol.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Network.PppAuthenticationType.None">
+            <summary>No authentication.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Network.PppAuthenticationType.Any">
+            <summary>Allow whichever the peer offers (PAP or CHAP).</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Network.PppAuthenticationType.Pap">
+            <summary>PAP — Password Authentication Protocol (cleartext).</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Network.PppAuthenticationType.Chap">
+            <summary>CHAP — Challenge-Handshake Authentication Protocol.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Network.PppNetworkInterfaceSettings">
+            <summary>PPP-specific interface settings (cellular modems, dial-up).</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Network.PppNetworkInterfaceSettings.Username">
+            <summary>PPP username.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Network.PppNetworkInterfaceSettings.Password">
+            <summary>PPP password.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Network.PppNetworkInterfaceSettings.AuthenticationType">
+            <summary>Authentication protocol to use.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Network.NetworkCommunicationInterface">
+            <summary>Underlying physical bus carrying the network interface.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Network.NetworkCommunicationInterface.BuiltIn">
+            <summary>Built-in MAC peripheral.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Network.NetworkCommunicationInterface.Spi">
+            <summary>External controller over SPI (e.g. ENC28J60, WINC1500).</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Network.NetworkCommunicationInterface.Uart">
+            <summary>External controller over UART.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Network.NetworkCommunicationInterfaceSettings">
+            <summary>Base class for transport-bus settings.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Network.BuiltInNetworkCommunicationInterfaceSettings">
+            <summary>Built-in MAC — no extra wiring required.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Network.SpiNetworkCommunicationInterfaceSettings">
+            <summary>Settings for an external SPI-attached network controller (chip select, reset, interrupt pins, SPI mode).</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Network.SpiNetworkCommunicationInterfaceSettings.SpiApiName">
+            <summary>Native API name of the SPI controller to use.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Network.SpiNetworkCommunicationInterfaceSettings.SpiSettings">
+            <summary>SPI clock and mode settings.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Network.SpiNetworkCommunicationInterfaceSettings.GpioApiName">
+            <summary>Native API name of the GPIO controller owning the reset/interrupt pins.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Network.SpiNetworkCommunicationInterfaceSettings.ResetPin">
+            <summary>Pin used to reset the external controller.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Network.SpiNetworkCommunicationInterfaceSettings.ResetActiveState">
+            <summary>Level that drives the chip into reset.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Network.SpiNetworkCommunicationInterfaceSettings.InterruptPin">
+            <summary>Pin the external controller uses to signal interrupts.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Network.SpiNetworkCommunicationInterfaceSettings.InterruptEdge">
+            <summary>Edge of the interrupt signal that fires an event.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Network.SpiNetworkCommunicationInterfaceSettings.InterruptDriveMode">
+            <summary>Drive mode applied to the interrupt pin.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Network.UartNetworkCommunicationInterfaceSettings">
+            <summary>Settings for an external UART-attached network controller (cellular modem, etc.).</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Network.UartNetworkCommunicationInterfaceSettings.ApiName">
+            <summary>Native API name of the UART controller to use.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Network.UartNetworkCommunicationInterfaceSettings.BaudRate">
+            <summary>UART baud rate.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Network.UartNetworkCommunicationInterfaceSettings.DataBits">
+            <summary>UART data bits.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Network.UartNetworkCommunicationInterfaceSettings.Parity">
+            <summary>UART parity.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Network.UartNetworkCommunicationInterfaceSettings.StopBits">
+            <summary>UART stop bits.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Network.UartNetworkCommunicationInterfaceSettings.Handshaking">
+            <summary>UART flow control.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Network.Provider.INetworkControllerProvider">
+            <summary>Provider contract for a network controller.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Network.Provider.NetworkControllerApiWrapper">
+            <summary>Concrete <see cref="T:GHIElectronics.TinyCLR.Devices.Network.Provider.INetworkControllerProvider"/> backed by the native TinyCLR network HAL (lwIP + mbedTLS).</summary>
+        </member>
+    </members>
+</doc>

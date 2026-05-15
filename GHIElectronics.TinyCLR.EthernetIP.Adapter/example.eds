@@ -1,0 +1,150 @@
+$ EtherNet/IP Electronic Data Sheet (EDS) — TEMPLATE
+$
+$ HOW TO USE THIS FILE
+$ --------------------
+$ Replace every value marked TODO with the real value for your device.
+$ The VendorID, DeviceType, ProductCode, MajRev, and MinRev MUST match
+$ exactly what you pass to the AdapterController constructor. The
+$ scanner reads this file to know how to discover and configure your
+$ device, so any mismatch causes the scanner to reject the connection.
+$
+$ After editing, import this EDS into your scanner's tool:
+$   Rockwell Studio 5000:  Tools > EDS Hardware Installation Tool
+$   Codesys 3.5:           Right-click "EtherNet/IP Scanner" > Add Device
+$   FactoryTalk Linx:      Network > EDS Hardware Installation Tool
+$
+$ Format reference: ODVA Publication PUB00213 "EtherNet/IP Adaptation
+$ of CIP", §13 "Electronic Data Sheet".
+
+[File]
+        DescText = "TinyCLR EIP Adapter Example EDS";
+        CreateDate = 04-01-2026;
+        CreateTime = 12:00:00;
+        ModDate = 04-01-2026;
+        ModTime = 12:00:00;
+        Revision = 1.1;
+        HomeURL = "https://ghielectronics.com/";
+
+[Device]
+        VendCode = 4660;                $ TODO: ODVA-assigned VendorID. Hex 0x1234 = 4660 decimal.
+        VendName = "GHI Electronics";   $ TODO: your company name as registered with ODVA
+        ProdType = 12;                  $ Generic Device, see CIP Vol 1 Appendix A
+        ProdTypeStr = "Generic Device";
+        ProdCode = 100;                 $ TODO: must match deviceProductCode passed to AdapterController
+        MajRev = 1;                     $ TODO: must match deviceMajorRevision
+        MinRev = 0;                     $ TODO: must match deviceMinorRevision
+        ProdName = "TinyCLR EIP Adapter";  $ TODO: must match deviceName
+        Catalog = "TINYCLR-EIP-001";    $ TODO: your catalog/part number
+
+[Device Classification]
+        Class1 = EtherNetIP;
+
+[Params]
+$ No configurable parameters in this minimal template. Add per-attribute
+$ Param entries here for a CIP-configurable device.
+
+[Assembly]
+$ Three assembly instances:
+$   100 = Input (T->O), 32 bytes  — target produces this, scanner reads
+$   150 = Output (O->T), 32 bytes — scanner produces this, target reads
+$   151 = Configuration, 10 bytes — sent during ForwardOpen
+$
+$ The 'Size' is in BITS — 32 bytes = 256 bits.
+
+        Assem1 =
+                "Input",            $ name shown in scanner tool
+                "",                 $ help string
+                "",                 $ icon path (none)
+                0x0000,             $ path (use default)
+                256,                $ size in bits (32 bytes)
+                ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,;  $ 32 reserved members
+
+        Assem2 =
+                "Output",
+                "",
+                "",
+                0x0000,
+                256,                $ size in bits (32 bytes)
+                ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,;
+
+        Assem3 =
+                "Configuration",
+                "",
+                "",
+                0x0000,
+                80,                 $ size in bits (10 bytes)
+                ,,,,,,,,,,;
+
+[Connection Manager]
+$ Exclusive Owner — bidirectional cyclic I/O. Most common.
+$
+$ Field-by-field (see PUB00213 §13.5.4 for full list):
+$   1 = Trigger and Transport (0x84010002 = Class 1, server, cyclic, exclusive)
+$   2 = Point/Multicast (0x44640300 = O->T point-to-point, T->O multicast)
+$   3 = O->T network connection parameters (0x44010000 | size)
+$   4 = T->O network connection parameters (0x42010000 | size)
+$   5 = Connection name
+$   6 = Help string
+$   7 = Connection path (class 4 instance config attribute data + connection points)
+$   8 = Help string
+
+        Connection1 =
+                0x04010002,                                     $ trigger / transport
+                0x44640300,                                     $ point-to-point O->T, multicast T->O
+                0x44010100,                                     $ O->T fixed 32 bytes, scheduled, modeless
+                                                                $   bit 9 = variable (0=fixed)
+                                                                $   bits 10-11 = priority (1=high)
+                                                                $   bits 13-14 = connection type (2=P2P)
+                0x42010100,                                     $ T->O fixed 32 bytes
+                "Exclusive Owner",
+                "",
+                "20 04 24 97 2C 96 2C 64",                      $ connection path:
+                                                                $   20 04 = class 4 (Assembly)
+                                                                $   24 97 = config instance 151 (0x97)
+                                                                $   2C 96 = O->T connection point 150 (0x96)
+                                                                $   2C 64 = T->O connection point 100 (0x64)
+                "";
+
+$ ----- Heartbeat (Input-Only) — optional, scanner can request just the inputs.
+        Connection2 =
+                0x04010002,
+                0x44640305,                                     $ heartbeat O->T (no output data)
+                0x44000000,                                     $ O->T size 0
+                0x42010100,                                     $ T->O fixed 32 bytes
+                "Input Only",
+                "",
+                "20 04 24 97 2C 98 2C 64",                      $ heartbeat config = 0x98 = 152
+                "";
+
+$ ----- Listen-Only — optional, lets a second supervisor watch the inputs.
+        Connection3 =
+                0x04010002,
+                0x44640305,
+                0x44000000,
+                0x42010100,
+                "Listen Only",
+                "",
+                "20 04 24 97 2C 99 2C 64",                      $ listen-only config = 0x99 = 153
+                "";
+
+[Port]
+        Port1 = "Backplane",1,"20 F5 24 01",1;
+        Port2 = "Port2","TCP",,2;
+
+[Capacity]
+        ConnOverhead = 2;
+        MaxIOConnections = 4;            $ TODO: tune to your application
+        MaxMsgConnections = 6;           $ TODO: tune to your application
+        MaxConsumersPerMcast = 4;
+
+[Internet Protocol]
+        InterfaceLabel1 = "Port 1";
+
+[EthernetLink Class]
+        Revision = 4;
+        MaxInstance = 1;
+        Number_Of_Static_Instances = 1;
+        Max_Number_Of_Dynamic_Instances = 0;
+
+[Ethernet Link]
+        InterfaceLabel1 = "Port 1";

@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>GHIElectronics.TinyCLR.Networking.Mqtt</name>
+    </assembly>
+    <members>
+        <member name="T:GHIElectronics.TinyCLR.Networking.Mqtt.QoSLevel">
+            <summary>MQTT Quality-of-Service level.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Networking.Mqtt.QoSLevel.MostOnce">
+            <summary>Fire-and-forget; the message may be lost.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Networking.Mqtt.QoSLevel.LeastOnce">
+            <summary>Acknowledged delivery; the message may be delivered more than once.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Networking.Mqtt.QoSLevel.ExactlyOnce">
+            <summary>Acknowledged delivery; the message is delivered exactly once.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Networking.Mqtt.ConnectReturnCode">
+            <summary>Result of a CONNECT request reported by the broker.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Networking.Mqtt.ConnectReturnCode.ConnectionAccepted">
+            <summary>Connection succeeded.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Networking.Mqtt.ConnectReturnCode.UnacceptableProtocol">
+            <summary>Broker does not support the requested MQTT protocol version.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Networking.Mqtt.ConnectReturnCode.IdentifierRejected">
+            <summary>The supplied client ID is not valid or is in use.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Networking.Mqtt.ConnectReturnCode.ServerUnavailable">
+            <summary>Broker reachable but currently rejecting connections.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Networking.Mqtt.ConnectReturnCode.BadUserNameOrPassword">
+            <summary>Authentication failed.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Networking.Mqtt.ConnectReturnCode.NotAuthorized">
+            <summary>Authenticated client is not authorized for this operation.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Networking.Mqtt.ConnectReturnCode.Unknown">
+            <summary>No CONNACK received or the code didn't match a known value.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Networking.Mqtt.MqttConnectionSetting">
+            <summary>Per-session MQTT settings — client ID, credentials, last-will, keepalive.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Networking.Mqtt.MqttClientSetting">
+            <summary>Transport-level MQTT settings — broker host/port, TLS, certificates.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Networking.Mqtt.Mqtt">
+            <summary>
+            MQTT client. Construct with an <see cref="T:GHIElectronics.TinyCLR.Networking.Mqtt.MqttClientSetting"/>, call
+            <c>Connect</c> with an <see cref="T:GHIElectronics.TinyCLR.Networking.Mqtt.MqttConnectionSetting"/>, subscribe to
+            topics, and publish messages. Asynchronous events deliver inbound traffic.
+            </summary>
+        </member>
+    </members>
+</doc>

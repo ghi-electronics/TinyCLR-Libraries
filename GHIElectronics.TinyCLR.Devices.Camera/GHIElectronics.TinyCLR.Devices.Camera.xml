@@ -1,0 +1,130 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>GHIElectronics.TinyCLR.Devices.Camera</name>
+    </assembly>
+    <members>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Camera.CameraController">
+            <summary>
+            Represents a DCMI / parallel camera interface. Configure timing via
+            <see cref="M:GHIElectronics.TinyCLR.Devices.Camera.CameraController.SetActiveSettings(GHIElectronics.TinyCLR.Devices.Camera.CaptureRate,System.Boolean,System.Boolean,System.Boolean,GHIElectronics.TinyCLR.Devices.Camera.SynchronizationMode,GHIElectronics.TinyCLR.Devices.Camera.ExtendedDataMode,System.UInt32)"/>, <see cref="M:GHIElectronics.TinyCLR.Devices.Camera.CameraController.Enable"/> the capture engine,
+            then call <see cref="M:GHIElectronics.TinyCLR.Devices.Camera.CameraController.Capture(System.Byte[],System.Int32)"/> to read a frame into a buffer.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Camera.CameraController.Provider">
+            <summary>The low-level provider backing this controller.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Camera.CameraController.GetDefault">
+            <summary>Returns the default camera controller for this device.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Camera.CameraController.FromName(System.String)">
+            <summary>Returns a camera controller identified by its native API name.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Camera.CameraController.FromProvider(GHIElectronics.TinyCLR.Devices.Camera.Provider.ICameraControllerProvider)">
+            <summary>Creates a controller from a custom <see cref="T:GHIElectronics.TinyCLR.Devices.Camera.Provider.ICameraControllerProvider"/>.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Camera.CameraController.Dispose">
+            <summary>Releases the underlying provider.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Camera.CameraController.SetActiveSettings(GHIElectronics.TinyCLR.Devices.Camera.CaptureRate,System.Boolean,System.Boolean,System.Boolean,GHIElectronics.TinyCLR.Devices.Camera.SynchronizationMode,GHIElectronics.TinyCLR.Devices.Camera.ExtendedDataMode,System.UInt32)">
+            <summary>Applies a complete set of DCMI timing/protocol settings.</summary>
+            <param name="captureRate">Per-frame capture rate.</param>
+            <param name="horizontalSyncPolarity">HSYNC polarity (false = active low).</param>
+            <param name="verticalSyncPolarity">VSYNC polarity (false = active low).</param>
+            <param name="pixelClockPolarity">Pixel-clock polarity (false = falling-edge sample).</param>
+            <param name="synchronizationMode">Hardware vs. embedded synchronization.</param>
+            <param name="extendedDataMode">Data bus width.</param>
+            <param name="sourceClock">Source clock feeding the camera, in Hz.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Camera.CameraController.Capture(System.Byte[],System.Int32)">
+            <summary>Captures one frame into the supplied buffer.</summary>
+            <param name="data">Destination buffer. Must be large enough for one frame at the configured resolution/format.</param>
+            <param name="timeoutMillisecond">Maximum time to wait for the frame, in milliseconds.</param>
+            <returns>Number of bytes actually captured.</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Camera.CameraController.Capture(System.Byte[],System.Int32,System.Int32,System.Int32)">
+            <summary>Captures one frame into a slice of the buffer.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Camera.CameraController.Enable">
+            <summary>Powers on the capture engine.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Camera.CameraController.Disable">
+            <summary>Powers off the capture engine.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Camera.CaptureRate">
+            <summary>Frame-dropping policy for the capture engine.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Camera.CaptureRate.AllFrame">
+            <summary>Capture every frame.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Camera.CaptureRate.AlternateTwoFrame">
+            <summary>Capture every other frame.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Camera.CaptureRate.AlternateFourFrame">
+            <summary>Capture every fourth frame.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Camera.ExtendedDataMode">
+            <summary>Camera-to-SoC parallel data bus width.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Camera.ExtendedDataMode.Extended8bit">
+            <summary>8-bit data bus.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Camera.ExtendedDataMode.Extended10bit">
+            <summary>10-bit data bus.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Camera.ExtendedDataMode.Extended12bit">
+            <summary>12-bit data bus.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Camera.ExtendedDataMode.Extended14bit">
+            <summary>14-bit data bus.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Camera.SynchronizationMode">
+            <summary>How the camera frames its data.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Camera.SynchronizationMode.Hardware">
+            <summary>Discrete HSYNC/VSYNC signals.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Camera.SynchronizationMode.Embedded">
+            <summary>Synchronization codes embedded in the data stream (ITU-R BT.656 style).</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Camera.Provider.ICameraControllerProvider">
+            <summary>Provider contract for a camera controller.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Camera.Provider.ICameraControllerProvider.SetActiveSettings(GHIElectronics.TinyCLR.Devices.Camera.CaptureRate,System.Boolean,System.Boolean,System.Boolean,GHIElectronics.TinyCLR.Devices.Camera.SynchronizationMode,GHIElectronics.TinyCLR.Devices.Camera.ExtendedDataMode,System.UInt32)">
+            <summary>Applies a complete set of camera timing/protocol settings.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Camera.Provider.ICameraControllerProvider.Capture(System.Byte[],System.Int32,System.Int32,System.Int32)">
+            <summary>Captures one frame.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Camera.Provider.ICameraControllerProvider.Enable">
+            <summary>Powers on the capture engine.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Camera.Provider.ICameraControllerProvider.Disable">
+            <summary>Powers off the capture engine.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Camera.Provider.CameraControllerApiWrapper">
+            <summary>Concrete <see cref="T:GHIElectronics.TinyCLR.Devices.Camera.Provider.ICameraControllerProvider"/> backed by the native TinyCLR camera HAL.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Camera.Provider.CameraControllerApiWrapper.Api">
+            <summary>The underlying native API descriptor.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Camera.Provider.CameraControllerApiWrapper.#ctor(GHIElectronics.TinyCLR.Native.NativeApi)">
+            <summary>Wraps the given native API as a provider.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Camera.Provider.CameraControllerApiWrapper.Dispose">
+            <summary>Releases the native controller.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Camera.Provider.CameraControllerApiWrapper.SetActiveSettings(GHIElectronics.TinyCLR.Devices.Camera.CaptureRate,System.Boolean,System.Boolean,System.Boolean,GHIElectronics.TinyCLR.Devices.Camera.SynchronizationMode,GHIElectronics.TinyCLR.Devices.Camera.ExtendedDataMode,System.UInt32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Camera.Provider.CameraControllerApiWrapper.Capture(System.Byte[],System.Int32,System.Int32,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Camera.Provider.CameraControllerApiWrapper.Enable">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Camera.Provider.CameraControllerApiWrapper.Disable">
+            <inheritdoc/>
+        </member>
+    </members>
+</doc>

@@ -1,0 +1,1287 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>GHIElectronics.TinyCLR.Networking</name>
+    </assembly>
+    <members>
+        <member name="T:System.Net.EndPoint">
+            <devdoc>
+               <para>
+                  Identifies a network address.
+               </para>
+            </devdoc>
+        </member>
+        <member name="T:System.Net.IPAddress">
+            <devdoc>
+               <para>Provides an internet protocol (IP) address.</para>
+            </devdoc>
+        </member>
+        <member name="M:System.Net.IPAddress.ConvertStringToInt32(System.String)">
+            <summary>
+            Converts the specified System.String representation of a number to an equivalent
+            32-bit signed integer.
+            </summary>
+            <param name="value">A System.String containing a number to convert.</param>
+            <returns>
+            A 32-bit signed integer equivalent to the value of value.-or- Zero if value
+            is null.
+            </returns>
+            <exception cref="T:System.OverflowException">
+            Value represents a number less than System.Int32.MinValue or greater than
+            System.Int32.MaxValue.
+            </exception>
+            <exception cref="T:System.ArgumentNullException">
+            The value parameter is null.
+            </exception>
+            <exception cref="T:System.FormatException">
+            Value does not consist of an optional sign followed by a sequence of digits
+            (zero through nine).
+            </exception>
+        </member>
+        <member name="T:System.Net.Sockets.AddressFamily">
+            <devdoc>
+               <para>
+                  Specifies the address families that an instance of the <see cref='T:System.Net.Sockets.Socket'/>
+                  class can use.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.AddressFamily.Unknown">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.AddressFamily.Unspecified">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.AddressFamily.Unix">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.AddressFamily.InterNetwork">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.AddressFamily.ImpLink">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.AddressFamily.Pup">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.AddressFamily.Chaos">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.AddressFamily.NS">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.AddressFamily.Ipx">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.AddressFamily.Iso">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.AddressFamily.Osi">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.AddressFamily.Ecma">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.AddressFamily.DataKit">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.AddressFamily.Ccitt">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.AddressFamily.Sna">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.AddressFamily.DecNet">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.AddressFamily.DataLink">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.AddressFamily.Lat">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.AddressFamily.HyperChannel">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.AddressFamily.AppleTalk">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.AddressFamily.NetBios">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.AddressFamily.VoiceView">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.AddressFamily.FireFox">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.AddressFamily.Banyan">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.AddressFamily.Atm">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.AddressFamily.InterNetworkV6">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.AddressFamily.Cluster">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.AddressFamily.Ieee12844">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.AddressFamily.Irda">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.AddressFamily.NetworkDesigners">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.AddressFamily.Max">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="T:System.Net.Sockets.ProtocolFamily">
+            <devdoc>
+               <para>
+                  Specifies the type of protocol that an instance of the <see cref='T:System.Net.Sockets.Socket'/>
+                  class can use.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.ProtocolFamily.Unknown">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.ProtocolFamily.Unspecified">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.ProtocolFamily.Unix">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.ProtocolFamily.InterNetwork">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.ProtocolFamily.ImpLink">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.ProtocolFamily.Pup">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.ProtocolFamily.Chaos">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.ProtocolFamily.NS">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.ProtocolFamily.Ipx">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.ProtocolFamily.Iso">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.ProtocolFamily.Osi">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.ProtocolFamily.Ecma">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.ProtocolFamily.DataKit">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.ProtocolFamily.Ccitt">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.ProtocolFamily.Sna">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.ProtocolFamily.DecNet">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.ProtocolFamily.DataLink">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.ProtocolFamily.Lat">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.ProtocolFamily.HyperChannel">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.ProtocolFamily.AppleTalk">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.ProtocolFamily.NetBios">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.ProtocolFamily.VoiceView">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.ProtocolFamily.FireFox">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.ProtocolFamily.Banyan">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.ProtocolFamily.Atm">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.ProtocolFamily.InterNetworkV6">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.ProtocolFamily.Cluster">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.ProtocolFamily.Ieee12844">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.ProtocolFamily.Irda">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.ProtocolFamily.NetworkDesigners">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.ProtocolFamily.Max">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="T:System.Net.Sockets.ProtocolType">
+            <devdoc>
+               <para>
+                  Specifies the protocols that the <see cref='T:System.Net.Sockets.Socket'/> class supports.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.ProtocolType.IP">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.ProtocolType.IPv6HopByHopOptions">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.ProtocolType.Icmp">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.ProtocolType.Igmp">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.ProtocolType.Ggp">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.ProtocolType.IPv4">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.ProtocolType.Tcp">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.ProtocolType.Pup">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.ProtocolType.Udp">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.ProtocolType.Idp">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.ProtocolType.IPv6">
+            <devdoc>
+            <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.ProtocolType.IPv6RoutingHeader">
+            <devdoc>
+            <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.ProtocolType.IPv6FragmentHeader">
+            <devdoc>
+            <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.ProtocolType.IPSecEncapsulatingSecurityPayload">
+            <devdoc>
+            <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.ProtocolType.IPSecAuthenticationHeader">
+            <devdoc>
+            <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.ProtocolType.IcmpV6">
+            <devdoc>
+            <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.ProtocolType.IPv6NoNextHeader">
+            <devdoc>
+            <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.ProtocolType.IPv6DestinationOptions">
+            <devdoc>
+            <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.ProtocolType.ND">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.ProtocolType.Raw">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.ProtocolType.Unspecified">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.ProtocolType.Ipx">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.ProtocolType.Spx">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.ProtocolType.SpxII">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.ProtocolType.Unknown">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="T:System.Net.Sockets.SelectMode">
+            <devdoc>
+               <para>
+                  Specifies the mode for polling the status of a socket.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SelectMode.SelectRead">
+            <devdoc>
+               <para>
+                  Poll the read status of a socket.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SelectMode.SelectWrite">
+            <devdoc>
+               <para>
+                  Poll the write status of a socket.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SelectMode.SelectError">
+            <devdoc>
+               <para>
+                  Poll the error status of a socket.
+               </para>
+            </devdoc>
+        </member>
+        <member name="T:System.Net.Sockets.SocketError">
+            <devdoc>
+               <para>
+                  Defines socket error constants.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketError.Success">
+            <devdoc>
+               <para>
+                  The operation completed succesfully.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketError.SocketError">
+            <devdoc>
+               <para>
+                  The socket has an error.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketError.Interrupted">
+            <devdoc>
+               <para>
+                  A blocking socket call was canceled.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketError.AccessDenied">
+            <devdoc>
+               <para>
+                  Permission denied.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketError.Fault">
+            <devdoc>
+               <para>
+                  Bad address.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketError.InvalidArgument">
+            <devdoc>
+               <para>
+                  Invalid argument.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketError.TooManyOpenSockets">
+            <devdoc>
+               <para>
+                  Too many open
+                  files.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketError.WouldBlock">
+            <devdoc>
+               <para>
+                  Resource temporarily unavailable.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketError.InProgress">
+            <devdoc>
+               <para>
+                  Operation now in progress.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketError.AlreadyInProgress">
+            <devdoc>
+               <para>
+                  Operation already in progress.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketError.NotSocket">
+            <devdoc>
+               <para>
+                  Socket operation on nonsocket.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketError.DestinationAddressRequired">
+            <devdoc>
+               <para>
+                  Destination address required.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketError.MessageSize">
+            <devdoc>
+               <para>
+                  Message too long.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketError.ProtocolType">
+            <devdoc>
+               <para>
+                  Protocol wrong type for socket.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketError.ProtocolOption">
+            <devdoc>
+               <para>
+                  Bad protocol option.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketError.ProtocolNotSupported">
+            <devdoc>
+               <para>
+                  Protocol not supported.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketError.SocketNotSupported">
+            <devdoc>
+               <para>
+                  Socket type not supported.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketError.OperationNotSupported">
+            <devdoc>
+               <para>
+                  Operation not supported.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketError.ProtocolFamilyNotSupported">
+            <devdoc>
+               <para>
+                  Protocol family not supported.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketError.AddressFamilyNotSupported">
+            <devdoc>
+               <para>
+                  Address family not supported by protocol family.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketError.AddressAlreadyInUse">
+            <devdoc>
+               Address already in use.
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketError.AddressNotAvailable">
+            <devdoc>
+               <para>
+                  Cannot assign requested address.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketError.NetworkDown">
+            <devdoc>
+               <para>
+                  Network is down.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketError.NetworkUnreachable">
+            <devdoc>
+               <para>
+                  Network is unreachable.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketError.NetworkReset">
+            <devdoc>
+               <para>
+                  Network dropped connection on reset.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketError.ConnectionAborted">
+            <devdoc>
+               <para>
+                  Software caused connection to abort.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketError.ConnectionReset">
+            <devdoc>
+               <para>
+                  Connection reset by peer.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketError.NoBufferSpaceAvailable">
+            <devdoc>
+               No buffer space available.
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketError.IsConnected">
+            <devdoc>
+               <para>
+                  Socket is already connected.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketError.NotConnected">
+            <devdoc>
+               <para>
+                  Socket is not connected.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketError.Shutdown">
+            <devdoc>
+               <para>
+                  Cannot send after socket shutdown.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketError.TimedOut">
+            <devdoc>
+               <para>
+                  Connection timed out.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketError.ConnectionRefused">
+            <devdoc>
+               <para>
+                  Connection refused.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketError.HostDown">
+            <devdoc>
+               <para>
+                  Host is down.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketError.HostUnreachable">
+            <devdoc>
+               <para>
+                  No route to host.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketError.ProcessLimit">
+            <devdoc>
+               <para>
+                  Too many processes.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketError.SystemNotReady">
+            <devdoc>
+               <para>
+                  Network subsystem is unavailable.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketError.VersionNotSupported">
+            <devdoc>
+               <para>
+                  Winsock.dll out of range.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketError.NotInitialized">
+            <devdoc>
+               <para>
+                  Successful startup not yet performed.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketError.Disconnecting">
+            <devdoc>
+               <para>
+                  Graceful shutdown in progress.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketError.HostNotFound">
+            <devdoc>
+               <para>
+                  Host not found (Authoritative Answer: Host not found).
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketError.TryAgain">
+            <devdoc>
+               <para>
+                  Nonauthoritative host not found (Non-Authoritative: Host not found, or SERVERFAIL).
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketError.NoRecovery">
+            <devdoc>
+               <para>
+                  This is a nonrecoverable error (Non recoverable errors, FORMERR, REFUSED, NOTIMP).
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketError.NoData">
+            <devdoc>
+               <para>
+                  Valid name, no data record of requested type.
+               </para>
+            </devdoc>
+        </member>
+        <member name="T:System.Net.Sockets.SocketFlags">
+            <devdoc>
+               <para>
+                  Provides constant values for socket messages.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketFlags.None">
+            <devdoc>
+               <para>
+                  Use no flags for this call.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketFlags.OutOfBand">
+            <devdoc>
+               <para>
+                  Process out-of-band data.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketFlags.Peek">
+            <devdoc>
+               <para>
+                  Peek at incoming message.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketFlags.DontRoute">
+            <devdoc>
+               <para>
+                  Send without using routing tables.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketFlags.Truncated">
+            <devdoc>
+               <para>
+                  Partial send or recv for message.
+               </para>
+            </devdoc>
+        </member>
+        <member name="T:System.Net.Sockets.SocketOptionLevel">
+            <devdoc>
+               <para>
+                  Defines socket option levels for the <see cref='T:System.Net.Sockets.Socket'/> class.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketOptionLevel.Socket">
+            <devdoc>
+               <para>
+                  Indicates socket options apply to the socket itself.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketOptionLevel.IP">
+            <devdoc>
+               <para>
+                  Indicates socket options apply to IP sockets.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketOptionLevel.IPv6">
+            <devdoc>
+            <para>
+            Indicates socket options apply to IPv6 sockets.
+            </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketOptionLevel.Tcp">
+            <devdoc>
+               <para>
+                  Indicates socket options apply to Tcp sockets.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketOptionLevel.Udp">
+            <devdoc>
+            <para>
+            Indicates socket options apply to Udp sockets.
+            </para>
+            </devdoc>
+        </member>
+        <member name="T:System.Net.Sockets.SocketOptionName">
+            <devdoc>
+               <para>
+                  Defines socket option names for the <see cref='T:System.Net.Sockets.Socket'/> class.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketOptionName.Debug">
+            <devdoc>
+               <para>Record debugging information.</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketOptionName.AcceptConnection">
+            <devdoc>
+               <para>Socket is listening.</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketOptionName.ReuseAddress">
+            <devdoc>
+               <para>
+                  Allows the socket to be bound to an address that is already in use.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketOptionName.KeepAlive">
+            <devdoc>
+               <para>
+                  Send keep-alives.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketOptionName.DontRoute">
+            <devdoc>
+               <para>
+                  Do not route, send directly to interface addresses.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketOptionName.Broadcast">
+            <devdoc>
+               <para>
+                  Permit sending broadcast messages on the socket.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketOptionName.UseLoopback">
+            <devdoc>
+               <para>
+                  Bypass hardware when possible.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketOptionName.Linger">
+            <devdoc>
+               <para>
+                  Linger on close if unsent data is present.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketOptionName.OutOfBandInline">
+            <devdoc>
+               <para>
+                  Receives out-of-band data in the normal data stream.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketOptionName.DontLinger">
+            <devdoc>
+               <para>
+                  Close socket gracefully without lingering.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketOptionName.ExclusiveAddressUse">
+            <devdoc>
+               <para>
+                  Enables a socket to be bound for exclusive access.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketOptionName.SendBuffer">
+            <devdoc>
+               <para>
+                  Specifies the total per-socket buffer space reserved for sends. This is
+                  unrelated to the maximum message size or the size of a TCP window.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketOptionName.ReceiveBuffer">
+            <devdoc>
+               <para>
+                  Send low water mark.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketOptionName.SendLowWater">
+            <devdoc>
+               <para>
+                  Specifies the total per-socket buffer space reserved for receives. This is unrelated to the maximum message size or the size of a TCP window.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketOptionName.ReceiveLowWater">
+            <devdoc>
+               <para>
+                  Receive low water mark.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketOptionName.SendTimeout">
+            <devdoc>
+               <para>
+                  Send timeout.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketOptionName.ReceiveTimeout">
+            <devdoc>
+               <para>
+                  Receive timeout.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketOptionName.Error">
+            <devdoc>
+               <para>
+                  Get error status and clear.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketOptionName.Type">
+            <devdoc>
+               <para>
+                  Get socket type.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketOptionName.MaxConnections">
+            <devdoc>
+               <para>
+                  Maximum queue length that can be specified by <see cref='M:System.Net.Sockets.Socket.Listen(System.Int32)'/>.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketOptionName.IPOptions">
+            <devdoc>
+               <para>
+                  IP options.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketOptionName.HeaderIncluded">
+            <devdoc>
+               <para>
+                  Header is included with data.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketOptionName.TypeOfService">
+            <devdoc>
+               <para>
+                  IP type of service and preced.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketOptionName.IpTimeToLive">
+            <devdoc>
+               <para>
+                  IP time to live.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketOptionName.MulticastInterface">
+            <devdoc>
+               <para>
+                  IP multicast interface.
+                  - Additional comments by mbolien:
+                    multicast interface  You provide it with an SOCKADDR_IN, and that tells the
+                    system that it should receive multicast messages on that interface (if you
+                    have more than one interface).  Binding the socket is not sufficient, since
+                    if the Ethernet hardware isnt set up to grab the multicast packets, it wont
+                    do good to bind the socket.  Kinda like raw sockets.  Unless you
+                    put the Ethernet card in promiscuous mode, youll only get stuff sent to and
+                    from your machine.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketOptionName.MulticastTimeToLive">
+            <devdoc>
+               <para>
+                  IP multicast time to live.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketOptionName.MulticastLoopback">
+            <devdoc>
+               <para>
+                  IP Multicast loopback.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketOptionName.AddMembership">
+            <devdoc>
+               <para>
+                  Add an IP group membership.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketOptionName.DropMembership">
+            <devdoc>
+               <para>
+                  Drop an IP group membership.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketOptionName.DontFragment">
+            <devdoc>
+               <para>
+                  Don't fragment IP datagrams.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketOptionName.AddSourceMembership">
+            <devdoc>
+               <para>
+                  Join IP group/source.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketOptionName.DropSourceMembership">
+            <devdoc>
+               <para>
+                  Leave IP group/source.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketOptionName.BlockSource">
+            <devdoc>
+               <para>
+                  Block IP group/source.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketOptionName.UnblockSource">
+            <devdoc>
+               <para>
+                  Unblock IP group/source.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketOptionName.PacketInformation">
+            <devdoc>
+               <para>
+                  Receive packet information for ipv4.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketOptionName.NoDelay">
+            <devdoc>
+               <para>
+                  Disables the Nagle algorithm for send coalescing.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketOptionName.BsdUrgent">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketOptionName.NoChecksum">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketOptionName.ChecksumCoverage">
+            <devdoc>
+               <para>
+                  Udp-Lite checksum coverage.
+               </para>
+            </devdoc>
+        </member>
+        <member name="T:System.Net.Sockets.SocketType">
+            <devdoc>
+               <para>
+                  Specifies the type of socket an instance of the <see cref='T:System.Net.Sockets.Socket'/> class represents.
+               </para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketType.Stream">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketType.Dgram">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketType.Raw">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketType.Rdm">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketType.Seqpacket">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="F:System.Net.Sockets.SocketType.Unknown">
+            <devdoc>
+               <para>[To be supplied.]</para>
+            </devdoc>
+        </member>
+        <member name="M:System.Net.Sockets.UdpClient.Send(System.Byte[],System.Net.IPEndPoint)">
+            <summary>
+            Sends a UDP datagram to the host at the specified remote endpoint.
+            </summary>
+            <param name="datagram">
+            An <see cref="!:ReadOnlySpan&lt;T&gt;"/> of Type <see cref="T:System.Byte"/> that specifies the UDP datagram that you intend to send.
+            </param>
+            <param name="endPoint">
+            An <see cref="T:System.Net.IPEndPoint"/> that represents the host and port to which to send the datagram.
+            </param>
+            <returns>The number of bytes sent.</returns>
+            <exception cref="T:System.InvalidOperationException"><see cref="T:System.Net.Sockets.UdpClient"/> has already established a default remote host and <paramref name="endPoint"/> is not <see langword="null"/>.</exception>
+            <exception cref="T:System.ObjectDisposedException"><see cref="T:System.Net.Sockets.UdpClient"/> is closed.</exception>
+            <exception cref="T:System.Net.Sockets.SocketException">An error occurred when accessing the socket.</exception>
+        </member>
+        <member name="M:System.Net.Sockets.UdpClient.Send(System.Byte[],System.String,System.Int32)">
+            <summary>
+            Sends a UDP datagram to a specified port on a specified remote host.
+            </summary>
+            <param name="datagram">
+            An <see cref="!:ReadOnlySpan&lt;T&gt;"/> of Type <see cref="T:System.Byte"/> that specifies the UDP datagram that you intend to send.
+            </param>
+            <param name="hostname">
+            The name of the remote host to which you intend to send the datagram.
+            </param>
+            <param name="port">
+            The remote port number with which you intend to communicate.
+            </param>
+            <returns>The number of bytes sent.</returns>
+            <exception cref="T:System.InvalidOperationException">The <see cref="T:System.Net.Sockets.UdpClient"/> has already established a default remote host.</exception>
+            <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Net.Sockets.UdpClient"/> is closed.</exception>
+            <exception cref="T:System.Net.Sockets.SocketException">An error occurred when accessing the socket.</exception>
+        </member>
+        <member name="M:System.Net.Sockets.UdpClient.Send(System.Byte[])">
+            <summary>
+            Sends a UDP datagram to a remote host.
+            </summary>
+            <param name="datagram">
+            An <see cref="!:ReadOnlySpan&lt;T&gt;"/> of Type <see cref="T:System.Byte"/> that specifies the UDP datagram that you intend to send.
+            </param>
+            <returns>The number of bytes sent.</returns>
+            <exception cref="T:System.InvalidOperationException">The <see cref="T:System.Net.Sockets.UdpClient"/> has not established a default remote host.</exception>
+            <exception cref="T:System.ObjectDisposedException">The <see cref="T:System.Net.Sockets.UdpClient"/> is closed.</exception>
+            <exception cref="T:System.Net.Sockets.SocketException">An error occurred when accessing the socket.</exception>
+        </member>
+    </members>
+</doc>
