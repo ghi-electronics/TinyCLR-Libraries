@@ -115,7 +115,7 @@ namespace System.Device.Gpio {
         }
 
         protected internal override bool IsPinModeSupported(int pinNumber, PinMode mode) =>
-            this.GetTinyClrPin(pinNumber).IsDriveModeSupported(this.MapPinNumber(pinNumber), ToTinyClrDriveMode(mode));
+            this.GetTinyClrPin(pinNumber).IsDriveModeSupported(ToTinyClrDriveMode(mode));
 
         protected internal override void SetPinMode(int pinNumber, PinMode mode) =>
             this.GetTinyClrPin(pinNumber).SetDriveMode(ToTinyClrDriveMode(mode));

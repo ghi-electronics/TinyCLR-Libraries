@@ -92,7 +92,10 @@ namespace GHIElectronics.TinyCLR.Devices.Gpio {
 
         public void Dispose() => this.Controller.Provider.ClosePin(this.PinNumber);
 
-        public bool IsDriveModeSupported(int pin, GpioPinDriveMode mode) => this.Controller.Provider.IsDriveModeSupported(pin, mode);
+        public bool IsDriveModeSupported(GpioPinDriveMode mode) => this.Controller.Provider.IsDriveModeSupported(this.PinNumber, mode);
+
+        [Obsolete("Use IsDriveModeSupported(GpioPinDriveMode mode) instead; the pin parameter is ignored and the GpioPin's own PinNumber is used.")]
+        public bool IsDriveModeSupported(int pin, GpioPinDriveMode mode) => this.Controller.Provider.IsDriveModeSupported(this.PinNumber, mode);
 
         public TimeSpan DebounceTimeout {
             get => this.Controller.Provider.GetDebounceTimeout(this.PinNumber);
