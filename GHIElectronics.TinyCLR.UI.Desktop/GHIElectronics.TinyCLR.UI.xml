@@ -1,0 +1,3270 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>GHIElectronics.TinyCLR.UI</name>
+    </assembly>
+    <members>
+        <member name="T:GHIElectronics.TinyCLR.UI.Controls.DataGrid">
+            <summary>
+            The DataGrid component is a list-based component that provides a grid of rows and columns.
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Controls.DataGrid.TapCellEventArgs">
+            <summary>
+            Tap cell event arguments.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.DataGrid.TapCellEventArgs.ColumnIndex">
+            <summary>
+            Column index.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.DataGrid.TapCellEventArgs.RowIndex">
+            <summary>
+            Row index.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.DataGrid.TapCellEventArgs.#ctor(System.Int32,System.Int32)">
+            <summary>
+            Creates a new TapCellEventArgs.
+            </summary>
+            <param name="columnIndex">X coordinate</param>
+            <param name="rowIndex">Y coordinate</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.DataGrid.TapCellEventArgs.ToString">
+            <summary>
+            ToString
+            </summary>
+            <returns>Tap cell event properties.</returns>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Controls.DataGrid.OnTapCell">
+            <summary>
+            Tap cell event handler.
+            </summary>
+            <param name="sender">Object associated with this event.</param>
+            <param name="args">Tap cell event arguments.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.DataGrid.#ctor(System.Int32,System.Int32,System.Int32,System.Drawing.Font)">
+            <summary>
+            Creates a new DataGrid component.
+            </summary>      
+            <param name="width">width</param>
+            <param name="rowHeight">rowHeight</param>
+            <param name="rowCount">rowCount</param>
+            <param name="font">font</param>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.UI.Controls.DataGrid.TapCellEvent">
+            <summary>
+            Tap grid event.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.DataGrid.TriggerTapCellEvent(System.Object,GHIElectronics.TinyCLR.UI.Controls.DataGrid.TapCellEventArgs)">
+            <summary>
+            Triggers a tap cell event.
+            </summary>
+            <param name="sender">Object associated with this event.</param>
+            <param name="args">Tap cell event arguments.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.DataGrid.OnRender(GHIElectronics.TinyCLR.UI.Media.DrawingContext)">
+            <summary>
+            Renders the DataGrid onto it's parent container's graphics.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.DataGrid.OnTouchDown(GHIElectronics.TinyCLR.UI.Input.TouchEventArgs)">
+            <summary>
+            Handles the touch down event.
+            </summary>
+            <param name="e">Touch event arguments.</param>
+            <returns>Touch event arguments.</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.DataGrid.OnTouchUp(GHIElectronics.TinyCLR.UI.Input.TouchEventArgs)">
+            <summary>
+            Handles the touch up event.
+            </summary>
+            <param name="e">Touch event arguments.</param>
+            <returns>Touch event arguments.</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.DataGrid.OnTouchMove(GHIElectronics.TinyCLR.UI.Input.TouchEventArgs)">
+            <summary>
+            Handles the touch move event.
+            </summary>
+            <param name="e">Touch event arguments.</param>
+            <returns>Touch event arguments.</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.DataGrid.AddColumn(GHIElectronics.TinyCLR.UI.Controls.DataGridColumn)">
+            <summary>
+            Adds a column.
+            </summary>
+            <param name="dataGridColumn">dataGridColumn</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.DataGrid.AddColumnAt(System.Int32,GHIElectronics.TinyCLR.UI.Controls.DataGridColumn)">
+            <summary>
+            Adds a column at a specified index.
+            </summary>
+            <param name="index">index</param>
+            <param name="dataGridColumn">dataGridColumn</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.DataGrid.RemoveColumn(GHIElectronics.TinyCLR.UI.Controls.DataGridColumn)">
+            <summary>
+            Removes a column.
+            </summary>
+            <param name="dataGridColumn">dataGridColumn</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.DataGrid.RemoveColumnAt(System.Int32)">
+            <summary>
+            Removes a column at a specified index.
+            </summary>
+            <param name="index">index</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.DataGrid.AddItem(GHIElectronics.TinyCLR.UI.Controls.DataGridItem)">
+            <summary>
+            Adds an item.
+            </summary>
+            <param name="dataGridItem">dataGridItem</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.DataGrid.AddItemAt(System.Int32,GHIElectronics.TinyCLR.UI.Controls.DataGridItem)">
+            <summary>
+            Adds an item at a specified index.
+            </summary>
+            <param name="index">index</param>
+            <param name="dataGridItem">dataGridItem</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.DataGrid.RemoveItem(GHIElectronics.TinyCLR.UI.Controls.DataGridItem)">
+            <summary>
+            Removes an item.
+            </summary>
+            <param name="dataGridItem">dataGridItem</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.DataGrid.RemoveItemAt(System.Int32)">
+            <summary>
+            Removes an item a specified index.
+            </summary>
+            <param name="index">index</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.DataGrid.ScrollUp(System.Int32)">
+            <summary>
+            Scroll the rows up by a specified amount.
+            </summary>
+            <param name="amount">amount</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.DataGrid.ScrollDown(System.Int32)">
+            <summary>
+            Scroll the rows down by a specified amount.
+            </summary>
+            <param name="amount">amount</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.DataGrid.ScrollTo(System.Int32)">
+            <summary>
+            Scroll the rows to a specified index.
+            </summary>
+            <param name="index">index</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.DataGrid.SetRowData(System.Int32,System.Object[])">
+            <summary>
+            Sets new row data.
+            </summary>
+            <param name="index">index</param>
+            <param name="data">Data object array.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.DataGrid.GetRowData(System.Int32)">
+            <summary>
+            Gets row data.
+            </summary>
+            <param name="index">index</param>
+            <returns>Data object array.</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.DataGrid.SetCellData(System.Int32,System.Int32,System.Object)">
+            <summary>
+            Sets a cell's data.
+            </summary>
+            <param name="columnIndex">columnIndex</param>
+            <param name="rowIndex">rowIndex</param>
+            <param name="data">data</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.DataGrid.GetCellData(System.Int32,System.Int32)">
+            <summary>
+            Get a cell's data.
+            </summary>
+            <param name="columnIndex">columnIndex</param>
+            <param name="rowIndex">rowIndex</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.DataGrid.Sort(System.Int32)">
+            <summary>
+            Sorts the items on a specified column index.
+            </summary>
+            <param name="columnIndex"></param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.DataGrid.Clear">
+            <summary>
+            Clears all items including their data and resets the data grid.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.DataGrid.RowCount">
+            <summary>
+            Number of rows displayed.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.DataGrid.Font">
+            <summary>
+            Font used by the text.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.DataGrid.RowHeight">
+            <summary>
+            Row height.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.DataGrid.SelectedIndex">
+            <summary>
+            The currently selected index.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.DataGrid.NumItems">
+            <summary>
+            Number of items in the DataGrid.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.DataGrid.TappableCells">
+            <summary>
+            Indicates whether items trigger cell tap events or not.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.DataGrid.Draggable">
+            <summary>
+            Indicates whether or not the item list can be dragged up and down.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.DataGrid.ShowHeaders">
+            <summary>
+            Indicates whether the headers are shown.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.DataGrid.SortableHeaders">
+            <summary>
+            Indicates whether the headers are sortable.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.DataGrid.HeadersBackColor">
+            <summary>
+            Headers background color.
+            </summary>        
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.DataGrid.HeadersFontColor">
+            <summary>
+            Headers font color.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.DataGrid.ItemsBackColor">
+            <summary>
+            Items background color.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.DataGrid.ItemsAltBackColor">
+            <summary>
+            Items alternate background color.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.DataGrid.ItemsFontColor">
+            <summary>
+            Items font color.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.DataGrid.SelectedItemBackColor">
+            <summary>
+            Selected item background color.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.DataGrid.SelectedItemFontColor">
+            <summary>
+            Selected item font color.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.DataGrid.GridColor">
+            <summary>
+            Grid color.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.DataGrid.ShowScrollbar">
+            <summary>
+            Indicates whether the scrollbar is shown.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.DataGrid.ScrollbarWidth">
+            <summary>
+            Scrollbar width.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.DataGrid.ScrollbarBackColor">
+            <summary>
+            Scrollbar background color.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.DataGrid.ScrollbarScrubberColor">
+            <summary>
+            Scrollbar scrubber color.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.DataGrid.MaxIgnoredTouchMoves">
+            <summary>
+            Touch senstitive.
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Controls.DataGrid.Order">
+            <summary>
+            The order in which rows are sorted.
+            </summary>
+            <remarks>ASC stands for ascending ex: 1 to 10 or A to Z. DESC stands for descending ex: 10 to 1 or Z to A.</remarks>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Controls.DataGrid.Order.ASC">
+            <summary>
+            Ascending
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Controls.DataGrid.Order.DESC">
+            <summary>
+            Descending
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.DataGrid.MinMax(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Checks a value against minimum and maximum limits.
+            </summary>
+            <param name="value">Value to be checked.</param>
+            <param name="min">Minimum value.</param>
+            <param name="max">Maximum value.</param>
+            <returns>The value limited by min and max.</returns>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Control.TabIndex">
+            <summary>Lower values are visited first by <see cref="T:GHIElectronics.TinyCLR.UI.Input.FocusNavigator"/>.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Control.IsTabStop">
+            <summary>When false, this control is skipped for keyboard focus navigation.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Control.ShowFocusVisual">
+            <summary>When true and the control has focus, a focus rectangle is drawn.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Control.DataContext">
+            <summary>Optional data context for lightweight binding (e.g. <see cref="M:GHIElectronics.TinyCLR.UI.Controls.TextBox.SetTextBinding(System.Object,System.String,System.Boolean)"/>).</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Controls.DataGridColumn">
+            <summary>
+            The DataGridColumn class describes a column in a DataGrid component.
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Controls.DataGridColumn.label">
+            <summary>
+            The column name to be displayed.
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Controls.DataGridColumn.width">
+            <summary>
+            The width of the column, in pixels.
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Controls.DataGridColumn.order">
+            <summary>
+            Indicates the default order of this column.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.DataGridColumn.#ctor(System.String,System.Int32)">
+            <summary>
+            Creates a new DataGridColumn instance.
+            </summary>
+            <param name="label"></param>
+            <param name="width"></param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.DataGridColumn.ToggleOrder">
+            <summary>
+            Toggles the ordering of this column.
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Controls.DataGridItem">
+            <summary>
+            The DataGridItem class describes an item in a DataGrid component.
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Controls.DataGridItem.data">
+            <summary>
+            Contains the data for each column within this row.
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Controls.DataGridItem.dataType">
+            <summary>
+            Contains the data type for each column within this row.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.DataGridItem.#ctor(System.Object[])">
+            <summary>
+            Creates a new DataGridItem.
+            </summary>
+            <param name="data">Object containing data for each column.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.DataGridItem.CompareTo(System.Object)">
+            <summary>
+            IComparable contract. Compares this row against another DataGridItem
+            using column 0. For non-default column comparisons use the typed
+            CompareTo(DataGridItem, int) overload.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.DataGridItem.CompareTo(GHIElectronics.TinyCLR.UI.Controls.DataGridItem,System.Int32)">
+            <summary>
+            Compares this item's column to another DataGridItem's column.
+            </summary>
+            <param name="row">DataGridItem object.</param>
+            <param name="columnIndex">Column index.</param>
+            <returns>Number indicating how it should be positioned.</returns>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Controls.DataGridItemComparer">
+            <summary>
+            The DataGridItemComparer class allows comparison between DataGridItems.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.DataGridItemComparer.Compare(System.Object,System.Object)">
+            <summary>
+            Compare two DataGridRow objects.
+            </summary>
+            <param name="x"></param>
+            <param name="y"></param>
+            <returns></returns>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.DataGridItemComparer.ColumnIndex">
+            <summary>
+            Column index to compare.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Dropdown.OnButtonDown(GHIElectronics.TinyCLR.UI.Input.ButtonEventArgs)">
+            <summary>
+            Hardware button support: <see cref="F:GHIElectronics.TinyCLR.UI.Input.HardwareButton.Select"/> toggles the
+            dropdown open/closed (parity with touch). <see cref="F:GHIElectronics.TinyCLR.UI.Input.HardwareButton.Back"/>
+            closes an open dropdown. Up/Down navigation comes free from <see cref="T:GHIElectronics.TinyCLR.UI.Controls.ListBox"/>.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Gauge.MinValue">
+            <summary>
+            Mininum value on the scale
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Gauge.MaxValue">
+            <summary>
+            Maximum value on the scale
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Gauge.ThresholdPercent">
+            <summary>
+            Gets or Sets the Threshold area from the Recommended Value. (1-99%)
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Gauge.RecommendedValue">
+            <summary>
+            Threshold value from which green area will be marked.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Gauge.Value">
+            <summary>
+            Value where the pointer will point to.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Gauge.DialColor">
+            <summary>
+            Background color of the dial
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Gauge.Glossiness">
+            <summary>
+            Glossiness strength. Range: 0-100
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Gauge.NoOfDivisions">
+            <summary>
+            Get or Sets the number of Divisions in the dial scale.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Gauge.NoOfSubDivisions">
+            <summary>
+            Gets or Sets the number of Sub Divisions in the scale per Division.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Gauge.DialText">
+            <summary>
+            Gets or Sets the Text to be displayed in the dial
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Gauge.EnableTransparentBackground">
+            <summary>
+            Enables or Disables Transparent Background color.
+            Note: Enabling this will reduce the performance and may make the control flicker.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Gauge.GetGauge">
+            <summary>
+            Draws the pointer.
+            </summary>
+            <param name="e"></param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Gauge.PaintBackground(System.Drawing.Graphics)">
+            <summary>
+            Draws the dial background.
+            </summary>
+            <param name="e"></param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Gauge.DrawPointer(System.Drawing.Graphics,System.Int32,System.Int32)">
+            <summary>
+            Draws the Pointer.
+            </summary>
+            <param name="gr"></param>
+            <param name="cx"></param>
+            <param name="cy"></param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Gauge.DrawGloss(System.Drawing.Graphics)">
+            <summary>
+            Draws the glossiness.
+            </summary>
+            <param name="g"></param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Gauge.DrawCenterPoint(System.Drawing.Graphics,System.Drawing.Rectangle,System.Int32,System.Int32)">
+            <summary>
+            Draws the center point.
+            </summary>
+            <param name="g"></param>
+            <param name="rect"></param>
+            <param name="cX"></param>
+            <param name="cY"></param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Gauge.DrawCalibration(System.Drawing.Graphics,System.Drawing.Rectangle,System.Int32,System.Int32)">
+            <summary>
+            Draws the Ruler
+            </summary>
+            <param name="g"></param>
+            <param name="rect"></param>
+            <param name="cX"></param>
+            <param name="cY"></param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Gauge.GetRadian(System.Single)">
+            <summary>
+            Converts the given degree to radian.
+            </summary>
+            <param name="theta"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Gauge.DisplayNumber(System.Drawing.Graphics,System.Single,System.Drawing.Rectangle)">
+            <summary>
+            Displays the given number in the 7-Segement format.
+            </summary>
+            <param name="g"></param>
+            <param name="number"></param>
+            <param name="drect"></param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Gauge.DrawDigit(System.Drawing.Graphics,System.Int32,GHIElectronics.TinyCLR.UI.Controls.Gauge.PointF,System.Boolean,System.Single)">
+            <summary>
+            Draws a digit in 7-Segement format.
+            </summary>
+            <param name="g"></param>
+            <param name="number"></param>
+            <param name="position"></param>
+            <param name="dp"></param>
+            <param name="height"></param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Gauge.GetX(System.Single,System.Single)">
+            <summary>
+            Gets Relative X for the given width to draw digit
+            </summary>
+            <param name="x"></param>
+            <param name="width"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Gauge.GetY(System.Single,System.Single)">
+            <summary>
+            Gets relative Y for the given height to draw digit
+            </summary>
+            <param name="y"></param>
+            <param name="height"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Gauge.IsNumberAvailable(System.Int32,System.Int32[])">
+            <summary>
+            Returns true if a given number is available in the given list.
+            </summary>
+            <param name="number"></param>
+            <param name="listOfNumbers"></param>
+            <returns></returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Gauge.Resize">
+            <summary>
+            Restricts the size to make sure the height and width are always same.
+            </summary>
+            <param name="sender"></param>
+            <param name="e"></param>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Controls.GridLength.Value">
+            <summary>Pixel size, or star weight when <see cref="F:GHIElectronics.TinyCLR.UI.Controls.GridLength.Unit"/> is <see cref="F:GHIElectronics.TinyCLR.UI.Controls.GridUnitType.Star"/>.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Controls.Grid">
+            <summary>
+            Row/column layout with pixel, auto, and star sizing (WPF-style subset).
+            Use <see cref="M:GHIElectronics.TinyCLR.UI.Controls.Grid.GetRow(GHIElectronics.TinyCLR.UI.UIElement)"/> / <see cref="M:GHIElectronics.TinyCLR.UI.Controls.Grid.SetRow(GHIElectronics.TinyCLR.UI.UIElement,System.Int32)"/> and <see cref="M:GHIElectronics.TinyCLR.UI.Controls.Grid.GetColumn(GHIElectronics.TinyCLR.UI.UIElement)"/> / <see cref="M:GHIElectronics.TinyCLR.UI.Controls.Grid.SetColumn(GHIElectronics.TinyCLR.UI.UIElement,System.Int32)"/> on children.
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Controls.Image">
+            <summary>
+            Summary description for Image.
+            </summary>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.UI.Controls.ListBox.Click">
+            <summary>
+            Fires when the user commits the current selection — either by tapping a
+            ListBoxItem or by pressing <see cref="F:GHIElectronics.TinyCLR.UI.Input.HardwareButton.Select"/> while the
+            ListBox has focus. The event source is the committed <see cref="T:GHIElectronics.TinyCLR.UI.Controls.ListBoxItem"/>.
+            </summary>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.UI.Controls.ListBox.ScrollChanged">
+            <summary>
+            Event handler if the scroll changes.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.ListBox.HorizontalOffset">
+            <summary>
+            Horizontal offset of the scroll.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.ListBox.VerticalOffset">
+            <summary>
+            Vertical offset of the scroll.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.ListBox.ExtentHeight">
+            <summary>
+            Extent height of the scroll area.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.ListBox.ExtentWidth">
+            <summary>
+            Extent width of the scroll area.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.ListBox.ScrollingStyle">
+            <summary>
+            The scrolling style.
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Controls.Slider">
+            <summary>
+            The Slider component lets users select a value by sliding a knob along a track.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Slider.#ctor(System.Int32,System.Int32)">
+            <summary>
+            Creates a new Slider component.
+            </summary>     
+            <param name="width">Width</param>
+            <param name="height">Height</param>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.UI.Controls.Slider.OnValueChanged">
+            <summary>
+            Value changed event.
+            </summary>           
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Slider.OnRender(GHIElectronics.TinyCLR.UI.Media.DrawingContext)">
+            <summary>
+            Renders the Slider onto it's parent container's graphics.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Slider.OnTouchDown(GHIElectronics.TinyCLR.UI.Input.TouchEventArgs)">
+            <summary>
+            Handles the touch down event.
+            </summary>
+            <param name="e">Touch event arguments.</param>
+            <returns>Touch event arguments.</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Slider.OnButtonDown(GHIElectronics.TinyCLR.UI.Input.ButtonEventArgs)">
+            <summary>
+            Hardware button support: Left/Right step a horizontal slider,
+            Up/Down step a vertical slider. Step size is one <see cref="P:GHIElectronics.TinyCLR.UI.Controls.Slider.SnapInterval"/>
+            (or 1% of range when SnapInterval is 0).
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Slider.OnTouchUp(GHIElectronics.TinyCLR.UI.Input.TouchEventArgs)">
+            <summary>
+            Handles the touch up event.
+            </summary>
+            <param name="e">Touch event arguments.</param>
+            <returns>Touch event arguments.</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Slider.OnTouchMove(GHIElectronics.TinyCLR.UI.Input.TouchEventArgs)">
+            <summary>
+            Handles the touch move event.
+            </summary>
+            <param name="e">Touch event arguments.</param>
+            <returns>Touch event arguments.</returns>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Slider.Direction">
+            <summary>
+            Direction of the slider; horizontal or vertical.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Slider.KnobSize">
+            <summary>
+            Size of the knob.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Slider.Maximum">
+            <summary>
+            Maximum value.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Slider.Minimum">
+            <summary>
+            Minimum value.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Slider.SnapInterval">
+            <summary>
+            Increment by which the value is increased or decreased as the user slides the knob.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Slider.TickInterval">
+            <summary>
+            Tick mark spacing relative to the maximum value.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Slider.Value">
+            <summary>
+            Gets or sets the current value.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.TextBox.SetTextBinding(System.Object,System.String,System.Boolean)">
+            <summary>
+            One-way or two-way bind <see cref="P:GHIElectronics.TinyCLR.UI.Controls.TextBox.Text"/> to a CLR property on <paramref name="source"/> using reflection.
+            For change notifications implement <see cref="T:GHIElectronics.TinyCLR.UI.INotifyBindablePropertyChanged"/> on the source.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.TextBox.OnButtonDown(GHIElectronics.TinyCLR.UI.Input.ButtonEventArgs)">
+            <summary>
+            Hardware button support: <see cref="F:GHIElectronics.TinyCLR.UI.Input.HardwareButton.Select"/> opens the
+            on-screen keyboard, mirroring tap-to-edit behavior.
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Controls.VirtualizingListBox">
+            <summary>
+            Large homogeneous lists: recycles a small pool of rows while preserving full scroll extent.
+            Set <see cref="P:GHIElectronics.TinyCLR.UI.Controls.VirtualizingListBox.ItemsSource"/> to an <see cref="T:System.Collections.IList"/> (e.g. <see cref="T:System.Collections.ArrayList"/>); each item is shown via <c>ToString()</c>.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.VirtualizingListBox.ItemHeight">
+            <summary>Fixed row height in pixels (all rows use this for virtualization math).</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Input.ButtonDevice">
+            <summary>
+                The ButtonDevice class represents the button device to the
+                members of a context.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Input.ButtonDevice.Target">
+            <summary>
+                Returns the element that input from this device is sent to.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Input.ButtonDevice.Focus(GHIElectronics.TinyCLR.UI.UIElement)">
+            <summary>
+                Focuses the button input on a particular element.
+            </summary>
+            <param name="element">
+                The element to focus the button pad on.
+            </param>
+            <returns>Element focused to</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Input.ButtonDevice.IsButtonDown(GHIElectronics.TinyCLR.UI.Input.HardwareButton)">
+            <summary>
+                Returns whether or not the specified button is down.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Input.ButtonDevice.IsButtonUp(GHIElectronics.TinyCLR.UI.Input.HardwareButton)">
+            <summary>
+                Returns whether or not the specified button is up.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Input.ButtonDevice.IsButtonHeld(GHIElectronics.TinyCLR.UI.Input.HardwareButton)">
+            <summary>
+                Returns whether or not the specified button is held.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Input.ButtonDevice.GetButtonState(GHIElectronics.TinyCLR.UI.Input.HardwareButton)">
+            <summary>
+                Returns the state of the specified button.
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Input.ButtonEventArgs">
+            <summary>
+                The ButtonEventArgs class contains information about button states.
+            </summary>
+            <ExternalAPI/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Input.ButtonEventArgs.#ctor(GHIElectronics.TinyCLR.UI.Input.ButtonDevice,GHIElectronics.TinyCLR.UI.PresentationSource,System.DateTime,GHIElectronics.TinyCLR.UI.Input.HardwareButton)">
+            <summary>
+                Constructs an instance of the ButtonEventArgs class.
+            </summary>
+            <param name="buttonDevice">
+                The button device associated with this event.
+            </param>
+            <param name="timestamp">
+                The time when the input occured. (machine time)
+            </param>
+            <param name="button">
+                The button referenced by the event.
+            </param>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Input.ButtonEventArgs.Button">
+            <summary>
+                The Button referenced by the event.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Input.ButtonEventArgs.ButtonState">
+            <summary>
+                The state of the button referenced by the event.
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Input.ButtonEventArgs.InputSource">
+            <summary>
+            The source for this button
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Input.ButtonEventArgs.IsRepeat">
+            <summary>
+                Whether the button pressed is a repeated button or not.
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Input.ButtonEventHandler">
+            <summary>
+                The delegate to use for handlers that receive ButtonEventArgs.
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Input.Buttons">
+            <summary>
+                The Button class represents the button device to the
+                members of a context.
+            </summary>
+            <remarks>
+                The static members of this class simply delegate to the primary
+                button device of the calling thread's input manager.
+            </remarks>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Input.Buttons.PreviewButtonDownEvent">
+            <summary>
+                PreviewButtonDown
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Input.Buttons.PreviewButtonUpEvent">
+            <summary>
+                PreviewButtonUp
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Input.Buttons.ButtonDownEvent">
+            <summary>
+                ButtonDown
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Input.Buttons.ButtonUpEvent">
+            <summary>
+                ButtonUp
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Input.Buttons.GotFocusEvent">
+            <summary>
+                GotFocus
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Input.Buttons.LostFocusEvent">
+            <summary>
+                LostFocus
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Input.Buttons.FocusedElement">
+            <summary>
+                Returns the element that the button is focused on.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Input.Buttons.Focus(GHIElectronics.TinyCLR.UI.UIElement)">
+            <summary>
+                Focuses the button on a particular element.
+            </summary>
+            <param name="element">
+                The element to focus the button on.
+            </param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Input.Buttons.IsButtonDown(GHIElectronics.TinyCLR.UI.Input.HardwareButton)">
+            <summary>
+                Returns whether or not the specified button is down.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Input.Buttons.IsButtonUp(GHIElectronics.TinyCLR.UI.Input.HardwareButton)">
+            <summary>
+                Returns whether or not the specified button is up.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Input.Buttons.IsButtonHeld(GHIElectronics.TinyCLR.UI.Input.HardwareButton)">
+            <summary>
+                Returns whether or not the specified button is held.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Input.Buttons.GetButtonState(GHIElectronics.TinyCLR.UI.Input.HardwareButton)">
+            <summary>
+                Returns the state of the specified button.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Input.Buttons.PrimaryDevice">
+            <summary>
+                The primary button device.
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Input.ButtonState">
+            <summary>
+                The ButtonState enumeration describes the state that buttons
+                can be in.
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Input.ButtonState.None">
+            <summary>
+                No state (same as up).
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Input.ButtonState.Down">
+            <summary>
+               The button is down.
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Input.ButtonState.Held">
+            <summary>
+               The button is held
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Input.FocusChangedEventArgs">
+            <summary>
+                The FocusChangedEventArgs class contains information about focus states
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Input.FocusChangedEventArgs.#ctor(GHIElectronics.TinyCLR.UI.Input.ButtonDevice,System.DateTime,GHIElectronics.TinyCLR.UI.UIElement,GHIElectronics.TinyCLR.UI.UIElement)">
+            <summary>
+                Constructs an instance of the FocusChangedEventArgs class.
+            </summary>
+            <param name="button">
+                The logical button device associated with this event.
+            </param>
+            <param name="timestamp">
+                The time when the input occured.
+            </param>
+            <param name="oldFocus">
+                The element that previously had focus.
+            </param>
+            <param name="newFocus">
+                The element that now has focus.
+            </param>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Input.FocusChangedEventArgs.OldFocus">
+            <summary>
+                The element that previously had focus.
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Input.FocusChangedEventArgs.NewFocus">
+            <summary>
+                The element that now has focus.
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Input.FocusChangedEventHandler">
+            <summary>
+                The delegate to use for handlers that receive FocusChangedEventArgs.
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Input.FocusNavigator">
+            <summary>
+            PC-style tab order over the logical tree. Call from hardware mappings (e.g. next/previous)
+            via <see cref="M:GHIElectronics.TinyCLR.UI.Input.InputProvider.RaiseFocusNavigation(System.Boolean)"/>.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Input.FocusNavigator.TryMoveFocus(System.Boolean)">
+            <summary>
+            Moves keyboard focus to the next or previous tab stop under <see cref="P:GHIElectronics.TinyCLR.UI.Application.MainWindow"/>.
+            </summary>
+            <returns>True if focus was moved or already on a valid target.</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Input.FocusNavigator.TryMoveFocus(System.Boolean,GHIElectronics.TinyCLR.UI.UIElement)">
+            <summary>Moves focus within the subtree rooted at <paramref name="scope"/>.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Input.GenericDevice">
+            <summary>
+                The GenericDevice class represents the Generic device to the
+                members of a context.
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Input.InputDevice">
+            <summary>
+                Provides the base class for all input devices.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Input.InputDevice.#ctor">
+            <summary>
+                Constructs an instance of the InputDevice class.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Input.InputDevice.Target">
+            <summary>
+                Returns the element that input from this device is sent to.
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Input.InputEventArgs">
+            <summary>
+                The InputEventArgs class represents a type of RoutedEventArgs that
+                are relevant to all input events.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Input.InputEventArgs.#ctor(GHIElectronics.TinyCLR.UI.Input.InputDevice,System.DateTime)">
+            <summary>
+                Initializes a new instance of the InputEventArgs class.
+            </summary>
+            <param name="inputDevice">
+                The input device to associate with this event.
+            </param>
+            <param name="timestamp">
+                The time when the input occured.
+            </param>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Input.InputEventArgs.Device">
+            <summary>
+                Read-only access to the input device that initiated this
+                event.
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Input.InputEventArgs.Timestamp">
+            <summary>
+                Read-only access to the input timestamp.
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Input.InputEventHandler">
+            <summary>
+                The delegate to use for handlers that receive InputEventArgs.
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Input.InputManager">
+             <summary>
+                 The InputManager class is responsible for coordinating all of the
+                 input system in TinyCore.
+            
+                 The input manager exists per Dispatcher
+             </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Input.InputManager.PreviewInputReportEvent">
+            <summary>
+                A routed event indicating that an input report arrived.
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Input.InputManager.InputReportEvent">
+            <summary>
+                A routed event indicating that an input report arrived.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Input.InputManager.CurrentInputManager">
+            <summary>
+                Return the input manager associated with the current context.
+            </summary>
+            <remarks>
+                This class will not be available in internet zone.
+            </remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Input.InputManager.RegisterInputProvider(System.Object)">
+            <summary>
+                Registers an input provider with the input manager.
+            </summary>
+            <param name="inputProvider">
+                The input provider to register.
+            </param>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Input.InputManager.InputProviders">
+            <summary>
+                Returns a collection of input providers registered with the input manager.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Input.InputManager.MostRecentInputDevice">
+            <summary>
+                The MostRecentInputDevice represents the last input device to
+                report an "interesting" user action.  What exactly constitutes
+                such an action is up to each device to implement.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Input.InputManager.ProcessInput(GHIElectronics.TinyCLR.UI.Input.InputEventArgs)">
+            <summary>
+                Synchronously processes the specified input.
+            </summary>
+            <remarks>
+                The specified input is processed by all of the filters and
+                monitors, and is finally dispatched to the appropriate
+                element as an input event.
+            </remarks>
+            <returns>
+                Whether or not any event generated as a consequence of this
+                event was handled.
+            </returns>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.UI.Input.InputManager.DeviceEvents.PreProcessInput">
+            <summary>Subscribe for all input before it is processed</summary>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.UI.Input.InputManager.DeviceEvents.PreNotifyInput">
+            <summary>Subscribe for all input before it is notified</summary>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.UI.Input.InputManager.DeviceEvents.PostNotifyInput">
+            <summary>Subscribe to all input after it is notified</summary>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.UI.Input.InputManager.DeviceEvents.PostProcessInput">
+            <summary>subscribe to all input after it is processed</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Input.InputProvider.RaiseFocusNavigation(System.Boolean)">
+            <summary>
+            Moves focus between tab stops (map hardware keys or UART keys to this for PC-style navigation).
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Input.InputProviderSite">
+            <summary>
+                The object which input providers use to report input to the input manager.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Input.InputProviderSite.InputManager">
+            <summary>
+                Returns the input manager that this site is attached to.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Input.InputProviderSite.Dispose">
+            <summary>
+                Unregisters this input provider.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Input.InputProviderSite.IsDisposed">
+            <summary>
+            Returns true if we are disposed.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Input.InputProviderSite.ReportInput(GHIElectronics.TinyCLR.UI.Input.InputDevice,GHIElectronics.TinyCLR.UI.Input.InputReport)">
+            <summary>
+                Reports input to the input manager.
+            </summary>
+            <returns>
+                Whether or not any event generated as a consequence of this
+                event was handled.
+            </returns>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Input.InputReport">
+            <summary>
+                The InputReport is an abstract base class for all input that is
+                reported to the InputManager.
+            </summary>
+            <remarks>
+                It is important to note that the InputReport class only contains
+                blittable types.  This is required so that the report can be
+                marshalled across application domains.
+            </remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Input.InputReport.#ctor(GHIElectronics.TinyCLR.UI.PresentationSource,System.DateTime)">
+            <summary>
+                Constructs an instance of the InputReport class.
+            </summary>
+            <param name="inputSource">
+                The type of input that is being reported.
+            </param>
+            <param name="timestamp">
+                The time when the input occured.
+            </param>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Input.InputReport.InputSource">
+            <summary>
+                Read-only access to the type of input source that reported input.
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Input.InputReport.Timestamp">
+            <summary>
+                Read-only access to the time when the input occured.
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Input.InputReportArgs">
+            <summary>
+                report arguments
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Input.InputReportEventArgs">
+            <summary>
+                The InputReportEventArgs class contains information about an input
+                report that is being processed.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Input.InputReportEventArgs.#ctor(GHIElectronics.TinyCLR.UI.Input.InputDevice,GHIElectronics.TinyCLR.UI.Input.InputReport)">
+            <summary>
+                Initializes a new instance of the InputReportEventArgs class.
+            </summary>
+            <param name="inputDevice">
+                The input device to associate this input with.
+            </param>
+            <param name="report">
+                The input report being processed.
+            </param>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Input.InputReportEventArgs.Report">
+            <summary>
+                Read-only access to the input report being processed.
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Input.InputReportEventHandler">
+            <summary>
+                The delegate to use for handlers that receive InputReportEventArgs
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Input.NotifyInputEventArgs">
+            <summary>
+                Provides information about an input event being processed by the
+                input manager.
+            </summary>
+            <remarks>
+                An instance of this class, or a derived class, is passed to the
+                handlers of the following events:
+                <list>
+                </list>
+            </remarks>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Input.NotifyInputEventArgs.StagingItem">
+            <summary>
+                The staging area input item being processed by the input
+                manager.
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Input.NotifyInputEventHandler">
+            <summary>
+                Delegate type for handles of events that use
+                <see cref="T:GHIElectronics.TinyCLR.UI.Input.NotifyInputEventArgs"/>.
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Input.PreProcessInputEventArgs">
+            <summary>
+                Allows the handler to cancel the processing of an input event.
+            </summary>
+            <remarks>
+                An instance of this class is passed to the handlers of the
+                following events:
+                <list>
+                    <item>
+                        <see cref="!:InputManager.PreProcessInput"/>
+                    </item>
+                </list>
+            </remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Input.PreProcessInputEventArgs.Cancel">
+            <summary>
+                Cancels the processing of the input event.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Input.PreProcessInputEventArgs.Canceled">
+            <summary>
+                Whether or not the input event processing was canceled.
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Input.PreProcessInputEventHandler">
+            <summary>
+                Delegate type for handles of events that use
+                <see cref="T:GHIElectronics.TinyCLR.UI.Input.PreProcessInputEventArgs"/>.
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Input.ProcessInputEventArgs">
+            <summary>
+                Provides access to the input manager's staging area.
+            </summary>
+            <remarks>
+                An instance of this class, or a derived class, is passed to the
+                handlers of the following events:
+                <list>
+                    <item>
+                        <see cref="!:InputManager.PreProcessInput"/>
+                    </item>
+                    <item>
+                        <see cref="!:InputManager.PostProcessInput"/>
+                    </item>
+                </list>
+            </remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Input.ProcessInputEventArgs.PushInput(GHIElectronics.TinyCLR.UI.Input.InputEventArgs,GHIElectronics.TinyCLR.UI.Input.StagingAreaInputItem)">
+            <summary>
+                Pushes an input event onto the top of the staging area.
+            </summary>
+            <param name="input">
+                The input event to place on the staging area.  This may not
+                be null, and may not already exist in the staging area.
+            </param>
+            <param name="promote">
+                An existing staging area item to promote the state from.
+            </param>
+            <returns>
+                The staging area input item that wraps the specified input.
+            </returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Input.ProcessInputEventArgs.PushInput(GHIElectronics.TinyCLR.UI.Input.StagingAreaInputItem)">
+            <summary>
+                Pushes an input event onto the top of the staging area.
+            </summary>
+            <param name="input">
+                The input event to place on the staging area.  This may not
+                be null, and may not already exist in the staging area.
+            </param>
+            <returns>
+                The specified staging area input item.
+            </returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Input.ProcessInputEventArgs.PopInput">
+            <summary>
+                Pops off the input event on the top of the staging area.
+            </summary>
+            <returns>
+                The input event that was on the top of the staging area.
+                This can be null, if the staging area was empty.
+            </returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Input.ProcessInputEventArgs.PeekInput">
+            <summary>
+                Returns the input event on the top of the staging area.
+            </summary>
+            <returns>
+                The input event that is on the top of the staging area.
+                This can be null, if the staging area is empty.
+            </returns>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Input.ProcessInputEventHandler">
+            <summary>
+                Delegate type for handles of events that use
+                <see cref="T:GHIElectronics.TinyCLR.UI.Input.ProcessInputEventArgs"/>.
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Input.RawButtonInputReport">
+            <summary>
+                The RawButtonInputReport class encapsulates the raw input
+                provided from a keyboard.
+            </summary>
+            <remarks>
+                It is important to note that the InputReport class only contains
+                blittable types.  This is required so that the report can be
+                marshalled across application domains.
+            </remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Input.RawButtonInputReport.#ctor(GHIElectronics.TinyCLR.UI.PresentationSource,System.DateTime,GHIElectronics.TinyCLR.UI.Input.HardwareButton,GHIElectronics.TinyCLR.UI.Input.RawButtonActions)">
+            <summary>
+                Constructs an instance of the RawKeyboardInputReport class.
+            </summary>
+            <param name="inputSource">
+                source of the input
+            </param>
+            <param name="timestamp">
+                The time when the input occured.
+            </param>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Input.RawButtonInputReport.Button">
+            <summary>
+            Read-only access to the button reported.
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Input.RawButtonInputReport.Actions">
+            <summary>
+            Read-only access to the action reported.
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Input.RawGenericInputReport">
+            <summary>
+                The RawGenericInputReport class encapsulates the raw input
+                provided from a keyboard.
+            </summary>
+            <remarks>
+                It is important to note that the InputReport class only contains
+                blittable types.  This is required so that the report can be
+                marshalled across application domains.
+            </remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Input.RawGenericInputReport.#ctor(GHIElectronics.TinyCLR.UI.PresentationSource,GHIElectronics.TinyCLR.UI.Input.GenericEvent)">
+            <summary>
+                Constructs an instance of the RawKeyboardInputReport class.
+            </summary>
+            <param name="inputSource">
+                source of the input
+            </param>
+            <param name="timestamp">
+                The time when the input occured.
+            </param>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Input.RawTouchInputReport">
+            <summary>
+                The RawTouchInputReport class encapsulates the raw input
+                provided from a multitouch source.
+            </summary>
+            <remarks>
+                It is important to note that the InputReport class only contains
+                blittable types.  This is required so that the report can be
+                marshalled across application domains.
+            </remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Input.RawTouchInputReport.#ctor(GHIElectronics.TinyCLR.UI.PresentationSource,System.DateTime,System.Byte,GHIElectronics.TinyCLR.UI.Input.TouchInput[])">
+            <summary>
+                Constructs an instance of the RawKeyboardInputReport class.
+            </summary>
+            <param name="inputSource">
+                source of the input
+            </param>
+            <param name="timestamp">
+                The time when the input occured.
+            </param>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Input.StagingAreaInputItem">
+            <summary>
+                This class encapsulates an input event while it is being
+                processed by the input manager.
+            </summary>
+            <remarks>
+                This class just provides the dictionary-based storage for
+                all of the listeners of the various input manager events.
+            </remarks>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Input.StagingAreaInputItem.Input">
+            <summary>
+                Returns the input event.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Input.StagingAreaInputItem.GetData(System.Object)">
+            <summary>
+                Provides storage for arbitrary data needed during the
+                processing of this input event.
+            </summary>
+            <param name="key">
+                An arbitrary key for the data.  This cannot be null.
+            </param>
+            <returns>
+                The data previously set for this key, or null.
+            </returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Input.StagingAreaInputItem.SetData(System.Object,System.Object)">
+            <summary>
+                Provides storage for arbitrary data needed during the
+                processing of this input event.
+            </summary>
+            <param name="key">
+                An arbitrary key for the data.  This cannot be null.
+            </param>
+            <param name="value">
+                The data to set for this key.  This can be null.
+            </param>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Input.TouchGestureEventArgs.X">
+            <note> X and Y form the center location of the gesture for multi-touch or the starting location for single touch </note>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Input.TouchGestureEventArgs.Arguments">
+            <note>2 bytes for gesture-specific arguments.
+            TouchGesture.Zoom: Arguments = distance between fingers
+            TouchGesture.Rotate: Arguments = angle in degrees (0-360)
+            </note>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Input.TouchDevice">
+            <summary>
+                The TouchDevice class represents the stylus/touch device to the
+                members of a context.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Media.Colors.CornflowerBlue">
+            <summary>Default focus ring / accent (PC-style highlight).</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Media.DrawingContext">
+            <summary>
+            Drawing Context.
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Media.MediaContext">
+            <summary>
+            The MediaContext class controls the rendering
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Media.MediaContext.#ctor">
+            <summary>
+            The MediaContext lives in the Dispatcher and is the MediaSystem's class that keeps
+            per Dispatcher state.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Media.MediaContext.From(GHIElectronics.TinyCLR.UI.Threading.Dispatcher)">
+            <summary>
+            Gets the MediaContext from the context passed in as argument.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Media.MediaContext.PostRender">
+            <summary>
+            If there is already a render operation in the Dispatcher queue, this
+            method will do nothing.  If not, it will add a
+            render operation.
+            </summary>
+            <remarks>
+            This method should only be called when a render is necessary "right
+            now."  Events such as a change to the visual tree would result in
+            this method being called.
+            </remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Media.MediaContext.RenderMessageHandler(System.Object)">
+            <summary>
+            This is the standard RenderMessageHandler callback, posted via PostRender()
+            and Resize().  This wraps RenderMessageHandlerCore and emits an ETW events
+            to trace its execution.
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Media.MediaContext._currentRenderOp">
+            <summary>
+            Message delegate.
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Media.MediaContext._isRendering">
+            <summary>
+            Indicates that we are in the middle of processing a render message.
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Media.SolidColorBrush.LineSegment.dx">
+            <summary>
+            We will use Bresenham alg for line calc.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Media.SolidColorBrush.RenderPolygon(GHIElectronics.TinyCLR.UI.Bitmap,GHIElectronics.TinyCLR.UI.Media.Pen,System.Int32[])">
+            <summary>
+            Basic algorithm uses scan lines to fill the polygon.
+            No multiplication or division is needed, neither is floating point calculation.
+            </summary>
+            <param name="bmp"></param>
+            <param name="outline"></param>
+            <param name="pts"></param>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Threading.Dispatcher">
+            <summary>
+                Provides UI services for a thread.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Threading.Dispatcher.CurrentDispatcher">
+            <summary>
+            Returns the Dispatcher for the current thread.
+            </summary>
+            <value>Dispatcher</value>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Threading.Dispatcher.FromThread(System.Threading.Thread)">
+            <summary>
+                Returns the Dispatcher for the specified thread.
+            </summary>
+            <remarks>
+                If there is no dispatcher available for the specified thread,
+                this method will return null.
+            </remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Threading.Dispatcher.CheckAccess">
+            <summary>
+                Checks that the calling thread has access to this object.
+            </summary>
+            <remarks>
+                Only the dispatcher thread may access DispatcherObjects.
+                <p/>
+                This method is public so that any thread can probe to
+                see if it has access to the DispatcherObject.
+            </remarks>
+            <returns>
+                True if the calling thread has access to this object.
+            </returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Threading.Dispatcher.VerifyAccess">
+            <summary>
+                Verifies that the calling thread has access to this object.
+            </summary>
+            <remarks>
+                Only the dispatcher thread may access DispatcherObjects.
+                <p/>
+                This method is public so that derived classes can probe to
+                see if the calling thread has access to itself.
+            </remarks>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Threading.Dispatcher.Thread">
+            <summary>
+            Thread for the dispatcher.
+            </summary>
+            <value></value>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Threading.Dispatcher.InvokeShutdown">
+            <summary>
+                Begins the process of shutting down the dispatcher, synchronously.
+                The process may complete asynchronously, since we may be
+                nested in dispatcher frames.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Threading.Dispatcher.HasShutdownStarted">
+            <summary>
+                Whether or not the dispatcher is shutting down.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Threading.Dispatcher.HasShutdownFinished">
+            <summary>
+                Whether or not the dispatcher has been shut down.
+            </summary>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.UI.Threading.Dispatcher.ShutdownStarted">
+            <summary>
+                Raised when the dispatcher starts shutting down.
+            </summary>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.UI.Threading.Dispatcher.ShutdownFinished">
+            <summary>
+                Raised when the dispatcher is shut down.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Threading.Dispatcher.Run">
+            <summary>
+                Push the main execution frame.
+            </summary>
+            <remarks>
+                This frame will continue until the dispatcher is shut down.
+            </remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Threading.Dispatcher.PushFrame(GHIElectronics.TinyCLR.UI.Threading.DispatcherFrame)">
+            <summary>
+                Push an execution frame.
+            </summary>
+            <param name="frame">
+                The frame for the dispatcher to process.
+            </param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Threading.Dispatcher.BeginInvoke(GHIElectronics.TinyCLR.UI.Threading.DispatcherOperationCallback,System.Object)">
+            <summary>
+                Executes the specified delegate asynchronously with the specified
+                arguments, on the thread that the Dispatcher was created on.
+            </summary>
+            <param name="method">
+                A delegate to a method that takes parameters of the same number
+                and type that are contained in the args parameter.
+            </param>
+            <param name="args">
+                An object to pass as the argument to the given method.
+                This can be null if no arguments are needed.
+            </param>
+            <returns>
+                A DispatcherOperation object that represents the result of the
+                BeginInvoke operation.  null if the operation could not be queued.
+            </returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Threading.Dispatcher.Invoke(System.TimeSpan,GHIElectronics.TinyCLR.UI.Threading.DispatcherOperationCallback,System.Object)">
+            <summary>
+                Executes the specified delegate synchronously with the specified
+                arguments, on the thread that the Dispatcher was created on.
+            </summary>
+            <param name="timeout">
+                The maximum amount of time to wait for the operation to complete.
+            </param>
+            <param name="method">
+                A delegate to a method that takes parameters of the same number
+                and type that are contained in the args parameter.
+            </param>
+            <param name="args">
+                An object to pass as the argument to the given method.
+                This can be null if no arguments are needed.
+            </param>
+            <returns>
+                The return value from the delegate being invoked, or null if
+                the delegate has no return value or if the operation was aborted.
+            </returns>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Threading.DispatcherExceptionEventHandler">
+            <summary>
+              Delegate for processing exceptions that happen during Invoke or BeginInvoke.
+              Return true if the exception was processed.
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Threading.DispatcherOperationCallback">
+            <summary>
+              A convenient delegate to use for dispatcher operations.
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Threading.DispatcherFrame">
+            <summary>
+                Representation of Dispatcher frame.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Threading.DispatcherFrame.#ctor">
+            <summary>
+                Constructs a new instance of the DispatcherFrame class.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Threading.DispatcherFrame.#ctor(System.Boolean)">
+            <summary>
+                Constructs a new instance of the DispatcherFrame class.
+            </summary>
+            <param name="exitWhenRequested">
+                Indicates whether or not this frame will exit when all frames
+                are requested to exit.
+                <p/>
+                Dispatcher frames typically break down into two categories:
+                1) Long running, general purpose frames, that exit only when
+                   told to.  These frames should exit when requested.
+                2) Short running, very specific frames that exit themselves
+                   when an important criteria is met.  These frames may
+                   consider not exiting when requested in favor of waiting
+                   for their important criteria to be met.  These frames
+                   should have a timeout associated with them.
+            </param>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Threading.DispatcherFrame.Continue">
+            <summary>
+                Indicates that this dispatcher frame should exit.
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Threading.DispatcherObject">
+            <summary>
+                A DispatcherObject is an object associated with a
+                <see cref="F:GHIElectronics.TinyCLR.UI.Threading.DispatcherObject.Dispatcher"/>.  A DispatcherObject instance should
+                only be access by the dispatcher's thread.
+            </summary>
+            <remarks>
+                Subclasses of <see cref="T:GHIElectronics.TinyCLR.UI.Threading.DispatcherObject"/> should enforce thread
+                safety by calling <see cref="M:GHIElectronics.TinyCLR.UI.Threading.DispatcherObject.VerifyAccess"/> on all their public
+                methods to ensure the calling thread is the appropriate thread.
+                <para/>
+                DispatcherObject cannot be independently instantiated; that is,
+                all constructors are protected.
+            </remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Threading.DispatcherObject.CheckAccess">
+            <summary>
+                Checks that the calling thread has access to this object.
+            </summary>
+            <remarks>
+                Only the dispatcher thread may access DispatcherObjects.
+                <p/>
+                This method is public so that any thread can probe to
+                see if it has access to the DispatcherObject.
+            </remarks>
+            <returns>
+                True if the calling thread has access to this object.
+            </returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Threading.DispatcherObject.VerifyAccess">
+             <summary>
+                 Verifies that the calling thread has access to this object.
+             </summary>
+             <remarks>
+                 Only the dispatcher thread may access DispatcherObjects.
+                 <p/>
+                 This method is public so that derived classes can probe to
+                 see if the calling thread has access to itself.
+            
+                 This is only verified in debug builds.
+             </remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Threading.DispatcherObject.#ctor">
+            <summary>
+                Instantiate this object associated with the current Dispatcher.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Threading.DispatcherObject.#ctor(System.Boolean)">
+            <summary>
+                Instantiate this object associated with the current Dispatcher.
+            </summary>
+            <param name="canBeUnbound">
+                Whether or not the object can be detached from any Dispatcher.
+            </param>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Threading.DispatcherObject.Dispatcher">
+            <summary>
+                The <see cref="F:GHIElectronics.TinyCLR.UI.Threading.DispatcherObject.Dispatcher"/> that this
+                <see cref="T:GHIElectronics.TinyCLR.UI.Threading.DispatcherObject"/> is associated with.
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Threading.DispatcherOperation">
+            <summary>
+                DispatcherOperation represents a delegate that has been
+                posted to the Dispatcher queue.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Threading.DispatcherOperation.Dispatcher">
+            <summary>
+                Returns the Dispatcher that this operation was posted to.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Threading.DispatcherOperation.Status">
+            <summary>
+                The status of this operation.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Threading.DispatcherOperation.Wait">
+            <summary>
+                Waits for this operation to complete.
+            </summary>
+            <returns>
+                The status of the operation.  To obtain the return value
+                of the invoked delegate, use the the Result property.
+            </returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Threading.DispatcherOperation.Wait(System.TimeSpan)">
+            Negative one (-1) milliseconds to prevent the timer from starting. See documentation.
+            <summary>
+                Waits for this operation to complete.
+            </summary>
+            <param name="timeout">
+                The maximum amount of time to wait.
+            </param>
+            <returns>
+                The status of the operation.  To obtain the return value
+                of the invoked delegate, use the the Result property.
+            </returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Threading.DispatcherOperation.Abort">
+            <summary>
+                Aborts this operation.
+            </summary>
+            <returns>
+                False if the operation could not be aborted (because the
+                operation was already in  progress)
+            </returns>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Threading.DispatcherOperation.Result">
+            <summary>
+                Returns the result of the operation if it has completed.
+            </summary>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.UI.Threading.DispatcherOperation.Aborted">
+            <summary>
+                An event that is raised when the operation is aborted.
+            </summary>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.UI.Threading.DispatcherOperation.Completed">
+            <summary>
+                An event that is raised when the operation completes.
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Threading.DispatcherOperationStatus">
+             <summary>
+                 An enumeration describing the status of a DispatcherOperation.
+             </summary>
+            
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Threading.DispatcherOperationStatus.Pending">
+            <summary>
+                The operation is still pending.
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Threading.DispatcherOperationStatus.Aborted">
+            <summary>
+                The operation has been aborted.
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Threading.DispatcherOperationStatus.Completed">
+            <summary>
+                The operation has been completed.
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Threading.DispatcherOperationStatus.Executing">
+            <summary>
+                The operation has started executing, but has not completed yet.
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Threading.DispatcherTimer">
+            <summary>
+                A timer that is integrated into the Dispatcher queues, and will
+                be processed after a given amount of time
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Threading.DispatcherTimer.#ctor">
+            <summary>
+                Creates a timer that uses the current thread's Dispatcher to
+                process the timer event
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Threading.DispatcherTimer.#ctor(GHIElectronics.TinyCLR.UI.Threading.Dispatcher)">
+            <summary>
+                Creates a timer that uses the specified Dispatcher to
+                process the timer event.
+            </summary>
+            <param name="dispatcher">
+                The dispatcher to use to process the timer.
+            </param>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Threading.DispatcherTimer.Dispatcher">
+            <summary>
+                Gets the dispatcher this timer is associated with.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Threading.DispatcherTimer.IsEnabled">
+            <summary>
+                Gets or sets whether the timer is running.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Threading.DispatcherTimer.Interval">
+            <summary>
+                Gets or sets the time between timer ticks.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Threading.DispatcherTimer.Start">
+            <summary>
+                Starts the timer.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Threading.DispatcherTimer.Stop">
+            <summary>
+                Stops the timer.
+            </summary>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.UI.Threading.DispatcherTimer.Tick">
+            <summary>
+                Occurs when the specified timer interval has elapsed and the
+                timer is enabled.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Threading.DispatcherTimer.Tag">
+            <summary>
+                Any data that the caller wants to pass along with the timer.
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Application">
+            <summary>
+            Application base class
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Application.#ctor(System.Int32,System.Int32)">
+            <summary>
+                Application constructor
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Application.#ctor(GHIElectronics.TinyCLR.Devices.Display.DisplayController)">
+            <summary>
+                Application constructor
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Application.Run">
+            <summary>
+                 Run is called to start an application.
+            
+                 Typically a developer will do some setting of properties/attaching to events after instantiating an application object,
+                 and then call Run() to start the application.
+            </summary>
+            <remarks>
+                 Once run has been called - an application's OnStartup override and Startup event is called
+                 immediately afterwards.
+            </remarks>
+             <returns>ExitCode of the application</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Application.Run(GHIElectronics.TinyCLR.UI.Window)">
+            <summary>
+                 Run is called to start an application.
+            
+                 Typically a developer will do some setting of properties/attaching to events after instantiating an application object,
+                 and then call Run() to start the application.
+            </summary>
+            <remarks>
+                 Once run has been called - an application's OnStartup override and Startup event is called
+                 immediately afterwards.
+            </remarks>
+             <param name="window">Window that will be added to the Windows property and made the MainWindow of the Applcation.
+             The passed Window must be created on the same thread as the Application object.  Furthermore, this Window is
+             shown once the Application is run.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Application.Shutdown">
+             <summary>
+                 Shutdown is called to programmatically shutdown an application.
+            
+                 Once shutdown() is called, the application gets called with the
+                 OnShutdown method to raise the Shutdown event.
+             </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Application.Current">
+            <summary>
+                The Current property enables the developer to always get to the application in
+                AppDomain in which they are running.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Application.Windows">
+            <summary>
+                The Windows property exposes a WindowCollection object, from which a developer
+                can iterate over all the windows that have been opened in the current application.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Application.MainWindow">
+             <summary>
+                 The MainWindow property indicates the primary window of the application.
+             </summary>
+             <remarks>
+                 By default - MainWindow will be set to the first window opened in the application.
+                 However the MainWindow may be set programmatically to indicate "this is my main window".
+                 It is a recommended programming style to refer to MainWindow in code instead of Windows[0].
+            
+             </remarks>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Application.ShutdownMode">
+             <summary>
+                 The ShutdownMode property is called to set the shutdown specific mode of
+                 the application. Setting this property controls the way in which an application
+                 will shutdown.
+                     The three values for the ShutdownMode enum are :
+                             OnLastWindowClose
+                             OnMainWindowClose
+                             OnExplicitShutdown
+            
+                     OnLastWindowClose - this mode will shutdown the application when  the
+                                         last window is closed, or an explicit call is made
+                                         to Application.Shutdown(). This is the default mode.
+            
+                     OnMainWindowClose - this mode will shutdown the application when the main
+                                         window has been closed, or Application.Shutdown() is
+                                         called. Note that if the MainWindow property has not
+                                         been set - this mode is equivalent to OnExplicitOnly.
+            
+                     OnExplicitShutdown- this mode will shutdown the application only when an
+                                         explicit call to OnShutdown() has been made.
+             </summary>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.UI.Application.Startup">
+            <summary>
+                The Startup event is fired when an application is starting.
+                This event is raised by the OnStartup method.
+            </summary>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.UI.Application.Exit">
+            <summary>
+            The Exit event is fired when an application is shutting down.
+            This event is raised by the OnExit method.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Application.OnStartup(System.EventArgs)">
+            <summary>
+                OnStartup is called to raise the Startup event. The developer will typically override this method
+                if they want to take action at startup time ( or they may choose to attach an event).
+                This method will be called once when the application begins, once that application's Run() method
+                has been called.
+            </summary>
+            <remarks>
+                This method follows the .Net programming guideline of having a protected virtual method
+                that raises an event, to provide a convenience for developers that subclass the event.
+                If you override this method - you need to call Base.OnStartup(...) for the corresponding event
+                to be raised.
+            </remarks>
+            <param name="e">The event args that will be passed to the Startup event</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Application.OnExit(System.EventArgs)">
+            <summary>
+                OnExit is called to raise the Exit event.
+                The developer will typically override this method if they want to take
+                action when the application exits  ( or they may choose to attach an event).
+            </summary>
+            <remarks>
+                This method follows the .Net programming guideline of having a protected virtual method
+                that raises an event, to provide a convenience for developers that subclass the event.
+                If you override this method - you need to call Base.OnExit(...) for the
+                corresponding event to be raised.
+            </remarks>
+            <param name="e">The event args that will be passed to the Exit event</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Application.DoShutdown">
+            <summary>
+            DO NOT USE - internal method
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Application.ShutdownCallback(System.Object)">
+            <summary>
+            This method gets called on dispatch of the Shutdown DispatcherOperationCallback
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Application.DefaultContextExceptionHandler(System.Object,System.Exception)">
+            <summary>
+            This DispatcherException event handler creates the default UI
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.ShutdownMode">
+            <summary>
+                Enum for ShutdownMode
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.ShutdownMode.OnLastWindowClose">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.ShutdownMode.OnMainWindowClose">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.ShutdownMode.OnExplicitShutdown">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.ReasonSessionEnding">
+            <summary>
+                Enum for ReasonSessionEnding
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.ReasonSessionEnding.Logoff">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.ReasonSessionEnding.Shutdown">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.BindablePropertyChangedEventHandler">
+            <summary>PC-style change notification for simple MVVM binding (TinyCLR subset).</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.INotifyBindablePropertyChanged">
+            <summary>
+            Implement on view-models; raise <see cref="E:GHIElectronics.TinyCLR.UI.INotifyBindablePropertyChanged.BindablePropertyChanged"/> with the property name
+            (or null / empty to refresh all bindings on the object).
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.EventRoute">
+             <summary>
+                 Container for the route to be followed
+                 by a RoutedEvent when raised
+             </summary>
+             <remarks>
+                 EventRoute constitues <para/>
+                 a non-null <see cref="F:GHIElectronics.TinyCLR.UI.EventRoute.RoutedEvent"/>
+                 and <para/>
+                 an ordered list of (target object, handler list)
+                 pairs <para/>
+                 <para/>
+            
+                 It facilitates adding new entries to this list
+                 and also allows for the handlers in the list
+                 to be invoked
+             </remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.EventRoute.#ctor(GHIElectronics.TinyCLR.UI.RoutedEvent)">
+            <summary>
+                Constructor for <see cref="T:GHIElectronics.TinyCLR.UI.EventRoute"/> given
+                the associated <see cref="F:GHIElectronics.TinyCLR.UI.EventRoute.RoutedEvent"/>
+            </summary>
+            <param name="routedEvent">
+                Non-null <see cref="F:GHIElectronics.TinyCLR.UI.EventRoute.RoutedEvent"/> to be associated with
+                this <see cref="T:GHIElectronics.TinyCLR.UI.EventRoute"/>
+            </param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.EventRoute.Add(System.Object,GHIElectronics.TinyCLR.UI.RoutedEventHandler,System.Boolean)">
+            <summary>
+                Adds this handler for the
+                specified target to the route
+            </summary>
+            <remarks>
+                NOTE: It is not an error to add a
+                handler for a particular target instance
+                twice (handler will simply be called twice).
+            </remarks>
+            <param name="target">
+                Target object whose handler is to be
+                added to the route
+            </param>
+            <param name="handler">
+                Handler to be added to the route
+            </param>
+            <param name="handledEventsToo">
+                Flag indicating whether or not the listener wants to
+                hear about events that have already been handled
+            </param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.EventRoute.InvokeHandlers(System.Object,GHIElectronics.TinyCLR.UI.RoutedEventArgs)">
+             <summary>
+                 Invokes all the handlers that have been
+                 added to the route
+             </summary>
+             <remarks>
+                 NOTE: If the <see cref="T:GHIElectronics.TinyCLR.UI.RoutingStrategy"/>
+                 of the associated <see cref="F:GHIElectronics.TinyCLR.UI.EventRoute.RoutedEvent"/>
+                 is <see cref="F:GHIElectronics.TinyCLR.UI.RoutingStrategy.Bubble"/>
+                 the last handlers added are the
+                 last ones invoked <para/>
+                 However if the <see cref="T:GHIElectronics.TinyCLR.UI.RoutingStrategy"/>
+                 of the associated <see cref="F:GHIElectronics.TinyCLR.UI.EventRoute.RoutedEvent"/>
+                 is <see cref="F:GHIElectronics.TinyCLR.UI.RoutingStrategy.Tunnel"/>,
+                 the last handlers added are the
+                 first ones invoked.
+                 However the handlers for a particular object
+                 are always invoked in the order they were added
+                 regardless of whether its a tunnel or buble.
+            
+             </remarks>
+             <param name="source">
+                 <see cref="P:GHIElectronics.TinyCLR.UI.RoutedEventArgs.Source"/>
+                 that raised the RoutedEvent
+             </param>
+             <param name="args">
+                 <see cref="T:GHIElectronics.TinyCLR.UI.RoutedEventArgs"/> that carry
+                 all the details specific to this RoutedEvent
+             </param>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.PresentationSource">
+             <summary>
+             Presentation source is our connection to the rest of the managed system.
+            
+             </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.PresentationSource.#ctor">
+            <summary>
+                Constructs an instance of the PresentationSource object.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.PresentationSource.RootUIElement">
+            <summary>
+            The Root UIElement for this source.
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.PropertyChangedEventArgs">
+            <summary>
+                Provides data for the various property changed events.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.PropertyChangedEventArgs.#ctor(System.String,System.Object,System.Object)">
+            <summary>
+                Initializes a new instance of the PropertyChangedEventArgs class.
+            </summary>
+            <param name="property">
+                The property whose value changed.
+            </param>
+            <param name="oldValue">
+                The value of the property before the change.
+            </param>
+            <param name="newValue">
+                The value of the property after the change.
+            </param>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.PropertyChangedEventArgs.Property">
+            <summary>
+                The property whose value changed.
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.PropertyChangedEventArgs.OldValue">
+            <summary>
+                The value of the property before the change.
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.PropertyChangedEventArgs.NewValue">
+            <summary>
+                The value of the property after the change.
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.PropertyChangedEventHandler">
+            <summary>
+                Represents the method that will handle the event raised when a
+                Property is changed
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.RoutedEvent">
+             <summary>
+                 RoutedEvent is a unique identifier for
+                 any registered RoutedEvent
+             </summary>
+             <remarks>
+                 RoutedEvent constitutes the <para/>
+                 <see cref="P:GHIElectronics.TinyCLR.UI.RoutedEvent.Name"/>, <para/>
+                 <see cref="P:GHIElectronics.TinyCLR.UI.RoutedEvent.RoutingStrategy"/>, <para/>
+                 <see cref="P:GHIElectronics.TinyCLR.UI.RoutedEvent.HandlerType"/> and <para/>
+                 <see cref="!:RoutedEvent.OwnerType"/> <para/>
+                 <para/>
+            
+                 NOTE: None of the members can be null
+             </remarks>
+             <ExternalAPI/>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.RoutedEvent.Name">
+            <summary>
+                Returns the Name of the RoutedEvent
+            </summary>
+            <remarks>
+                RoutedEvent Name is unique within the
+                OwnerType (super class types not considered
+                when talking about uniqueness)
+            </remarks>
+            <ExternalAPI/>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.RoutedEvent.RoutingStrategy">
+            <summary>
+                Returns the <see cref="P:GHIElectronics.TinyCLR.UI.RoutedEvent.RoutingStrategy"/>
+                of the RoutedEvent
+            </summary>
+            <ExternalAPI/>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.RoutedEvent.HandlerType">
+            <summary>
+                Returns Type of Handler for the RoutedEvent
+            </summary>
+            <remarks>
+                HandlerType is a type of delegate
+            </remarks>
+            <ExternalAPI/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.RoutedEvent.ToString">
+            <summary>
+               String representation
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.RoutedEvent.#ctor(System.String,GHIElectronics.TinyCLR.UI.RoutingStrategy,System.Type)">
+             <summary>
+             Create a new routed event.
+            
+             You have to promise not to duplicate another event name in the system,
+             or you will be sorry.
+             </summary>
+             <param name="name"></param>
+             <param name="routingStrategy"></param>
+             <param name="handlerType"></param>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.RoutedEvent.GlobalIndex">
+            <summary>
+               Index for this event
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.RoutedEventArgs">
+             <summary>
+                 The container for all state associated
+                 with a RoutedEvent
+             </summary>
+             <remarks>
+                 <see cref="T:GHIElectronics.TinyCLR.UI.RoutedEventArgs"/>
+                 constitutes the <para/>
+                 <see cref="P:GHIElectronics.TinyCLR.UI.RoutedEventArgs.RoutedEvent"/>, <para/>
+                 <see cref="P:GHIElectronics.TinyCLR.UI.RoutedEventArgs.Handled"/>, <para/>
+                 <see cref="P:GHIElectronics.TinyCLR.UI.RoutedEventArgs.Source"/> and <para/>
+                 <see cref="P:GHIElectronics.TinyCLR.UI.RoutedEventArgs.OriginalSource"/> <para/>
+                 <para/>
+            
+                 Different <see cref="T:GHIElectronics.TinyCLR.UI.RoutedEventArgs"/>
+                 can be used with a single <see cref="P:GHIElectronics.TinyCLR.UI.RoutedEventArgs.RoutedEvent"/> <para/>
+                 <para/>
+            
+                 The <see cref="T:GHIElectronics.TinyCLR.UI.RoutedEventArgs"/> is responsible
+                 for packaging the <see cref="P:GHIElectronics.TinyCLR.UI.RoutedEventArgs.RoutedEvent"/>,
+                 providing extra event state info, and invoking the
+                 handler associated with the RoutedEvent
+             </remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.RoutedEventArgs.#ctor">
+             <summary>
+                 Constructor for <see cref="T:GHIElectronics.TinyCLR.UI.RoutedEventArgs"/>
+             </summary>
+             <remarks>
+                 All members take default values <para/>
+                 <para/>
+            
+                 <see cref="P:GHIElectronics.TinyCLR.UI.RoutedEventArgs.RoutedEvent"/>
+                 defaults to null <para/>
+                 <see cref="P:GHIElectronics.TinyCLR.UI.RoutedEventArgs.Handled"/> defaults to
+                 false <para/>
+                 <see cref="P:GHIElectronics.TinyCLR.UI.RoutedEventArgs.Source"/> defaults to null <para/>
+                 <see cref="P:GHIElectronics.TinyCLR.UI.RoutedEventArgs.OriginalSource"/> also defaults to null
+                 <para/>
+             </remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.RoutedEventArgs.#ctor(GHIElectronics.TinyCLR.UI.RoutedEvent)">
+            <summary>
+                Constructor for <see cref="T:GHIElectronics.TinyCLR.UI.RoutedEventArgs"/>
+            </summary>
+            <param name="routedEvent">The new value that the RoutedEvent Property is being set to </param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.RoutedEventArgs.#ctor(GHIElectronics.TinyCLR.UI.RoutedEvent,System.Object)">
+            <summary>
+                Constructor for <see cref="T:GHIElectronics.TinyCLR.UI.RoutedEventArgs"/>
+            </summary>
+            <param name="source">The new value that the SourceProperty is being set to </param>
+            <param name="routedEvent">The new value that the RoutedEvent Property is being set to </param>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.RoutedEventArgs.RoutedEvent">
+            <summary>
+                Returns the <see cref="P:GHIElectronics.TinyCLR.UI.RoutedEventArgs.RoutedEvent"/> associated
+                with this <see cref="T:GHIElectronics.TinyCLR.UI.RoutedEventArgs"/>
+            </summary>
+            <remarks>
+                The <see cref="P:GHIElectronics.TinyCLR.UI.RoutedEventArgs.RoutedEvent"/> cannot be null
+                at any time
+            </remarks>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.RoutedEventArgs.Handled">
+            <summary>
+                Returns a boolean flag indicating if or not this
+                RoutedEvent has been handled this far in the route
+            </summary>
+            <remarks>
+                Initially starts with a false value before routing
+                has begun
+            </remarks>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.RoutedEventArgs.Source">
+            <summary>
+                Returns Source object that raised the RoutedEvent
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.RoutedEventArgs.OriginalSource">
+            <summary>
+                Returns OriginalSource object that raised the RoutedEvent
+            </summary>
+            <remarks>
+                Always returns the OriginalSource object that raised the
+                RoutedEvent unlike <see cref="P:GHIElectronics.TinyCLR.UI.RoutedEventArgs.Source"/>
+                that may vary under specific scenarios <para/>
+                This property acquires its value once before the event
+                handlers are invoked and never changes then on
+            </remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.RoutedEventArgs.OnSetSource(System.Object)">
+            <summary>
+                Invoked when the source of the event is set
+            </summary>
+            <remarks>
+                Changing the source of an event can often
+                require updating the data within the event.
+                For this reason, the OnSource=  method is
+                protected virtual and is meant to be
+                overridden by sub-classes of
+                <see cref="T:GHIElectronics.TinyCLR.UI.RoutedEventArgs"/> <para/>
+                Also see <see cref="P:GHIElectronics.TinyCLR.UI.RoutedEventArgs.Source"/>
+            </remarks>
+            <param name="source">
+                The new value that the SourceProperty is being set to
+            </param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.RoutedEventArgs.InvokeHandler(GHIElectronics.TinyCLR.UI.RouteItem)">
+            <summary>
+                Invokes the handler associated with the specified RouteItem
+            </summary>
+            <param name="routeItem">
+                RouteItem containing handler and target
+            </param>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.RoutedEventHandler">
+            <summary>
+                RoutedEventHandler Definition
+            </summary>
+            <ExternalAPI/>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.RoutedEventHandlerInfo">
+             <summary>
+                 Container for handler instance and other
+                 invocation preferences for this handler
+                 instance
+             </summary>
+             <remarks>
+                 RoutedEventHandlerInfo constitutes the
+                 handler instance and flag that indicates if
+                 or not this handler must be invoked for
+                 already handled events <para/>
+                 <para/>
+            
+                 This class needs to be public because it is
+                 used by ContentElement in the Framework
+                 to store Instance EventHandlers
+             </remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.RoutedEventHandlerInfo.#ctor(GHIElectronics.TinyCLR.UI.RoutedEventHandler,System.Boolean)">
+            <summary>
+                Construtor for RoutedEventHandlerInfo
+            </summary>
+            <param name="handler">
+                Non-null handler
+            </param>
+            <param name="handledEventsToo">
+                Flag that indicates if or not the handler must
+                be invoked for already handled events
+            </param>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.RoutedEventHandlerInfo.Handler">
+            <summary>
+                Returns associated handler instance
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.RoutedEventHandlerInfo.InvokeHandledEventsToo">
+            <summary>
+                Returns HandledEventsToo Flag
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.RoutedEventHandlerInfo.Equals(System.Object)">
+            <summary>
+                Is the given object equivalent to the current one
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.RoutedEventHandlerInfo.Equals(GHIElectronics.TinyCLR.UI.RoutedEventHandlerInfo)">
+            <summary>
+                Is the given RoutedEventHandlerInfo equals the current
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.RoutedEventHandlerInfo.GetHashCode">
+            <summary>
+                Serves as a hash function for a particular type, suitable for use in
+                hashing algorithms and data structures like a hash table
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.RoutedEventHandlerInfo.op_Equality(GHIElectronics.TinyCLR.UI.RoutedEventHandlerInfo,GHIElectronics.TinyCLR.UI.RoutedEventHandlerInfo)">
+            <summary>
+                Equals operator overload
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.RoutedEventHandlerInfo.op_Inequality(GHIElectronics.TinyCLR.UI.RoutedEventHandlerInfo,GHIElectronics.TinyCLR.UI.RoutedEventHandlerInfo)">
+            <summary>
+                NotEquals operator overload
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.RouteItem.Equals(System.Object)">
+            <summary>
+                Is the given object equals the current
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.RouteItem.Equals(GHIElectronics.TinyCLR.UI.RouteItem)">
+            <summary>
+                Is the given RouteItem equals the current
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.RouteItem.GetHashCode">
+            <summary>
+                Serves as a hash function for a particular type, suitable for use in
+                hashing algorithms and data structures like a hash table
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.RouteItem.op_Equality(GHIElectronics.TinyCLR.UI.RouteItem,GHIElectronics.TinyCLR.UI.RouteItem)">
+            <summary>
+                Equals operator overload
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.RouteItem.op_Inequality(GHIElectronics.TinyCLR.UI.RouteItem,GHIElectronics.TinyCLR.UI.RouteItem)">
+            <summary>
+                NotEquals operator overload
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.RoutingStrategy">
+            <summary>
+                Routing Strategy can be either of
+                Tunnel or Bubble
+            </summary>
+            <ExternalAPI/>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.RoutingStrategy.Tunnel">
+            <summary>
+                Tunnel
+            </summary>
+            <remarks>
+                Route the event starting at the root of
+                the visual tree and ending with the source
+            </remarks>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.RoutingStrategy.Bubble">
+            <summary>
+                Bubble
+            </summary>
+            <remarks>
+                Route the event starting at the source
+                and ending with the root of the visual tree
+            </remarks>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.RoutingStrategy.Direct">
+            <summary>
+                Direct
+            </summary>
+            <remarks>
+                Raise the event at the source only.
+            </remarks>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.SizeToContent">
+            <summary>
+            SizeToContent
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.SizeToContent.Manual">
+            <summary>
+            Does not size to content
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.SizeToContent.Width">
+            <summary>
+            Sizes Width to content's Width
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.SizeToContent.Height">
+            <summary>
+            Sizes Height to content's Height
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.SizeToContent.WidthAndHeight">
+            <summary>
+            Sizes both Width and Height to content's size
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Theme">
+            <summary>
+            Central palette for TinyCLR.UI. Brushes are shared instances; change <see cref="P:GHIElectronics.TinyCLR.UI.Theme.WindowBackground"/> etc.
+            then replace the corresponding brush field if you need live updates.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Theme.RefreshBrushesFromColors">
+            <summary>Call after mutating color fields if you need brushes to match.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.UIElement.OnPreviewButtonDown(GHIElectronics.TinyCLR.UI.Input.ButtonEventArgs)">
+            <summary>
+                An event reporting a button was pressed.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.UIElement.OnButtonDown(GHIElectronics.TinyCLR.UI.Input.ButtonEventArgs)">
+            <summary>
+                An event reporting a button was pressed.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.UIElement.OnPreviewButtonUp(GHIElectronics.TinyCLR.UI.Input.ButtonEventArgs)">
+            <summary>
+                An event reporting a button was released.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.UIElement.OnButtonUp(GHIElectronics.TinyCLR.UI.Input.ButtonEventArgs)">
+            <summary>
+                An event reporting a button was released.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.UIElement.OnGotFocus(GHIElectronics.TinyCLR.UI.Input.FocusChangedEventArgs)">
+            <summary>
+                An event announcing that the buttons are focused on this element.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.UIElement.OnLostFocus(GHIElectronics.TinyCLR.UI.Input.FocusChangedEventArgs)">
+            <summary>
+                An event announcing that the buttons is no longer focused on this element
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.UIElement.OnChildrenChanged(GHIElectronics.TinyCLR.UI.UIElement,GHIElectronics.TinyCLR.UI.UIElement,System.Int32)">
+            <summary>
+            OnChildrenChanged is called when the UIElementCollection of the UIElement is edited.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.UIElement.IsFocused">
+            <summary>
+                A property indicating if the button is focused on this
+                element or not.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.UIElement.PropagateSuspendLayout(GHIElectronics.TinyCLR.UI.UIElement)">
+            <summary>
+            Recursively propagates IsLayoutSuspended flag down to the whole v's sub tree.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.UIElement.PropagateResumeLayout(GHIElectronics.TinyCLR.UI.UIElement)">
+            <summary>
+            Recursively resets IsLayoutSuspended flag on all visuals of the whole v's sub tree.
+            For UIElements also re-inserts the UIElement into Measure and / or Arrange update queues
+            if necessary.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.UIElement.Measure(System.Int32,System.Int32)">
+            <summary>
+            Updates DesiredSize of the UIElement. Must be called by parents from their MeasureOverride, to form recursive update.
+            This is first pass of layout update.
+            </summary>
+            <remarks>
+            Measure is called by parents on their children. Internally, Measure calls MeasureOverride override on the same object,
+            giving it opportunity to compute its DesiredSize.<para/>
+            This method will return immediately if child is not Dirty, previously measured
+            and availableSize is the same as cached. <para/>
+            This method also resets the IsMeasureinvalid bit on the child.<para/>
+            In case when "unbounded measure to content" is needed, parent can use availableSize
+            as double.PositiveInfinity. Any returned size is OK in this case.
+            </remarks>
+            <param name="availableWidth">Available width that parent can give to the child. May be MaxValue (when parent wants to
+            measure to content). This is soft constraint. Child can return bigger size to indicate that it wants bigger space and hope
+            that parent can throw in scrolling...</param>
+            <param name="availableHeight">Available height that parent can give to the child. May be MaxValue (when parent wants to
+            measure to content). This is soft constraint. Child can return bigger size to indicate that it wants bigger space and hope
+            that parent can throw in scrolling...</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.UIElement.Arrange(System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Parents or system call this method to arrange the internals of children on a second pass of layout update.
+            </summary>
+            <remarks>
+            This method internally calls ArrangeOverride override, giving the derived class opportunity
+            to arrange its children and/or content using final computed size.
+            In their ArrangeOverride overrides, derived class is supposed to create its visual structure and
+            prepare itself for rendering. Arrange is called by parents
+            from their implementation of ArrangeOverride or by system when needed.
+            This method sets Bounds=finalSize before calling ArrangeOverride.
+            </remarks>
+            <param name="finalRectX">This is the final X location that parent or system wants this UIElement to assume.</param>
+            <param name="finalRectY">This is the final Y location that parent or system wants this UIElement to assume.</param>
+            <param name="finalRectWidth">This is the Width that parent or system wants this UIElement to assume.</param>
+            <param name="finalRectHeight">This is the height that parent or system wants this UIElement to assume.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.UIElement.MeasureOverride(System.Int32,System.Int32,System.Int32@,System.Int32@)">
+             <summary>
+             Measurement override. Implement your size-to-content logic here.
+             </summary>
+             <remarks>
+             MeasureOverride is designed to be the main customizability point for size control of layout.
+             UIElement authors should override this method, call Measure on each child UIElement,
+             and compute their desired size based upon the measurement of the children.
+             The return value should be the desired size.<para/>
+             Note: It is required that a parent UIElement calls Measure on each child or they won't be sized/arranged.
+             Typical override follows a pattern roughly like this (pseudo-code):
+             <example>
+                 <code lang="C#">
+             <![CDATA[
+            
+             protected override void MeasureOverride(int avialableWidth, int availableHeight, out int desiredWidth, out int desiredHeight)
+             {
+                 foreach (UIElement child in VisualChildren)
+                 {
+                     child.Measure(availableSize);
+                     availableSize.Deflate(child.DesiredSize);
+                     _cache.StoreInfoAboutChild(child);
+                 }
+            
+                 Size desired = CalculateBasedOnCache(_cache);
+                 return desired;
+             }
+             ]]>
+                 </code>
+             </example>
+             The key aspects of this snippet are:
+                 <list type="bullet">
+             <item>You must call Measure on each child UIElement</item>
+             <item>It is common to cache measurement information between the MeasureOverride and ArrangeOverride method calls</item>
+             <item>Calling base.MeasureOverride is not required.</item>
+             <item>Calls to Measure on children are passing either the same availableSize as the parent, or a subset of the area depending
+             on the type of layout the parent will perform (for example, it would be valid to remove the area
+             for some border or padding).</item>
+                 </list>
+             </remarks>
+             <param name="availableWidth">Available size that parent can give to the child. May be MaxValue(when parent wants to
+             measure to content). This is soft constraint. Child can return bigger size to indicate that it wants bigger space and hope
+             that parent can throw in scrolling...</param>
+             <param name="availableHeight"></param>
+             <param name="desiredWidth"></param>
+             <param name="desiredHeight"></param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.UIElement.ArrangeOverride(System.Int32,System.Int32)">
+             <summary>
+             ArrangeOverride allows for the customization of the final sizing and positioning of children.
+             </summary>
+             <remarks>
+             UIElement authors should override this method, call Arrange on each visible child UIElement,
+             to size and position each child UIElement by passing a rectangle reserved for the child within parent space.
+             Note: It is required that a parent UIElement calls Arrange on each child or they won't be rendered.
+             Typical override follows a pattern roughly like this (pseudo-code):
+             <example>
+                 <code lang="C#">
+             <![CDATA[
+            
+             protected override void ArrangeOverride(int arrangeWidth, int arrangeHeight)
+             {
+            
+                 foreach (UIElement child in VisualChildren)
+                 {
+                     child.Arrange(new Rect(childX, childY, childWidth, childHeight);
+                 }
+             }
+             ]]>
+                 </code>
+             </example>
+             </remarks>
+             <param name="arrangeWidth">Final width</param>
+             <param name="arrangeHeight">Final height</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.UIElement.UpdateLayout">
+            <summary>
+            Call this method to ensure that the whoel subtree of elements that includes this UIElement
+            is properly updated.
+            </summary>
+            <remarks>
+            This ensures that UIElements with IsMeasureInvalid or IsArrangeInvalid will
+            get call to their MeasureOverride and ArrangeOverride, and all computed sizes will be validated.
+            This method does nothing if layout is clean but it does work if layout is not clean so avoid calling
+            it after each change in the UIElement tree. It makes sense to either never call it (system will do this
+            in a deferred manner) or only call it if you absolutely need updated sizes and positions after you do all changes.
+            </remarks>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.UIElement.IsMeasureValid">
+            <summary>
+            Determines if the DesiredSize is valid.
+            </summary>
+            <remarks>
+            A developer can force arrangement to be invalidated by calling InvalidateMeasure.
+            IsArrangeValid and IsMeasureValid are related,
+            in that arrangement cannot be valid without measurement first being valid.
+            </remarks>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.UIElement.IsArrangeValid">
+            <summary>
+            Determines if the RenderSize and position of child elements is valid.
+            </summary>
+            <remarks>
+            A developer can force arrangement to be invalidated by calling InvalidateArrange.
+            IsArrangeValid and IsMeasureValid are related, in that arrangement cannot be valid without measurement first
+            being valid.
+            </remarks>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:GHIElectronics.TinyCLR.UI.UIElement.ChildElementFromPoint(System.Int32,System.Int32)" -->
+        <member name="M:GHIElectronics.TinyCLR.UI.UIElement.PointToScreen(System.Int32@,System.Int32@)">
+            <summary>
+            We are deviating little from their desktop counter parts, mostly for simplicity and perf.
+            </summary>
+            <param name="x"></param>
+            <param name="y"></param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.UIElement.InvalidateMeasure">
+            <summary>
+            Invalidates the measurement state for the UIElement.
+            This has the effect of also invalidating the arrange state for the UIElement.
+            The UIElement will be queued for an update layout that will occur asynchronously.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.UIElement.InvalidateArrange">
+            <summary>
+            Invalidates the arrange state for the UIElement.
+            The UIElement will be queued for an update layout that will occur asynchronously.
+            MeasureOverride will not be called unless InvalidateMeasure is also called - or that something
+            else caused the measure state to be invalidated.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.UIElement.GetIsRootElement">
+            <summary>
+            The CompositionTarget marks the root element. The root element is responsible
+            for posting renders. This method is also used to ensure that the Visual is not
+            used in multiple CompositionTargets.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.UIElement.OnChildDesiredSizeChanged(GHIElectronics.TinyCLR.UI.UIElement)">
+            <summary>
+            Notification that is called by Measure of a child when
+            it ends up with different desired size for the child.
+            </summary>
+            <remarks>
+            Default implementation simply calls invalidateMeasure(), assuming that layout of a
+            parent should be updated after child changed its size.<para/>
+            Finer point: this method can only be called in the scenario when the system calls Measure on a child,
+            not when parent calls it since if parent calls it, it means parent has dirty layout and is recalculating already.
+            </remarks>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.UIElement.Visibility">
+            <summary>
+                Visibility accessor
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.UIElement.IsVisible">
+            <summary>
+                A property indicating if this element is Visible or not.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.UIElement.IsEnabled">
+            <summary>
+                Fetches the value of the IsEnabled property
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.UIElement.RaiseEvent(GHIElectronics.TinyCLR.UI.RoutedEventArgs)">
+             <summary>
+                 Raise the events specified by
+                 <see cref="P:GHIElectronics.TinyCLR.UI.RoutedEventArgs.RoutedEvent"/>
+             </summary>
+             <remarks>
+                 This method is a shorthand for
+                 This method walks up the visual tree, calling
+                 <see cref="!:UIElement.BuildRouteCore"/>
+                 on every <see cref="T:GHIElectronics.TinyCLR.UI.UIElement"/> <para/>
+                 <para/>
+            
+                 NOTE: The RoutedEvent in RoutedEventArgs
+                 and EventRoute must be matched
+            
+                 Once the route is built, it calls InvokeHandlers()
+             </remarks>
+             <param name="args">
+                 <see cref="T:GHIElectronics.TinyCLR.UI.RoutedEventArgs"/> for the event to
+                 be raised
+             </param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.UIElement.AddToEventRoute(GHIElectronics.TinyCLR.UI.EventRoute,GHIElectronics.TinyCLR.UI.RoutedEventArgs)">
+            <summary>
+                Add the event handlers for this element to the route.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.UIElement.InstanceEventHandlersStore">
+            <summary>
+            Ensure the store has been created.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.UIElement.AddHandler(GHIElectronics.TinyCLR.UI.RoutedEvent,GHIElectronics.TinyCLR.UI.RoutedEventHandler,System.Boolean)">
+             <summary>
+                 Adds a routed event handler for the particular
+                 <see cref="T:GHIElectronics.TinyCLR.UI.RoutedEvent"/>
+             </summary>
+             <remarks>
+                 The handler added thus is also known as
+                 an instance handler <para/>
+                 <para/>
+            
+                 NOTE: It is not an error to add a handler twice
+                 (handler will simply be called twice) <para/>
+                 <para/>
+            
+                 Input parameters <see cref="T:GHIElectronics.TinyCLR.UI.RoutedEvent"/>
+                 and handler cannot be null <para/>
+                 handledEventsToo input parameter when false means
+                 that listener does not care about already handled events.
+                 Hence the handler will not be invoked on the target if
+                 the RoutedEvent has already been
+                 <see cref="P:GHIElectronics.TinyCLR.UI.RoutedEventArgs.Handled"/> <para/>
+                 handledEventsToo input parameter when true means
+                 that the listener wants to hear about all events even if
+                 they have already been handled. Hence the handler will
+                 be invoked irrespective of the event being
+                 <see cref="P:GHIElectronics.TinyCLR.UI.RoutedEventArgs.Handled"/>
+             </remarks>
+             <param name="routedEvent">
+                 <see cref="T:GHIElectronics.TinyCLR.UI.RoutedEvent"/> for which the handler
+                 is attached
+             </param>
+             <param name="handler">
+                 The handler that will be invoked on this object
+                 when the RoutedEvent is raised
+             </param>
+             <param name="handledEventsToo">
+                 Flag indicating whether or not the listener wants to
+                 hear about events that have already been handled
+             </param>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.UIElementCollection">
+             <summary>
+             A UIElementCollection is a ordered collection of UIElements.
+             </summary>
+             <remarks>
+             A UIElementCollection has implied context affinity. It is a violation to access
+             the collection from a different context than that of the owning Element
+            
+             This collection is an amalgam of UIElementCollection and UIElementCollection from Avalon
+            
+             </remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.UIElementCollection.CopyTo(System.Array,System.Int32)">
+            <summary>
+            Copies the UIElement collection to the specified array starting at the specified index.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.UIElementCollection.CopyTo(GHIElectronics.TinyCLR.UI.UIElement[],System.Int32)">
+            <summary>
+            Strongly typed version of CopyTo
+            Copies the collection into the Array.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.UIElementCollection.EnsureCapacity(System.Int32)">
+            <summary>
+            Ensures that the capacity of this list is at least the given minimum
+            value. If the currect capacity of the list is less than min, the
+            capacity is increased to min.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.UIElementCollection.Capacity">
+             <summary>
+             Gets or sets the number of elements that the UIElementCollection can contain.
+             </summary>
+             <value>
+             The number of elements that the UIElementCollection can contain.
+             </value>
+             <remarks>
+             Capacity is the number of elements that the UIElementCollection is capable of storing.
+             Count is the number of UIElements that are actually in the UIElementCollection.
+            
+             Capacity is always greater than or equal to Count. If Count exceeds
+             Capacity while adding elements, the capacity of the UIElementCollection is increased.
+            
+             By default the capacity is 0.
+             </remarks>
+             <exception cref="T:System.ArgumentOutOfRangeException">Capacity is set to a value that is less than Count.</exception>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.UIElementCollection.Item(System.Int32)">
+            <summary>
+            Indexer for the UIElementCollection. Gets or sets the UIElement stored at the
+            zero-based index of the UIElementCollection.
+            </summary>
+            <remarks>This property provides the ability to access a specific UIElement in the
+            UIElementCollection by using the following systax: <c>myUIElementCollection[index]</c>.</remarks>
+            <exception cref="T:System.ArgumentOutOfRangeException"><c>index</c> is less than zero -or- <c>index</c> is equal to or greater than Count.</exception>
+            <exception cref="T:System.ArgumentException">If the new child has already a parent or if the slot a the specified index is not null.</exception>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.UIElementCollection.ConnectChild(System.Int32,GHIElectronics.TinyCLR.UI.UIElement)">
+            <summary>
+            Sets the specified element at the specified index into the child
+            collection. It also corrects the parent.
+            Note that the function requires that _item[index] == null and it
+            also requires that the passed in child is not connected to another UIElement.
+            </summary>
+            <exception cref="T:System.ArgumentException">If the new child has already a parent or if the slot a the specified index is not null.</exception>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.UIElementCollection.DisconnectChild(System.Int32)">
+            <summary>
+            Disconnects a child.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.UIElementCollection.Add(GHIElectronics.TinyCLR.UI.UIElement)">
+            <summary>
+            Appends a UIElement to the end of the UIElementCollection.
+            </summary>
+            <param name="visual">The UIElement to be added to the end of the UIElementCollection.</param>
+            <returns>The UIElementCollection index at which the UIElement has been added.</returns>
+            <remarks>Adding a null is allowed.</remarks>
+            <exception cref="T:System.ArgumentException">If the new child has already a parent.</exception>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.UIElementCollection.IndexOf(GHIElectronics.TinyCLR.UI.UIElement)">
+            <summary>
+            Returns the zero-based index of the UIElement. If the UIElement is not
+            in the UIElementCollection -1 is returned. If null is passed to the method, the index
+            of the first entry with null is returned. If there is no null entry -1 is returned.
+            </summary>
+            <param name="UIElement">The UIElement to locate in the UIElementCollection.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.UIElementCollection.Remove(GHIElectronics.TinyCLR.UI.UIElement)">
+             <summary>
+             Removes the specified element from the UIElementCollection.
+             </summary>
+             <param name="element">The UIElement to remove from the UIElementCollection.</param>
+             <remarks>
+             The UIElements that follow the removed UIElements move up to occupy
+             the vacated spot. The indexes of the UIElements that are moved are
+             also updated.
+            
+             If element is null then the first null entry is removed. Note that removing
+             a null entry is linear in the size of the collection.
+             </remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.UIElementCollection.Contains(GHIElectronics.TinyCLR.UI.UIElement)">
+            <summary>
+            Determines whether a element is in the UIElementCollection.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.UIElementCollection.Clear">
+            <summary>
+            Removes all elements from the UIElementCollection.
+            </summary>
+            <remarks>
+            Count is set to zero. Capacity remains unchanged.
+            To reset the capacity of the UIElementCollection, call TrimToSize
+            or set the Capacity property directly.
+            </remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.UIElementCollection.Insert(System.Int32,GHIElectronics.TinyCLR.UI.UIElement)">
+             <summary>
+             Inserts an element into the UIElementCollection at the specified index.
+             </summary>
+             <param name="index">The zero-based index at which value should be inserted.</param>
+             <param name="element">The UIElement to insert. </param>
+             <exception cref="T:System.ArgumentOutOfRangeException">
+             index is less than zero.
+            
+             -or-
+            
+             index is greater than Count.
+             </exception>
+             <remarks>
+             If Count already equals Capacity, the capacity of the
+             UIElementCollection is increased before the new UIElement
+             is inserted.
+            
+             If index is equal to Count, value is added to the
+             end of UIElementCollection.
+            
+             The UIElements that follow the insertion point move down to
+             accommodate the new UIElement. The indexes of the UIElements that are
+             moved are also updated.
+             </remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.UIElementCollection.RemoveAt(System.Int32)">
+            <summary>
+            Removes the UIElement at the specified index.
+            </summary>
+            <param name="index">The zero-based index of the element to remove.</param>
+            <exception cref="T:System.ArgumentOutOfRangeException">index is less than zero
+            - or - index is equal or greater than count.</exception>
+            <remarks>
+            The UIElements that follow the removed UIElements move up to occupy
+            the vacated spot. The indexes of the UIElements that are moved are
+            also updated.
+            </remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.UIElementCollection.RemoveRange(System.Int32,System.Int32)">
+            <summary>
+            Removes a range of UIElements from the UIElementCollection.
+            </summary>
+            <param name="index">The zero-based index of the range
+            of elements to remove</param>
+            <param name="count">The number of elements to remove.</param>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            index is less than zero.
+            -or-
+            count is less than zero.
+            </exception>
+            <exception cref="T:System.ArgumentException">
+            index and count do not denote a valid range of elements in the UIElementCollection.
+            </exception>
+            <remarks>
+            The UIElements that follow the removed UIElements move up to occupy
+            the vacated spot. The indexes of the UIElements that are moved are
+            also updated.
+            </remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.UIElementCollection.System#Collections#IEnumerable#GetEnumerator">
+            <summary>
+            Returns an enumerator that can iterate through the UIElementCollection.
+            </summary>
+            <returns>Enumerator that enumerates the UIElementCollection in order.</returns>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.UIElementCollection.Enumerator">
+             <summary>
+             This is a simple UIElementCollection enumerator that is based on
+             the ArrayListEnumeratorSimple that is used for ArrayLists.
+            
+             The following comment is from the CLR people:
+               For a straightforward enumeration of the entire ArrayList,
+               this is faster, because it's smaller.  Benchmarks showed
+               this.
+             </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.UIElementCollection.Enumerator.Clone">
+            <summary>
+            Creates a new object that is a copy of the current instance.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.UIElementCollection.Enumerator.MoveNext">
+            <summary>
+            Advances the enumerator to the next element of the collection.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.UIElementCollection.Enumerator.System#Collections#IEnumerator#Current">
+            <summary>
+            Gets the current UIElement.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.UIElementCollection.Enumerator.Current">
+            <summary>
+            Gets the current UIElement.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.UIElementCollection.Enumerator.Reset">
+            <summary>
+            Sets the enumerator to its initial position, which is before the first element in the collection.
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Visibility">
+            <summary>
+            Visibility - Enum which describes 3 possible visibility options.
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Visibility.Visible">
+            <summary>
+            Normally visible.
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Visibility.Hidden">
+            <summary>
+            Occupies space in the layout, but is not visible (completely transparent).
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Visibility.Collapsed">
+            <summary>
+            Not visible and does not occupy any space in layout, as if it doesn't exist.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Window.#ctor">
+            <summary>
+                Constructs a window object
+            </summary>
+            <remarks>
+                Automatic determination of current Dispatcher. Use alternative constructor
+                that accepts a Dispatcher for best performance.
+            REFACTOR -- consider specifying app default window sizes to cover Aux case for default window size.
+            </remarks>
+                Initializes the Width/Height, Top/Left properties to use windows
+                default. Updates Application object properties if inside app.
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Window.SizeToContent">
+            <summary>
+            Auto size Window to its content's size
+            </summary>
+            <remarks>
+            1. SizeToContent can be applied to Width Height independently
+            2. After SizeToContent is set, setting Width/Height does not take affect if that
+               dimension is sizing to content.
+            </remarks>
+            <value>
+            Default value is SizeToContent.Manual
+            </value>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Window.Top">
+            <summary>
+                Position for Top of the host window
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Window.Topmost">
+            <summary>
+                Determines if this window is always on the top.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Window.MeasureOverride(System.Int32,System.Int32,System.Int32@,System.Int32@)">
+            <summary>
+                Measurement override. Implements content sizing logic.
+            </summary>
+            <remarks>
+                Deducts the frame size from the constraint and then passes it on
+                to it's child.  Only supports one Visual child (just like control)
+            </remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Window.ArrangeOverride(System.Int32,System.Int32)">
+            <summary>
+                ArrangeOverride allows for the customization of the positioning of children.
+            </summary>
+            <remarks>
+                Deducts the frame size of the window from the constraint and then
+                arranges it's child.  Supports only one child.
+            </remarks>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.WindowCollection">
+            <summary>
+            WindowCollection can be used to interate over all the windows that have been
+            opened in the current application.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.WindowCollection.#ctor">
+            <summary>
+            Default Constructor
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.WindowCollection.Item(System.Int32)">
+            <summary>
+            Overloaded [] operator to access the WindowCollection list
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.WindowCollection.GetEnumerator">
+            <summary>
+            GetEnumerator
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.WindowCollection.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
+            <summary>
+            CopyTo
+            </summary>
+            <param name="array"></param>
+            <param name="index"></param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.WindowCollection.CopyTo(GHIElectronics.TinyCLR.UI.Window[],System.Int32)">
+            <summary>
+            CopyTo
+            </summary>
+            <param name="array"></param>
+            <param name="index"></param>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.WindowCollection.Count">
+            <summary>
+            Count property
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.WindowCollection.IsSynchronized">
+            <summary>
+            IsSynchronized
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.WindowCollection.SyncRoot">
+            <summary>
+            SyncRoot
+            </summary>
+        </member>
+    </members>
+</doc>

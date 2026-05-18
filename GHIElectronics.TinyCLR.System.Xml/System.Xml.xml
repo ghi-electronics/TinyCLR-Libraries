@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>System.Xml</name>
+    </assembly>
+    <members>
+        <member name="T:System.Xml.XmlNodeType">
+            <summary>Node kinds in an XML document. Same values as .NET's <c>System.Xml.XmlNodeType</c>.</summary>
+        </member>
+        <member name="T:System.Xml.ReadState">
+            <summary>Reader lifecycle state.</summary>
+        </member>
+        <member name="T:System.Xml.ConformanceLevel">
+            <summary>XML conformance level (auto-detect, fragment, or full document).</summary>
+        </member>
+        <member name="T:System.Xml.WhitespaceHandling">
+            <summary>How the reader treats whitespace nodes.</summary>
+        </member>
+        <member name="T:System.Xml.NewLineHandling">
+            <summary>How the writer represents line breaks.</summary>
+        </member>
+        <member name="T:System.Xml.XmlSpace">
+            <summary>Value of an in-scope <c>xml:space</c> attribute.</summary>
+        </member>
+        <member name="T:System.Xml.ValidationType">
+            <summary>XML validation policy (none or DTD/Schema).</summary>
+        </member>
+        <member name="T:System.Xml.XmlException">
+            <summary>Thrown for XML parse errors; carries line/position info.</summary>
+        </member>
+        <member name="T:System.Xml.XmlNameTable">
+            <summary>Atomized-string table shared between readers and writers.</summary>
+        </member>
+        <member name="T:System.Xml.NameTable">
+            <summary>Hashtable-backed <see cref="T:System.Xml.XmlNameTable"/>.</summary>
+        </member>
+        <member name="T:System.Xml.XmlReaderSettings">
+            <summary>Settings bag passed to <see cref="M:System.Xml.XmlReader.Create(System.IO.Stream,System.Xml.XmlReaderSettings)"/>. Mirrors the .NET BCL type.</summary>
+        </member>
+        <member name="T:System.Xml.XmlReader">
+            <summary>Forward-only XML reader. Same surface as .NET's <c>System.Xml.XmlReader</c>.</summary>
+        </member>
+        <member name="T:System.Xml.XmlWriter">
+            <summary>Forward-only XML writer. Same surface as .NET's <c>System.Xml.XmlWriter</c>.</summary>
+        </member>
+    </members>
+</doc>

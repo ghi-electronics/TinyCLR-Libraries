@@ -1,6 +1,7 @@
 ﻿using System.Drawing.Drawing2D;
 
 namespace System.Drawing {
+    /// <summary>Defines an object used to draw lines and outlines — color, width, and brush.</summary>
     public sealed class Pen : MarshalByRefObject, ICloneable, IDisposable {
         public float Width { get; set; }
         public Color Color { get; set; }

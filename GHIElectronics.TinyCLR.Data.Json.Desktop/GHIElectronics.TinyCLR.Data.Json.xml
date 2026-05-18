@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>GHIElectronics.TinyCLR.Data.Json</name>
+    </assembly>
+    <members>
+        <member name="T:GHIElectronics.TinyCLR.Data.Json.JArray">
+            <summary>A JSON array — an ordered sequence of <see cref="T:GHIElectronics.TinyCLR.Data.Json.JToken"/> elements.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Data.Json.JObject">
+            <summary>A JSON object — an unordered map of name/<see cref="T:GHIElectronics.TinyCLR.Data.Json.JToken"/> pairs.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Data.Json.JProperty">
+            <summary>A name/value pair inside a <see cref="T:GHIElectronics.TinyCLR.Data.Json.JObject"/>.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Data.Json.InstanceFactory">
+            <summary>
+            Hook invoked by <see cref="M:GHIElectronics.TinyCLR.Data.Json.JsonConverter.DeserializeObject(System.String,System.Type,GHIElectronics.TinyCLR.Data.Json.InstanceFactory)"/>
+            when a polymorphic field is deserialized — return the concrete instance to populate.
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Data.Json.JsonConverter">
+            <summary>
+            Parses JSON text into a <see cref="T:GHIElectronics.TinyCLR.Data.Json.JToken"/> tree and serializes objects back
+            to JSON. Strict-on-emit, generous-on-accept per RFC 8259.
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Data.Json.JToken">
+            <summary>
+            Abstract base for every JSON value type: <see cref="T:GHIElectronics.TinyCLR.Data.Json.JObject"/>, <see cref="T:GHIElectronics.TinyCLR.Data.Json.JArray"/>,
+            <see cref="T:GHIElectronics.TinyCLR.Data.Json.JValue"/>, and <see cref="T:GHIElectronics.TinyCLR.Data.Json.JProperty"/>. Use <see cref="T:GHIElectronics.TinyCLR.Data.Json.JsonConverter"/>
+            to parse JSON text into a token tree or serialize a tree back to text.
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Data.Json.JValue">
+            <summary>A JSON primitive value — string, number, boolean, or null.</summary>
+        </member>
+    </members>
+</doc>

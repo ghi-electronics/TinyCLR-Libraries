@@ -1,0 +1,1082 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>GHIElectronics.TinyCLR.RegularExpressions</name>
+    </assembly>
+    <members>
+        <member name="T:System.Text.RegularExpressions.Capture">
+            <summary>
+            Represents the results from a single subexpression capture. 
+            System.Text.RegularExpressions. 
+            Capture respresents one substring to a single successful catpture
+            </summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.CharacterClass.IsNewline(System.Char@)">
+            <summary>                 
+            </summary>        
+            <returns>true if the given character is a newline</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.CharacterClass.CompareChars(System.Char@,System.Char@,System.Boolean)">
+            <summary>
+            Compares two characters
+            </summary>
+            <param name="a">first character to compare.</param>
+            <param name="b">second character to compare.</param>
+            <param name="caseIndependent">whether comparision is case insensitive or not.</param>
+            <returns>negative, 0, or positive integer as the first character less than, equal to, or greater then the second.</returns>
+        </member>
+        <member name="T:System.Text.RegularExpressions.CharacterRange">
+            <summary>
+            Class for maintaining char ranges for char classes.
+            </summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.CharacterRange.Delete(System.Int32)">
+            <summary>
+            Deletes the range at a given index from the range lists
+            </summary>
+            <param name="index">Index of range to delete from minRange and maxRange arrays.</param>
+        </member>
+        <member name="M:System.Text.RegularExpressions.CharacterRange.Merge(System.Int32,System.Int32)">
+            <summary>
+            Merges a range into the range list, coalescing ranges if possible.
+            </summary>
+            <param name="min">min Minimum end of range</param>
+            <param name="max">max Maximum end of range</param>
+        </member>
+        <member name="M:System.Text.RegularExpressions.CharacterRange.Remove(System.Int32,System.Int32)">
+            <summary>
+            Removes a range by deleting or shrinking all other ranges
+            </summary>
+            <param name="min">Minimum end of range</param>
+            <param name="max">Maximum end of range</param>
+        </member>
+        <member name="M:System.Text.RegularExpressions.CharacterRange.Include(System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            Includes (or excludes) the range from min to max, inclusive.
+            </summary>
+            <param name="min">Minimum end of range</param>
+            <param name="max">Maximum end of range</param>
+            <param name="include">True if range should be included.  False otherwise.</param>
+        </member>
+        <member name="M:System.Text.RegularExpressions.CharacterRange.Include(System.Char,System.Boolean)">
+            <summary>
+            Includes a range with the same min and max
+            </summary>
+            <param name="minmax">Minimum and maximum end of range (inclusive)</param>
+            <param name="shouldInclude">True if range should be included.  False otherwise.</param>
+        </member>
+        <member name="P:System.Text.RegularExpressions.Group.Success">
+            <summary>
+            Gets a value indicating whether the match was successful. 
+            </summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Match">
+            <summary>
+            Represents the results from a single regular expression match.
+            </summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Regex">
+            <summary>
+            A lightweight Regular Expression Engine and Parser. Contributed by Julius Friedman
+            </summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Regex.MaximumNodes">
+            <summary>
+            Maximum number of nodes in a program
+            </summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Regex.MaximumSubExpressions">
+            <summary>
+            Number of paren pairs (only 9 can be backrefs)
+            </summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Regex.offsetOpcode">
+            <summary>
+            Opcode offset (first character)
+            </summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Regex.offsetOpdata">
+            <summary>
+            Opdata offset (second char)
+            </summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Regex.offsetNext">
+            <summary>
+            Next index offset (third char)
+            </summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Regex.nodeSize">
+            <summary>
+            Node size (in chars)
+            </summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Regex.program">
+            <summary>
+            Compiled regular expression 'program'
+            </summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Regex.search">
+            <summary>
+            The string being matched against indirectly through an interface. 
+            If unsafe access becomes supported this can become more optomized in the implementation
+            </summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Regex.matchFlags">
+            <summary>
+            Match behaviour flags
+            </summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Regex.maxMatches">
+            <summary>
+            The maximum amount of matches to perform -1 
+            </summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Regex.timed">
+            <summary>
+            Are we timing? If this is true the engine will ensure not alot of ticks have passed when matching each node.
+            If it has so determined that it is taking a long time a RegexExecutionException is generated and will be thrown. 
+            Developers can catch this exception to check if anything has been matched thus far in the Regex. 
+            They can then continue the match at the index from which the exception was thrown by using IsMatch(someInput, ex.Index)
+            </summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Regex.startTicks">
+            <summary>
+            The time we started matching at Tick wise
+            </summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Regex.MaxTick">
+            <summary>
+            EXPERIMENTAL USE ONLY! 
+            Regex must have RegexOption.Timed Applied before calling a method either manually or through Compilation!
+            The maximum amount of ticks this Regex will wait before throwing a ExecutionException allowing the developer to evaluate and continue.
+            Other interrups will also be allows to process in regions of the controller at this time due to this break if handled correctly by the developer.
+            With this Default value ALL TESTS SUCCESSFULLY PASS IF TIMED! Could be set based on input length to be more specific but would cost an operation.
+            </summary>
+        </member>
+        <member name="P:System.Text.RegularExpressions.Regex.CacheSize">
+            <summary>
+            The size of the Regex Cache indicating how many RegexProgram's will be stored in the Stack for later use.
+            </summary>
+        </member>
+        <member name="P:System.Text.RegularExpressions.Regex.Cache">
+            <summary>
+            The Stack of RegexPrograms which have been cached by compiling Regular Expressions. 
+            Potentially there may be lots of threads accessing the cache. Since we do not have a concurrent collection this critical section provides synchronization
+            </summary>        
+        </member>
+        <member name="M:System.Text.RegularExpressions.Regex.#ctor(System.String)">
+            <summary>
+            Constructs a regular expression matcher from a String by compiling it
+            using a new instance of RECompiler.  If you will be compiling many
+            expressions, you may prefer to use a single RECompiler object instead.
+            </summary>
+            <param name="pattern">he regular expression pattern to compile.</param>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Regex.#ctor(System.String,System.Text.RegularExpressions.RegexOptions)">
+            <summary>
+            Constructs a regular expression matcher from a String by compiling it
+            using a new instance of RECompiler.  If you will be compiling many
+            expressions, you may prefer to use a single RECompiler object instead.
+            </summary>
+            <param name="pattern">The regular expression pattern to compile.</param>
+            <param name="matchFlags">The MatchOptions</param>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Regex.#ctor(System.Text.RegularExpressions.RegexProgram,System.Text.RegularExpressions.RegexOptions)">
+            <summary>
+            Internal use only.
+            Construct a matcher for a pre-compiled regular expression from program
+            bytecode) data.  Permits special flags to be passed in to modify matching
+            behaviour.
+            RegexOptions.Normal              // Normal (case-sensitive) matching
+            RegexOptions.CaseIndependant     // Case folded comparisons
+            RegexOptions.Multiline           // Newline matches as BOL/EOL
+            </summary>
+            <param name="program">Compiled regular expression program (see RECompiler)</param>
+            <param name="matchFlags">One or more of the MatchOptions</param>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Regex.#ctor(System.Text.RegularExpressions.RegexProgram)">
+            <summary>
+            Internal use only.
+            Construct a matcher for a pre-compiled regular expression from program
+            (bytecode) data. Internal use only
+            </summary>
+            <param name="program">Compiled regular expression program</param>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Regex.#ctor">
+            <summary>
+            Internal use only.
+            Constructs a regular expression matcher with no initial program.
+            This is likely to be an uncommon practice, but is still supported.
+            </summary>
+        </member>
+        <member name="P:System.Text.RegularExpressions.Regex.Options">
+            <summary>
+            The Match Options of this Regular Expression
+            </summary>
+        </member>
+        <member name="P:System.Text.RegularExpressions.Regex.Program">
+            <summary>
+            The compiled RegularExpression
+            </summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Regex.ToFullRegularExpression(System.String)">
+            <summary>
+            Converts a 'simplified' regular expression to a full regular expression
+            </summary>
+            <param name="simplePattern">The pattern to convert</param>
+            <returns>The full regular expression</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Regex.IsMatch(System.String,System.Int32)">
+            <summary>
+            Matches the current regular expression program against a character array,starting at a given index.
+            </summary>
+            <param name="search">String to match against</param>
+            <param name="i">Index to start searching at</param>
+            <returns>True if string matched</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Regex.IsMatch(System.String)">
+            <summary>
+            Matches the current regular expression program against a String.
+            </summary>
+            <param name="search">String to match against</param>
+            <returns>True if search string matched</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Regex.SetSubExpressionStart(System.Int32,System.Int32)">
+            <summary>
+             Sets the start of a paren level
+            </summary>
+            <param name="which">Which paren level</param>
+            <param name="i">i Index in input array</param>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Regex.SetSubExpressionEnd(System.Int32,System.Int32)">
+            <summary>
+            Sets the end index of a subexpression.
+            </summary>
+            <param name="which">Which subexpression</param>
+            <param name="i">Index in input ICharacterStream</param>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Regex.InternalError(System.String)">
+            <summary>
+            Throws an Error representing an internal error condition probably resulting
+            from a bug in the regular expression compiler (or possibly data corruption).
+            In practice, this should be very rare.
+            </summary>
+            <param name="s">Error description</param>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Regex.AllocateSubExpressions">
+            <summary>
+            Performs lazy allocation of subexpression arrays
+            </summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Regex.Group(System.Int32)">
+            <summary>
+            Gets the contents of a parenthesized subexpression after a successful match.
+            </summary>
+            <param name="which">Nesting level of subexpression</param>
+            <returns>String Subexpression if present, otherwise null</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Regex.GroupStart(System.Int32)">
+            <summary>
+            Returns the start index of a given subexpression.
+            </summary>
+            <param name="which">Nesting level of subexpression</param>
+            <returns>String index</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Regex.GroupEnd(System.Int32)">
+            <summary>
+            Returns the end index of a given subexpression.
+            </summary>
+            <param name="which">Nesting level of subexpression</param>
+            <returns>index in input ICharacterStream</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Regex.GroupLength(System.Int32)">
+            <summary>
+            Returns the Length of a given subexpression level.
+            </summary>
+            <param name="which">Nesting level of subexpression</param>
+            <returns>The length of the subexpression if it exists otherwise -1</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Regex.IsMatch(System.Text.RegularExpressions.ICharacterIterator,System.Int32)">
+            <summary>
+            Matches the current regular expression program against a character array,starting at a given index.
+            </summary>
+            <param name="search">String to match against</param>
+            <param name="i">Index to start searching at</param>
+            <returns>True if search string matched</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Regex.MatchNodes(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Try to match a string against a subset of nodes in the program
+            </summary>
+            <param name="firstNode">firstNode Node to start at in program</param>
+            <param name="lastNode">lastNode  Last valid node (used for matching a subexpression without matching the rest of the program as well).</param>
+            <param name="idxStart">idxStart  Starting position in character array</param>
+            <returns> input ICharacterStream index if match succeeded, otherwise -1.</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Regex.MatchAt(System.Int32)">
+            <summary>
+            Match the current regular expression program against the current
+            input string, starting at index i of the input string.  This method
+            is only meant for internal use.
+            </summary>
+            <param name="i">The input string index to start matching at</param>
+            <returns>True if the input matched the expression</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Regex.Split(System.String,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Splits a string into an array of strings on regular expression boundaries.
+            This function works the same way as the Perl function of the same name.
+            Given a regular expression of "[ab]+" and a string to split of
+            "xyzzyababbayyzabbbab123", the result would be the array of Strings
+            "[xyzzy, yyz, 123]".
+            <p>Please note that the first string in the resulting array may be an empty
+            string. This happens when the very first character of input string is
+            matched by the pattern.</p>
+            </summary>
+            <param name="s">String to split on this regular exression</param>
+            <param name="maxMatches">The maximum number of matches to split</param>
+            <param name="start">The offset in the string to start at</param>
+            <returns>Array of strings</returns>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:System.Text.RegularExpressions.Regex.Split(System.String,System.Int32)" -->
+        <!-- Badly formed XML comment ignored for member "M:System.Text.RegularExpressions.Regex.Split(System.String)" -->
+        <member name="M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String)">
+            <summary>
+            Substitutes a string for this regular expression in another string.
+            This method works like the Perl function of the same name.
+            Given a regular expression of "a*b", a String to substituteIn of
+            "aaaabfooaaabgarplyaaabwackyb" and the substitution String "-", the
+            resulting String returned by Substring would be "-foo-garply-wacky-".
+            </summary>
+            <param name="substituteIn">String to substitute within</param>
+            <param name="substitution">String to substitute for all matches of this regular expression.</param>
+            <returns>The string substituteIn with zero or more occurrences of the current
+            regular expression replaced with the substitution String (if this regular
+            expression object doesn't match at any position, the original String is returned unchanged).
+            </returns>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:System.Text.RegularExpressions.Regex.Replace(System.String,System.String,System.Int32,System.Int32)" -->
+        <member name="M:System.Text.RegularExpressions.Regex.GetMatches(System.String[])">
+            <summary>
+            Returns an array of Strings, whose ToString representation matches a regular
+            expression. This method works like the Perl function of the same name.  Given
+            a regular expression of "a*b" and an array of String objects of [foo, aab, zzz,
+            aaaab], the array of Strings returned by grep would be [aab, aaaab].
+            </summary>
+            <param name="search">Array of string to search</param>
+            <returns>Array of Strings whose value matches this regular expression</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Regex.GetMatches(System.String)">
+            <summary>
+            Returns an array of Strings, whose ToString representation matches a regular
+            expression. This method works like the Perl function of the same name.  Given
+            a regular expression of "a*b" and an array of String objects of [foo, aab, zzz,
+            aaaab], the array of Strings returned by grep would be [aab, aaaab].
+            </summary>
+            <param name="search">string to search</param>
+            <returns>Array of Strings whose value matches this regular expression</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Regex.GetMatches(System.String[],System.Int32,System.Int32)">
+            <summary>
+            Returns an array of Strings, whose ToString representation matches a regular
+            expression. This method works like the Perl function of the same name.  Given
+            a regular expression of "a*b" and an array of String objects of [foo, aab, zzz,
+            aaaab], the array of Strings returned by grep would be [aab, aaaab].
+            </summary>
+            <param name="search">Array of string to search</param>
+            <returns>Array of Strings whose value matches this regular expression</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Regex.Scan(System.Text.RegularExpressions.Regex,System.String,System.Int32,System.Int32,System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            Scans a Regex to find a Match using Full Fx Matching Style
+            </summary>
+            <param name="regex"></param>
+            <param name="text"></param>
+            <param name="textbeg"></param>
+            <param name="textend"></param>
+            <param name="textstart"></param>
+            <param name="prevlen"></param>
+            <param name="quick"></param>
+            <returns></returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Regex.Capture(System.Text.RegularExpressions.Match,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Adds a match to a Match
+            </summary>
+            <param name="capnum"></param>
+            <param name="start"></param>
+            <param name="end"></param>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Regex.TransferCapture(System.Text.RegularExpressions.Match,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Transfers a Capture to a Match
+            </summary>
+            <param name="match"></param>
+            <param name="capnum"></param>
+            <param name="uncapnum"></param>
+            <param name="start"></param>
+            <param name="end"></param>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Regex.Match(System.String)">
+            <summary>
+            Searches the specified input string for the first occurrence of the regular expression specified in the Regex constructor.
+            </summary>
+            <param name="input"></param>
+            <returns>A Match </returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Regex.Match(System.String,System.Int32)">
+            <summary>
+            Searches the input string for the first occurrence of a regular expression, beginning at the specified starting position in the string.
+            </summary>
+            <param name="input"></param>
+            <param name="startat"></param>
+            <returns></returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Regex.Match(System.String,System.Int32,System.Int32)">
+             <summary>
+             Searches the specified input string for the first occurrence of the specified regular expression.
+             </summary>
+             <param name="input">The input string to match at</param>
+             <param name="beginning">The place to start matching</param>
+            <param name="length">NOT YET USED</param>
+             <returns>The Match resulting from the input against the compiled pattern</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Regex.Matches(System.String)">
+            <summary>
+            Searches the specified input string for all occurrences of a regular expression.
+            </summary>
+            <param name="input">The input string to match against</param>
+            <returns>A Collection of Matches from the input</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Regex.Matches(System.String,System.Int32)">
+            <summary>
+            Searches the specified input string for all occurrences of a regular expression, beginning at the specified starting position in the string.
+            </summary>
+            <param name="input">The string to match against</param>
+            <param name="startat">The position to start matching at</param>
+            <returns>A Collection of Matches from the input</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Regex.Split(System.Text.RegularExpressions.Regex,System.String,System.Int32,System.Int32)">
+            <summary>
+            Splits the input string at the positions defined by a specified regular expression pattern. Specified options modify the matching operation.
+            </summary>
+            <param name="regex">The Regex to use to Split the input string</param>
+            <param name="input">The input string</param>
+            <param name="count">The amount of Splits to perform</param>
+            <param name="startat">The start index in the input</param>
+            <returns>The result of splitting the input string against the Regexp</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Regex.Split(System.String,System.String,System.Text.RegularExpressions.RegexOptions)">
+            <summary>
+            Splits the input string at the positions defined by a specified regular expression pattern. Specified options modify the matching operation.
+            </summary>
+            <param name="pattern">The pattern to match against</param>
+            <param name="split">The string to split</param>
+            <param name="options">The options to utilize during matching</param>
+            <returns>The result of splitting the input string against the pattern</returns>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:System.Text.RegularExpressions.Regex.Split(System.String,System.Text.RegularExpressions.RegexOptions,System.String,System.Int32,System.Int32)" -->
+        <member name="M:System.Text.RegularExpressions.Regex.Match(System.String,System.String)">
+            <summary>
+            Searches the specified input string for the first occurrence of the specified regular expression.
+            </summary>
+            <param name="input">The string to match against</param>
+            <param name="pattern">The pattern to match</param>
+            <returns>A Match representing the first match from the input against the pattern</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Regex.Match(System.String,System.String,System.Text.RegularExpressions.RegexOptions)">
+            <summary>
+            Searches the specified input string for the first occurrence of the specified regular expression.
+            </summary>
+            <param name="input">The string to match against</param>
+            <param name="pattern">The pattern to match</param>
+            <param name="options">RegexOptions to utilize during the Match process</param>
+            <returns>A Match representing the first match from the input against the pattern with the specified options</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Regex.Matches(System.String,System.String)">
+            <summary>
+            Searches the specified input string for all occurrences of a regular expression.
+            </summary>
+            <param name="input">The string to match against</param>
+            <param name="pattern">The pattern to match</param>
+            <returns>A Collection of Matches from the input</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Regex.Matches(System.String,System.String,System.Text.RegularExpressions.RegexOptions)">
+            <summary>
+            Searches the specified input string for all occurrences of a regular expression, beginning at the specified starting position in the string.
+            </summary>
+            <param name="input">The string to match against</param>
+            <param name="pattern">The pattern to match</param>
+            <param name="options">RegexOptions to utilize during the Match process</param>
+            <returns>A Collection of Matches from the input</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Regex.InternalEscape(System.String@)">
+            <summary>
+            Escapes a minimal set of characters (\, *, +, ?, |, {, [, (,), ^, $,., #, and white space) by replacing them with their escape codes. 
+            This instructs the regular expression engine to interpret these characters literally rather than as metacharacters.
+            </summary>
+            <param name="input">The input string to escape</param>
+            <returns>The escaped input string</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Regex.Escape(System.String)">
+            <summary>
+            Escapes a minimal set of characters (\, *, +, ?, |, {, [, (,), ^, $,., #, and white space) by replacing them with their escape codes. 
+            This instructs the regular expression engine to interpret these characters literally rather than as metacharacters.
+            </summary>
+            <param name="input">The input string to escape</param>
+            <returns>The escaped input string</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Regex.ToString">
+            <summary>
+            Provides a string representation of the pattern this Regular Expression is matching
+            </summary>
+            <returns>The Pattern of this Regular Expression</returns>
+        </member>
+        <member name="T:System.Text.RegularExpressions.RegexProgram">
+            <summary>
+            A class that holds compiled regular expressions.  You should not need to work directly with this class. 
+            Fields are marked internal so that they can be accesed from Capture, Group and Match as well as other classes in this assembly.    
+            </summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.RegexProgram.instruction">
+            <summary>
+            The compiled regular expression 'program' which can be thought of as opcodes and read as char's
+            </summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.RegexProgram.lenInstruction">
+            <summary>
+            The amount of the instruction buffer in use out of all allocated instructions
+            </summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.RegexProgram.prefix">
+            <summary>
+            Prefix string optimization, (only performed if present)
+            </summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.RegexProgram.flags">
+            <summary>
+            Execution flags for the program, certain matches can be optomized by the use or lack there of certain flags. 
+            Set when the Instructions property is set or when setInstructions is called.
+            Can be changed by the Regex when Match is executed for advanced operations if necessary as well.
+            </summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.RegexProgram.maxMatches">
+            <summary>
+            The maximum amount of matches to perform, changed by the Regex when Match is executed 
+            </summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.RegexProgram.pattern">
+            <summary>
+            The pattern we are matching against, it cannot be changed unless this program is Recompiled
+            </summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.RegexProgram.#ctor(System.Char[])">
+            <summary>
+            Constructs a program object from a character array.
+            Internal use only.
+            </summary>
+            <param name="instruction">Instruction array with RegexProgram opcode instructions in it</param>
+        </member>
+        <member name="M:System.Text.RegularExpressions.RegexProgram.#ctor(System.Int32,System.Char[],System.String)">
+            <summary>
+            Constructs a program object from a character array
+            </summary>
+            <param name="parens">Count of parens in the program</param>
+            <param name="instruction">Character array with RE opcode instructions in it</param>
+            <param name="pattern">The pattern to match against</param>
+        </member>
+        <member name="M:System.Text.RegularExpressions.RegexProgram.#ctor(System.Char[],System.Int32,System.String)">
+            <summary>
+            Constructs a RegexProgram object from a char array which can be though of as RegexOpcode's
+            </summary>
+            <param name="instruction">Character array with RE opcode instructions in it</param>
+            <param name="lenInstruction"> Amount of instruction array in use</param>
+            <param name="pattern">The pattern this RegexProgram matches against</param>
+        </member>
+        <member name="P:System.Text.RegularExpressions.RegexProgram.Pattern">
+            <summary>
+            The string representation of the pattern this RegexProgram matches against
+            </summary>
+        </member>
+        <member name="P:System.Text.RegularExpressions.RegexProgram.Instructions">
+            <summary>
+            The char array of instuctions which this RegexProgram matches against. It can be though of and read as Regex.Opcode's
+            </summary>
+        </member>
+        <member name="P:System.Text.RegularExpressions.RegexProgram.Flags">
+            <summary>
+            Optomization and Matching flags
+            </summary>
+        </member>
+        <member name="P:System.Text.RegularExpressions.RegexProgram.MaximumMatches">
+            <summary>
+            The maximum number of matches to match against
+            </summary>
+        </member>
+        <member name="P:System.Text.RegularExpressions.RegexProgram.Prefix">
+            <summary>
+            Returns a copy of the prefix of current regular expression program
+            in a character array.  If there is no prefix, or there is no program
+            compiled yet, <code>getPrefix</code> will return null.
+            return A copy of the prefix of current compiled RE program
+            </summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.RegexProgram.setInstructions(System.Char[],System.Int32)">
+            <summary>
+            Sets a new regular expression program to run.  It is this method which
+            performs any special compile-time search optimizations.  Currently only
+            two optimizations are in place - one which checks for backreferences
+            (so that they can be lazily allocated) and another which attempts to
+            find an prefix anchor string so that substantial amounts of input can
+            potentially be skipped without running the actual program.
+            </summary>
+            <param name="instruction">Program instruction buffer</param>
+            <param name="lenInstruction">Length of instruction buffer in use</param>
+        </member>
+        <member name="T:System.Text.RegularExpressions.StreamCharacterIterator">
+            <summary>
+            Encapsulates Stream as CharacterIterator.
+            </summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.StreamCharacterIterator.inputStream">
+            <summary>
+            Underlying Stream
+            </summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.StreamCharacterIterator.buff">
+            <summary>
+            Buffer of read chars
+            </summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.StreamCharacterIterator.closed">
+            <summary>
+            at end?
+            </summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.StreamCharacterIterator.#ctor(System.IO.MemoryStream)">
+            <summary>
+            Constructs a StreamCharacterIterator
+            </summary>
+            <param name="inputStream">inputStream a MemoryStream, from which input is parsed</param>
+        </member>
+        <member name="M:System.Text.RegularExpressions.StreamCharacterIterator.Range(System.Int32,System.Int32)">
+            <summary>
+            Gets a range of characters from the source stream
+            </summary>
+            <param name="beginIndex">the beginIndex of the range</param>
+            <param name="endIndex">the endIndex of the range</param>
+            <returns>A Substring of the stream from beingIndex to endIndex</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.StreamCharacterIterator.Range(System.Int32)">
+            <summary>
+            Gets a range of characers from the underlying stream
+            </summary>
+            <param name="beginIndex">the start index</param>
+            <returns>A range of characters from beginIndex to the end of the stream</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.StreamCharacterIterator.CharAt(System.Int32)">
+            <summary>
+            gets the character at the specified position
+            </summary>
+            <param name="pos">the position in the underlying stream</param>
+            <returns>the character at the given position</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.StreamCharacterIterator.IsEnd(System.Int32)">
+            <summary>
+            Indicates <tt>true</tt> iff if the specified index is after the end of the character stream
+            </summary>
+            <param name="pos">The position to check is within the character stream</param>
+            <returns></returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.StreamCharacterIterator.Read(System.Int32)">
+            <summary>
+            Reads n characters from the stream and appends them to the buffer
+            </summary>
+            <param name="n"></param>
+            <returns></returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.StreamCharacterIterator.ReadToEnd">
+            <summary>
+            Reads rest of the stream.
+            </summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.StreamCharacterIterator.EnsureCapacity(System.Int32)">
+            <summary>
+            Reads chars up to the idx
+            </summary>
+            <param name="idx"></param>
+        </member>
+        <member name="T:System.Text.RegularExpressions.StringCharacterIterator">
+            <summary>
+             Encapsulates String as CharacterIterator.
+            </summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.StringCharacterIterator.src">
+            <summary>
+            encapsulated string
+            </summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.StringCharacterIterator.#ctor(System.String)">
+            <summary>
+            Creates a StringCharacterIterator for the given string
+            </summary>
+            <param name="src">The string to encapsulate</param>
+        </member>
+        <member name="M:System.Text.RegularExpressions.StringCharacterIterator.Range(System.Int32,System.Int32)">
+            <summary>
+            Gets a range of characters from the encapsulated string
+            </summary>
+            <param name="beginIndex">The position to start the range</param>
+            <param name="endIndex">The position to end the range</param>
+            <returns>A new string with the characters within the range</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.StringCharacterIterator.Range(System.Int32)">
+            <summary>
+            Gets a range of characters from the encapsulated string
+            </summary>
+            <param name="beginIndex">The position to start the range</param>
+            <returns>A new string with the characters within the range</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.StringCharacterIterator.CharAt(System.Int32)">
+            <summary>
+            Gets a character at the specified position in the encapsulated string.
+            </summary>
+            <param name="pos">The position to get the character at</param>
+            <returns>The character at the specified position</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.StringCharacterIterator.ToString">
+            <summary>
+            Returns the encapsulated string
+            </summary>
+            <returns>The encapsulated string</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.StringCharacterIterator.IsEnd(System.Int32)">
+            <summary>
+            Indicates weather or not he given position is past the end of the encapsulated string
+            </summary>
+            <param name="pos"></param>
+            <returns><tt>true</tt> iff if the specified index is past the end of the character stream</returns>
+        </member>
+        <member name="F:System.Text.RegularExpressions.MatchCollection._lastIndex">
+            <summary>
+            the last index to match against
+            </summary>
+        </member>
+        <member name="P:System.Text.RegularExpressions.MatchCollection.Count">
+            <summary>
+            Gets the number of matches. 
+            </summary>
+        </member>
+        <member name="P:System.Text.RegularExpressions.MatchCollection.IsReadOnly">
+            <summary>
+            Gets a value that indicates whether the collection is read only. 
+            </summary>
+        </member>
+        <member name="P:System.Text.RegularExpressions.MatchCollection.IsSynchronized">
+            <summary>
+            Gets a value indicating whether access to the collection is synchronized (thread-safe). 
+            </summary>
+        </member>
+        <member name="P:System.Text.RegularExpressions.MatchCollection.Item(System.Int32)">
+            <summary>
+            Gets an individual member of the collection. 
+            </summary>
+            <param name="i"></param>
+            <returns></returns>
+        </member>
+        <member name="P:System.Text.RegularExpressions.MatchCollection.SyncRoot">
+            <summary>
+            Gets an object that can be used to synchronize access to the collection. 
+            </summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.RegexCompiler">
+            <summary>
+            A regular expression compiler class.  This class compiles a pattern string into a
+            regular expression program interpretable by the RE evaluator class.  The 'recompile'
+            command line tool uses this compiler to pre-compile regular expressions for use
+            with RE.  For a description of the syntax accepted by RECompiler and what you can
+            do with regular expressions, see the documentation for the RE matcher class.
+            </summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.RegexCompiler.hashPOSIX">
+            <summary>
+            Lookup table for POSIX char class names
+            </summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.RegexCompiler.#ctor">
+            <summary>
+            Constructor.  Creates (initially empty) storage for a regular expression program.
+            </summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.RegexCompiler.Ensure(System.Int32)">
+            <summary>
+            Ensures that n more characters can fit in the program buffer.
+            If n more can't fit, then the size is doubled until it can.
+            </summary>
+            <param name="n">Number of additional characters to ensure will fit.</param>
+        </member>
+        <member name="M:System.Text.RegularExpressions.RegexCompiler.Emit(System.Char)">
+            <summary>
+            Emit a single char into the program stream.
+            </summary>
+            <param name="c">char to add</param>
+        </member>
+        <member name="M:System.Text.RegularExpressions.RegexCompiler.InsertNode(System.Char,System.Int32,System.Int32)">
+            <summary>
+            Inserts a node with a given opcode and opdata at insertAt.  The node relative next
+            pointer is initialized to 0.
+            </summary>
+            <param name="opcode">opcode Opcode for new node</param>
+            <param name="opdata">opdata Opdata for new node (only the low 16 bits are currently used)</param>
+            <param name="insertAt">insertAt Index at which to insert the new node in the program</param>
+        </member>
+        <member name="M:System.Text.RegularExpressions.RegexCompiler.SetNextOfEnd(System.Int32,System.Int32)">
+            <summary>
+            Appends a node to the end of a node chain
+            </summary>
+            <param name="node">Start of node chain to traverse</param>
+            <param name="pointTo">Node to have the tail of the chain point to</param>
+        </member>
+        <member name="M:System.Text.RegularExpressions.RegexCompiler.CreateNode(System.Char,System.Int32)">
+            <summary>
+            Adds a new node
+            </summary>
+            <param name="opcode">Opcode for node</param>
+            <param name="opdata">Opdata for node (only the low 16 bits are currently used)</param>
+            <returns>Index of new node in program</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.RegexCompiler.InternalError">
+             <summary>
+            Throws a new internal error exception 
+             </summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.RegexCompiler.SyntaxError(System.String)">
+            <summary>
+            Throws a new syntax error exception
+            </summary>
+            <param name="s">The Syntax Error</param>
+        </member>
+        <member name="M:System.Text.RegularExpressions.RegexCompiler.Bracket">
+            <summary>
+            Match bracket {m,n} expression put results in bracket member variables
+            </summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.RegexCompiler.Escape">
+            <summary>
+            Match an escape sequence.  Handles quoted chars and octal escapes as well
+            as normal escape characters.  Always advances the input stream by the
+            right amount. This code "understands" the subtle difference between an
+            octal escape and a backref.  You can access the type of EscapeCode or
+            EscapeCode.Complex or EscapeCode.Backrefrence by looking at pattern[idx - 1].
+            </summary>
+            <returns>EscapeCode or char if simple escape</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.RegexCompiler.GetCharacterClass">
+            <summary>
+            Compile a char class
+            </summary>
+            <returns>Index of class node</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.RegexCompiler.Atom">
+            <summary>
+            Absorb an atomic char string.  This method is a little tricky because
+            it can un-include the last char of string if a closure operator follows.
+            This is correct because *+? have higher precedence than concatentation 
+            (thus ABC* means AB(C*) and NOT (ABC)*).
+            </summary>
+            <returns> Index of new atom node</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.RegexCompiler.Terminal(System.Int32[])">
+            <summary>
+            Match a terminal node.
+            </summary>
+            <param name="flags">Flags</param>
+            <returns>Index of terminal node (closeable)</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.RegexCompiler.Closure(System.Int32[])">
+            <summary>
+            Compile a possibly closured terminal
+            </summary>
+            <param name="flags">Flags passed by reference</param>
+            <returns>Index of closured node</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.RegexCompiler.Branch(System.Int32[])">
+            <summary>
+            Compile body of one branch of an or operator (implements concatenation)
+            </summary>
+            <param name="flags">Flags</param>
+            <returns>Pointer to first node in the branch</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.RegexCompiler.Expression(System.Int32[])">
+            <summary>
+            Compile an expression with possible parens around it.  Paren matching
+             is done at this level so we can tie the branch tails together.
+            </summary>
+            <param name="flags">Flags</param>
+            <returns>Node index of expression in instruction array</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.RegexCompiler.Compile(System.String)">
+            <summary>
+            Compiles a regular expression pattern into a program runnable by the pattern matcher class 'RE'.
+            </summary>
+            <param name="pattern">Regular expression pattern to compile</param>
+            <returns></returns>
+        </member>
+        <member name="T:System.Text.RegularExpressions.RegexDebugCompiler">
+            <summary>
+            A subclass of RECompiler which can dump a regular expression program for debugging purposes.
+            </summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.RegexDebugCompiler.hashOpcode">
+            <summary>
+            Mapping from opcodes to descriptive strings
+            </summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.RegexDebugCompiler.OpcodeToString(System.Char)">
+            <summary>
+            Returns a descriptive string for an opcode.
+            </summary>
+            <param name="opcode">Opcode to convert to a string</param>
+            <returns> Description of opcode</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.RegexDebugCompiler.CharToString(System.Char)">
+            <summary>
+            Return a string describing a (possibly unprintable) character.
+            </summary>
+            <param name="c">Character to convert to a printable representation</param>
+            <returns>String representation of character</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.RegexDebugCompiler.NodeToString(System.Int32)">
+            <summary>
+            Returns a descriptive string for a node in a regular expression program.
+            </summary>
+            <param name="node">Node to describe</param>
+            <returns>Description of node</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.RegexDebugCompiler.DumpProgram(System.IO.TextWriter)">
+            <summary>
+            Dumps the current program to a {@link PrintStream}.
+            </summary>
+            <param name="p">PrintStream for program dump output</param>
+        </member>
+        <member name="M:System.Text.RegularExpressions.RegexDebugCompiler.dumpProgram">
+            <summary>
+            Dumps the current program to a <code>System.out</code>.
+            </summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.RegexPrecompiler">
+            <summary>
+            Class for precompiling regular expressions for later use
+            </summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.RegexPrecompiler.Main(System.String[])">
+            <summary>
+            Main application entrypoint.
+            Might make this have methods and be a class rathern the a program...
+            Then the class can Serialise and Deserialiaze the Regexps
+            </summary>
+            <param name="arg">Command line arguments</param>
+        </member>
+        <member name="T:System.Text.RegularExpressions.EscapeCode">
+            <summary>
+            Escape codes used by the Regex Engine
+            </summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.OpCode">
+            <summary>
+            OpCodes used by the Regex Engine
+            </summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.POSIXCharacterClass">
+            <summary>
+            Character Classes for POSIX Characters
+            </summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.ProgramOptions">
+            <summary>
+            Program Optomization Flags
+            </summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.RegexOptions">
+            <summary>
+            Options which can be applied to a RegularExpression
+            </summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.ReplaceOptions.ReplaceAll">
+            Flag bit that indicates that subst should replace all occurrences of this
+            regular expression.
+        </member>
+        <member name="F:System.Text.RegularExpressions.ReplaceOptions.ReplaceFirst">
+            Flag bit that indicates that subst should only replace the first occurrence
+            of this regular expression.
+        </member>
+        <member name="F:System.Text.RegularExpressions.ReplaceOptions.ReplaceBackrefrences">
+            Flag bit that indicates that subst should replace backreferences
+        </member>
+        <member name="T:System.Text.RegularExpressions.SpecialEscape">
+            <summary>
+            The SpecialEscape bit masks and range values
+            </summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.RegexExecutionTimeException">
+            <summary>
+            This will be thrown if you have RegexOption.Timed set and the Matching is taking longer then MaxTicks per MatchNode
+            </summary>
+        </member>
+        <member name="P:System.Text.RegularExpressions.RegexExecutionTimeException.Index">
+            <summary>
+            You can use MatchAt again with this index to resume matching after cathing this exception
+            </summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.RegexpSyntaxException">
+            <summary>
+            Exception thrown to indicate a syntax error in a regular expression.
+            This is a non-checked exception because you should only have problems compiling
+            a regular expression during development.
+            If you are making regular expresion programs dynamically then you can catch it
+            if you wish. But should not be forced to.
+            </summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.RegexpSyntaxException.#ctor(System.String)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="s">Further description of the syntax error</param>
+        </member>
+        <member name="T:System.Text.RegularExpressions.ICharacterIterator">
+            <summary>
+            Encapsulates different types of character sources - String, InputStream, ...
+            Defines a set of common methods 
+            </summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.ICharacterIterator.Range(System.Int32,System.Int32)">
+            <summary>
+            Gets a substring of the character stream
+            </summary>
+            <param name="beginIndex">The position to begin the substring</param>
+            <param name="endIndex">The position in the origional string where the substring should end</param>
+            <returns>A substring of the character stream starting at the given index</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.ICharacterIterator.Range(System.Int32)">
+            <summary>
+            Gets a substring of the character stream
+            </summary>
+            <param name="beginIndex">The position to begin the substring</param>
+            <returns>A substring of the character stream starting at the given index</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.ICharacterIterator.CharAt(System.Int32)">
+            <summary>
+            Retrieves the character at the underlying position in the stream
+            </summary>
+            <param name="pos">The postion in the character stream</param>
+            <returns>A character at the specified position.</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.ICharacterIterator.IsEnd(System.Int32)">
+            <summary>
+            Determines weather the given position is at the end of the stream
+            </summary>
+            <param name="pos">The position in the character stream</param>
+            <returns>true iff if the specified index is after the end of the character stream</returns>
+        </member>
+    </members>
+</doc>

@@ -37,11 +37,11 @@ namespace System.Net.Sockets
         ///    </para>
         /// </devdoc>
         Interrupted = (10000 + 4),      //WSAEINTR
-        /// <devdoc>
-        ///    <para>
-        ///       [To be supplied.]
-        ///    </para>
-        /// </devdoc>
+        // <devdoc>
+        //    <para>
+        //       [To be supplied.]
+        //    </para>
+        // </devdoc>
         //WSAEBADF               = (10000+9),   //
         /// <devdoc>
         ///    <para>
@@ -242,11 +242,11 @@ namespace System.Net.Sockets
         ///    </para>
         /// </devdoc>
         ProcessLimit = (10000 + 67), //WSAEPROCLIM
-        /// <devdoc>
-        ///    <para>
-        ///       [To be supplied.]
-        ///    </para>
-        /// </devdoc>
+        // <devdoc>
+        //    <para>
+        //       [To be supplied.]
+        //    </para>
+        // </devdoc>
         /*
          * Extended Windows Sockets error constant definitions
          */

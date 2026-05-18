@@ -3,6 +3,7 @@ using System.Text;
 
 namespace GHIElectronics.TinyCLR.Data.Json
 {
+	/// <summary>A name/value pair inside a <see cref="JObject"/>.</summary>
 	public class JProperty : JToken
 	{
 		public JProperty()

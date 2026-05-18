@@ -93,7 +93,7 @@ namespace GHIElectronics.TinyCLR.Pins {
 
                     /// <summary>PWM pin.</summary>
                     public const int Backlight = STM32H7.Timer.Channel0;
-                    /// <summary>PWM pin.</summary>                    
+                    // <summary>PWM pin.</summary>                    
                 }
 
                 /// <summary>PWM controller.</summary>

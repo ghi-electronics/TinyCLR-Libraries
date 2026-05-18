@@ -3,6 +3,7 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("GHIElectronics.TinyCLR.UI")]
 
 namespace System.Drawing {
+    /// <summary>Unit of measurement for text and graphics sizes.</summary>
     public enum GraphicsUnit {
         World = 0,
         Display = 1,
@@ -13,6 +14,10 @@ namespace System.Drawing {
         Millimeter = 6
     }
 
+    /// <summary>
+    /// A bitmap font loaded from a TinyCLR resource. Use the resource designer to
+    /// embed .tinyfnt files, then construct via <c>Resources.GetFont</c>.
+    /// </summary>
     //The name and namespace of this must match the definition in c_TypeIndexLookup in TypeSystem.cpp
     public sealed class Font : MarshalByRefObject, ICloneable, IDisposable {
 #pragma warning disable CS0169 // The field is never used

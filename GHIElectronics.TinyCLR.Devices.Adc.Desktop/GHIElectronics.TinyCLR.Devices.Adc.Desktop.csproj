@@ -11,13 +11,14 @@
     <!-- Output filename matches the TinyCLR-side library so it can replace
          it in user's bin\Debug\. Identity comes from AssemblyInfo.cs. -->
     <AssemblyName>GHIElectronics.TinyCLR.Devices.Adc</AssemblyName>
+    <DocumentationFile>$(OutputPath)$(AssemblyName).xml</DocumentationFile>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <!-- Suppress harmless dual-mode-shim warnings:
          CS0436 = type forwarded but also defined locally
          CS0067 = events declared but never used (passthroughs)
          CS0649 = fields never assigned (no-op state placeholders) -->
-    <NoWarn>CS0436;CS0067;CS0649</NoWarn>
+    <NoWarn>CS0436;CS0067;CS0649;CS1591;CS1570;CS1572;CS1573;CS1574;CS1658</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>

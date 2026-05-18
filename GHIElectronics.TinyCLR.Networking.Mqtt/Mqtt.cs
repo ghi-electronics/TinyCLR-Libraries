@@ -7,22 +7,35 @@ using System.Threading;
 using static GHIElectronics.TinyCLR.Networking.Mqtt.MqttPacket;
 
 namespace GHIElectronics.TinyCLR.Networking.Mqtt {
+    /// <summary>MQTT Quality-of-Service level.</summary>
     public enum QoSLevel {
+        /// <summary>Fire-and-forget; the message may be lost.</summary>
         MostOnce = 0,
+        /// <summary>Acknowledged delivery; the message may be delivered more than once.</summary>
         LeastOnce = 1,
+        /// <summary>Acknowledged delivery; the message is delivered exactly once.</summary>
         ExactlyOnce = 2,
     }
 
+    /// <summary>Result of a CONNECT request reported by the broker.</summary>
     public enum ConnectReturnCode {
+        /// <summary>Connection succeeded.</summary>
         ConnectionAccepted = 0,
+        /// <summary>Broker does not support the requested MQTT protocol version.</summary>
         UnacceptableProtocol = 1,
+        /// <summary>The supplied client ID is not valid or is in use.</summary>
         IdentifierRejected = 2,
+        /// <summary>Broker reachable but currently rejecting connections.</summary>
         ServerUnavailable = 3,
+        /// <summary>Authentication failed.</summary>
         BadUserNameOrPassword = 4,
+        /// <summary>Authenticated client is not authorized for this operation.</summary>
         NotAuthorized = 5,
+        /// <summary>No CONNACK received or the code didn't match a known value.</summary>
         Unknown = -1
     }
 
+    /// <summary>Per-session MQTT settings — client ID, credentials, last-will, keepalive.</summary>
     public class MqttConnectionSetting {
         public string ClientId { get; set; }
         public bool CleanSession { get; set; } = true;
@@ -35,6 +48,7 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
         public int KeepAliveTimeout { get; set; } = 60;
     }
 
+    /// <summary>Transport-level MQTT settings — broker host/port, TLS, certificates.</summary>
     public class MqttClientSetting {
         public string BrokerName { get; set; }
         public int BrokerPort { get; set; }
@@ -43,6 +57,11 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
         public SslProtocols SslProtocol { get; set; }
     }
 
+    /// <summary>
+    /// MQTT client. Construct with an <see cref="MqttClientSetting"/>, call
+    /// <c>Connect</c> with an <see cref="MqttConnectionSetting"/>, subscribe to
+    /// topics, and publish messages. Asynchronous events deliver inbound traffic.
+    /// </summary>
     public class Mqtt {
         const int CONNECTION_TIMEOUT_DEFAULT = 60000;
         const int PING_TIMEOUT_DEFAULT = 5000;

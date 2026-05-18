@@ -1,0 +1,413 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>GHIElectronics.TinyCLR.Devices.Can</name>
+    </assembly>
+    <members>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Can.CanController">
+            <summary>
+            Represents a CAN bus controller. Configure bit timing and acceptance
+            filters, <see cref="M:GHIElectronics.TinyCLR.Devices.Can.CanController.Enable"/> the controller, then exchange
+            <see cref="T:GHIElectronics.TinyCLR.Devices.Can.CanMessage"/>s. Subscribe to <see cref="E:GHIElectronics.TinyCLR.Devices.Can.CanController.MessageReceived"/>
+            for event-driven receive instead of polling <see cref="P:GHIElectronics.TinyCLR.Devices.Can.CanController.MessagesToRead"/>.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Can.CanController.Provider">
+            <summary>The low-level provider backing this controller.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Can.CanController.GetDefault">
+            <summary>Returns the default CAN controller for this device.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Can.CanController.FromName(System.String)">
+            <summary>Returns a CAN controller identified by its native API name.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Can.CanController.FromProvider(GHIElectronics.TinyCLR.Devices.Can.Provider.ICanControllerProvider)">
+            <summary>Creates a controller from a custom <see cref="T:GHIElectronics.TinyCLR.Devices.Can.Provider.ICanControllerProvider"/>.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Can.CanController.Dispose">
+            <summary>Releases the underlying provider.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Can.CanController.Enable">
+            <summary>Powers on the controller. Call after configuring timing and filters.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Can.CanController.Disable">
+            <summary>Powers off the controller.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Can.CanController.WriteMessage(GHIElectronics.TinyCLR.Devices.Can.CanMessage)">
+            <summary>Queues a single message for transmission. Returns true on success.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Can.CanController.WriteMessages(GHIElectronics.TinyCLR.Devices.Can.CanMessage[],System.Int32,System.Int32)">
+            <summary>Queues a slice of <paramref name="messages"/> for transmission.</summary>
+            <returns>Number of messages successfully queued.</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Can.CanController.ReadMessage(GHIElectronics.TinyCLR.Devices.Can.CanMessage@)">
+            <summary>Dequeues a single received message. Returns true if one was available.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Can.CanController.ReadMessages(GHIElectronics.TinyCLR.Devices.Can.CanMessage[],System.Int32,System.Int32)">
+            <summary>Dequeues up to <paramref name="count"/> received messages into <paramref name="messages"/>.</summary>
+            <returns>Number of messages actually read.</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Can.CanController.SetNominalBitTiming(GHIElectronics.TinyCLR.Devices.Can.CanBitTiming)">
+            <summary>Configures the arbitration-phase bit timing (used for the whole frame in classic CAN).</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Can.CanController.SetDataBitTiming(GHIElectronics.TinyCLR.Devices.Can.CanBitTiming)">
+            <summary>Configures the data-phase bit timing for CAN-FD frames with bit-rate switching.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Can.CanController.ClearWriteBuffer">
+            <summary>Empties the transmit queue.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Can.CanController.ClearReadBuffer">
+            <summary>Empties the receive queue.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Can.CanController.WriteBufferSize">
+            <summary>Size of the transmit message queue.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Can.CanController.ReadBufferSize">
+            <summary>Size of the receive message queue.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Can.CanController.MessagesToWrite">
+            <summary>Messages currently queued for transmission.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Can.CanController.MessagesToRead">
+            <summary>Messages currently available to read.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Can.CanController.CanWriteMessage">
+            <summary>True when the transmit queue has room.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Can.CanController.CanReadMessage">
+            <summary>True when at least one received message is available.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Can.CanController.WriteErrorCount">
+            <summary>Current transmit error counter (TEC).</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Can.CanController.ReadErrorCount">
+            <summary>Current receive error counter (REC).</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Can.CanController.SourceClock">
+            <summary>Source clock feeding the CAN prescaler, in Hz. Used to compute bit timing.</summary>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.Devices.Can.CanController.MessageReceived">
+            <summary>Raised when one or more messages have arrived. Call <see cref="M:GHIElectronics.TinyCLR.Devices.Can.CanController.ReadMessage(GHIElectronics.TinyCLR.Devices.Can.CanMessage@)"/> from the handler.</summary>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.Devices.Can.CanController.ErrorReceived">
+            <summary>Raised when the controller detects a bus error or enters bus-off.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Can.CanController.Filter">
+            <summary>Acceptance filter configuration for this controller.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Can.Filter">
+            <summary>Acceptance-filter configuration for a CAN controller.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Can.Filter.IdType">
+            <summary>CAN identifier width.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Can.Filter.IdType.Standard">
+            <summary>11-bit standard identifier.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Can.Filter.IdType.Extended">
+            <summary>29-bit extended identifier.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Can.Filter.FilterType">
+            <summary>How a filter matches arbitration IDs.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Can.Filter.FilterType.Range">
+            <summary>Accept IDs in the inclusive range [id1, id2].</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Can.Filter.FilterType.Mask">
+            <summary>Accept IDs where (id &amp; mask) == (compare &amp; mask).</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Can.Filter.AddRangeFilter(GHIElectronics.TinyCLR.Devices.Can.Filter.IdType,System.UInt32,System.UInt32)">
+            <summary>Accepts IDs in the inclusive range [<paramref name="startId"/>, <paramref name="endId"/>].</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Can.Filter.AddMaskFilter(GHIElectronics.TinyCLR.Devices.Can.Filter.IdType,System.UInt32,System.UInt32)">
+            <summary>Accepts IDs where the bits selected by <paramref name="mask"/> equal those in <paramref name="compare"/>.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Can.Filter.RejectRemoteFrame(GHIElectronics.TinyCLR.Devices.Can.Filter.IdType)">
+            <summary>Filters out remote-transmission-request (RTR) frames of the given ID width.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Can.Filter.Clear">
+            <summary>Removes every previously installed filter (controller will pass all frames).</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Can.CanError">
+            <summary>Categories of error reported via <see cref="E:GHIElectronics.TinyCLR.Devices.Can.CanController.ErrorReceived"/>.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Can.CanError.ReadBufferOverrun">
+            <summary>Receive overrun.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Can.CanError.ReadBufferFull">
+            <summary>Receive buffer full; subsequent messages will be dropped.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Can.CanError.BusOff">
+            <summary>Controller has entered bus-off state and stopped transmitting.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Can.CanError.Passive">
+            <summary>Controller has entered error-passive state.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Can.ErrorStateIndicator">
+            <summary>CAN-FD error state indicator carried in a received message.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Can.ErrorStateIndicator.Active">
+            <summary>Sender was error-active.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Can.ErrorStateIndicator.Passive">
+            <summary>Sender was error-passive.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Can.MessageReceivedEventHandler">
+            <summary>Handler signature for <see cref="E:GHIElectronics.TinyCLR.Devices.Can.CanController.MessageReceived"/>.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Can.ErrorReceivedEventHandler">
+            <summary>Handler signature for <see cref="E:GHIElectronics.TinyCLR.Devices.Can.CanController.ErrorReceived"/>.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Can.MessageReceivedEventArgs">
+            <summary>Arguments for <see cref="E:GHIElectronics.TinyCLR.Devices.Can.CanController.MessageReceived"/>.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Can.MessageReceivedEventArgs.Count">
+            <summary>Number of messages that have just become available.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Can.MessageReceivedEventArgs.Timestamp">
+            <summary>Driver-captured time of the receive event.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Can.ErrorReceivedEventArgs">
+            <summary>Arguments for <see cref="E:GHIElectronics.TinyCLR.Devices.Can.CanController.ErrorReceived"/>.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Can.ErrorReceivedEventArgs.Error">
+            <summary>The kind of error reported.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Can.ErrorReceivedEventArgs.Timestamp">
+            <summary>Driver-captured time of the error.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Can.CanBitTiming">
+            <summary>Bit-timing parameters for one phase (arbitration or data) of a CAN frame.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Can.CanBitTiming.Phase1">
+            <summary>Time segment 1 (propagation + phase 1) in time quanta.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Can.CanBitTiming.Phase2">
+            <summary>Time segment 2 (phase 2) in time quanta.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Can.CanBitTiming.BaudratePrescaler">
+            <summary>Clock divider applied to the controller's source clock to produce the time-quantum frequency.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Can.CanBitTiming.SynchronizationJumpWidth">
+            <summary>Synchronization Jump Width (SJW), in time quanta.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Can.CanBitTiming.UseMultiBitSampling">
+            <summary>If true, the controller samples each bit three times and takes the majority value.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Can.CanBitTiming.#ctor">
+            <summary>Constructs an uninitialized bit-timing object.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Can.CanBitTiming.#ctor(System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>Constructs a bit-timing object without multi-bit sampling.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Can.CanBitTiming.#ctor(System.Int32,System.Int32,System.Int32,System.Int32,System.Boolean)">
+            <summary>Constructs a fully specified bit-timing object.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Can.CanMessage">
+            <summary>
+            One CAN (or CAN-FD) frame. Set <see cref="P:GHIElectronics.TinyCLR.Devices.Can.CanMessage.ArbitrationId"/>, optionally
+            <see cref="P:GHIElectronics.TinyCLR.Devices.Can.CanMessage.ExtendedId"/> for 29-bit IDs, and the payload via <see cref="P:GHIElectronics.TinyCLR.Devices.Can.CanMessage.Data"/>
+            / <see cref="P:GHIElectronics.TinyCLR.Devices.Can.CanMessage.Length"/>. For CAN-FD, set <see cref="P:GHIElectronics.TinyCLR.Devices.Can.CanMessage.FdCan"/> and optionally
+            <see cref="P:GHIElectronics.TinyCLR.Devices.Can.CanMessage.BitRateSwitch"/>.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Can.CanMessage.ArbitrationId">
+            <summary>The CAN arbitration ID. Limited to 11 bits when <see cref="P:GHIElectronics.TinyCLR.Devices.Can.CanMessage.ExtendedId"/> is false, 29 bits otherwise.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Can.CanMessage.ExtendedId">
+            <summary>True when <see cref="P:GHIElectronics.TinyCLR.Devices.Can.CanMessage.ArbitrationId"/> is a 29-bit extended identifier.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Can.CanMessage.Timestamp">
+            <summary>For received messages: driver-captured arrival time. For TX: not used.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Can.CanMessage.BitRateSwitch">
+            <summary>CAN-FD only: switch to data-phase bit timing for the payload.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Can.CanMessage.ErrorStateIndicator">
+            <summary>Reports whether a received message was sent by an error-active or error-passive node.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Can.CanMessage.RemoteTransmissionRequest">
+            <summary>True when this is a remote-transmission-request (RTR) frame. Not allowed in CAN-FD.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Can.CanMessage.Length">
+            <summary>
+            Payload length in bytes. 0..8 for classic CAN; for CAN-FD also accepts
+            12, 16, 20, 24, 32, 48, or 64. Larger classic values are clamped to 8.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Can.CanMessage.FdCan">
+            <summary>True if this is a CAN-FD (flexible-data) frame.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Can.CanMessage.Data">
+            <summary>The payload buffer. Up to 64 bytes for CAN-FD, 8 for classic CAN.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Can.CanMessage.#ctor">
+            <summary>Constructs an empty 8-byte classic CAN message with ID 0.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Can.CanMessage.#ctor(System.Int32)">
+            <summary>Constructs an empty message with the given arbitration ID.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Can.CanMessage.#ctor(System.Int32,System.Byte[])">
+            <summary>Constructs a message carrying <paramref name="data"/> in full.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Can.CanMessage.#ctor(System.Int32,System.Byte[],System.Int32,System.Int32)">
+            <summary>Constructs a message from a slice of <paramref name="data"/>.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Can.CanMessage.#ctor(System.Int32,System.Byte[],System.Int32,System.Int32,System.Boolean,System.Boolean)">
+            <summary>Constructs a message with explicit RTR and extended-ID flags.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Can.CanMessage.#ctor(System.Int32,System.Byte[],System.Int32,System.Int32,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>Constructs a possibly-CAN-FD message.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Can.CanMessage.#ctor(System.Int32,System.Byte[],System.Int32,System.Int32,System.Boolean,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>Constructs a fully specified message including bit-rate switch.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Can.Provider.ICanControllerProvider">
+            <summary>Provider contract for a CAN controller.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Can.Provider.ICanControllerProvider.Enable">
+            <summary>Powers on the controller.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Can.Provider.ICanControllerProvider.Disable">
+            <summary>Powers off the controller.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Can.Provider.ICanControllerProvider.WriteMessages(GHIElectronics.TinyCLR.Devices.Can.CanMessage[],System.Int32,System.Int32)">
+            <summary>Queues a slice of messages for transmission. Returns count actually queued.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Can.Provider.ICanControllerProvider.ReadMessages(GHIElectronics.TinyCLR.Devices.Can.CanMessage[],System.Int32,System.Int32)">
+            <summary>Dequeues up to <paramref name="count"/> received messages. Returns count actually read.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Can.Provider.ICanControllerProvider.SetNominalBitTiming(GHIElectronics.TinyCLR.Devices.Can.CanBitTiming)">
+            <summary>Configures arbitration-phase bit timing.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Can.Provider.ICanControllerProvider.SetDataBitTiming(GHIElectronics.TinyCLR.Devices.Can.CanBitTiming)">
+            <summary>Configures CAN-FD data-phase bit timing.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Can.Provider.ICanControllerProvider.AddFilter(GHIElectronics.TinyCLR.Devices.Can.Filter.IdType,GHIElectronics.TinyCLR.Devices.Can.Filter.FilterType,System.UInt32,System.UInt32)">
+            <summary>Installs an acceptance filter.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Can.Provider.ICanControllerProvider.RejectRemoteFrame(GHIElectronics.TinyCLR.Devices.Can.Filter.IdType)">
+            <summary>Filters out RTR frames of the given ID width.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Can.Provider.ICanControllerProvider.ClearFilter">
+            <summary>Removes every installed filter.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Can.Provider.ICanControllerProvider.ClearWriteBuffer">
+            <summary>Empties the transmit queue.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Can.Provider.ICanControllerProvider.ClearReadBuffer">
+            <summary>Empties the receive queue.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Can.Provider.ICanControllerProvider.WriteBufferSize">
+            <summary>Size of the transmit message queue.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Can.Provider.ICanControllerProvider.ReadBufferSize">
+            <summary>Size of the receive message queue.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Can.Provider.ICanControllerProvider.MessagesToWrite">
+            <summary>Messages currently queued for transmission.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Can.Provider.ICanControllerProvider.MessagesToRead">
+            <summary>Messages currently available to read.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Can.Provider.ICanControllerProvider.CanWriteMessage">
+            <summary>True when the transmit queue has room.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Can.Provider.ICanControllerProvider.CanReadMessage">
+            <summary>True when at least one received message is available.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Can.Provider.ICanControllerProvider.WriteErrorCount">
+            <summary>Current transmit error counter (TEC).</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Can.Provider.ICanControllerProvider.ReadErrorCount">
+            <summary>Current receive error counter (REC).</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Can.Provider.ICanControllerProvider.SourceClock">
+            <summary>Source clock feeding the CAN prescaler, in Hz.</summary>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.Devices.Can.Provider.ICanControllerProvider.MessageReceived">
+            <summary>Raised when messages arrive.</summary>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.Devices.Can.Provider.ICanControllerProvider.ErrorReceived">
+            <summary>Raised when a bus error or state change is observed.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Can.Provider.CanControllerApiWrapper">
+            <summary>Concrete <see cref="T:GHIElectronics.TinyCLR.Devices.Can.Provider.ICanControllerProvider"/> backed by the native TinyCLR CAN HAL.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Can.Provider.CanControllerApiWrapper.Api">
+            <summary>The underlying native API descriptor.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Can.Provider.CanControllerApiWrapper.#ctor(GHIElectronics.TinyCLR.Native.NativeApi)">
+            <summary>Wraps the given native API as a provider.</summary>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.Devices.Can.Provider.CanControllerApiWrapper.MessageReceived">
+            <inheritdoc/>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.Devices.Can.Provider.CanControllerApiWrapper.ErrorReceived">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Can.Provider.CanControllerApiWrapper.Dispose">
+            <summary>Releases the native controller.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Can.Provider.CanControllerApiWrapper.WriteBufferSize">
+            <inheritdoc/>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Can.Provider.CanControllerApiWrapper.ReadBufferSize">
+            <inheritdoc/>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Can.Provider.CanControllerApiWrapper.MessagesToWrite">
+            <inheritdoc/>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Can.Provider.CanControllerApiWrapper.MessagesToRead">
+            <inheritdoc/>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Can.Provider.CanControllerApiWrapper.CanWriteMessage">
+            <inheritdoc/>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Can.Provider.CanControllerApiWrapper.CanReadMessage">
+            <inheritdoc/>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Can.Provider.CanControllerApiWrapper.WriteErrorCount">
+            <inheritdoc/>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Can.Provider.CanControllerApiWrapper.ReadErrorCount">
+            <inheritdoc/>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Can.Provider.CanControllerApiWrapper.SourceClock">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Can.Provider.CanControllerApiWrapper.Enable">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Can.Provider.CanControllerApiWrapper.Disable">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Can.Provider.CanControllerApiWrapper.WriteMessages(GHIElectronics.TinyCLR.Devices.Can.CanMessage[],System.Int32,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Can.Provider.CanControllerApiWrapper.ReadMessages(GHIElectronics.TinyCLR.Devices.Can.CanMessage[],System.Int32,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Can.Provider.CanControllerApiWrapper.SetNominalBitTiming(GHIElectronics.TinyCLR.Devices.Can.CanBitTiming)">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Can.Provider.CanControllerApiWrapper.SetDataBitTiming(GHIElectronics.TinyCLR.Devices.Can.CanBitTiming)">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Can.Provider.CanControllerApiWrapper.ClearWriteBuffer">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Can.Provider.CanControllerApiWrapper.ClearReadBuffer">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Can.Provider.CanControllerApiWrapper.AddFilter(GHIElectronics.TinyCLR.Devices.Can.Filter.IdType,GHIElectronics.TinyCLR.Devices.Can.Filter.FilterType,System.UInt32,System.UInt32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Can.Provider.CanControllerApiWrapper.RejectRemoteFrame(GHIElectronics.TinyCLR.Devices.Can.Filter.IdType)">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Can.Provider.CanControllerApiWrapper.ClearFilter">
+            <inheritdoc/>
+        </member>
+    </members>
+</doc>

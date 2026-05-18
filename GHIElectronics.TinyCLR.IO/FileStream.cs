@@ -6,6 +6,7 @@ using GHIElectronics.TinyCLR.IO;
 
 namespace System.IO {
 
+    /// <summary>A read/write stream backed by a file on a mounted file system. Construct via <see cref="File.OpenRead(string)"/> / <see cref="File.OpenWrite(string)"/> / <see cref="File.Create(string)"/>.</summary>
     public class FileStream : Stream {
         internal const int TimeoutDefault = 5000;
         internal const int BufferSizeDefault = 0;

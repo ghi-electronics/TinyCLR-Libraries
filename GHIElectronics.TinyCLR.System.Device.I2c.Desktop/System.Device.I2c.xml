@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>System.Device.I2c</name>
+    </assembly>
+    <members>
+        <member name="T:System.Device.I2c.I2cBusSpeed">
+            <summary>Standard .NET-style I²C bus speed selector.</summary>
+        </member>
+        <member name="F:System.Device.I2c.I2cBusSpeed.StandardMode">
+            <summary>100 kHz standard mode.</summary>
+        </member>
+        <member name="F:System.Device.I2c.I2cBusSpeed.FastMode">
+            <summary>400 kHz fast mode.</summary>
+        </member>
+        <member name="F:System.Device.I2c.I2cBusSpeed.FastModePlus">
+            <summary>1 MHz fast mode plus.</summary>
+        </member>
+        <member name="T:System.Device.I2c.I2cConnectionSettings">
+            <summary>Per-device I²C settings in the standard <c>System.Device.I2c</c> shape. TinyCLR maps these onto its native I²C driver via <see cref="M:System.Device.I2c.I2cDevice.Create(System.Device.I2c.I2cConnectionSettings)"/>.</summary>
+        </member>
+        <member name="T:System.Device.I2c.I2cDevice">
+            <summary>
+            .NET-style I²C device. Standard surface (<c>Read</c> / <c>Write</c> / <c>WriteRead</c>);
+            internally TinyCLR routes calls through <see cref="T:GHIElectronics.TinyCLR.Devices.I2c.I2cController"/>.
+            </summary>
+        </member>
+    </members>
+</doc>

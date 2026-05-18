@@ -39,7 +39,7 @@ namespace System.IO
 
             var subDirPath = Path.Combine(this.m_fullPath, path);
 
-            /// This will also ensure "path" is valid.
+            // This will also ensure "path" is valid.
             subDirPath = Path.GetFullPath(subDirPath);
 
             return Directory.CreateDirectory(subDirPath);

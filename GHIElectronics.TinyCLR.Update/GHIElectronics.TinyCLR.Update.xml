@@ -1,0 +1,88 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>GHIElectronics.TinyCLR.Update</name>
+    </assembly>
+    <members>
+        <member name="T:GHIElectronics.TinyCLR.Update.ApplicationUpdate">
+            <summary>
+            Applies an over-the-air application update from a stream. Verifies the
+            signature against <c>key</c>, then flashes and reboots into the new app.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Update.ApplicationUpdate.ActivityPin">
+            <summary>Optional pin to toggle during long-running update operations (visual progress LED).</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Update.ApplicationUpdate.#ctor(System.IO.Stream,System.Byte[])">
+            <summary>Creates an updater that reads the new application image from <paramref name="stream"/> and verifies its signature against <paramref name="key"/>.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Update.ApplicationUpdate.Verify">
+            <summary>Verifies the signature of the streamed image without flashing it.</summary>
+            <returns>Decoded version string (e.g. "2.5.0.1000") or "Invalid." if verification failed.</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Update.ApplicationUpdate.FlashAndReset">
+            <summary>
+            Verifies the image, then writes it to the application region and resets
+            the device. Does not return on success.
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Update.InFieldUpdate">
+            <summary>
+            In-Field Update — feed firmware and/or application bytes in chunks, verify
+            the signatures, then flash and reboot. Supports caching the chunks in RAM
+            (faster) or to an external <see cref="T:GHIElectronics.TinyCLR.Devices.Storage.StorageController"/> (handles images
+            larger than free RAM).
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Update.InFieldUpdate.CacheMode">
+            <summary>Where the updater caches incoming chunks before flashing.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Update.InFieldUpdate.CacheMode.Flash">
+            <summary>Buffer to external flash via a <see cref="T:GHIElectronics.TinyCLR.Devices.Storage.StorageController"/>.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Update.InFieldUpdate.CacheMode.Ram">
+            <summary>Buffer in RAM.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Update.InFieldUpdate.ActivityPin">
+            <summary>Optional pin to toggle during long-running update operations (visual progress LED).</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Update.InFieldUpdate.#ctor">
+            <summary>Creates a RAM-cached updater.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Update.InFieldUpdate.#ctor(GHIElectronics.TinyCLR.Devices.Storage.StorageController)">
+            <summary>Creates a flash-cached updater backed by an external storage device. Use for images that don't fit in RAM.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Update.InFieldUpdate.LoadApplicationKey(System.Byte[])">
+            <summary>Loads the public key used to verify the application image.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Update.InFieldUpdate.LoadApplicationChunk(System.Byte[],System.Int32,System.Int32)">
+            <summary>Appends a chunk of bytes to the buffered application image.</summary>
+            <returns>Number of bytes accepted.</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Update.InFieldUpdate.LoadFirmwareChunk(System.Byte[],System.Int32,System.Int32)">
+            <summary>Appends a chunk of bytes to the buffered firmware image.</summary>
+            <returns>Number of bytes accepted.</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Update.InFieldUpdate.VerifyApplication">
+            <summary>Verifies the application signature without flashing. Returns the embedded version string, or "Invalid." on failure.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Update.InFieldUpdate.VerifyFirmware">
+            <summary>Verifies the firmware signature without flashing. Returns the embedded version string, or "Invalid." on failure.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Update.InFieldUpdate.ResetChunks">
+            <summary>Discards every buffered chunk and rewinds both write indices to zero.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Update.InFieldUpdate.FlashAndReset">
+            <summary>
+            Verifies any buffered images, writes them to their destination regions,
+            and resets the device. Does not return on success.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Update.InFieldUpdate.Dispose">
+            <summary>Releases buffered memory (the unmanaged firmware/application buffers).</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Update.InFieldUpdate.VersionConvertToString(System.UInt32)">
+            <summary>Formats a packed 32-bit version (major.minor.build.revision) as a dotted string.</summary>
+        </member>
+    </members>
+</doc>

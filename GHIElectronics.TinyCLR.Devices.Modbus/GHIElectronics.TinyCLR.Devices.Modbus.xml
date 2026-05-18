@@ -1,0 +1,1265 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>GHIElectronics.TinyCLR.Devices.Modbus</name>
+    </assembly>
+    <members>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Modbus.Interface.IModbusInterface">
+            <summary>
+            Interface for physical modbus implementations
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Modbus.Interface.IModbusInterface.MaxDataLength">
+            <summary>
+            Gets the maximum data length (not including address, function code, ...) of e telegram.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Modbus.Interface.IModbusInterface.MaxTelegramLength">
+            <summary>
+            Gets the maximum length of a Modbus telegram.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.Interface.IModbusInterface.CreateTelegram(System.Byte,System.Byte,System.Int16,System.Byte[],System.Int16@,System.Int16@,System.Boolean,System.Object@)">
+            <summary>
+            Creates a new telegram for a modbus request or response.
+            All data except the function code specific user data is written into the given buffer.
+            </summary>
+            <param name="addr">Device address. 0 = Breadcast, 1..247 are valid device addresses.</param>
+            <param name="fkt">Function code. <see cref="T:GHIElectronics.TinyCLR.Devices.Modbus.ModbusFunctionCode"/></param>
+            <param name="dataLength">Number of bytes for function code sspecific user data.</param>
+            <param name="buffer">Buffer to write data into. The buffer must be at least MaxTelegramLength - MaxDataLength + dataLength bytes long.</param>
+            <param name="telegramLength">Returns the total length of the telegram in bytes.</param>
+            <param name="dataPos">Returns the offset of the function code specific user data in buffer.</param>
+            <param name="isResponse">true if this is a response telegram; false if this is a request telegram.</param>
+            <param name="telegramContext">
+            If isResponse == false, this parameter returns the interface implementation specific data which must be passed to the ParseTelegram method of the received response.
+            If isResponse == true, this parameter must be called with the telegramContext parameter returned by ParseTelegram of the request telegram.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.Interface.IModbusInterface.SendTelegram(System.Byte[],System.Int16)">
+            <summary>
+            Sends the given telegram.
+            If necessary additional information like a checksum can be inserted here.
+            </summary>
+            <param name="buffer">Buffer containing the data.</param>
+            <param name="telegramLength">Length of the telegram in bytes.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.Interface.IModbusInterface.ReceiveTelegram(System.Byte[],System.Int16,System.Int32,System.Int16@)">
+            <summary>
+            Waits and receives a telegram.
+            </summary>
+            <param name="buffer">Buffer to write data into.</param>
+            <param name="desiredDataLength">Desired length of the function code specific data in bytes. -1 if length is unknown.</param>
+            <param name="timeout">Timeout in milliseconds to wait for the telegram.</param>
+            <param name="telegramLength">Returns the total length of the telegram in bytes.</param>
+            <returns>Returns true if the telegram was received successfully; false on timeout.</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.Interface.IModbusInterface.ParseTelegram(System.Byte[],System.Int16,System.Boolean,System.Object@,System.Byte@,System.Byte@,System.Int16@,System.Int16@)">
+            <summary>
+            Parses a telegram received by ReceiveTelegram.
+            </summary>
+            <param name="buffer">Buffer containing the data.</param>
+            <param name="telegramLength">Total length of the telegram in bytes.</param>
+            <param name="isResponse">true if the telegram is a response telegram; false if the telegram is a request telegram.</param>
+            <param name="telegramContext">
+            If isResponse == true: pass the telegramContext returned by CreateTelegram from the request.
+            If isResponse == false: returns the telegramContext from the received request. It must pe passed to the CreateTelegram method for the response.
+            </param>
+            <param name="address">Returns the device address.</param>
+            <param name="fkt">Returns the function code.</param>
+            <param name="dataPos">Returns the offset in buffer of the function code specific data.</param>
+            <param name="dataLength">Returns the length of the function code specific data.</param>
+            <returns>Returns true if this is the matching response according to the telegramContext; else false. If isResponse == false this method should return always true.</returns>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Modbus.Interface.IModbusInterface.IsDataAvailable">
+            <summary>
+            Gets if there is currently data available on the interface.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.Interface.IModbusInterface.ClearInputBuffer">
+            <summary>
+            Removes all data from the input interface.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Modbus.Interface.IModbusInterface.IsConnectionOk">
+            <summary>
+            Gets if the connection is ok
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Modbus.Interface.ModbusRtuInterface">
+            <summary>
+            ModbusRtuInterface is a Modbus RTU implemention of the <see cref="T:GHIElectronics.TinyCLR.Devices.Modbus.Interface.IModbusInterface"/> interface 
+            to be used with <see cref="T:GHIElectronics.TinyCLR.Devices.Modbus.ModbusMaster"/> or <see cref="T:GHIElectronics.TinyCLR.Devices.Modbus.ModbusDevice"/>.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Modbus.Interface.ModbusRtuInterface.UartController">
+            <summary>
+            Gets the serial port which is used.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.Interface.ModbusRtuInterface.#ctor(GHIElectronics.TinyCLR.Devices.Uart.UartController,System.Int32,System.Int32,GHIElectronics.TinyCLR.Devices.Uart.UartStopBitCount,GHIElectronics.TinyCLR.Devices.Uart.UartParity,System.Int16)">
+            <summary>
+            Creates a new Modbus RTU interface using an existing and fully initialized <see cref="P:GHIElectronics.TinyCLR.Devices.Modbus.Interface.ModbusRtuInterface.UartController"/>.
+            This interface can be used with <see cref="T:GHIElectronics.TinyCLR.Devices.Modbus.ModbusMaster"/> or <see cref="T:GHIElectronics.TinyCLR.Devices.Modbus.ModbusDevice"/>.
+            </summary>
+            <param name="serial">Fully initialized <see cref="P:GHIElectronics.TinyCLR.Devices.Modbus.Interface.ModbusRtuInterface.UartController"/>.</param>
+            <param name="maxDataLength">Maximum number of data bytes</param>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Modbus.Interface.ModbusRtuInterface.MaxDataLength">
+            <summary>
+            Gets the maximum data length (not including address, function code, ...) of e telegram.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Modbus.Interface.ModbusRtuInterface.MaxTelegramLength">
+            <summary>
+            Gets the maximum length of a Modbus telegram.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.Interface.ModbusRtuInterface.CreateTelegram(System.Byte,System.Byte,System.Int16,System.Byte[],System.Int16@,System.Int16@,System.Boolean,System.Object@)">
+            <summary>
+            Creates a new telegram for a modbus request or response.
+            All data except the function code specific user data is written into the given buffer.
+            </summary>
+            <param name="addr">Device address. 0 = Breadcast, 1..247 are valid device addresses.</param>
+            <param name="fkt">Function code. <see cref="T:GHIElectronics.TinyCLR.Devices.Modbus.ModbusFunctionCode"/></param>
+            <param name="dataLength">Number of bytes for function code sspecific user data.</param>
+            <param name="buffer">Buffer to write data into. The buffer must be at least MaxTelegramLength - MaxDataLength + dataLength bytes long.</param>
+            <param name="telegramLength">Returns the total length of the telegram in bytes.</param>
+            <param name="dataPos">Returns the offset of the function code specific user data in buffer.</param>
+            <param name="isResponse">true if this is a response telegram; false if this is a request telegram.</param>
+            <param name="telegramContext">
+            If isResponse == false, this parameter returns the interface implementation specific data which must be passed to the ParseTelegram method of the received response.
+            If isResponse == true, this parameter must be called with the telegramContext parameter returned by ParseTelegram of the request telegram.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.Interface.ModbusRtuInterface.SendTelegram(System.Byte[],System.Int16)">
+            <summary>
+            Sends the given telegram.
+            If necessary additional information like a checksum can be inserted here.
+            </summary>
+            <param name="buffer">Buffer containing the data.</param>
+            <param name="telegramLength">Length of the telegram in bytes.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.Interface.ModbusRtuInterface.ReceiveTelegram(System.Byte[],System.Int16,System.Int32,System.Int16@)">
+            <summary>
+            Waits and receives a telegram.
+            </summary>
+            <param name="buffer">Buffer to write data into.</param>
+            <param name="desiredDataLength">Desired length of the function code specific data in bytes. -1 if length is unknown.</param>
+            <param name="timeout">Timeout in milliseconds to wait for the telegram.</param>
+            <param name="telegramLength">Returns the total length of the telegram in bytes.</param>
+            <returns>Returns true if the telegram was received successfully; false on timeout.</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.Interface.ModbusRtuInterface.ParseTelegram(System.Byte[],System.Int16,System.Boolean,System.Object@,System.Byte@,System.Byte@,System.Int16@,System.Int16@)">
+            <summary>
+            Parses a telegram received by ReceiveTelegram.
+            </summary>
+            <param name="buffer">Buffer containing the data.</param>
+            <param name="telegramLength">Total length of the telegram in bytes.</param>
+            <param name="isResponse">true if the telegram is a response telegram; false if the telegram is a request telegram.</param>
+            <param name="telegramContext">
+            If isResponse == true: pass the telegramContext returned by CreateTelegram from the request.
+            If isResponse == false: returns the telegramContext from the received request. It must pe passed to the CreateTelegram method for the response.
+            </param>
+            <param name="address">Returns the device address.</param>
+            <param name="fkt">Returns the function code.</param>
+            <param name="dataPos">Returns the offset in buffer of the function code specific data.</param>
+            <param name="dataLength">Returns the length of the function code specific data.</param>
+            <returns>Returns true if this is the matching response according to the telegramContext; else false. If isResponse == false this method should return always true.</returns>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Modbus.Interface.ModbusRtuInterface.IsDataAvailable">
+            <summary>
+            Gets if there is currently dataavailable on the interface.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.Interface.ModbusRtuInterface.ClearInputBuffer">
+            <summary>
+            Removes all data from the input interface.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Modbus.Interface.ModbusRtuInterface.IsConnectionOk">
+            <summary>
+            Gets if the connection is ok
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Modbus.Interface.ModbusTcpInterface">
+            <summary>
+            ModbusTcpInterface is a Modbus TCP implemention of the <see cref="T:GHIElectronics.TinyCLR.Devices.Modbus.Interface.IModbusInterface"/> interface 
+            to be used with <see cref="T:GHIElectronics.TinyCLR.Devices.Modbus.ModbusMaster"/> or <see cref="T:GHIElectronics.TinyCLR.Devices.Modbus.ModbusDevice"/>.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.Interface.ModbusTcpInterface.#ctor(System.Net.Sockets.Socket,System.Int16,System.Boolean)">
+            <summary>
+            Creates a new Modbus TCP interface using an existing and fully initialized <see cref="T:System.Net.Sockets.Socket"/>.
+            This interface can be used with <see cref="T:GHIElectronics.TinyCLR.Devices.Modbus.ModbusMaster"/> or <see cref="T:GHIElectronics.TinyCLR.Devices.Modbus.ModbusDevice"/>.
+            </summary>
+            <param name="socket">Fully initialized <see cref="T:System.Net.Sockets.Socket"/>.</param>
+            <param name="maxDataLength">Maximum allowed length of function code specific data.</param>
+            <param name="ownsSocket">true if the interface owns the <see cref="T:System.Net.Sockets.Socket"/> and should close it when disposed; else false.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.Interface.ModbusTcpInterface.#ctor(System.String,System.Int32,System.Int16)">
+            <summary>
+            Creates a new Modbus TCP interface. This will connect to a TCP server listening to the given port.
+            This interface can be used with <see cref="T:GHIElectronics.TinyCLR.Devices.Modbus.ModbusMaster"/>.
+            </summary>
+            <param name="host">Host name or ip address of the Modbus TCP device.</param>
+            <param name="port">Port to which the devuice is listening. The Modbus TCP default port is 502.</param>
+            <param name="maxDataLength">Maximum allowed length of function code specific data.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.Interface.ModbusTcpInterface.StartDeviceListener(GHIElectronics.TinyCLR.Devices.Modbus.ModbusDevice,System.Int32,System.Int32,System.Int16)">
+            <summary>
+            Creates a new Modbus TCP listener. This will start a TCP server listening to the given port.
+            </summary>
+            <param name="device">Device to add the listeners to.</param>
+            <param name="port">Port to listen. The Modbus TCP default port is 502.</param>
+            <param name="maxConnections">Maximum number of allowed connections. The default is 5.</param>
+            <param name="maxDataLength">Maximum allowed length of function code specific data.</param>
+            <returns>Returns a new <see cref="T:GHIElectronics.TinyCLR.Devices.Modbus.Interface.ModbusTcpListener"/>.</returns>
+            <remarks>
+            For every incomming connection a new <see cref="T:GHIElectronics.TinyCLR.Devices.Modbus.Interface.ModbusTcpInterface"/> is created and added to the <see cref="T:GHIElectronics.TinyCLR.Devices.Modbus.ModbusDevice"/>.
+            </remarks>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Modbus.Interface.ModbusTcpInterface.MaxDataLength">
+            <summary>
+            Gets the maximum function code specific data length (not including address, function code, ...) of e telegram.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Modbus.Interface.ModbusTcpInterface.MaxTelegramLength">
+            <summary>
+            Gets the maximum length of a Modbus telegram.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.Interface.ModbusTcpInterface.CreateTelegram(System.Byte,System.Byte,System.Int16,System.Byte[],System.Int16@,System.Int16@,System.Boolean,System.Object@)">
+            <summary>
+            Creates a new telegram for a modbus request or response.
+            All data except the function code specific user data is written into the given buffer.
+            </summary>
+            <param name="addr">Device address. 0 = Breadcast, 1..247 are valid device addresses.</param>
+            <param name="fkt">Function code. <see cref="T:GHIElectronics.TinyCLR.Devices.Modbus.ModbusFunctionCode"/></param>
+            <param name="dataLength">Number of bytes for function code sspecific user data.</param>
+            <param name="buffer">Buffer to write data into. The buffer must be at least MaxTelegramLength - MaxDataLength + dataLength bytes long.</param>
+            <param name="telegramLength">Returns the total length of the telegram in bytes.</param>
+            <param name="dataPos">Returns the offset of the function code specific user data in buffer.</param>
+            <param name="isResponse">true if this is a response telegram; false if this is a request telegram.</param>
+            <param name="telegramContext">
+            If isResponse == false, this parameter returns the interface implementation specific data which must be passed to the ParseTelegram method of the received response.
+            If isResponse == true, this parameter must be called with the telegramContext parameter returned by ParseTelegram of the request telegram.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.Interface.ModbusTcpInterface.SendTelegram(System.Byte[],System.Int16)">
+            <summary>
+            Sends the given telegram.
+            If necessary additional information like a checksum can be inserted here.
+            </summary>
+            <param name="buffer">Buffer containing the data.</param>
+            <param name="telegramLength">Length of the telegram in bytes.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.Interface.ModbusTcpInterface.ReceiveTelegram(System.Byte[],System.Int16,System.Int32,System.Int16@)">
+            <summary>
+            Waits and receives a telegram.
+            </summary>
+            <param name="buffer">Buffer to write data into.</param>
+            <param name="desiredDataLength">Desired length of the function code specific data in bytes. -1 if length is unknown.</param>
+            <param name="timeout">Timeout in milliseconds to wait for the telegram.</param>
+            <param name="telegramLength">Returns the total length of the telegram in bytes.</param>
+            <returns>Returns true if the telegram was received successfully; false on timeout.</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.Interface.ModbusTcpInterface.ParseTelegram(System.Byte[],System.Int16,System.Boolean,System.Object@,System.Byte@,System.Byte@,System.Int16@,System.Int16@)">
+            <summary>
+            Parses a telegram received by ReceiveTelegram.
+            </summary>
+            <param name="buffer">Buffer containing the data.</param>
+            <param name="telegramLength">Total length of the telegram in bytes.</param>
+            <param name="isResponse">true if the telegram is a response telegram; false if the telegram is a request telegram.</param>
+            <param name="telegramContext">
+            If isResponse == true: pass the telegramContext returned by CreateTelegram from the request.
+            If isResponse == false: returns the telegramContext from the received request. It must pe passed to the CreateTelegram method for the response.
+            </param>
+            <param name="address">Returns the device address.</param>
+            <param name="fkt">Returns the function code.</param>
+            <param name="dataPos">Returns the offset in buffer of the function code specific data.</param>
+            <param name="dataLength">Returns the length of the function code specific data.</param>
+            <returns>Returns true if this is the matching response according to the telegramContext; else false. If isResponse == false this method should return always true.</returns>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Modbus.Interface.ModbusTcpInterface.IsDataAvailable">
+            <summary>
+            Gets if there is currently data available on the interface.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.Interface.ModbusTcpInterface.ClearInputBuffer">
+            <summary>
+            Removes all data from the input interface.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Modbus.Interface.ModbusTcpInterface.IsConnectionOk">
+            <summary>
+            Gets if the connection is ok
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.Interface.ModbusTcpInterface.Dispose">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Modbus.Interface.ModbusTcpListener">
+            <summary>
+            Listener for Mdbus TCP devices
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.Interface.ModbusTcpListener.#ctor(GHIElectronics.TinyCLR.Devices.Modbus.ModbusDevice,System.Int32,System.Int32,System.Int16)">
+            <summary>
+            Creates a new Modbus TCP listener. This will start a TCP server listening to the given port.
+            </summary>
+            <param name="device">Device to add the listeners to.</param>
+            <param name="port">Port to listen. The Modbus TCP default port is 502.</param>
+            <param name="maxConnections">Maximum number of allowed connections. The default is 5.</param>
+            <param name="maxDataLength">Maximum allowed length of function code specific data.</param>
+            <remarks>
+            For every incomming connection a new <see cref="T:GHIElectronics.TinyCLR.Devices.Modbus.Interface.ModbusTcpInterface"/> is created and added to the <see cref="T:GHIElectronics.TinyCLR.Devices.Modbus.ModbusDevice"/>.
+            </remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.Interface.ModbusTcpListener.Dispose">
+            <summary>
+            Disposes the listener and releases all resources
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Modbus.ModbusConst">
+            <summary>
+            Some general constants for Modbus
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Modbus.ModbusConst.BroadcastAddress">
+            <summary>
+            Modbus broadcast address
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Modbus.ModbusConst.TcpDeviceAddress">
+            <summary>
+            The default device address for Modbus TCP devices (248)
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Modbus.ModbusConst.TcpDefaultPort">
+            <summary>
+            The dafult TCP port for Modbus TCP devices
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Modbus.ModbusFunctionCode">
+            <summary>
+            Modbus function codes
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Modbus.ModbusFunctionCode.ReadCoils">
+            <summary>
+            Read colis (input/output bits)
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Modbus.ModbusFunctionCode.ReadDiscreteInputs">
+            <summary>
+            Read discrete inputs (input bits)
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Modbus.ModbusFunctionCode.ReadHoldingRegisters">
+            <summary>
+            Read holding registers (input/output registers)
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Modbus.ModbusFunctionCode.ReadInputRegisters">
+            <summary>
+            Read input registers
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Modbus.ModbusFunctionCode.WriteSingleCoil">
+            <summary>
+            Write single coil (input/output bit)
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Modbus.ModbusFunctionCode.WriteSingleRegister">
+            <summary>
+            Write single registers (input/output register)
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Modbus.ModbusFunctionCode.ReadExceptionStatus">
+            <summary>
+            Read exception status
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Modbus.ModbusFunctionCode.Diagnostics">
+            <summary>
+            Diagnostics
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Modbus.ModbusFunctionCode.GetCommEventCounter">
+            <summary>
+            Get comm event counter
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Modbus.ModbusFunctionCode.GetCommEventLog">
+            <summary>
+            Get comm event log
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Modbus.ModbusFunctionCode.WriteMultipleCoils">
+            <summary>
+            Write multiple coils (input/output bits)
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Modbus.ModbusFunctionCode.WriteMultipleRegisters">
+            <summary>
+            Write multiple registers (input/output registers)
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Modbus.ModbusFunctionCode.ReadWriteMultipleRegisters">
+            <summary>
+            Read write multiple registers (input/output regsiters)
+            The Write operation is performed first.
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Modbus.ModbusFunctionCode.ReadDeviceIdentification">
+            <summary>
+            Read device identification
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Modbus.ModbusFunctionCode.ReadDeviceIdentification2">
+            <summary>
+            Read device identification (again !?)
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Modbus.ModbusDevice">
+            <summary>
+            ModbusDevice is a base class for any modbus device.
+            </summary>
+            <remarks>
+            Override the methods named like On"ModbusFunctionCode"() to implement this FunctionCode or OnCustomTelegram for any not directly supported function code.
+            </remarks>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Modbus.ModbusDevice.Buffer">
+            <summary>
+            Gets the internal buffer
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.ModbusDevice.#ctor(System.Byte,System.Object)">
+            <summary>
+            Creates a new ModebusDevice without assigned interfaces.
+            </summary>
+            <param name="deviceAddress">Device address. Must be between 1 and 247 for RTU and should be 248 for TCP.</param>
+            <param name="syncObject">Optional object for communication interface synchronization.</param>
+            <remarks>
+            Interfaces can be add or removed by AddInterface and RemoveInterface methods.
+            </remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.ModbusDevice.#ctor(GHIElectronics.TinyCLR.Devices.Modbus.Interface.IModbusInterface,System.Byte,System.Object)">
+            <summary>
+            Creates a new ModebusDevice with one initial interface.
+            </summary>
+            <param name="intf">Initial interface.</param>
+            <param name="deviceAddress">Device address. Must be between 1 and 247 for RTU and should be 248 for TCP.</param>
+            <param name="syncObject">Optional object for communication interface synchronization.</param>
+            <remarks>
+            More interfaces can be add or removed by AddInterface and RemoveInterface methods.
+            </remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.ModbusDevice.AddInterface(GHIElectronics.TinyCLR.Devices.Modbus.Interface.IModbusInterface)">
+            <summary>
+            Adds an additional interface to be polled for incoming messages.
+            </summary>
+            <param name="intf">Interface to add.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.ModbusDevice.RemoveInterface(GHIElectronics.TinyCLR.Devices.Modbus.Interface.IModbusInterface)">
+            <summary>
+            Removes an interface.
+            </summary>
+            <param name="intf">Interface to remove.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.ModbusDevice.Start">
+            <summary>
+            Start the interface message polling.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.ModbusDevice.Stop">
+            <summary>
+            Stop the interface message polling.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Modbus.ModbusDevice.IsRunning">
+            <summary>
+            Gets if the interface message polling is running.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.ModbusDevice.OnMessageReceived(GHIElectronics.TinyCLR.Devices.Modbus.Interface.IModbusInterface,System.Byte,GHIElectronics.TinyCLR.Devices.Modbus.ModbusFunctionCode)">
+            <summary>
+            Is called when ever a modbus message was received, no matter if it was for this device or not.
+            </summary>
+            <param name="modbusInterface">Interface by which the message was received</param>
+            <param name="deviceAddress">Address to which device the message was sent</param>
+            <param name="functionCode">Function code</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.ModbusDevice.OnHandleTelegram(GHIElectronics.TinyCLR.Devices.Modbus.Interface.IModbusInterface,System.Byte,System.Boolean,System.Int16,System.Object,GHIElectronics.TinyCLR.Devices.Modbus.ModbusFunctionCode,System.Int16,System.Int16)">
+            <summary>
+            Handles a received message.
+            </summary>
+            <param name="intf">Interface by which the message was received.</param>
+            <param name="deviceAddress">Address of the target device</param>
+            <param name="isBroadcast">true if the message is a broadcast. For broadcast messages no response is sent.</param>
+            <param name="telegramLength">Length of the message in bytes.</param>
+            <param name="telegramContext">Interface specific message context.</param>
+            <param name="fc">Function code.</param>
+            <param name="dataPos">Index of function code specific data.</param>
+            <param name="dataLength">Length of the function code specific data in bytes.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.ModbusDevice.OnReadCoils(System.Boolean,System.UInt16,System.UInt16,System.Byte[])">
+            <summary>
+            Is called when a ReadCoils request comes in.
+            </summary>
+            <param name="isBroadcast">true if the message is a broadcast. For broadcast messages no reponse is sent.</param>
+            <param name="startAddress">Start address: 0x0000 .. 0xFFFF</param>
+            <param name="coilCount">Number of coils to read: 1 .. 2000</param>
+            <param name="coils">Byte array which must receive the coils. The coils are written as single bits into the array starting with coil 1 at the lsb.</param>
+            <returns>Returns <see cref="F:GHIElectronics.TinyCLR.Devices.Modbus.ModbusErrorCode.NoError"/> on success or any other <see cref="T:GHIElectronics.TinyCLR.Devices.Modbus.ModbusErrorCode"/> on errors.</returns>
+            <remarks>
+            Look at http://www.modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf for more details.
+            </remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.ModbusDevice.OnReadDiscreteInputs(System.Boolean,System.UInt16,System.UInt16,System.Byte[])">
+            <summary>
+            Is called when a ReadDiscreteInputs request comes in.
+            </summary>
+            <param name="isBroadcast">true if the message is a broadcast. For broadcast messages no reponse is sent.</param>
+            <param name="startAddress">Start address: 0x0000 .. 0xFFFF</param>
+            <param name="inputCount">Number of inputs to read: 1 .. 2000</param>
+            <param name="inputs">Byte array which must receive the inputs. The inputs are written as single bits into the array starting with input 1 at the lsb.</param>
+            <returns>Returns <see cref="F:GHIElectronics.TinyCLR.Devices.Modbus.ModbusErrorCode.NoError"/> on success or any other <see cref="T:GHIElectronics.TinyCLR.Devices.Modbus.ModbusErrorCode"/> on errors.</returns>
+            <remarks>
+            Look at http://www.modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf for more details.
+            </remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.ModbusDevice.OnReadHoldingRegisters(System.Boolean,System.UInt16,System.UInt16[])">
+            <summary>
+            Is called when a ReadHoldingRegisters request comes in.
+            </summary>
+            <param name="isBroadcast">true if the message is a broadcast. For broadcast messages no reponse is sent.</param>
+            <param name="startAddress">Start address: 0x0000 .. 0xFFFF</param>
+            <param name="registers">Array in which the read register values must be written.</param>
+            <returns>Returns <see cref="F:GHIElectronics.TinyCLR.Devices.Modbus.ModbusErrorCode.NoError"/> on success or any other <see cref="T:GHIElectronics.TinyCLR.Devices.Modbus.ModbusErrorCode"/> on errors.</returns>
+            <remarks>
+            Look at http://www.modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf for more details.
+            </remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.ModbusDevice.OnReadInputRegisters(System.Boolean,System.UInt16,System.UInt16[])">
+            <summary>
+            Is called when a ReadInputRegisters request comes in.
+            </summary>
+            <param name="isBroadcast">true if the message is a broadcast. For broadcast messages no reponse is sent.</param>
+            <param name="startAddress">Start address: 0x0000 .. 0xFFFF</param>
+            <param name="registers">Array in which the read register values must be written.</param>
+            <returns>Returns <see cref="F:GHIElectronics.TinyCLR.Devices.Modbus.ModbusErrorCode.NoError"/> on success or any other <see cref="T:GHIElectronics.TinyCLR.Devices.Modbus.ModbusErrorCode"/> on errors.</returns>
+            <remarks>
+            Look at http://www.modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf for more details.
+            </remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.ModbusDevice.OnWriteSingleCoil(System.Boolean,System.UInt16,System.Boolean)">
+            <summary>
+            Is called when a WriteSingleCoil request comes in.
+            </summary>
+            <param name="isBroadcast">true if the message is a broadcast. For broadcast messages no reponse is sent.</param>
+            <param name="address">Address of the coil: 0x0000 .. 0xFFFF</param>
+            <param name="value">Value to write.</param>
+            <returns>Returns <see cref="F:GHIElectronics.TinyCLR.Devices.Modbus.ModbusErrorCode.NoError"/> on success or any other <see cref="T:GHIElectronics.TinyCLR.Devices.Modbus.ModbusErrorCode"/> on errors.</returns>
+            <remarks>
+            Look at http://www.modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf for more details.
+            </remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.ModbusDevice.OnWriteSingleRegister(System.Boolean,System.UInt16,System.UInt16)">
+            <summary>
+            Is called when a WriteSingleRegister request comes in.
+            </summary>
+            <param name="isBroadcast">true if the message is a broadcast. For broadcast messages no reponse is sent.</param>
+            <param name="address">Address of the register: 0x0000 .. 0xFFFF</param>
+            <param name="value">Register value to write</param>
+            <returns>Returns <see cref="F:GHIElectronics.TinyCLR.Devices.Modbus.ModbusErrorCode.NoError"/> on success or any other <see cref="T:GHIElectronics.TinyCLR.Devices.Modbus.ModbusErrorCode"/> on errors.</returns>
+            <remarks>
+            Look at http://www.modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf for more details.
+            </remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.ModbusDevice.OnWriteMultipleCoils(System.Boolean,System.UInt16,System.UInt16,System.Byte[])">
+            <summary>
+            Is called when a WriteMultipleCoils request comes in.
+            </summary>
+            <param name="isBroadcast">true if the message is a broadcast. For broadcast messages no reponse is sent.</param>
+            <param name="startAddress">Start address: 0x0000 .. 0xFFFF</param>
+            <param name="outputCount">Number of couils (bist) to write.</param>
+            <param name="values">Values to write. Each bit is a value, starting at the lsb.</param>
+            <returns>Returns <see cref="F:GHIElectronics.TinyCLR.Devices.Modbus.ModbusErrorCode.NoError"/> on success or any other <see cref="T:GHIElectronics.TinyCLR.Devices.Modbus.ModbusErrorCode"/> on errors.</returns>
+            <remarks>
+            Look at http://www.modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf for more details.
+            </remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.ModbusDevice.OnWriteMultipleRegisters(System.Boolean,System.UInt16,System.UInt16[])">
+            <summary>
+            Is called when a WriteMultipleRegisters request comes in.
+            </summary>
+            <param name="isBroadcast">true if the message is a broadcast. For broadcast messages no reponse is sent.</param>
+            <param name="startAddress">Start address: 0x0000 .. 0xFFFF</param>
+            <param name="registers">Registers to write</param>
+            <returns>Returns <see cref="F:GHIElectronics.TinyCLR.Devices.Modbus.ModbusErrorCode.NoError"/> on success or any other <see cref="T:GHIElectronics.TinyCLR.Devices.Modbus.ModbusErrorCode"/> on errors.</returns>
+            <remarks>
+            Look at http://www.modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf for more details.
+            </remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.ModbusDevice.OnReadWriteMultipleRegisters(System.Boolean,System.UInt16,System.UInt16[],System.UInt16,System.UInt16[])">
+            <summary>
+            Is called when a ReadWriteMultipleRegisters request comes in.
+            </summary>
+            <param name="isBroadcast">true if the message is a broadcast. For broadcast messages no reponse is sent.</param>
+            <param name="writeStartAddress">Start address of writeRegisters: 0x0000 .. 0xFFFF</param>
+            <param name="writeRegisters">Registers to write</param>
+            <param name="readStartAddress">Start address readRegisters: 0x0000 .. 0xFFFF</param>
+            <param name="readRegisters">Array to write the read registers into.</param>
+            <returns>Returns <see cref="F:GHIElectronics.TinyCLR.Devices.Modbus.ModbusErrorCode.NoError"/> on success or any other <see cref="T:GHIElectronics.TinyCLR.Devices.Modbus.ModbusErrorCode"/> on errors.</returns>
+            <remarks>
+            The write operation is performed before the read operation.
+            Look at http://www.modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf for more details.
+            </remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.ModbusDevice.ReadDeviceIdentification(GHIElectronics.TinyCLR.Devices.Modbus.Interface.IModbusInterface,System.Boolean,System.Object,GHIElectronics.TinyCLR.Devices.Modbus.ModbusFunctionCode,System.Int16,System.Int16)">
+            <summary>
+            Is called when the device identification of this devuice is requested.
+            </summary>
+            <param name="intf">Interface from wich the requst was received</param>
+            <param name="isBroadcast">true if request is a broadcast</param>
+            <param name="telegramContext">Conext of the telegram</param>
+            <param name="fc">Function code</param>
+            <param name="dataPos">Posittion (offset) of the data in the buffer</param>
+            <param name="dataLength">Length of the data in the buffer</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.ModbusDevice.OnGetDeviceIdentification(GHIElectronics.TinyCLR.Devices.Modbus.ModbusObjectId)">
+            <summary>
+            Is called when the value of the object id is needed for a ReadDeviceIdentification request.
+            </summary>
+            <param name="objectId">Object id.</param>
+            <returns>Returns the value of the requested object id.</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.ModbusDevice.GetConformityLevel">
+            <summary>
+            Is called when the maximum conformity level is needed for a ReadDeviceIdentification request.
+            </summary>
+            <returns>Returns the maximum conformity level which is provided by this device.</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.ModbusDevice.OnCustomTelegram(GHIElectronics.TinyCLR.Devices.Modbus.Interface.IModbusInterface,System.Boolean,System.Byte[],System.Int16,System.Object,GHIElectronics.TinyCLR.Devices.Modbus.ModbusFunctionCode,System.Int16,System.Int16)">
+            <summary>
+            OnCustomTelegram is called for any function code which is not explicitly handeled by a On"FunctionCode" methos.
+            </summary>
+            <param name="intf">Interface which sent the request.</param>
+            <param name="isBroadcast">true if the request is a broadcast</param>
+            <param name="buffer">Buffer containing the message.</param>
+            <param name="telegramLength">Total length of message in bytes.</param>
+            <param name="telegramContext">Interface specific message context.</param>
+            <param name="fc">Function code.</param>
+            <param name="dataPos">Index of the function code specific data.</param>
+            <param name="dataLength">Length of the function code specific data in bytes.</param>
+            <returns></returns>
+            <remarks>
+            Look at http://www.modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf for more details about function codes.
+            </remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.ModbusDevice.SendErrorResult(GHIElectronics.TinyCLR.Devices.Modbus.Interface.IModbusInterface,System.Boolean,System.Byte,System.Object,GHIElectronics.TinyCLR.Devices.Modbus.ModbusFunctionCode,GHIElectronics.TinyCLR.Devices.Modbus.ModbusErrorCode)">
+            <summary>
+            Sends a error result message.
+            </summary>
+            <param name="intf">Interface to send message to.</param>
+            <param name="isBroadcast">true if the message is a broadcast. For broadcast messages no reponse is sent.</param>
+            <param name="deviceAddress">Device address for response</param>
+            <param name="telegramContext">Interface specific telegram context.</param>
+            <param name="fc">Function code. The msg is automatically set.</param>
+            <param name="modbusErrorCode">Modbus error code to send.</param>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Modbus.ModbusException">
+            <summary>
+            Modbus communication related exception
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.ModbusException.#ctor(System.String)">
+            <summary>
+            Creates a new ModbusException from an message
+            </summary>
+            <param name="message">Message of the exception</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.ModbusException.#ctor(GHIElectronics.TinyCLR.Devices.Modbus.ModbusErrorCode)">
+            <summary>
+            Creates a new ModbusException from an error code
+            </summary>
+            <param name="errorCode">Error code</param>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Modbus.ModbusException.ErrorCode">
+            <summary>
+            Gets the modbus error code
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Modbus.ModbusGateway">
+            <summary>
+            Modbus TCP/RTU Gateway
+            </summary>
+            <remarks>
+            The <see cref="T:GHIElectronics.TinyCLR.Devices.Modbus.ModbusGateway"/> class provides a gateway from an Modbus/TCP device to one or more Modbus/RTU (or even TCP) master busses.
+            </remarks>
+            <example>
+            The following code creates a 1:1 gateway to as single RTU master.
+            <code>
+            var modbusRtuInterface = new ModbusRtuInterface(...);
+            var gateway = new ModbusGateway(ModbusConst.TcpDeviceAddress, modbusRtuInterface, 1000);
+            var tcpInterfaceListener = ModbusTcpInterface.StartDeviceListener(gateway);
+            gateway.Start();
+            </code>
+            </example>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.ModbusGateway.#ctor(System.Byte)">
+            <summary>
+            Creates a new Modbus Gateway without any master interfaces.
+            </summary>
+            <param name="deviceAddress">Address of this device</param>
+            <remarks>
+            Use <see cref="M:GHIElectronics.TinyCLR.Devices.Modbus.ModbusGateway.AddMaster(GHIElectronics.TinyCLR.Devices.Modbus.Interface.IModbusInterface,System.Int32,System.Collections.Hashtable)"/> to add various Modbus masters.
+            </remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.ModbusGateway.#ctor(System.Byte,GHIElectronics.TinyCLR.Devices.Modbus.Interface.IModbusInterface,System.Int32)">
+            <summary>
+            Creates a new Modbus Gateway with a single master interface and an 1:1 device id mapping
+            </summary>
+            <param name="deviceAddress">Address of this device</param>
+            <param name="masterInterface">Master interface to add</param>
+            <param name="timeout">Timeout for master interface</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.ModbusGateway.AddMaster(GHIElectronics.TinyCLR.Devices.Modbus.Interface.IModbusInterface,System.Int32)">
+            <summary>
+            Adds an additional master interface with a 1:1 device id mapping
+            </summary>
+            <param name="masterInterface">Master interface to add</param>
+            <param name="timeout">Timeout for master interface</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.ModbusGateway.AddMaster(GHIElectronics.TinyCLR.Devices.Modbus.Interface.IModbusInterface,System.Int32,System.Collections.Hashtable)">
+            <summary>
+            Adds an additional master interface with an custom device id mapping
+            </summary>
+            <param name="masterInterface">master interface to add</param>
+            <param name="timeout">Timeout for master interface</param>
+            <param name="addressMap">A hashtable where the key is the incoming device id that is mapped to it's value as device id on the master interface.
+            Both, key and value of the hashtable must be of type byte.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.ModbusGateway.OnGetDeviceIdentification(GHIElectronics.TinyCLR.Devices.Modbus.ModbusObjectId)">
+            <summary>
+            Is called when the value of the object id is needed for a ReadDeviceIdentification request.
+            </summary>
+            <param name="objectId">Object id.</param>
+            <returns>Returns the value of the requested object id.</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.ModbusGateway.GetConformityLevel">
+            <summary>
+            Is called when the maximum conformity level is needed for a ReadDeviceIdentification request.
+            </summary>
+            <returns>Returns the maximum conformity level which is provided by this device.</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.ModbusGateway.OnHandleTelegram(GHIElectronics.TinyCLR.Devices.Modbus.Interface.IModbusInterface,System.Byte,System.Boolean,System.Int16,System.Object,GHIElectronics.TinyCLR.Devices.Modbus.ModbusFunctionCode,System.Int16,System.Int16)">
+            <summary>
+            Handles a received message.
+            </summary>
+            <param name="intf">Interface by which te message was received.</param>
+            <param name="deviceAddress">Address of the target device</param>
+            <param name="isBroadcast">true if the message is a broadcast. For broadcast messages no reponse is sent.</param>
+            <param name="telegramLength">Length of the message in bytes.</param>
+            <param name="telegramContext">Interface specific message context.</param>
+            <param name="fc">Function code.</param>
+            <param name="dataPos">Index of function code specific data.</param>
+            <param name="dataLength">Length of the function code specific data in bytes.</param>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Modbus.ModbusMaster">
+            <summary>
+            ModbusMaster provides the function code implementaions for a modbus master.
+            </summary>
+            <remarks>
+            A Modbus Interface is required for communication.
+            Use <see cref="T:GHIElectronics.TinyCLR.Devices.Modbus.Interface.ModbusRtuInterface"/> or <see cref="T:GHIElectronics.TinyCLR.Devices.Modbus.Interface.ModbusTcpInterface"/>.
+            </remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.ModbusMaster.#ctor(GHIElectronics.TinyCLR.Devices.Modbus.Interface.IModbusInterface,System.Object)">
+            <summary>
+            Creates a modbus master using the given interface
+            </summary>
+            <param name="intf">Interface to use for the master</param>
+            <param name="syncObject">Object to use for multi threaded communication locking.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.ModbusMaster.SendReceive(System.Byte,GHIElectronics.TinyCLR.Devices.Modbus.ModbusFunctionCode,System.Int32,System.Int16,System.Int16,System.Object,System.Int16@)">
+            <summary>
+            Sends a modbus telegram over the interface and waits for a response
+            </summary>
+            <param name="deviceAddress">Modbus device address.</param>
+            <param name="fc">Function code.</param>
+            <param name="timeout">Timeout in Milli seconds.</param>
+            <param name="telegramLength">Total length of the telegram in bytes</param>
+            <param name="desiredDataLength">Length of the desired telegram data (without fc, cs, ...) of the response in bytes. -1 for unknown.</param>
+            <param name="telegramContext">Interface specific context of the telegram</param>
+            <param name="dataPos">Index of the response data in the buffer.</param>
+            <returns></returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.ModbusMaster.ReadCoils(System.Byte,System.UInt16,System.UInt16,System.Int32)">
+            <summary>
+            Sends a Read Coils (0x01) telegram to a device and waits for the response
+            </summary>
+            <param name="deviceAddress">Address of the modbus device.</param>
+            <param name="startAddress">Start address: 0x0000 .. 0xFFFF</param>
+            <param name="coilCount">>Number of coils to read: 1 .. 2000</param>
+            <param name="timeout">Timeout for response in Milli seconds.</param>
+            <returns>Returns a byte array which contains the coils. The coils are written as single bits into the array starting with coil 1 at the lsb.</returns>
+            <remarks>
+            Look at http://www.modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf for more details.
+            </remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.ModbusMaster.ReadDiscreteInputs(System.Byte,System.UInt16,System.UInt16,System.Int32)">
+            <summary>
+            Sends a Read Discrete Inputs (0x02) telegram to a device and waits for the response
+            </summary>
+            <param name="deviceAddress">Address of the modbus device.</param>
+            <param name="startAddress">Start address: 0x0000 .. 0xFFFF</param>
+            <param name="inputCount">>Number of coils to read: 1 .. 2000</param>
+            <param name="timeout">Timeout for response in milli seconds.</param>
+            <returns>Returns a byte array which contains the inputs. The inputs are written as single bits into the array starting with coil 1 at the lsb.</returns>
+            <remarks>
+            Look at http://www.modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf for more details.
+            </remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.ModbusMaster.ReadHoldingRegisters(System.Byte,System.UInt16,System.UInt16,System.Int32)">
+            <summary>
+            Sends a Read Holding Registers (0x03) telegram to a device and waits for the response
+            </summary>
+            <param name="deviceAddress">Address of the modbus device.</param>
+            <param name="startAddress">Start address: 0x0000 .. 0xFFFF</param>
+            <param name="registerCount">Number of the registers to read.</param>
+            <param name="timeout">Timeout for response in milli seconds.</param>
+            <returns>Returns an array of 16 bit register values.</returns>
+            <remarks>
+            A register is a 16 bit unsigned value.
+            Look at http://www.modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf for more details.
+            </remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.ModbusMaster.ReadInputRegisters(System.Byte,System.UInt16,System.UInt16,System.Int32)">
+            <summary>
+            Sends a Read Input Registers (0x04) telegram to a device and waits for the response
+            </summary>
+            <param name="deviceAddress">Address of the modbus device.</param>
+            <param name="startAddress">Start address: 0x0000 .. 0xFFFF</param>
+            <param name="registerCount">Number of the registers to read.</param>
+            <param name="timeout">Timeout for response in milli seconds.</param>
+            <returns>Returns an array of 16 bit register values.</returns>
+            <remarks>
+            A register is a 16 bit unsigned value.
+            Look at http://www.modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf for more details.
+            </remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.ModbusMaster.WriteSingleCoil(System.Byte,System.UInt16,System.Boolean,System.Int32)">
+            <summary>
+            Sends a Write Single Coils (0x05) telegram to a device and waits for the response
+            </summary>
+            <param name="deviceAddress">Address of the modbus device.</param>
+            <param name="address">Address of the coil: 0x0000 .. 0xFFFF</param>
+            <param name="value">true or false</param>
+            <param name="timeout">Timeout for response in milli seconds.</param>
+            <remarks>
+            Look at http://www.modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf for more details.
+            </remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.ModbusMaster.WriteSingleCoil(System.Byte,System.UInt16,System.UInt16,System.Int32)">
+            <summary>
+            Sends a Write Single Coils (0x05) telegram to a device and waits for the response
+            </summary>
+            <param name="deviceAddress">Address of the modbus device.</param>
+            <param name="address">Address of the coil: 0x0000 .. 0xFFFF</param>
+            <param name="value">0xFF00 for true or 0x0000 for false</param>
+            <param name="timeout">Timeout for response in milli seconds.</param>
+            <remarks>
+            Look at http://www.modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf for more details.
+            </remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.ModbusMaster.WriteSingleRegister(System.Byte,System.UInt16,System.UInt16,System.Int32)">
+            <summary>
+            Sends a Write Single Register (0x06) telegram to a device and waits for the response
+            </summary>
+            <param name="deviceAddress">Address of the modbus device.</param>
+            <param name="address">Address of the register: 0x0000 .. 0xFFFF</param>
+            <param name="value">Register value to write</param>
+            <param name="timeout">Timeout for response in milli seconds.</param>
+            <remarks>
+            Look at http://www.modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf for more details.
+            </remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.ModbusMaster.ReadExceptionStatus(System.Byte,System.Int32)">
+            <summary>
+            Sends a Read Exception Status (0x07) telegram to a device and waits for the response
+            </summary>
+            <param name="deviceAddress">Address of the modbus device.</param>
+            <param name="timeout">Timeout for response in milli seconds.</param>
+            <returns>Returns 8 bit encoded exception statuses of the device.</returns>
+            <remarks>
+            Look at http://www.modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf for more details.
+            </remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.ModbusMaster.Diagnostics(System.Byte,System.UInt16,System.UInt16[],System.Int32)">
+            <summary>
+            Sends a Diagnostics (0x08) telegram to a device and waits for the response
+            </summary>
+            <param name="deviceAddress">Address of the modbus device.</param>
+            <param name="subFunction">Sub function code.</param>
+            <param name="data">Data</param>
+            <param name="timeout">Timeout for response in milli seconds.</param>
+            <returns>Returns a unsigned short array with diagnostic data.</returns>
+            <remarks>
+            Look at http://www.modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf for more details.
+            </remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.ModbusMaster.GetCommEventCounter(System.Byte,System.UInt16@,System.UInt16@,System.Int32)">
+            <summary>
+            Sends a Get Comm Event Counter (0x0B) telegram to a device and waits for the response
+            </summary>
+            <param name="deviceAddress">Address of the modbus device.</param>
+            <param name="status">Receives the status word of the device.</param>
+            <param name="eventCount">Receives the event counter of the device.</param>
+            <param name="timeout">Timeout for response in milli seconds.</param>
+            <remarks>
+            Look at http://www.modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf for more details.
+            </remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.ModbusMaster.GetCommEventLog(System.Byte,System.UInt16@,System.UInt16@,System.UInt16@,System.Byte[]@,System.Int32)">
+            <summary>
+            Sends a Get Comm Event Log (0x0C) telegram to a device and waits for the response
+            </summary>
+            <param name="deviceAddress">Address of the modbus device.</param>
+            <param name="status">Receives the status word of the device.</param>
+            <param name="eventCount">Receives the event counter of the device.</param>
+            <param name="messageCount">Receives the event message count.</param>
+            <param name="events">Receives 0 - 64 bytes, with each byte corresponding to the status of one MODBUS send or receive operation for the remote device.
+            Byte 0 is the most recent.</param>
+            <param name="timeout">Timeout for response in milli seconds.</param>
+            <remarks>
+            Look at http://www.modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf for more details.
+            </remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.ModbusMaster.WriteMultipleCoils(System.Byte,System.UInt16,System.UInt16,System.Byte[],System.Int32)">
+            <summary>
+            Sends a Write Multiple Coils (0x0F) telegram to a device and waits for the response
+            </summary>
+            <param name="deviceAddress">Address of the modbus device.</param>
+            <param name="startAddress">Address of the 1st coil: 0x0000 .. 0xFFFF</param>
+            <param name="coilCount">Number of coils to write.</param>
+            <param name="coils">Byte array with bit coded coil values.</param>
+            <param name="timeout">Timeout for response in milli seconds.</param>
+            <remarks>
+            Look at http://www.modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf for more details.
+            </remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.ModbusMaster.WriteMultipleRegisters(System.Byte,System.UInt16,System.UInt16[],System.Int32)">
+            <summary>
+            Sends a Write Multiple Coils (0x10) telegram to a device and waits for the response
+            </summary>
+            <param name="deviceAddress">Address of the modbus device.</param>
+            <param name="startAddress">Address of the 1st register: 0x0000 .. 0xFFFF</param>
+            <param name="registers">Register values to write</param>
+            <param name="timeout">Timeout for response in milli seconds.</param>
+            <remarks>
+            Look at http://www.modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf for more details.
+            </remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.ModbusMaster.WriteMultipleRegisters(System.Byte,System.UInt16,System.UInt16[],System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Sends a Write Multiple Coils (0x10) telegram to a device and waits for the response
+            </summary>
+            <param name="deviceAddress">Address of the modbus device.</param>
+            <param name="startAddress">Address of the 1st register: 0x0000 .. 0xFFFF</param>
+            <param name="registers">Register values to write</param>
+            <param name="offset">Offset in register of the 1st register to write</param>
+            <param name="count">Number of registers to write</param>
+            <param name="timeout">Timeout for response in milli seconds.</param>
+            <remarks>
+            Look at http://www.modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf for more details.
+            </remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.ModbusMaster.ReadWriteMultipleRegisters(System.Byte,System.UInt16,System.UInt16[],System.UInt16,System.UInt16,System.Int32)">
+            <summary>
+            Sends a Read Write Multiple Coils (0x17) telegram to a device and waits for the response
+            </summary>
+            <param name="deviceAddress">Address of the modbus device.</param>
+            <param name="writeStartAddress">Address of the 1st write register: 0x0000 .. 0xFFFF</param>
+            <param name="writeRegisters">Register values to write</param>
+            <param name="readStartAddress">Address of the 1st read register: 0x0000 .. 0xFFFF</param>
+            <param name="readCount">Number of registers to read</param>
+            <param name="timeout">Timeout for response in milli seconds.</param>
+            <returns>Returns a unsigned short array with the register values.</returns>
+            <remarks>
+            The write operation is performed before the read operation.
+            Look at http://www.modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf for more details.
+            </remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.ModbusMaster.ReadDeviceIdentification(System.Byte,GHIElectronics.TinyCLR.Devices.Modbus.ModbusConformityLevel,System.Int32)">
+            <summary>
+            Reads the Device Information by using the function code (0x2b / 0x0e). The methods sends as many messages as needed to read the whole data.
+            </summary>
+            <param name="deviceAddress">Address of the modbus device.</param>
+            <param name="deviceIdCode">Device id code to read.</param>
+            <param name="timeout">Timeout for response in milli seconds.</param>
+            <returns>Returns an array with all device information.</returns>
+            <remarks>
+            Look at http://www.modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf for more details.
+            </remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.ModbusMaster.ReadDeviceIdentification(System.Byte,GHIElectronics.TinyCLR.Devices.Modbus.ModbusConformityLevel,GHIElectronics.TinyCLR.Devices.Modbus.ModbusObjectId@,System.Boolean@,System.Int32)">
+            <summary>
+            Reads the Device Information by using the function code (0x2b / 0x0e)
+            </summary>
+            <param name="deviceAddress">Address of the modbus device.</param>
+            <param name="deviceIdCode">Device id code to read.</param>
+            <param name="objectId">Object id to start at. Receives the next object id to read from if moreFollows is set to true.</param>
+            <param name="moreFollows">Receives true if there is more information to read.</param>
+            <param name="timeout">Timeout for response in milli seconds.</param>
+            <returns>Returns an array with all device information.</returns>
+            <remarks>
+            Look at http://www.modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf for more details.
+            </remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.ModbusMaster.ReadSpecificDeviceIdentification(System.Byte,GHIElectronics.TinyCLR.Devices.Modbus.ModbusObjectId,System.Int32)">
+            <summary>
+            Reads one specific Device Information by using the function code (0x2b / 0x0e)
+            </summary>
+            <param name="deviceAddress">Address of the modbus device.</param>
+            <param name="objectId">Object id to read.</param>
+            <param name="timeout">Timeout for response in milli seconds.</param>
+            <returns>Returns the requested device information.</returns>
+            <remarks>
+            Look at http://www.modbus.org/docs/Modbus_Application_Protocol_V1_1b3.pdf for more details.
+            </remarks>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Modbus.ModbusConformityLevel">
+            <summary>
+            Identification conformity level of the device and type of supported access.
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Modbus.ModbusConformityLevel.Basic">
+            <summary>
+            Basic Device Identification. All objects of this category are mandatory : VendorName, Product code, and revision number.
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Modbus.ModbusConformityLevel.Regular">
+            <summary>
+            Regular Device Identification. In addition to Basic data objects, the device provides additional and optional identification and description data objects. All of the objects of this category are defined in the standard but their implementation is optional .
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Modbus.ModbusConformityLevel.Extended">
+            <summary>
+            Extended Device Identification. In addition to regular data objects, the device provides additional and optional identification and description private data about the physical device itself. All of these data are device dependent.
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Modbus.ModbusObjectId">
+            <summary>
+            Identifiers for the Device Identification elements.
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Modbus.ModbusObjectId.VendorName">
+            <summary>
+            VendorName (mandatory)
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Modbus.ModbusObjectId.ProductCode">
+            <summary>
+            ProductCode (mandatory)
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Modbus.ModbusObjectId.MajorMinorRevision">
+            <summary>
+            MajorMinorRevision (mandatory)
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Modbus.ModbusObjectId.VendorUrl">
+            <summary>
+            VendorUrl (optional)
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Modbus.ModbusObjectId.ProductName">
+            <summary>
+            ProductName (optional)
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Modbus.ModbusObjectId.ModelName">
+            <summary>
+            ModelName (optional)
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Modbus.ModbusObjectId.UserApplicationName">
+            <summary>
+            UserApplicationName (optional)
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Modbus.ModbusObjectId.ReservedFirst">
+            <summary>
+            Fisrt reserved id (0x07 .. 0x7f are reserved)
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Modbus.ModbusObjectId.ReservedLast">
+            <summary>
+            Last reserved id (0x07 .. 0x7f are reserved)
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Modbus.ModbusObjectId.PrivareFirst">
+            <summary>
+            First private (extended) id (0x80 .. 0xff are private)
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Modbus.ModbusObjectId.PrivateLast">
+            <summary>
+            Last private (extended) id (0x80 .. 0xff are private)
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Modbus.DeviceIdentification">
+            <summary>
+            Defines a device identification by id and value
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Modbus.DeviceIdentification.ObjectId">
+            <summary>
+            Gets sets the object id of the device identification 
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Modbus.DeviceIdentification.Value">
+            <summary>
+            Gets sets the value of the divide identification
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Modbus.ModbusErrorCode">
+            <summary>
+            Modbus error codes
+            </summary>
+            <remarks>
+            Errors received from modbus devices have the high byte set to zero.
+            Internal errors like Timeout have the high byte != zero
+            </remarks>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Modbus.ModbusErrorCode.NoError">
+            <summary>
+            No error
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Modbus.ModbusErrorCode.IllegalFunction">
+            <summary>
+            The function code received in the query is not an allowable action for the server.
+            </summary>
+            <remarks>This may be because the function code is only applicable to newer devices, and was not implemented in the unit selected. It could also indicate that the server is in the wrong state to process a request of this type, for example because it is unconfigured and is being asked to return register values.</remarks>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Modbus.ModbusErrorCode.IllegalDataAddress">
+            <summary>
+            The data address received in the query is not an allowable address for the server.
+            </summary>
+            <remarks>
+            More specifically, the combination of reference number and transfer length is invalid. For a controller with 100 registers, the PDU addresses the first register as 0, and the last one as 99. If a request is submitted with a starting register address of 96 and a quantity of registers of 4, then this request will successfully operate (address-wise at least) on registers 96, 97, 98, 99. If a request is submitted with a starting register address of 96 and a quantity of registers of 5, then this request will fail with Exception Code 0x02 “Illegal Data Address” since it attempts to operate on registers 96, 97, 98, 99 and 100, and there is no register with address 100.
+            </remarks>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Modbus.ModbusErrorCode.IllegalDataValue">
+            <summary>
+            A value contained in the query data field is not an allowable value for server.
+            </summary>
+            <remarks>
+            This indicates a fault in the structure of the remainder of a complex request, such as that the implied length is incorrect. It specifically does NOT mean that a data item submitted for storage in a register has a value outside the expectation of the application program, since the MODBUS protocol is unaware of the significance of any particular value of any particular register.
+            </remarks>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Modbus.ModbusErrorCode.ServerDeviceFailure">
+            <summary>
+            An unrecoverable error occurred while the server was attempting to perform the requested action.
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Modbus.ModbusErrorCode.Acknowledge">
+            <summary>
+            Specialized use in conjunction with programming commands.
+            </summary>
+            <remarks>
+            The server has accepted the request and is processing it, but a long duration of time will be required to do so. This response is returned to prevent a timeout error from occurring in the client. The client can next issue a Poll Program Complete message to determine if processing is completed.
+            </remarks>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Modbus.ModbusErrorCode.ServerDeviceBusy">
+            <summary>
+            Specialized use in conjunction with programming commands.
+            </summary>
+            <remarks>
+            The server is engaged in processing a long–duration program command. The client should retransmit the message later when the server is free.
+            </remarks>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Modbus.ModbusErrorCode.NegativeAcknowledgement">
+            <summary>
+            Specialized use in conjunction with programming commands.
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Modbus.ModbusErrorCode.MemoryParityError">
+            <summary>
+            Specialized use in conjunction with function codes 20 and 21 and reference type 6, to indicate that the extended file area failed to pass a consistency check.
+            </summary>
+            <remarks>
+            The server attempted to read record file, but detected a parity error in the memory. The client can retry the request, but service may be required on the server device.
+            </remarks>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Modbus.ModbusErrorCode.GatewayPathUnavailable">
+            <summary>
+            Specialized use in conjunction with gateways.
+            </summary>
+            <remarks>
+            Indicates that the gateway was unable to allocate an internal communication path from the input port to the output port for processing the request. Usually means that the gateway is misconfigured or overloaded.
+            </remarks>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Modbus.ModbusErrorCode.GatewayTargetDeviceFailedToRespond">
+            <summary>
+            Specialized use in conjunction with gateways.
+            </summary>
+            <remarks>
+            Indicates that no response was obtained from the target device. Usually means that the device is not present on the network.
+            </remarks>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Modbus.ModbusErrorCode.Unspecified">
+            <summary>
+            Unspecifed internal error
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Modbus.ModbusErrorCode.Timeout">
+            <summary>
+            Device response timeout
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Modbus.ModbusErrorCode.CrcError">
+            <summary>
+            Check summ error
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Modbus.ModbusErrorCode.ResponseTooShort">
+            <summary>
+            Response data to short.
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Modbus.ModbusUtils">
+            <summary>
+            Class with modbus utility functions
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.ModbusUtils.InsertUShort(System.Byte[],System.Int32,System.UInt16)">
+            <summary>
+            Inserts a unsigned short value into a byte array in big-endian format.
+            </summary>
+            <param name="buffer">Byte array to write to</param>
+            <param name="pos">Index to write to.</param>
+            <param name="value">Value to write.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.ModbusUtils.ExtractUShort(System.Byte[],System.Int32)">
+            <summary>
+            Extracts a unsigned short value from an byte array in big-endian format.
+            </summary>
+            <param name="buffer">Byte array to read from</param>
+            <param name="pos">Index to read from</param>
+            <returns>Returns the unsigned short value.</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.ModbusUtils.CalcCrc(System.Byte[],System.Int32)">
+            <summary>
+            Calculates the Modbus RTU CRC16 checksumm
+            </summary>
+            <param name="buffer">Buffer containing the telegram.</param>
+            <param name="count">Count of bytes to use for CRC (not including the 2 bytes for CRC).</param>
+            <returns>Returns the 16 bit CRC</returns>
+        </member>
+    </members>
+</doc>

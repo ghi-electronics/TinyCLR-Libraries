@@ -1,4 +1,5 @@
 ﻿namespace System.Drawing {
+    /// <summary>Abstract base for objects that fill graphics shapes (rectangles, ellipses, paths).</summary>
     public abstract class Brush : MarshalByRefObject, ICloneable, IDisposable {
         public abstract object Clone();
 
@@ -12,6 +13,7 @@
         ~Brush() => this.Dispose(false);
     }
 
+    /// <summary>A brush that fills with a single solid <see cref="Color"/>.</summary>
     public class SolidBrush : Brush {
         public SolidBrush(Color color) => this.Color = color;
 

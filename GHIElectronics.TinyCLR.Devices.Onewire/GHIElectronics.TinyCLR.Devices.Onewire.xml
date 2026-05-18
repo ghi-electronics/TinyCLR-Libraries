@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>GHIElectronics.TinyCLR.Devices.Onewire</name>
+    </assembly>
+    <members>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Onewire.OneWireController">
+            <summary>
+            Software 1-Wire bus master driven from a single GPIO pin. Devices like
+            DS18B20 temperature sensors and DS24xx ROM chips can be enumerated with
+            <see cref="M:GHIElectronics.TinyCLR.Devices.Onewire.OneWireController.FindAllDevices"/>, addressed by 8-byte serial number, and then
+            transacted with via <see cref="M:GHIElectronics.TinyCLR.Devices.Onewire.OneWireController.TouchReset"/> / <see cref="M:GHIElectronics.TinyCLR.Devices.Onewire.OneWireController.WriteByte(System.Int32)"/> /
+            <see cref="M:GHIElectronics.TinyCLR.Devices.Onewire.OneWireController.ReadByte"/>.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Onewire.OneWireController.#ctor(System.Int32)">
+            <summary>Opens 1-Wire on a pin of the default <see cref="T:GHIElectronics.TinyCLR.Devices.Gpio.GpioController"/>.</summary>
+            <param name="pinNumber">GPIO pin number connected to the 1-Wire data line.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Onewire.OneWireController.#ctor(GHIElectronics.TinyCLR.Devices.Gpio.GpioController,System.Int32)">
+            <summary>Opens 1-Wire on a pin of the supplied <see cref="T:GHIElectronics.TinyCLR.Devices.Gpio.GpioController"/>.</summary>
+            <param name="gpioController">GPIO controller owning the data pin.</param>
+            <param name="pinNumber">GPIO pin number connected to the 1-Wire data line.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Onewire.OneWireController.TouchReset">
+            <summary>Issues a 1-Wire reset pulse and returns the presence-detect result.</summary>
+            <returns>Non-zero when at least one slave responded with a presence pulse.</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Onewire.OneWireController.TouchBit(System.Int32)">
+            <summary>Reads/writes a single bit on the bus (write-then-sample within one slot).</summary>
+            <param name="sendbit">Bit to drive (0 or 1).</param>
+            <returns>The bit actually read back from the bus.</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Onewire.OneWireController.TouchByte(System.Int32)">
+            <summary>Reads/writes a single byte on the bus (LSB first).</summary>
+            <param name="sendbyte">Byte to send.</param>
+            <returns>The byte actually read back during the same slot.</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Onewire.OneWireController.WriteByte(System.Int32)">
+            <summary>Writes a single byte; the read value is discarded.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Onewire.OneWireController.ReadByte">
+            <summary>Reads a single byte (drives 0xFF on the bus to sample the slave).</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Onewire.OneWireController.AcquireEx">
+            <summary>Acquires exclusive access to the 1-Wire net. Returns a port number ≥ 0 on success.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Onewire.OneWireController.Release">
+            <summary>Releases a previously acquired 1-Wire net.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Onewire.OneWireController.FindFirstDevice(System.Boolean,System.Boolean)">
+            <summary>Starts a 1-Wire ROM search. Returns non-zero if a device was found.</summary>
+            <param name="performResetBeforeSearch">When true, issues a reset pulse before searching.</param>
+            <param name="searchWithAlarmCommand">When true, uses the alarm-search command (0xEC) instead of the regular search (0xF0).</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Onewire.OneWireController.FindNextDevice(System.Boolean,System.Boolean)">
+            <summary>Continues a ROM search started by <see cref="M:GHIElectronics.TinyCLR.Devices.Onewire.OneWireController.FindFirstDevice(System.Boolean,System.Boolean)"/>.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Onewire.OneWireController.SerialNum(System.Byte[],System.Boolean)">
+            <summary>Reads or writes the 8-byte serial number of the last-discovered device.</summary>
+            <param name="sNum">Serial-number buffer (8 bytes).</param>
+            <param name="read">True to read the discovered serial number into <paramref name="sNum"/>; false to write <paramref name="sNum"/> as the active target.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Onewire.OneWireController.FindAllDevices">
+            <summary>
+            Enumerates every device on the bus and returns their 8-byte serial numbers.
+            Acquires and releases the 1-Wire net internally. Returns null if the bus
+            cannot be acquired.
+            </summary>
+            <returns>An <see cref="T:System.Collections.ArrayList"/> of byte[8] serial numbers, or null on failure.</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Onewire.OneWireController.Dispose">
+            <summary>Closes the GPIO pin.</summary>
+        </member>
+    </members>
+</doc>

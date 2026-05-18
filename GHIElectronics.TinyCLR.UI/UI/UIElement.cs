@@ -919,7 +919,7 @@ namespace GHIElectronics.TinyCLR.UI {
         public UIElement ChildElementFromPoint(int x, int y) {
             UIElement targetElement = null;
 
-            /// Translate.
+            // Translate.
             x -= this._offsetX;
             y -= this._offsetY;
 

@@ -18,12 +18,18 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="$TargetDir$GHIElectronics.TinyCLR.Cryptography.dll" target="lib\net48" />
-    <file src="$TargetDir$System.Security.Cryptography.dll" target="lib\net48" />
-    <file src="..\GHIElectronics.TinyCLR.Cryptography.Desktop\bin\Debug\GHIElectronics.TinyCLR.Cryptography.dll" target="desktop-shim" />
-    <file src="..\GHIElectronics.TinyCLR.System.Security.Cryptography.Desktop\bin\Debug\System.Security.Cryptography.dll" target="desktop-shim" />
-    <file src="$TargetDir$GHIElectronics.TinyCLR.Cryptography.dll" target="tinyclr" />
-    <file src="$TargetDir$System.Security.Cryptography.dll" target="tinyclr" />
+    <file src="$TargetDir$GHIElectronics.TinyCLR.Cryptography.dll" target="lib\net48" />
+    <file src="$TargetDir$GHIElectronics.TinyCLR.Cryptography.xml" target="lib\net48" />
+    <file src="$TargetDir$System.Security.Cryptography.dll" target="lib\net48" />
+    <file src="$TargetDir$System.Security.Cryptography.xml" target="lib\net48" />
+    <file src="..\GHIElectronics.TinyCLR.Cryptography.Desktop\bin\Debug\GHIElectronics.TinyCLR.Cryptography.dll" target="desktop-shim" />
+    <file src="$TargetDir$GHIElectronics.TinyCLR.Cryptography.xml" target="desktop-shim" />
+    <file src="..\GHIElectronics.TinyCLR.System.Security.Cryptography.Desktop\bin\Debug\System.Security.Cryptography.dll" target="desktop-shim" />
+    <file src="$TargetDir$System.Security.Cryptography.xml" target="desktop-shim" />
+    <file src="$TargetDir$GHIElectronics.TinyCLR.Cryptography.dll" target="tinyclr" />
+    <file src="$TargetDir$GHIElectronics.TinyCLR.Cryptography.xml" target="tinyclr" />
+    <file src="$TargetDir$System.Security.Cryptography.dll" target="tinyclr" />
+    <file src="$TargetDir$System.Security.Cryptography.xml" target="tinyclr" />
     <file src="$ProjectDir$GHIElectronics.TinyCLR.Cryptography.props" target="build\net48" />
   </files>
 </package>

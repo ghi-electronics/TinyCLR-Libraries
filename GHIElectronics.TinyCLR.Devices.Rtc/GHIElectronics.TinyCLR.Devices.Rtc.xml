@@ -1,0 +1,242 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>GHIElectronics.TinyCLR.Devices.Rtc</name>
+    </assembly>
+    <members>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Rtc.BatteryChargeMode">
+            <summary>Trickle-charge setting applied to the RTC backup battery.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Rtc.BatteryChargeMode.None">
+            <summary>Charging disabled.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Rtc.BatteryChargeMode.Fast">
+            <summary>Higher charge current.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Rtc.BatteryChargeMode.Slow">
+            <summary>Lower charge current.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Rtc.RtcController">
+            <summary>
+            Real-time clock controller. Tracks calendar time across power cycles when
+            backed by a coin cell, and exposes a small region of battery-backed RAM
+            via <see cref="M:GHIElectronics.TinyCLR.Devices.Rtc.RtcController.WriteBackupMemory(System.Byte[])"/> / <see cref="M:GHIElectronics.TinyCLR.Devices.Rtc.RtcController.ReadBackupMemory(System.Byte[])"/>.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Rtc.RtcController.Provider">
+            <summary>The low-level provider backing this controller.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Rtc.RtcController.GetDefault">
+            <summary>Returns the default RTC controller for this device.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Rtc.RtcController.FromName(System.String)">
+            <summary>Returns an RTC controller identified by its native API name.</summary>
+            <param name="name">Native API name.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Rtc.RtcController.FromProvider(GHIElectronics.TinyCLR.Devices.Rtc.Provider.IRtcControllerProvider)">
+            <summary>Creates a controller from a custom <see cref="T:GHIElectronics.TinyCLR.Devices.Rtc.Provider.IRtcControllerProvider"/>.</summary>
+            <param name="provider">Provider implementing the clock operations.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Rtc.RtcController.Dispose">
+            <summary>Releases the underlying provider.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Rtc.RtcController.IsValid">
+            <summary>True when the RTC has been initialized with a valid time at least once.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Rtc.RtcController.InternalRC">
+            <summary>True when the RTC is clocked from the internal RC oscillator rather than an external crystal.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Rtc.RtcController.GetTime">
+            <summary>Returns the current RTC time.</summary>
+            <exception cref="T:System.InvalidOperationException">Thrown when <see cref="P:GHIElectronics.TinyCLR.Devices.Rtc.RtcController.IsValid"/> is false.</exception>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Rtc.RtcController.SetTime(GHIElectronics.TinyCLR.Devices.Rtc.RtcDateTime)">
+            <summary>Sets the RTC time. After a successful call, <see cref="P:GHIElectronics.TinyCLR.Devices.Rtc.RtcController.IsValid"/> becomes true.</summary>
+            <param name="value">Calendar time to write.</param>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Rtc.RtcController.Now">
+            <summary>Convenience accessor that returns/accepts a managed <see cref="T:System.DateTime"/>.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Rtc.RtcController.BackupMemorySize">
+            <summary>Size in bytes of the battery-backed memory region.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Rtc.RtcController.WriteBackupMemory(System.Byte[])">
+            <summary>Writes the entire <paramref name="sourceData"/> array to backup memory starting at offset 0.</summary>
+            <param name="sourceData">Bytes to write.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Rtc.RtcController.WriteBackupMemory(System.Byte[],System.UInt32)">
+            <summary>Writes the entire <paramref name="sourceData"/> array to backup memory at <paramref name="destinationOffset"/>.</summary>
+            <param name="sourceData">Bytes to write.</param>
+            <param name="destinationOffset">Offset in backup memory where the write begins.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Rtc.RtcController.WriteBackupMemory(System.Byte[],System.UInt32,System.UInt32,System.Int32)">
+            <summary>Writes a slice of <paramref name="sourceData"/> to backup memory.</summary>
+            <param name="sourceData">Source buffer.</param>
+            <param name="sourceOffset">Starting offset within <paramref name="sourceData"/>.</param>
+            <param name="destinationOffset">Starting offset in backup memory.</param>
+            <param name="count">Number of bytes to write.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Rtc.RtcController.ReadBackupMemory(System.Byte[])">
+            <summary>Reads <paramref name="destinationData"/>.Length bytes from backup memory starting at offset 0.</summary>
+            <param name="destinationData">Destination buffer.</param>
+            <returns>Number of bytes read.</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Rtc.RtcController.ReadBackupMemory(System.Byte[],System.UInt32)">
+            <summary>Reads <paramref name="destinationData"/>.Length bytes from backup memory starting at <paramref name="sourceOffset"/>.</summary>
+            <param name="destinationData">Destination buffer.</param>
+            <param name="sourceOffset">Starting offset in backup memory.</param>
+            <returns>Number of bytes read.</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Rtc.RtcController.ReadBackupMemory(System.Byte[],System.UInt32,System.UInt32,System.Int32)">
+            <summary>Reads a slice from backup memory into <paramref name="destinationData"/>.</summary>
+            <param name="destinationData">Destination buffer.</param>
+            <param name="destinationOffset">Starting offset within <paramref name="destinationData"/>.</param>
+            <param name="sourceOffset">Starting offset in backup memory.</param>
+            <param name="count">Number of bytes to read.</param>
+            <returns>Number of bytes read.</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Rtc.RtcController.SetChargeMode(GHIElectronics.TinyCLR.Devices.Rtc.BatteryChargeMode)">
+            <summary>Configures the backup-battery trickle charger.</summary>
+            <param name="chargeMode">Charging policy.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Rtc.RtcController.Calibrate(System.Int32)">
+            <summary>Applies a frequency calibration pulse to compensate crystal drift.</summary>
+            <param name="pulse">Platform-specific calibration value.</param>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Rtc.RtcDateTime">
+            <summary>
+            RTC-native calendar time representation. Mirrors the underlying hardware
+            registers — most app code should round-trip through <see cref="M:GHIElectronics.TinyCLR.Devices.Rtc.RtcDateTime.ToDateTime"/>
+            / <see cref="M:GHIElectronics.TinyCLR.Devices.Rtc.RtcDateTime.FromDateTime(System.DateTime)"/> rather than touching fields directly.
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Rtc.RtcDateTime.Year">
+            <summary>Calendar year (e.g. 2026).</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Rtc.RtcDateTime.Month">
+            <summary>Month, 1..12.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Rtc.RtcDateTime.Week">
+            <summary>ISO week-of-year (platform-dependent; may be unset).</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Rtc.RtcDateTime.DayOfYear">
+            <summary>Day-of-year, 1..366.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Rtc.RtcDateTime.DayOfMonth">
+            <summary>Day-of-month, 1..31.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Rtc.RtcDateTime.DayOfWeek">
+            <summary>Day-of-week (0 = Sunday).</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Rtc.RtcDateTime.Hour">
+            <summary>Hour, 0..23.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Rtc.RtcDateTime.Minute">
+            <summary>Minute, 0..59.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Rtc.RtcDateTime.Second">
+            <summary>Second, 0..59.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Rtc.RtcDateTime.Millisecond">
+            <summary>Millisecond, 0..999.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Rtc.RtcDateTime.Microsecond">
+            <summary>Microsecond component, 0..999.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Rtc.RtcDateTime.Nanosecond">
+            <summary>Nanosecond component (rounded to 100 ns), 0..900.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Rtc.RtcDateTime.ToDateTime">
+            <summary>Converts this <see cref="T:GHIElectronics.TinyCLR.Devices.Rtc.RtcDateTime"/> to a managed <see cref="T:System.DateTime"/>.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Rtc.RtcDateTime.FromDateTime(System.DateTime)">
+            <summary>Builds an <see cref="T:GHIElectronics.TinyCLR.Devices.Rtc.RtcDateTime"/> from a managed <see cref="T:System.DateTime"/>.</summary>
+            <param name="value">Calendar time to convert.</param>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Rtc.Provider.IRtcControllerProvider">
+            <summary>Provider contract for an RTC controller.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Rtc.Provider.IRtcControllerProvider.IsValid">
+            <summary>True when the RTC has been initialized with a valid time at least once.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Rtc.Provider.IRtcControllerProvider.InternalRC">
+            <summary>True when clocked from the internal RC oscillator.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Rtc.Provider.IRtcControllerProvider.BackupMemorySize">
+            <summary>Size in bytes of the battery-backed memory region.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Rtc.Provider.IRtcControllerProvider.GetTime">
+            <summary>Reads the current calendar time.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Rtc.Provider.IRtcControllerProvider.SetTime(GHIElectronics.TinyCLR.Devices.Rtc.RtcDateTime)">
+            <summary>Sets the RTC time.</summary>
+            <param name="value">Calendar time to write.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Rtc.Provider.IRtcControllerProvider.WriteBackupMemory(System.Byte[],System.UInt32,System.UInt32,System.Int32)">
+            <summary>Writes a slice of bytes to backup memory.</summary>
+            <param name="sourceData">Source buffer.</param>
+            <param name="sourceOffset">Starting offset within <paramref name="sourceData"/>.</param>
+            <param name="destinationOffset">Starting offset in backup memory.</param>
+            <param name="count">Number of bytes to write.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Rtc.Provider.IRtcControllerProvider.ReadBackupMemory(System.Byte[],System.UInt32,System.UInt32,System.Int32)">
+            <summary>Reads a slice from backup memory.</summary>
+            <param name="destinationData">Destination buffer.</param>
+            <param name="destinationOffset">Starting offset within <paramref name="destinationData"/>.</param>
+            <param name="sourceOffset">Starting offset in backup memory.</param>
+            <param name="count">Number of bytes to read.</param>
+            <returns>Number of bytes read.</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Rtc.Provider.IRtcControllerProvider.SetChargeMode(GHIElectronics.TinyCLR.Devices.Rtc.BatteryChargeMode)">
+            <summary>Configures the backup-battery trickle charger.</summary>
+            <param name="chargeMode">Charging policy.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Rtc.Provider.IRtcControllerProvider.Calibrate(System.Int32)">
+            <summary>Applies a frequency calibration pulse.</summary>
+            <param name="pulse">Platform-specific calibration value.</param>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Rtc.Provider.RtcControllerApiWrapper">
+            <summary>
+            Concrete <see cref="T:GHIElectronics.TinyCLR.Devices.Rtc.Provider.IRtcControllerProvider"/> backed by the native
+            TinyCLR RTC HAL.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Rtc.Provider.RtcControllerApiWrapper.Api">
+            <summary>The underlying native API descriptor.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Rtc.Provider.RtcControllerApiWrapper.#ctor(GHIElectronics.TinyCLR.Native.NativeApi)">
+            <summary>Wraps the given native API as a provider.</summary>
+            <param name="api">The native RTC API to bind to.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Rtc.Provider.RtcControllerApiWrapper.Dispose">
+            <summary>Releases the native controller.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Rtc.Provider.RtcControllerApiWrapper.GetTime">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Rtc.Provider.RtcControllerApiWrapper.SetTime(GHIElectronics.TinyCLR.Devices.Rtc.RtcDateTime)">
+            <inheritdoc/>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Rtc.Provider.RtcControllerApiWrapper.IsValid">
+            <inheritdoc/>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Rtc.Provider.RtcControllerApiWrapper.InternalRC">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Rtc.Provider.RtcControllerApiWrapper.WriteBackupMemory(System.Byte[],System.UInt32,System.UInt32,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Rtc.Provider.RtcControllerApiWrapper.ReadBackupMemory(System.Byte[],System.UInt32,System.UInt32,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Rtc.Provider.RtcControllerApiWrapper.BackupMemorySize">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Rtc.Provider.RtcControllerApiWrapper.SetChargeMode(GHIElectronics.TinyCLR.Devices.Rtc.BatteryChargeMode)">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Rtc.Provider.RtcControllerApiWrapper.Calibrate(System.Int32)">
+            <inheritdoc/>
+        </member>
+    </members>
+</doc>

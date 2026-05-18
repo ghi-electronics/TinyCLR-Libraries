@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>GHIElectronics.TinyCLR.Linq</name>
+    </assembly>
+    <members>
+        <member name="T:System.Linq.IGrouping`2">
+            <summary>
+            Represents a collection of objects that have a common key. Returned by <c>GroupBy</c>.
+            </summary>
+        </member>
+        <member name="T:System.Linq.IOrderedEnumerable`1">
+            <summary>
+            Represents a sorted sequence. Used as the chain link between
+            <c>OrderBy</c>/<c>OrderByDescending</c> and <c>ThenBy</c>/<c>ThenByDescending</c>.
+            </summary>
+        </member>
+        <member name="T:System.Linq.Grouping`2">
+            <summary>
+            Internal IGrouping implementation backed by a List. Allocated by
+            <see cref="M:System.Linq.Enumerable.GroupBy``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1})"/> and friends.
+            </summary>
+        </member>
+        <member name="T:System.Linq.OrderedEnumerable`1">
+            <summary>
+            Internal implementation that materializes the source on first
+            enumeration, sorts it using a chain of key-comparers (one per
+            OrderBy / ThenBy call), and yields the result. The chain is built up
+            by <see cref="M:System.Linq.OrderedEnumerable`1.CreateOrderedEnumerable``1(System.Func{`0,``0},System.Collections.Generic.IComparer{``0},System.Boolean)"/>.
+            </summary>
+        </member>
+        <member name="T:System.Linq.Enumerable">
+            <summary>
+            LINQ to Objects on top of <see cref="T:System.Collections.Generic.IEnumerable`1"/>. Subset of the
+            .NET BCL surface picked for embedded use - covers the common
+            filter / project / aggregate / order / group / convert operators.
+            Lazy operators (Where, Select, etc.) use iterator state machines;
+            terminal operators (ToArray, Sum, OrderBy, etc.) are eager.
+            </summary>
+        </member>
+    </members>
+</doc>

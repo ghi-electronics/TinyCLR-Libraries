@@ -1,6 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 
 namespace System.Drawing {
+    /// <summary>A floating-point width × height size.</summary>
     public struct SizeF {
         public static readonly SizeF Empty = new SizeF();
 

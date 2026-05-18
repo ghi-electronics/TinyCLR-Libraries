@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>GHIElectronics.TinyCLR.Cryptography</name>
+    </assembly>
+    <members>
+        <member name="T:GHIElectronics.TinyCLR.Cryptography.SHA1">
+             implementation of SHA-1 as outlined in "Handbook of Applied Cryptography", pages 346 - 349.
+            
+             It is interesting to ponder why the, apart from the extra IV, the other difference here from MD5
+             is the "endianness" of the word processing!
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Cryptography.SHA1.Clear">
+            reset the chaining variables
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Cryptography.HMACSHA1.Reset">
+            Reset the mac generator.
+        </member>
+    </members>
+</doc>

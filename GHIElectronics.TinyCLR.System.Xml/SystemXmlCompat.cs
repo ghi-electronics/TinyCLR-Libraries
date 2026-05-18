@@ -6,6 +6,7 @@ namespace System.Xml {
 
     // ---- Enums (copy values verbatim from TinyXml; matches .NET BCL) ----
 
+    /// <summary>Node kinds in an XML document. Same values as .NET's <c>System.Xml.XmlNodeType</c>.</summary>
     public enum XmlNodeType {
         None = 0,
         Element = 1,
@@ -27,6 +28,7 @@ namespace System.Xml {
         XmlDeclaration = 17,
     }
 
+    /// <summary>Reader lifecycle state.</summary>
     public enum ReadState {
         Initial = 0,
         Interactive = 1,
@@ -35,30 +37,35 @@ namespace System.Xml {
         Closed = 4,
     }
 
+    /// <summary>XML conformance level (auto-detect, fragment, or full document).</summary>
     public enum ConformanceLevel {
         Auto = 0,
         Fragment = 1,
         Document = 2,
     }
 
+    /// <summary>How the reader treats whitespace nodes.</summary>
     public enum WhitespaceHandling {
         All = 0,
         Significant = 1,
         None = 2,
     }
 
+    /// <summary>How the writer represents line breaks.</summary>
     public enum NewLineHandling {
         Replace = 0,
         Entitize = 1,
         None = 2,
     }
 
+    /// <summary>Value of an in-scope <c>xml:space</c> attribute.</summary>
     public enum XmlSpace {
         None = 0,
         Default = 1,
         Preserve = 2,
     }
 
+    /// <summary>XML validation policy (none or DTD/Schema).</summary>
     public enum ValidationType {
         None = 0,
         Auto = 1,
@@ -77,6 +84,7 @@ namespace System.Xml {
 
     // ---- Exception ----
 
+    /// <summary>Thrown for XML parse errors; carries line/position info.</summary>
     public class XmlException : Exception {
         public XmlException() : base() { }
         public XmlException(string message) : base(message) { }
@@ -92,6 +100,7 @@ namespace System.Xml {
 
     // ---- Name table (abstract base) ----
 
+    /// <summary>Atomized-string table shared between readers and writers.</summary>
     public abstract class XmlNameTable {
         public abstract string Add(string array);
         public abstract string Add(char[] array, int offset, int length);
@@ -99,6 +108,7 @@ namespace System.Xml {
         public abstract string Get(char[] array, int offset, int length);
     }
 
+    /// <summary>Hashtable-backed <see cref="XmlNameTable"/>.</summary>
     public class NameTable : XmlNameTable {
         private readonly TinyXml.NameTable inner;
 
@@ -116,6 +126,7 @@ namespace System.Xml {
 
     // ---- XmlReaderSettings (data wrapper) ----
 
+    /// <summary>Settings bag passed to <see cref="XmlReader.Create(Stream, XmlReaderSettings)"/>. Mirrors the .NET BCL type.</summary>
     public class XmlReaderSettings {
         private readonly TinyXml.XmlReaderSettings inner;
 
@@ -192,6 +203,7 @@ namespace System.Xml {
 
     // ---- XmlReader (abstract; .NET-shape facade backed by an inner TinyXml reader) ----
 
+    /// <summary>Forward-only XML reader. Same surface as .NET's <c>System.Xml.XmlReader</c>.</summary>
     public abstract class XmlReader : IDisposable {
         public abstract XmlNodeType NodeType { get; }
         public abstract string LocalName { get; }
@@ -336,6 +348,7 @@ namespace System.Xml {
 
     // ---- XmlWriter (abstract, .NET-shape; backed by TinyXml.XmlWriter which is concrete) ----
 
+    /// <summary>Forward-only XML writer. Same surface as .NET's <c>System.Xml.XmlWriter</c>.</summary>
     public abstract class XmlWriter : IDisposable {
         public abstract void WriteStartDocument();
         public abstract void WriteStartDocument(bool standalone);

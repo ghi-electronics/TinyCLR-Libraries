@@ -1,0 +1,139 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>GHIElectronics.TinyCLR.Devices.Storage</name>
+    </assembly>
+    <members>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Storage.StorageController">
+            <summary>
+            Represents a block-storage device — internal flash, external SPI/SD flash,
+            SD/MMC, or USB mass-storage. Use <see cref="P:GHIElectronics.TinyCLR.Devices.Storage.StorageController.Hdc"/> to mount the controller
+            with the file-system stack, or call the provider's Read/Write/Erase methods
+            directly for raw block access.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Storage.StorageController.Provider">
+            <summary>The low-level provider backing this controller.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Storage.StorageController.GetDefault">
+            <summary>Returns the default storage controller for this device.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Storage.StorageController.FromName(System.String)">
+            <summary>Returns a storage controller identified by its native API name.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Storage.StorageController.FromProvider(GHIElectronics.TinyCLR.Devices.Storage.Provider.IStorageControllerProvider)">
+            <summary>Creates a controller from a custom <see cref="T:GHIElectronics.TinyCLR.Devices.Storage.Provider.IStorageControllerProvider"/>.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Storage.StorageController.Hdc">
+            <summary>Native handle (HDC) of the underlying provider, for use with the file-system mount API.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Storage.StorageController.Dispose">
+            <summary>Releases the underlying provider.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Storage.StorageController.Open">
+            <summary>Powers on and initializes the underlying media.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Storage.StorageController.Close">
+            <summary>Powers off the underlying media.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Storage.StorageController.Descriptor">
+            <summary>Reports the media's block layout and capabilities.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Storage.StorageDescriptor">
+            <summary>Describes a storage medium's geometry and capabilities.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Storage.StorageDescriptor.CanReadDirect">
+            <summary>True when single-byte reads are supported (NOR-style flash, RAM).</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Storage.StorageDescriptor.CanWriteDirect">
+            <summary>True when single-byte writes are supported.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Storage.StorageDescriptor.CanExecuteDirect">
+            <summary>True when code can be executed in-place from this media (XIP).</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Storage.StorageDescriptor.EraseBeforeWrite">
+            <summary>True when a sector must be erased before it can be overwritten (most flash).</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Storage.StorageDescriptor.Removable">
+            <summary>True when the media can be physically removed (SD card, USB stick).</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Storage.StorageDescriptor.RegionsContiguous">
+            <summary>True when <see cref="P:GHIElectronics.TinyCLR.Devices.Storage.StorageDescriptor.RegionAddresses"/> form a contiguous span.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Storage.StorageDescriptor.RegionsEqualSized">
+            <summary>True when every entry in <see cref="P:GHIElectronics.TinyCLR.Devices.Storage.StorageDescriptor.RegionSizes"/> has the same value.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Storage.StorageDescriptor.RegionCount">
+            <summary>Number of distinct erase regions reported.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Storage.StorageDescriptor.RegionAddresses">
+            <summary>Starting address of each erase region.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Storage.StorageDescriptor.RegionSizes">
+            <summary>Size in bytes of each erase region (parallel to <see cref="P:GHIElectronics.TinyCLR.Devices.Storage.StorageDescriptor.RegionAddresses"/>).</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Storage.Provider.IStorageControllerProvider">
+            <summary>Provider contract for a block-storage controller.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Storage.Provider.IStorageControllerProvider.Descriptor">
+            <summary>Media geometry and capabilities.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Storage.Provider.IStorageControllerProvider.Open">
+            <summary>Powers on and initializes the media.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Storage.Provider.IStorageControllerProvider.Close">
+            <summary>Powers off the media.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Storage.Provider.IStorageControllerProvider.Read(System.Int64,System.Int32,System.Byte[],System.Int32,System.TimeSpan)">
+            <summary>Reads <paramref name="count"/> bytes from <paramref name="address"/> into <paramref name="buffer"/>+<paramref name="offset"/>.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Storage.Provider.IStorageControllerProvider.Write(System.Int64,System.Int32,System.Byte[],System.Int32,System.TimeSpan)">
+            <summary>Writes <paramref name="count"/> bytes from <paramref name="buffer"/>+<paramref name="offset"/> to <paramref name="address"/>.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Storage.Provider.IStorageControllerProvider.Erase(System.Int64,System.Int32,System.TimeSpan)">
+            <summary>Erases <paramref name="count"/> sectors starting at <paramref name="address"/>.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Storage.Provider.IStorageControllerProvider.IsErased(System.Int64,System.Int32)">
+            <summary>True when the addressed span is in its erased (all-0xFF) state.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Storage.Provider.IStorageControllerProvider.EraseAll(System.TimeSpan)">
+            <summary>Erases every sector on the media.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Storage.Provider.StorageControllerApiWrapper">
+            <summary>Concrete <see cref="T:GHIElectronics.TinyCLR.Devices.Storage.Provider.IStorageControllerProvider"/> backed by the native TinyCLR storage HAL.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Storage.Provider.StorageControllerApiWrapper.Api">
+            <summary>The underlying native API descriptor.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Storage.Provider.StorageControllerApiWrapper.#ctor(GHIElectronics.TinyCLR.Native.NativeApi)">
+            <summary>Wraps the given native API as a provider.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Storage.Provider.StorageControllerApiWrapper.Dispose">
+            <summary>Releases the native controller.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Storage.Provider.StorageControllerApiWrapper.Descriptor">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Storage.Provider.StorageControllerApiWrapper.Open">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Storage.Provider.StorageControllerApiWrapper.Close">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Storage.Provider.StorageControllerApiWrapper.Read(System.Int64,System.Int32,System.Byte[],System.Int32,System.TimeSpan)">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Storage.Provider.StorageControllerApiWrapper.Write(System.Int64,System.Int32,System.Byte[],System.Int32,System.TimeSpan)">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Storage.Provider.StorageControllerApiWrapper.Erase(System.Int64,System.Int32,System.TimeSpan)">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Storage.Provider.StorageControllerApiWrapper.IsErased(System.Int64,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Storage.Provider.StorageControllerApiWrapper.EraseAll(System.TimeSpan)">
+            <inheritdoc/>
+        </member>
+    </members>
+</doc>

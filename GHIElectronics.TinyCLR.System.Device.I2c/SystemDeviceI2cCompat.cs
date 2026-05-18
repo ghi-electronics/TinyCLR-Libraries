@@ -3,12 +3,17 @@ using System;
 using GHIElectronics.TinyCLR.Native;
 
 namespace System.Device.I2c {
+    /// <summary>Standard .NET-style I²C bus speed selector.</summary>
     public enum I2cBusSpeed {
+        /// <summary>100 kHz standard mode.</summary>
         StandardMode = 0,
+        /// <summary>400 kHz fast mode.</summary>
         FastMode = 1,
+        /// <summary>1 MHz fast mode plus.</summary>
         FastModePlus = 2
     }
 
+    /// <summary>Per-device I²C settings in the standard <c>System.Device.I2c</c> shape. TinyCLR maps these onto its native I²C driver via <see cref="I2cDevice.Create(I2cConnectionSettings)"/>.</summary>
     public sealed class I2cConnectionSettings {
         public int BusId { get; }
         public int DeviceAddress { get; set; }
@@ -20,6 +25,10 @@ namespace System.Device.I2c {
         }
     }
 
+    /// <summary>
+    /// .NET-style I²C device. Standard surface (<c>Read</c> / <c>Write</c> / <c>WriteRead</c>);
+    /// internally TinyCLR routes calls through <see cref="GHIElectronics.TinyCLR.Devices.I2c.I2cController"/>.
+    /// </summary>
     public abstract class I2cDevice : IDisposable {
         public abstract I2cConnectionSettings ConnectionSettings { get; }
 

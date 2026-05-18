@@ -19,9 +19,12 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="$TargetDir$GHIElectronics.TinyCLR.RegularExpressions.dll" target="lib\net48" />
-    <file src="..\GHIElectronics.TinyCLR.RegularExpressions.Desktop\bin\Debug\GHIElectronics.TinyCLR.RegularExpressions.dll" target="desktop-shim" />
-    <file src="$TargetDir$GHIElectronics.TinyCLR.RegularExpressions.dll" target="tinyclr" />
+    <file src="$TargetDir$GHIElectronics.TinyCLR.RegularExpressions.dll" target="lib\net48" />
+    <file src="$TargetDir$GHIElectronics.TinyCLR.RegularExpressions.xml" target="lib\net48" />
+    <file src="..\GHIElectronics.TinyCLR.RegularExpressions.Desktop\bin\Debug\GHIElectronics.TinyCLR.RegularExpressions.dll" target="desktop-shim" />
+    <file src="$TargetDir$GHIElectronics.TinyCLR.RegularExpressions.xml" target="desktop-shim" />
+    <file src="$TargetDir$GHIElectronics.TinyCLR.RegularExpressions.dll" target="tinyclr" />
+    <file src="$TargetDir$GHIElectronics.TinyCLR.RegularExpressions.xml" target="tinyclr" />
     <file src="$ProjectDir$GHIElectronics.TinyCLR.RegularExpressions.props" target="build\net48" />
   </files>
 </package>

@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>GHIElectronics.TinyCLR.Devices.SecureStorage</name>
+    </assembly>
+    <members>
+        <member name="T:GHIElectronics.TinyCLR.Devices.SecureStorage.SecureStorage">
+            <summary>Selects which on-chip non-volatile region the controller targets.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.SecureStorage.SecureStorage.Configuration">
+            <summary>Re-writable configuration region (erasable, can be updated freely).</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.SecureStorage.SecureStorage.Otp">
+            <summary>One-Time-Programmable region. Writes are permanent; <see cref="M:GHIElectronics.TinyCLR.Devices.SecureStorage.SecureStorageController.Erase"/> is not supported.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.SecureStorage.SecureStorageController">
+            <summary>
+            Reads and writes blocks in one of the chip's secure non-volatile regions.
+            Pick the region in the constructor; subsequent calls operate on that region.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.SecureStorage.SecureStorageController.#ctor(GHIElectronics.TinyCLR.Devices.SecureStorage.SecureStorage)">
+            <summary>Opens a controller bound to the given region.</summary>
+            <param name="secureStorage">Which region to operate on.</param>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.SecureStorage.SecureStorageController.BlockSize">
+            <summary>Block (write) granularity of the region, in bytes.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.SecureStorage.SecureStorageController.TotalSize">
+            <summary>Total size of the region, in bytes.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.SecureStorage.SecureStorageController.Write(System.UInt32,System.Byte[])">
+            <summary>Writes one block at the given block index.</summary>
+            <param name="blockIndex">Index of the block to write (0-based).</param>
+            <param name="data">Block contents. Length must equal <see cref="P:GHIElectronics.TinyCLR.Devices.SecureStorage.SecureStorageController.BlockSize"/>.</param>
+            <returns>Bytes actually written.</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.SecureStorage.SecureStorageController.Read(System.UInt32,System.Byte[])">
+            <summary>Reads one block at the given block index.</summary>
+            <param name="blockIndex">Index of the block to read (0-based).</param>
+            <param name="data">Destination buffer. Length must equal <see cref="P:GHIElectronics.TinyCLR.Devices.SecureStorage.SecureStorageController.BlockSize"/>.</param>
+            <returns>Bytes actually read.</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.SecureStorage.SecureStorageController.Erase">
+            <summary>Erases the entire region. Not supported for OTP storage.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.SecureStorage.SecureStorageController.IsBlank(System.UInt32)">
+            <summary>Returns true if the addressed block is in its erased (all-0xFF) state.</summary>
+        </member>
+    </members>
+</doc>

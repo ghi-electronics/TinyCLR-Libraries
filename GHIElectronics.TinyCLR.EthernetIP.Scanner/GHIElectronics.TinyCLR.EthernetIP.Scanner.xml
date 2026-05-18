@@ -1,0 +1,649 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>GHIElectronics.TinyCLR.EthernetIP.Scanner</name>
+    </assembly>
+    <members>
+        <member name="T:GHIElectronics.TinyCLR.EthernetIP.Scanner.CIPCommonServices">
+            <summary>
+            Table A-3.1 Volume 1 Chapter A-3
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.EthernetIP.Scanner.GeneralStatusCodes">
+            <summary>
+            Table B-1.1 CIP General Status Codes
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController">
+            <summary>
+            Runs the device as an EtherNet/IP <b>Scanner</b> (the client/originator side —
+            the role that talks to PLCs, motor drives, or other EIP adapters). Pure C#
+            implementation, no native interop.
+            </summary>
+            <remarks>
+            <para>
+            <b>Property-bag API</b>: configure the connection by setting properties
+            (<see cref="P:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.IPAddress"/>, <see cref="P:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.O_T_InstanceID"/>, <see cref="P:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.T_O_InstanceID"/>,
+            <see cref="P:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.RequestedPacketRate_O_T"/>, <see cref="P:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.O_T_RealTimeFormat"/>, etc.)
+            <i>before</i> calling <see cref="M:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.ForwardOpen"/>. Changing properties after
+            the connection is up has no effect on the live session.
+            </para>
+            <para>
+            <b>Typical flow</b> (full example in <c>README.md</c> and
+            <c>Test\TinyCLRApplication_EthernetIP\Program.cs</c>):
+            <code>
+            using (var scanner = new ScannerController()) {
+                var devices = scanner.ListIdentity(networkController, TimeSpan.FromSeconds(2));
+                scanner.IPAddress = "192.168.1.100";
+                scanner.O_T_InstanceID = 150; scanner.T_O_InstanceID = 100;
+                scanner.O_T_IOData = new byte[32]; scanner.T_O_IOData = new byte[32];
+                scanner.ImplicitDataReceived += (s, snapshot) =&gt; { /* use snapshot */ };
+                scanner.RegisterSession();
+                scanner.ForwardOpen();
+                while (true) Thread.Sleep(10);   // implicit I/O runs on background threads
+            }   // Dispose() runs ForwardClose + UnRegisterSession automatically
+            </code>
+            </para>
+            <para>
+            <b>Thread safety</b>: <see cref="P:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.T_O_IOData"/> is written by the receive thread
+            while your application reads it (torn-read risk). New code should subscribe to
+            <see cref="E:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.ImplicitDataReceived"/> instead, which delivers a race-free byte[]
+            snapshot. <see cref="P:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.T_O_IOData"/> is kept for backwards compatibility.
+            </para>
+            </remarks>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.TCPPort">
+            <summary>
+            TCP-Port of the Server
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.TargetUDPPort">
+            <summary>
+            UDP-Port of the IO-Adapter - Standard is 0xAF12
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.OriginatorUDPPort">
+            <summary>
+            UDP-Port of the Scanner - Standard is 0xAF12
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.IPAddress">
+            <summary>
+            IPAddress of the Ethernet/IP Device
+            </summary>
+            
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.RequestedPacketRate_O_T">
+            <summary>
+            Requested Packet Rate (RPI) in Microseconds Originator -> Target for Implicit-Messaging (Default 0x7A120 -> 500ms)
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.RequestedPacketRate_T_O">
+            <summary>
+            Requested Packet Rate (RPI) in Microseconds Target -> Originator for Implicit-Messaging (Default 0x7A120 -> 500ms)
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.O_T_OwnerRedundant">
+            <summary>
+            "1" Indicates that multiple connections are allowed Originator -> Target for Implicit-Messaging (Default: TRUE) 
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.T_O_OwnerRedundant">
+            <summary>
+            "1" Indicates that multiple connections are allowed Target -> Originator for Implicit-Messaging (Default: TRUE) 
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.O_T_VariableLength">
+            <summary>
+            With a fixed size connection, the amount of data shall be the size of specified in the "Connection Size" Parameter.
+            With a variable size, the amount of data could be up to the size specified in the "Connection Size" Parameter
+            Originator -> Target for Implicit Messaging (Default: True (Variable length))
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.T_O_VariableLength">
+            <summary>
+            With a fixed size connection, the amount of data shall be the size of specified in the "Connection Size" Parameter.
+            With a variable size, the amount of data could be up to the size specified in the "Connection Size" Parameter
+            Target -> Originator for Implicit Messaging (Default: True (Variable length))
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.O_T_Length">
+            <summary>
+            The maximum size in bytes (only pure data without sequence count and 32-Bit Real Time Header (if present)) from Originator -> Target for Implicit Messaging (Default: 505)
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.T_O_Length">
+            <summary>
+            The maximum size in bytes (only pure data woithout sequence count and 32-Bit Real Time Header (if present)) from Target -> Originator for Implicit Messaging (Default: 505)
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.O_T_ConnectionType">
+            <summary>
+            Connection Type Originator -> Target for Implicit Messaging (Default: ConnectionType.Point_to_Point)
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.T_O_ConnectionType">
+            <summary>
+            Connection Type Target -> Originator for Implicit Messaging (Default: ConnectionType.Multicast)
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.O_T_Priority">
+            <summary>
+            Priority Originator -> Target for Implicit Messaging (Default: Priority.Scheduled)
+            Could be: Priority.Scheduled; Priority.High; Priority.Low; Priority.Urgent
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.T_O_Priority">
+            <summary>
+            Priority Target -> Originator for Implicit Messaging (Default: Priority.Scheduled)
+            Could be: Priority.Scheduled; Priority.High; Priority.Low; Priority.Urgent
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.O_T_InstanceID">
+            <summary>
+            Class Assembly (Consuming IO-Path - Outputs) Originator -> Target for Implicit Messaging 
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.T_O_InstanceID">
+            <summary>
+            Class Assembly (Producing IO-Path - Inputs) Target -> Originator for Implicit Messaging 
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.O_T_IOData">
+            <summary>
+            Provides Access to the Class 1 Real-Time IO-Data Originator -> Target for Implicit Messaging    
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.T_O_IOData">
+            <summary>
+            Provides Access to the Class 1 Real-Time IO-Data Target -> Originator for Implicit Messaging
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.O_T_RealTimeFormat">
+            <summary>
+            Used Real-Time Format Originator -> Target for Implicit Messaging (Default: RealTimeFormat.Header32Bit)
+            Possible Values: RealTimeFormat.Header32Bit; RealTimeFormat.Heartbeat; RealTimeFormat.ZeroLength; RealTimeFormat.Modeless
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.T_O_RealTimeFormat">
+            <summary>
+            Used Real-Time Format Target -> Originator for Implicit Messaging (Default: RealTimeFormat.Modeless)
+            Possible Values: RealTimeFormat.Header32Bit; RealTimeFormat.Heartbeat; RealTimeFormat.ZeroLength; RealTimeFormat.Modeless
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.AssemblyObjectClass">
+            <summary>
+            AssemblyObject for the Configuration Path in case of Implicit Messaging (Standard: 0x04)
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.ConfigurationAssemblyInstanceID">
+            <summary>
+            ConfigurationAssemblyInstanceID is the InstanceID of the configuration Instance in the Assembly Object Class (Standard: 0x01)
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.ConfigurationAssembly_Data">
+            <summary>
+            ConfigurationAssemblyInstanceID is the InstanceID of the configuration Instance in the Assembly Object Class (Standard: 0x01)
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.ConfigurationAssemblyData_Length">
+            <summary>
+            ConfigurationAssemblyDataLength max 500
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.WriteConfiguration">
+            <summary>
+            ConfigurationAssemblyDataLength max 500
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.LastReceivedImplicitMessage">
+            <summary>
+            Returns the Date and Time when the last Implicit Message has been received fŕom The Target Device
+            Could be used to determine a Timeout.
+            <para>
+            NOTE: this is a wall-clock timestamp (DateTime.Now) and breaks if the system
+            clock jumps (NTP sync, DST, manual set). For timeout detection that must
+            survive clock changes, read <see cref="P:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.LastReceivedImplicitMessageTickCount"/>
+            instead and compare against <c>Environment.TickCount</c>.
+            </para>
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.LastReceivedImplicitMessageTickCount">
+            <summary>
+            Monotonic (clock-jump-safe) counterpart of <see cref="P:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.LastReceivedImplicitMessage"/>.
+            Stores <c>Environment.TickCount</c> at the moment the last Class-1 packet was
+            received from the target. Compare against a fresh <c>Environment.TickCount</c>
+            read to compute elapsed-since-last-implicit, e.g.
+            <c>(Environment.TickCount - scanner.LastReceivedImplicitMessageTickCount) > 5000</c>
+            for a 5-second watchdog. Unlike <see cref="P:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.LastReceivedImplicitMessage"/>, this
+            value is not affected by NTP sync, DST changes, or manual clock adjustment.
+            </summary>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.ConnectionEstablished">
+            <summary>Fired once after a successful ForwardOpen / LargeForwardOpen.</summary>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.ConnectionLost">
+            <summary>
+            Fired when the implicit producer (sendUDP) repeatedly fails to send, or when
+            the target stops producing for longer than the RPI watchdog. Not fired on a
+            user-initiated ForwardClose / Dispose.
+            </summary>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.ImplicitDataReceived">
+            <summary>
+            Fired on every Class-1 packet received from the target. The byte[] argument
+            is a freshly-allocated snapshot of the payload — safe to retain, safe to
+            read off-thread. T_O_IOData is also updated, but the snapshot is the
+            race-free way to consume implicit input.
+            </summary>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.RpiViolated">
+            <summary>
+            Fired when an implicit packet arrives later than the negotiated RPI tolerance
+            (currently fires when the inter-arrival gap exceeds 4 * RPI). Diagnostic only;
+            the connection is not automatically closed.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.ListIdentity(GHIElectronics.TinyCLR.Devices.Network.NetworkController,System.TimeSpan)">
+            <summary>
+            Broadcasts an EIP List Identity command and collects responses from every
+            EtherNet/IP device on the local subnet during the timeout window.
+            </summary>
+            <param name="networkController">The TinyCLR <c>NetworkController</c> whose
+            IP/mask is used to compute the broadcast address.</param>
+            <param name="timeout">How long to listen for responses. Spec says devices
+            reply within a random 0–2 s delay window, so use ≥ 2 s for reliable discovery.
+            Pass <c>TimeSpan.Zero</c> to wait indefinitely (not recommended).</param>
+            <returns>One <see cref="T:GHIElectronics.TinyCLR.EthernetIP.Scanner.Encapsulation.CIPIdentityItem"/> per responding device,
+            or <c>null</c> if no device responded.</returns>
+            <remarks>Current implementation broadcasts to the <i>directed</i> subnet
+            address (e.g. 192.168.1.255 for a /24). Devices behind a router won't see
+            the request unless directed-broadcast forwarding is enabled.</remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.RegisterSession(System.UInt32,System.UInt16)">
+            <summary>
+            Opens a TCP connection to the target on port 44818 (0xAF12) and sends an EIP
+            RegisterSession command to establish an encapsulation session. Required before
+            any explicit-messaging service (GetAttributeSingle, ForwardOpen, etc.) can be sent.
+            </summary>
+            <param name="address">Target IP as a packed 32-bit value: top byte is the
+            first IPv4 octet (e.g. 192.168.1.1 = 0xC0A80101). Use the string overload
+            if you have a dotted-quad string.</param>
+            <param name="port">TCP port — typically 0xAF12 (44818, EIP standard). Pass
+            a non-standard port only if the target listens elsewhere.</param>
+            <returns>The 32-bit session handle assigned by the target. Stored internally;
+            you typically don't need to inspect it.</returns>
+            <remarks><b>This call blocks</b> until the TCP connect succeeds, fails, or the
+            OS-level timeout fires (typically 60–120 s for unreachable hosts). There is
+            no per-call timeout knob — if you might point at unreachable IPs, run this
+            on a thread you can abandon.</remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.UnRegisterSession">
+            <summary>
+            Sends an EIP UnregisterSession command to gracefully close the encapsulation
+            session, then closes the TCP connection. Idempotent — safe to call even if
+            the target has already dropped. <see cref="M:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.Dispose"/> calls this for you.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.Dispose">
+            <summary>Tears down the scanner cleanly: closes the Class-1 connection
+            (ForwardClose), unregisters the encapsulation session, closes all sockets.
+            Each sub-step swallows its own exceptions so Dispose itself never throws
+            (per the <see cref="T:System.IDisposable"/> contract). Idempotent and safe to call
+            from a <c>using</c> block on any code path including before <see cref="M:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.ForwardOpen"/>.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.ForwardOpen">
+            <summary>Opens a Class-1 (implicit / cyclic I/O) connection to the target
+            using regular Forward Open (service 0x54). Configure all connection-related
+            properties (<see cref="P:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.IPAddress"/>, <see cref="P:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.O_T_InstanceID"/>,
+            <see cref="P:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.T_O_InstanceID"/>, <see cref="P:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.RequestedPacketRate_O_T"/>,
+            <see cref="P:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.O_T_RealTimeFormat"/>, etc.) before calling.</summary>
+            <remarks>Spawns two background threads — <c>sendUDP</c> producing O→T data
+            at the negotiated RPI, and a receive loop that fires
+            <see cref="E:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.ImplicitDataReceived"/> per T→O packet. Use Large Forward Open
+            (the overload below) for connection sizes > ~500 bytes.</remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.ForwardOpen(System.Boolean)">
+            <summary>Opens a Class-1 implicit connection, choosing between regular Forward
+            Open (service 0x54) and Large Forward Open (service 0x5B) based on the
+            <paramref name="largeForwardOpen"/> flag. Large form is required when either
+            direction's payload exceeds ~500 bytes.</summary>
+            <param name="largeForwardOpen">true → use Large Forward Open (32-bit
+            connection parameters, allows up to ~65 KB per direction);
+            false → use regular Forward Open.</param>
+            <exception cref="T:System.Exception">Connection size exceeds buffer, missing
+            configuration, etc. See exception message.</exception>
+            <exception cref="T:GHIElectronics.TinyCLR.EthernetIP.Scanner.CIPException">Target returned a CIP error status. Use
+            <c>data[42]</c> + extended status to diagnose.</exception>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.Detect_O_T_Length">
+            <summary>
+            Detects the Length of the data Originator -> Target.
+            The Method uses an Explicit Message to detect the length.
+            The IP-Address, Port and the Instance ID has to be defined before
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.Detect_T_O_Length">
+            <summary>
+            Detects the Length of the data Target -> Originator.
+            The Method uses an Explicit Message to detect the length.
+            The IP-Address, Port and the Instance ID has to be defined before
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.ForwardClose">
+            <summary>Sends a Forward Close to tear down the Class-1 implicit connection,
+            stops the producer thread, waits for the producer to exit, then sends the
+            close request and closes the UDP receive socket. Safe to call from a
+            <c>using</c> block via <see cref="M:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.Dispose"/>.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.RegisterSession(System.String,System.UInt16)">
+            <summary>
+            Sends a RegisterSession command to a target to initiate session
+            </summary>
+            <param name="address">IP-Address of the target device</param> 
+            <param name="port">Port of the target device (default should be 0xAF12)</param> 
+            <returns>Session Handle</returns>	
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.RegisterSession(System.String)">
+            <summary>
+            Sends a RegisterSession command to a target to initiate session with the Standard or predefined Port (Standard: 0xAF12)
+            </summary>
+            <param name="address">IP-Address of the target device</param> 
+            <returns>Session Handle</returns>	
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.RegisterSession">
+            <summary>
+            Sends a RegisterSession command to a target to initiate session with the Standard or predefined Port and Predefined IPAddress (Standard-Port: 0xAF12)
+            </summary>
+            <returns>Session Handle</returns>	
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.GetAttributeSingle(System.Int32,System.Int32,System.Int32)">
+            <summary>Sends a CIP Get_Attribute_Single (service 0x0E) to read one
+            attribute from the target. Auto-registers a session if not already open.
+            Blocks until the target replies or the underlying TCP read times out.</summary>
+            <param name="classID">CIP class code (e.g. 0x01 = Identity).</param>
+            <param name="instanceID">Instance number, 1-based.</param>
+            <param name="attributeID">Attribute ID within the instance.</param>
+            <returns>Raw attribute bytes. Endianness and structure depend on the
+            attribute's CIP type — use the <c>ToUshort</c>/<c>ToUint</c> helpers or
+            the strongly-typed accessors on <see cref="T:GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary.IdentityObject"/>
+            etc. for common cases.</returns>
+            <exception cref="T:GHIElectronics.TinyCLR.EthernetIP.Scanner.CIPException">Target returned a non-success CIP general
+            status (e.g. 0x14 Attribute Not Supported, 0x05 Path Destination Unknown).</exception>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.GetAttributeAll(System.Int32,System.Int32)">
+            <summary>
+            Implementation of Common Service "Get_Attribute_All" - Service Code: 0x01
+            </summary>
+            <param name="classID">Class id of requested Attributes</param> 
+            <param name="instanceID">Instance of Requested Attributes (0 for class Attributes)</param> 
+            <returns>Session Handle</returns>	
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.SetAttributeSingle(System.Int32,System.Int32,System.Int32,System.Byte[])">
+            <summary>Sends a CIP Set_Attribute_Single (service 0x10) to write one
+            attribute on the target. Auto-registers a session if not already open.</summary>
+            <param name="classID">CIP class code.</param>
+            <param name="instanceID">Instance number, 1-based.</param>
+            <param name="attributeID">Attribute ID within the instance.</param>
+            <param name="value">Raw bytes to write. Must match the attribute's CIP type
+            width and endianness — most types are little-endian on the wire.</param>
+            <returns>Any reply bytes the target included. Usually empty.</returns>
+            <exception cref="T:GHIElectronics.TinyCLR.EthernetIP.Scanner.CIPException">Target returned a non-success status (e.g.
+            0x0E Attribute Not Settable, 0x09 Invalid Attribute Value).</exception>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.GetEPath(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Get the Encrypted Request Path - See Volume 1 Appendix C (C9)
+            e.g. for 8 Bit: 20 05 24 02 30 01
+            for 16 Bit: 21 00 05 00 24 02 30 01
+            </summary>
+            <param name="classID">Requested Class ID</param>
+            <param name="instanceID">Requested Instance ID</param>
+            <param name="attributeID">Requested Attribute ID - if "0" the attribute will be ignored</param>
+            <returns>Encrypted Request Path</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.GetAttributeAll(System.Int32)">
+            <summary>
+            Implementation of Common Service "Get_Attribute_All" - Service Code: 0x01
+            </summary>
+            <param name="classID">Class id of requested Attributes</param> 
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.IdentityObject">
+            <summary>
+            Implementation of the identity Object (Class Code: 0x01) - Required Object according to CIP-Specification
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.MessageRouterObject">
+            <summary>
+            Implementation of the Message Router Object (Class Code: 0x02) - Required Object according to CIP-Specification
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.AssemblyObject">
+            <summary>
+            Implementation of the Assembly Object (Class Code: 0x04)
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.TcpIpInterfaceObject">
+            <summary>
+            Implementation of the TCP/IP Object (Class Code: 0xF5) - Required Object according to CIP-Specification
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.ToUshort(System.Byte[])">
+            <summary>
+            Converts a bytearray (received e.g. via getAttributeSingle) to ushort
+            </summary>
+            <param name="byteArray">bytearray to convert</param> 
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.ToUint(System.Byte[])">
+            <summary>
+            Converts a bytearray (received e.g. via getAttributeSingle) to uint
+            </summary>
+            <param name="byteArray">bytearray to convert</param> 
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.EthernetIP.Scanner.ScannerController.ToBool(System.Byte,System.Int32)">
+            <summary>
+            Returns the "Bool" State of a byte Received via getAttributeSingle
+            </summary>
+            <param name="inputbyte">byte to convert</param> 
+            <param name="bitposition">bitposition to convert (First bit = bitposition 0)</param> 
+            <returns>Converted bool value</returns>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.EthernetIP.Scanner.Encapsulation.StatusEnum">
+            <summary>
+            Table 2-3.3 Error Codes
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.EthernetIP.Scanner.Encapsulation.CommandsEnum">
+            <summary>
+            Table 2-3.2 Encapsulation Commands
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.EthernetIP.Scanner.Encapsulation.CIPIdentityItem">
+            <summary>
+            Table 2-4.4 CIP Identity Item
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.EthernetIP.Scanner.Encapsulation.CIPIdentityItem.GetIPAddress(System.UInt32)">
+            <summary>
+            Converts an IP-Address in UIint32 Format (Received by Device)
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.EthernetIP.Scanner.Encapsulation.SocketAddress">
+            <summary>
+            Socket Address (see section 2-6.3.2)
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary.AssemblyObject.GetInstance(System.Int32)">
+            <summary>
+            Reads the Instance of the Assembly Object (Instance 101 returns the bytes of the class ID 101)
+            </summary>
+            <param name="instanceNo"> Instance number to be returned</param>
+            <returns>bytes of the Instance</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary.AssemblyObject.SetInstance(System.Int32,System.Byte[])">
+            <summary>
+            Sets an Instance of the Assembly Object
+            </summary>
+            <param name="instanceNo"> Instance number to be returned</param>
+            <returns>bytes of the Instance</returns>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary.ConnectionManagerObject">
+            <summary>
+            Connection Manager Object - Class Code: 06 Hex
+            </summary>
+            <remarks>
+            </remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary.ConnectionManagerObject.GetExtendedStatus(System.UInt32)">
+            <summary>
+            Returns the Explanation of a given statuscode (Table 3-5-29) Page 3-75 Vol 1
+            </summary>
+            <param name="statusCode">Extended Status Code</param> 
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary.IdentityObject">
+            <summary>
+            Identity Object - Class Code: 01 Hex
+            </summary>
+            <remarks>
+            This object provides identification of and general information about the device. The Identity Object shall be present in all CIP products.
+            If autonomous components of a device exist, use multiple instances of the Identity Object.
+            </remarks>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary.IdentityObject.VendorID">
+            <summary>
+            gets the Vendor ID / Read "Identity Object" Class Code 0x01 - Attribute ID 1
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary.IdentityObject.DeviceType">
+            <summary>
+            gets the Device Type / Read "Identity Object" Class Code 0x01 - Attribute ID 2
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary.IdentityObject.ProductCode">
+            <summary>
+            gets the Product code / Read "Identity Object" Class Code 0x01 - Attribute ID 3
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary.IdentityObject.Revision">
+            <summary>
+            gets the Revision / Read "Identity Object" Class Code 0x01 - Attribute ID 4
+            </summary>
+            <returns>Revision</returns>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary.IdentityObject.Status">
+            <summary>
+            gets the Status / Read "Identity Object" Class Code 0x01 - Attribute ID 5
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary.IdentityObject.SerialNumber">
+            <summary>
+            gets the Serial number / Read "Identity Object" Class Code 0x01 - Attribute ID 6
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary.IdentityObject.ProductName">
+            <summary>
+            gets the Product Name / Read "Identity Object" Class Code 0x01 - Attribute ID 7
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary.IdentityObject.State">
+            <summary>
+            gets the State / Read "Identity Object" Class Code 0x01 - Attribute ID 8
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary.IdentityObject.ConfigurationConsistencyValue">
+            <summary>
+            gets the State / Read "Identity Object" Class Code 0x01 - Attribute ID 9
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary.IdentityObject.HeartbeatInterval">
+            <summary>
+            gets the Heartbeat intervall / Read "Identity Object" Class Code 0x01 - Attribute ID 10
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary.IdentityObject.SupportedLanguageList">
+            <summary>
+            gets the Supported Language List / Read "Identity Object" Class Code 0x01 - Attribute ID 12
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary.IdentityObject.ClassAttributes">
+            <summary>
+            gets all class attributes
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary.IdentityObject.InstanceAttributes">
+            <summary>
+            gets all instance attributes
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary.MessageRouterObject.ObjectList">
+            <summary>
+            gets the Object List / Read "Message Router Object" Class Code 0x02 - Attribute ID 1
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary.MessageRouterObject.NumberAvailable">
+            <summary>
+            gets the Maximum of connections supported / Read "Message Router Object" Class Code 0x02 - Attribute ID 2
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary.MessageRouterObject.NumberActive">
+            <summary>
+            gets the number of active connections / Read "Message Router Object" Class Code 0x02 - Attribute ID 3
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary.MessageRouterObject.ActiveConnections">
+            <summary>
+            gets the active connections / Read "Message Router Object" Class Code 0x02 - Attribute ID 4
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary.TcpIpInterfaceObject.Status">
+            <summary>
+            gets the Status / Read "TCP/IP Interface Object" Class Code 0xF5 - Attribute ID 1
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary.TcpIpInterfaceObject.ConfigurationCapability">
+            <summary>
+            gets the Configuration capability / Read "TCP/IP Interface Object" Class Code 0xF5 - Attribute ID 2
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary.TcpIpInterfaceObject.PhysicalLinkObject">
+            <summary>
+            gets the Path to the Physical Link object / Read "TCP/IP Interface Object" Class Code 0xF5 - Attribute ID 4
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary.TcpIpInterfaceObject.ConfigurationControl">
+            <summary>
+            sets the Configuration control attribute / Write "TCP/IP Interface Object" Class Code 0xF5 - Attribute ID 3
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary.TcpIpInterfaceObject.InterfaceConfiguration">
+            <summary>
+            sets the TCP/IP Network interface Configuration / Write "TCP/IP Interface Object" Class Code 0xF5 - Attribute ID 5
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary.InterfaceStatus">
+            <summary>
+            Chapter 5-3.2.2.1 Volume 2
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary.InterfaceCapabilityFlags">
+            <summary>
+            Chapter 5-3.2.2.2 Volume 2
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary.InterfaceControlFlags">
+            <summary>
+            Chapter 5-3.2.2.3 Volume 2
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary.PhysicalLink">
+            <summary>
+            Page 5.5 Volume 2
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary.NetworkInterfaceConfiguration">
+            <summary>
+            Chapter 5-3.2.2.5 Volume 2
+            </summary>
+        </member>
+    </members>
+</doc>

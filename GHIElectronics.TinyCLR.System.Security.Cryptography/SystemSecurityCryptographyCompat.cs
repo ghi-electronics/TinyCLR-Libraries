@@ -4,6 +4,7 @@ using TinyCrypto = GHIElectronics.TinyCLR.Cryptography;
 
 namespace System.Security.Cryptography {
 
+    /// <summary>Well-known hash-algorithm name selector matching .NET Framework's <c>System.Security.Cryptography.HashAlgorithmName</c>.</summary>
     // .NET hash algorithm name selector. Matches System.Security.Cryptography.HashAlgorithmName
     // shape from .NET Framework 4.6+: a struct with static well-known names + Equals.
     public struct HashAlgorithmName {
@@ -28,11 +29,15 @@ namespace System.Security.Cryptography {
         public static bool operator !=(HashAlgorithmName left, HashAlgorithmName right) => !left.Equals(right);
     }
 
+    /// <summary>Padding scheme applied to RSA-encrypted blocks.</summary>
     public enum RSAEncryptionPaddingMode {
+        /// <summary>PKCS#1 v1.5 padding.</summary>
         Pkcs1 = 0,
+        /// <summary>OAEP (Optimal Asymmetric Encryption Padding).</summary>
         Oaep = 1,
     }
 
+    /// <summary>Encryption-padding configuration — padding mode plus (for OAEP) the hash algorithm. Matches the .NET Framework type.</summary>
     // Matches .NET Framework: padding mode + (for OAEP) hash algorithm bundled together.
     public sealed class RSAEncryptionPadding {
         private static readonly RSAEncryptionPadding s_pkcs1 = new RSAEncryptionPadding(RSAEncryptionPaddingMode.Pkcs1, default(HashAlgorithmName));
@@ -65,11 +70,15 @@ namespace System.Security.Cryptography {
         public static bool operator !=(RSAEncryptionPadding left, RSAEncryptionPadding right) => !(left == right);
     }
 
+    /// <summary>Padding scheme applied to RSA signatures.</summary>
     public enum RSASignaturePaddingMode {
+        /// <summary>PKCS#1 v1.5 signature padding.</summary>
         Pkcs1 = 0,
+        /// <summary>PSS (Probabilistic Signature Scheme) padding.</summary>
         Pss = 1,
     }
 
+    /// <summary>Signature-padding configuration. Matches the .NET Framework type.</summary>
     public sealed class RSASignaturePadding {
         private static readonly RSASignaturePadding s_pkcs1 = new RSASignaturePadding(RSASignaturePaddingMode.Pkcs1);
         private static readonly RSASignaturePadding s_pss = new RSASignaturePadding(RSASignaturePaddingMode.Pss);
@@ -91,6 +100,7 @@ namespace System.Security.Cryptography {
         public static bool operator !=(RSASignaturePadding left, RSASignaturePadding right) => !(left == right);
     }
 
+    /// <summary>RSA key parameters (modulus, exponent, and optional private components) matching the .NET Framework struct.</summary>
     [Serializable]
     public struct RSAParameters {
         public byte[] D;
@@ -106,6 +116,7 @@ namespace System.Security.Cryptography {
     // .NET hash algorithm hierarchy: HashAlgorithm -> SHA1/SHA256/MD5 (each abstract in BCL,
     // concrete here for simplicity). KeyedHashAlgorithm -> HMAC -> HMACSHA1/HMACSHA256.
 
+    /// <summary>Abstract base for cryptographic hash algorithms (MD5, SHA1, SHA256). Matches the .NET BCL surface.</summary>
     public abstract class HashAlgorithm : IDisposable {
         public virtual int HashSize { get; protected set; }
         public virtual byte[] Hash { get; protected set; }
@@ -121,14 +132,17 @@ namespace System.Security.Cryptography {
         public virtual void Dispose() { }
     }
 
+    /// <summary>Abstract base for keyed hash algorithms (HMAC family).</summary>
     public abstract class KeyedHashAlgorithm : HashAlgorithm {
         public virtual byte[] Key { get; set; }
     }
 
+    /// <summary>Abstract base for HMAC algorithms (HMAC-SHA1, HMAC-SHA256, etc.).</summary>
     public abstract class HMAC : KeyedHashAlgorithm {
         public string HashName { get; set; }
     }
 
+    /// <summary>Abstract base for asymmetric (public-key) algorithms.</summary>
     public abstract class AsymmetricAlgorithm : IDisposable {
         public virtual int KeySize { get; set; }
         public virtual string KeyExchangeAlgorithm => null;
@@ -137,6 +151,7 @@ namespace System.Security.Cryptography {
         public void Clear() => this.Dispose();
     }
 
+    /// <summary>Abstract RSA implementation; create concrete instances via <see cref="RSACryptoServiceProvider"/>.</summary>
     public abstract class RSA : AsymmetricAlgorithm {
         public abstract RSAParameters ExportParameters(bool includePrivateParameters);
         public abstract void ImportParameters(RSAParameters parameters);
@@ -157,6 +172,7 @@ namespace System.Security.Cryptography {
 
     // ----- Concrete algorithms (delegate to TinyCLR.Cryptography) -----
 
+    /// <summary>SHA-1 hash (160-bit). Use <see cref="HashAlgorithm.Create()"/> overloads or instantiate directly.</summary>
     public sealed class SHA1 : HashAlgorithm {
         private readonly TinyCrypto.SHA1 impl;
 
@@ -181,6 +197,7 @@ namespace System.Security.Cryptography {
         public override void Dispose() => this.impl.Dispose();
     }
 
+    /// <summary>SHA-256 hash (256-bit).</summary>
     public sealed class SHA256 : HashAlgorithm {
         private readonly TinyCrypto.SHA256 impl;
 
@@ -205,6 +222,7 @@ namespace System.Security.Cryptography {
         public override void Dispose() => this.impl.Dispose();
     }
 
+    /// <summary>MD5 hash (128-bit). Cryptographically broken; use for checksums, not for security.</summary>
     public sealed class MD5 : HashAlgorithm {
         private readonly TinyCrypto.MD5 impl;
 
@@ -229,6 +247,7 @@ namespace System.Security.Cryptography {
         public override void Dispose() => this.impl.Dispose();
     }
 
+    /// <summary>HMAC-SHA1 keyed hash (160-bit output).</summary>
     public sealed class HMACSHA1 : HMAC {
         private readonly TinyCrypto.HMACSHA1 impl;
 
@@ -263,6 +282,7 @@ namespace System.Security.Cryptography {
         public override void Dispose() => this.impl.Dispose();
     }
 
+    /// <summary>HMAC-SHA256 keyed hash (256-bit output).</summary>
     public sealed class HMACSHA256 : HMAC {
         private readonly TinyCrypto.HMACSHA256 impl;
 
@@ -297,6 +317,7 @@ namespace System.Security.Cryptography {
         public override void Dispose() => this.impl.Dispose();
     }
 
+    /// <summary>Concrete RSA implementation. Construct with the desired key size or with externally supplied <see cref="RSAParameters"/>.</summary>
     public sealed class RSACryptoServiceProvider : RSA {
         private readonly TinyCrypto.RSACryptoServiceProvider impl;
 
@@ -398,6 +419,7 @@ namespace System.Security.Cryptography {
 
     // ----- Random number generator (already shaped to .NET) -----
 
+    /// <summary>Cryptographically secure RNG. Create via <see cref="Create()"/>; do not seed manually.</summary>
     public abstract class RandomNumberGenerator : IDisposable {
         public static RandomNumberGenerator Create() => new TinyClrRandomNumberGenerator();
 

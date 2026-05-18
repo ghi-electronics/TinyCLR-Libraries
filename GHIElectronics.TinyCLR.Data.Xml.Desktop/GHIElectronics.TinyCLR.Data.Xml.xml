@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>GHIElectronics.TinyCLR.Data.Xml</name>
+    </assembly>
+    <members>
+        <member name="T:GHIElectronics.TinyCLR.Data.Xml.Res">
+            <summary>
+            Summary description for Res.
+            </summary>";
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Data.Xml.XmlCharType">
+            <internalonly/>
+        </member>
+    </members>
+</doc>

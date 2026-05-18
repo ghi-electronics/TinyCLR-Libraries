@@ -4,6 +4,11 @@ using System.IO;
 using System.Runtime.CompilerServices;
 
 namespace GHIElectronics.TinyCLR.IO {
+    /// <summary>
+    /// Mounts and unmounts file systems on top of a <see cref="GHIElectronics.TinyCLR.Devices.Storage.StorageController"/>.
+    /// Pass the controller's <c>Hdc</c> to <see cref="Mount(IntPtr)"/> to make its
+    /// content accessible via <see cref="System.IO.File"/> / <see cref="System.IO.Directory"/>.
+    /// </summary>
     public static class FileSystem {
         private static readonly IDictionary mounted = new Hashtable();
 

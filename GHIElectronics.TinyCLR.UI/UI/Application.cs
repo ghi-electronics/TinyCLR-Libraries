@@ -265,16 +265,16 @@ EventTrace.EventProvider.TraceEvent(EventTrace.APPGUID, MS.Utility.EventType.Inf
             InputReport ir = null;
             InputDevice dev = null;
 
-            /// Process known events, otherwise forward as generic to MainWindow.
-            ///
+            // Process known events, otherwise forward as generic to MainWindow.
+            //
 
             if (ev is TouchEvent touchEvent) {
                 var targetWindow = TouchCapture.Captured;
 
-                ///
-                ///  Make sure the current event's coordinates are contained in the current
-                ///  stylus/touch window, if not then search for the appropriate window
-                ///
+                //
+                //  Make sure the current event's coordinates are contained in the current
+                //  stylus/touch window, if not then search for the appropriate window
+                //
                 if (targetWindow != null && touchEvent.EventMessage == (byte)TouchMessages.Down) {
                     int x = 0, y = 0;
                     var xSrc = touchEvent.Touches[0].X;
@@ -342,7 +342,7 @@ EventTrace.EventProvider.TraceEvent(EventTrace.APPGUID, MS.Utility.EventType.Inf
 
             }
             else {
-                /// Unkown event.
+                // Unkown event.
             }
 
             this.Dispatcher.BeginInvoke(_reportInputMethod, new InputReportArgs(dev, ir));

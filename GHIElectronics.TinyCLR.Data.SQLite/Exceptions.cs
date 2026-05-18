@@ -1,6 +1,7 @@
 using System;
 
 namespace GHIElectronics.TinyCLR.Data.SQLite {
+    /// <summary>Thrown when a database file cannot be opened.</summary>
     [Serializable]
     public class OpenException : Exception {
         internal OpenException() : base() {
@@ -16,6 +17,7 @@ namespace GHIElectronics.TinyCLR.Data.SQLite {
         }
     }
 
+    /// <summary>Thrown when SQLite returns an error during query execution.</summary>
     [Serializable]
     public class QueryExecutionException : Exception {
         internal QueryExecutionException() : base() {
@@ -30,6 +32,7 @@ namespace GHIElectronics.TinyCLR.Data.SQLite {
 
         }
     }
+    /// <summary>Thrown when SQLite fails to finalize (release) a prepared statement.</summary>
     [Serializable]
     public class QueryFinalizationException : Exception {
         internal QueryFinalizationException() : base() {
@@ -44,6 +47,7 @@ namespace GHIElectronics.TinyCLR.Data.SQLite {
 
         }
     }
+    /// <summary>Thrown when SQLite cannot prepare (compile) a query.</summary>
     [Serializable]
     public class QueryPrepareException : Exception {
         internal QueryPrepareException() : base() {

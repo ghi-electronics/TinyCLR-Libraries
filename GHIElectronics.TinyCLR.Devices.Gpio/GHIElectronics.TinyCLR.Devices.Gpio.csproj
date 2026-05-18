@@ -10,6 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>GHIElectronics.TinyCLR.Devices.Gpio</RootNamespace>
     <AssemblyName>GHIElectronics.TinyCLR.Devices.Gpio</AssemblyName>
+    <DocumentationFile>$(OutputPath)$(AssemblyName).xml</DocumentationFile>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A1948822-69DD-4150-919B-F3F42EFB71CC};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -62,6 +63,7 @@
   <Target Name="BuildGpioCompatAssembly" AfterTargets="Build">
     <MSBuild Projects="..\GHIElectronics.TinyCLR.System.Device.Gpio\GHIElectronics.TinyCLR.System.Device.Gpio.csproj" Targets="Build" Properties="Configuration=$(Configuration);Platform=$(Platform);BuildProjectReferences=false" />
     <Copy SourceFiles="..\GHIElectronics.TinyCLR.System.Device.Gpio\bin\$(Configuration)\System.Device.Gpio.dll" DestinationFolder="$(TargetDir)" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="..\GHIElectronics.TinyCLR.System.Device.Gpio\bin\$(Configuration)\System.Device.Gpio.xml" DestinationFolder="$(TargetDir)" SkipUnchangedFiles="true" Condition="Exists('..\GHIElectronics.TinyCLR.System.Device.Gpio\bin\$(Configuration)\System.Device.Gpio.xml')" />
     <MSBuild Projects="..\GHIElectronics.TinyCLR.System.Device.Gpio.Desktop\GHIElectronics.TinyCLR.System.Device.Gpio.Desktop.csproj" Targets="Build" Properties="Configuration=$(Configuration);Platform=$(Platform);BuildProjectReferences=false" />
   </Target>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

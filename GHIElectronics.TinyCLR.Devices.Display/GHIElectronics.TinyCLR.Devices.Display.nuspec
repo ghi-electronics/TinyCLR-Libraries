@@ -19,9 +19,12 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.Display.dll" target="lib\net48" />
-    <file src="..\GHIElectronics.TinyCLR.Devices.Display.Desktop\bin\Debug\GHIElectronics.TinyCLR.Devices.Display.dll" target="desktop-shim" />
-    <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.Display.dll" target="tinyclr" />
+    <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.Display.dll" target="lib\net48" />
+    <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.Display.xml" target="lib\net48" />
+    <file src="..\GHIElectronics.TinyCLR.Devices.Display.Desktop\bin\Debug\GHIElectronics.TinyCLR.Devices.Display.dll" target="desktop-shim" />
+    <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.Display.xml" target="desktop-shim" />
+    <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.Display.dll" target="tinyclr" />
+    <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.Display.xml" target="tinyclr" />
     <file src="$ProjectDir$GHIElectronics.TinyCLR.Devices.Display.props" target="build\net48" />
   </files>
 </package>

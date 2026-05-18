@@ -2,31 +2,48 @@ using System;
 using System.Collections;
 
 namespace System.Device.Gpio {
+    /// <summary>Edge selector for <see cref="GpioController"/> change notifications. Same shape as .NET IoT.</summary>
     [Flags]
     public enum PinEventTypes {
+        /// <summary>Rising edge (low → high).</summary>
         Rising = 1,
+        /// <summary>Falling edge (high → low).</summary>
         Falling = 2,
     }
 
+    /// <summary>Drive mode applied to a GPIO pin. Mirrors .NET IoT's <c>System.Device.Gpio.PinMode</c>.</summary>
     public enum PinMode {
+        /// <summary>High-impedance input.</summary>
         Input = 0,
+        /// <summary>Push-pull output.</summary>
         Output = 1,
+        /// <summary>Input with internal pull-up.</summary>
         InputPullUp = 2,
+        /// <summary>Input with internal pull-down.</summary>
         InputPullDown = 3,
+        /// <summary>Open-drain output.</summary>
         OutputOpenDrain = 4,
     }
 
+    /// <summary>Logical pin level.</summary>
     public enum PinValue {
+        /// <summary>Low (0 V).</summary>
         Low = 0,
+        /// <summary>High (Vcc).</summary>
         High = 1,
     }
 
+    /// <summary>How <see cref="GpioController"/> interprets pin numbers — TinyCLR uses <see cref="Logical"/>.</summary>
     public enum PinNumberingScheme {
+        /// <summary>Driver-relative logical pin index.</summary>
         Logical = 0,
+        /// <summary>Physical board header pin number.</summary>
         Board = 1,
+        /// <summary>Broadcom SoC pin number (Raspberry Pi convention).</summary>
         Bcm = 2,
     }
 
+    /// <summary>Arguments for the .NET IoT pin-change callback.</summary>
     public sealed class PinValueChangedEventArgs : EventArgs {
         public PinEventTypes ChangeType { get; }
         public int PinNumber { get; }
@@ -37,8 +54,10 @@ namespace System.Device.Gpio {
         }
     }
 
+    /// <summary>Callback signature for .NET IoT pin-change notifications.</summary>
     public delegate void PinChangeEventHandler(object sender, PinValueChangedEventArgs pinValueChangedEventArgs);
 
+    /// <summary>Abstract GPIO driver per .NET IoT. Implemented by <see cref="TinyClrGpioDriver"/> for TinyCLR hardware.</summary>
     public abstract class GpioDriver : IDisposable {
         public abstract int PinCount { get; }
 
@@ -55,6 +74,7 @@ namespace System.Device.Gpio {
         public abstract void Dispose();
     }
 
+    /// <summary>TinyCLR-backed implementation of <see cref="GpioDriver"/>. Routes <see cref="GpioController"/> calls to <see cref="GHIElectronics.TinyCLR.Devices.Gpio.GpioController"/>.</summary>
     public class TinyClrGpioDriver : GpioDriver {
         private readonly GHIElectronics.TinyCLR.Devices.Gpio.GpioController controller;
         private readonly Hashtable pinToTinyClrPin;
@@ -216,6 +236,10 @@ namespace System.Device.Gpio {
         }
     }
 
+    /// <summary>
+    /// .NET IoT-style GPIO controller. Same surface as <c>System.Device.Gpio.GpioController</c>;
+    /// internally routes through TinyCLR's GPIO HAL via <see cref="TinyClrGpioDriver"/>.
+    /// </summary>
     public sealed class GpioController : IDisposable {
         private readonly Hashtable openedPins;
 
@@ -299,6 +323,7 @@ namespace System.Device.Gpio {
 }
 
 namespace System.Device.Gpio.Drivers {
+    /// <summary>Alias of <see cref="TinyClrGpioDriver"/> for source-compatibility with Linux .NET IoT samples that reference <c>LibGpiodDriver</c>.</summary>
     public sealed class LibGpiodDriver : System.Device.Gpio.TinyClrGpioDriver {
         public int ChipNumber { get; }
 

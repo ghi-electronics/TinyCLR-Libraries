@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>System.Security.Cryptography</name>
+    </assembly>
+    <members>
+        <member name="T:System.Security.Cryptography.HashAlgorithmName">
+            <summary>Well-known hash-algorithm name selector matching .NET Framework's <c>System.Security.Cryptography.HashAlgorithmName</c>.</summary>
+        </member>
+        <member name="T:System.Security.Cryptography.RSAEncryptionPaddingMode">
+            <summary>Padding scheme applied to RSA-encrypted blocks.</summary>
+        </member>
+        <member name="F:System.Security.Cryptography.RSAEncryptionPaddingMode.Pkcs1">
+            <summary>PKCS#1 v1.5 padding.</summary>
+        </member>
+        <member name="F:System.Security.Cryptography.RSAEncryptionPaddingMode.Oaep">
+            <summary>OAEP (Optimal Asymmetric Encryption Padding).</summary>
+        </member>
+        <member name="T:System.Security.Cryptography.RSAEncryptionPadding">
+            <summary>Encryption-padding configuration — padding mode plus (for OAEP) the hash algorithm. Matches the .NET Framework type.</summary>
+        </member>
+        <member name="T:System.Security.Cryptography.RSASignaturePaddingMode">
+            <summary>Padding scheme applied to RSA signatures.</summary>
+        </member>
+        <member name="F:System.Security.Cryptography.RSASignaturePaddingMode.Pkcs1">
+            <summary>PKCS#1 v1.5 signature padding.</summary>
+        </member>
+        <member name="F:System.Security.Cryptography.RSASignaturePaddingMode.Pss">
+            <summary>PSS (Probabilistic Signature Scheme) padding.</summary>
+        </member>
+        <member name="T:System.Security.Cryptography.RSASignaturePadding">
+            <summary>Signature-padding configuration. Matches the .NET Framework type.</summary>
+        </member>
+        <member name="T:System.Security.Cryptography.RSAParameters">
+            <summary>RSA key parameters (modulus, exponent, and optional private components) matching the .NET Framework struct.</summary>
+        </member>
+        <member name="T:System.Security.Cryptography.HashAlgorithm">
+            <summary>Abstract base for cryptographic hash algorithms (MD5, SHA1, SHA256). Matches the .NET BCL surface.</summary>
+        </member>
+        <member name="T:System.Security.Cryptography.KeyedHashAlgorithm">
+            <summary>Abstract base for keyed hash algorithms (HMAC family).</summary>
+        </member>
+        <member name="T:System.Security.Cryptography.HMAC">
+            <summary>Abstract base for HMAC algorithms (HMAC-SHA1, HMAC-SHA256, etc.).</summary>
+        </member>
+        <member name="T:System.Security.Cryptography.AsymmetricAlgorithm">
+            <summary>Abstract base for asymmetric (public-key) algorithms.</summary>
+        </member>
+        <member name="T:System.Security.Cryptography.RSA">
+            <summary>Abstract RSA implementation; create concrete instances via <see cref="T:System.Security.Cryptography.RSACryptoServiceProvider"/>.</summary>
+        </member>
+        <member name="T:System.Security.Cryptography.SHA1">
+            <summary>SHA-1 hash (160-bit). Use <see cref="!:HashAlgorithm.Create()"/> overloads or instantiate directly.</summary>
+        </member>
+        <member name="T:System.Security.Cryptography.SHA256">
+            <summary>SHA-256 hash (256-bit).</summary>
+        </member>
+        <member name="T:System.Security.Cryptography.MD5">
+            <summary>MD5 hash (128-bit). Cryptographically broken; use for checksums, not for security.</summary>
+        </member>
+        <member name="T:System.Security.Cryptography.HMACSHA1">
+            <summary>HMAC-SHA1 keyed hash (160-bit output).</summary>
+        </member>
+        <member name="T:System.Security.Cryptography.HMACSHA256">
+            <summary>HMAC-SHA256 keyed hash (256-bit output).</summary>
+        </member>
+        <member name="T:System.Security.Cryptography.RSACryptoServiceProvider">
+            <summary>Concrete RSA implementation. Construct with the desired key size or with externally supplied <see cref="T:System.Security.Cryptography.RSAParameters"/>.</summary>
+        </member>
+        <member name="T:System.Security.Cryptography.RandomNumberGenerator">
+            <summary>Cryptographically secure RNG. Create via <see cref="M:System.Security.Cryptography.RandomNumberGenerator.Create"/>; do not seed manually.</summary>
+        </member>
+    </members>
+</doc>

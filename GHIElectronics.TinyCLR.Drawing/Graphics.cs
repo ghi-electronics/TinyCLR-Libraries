@@ -35,6 +35,11 @@ namespace System.Drawing
         void Scale9Image(int xDst, int yDst, int widthDst, int heightDst, IGraphics image, int leftBorder, int topBorder, int rightBorder, int bottomBorder, ushort opacity);
     }
 
+    /// <summary>
+    /// 2-D drawing surface backed by a <see cref="Bitmap"/>. Issue line, rectangle,
+    /// ellipse, text, and image draws against this surface, then push the result to
+    /// the display via <see cref="Flush(IntPtr)"/>.
+    /// </summary>
     public class Graphics : MarshalByRefObject, IDisposable
     {
         public int Width => this.surface.Width;

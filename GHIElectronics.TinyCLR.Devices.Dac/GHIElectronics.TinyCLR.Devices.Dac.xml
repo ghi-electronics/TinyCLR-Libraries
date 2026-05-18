@@ -1,0 +1,146 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>GHIElectronics.TinyCLR.Devices.Dac</name>
+    </assembly>
+    <members>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Dac.DacController">
+            <summary>
+            Represents a DAC peripheral. Open a channel via <see cref="M:GHIElectronics.TinyCLR.Devices.Dac.DacController.OpenChannel(System.Int32)"/>
+            to drive analog output; use <see cref="P:GHIElectronics.TinyCLR.Devices.Dac.DacController.MinValue"/>/<see cref="P:GHIElectronics.TinyCLR.Devices.Dac.DacController.MaxValue"/>
+            to know the raw-code range for the configured resolution.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Dac.DacController.Provider">
+            <summary>The low-level provider backing this controller.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Dac.DacController.GetDefault">
+            <summary>Returns the default DAC controller for this device.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Dac.DacController.FromName(System.String)">
+            <summary>Returns a DAC controller identified by its native API name.</summary>
+            <param name="name">Native API name.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Dac.DacController.FromProvider(GHIElectronics.TinyCLR.Devices.Dac.Provider.IDacControllerProvider)">
+            <summary>Creates a controller from a custom <see cref="T:GHIElectronics.TinyCLR.Devices.Dac.Provider.IDacControllerProvider"/>.</summary>
+            <param name="provider">Provider implementing the channel operations.</param>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Dac.DacController.ChannelCount">
+            <summary>Number of channels exposed by this controller.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Dac.DacController.ResolutionInBits">
+            <summary>Sample width in bits.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Dac.DacController.MinValue">
+            <summary>Smallest raw value accepted by <see cref="M:GHIElectronics.TinyCLR.Devices.Dac.DacChannel.WriteValue(System.Int32)"/>.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Dac.DacController.MaxValue">
+            <summary>Largest raw value accepted by <see cref="M:GHIElectronics.TinyCLR.Devices.Dac.DacChannel.WriteValue(System.Int32)"/>.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Dac.DacController.Dispose">
+            <summary>Releases the underlying provider.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Dac.DacController.OpenChannel(System.Int32)">
+            <summary>Opens a channel for output.</summary>
+            <param name="channelNumber">Controller-relative channel index.</param>
+            <returns>A <see cref="T:GHIElectronics.TinyCLR.Devices.Dac.DacChannel"/>; dispose it to release the channel.</returns>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Dac.DacChannel">
+            <summary>
+            A single DAC channel opened from a <see cref="T:GHIElectronics.TinyCLR.Devices.Dac.DacController"/>. Call
+            <see cref="M:GHIElectronics.TinyCLR.Devices.Dac.DacChannel.WriteValue(System.Int32)"/> for raw codes or <see cref="M:GHIElectronics.TinyCLR.Devices.Dac.DacChannel.WriteValue(System.Double)"/>
+            for a 0.0–1.0 ratio of the output range.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Dac.DacChannel.ChannelNumber">
+            <summary>Controller-relative channel index this object represents.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Dac.DacChannel.Controller">
+            <summary>The <see cref="T:GHIElectronics.TinyCLR.Devices.Dac.DacController"/> that owns this channel.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Dac.DacChannel.LastWrittenValue">
+            <summary>The most recent raw value written through <see cref="M:GHIElectronics.TinyCLR.Devices.Dac.DacChannel.WriteValue(System.Int32)"/>.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Dac.DacChannel.Dispose">
+            <summary>Releases the channel so another caller can open it.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Dac.DacChannel.WriteValue(System.Int32)">
+            <summary>Drives the channel to a raw output code.</summary>
+            <param name="value">Code in [<see cref="P:GHIElectronics.TinyCLR.Devices.Dac.DacController.MinValue"/>, <see cref="P:GHIElectronics.TinyCLR.Devices.Dac.DacController.MaxValue"/>].</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Dac.DacChannel.WriteValue(System.Double)">
+            <summary>Drives the channel using a 0.0..1.0 fraction of the full output range.</summary>
+            <param name="ratio">Normalized output level; 0.0 maps to <see cref="P:GHIElectronics.TinyCLR.Devices.Dac.DacController.MinValue"/> and 1.0 to <see cref="P:GHIElectronics.TinyCLR.Devices.Dac.DacController.MaxValue"/>.</param>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Dac.Provider.IDacControllerProvider">
+            <summary>
+            Provider contract for a DAC controller. Most users call
+            <see cref="T:GHIElectronics.TinyCLR.Devices.Dac.DacController"/> / <see cref="T:GHIElectronics.TinyCLR.Devices.Dac.DacChannel"/> directly; implement
+            this interface only when supplying a custom or virtual DAC.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Dac.Provider.IDacControllerProvider.ChannelCount">
+            <summary>Total number of channels exposed by this controller.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Dac.Provider.IDacControllerProvider.ResolutionInBits">
+            <summary>Sample width in bits.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Dac.Provider.IDacControllerProvider.MinValue">
+            <summary>Smallest raw value accepted by <see cref="M:GHIElectronics.TinyCLR.Devices.Dac.Provider.IDacControllerProvider.Write(System.Int32,System.Int32)"/>.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Dac.Provider.IDacControllerProvider.MaxValue">
+            <summary>Largest raw value accepted by <see cref="M:GHIElectronics.TinyCLR.Devices.Dac.Provider.IDacControllerProvider.Write(System.Int32,System.Int32)"/>.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Dac.Provider.IDacControllerProvider.OpenChannel(System.Int32)">
+            <summary>Acquires exclusive access to the specified channel.</summary>
+            <param name="channel">Controller-relative channel index.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Dac.Provider.IDacControllerProvider.CloseChannel(System.Int32)">
+            <summary>Releases a previously opened channel.</summary>
+            <param name="channel">Controller-relative channel index.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Dac.Provider.IDacControllerProvider.Write(System.Int32,System.Int32)">
+            <summary>Writes a raw code to the channel.</summary>
+            <param name="channel">Controller-relative channel index.</param>
+            <param name="value">Output code.</param>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Dac.Provider.DacControllerApiWrapper">
+            <summary>
+            Concrete <see cref="T:GHIElectronics.TinyCLR.Devices.Dac.Provider.IDacControllerProvider"/> backed by the native
+            TinyCLR DAC HAL. Constructed internally by <see cref="T:GHIElectronics.TinyCLR.Devices.Dac.DacController"/>;
+            you don't normally need to use this type directly.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Dac.Provider.DacControllerApiWrapper.Api">
+            <summary>The underlying native API descriptor.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Dac.Provider.DacControllerApiWrapper.#ctor(GHIElectronics.TinyCLR.Native.NativeApi)">
+            <summary>Wraps the given native API as a provider.</summary>
+            <param name="api">The native DAC API to bind to.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Dac.Provider.DacControllerApiWrapper.Dispose">
+            <summary>Releases the native controller.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Dac.Provider.DacControllerApiWrapper.ChannelCount">
+            <inheritdoc/>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Dac.Provider.DacControllerApiWrapper.ResolutionInBits">
+            <inheritdoc/>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Dac.Provider.DacControllerApiWrapper.MinValue">
+            <inheritdoc/>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Dac.Provider.DacControllerApiWrapper.MaxValue">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Dac.Provider.DacControllerApiWrapper.OpenChannel(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Dac.Provider.DacControllerApiWrapper.CloseChannel(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Dac.Provider.DacControllerApiWrapper.Write(System.Int32,System.Int32)">
+            <inheritdoc/>
+        </member>
+    </members>
+</doc>

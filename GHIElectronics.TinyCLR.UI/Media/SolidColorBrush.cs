@@ -71,13 +71,13 @@ namespace GHIElectronics.TinyCLR.UI.Media {
         /// <param name="outline"></param>
         /// <param name="pts"></param>
         internal override void RenderPolygon(Bitmap bmp, Pen outline, int[] pts) {
-            var n = pts.Length / 2; /// This is number of points and number of lines (closed polygon).
+            var n = pts.Length / 2; // This is number of points and number of lines (closed polygon).
 
-            /// Polygon to fill must have at least 3 points.
+            // Polygon to fill must have at least 3 points.
             if (n < 3)
                 return;
 
-            /// Nothing to do if this is a transparent brush.
+            // Nothing to do if this is a transparent brush.
             if (this.Opacity == Bitmap.OpacityTransparent)
                 return;
 
@@ -90,7 +90,7 @@ namespace GHIElectronics.TinyCLR.UI.Media {
 
             var xPoints = new int[n];
 
-            /// Initialize line segments.
+            // Initialize line segments.
             for (i = 0; i < n; i++) {
                 lines[i] = new LineSegment {
                     processedPts = 0
@@ -108,27 +108,27 @@ namespace GHIElectronics.TinyCLR.UI.Media {
                     lines[i].y2 = pts[1];
                 }
 
-                /// Reverse the points to make sure y1 <= y2 always.
+                // Reverse the points to make sure y1 <= y2 always.
                 if (lines[i].y2 < lines[i].y1) {
                     Swap(ref lines[i].y2, ref lines[i].y1);
                     Swap(ref lines[i].x2, ref lines[i].x1);
                 }
 
-                /// Calculate slopes and increments.
+                // Calculate slopes and increments.
                 lines[i].dx = Abs(lines[i].x2 - lines[i].x1);
                 lines[i].dy = Abs(lines[i].y2 - lines[i].y1);
                 lines[i].cx = lines[i].x1;
                 lines[i].e = 0;
 
                 if (lines[i].dx < lines[i].dy) {
-                    /// Angle is 45 degree or more. So y increases faster.
+                    // Angle is 45 degree or more. So y increases faster.
                     lines[i].highSlope = true;
                 }
                 else {
                     lines[i].highSlope = false;
                 }
 
-                /// Actual increment direction.
+                // Actual increment direction.
                 if (lines[i].x2 > lines[i].x1) lines[i].ix = 1;
                 else lines[i].ix = -1;
 
@@ -142,14 +142,14 @@ namespace GHIElectronics.TinyCLR.UI.Media {
                 }
             }
 
-            /// Fill via scan lines between yLow and yHigh.
+            // Fill via scan lines between yLow and yHigh.
             for (y = yLow; y <= yHigh; y++) {
                 var j = 0;
                 for (i = 0; i < n; i++) {
                     xPoints[i] = int.MaxValue;
                 }
 
-                /// Find intersection points for given y.
+                // Find intersection points for given y.
                 for (i = 0; i < n; i++) {
                     if (y < lines[i].y1) continue;
                     if (y > lines[i].y2) continue;
@@ -158,8 +158,8 @@ namespace GHIElectronics.TinyCLR.UI.Media {
 
                     if (lines[i].dy != 0) {
                         if (lines[i].highSlope) {
-                            /// For this y find the x, which either the same pixel
-                            /// in last iteration or next one.
+                            // For this y find the x, which either the same pixel
+                            // in last iteration or next one.
                             if (y == lines[i].y1) lines[i].cx = lines[i].x1;
                             else if (y == lines[i].y2) lines[i].cx = lines[i].x2;
                             else {
@@ -171,7 +171,7 @@ namespace GHIElectronics.TinyCLR.UI.Media {
                             }
                         }
                         else {
-                            /// In this case for every y pixel inc, x increases more than 1 pixel.
+                            // In this case for every y pixel inc, x increases more than 1 pixel.
                             if (y == lines[i].y1) lines[i].cx = lines[i].x1;
                             else if (y == lines[i].y2) lines[i].cx = lines[i].x2;
                             else {
@@ -189,15 +189,15 @@ namespace GHIElectronics.TinyCLR.UI.Media {
                         }
                     }
 
-                    /// Insertion sort, do not insert back to back duplicates
+                    // Insertion sort, do not insert back to back duplicates
                     int x1;
                     bool x1YMin;
                     var x2 = int.MaxValue;
                     var x2YMin = false;
 
-                    ///
-                    /// add both x endpoints if the line is horizontal
-                    ///
+                    //
+                    // add both x endpoints if the line is horizontal
+                    //
                     if (lines[i].dy == 0) {
                         x1 = lines[i].x1;
                         x1YMin = true;
@@ -220,27 +220,27 @@ namespace GHIElectronics.TinyCLR.UI.Media {
                     var idx2 = x2 == int.MaxValue ? x2 : -1;
                     var offset = 0;
 
-                    ///
-                    /// First we search for the indexes of x1 and x2 (if neccessary) and then we will insert the
-                    /// items, by shifting the elements in the array
+                    //
+                    // First we search for the indexes of x1 and x2 (if neccessary) and then we will insert the
+                    // items, by shifting the elements in the array
                     for (j = 0; j < n; j++) {
                         var ix = (xPoints[j] & c_XValueMask);
                         var isYMin = (xPoints[j] & c_YMinBit) != 0;
 
                         if (idx1 == -1) {
-                            ///
-                            /// Only add duplicate x values if the intersection produces up (^) or down (v) angles
-                            /// as opposed to right (<) or left (>) angles.
-                            ///
+                            //
+                            // Only add duplicate x values if the intersection produces up (^) or down (v) angles
+                            // as opposed to right (<) or left (>) angles.
+                            //
                             if (ix == x1 && isYMin != x1YMin) { idx1 = int.MaxValue; }
                             else if (ix > x1) { idx1 = j + offset; offset++; }
                         }
 
                         if (idx2 == -1) {
-                            ///
-                            /// Only add duplicate x values if the intersection produces up (^) or down (v) angles
-                            /// as opposed to right (<) or left (>) angles.
-                            ///
+                            //
+                            // Only add duplicate x values if the intersection produces up (^) or down (v) angles
+                            // as opposed to right (<) or left (>) angles.
+                            //
                             if (ix == x2 && isYMin != x2YMin) { idx2 = int.MaxValue; }
                             else if (ix > x2) { idx2 = j + offset; offset++; }
                         }
@@ -272,7 +272,7 @@ namespace GHIElectronics.TinyCLR.UI.Media {
                     }
                 }
 
-                /// Finally draw the line segments to fill.
+                // Finally draw the line segments to fill.
                 for (i = 0; i < xPoints.Length - 1; i += 2) {
                     var ix1 = (xPoints[i] & c_XValueMask);
                     var ix2 = (xPoints[i + 1] & c_XValueMask);
