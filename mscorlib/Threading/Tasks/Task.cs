@@ -14,12 +14,10 @@ namespace System.Threading.Tasks {
         // Used by Wait(), WhenAll (via WaitHandle.WaitAll), WhenAny (via
         // WaitHandle.WaitAny).
         //
-        // _continuation is the single-slot continuation registered by
+        // _continuation is the continuation list registered by
         // TaskAwaiter.OnCompleted (i.e. the rest-of-method lambda from an
-        // `await task`). Multiple registrations on the same Task chain
-        // existing-then-new, preserving registration order on completion.
-        // Single slot keeps the common case (one awaiter per Task)
-        // allocation-free.
+        // `await task`). Multiple registrations on the same Task are chained
+        // via Delegate.Combine — invocation order matches registration order.
         internal ManualResetEvent _completion;
         private Action _continuation;
         private readonly object _completionLock = new object();
@@ -58,9 +56,6 @@ namespace System.Threading.Tasks {
                     if (!this._completion.WaitOne(millisecondsTimeout, false)) return false;
                 }
                 else {
-                    // No completion event ever installed and not completed —
-                    // shouldn't happen for any of our internal Task creation
-                    // paths, but degrade gracefully.
                     return false;
                 }
             }
@@ -93,13 +88,19 @@ namespace System.Threading.Tasks {
         //
         // Spawns a Thread per call. No ThreadPool, so this is "honest
         // parallelism with a cost": appropriate for "start a long-running
-        // background job," wrong for "fork-join a thousand small units." Real
-        // .NET pools workers and recycles; we don't yet.
+        // background job," wrong for "fork-join a thousand small units."
         //
         // The returned Task transitions WaitingToRun → Running → terminal as
         // the worker thread progresses. An awaiter that hits IsCompleted=false
         // registers a continuation that the worker thread invokes on
         // completion — matching the real .NET async pattern.
+        //
+        // IMPORTANT: we deliberately avoid lambdas that capture local variables.
+        // The C# compiler generates `<>c__DisplayClass<N>_<M>` types for those,
+        // and TinyCLR's MetadataProcessor doesn't sanitize the `<>` characters
+        // when it emits FIELD___ constants in mscorlib.h, producing
+        // syntactically-invalid C++. All thread-bound work is wrapped in named
+        // worker classes whose fields hold the would-be captures explicitly.
 
         public static Task Run(Action action) => Run(action, CancellationToken.None);
 
@@ -111,21 +112,8 @@ namespace System.Threading.Tasks {
             t._status = TaskStatus.WaitingToRun;
             t._completion = new ManualResetEvent(false);
 
-            var worker = new Thread(() => {
-                if (cancellationToken.IsCancellationRequested) { t.SetCanceled(); return; }
-                t._status = TaskStatus.Running;
-                try {
-                    action();
-                    t.SetCompleted();
-                }
-                catch (OperationCanceledException) {
-                    t.SetCanceled();
-                }
-                catch (Exception ex) {
-                    t.SetException(ex);
-                }
-            });
-            worker.Start();
+            var worker = new RunActionWorker(action, cancellationToken, t);
+            new Thread(new ThreadStart(worker.Run)).Start();
             return t;
         }
 
@@ -139,21 +127,8 @@ namespace System.Threading.Tasks {
             t._status = TaskStatus.WaitingToRun;
             t._completion = new ManualResetEvent(false);
 
-            var worker = new Thread(() => {
-                if (cancellationToken.IsCancellationRequested) { t.SetCanceled(); return; }
-                t._status = TaskStatus.Running;
-                try {
-                    t._result = function();
-                    t.SetCompleted();
-                }
-                catch (OperationCanceledException) {
-                    t.SetCanceled();
-                }
-                catch (Exception ex) {
-                    t.SetException(ex);
-                }
-            });
-            worker.Start();
+            var worker = new RunFuncWorker<TResult>(function, cancellationToken, t);
+            new Thread(new ThreadStart(worker.Run)).Start();
             return t;
         }
 
@@ -166,14 +141,20 @@ namespace System.Threading.Tasks {
         public static Task FromException(Exception exception) {
             if (exception == null) throw new ArgumentNullException();
             var t = new Task();
-            t.SetException(exception);
+            // Direct field write — SetException's IsCompleted guard would bail
+            // because `new Task()` defaults to RanToCompletion. The guard exists
+            // for race safety on Task.Run workers, not for construction.
+            // FromCanceled follows the same pattern below.
+            t._exception = exception;
+            t._status = TaskStatus.Faulted;
             return t;
         }
 
         public static Task<TResult> FromException<TResult>(Exception exception) {
             if (exception == null) throw new ArgumentNullException();
             var t = new Task<TResult>();
-            t.SetException(exception);
+            t._exception = exception;
+            t._status = TaskStatus.Faulted;
             return t;
         }
 
@@ -193,8 +174,9 @@ namespace System.Threading.Tasks {
         //
         // Both spawn ONE coordinator thread that uses WaitHandle.WaitAll /
         // WaitAny to sleep in the kernel until input tasks signal. Beats
-        // polling, and stays at one thread regardless of how many inputs
-        // there are.
+        // polling, and stays at one thread regardless of how many inputs.
+        // Coordinator logic lives in named worker classes for the same MMP
+        // reason as Task.Run.
 
         public static Task WhenAll(params Task[] tasks) {
             if (tasks == null) throw new ArgumentNullException();
@@ -238,21 +220,8 @@ namespace System.Threading.Tasks {
                 return agg;
             }
 
-            new Thread(() => {
-                var handles = new WaitHandle[tasks.Length];
-                for (var i = 0; i < tasks.Length; i++) handles[i] = tasks[i].GetCompletionHandle();
-                WaitHandle.WaitAll(handles);
-
-                Exception firstFault = null;
-                var anyCanceled = false;
-                foreach (var t in tasks) {
-                    if (t.IsFaulted && firstFault == null) firstFault = t._exception;
-                    else if (t.IsCanceled) anyCanceled = true;
-                }
-                if (firstFault != null) agg.SetException(firstFault);
-                else if (anyCanceled) agg.SetCanceled();
-                else agg.SetCompleted();
-            }).Start();
+            var worker = new WhenAllWorker(tasks, agg);
+            new Thread(new ThreadStart(worker.Run)).Start();
             return agg;
         }
 
@@ -267,24 +236,8 @@ namespace System.Threading.Tasks {
                 return agg;
             }
 
-            new Thread(() => {
-                var handles = new WaitHandle[tasks.Length];
-                for (var i = 0; i < tasks.Length; i++) handles[i] = tasks[i].GetCompletionHandle();
-                WaitHandle.WaitAll(handles);
-
-                Exception firstFault = null;
-                var anyCanceled = false;
-                var results = new TResult[tasks.Length];
-                for (var i = 0; i < tasks.Length; i++) {
-                    var t = tasks[i];
-                    if (t.IsFaulted && firstFault == null) firstFault = t._exception;
-                    else if (t.IsCanceled) anyCanceled = true;
-                    else results[i] = t._result;
-                }
-                if (firstFault != null) agg.SetException(firstFault);
-                else if (anyCanceled) agg.SetCanceled();
-                else { agg._result = results; agg.SetCompleted(); }
-            }).Start();
+            var worker = new WhenAllWorker<TResult>(tasks, agg);
+            new Thread(new ThreadStart(worker.Run)).Start();
             return agg;
         }
 
@@ -329,13 +282,8 @@ namespace System.Threading.Tasks {
             agg._status = TaskStatus.WaitingForActivation;
             agg._completion = new ManualResetEvent(false);
 
-            new Thread(() => {
-                var handles = new WaitHandle[tasks.Length];
-                for (var i = 0; i < tasks.Length; i++) handles[i] = tasks[i].GetCompletionHandle();
-                var idx = WaitHandle.WaitAny(handles);
-                agg._result = tasks[idx];
-                agg.SetCompleted();
-            }).Start();
+            var worker = new WhenAnyWorker(tasks, agg);
+            new Thread(new ThreadStart(worker.Run)).Start();
             return agg;
         }
 
@@ -344,24 +292,12 @@ namespace System.Threading.Tasks {
             agg._status = TaskStatus.WaitingForActivation;
             agg._completion = new ManualResetEvent(false);
 
-            new Thread(() => {
-                var handles = new WaitHandle[tasks.Length];
-                for (var i = 0; i < tasks.Length; i++) handles[i] = tasks[i].GetCompletionHandle();
-                var idx = WaitHandle.WaitAny(handles);
-                agg._result = tasks[idx];
-                agg.SetCompleted();
-            }).Start();
+            var worker = new WhenAnyWorker<TResult>(tasks, agg);
+            new Thread(new ThreadStart(worker.Run)).Start();
             return agg;
         }
 
         // ============ Completion + continuation dispatch ============
-        //
-        // All three terminal-state transitions go through the same locked
-        // pattern: flip status → signal event → grab continuation → unlock →
-        // invoke continuation outside the lock. The lock guards the race
-        // between RegisterContinuation (which may register just as we're
-        // transitioning) and us — the loser of that race observes IsCompleted
-        // inside the lock and runs the continuation itself.
 
         internal void SetCompleted() {
             Action c;
@@ -372,7 +308,7 @@ namespace System.Threading.Tasks {
                 c = this._continuation;
                 this._continuation = null;
             }
-            c?.Invoke();
+            if (c != null) c();
         }
 
         internal void SetCanceled() {
@@ -384,7 +320,7 @@ namespace System.Threading.Tasks {
                 c = this._continuation;
                 this._continuation = null;
             }
-            c?.Invoke();
+            if (c != null) c();
         }
 
         internal void SetException(Exception ex) {
@@ -397,13 +333,15 @@ namespace System.Threading.Tasks {
                 c = this._continuation;
                 this._continuation = null;
             }
-            c?.Invoke();
+            if (c != null) c();
         }
 
-        // Called by TaskAwaiter.OnCompleted. If the Task has already
-        // completed, runs the continuation immediately on the calling thread.
-        // Otherwise stashes it for SetCompleted/SetCanceled/SetException to
-        // fire from the worker thread.
+        // Called by TaskAwaiter.OnCompleted. If the Task has already completed,
+        // runs the continuation immediately on the calling thread. Otherwise
+        // stashes it for SetCompleted/SetCanceled/SetException to fire from
+        // the worker thread. Multiple registrations chain via MulticastDelegate
+        // — no lambda needed (which would create a `<>c__DisplayClass` and
+        // trip MetadataProcessor).
         internal void RegisterContinuation(Action continuation) {
             if (continuation == null) return;
             var runNow = false;
@@ -412,11 +350,7 @@ namespace System.Threading.Tasks {
                     runNow = true;
                 }
                 else {
-                    // Chain if there's already one registered (rare). Preserves
-                    // FIFO order; matches BCL behavior where multiple awaiters
-                    // on the same Task all get to resume.
-                    var existing = this._continuation;
-                    this._continuation = existing == null ? continuation : (Action)(() => { existing(); continuation(); });
+                    this._continuation = (Action)Delegate.Combine(this._continuation, continuation);
                 }
             }
             if (runNow) continuation();
@@ -428,12 +362,154 @@ namespace System.Threading.Tasks {
         internal WaitHandle GetCompletionHandle() {
             if (this._completion != null) return this._completion;
             if (this.IsCompleted) return _alreadySignaled;
-            // Not completed, no event yet — install one. Race-safe because
-            // SetCompleted reads _completion under the lock.
             lock (this._completionLock) {
                 if (this._completion == null) this._completion = new ManualResetEvent(this.IsCompleted);
             }
             return this._completion;
+        }
+
+        // ============ Internal worker classes (replace capturing lambdas) ============
+        //
+        // Each holds the would-be captured variables as explicit fields. Run()
+        // is the method invoked from the worker thread. Named classes are
+        // immune to the MMP `<>c__DisplayClass` mangling bug because their
+        // identifiers contain no `<` or `>` characters.
+
+        private sealed class RunActionWorker {
+            private readonly Action _action;
+            private readonly CancellationToken _token;
+            private readonly Task _result;
+
+            internal RunActionWorker(Action action, CancellationToken token, Task result) {
+                this._action = action;
+                this._token = token;
+                this._result = result;
+            }
+
+            internal void Run() {
+                if (this._token.IsCancellationRequested) { this._result.SetCanceled(); return; }
+                this._result._status = TaskStatus.Running;
+                try {
+                    this._action();
+                    this._result.SetCompleted();
+                }
+                catch (OperationCanceledException) { this._result.SetCanceled(); }
+                catch (Exception ex) { this._result.SetException(ex); }
+            }
+        }
+
+        private sealed class RunFuncWorker<TResult> {
+            private readonly Func<TResult> _function;
+            private readonly CancellationToken _token;
+            private readonly Task<TResult> _result;
+
+            internal RunFuncWorker(Func<TResult> function, CancellationToken token, Task<TResult> result) {
+                this._function = function;
+                this._token = token;
+                this._result = result;
+            }
+
+            internal void Run() {
+                if (this._token.IsCancellationRequested) { this._result.SetCanceled(); return; }
+                this._result._status = TaskStatus.Running;
+                try {
+                    this._result._result = this._function();
+                    this._result.SetCompleted();
+                }
+                catch (OperationCanceledException) { this._result.SetCanceled(); }
+                catch (Exception ex) { this._result.SetException(ex); }
+            }
+        }
+
+        private sealed class WhenAllWorker {
+            private readonly Task[] _tasks;
+            private readonly Task _agg;
+
+            internal WhenAllWorker(Task[] tasks, Task agg) {
+                this._tasks = tasks;
+                this._agg = agg;
+            }
+
+            internal void Run() {
+                var handles = new WaitHandle[this._tasks.Length];
+                for (var i = 0; i < this._tasks.Length; i++) handles[i] = this._tasks[i].GetCompletionHandle();
+                WaitHandle.WaitAll(handles);
+
+                Exception firstFault = null;
+                var anyCanceled = false;
+                foreach (var t in this._tasks) {
+                    if (t.IsFaulted && firstFault == null) firstFault = t._exception;
+                    else if (t.IsCanceled) anyCanceled = true;
+                }
+                if (firstFault != null) this._agg.SetException(firstFault);
+                else if (anyCanceled) this._agg.SetCanceled();
+                else this._agg.SetCompleted();
+            }
+        }
+
+        private sealed class WhenAllWorker<TResult> {
+            private readonly Task<TResult>[] _tasks;
+            private readonly Task<TResult[]> _agg;
+
+            internal WhenAllWorker(Task<TResult>[] tasks, Task<TResult[]> agg) {
+                this._tasks = tasks;
+                this._agg = agg;
+            }
+
+            internal void Run() {
+                var handles = new WaitHandle[this._tasks.Length];
+                for (var i = 0; i < this._tasks.Length; i++) handles[i] = this._tasks[i].GetCompletionHandle();
+                WaitHandle.WaitAll(handles);
+
+                Exception firstFault = null;
+                var anyCanceled = false;
+                var results = new TResult[this._tasks.Length];
+                for (var i = 0; i < this._tasks.Length; i++) {
+                    var t = this._tasks[i];
+                    if (t.IsFaulted && firstFault == null) firstFault = t._exception;
+                    else if (t.IsCanceled) anyCanceled = true;
+                    else results[i] = t._result;
+                }
+                if (firstFault != null) this._agg.SetException(firstFault);
+                else if (anyCanceled) this._agg.SetCanceled();
+                else { this._agg._result = results; this._agg.SetCompleted(); }
+            }
+        }
+
+        private sealed class WhenAnyWorker {
+            private readonly Task[] _tasks;
+            private readonly Task<Task> _agg;
+
+            internal WhenAnyWorker(Task[] tasks, Task<Task> agg) {
+                this._tasks = tasks;
+                this._agg = agg;
+            }
+
+            internal void Run() {
+                var handles = new WaitHandle[this._tasks.Length];
+                for (var i = 0; i < this._tasks.Length; i++) handles[i] = this._tasks[i].GetCompletionHandle();
+                var idx = WaitHandle.WaitAny(handles);
+                this._agg._result = this._tasks[idx];
+                this._agg.SetCompleted();
+            }
+        }
+
+        private sealed class WhenAnyWorker<TResult> {
+            private readonly Task<TResult>[] _tasks;
+            private readonly Task<Task<TResult>> _agg;
+
+            internal WhenAnyWorker(Task<TResult>[] tasks, Task<Task<TResult>> agg) {
+                this._tasks = tasks;
+                this._agg = agg;
+            }
+
+            internal void Run() {
+                var handles = new WaitHandle[this._tasks.Length];
+                for (var i = 0; i < this._tasks.Length; i++) handles[i] = this._tasks[i].GetCompletionHandle();
+                var idx = WaitHandle.WaitAny(handles);
+                this._agg._result = this._tasks[idx];
+                this._agg.SetCompleted();
+            }
         }
     }
 

@@ -57,14 +57,20 @@ namespace System.Threading {
             if (this._cancelled) return;
 
             // One-shot Timer that fires Cancel(). Replaces any prior timer.
-            this._timer?.Dispose();
+            // Callback is an instance method (not a capturing lambda) to avoid
+            // the C# compiler emitting a `<>c__DisplayClass` — TinyCLR's
+            // MetadataProcessor doesn't sanitize the `<>` characters when it
+            // emits FIELD___ constants in mscorlib.h.
+            if (this._timer != null) this._timer.Dispose();
             if (millisecondsDelay == Timeout.Infinite) {
                 this._timer = null;
                 return;
             }
-            this._timer = new Timer(_ => {
-                try { if (!this._disposed) this.Cancel(); } catch { }
-            }, null, millisecondsDelay, Timeout.Infinite);
+            this._timer = new Timer(new TimerCallback(this.OnCancelAfterTimer), null, millisecondsDelay, Timeout.Infinite);
+        }
+
+        private void OnCancelAfterTimer(object state) {
+            try { if (!this._disposed) this.Cancel(); } catch { }
         }
 
         public void CancelAfter(TimeSpan delay) => this.CancelAfter((int)delay.TotalMilliseconds);
@@ -80,7 +86,7 @@ namespace System.Threading {
         public void Dispose() {
             if (this._disposed) return;
             this._disposed = true;
-            this._timer?.Dispose();
+            if (this._timer != null) this._timer.Dispose();
             this._timer = null;
         }
 
