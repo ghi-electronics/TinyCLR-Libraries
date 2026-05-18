@@ -12,12 +12,20 @@ namespace System.Runtime.CompilerServices {
             if (this._task != null) this._task.Wait();
         }
 
+        // Register the continuation on the Task. If the Task is already
+        // complete, RegisterContinuation runs it immediately. Otherwise the
+        // worker thread (or whoever calls SetCompleted/Canceled/Exception)
+        // fires it. This matches the real .NET async pattern — the calling
+        // thread doesn't block, and the state machine resumes on whatever
+        // thread completes the Task.
         public void OnCompleted(Action continuation) {
-            if (continuation != null) continuation();
+            if (this._task == null) { continuation?.Invoke(); return; }
+            this._task.RegisterContinuation(continuation);
         }
 
         public void UnsafeOnCompleted(Action continuation) {
-            if (continuation != null) continuation();
+            if (this._task == null) { continuation?.Invoke(); return; }
+            this._task.RegisterContinuation(continuation);
         }
     }
 
@@ -31,15 +39,17 @@ namespace System.Runtime.CompilerServices {
         public TResult GetResult() {
             if (this._task == null) return default(TResult);
             this._task.Wait();
-            return this._task.Result;
+            return this._task._result;
         }
 
         public void OnCompleted(Action continuation) {
-            if (continuation != null) continuation();
+            if (this._task == null) { continuation?.Invoke(); return; }
+            this._task.RegisterContinuation(continuation);
         }
 
         public void UnsafeOnCompleted(Action continuation) {
-            if (continuation != null) continuation();
+            if (this._task == null) { continuation?.Invoke(); return; }
+            this._task.RegisterContinuation(continuation);
         }
     }
 }
