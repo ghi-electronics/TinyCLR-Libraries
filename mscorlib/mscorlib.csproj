@@ -79,8 +79,6 @@
     <Compile Include="Collections\Generic\IEnumerator.cs" />
     <Compile Include="Collections\Generic\IEqualityComparer.cs" />
     <Compile Include="Collections\Generic\IList.cs" />
-    <Compile Include="Collections\Generic\ISet.cs" />
-    <Compile Include="Collections\Generic\HashSet.cs" />
     <Compile Include="Collections\Generic\KeyNotFoundException.cs" />
     <Compile Include="Collections\Generic\KeyValuePair.cs" />
     <Compile Include="Collections\Generic\List.cs" />

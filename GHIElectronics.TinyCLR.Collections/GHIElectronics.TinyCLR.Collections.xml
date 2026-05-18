@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>GHIElectronics.TinyCLR.Collections</name>
+    </assembly>
+    <members>
+        <member name="T:System.Collections.Generic.ISet`1">
+            <summary>
+            Generic set abstraction. Mirrors the .NET BCL <c>System.Collections.Generic.ISet&lt;T&gt;</c>
+            shape so HashSet&lt;T&gt; and future set implementations interop cleanly with
+            portable BCL-using code.
+            </summary>
+        </member>
+        <member name="T:System.Collections.Generic.HashSet`1">
+             <summary>
+             Hash-table-based generic set. Mirrors the .NET BCL surface for the subset
+             we ship. Same chained-collision layout and prime-table sizing as
+             <see cref="T:System.Collections.Generic.Dictionary`2"/>; the entry holds the element
+             directly instead of a key/value pair.
+            
+             null IS a valid element when T is a reference type — the comparer
+             (<see cref="P:System.Collections.Generic.EqualityComparer`1.Default"/>) treats null consistently
+             (GetHashCode(null) = 0, Equals(null, null) = true).
+             </summary>
+        </member>
+    </members>
+</doc>
