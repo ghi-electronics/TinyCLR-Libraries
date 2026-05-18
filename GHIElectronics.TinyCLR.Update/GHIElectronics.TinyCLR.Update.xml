@@ -18,7 +18,7 @@
         </member>
         <member name="M:GHIElectronics.TinyCLR.Update.ApplicationUpdate.Verify">
             <summary>Verifies the signature of the streamed image without flashing it.</summary>
-            <returns>Decoded version string (e.g. "2.5.0.1000") or "Invalid." if verification failed.</returns>
+            <returns>Decoded version string (e.g. "3.0.0.1000") or "Invalid." if verification failed.</returns>
         </member>
         <member name="M:GHIElectronics.TinyCLR.Update.ApplicationUpdate.FlashAndReset">
             <summary>

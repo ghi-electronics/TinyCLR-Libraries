@@ -46,7 +46,7 @@ namespace GHIElectronics.TinyCLR.Update {
         }
 
         /// <summary>Verifies the signature of the streamed image without flashing it.</summary>
-        /// <returns>Decoded version string (e.g. "2.5.0.1000") or "Invalid." if verification failed.</returns>
+        /// <returns>Decoded version string (e.g. "3.0.0.1000") or "Invalid." if verification failed.</returns>
         public string Verify() {
             InFieldUpdate.NativeSetApplicationSize((uint)this.stream.Length);
             var v = this.NativeAuthenticateApplication(this.stream, this.key, this.activityPinId);
