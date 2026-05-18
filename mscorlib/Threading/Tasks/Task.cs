@@ -2,6 +2,39 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
 namespace System.Threading.Tasks {
+    // ============ KNOWN LIMITATION: `await Task<T>` ============
+    //
+    // `await Task<T>` (awaiting a generic Task) currently crashes with
+    // CLR_E_WRONG_TYPE inside the compiler-generated state machine. Root
+    // cause is in TinyCLR's interpreter: generic type parameters are lost
+    // when a struct state machine is boxed for an await suspension, so
+    // reading the `TaskAwaiter<T> <>u__N` field back from the box after
+    // the continuation resumes mis-types the access.
+    //
+    // Workaround patterns:
+    //
+    //   // BAD - hits the bug:
+    //   int v = await Task.Run<int>(() => Compute());
+    //
+    //   // GOOD - use .Result after starting:
+    //   var t = Task.Run<int>(() => Compute());
+    //   ...
+    //   int v = t.Result;       // blocks, but no async-await type loss
+    //
+    //   // ALSO GOOD - await non-generic Task instead:
+    //   await Task.Delay(0);     // or any non-generic awaitable
+    //   int v = t.Result;
+    //
+    // Awaiting non-generic `Task` (Task.Delay, Task.WhenAll(Task[])) works
+    // correctly. Only generic Task<T> awaits are affected.
+    //
+    // Defensive fault: AsyncTaskMethodBuilder's continuation trampoline
+    // catches the MoveNext crash and faults the outer Task, so the caller
+    // sees an exception rather than a deadlock. But the operation still
+    // fails — this is escape-the-hang, not make-it-work.
+    //
+    // Full fix is CLR-level (interpreter generic-erasure tracking), Tier 3.
+    // See feedback_task_async_generic_state_machine memory note.
     public class Task {
         internal Exception _exception;
         internal TaskStatus _status = TaskStatus.RanToCompletion;
