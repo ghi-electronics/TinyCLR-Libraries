@@ -84,7 +84,15 @@ namespace System.Collections.Generic {
             Array.Copy(_items, 0, array, arrayIndex, _size);
         }
 
-        public IEnumerator<T> GetEnumerator() => new Enumerator(this);
+        // Return the inner Enumerator struct directly. BCL's signature is
+        // `public Enumerator GetEnumerator()`; if we return IEnumerator<T>
+        // here, the IL typeref baked into user code (e.g. via foreach) doesn't
+        // match BCL's on Desktop and raises MissingMethodException at JIT.
+        // Explicit IEnumerable<T>/IEnumerable interface impls (below) cover
+        // the interface-resolved cases. This signature change requires an MMP
+        // regen pass against the new mscorlib.dll so the device's mscorlib.h
+        // tables match the new method layout.
+        public Enumerator GetEnumerator() => new Enumerator(this);
 
         public int IndexOf(T item) {
             for (var i = 0; i < _size; i++) {
@@ -399,13 +407,17 @@ namespace System.Collections.Generic {
         void IList.RemoveAt(int index) => RemoveAt(index);
         void ICollection.CopyTo(Array array, int index) => Array.Copy(_items, 0, array, index, _size);
 
-        // --- IEnumerable (non-generic) explicit implementation ---
+        // --- IEnumerable<T> / IEnumerable (explicit interface implementations) ---
 
+        IEnumerator<T> IEnumerable<T>.GetEnumerator() => new Enumerator(this);
         IEnumerator IEnumerable.GetEnumerator() => new Enumerator(this);
 
         // --- Inner Enumerator ---
+        // BCL ships List<T>.Enumerator as a public struct. Match that so
+        // foreach IL binds correctly on Desktop (the struct is consumed by
+        // value through the IDispose-pattern foreach emits).
 
-        private class Enumerator : IEnumerator<T>, IEnumerator, IDisposable {
+        public struct Enumerator : IEnumerator<T>, IEnumerator, IDisposable {
             private readonly List<T> _list;
             private readonly int _version;
             private int _index;
