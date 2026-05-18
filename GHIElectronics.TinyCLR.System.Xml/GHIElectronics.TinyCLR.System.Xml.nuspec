@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>GHIElectronics.TinyCLR.System.Xml</id>
+    <version>3.0.0.1000-prerelease</version>
+    <authors>GHI Electronics, LLC</authors>
+    <owners>GHI Electronics, LLC</owners>
+    <projectUrl>https://ghielectronics.com/</projectUrl>
+    <iconUrl>http://files.ghielectronics.com/downloads/Logos/GHIElectronicsTinyCLRNuGet.png</iconUrl>
+    <licenseUrl>http://files.ghielectronics.com/downloads/TinyCLR/License.txt</licenseUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>System.Xml compatibility facade for TinyCLR OS. User code writes `using System.Xml; XmlReader.Create(...)` — on device the call is backed by GHIElectronics.TinyCLR.Data.Xml; on Desktop the type-refs forward to the real BCL System.Xml.dll.</description>
+    <copyright>Copyright GHI Electronics, LLC 2026</copyright>
+    <tags>TinyCLR TinyCLROS Xml</tags>
+    <dependencies>
+      <dependency id="GHIElectronics.TinyCLR.Core" version="3.0.0.1000-prerelease" />
+      <dependency id="GHIElectronics.TinyCLR.Data.Xml" version="3.0.0.1000-prerelease" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="$TargetDir$GHIElectronics.TinyCLR.System.Xml.dll" target="lib\net48" />
+    <file src="$TargetDir$GHIElectronics.TinyCLR.System.Xml.xml" target="lib\net48" />
+    <file src="..\GHIElectronics.TinyCLR.System.Xml.Desktop\bin\Debug\GHIElectronics.TinyCLR.System.Xml.dll" target="desktop-shim" />
+    <file src="$TargetDir$GHIElectronics.TinyCLR.System.Xml.xml" target="desktop-shim" />
+    <file src="$TargetDir$GHIElectronics.TinyCLR.System.Xml.dll" target="tinyclr" />
+    <file src="$TargetDir$GHIElectronics.TinyCLR.System.Xml.xml" target="tinyclr" />
+    <file src="$ProjectDir$GHIElectronics.TinyCLR.System.Xml.props" target="build\net48" />
+  </files>
+</package>

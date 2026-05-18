@@ -9,11 +9,12 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>System.Xml</RootNamespace>
-    <AssemblyName>System.Xml</AssemblyName>
+    <AssemblyName>GHIElectronics.TinyCLR.System.Xml</AssemblyName>
     <DocumentationFile>$(OutputPath)$(AssemblyName).xml</DocumentationFile>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A1948822-69DD-4150-919B-F3F42EFB71CC};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <LangVersion>latest</LangVersion>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <TargetFrameworkProfile />
@@ -40,10 +41,30 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="GHIElectronics.TinyCLR.System.Xml.nuspec" />
+    <None Include="GHIElectronics.TinyCLR.System.Xml.props" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\GHIElectronics.TinyCLR.Data.Xml\GHIElectronics.TinyCLR.Data.Xml.csproj">
       <Project>{C591328A-97A3-4392-96B2-D3DB823E8CFF}</Project>
       <Name>GHIElectronics.TinyCLR.Data.Xml</Name>
     </ProjectReference>
+    <ProjectReference Include="..\GHIElectronics.TinyCLR.System.Xml.Desktop\GHIElectronics.TinyCLR.System.Xml.Desktop.csproj">
+      <Project>{6F8A3C2E-1B5D-4A7E-9C4F-3D2E1A0B5C6D}</Project>
+      <Name>GHIElectronics.TinyCLR.System.Xml.Desktop</Name>
+      <ReferenceOutputAssembly>False</ReferenceOutputAssembly>
+      <Private>False</Private>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\GHIElectronics.Tools.NuGetPacker.1.0.3\build\GHIElectronics.Tools.NuGetPacker.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\GHIElectronics.Tools.NuGetPacker.1.0.3\build\GHIElectronics.Tools.NuGetPacker.targets'))" />
+    <Error Condition="'$(DoAssemblySign)'=='true' And !Exists('..\packages\GHIElectronics.Tools.AssemblySigner.1.0.3\build\GHIElectronics.Tools.AssemblySigner.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\GHIElectronics.Tools.AssemblySigner.1.0.3\build\GHIElectronics.Tools.AssemblySigner.targets'))" />
+  </Target>
+  <Import Project="..\packages\GHIElectronics.Tools.NuGetPacker.1.0.3\build\GHIElectronics.Tools.NuGetPacker.targets" Condition="Exists('..\packages\GHIElectronics.Tools.NuGetPacker.1.0.3\build\GHIElectronics.Tools.NuGetPacker.targets')" />
+  <Import Project="..\packages\GHIElectronics.Tools.AssemblySigner.1.0.3\build\GHIElectronics.Tools.AssemblySigner.targets" Condition="'$(DoAssemblySign)'=='true' And Exists('..\packages\GHIElectronics.Tools.AssemblySigner.1.0.3\build\GHIElectronics.Tools.AssemblySigner.targets')" />
 </Project>

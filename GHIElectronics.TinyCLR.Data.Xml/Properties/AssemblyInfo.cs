@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 
 // .NET-overlap XML types (XmlReader/XmlWriter/etc.) are internal here; their public
 // surface lives in the System.Xml compat assembly which delegates back via friend access.
-[assembly: InternalsVisibleTo("System.Xml")]
+[assembly: InternalsVisibleTo("GHIElectronics.TinyCLR.System.Xml")]
 
 [assembly: AssemblyTitle("GHIElectronics.TinyCLR.Data.Xml")]
 [assembly: AssemblyDescription("TinyCLR OS Xml library.")]
