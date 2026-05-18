@@ -79,6 +79,8 @@
     <Compile Include="Collections\Generic\IEnumerator.cs" />
     <Compile Include="Collections\Generic\IEqualityComparer.cs" />
     <Compile Include="Collections\Generic\IList.cs" />
+    <Compile Include="Collections\Generic\ISet.cs" />
+    <Compile Include="Collections\Generic\HashSet.cs" />
     <Compile Include="Collections\Generic\KeyNotFoundException.cs" />
     <Compile Include="Collections\Generic\KeyValuePair.cs" />
     <Compile Include="Collections\Generic\List.cs" />
@@ -198,6 +200,7 @@
     <Compile Include="Runtime\CompilerServices\AsyncMethodBuilderAttribute.cs" />
     <Compile Include="Runtime\CompilerServices\AsyncTaskMethodBuilder.cs" />
     <Compile Include="Runtime\CompilerServices\CallerArgumentExpressionAttribute.cs" />
+    <Compile Include="Runtime\CompilerServices\ConfiguredTaskAwaitable.cs" />
     <Compile Include="Runtime\CompilerServices\CompilerFeatureRequiredAttribute.cs" />
     <Compile Include="Runtime\CompilerServices\CompilerGeneratedAttribute.cs" />
     <Compile Include="Runtime\CompilerServices\ExtensionAttribute.cs" />
@@ -236,6 +239,8 @@
     <Compile Include="ThreadAttributes.cs" />
     <Compile Include="Threading\AutoResetEvent.cs" />
     <Compile Include="Threading\CancellationToken.cs" />
+    <Compile Include="Threading\CancellationTokenSource.cs" />
+    <Compile Include="Threading\OperationCanceledException.cs" />
     <Compile Include="Threading\Interlocked.cs" />
     <Compile Include="Threading\ManualResetEvent.cs" />
     <Compile Include="Threading\Monitor.cs" />

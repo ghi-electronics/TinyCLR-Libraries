@@ -1,23 +1,33 @@
 namespace System.Threading {
-    // Skeleton. The struct's storage is reserved for a future CancellationTokenSource
-    // reference; current state is "never cancellable" so most APIs that accept a
-    // CancellationToken parameter type-check correctly and behave as if no token
-    // were passed. ThrowIfCancellationRequested is a no-op because there is no
-    // source to fire cancellation yet.
+    /// <summary>
+    /// Read-only handle to a <see cref="CancellationTokenSource"/>'s cancellation
+    /// state. Pollable (<see cref="IsCancellationRequested"/>) and assertable
+    /// (<see cref="ThrowIfCancellationRequested"/>). The token is a struct, so
+    /// passing it around is allocation-free; cancellation observation is one
+    /// reference-comparison + one bool read.
+    ///
+    /// There is no callback (Register) support yet — consumers must poll. See
+    /// CancellationTokenSource for the latency / interrupt semantics.
+    /// </summary>
     public struct CancellationToken {
-        private readonly object _source;
+        private readonly CancellationTokenSource _source;
 
-        internal CancellationToken(object source) { this._source = source; }
+        internal CancellationToken(CancellationTokenSource source) { this._source = source; }
+
+        // Legacy ctor — accepts a generic object so existing call sites that
+        // were typed against the pre-source skeleton still compile. Anything
+        // that isn't a CancellationTokenSource just yields an uncancellable
+        // token (matches the old behavior).
+        internal CancellationToken(object source) { this._source = source as CancellationTokenSource; }
 
         public static CancellationToken None => default(CancellationToken);
 
-        public bool IsCancellationRequested => false;
+        public bool IsCancellationRequested => this._source != null && this._source.InternalIsCancelled;
 
-        public bool CanBeCanceled => false;
+        public bool CanBeCanceled => this._source != null;
 
         public void ThrowIfCancellationRequested() {
-            // No-op until CancellationTokenSource is added. When a source exists,
-            // this should throw OperationCanceledException if requested.
+            if (this.IsCancellationRequested) throw new OperationCanceledException(this);
         }
 
         public override bool Equals(object obj) => obj is CancellationToken other && this._source == other._source;
