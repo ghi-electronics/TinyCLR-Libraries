@@ -36,7 +36,11 @@ namespace System.Threading.Tasks {
     // Full fix is CLR-level (interpreter generic-erasure tracking), Tier 3.
     // See feedback_task_async_generic_state_machine memory note.
     public class Task {
-        internal Exception _exception;
+        // AggregateException, not Exception, to match BCL Task.get_Exception()
+        // signature. On Desktop the user-code IL typeref resolves through to
+        // BCL Task; if the return type were Exception, the JIT would raise
+        // MissingMethodException.
+        internal AggregateException _exception;
         internal TaskStatus _status = TaskStatus.RanToCompletion;
 
         // Completion plumbing — both lazy, so the legacy "make a pre-completed
@@ -64,7 +68,7 @@ namespace System.Threading.Tasks {
         public bool IsCompleted => this._status == TaskStatus.RanToCompletion || this._status == TaskStatus.Faulted || this._status == TaskStatus.Canceled;
         public bool IsFaulted => this._status == TaskStatus.Faulted;
         public bool IsCanceled => this._status == TaskStatus.Canceled;
-        public Exception Exception => this._exception;
+        public AggregateException Exception => this._exception;
 
         public static readonly Task CompletedTask = new Task();
 
@@ -80,7 +84,10 @@ namespace System.Threading.Tasks {
                 if (this._completion != null) this._completion.WaitOne();
             }
             if (this._status == TaskStatus.Faulted && this._exception != null) throw this._exception;
-            if (this._status == TaskStatus.Canceled) throw new OperationCanceledException();
+            // BCL Task.Wait() on a canceled Task throws AggregateException
+            // wrapping a TaskCanceledException — not a raw OperationCanceledException.
+            // Match that here so device and Desktop agree on the throw type.
+            if (this._status == TaskStatus.Canceled) throw new AggregateException(new OperationCanceledException());
         }
 
         public bool Wait(int millisecondsTimeout) {
@@ -93,7 +100,10 @@ namespace System.Threading.Tasks {
                 }
             }
             if (this._status == TaskStatus.Faulted && this._exception != null) throw this._exception;
-            if (this._status == TaskStatus.Canceled) throw new OperationCanceledException();
+            // BCL Task.Wait() on a canceled Task throws AggregateException
+            // wrapping a TaskCanceledException — not a raw OperationCanceledException.
+            // Match that here so device and Desktop agree on the throw type.
+            if (this._status == TaskStatus.Canceled) throw new AggregateException(new OperationCanceledException());
             return true;
         }
 
@@ -178,7 +188,7 @@ namespace System.Threading.Tasks {
             // because `new Task()` defaults to RanToCompletion. The guard exists
             // for race safety on Task.Run workers, not for construction.
             // FromCanceled follows the same pattern below.
-            t._exception = exception;
+            t._exception = WrapForTask(exception);
             t._status = TaskStatus.Faulted;
             return t;
         }
@@ -186,18 +196,31 @@ namespace System.Threading.Tasks {
         public static Task<TResult> FromException<TResult>(Exception exception) {
             if (exception == null) throw new ArgumentNullException();
             var t = new Task<TResult>();
-            t._exception = exception;
+            t._exception = WrapForTask(exception);
             t._status = TaskStatus.Faulted;
             return t;
         }
 
+        // Storing exceptions as AggregateException matches BCL's Task contract.
+        // If the caller already handed us an AggregateException, keep it as-is
+        // rather than double-wrapping; otherwise wrap the raw Exception.
+        internal static AggregateException WrapForTask(Exception ex) =>
+            ex is AggregateException ae ? ae : new AggregateException(ex);
+
         public static Task FromCanceled(CancellationToken cancellationToken) {
+            // BCL requires the token to be already-canceled; passing
+            // CancellationToken.None throws ArgumentOutOfRangeException. Mirror
+            // that so device behavior matches Desktop.
+            if (!cancellationToken.IsCancellationRequested)
+                throw new ArgumentOutOfRangeException("cancellationToken");
             var t = new Task();
             t._status = TaskStatus.Canceled;
             return t;
         }
 
         public static Task<TResult> FromCanceled<TResult>(CancellationToken cancellationToken) {
+            if (!cancellationToken.IsCancellationRequested)
+                throw new ArgumentOutOfRangeException("cancellationToken");
             var t = new Task<TResult>();
             t._status = TaskStatus.Canceled;
             return t;
@@ -360,7 +383,7 @@ namespace System.Threading.Tasks {
             Action c;
             lock (this._completionLock) {
                 if (this.IsCompleted) return;
-                this._exception = ex;
+                this._exception = WrapForTask(ex);
                 this._status = TaskStatus.Faulted;
                 if (this._completion != null) this._completion.Set();
                 c = this._continuation;

@@ -340,7 +340,18 @@ namespace System.Xml {
         public override bool MoveToNextAttribute() => this.inner.MoveToNextAttribute();
         public override bool MoveToElement() => this.inner.MoveToElement();
         public override bool ReadAttributeValue() => this.inner.ReadAttributeValue();
-        public override bool Read() => this.inner.Read();
+
+        // Parsing errors bubble up here as TinyXml.XmlException. Translate to the
+        // BCL-shape System.Xml.XmlException so user code's `catch (XmlException)`
+        // catches on both sides — on Desktop the typeref forwards to the BCL
+        // type, which the BCL reader naturally throws. Match that here.
+        public override bool Read() {
+            try { return this.inner.Read(); }
+            catch (TinyXml.XmlException ex) {
+                throw new XmlException(ex.Message, ex, ex.LineNumber, ex.LinePosition);
+            }
+        }
+
         public override void Close() => this.inner.Close();
         public override string LookupNamespace(string prefix) => this.inner.LookupNamespace(prefix);
         public override void ResolveEntity() => this.inner.ResolveEntity();
@@ -386,6 +397,7 @@ namespace System.Xml {
 
     internal sealed class WrappingXmlWriter : XmlWriter {
         private readonly TinyXml.XmlWriter inner;
+        private bool closed;
         public WrappingXmlWriter(TinyXml.XmlWriter inner) => this.inner = inner;
 
         public override void WriteStartDocument() => this.inner.WriteStartDocument();
@@ -405,7 +417,24 @@ namespace System.Xml {
         public override void WriteComment(string text) => this.inner.WriteComment(text);
         public override void WriteProcessingInstruction(string name, string text) => this.inner.WriteProcessingInstruction(name, text);
         public override void Flush() => this.inner.Flush();
-        public override void Close() => this.inner.Close();
+
+        // BCL XmlWriter.Close (with default XmlWriterSettings.CloseOutput == false)
+        // flushes the buffered XML but LEAVES the underlying stream open. The
+        // user owns the stream lifecycle. TinyXml.XmlWriter.Close eagerly closes
+        // the inner stream — that mismatches BCL and breaks the common pattern
+        //   var ms = new MemoryStream();
+        //   using (var w = XmlWriter.Create(ms)) { ... }
+        //   ms.Position = 0;   // would throw ObjectDisposedException
+        //   var bytes = ms.ToArray();
+        // So we flush only — the inner XmlWriter's internal state is unreachable
+        // after our wrapper is disposed; GC will reclaim it. The user's stream
+        // stays open and seekable.
+        public override void Close() {
+            if (this.closed) return;
+            this.closed = true;
+            this.inner.Flush();
+        }
+
         public override string LookupPrefix(string ns) => this.inner.LookupPrefix(ns);
     }
 }

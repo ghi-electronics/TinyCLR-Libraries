@@ -38,6 +38,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Action.cs" />
+    <Compile Include="AggregateException.cs" />
     <Compile Include="AppDomain.cs" />
     <Compile Include="AppDomainUnloadedException.cs" />
     <Compile Include="ApplicationException.cs" />

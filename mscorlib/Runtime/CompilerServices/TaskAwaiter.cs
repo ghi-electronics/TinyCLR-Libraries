@@ -9,7 +9,19 @@ namespace System.Runtime.CompilerServices {
         public bool IsCompleted => this._task == null || this._task.IsCompleted;
 
         public void GetResult() {
-            if (this._task != null) this._task.Wait();
+            if (this._task == null) return;
+            // BCL semantics: `await task` throws the underlying exception, NOT
+            // the AggregateException wrapper. Only task.Wait() throws the
+            // AggregateException. Mirror that here so user code's
+            //   try { await task; } catch (InvalidOperationException) { ... }
+            // catches the original type as it does on Desktop.
+            if (this._task._status == TaskStatus.Canceled) throw new OperationCanceledException();
+            if (this._task._status == TaskStatus.Faulted && this._task._exception != null) {
+                var inners = this._task._exception.GetInnerExceptions();
+                if (inners.Length == 1 && inners[0] != null) throw inners[0];
+                throw this._task._exception;
+            }
+            this._task.Wait();
         }
 
         // Register the continuation on the Task. If the Task is already
@@ -38,6 +50,13 @@ namespace System.Runtime.CompilerServices {
 
         public TResult GetResult() {
             if (this._task == null) return default(TResult);
+            // See TaskAwaiter.GetResult above for rationale on unwrapping.
+            if (this._task._status == TaskStatus.Canceled) throw new OperationCanceledException();
+            if (this._task._status == TaskStatus.Faulted && this._task._exception != null) {
+                var inners = this._task._exception.GetInnerExceptions();
+                if (inners.Length == 1 && inners[0] != null) throw inners[0];
+                throw this._task._exception;
+            }
             this._task.Wait();
             return this._task._result;
         }
