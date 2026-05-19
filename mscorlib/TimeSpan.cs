@@ -75,23 +75,47 @@ namespace System {
 
         public int Seconds => (int)((this.m_ticks / TicksPerSecond) % 60);
 
-        public double TotalDays => this.m_ticks * DaysPerTick;
-        public double TotalHours => this.m_ticks * HoursPerTick;
+        // TinyCLR's interpreter has a bug in the `long * double` path: the
+        // multiplication produces a value far outside the expected range. On
+        // device, `2524438 * 0.0001` (which should be 252.4438) lands below
+        // MinMilliSeconds, the clamp fires, and TotalMilliseconds returns
+        // -922337203685477 for any nonzero TimeSpan. Adding an explicit
+        // `(double)` cast to the long doesn't help — the C# compiler emits
+        // identical IL either way (the conv.r8 is required for both forms).
+        //
+        // Workaround: split the long into a whole-unit part and a remainder,
+        // do the divide and multiply in long-only arithmetic, then add the
+        // remainder fraction via pure double math. No `long * double`
+        // operation appears anywhere. Public API and observable behavior are
+        // unchanged.
+        //
+        // Precision note: (double)wholeUnits is precise as long as wholeUnits
+        // fits in 53 bits — true for any TimeSpan up to ~285,000 years.
+        public double TotalDays => DivToDouble(this.m_ticks, TicksPerDay);
+        public double TotalHours => DivToDouble(this.m_ticks, TicksPerHour);
         public double TotalMilliseconds {
             get {
-                var temp = this.m_ticks * MillisecondsPerTick;
-                if (temp > MaxMilliSeconds)
+                var result = DivToDouble(this.m_ticks, TicksPerMillisecond);
+                if (result > MaxMilliSeconds)
                     return MaxMilliSeconds;
 
-                if (temp < MinMilliSeconds)
+                if (result < MinMilliSeconds)
                     return MinMilliSeconds;
 
-                return temp;
+                return result;
             }
         }
 
-        public double TotalMinutes => this.m_ticks * MinutesPerTick;
-        public double TotalSeconds => this.m_ticks * SecondsPerTick;
+        public double TotalMinutes => DivToDouble(this.m_ticks, TicksPerMinute);
+        public double TotalSeconds => DivToDouble(this.m_ticks, TicksPerSecond);
+
+        // Computes `ticks / divisor` as a double without going through the
+        // broken long*double multiplication path. `divisor` must be > 0.
+        private static double DivToDouble(long ticks, long divisor) {
+            var whole = ticks / divisor;
+            var remainder = ticks - whole * divisor;
+            return (double)whole + (double)remainder / (double)divisor;
+        }
         public TimeSpan Add(TimeSpan ts) => new TimeSpan(this.m_ticks + ts.m_ticks);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
