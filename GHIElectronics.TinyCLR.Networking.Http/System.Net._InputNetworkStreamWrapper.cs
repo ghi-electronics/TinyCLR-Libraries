@@ -118,16 +118,18 @@ namespace System.Net
 #endif
             //  m_dataStart should be equal to m_dataEnd. Purge buffered data.
             this.m_dataStart = this.m_dataEnd = 0;
-            // Read up to read_buffer_size, but less data can be read.
-            // This function does not try to block, so it reads available data or 1 byte at least.
-            var readCount = (int)this.m_Stream.Length;
-            if ( readCount > read_buffer_size )
-            {
+            // Standard .NET: NetworkStream.Length always throws NotSupportedException
+            // (network streams aren't seekable). To find out "how many bytes can I read
+            // right now without blocking", use Socket.Available — that's what BCL code
+            // does, and it matches the Desktop sibling of this wrapper. The previous
+            // `(int)this.m_Stream.Length` was legacy NETMF behavior and broke every
+            // GetResponse() call with NotSupportedException.
+            //
+            // If Available is 0, ask for read_buffer_size and let Stream.Read block
+            // until at least 1 byte arrives (standard Stream.Read semantics).
+            var readCount = this.m_Socket != null ? this.m_Socket.Available : 0;
+            if (readCount > read_buffer_size || readCount == 0) {
                 readCount = read_buffer_size;
-            }
-            else if (readCount == 0)
-            {
-                readCount = 1;
             }
 
             //this.m_dataEnd = this.m_Stream.Read(this.m_readBuffer, 0, readCount);
@@ -404,7 +406,11 @@ namespace System.Net
         /// </summary>
         /// <returns>The length of the data available on the stream.
         /// Add data cached in the stream buffer to available on socket</returns>
-        public override long Length => this.m_EnableChunkedDecoding && this.m_chunk != null ? this.m_chunk.m_Size : this.m_Stream.Length + this.m_dataEnd - this.m_dataStart;
+        public override long Length => this.m_EnableChunkedDecoding && this.m_chunk != null
+            ? (long)this.m_chunk.m_Size
+            // NetworkStream.Length throws NotSupportedException per standard .NET.
+            // Use Socket.Available + buffered bytes — same as the Desktop sibling.
+            : (this.m_Socket != null ? this.m_Socket.Available : 0) + this.m_dataEnd - this.m_dataStart;
 
         /// <summary>
         /// Position is not supported for NetworkStream

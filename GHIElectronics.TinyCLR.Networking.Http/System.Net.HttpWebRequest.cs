@@ -1509,6 +1509,32 @@ namespace System.Net {
                 }
             }
 
+            // RFC 7230 §3.3.3: bodies are forbidden for responses to a HEAD
+            // request, and for responses with status 1xx (Informational),
+            // 204 (No Content), or 304 (Not Modified). The response message
+            // ends at the empty line after the headers, regardless of
+            // Content-Length / Transfer-Encoding (which the server may still
+            // send to describe what the body WOULD be for an equivalent GET).
+            //
+            // Without these overrides, GetResponseStream().Read() blocks
+            // forever waiting for body bytes that will never arrive — which
+            // surfaced as test hangs against /status/204 and HEAD requests
+            // where the server reported Content-Length > 0.
+            //
+            // We zero only the wrapper's internal "bytes left" counter — the
+            // public HttpWebResponse.ContentLength still reports the server's
+            // header value, which matches BCL behavior. Chunked-decoding is
+            // also disabled in case a server (incorrectly) signaled it for a
+            // bodyless response.
+            var bodyless = this.m_method == "HEAD"
+                        || ret.m_statusCode == 204
+                        || ret.m_statusCode == 304
+                        || (ret.m_statusCode >= 100 && ret.m_statusCode < 200);
+            if (bodyless) {
+                inStream.m_BytesLeftInResponse = 0;
+                ret.m_chunked = false;
+            }
+
             return ret;
         }
 
@@ -1676,7 +1702,12 @@ namespace System.Net {
                 statusLine = this.Method + " " + this.Address.AbsoluteUri + " HTTP/" + this.ProtocolVersion + "\r\n";
             }
             else {
-                statusLine = this.Method + " " + this.Address.AbsolutePath + " HTTP/" + this.ProtocolVersion + "\r\n";    // .PathAndQuery
+                // PathAndQuery — NOT AbsolutePath. BCL's Uri.AbsolutePath
+                // strips the query string per RFC; TinyCLR's accidentally
+                // included it (non-standard). Using PathAndQuery is correct
+                // on both runtimes — any `?key=value` portion of the URL
+                // now reaches the server.
+                statusLine = this.Method + " " + this.Address.PathAndQuery + " HTTP/" + this.ProtocolVersion + "\r\n";
             }
 
             //most intrinsic headers are stored in the webheaders class

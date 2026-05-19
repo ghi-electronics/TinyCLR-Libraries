@@ -4076,6 +4076,25 @@
             This instance represents a relative URI, and this property is valid
             only for absolute URIs.
             </exception>
+            <summary>
+            Path portion of the URI, without the query string. Matches BCL.
+            </summary>
+            <remarks>
+            Internal storage (<see cref="F:System.Uri.m_AbsolutePath"/>) historically held
+            "path?query" because the URI parser doesn't split on '?' (the
+            parser only splits on '/' between authority and the rest). The
+            getter strips at '?' here so the public value matches BCL
+            semantics. Use <see cref="P:System.Uri.PathAndQuery"/> if you need the
+            path-plus-query string (e.g. for an HTTP request line).
+            </remarks>
+        </member>
+        <member name="P:System.Uri.PathAndQuery">
+            <summary>
+            The <see cref="P:System.Uri.AbsolutePath"/> and <see cref="P:System.Uri.Query"/> properties
+            joined by '?'. Matches the BCL property of the same name. Meant
+            for callers that need the path-plus-query part to send on the
+            wire (HTTP request line, etc.).
+            </summary>
         </member>
         <member name="P:System.Uri.Query">
             <summary>

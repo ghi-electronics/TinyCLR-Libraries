@@ -99,16 +99,17 @@ namespace System.IO
                 // Get the new buffer
                 try
                 {
-                    // Retry read until response timeout expires
-                    while (this.m_stream.Length > 0 && totRead < this.m_buffer.Length)
+                    // Standard .NET pattern: ask Stream.Read for the full
+                    // remaining buffer space and let the stream return what
+                    // it has. The previous `m_stream.Length` guard threw
+                    // NotSupportedException on BCL NetworkStream/SslStream.
+                    while (totRead < this.m_buffer.Length)
                     {
-                        var len = (int)(this.m_buffer.Length - totRead);
-
-                        if(len > this.m_stream.Length) len = (int)this.m_stream.Length;
+                        var len = this.m_buffer.Length - totRead;
 
                         len = this.m_stream.Read(this.m_buffer, totRead, len);
 
-                        if(len <= 0) break;
+                        if (len <= 0) break;
 
                         totRead += len;
                     }
@@ -145,16 +146,11 @@ namespace System.IO
                 }
                 else
                 {
-                    // get more data to feed the decider and try again.
-                    // Try to fill the m_buffer.
-                    // FillBufferAndReset purges processed data in front of buffer. Thus we can use up to full m_buffer.Length
+                    // get more data to feed the decoder and try again.
+                    // Ask for the full buffer; Stream.Read returns whatever
+                    // it has (>=1 for blocking streams, 0 for EOF). Previous
+                    // `m_stream.Length` cap threw on BCL network streams.
                     var readCount = this.m_buffer.Length;
-                    // Put it to the maximum of available data and readCount
-                    readCount = readCount > (int)this.m_stream.Length ? (int)this.m_stream.Length : readCount;
-                    if (readCount == 0)
-                    {
-                        readCount = 1;
-                    }
 
                     // If there is no data, then return -1
                     if (FillBufferAndReset(readCount) == 0)

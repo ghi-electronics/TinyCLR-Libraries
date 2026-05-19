@@ -898,12 +898,43 @@ namespace System
         /// This instance represents a relative URI, and this property is valid
         /// only for absolute URIs.
         /// </exception>
+        /// <summary>
+        /// Path portion of the URI, without the query string. Matches BCL.
+        /// </summary>
+        /// <remarks>
+        /// Internal storage (<see cref="m_AbsolutePath"/>) historically held
+        /// "path?query" because the URI parser doesn't split on '?' (the
+        /// parser only splits on '/' between authority and the rest). The
+        /// getter strips at '?' here so the public value matches BCL
+        /// semantics. Use <see cref="PathAndQuery"/> if you need the
+        /// path-plus-query string (e.g. for an HTTP request line).
+        /// </remarks>
         public string AbsolutePath
         {
             get
             {
                 if (this.m_isAbsoluteUri == false)
                     throw new InvalidOperationException();
+                var p = this.m_AbsolutePath;
+                var q = p.IndexOf('?');
+                return q < 0 ? p : p.Substring(0, q);
+            }
+        }
+
+        /// <summary>
+        /// The <see cref="AbsolutePath"/> and <see cref="Query"/> properties
+        /// joined by '?'. Matches the BCL property of the same name. Meant
+        /// for callers that need the path-plus-query part to send on the
+        /// wire (HTTP request line, etc.).
+        /// </summary>
+        public string PathAndQuery
+        {
+            get
+            {
+                if (this.m_isAbsoluteUri == false)
+                    throw new InvalidOperationException();
+                // Storage already holds "path?query" — return it verbatim so
+                // we don't have to reconcatenate Query into AbsolutePath.
                 return this.m_AbsolutePath;
             }
         }

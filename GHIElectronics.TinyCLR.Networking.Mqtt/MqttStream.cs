@@ -25,13 +25,21 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
 
             if (remoteIpAddress == null) {
                 var hostEntry = Dns.GetHostEntry(hostName);
-                if ((hostEntry != null) && (hostEntry.AddressList.Length > 0)) {
-                    var i = 0;
-                    while (hostEntry.AddressList[i] == null) i++;
-                    remoteIpAddress = hostEntry.AddressList[i];
+                if (hostEntry == null || hostEntry.AddressList.Length == 0) {
+                    throw new Exception("Server not found.");
                 }
-                else {
-                    throw new Exception("Server not found."); ;
+
+                // Bounded scan for the first non-null address. The previous
+                // `while (AddressList[i] == null) i++;` ran past the array end
+                // when every entry was null and threw IndexOutOfRangeException.
+                for (var i = 0; i < hostEntry.AddressList.Length; i++) {
+                    if (hostEntry.AddressList[i] != null) {
+                        remoteIpAddress = hostEntry.AddressList[i];
+                        break;
+                    }
+                }
+                if (remoteIpAddress == null) {
+                    throw new Exception("Server not found.");
                 }
             }
 

@@ -41,14 +41,15 @@ namespace System.Net.Security {
 
         public bool IsServer => this._isServer;
 
-        public override long Length {
-            get {
-                if (this._disposed) throw new ObjectDisposedException();
-                if (this._socket == null) throw new IOException();
-
-                return this.ni.Available(this.sslHandle);
-            }
-        }
+        // Standard .NET behavior: SslStream is not seekable and Length throws
+        // NotSupportedException. The previous override returned `Available`
+        // (decrypted plaintext bytes ready to read), which silently broke
+        // callers that did `new byte[stream.Length]` — they'd get a buffer
+        // sized to whatever happened to be buffered at that instant rather
+        // than the full content. For "is there data ready" use DataAvailable
+        // (bool, matches BCL NetworkStream.DataAvailable). For a content
+        // length, read the HTTP/protocol header — never the stream's Length.
+        public override long Length => throw new NotSupportedException();
 
         public override bool DataAvailable {
             get {
