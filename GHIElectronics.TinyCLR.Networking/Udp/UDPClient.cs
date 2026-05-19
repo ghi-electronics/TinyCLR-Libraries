@@ -161,13 +161,18 @@ namespace System.Net.Sockets {
 
                 var chkClientSocket = this._clientSocket;
                 if (chkClientSocket != null) {
-                    // Match full .NET: half-close before close to deliver a
-                    // graceful end signal where applicable (UDP shutdown is
-                    // a no-op at the wire level, but lwIP still tracks state).
-                    try {
-                        chkClientSocket.Shutdown(SocketShutdown.Both);
-                    }
-                    catch { /* swallow — best-effort */ }
+                    // BCL's UdpClient.Dispose calls Socket.InternalShutdown(Both)
+                    // — a best-effort half-close that silently swallows the
+                    // failure that always happens on UDP (no FIN at the wire
+                    // level, lwIP/POSIX return ENOTCONN for unconnected UDP
+                    // sockets). We can't replicate the silent swallow on
+                    // TinyCLR because the VS debugger surfaces every *thrown*
+                    // exception via first-chance reporting, even when caught
+                    // — so Shutdown produces noisy log spam at every Close.
+                    // Skip the call entirely on UDP: end state is identical
+                    // (Close releases the port and any lwIP socket state),
+                    // and BCL's effective behavior is preserved. Keep
+                    // Shutdown for TCP in TcpClient — TCP needs the FIN.
                     chkClientSocket.Close();
                     this._clientSocket = null;
                 }
