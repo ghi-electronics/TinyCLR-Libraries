@@ -7,7 +7,7 @@
        lib/net48/        : TinyCLR-impl DLL (real type defs; used at compile-
                            time so user code sees the TinyCLR API).
        desktop-shim/     : Desktop SHIM DLL (no-op safe defaults; copied to
-                           bin\Debug\ for Desktop runtime).
+                           the consumer project's $(OutDir) for Desktop runtime).
        tinyclr/          : TinyCLR-impl DLL again (read by deploy step,
                            MMP-processed into a .pe and pushed to device).
 

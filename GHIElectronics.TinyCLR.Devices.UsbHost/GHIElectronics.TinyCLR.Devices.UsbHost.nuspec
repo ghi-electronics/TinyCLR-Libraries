@@ -22,7 +22,7 @@
   <files>
     <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.UsbHost.dll" target="lib\net48" />
     <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.UsbHost.xml" target="lib\net48" />
-    <file src="..\GHIElectronics.TinyCLR.Devices.UsbHost.Desktop\bin\Debug\GHIElectronics.TinyCLR.Devices.UsbHost.dll" target="desktop-shim" />
+    <file src="..\GHIElectronics.TinyCLR.Devices.UsbHost.Desktop\bin\$Configuration$\GHIElectronics.TinyCLR.Devices.UsbHost.dll" target="desktop-shim" />
     <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.UsbHost.xml" target="desktop-shim" />
     <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.UsbHost.dll" target="tinyclr" />
     <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.UsbHost.xml" target="tinyclr" />

@@ -21,7 +21,7 @@
   <files>
     <file src="$TargetDir$GHIElectronics.TinyCLR.Data.Json.dll" target="lib\net48" />
     <file src="$TargetDir$GHIElectronics.TinyCLR.Data.Json.xml" target="lib\net48" />
-    <file src="..\GHIElectronics.TinyCLR.Data.Json.Desktop\bin\Debug\GHIElectronics.TinyCLR.Data.Json.dll" target="desktop-shim" />
+    <file src="..\GHIElectronics.TinyCLR.Data.Json.Desktop\bin\$Configuration$\GHIElectronics.TinyCLR.Data.Json.dll" target="desktop-shim" />
     <file src="$TargetDir$GHIElectronics.TinyCLR.Data.Json.xml" target="desktop-shim" />
     <file src="$TargetDir$GHIElectronics.TinyCLR.Data.Json.dll" target="tinyclr" />
     <file src="$TargetDir$GHIElectronics.TinyCLR.Data.Json.xml" target="tinyclr" />

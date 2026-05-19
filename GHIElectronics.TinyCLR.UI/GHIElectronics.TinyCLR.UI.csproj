@@ -250,6 +250,13 @@
   <PropertyGroup>
     <TcuiBuildTasksProject>$(MSBuildThisFileDirectory)..\..\TinyCLR-SDK\GHIElectronics.TinyCLR.UI.BuildTasks\GHIElectronics.TinyCLR.UI.BuildTasks.csproj</TcuiBuildTasksProject>
     <TcuiCodegenPayloadDir>$(MSBuildThisFileDirectory)build\net48\</TcuiCodegenPayloadDir>
+
+    <!-- Pass the active Configuration through to NuGetPacker so the nuspec can
+         substitute $Configuration$ instead of hardcoding bin\Debug\ for the
+         desktop-shim path. Works the same whether the build was started from
+         the VS IDE (Debug/Release picked in the toolbar) or the CLI
+         (msbuild /p:Configuration=...). -->
+    <NuGetPackerProperties>Configuration=$(Configuration);$(NuGetPackerProperties)</NuGetPackerProperties>
   </PropertyGroup>
   <Target Name="StageTcuiCodegenPayload" BeforeTargets="BeforeBuild;PackNuGet" Condition="Exists('$(TcuiBuildTasksProject)')">
     <MSBuild Projects="$(TcuiBuildTasksProject)" Targets="Restore;Build" Properties="Configuration=$(Configuration)" />

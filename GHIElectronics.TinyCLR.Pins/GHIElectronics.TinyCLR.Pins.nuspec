@@ -20,7 +20,7 @@
   <files>
     <file src="$TargetDir$GHIElectronics.TinyCLR.Pins.dll" target="lib\net48" />
     <file src="$TargetDir$GHIElectronics.TinyCLR.Pins.xml" target="lib\net48" />
-    <file src="..\GHIElectronics.TinyCLR.Pins.Desktop\bin\Debug\GHIElectronics.TinyCLR.Pins.dll" target="desktop-shim" />
+    <file src="..\GHIElectronics.TinyCLR.Pins.Desktop\bin\$Configuration$\GHIElectronics.TinyCLR.Pins.dll" target="desktop-shim" />
     <file src="$TargetDir$GHIElectronics.TinyCLR.Pins.xml" target="desktop-shim" />
     <file src="$TargetDir$GHIElectronics.TinyCLR.Pins.dll" target="tinyclr" />
     <file src="$TargetDir$GHIElectronics.TinyCLR.Pins.xml" target="tinyclr" />

@@ -75,6 +75,10 @@
     <Error Condition="!Exists('..\packages\GHIElectronics.Tools.NuGetPacker.1.0.3\build\GHIElectronics.Tools.NuGetPacker.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\GHIElectronics.Tools.NuGetPacker.1.0.3\build\GHIElectronics.Tools.NuGetPacker.targets'))" />
     <Error Condition="'$(DoAssemblySign)'=='true' And !Exists('..\packages\GHIElectronics.Tools.AssemblySigner.1.0.3\build\GHIElectronics.Tools.AssemblySigner.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\GHIElectronics.Tools.AssemblySigner.1.0.3\build\GHIElectronics.Tools.AssemblySigner.targets'))" />
   </Target>
+  <PropertyGroup>
+    <!-- Forward Configuration to nuget pack -Properties so the nuspec's $Configuration$ substitution resolves to Debug or Release. Without this the desktop-shim path hardcodes bin\Debug\ and fails IDE Release builds. -->
+    <NuGetPackerProperties>Configuration=$(Configuration);$(NuGetPackerProperties)</NuGetPackerProperties>
+  </PropertyGroup>
   <Import Project="..\packages\GHIElectronics.Tools.NuGetPacker.1.0.3\build\GHIElectronics.Tools.NuGetPacker.targets" Condition="Exists('..\packages\GHIElectronics.Tools.NuGetPacker.1.0.3\build\GHIElectronics.Tools.NuGetPacker.targets')" />
   <Import Project="..\packages\GHIElectronics.Tools.AssemblySigner.1.0.3\build\GHIElectronics.Tools.AssemblySigner.targets" Condition="'$(DoAssemblySign)'=='true' And Exists('..\packages\GHIElectronics.Tools.AssemblySigner.1.0.3\build\GHIElectronics.Tools.AssemblySigner.targets')" />
 </Project>

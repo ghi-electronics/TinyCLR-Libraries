@@ -7,7 +7,8 @@
        lib/net48/        : TinyCLR-impl DLL (real type definitions; used at
                            compile-time so user code sees TinyCLR's API).
        desktop-shim/     : Desktop SHIM DLL (TypeForwardedTo to framework
-                           System.dll; copied to bin\Debug\ for runtime).
+                           System.dll; copied to the consumer's $(OutDir) for
+                           runtime).
        tinyclr/          : TinyCLR-impl DLL again (read by deploy step,
                            MMP-processed into a .pe and pushed to device).
 
