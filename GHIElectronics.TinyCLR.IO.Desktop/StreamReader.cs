@@ -12,6 +12,18 @@ namespace System.IO
         private const int c_MaxReadLineLen = 0xFFFF;
         private const int c_BufferSize = 512;
 
+        // Larger chunk used only in ReadNonSeekableStream.
+        // Why not reuse c_BufferSize (512): on a body of N chars, the old
+        // 512-char chunks produced ceil(N/512) ArrayList entries — for a
+        // ~80 KB response that's ~160 small char[] objects, each with its
+        // own GC header. The cumulative fragmentation made it impossible
+        // to allocate the final contiguous char[N] concat buffer on devices
+        // without external heap (failed at ~161 KB with the heap holding
+        // plenty of total free space — just no contiguous slab). 4096-char
+        // (8 KB) chunks cost the same total bytes but produce ~8× fewer
+        // allocations and ~8× fewer holes, so the final concat slab fits.
+        private const int c_ReadToEndChunkSize = 4096;
+
         //--//
 
         private Stream m_stream;
@@ -280,65 +292,74 @@ namespace System.IO
 
         private char[] ReadNonSeekableStream()
         {
+            // Larger 8 KB chunks (vs the old 512-byte ones) keep the
+            // small-allocation count low so the heap stays defragmented
+            // enough to allocate the final concat buffer below — critical
+            // on devices without external heap. See c_ReadToEndChunkSize.
+            //
+            // Feed each chunk by calling Read() in c_BufferSize-sized
+            // batches into a small reusable temp buffer, then copy into
+            // the current chunk at the running write position. Why not
+            // call Read(chunk, 0, chunk.Length) directly: the underlying
+            // Read overload returns the *last Convert iteration's* char
+            // count rather than the cumulative total when count exceeds
+            // the internal m_buffer size — for ASCII bodies > 512 chars
+            // it would silently truncate to the tail's char count. Reading
+            // in m_buffer-sized batches keeps Read on its single-iteration
+            // happy path so the returned count is reliable.
             var buffers = new ArrayList();
-
-            int read;
             var totalRead = 0;
-
-            char[] lastBuffer = null;
-            var done = false;
+            int chunkRead;
+            var temp = new char[c_BufferSize];
 
             do
             {
-                var chars = new char[c_BufferSize];
-
-                read = Read(chars, 0, chars.Length);
-
-                totalRead += read;
-
-                if (read < c_BufferSize) // we are done
+                var chunk = new char[c_ReadToEndChunkSize];
+                chunkRead = 0;
+                while (chunkRead < chunk.Length)
                 {
-                    if (read > 0) // copy last scraps
-                    {
-                        var newChars = new char[read];
-
-                        Array.Copy(chars, newChars, read);
-
-                        lastBuffer = newChars;
-                    }
-
-                    done = true;
+                    var n = Read(temp, 0, temp.Length);
+                    if (n <= 0) break;
+                    Array.Copy(temp, 0, chunk, chunkRead, n);
+                    chunkRead += n;
                 }
-                else
+                if (chunkRead > 0)
                 {
-                    lastBuffer = chars;
+                    buffers.Add(chunk);
+                    totalRead += chunkRead;
                 }
-
-                buffers.Add(lastBuffer);
             }
+            while (chunkRead == c_ReadToEndChunkSize);
 
-            while (!done);
+            if (totalRead == 0) return new char[0];
 
-            if (buffers.Count > 1)
+            if (buffers.Count == 1)
             {
-                var text = new char[totalRead];
+                var only = (char[])buffers[0];
+                if (totalRead == only.Length) return only;
 
-                var len = 0;
-                for (var i = 0; i < buffers.Count; ++i)
-                {
-                    var buffer = (char[])buffers[i];
-
-                    buffer.CopyTo(text, len);
-
-                    len += buffer.Length;
-                }
-
-                return text;
+                // Single partial chunk — trim to exact length.
+                var trimmed = new char[totalRead];
+                Array.Copy(only, 0, trimmed, 0, totalRead);
+                return trimmed;
             }
-            else
+
+            // Multi-chunk concat. Null each source slot as we copy from it
+            // so the GC has a chance to reclaim individual chunks if the
+            // caller's `new string(...)` later triggers GC under pressure.
+            var text = new char[totalRead];
+            var pos = 0;
+            var count = buffers.Count;
+            for (var i = 0; i < count; i++)
             {
-                return (char[])buffers[0];
+                var buf = (char[])buffers[i];
+                var copyLen = totalRead - pos;
+                if (copyLen > buf.Length) copyLen = buf.Length;
+                Array.Copy(buf, 0, text, pos, copyLen);
+                pos += copyLen;
+                buffers[i] = null;
             }
+            return text;
         }
 
         //--//
