@@ -4,6 +4,20 @@
         <name>GHIElectronics.TinyCLR.UI</name>
     </assembly>
     <members>
+        <member name="T:GHIElectronics.TinyCLR.UI.Controls.Chart">
+            <summary>
+            Simple line / bar chart. The rendered surface is cached and only rebuilt
+            when <see cref="M:GHIElectronics.TinyCLR.UI.Controls.Chart.Refresh"/> is called or the control's render size
+            changes — so calling Invalidate on the parent each frame does not redo
+            the chart math.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Chart.Refresh">
+            <summary>
+            Marks the cached chart surface stale. Call after mutating <see cref="P:GHIElectronics.TinyCLR.UI.Controls.Chart.Items"/>
+            or any styling property to force a re-render on the next paint.
+            </summary>
+        </member>
         <member name="T:GHIElectronics.TinyCLR.UI.Controls.DataGrid">
             <summary>
             The DataGrid component is a list-based component that provides a grid of rows and columns.
@@ -336,35 +350,20 @@
         </member>
         <member name="T:GHIElectronics.TinyCLR.UI.Controls.DataGridColumn">
             <summary>
-            The DataGridColumn class describes a column in a DataGrid component.
+            Column descriptor for <see cref="T:GHIElectronics.TinyCLR.UI.Controls.DataGrid"/>.
             </summary>
         </member>
-        <member name="F:GHIElectronics.TinyCLR.UI.Controls.DataGridColumn.label">
-            <summary>
-            The column name to be displayed.
-            </summary>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.DataGridColumn.Label">
+            <summary>Display label for the column header.</summary>
         </member>
-        <member name="F:GHIElectronics.TinyCLR.UI.Controls.DataGridColumn.width">
-            <summary>
-            The width of the column, in pixels.
-            </summary>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.DataGridColumn.Width">
+            <summary>Column width in pixels.</summary>
         </member>
-        <member name="F:GHIElectronics.TinyCLR.UI.Controls.DataGridColumn.order">
-            <summary>
-            Indicates the default order of this column.
-            </summary>
-        </member>
-        <member name="M:GHIElectronics.TinyCLR.UI.Controls.DataGridColumn.#ctor(System.String,System.Int32)">
-            <summary>
-            Creates a new DataGridColumn instance.
-            </summary>
-            <param name="label"></param>
-            <param name="width"></param>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.DataGridColumn.Order">
+            <summary>Default sort order applied when the column header is tapped.</summary>
         </member>
         <member name="M:GHIElectronics.TinyCLR.UI.Controls.DataGridColumn.ToggleOrder">
-            <summary>
-            Toggles the ordering of this column.
-            </summary>
+            <summary>Toggles between ASC and DESC.</summary>
         </member>
         <member name="T:GHIElectronics.TinyCLR.UI.Controls.DataGridItem">
             <summary>
@@ -420,6 +419,13 @@
             Column index to compare.
             </summary>
         </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Dropdown.MaxOpenHeight">
+            <summary>
+            Optional cap on the expanded list height. When set to a positive value
+            the open dropdown is clamped to this height and overflow scrolls through
+            the inherited ScrollViewer. Default 0 = no clamp (legacy behavior).
+            </summary>
+        </member>
         <member name="M:GHIElectronics.TinyCLR.UI.Controls.Dropdown.OnButtonDown(GHIElectronics.TinyCLR.UI.Input.ButtonEventArgs)">
             <summary>
             Hardware button support: <see cref="F:GHIElectronics.TinyCLR.UI.Input.HardwareButton.Select"/> toggles the
@@ -430,251 +436,124 @@
         <member name="F:GHIElectronics.TinyCLR.UI.Controls.GridLength.Value">
             <summary>Pixel size, or star weight when <see cref="F:GHIElectronics.TinyCLR.UI.Controls.GridLength.Unit"/> is <see cref="F:GHIElectronics.TinyCLR.UI.Controls.GridUnitType.Star"/>.</summary>
         </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Controls.GridLengthCollection">
+            <summary>
+            Notifying GridLength collection. Every mutation invalidates the owning
+            Grid's measure pass so layout stays in sync without callers having to
+            remember to call InvalidateMeasure() manually.
+            </summary>
+        </member>
         <member name="T:GHIElectronics.TinyCLR.UI.Controls.Grid">
             <summary>
             Row/column layout with pixel, auto, and star sizing (WPF-style subset).
             Use <see cref="M:GHIElectronics.TinyCLR.UI.Controls.Grid.GetRow(GHIElectronics.TinyCLR.UI.UIElement)"/> / <see cref="M:GHIElectronics.TinyCLR.UI.Controls.Grid.SetRow(GHIElectronics.TinyCLR.UI.UIElement,System.Int32)"/> and <see cref="M:GHIElectronics.TinyCLR.UI.Controls.Grid.GetColumn(GHIElectronics.TinyCLR.UI.UIElement)"/> / <see cref="M:GHIElectronics.TinyCLR.UI.Controls.Grid.SetColumn(GHIElectronics.TinyCLR.UI.UIElement,System.Int32)"/> on children.
             </summary>
         </member>
-        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Gauge.MinValue">
-            <summary>
-            Mininum value on the scale
-            </summary>
-        </member>
-        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Gauge.MaxValue">
-            <summary>
-            Maximum value on the scale
-            </summary>
+        <member name="T:GHIElectronics.TinyCLR.UI.Controls.Gauge">
+             <summary>
+             Analog gauge with calibrated tick marks, optional threshold arc, optional
+             seven-segment digital readout, dial label, and pointer needle. Always
+             square — pass the side length to the constructor.
+            
+             Rendering is cached: the static background (dial face, calibration,
+             threshold, digital number, label) is drawn once into a backing bitmap;
+             only the pointer is redrawn each paint. Any property change marks the
+             background dirty.
+             </summary>
         </member>
         <member name="P:GHIElectronics.TinyCLR.UI.Controls.Gauge.ThresholdPercent">
-            <summary>
-            Gets or Sets the Threshold area from the Recommended Value. (1-99%)
-            </summary>
-        </member>
-        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Gauge.RecommendedValue">
-            <summary>
-            Threshold value from which green area will be marked.
-            </summary>
+            <summary>Threshold area around the recommended value, 1–99%.</summary>
         </member>
         <member name="P:GHIElectronics.TinyCLR.UI.Controls.Gauge.Value">
-            <summary>
-            Value where the pointer will point to.
-            </summary>
-        </member>
-        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Gauge.DialColor">
-            <summary>
-            Background color of the dial
-            </summary>
+            <summary>Current needle position. Only this property doesn't dirty
+            the background — the pointer is repainted every frame.</summary>
         </member>
         <member name="P:GHIElectronics.TinyCLR.UI.Controls.Gauge.Glossiness">
-            <summary>
-            Glossiness strength. Range: 0-100
-            </summary>
-        </member>
-        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Gauge.NoOfDivisions">
-            <summary>
-            Get or Sets the number of Divisions in the dial scale.
-            </summary>
-        </member>
-        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Gauge.NoOfSubDivisions">
-            <summary>
-            Gets or Sets the number of Sub Divisions in the scale per Division.
-            </summary>
-        </member>
-        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Gauge.DialText">
-            <summary>
-            Gets or Sets the Text to be displayed in the dial
-            </summary>
+            <summary>Glossiness strength 0..100 (mapped to 0..220 alpha internally).</summary>
         </member>
         <member name="P:GHIElectronics.TinyCLR.UI.Controls.Gauge.EnableTransparentBackground">
             <summary>
-            Enables or Disables Transparent Background color.
-            Note: Enabling this will reduce the performance and may make the control flicker.
+            When true, the dial face is overlapped by a slightly larger ellipse
+            in the back color so the dial appears to float. Costs an extra
+            FillEllipse per redraw.
             </summary>
         </member>
-        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Gauge.GetGauge">
-            <summary>
-            Draws the pointer.
-            </summary>
-            <param name="e"></param>
+        <member name="T:GHIElectronics.TinyCLR.UI.Controls.MessageBox">
+             <summary>
+             WinForms-style modal message box.
+            
+             Usage:
+             <code>
+             MessageBox.DefaultFont = myFont;             // once at app start
+             var r = MessageBox.Show("Erase all data?", "Confirm", MessageBoxButtons.YesNo);
+             if (r == DialogResult.Yes) { ... }
+             </code>
+            
+             Show() is synchronous: it nests a dispatcher frame so the UI keeps painting
+             and dispatching input while the box is up, and returns when the user picks
+             a button (or Esc cancels). Safe to call from any UI-thread event handler.
+             </summary>
         </member>
-        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Gauge.PaintBackground(System.Drawing.Graphics)">
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.MessageBox.DefaultFont">
             <summary>
-            Draws the dial background.
+            Optional default font. Set this once at startup so callers don't have
+            to pass a Font on every call. Each Show overload that omits a Font uses
+            this value.
             </summary>
-            <param name="e"></param>
         </member>
-        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Gauge.DrawPointer(System.Drawing.Graphics,System.Int32,System.Int32)">
+        <member name="T:GHIElectronics.TinyCLR.UI.Controls.MessageBoxDialog">
             <summary>
-            Draws the Pointer.
+            The actual modal Canvas: fills the host, paints a scrim, hosts the dialog
+            rectangle + buttons, and pumps a nested dispatcher frame until dismissed.
+            Internal — public API is <see cref="T:GHIElectronics.TinyCLR.UI.Controls.MessageBox"/>.
             </summary>
-            <param name="gr"></param>
-            <param name="cx"></param>
-            <param name="cy"></param>
         </member>
-        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Gauge.DrawGloss(System.Drawing.Graphics)">
-            <summary>
-            Draws the glossiness.
-            </summary>
-            <param name="g"></param>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.ProgressBar.RadiusBorder">
+            <summary>Corner radius in pixels for the Scale9Image-rendered bar.</summary>
         </member>
-        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Gauge.DrawCenterPoint(System.Drawing.Graphics,System.Drawing.Rectangle,System.Int32,System.Int32)">
-            <summary>
-            Draws the center point.
-            </summary>
-            <param name="g"></param>
-            <param name="rect"></param>
-            <param name="cX"></param>
-            <param name="cY"></param>
-        </member>
-        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Gauge.DrawCalibration(System.Drawing.Graphics,System.Drawing.Rectangle,System.Int32,System.Int32)">
-            <summary>
-            Draws the Ruler
-            </summary>
-            <param name="g"></param>
-            <param name="rect"></param>
-            <param name="cX"></param>
-            <param name="cY"></param>
-        </member>
-        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Gauge.GetRadian(System.Single)">
-            <summary>
-            Converts the given degree to radian.
-            </summary>
-            <param name="theta"></param>
-            <returns></returns>
-        </member>
-        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Gauge.DisplayNumber(System.Drawing.Graphics,System.Single,System.Drawing.Rectangle)">
-            <summary>
-            Displays the given number in the 7-Segement format.
-            </summary>
-            <param name="g"></param>
-            <param name="number"></param>
-            <param name="drect"></param>
-        </member>
-        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Gauge.DrawDigit(System.Drawing.Graphics,System.Int32,GHIElectronics.TinyCLR.UI.Controls.Gauge.PointF,System.Boolean,System.Single)">
-            <summary>
-            Draws a digit in 7-Segement format.
-            </summary>
-            <param name="g"></param>
-            <param name="number"></param>
-            <param name="position"></param>
-            <param name="dp"></param>
-            <param name="height"></param>
-        </member>
-        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Gauge.GetX(System.Single,System.Single)">
-            <summary>
-            Gets Relative X for the given width to draw digit
-            </summary>
-            <param name="x"></param>
-            <param name="width"></param>
-            <returns></returns>
-        </member>
-        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Gauge.GetY(System.Single,System.Single)">
-            <summary>
-            Gets relative Y for the given height to draw digit
-            </summary>
-            <param name="y"></param>
-            <param name="height"></param>
-            <returns></returns>
-        </member>
-        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Gauge.IsNumberAvailable(System.Int32,System.Int32[])">
-            <summary>
-            Returns true if a given number is available in the given list.
-            </summary>
-            <param name="number"></param>
-            <param name="listOfNumbers"></param>
-            <returns></returns>
-        </member>
-        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Gauge.Resize">
-            <summary>
-            Restricts the size to make sure the height and width are always same.
-            </summary>
-            <param name="sender"></param>
-            <param name="e"></param>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.ProgressBar.Border">
+            <summary>Legacy alias for <see cref="P:GHIElectronics.TinyCLR.UI.Controls.ProgressBar.RadiusBorder"/>. Will be removed.</summary>
         </member>
         <member name="T:GHIElectronics.TinyCLR.UI.Controls.Slider">
             <summary>
-            The Slider component lets users select a value by sliding a knob along a track.
+            Horizontal or vertical value slider with optional tick marks and snap-to
+            intervals. The knob is rendered with the shared Scale9 Button bitmaps so
+            it picks up the theme's surface styling automatically.
             </summary>
         </member>
-        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Slider.#ctor(System.Int32,System.Int32)">
+        <member name="F:GHIElectronics.TinyCLR.UI.Controls.Slider.KnobBreadthRatio">
             <summary>
-            Creates a new Slider component.
-            </summary>     
-            <param name="width">Width</param>
-            <param name="height">Height</param>
-        </member>
-        <member name="E:GHIElectronics.TinyCLR.UI.Controls.Slider.OnValueChanged">
-            <summary>
-            Value changed event.
-            </summary>           
-        </member>
-        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Slider.OnRender(GHIElectronics.TinyCLR.UI.Media.DrawingContext)">
-            <summary>
-            Renders the Slider onto it's parent container's graphics.
+            Knob thickness across the track = trackBreadth / KnobBreadthRatio.
+            Slightly less than 1 leaves a thin visible track on either side.
             </summary>
         </member>
-        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Slider.OnTouchDown(GHIElectronics.TinyCLR.UI.Input.TouchEventArgs)">
-            <summary>
-            Handles the touch down event.
-            </summary>
-            <param name="e">Touch event arguments.</param>
-            <returns>Touch event arguments.</returns>
+        <member name="F:GHIElectronics.TinyCLR.UI.Controls.Slider.TickLengthRatio">
+            <summary>Tick mark length as a fraction of the perpendicular dimension.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Slider.KnobSize">
+            <summary>Knob size along the slide axis (px).</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Slider.TickInterval">
+            <summary>Number of tick mark intervals along the track. 0 disables ticks.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Slider.SnapInterval">
+            <summary>Number of snap stops along the track. 0 disables snap (continuous).</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Slider.TrackColor">
+            <summary>Color used for the track line and tick marks.</summary>
         </member>
         <member name="M:GHIElectronics.TinyCLR.UI.Controls.Slider.OnButtonDown(GHIElectronics.TinyCLR.UI.Input.ButtonEventArgs)">
             <summary>
             Hardware button support: Left/Right step a horizontal slider,
-            Up/Down step a vertical slider. Step size is one <see cref="P:GHIElectronics.TinyCLR.UI.Controls.Slider.SnapInterval"/>
-            (or 1% of range when SnapInterval is 0).
+            Up/Down step a vertical slider. Step size is one snap interval, or
+            1% of the range when SnapInterval is 0.
             </summary>
         </member>
-        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Slider.OnTouchUp(GHIElectronics.TinyCLR.UI.Input.TouchEventArgs)">
+        <member name="E:GHIElectronics.TinyCLR.UI.Controls.TextBox.BindingError">
             <summary>
-            Handles the touch up event.
-            </summary>
-            <param name="e">Touch event arguments.</param>
-            <returns>Touch event arguments.</returns>
-        </member>
-        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Slider.OnTouchMove(GHIElectronics.TinyCLR.UI.Input.TouchEventArgs)">
-            <summary>
-            Handles the touch move event.
-            </summary>
-            <param name="e">Touch event arguments.</param>
-            <returns>Touch event arguments.</returns>
-        </member>
-        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Slider.Direction">
-            <summary>
-            Direction of the slider; horizontal or vertical.
-            </summary>
-        </member>
-        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Slider.KnobSize">
-            <summary>
-            Size of the knob.
-            </summary>
-        </member>
-        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Slider.Maximum">
-            <summary>
-            Maximum value.
-            </summary>
-        </member>
-        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Slider.Minimum">
-            <summary>
-            Minimum value.
-            </summary>
-        </member>
-        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Slider.SnapInterval">
-            <summary>
-            Increment by which the value is increased or decreased as the user slides the knob.
-            </summary>
-        </member>
-        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Slider.TickInterval">
-            <summary>
-            Tick mark spacing relative to the maximum value.
-            </summary>
-        </member>
-        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Slider.Value">
-            <summary>
-            Gets or sets the current value.
+            Raised when a binding pull (source → TextBox) or push (TextBox → source)
+            fails. Default behavior is silent (the framework can't sensibly recover);
+            subscribe here to log or surface the error during development.
             </summary>
         </member>
         <member name="M:GHIElectronics.TinyCLR.UI.Controls.TextBox.SetTextBinding(System.Object,System.String,System.Boolean)">
@@ -687,6 +566,20 @@
             <summary>
             Hardware button support: <see cref="F:GHIElectronics.TinyCLR.UI.Input.HardwareButton.Select"/> opens the
             on-screen keyboard, mirroring tap-to-edit behavior.
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Controls.BindingErrorDirection.Pull">
+            <summary>Source → control. The control couldn't read the bound property.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Controls.BindingErrorDirection.Push">
+            <summary>Control → source. The control couldn't write the bound property.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Controls.BindingErrorEventArgs">
+            <summary>
+            Reported by controls (currently <see cref="T:GHIElectronics.TinyCLR.UI.Controls.TextBox"/>) when a reflection-
+            based binding read or write fails. Subscribing is optional — the
+            framework defaults to silent so a misspelled property name doesn't crash
+            the UI, but a subscriber can log or surface the error.
             </summary>
         </member>
         <member name="P:GHIElectronics.TinyCLR.UI.Controls.Control.TabIndex">
@@ -1530,6 +1423,14 @@
             <param name="bmp"></param>
             <param name="outline"></param>
             <param name="pts"></param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Resources.LoadBitmapImage(GHIElectronics.TinyCLR.UI.Resources.BitmapResources)">
+            <summary>
+            Loads a built-in bitmap resource and wraps it as a ready-to-draw
+            <see cref="T:GHIElectronics.TinyCLR.UI.Media.Imaging.BitmapImage"/>. Each call returns an independent owning
+            instance — the caller is responsible for disposing the inner
+            Graphics in its own <c>Dispose(true)</c> path.
+            </summary>
         </member>
         <member name="T:GHIElectronics.TinyCLR.UI.PresentationSource">
              <summary>
@@ -2396,6 +2297,12 @@
             Central palette for TinyCLR.UI. Brushes are shared instances; change <see cref="P:GHIElectronics.TinyCLR.UI.Theme.WindowBackground"/> etc.
             then replace the corresponding brush field if you need live updates.
             </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Theme.DefaultAlpha">
+            <summary>Default Scale9Image alpha for surface-rendered controls (Button, CheckBox, RadioButton, ProgressBar, Dropdown, Slider). ~78% opacity.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Theme.DefaultRadiusBorder">
+            <summary>Default corner radius (in pixels) for Scale9Image-rendered surfaces.</summary>
         </member>
         <member name="M:GHIElectronics.TinyCLR.UI.Theme.RefreshBrushesFromColors">
             <summary>Call after mutating color fields if you need brushes to match.</summary>

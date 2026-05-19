@@ -127,19 +127,18 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         }
 
         protected virtual void Dispose(bool disposing) {
-            if (!this.disposed) {
+            if (this.disposed) return;
 
+            if (disposing) {
+                // Managed cleanup; finalizer path skips this. Font is owned by
+                // the caller (passed via constructor), so we don't touch it.
                 this.dataGridIcon_Asc?.Dispose();
                 this.dataGridIcon_Desc?.Dispose();
-
-                // BitmapImage doesn't declare IDisposable; reach the wrapped
-                // Graphics through the internal field. Font is owned by the
-                // caller (passed via constructor), so we don't touch it.
                 this.headers?.graphics?.Dispose();
                 this.items?.graphics?.Dispose();
-
-                this.disposed = true;
             }
+
+            this.disposed = true;
         }
 
         ~DataGrid() {
@@ -173,17 +172,17 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                 dataGridColumn = (DataGridColumn)this.columns_[j];
 
                 // Draw text
-                this.headers.graphics.DrawTextInRect(dataGridColumn.label, x + 5, (this.headers.Height - this.Font.Height) / 2, dataGridColumn.width, this.headers.Height, 0, System.Drawing.Color.FromArgb(this.HeadersFontColor.R, this.HeadersFontColor.G, this.HeadersFontColor.B), this.Font);
+                this.headers.graphics.DrawTextInRect(dataGridColumn.Label, x + 5, (this.headers.Height - this.Font.Height) / 2, dataGridColumn.Width, this.headers.Height, 0, System.Drawing.Color.FromArgb(this.HeadersFontColor.R, this.HeadersFontColor.G, this.HeadersFontColor.B), this.Font);
 
                 // If we're on the selected column draw the icon.
                 if (j == this.selectedDataGridColumnIndex) {
-                    if (dataGridColumn.order == Order.ASC)
-                        this.headers.graphics.DrawImage(this.dataGridIcon_Asc, this.columns_.Count / 2 * dataGridColumn.width, 5, this.dataGridIcon_Asc.Width, this.dataGridIcon_Asc.Height);
+                    if (dataGridColumn.Order == Order.ASC)
+                        this.headers.graphics.DrawImage(this.dataGridIcon_Asc, this.columns_.Count / 2 * dataGridColumn.Width, 5, this.dataGridIcon_Asc.Width, this.dataGridIcon_Asc.Height);
                     else
-                        this.headers.graphics.DrawImage(this.dataGridIcon_Desc, this.columns_.Count / 2 * dataGridColumn.width, 5, this.dataGridIcon_Desc.Width, this.dataGridIcon_Desc.Height);
+                        this.headers.graphics.DrawImage(this.dataGridIcon_Desc, this.columns_.Count / 2 * dataGridColumn.Width, 5, this.dataGridIcon_Desc.Width, this.dataGridIcon_Desc.Height);
                 }
 
-                x += dataGridColumn.width;
+                x += dataGridColumn.Width;
             }
         }
 
@@ -221,10 +220,10 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                 for (var i = 0; i < this.columns_.Count; i++) {
                     dataGridColumn = (DataGridColumn)this.columns_[i];
 
-                    this.items.graphics.DrawTextInRect(data[i].ToString(), x + 5, y + (this.RowHeight - this.Font.Height) / 2, dataGridColumn.width, this.RowHeight, 0, System.Drawing.Color.FromArgb(fontColor.R, fontColor.G, fontColor.B), this.Font);
+                    this.items.graphics.DrawTextInRect(data[i].ToString(), x + 5, y + (this.RowHeight - this.Font.Height) / 2, dataGridColumn.Width, this.RowHeight, 0, System.Drawing.Color.FromArgb(fontColor.R, fontColor.G, fontColor.B), this.Font);
                     this.items.graphics.DrawLine(gridColorPen, x, y, x, y + this.RowHeight);
 
-                    x += dataGridColumn.width;
+                    x += dataGridColumn.Width;
                 }
             }
         }
@@ -247,7 +246,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                 var x = 0;
                 for (var i = 0; i < this.columns_.Count; i++) {
                     this.items.graphics.DrawLine(gridColorPen, x, 0, x, this.items.Height);
-                    x += ((DataGridColumn)this.columns_[i]).width;
+                    x += ((DataGridColumn)this.columns_[i]).Width;
                 }
             }
         }
@@ -256,6 +255,13 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         /// Renders the DataGrid onto it's parent container's graphics.
         /// </summary>
         public override void OnRender(DrawingContext dc) {
+            // Bail before any of the inner allocations / divisions if the grid
+            // was constructed degenerate (width=0, rowCount=0, rowHeight=0).
+            // Otherwise we either throw out of OnRender or produce 0-byte
+            // bitmaps that fail downstream.
+            if (this.ActualWidth <= 0 || this.ActualHeight <= 0) return;
+            if (this.RowHeight <= 0 || this.rowCount <= 0) return;
+
             if (this.ShowHeaders && this.renderHeaders) {
                 //this.renderHeaders = false; TODO
                 this.RenderHeaders();
@@ -360,10 +366,8 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
 
             if (this.rows_.Count > 0) {
-                var touchPoint = new Point(e.Touches[0].X, e.Touches[0].Y);
-
                 this.pressed = true;
-                this.lastTouchY = touchPoint.Y;
+                this.lastTouchY = e.Touches[0].Y;
                 this.lastListY = this.listY;
 
                 this.posX = 0;
@@ -384,14 +388,15 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             if (!this.pressed)
                 return;
 
-            var touchPoint = new Point(e.Touches[0].X, e.Touches[0].Y);
+            var touchX = e.Touches[0].X;
+            var touchY = e.Touches[0].Y;
             var isContained = false;
 
             if (!this.moving) {
                 var x = this.posX;
                 var y = this.posY;
 
-                var index = ((this.listY + touchPoint.Y) - y) / this.RowHeight;
+                var index = ((this.listY + touchY) - y) / this.RowHeight;
                 var rowIndex = index;
                 // If headers are present the rowIndex needs to be offset
                 if (this.ShowHeaders)
@@ -403,14 +408,14 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                 for (var i = 0; i < this.columns_.Count; i++) {
                     dataGridColumn = (DataGridColumn)this.columns_[i];
 
-                    if (IsContains(touchPoint, x, y, dataGridColumn.width, this.Height)) {
+                    if (IsContains(touchX, touchY, x, y, dataGridColumn.Width, this.Height)) {
                         columnIndex = i;
 
                         isContained = true;
                         break;
                     }
 
-                    x += dataGridColumn.width;
+                    x += dataGridColumn.Width;
                 }
 
                 if (index == 0 && this.ShowHeaders && this.SortableHeaders) {
@@ -448,9 +453,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                 }
             }
             else {
-                var touchPoint = new Point(e.Touches[0].X, e.Touches[0].Y);
-
-                this.listY = this.lastListY - (touchPoint.Y - this.lastTouchY);
+                this.listY = this.lastListY - (e.Touches[0].Y - this.lastTouchY);
                 this.listY = MinMax(this.listY, 0, this.listMaxY);
 
                 this.scrollIndex = (int)System.Math.Ceiling(this.listY / this.RowHeight);
@@ -694,7 +697,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             var dataGridColumn = (DataGridColumn)this.columns_[columnIndex];
             dataGridColumn.ToggleOrder();
 
-            this.order = dataGridColumn.order;
+            this.order = dataGridColumn.Order;
             this.comparer.ColumnIndex = columnIndex;
 
             this.PerformSort();
@@ -915,13 +918,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         /// <param name="max">Maximum value.</param>
         /// <returns>The value limited by min and max.</returns>
         private static int MinMax(int value, int min, int max) => Math.Max(min, System.Math.Min(max, value));
-        private static bool IsContains(Point point, int x, int y, int width, int height) {
-
-            if (point.X >= x && point.X < (x + width) && point.Y >= y && point.Y < (y + height))
-                return true;
-
-            return false;
-
-        }
+        private static bool IsContains(int pointX, int pointY, int x, int y, int width, int height) =>
+            pointX >= x && pointX < x + width && pointY >= y && pointY < y + height;
     }
 }

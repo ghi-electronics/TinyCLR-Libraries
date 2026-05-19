@@ -66,13 +66,32 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
 
             if (this.ShowFocusVisual && this.IsFocused && this._renderWidth > 2 && this._renderHeight > 2) {
-                var pen = new Pen(Theme.FocusRing, 2);
+                var pen = GetFocusPen();
                 var t = pen.Thickness;
                 if (t < this._renderWidth && t < this._renderHeight) {
                     dc.DrawRectangle(null, pen, t / 2, t / 2, this._renderWidth - t, this._renderHeight - t);
                 }
             }
         }
+
+        // Cached focus-ring pen, rebuilt only when Theme.FocusRing changes.
+        // Previously a fresh Pen was allocated on every paint of every focused
+        // control — measurable GC churn under animations.
+        private static Pen s_focusPen;
+        private static Color s_focusPenColor;
+        private static Pen GetFocusPen() {
+            var current = Theme.FocusRing;
+            var cached = s_focusPen;
+            if (cached == null || !ColorEquals(s_focusPenColor, current)) {
+                cached = new Pen(current, 2);
+                s_focusPen = cached;
+                s_focusPenColor = current;
+            }
+            return cached;
+        }
+
+        private static bool ColorEquals(Color a, Color b) =>
+            a.R == b.R && a.G == b.G && a.B == b.B && a.A == b.A;
 
         protected internal Media.Brush _background = null;
         protected internal Media.Brush _foreground = new SolidColorBrush(Colors.Black);

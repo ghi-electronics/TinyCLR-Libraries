@@ -22,6 +22,49 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
     }
 
     /// <summary>
+    /// Notifying GridLength collection. Every mutation invalidates the owning
+    /// Grid's measure pass so layout stays in sync without callers having to
+    /// remember to call InvalidateMeasure() manually.
+    /// </summary>
+    public sealed class GridLengthCollection {
+        private readonly Grid _owner;
+        private readonly ArrayList _items = new ArrayList();
+
+        internal GridLengthCollection(Grid owner) => this._owner = owner;
+
+        public int Count => this._items.Count;
+
+        public GridLength this[int index] {
+            get => (GridLength)this._items[index];
+            set {
+                this._items[index] = value;
+                this._owner.InvalidateMeasure();
+            }
+        }
+
+        public void Add(GridLength item) {
+            this._items.Add(item);
+            this._owner.InvalidateMeasure();
+        }
+
+        public void Clear() {
+            if (this._items.Count == 0) return;
+            this._items.Clear();
+            this._owner.InvalidateMeasure();
+        }
+
+        public void Insert(int index, GridLength item) {
+            this._items.Insert(index, item);
+            this._owner.InvalidateMeasure();
+        }
+
+        public void RemoveAt(int index) {
+            this._items.RemoveAt(index);
+            this._owner.InvalidateMeasure();
+        }
+    }
+
+    /// <summary>
     /// Row/column layout with pixel, auto, and star sizing (WPF-style subset).
     /// Use <see cref="GetRow"/> / <see cref="SetRow"/> and <see cref="GetColumn"/> / <see cref="SetColumn"/> on children.
     /// </summary>
@@ -31,8 +74,13 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         private static readonly Hashtable RowStore = new Hashtable();
         private static readonly Hashtable ColStore = new Hashtable();
 
-        public readonly ArrayList RowDefinitions = new ArrayList();
-        public readonly ArrayList ColumnDefinitions = new ArrayList();
+        public GridLengthCollection RowDefinitions { get; }
+        public GridLengthCollection ColumnDefinitions { get; }
+
+        public Grid() {
+            this.RowDefinitions = new GridLengthCollection(this);
+            this.ColumnDefinitions = new GridLengthCollection(this);
+        }
 
         public static int GetRow(UIElement e) => RowStore.Contains(e) ? (int)RowStore[e] : 0;
 
@@ -65,20 +113,12 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
-        private static GridLength DefCol(int index, ArrayList defs) {
+        private static GridLength DefAt(int index, GridLengthCollection defs) {
             if (defs == null || index < 0 || index >= defs.Count) {
                 return GridLength.Auto();
             }
 
-            return (GridLength)defs[index];
-        }
-
-        private static GridLength DefRow(int index, ArrayList defs) {
-            if (defs == null || index < 0 || index >= defs.Count) {
-                return GridLength.Auto();
-            }
-
-            return (GridLength)defs[index];
+            return defs[index];
         }
 
         protected override void MeasureOverride(int availableWidth, int availableHeight, out int desiredWidth, out int desiredHeight) {
@@ -106,7 +146,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             var rowUnit = new GridUnitType[rowCount];
 
             for (var c = 0; c < colCount; c++) {
-                var gl = DefCol(c, this.ColumnDefinitions);
+                var gl = DefAt(c, this.ColumnDefinitions);
                 colUnit[c] = gl.Unit;
                 if (gl.Unit == GridUnitType.Pixel) {
                     colWidths[c] = gl.Value;
@@ -121,7 +161,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
 
             for (var r = 0; r < rowCount; r++) {
-                var gl = DefRow(r, this.RowDefinitions);
+                var gl = DefAt(r, this.RowDefinitions);
                 rowUnit[r] = gl.Unit;
                 if (gl.Unit == GridUnitType.Pixel) {
                     rowHeights[r] = gl.Value;

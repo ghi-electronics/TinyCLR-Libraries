@@ -14,6 +14,12 @@ namespace GHIElectronics.TinyCLR.UI {
         public static Color FocusRing { get; set; } = Colors.CornflowerBlue;
         public static Color SelectionHighlight { get; set; } = Colors.Teal;
 
+        /// <summary>Default Scale9Image alpha for surface-rendered controls (Button, CheckBox, RadioButton, ProgressBar, Dropdown, Slider). ~78% opacity.</summary>
+        public static ushort DefaultAlpha { get; set; } = 0xC8;
+
+        /// <summary>Default corner radius (in pixels) for Scale9Image-rendered surfaces.</summary>
+        public static int DefaultRadiusBorder { get; set; } = 5;
+
         public static readonly SolidColorBrush WindowBackgroundBrush = new SolidColorBrush(Colors.White);
         public static readonly SolidColorBrush ControlSurfaceBrush = new SolidColorBrush(Colors.LightGray);
         public static readonly SolidColorBrush TextBoxFillBrush = new SolidColorBrush(Colors.White);

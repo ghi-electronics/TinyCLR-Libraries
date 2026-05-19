@@ -53,9 +53,11 @@
     <Compile Include="Controls\Slider.cs" />
     <Compile Include="Controls\TextBox.cs" />
     <Compile Include="Controls\Button.cs" />
+    <Compile Include="Controls\BindingErrorEventArgs.cs" />
     <Compile Include="Input\InputProvider.cs" />
     <Compile Include="Input\FocusNavigator.cs" />
     <Compile Include="Media\Color.cs" />
+    <Compile Include="Resources.cs" />
     <Compile Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

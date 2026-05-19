@@ -37,8 +37,12 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                         break;
 
                     case Stretch.Fill:
-                        desiredWidth = this.Width;
-                        desiredHeight = this.Height;
+                        // Width/Height are optional with Stretch.Fill — when the
+                        // caller didn't specify, fall back to the bitmap's
+                        // natural size instead of throwing "width not set" and
+                        // tearing down the parent's paint pass.
+                        desiredWidth = this.IsWidthSet(out var fillW) ? fillW : this._bitmap.Width;
+                        desiredHeight = this.IsHeightSet(out var fillH) ? fillH : this._bitmap.Height;
                         break;
 
                     default: throw new NotSupportedException("Stretch value " + this.Stretch + " is not supported. Use Stretch.None or Stretch.Fill.");

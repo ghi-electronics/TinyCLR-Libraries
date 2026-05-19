@@ -272,7 +272,10 @@ namespace GHIElectronics.TinyCLR.UI {
             }
         }
 
-        private bool IsHeightSet(out int height) {
+        // Exposed to derived controls so MeasureOverride / OnRender can probe
+        // Width/Height without going through the public getters that throw
+        // when the value was never assigned.
+        protected internal bool IsHeightSet(out int height) {
             var size = this._requestedSize;
             if (size != null && (size._status & Pair.Flags_Second) != 0) {
                 height = size._second;
@@ -283,7 +286,7 @@ namespace GHIElectronics.TinyCLR.UI {
             return false;
         }
 
-        private bool IsWidthSet(out int width) {
+        protected internal bool IsWidthSet(out int width) {
             var size = this._requestedSize;
             if (size != null && (size._status & Pair.Flags_First) != 0) {
                 width = size._first;

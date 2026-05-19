@@ -1,449 +1,402 @@
 using System;
-using System.Collections;
 using System.Drawing;
-using System.Text;
-using System.Threading;
 using GHIElectronics.TinyCLR.UI.Input;
 using GHIElectronics.TinyCLR.UI.Media;
 using GHIElectronics.TinyCLR.UI.Media.Imaging;
 
 namespace GHIElectronics.TinyCLR.UI.Controls {
-    public class Point {
-        public int X { get; set; }
-        public int Y { get; set; }
-        public Point(int x, int y) {
-
-            this.X = x;
-            this.Y = y;
-        }
-
-    }
-
     /// <summary>
-    /// The Slider component lets users select a value by sliding a knob along a track.
+    /// Horizontal or vertical value slider with optional tick marks and snap-to
+    /// intervals. The knob is rendered with the shared Scale9 Button bitmaps so
+    /// it picks up the theme's surface styling automatically.
     /// </summary>
-    public class Slider : ContentControl {
+    public class Slider : ContentControl, IDisposable {
+        // --- visual constants ------------------------------------------------
 
-        public class ValueChangedEventArgs : EventArgs {
-            public readonly double Value;
+        /// <summary>
+        /// Knob thickness across the track = trackBreadth / KnobBreadthRatio.
+        /// Slightly less than 1 leaves a thin visible track on either side.
+        /// </summary>
+        private const double KnobBreadthRatio = 1.2;
 
-            public ValueChangedEventArgs(double newIndex) => this.Value = newIndex;
-        }
+        /// <summary>Tick mark length as a fraction of the perpendicular dimension.</summary>
+        private const double TickLengthRatio = 0.05;
 
-        private BitmapImage bitmapImageButtonUp;
-        private BitmapImage bitmapImageButtonDown;
-
-        private bool dragging = false;
-        private Orientation direction = Orientation.Horizontal;
-        private Rectangle knob;
-        private int knobSize;
-        private int lineSize;
-        private int tickInterval;
-        private double tickSize;
-        private int snapInterval;
-        private double snapSize;
-        private double pixelsPerValue;
-        private double min;
-        private double max;
-        private double value;
-        private int posX;
-        private int posY;
-        private bool disposed;
-        private bool isRenderKnob;
+        // --- public API ------------------------------------------------------
 
         public delegate void ValueChangedEventHandler(object sender, ValueChangedEventArgs args);
 
-        private event ValueChangedEventHandler TriggerValueChanged;
+        public sealed class ValueChangedEventArgs : EventArgs {
+            public ValueChangedEventArgs(double value) => this.Value = value;
+            public double Value { get; }
+        }
 
-        private Media.Color color = Media.Color.FromRgb(0, 0, 0);
-        private Media.Pen colorPen = new Media.Pen(Media.Color.FromRgb(0, 0, 0));
+        public event ValueChangedEventHandler ValueChanged;
 
+        public ushort Alpha { get; set; } = Theme.DefaultAlpha;
+        public int RadiusBorder { get; set; } = Theme.DefaultRadiusBorder;
 
-        /// <summary>
-        /// Creates a new Slider component.
-        /// </summary>     
-        /// <param name="width">Width</param>
-        /// <param name="height">Height</param>
+        public Slider() : this(0, 0) { }
+
         public Slider(int width, int height) {
-            this.Width = width;
-            this.Height = height;
+            if (width > 0) this.Width = width;
+            if (height > 0) this.Height = height;
 
-            // Default
-            this.KnobSize = 20;
-            this.SnapInterval = 10;
-            this.TickInterval = 10;
-            this.Minimum = 0;
-            this.Maximum = 100;
-            this.value = 0;
+            this._knobSize = 20;
+            this._snapInterval = 10;
+            this._tickInterval = 10;
+            this._min = 0;
+            this._max = 100;
+            this._value = 0;
 
-            this.bitmapImageButtonUp = BitmapImage.FromGraphics(Graphics.FromImage(Resources.GetBitmap(Resources.BitmapResources.Button_Up)));
-            this.bitmapImageButtonDown = BitmapImage.FromGraphics(Graphics.FromImage(Resources.GetBitmap(Resources.BitmapResources.Button_Down)));
-
-            this.Init();
+            this._bitmapKnobUp = Resources.LoadBitmapImage(Resources.BitmapResources.Button_Up);
+            this._bitmapKnobDown = Resources.LoadBitmapImage(Resources.BitmapResources.Button_Down);
         }
 
-        /// <summary>
-        /// Value changed event.
-        /// </summary>           
-        public event ValueChangedEventHandler OnValueChanged {
-            add {
-                this.VerifyAccess();
-                this.TriggerValueChanged += value;
-            }
-
-            remove {
-                this.VerifyAccess();
-                this.TriggerValueChanged -= value;
+        public Orientation Orientation {
+            get => this._orientation;
+            set {
+                if (this._orientation == value) return;
+                this._orientation = value;
+                this._metricsDirty = true;
+                this.Invalidate();
             }
         }
 
-        private void RenderKnob(Point globalPoint) {
-            var localPoint = new Point(globalPoint.X, globalPoint.Y);
-
-            this.isRenderKnob = true;
-
-            if (this.direction == Orientation.Horizontal) {
-                var half = this.knob.Width / 2;
-                var maxX = this.Width - this.knob.Width;
-
-                if (localPoint.X < half)
-                    this.knob.X = 0;
-                else if (localPoint.X - half > maxX)
-                    this.knob.X = maxX;
-                else
-                    this.knob.X = localPoint.X - half;
-
-                var interval = (int)System.Math.Round(this.knob.X / this.snapSize);
-
-                if (this.SnapInterval > 0)
-                    this.knob.X = (int)(interval * this.snapSize);
-
-                this.Value = this.knob.X / this.pixelsPerValue;
+        public double Minimum {
+            get => this._min;
+            set {
+                if (this._min == value) return;
+                this._min = value;
+                this._metricsDirty = true;
+                this.ClampValueAndInvalidate();
             }
-            else {
-                var half = this.knob.Height / 2;
-                var maxY = this.Height - this.knob.Height;
-
-                if (localPoint.Y < half)
-                    this.knob.Y = 0;
-                else if (localPoint.Y - half > maxY)
-                    this.knob.Y = maxY;
-                else
-                    this.knob.Y = localPoint.Y - half;
-
-                var interval = (int)System.Math.Round(this.knob.Y / this.snapSize);
-
-                if (this.SnapInterval > 0)
-                    this.knob.Y = (int)(interval * this.snapSize);
-
-                this.Value = this.max - (this.knob.Y / this.pixelsPerValue);
-            }
-
-            this.Invalidate();
-
-            this.isRenderKnob = false;
         }
 
-        /// <summary>
-        /// Renders the Slider onto it's parent container's graphics.
-        /// </summary>
+        public double Maximum {
+            get => this._max;
+            set {
+                if (this._max == value) return;
+                this._max = value;
+                this._metricsDirty = true;
+                this.ClampValueAndInvalidate();
+            }
+        }
+
+        public double Value {
+            get => this._value;
+            set {
+                if (value < this._min) value = this._min;
+                if (value > this._max) value = this._max;
+                if (this._value == value) return;
+
+                this._value = value;
+                this.ValueChanged?.Invoke(this, new ValueChangedEventArgs(value));
+                this.Invalidate();
+            }
+        }
+
+        /// <summary>Knob size along the slide axis (px).</summary>
+        public int KnobSize {
+            get => this._knobSize;
+            set {
+                if (this._knobSize == value) return;
+                this._knobSize = value;
+                this._metricsDirty = true;
+                this.Invalidate();
+            }
+        }
+
+        /// <summary>Number of tick mark intervals along the track. 0 disables ticks.</summary>
+        public int TickInterval {
+            get => this._tickInterval;
+            set {
+                if (value < 0) value = 0;
+                if (this._tickInterval == value) return;
+                this._tickInterval = value;
+                this._metricsDirty = true;
+                this.Invalidate();
+            }
+        }
+
+        /// <summary>Number of snap stops along the track. 0 disables snap (continuous).</summary>
+        public int SnapInterval {
+            get => this._snapInterval;
+            set {
+                if (value < 0) value = 0;
+                if (this._snapInterval == value) return;
+                this._snapInterval = value;
+                this._metricsDirty = true;
+                this.Invalidate();
+            }
+        }
+
+        /// <summary>Color used for the track line and tick marks.</summary>
+        public Media.Color TrackColor {
+            get => this._trackColor;
+            set {
+                this._trackColor = value;
+                this._trackPen = new Media.Pen(value);
+                this.Invalidate();
+            }
+        }
+
+        // --- internal state --------------------------------------------------
+
+        private readonly BitmapImage _bitmapKnobUp;
+        private readonly BitmapImage _bitmapKnobDown;
+
+        private Orientation _orientation = Orientation.Horizontal;
+        private bool _dragging;
+        private int _dragOriginX, _dragOriginY;
+
+        private int _knobSize;
+        private int _tickInterval;
+        private int _snapInterval;
+        private double _min;
+        private double _max;
+        private double _value;
+
+        private Media.Color _trackColor = Colors.Black;
+        private Media.Pen _trackPen = new Media.Pen(Colors.Black);
+
+        // Cached metrics, recomputed lazily when _metricsDirty is set by a
+        // property setter or layout change.
+        private bool _metricsDirty = true;
+        private int _cachedTrackLength;
+        private int _cachedKnobBreadth;
+        private double _cachedSnapSize;
+        private double _cachedTickSize;
+        private double _cachedPixelsPerValue;
+
+        private bool _disposed;
+
+        // --- rendering -------------------------------------------------------
+
         public override void OnRender(DrawingContext dc) {
-            var x = 0;
-            var y = 0;
+            var w = this.ActualWidth;
+            var h = this.ActualHeight;
+            if (w <= 0 || h <= 0) return;
 
-            if (this.direction == Orientation.Horizontal) {
-                var lineY = y + (this.Height / 2);
-                var offsetX = this.knob.Width / 2;
-                var knobY = this.Height - this.knob.Height;
-                int tickX;
-                var tickHeight = (int)System.Math.Ceiling(this.Height * 0.05);
+            // Paint Background and focus ring from Control base.
+            base.OnRender(dc);
 
-                dc.DrawLine(this.colorPen, x + offsetX, lineY, x + offsetX + this.lineSize, lineY);
+            this.EnsureMetrics(w, h);
 
-                if (this.TickInterval > 1) {
-                    for (var i = 0; i < this.TickInterval + 1; i++) {
-                        tickX = x + offsetX + (int)(i * this.tickSize);
-                        dc.DrawLine(this.colorPen, tickX, y, tickX, y + tickHeight);
-                    }
-                }
-
-                if (this.dragging)
-                    dc.Scale9Image(x + this.knob.X, y + knobY, this.knob.Width, this.knob.Height, this.bitmapImageButtonDown, 5, 5, 5, 5, (ushort)this.Alpha);
-                else
-                    dc.Scale9Image(x + this.knob.X, y + knobY, this.knob.Width, this.knob.Height, this.bitmapImageButtonUp, 5, 5, 5, 5, (ushort)this.Alpha);
+            if (this._orientation == Orientation.Horizontal) {
+                this.RenderHorizontal(dc, w, h);
             }
             else {
-                var lineX = x + (this.Width / 2);
-                var offsetY = this.knob.Height / 2;
-                var knobX = this.Width - this.knob.Width;
-                int tickY;
-                var tickWidth = (int)System.Math.Ceiling(this.Width * 0.05);
-
-                dc.DrawLine(this.colorPen, lineX, y + offsetY, lineX, y + offsetY + this.lineSize);
-
-                if (this.TickInterval > 1) {
-                    for (var i = 0; i < this.TickInterval + 1; i++) {
-                        tickY = y + offsetY + (int)(i * this.tickSize);
-                        dc.DrawLine(this.colorPen, x, tickY, x + tickWidth, tickY);
-                    }
-                }
-
-                if (this.dragging)
-                    dc.Scale9Image(x + knobX, y + this.knob.Y, this.knob.Width, this.knob.Height, this.bitmapImageButtonDown, 5, 5, 5, 5, (ushort)this.Alpha);
-                else
-                    dc.Scale9Image(x + knobX, y + this.knob.Y, this.knob.Width, this.knob.Height, this.bitmapImageButtonUp, 5, 5, 5, 5, (ushort)this.Alpha);
+                this.RenderVertical(dc, w, h);
             }
         }
 
-        /// <summary>
-        /// Handles the touch down event.
-        /// </summary>
-        /// <param name="e">Touch event arguments.</param>
-        /// <returns>Touch event arguments.</returns>
-        protected override void OnTouchDown(TouchEventArgs e) {
-            this.posX = 0;
-            this.posY = 0;
-            this.PointToScreen(ref this.posX, ref this.posY);
-            this.dragging = true;
+        private void RenderHorizontal(DrawingContext dc, int w, int h) {
+            var trackY = h / 2;
+            var startX = this._cachedKnobBreadth / 2;
+            var endX = startX + this._cachedTrackLength;
+
+            dc.DrawLine(this._trackPen, startX, trackY, endX, trackY);
+
+            if (this._tickInterval > 1) {
+                var tickLen = (int)System.Math.Ceiling(h * TickLengthRatio);
+                for (var i = 0; i <= this._tickInterval; i++) {
+                    var tx = startX + (int)(i * this._cachedTickSize);
+                    dc.DrawLine(this._trackPen, tx, 0, tx, tickLen);
+                }
+            }
+
+            var knobX = this.ValueToPixel();
+            var knobY = h - this.KnobThickness(h);
+            var knobImg = this._dragging ? this._bitmapKnobDown : this._bitmapKnobUp;
+            dc.Scale9Image(knobX, knobY, this._knobSize, this.KnobThickness(h),
+                knobImg, this.RadiusBorder, this.RadiusBorder, this.RadiusBorder, this.RadiusBorder, this.Alpha);
         }
+
+        private void RenderVertical(DrawingContext dc, int w, int h) {
+            var trackX = w / 2;
+            var startY = this._cachedKnobBreadth / 2;
+            var endY = startY + this._cachedTrackLength;
+
+            dc.DrawLine(this._trackPen, trackX, startY, trackX, endY);
+
+            if (this._tickInterval > 1) {
+                var tickLen = (int)System.Math.Ceiling(w * TickLengthRatio);
+                for (var i = 0; i <= this._tickInterval; i++) {
+                    var ty = startY + (int)(i * this._cachedTickSize);
+                    dc.DrawLine(this._trackPen, 0, ty, tickLen, ty);
+                }
+            }
+
+            var knobY = this.ValueToPixel();
+            var knobX = w - this.KnobThickness(w);
+            var knobImg = this._dragging ? this._bitmapKnobDown : this._bitmapKnobUp;
+            dc.Scale9Image(knobX, knobY, this.KnobThickness(w), this._knobSize,
+                knobImg, this.RadiusBorder, this.RadiusBorder, this.RadiusBorder, this.RadiusBorder, this.Alpha);
+        }
+
+        private int KnobThickness(int perpendicular) => (int)(perpendicular / KnobBreadthRatio);
+
+        // Maps the current Value to the leading pixel of the knob on the slide axis.
+        // Vertical orientation inverts (top = max, bottom = min) to match WPF / common
+        // convention.
+        private int ValueToPixel() {
+            var range = this._max - this._min;
+            if (range <= 0 || this._cachedPixelsPerValue == 0) return 0;
+
+            var normalized = this._value - this._min;
+            if (this._orientation == Orientation.Horizontal) {
+                return (int)(normalized * this._cachedPixelsPerValue);
+            }
+            return (int)((range - normalized) * this._cachedPixelsPerValue);
+        }
+
+        // --- metrics caching -------------------------------------------------
+
+        private void EnsureMetrics(int w, int h) {
+            if (!this._metricsDirty && this._cachedTrackLength > 0) return;
+
+            // Total length along the slide axis minus knob length so the knob
+            // never overshoots either end.
+            var axisLength = this._orientation == Orientation.Horizontal ? w : h;
+            this._cachedTrackLength = axisLength - this._knobSize;
+            if (this._cachedTrackLength < 1) this._cachedTrackLength = 1;
+
+            this._cachedKnobBreadth = this._knobSize;
+
+            this._cachedSnapSize = this._snapInterval > 0
+                ? (double)this._cachedTrackLength / this._snapInterval
+                : 0;
+            this._cachedTickSize = this._tickInterval > 0
+                ? (double)this._cachedTrackLength / this._tickInterval
+                : 0;
+
+            var range = this._max - this._min;
+            this._cachedPixelsPerValue = range > 0 ? this._cachedTrackLength / range : 0;
+
+            this._metricsDirty = false;
+        }
+
+        private void ClampValueAndInvalidate() {
+            var v = this._value;
+            if (v < this._min) v = this._min;
+            if (v > this._max) v = this._max;
+            if (v != this._value) {
+                this._value = v;
+                this.ValueChanged?.Invoke(this, new ValueChangedEventArgs(v));
+            }
+            this.Invalidate();
+        }
+
+        // --- input -----------------------------------------------------------
+
+        protected override void OnTouchDown(TouchEventArgs e) {
+            if (!this.IsEnabled) return;
+
+            this._dragOriginX = 0;
+            this._dragOriginY = 0;
+            this.PointToScreen(ref this._dragOriginX, ref this._dragOriginY);
+            this._dragging = true;
+            e.Handled = true;
+            this.Invalidate();
+        }
+
+        protected override void OnTouchUp(TouchEventArgs e) {
+            if (!this._dragging) return;
+            this._dragging = false;
+            this.Invalidate();
+        }
+
+        protected override void OnTouchMove(TouchEventArgs e) {
+            if (!this._dragging) return;
+
+            var localX = e.Touches[0].X - this._dragOriginX;
+            var localY = e.Touches[0].Y - this._dragOriginY;
+            this.UpdateValueFromTouch(localX, localY);
+        }
+
+        private void UpdateValueFromTouch(int localX, int localY) {
+            var w = this.ActualWidth;
+            var h = this.ActualHeight;
+            if (w <= 0 || h <= 0) return;
+            this.EnsureMetrics(w, h);
+            if (this._cachedPixelsPerValue == 0) return;
+
+            int pos;
+            if (this._orientation == Orientation.Horizontal) {
+                pos = localX - this._cachedKnobBreadth / 2;
+                pos = Clamp(pos, 0, this._cachedTrackLength);
+                pos = this.ApplySnap(pos);
+                this.Value = this._min + pos / this._cachedPixelsPerValue;
+            }
+            else {
+                pos = localY - this._cachedKnobBreadth / 2;
+                pos = Clamp(pos, 0, this._cachedTrackLength);
+                pos = this.ApplySnap(pos);
+                this.Value = this._max - pos / this._cachedPixelsPerValue;
+            }
+        }
+
+        private int ApplySnap(int pixel) {
+            if (this._cachedSnapSize <= 0) return pixel;
+            var slot = (int)System.Math.Round(pixel / this._cachedSnapSize);
+            return (int)(slot * this._cachedSnapSize);
+        }
+
+        private static int Clamp(int v, int lo, int hi) =>
+            v < lo ? lo : v > hi ? hi : v;
 
         /// <summary>
         /// Hardware button support: Left/Right step a horizontal slider,
-        /// Up/Down step a vertical slider. Step size is one <see cref="SnapInterval"/>
-        /// (or 1% of range when SnapInterval is 0).
+        /// Up/Down step a vertical slider. Step size is one snap interval, or
+        /// 1% of the range when SnapInterval is 0.
         /// </summary>
         protected override void OnButtonDown(ButtonEventArgs e) {
-            if (!this.IsEnabled) {
-                return;
-            }
+            if (!this.IsEnabled) return;
 
             var step = this.GetKeyboardStep();
-            var newValue = this.value;
+            var delta = 0.0;
 
-            if (this.direction == Orientation.Horizontal) {
-                if (e.Button == HardwareButton.Right) {
-                    newValue = this.value + step;
-                }
-                else if (e.Button == HardwareButton.Left) {
-                    newValue = this.value - step;
-                }
-                else {
-                    return;
-                }
+            if (this._orientation == Orientation.Horizontal) {
+                if (e.Button == HardwareButton.Right) delta = step;
+                else if (e.Button == HardwareButton.Left) delta = -step;
+                else return;
             }
             else {
-                // Vertical slider: visually, larger value is toward the top.
-                if (e.Button == HardwareButton.Up) {
-                    newValue = this.value + step;
-                }
-                else if (e.Button == HardwareButton.Down) {
-                    newValue = this.value - step;
-                }
-                else {
-                    return;
-                }
+                // Vertical: visually larger value is toward the top.
+                if (e.Button == HardwareButton.Up) delta = step;
+                else if (e.Button == HardwareButton.Down) delta = -step;
+                else return;
             }
 
-            if (newValue < this.min) newValue = this.min;
-            if (newValue > this.max) newValue = this.max;
-
-            if (newValue != this.value) {
-                this.Value = newValue;
-                if (this.Parent != null) {
-                    this.Invalidate();
-                }
-            }
+            this.Value = this._value + delta;
             e.Handled = true;
         }
 
         private double GetKeyboardStep() {
-            var steps = this.snapInterval > 0 ? this.snapInterval : 100;
-            var range = this.max - this.min;
-            return range / steps;
+            var steps = this._snapInterval > 0 ? this._snapInterval : 100;
+            var range = this._max - this._min;
+            return range > 0 ? range / steps : 0;
         }
 
-        /// <summary>
-        /// Handles the touch up event.
-        /// </summary>
-        /// <param name="e">Touch event arguments.</param>
-        /// <returns>Touch event arguments.</returns>
-        protected override void OnTouchUp(TouchEventArgs e) =>
-            this.dragging = false;
+        // --- IDisposable -----------------------------------------------------
 
-        /// <summary>
-        /// Handles the touch move event.
-        /// </summary>
-        /// <param name="e">Touch event arguments.</param>
-        /// <returns>Touch event arguments.</returns>
-        protected override void OnTouchMove(TouchEventArgs e) {
-            if (this.dragging) {
-
-                var touchPoint = new Point(e.Touches[0].X, e.Touches[0].Y);
-                var point = new Point(touchPoint.X - this.posX, touchPoint.Y - this.posY);
-
-                this.RenderKnob(point);
-            }
-        }
-
-        private void Init() {
-            if (this.direction == Orientation.Horizontal) {
-                this.knob = new Rectangle(0, 0, this.knobSize, (int)((double)this.Height / 1.2));
-                this.lineSize = this.Width - this.knobSize;
-            }
-            else {
-                this.knob = new Rectangle(0, 0, (int)((double)this.Width / 1.2), this.knobSize);
-                this.lineSize = this.Height - this.knobSize;
-            }
-
-            if (this.tickInterval < 0)
-                this.tickInterval = 0;
-            else if (this.tickInterval > this.lineSize)
-                this.tickInterval = this.lineSize;
-
-            if (this.tickInterval > 0)
-                this.tickSize = (double)this.lineSize / this.TickInterval;
-            else
-                this.tickSize = (double)this.lineSize / this.lineSize;
-
-            if (this.snapInterval < 0)
-                this.snapInterval = 0;
-            else if (this.snapInterval > this.lineSize)
-                this.snapInterval = this.lineSize;
-
-            if (this.snapInterval > 0)
-                this.snapSize = (double)this.lineSize / this.snapInterval;
-            else
-                this.snapSize = (double)this.lineSize / this.lineSize;
-
-            if (this.max > 0)
-                this.pixelsPerValue = this.lineSize / (this.max - this.min);
-        }
-
-
-        /// <summary>
-        /// Direction of the slider; horizontal or vertical.
-        /// </summary>
-        public Orientation Direction {
-            get => this.direction;
-            set {
-                if (value != this.direction) {
-                    this.direction = value;
-                    this.Init();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Size of the knob.
-        /// </summary>
-        public int KnobSize {
-            get => this.knobSize;
-            set {
-                this.knobSize = value;
-                this.Init();
-            }
-        }
-
-        /// <summary>
-        /// Maximum value.
-        /// </summary>
-        public double Maximum {
-            get => this.max;
-            set {
-                this.max = value;
-                this.Init();
-            }
-        }
-
-        /// <summary>
-        /// Minimum value.
-        /// </summary>
-        public double Minimum {
-            get => this.min;
-            set {
-                this.min = value;
-                this.Init();
-            }
-        }
-
-        /// <summary>
-        /// Increment by which the value is increased or decreased as the user slides the knob.
-        /// </summary>
-        public int SnapInterval {
-            get => this.snapInterval;
-            set {
-                this.snapInterval = value;
-                this.Init();
-            }
-        }
-
-        /// <summary>
-        /// Tick mark spacing relative to the maximum value.
-        /// </summary>
-        public int TickInterval {
-            get => this.tickInterval;
-            set {
-                this.tickInterval = value;
-                this.Init();
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the current value.
-        /// </summary>
-        public double Value {
-            get => this.value;
-            set {
-                var oldValue = this.value;
-                this.value = value;
-
-                if (oldValue != this.value) {
-                    var args = new ValueChangedEventArgs(this.value);
-
-                    this.TriggerValueChanged?.Invoke(this, args);
-
-                    // if value change by set value from user directly
-                    if (this.isRenderKnob == false) {
-                        if (this.direction == Orientation.Horizontal) {
-                            this.knob.X = (int)(this.value * this.pixelsPerValue);
-                        }
-                        else {
-
-                            if (this.pixelsPerValue != 0) {
-                                this.knob.Y = (int)((this.max - this.value) / this.pixelsPerValue);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        public ushort Alpha { get; set; } = 0xC8;
-
-        public Media.Color Color {
-            get => this.color;
-            set {
-                this.color = value;
-                this.colorPen = new Media.Pen(this.color); ;
-            }
-        }
-		
-		public void Dispose() {
+        public void Dispose() {
             this.Dispose(true);
             GC.SuppressFinalize(this);
         }
 
         protected virtual void Dispose(bool disposing) {
-            if (!this.disposed) {
+            if (this._disposed) return;
 
-                this.bitmapImageButtonDown.graphics.Dispose();
-                this.bitmapImageButtonUp.graphics.Dispose();                
-
-                this.disposed = true;
+            if (disposing) {
+                this._bitmapKnobUp?.graphics?.Dispose();
+                this._bitmapKnobDown?.graphics?.Dispose();
             }
+
+            this._disposed = true;
         }
 
-        ~Slider() {
-            this.Dispose(false);
-        }
+        ~Slider() => this.Dispose(false);
     }
 }

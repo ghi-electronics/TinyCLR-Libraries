@@ -6,45 +6,25 @@
 
 namespace GHIElectronics.TinyCLR.UI.Controls {
     /// <summary>
-    /// The DataGridColumn class describes a column in a DataGrid component.
+    /// Column descriptor for <see cref="DataGrid"/>.
     /// </summary>
     public class DataGridColumn {
-        /// <summary>
-        /// The column name to be displayed.
-        /// </summary>
-        public string label;
+        /// <summary>Display label for the column header.</summary>
+        public string Label { get; set; }
 
-        /// <summary>
-        /// The width of the column, in pixels.
-        /// </summary>
-        public int width;
+        /// <summary>Column width in pixels.</summary>
+        public int Width { get; set; }
 
-        /// <summary>
-        /// Indicates the default order of this column.
-        /// </summary>
-        public DataGrid.Order order;
+        /// <summary>Default sort order applied when the column header is tapped.</summary>
+        public DataGrid.Order Order { get; set; }
 
-        /// <summary>
-        /// Creates a new DataGridColumn instance.
-        /// </summary>
-        /// <param name="label"></param>
-        /// <param name="width"></param>
         public DataGridColumn(string label, int width) {
-            this.label = label;
-            this.width = width;
-
-            // Default
-            this.order = DataGrid.Order.ASC;
+            this.Label = label;
+            this.Width = width;
+            this.Order = DataGrid.Order.ASC;
         }
 
-        /// <summary>
-        /// Toggles the ordering of this column.
-        /// </summary>
-        public void ToggleOrder() {
-            if (this.order == DataGrid.Order.ASC)
-                this.order = DataGrid.Order.DESC;
-            else
-                this.order = DataGrid.Order.ASC;
-        }
+        /// <summary>Toggles between ASC and DESC.</summary>
+        public void ToggleOrder() => this.Order = (this.Order == DataGrid.Order.ASC) ? DataGrid.Order.DESC : DataGrid.Order.ASC;
     }
 }

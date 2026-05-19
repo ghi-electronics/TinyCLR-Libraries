@@ -1,12 +1,16 @@
 using System;
 using System.Collections;
 using System.Drawing;
-using System.Text;
-using System.Threading;
 using GHIElectronics.TinyCLR.UI.Media;
 using GHIElectronics.TinyCLR.UI.Media.Imaging;
 
 namespace GHIElectronics.TinyCLR.UI.Controls {
+    /// <summary>
+    /// Simple line / bar chart. The rendered surface is cached and only rebuilt
+    /// when <see cref="Refresh"/> is called or the control's render size
+    /// changes — so calling Invalidate on the parent each frame does not redo
+    /// the chart math.
+    /// </summary>
     public class Chart : Image, IDisposable {
 
         public enum ChartMode {
@@ -19,56 +23,55 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             public string Name { get; set; }
         }
 
-        public class Point {
-            public Point() {
-
-            }
-            public Point(int ax, int ay) {
-                this.X = ax;
-                this.Y = ay;
-
-            }
+        // Named "ChartPoint" rather than "Point" so it doesn't visually collide
+        // with System.Drawing.Point inside this file (both are in scope via
+        // `using System.Drawing`).
+        public class ChartPoint {
+            public ChartPoint() { }
+            public ChartPoint(int ax, int ay) { this.X = ax; this.Y = ay; }
             public int X { get; set; }
             public int Y { get; set; }
         }
 
-        public class PointF {
-            public PointF(float ax, float ay) {
-                this.X = ax;
-                this.Y = ay;
-
-            }
-            public float X { get; set; }
-            public float Y { get; set; }
-        }
-
-        public class PointModel {
-            public Point Point { get; set; }
+        public class ChartPointModel {
+            public ChartPoint Point { get; set; }
             public double Value { get; set; }
         }
 
         public int DivisionAxisX { get; set; } = 1;
         public int DivisionAxisY { get; set; } = 1;
-        public Font Font { get; set; }
-        public System.Drawing.Pen AxisPen { get; set; } = new System.Drawing.Pen(System.Drawing.Color.Black, 1);
-        public System.Drawing.Pen ChartPen { get; set; } = new System.Drawing.Pen(System.Drawing.Color.Green, 1);
-        public int RadiusPoint { get; set; } = 10;
-        public System.Drawing.Brush EllipseColor { get; set; } = new SolidBrush(System.Drawing.Color.Black);
-        public System.Drawing.Brush DivisionColor { get; set; } = new SolidBrush(System.Drawing.Color.Black);
-        public System.Drawing.Brush TextColor { get; set; } = new SolidBrush(System.Drawing.Color.Black);
-        public System.Drawing.Brush BackgroundColor { get; set; } = new SolidBrush(System.Drawing.Color.White);
 
-        private int paddingLeft = 50;
+        public Font Font { get; set; }
+
+        // Public styling — Media types, like every other control. Internally
+        // converted to System.Drawing at rebuild time.
+        public Media.Pen AxisPen { get; set; } = new Media.Pen(Colors.Black, 1);
+        public Media.Pen ChartPen { get; set; } = new Media.Pen(Colors.Green, 1);
+        public Media.SolidColorBrush EllipseColor { get; set; } = new Media.SolidColorBrush(Colors.Black);
+        public Media.SolidColorBrush DivisionColor { get; set; } = new Media.SolidColorBrush(Colors.Black);
+        public Media.SolidColorBrush TextColor { get; set; } = new Media.SolidColorBrush(Colors.Black);
+        public Media.SolidColorBrush BackgroundColor { get; set; } = new Media.SolidColorBrush(Colors.White);
+
+        public int RadiusPoint { get; set; } = 10;
         public string ChartTitle { get; set; } = "Chart1";
         public ArrayList Items { get; set; }
-
-        private int margin = 50;
-        private Point pStart;
-        private Point pEnd;
         public ChartMode Mode { get; set; } = ChartMode.LineMode;
+
+        private int paddingLeft = 50;
+        private int margin = 50;
+        private ChartPoint pStart;
+        private ChartPoint pEnd;
 
         const int SCALE_FROM_WIDTH = 800;
         const int SCALE_FROM_HEIGHT = 480;
+
+        // Cached rendered surface. Reused across paints until Refresh() or a
+        // size change marks it dirty.
+        private System.Drawing.Bitmap _cachedBmp;
+        private BitmapImage _cachedImage;
+        private int _cachedW;
+        private int _cachedH;
+        private bool _dirty = true;
 
         public Chart(int width, int height) {
             this.Width = width;
@@ -77,14 +80,60 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             this.margin = (int)Scale(this.margin, SCALE_FROM_HEIGHT, height);
             this.paddingLeft = (int)Scale(this.paddingLeft, SCALE_FROM_WIDTH, width);
 
-            this.pStart = new Point(this.margin + this.paddingLeft, height - this.margin);
-            this.pEnd = new Point(width - this.margin, this.margin + (int)Scale(100, SCALE_FROM_HEIGHT, height));
+            this.pStart = new ChartPoint(this.margin + this.paddingLeft, height - this.margin);
+            this.pEnd = new ChartPoint(width - this.margin, this.margin + (int)Scale(100, SCALE_FROM_HEIGHT, height));
         }
 
-        private System.Drawing.Bitmap GetChart() => this.Mode switch {
+        /// <summary>
+        /// Marks the cached chart surface stale. Call after mutating <see cref="Items"/>
+        /// or any styling property to force a re-render on the next paint.
+        /// </summary>
+        public void Refresh() {
+            this._dirty = true;
+            this.Invalidate();
+        }
+
+        public override void OnRender(DrawingContext dc) {
+            if (this.Font == null) return;
+            if (this.Items == null || this.Items.Count == 0) return;
+
+            var w = this.ActualWidth;
+            var h = this.ActualHeight;
+            if (w <= 0 || h <= 0) return;
+
+            this.EnsureCache(w, h);
+            if (this._cachedImage == null) return;
+
+            dc.DrawImage(this._cachedImage, 0, 0);
+        }
+
+        // Rebuilds the cached bitmap if dirty or if the render size changed
+        // since the last paint. Disposes the previous cache before replacing.
+        private void EnsureCache(int w, int h) {
+            if (!this._dirty && this._cachedImage != null && this._cachedW == w && this._cachedH == h) {
+                return;
+            }
+
+            this.DisposeCache();
+
+            this._cachedBmp = this.RenderChart();
+            this._cachedImage = BitmapImage.FromGraphics(Graphics.FromImage(this._cachedBmp));
+            this._cachedW = w;
+            this._cachedH = h;
+            this._dirty = false;
+        }
+
+        private void DisposeCache() {
+            this._cachedImage?.graphics?.Dispose();
+            this._cachedImage = null;
+            this._cachedBmp?.Dispose();
+            this._cachedBmp = null;
+        }
+
+        private System.Drawing.Bitmap RenderChart() => this.Mode switch {
             ChartMode.LineMode => this.GetLineChart(),
             ChartMode.RectangleMode => this.GetRectangleChart(),
-            _ => null
+            _ => null,
         };
 
         double GetMax(ArrayList data) {
@@ -103,23 +152,39 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             return min;
         }
 
+        // --- conversion helpers ----------------------------------------------
+        // The actual surface is a System.Drawing.Bitmap so we still need
+        // System.Drawing.Pen/Brush instances for the heavy drawing calls.
+        // These are allocated once per rebuild (not per paint).
+
+        private static System.Drawing.Color ToSd(Media.Color c) =>
+            System.Drawing.Color.FromArgb(c.R, c.G, c.B);
+
+        private static System.Drawing.Pen ToSdPen(Media.Pen p) =>
+            new System.Drawing.Pen(ToSd(p.Color), p.Thickness);
+
+        private static System.Drawing.SolidBrush ToSdBrush(Media.SolidColorBrush b) =>
+            new System.Drawing.SolidBrush(ToSd(b.Color));
+
         private System.Drawing.Bitmap GetLineChart() {
             var bitmap = new System.Drawing.Bitmap(this.Width, this.Height);
 
             using var graph = Graphics.FromImage(bitmap);
-            //graph.SmoothingMode = SmoothingMode.AntiAlias;
-            //graph.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
-            //graph.InterpolationMode = InterpolationMode.High;
+            using var axisPen = ToSdPen(this.AxisPen);
+            using var chartPen = ToSdPen(this.ChartPen);
+            using var bgBrush = ToSdBrush(this.BackgroundColor);
+            using var ellipseBrush = ToSdBrush(this.EllipseColor);
+            using var divisionBrush = ToSdBrush(this.DivisionColor);
+            using var textBrush = ToSdBrush(this.TextColor);
 
-            var imageSize = new Rectangle(0, 0, this.Width, this.Height);
-            graph.FillRectangle(this.BackgroundColor, imageSize.X, imageSize.Y, imageSize.Width, imageSize.Height);
+            graph.FillRectangle(bgBrush, 0, 0, this.Width, this.Height);
 
-            //title
-            graph.DrawString(this.ChartTitle, this.Font, this.TextColor,
-                this.Width / 2 - (this.ChartTitle.Length / 2 * (int)Scale(18, SCALE_FROM_WIDTH, this.Width)), (int)Scale(30, SCALE_FROM_HEIGHT, this.Height));
+            graph.DrawString(this.ChartTitle, this.Font, textBrush,
+                this.Width / 2 - (this.ChartTitle.Length / 2 * (int)Scale(18, SCALE_FROM_WIDTH, this.Width)),
+                (int)Scale(30, SCALE_FROM_HEIGHT, this.Height));
 
-            graph.DrawLine(this.AxisPen, this.margin, this.margin + (int)Scale(100, SCALE_FROM_HEIGHT, this.Height), this.margin, this.Height - this.margin);
-            graph.DrawLine(this.AxisPen, this.margin, this.Height - this.margin, this.Width - this.margin, this.Height - this.margin);
+            graph.DrawLine(axisPen, this.margin, this.margin + (int)Scale(100, SCALE_FROM_HEIGHT, this.Height), this.margin, this.Height - this.margin);
+            graph.DrawLine(axisPen, this.margin, this.Height - this.margin, this.Width - this.margin, this.Height - this.margin);
 
             var maxValue = Math.Ceiling(this.GetMax(this.Items));
             var minValue = (int)this.GetMin(this.Items);
@@ -128,39 +193,33 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             var chartWidth = Math.Abs(this.pEnd.X - this.pStart.X - (int)Scale(50, SCALE_FROM_WIDTH, this.Width));
             var chartHeight = Math.Abs(this.pEnd.Y - (this.pStart.Y - (int)Scale(50, SCALE_FROM_HEIGHT, this.Height)));
 
-            var divisionHeight = chartHeight / (maxValue - minValue);
-            var divisionWidth = chartWidth / countValue;
-
-            #region Draw divisions
+            // Guard against flat datasets and empty collections.
+            var range = maxValue - minValue;
+            var divisionHeight = (range != 0) ? chartHeight / range : 0;
+            var divisionWidth = (countValue > 0) ? chartWidth / countValue : 0;
 
             var startDivX = this.pStart.X + divisionWidth;
             foreach (DataItem xx in this.Items) {
-                var item = xx.Name;
-                graph.FillEllipse(this.DivisionColor, startDivX - this.RadiusPoint / 2, this.pStart.Y - this.RadiusPoint / 2,
-                    this.RadiusPoint,
-                    this.RadiusPoint);
-                graph.DrawString(item.ToString(), this.Font, this.TextColor,
-                    startDivX - (int)Scale(7, SCALE_FROM_WIDTH, this.Width), this.pStart.Y + this.margin / 2 - (int)Scale(7, SCALE_FROM_HEIGHT, this.Height));
+                graph.FillEllipse(divisionBrush, startDivX - this.RadiusPoint / 2, this.pStart.Y - this.RadiusPoint / 2,
+                    this.RadiusPoint, this.RadiusPoint);
+                graph.DrawString(xx.Name, this.Font, textBrush,
+                    startDivX - (int)Scale(7, SCALE_FROM_WIDTH, this.Width),
+                    this.pStart.Y + this.margin / 2 - (int)Scale(7, SCALE_FROM_HEIGHT, this.Height));
                 startDivX += divisionWidth * this.DivisionAxisX;
             }
 
             var startDivY = this.pStart.Y - (int)Scale(25, SCALE_FROM_HEIGHT, this.Height);
             for (var i = minValue; i <= maxValue; i += this.DivisionAxisY) {
-                graph.FillEllipse(this.DivisionColor, this.pStart.X - this.paddingLeft - this.RadiusPoint / 2, startDivY - this.RadiusPoint / 2,
-                    this.RadiusPoint,
-                    this.RadiusPoint);
-                graph.DrawString(i.ToString(), this.Font, this.TextColor,
-                    this.pStart.X - this.paddingLeft + this.margin / 2, startDivY - (int)Scale(10, SCALE_FROM_HEIGHT, this.Height));
+                graph.FillEllipse(divisionBrush, this.pStart.X - this.paddingLeft - this.RadiusPoint / 2, startDivY - this.RadiusPoint / 2,
+                    this.RadiusPoint, this.RadiusPoint);
+                graph.DrawString(i.ToString(), this.Font, textBrush,
+                    this.pStart.X - this.paddingLeft + this.margin / 2,
+                    startDivY - (int)Scale(10, SCALE_FROM_HEIGHT, this.Height));
                 startDivY -= (int)(divisionHeight * this.DivisionAxisY);
             }
 
-            #endregion
-
-            #region Draw points
-
-            var prevPoint = new Point();
-
-            var ellipsePoints = new ArrayList(); //PointModel
+            var prevPoint = new ChartPoint();
+            var ellipsePoints = new ArrayList(); // ChartPointModel
             for (var i = 0; i < this.Items.Count; i++) {
                 var item = (DataItem)this.Items[i];
                 var pixelYValue = divisionHeight * item.Value -
@@ -168,29 +227,27 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                 var pixelXValue = divisionWidth * (i + 1);
 
                 if (i > 0) {
-                    var currentPoint = new Point(this.pStart.X + pixelXValue, (int)(this.pStart.Y - pixelYValue));
-                    graph.DrawLine(this.ChartPen, prevPoint.X, prevPoint.Y, currentPoint.X, currentPoint.Y);
+                    var currentPoint = new ChartPoint(this.pStart.X + pixelXValue, (int)(this.pStart.Y - pixelYValue));
+                    graph.DrawLine(chartPen, prevPoint.X, prevPoint.Y, currentPoint.X, currentPoint.Y);
                 }
 
-                ellipsePoints.Add(new PointModel() {
-                    Point = new Point(this.pStart.X + pixelXValue, (int)(this.pStart.Y - pixelYValue)),
-                    Value = item.Value
+                ellipsePoints.Add(new ChartPointModel {
+                    Point = new ChartPoint(this.pStart.X + pixelXValue, (int)(this.pStart.Y - pixelYValue)),
+                    Value = item.Value,
                 });
 
-                prevPoint = new Point(this.pStart.X + pixelXValue, (int)(this.pStart.Y - pixelYValue));
+                prevPoint = new ChartPoint(this.pStart.X + pixelXValue, (int)(this.pStart.Y - pixelYValue));
             }
 
-            foreach (PointModel pointModel in ellipsePoints) {
-                var textSize = graph.MeasureString(pointModel.Value.ToString(), this.Font);
+            foreach (ChartPointModel pm in ellipsePoints) {
+                var textSize = graph.MeasureString(pm.Value.ToString(), this.Font);
 
-                graph.FillEllipse(this.EllipseColor, pointModel.Point.X - this.RadiusPoint / 2,
-                    pointModel.Point.Y - this.RadiusPoint / 2, this.RadiusPoint, this.RadiusPoint);
-                graph.DrawString($"({pointModel.Value})", this.Font, this.TextColor,
-                    pointModel.Point.X - textSize.Width / 2,
-                    pointModel.Point.Y - this.Font.Height - (int)Scale(15, SCALE_FROM_HEIGHT, this.Height));
+                graph.FillEllipse(ellipseBrush, pm.Point.X - this.RadiusPoint / 2,
+                    pm.Point.Y - this.RadiusPoint / 2, this.RadiusPoint, this.RadiusPoint);
+                graph.DrawString($"({pm.Value})", this.Font, textBrush,
+                    pm.Point.X - textSize.Width / 2,
+                    pm.Point.Y - this.Font.Height - (int)Scale(15, SCALE_FROM_HEIGHT, this.Height));
             }
-
-            #endregion
 
             return bitmap;
         }
@@ -199,16 +256,23 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             var bitmap = new System.Drawing.Bitmap(this.Width, this.Height);
 
             using var graph = Graphics.FromImage(bitmap);
+            using var axisPen = ToSdPen(this.AxisPen);
+            using var bgBrush = ToSdBrush(this.BackgroundColor);
+            using var ellipseBrush = ToSdBrush(this.EllipseColor);
+            using var divisionBrush = ToSdBrush(this.DivisionColor);
+            using var textBrush = ToSdBrush(this.TextColor);
+            // The bar outline strokes use the chart's background color (gives
+            // the bars a "card cut from the background" look). One pen, reused.
+            using var barOutlinePen = new System.Drawing.Pen(ToSd(this.BackgroundColor.Color), 2);
 
-            var imageSize = new Rectangle(0, 0, this.Width, this.Height);
-            graph.FillRectangle(this.BackgroundColor, imageSize.X, imageSize.Y, imageSize.Width, imageSize.Height);
+            graph.FillRectangle(bgBrush, 0, 0, this.Width, this.Height);
 
-            //title
-            graph.DrawString(this.ChartTitle, this.Font, this.TextColor,
-                this.Width / 2 - (this.ChartTitle.Length / 2 * (int)Scale(18, SCALE_FROM_WIDTH, this.Width)), (int)Scale(30, SCALE_FROM_HEIGHT, this.Height));
+            graph.DrawString(this.ChartTitle, this.Font, textBrush,
+                this.Width / 2 - (this.ChartTitle.Length / 2 * (int)Scale(18, SCALE_FROM_WIDTH, this.Width)),
+                (int)Scale(30, SCALE_FROM_HEIGHT, this.Height));
 
-            graph.DrawLine(this.AxisPen, this.margin, this.margin + (int)Scale(100, SCALE_FROM_HEIGHT, this.Height), this.margin, this.Height - this.margin);
-            graph.DrawLine(this.AxisPen, this.margin, this.Height - this.margin, this.Width - this.margin, this.Height - this.margin);
+            graph.DrawLine(axisPen, this.margin, this.margin + (int)Scale(100, SCALE_FROM_HEIGHT, this.Height), this.margin, this.Height - this.margin);
+            graph.DrawLine(axisPen, this.margin, this.Height - this.margin, this.Width - this.margin, this.Height - this.margin);
 
             var maxValue = Math.Ceiling(this.GetMax(this.Items));
             var minValue = (int)this.GetMin(this.Items);
@@ -217,76 +281,62 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             var chartWidth = Math.Abs(this.pEnd.X - this.pStart.X - (int)Scale(50, SCALE_FROM_WIDTH, this.Width));
             var chartHeight = Math.Abs(this.pEnd.Y - (this.pStart.Y - (int)Scale(50, SCALE_FROM_HEIGHT, this.Height)));
 
-            var divisionHeight = chartHeight / (maxValue - minValue);
-            var divisionWidth = chartWidth / countValue;
-
-            #region Draw divisions
+            var range = maxValue - minValue;
+            var divisionHeight = (range != 0) ? chartHeight / range : 0;
+            var divisionWidth = (countValue > 0) ? chartWidth / countValue : 0;
 
             var startDivX = this.pStart.X + divisionWidth;
             foreach (DataItem xx in this.Items) {
-                var item = xx.Name;
-                graph.FillEllipse(this.DivisionColor, startDivX - this.RadiusPoint / 2, this.pStart.Y - this.RadiusPoint / 2,
-                    this.RadiusPoint,
-                    this.RadiusPoint);
-                graph.DrawString(item.ToString(), this.Font, this.TextColor,
-                    startDivX - (int)Scale(7, SCALE_FROM_WIDTH, this.Width), this.pStart.Y + this.margin / 2 - (int)Scale(7, SCALE_FROM_HEIGHT, this.Height));
+                graph.FillEllipse(divisionBrush, startDivX - this.RadiusPoint / 2, this.pStart.Y - this.RadiusPoint / 2,
+                    this.RadiusPoint, this.RadiusPoint);
+                graph.DrawString(xx.Name, this.Font, textBrush,
+                    startDivX - (int)Scale(7, SCALE_FROM_WIDTH, this.Width),
+                    this.pStart.Y + this.margin / 2 - (int)Scale(7, SCALE_FROM_HEIGHT, this.Height));
                 startDivX += divisionWidth * this.DivisionAxisX;
             }
 
             var startDivY = this.pStart.Y - (int)Scale(25, SCALE_FROM_HEIGHT, this.Height);
             for (var i = minValue; i <= maxValue; i += this.DivisionAxisY) {
-                graph.FillEllipse(this.DivisionColor, this.pStart.X - this.paddingLeft - this.RadiusPoint / 2, startDivY - this.RadiusPoint / 2,
-                    this.RadiusPoint,
-                    this.RadiusPoint);
-                graph.DrawString(i.ToString(), this.Font, this.TextColor,
-                    this.pStart.X - this.paddingLeft + this.margin / 2, startDivY - (int)Scale(10, SCALE_FROM_HEIGHT, this.Height));
+                graph.FillEllipse(divisionBrush, this.pStart.X - this.paddingLeft - this.RadiusPoint / 2, startDivY - this.RadiusPoint / 2,
+                    this.RadiusPoint, this.RadiusPoint);
+                graph.DrawString(i.ToString(), this.Font, textBrush,
+                    this.pStart.X - this.paddingLeft + this.margin / 2,
+                    startDivY - (int)Scale(10, SCALE_FROM_HEIGHT, this.Height));
                 startDivY -= (int)(divisionHeight * this.DivisionAxisY);
             }
 
-            #endregion
-
-            #region Draw rectangles
-
             for (var i = 0; i < this.Items.Count; i++) {
                 var item = (DataItem)this.Items[i];
-                var itemValue = item.Value;
-                var pixelYValue = divisionHeight * itemValue -
+                var pixelYValue = divisionHeight * item.Value -
                     divisionHeight * minValue + (int)Scale(25, SCALE_FROM_HEIGHT, this.Height);
                 var pixelXValue = divisionWidth * (i + 1);
                 const int BorderWidth = 2;
 
-                graph.FillRectangle(this.EllipseColor, this.pStart.X + pixelXValue - divisionWidth / 2,
-                    this.pStart.Y - (int)pixelYValue,
-                    divisionWidth, (int)pixelYValue - BorderWidth);
+                graph.FillRectangle(ellipseBrush, this.pStart.X + pixelXValue - divisionWidth / 2,
+                    this.pStart.Y - (int)pixelYValue, divisionWidth, (int)pixelYValue - BorderWidth);
 
                 var commonX = this.pStart.X + pixelXValue - divisionWidth / 2;
-                graph.DrawLine(new System.Drawing.Pen(this.BackgroundColor, BorderWidth), commonX,
-                    this.pStart.Y - BorderWidth, commonX, this.pStart.Y - (int)pixelYValue);
-                graph.DrawLine(new System.Drawing.Pen(this.BackgroundColor, BorderWidth), commonX,
-                    this.pStart.Y - (int)pixelYValue, commonX + divisionWidth,
-                    this.pStart.Y - (int)pixelYValue);
-                graph.DrawLine(new System.Drawing.Pen(this.BackgroundColor, BorderWidth),
-                    commonX + divisionWidth,
-                    this.pStart.Y - (int)pixelYValue, commonX + divisionWidth,
-                    this.pStart.Y - BorderWidth);
+                graph.DrawLine(barOutlinePen, commonX, this.pStart.Y - BorderWidth, commonX, this.pStart.Y - (int)pixelYValue);
+                graph.DrawLine(barOutlinePen, commonX, this.pStart.Y - (int)pixelYValue, commonX + divisionWidth, this.pStart.Y - (int)pixelYValue);
+                graph.DrawLine(barOutlinePen, commonX + divisionWidth, this.pStart.Y - (int)pixelYValue, commonX + divisionWidth, this.pStart.Y - BorderWidth);
 
-                var textSize = graph.MeasureString(itemValue.ToString(), this.Font);
+                var textSize = graph.MeasureString(item.Value.ToString(), this.Font);
 
-                graph.DrawString(itemValue.ToString(), this.Font, this.TextColor, commonX + (divisionWidth - textSize.Width)/2,
+                graph.DrawString(item.Value.ToString(), this.Font, textBrush,
+                    commonX + (divisionWidth - textSize.Width) / 2,
                     this.pStart.Y - (int)pixelYValue - this.Font.Height - BorderWidth);
             }
-            #endregion
 
             return bitmap;
         }
 
         static int Scale(int value, int orig, int scale) {
             var v = (scale * value) / orig;
-
-            if (v == 0)
-                v = 1;
+            if (v == 0) v = 1;
             return v;
         }
+
+        // --- IDisposable -----------------------------------------------------
 
         private bool disposed;
 
@@ -296,22 +346,17 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         }
 
         protected virtual void Dispose(bool disposing) {
-            if (!this.disposed) {
-                this.disposed = true;
+            if (this.disposed) return;
+
+            if (disposing) {
+                this.DisposeCache();
             }
+
+            this.disposed = true;
         }
 
         ~Chart() {
             this.Dispose(false);
-        }
-
-        public override void OnRender(DrawingContext dc) {
-            if (this.Font == null)
-                throw new ArgumentNullException("Font null!");                
-
-            var uiBmp = BitmapImage.FromGraphics(Graphics.FromImage(this.GetChart()));
-
-            dc.DrawImage(uiBmp, 0, 0);
         }
     }
 }

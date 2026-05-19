@@ -56,14 +56,20 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         }
 
         /// <summary>
+        /// Raised when a binding pull (source → TextBox) or push (TextBox → source)
+        /// fails. Default behavior is silent (the framework can't sensibly recover);
+        /// subscribe here to log or surface the error during development.
+        /// </summary>
+        public event BindingErrorEventHandler BindingError;
+
+        /// <summary>
         /// One-way or two-way bind <see cref="Text"/> to a CLR property on <paramref name="source"/> using reflection.
         /// For change notifications implement <see cref="INotifyBindablePropertyChanged"/> on the source.
         /// </summary>
         public void SetTextBinding(object source, string propertyName, bool twoWay = true) {
             this.ClearTextBinding();
-            if (source == null || propertyName == null) {
-                throw new ArgumentNullException();
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (propertyName == null) throw new ArgumentNullException(nameof(propertyName));
 
             this._bindSource = source;
             this._bindPropertyName = propertyName;
@@ -106,7 +112,12 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                     this._suppressBindPush = false;
                 }
             }
-            catch {
+            catch (Exception ex) {
+                // Reflection can throw a wide range of types here (missing
+                // member, mismatched signature, user-getter throwing). Don't
+                // tear down the paint pass — instead surface via BindingError
+                // so a dev subscriber can log it.
+                this.RaiseBindingError(BindingErrorDirection.Pull, ex);
             }
         }
 
@@ -118,8 +129,15 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             try {
                 this._bindSource.GetType().InvokeMember(this._bindPropertyName, BindingFlags.SetProperty | BindingFlags.Public | BindingFlags.Instance, null, this._bindSource, new object[] { this.text });
             }
-            catch {
+            catch (Exception ex) {
+                this.RaiseBindingError(BindingErrorDirection.Push, ex);
             }
+        }
+
+        private void RaiseBindingError(BindingErrorDirection direction, Exception ex) {
+            var handler = this.BindingError;
+            if (handler == null) return;
+            handler(this, new BindingErrorEventArgs(direction, this._bindPropertyName, ex));
         }
 
         public Color BorderColor {
@@ -142,12 +160,18 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
         public ushort PaddingX {
             get => this.paddingx;
-            set => this.paddingx = value;
+            set {
+                this.paddingx = value;
+                this.InvalidateMeasure();
+            }
         }
 
         public ushort PaddingY {
             get => this.paddingy;
-            set => this.paddingy = value;
+            set {
+                this.paddingy = value;
+                this.InvalidateMeasure();
+            }
         }
 
         internal bool ForOnScreenKeyboard { get; set; }

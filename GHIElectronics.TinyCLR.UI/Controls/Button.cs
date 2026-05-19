@@ -7,8 +7,8 @@ using GHIElectronics.TinyCLR.UI.Media.Imaging;
 
 namespace GHIElectronics.TinyCLR.UI.Controls {
     public class Button : ContentControl, IDisposable {
-        public ushort Alpha { get; set; } = 0xC8;
-        public int RadiusBorder { get; set; } = 5;
+        public ushort Alpha { get; set; } = Theme.DefaultAlpha;
+        public int RadiusBorder { get; set; } = Theme.DefaultRadiusBorder;
 
         // Cached events - allocated once per AppDomain, not per click. Each
         // click still needs a fresh RoutedEventArgs, but the event identity
@@ -38,8 +38,8 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         public bool IsPressed => this.isPressed;
 
         private void InitResource() {
-            this.bitmapImageButtonDown = BitmapImage.FromGraphics(Graphics.FromImage(Resources.GetBitmap(Resources.BitmapResources.Button_Down)));
-            this.bitmapImageButtonUp = BitmapImage.FromGraphics(Graphics.FromImage(Resources.GetBitmap(Resources.BitmapResources.Button_Up)));
+            this.bitmapImageButtonDown = Resources.LoadBitmapImage(Resources.BitmapResources.Button_Down);
+            this.bitmapImageButtonUp = Resources.LoadBitmapImage(Resources.BitmapResources.Button_Up);
         }
 
         private void OnParentTouchUp(object sender, TouchEventArgs e) {
@@ -126,24 +126,27 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         }
 
         // Fires Click. Returns the args.Handled flag so callers can propagate
-        // it to TouchEventArgs/ButtonEventArgs.Handled.
+        // it to TouchEventArgs/ButtonEventArgs.Handled. Exceptions from user
+        // handlers propagate — the framework should not silently swallow them.
         private bool PerformClick() {
             var args = new RoutedEventArgs(ClickRoutedEvent, this);
-            try {
-                this.Click?.Invoke(this, args);
-            }
-            catch {
-            }
+            this.Click?.Invoke(this, args);
             return args.Handled;
         }
 
         public override void OnRender(DrawingContext dc) {
+            // ActualWidth/ActualHeight are populated by Arrange and never throw,
+            // unlike this.Width/Height which fire "width not set" if the caller
+            // forgot to assign them — and a single exception out of OnRender
+            // aborts paint for every sibling on the same canvas.
+            var w = this.ActualWidth;
+            var h = this.ActualHeight;
+            if (w <= 0 || h <= 0) return;
+
             var alpha = (this.IsEnabled) ? this.Alpha : (ushort)(this.Alpha / 2);
 
-            if (this.isPressed && this.IsEnabled)
-                dc.Scale9Image(0, 0, this.Width, this.Height, this.bitmapImageButtonDown, this.RadiusBorder, this.RadiusBorder, this.RadiusBorder, this.RadiusBorder, alpha);
-            else
-                dc.Scale9Image(0, 0, this.Width, this.Height, this.bitmapImageButtonUp, this.RadiusBorder, this.RadiusBorder, this.RadiusBorder, this.RadiusBorder, alpha);
+            var img = (this.isPressed && this.IsEnabled) ? this.bitmapImageButtonDown : this.bitmapImageButtonUp;
+            dc.Scale9Image(0, 0, w, h, img, this.RadiusBorder, this.RadiusBorder, this.RadiusBorder, this.RadiusBorder, alpha);
         }
 
         private bool disposed;
@@ -154,20 +157,22 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         }
 
         protected virtual void Dispose(bool disposing) {
-            if (!this.disposed) {
+            if (this.disposed) return;
 
+            if (disposing) {
+                // Managed cleanup — only safe when called from explicit Dispose(),
+                // not from the finalizer (where dependent managed objects may
+                // already be gone or about to finalize themselves).
                 this.bitmapImageButtonDown?.graphics?.Dispose();
                 this.bitmapImageButtonUp?.graphics?.Dispose();
 
-                // Unsubscribe from the parent we ACTUALLY subscribed to, not
-                // this.Parent (which may have changed via re-parenting).
                 if (this.subscribedParent != null) {
                     this.subscribedParent.TouchUp -= this.OnParentTouchUp;
                     this.subscribedParent = null;
                 }
-
-                this.disposed = true;
             }
+
+            this.disposed = true;
         }
 
         ~Button() {

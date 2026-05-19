@@ -77,11 +77,11 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         private string value = string.Empty;
 
         public string Name { get; set; } = string.Empty;
-        public ushort Alpha { get; set; } = 0xC8;
-        public int RadiusBorder { get; set; } = 5;
+        public ushort Alpha { get; set; } = Theme.DefaultAlpha;
+        public int RadiusBorder { get; set; } = Theme.DefaultRadiusBorder;
         public bool ShowBackground { get; set; } = true;
 
-        private void InitResource() => this.bitmapImageRadioButton = BitmapImage.FromGraphics(Graphics.FromImage(Resources.GetBitmap(Resources.BitmapResources.RadioButton)));
+        private void InitResource() => this.bitmapImageRadioButton = Resources.LoadBitmapImage(Resources.BitmapResources.RadioButton);
 
         public RadioButton() : this(string.Empty) {
 
@@ -98,19 +98,20 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         }
 
         public override void OnRender(DrawingContext dc) {
-            var x = 0;
-            var y = 0;
+            var w = this.ActualWidth;
+            var h = this.ActualHeight;
+            if (w <= 0 || h <= 0) return;
 
             var alpha = (this.IsEnabled) ? this.Alpha : (ushort)(this.Alpha / 2);
 
             if (ShowBackground)
-                dc.Scale9Image(x, y, this.Width, this.Height, this.bitmapImageRadioButton, this.RadiusBorder, this.RadiusBorder, this.RadiusBorder, this.RadiusBorder, alpha);
+                dc.Scale9Image(0, 0, w, h, this.bitmapImageRadioButton, this.RadiusBorder, this.RadiusBorder, this.RadiusBorder, this.RadiusBorder, alpha);
 
-            x += (this.Width / 2) - 1;
-            y += (this.Height / 2) - 1;
+            var x = (w / 2) - 1;
+            var y = (h / 2) - 1;
 
-            var xRadius = this.Width / 3;
-            var yRadius = this.Height / 3;
+            var xRadius = w / 3;
+            var yRadius = h / 3;
 
             var penSelected = new GHIElectronics.TinyCLR.UI.Media.Pen(this.SelectedColor, 1);
             var penSelectedOutline = new GHIElectronics.TinyCLR.UI.Media.Pen(this.SelectedOutlineColor, 1);
@@ -121,7 +122,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             if (this.isChecked) {
                 dc.DrawEllipse(null, penSelectedOutline, x, y, xRadius, yRadius);
 
-                dc.DrawEllipse(brush, penSelected, x, y, this.Width / 4, this.Height / 4);
+                dc.DrawEllipse(brush, penSelected, x, y, w / 4, h / 4);
 
             }
             else {
@@ -151,12 +152,11 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
         // Fires Click and toggles the radio group selection.
         // Returns the Click args.Handled flag so callers can forward it.
+        // Exceptions from user handlers propagate — the framework should not
+        // silently swallow them.
         private bool PerformClick() {
             var args = new RoutedEventArgs(ClickRoutedEvent, this);
-            try {
-                this.Click?.Invoke(this, args);
-            }
-            catch { }
+            this.Click?.Invoke(this, args);
 
             this.Toggle();
 
@@ -213,12 +213,13 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         }
 
         protected virtual void Dispose(bool disposing) {
-            if (!this.disposed) {
+            if (this.disposed) return;
 
-                this.bitmapImageRadioButton.graphics.Dispose();
-
-                this.disposed = true;
+            if (disposing) {
+                this.bitmapImageRadioButton?.graphics?.Dispose();
             }
+
+            this.disposed = true;
         }
 
         ~RadioButton() {

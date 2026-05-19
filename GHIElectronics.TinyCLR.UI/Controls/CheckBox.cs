@@ -27,13 +27,13 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         private bool isChecked = false;
 
         public string Name { get; set; } = string.Empty;
-        public ushort Alpha { get; set; } = 0xC8;
-        public ushort RadiusBorder { get; set; } = 5;
+        public ushort Alpha { get; set; } = Theme.DefaultAlpha;
+        public ushort RadiusBorder { get; set; } = (ushort)Theme.DefaultRadiusBorder;
 
 
         private void InitResource() {
-            this.bitmapImageCheckboxOn = BitmapImage.FromGraphics(Graphics.FromImage(Resources.GetBitmap(Resources.BitmapResources.CheckBox_On)));
-            this.bitmapImageCheckboxOff = BitmapImage.FromGraphics(Graphics.FromImage(Resources.GetBitmap(Resources.BitmapResources.CheckBox_Off)));
+            this.bitmapImageCheckboxOn = Resources.LoadBitmapImage(Resources.BitmapResources.CheckBox_On);
+            this.bitmapImageCheckboxOff = Resources.LoadBitmapImage(Resources.BitmapResources.CheckBox_Off);
         }
 
         public CheckBox() : base() {
@@ -44,13 +44,16 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         }
 
         public override void OnRender(DrawingContext dc) {
-            var x = 0;
-            var y = 0;
+            // The ctor pre-sets Width/Height from the bitmap, so this normally
+            // wouldn't throw — but a caller can still override Width/Height
+            // back to unset via reflection or future API changes. Using
+            // ActualWidth/ActualHeight keeps the paint pass alive regardless.
+            var w = this.ActualWidth;
+            var h = this.ActualHeight;
+            if (w <= 0 || h <= 0) return;
 
-            if (this.isChecked)
-                dc.Scale9Image(x, y, this.Width, this.Height, this.bitmapImageCheckboxOn, this.RadiusBorder, this.RadiusBorder, this.RadiusBorder, this.RadiusBorder, this.Alpha);
-            else
-                dc.Scale9Image(x, y, this.Width, this.Height, this.bitmapImageCheckboxOff, this.RadiusBorder, this.RadiusBorder, this.RadiusBorder, this.RadiusBorder, this.Alpha);
+            var img = this.isChecked ? this.bitmapImageCheckboxOn : this.bitmapImageCheckboxOff;
+            dc.Scale9Image(0, 0, w, h, img, this.RadiusBorder, this.RadiusBorder, this.RadiusBorder, this.RadiusBorder, this.Alpha);
         }
 
         protected override void OnTouchUp(TouchEventArgs e) {
@@ -76,12 +79,11 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
         // Toggles checked state and raises Click + Checked/Unchecked.
         // Returns the Click args.Handled flag so callers can forward it.
+        // Exceptions from user handlers propagate — the framework should not
+        // silently swallow them.
         private bool PerformClick() {
             var clickArgs = new RoutedEventArgs(ClickRoutedEvent, this);
-            try {
-                this.Click?.Invoke(this, clickArgs);
-            }
-            catch { }
+            this.Click?.Invoke(this, clickArgs);
 
             this.IsChecked = !this.IsChecked;
 
@@ -103,9 +105,13 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         public bool IsChecked {
             get => this.isChecked;
             set {
-                if (this.isChecked != value) {
-                    this.isChecked = value;
-                }
+                if (this.isChecked == value) return;
+                this.isChecked = value;
+
+                // Programmatic state changes must repaint — PerformClick()
+                // already invalidates on its own path, but direct property
+                // assignment used to silently leave the visual stale.
+                if (this.Parent != null) this.Invalidate();
             }
         }
 
@@ -117,13 +123,14 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         }
 
         protected virtual void Dispose(bool disposing) {
-            if (!this.disposed) {
+            if (this.disposed) return;
 
-                this.bitmapImageCheckboxOn.graphics.Dispose();
-                this.bitmapImageCheckboxOff.graphics.Dispose();
-
-                this.disposed = true;
+            if (disposing) {
+                this.bitmapImageCheckboxOn?.graphics?.Dispose();
+                this.bitmapImageCheckboxOff?.graphics?.Dispose();
             }
+
+            this.disposed = true;
         }
 
         ~CheckBox() {

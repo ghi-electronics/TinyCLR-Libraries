@@ -156,13 +156,10 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
         // Raises Click with the supplied ListBoxItem as the event source.
         // Used by ListBoxItem.OnTouchUp and by Select-button activation.
+        // Exceptions from user handlers propagate.
         internal bool RaiseClick(ListBoxItem source) {
             var args = new RoutedEventArgs(ClickRoutedEvent, source);
-            try {
-                this.Click?.Invoke(this, args);
-            }
-            catch {
-            }
+            this.Click?.Invoke(this, args);
             return args.Handled;
         }
 

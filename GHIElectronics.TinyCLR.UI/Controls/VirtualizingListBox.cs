@@ -8,7 +8,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
     /// Large homogeneous lists: recycles a small pool of rows while preserving full scroll extent.
     /// Set <see cref="ItemsSource"/> to an <see cref="IList"/> (e.g. <see cref="ArrayList"/>); each item is shown via <c>ToString()</c>.
     /// </summary>
-    public class VirtualizingListBox : Control {
+    public class VirtualizingListBox : Control, IDisposable {
         private const int DefaultPoolSize = 12;
 
         private readonly ScrollViewer scroll;
@@ -154,6 +154,39 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         protected override void ArrangeOverride(int arrangeWidth, int arrangeHeight) {
             this.scroll.Arrange(0, 0, arrangeWidth, arrangeHeight);
         }
+
+        // --- IDisposable ----------------------------------------------------
+        //
+        // The constructor wires `border.TouchUp += Row_TouchUp` for every row
+        // in the recycling pool and `scroll.ScrollChanged += Scroll_ScrollChanged`
+        // for the inner viewer. All targets point at `this`, so once the list
+        // is unreachable from the UI root the whole subgraph collects fine
+        // without Dispose. Explicit Dispose is still provided for callers that
+        // want deterministic teardown (e.g. swapping list views on a page).
+
+        private bool _disposed;
+
+        public void Dispose() {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing) {
+            if (this._disposed) return;
+
+            if (disposing) {
+                this.scroll.ScrollChanged -= this.Scroll_ScrollChanged;
+                for (var i = 0; i < this.host.Children.Count; i++) {
+                    if (this.host.Children[i] is Border b) {
+                        b.TouchUp -= this.Row_TouchUp;
+                    }
+                }
+            }
+
+            this._disposed = true;
+        }
+
+        ~VirtualizingListBox() => this.Dispose(false);
 
         private sealed class VirtualPanel : Panel {
             private readonly VirtualizingListBox owner;

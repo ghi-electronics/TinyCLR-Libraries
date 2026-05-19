@@ -1,36 +1,26 @@
 using System;
 using System.Collections;
 using System.Drawing;
-using GHIElectronics.TinyCLR.UI;
+using GHIElectronics.TinyCLR.UI.Input;
 using GHIElectronics.TinyCLR.UI.Media;
+using GHIElectronics.TinyCLR.UI.Threading;
 
 namespace GHIElectronics.TinyCLR.UI.Controls {
-
-
-    public class MessageBox : Canvas, IDisposable {
-
-        public Font Font { get; set; }
-
-        public delegate void MessageBoxRoutedEventHandler(object sender, MessageBoxRoutedEventArgs e);
-        public event MessageBoxRoutedEventHandler ButtonClick;
-
-        private Button buttonCenter;
-        private Button buttonLeft;
-        private Button buttonRight;
-        private MessageBoxButtons messageBoxButton;
-        private int messageLines;
-        public UIElement Owner { get; set; }
-
-        public class MessageBoxRoutedEventArgs {
-            public MessageBoxRoutedEventArgs() {
-
-            }
-
-            public RoutedEventArgs RoutedEventArgs { get; internal set; }
-            public DialogResult DialogResult { get; internal set; }
-        }
-
-        private bool _isShown;
+    /// <summary>
+    /// WinForms-style modal message box.
+    ///
+    /// Usage:
+    /// <code>
+    /// MessageBox.DefaultFont = myFont;             // once at app start
+    /// var r = MessageBox.Show("Erase all data?", "Confirm", MessageBoxButtons.YesNo);
+    /// if (r == DialogResult.Yes) { ... }
+    /// </code>
+    ///
+    /// Show() is synchronous: it nests a dispatcher frame so the UI keeps painting
+    /// and dispatching input while the box is up, and returns when the user picks
+    /// a button (or Esc cancels). Safe to call from any UI-thread event handler.
+    /// </summary>
+    public static class MessageBox {
         public enum MessageBoxButtons {
             OK = 0,
             Cancel = 1,
@@ -45,360 +35,488 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             No = 3,
         }
 
-        public MessageBox(Font font) => this.Font = font;
-        public void Show(string message, string caption, MessageBoxButtons messageBoxButton) => this.Show(null, message, caption, messageBoxButton);
-        public void Show(UIElement owner, string message, string caption, MessageBoxButtons messageBoxButton) {
+        /// <summary>
+        /// Optional default font. Set this once at startup so callers don't have
+        /// to pass a Font on every call. Each Show overload that omits a Font uses
+        /// this value.
+        /// </summary>
+        public static Font DefaultFont { get; set; }
 
-            if (this._isShown) {
+        public static DialogResult Show(string message, string caption, MessageBoxButtons buttons)
+            => Show(null, message, caption, buttons, DefaultFont);
+
+        public static DialogResult Show(string message, string caption, MessageBoxButtons buttons, Font font)
+            => Show(null, message, caption, buttons, font);
+
+        public static DialogResult Show(UIElement owner, string message, string caption, MessageBoxButtons buttons, Font font) {
+            if (font == null) throw new ArgumentNullException(nameof(font), "Set MessageBox.DefaultFont or pass a Font.");
+
+            // The dialog mounts under the owner if supplied and live, otherwise
+            // under MainWindow.Child. Without either we have nowhere to draw.
+            var host = ResolveHost(owner);
+            if (host == null) throw new InvalidOperationException("No host: pass an owner or set Application.Current.MainWindow.");
+
+            var dialog = new MessageBoxDialog(font, message ?? string.Empty, caption ?? string.Empty, buttons);
+            return dialog.ShowModal(host);
+        }
+
+        private static UIElement ResolveHost(UIElement owner) {
+            if (owner != null) return owner;
+
+            var app = Application.Current;
+            if (app == null) return null;
+
+            var mw = app.MainWindow;
+            if (mw == null) return null;
+
+            return mw.Child ?? mw;
+        }
+    }
+
+    /// <summary>
+    /// The actual modal Canvas: fills the host, paints a scrim, hosts the dialog
+    /// rectangle + buttons, and pumps a nested dispatcher frame until dismissed.
+    /// Internal — public API is <see cref="MessageBox"/>.
+    /// </summary>
+    internal sealed class MessageBoxDialog : Canvas {
+        // Layout constants (relative to font height so big-font configs scale).
+        private const int OuterMarginRatioNum = 1;   // dialog inset from host edge: 1/8 of min(hostW,hostH)
+        private const int OuterMarginRatioDen = 8;
+        private const int InnerPad = 12;             // px padding inside dialog edges
+        private const int LineSpacingNum = 5;        // line height multiplier: font.Height * 5/4
+        private const int LineSpacingDen = 4;
+        private const int ButtonGap = 12;            // px between two buttons
+        private const ushort ScrimAlpha = 0x80;      // ~50% black scrim
+        private const int MinDialogWidth = 160;
+
+        private readonly Font _font;
+        private readonly string _caption;
+        private readonly MessageBox.MessageBoxButtons _kind;
+        private readonly string[] _rawLines;
+        private readonly DispatcherFrame _frame = new DispatcherFrame();
+
+        // Static brush/pen cache, rebuilt only when Theme colors change.
+        // Previously each dialog instance allocated its own set on every Show()
+        // — needless garbage given that the visuals are theme-driven and shared.
+        private static SolidColorBrush s_scrimBrush;
+        private static SolidColorBrush s_captionBrush;
+        private static SolidColorBrush s_bodyBrush;
+        private static Media.Pen s_borderPen;
+        private static Media.Color s_cachedCaptionColor;
+        private static Media.Color s_cachedBodyColor;
+        private static Media.Color s_cachedBorderColor;
+
+        private static SolidColorBrush ScrimBrush() {
+            if (s_scrimBrush == null) {
+                s_scrimBrush = new SolidColorBrush(Colors.Black) { Opacity = ScrimAlpha };
+            }
+            return s_scrimBrush;
+        }
+
+        private static SolidColorBrush CaptionBrush() {
+            var c = Theme.ControlSurface;
+            if (s_captionBrush == null || !ColorEquals(s_cachedCaptionColor, c)) {
+                s_captionBrush = new SolidColorBrush(c);
+                s_cachedCaptionColor = c;
+            }
+            return s_captionBrush;
+        }
+
+        private static SolidColorBrush BodyBrush() {
+            var c = Theme.TextBoxFill;
+            if (s_bodyBrush == null || !ColorEquals(s_cachedBodyColor, c)) {
+                s_bodyBrush = new SolidColorBrush(c);
+                s_cachedBodyColor = c;
+            }
+            return s_bodyBrush;
+        }
+
+        private static Media.Pen BorderPen() {
+            var c = Theme.Border;
+            if (s_borderPen == null || !ColorEquals(s_cachedBorderColor, c)) {
+                s_borderPen = new Media.Pen(c, 1);
+                s_cachedBorderColor = c;
+            }
+            return s_borderPen;
+        }
+
+        private static bool ColorEquals(Media.Color a, Media.Color b) =>
+            a.R == b.R && a.G == b.G && a.B == b.B && a.A == b.A;
+
+        private MessageBox.DialogResult _result = MessageBox.DialogResult.Cancel;
+
+        private Button _primary;     // OK / Yes / center-only
+        private Button _secondary;   // Cancel / No (only for OKCancel and YesNo)
+        private MessageBox.DialogResult _primaryResult;
+        private MessageBox.DialogResult _secondaryResult;
+
+        // Geometry computed in BuildLayout once we know the host size.
+        private string[] _wrappedLines;
+        private int _dialogX, _dialogY, _dialogW, _dialogH;
+        private int _captionBarHeight;
+        private int _bodyTop, _bodyHeight;
+        private int _lineSpacing;
+
+        private UIElement _host;
+        private UIElement _previousFocus;
+
+        internal MessageBoxDialog(Font font, string message, string caption, MessageBox.MessageBoxButtons kind) {
+            this._font = font;
+            this._caption = caption;
+            this._kind = kind;
+            this._rawLines = SplitLines(message);
+        }
+
+        internal MessageBox.DialogResult ShowModal(UIElement host) {
+            this._host = host;
+            this._previousFocus = Buttons.FocusedElement;
+
+            var hostW = host.ActualWidth > 0 ? host.ActualWidth : Application.Current.MainWindow.Width;
+            var hostH = host.ActualHeight > 0 ? host.ActualHeight : Application.Current.MainWindow.Height;
+
+            this.Width = hostW;
+            this.Height = hostH;
+
+            this.BuildLayout(hostW, hostH);
+            this.BuildButtons();
+
+            // Mount under the host. Logical-children list is the canvas's child
+            // collection; appending puts us on top of everything else.
+            host.LogicalChildren.Add(this);
+            host.Invalidate();
+
+            // Focus the primary button so Enter/Select activates it immediately.
+            if (this._primary != null) {
+                Buttons.Focus(this._primary);
+            }
+
+            try {
+                // Nested message loop. Returns when a button click sets Continue=false.
+                Dispatcher.PushFrame(this._frame);
+            }
+            finally {
+                this.Detach();
+            }
+
+            return this._result;
+        }
+
+        private void Detach() {
+            if (this._host != null) {
+                if (this._host.LogicalChildren.Contains(this)) {
+                    this._host.LogicalChildren.Remove(this);
+                }
+                this._host.Invalidate();
+                this._host = null;
+            }
+
+            // Restore focus to whatever owned it before we opened.
+            if (this._previousFocus != null) {
+                Buttons.Focus(this._previousFocus);
+                this._previousFocus = null;
+            }
+        }
+
+        // --- layout -----------------------------------------------------------
+
+        private void BuildLayout(int hostW, int hostH) {
+            var inset = (hostW < hostH ? hostW : hostH) * OuterMarginRatioNum / OuterMarginRatioDen;
+            var maxW = hostW - inset * 2;
+            var maxH = hostH - inset * 2;
+            if (maxW < MinDialogWidth) maxW = MinDialogWidth;
+
+            this._lineSpacing = this._font.Height * LineSpacingNum / LineSpacingDen;
+            this._captionBarHeight = (this._font.Height * 3 + 1) / 2;
+
+            var bodyMaxW = maxW - InnerPad * 2;
+            if (bodyMaxW < 1) bodyMaxW = 1;
+
+            // Word-wrap each line to bodyMaxW. Empty lines stay empty (blank row).
+            this._wrappedLines = WrapAllLines(this._rawLines, bodyMaxW);
+
+            // Compute the desired body width: longest wrapped line, capped at bodyMaxW.
+            // Also factor in caption width so the bar isn't clipped.
+            var longest = 0;
+            for (var i = 0; i < this._wrappedLines.Length; i++) {
+                this._font.ComputeExtent(this._wrappedLines[i], out var w, out _);
+                if (w > longest) longest = w;
+            }
+            if (this._caption.Length > 0) {
+                this._font.ComputeExtent(this._caption, out var cw, out _);
+                if (cw > longest) longest = cw;
+            }
+
+            var contentW = longest + InnerPad * 2;
+            if (contentW > maxW) contentW = maxW;
+            if (contentW < MinDialogWidth) contentW = MinDialogWidth;
+
+            // Vertical layout: caption + body + button row, each with InnerPad above/below.
+            var buttonRowH = this._font.Height * 2 + InnerPad;
+            var bodyH = this._wrappedLines.Length * this._lineSpacing + InnerPad;
+            var totalH = this._captionBarHeight + bodyH + buttonRowH + InnerPad;
+
+            if (totalH > maxH) {
+                // Trim body height; the renderer clips trailing lines.
+                bodyH = maxH - this._captionBarHeight - buttonRowH - InnerPad;
+                if (bodyH < this._lineSpacing) bodyH = this._lineSpacing;
+                totalH = this._captionBarHeight + bodyH + buttonRowH + InnerPad;
+            }
+
+            this._dialogW = contentW;
+            this._dialogH = totalH;
+            this._dialogX = (hostW - contentW) / 2;
+            this._dialogY = (hostH - totalH) / 2;
+            this._bodyTop = this._dialogY + this._captionBarHeight + InnerPad / 2;
+            this._bodyHeight = bodyH;
+        }
+
+        private string[] WrapAllLines(string[] lines, int maxWidth) {
+            var bag = new ArrayList();
+            for (var i = 0; i < lines.Length; i++) {
+                this.WrapOne(lines[i], maxWidth, bag);
+            }
+            var arr = new string[bag.Count];
+            for (var i = 0; i < arr.Length; i++) arr[i] = (string)bag[i];
+            return arr;
+        }
+
+        private void WrapOne(string line, int maxWidth, ArrayList output) {
+            if (line.Length == 0) {
+                output.Add(string.Empty);
                 return;
             }
 
-            if (this.Font == null) {
-                throw new ArgumentNullException(nameof(Font));
-            }
-
-            if (message == null) {
-                throw new ArgumentNullException(nameof(message));
-            }
-
-            this.Owner = owner;
-
-            var windowWidth = 0;
-            var windowHeight = 0;
-
-            var alignToOwner = false;
-
-            if (owner != null) {
-                try {
-
-                    windowWidth = this.Owner.ActualWidth;
-                    windowHeight = this.Owner.ActualHeight;
-
-                    alignToOwner = windowWidth > 0 && windowHeight > 0;
+            var start = 0;
+            while (start < line.Length) {
+                // Fast path: does the rest fit?
+                var rest = line.Substring(start);
+                this._font.ComputeExtent(rest, out var fullW, out _);
+                if (fullW <= maxWidth) {
+                    output.Add(rest);
+                    return;
                 }
-                catch {
+
+                // Walk forward until we exceed maxWidth, remember the last
+                // boundary that still fit.
+                var fitChars = 1;
+                for (var i = start + 1; i <= line.Length; i++) {
+                    this._font.ComputeExtent(line.Substring(start, i - start), out var w, out _);
+                    if (w > maxWidth) break;
+                    fitChars = i - start;
                 }
-            }
 
-            windowWidth = windowWidth == 0 ? Application.Current.MainWindow.Width : windowWidth;
-            windowHeight = windowHeight == 0 ? Application.Current.MainWindow.Height : windowHeight;
-
-            this.captionBarHeight = (this.Font.Height * 3 / 2);
-            this.Width = (windowWidth * 2) / 3;
-
-            this.messageLines = 0;
-
-            this.messageList = new ArrayList();
-
-            for (var i = 0; i < message.Length; i++) {
-                if (message[i] == '\n' || message[i] == '\r') {
-                    this.messageLines++;
-
-                    var str = message.Substring(0, i);
-
-                    this.messageList.Add(str);
-
-                    message = message.Substring(i + 1, message.Length - (i + 1));
-                    i = 0;
+                // Prefer to break at the last whitespace inside the fit window.
+                var breakLen = fitChars;
+                for (var i = fitChars; i > 0; i--) {
+                    var c = line[start + i - 1];
+                    if (c == ' ' || c == '\t') {
+                        breakLen = i - 1;          // drop the space itself
+                        break;
+                    }
                 }
+                if (breakLen == 0) breakLen = fitChars; // no whitespace → hard break
+
+                output.Add(line.Substring(start, breakLen));
+                start += breakLen;
+                // Skip leading whitespace on the next line.
+                while (start < line.Length && (line[start] == ' ' || line[start] == '\t')) start++;
             }
-
-            this.messageList.Add(message);
-            this.messageLines++;
-            var maxWith = 0;
-            var maxAverageWith = 0;
-
-            for (var i = 0; i < this.messageList.Count; i++) {
-                var str = this.messageList[i] as string;
-
-                this.Font.ComputeExtent(str, out var w, out var _);
-
-                maxWith = Math.Max(maxWith, w);
-                if (str != null && str.Length > 0) {
-                    maxAverageWith = Math.Max(maxAverageWith, w / str.Length);
-                }
-            }
-
-            this.Width = maxWith + maxAverageWith * 2;
-            this.Width = Math.Min(this.Width, windowWidth);
-
-
-            var buttonCenterMessage = string.Empty;
-            var buttonLeftMessage = string.Empty;
-            var buttonRightMessage = string.Empty;
-
-
-            this.caption = caption ?? string.Empty;
-
-            this.messageBoxButton = messageBoxButton;
-
-            switch (this.messageBoxButton) {
-                case MessageBoxButtons.OK:
-                    buttonCenterMessage = "OK";
-                    break;
-                case MessageBoxButtons.Cancel:
-                    buttonCenterMessage = "Cancel";
-                    break;
-                case MessageBoxButtons.OKCancel:
-                    buttonLeftMessage = "OK";
-                    buttonRightMessage = "Cancel";
-                    break;
-                case MessageBoxButtons.YesNo:
-                    buttonLeftMessage = "Yes";
-                    buttonRightMessage = "No";
-                    break;
-            }
-
-
-            if (buttonCenterMessage != string.Empty) {
-
-                var textButtonCenter = new Text(this.Font, buttonCenterMessage) {
-                    ForeColor = Colors.Black,
-                    HorizontalAlignment = HorizontalAlignment.Center,
-                    VerticalAlignment = VerticalAlignment.Center,
-                };
-
-                this.Font.ComputeExtent(buttonCenterMessage, out var w, out var h);
-                var averageChar = buttonCenterMessage.Length > 0 ? w / buttonCenterMessage.Length : 0;
-
-                this.buttonCenter = new Button() {
-                    Child = textButtonCenter,
-                    Width = w + averageChar * 2,
-                    Height = h * 2,
-
-                };
-
-                this.Height = this.captionBarHeight + (this.messageLines + 2) * this.Font.Height + this.buttonCenter.Height + this.Font.Height;
-                this.Width = Math.Max(this.Width, this.buttonCenter.Width * 4);
-
-                this.buttonCenter.SetMargin(this.Width / 2 - this.buttonCenter.Width / 2, this.Height - (this.buttonCenter.Height + this.Font.Height), 0, 0);
-                this.buttonCenter.Click += this.Button_Click;
-
-                this.Children.Add(this.buttonCenter);
-            }
-            else {
-
-
-                var textButtonLeft = new Text(this.Font, buttonLeftMessage) {
-                    ForeColor = Colors.Black,
-                    HorizontalAlignment = HorizontalAlignment.Center,
-                    VerticalAlignment = VerticalAlignment.Center,
-                };
-
-                var textButtonRight = new Text(this.Font, buttonRightMessage) {
-                    ForeColor = Colors.Black,
-                    HorizontalAlignment = HorizontalAlignment.Center,
-                    VerticalAlignment = VerticalAlignment.Center,
-                };
-
-                this.Font.ComputeExtent(buttonLeftMessage, out var w1, out var h1);
-                var averageChar1 = buttonLeftMessage.Length > 0 ? w1 / buttonLeftMessage.Length : 0;
-
-                this.Font.ComputeExtent(buttonRightMessage, out var w2, out var h2);
-                var averageChar2 = buttonRightMessage.Length > 0 ? w2 / buttonRightMessage.Length : 0;
-
-                var averageChar = Math.Max(averageChar1, averageChar2);
-                var w = Math.Max(w1, w2);
-                var h = Math.Max(h1, h2);
-
-                this.buttonLeft = new Button() {
-                    Child = textButtonLeft,
-                    Width = w + averageChar * 2,
-                    Height = h * 2,
-                };
-
-                this.Height = this.captionBarHeight + (this.messageLines + 2) * this.Font.Height + this.buttonLeft.Height + this.Font.Height;
-                this.Width = Math.Max(this.Width, this.buttonLeft.Width * 4);
-
-                this.buttonLeft.SetMargin(this.Width / 2 - this.buttonLeft.Width * 3 / 2, this.Height - (this.buttonLeft.Height + this.Font.Height), 0, 0);
-
-                this.buttonLeft.Click += this.Button_Click;
-
-                this.Children.Add(this.buttonLeft);
-
-                this.buttonRight = new Button() {
-                    Child = textButtonRight,
-                    Width = Math.Max(this.buttonLeft.Width, w + averageChar * 2),
-                    Height = h * 2,
-                };
-
-                this.buttonRight.SetMargin(this.Width / 2 + this.buttonRight.Width / 2, this.Height - (this.buttonLeft.Height + this.Font.Height), 0, 0);
-
-                this.Width = Math.Max(this.Width, this.buttonRight.Width * 4);
-
-
-                this.buttonRight.Click += this.Button_Click;
-                this.Children.Add(this.buttonRight);
-            }
-
-            this.Width = Math.Min(this.Width, windowWidth);
-            this.Height = Math.Min(this.Height, windowHeight);
-
-            if (alignToOwner)
-                this.SetMargin(windowWidth / 2 - this.Width / 2, windowHeight / 2 - this.Height / 2, 0, 0);
-            else {
-                SetLeft(this, windowWidth / 2 - this.Width / 2);
-                SetTop(this, windowHeight / 2 - this.Height / 2);
-            }
-
-
-            if (this.Owner != null && !this.Owner._logicalChildren.Contains(this))
-                this.Owner._logicalChildren.Add(this);
-            else if (!Application.Current.MainWindow.Child._logicalChildren.Contains(this))
-                Application.Current.MainWindow.Child._logicalChildren.Add(this);
-
-            this._isShown = true;
         }
 
-        public void Close() {
-            if (this.Owner != null && this.Owner._logicalChildren.Contains(this)) {
-                this.Owner._logicalChildren.Remove(this);
-            }
-            else {
-                if (Application.Current.MainWindow.Child._logicalChildren.Contains(this))
-                    Application.Current.MainWindow.Child._logicalChildren.Remove(this);
-            }
+        // --- buttons ----------------------------------------------------------
 
-            if (this.buttonLeft != null) {
-
-                this.buttonLeft.Click -= this.Button_Click;
-                this.Children.Remove(this.buttonLeft);
-                this.buttonLeft.Dispose();
-                this.buttonLeft = null;
-            }
-
-            if (this.buttonRight != null) {
-
-                this.buttonRight.Click -= this.Button_Click;
-                this.Children.Remove(this.buttonRight);
-                this.buttonRight.Dispose();
-                this.buttonRight = null;
-            }
-
-            if (this.buttonCenter != null) {
-
-                this.buttonCenter.Click -= this.Button_Click;
-                this.Children.Remove(this.buttonCenter);
-                this.buttonCenter.Dispose();
-                this.buttonCenter = null;
+        private void BuildButtons() {
+            string primaryLabel, secondaryLabel;
+            switch (this._kind) {
+                case MessageBox.MessageBoxButtons.OK:
+                    primaryLabel = "OK"; secondaryLabel = null;
+                    this._primaryResult = MessageBox.DialogResult.OK;
+                    break;
+                case MessageBox.MessageBoxButtons.Cancel:
+                    primaryLabel = "Cancel"; secondaryLabel = null;
+                    this._primaryResult = MessageBox.DialogResult.Cancel;
+                    break;
+                case MessageBox.MessageBoxButtons.OKCancel:
+                    primaryLabel = "OK"; secondaryLabel = "Cancel";
+                    this._primaryResult = MessageBox.DialogResult.OK;
+                    this._secondaryResult = MessageBox.DialogResult.Cancel;
+                    break;
+                case MessageBox.MessageBoxButtons.YesNo:
+                    primaryLabel = "Yes"; secondaryLabel = "No";
+                    this._primaryResult = MessageBox.DialogResult.Yes;
+                    this._secondaryResult = MessageBox.DialogResult.No;
+                    break;
+                default:
+                    primaryLabel = "OK"; secondaryLabel = null;
+                    this._primaryResult = MessageBox.DialogResult.OK;
+                    break;
             }
 
-            this._isShown = false;
+            // Size each button to fit its label with horizontal padding equal
+            // to one font height on each side (works for any string length and
+            // any proportional font).
+            this._primary = MakeButton(primaryLabel);
+            this._primary.Click += this.OnPrimaryClick;
 
+            if (secondaryLabel != null) {
+                this._secondary = MakeButton(secondaryLabel);
+                this._secondary.Click += this.OnSecondaryClick;
+            }
 
+            this.LayoutButtons();
+
+            this.LogicalChildren.Add(this._primary);
+            if (this._secondary != null) this.LogicalChildren.Add(this._secondary);
         }
-        private void Button_Click(object sender, RoutedEventArgs e) {
 
-            //if (this.Owner != null && this.Owner._logicalChildren.Contains(this)) {
-            //    this.Owner._logicalChildren.Remove(this);
-            //}
-            //else {
-            //    if (Application.Current.MainWindow.Child._logicalChildren.Contains(this))
-            //        Application.Current.MainWindow.Child._logicalChildren.Remove(this);
-            //}
-
-            this._isShown = false;
-
-            var e1 = new MessageBoxRoutedEventArgs() {
-                RoutedEventArgs = e
+        private Button MakeButton(string label) {
+            var t = new Text(this._font, label) {
+                ForeColor = Theme.TextPrimary,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
             };
-
-            var s = sender as Button;
-
-            if (s == this.buttonCenter) {
-                if (this.messageBoxButton == MessageBoxButtons.OK)
-                    e1.DialogResult = DialogResult.OK;
-
-                if (this.messageBoxButton == MessageBoxButtons.Cancel)
-                    e1.DialogResult = DialogResult.Cancel;
-            }
-
-            if (s == this.buttonLeft) {
-                if (this.messageBoxButton == MessageBoxButtons.OKCancel)
-                    e1.DialogResult = DialogResult.OK;
-
-                if (this.messageBoxButton == MessageBoxButtons.YesNo)
-                    e1.DialogResult = DialogResult.Yes;
-            }
-
-            if (s == this.buttonRight) {
-                if (this.messageBoxButton == MessageBoxButtons.OKCancel)
-                    e1.DialogResult = DialogResult.Cancel;
-
-                if (this.messageBoxButton == MessageBoxButtons.YesNo)
-                    e1.DialogResult = DialogResult.No;
-            }
-
-            ButtonClick?.Invoke(sender, e1);
-
-            this.Close();
-
+            this._font.ComputeExtent(label, out var w, out var h);
+            return new Button {
+                Child = t,
+                Width = w + this._font.Height * 2,
+                Height = h + this._font.Height,
+            };
         }
+
+        private void LayoutButtons() {
+            var rowY = this._dialogY + this._dialogH - this._primary.Height - InnerPad / 2;
+
+            if (this._secondary == null) {
+                // Single button centered.
+                var x = this._dialogX + (this._dialogW - this._primary.Width) / 2;
+                Canvas.SetLeft(this._primary, x);
+                Canvas.SetTop(this._primary, rowY);
+                return;
+            }
+
+            // Two buttons: equal widths (use the larger of the two), centered as a pair.
+            var btnW = this._primary.Width > this._secondary.Width ? this._primary.Width : this._secondary.Width;
+            this._primary.Width = btnW;
+            this._secondary.Width = btnW;
+
+            var totalW = btnW * 2 + ButtonGap;
+            var startX = this._dialogX + (this._dialogW - totalW) / 2;
+
+            Canvas.SetLeft(this._primary, startX);
+            Canvas.SetTop(this._primary, rowY);
+            Canvas.SetLeft(this._secondary, startX + btnW + ButtonGap);
+            Canvas.SetTop(this._secondary, rowY);
+        }
+
+        private void OnPrimaryClick(object sender, RoutedEventArgs e) => this.Dismiss(this._primaryResult);
+        private void OnSecondaryClick(object sender, RoutedEventArgs e) => this.Dismiss(this._secondaryResult);
+
+        private void Dismiss(MessageBox.DialogResult result) {
+            this._result = result;
+            this._frame.Continue = false;
+        }
+
+        // --- input ------------------------------------------------------------
+
+        // Swallow touches that fall on the scrim (anywhere outside the dialog),
+        // so the underlying UI doesn't react while we're modal.
+        protected override void OnTouchDown(TouchEventArgs e) {
+            e.Handled = true;
+            base.OnTouchDown(e);
+        }
+
+        protected override void OnTouchUp(TouchEventArgs e) {
+            e.Handled = true;
+            base.OnTouchUp(e);
+        }
+
+        protected override void OnButtonDown(ButtonEventArgs e) {
+            // Esc / Back dismisses with the secondary result if there is one,
+            // otherwise with Cancel. Matches WinForms semantics.
+            if (e.Button == HardwareButton.Back) {
+                this.Dismiss(this._secondary != null ? this._secondaryResult : MessageBox.DialogResult.Cancel);
+                e.Handled = true;
+                return;
+            }
+
+            // Tab moves focus between primary/secondary.
+            if (e.Button == HardwareButton.Right || e.Button == HardwareButton.Down) {
+                if (this._secondary != null) {
+                    Buttons.Focus(this._secondary);
+                    e.Handled = true;
+                }
+                return;
+            }
+            if (e.Button == HardwareButton.Left || e.Button == HardwareButton.Up) {
+                if (this._primary != null) {
+                    Buttons.Focus(this._primary);
+                    e.Handled = true;
+                }
+                return;
+            }
+
+            base.OnButtonDown(e);
+        }
+
+        // --- paint ------------------------------------------------------------
 
         public override void OnRender(DrawingContext dc) {
-            var offsetX = 10;
-            var offsetY = this.captionBarHeight;
+            // Scrim over the whole host area first (we sized this.Width/Height
+            // to host dimensions in ShowModal).
+            var w = this.ActualWidth;
+            var h = this.ActualHeight;
+            if (w <= 0 || h <= 0) return;
 
-            base.OnRender(dc);
+            dc.DrawRectangle(ScrimBrush(), null, 0, 0, w, h);
 
-            if (this.caption != null && this.caption.Length > 0) {
-                dc.DrawRectangle(this.brushCaption, this.penCaption, 0, 0, this.Width, this.captionBarHeight);
+            // Caption bar.
+            dc.DrawRectangle(CaptionBrush(), BorderPen(),
+                this._dialogX, this._dialogY, this._dialogW, this._captionBarHeight);
+
+            if (this._caption.Length > 0) {
+                var captionY = this._dialogY + (this._captionBarHeight - this._font.Height) / 2;
+                var caption = this._caption;
+                dc.DrawText(ref caption, this._font, Theme.TextPrimary,
+                    this._dialogX + InnerPad, captionY,
+                    this._dialogW - InnerPad * 2, this._font.Height,
+                    TextAlignment.Left, TextTrimming.WordEllipsis);
             }
 
-            var buttonRow = this.buttonCenter != null
-                ? this.buttonCenter.Height + this.Font.Height
-                : this.buttonLeft != null ? this.buttonLeft.Height + this.Font.Height : this.Font.Height * 2;
-            var messageBodyHeight = this.Height - this.captionBarHeight - buttonRow;
-            if (messageBodyHeight < this.Font.Height) {
-                messageBodyHeight = this.Font.Height;
-            }
+            // Body background — sits between caption bar and button row.
+            var bodyVisibleH = this._dialogH - this._captionBarHeight - (this._primary != null ? this._primary.Height + InnerPad : 0);
+            if (bodyVisibleH < 1) bodyVisibleH = 1;
+            dc.DrawRectangle(BodyBrush(), BorderPen(),
+                this._dialogX, this._dialogY + this._captionBarHeight, this._dialogW, bodyVisibleH);
 
-            dc.DrawRectangle(this.brushMessage, this.penMessage, 0, this.captionBarHeight, this.Width, messageBodyHeight);
-
-            if (this.caption != null && this.caption.Length > 0) {
-                dc.DrawText(ref this.caption, this.Font, Theme.TextPrimary, offsetX, (this.captionBarHeight - this.Font.Height) / 2, this.Width, this.Font.Height, TextAlignment.Left, TextTrimming.None);
-            }
-
-            for (var i = 0; i < this.messageList.Count; i++) {
-                var msg = this.messageList[i] as string;
-
-                dc.DrawText(ref msg, this.Font, Theme.TextPrimary, offsetX, offsetY, this.Width - offsetX * 2, this.Font.Height, TextAlignment.Left, TextTrimming.WordEllipsis);
-                offsetY += (this.Font.Height * 3) / 2;
+            // Body text. Clip lines that overflow the visible body region.
+            var maxBodyBottom = this._dialogY + this._captionBarHeight + bodyVisibleH - InnerPad / 2;
+            var y = this._bodyTop;
+            for (var i = 0; i < this._wrappedLines.Length; i++) {
+                if (y + this._font.Height > maxBodyBottom) break;
+                var line = this._wrappedLines[i];
+                dc.DrawText(ref line, this._font, Theme.TextPrimary,
+                    this._dialogX + InnerPad, y,
+                    this._dialogW - InnerPad * 2, this._font.Height,
+                    TextAlignment.Left, TextTrimming.WordEllipsis);
+                y += this._lineSpacing;
             }
         }
 
-        private readonly Media.Pen penCaption = new Media.Pen(Theme.Border, 1);
-        private readonly SolidColorBrush brushCaption = new SolidColorBrush(Theme.ControlSurface);
+        // --- helpers ----------------------------------------------------------
 
-        private readonly Media.Pen penMessage = new Media.Pen(Theme.Border, 1);
-        private readonly SolidColorBrush brushMessage = new SolidColorBrush(Theme.TextBoxFill);
+        // Splits on \n, dropping a trailing \r from each segment so Windows-style
+        // line endings produce one row per line, not blank rows in between.
+        private static string[] SplitLines(string message) {
+            if (message.Length == 0) return new string[] { string.Empty };
 
-        private ArrayList messageList;
-        private string caption = string.Empty;
-
-        private int captionBarHeight = 0;
-
-        private bool disposed;
-
-        public void Dispose() {
-            this.Dispose(true);
-            this._isShown = false;
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing) {
-            if (!this.disposed) {
-                this.disposed = true;
-
-                if (disposing) {
-
-                    this.Close();
+            var raw = message.Split('\n');
+            for (var i = 0; i < raw.Length; i++) {
+                var s = raw[i];
+                if (s.Length > 0 && s[s.Length - 1] == '\r') {
+                    raw[i] = s.Substring(0, s.Length - 1);
                 }
             }
-        }
-
-        ~MessageBox() {
-            this.Dispose(false);
+            return raw;
         }
     }
 }
