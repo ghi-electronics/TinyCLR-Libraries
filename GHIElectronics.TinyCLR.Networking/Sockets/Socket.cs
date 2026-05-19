@@ -42,7 +42,21 @@ namespace System.Net.Sockets {
         private const int NativeTimeoutSentinel = -2;
         private const int NativeErrorSentinel = -1;
 
-        public int NativeSendTimeout {
+        // Per-syscall native poll quantum (how long one underlying poll()
+        // blocks before the managed Send/Receive loop wakes up to check the
+        // user-visible SendTimeout/ReceiveTimeout deadline). 250 ms is fine
+        // for the typical SC20260 workload; user code shouldn't need this.
+        //
+        // Hidden (internal) for two reasons:
+        //   1. The BCL Socket has no equivalent — exposing it as public
+        //      breaks dual-mode source: code that sets it compiles against
+        //      TinyCLR.Networking but throws MissingMethodException when the
+        //      same assembly loads under TinyCLR.Networking.Desktop.
+        //   2. Users coming from .NET reach for "SendTimeout" expecting
+        //      total operation timeout, not native poll quantum, and
+        //      autocompleting on Native* leads them wrong.
+        // The public knob for total timeout is SendTimeout / ReceiveTimeout.
+        internal int NativeSendTimeout {
             get => this.nativeSendTimeout;
 
             set {
@@ -54,7 +68,7 @@ namespace System.Net.Sockets {
             }
         }
 
-        public int NativeReceiveTimeout {
+        internal int NativeReceiveTimeout {
             get => this.nativeReceiveTimeout;
 
             set {
