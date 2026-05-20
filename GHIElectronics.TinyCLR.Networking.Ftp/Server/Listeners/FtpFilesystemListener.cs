@@ -74,7 +74,7 @@ namespace GHIElectronics.TinyCLR.Networking.Ftp
                             {
                                 String fsPath = MapToFilesystem(context.Request.QueryString);
 
-                                if (fsPath[fsPath.Length - 1] == Path.DirectorySeparatorChar) fsPath = fsPath.Substring(0, fsPath.Length - 1);
+                                fsPath = StripTrailingSeparator(fsPath);
 
                                 context.Response.StatusCode = Directory.Exists(fsPath) ? FtpStatusCode.FileActionOK : FtpStatusCode.ActionNotTakenFileUnavailable;
                             }
@@ -84,7 +84,7 @@ namespace GHIElectronics.TinyCLR.Networking.Ftp
                             {
                                 String fsPath = MapToFilesystem(context.Request.QueryString);
 
-                                if (fsPath[fsPath.Length - 1] == Path.DirectorySeparatorChar) fsPath = fsPath.Substring(0, fsPath.Length - 1);
+                                fsPath = StripTrailingSeparator(fsPath);
 
                                 if (WriteDirInfo(fsPath, context.Response.OutputStream))
                                 {
@@ -101,7 +101,7 @@ namespace GHIElectronics.TinyCLR.Networking.Ftp
                             {
                                 String fsPath = MapToFilesystem(context.Request.QueryString);
 
-                                if (fsPath[fsPath.Length - 1] == Path.DirectorySeparatorChar) fsPath = fsPath.Substring(0, fsPath.Length - 1);
+                                fsPath = StripTrailingSeparator(fsPath);
 
                                 DirectoryInfo dinfo = Directory.CreateDirectory(fsPath);
                                 context.Response.StatusCode = (null != dinfo && dinfo.Exists) ? FtpStatusCode.PathnameCreated : FtpStatusCode.ActionNotTakenFileUnavailable;
@@ -199,7 +199,7 @@ namespace GHIElectronics.TinyCLR.Networking.Ftp
                                 FileInfo fInfo = new FileInfo(MapToFilesystem(context.Request.QueryString));
 
                                 String fsPath = MapToFilesystem(context.Request.QueryString);
-                                if (fsPath[fsPath.Length - 1] == Path.DirectorySeparatorChar) fsPath = fsPath.Substring(0, fsPath.Length - 1);
+                                fsPath = StripTrailingSeparator(fsPath);
                                 DirectoryInfo dInfo = new DirectoryInfo(fsPath);
 
                                 if (fInfo.Exists)
@@ -234,7 +234,7 @@ namespace GHIElectronics.TinyCLR.Networking.Ftp
                                     else
                                     {
                                         fsPath = MapToFilesystem(context.Request.QueryString);
-                                        if (fsPath[fsPath.Length - 1] == Path.DirectorySeparatorChar) fsPath = fsPath.Substring(0, fsPath.Length - 1);
+                                        fsPath = StripTrailingSeparator(fsPath);
 
                                         Directory.Move(dInfo.FullName, fsPath);
 
@@ -283,6 +283,25 @@ namespace GHIElectronics.TinyCLR.Networking.Ftp
 
             String filesystemPath = this.FilesystemRoot + (virtualPath.Substring(this.VirtualRoot.Length));
             return filesystemPath;
+        }
+
+        // Issue #1055: stripping a trailing '\' off a drive root like "A:\"
+        // leaves "A:" — which Directory.Exists / Directory.GetDirectories on
+        // TinyCLR (matching Windows behaviour) does NOT recognize as the
+        // drive's root. Calls then return false / empty and the FTP layer
+        // reports the LIST/CWD as "Bad sequence of commands" (the LIST/NList
+        // branches in FtpListenerResponse only emit 226 for ClosingData;
+        // anything else collapses to 503).
+        //
+        // Only strip when the result is still a real directory path —
+        // i.e. longer than the bare "X:\" form (3 chars). For deeper paths
+        // ("A:\foo\") removing the trailing slash is fine; for the root
+        // ("A:\") we must keep it.
+        private static string StripTrailingSeparator(string path)
+        {
+            if (path != null && path.Length > 3 && path[path.Length - 1] == Path.DirectorySeparatorChar)
+                return path.Substring(0, path.Length - 1);
+            return path;
         }
 
         private static bool WriteDirInfo(string path, FtpResponseStream stream)
