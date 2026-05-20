@@ -42,7 +42,22 @@ namespace System {
             }
         }
 
-        public string ToString(string format, IFormatProvider provider) => Number.Format(this.m_value, false, format, NumberFormatInfo.GetInstance(provider));
+        // Same fix as Double.ToString(string, IFormatProvider): String.Format
+        // and $"{x}" dispatch through this overload, so it must short-circuit
+        // NaN / ±Infinity. Without the guard, Number.Format reaches the
+        // native normalization loop in tinycrt.cpp which hangs on Infinity
+        // (Infinity / 10 = Infinity) and misbehaves on NaN.
+        public string ToString(string format, IFormatProvider provider) {
+            var str = ((double)this.m_value).ToString();
+            switch (str) {
+                case "Infinity":
+                case "-Infinity":
+                case "NaN":
+                    return str;
+                default:
+                    return Number.Format(this.m_value, false, format, NumberFormatInfo.GetInstance(provider));
+            }
+        }
 
         public bool Equals(float obj) {
             if (Double.IsNaN(obj) && Double.IsNaN(this.m_value)) {

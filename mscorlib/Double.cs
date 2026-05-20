@@ -271,7 +271,20 @@ namespace System {
             return Number.Format(this.m_value, false, format, NumberFormatInfo.CurrentInfo);
         }
 
-        public string ToString(string format, IFormatProvider provider) => Number.Format(this.m_value, false, format, NumberFormatInfo.GetInstance(provider));
+        // 3-arg overload is the IFormattable contract — String.Format,
+        // $"{x}" interpolation, and StringBuilder.AppendFormat all dispatch
+        // to this one. Must short-circuit NaN / ±Infinity the same way the
+        // other two ToString overloads do: passing those values to
+        // Number.Format reaches the native normalization loop in
+        // tinycrt.cpp (norm /= 10.0; exp++) which never terminates for
+        // Infinity (Infinity / 10 = Infinity) and is similarly wedged on
+        // NaN, hanging the device.
+        public string ToString(string format, IFormatProvider provider) {
+            if (IsPositiveInfinity(this)) return "Infinity";
+            if (IsNegativeInfinity(this)) return "-Infinity";
+            if (IsNaN(this)) return "NaN";
+            return Number.Format(this.m_value, false, format, NumberFormatInfo.GetInstance(provider));
+        }
 
         //
         // Summary:
