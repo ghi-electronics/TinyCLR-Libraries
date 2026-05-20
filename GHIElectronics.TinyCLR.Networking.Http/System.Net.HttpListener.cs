@@ -347,7 +347,16 @@ namespace System.Net {
                         netStream.ReadTimeout = 10000;
                     }
                 }
-                catch (SocketException) {
+                catch {
+                    // Catch ALL per-connection failures, not just SocketException.
+                    // The native AuthenticateAsServer path throws
+                    // InvalidOperationException (not SocketException) for
+                    // anything from "peer aborted handshake" (browser refused
+                    // self-signed cert, name mismatch, etc.) to "cert/key
+                    // pair invalid". Letting any non-Socket exception escape
+                    // here kills the whole AcceptThreadFunc — the listener
+                    // stops accepting forever after a single failed
+                    // handshake. Drop the bad connection, keep the loop alive.
                     if (netStream != null) {
                         netStream.Dispose();
                     }

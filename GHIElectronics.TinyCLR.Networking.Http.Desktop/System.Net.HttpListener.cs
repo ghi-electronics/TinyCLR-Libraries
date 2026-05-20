@@ -341,7 +341,11 @@ namespace System.Net {
                         throw new System.NotSupportedException("TODO - Not supported on Desktop: TinyCLR-Networking-specific API.");
                     }
                 }
-                catch (SocketException) {
+                catch {
+                    // Catch ALL per-connection failures, not just SocketException.
+                    // Mirrors the device-side fix — anything that escapes
+                    // here kills the AcceptThreadFunc and stops the listener
+                    // accepting forever after a single bad connection.
                     if (netStream != null) {
                         netStream.Dispose();
                     }
