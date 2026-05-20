@@ -212,18 +212,30 @@ namespace System.Net {
                 // This is a blocking call waiting for more data.
                 outputStream.m_Socket.Poll(DefaultKeepAliveMilliseconds * 1000, SelectMode.SelectRead);
 
+                // See the TinyCLR-side WaitingConnectionThreadFunc for the full
+                // rationale. Short version: `Available > 0` alone misclassifies
+                // a pure-FIN peer close on some lwIP builds (and is a flakey
+                // signal in general). A one-byte SocketFlags.Peek receive is
+                // the definitive way to confirm there's an actual byte to read
+                // before enqueueing the connection for the user's WebThread.
+                var hasData = false;
                 if (outputStream.m_Socket.Available > 0) {
+                    try {
+                        var peekBuf = new byte[1];
+                        hasData = outputStream.m_Socket.Receive(peekBuf, 1, SocketFlags.Peek) > 0;
+                    }
+                    catch {
+                        hasData = false;
+                    }
+                }
 
-                    // Add this connected stream to the list.
+                if (hasData) {
                     lock (this.m_InputStreamsQueue) {
                         this.m_InputStreamsQueue.Enqueue(outputStream);
                     }
-
-                    // Set event that client stream or exception is added to the queue.
                     this.m_RequestArrived.Set();
                 }
-                else // If no data available - means connection was close on other side or timed out.
-                {
+                else {
                     outputStream.Dispose();
                 }
             }

@@ -370,13 +370,27 @@ namespace System.Net {
                     continue;
                 }
 
-                // Add this connected stream to the list.
-                lock (this.m_InputStreamsQueue) {
-                    this.m_InputStreamsQueue.Enqueue(new OutputNetworkStreamWrapper(clientSock, netStream));
-                }
-
-                // Set event that client stream or exception is added to the queue.
-                this.m_RequestArrived.Set();
+                // Hand the freshly accepted+handshake-complete connection to the
+                // keep-alive waiter thread instead of dropping it directly
+                // onto m_InputStreamsQueue. Reason: modern Chromium-family
+                // browsers (Edge/Chrome) aggressively TCP-pre-connect — they
+                // open extra TLS connections in anticipation of needing them
+                // and may never send an HTTP request on them. The previous
+                // code blindly enqueued every freshly handshake-complete socket, so
+                // the single-threaded user request loop would dequeue a
+                // pre-connect, block inside Read_HTTP_Line waiting for HTTP
+                // bytes that never come, time out after ReadTimeout (~10 s),
+                // and stall every other queued request behind it (e.g. a
+                // legitimate favicon GET arriving on a different socket).
+                //
+                // WaitingConnectionThreadFunc was already built for "wait for
+                // real data before handing to GetContext" — using it here too
+                // means fresh sockets and kept-alive sockets share one
+                // gating policy. A pre-connect that never sees HTTP simply
+                // sits on a background thread until its Poll times out and
+                // is disposed silently; the user request loop never touches
+                // it.
+                AddToWaitingConnections(new OutputNetworkStreamWrapper(clientSock, netStream));
             }
         }
 
