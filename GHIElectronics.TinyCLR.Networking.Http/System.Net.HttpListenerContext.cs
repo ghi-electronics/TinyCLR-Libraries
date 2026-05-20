@@ -86,7 +86,44 @@ namespace System.Net
         }
 
         ~HttpListenerContext() {
-            Response.Close(); ;
+            // Runs on the GC finalizer thread when a context was queued by
+            // the listener (kept-alive socket re-arming, accept of a then-
+            // FIN'd connection, user-code handler that returned without
+            // calling Response.Close, etc).
+            //
+            // Hard rule for finalizers: **NEVER do blocking network I/O**.
+            // The earlier two versions of this finalizer both did:
+            //   - The original `Response.Close()` walked through the lazy
+            //     Response getter, which triggered ParseHTTPRequest →
+            //     SslStream.Read on a dead peer → blocked until
+            //     ReceiveTimeout → IOException("SSL read timed out.").
+            //   - The next attempt routed through
+            //     OutputNetworkStreamWrapper.Close, which invokes the
+            //     m_headersSend delegate to send a "polite" minimum
+            //     response if the user never wrote any → SslStream.Write
+            //     on a dead peer → blocked until SendTimeout →
+            //     IOException("SSL write failed.").
+            // Either way, the finalizer thread stalls for seconds while
+            // those timeouts run, starving every other queued finalizer
+            // and showing up as choppy listener behavior on subsequent F5s.
+            //
+            // The right thing to do here is dispose the raw stream and
+            // socket directly, bypassing both polite paths. If user code
+            // wanted to flush a response, it had to call Response.Close()
+            // from its own handler (where blocking is fine because it's
+            // not on the finalizer thread). Closing the underlying SSL
+            // stream still issues a mbedtls_ssl_close_notify, but that's
+            // a single short write that fails fast on a dead peer (lwip_send
+            // returns immediately with EPIPE / ECONNRESET) — it does not
+            // wait on the multi-second SendTimeout the way the lazy
+            // SendHeaders path does.
+            try {
+                if (this.m_clientOutputStream != null) {
+                    try { this.m_clientOutputStream.m_Stream?.Close(); } catch { }
+                    try { this.m_clientOutputStream.m_Socket?.Close(); } catch { }
+                }
+            }
+            catch { }
         }
 
         public void Reset()
