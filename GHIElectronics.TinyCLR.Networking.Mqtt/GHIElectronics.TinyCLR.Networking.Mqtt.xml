@@ -7,10 +7,10 @@
         <member name="T:GHIElectronics.TinyCLR.Networking.Mqtt.QoSLevel">
             <summary>MQTT Quality-of-Service level.</summary>
         </member>
-        <member name="F:GHIElectronics.TinyCLR.Networking.Mqtt.QoSLevel.MostOnce">
+        <member name="F:GHIElectronics.TinyCLR.Networking.Mqtt.QoSLevel.AtMostOnce">
             <summary>Fire-and-forget; the message may be lost.</summary>
         </member>
-        <member name="F:GHIElectronics.TinyCLR.Networking.Mqtt.QoSLevel.LeastOnce">
+        <member name="F:GHIElectronics.TinyCLR.Networking.Mqtt.QoSLevel.AtLeastOnce">
             <summary>Acknowledged delivery; the message may be delivered more than once.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Networking.Mqtt.QoSLevel.ExactlyOnce">
