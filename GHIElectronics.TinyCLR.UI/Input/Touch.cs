@@ -62,10 +62,17 @@ namespace GHIElectronics.TinyCLR.UI.Input {
     }
 
     public sealed class TouchEvents {
-        // Fields
-        public static readonly RoutedEvent TouchDownEvent = new RoutedEvent("TouchDownEvent", RoutingStrategy.Tunnel, typeof(TouchEventArgs));
-        public static readonly RoutedEvent TouchMoveEvent = new RoutedEvent("TouchMoveEvent", RoutingStrategy.Tunnel, typeof(TouchEventArgs));
-        public static readonly RoutedEvent TouchUpEvent = new RoutedEvent("TouchUpEvent", RoutingStrategy.Tunnel, typeof(TouchEventArgs));
+        // Bubble routing: the deepest hit-tested element receives the event
+        // first, and ancestors see it afterwards. This matches WPF's regular
+        // Touch* events (its Preview* variants are the Tunnel ones, which we
+        // don't currently expose). Controls that override OnTouchDown/Up to
+        // implement their own behaviour rely on running before their parents
+        // — Tunnel routing here would let an ancestor handler clobber state
+        // (e.g. clearing a press flag) before the originating control's own
+        // OnTouchUp can act on it. See Button.OnParentTouchUp for why.
+        public static readonly RoutedEvent TouchDownEvent = new RoutedEvent("TouchDownEvent", RoutingStrategy.Bubble, typeof(TouchEventArgs));
+        public static readonly RoutedEvent TouchMoveEvent = new RoutedEvent("TouchMoveEvent", RoutingStrategy.Bubble, typeof(TouchEventArgs));
+        public static readonly RoutedEvent TouchUpEvent = new RoutedEvent("TouchUpEvent", RoutingStrategy.Bubble, typeof(TouchEventArgs));
     }
 
     public class TouchEventArgs : InputEventArgs {

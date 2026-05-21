@@ -43,6 +43,15 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         }
 
         private void OnParentTouchUp(object sender, TouchEventArgs e) {
+            // Handles the drag-off-and-release-elsewhere case: the touch went
+            // down on us (isPressed=true) but the user released on a different
+            // element, so our own OnTouchUp never fires. The release bubbles
+            // through a common ancestor we're subscribed to, which lets us
+            // clear isPressed and repaint as unpressed.
+            //
+            // Bubble routing means our own OnTouchUp has already fired first
+            // for on-button releases, so isPressed is already false when this
+            // runs in that case — no special guard needed.
             if (this.isPressed) {
                 this.isPressed = false;
                 this.Invalidate();
