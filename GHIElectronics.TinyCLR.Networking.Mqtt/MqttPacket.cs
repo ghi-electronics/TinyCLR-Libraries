@@ -264,7 +264,7 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
 
                 vheaderSize += topicToBytes.Length + 2;
 
-                if ((this.QosLevel == QoSLevel.LeastOnce) ||
+                if ((this.QosLevel == QoSLevel.AtLeastOnce) ||
                     (this.QosLevel == QoSLevel.ExactlyOnce)) {
                     vheaderSize += 2; //packet id 2 bytes;
                 }
@@ -297,7 +297,7 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
                 Array.Copy(topicToBytes, 0, buffer, index, topicToBytes.Length);
                 index += topicToBytes.Length;
 
-                if ((this.QosLevel == QoSLevel.LeastOnce) ||
+                if ((this.QosLevel == QoSLevel.AtLeastOnce) ||
                     (this.QosLevel == QoSLevel.ExactlyOnce)) {
                     if (this.PacketId == 0)
                         throw new Exception("PacketId cannot be 0.");

@@ -10,9 +10,9 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
     /// <summary>MQTT Quality-of-Service level.</summary>
     public enum QoSLevel {
         /// <summary>Fire-and-forget; the message may be lost.</summary>
-        MostOnce = 0,
+        AtMostOnce = 0,
         /// <summary>Acknowledged delivery; the message may be delivered more than once.</summary>
-        LeastOnce = 1,
+        AtLeastOnce = 1,
         /// <summary>Acknowledged delivery; the message is delivered exactly once.</summary>
         ExactlyOnce = 2,
     }
@@ -42,7 +42,7 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
         public string UserName { get; set; }
         public string Password { get; set; }
         public string LastWillTopic { get; set; }
-        public QoSLevel LastWillQos { get; set; } = QoSLevel.LeastOnce;
+        public QoSLevel LastWillQos { get; set; } = QoSLevel.AtLeastOnce;
         public string LastWillMessage { get; set; }
         public bool LastWillRetain { get; set; }
         public int KeepAliveTimeout { get; set; } = 60;
@@ -267,7 +267,7 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
                     PacketId = packetId,
                     Topics = topics,
                     QosLevels = qosLevels,
-                    QosLevel = QoSLevel.LeastOnce // Subcribe is always Qos1
+                    QosLevel = QoSLevel.AtLeastOnce // Subcribe is always Qos1
                 };
 
             this.PushPacketToQueue(subscribe, PacketDirection.ToServer);
@@ -480,11 +480,11 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
                 packet.RetryCount = 0;
 
                 switch (packet.QosLevel) {
-                    case QoSLevel.MostOnce:
+                    case QoSLevel.AtMostOnce:
                         packet.State = PacketState.QueuedQos0;
                         break;
 
-                    case QoSLevel.LeastOnce:
+                    case QoSLevel.AtLeastOnce:
                         packet.State = PacketState.QueuedQos1;
                         break;
 
@@ -1097,7 +1097,7 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
 
             packet.Retain = (((controlHeaderByte & RETAIN_FLAG_MASK) >> RETAIN_FLAG_OFFSET) == 0x01);
 
-            if ((packet.QosLevel == QoSLevel.LeastOnce) ||
+            if ((packet.QosLevel == QoSLevel.AtLeastOnce) ||
                 (packet.QosLevel == QoSLevel.ExactlyOnce)) {
 
                 packet.PacketId = (ushort)((buffer[index++] << 8) & 0xFF00);
