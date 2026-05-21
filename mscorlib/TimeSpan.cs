@@ -137,11 +137,16 @@ namespace System {
         public TimeSpan Subtract(TimeSpan ts) => new TimeSpan(this.m_ticks - ts.m_ticks);
 
         public static TimeSpan FromTicks(long val) => new TimeSpan(val);
-        public static TimeSpan FromMilliseconds(double milliseconds) => new TimeSpan((long)(milliseconds * TimeSpan.TicksPerMillisecond));
-        public static TimeSpan FromSeconds(double seconds) => new TimeSpan((long)(seconds * TimeSpan.TicksPerSecond));
-        public static TimeSpan FromMinutes(double minutes) => new TimeSpan((long)(minutes * TimeSpan.TicksPerMinute));
-        public static TimeSpan FromHours(double hours) => new TimeSpan((long)(hours * TimeSpan.TicksPerHour));
-        public static TimeSpan FromDays(double days) => new TimeSpan((long)(days * TimeSpan.TicksPerDay));
+        // Same TinyCLR interpreter bug as in TotalMilliseconds: `double * long`
+        // emits `conv.r8` on the long followed by `mul`, which mishandles the
+        // long-to-double promotion and produces garbage. Cast the const long
+        // to double at the source so the C# compiler folds it to a double
+        // literal at compile time, eliminating the conv.r8 from the mul path.
+        public static TimeSpan FromMilliseconds(double milliseconds) => new TimeSpan((long)(milliseconds * (double)TimeSpan.TicksPerMillisecond));
+        public static TimeSpan FromSeconds(double seconds) => new TimeSpan((long)(seconds * (double)TimeSpan.TicksPerSecond));
+        public static TimeSpan FromMinutes(double minutes) => new TimeSpan((long)(minutes * (double)TimeSpan.TicksPerMinute));
+        public static TimeSpan FromHours(double hours) => new TimeSpan((long)(hours * (double)TimeSpan.TicksPerHour));
+        public static TimeSpan FromDays(double days) => new TimeSpan((long)(days * (double)TimeSpan.TicksPerDay));
 
         public string ToString(string format, IFormatProvider formatProvider) => this.ToString();
 
