@@ -44,6 +44,21 @@ namespace System {
         public const long TicksPerDay = TicksPerHour * 24;
         private const double DaysPerTick = 1.0 / TicksPerDay;
 
+        // Forward-direction double constants. Used by the FromX(double) factory
+        // methods below so the multiplication is unambiguously `double * double`
+        // in IL — `ldc.r8 <literal>; mul`. Previously the FromX methods used
+        // `(double)TicksPerX` (cast of a const long), expecting the C# compiler
+        // to fold it to a double literal at compile time. In Debug builds it
+        // does; in Release builds Roslyn sometimes emits
+        // `ldc.i8 N; conv.r8; mul` instead, which re-introduces the broken
+        // `conv.r8 + mul` interpreter pattern. Defining the double-typed
+        // constants explicitly removes the ambiguity.
+        private const double TicksPerMillisecondAsDouble = 10000.0;
+        private const double TicksPerSecondAsDouble      = 10000000.0;
+        private const double TicksPerMinuteAsDouble      = 600000000.0;
+        private const double TicksPerHourAsDouble        = 36000000000.0;
+        private const double TicksPerDayAsDouble         = 864000000000.0;
+
         private const long MaxMilliSeconds = long.MaxValue / TicksPerMillisecond;
         private const long MinMilliSeconds = long.MinValue / TicksPerMillisecond;
 
@@ -75,34 +90,25 @@ namespace System {
 
         public int Seconds => (int)((this.m_ticks / TicksPerSecond) % 60);
 
-        // TinyCLR's interpreter has a bug in the `long * double` path: the
-        // multiplication produces a value far outside the expected range. On
-        // device, `2524438 * 0.0001` (which should be 252.4438) lands below
-        // MinMilliSeconds, the clamp fires, and TotalMilliseconds returns
-        // -922337203685477 for any nonzero TimeSpan. Adding an explicit
-        // `(double)` cast to the long doesn't help — the C# compiler emits
-        // identical IL either way (the conv.r8 is required for both forms).
-        //
-        // Workaround: split the long into a whole-unit part and a remainder,
-        // do the divide and multiply in long-only arithmetic, then add the
-        // remainder fraction via pure double math. No `long * double`
-        // operation appears anywhere. Public API and observable behavior are
-        // unchanged.
-        //
-        // Precision note: (double)wholeUnits is precise as long as wholeUnits
-        // fits in 53 bits — true for any TimeSpan up to ~285,000 years.
+        // Total* properties go through DivToDouble to avoid `long * double` in
+        // the IL, which the TinyCLR interpreter mis-executes on Release-built
+        // mscorlib (Total* would return the clamp bound for any nonzero
+        // TimeSpan). (double)whole is exact for any TimeSpan up to ~285,000
+        // years (53-bit mantissa).
         public double TotalDays => DivToDouble(this.m_ticks, TicksPerDay);
         public double TotalHours => DivToDouble(this.m_ticks, TicksPerHour);
+
+        // Must be a single ternary expression, not multi-`if`-return. Roslyn's
+        // Release-mode optimizer emits IL for the if/return form that the
+        // TinyCLR interpreter mis-executes inside mscorlib (returns the clamp
+        // bound for legitimate in-range inputs). The ternary form produces
+        // single-expression IL that survives the optimizer.
         public double TotalMilliseconds {
             get {
-                var result = DivToDouble(this.m_ticks, TicksPerMillisecond);
-                if (result > MaxMilliSeconds)
-                    return MaxMilliSeconds;
-
-                if (result < MinMilliSeconds)
-                    return MinMilliSeconds;
-
-                return result;
+                var r = DivToDouble(this.m_ticks, TicksPerMillisecond);
+                return r > MaxMilliSeconds ? (double)MaxMilliSeconds
+                     : r < MinMilliSeconds ? (double)MinMilliSeconds
+                     : r;
             }
         }
 
@@ -137,16 +143,18 @@ namespace System {
         public TimeSpan Subtract(TimeSpan ts) => new TimeSpan(this.m_ticks - ts.m_ticks);
 
         public static TimeSpan FromTicks(long val) => new TimeSpan(val);
-        // Same TinyCLR interpreter bug as in TotalMilliseconds: `double * long`
-        // emits `conv.r8` on the long followed by `mul`, which mishandles the
-        // long-to-double promotion and produces garbage. Cast the const long
-        // to double at the source so the C# compiler folds it to a double
-        // literal at compile time, eliminating the conv.r8 from the mul path.
-        public static TimeSpan FromMilliseconds(double milliseconds) => new TimeSpan((long)(milliseconds * (double)TimeSpan.TicksPerMillisecond));
-        public static TimeSpan FromSeconds(double seconds) => new TimeSpan((long)(seconds * (double)TimeSpan.TicksPerSecond));
-        public static TimeSpan FromMinutes(double minutes) => new TimeSpan((long)(minutes * (double)TimeSpan.TicksPerMinute));
-        public static TimeSpan FromHours(double hours) => new TimeSpan((long)(hours * (double)TimeSpan.TicksPerHour));
-        public static TimeSpan FromDays(double days) => new TimeSpan((long)(days * (double)TimeSpan.TicksPerDay));
+
+        // Use the explicit-double constants (defined near the top of this
+        // class) rather than `(double)TicksPerX`. The cast-of-const-long form
+        // worked in Debug builds but Release builds re-introduced the broken
+        // `conv.r8 + mul` IL pattern. Using a const that is already a double
+        // means the IL is unambiguously `ldc.r8 <literal>; mul` (pure
+        // double * double) regardless of optimization level.
+        public static TimeSpan FromMilliseconds(double milliseconds) => new TimeSpan((long)(milliseconds * TicksPerMillisecondAsDouble));
+        public static TimeSpan FromSeconds(double seconds)           => new TimeSpan((long)(seconds      * TicksPerSecondAsDouble));
+        public static TimeSpan FromMinutes(double minutes)           => new TimeSpan((long)(minutes      * TicksPerMinuteAsDouble));
+        public static TimeSpan FromHours(double hours)               => new TimeSpan((long)(hours        * TicksPerHourAsDouble));
+        public static TimeSpan FromDays(double days)                 => new TimeSpan((long)(days         * TicksPerDayAsDouble));
 
         public string ToString(string format, IFormatProvider formatProvider) => this.ToString();
 
