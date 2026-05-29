@@ -2290,6 +2290,24 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.SC13048.RtcController.Id">
             <summary>API id.</summary>
         </member>
+        <member name="T:GHIElectronics.TinyCLR.Pins.SC13048.WakeupPin">
+            <summary>Hardware wake-up pins for <see cref="!:GHIElectronics.TinyCLR.Native.Power.Shutdown(int, System.DateTime)"/>. OR-combine to select multiple.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC13048.WakeupPin.PA0">
+            <summary>PA0 — WKUP1.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC13048.WakeupPin.PC13">
+            <summary>PC13 — WKUP2.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC13048.WakeupPin.PE6">
+            <summary>PE6 — WKUP3.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC13048.WakeupPin.PA2">
+            <summary>PA2 — WKUP4.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC13048.WakeupPin.PC5">
+            <summary>PC5 — WKUP5.</summary>
+        </member>
         <member name="T:GHIElectronics.TinyCLR.Pins.SC20100">
             <summary>Board definition for the SC20100.</summary>
         </member>
@@ -2808,6 +2826,27 @@
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20100.RtcController.Id">
             <summary>API id.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Pins.SC20100.WakeupPin">
+            <summary>Hardware wake-up pins for <see cref="!:GHIElectronics.TinyCLR.Native.Power.Shutdown(int, System.DateTime)"/>. OR-combine to select multiple.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC20100.WakeupPin.PA0">
+            <summary>PA0 — WKUP1.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC20100.WakeupPin.PA2">
+            <summary>PA2 — WKUP2.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC20100.WakeupPin.PI8">
+            <summary>PI8 — WKUP3.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC20100.WakeupPin.PC13">
+            <summary>PC13 — WKUP4.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC20100.WakeupPin.PI11">
+            <summary>PI11 — WKUP5.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC20100.WakeupPin.PC1">
+            <summary>PC1 — WKUP6.</summary>
         </member>
         <member name="T:GHIElectronics.TinyCLR.Pins.SC20260">
             <summary>Board definition for the SC20260.</summary>
@@ -3649,6 +3688,27 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.RtcController.Id">
             <summary>API id.</summary>
         </member>
+        <member name="T:GHIElectronics.TinyCLR.Pins.SC20260.WakeupPin">
+            <summary>Hardware wake-up pins for <see cref="!:GHIElectronics.TinyCLR.Native.Power.Shutdown(int, System.DateTime)"/>. OR-combine to select multiple.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.WakeupPin.PA0">
+            <summary>PA0 — WKUP1.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.WakeupPin.PA2">
+            <summary>PA2 — WKUP2.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.WakeupPin.PI8">
+            <summary>PI8 — WKUP3.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.WakeupPin.PC13">
+            <summary>PC13 — WKUP4.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.WakeupPin.PI11">
+            <summary>PI11 — WKUP5.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.WakeupPin.PC1">
+            <summary>PC1 — WKUP6.</summary>
+        </member>
         <member name="T:GHIElectronics.TinyCLR.Pins.STM32H7">
             <summary>Board definition for the STM32H7.</summary>
         </member>
@@ -4453,6 +4513,31 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.RtcController.Id">
             <summary>API id.</summary>
         </member>
+        <member name="T:GHIElectronics.TinyCLR.Pins.STM32H7.WakeupPin">
+            <summary>
+            Hardware wake-up pin bit flags for <see cref="!:GHIElectronics.TinyCLR.Native.Power.Shutdown(int, System.DateTime)"/>.
+            OR-combine to allow any of the selected pins to wake the device.
+            Bit position matches the STM32H7 PWR_WAKEUP_PINx slot index (bit N → WKUP(N+1)).
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.WakeupPin.PA0">
+            <summary>PA0 — WKUP1.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.WakeupPin.PA2">
+            <summary>PA2 — WKUP2.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.WakeupPin.PI8">
+            <summary>PI8 — WKUP3.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.WakeupPin.PC13">
+            <summary>PC13 — WKUP4.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.WakeupPin.PI11">
+            <summary>PI11 — WKUP5.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.WakeupPin.PC1">
+            <summary>PC1 — WKUP6.</summary>
+        </member>
         <member name="T:GHIElectronics.TinyCLR.Pins.STM32L4">
             <summary>Board definition for the STM32L4.</summary>
         </member>
@@ -4737,6 +4822,28 @@
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.STM32L4.RtcController.Id">
             <summary>API id.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Pins.STM32L4.WakeupPin">
+            <summary>
+            Hardware wake-up pin bit flags for <see cref="!:GHIElectronics.TinyCLR.Native.Power.Shutdown(int, System.DateTime)"/>.
+            OR-combine to allow any of the selected pins to wake the device.
+            Bit position matches the STM32L4 PWR_WAKEUP_PINx slot index (bit N → WKUP(N+1)).
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.STM32L4.WakeupPin.PA0">
+            <summary>PA0 — WKUP1.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.STM32L4.WakeupPin.PC13">
+            <summary>PC13 — WKUP2.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.STM32L4.WakeupPin.PE6">
+            <summary>PE6 — WKUP3.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.STM32L4.WakeupPin.PA2">
+            <summary>PA2 — WKUP4.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.STM32L4.WakeupPin.PC5">
+            <summary>PC5 — WKUP5.</summary>
         </member>
     </members>
 </doc>

@@ -413,27 +413,49 @@
         <member name="T:GHIElectronics.TinyCLR.Native.Power">
             <summary>
             Power-management entry points: <see cref="M:GHIElectronics.TinyCLR.Native.Power.Reset"/> for a soft reset,
-            <see cref="M:GHIElectronics.TinyCLR.Native.Power.Sleep"/> for low-power stop with wake-up, <see cref="M:GHIElectronics.TinyCLR.Native.Power.Shutdown(System.Boolean,System.DateTime)"/>
+            <see cref="M:GHIElectronics.TinyCLR.Native.Power.Sleep"/> for low-power stop with wake-up, <see cref="M:GHIElectronics.TinyCLR.Native.Power.Shutdown(System.Int32,System.DateTime)"/>
             for power-off with RTC/pin wake-up, and <see cref="M:GHIElectronics.TinyCLR.Native.Power.SetSystemClock(GHIElectronics.TinyCLR.Native.SystemClock,System.Boolean)"/> for
             dynamic clock scaling.
             </summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Native.Power.WakeupEdge">
-            <summary>Polarity used by <see cref="M:GHIElectronics.TinyCLR.Native.Power.Shutdown(System.Boolean,System.DateTime)"/> when waking from a pin event.</summary>
+            <summary>Polarity used by <see cref="M:GHIElectronics.TinyCLR.Native.Power.Shutdown(System.Int32,System.DateTime)"/> when waking from a pin event. Applies to every pin set in the wake-up bit mask.</summary>
         </member>
         <member name="M:GHIElectronics.TinyCLR.Native.Power.Reset">
             <summary>Soft-resets the device, re-running the app afterward.</summary>
         </member>
         <member name="M:GHIElectronics.TinyCLR.Native.Power.Sleep">
-            <summary>Enters Sleep3 (deepest sleep). Wakes on any configured GPIO.</summary>
+            <summary>Enters Sleep3 (deepest sleep). Wakes on any GPIO EXTI interrupt.</summary>
         </member>
         <member name="M:GHIElectronics.TinyCLR.Native.Power.Sleep(System.DateTime)">
             <summary>Enters Sleep3 with an optional wake time. Pass <see cref="F:System.DateTime.MaxValue"/> for "pin only".</summary>
         </member>
-        <member name="M:GHIElectronics.TinyCLR.Native.Power.Shutdown(System.Boolean,System.DateTime)">
-            <summary>Powers off until either the wake-up pin asserts or the RTC alarm fires.</summary>
-            <param name="wakeupPin">When true, allow the wake-up pin to bring the device back up.</param>
-            <param name="wakeupTime">Wall-clock time at which the RTC should wake the device, or <see cref="F:System.DateTime.MaxValue"/> for "pin only".</param>
+        <member name="M:GHIElectronics.TinyCLR.Native.Power.Shutdown(System.Int32,System.DateTime)">
+            <summary>
+            Powers off until either one of the selected wake-up pins asserts or the
+            RTC alarm fires.
+            </summary>
+            <param name="wakeupPins">
+            OR-combined wake-up pin bit mask. Each SoC's pin-package exposes a
+            <c>WakeupPin</c> class (e.g. <c>SC20260.WakeupPin.PA0</c>) with one
+            <c>int</c> constant per pin its hardware can wake on; OR them together
+            to allow any of those pins to wake the device. Pass <c>0</c> for
+            RTC-only wake. A bit not routed to this SoC's wake-up peripheral
+            throws <see cref="T:System.ArgumentException"/>.
+            <para>
+            Example: <c>Power.Shutdown(SC20260.WakeupPin.PA0 | SC20260.WakeupPin.PA2, t)</c>.
+            </para>
+            </param>
+            <param name="wakeupTime">
+            Wall-clock time at which the RTC should wake the device, or
+            <see cref="F:System.DateTime.MaxValue"/> for "pin only".
+            </param>
+            <exception cref="T:System.ArgumentException">
+            Thrown when <paramref name="wakeupPins"/> is <c>0</c> AND <paramref name="wakeupTime"/>
+            is <see cref="F:System.DateTime.MaxValue"/> (no wake source — the device would never
+            come back), or when any bit in <paramref name="wakeupPins"/> isn't routed to
+            this SoC's hardware wake-up peripheral.
+            </exception>
         </member>
         <member name="M:GHIElectronics.TinyCLR.Native.Power.SetSystemClock(GHIElectronics.TinyCLR.Native.SystemClock,System.Boolean)">
             <summary>Switches the core-clock profile. <paramref name="persist"/> stores the choice across resets.</summary>

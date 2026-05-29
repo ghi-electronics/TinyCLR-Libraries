@@ -221,5 +221,23 @@ namespace GHIElectronics.TinyCLR.Pins {
             /// <summary>API id.</summary>
             public const string Id = "GHIElectronics.TinyCLR.NativeApis.STM32L4.RtcController\\0";
         }
+
+        /// <summary>
+        /// Hardware wake-up pin bit flags for <see cref="GHIElectronics.TinyCLR.Native.Power.Shutdown(int, System.DateTime)"/>.
+        /// OR-combine to allow any of the selected pins to wake the device.
+        /// Bit position matches the STM32L4 PWR_WAKEUP_PINx slot index (bit N → WKUP(N+1)).
+        /// </summary>
+        public static class WakeupPin {
+            /// <summary>PA0 — WKUP1.</summary>
+            public const int PA0  = 1 << 0;
+            /// <summary>PC13 — WKUP2.</summary>
+            public const int PC13 = 1 << 1;
+            /// <summary>PE6 — WKUP3.</summary>
+            public const int PE6  = 1 << 2;
+            /// <summary>PA2 — WKUP4.</summary>
+            public const int PA2  = 1 << 3;
+            /// <summary>PC5 — WKUP5.</summary>
+            public const int PC5  = 1 << 4;
+        }
     }
 }

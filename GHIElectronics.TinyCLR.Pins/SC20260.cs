@@ -674,5 +674,21 @@ namespace GHIElectronics.TinyCLR.Pins {
             /// <summary>API id.</summary>
             public const string Id = STM32H7.RtcController.Id;
         }
+
+        /// <summary>Hardware wake-up pins for <see cref="GHIElectronics.TinyCLR.Native.Power.Shutdown(int, System.DateTime)"/>. OR-combine to select multiple.</summary>
+        public static class WakeupPin {
+            /// <summary>PA0 — WKUP1.</summary>
+            public const int PA0  = STM32H7.WakeupPin.PA0;
+            /// <summary>PA2 — WKUP2.</summary>
+            public const int PA2  = STM32H7.WakeupPin.PA2;
+            /// <summary>PI8 — WKUP3.</summary>
+            public const int PI8  = STM32H7.WakeupPin.PI8;
+            /// <summary>PC13 — WKUP4.</summary>
+            public const int PC13 = STM32H7.WakeupPin.PC13;
+            /// <summary>PI11 — WKUP5.</summary>
+            public const int PI11 = STM32H7.WakeupPin.PI11;
+            /// <summary>PC1 — WKUP6.</summary>
+            public const int PC1  = STM32H7.WakeupPin.PC1;
+        }
     }
 }

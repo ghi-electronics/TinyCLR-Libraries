@@ -74,14 +74,14 @@ namespace GHIElectronics.TinyCLR.Native {
     /// dynamic clock scaling.
     /// </summary>
     public static class Power {
-        /// <summary>Polarity used by <see cref="Shutdown"/> when waking from a pin event.</summary>
+        /// <summary>Polarity used by <see cref="Shutdown"/> when waking from a pin event. Applies to every pin set in the wake-up bit mask.</summary>
         public static WakeupEdge WakeupEdge;
 
         /// <summary>Soft-resets the device, re-running the app afterward.</summary>
         public static void Reset() => Power.Reset(true);
 
-        /// <summary>Enters Sleep3 (deepest sleep). Wakes on any configured GPIO.</summary>
-        public static void Sleep() => SetLevel(PowerLevel.Sleep3, PowerWakeSource.Gpio, 0, 0);
+        /// <summary>Enters Sleep3 (deepest sleep). Wakes on any GPIO EXTI interrupt.</summary>
+        public static void Sleep() => SetLevel(PowerLevel.Sleep3, PowerWakeSource.Gpio, 0, 0, 0);
 
         /// <summary>Enters Sleep3 with an optional wake time. Pass <see cref="DateTime.MaxValue"/> for "pin only".</summary>
         public static void Sleep(DateTime wakeupTime) {
@@ -93,13 +93,38 @@ namespace GHIElectronics.TinyCLR.Native {
                 time = (ulong)wakeupTime.Ticks;
             }
 
-            SetLevel(PowerLevel.Sleep3, wakeupSource, time, 0);
+            SetLevel(PowerLevel.Sleep3, wakeupSource, time, 0, 0);
         }
 
-        /// <summary>Powers off until either the wake-up pin asserts or the RTC alarm fires.</summary>
-        /// <param name="wakeupPin">When true, allow the wake-up pin to bring the device back up.</param>
-        /// <param name="wakeupTime">Wall-clock time at which the RTC should wake the device, or <see cref="DateTime.MaxValue"/> for "pin only".</param>
-        public static void Shutdown(bool wakeupPin, DateTime wakeupTime) {
+        /// <summary>
+        /// Powers off until either one of the selected wake-up pins asserts or the
+        /// RTC alarm fires.
+        /// </summary>
+        /// <param name="wakeupPins">
+        /// OR-combined wake-up pin bit mask. Each SoC's pin-package exposes a
+        /// <c>WakeupPin</c> class (e.g. <c>SC20260.WakeupPin.PA0</c>) with one
+        /// <c>int</c> constant per pin its hardware can wake on; OR them together
+        /// to allow any of those pins to wake the device. Pass <c>0</c> for
+        /// RTC-only wake. A bit not routed to this SoC's wake-up peripheral
+        /// throws <see cref="ArgumentException"/>.
+        /// <para>
+        /// Example: <c>Power.Shutdown(SC20260.WakeupPin.PA0 | SC20260.WakeupPin.PA2, t)</c>.
+        /// </para>
+        /// </param>
+        /// <param name="wakeupTime">
+        /// Wall-clock time at which the RTC should wake the device, or
+        /// <see cref="DateTime.MaxValue"/> for "pin only".
+        /// </param>
+        /// <exception cref="ArgumentException">
+        /// Thrown when <paramref name="wakeupPins"/> is <c>0</c> AND <paramref name="wakeupTime"/>
+        /// is <see cref="DateTime.MaxValue"/> (no wake source — the device would never
+        /// come back), or when any bit in <paramref name="wakeupPins"/> isn't routed to
+        /// this SoC's hardware wake-up peripheral.
+        /// </exception>
+        public static void Shutdown(int wakeupPins, DateTime wakeupTime) {
+            if (wakeupPins == 0 && wakeupTime == DateTime.MaxValue)
+                throw new ArgumentException("Shutdown requires at least one wake source: pass one or more WakeupPin bits or an RTC wakeupTime (or both).");
+
             PowerWakeSource wakeupSource = 0;
             var time = 0UL;
 
@@ -108,10 +133,13 @@ namespace GHIElectronics.TinyCLR.Native {
                 time = (ulong)wakeupTime.Ticks;
             }
 
-            if (wakeupPin)
+            if (wakeupPins != 0)
                 wakeupSource |= PowerWakeSource.Gpio;
 
-            SetLevel(PowerLevel.Off, wakeupSource, time, WakeupEdge);
+            // Firmware validates each bit in wakeupPins against the SoC's hardware
+            // wake-up routing when PowerWakeSource.Gpio is set — any unsupported
+            // bit returns ArgumentInvalid which surfaces here as ArgumentException.
+            SetLevel(PowerLevel.Off, wakeupSource, time, WakeupEdge, wakeupPins);
         }
 
         /// <summary>Switches the core-clock profile. <paramref name="persist"/> stores the choice across resets.</summary>
@@ -127,7 +155,7 @@ namespace GHIElectronics.TinyCLR.Native {
         public static extern void Reset(bool runCoreAfter);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private static extern void SetLevel(PowerLevel powerLevel, PowerWakeSource wakeSource, ulong rtcTime, WakeupEdge wakeupEdge);
+        private static extern void SetLevel(PowerLevel powerLevel, PowerWakeSource wakeSource, ulong rtcTime, WakeupEdge wakeupEdge, int wakeupPins);
 
         /// <summary>Returns the reason for the most recent reset.</summary>
         [MethodImpl(MethodImplOptions.InternalCall)]
