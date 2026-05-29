@@ -170,9 +170,23 @@ namespace System.Drawing
 
         public void Clear() => this.surface.Clear();
 
+        // No-op default surface size for Desktop dual-mode runs where the
+        // DisplayController shim has no real LCD HAL behind it and returns
+        // Hdc = IntPtr.Zero. Wide enough to cover the common 480x272 / 800x480
+        // TinyCLR panels without clipping coordinates the user code passes in.
+        private const int DesktopNoOpDefaultWidth  = 800;
+        private const int DesktopNoOpDefaultHeight = 480;
+
         public static Graphics FromHdc(IntPtr hdc)
         {
-            if (hdc == IntPtr.Zero) throw new ArgumentNullException(nameof(hdc));
+            // Match the GPIO/UART desktop shim pattern: accept the call and
+            // let user code keep going instead of throwing. Hdc == Zero on
+            // Desktop is normal — there's no real display HAL. The returned
+            // Graphics has an in-memory surface so Clear/Fill/Draw/etc. work
+            // (drawing into a discarded buffer); Flush already short-circuits
+            // when hdc == Zero, so nothing ever tries to push to a real LCD.
+            if (hdc == IntPtr.Zero)
+                return new Graphics(DesktopNoOpDefaultWidth, DesktopNoOpDefaultHeight, IntPtr.Zero);
 
             var res = Internal.Bitmap.GetSizeForLcdFromHdc(hdc, out var width, out var height);
 
@@ -202,17 +216,25 @@ namespace System.Drawing
             OnFlushEvent?.Invoke(this, this.surface.GetBitmap(), 0, 0, this.surface.Width, this.surface.Height, this.surface.Width);
         }
 
+        // All DrawImage overloads silently no-op when the source image is null.
+        // On Desktop dual-mode the resource lookup can return null when a .resx
+        // entry's type isn't round-trippable to the Drawing.Desktop shim type
+        // (e.g. a BCL Bitmap that the rewriter couldn't convert). Without this
+        // guard the user's draw call would NRE on `image.data.surface`, which
+        // looks like a library bug — surfacing every dead-resource fault as a
+        // null-deref forces the user to scatter `if (img != null)` everywhere.
+
         //Draws a portion of an image at a specified location.
-        public void DrawImage(Image image, int x, int y, Rectangle srcRect, GraphicsUnit srcUnit) => this.surface.StretchImage(x, y, srcRect.Width, srcRect.Height, image.data.surface, srcRect.X, srcRect.Y, srcRect.Width, srcRect.Height, 0xFF);
+        public void DrawImage(Image image, int x, int y, Rectangle srcRect, GraphicsUnit srcUnit) { if (image == null) return; this.surface.StretchImage(x, y, srcRect.Width, srcRect.Height, image.data.surface, srcRect.X, srcRect.Y, srcRect.Width, srcRect.Height, 0xFF); }
 
         //Draws the specified Image at the specified location and with the specified size.
-        public void DrawImage(Image image, int x, int y, int width, int height) => this.surface.StretchImage(x, y, width, height, image.data.surface, 0, 0, image.Width, image.Height, 0xFF);
+        public void DrawImage(Image image, int x, int y, int width, int height) { if (image == null) return; this.surface.StretchImage(x, y, width, height, image.data.surface, 0, 0, image.Width, image.Height, 0xFF); }
 
         //Draws the specified image, using its original physical size, at the location specified by a coordinate pair.
-        public void DrawImage(Image image, int x, int y) => this.surface.StretchImage(x, y, image.Width, image.Height, image.data.surface, 0, 0, image.Width, image.Height, 0xFF);
+        public void DrawImage(Image image, int x, int y) { if (image == null) return; this.surface.StretchImage(x, y, image.Width, image.Height, image.data.surface, 0, 0, image.Width, image.Height, 0xFF); }
 
         //Draws the specified portion of the specified Image at the specified location and with the specified size.
-        public void DrawImage(Image image, Rectangle destRect, Rectangle srcRect, GraphicsUnit srcUnit) => this.surface.StretchImage(destRect.X, destRect.Y, destRect.Width, destRect.Height, image.data.surface, srcRect.X, srcRect.Y, srcRect.Width, srcRect.Height, 0xFF);
+        public void DrawImage(Image image, Rectangle destRect, Rectangle srcRect, GraphicsUnit srcUnit) { if (image == null) return; this.surface.StretchImage(destRect.X, destRect.Y, destRect.Width, destRect.Height, image.data.surface, srcRect.X, srcRect.Y, srcRect.Width, srcRect.Height, 0xFF); }
 
         public void DrawLine(Pen pen, int x1, int y1, int x2, int y2)
         {

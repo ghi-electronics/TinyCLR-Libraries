@@ -23,10 +23,17 @@
     call throws MissingMethodException at first dispatch.
 
     This task rewrites a copy of each Resources.Designer.cs into
-    $(IntermediateOutputPath)PostProcessedResources/ before CoreCompile, wrapping
-    the GetBytes body in try/catch with a string-keyed fallback. The enum member
-    name (e.g. "GlobalSign") matches the .resx key, so on Desktop the BCL
-    ResourceManager returns the real embedded resource bytes - not a no-op null.
+    $(IntermediateOutputPath)PostProcessedResources/ before CoreCompile,
+    replacing the Int16-keyed lookup with a reflection-based dispatch that
+    tries the short overload first (TinyCLR) and falls back to the string
+    overload (BCL). The enum member name (e.g. "GlobalSign", "small",
+    "Background_original") matches the .resx key, so on Desktop the BCL
+    ResourceManager returns the real embedded resource - not a no-op null.
+
+    The rewriter is type-agnostic: any return type the resource generator
+    emits is matched (byte[] for GetBytes, System.Drawing.Bitmap for
+    GetBitmap, System.Drawing.Font for GetFont, System.String for GetString)
+    so newly-added resource helpers don't need a new regex pattern.
 
     The user's original Designer.cs on disk is never modified; only a copy in
     obj/ is rewritten and that copy is what gets compiled. Idempotent across
@@ -45,37 +52,79 @@
       <Code Type="Fragment" Language="cs"><![CDATA[
         var src = File.ReadAllText(Source);
 
+        // Match the standard one-line return inside any GetX helper:
+        //   return ((<CastType>)(ResourceManager.GetObject(((short)(<param>)))));
+        // Where <CastType> is byte[] (GetBytes), System.Drawing.Bitmap
+        // (GetBitmap), System.Drawing.Font (GetFont), System.String
+        // (GetString), or whatever the resource generator emits for a
+        // newly-added type. Capture group 1 = the cast type, group 2 = the
+        // parameter name (typically "id").
         var isTinyCLRPattern =
-            Regex.IsMatch(src, @"BinaryResources\s*:\s*short")
+            Regex.IsMatch(src, @"(BinaryResources|BitmapResources|FontResources|StringResources)\s*:\s*short")
             && src.IndexOf("ResourceManager.GetObject") >= 0
             && src.IndexOf("(short)") >= 0;
 
         if (isTinyCLRPattern) {
-            // Match the standard one-line return inside GetBytes:
-            //   return ((byte[])(ResourceManager.GetObject(((short)(id)))));
-            // Capture group 1 = the parameter name (typically "id").
-            //
             // CRITICAL: We CANNOT emit a direct callvirt to GetObject(short) in
             // the IL, even inside a try block. The CLR JIT validates all method
             // tokens when JITting the method, and a missing token causes the
             // ENTIRE method to fail to JIT - the caller sees MissingMethodException
-            // at the call site of GetBytes, never reaching our try/catch.
+            // at the call site, never reaching our try/catch.
             //
             // Solution: use reflection for BOTH paths. The IL only references
             // Type.GetMethod / MethodInfo.Invoke (which exist on both runtimes),
             // so nothing for the JIT to fail on. Try the short-keyed overload
             // first (TinyCLR - dispatches to the native lookup); if not present,
             // fall back to the string-keyed overload (BCL - returns embedded
-            // resource bytes via the .resx string key, which equals the enum
-            // member name).
-            var rx = new Regex(@"return\s*\(\s*\(\s*byte\s*\[\s*\]\s*\)\s*\(\s*ResourceManager\.GetObject\s*\(\s*\(\s*\(\s*short\s*\)\s*\(\s*(\w+)\s*\)\s*\)\s*\)\s*\)\s*\)\s*;");
+            // resource via the .resx string key, which equals the enum member
+            // name). If neither overload exists (shouldn't happen), return
+            // default of the cast type so the caller gets null instead of an
+            // exception.
+            var rx = new Regex(@"return\s*\(\s*\(\s*(.+?)\s*\)\s*\(\s*ResourceManager\.GetObject\s*\(\s*\(\s*\(\s*short\s*\)\s*\(\s*(\w+)\s*\)\s*\)\s*\)\s*\)\s*\)\s*;");
             src = rx.Replace(src,
                 "var __t = typeof(System.Resources.ResourceManager); " +
                 "var __miShort = __t.GetMethod(\"GetObject\", new System.Type[] { typeof(short) }); " +
-                "if (__miShort != null) return (byte[])__miShort.Invoke(ResourceManager, new object[] { (short)$1 }); " +
+                "if (__miShort != null) return ($1)__miShort.Invoke(ResourceManager, new object[] { (short)$2 }); " +
                 "var __miStr = __t.GetMethod(\"GetObject\", new System.Type[] { typeof(string) }); " +
-                "if (__miStr != null) return (byte[])__miStr.Invoke(ResourceManager, new object[] { $1.ToString() }); " +
-                "return null;");
+                "if (__miStr != null) { " +
+                    "var __obj = __miStr.Invoke(ResourceManager, new object[] { $2.ToString() }); " +
+                    // Direct case: BCL stored the resource as the exact target
+                    // type (rare in dual-mode since the cast type is the
+                    // Drawing.Desktop shim, but cheap to check first).
+                    "if (__obj is $1 __direct) return __direct; " +
+                    // Byte-array case: TinyCLR stores .tinyfnt and custom-format
+                    // resources as System.Byte[] in the .resx so BCL returns
+                    // raw bytes. Drawing.Desktop shim types expose byte[] or
+                    // Stream constructors (e.g. Font(byte[]), Bitmap(Stream))
+                    // so a reflection-based ctor lookup round-trips the payload
+                    // into a real shim instance.
+                    "if (__obj is byte[] __bytes) { " +
+                        "var __ci = typeof($1).GetConstructor(new System.Type[] { typeof(byte[]) }); " +
+                        "if (__ci != null) return ($1)__ci.Invoke(new object[] { __bytes }); " +
+                        "var __ciS = typeof($1).GetConstructor(new System.Type[] { typeof(System.IO.Stream) }); " +
+                        "if (__ciS != null) return ($1)__ciS.Invoke(new object[] { new System.IO.MemoryStream(__bytes) }); " +
+                        // GetBytes consumers expect raw byte[] back.
+                        "if (typeof($1) == typeof(byte[])) return ($1)(object)__bytes; " +
+                    "} " +
+                    // BCL-type case: .resx entry typed as System.Drawing.Bitmap
+                    // makes BCL deserialize it back to BCL's Bitmap (not the
+                    // Drawing.Desktop shim type the cast targets). Round-trip
+                    // via the BCL type's Save(Stream) method to get raw bytes,
+                    // then feed those into the target type's byte[] or Stream
+                    // constructor. Works for any image-like type that supports
+                    // Save(Stream); falls through harmlessly otherwise.
+                    "var __saveMi = __obj.GetType().GetMethod(\"Save\", new System.Type[] { typeof(System.IO.Stream) }); " +
+                    "if (__saveMi != null) { " +
+                        "var __ms = new System.IO.MemoryStream(); " +
+                        "__saveMi.Invoke(__obj, new object[] { __ms }); " +
+                        "var __ser = __ms.ToArray(); " +
+                        "var __ci2 = typeof($1).GetConstructor(new System.Type[] { typeof(byte[]) }); " +
+                        "if (__ci2 != null) return ($1)__ci2.Invoke(new object[] { __ser }); " +
+                        "var __ci2S = typeof($1).GetConstructor(new System.Type[] { typeof(System.IO.Stream) }); " +
+                        "if (__ci2S != null) return ($1)__ci2S.Invoke(new object[] { new System.IO.MemoryStream(__ser) }); " +
+                    "} " +
+                "} " +
+                "return default($1);");
         }
 
         Directory.CreateDirectory(Path.GetDirectoryName(Destination));

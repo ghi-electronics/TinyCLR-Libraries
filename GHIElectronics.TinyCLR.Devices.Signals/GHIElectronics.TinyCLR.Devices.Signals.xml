@@ -191,15 +191,22 @@
             Capture timestamps of `count` edges on the pin.
             </summary>
             <remarks>
-            The returned buffer holds inter-edge intervals in nanoseconds:
-            - When <paramref name="waitForEdge"/> is true the timer starts on the
-              first edge, so buffer[0] is the interval between the first and
-              second edges, buffer[i] the interval from edge i+1 to edge i+2,
-              and the returned length is <c>count - 1</c>.
+            The returned buffer holds nanosecond values that are inter-edge
+            intervals EXCEPT for <c>buffer[0]</c>, which in both modes is a
+            DMA-arm-to-first-captured-edge artifact:
             - When <paramref name="waitForEdge"/> is false the timer starts
-              immediately. buffer[0] is the time from timer-start to the first
-              edge (and includes ~150 ns of counter-vs-DMA startup latency);
-              for high-frequency signals discard buffer[0].
+              immediately. <c>buffer[0]</c> is the time from timer-start to
+              the first edge (~150 ns of counter-vs-DMA startup latency
+              included). Returned length is <c>count</c>.
+            - When <paramref name="waitForEdge"/> is true the FIRST signal
+              edge fires a GPIO ISR which arms the capture-DMA; the timer
+              then counts from zero and the next <c>count - 1</c> edges are
+              captured. Returned length is <c>count - 1</c>. <c>buffer[0]</c>
+              is the phase between DMA-arm and the next signal edge — a
+              random fraction of one period, NOT an edge1→edge2 interval.
+            Callers performing jitter/period analysis should DISCARD
+            <c>buffer[0]</c> in both modes; valid inter-edge intervals start
+            at <c>buffer[1]</c>.
             </remarks>
         </member>
         <member name="M:GHIElectronics.TinyCLR.Devices.Signals.DigitalSignal.Generate(System.UInt32[],System.UInt32,System.UInt32)">
