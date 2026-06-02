@@ -1289,7 +1289,14 @@ namespace GHIElectronics.TinyCLR.UI {
                         var n = children.Count;
                         for (var i = 0; i < n; i++) {
                             var child = children[i];
-                            if (child.IsRenderable()) {
+                            // O1: skip children that cannot paint any pixel under
+                            // the current clip. Safe because every element clips
+                            // its own subtree to its render box (the Push below),
+                            // so a child outside the clip has no visible
+                            // descendants either. Resolution-independent: uses the
+                            // runtime clip + the child's own bounds.
+                            if (child.IsRenderable()
+                                && dc.IntersectsClip(child._offsetX, child._offsetY, child._renderWidth, child._renderHeight)) {
                                 child.RenderRecursive(dc);
                             }
                         }

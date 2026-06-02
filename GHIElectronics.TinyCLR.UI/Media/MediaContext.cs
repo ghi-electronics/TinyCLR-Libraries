@@ -177,7 +177,14 @@ namespace GHIElectronics.TinyCLR.UI.Media {
                     }
                 }
 
-                var dc = new DrawingContext(this._screen);
+                // Reuse a single DrawingContext across frames; just reset its
+                // per-frame state. Avoids allocating a context + clip stack every
+                // render, which was steady GC pressure under animation.
+                var dc = this._drawingContext;
+                if (dc == null) {
+                    dc = this._drawingContext = new DrawingContext(this._screen);
+                }
+                dc.Reset();
 
                 /* The dirty rectange MUST be read after the InvokeOnRender callbacks are
                  * complete, as they can trigger layout changes or invalidate controls
@@ -202,7 +209,8 @@ namespace GHIElectronics.TinyCLR.UI.Media {
                     }
                 }
                 finally {
-                    dc.Close();
+                    // NOTE: do not Close()/null the reused DrawingContext here -
+                    // it is retained across frames and reset on the next render.
                     if (w > 0 && h > 0) {
                         this._screen.Flush(x, y, w, h);
                     }
@@ -239,6 +247,7 @@ namespace GHIElectronics.TinyCLR.UI.Media {
 
         private UIElement _target;
         private Bitmap _screen;
+        private DrawingContext _drawingContext;   // reused across frames; see RenderMessageHandler
 
         private class GlobalLock { }
 
