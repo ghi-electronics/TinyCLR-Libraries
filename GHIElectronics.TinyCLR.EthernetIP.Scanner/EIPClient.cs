@@ -474,18 +474,46 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner
             encapsulation.Length = 0;
             encapsulation.SessionHandle = this.sessionHandle;
  
-            try
+            // Best-effort courtesy notification. If the target already tore down the
+            // TCP session (common when it disposes first — its sockets close right
+            // after the I/O exchange), skip the write entirely. Otherwise Socket.Send
+            // throws SocketException/IOException; the catch handles it, but it still
+            // surfaces as noisy first-chance exceptions. A peer-closed socket reads as
+            // Poll(SelectRead)==true with zero bytes available.
+            if (this.IsSessionSocketAlive())
             {
-                this.stream.Write(encapsulation.Tobytes(), 0, encapsulation.Tobytes().Length);
-            }
-            catch (Exception)
-            {
-                //Handle Exception to allow to Close the Stream if the connection was closed by Remote Device
+                try
+                {
+                    var bytes = encapsulation.Tobytes();
+                    this.stream.Write(bytes, 0, bytes.Length);
+                }
+                catch (Exception)
+                {
+                    // Peer dropped between the poll and the write — closing anyway.
+                }
             }
 
-            this.client.Close();
-            this.stream.Close();
+            try { this.client.Close(); } catch { }
+            try { this.stream.Close(); } catch { }
             this.sessionHandle = 0;
+        }
+
+        // True if the encapsulation TCP socket still looks usable for a final write.
+        // Mirrors the closed-socket check used elsewhere in the stack (e.g. Modbus):
+        // Poll(SelectRead) is true when the socket is readable OR closed; a closed peer
+        // has zero bytes available, so that combination means "gone — don't write".
+        private bool IsSessionSocketAlive()
+        {
+            try
+            {
+                var socket = this.client?.Client;
+                if (socket == null || !socket.Connected) return false;
+                return !(socket.Poll(0, SelectMode.SelectRead) && socket.Available == 0);
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         private bool disposed;
