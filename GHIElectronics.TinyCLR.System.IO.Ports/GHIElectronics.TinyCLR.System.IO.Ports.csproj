@@ -1,23 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildThisFileDirectory)..\mscorlib.props" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{6E2A8B4C-7D3F-4E1A-9C5B-2D3F4E5A6B7C}</ProjectGuid>
+    <ProjectGuid>{250BCEAA-45F2-47A9-B54A-AD259004D6AC}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GHIElectronics.TinyCLR.Devices.Uart</RootNamespace>
-    <AssemblyName>GHIElectronics.TinyCLR.Devices.Uart</AssemblyName>
+    <RootNamespace>System.IO.Ports</RootNamespace>
+    <AssemblyName>System.IO.Ports</AssemblyName>
     <DocumentationFile>$(OutputPath)$(AssemblyName).xml</DocumentationFile>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <!-- CS0436: SystemIoPortsCompat.cs redefines System.IO.Ports.* types
-         that also live in framework System.dll. The compiler picks our
-         types (matches impl-side identity); runtime works.
-         CS0067 / CS0649: shim events / fields are kept for ABI parity but
-         never raised / assigned in the no-op Desktop body. -->
-    <NoWarn>CS0436;CS0067;CS0649;CS1591;CS1570;CS1572;CS1573;CS1574;CS1658</NoWarn>
+    <ProjectTypeGuids>{A1948822-69DD-4150-919B-F3F42EFB71CC};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -36,24 +35,18 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-
   <ItemGroup>
-    <Reference Include="System" />
+    <Compile Include="SystemIoPortsCompat.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-
   <ItemGroup>
-    <ProjectReference Include="..\GHIElectronics.TinyCLR.Native.Desktop\GHIElectronics.TinyCLR.Native.Desktop.csproj">
-      <Project>{3F8E6C5A-1D2B-4E9A-9C7F-8A5D2E7B4C13}</Project>
-      <Name>GHIElectronics.TinyCLR.Native.Desktop</Name>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GHIElectronics.TinyCLR.Devices.Uart\GHIElectronics.TinyCLR.Devices.Uart.csproj">
+      <Project>{D4456808-26EE-49D9-99ED-A11F5FF78EB9}</Project>
+      <Name>GHIElectronics.TinyCLR.Devices.Uart</Name>
     </ProjectReference>
   </ItemGroup>
-
-  <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Uart.cs" />
-    <!-- SystemIoPortsCompat.cs moved to the standalone System.IO.Ports project
-         (built into System.IO.Ports.dll, shipped in this same NuGet). -->
-  </ItemGroup>
-
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

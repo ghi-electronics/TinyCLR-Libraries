@@ -124,6 +124,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Devi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.System.Device.Gpio", "GHIElectronics.TinyCLR.System.Device.Gpio\GHIElectronics.TinyCLR.System.Device.Gpio.csproj", "{8532DE22-C53A-4A6C-A4EC-B1DFD309E31A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.System.IO.Ports", "GHIElectronics.TinyCLR.System.IO.Ports\GHIElectronics.TinyCLR.System.IO.Ports.csproj", "{250BCEAA-45F2-47A9-B54A-AD259004D6AC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.System.Device.Pwm", "GHIElectronics.TinyCLR.System.Device.Pwm\GHIElectronics.TinyCLR.System.Device.Pwm.csproj", "{4123A3CD-7EDC-484A-B36A-449BB98C45FA}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GHIElectronics.TinyCLR.Devices.I2c", "GHIElectronics.TinyCLR.Devices.I2c\GHIElectronics.TinyCLR.Devices.I2c.csproj", "{670AD403-A7C6-4C0A-A9A3-82767B3FCBB2}"
 	ProjectSection(ProjectDependencies) = postProject
 		{7C8B5D3F-2E1A-4F9B-8D6E-5A2B1C4D7E3F} = {7C8B5D3F-2E1A-4F9B-8D6E-5A2B1C4D7E3F}
@@ -540,6 +544,14 @@ Global
 		{8532DE22-C53A-4A6C-A4EC-B1DFD309E31A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8532DE22-C53A-4A6C-A4EC-B1DFD309E31A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8532DE22-C53A-4A6C-A4EC-B1DFD309E31A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{250BCEAA-45F2-47A9-B54A-AD259004D6AC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{250BCEAA-45F2-47A9-B54A-AD259004D6AC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{250BCEAA-45F2-47A9-B54A-AD259004D6AC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{250BCEAA-45F2-47A9-B54A-AD259004D6AC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4123A3CD-7EDC-484A-B36A-449BB98C45FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4123A3CD-7EDC-484A-B36A-449BB98C45FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4123A3CD-7EDC-484A-B36A-449BB98C45FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4123A3CD-7EDC-484A-B36A-449BB98C45FA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{670AD403-A7C6-4C0A-A9A3-82767B3FCBB2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{670AD403-A7C6-4C0A-A9A3-82767B3FCBB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{670AD403-A7C6-4C0A-A9A3-82767B3FCBB2}.Release|Any CPU.ActiveCfg = Release|Any CPU

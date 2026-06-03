@@ -10,6 +10,8 @@
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
     <_TinyCLRPwmShimSource>$(MSBuildThisFileDirectory)..\..\desktop-shim\GHIElectronics.TinyCLR.Devices.Pwm.dll</_TinyCLRPwmShimSource>
     <_TinyCLRPwmImplSource>$(MSBuildThisFileDirectory)..\..\tinyclr\GHIElectronics.TinyCLR.Devices.Pwm.dll</_TinyCLRPwmImplSource>
+    <_SystemDevicePwmShimSource>$(MSBuildThisFileDirectory)..\..\desktop-shim\System.Device.Pwm.dll</_SystemDevicePwmShimSource>
+    <_SystemDevicePwmImplSource>$(MSBuildThisFileDirectory)..\..\tinyclr\System.Device.Pwm.dll</_SystemDevicePwmImplSource>
   </PropertyGroup>
   <Target Name="CopyTinyCLRPwmDesktopShim" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRPwmShimSource)')">
     <Copy SourceFiles="$(_TinyCLRPwmShimSource)"
@@ -20,6 +22,18 @@
   <Target Name="CopyTinyCLRPwmImplForDebugger" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRPwmImplSource)')">
     <Copy SourceFiles="$(_TinyCLRPwmImplSource)"
           DestinationFiles="$(OutDir)pe\GHIElectronics.TinyCLR.Devices.Pwm.dll"
+          OverwriteReadOnlyFiles="true"
+          SkipUnchangedFiles="false" />
+  </Target>
+  <Target Name="CopySystemDevicePwmDesktopShim" AfterTargets="AfterBuild" Condition="Exists('$(_SystemDevicePwmShimSource)')">
+    <Copy SourceFiles="$(_SystemDevicePwmShimSource)"
+          DestinationFiles="$(OutDir)System.Device.Pwm.dll"
+          OverwriteReadOnlyFiles="true"
+          SkipUnchangedFiles="false" />
+  </Target>
+  <Target Name="CopySystemDevicePwmImplForDebugger" AfterTargets="AfterBuild" Condition="Exists('$(_SystemDevicePwmImplSource)')">
+    <Copy SourceFiles="$(_SystemDevicePwmImplSource)"
+          DestinationFiles="$(OutDir)pe\System.Device.Pwm.dll"
           OverwriteReadOnlyFiles="true"
           SkipUnchangedFiles="false" />
   </Target>

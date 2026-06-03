@@ -19,12 +19,27 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.Pwm.dll" target="lib\net48" />
+    <!-- lib/net48/ : TinyCLR-IMPL DLLs (auto-referenced for compile). -->
+    <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.Pwm.dll" target="lib\net48" />
     <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.Pwm.xml" target="lib\net48" />
-    <file src="..\GHIElectronics.TinyCLR.Devices.Pwm.Desktop\bin\$Configuration$\GHIElectronics.TinyCLR.Devices.Pwm.dll" target="desktop-shim" />
+
+    <!-- System.Device.Pwm compat DLL (Microsoft-style API), TinyCLR-impl. -->
+    <file src="$TargetDir$System.Device.Pwm.dll" target="lib\net48" />
+    <file src="$TargetDir$System.Device.Pwm.xml" target="lib\net48" />
+
+    <!-- desktop-shim/ : Desktop SHIM DLLs (no-op safe defaults). -->
+    <file src="..\GHIElectronics.TinyCLR.Devices.Pwm.Desktop\bin\$Configuration$\GHIElectronics.TinyCLR.Devices.Pwm.dll" target="desktop-shim" />
     <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.Pwm.xml" target="desktop-shim" />
-    <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.Pwm.dll" target="tinyclr" />
+    <file src="..\GHIElectronics.TinyCLR.System.Device.Pwm.Desktop\bin\$Configuration$\System.Device.Pwm.dll" target="desktop-shim" />
+    <file src="$TargetDir$System.Device.Pwm.xml" target="desktop-shim" />
+
+    <!-- tinyclr/ : TinyCLR-IMPL DLLs (deploy artifact for the IDE). -->
+    <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.Pwm.dll" target="tinyclr" />
     <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.Pwm.xml" target="tinyclr" />
+    <file src="$TargetDir$System.Device.Pwm.dll" target="tinyclr" />
+    <file src="$TargetDir$System.Device.Pwm.xml" target="tinyclr" />
+
+    <!-- Consumer-side props. -->
     <file src="$ProjectDir$GHIElectronics.TinyCLR.Devices.Pwm.props" target="build\net48" />
   </files>
 </package>

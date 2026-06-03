@@ -9,10 +9,17 @@
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
     <_TinyCLRUartShimSource>$(MSBuildThisFileDirectory)..\..\desktop-shim\GHIElectronics.TinyCLR.Devices.Uart.dll</_TinyCLRUartShimSource>
+    <_SystemIoPortsShimSource>$(MSBuildThisFileDirectory)..\..\desktop-shim\System.IO.Ports.dll</_SystemIoPortsShimSource>
   </PropertyGroup>
   <Target Name="CopyTinyCLRUartDesktopShim" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRUartShimSource)')">
     <Copy SourceFiles="$(_TinyCLRUartShimSource)"
           DestinationFiles="$(OutDir)GHIElectronics.TinyCLR.Devices.Uart.dll"
+          OverwriteReadOnlyFiles="true"
+          SkipUnchangedFiles="false" />
+  </Target>
+  <Target Name="CopySystemIoPortsDesktopShim" AfterTargets="AfterBuild" Condition="Exists('$(_SystemIoPortsShimSource)')">
+    <Copy SourceFiles="$(_SystemIoPortsShimSource)"
+          DestinationFiles="$(OutDir)System.IO.Ports.dll"
           OverwriteReadOnlyFiles="true"
           SkipUnchangedFiles="false" />
   </Target>

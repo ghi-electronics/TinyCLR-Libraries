@@ -43,11 +43,8 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Pwm.cs" />
-    <!-- System.Device.Pwm compat is plain managed code with no native
-         dependencies; share the source verbatim with the impl. -->
-    <Compile Include="..\GHIElectronics.TinyCLR.Devices.Pwm\SystemDevicePwmCompat.cs">
-      <Link>SystemDevicePwmCompat.cs</Link>
-    </Compile>
+    <!-- SystemDevicePwmCompat.cs moved to the standalone System.Device.Pwm project
+         (built into System.Device.Pwm.dll, shipped in this same NuGet). -->
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
