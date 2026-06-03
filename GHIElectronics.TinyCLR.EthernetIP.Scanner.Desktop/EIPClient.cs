@@ -188,11 +188,19 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner
         // Phase 3.5 — Event surface (same as device side; see device EIPClient.cs)
         // ===========================================================================
 
+        // Stand-in for System.EventHandler. MUST mirror the device build: TinyCLR's
+        // mscorlib has no non-generic System.EventHandler, so the device declares its
+        // own EipEventHandler. The Desktop shim has to expose the SAME nested type, or
+        // apps compiled against the device surface throw at load time
+        // ("Could not load type 'EipEventHandler'"). Defining it here is harmless on
+        // Desktop (it coexists with System.EventHandler).
+        public delegate void EipEventHandler(object sender, EventArgs e);
+
         /// <summary>Fired once after a successful ForwardOpen / LargeForwardOpen.</summary>
-        public event EventHandler ConnectionEstablished;
+        public event EipEventHandler ConnectionEstablished;
 
         /// <summary>Fired when the implicit producer fails to send 4 times in a row.</summary>
-        public event EventHandler ConnectionLost;
+        public event EipEventHandler ConnectionLost;
 
         /// <summary>
         /// Fired on every Class-1 packet received from the target. The byte[] argument
@@ -202,7 +210,7 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner
         public delegate void ImplicitDataReceivedHandler(ScannerController scanner, byte[] snapshot);
 
         /// <summary>Fired when an implicit packet arrives later than 4 * RPI.</summary>
-        public event EventHandler RpiViolated;
+        public event EipEventHandler RpiViolated;
 
         private int lastImplicitTickCount;
 
