@@ -24,7 +24,10 @@ namespace System.Device.Pwm {
             get => this.controller.ActualFrequency;
             set {
                 this.ThrowIfDisposed();
-                this.controller.SetDesiredFrequency(this.channel, value);
+                // Controller-wide overload: the per-channel SetDesiredFrequency
+                // throws CLR_E_INVALID_OPERATION on hardware that shares one
+                // frequency across all of a timer's channels (e.g. STM32L4 / SC13048).
+                this.controller.SetDesiredFrequency(value);
             }
         }
 
@@ -59,7 +62,10 @@ namespace System.Device.Pwm {
             this.channel = this.controller.OpenChannel(channel);
             this.Channel = channel;
 
-            this.controller.SetDesiredFrequency(this.channel, frequency);
+            // Controller-wide overload: the per-channel SetDesiredFrequency
+            // throws CLR_E_INVALID_OPERATION on hardware that shares one
+            // frequency across all of a timer's channels (e.g. STM32L4 / SC13048).
+            this.controller.SetDesiredFrequency(frequency);
             this.channel.SetActiveDutyCyclePercentage(dutyCyclePercentage);
         }
 
@@ -97,7 +103,11 @@ namespace System.Device.Pwm {
 
             var controllerName = $"GHIElectronics.TinyCLR.NativeApis.STM32H7.PwmController\\{chip}";
 
-            if (deviceName.CompareTo("SC13") == 0) {
+            if (deviceName.Length >=4 &&
+                deviceName[0] == 'S' &&
+                deviceName[1] == 'C' &&
+                deviceName[2] == '1' &&
+                deviceName[3] == '3' ) {
                 controllerName = $"GHIElectronics.TinyCLR.NativeApis.STM32L4.PwmController\\{chip}";
             }
 
