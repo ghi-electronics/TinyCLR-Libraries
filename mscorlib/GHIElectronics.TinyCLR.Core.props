@@ -133,7 +133,21 @@
     </Task>
   </UsingTask>
 
-  <Target Name="TinyCLRRewriteResourcesDesigner" BeforeTargets="CoreCompile">
+  <!--
+    Run the resource rewrite for REAL builds only, never Visual Studio's
+    design-time builds (the ones that feed IntelliSense / Roslyn). The rewrite
+    swaps the on-disk Resources.Designer.cs out of @(Compile) for an obj\ copy;
+    doing that during a design-time build breaks VS's language workspace for the
+    project - Resources.* shows red, and the project can drop to "Miscellaneous
+    Files" on reopen. The rewrite only affects emitted IL, so design-time builds
+    (SkipCompilerExecution=true, no output) don't need it; they should compile the
+    original Designer.cs straight from disk, exactly as 2.4 did. A design-time
+    build is signalled by DesignTimeBuild=true (CPS) or BuildingProject=false (the
+    legacy project system these flavored TinyCLR projects use); real CLI/VS builds
+    set neither, so dual-mode rewriting is unaffected. Do NOT remove the guard.
+  -->
+  <Target Name="TinyCLRRewriteResourcesDesigner" BeforeTargets="CoreCompile"
+          Condition="'$(DesignTimeBuild)' != 'true' and '$(BuildingProject)' != 'false'">
     <ItemGroup>
       <_TinyCLRDesignerCandidate Include="@(Compile)"
                                  Condition="'%(Filename)' == 'Resources.Designer'" />
