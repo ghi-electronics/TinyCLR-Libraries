@@ -10,7 +10,7 @@
     <iconUrl>http://files.ghielectronics.com/downloads/Logos/GHIElectronicsTinyCLRNuGet.png</iconUrl>
     <licenseUrl>http://files.ghielectronics.com/downloads/TinyCLR/License.txt</licenseUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
-    <description>Runtime Loadable Procedures (RLP) for TinyCLR OS. Load user-supplied compiled C/C++ code at runtime for performance-critical paths. User code is isolated by the MPU: GPIO is the only peripheral accessible from RLP code; flash, FLASH controller, system registers, DMA, SPI/I2C/UART/TIMER, etc. are blocked.</description>
+    <description>Load and run native C/C++ procedures (RLP) at runtime for TinyCLR OS.</description>
     <copyright>Copyright GHI Electronics, LLC 2026</copyright>
     <tags>TinyCLR TinyCLROS RLP Native</tags>
     <dependencies>

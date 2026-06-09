@@ -10,7 +10,7 @@
     <iconUrl>http://files.ghielectronics.com/downloads/Logos/GHIElectronicsTinyCLRNuGet.png</iconUrl>
     <licenseUrl>http://files.ghielectronics.com/downloads/TinyCLR/License.txt</licenseUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
-    <description>System.Xml compatibility facade for TinyCLR OS. User code writes `using System.Xml; XmlReader.Create(...)` — on device the call is backed by GHIElectronics.TinyCLR.Data.Xml; on Desktop the type-refs forward to the real BCL System.Xml.dll.</description>
+    <description>System.Xml-compatible XML API for TinyCLR OS.</description>
     <copyright>Copyright GHI Electronics, LLC 2026</copyright>
     <tags>TinyCLR TinyCLROS Xml</tags>
     <dependencies>

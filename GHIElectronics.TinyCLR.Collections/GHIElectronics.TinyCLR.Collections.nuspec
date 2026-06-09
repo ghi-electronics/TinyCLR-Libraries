@@ -10,7 +10,7 @@
     <iconUrl>http://files.ghielectronics.com/downloads/Logos/GHIElectronicsTinyCLRNuGet.png</iconUrl>
     <licenseUrl>http://files.ghielectronics.com/downloads/TinyCLR/License.txt</licenseUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
-    <description>Collections (HashSet/ISet) for TinyCLR OS. Mirrors .NET Framework's System.Core.dll split: ship HashSet as a separate NuGet rather than baking it into mscorlib so Desktop dual-mode forwards to the framework copy.</description>
+    <description>HashSet and ISet generic collection types for TinyCLR OS.</description>
     <copyright>Copyright GHI Electronics, LLC 2026</copyright>
     <tags>TinyCLR TinyCLROS Collections HashSet</tags>
     <dependencies>

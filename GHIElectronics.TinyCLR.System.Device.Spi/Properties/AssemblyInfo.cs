@@ -2,7 +2,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("System.Device.Spi")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("System.Device.Spi compatibility library for TinyCLR OS.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("GHI Electronics, LLC")]
 [assembly: AssemblyProduct("System.Device.Spi")]
