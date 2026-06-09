@@ -131,6 +131,9 @@ namespace GHIElectronics.TinyCLR.Pins {
                 public static class Controller1 {
                     /// <summary>API id.</summary>
                     public const string Id = STM32H7.Timer.Tim1;
+
+                    /// <summary>Chip index for System.Device.Pwm.</summary>
+                    public const int Chip = 0;
                     
                     /// <summary>PWM pin.</summary>
                     public const int Led = STM32H7.Timer.Channel1;                    
@@ -143,6 +146,9 @@ namespace GHIElectronics.TinyCLR.Pins {
                     /// <summary>API id.</summary>
                     public const string Id = STM32H7.Timer.Tim2;
 
+                    /// <summary>Chip index for System.Device.Pwm.</summary>
+                    public const int Chip = 1;
+
                   
                     /// <summary>PWM pin.</summary>
                     public const int PA3 = STM32H7.Timer.Channel3;
@@ -152,6 +158,9 @@ namespace GHIElectronics.TinyCLR.Pins {
                 public static class Controller3 {
                     /// <summary>API id.</summary>
                     public const string Id = STM32H7.Timer.Tim3;
+
+                    /// <summary>Chip index for System.Device.Pwm.</summary>
+                    public const int Chip = 2;
                                      
                     /// <summary>PWM pin.</summary>
                     public const int PB1 = STM32H7.Timer.Channel3;
@@ -162,12 +171,18 @@ namespace GHIElectronics.TinyCLR.Pins {
                     /// <summary>API id.</summary>
                     public const string Id = STM32H7.Timer.Tim5;
 
+                    /// <summary>Chip index for System.Device.Pwm.</summary>
+                    public const int Chip = 4;
+
                     /// <summary>PWM pin.</summary>
                     public const int PA0 = STM32H7.Timer.Channel0;
                 }
                 public static class Controller13 {
                     /// <summary>API id.</summary>
                     public const string Id = STM32H7.Timer.Tim13;
+
+                    /// <summary>Chip index for System.Device.Pwm.</summary>
+                    public const int Chip = 12;
 
                     /// <summary>PWM pin.</summary>
                     public const int PA6 = STM32H7.Timer.Channel0;
@@ -176,12 +191,18 @@ namespace GHIElectronics.TinyCLR.Pins {
                     /// <summary>API id.</summary>
                     public const string Id = STM32H7.Timer.Tim14;
 
+                    /// <summary>Chip index for System.Device.Pwm.</summary>
+                    public const int Chip = 13;
+
                     /// <summary>PWM pin.</summary>
                     public const int PA7 = STM32H7.Timer.Channel0;
                 }
                 public static class Controller15 {
                     /// <summary>API id.</summary>
                     public const string Id = STM32H7.Timer.Tim15;
+
+                    /// <summary>Chip index for System.Device.Pwm.</summary>
+                    public const int Chip = 14;
                 
                     /// <summary>PWM pin.</summary>
                     public const int PE6 = STM32H7.Timer.Channel1;
@@ -191,6 +212,9 @@ namespace GHIElectronics.TinyCLR.Pins {
                     /// <summary>API id.</summary>
                     public const string Id = STM32H7.Timer.Tim16;
 
+                    /// <summary>Chip index for System.Device.Pwm.</summary>
+                    public const int Chip = 15;
+
                     /// <summary>PWM pin.</summary>
                     public const int PB8 = STM32H7.Timer.Channel0;
                 }
@@ -198,6 +222,9 @@ namespace GHIElectronics.TinyCLR.Pins {
                 public static class Controller17 {
                     /// <summary>API id.</summary>
                     public const string Id = STM32H7.Timer.Tim17;
+
+                    /// <summary>Chip index for System.Device.Pwm.</summary>
+                    public const int Chip = 16;
 
                     /// <summary>PWM pin.</summary>
                     public const int PB9 = STM32H7.Timer.Channel0;
@@ -235,6 +262,8 @@ namespace GHIElectronics.TinyCLR.Pins {
         public static class I2cBus {
             /// <summary>I2C bus on PB9 (SDA) and PB8 (SCL).</summary>
             public const string I2c1 = STM32H7.I2cBus.I2c1;
+            /// <summary>Bus id for System.Device.I2c.</summary>
+            public const int Chip0 = 0;
             /// <summary>I2C software.</summary>
             public const string Software = STM32H7.I2cBus.Software;
         }
@@ -243,10 +272,16 @@ namespace GHIElectronics.TinyCLR.Pins {
         public static class SpiBus {
             /// <summary>SPI bus on PE14 (MOSI), PE13 (MISO), and PE12 (SCK).</summary>
             public const string Spi4 = STM32H7.SpiBus.Spi4;
+            /// <summary>Bus id for System.Device.Spi.</summary>
+            public const int Chip3 = 3;
             /// <summary>SPI bus on PA7 (MOSI), PA6 (MISO), and PA5 (SCK).</summary>
             public const string Spi6 = STM32H7.SpiBus.Spi6;
+            /// <summary>Bus id for System.Device.Spi.</summary>
+            public const int Chip5 = 5;
             /// <summary>SPI bus.</summary>
             public const string WiFi = STM32H7.SpiBus.Spi3;
+            /// <summary>Bus id for System.Device.Spi.</summary>
+            public const int Chip2 = 2;
         }
 
         /// <summary>CAN bus definitions.</summary>
