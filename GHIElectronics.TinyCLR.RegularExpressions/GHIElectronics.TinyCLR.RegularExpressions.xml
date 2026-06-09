@@ -922,48 +922,6 @@
             <param name="pattern">Regular expression pattern to compile</param>
             <returns></returns>
         </member>
-        <member name="T:System.Text.RegularExpressions.RegexDebugCompiler">
-            <summary>
-            A subclass of RECompiler which can dump a regular expression program for debugging purposes.
-            </summary>
-        </member>
-        <member name="F:System.Text.RegularExpressions.RegexDebugCompiler.hashOpcode">
-            <summary>
-            Mapping from opcodes to descriptive strings
-            </summary>
-        </member>
-        <member name="M:System.Text.RegularExpressions.RegexDebugCompiler.OpcodeToString(System.Char)">
-            <summary>
-            Returns a descriptive string for an opcode.
-            </summary>
-            <param name="opcode">Opcode to convert to a string</param>
-            <returns> Description of opcode</returns>
-        </member>
-        <member name="M:System.Text.RegularExpressions.RegexDebugCompiler.CharToString(System.Char)">
-            <summary>
-            Return a string describing a (possibly unprintable) character.
-            </summary>
-            <param name="c">Character to convert to a printable representation</param>
-            <returns>String representation of character</returns>
-        </member>
-        <member name="M:System.Text.RegularExpressions.RegexDebugCompiler.NodeToString(System.Int32)">
-            <summary>
-            Returns a descriptive string for a node in a regular expression program.
-            </summary>
-            <param name="node">Node to describe</param>
-            <returns>Description of node</returns>
-        </member>
-        <member name="M:System.Text.RegularExpressions.RegexDebugCompiler.DumpProgram(System.IO.TextWriter)">
-            <summary>
-            Dumps the current program to a {@link PrintStream}.
-            </summary>
-            <param name="p">PrintStream for program dump output</param>
-        </member>
-        <member name="M:System.Text.RegularExpressions.RegexDebugCompiler.dumpProgram">
-            <summary>
-            Dumps the current program to a <code>System.out</code>.
-            </summary>
-        </member>
         <member name="T:System.Text.RegularExpressions.RegexPrecompiler">
             <summary>
             Class for precompiling regular expressions for later use

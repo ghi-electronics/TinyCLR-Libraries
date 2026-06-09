@@ -115,6 +115,9 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZBit.Timer.Pwm.Controller1.Id">
             <summary>API id.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZBit.Timer.Pwm.Controller1.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZBit.Timer.Pwm.Controller1.Led">
             <summary>PWM pin.</summary>
         </member>
@@ -124,6 +127,9 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZBit.Timer.Pwm.Controller2.Id">
             <summary>API id.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZBit.Timer.Pwm.Controller2.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZBit.Timer.Pwm.Controller2.Backlight">
             <summary>PWM pin.</summary>
         </member>
@@ -132,6 +138,9 @@
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZBit.Timer.Pwm.Controller3.Id">
             <summary>API id.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZBit.Timer.Pwm.Controller3.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZBit.Timer.Pwm.Controller3.P0">
             <summary>PWM pin.</summary>
@@ -148,17 +157,26 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZBit.Timer.Pwm.Controller5.Id">
             <summary>API id.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZBit.Timer.Pwm.Controller5.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZBit.Timer.Pwm.Controller5.P2">
             <summary>PWM pin.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZBit.Timer.Pwm.Controller13.Id">
             <summary>API id.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZBit.Timer.Pwm.Controller13.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZBit.Timer.Pwm.Controller13.P14">
             <summary>PWM pin.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZBit.Timer.Pwm.Controller14.Id">
             <summary>API id.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZBit.Timer.Pwm.Controller14.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZBit.Timer.Pwm.Controller14.P15">
             <summary>PWM pin.</summary>
@@ -253,17 +271,29 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZBit.SpiBus.Display">
             <summary>SPI bus.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZBit.SpiBus.Chip3">
+            <summary>Bus id for System.Device.Spi.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZBit.SpiBus.WiFi">
             <summary>SPI bus.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZBit.SpiBus.Chip2">
+            <summary>Bus id for System.Device.Spi.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZBit.SpiBus.Edge">
             <summary>SPI bus.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZBit.SpiBus.Chip5">
+            <summary>Bus id for System.Device.Spi.</summary>
         </member>
         <member name="T:GHIElectronics.TinyCLR.Pins.FEZBit.I2cBus">
             <summary>I2C bus definitions.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZBit.I2cBus.Edge">
             <summary>I2C bus on PB9 (SDA) and PB8 (SCL).</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZBit.I2cBus.Chip0">
+            <summary>Bus id for System.Device.I2c.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZBit.I2cBus.Accelerometer">
             <summary>I2C bus on PB9 (SDA) and PB8 (SCL).</summary>
@@ -436,6 +466,9 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZDuino.Timer.Pwm.Controller1.Id">
             <summary>API id.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZDuino.Timer.Pwm.Controller1.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZDuino.Timer.Pwm.Controller1.PE9">
             <summary>PWM pin.</summary>
         </member>
@@ -447,6 +480,9 @@
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZDuino.Timer.Pwm.Controller2.Id">
             <summary>API id.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZDuino.Timer.Pwm.Controller2.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZDuino.Timer.Pwm.Controller2.PA15">
             <summary>PWM pin.</summary>
@@ -463,6 +499,9 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZDuino.Timer.Pwm.Controller3.Id">
             <summary>API id.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZDuino.Timer.Pwm.Controller3.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZDuino.Timer.Pwm.Controller3.PC6">
             <summary>PWM pin.</summary>
         </member>
@@ -478,11 +517,17 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZDuino.Timer.Pwm.Controller5.Id">
             <summary>API id.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZDuino.Timer.Pwm.Controller5.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZDuino.Timer.Pwm.Controller5.PA0">
             <summary>PWM pin.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZDuino.Timer.Pwm.Controller13.Id">
             <summary>API id.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZDuino.Timer.Pwm.Controller13.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZDuino.Timer.Pwm.Controller13.PA6">
             <summary>PWM pin.</summary>
@@ -490,17 +535,26 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZDuino.Timer.Pwm.Controller14.Id">
             <summary>API id.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZDuino.Timer.Pwm.Controller14.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZDuino.Timer.Pwm.Controller14.PA7">
             <summary>PWM pin.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZDuino.Timer.Pwm.Controller16.Id">
             <summary>API id.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZDuino.Timer.Pwm.Controller16.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZDuino.Timer.Pwm.Controller16.PB8">
             <summary>PWM pin.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZDuino.Timer.Pwm.Controller17.Id">
             <summary>API id.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZDuino.Timer.Pwm.Controller17.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZDuino.Timer.Pwm.Controller17.PB9">
             <summary>PWM pin.</summary>
@@ -610,8 +664,14 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZDuino.SpiBus.Spi3">
             <summary>SPI bus on PB5 (MOSI), PB4 (MISO), and PB3 (SCK).</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZDuino.SpiBus.Chip2">
+            <summary>Bus id for System.Device.Spi.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZDuino.SpiBus.Spi6">
             <summary>SPI bus on PA7 (MOSI), PA6 (MISO), and PA5 (SCK).</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZDuino.SpiBus.Chip5">
+            <summary>Bus id for System.Device.Spi.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZDuino.SpiBus.WiFi">
             <summary>SPI bus on PB5 (MOSI), PB4 (MISO), and PB3 (SCK).</summary>
@@ -622,8 +682,14 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZDuino.I2cBus.I2c1">
             <summary>I2C bus on PB9 (SDA) and PB8 (SCL).</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZDuino.I2cBus.Chip0">
+            <summary>Bus id for System.Device.I2c.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZDuino.I2cBus.I2c2">
             <summary>I2C bus on PB11 (SDA) and PB10 (SCL).</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZDuino.I2cBus.Chip1">
+            <summary>Bus id for System.Device.I2c.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZDuino.I2cBus.Software">
             <summary>I2C software.</summary>
@@ -814,6 +880,9 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZFeather.Timer.Pwm.Controller1.Id">
             <summary>API id.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZFeather.Timer.Pwm.Controller1.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZFeather.Timer.Pwm.Controller1.Led">
             <summary>PWM pin.</summary>
         </member>
@@ -826,6 +895,9 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZFeather.Timer.Pwm.Controller2.Id">
             <summary>API id.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZFeather.Timer.Pwm.Controller2.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZFeather.Timer.Pwm.Controller2.PA3">
             <summary>PWM pin.</summary>
         </member>
@@ -835,11 +907,17 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZFeather.Timer.Pwm.Controller3.Id">
             <summary>API id.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZFeather.Timer.Pwm.Controller3.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZFeather.Timer.Pwm.Controller3.PB1">
             <summary>PWM pin.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZFeather.Timer.Pwm.Controller5.Id">
             <summary>API id.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZFeather.Timer.Pwm.Controller5.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZFeather.Timer.Pwm.Controller5.PA0">
             <summary>PWM pin.</summary>
@@ -847,11 +925,17 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZFeather.Timer.Pwm.Controller13.Id">
             <summary>API id.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZFeather.Timer.Pwm.Controller13.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZFeather.Timer.Pwm.Controller13.PA6">
             <summary>PWM pin.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZFeather.Timer.Pwm.Controller14.Id">
             <summary>API id.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZFeather.Timer.Pwm.Controller14.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZFeather.Timer.Pwm.Controller14.PA7">
             <summary>PWM pin.</summary>
@@ -859,17 +943,26 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZFeather.Timer.Pwm.Controller15.Id">
             <summary>API id.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZFeather.Timer.Pwm.Controller15.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZFeather.Timer.Pwm.Controller15.PE6">
             <summary>PWM pin.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZFeather.Timer.Pwm.Controller16.Id">
             <summary>API id.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZFeather.Timer.Pwm.Controller16.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZFeather.Timer.Pwm.Controller16.PB8">
             <summary>PWM pin.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZFeather.Timer.Pwm.Controller17.Id">
             <summary>API id.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZFeather.Timer.Pwm.Controller17.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZFeather.Timer.Pwm.Controller17.PB9">
             <summary>PWM pin.</summary>
@@ -904,6 +997,9 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZFeather.I2cBus.I2c1">
             <summary>I2C bus on PB9 (SDA) and PB8 (SCL).</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZFeather.I2cBus.Chip0">
+            <summary>Bus id for System.Device.I2c.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZFeather.I2cBus.Software">
             <summary>I2C software.</summary>
         </member>
@@ -913,11 +1009,20 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZFeather.SpiBus.Spi4">
             <summary>SPI bus on PE14 (MOSI), PE13 (MISO), and PE12 (SCK).</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZFeather.SpiBus.Chip3">
+            <summary>Bus id for System.Device.Spi.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZFeather.SpiBus.Spi6">
             <summary>SPI bus on PA7 (MOSI), PA6 (MISO), and PA5 (SCK).</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZFeather.SpiBus.Chip5">
+            <summary>Bus id for System.Device.Spi.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZFeather.SpiBus.WiFi">
             <summary>SPI bus.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZFeather.SpiBus.Chip2">
+            <summary>Bus id for System.Device.Spi.</summary>
         </member>
         <member name="T:GHIElectronics.TinyCLR.Pins.FEZFeather.CanBus">
             <summary>CAN bus definitions.</summary>
@@ -1027,6 +1132,9 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZFlea.Timer.Pwm.Controller1.Id">
             <summary>API id.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZFlea.Timer.Pwm.Controller1.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZFlea.Timer.Pwm.Controller1.Led">
             <summary>PWM pin.</summary>
         </member>
@@ -1035,6 +1143,9 @@
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZFlea.Timer.Pwm.Controller2.Id">
             <summary>API id.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZFlea.Timer.Pwm.Controller2.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZFlea.Timer.Pwm.Controller2.PA5">
             <summary>PWM pin.</summary>
@@ -1045,6 +1156,9 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZFlea.Timer.Pwm.Controller15.Id">
             <summary>API id.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZFlea.Timer.Pwm.Controller15.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZFlea.Timer.Pwm.Controller15.PA2">
             <summary>PWM pin.</summary>
         </member>
@@ -1053,6 +1167,9 @@
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZFlea.Timer.Pwm.Controller16.Id">
             <summary>API id.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZFlea.Timer.Pwm.Controller16.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZFlea.Timer.Pwm.Controller16.PB8">
             <summary>PWM pin.</summary>
@@ -1078,8 +1195,14 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZFlea.I2cBus.I2c1">
             <summary>I2C bus on PB9 (SDA) and PB8 (SCL).</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZFlea.I2cBus.Chip0">
+            <summary>Bus id for System.Device.I2c.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZFlea.I2cBus.I2c2">
             <summary>I2C bus on PB14 (SDA) and PB13 (SCL).</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZFlea.I2cBus.Chip1">
+            <summary>Bus id for System.Device.I2c.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZFlea.I2cBus.Software">
             <summary>I2C software.</summary>
@@ -1089,6 +1212,9 @@
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZFlea.SpiBus.Spi2">
             <summary>SPI bus on PB15 (MOSI), PB14 (MISO), and PB13 (SCK).</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZFlea.SpiBus.Chip1">
+            <summary>Bus id for System.Device.Spi.</summary>
         </member>
         <member name="T:GHIElectronics.TinyCLR.Pins.FEZFlea.RtcController">
             <summary>RTC controller definitions.</summary>
@@ -1249,6 +1375,9 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZPico.Timer.Pwm.Controller1.Id">
             <summary>API id.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZPico.Timer.Pwm.Controller1.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZPico.Timer.Pwm.Controller1.Led">
             <summary>PWM pin.</summary>
         </member>
@@ -1267,6 +1396,9 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZPico.Timer.Pwm.Controller2.Id">
             <summary>API id.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZPico.Timer.Pwm.Controller2.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZPico.Timer.Pwm.Controller2.PA5">
             <summary>PWM pin.</summary>
         </member>
@@ -1276,6 +1408,9 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZPico.Timer.Pwm.Controller15.Id">
             <summary>API id.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZPico.Timer.Pwm.Controller15.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZPico.Timer.Pwm.Controller15.PA2">
             <summary>PWM pin.</summary>
         </member>
@@ -1284,6 +1419,9 @@
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZPico.Timer.Pwm.Controller16.Id">
             <summary>API id.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZPico.Timer.Pwm.Controller16.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZPico.Timer.Pwm.Controller16.PB8">
             <summary>PWM pin.</summary>
@@ -1312,8 +1450,14 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZPico.I2cBus.I2c1">
             <summary>I2C bus on PB9 (SDA) and PB8 (SCL).</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZPico.I2cBus.Chip0">
+            <summary>Bus id for System.Device.I2c.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZPico.I2cBus.I2c2">
             <summary>I2C bus on PB14 (SDA) and PB13 (SCL).</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZPico.I2cBus.Chip1">
+            <summary>Bus id for System.Device.I2c.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZPico.I2cBus.Software">
             <summary>I2C software.</summary>
@@ -1323,6 +1467,9 @@
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZPico.SpiBus.Spi1">
             <summary>SPI bus on PB3 (MOSI), PB4 (MISO), and PB5 (SCK).</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZPico.SpiBus.Chip1">
+            <summary>Bus id for System.Device.Spi.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZPico.SpiBus.Spi2">
             <summary>SPI bus on PB15 (MOSI), PB14 (MISO), and PB13 (SCK).</summary>
@@ -1567,6 +1714,9 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZPortal.Timer.Pwm.Controller1.Id">
             <summary>API id.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZPortal.Timer.Pwm.Controller1.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZPortal.Timer.Pwm.Controller1.PJ11">
             <summary>PWM pin.</summary>
         </member>
@@ -1578,6 +1728,9 @@
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZPortal.Timer.Pwm.Controller2.Id">
             <summary>API id.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZPortal.Timer.Pwm.Controller2.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZPortal.Timer.Pwm.Controller2.Backlight">
             <summary>PWM pin.</summary>
@@ -1594,6 +1747,9 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZPortal.Timer.Pwm.Controller3.Id">
             <summary>API id.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZPortal.Timer.Pwm.Controller3.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZPortal.Timer.Pwm.Controller3.PC6">
             <summary>PWM pin.</summary>
         </member>
@@ -1609,6 +1765,9 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZPortal.Timer.Pwm.Controller5.Id">
             <summary>API id.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZPortal.Timer.Pwm.Controller5.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZPortal.Timer.Pwm.Controller5.PA0">
             <summary>PWM pin.</summary>
         </member>
@@ -1618,11 +1777,17 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZPortal.Timer.Pwm.Controller8.Id">
             <summary>API id.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZPortal.Timer.Pwm.Controller8.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZPortal.Timer.Pwm.Controller8.PI2">
             <summary>PWM pin.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZPortal.Timer.Pwm.Controller12.Id">
             <summary>API id.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZPortal.Timer.Pwm.Controller12.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZPortal.Timer.Pwm.Controller12.PH9">
             <summary>PWM pin.</summary>
@@ -1630,17 +1795,26 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZPortal.Timer.Pwm.Controller13.Id">
             <summary>API id.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZPortal.Timer.Pwm.Controller13.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZPortal.Timer.Pwm.Controller13.PF8">
             <summary>PWM pin.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZPortal.Timer.Pwm.Controller14.Id">
             <summary>API id.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZPortal.Timer.Pwm.Controller14.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZPortal.Timer.Pwm.Controller14.PF9">
             <summary>PWM pin.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZPortal.Timer.Pwm.Controller15.Id">
             <summary>API id.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZPortal.Timer.Pwm.Controller15.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZPortal.Timer.Pwm.Controller15.PE5">
             <summary>PWM pin.</summary>
@@ -1651,11 +1825,17 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZPortal.Timer.Pwm.Controller16.Id">
             <summary>API id.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZPortal.Timer.Pwm.Controller16.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZPortal.Timer.Pwm.Controller16.PB8">
             <summary>PWM pin.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZPortal.Timer.Pwm.Controller17.Id">
             <summary>API id.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZPortal.Timer.Pwm.Controller17.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZPortal.Timer.Pwm.Controller17.PB9">
             <summary>PWM pin.</summary>
@@ -1702,6 +1882,9 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZPortal.I2cBus.I2c1">
             <summary>I2C bus on PB9 (SDA) and PB8 (SCL).</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZPortal.I2cBus.Chip0">
+            <summary>Bus id for System.Device.I2c.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZPortal.I2cBus.Touch">
             <summary>I2C bus on PB9 (SDA) and PB8 (SCL).</summary>
         </member>
@@ -1717,14 +1900,23 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZPortal.SpiBus.Spi2">
             <summary>SPI bus on PI3 (MOSI), PI2 (MISO), and PI1 (SCK).</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZPortal.SpiBus.Chip1">
+            <summary>Bus id for System.Device.Spi.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZPortal.SpiBus.MikroBus">
             <summary>SPI bus on PI3 (MOSI), PI2 (MISO), and PI1 (SCK).</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZPortal.SpiBus.Spi3">
             <summary>SPI bus on PB5 (MOSI), PB4 (MISO), and PB3 (SCK).</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZPortal.SpiBus.Chip2">
+            <summary>Bus id for System.Device.Spi.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZPortal.SpiBus.Spi5">
             <summary>SPI bus on PJ10 (MOSI), PJ11 (MISO), and PK0 (SCK).</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZPortal.SpiBus.Chip4">
+            <summary>Bus id for System.Device.Spi.</summary>
         </member>
         <member name="T:GHIElectronics.TinyCLR.Pins.FEZPortal.CanBus">
             <summary>CAN bus definitions.</summary>
@@ -1906,6 +2098,9 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZStick.Timer.Pwm.Controller1.Id">
             <summary>API id.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZStick.Timer.Pwm.Controller1.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZStick.Timer.Pwm.Controller1.Led">
             <summary>Led pin.</summary>
         </member>
@@ -1921,6 +2116,9 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZStick.Timer.Pwm.Controller2.Id">
             <summary>API id.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZStick.Timer.Pwm.Controller2.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZStick.Timer.Pwm.Controller2.PB3">
             <summary>PWM pin.</summary>
         </member>
@@ -1933,11 +2131,17 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZStick.Timer.Pwm.Controller4.Id">
             <summary>API id.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZStick.Timer.Pwm.Controller4.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZStick.Timer.Pwm.Controller4.PB7">
             <summary>PWM pin.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZStick.Timer.Pwm.Controller15.Id">
             <summary>API id.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZStick.Timer.Pwm.Controller15.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZStick.Timer.Pwm.Controller15.PE5">
             <summary>PWM pin.</summary>
@@ -1945,11 +2149,17 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZStick.Timer.Pwm.Controller16.Id">
             <summary>API id.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZStick.Timer.Pwm.Controller16.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZStick.Timer.Pwm.Controller16.PB8">
             <summary>PWM pin.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZStick.Timer.Pwm.Controller17.Id">
             <summary>API id.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZStick.Timer.Pwm.Controller17.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZStick.Timer.Pwm.Controller17.PB9">
             <summary>PWM pin.</summary>
@@ -1975,8 +2185,14 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZStick.I2cBus.I2c1">
             <summary>I2C bus on PB9 (SDA) and PB8 (SCL).</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZStick.I2cBus.Chip0">
+            <summary>Bus id for System.Device.I2c.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZStick.I2cBus.I2c2">
             <summary>I2C bus on PB11 (SDA) and PB10 (SCL).</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZStick.I2cBus.Chip1">
+            <summary>Bus id for System.Device.I2c.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZStick.I2cBus.Software">
             <summary>I2C software.</summary>
@@ -1987,8 +2203,14 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZStick.SpiBus.Spi3">
             <summary>SPI bus on PB5 (MOSI), PB4 (MISO), and PB3 (SCK).</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZStick.SpiBus.Chip2">
+            <summary>Bus id for System.Device.Spi.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZStick.SpiBus.Spi4">
             <summary>SPI bus on PE14 (MOSI), PE13 (MISO), and PE12 (SCK).</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZStick.SpiBus.Chip3">
+            <summary>Bus id for System.Device.Spi.</summary>
         </member>
         <member name="T:GHIElectronics.TinyCLR.Pins.FEZStick.CanBus">
             <summary>CAN bus definitions.</summary>
@@ -2182,6 +2404,9 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.SC13048.Timer.Pwm.Controller1.Id">
             <summary>API id.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC13048.Timer.Pwm.Controller1.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.SC13048.Timer.Pwm.Controller1.PA8">
             <summary>PWM pin.</summary>
         </member>
@@ -2200,6 +2425,9 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.SC13048.Timer.Pwm.Controller2.Id">
             <summary>API id.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC13048.Timer.Pwm.Controller2.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.SC13048.Timer.Pwm.Controller2.PA5">
             <summary>PWM pin.</summary>
         </member>
@@ -2215,6 +2443,9 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.SC13048.Timer.Pwm.Controller15.Id">
             <summary>API id.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC13048.Timer.Pwm.Controller15.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.SC13048.Timer.Pwm.Controller15.PA2">
             <summary>PWM pin.</summary>
         </member>
@@ -2223,6 +2454,9 @@
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.SC13048.Timer.Pwm.Controller16.Id">
             <summary>API id.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC13048.Timer.Pwm.Controller16.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.SC13048.Timer.Pwm.Controller16.PB8">
             <summary>PWM pin.</summary>
@@ -2254,11 +2488,20 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.SC13048.I2cBus.I2c1">
             <summary>I2C bus on PB9 (SDA) and PB8 (SCL).</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC13048.I2cBus.Chip0">
+            <summary>Bus id for System.Device.I2c.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.SC13048.I2cBus.I2c2">
             <summary>I2C bus on PB14 (SDA) and PB13 (SCL).</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC13048.I2cBus.Chip1">
+            <summary>Bus id for System.Device.I2c.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.SC13048.I2cBus.I2c4">
             <summary>I2C bus on PB11 (SDA) and PB10 (SCL).</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC13048.I2cBus.Chip3">
+            <summary>Bus id for System.Device.I2c.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.SC13048.I2cBus.Software">
             <summary>I2C software.</summary>
@@ -2269,8 +2512,14 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.SC13048.SpiBus.Spi1">
             <summary>SPI bus on PB5 (MOSI), PB4 (MISO), and PB3 (SCK).</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC13048.SpiBus.Chip0">
+            <summary>Bus id for System.Device.Spi.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.SC13048.SpiBus.Spi2">
             <summary>SPI bus on PB15 (MOSI), PB14 (MISO), and PB13 (SCK).</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC13048.SpiBus.Chip1">
+            <summary>Bus id for System.Device.Spi.</summary>
         </member>
         <member name="T:GHIElectronics.TinyCLR.Pins.SC13048.CanBus">
             <summary>CAN bus definitions.</summary>
@@ -2647,6 +2896,9 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20100.Timer.Pwm.Controller1.Id">
             <summary>API id.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC20100.Timer.Pwm.Controller1.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20100.Timer.Pwm.Controller1.PE9">
             <summary>PWM pin.</summary>
         </member>
@@ -2665,6 +2917,9 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20100.Timer.Pwm.Controller2.Id">
             <summary>API id.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC20100.Timer.Pwm.Controller2.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20100.Timer.Pwm.Controller2.PA15">
             <summary>PWM pin.</summary>
         </member>
@@ -2679,6 +2934,9 @@
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20100.Timer.Pwm.Controller3.Id">
             <summary>API id.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC20100.Timer.Pwm.Controller3.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20100.Timer.Pwm.Controller3.PC6">
             <summary>PWM pin.</summary>
@@ -2698,11 +2956,17 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20100.Timer.Pwm.Controller4.Id">
             <summary>API id.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC20100.Timer.Pwm.Controller4.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20100.Timer.Pwm.Controller4.PB7">
             <summary>PWM pin.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20100.Timer.Pwm.Controller5.Id">
             <summary>API id.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC20100.Timer.Pwm.Controller5.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20100.Timer.Pwm.Controller5.PA0">
             <summary>PWM pin.</summary>
@@ -2710,17 +2974,26 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20100.Timer.Pwm.Controller13.Id">
             <summary>API id.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC20100.Timer.Pwm.Controller13.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20100.Timer.Pwm.Controller13.PA6">
             <summary>PWM pin.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20100.Timer.Pwm.Controller14.Id">
             <summary>API id.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC20100.Timer.Pwm.Controller14.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20100.Timer.Pwm.Controller14.PA7">
             <summary>PWM pin.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20100.Timer.Pwm.Controller15.Id">
             <summary>API id.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC20100.Timer.Pwm.Controller15.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20100.Timer.Pwm.Controller15.PE5">
             <summary>PWM pin.</summary>
@@ -2731,11 +3004,17 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20100.Timer.Pwm.Controller16.Id">
             <summary>API id.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC20100.Timer.Pwm.Controller16.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20100.Timer.Pwm.Controller16.PB8">
             <summary>PWM pin.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20100.Timer.Pwm.Controller17.Id">
             <summary>API id.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC20100.Timer.Pwm.Controller17.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20100.Timer.Pwm.Controller17.PB9">
             <summary>PWM pin.</summary>
@@ -2782,8 +3061,14 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20100.I2cBus.I2c1">
             <summary>I2C bus on PB9 (SDA) and PB8 (SCL).</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC20100.I2cBus.Chip0">
+            <summary>Bus id for System.Device.I2c.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20100.I2cBus.I2c2">
             <summary>I2C bus on PB11 (SDA) and PB10 (SCL).</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC20100.I2cBus.Chip1">
+            <summary>Bus id for System.Device.I2c.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20100.I2cBus.Software">
             <summary>I2C software.</summary>
@@ -2794,11 +3079,20 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20100.SpiBus.Spi3">
             <summary>SPI bus on PB5 (MOSI), PB4 (MISO), and PB3 (SCK).</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC20100.SpiBus.Chip2">
+            <summary>Bus id for System.Device.Spi.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20100.SpiBus.Spi4">
             <summary>SPI bus on PE14 (MOSI), PE13 (MISO), and PE12 (SCK).</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC20100.SpiBus.Chip3">
+            <summary>Bus id for System.Device.Spi.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20100.SpiBus.Spi6">
             <summary>SPI bus on PA7 (MOSI), PA6 (MISO), and PA5 (SCK).</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC20100.SpiBus.Chip5">
+            <summary>Bus id for System.Device.Spi.</summary>
         </member>
         <member name="T:GHIElectronics.TinyCLR.Pins.SC20100.CanBus">
             <summary>CAN bus definitions.</summary>
@@ -3472,6 +3766,9 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.Timer.Pwm.Controller1.Id">
             <summary>API id.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.Timer.Pwm.Controller1.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.Timer.Pwm.Controller1.PK1">
             <summary>PWM pin.</summary>
         </member>
@@ -3487,6 +3784,9 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.Timer.Pwm.Controller2.Id">
             <summary>API id.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.Timer.Pwm.Controller2.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.Timer.Pwm.Controller2.PA15">
             <summary>PWM pin.</summary>
         </member>
@@ -3501,6 +3801,9 @@
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.Timer.Pwm.Controller3.Id">
             <summary>API id.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.Timer.Pwm.Controller3.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.Timer.Pwm.Controller3.PC6">
             <summary>PWM pin.</summary>
@@ -3520,11 +3823,17 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.Timer.Pwm.Controller4.Id">
             <summary>API id.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.Timer.Pwm.Controller4.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.Timer.Pwm.Controller4.PB7">
             <summary>PWM pin.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.Timer.Pwm.Controller5.Id">
             <summary>API id.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.Timer.Pwm.Controller5.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.Timer.Pwm.Controller5.PA0">
             <summary>PWM pin.</summary>
@@ -3541,6 +3850,9 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.Timer.Pwm.Controller8.Id">
             <summary>API id.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.Timer.Pwm.Controller8.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.Timer.Pwm.Controller8.PI5">
             <summary>PWM pin.</summary>
         </member>
@@ -3556,6 +3868,9 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.Timer.Pwm.Controller12.Id">
             <summary>API id.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.Timer.Pwm.Controller12.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.Timer.Pwm.Controller12.PH6">
             <summary>PWM pin.</summary>
         </member>
@@ -3565,17 +3880,26 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.Timer.Pwm.Controller13.Id">
             <summary>API id.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.Timer.Pwm.Controller13.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.Timer.Pwm.Controller13.PF8">
             <summary>PWM pin.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.Timer.Pwm.Controller14.Id">
             <summary>API id.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.Timer.Pwm.Controller14.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.Timer.Pwm.Controller14.PF9">
             <summary>PWM pin.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.Timer.Pwm.Controller15.Id">
             <summary>API id.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.Timer.Pwm.Controller15.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.Timer.Pwm.Controller15.PE5">
             <summary>PWM pin.</summary>
@@ -3586,11 +3910,17 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.Timer.Pwm.Controller16.Id">
             <summary>API id.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.Timer.Pwm.Controller16.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.Timer.Pwm.Controller16.PB8">
             <summary>PWM pin.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.Timer.Pwm.Controller17.Id">
             <summary>API id.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.Timer.Pwm.Controller17.Chip">
+            <summary>Chip index for System.Device.Pwm.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.Timer.Pwm.Controller17.PB9">
             <summary>PWM pin.</summary>
@@ -3640,11 +3970,20 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.I2cBus.I2c1">
             <summary>I2C bus on PB9 (SDA) and PB8 (SCL).</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.I2cBus.Chip0">
+            <summary>Bus id for System.Device.I2c.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.I2cBus.I2c2">
             <summary>I2C bus on PB11 (SDA) and PB10 (SCL).</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.I2cBus.Chip1">
+            <summary>Bus id for System.Device.I2c.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.I2cBus.I2c3">
             <summary>I2C bus on PH8 (SDA) and PH7 (SCL).</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.I2cBus.Chip2">
+            <summary>Bus id for System.Device.I2c.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.I2cBus.Software">
             <summary>I2C software.</summary>
@@ -3655,11 +3994,20 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.SpiBus.Spi2">
             <summary>SPI bus on PI3 (MOSI), PI2 (MISO), and PI1 (SCK).</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.SpiBus.Chip1">
+            <summary>Bus id for System.Device.Spi.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.SpiBus.Spi3">
             <summary>SPI bus on PB5 (MOSI), PB4 (MISO), and PB3 (SCK).</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.SpiBus.Chip2">
+            <summary>Bus id for System.Device.Spi.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.SpiBus.Spi5">
             <summary>SPI bus on PJ10 (MOSI), PJ11 (MISO), and PK0 (SCK).</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.SpiBus.Chip4">
+            <summary>Bus id for System.Device.Spi.</summary>
         </member>
         <member name="T:GHIElectronics.TinyCLR.Pins.SC20260.CanBus">
             <summary>CAN bus definitions.</summary>
@@ -4333,53 +4681,104 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.Timer.Tim1">
             <summary>API id.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.Timer.Chip0">
+            <summary>Chip index for System.Device.Pwm.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.Timer.Tim2">
             <summary>API id.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.Timer.Chip1">
+            <summary>Chip index for System.Device.Pwm.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.Timer.Tim3">
             <summary>API id.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.Timer.Chip2">
+            <summary>Chip index for System.Device.Pwm.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.Timer.Tim4">
             <summary>API id.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.Timer.Chip3">
+            <summary>Chip index for System.Device.Pwm.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.Timer.Tim5">
             <summary>API id.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.Timer.Chip4">
+            <summary>Chip index for System.Device.Pwm.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.Timer.Tim6">
             <summary>API id.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.Timer.Chip5">
+            <summary>Chip index for System.Device.Pwm.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.Timer.Tim7">
             <summary>API id.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.Timer.Chip6">
+            <summary>Chip index for System.Device.Pwm.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.Timer.Tim8">
             <summary>API id.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.Timer.Chip7">
+            <summary>Chip index for System.Device.Pwm.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.Timer.Tim9">
             <summary>API id.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.Timer.Chip8">
+            <summary>Chip index for System.Device.Pwm.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.Timer.Tim10">
             <summary>API id.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.Timer.Chip9">
+            <summary>Chip index for System.Device.Pwm.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.Timer.Tim11">
             <summary>API id.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.Timer.Chip10">
+            <summary>Chip index for System.Device.Pwm.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.Timer.Tim12">
             <summary>API id.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.Timer.Chip11">
+            <summary>Chip index for System.Device.Pwm.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.Timer.Tim13">
             <summary>API id.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.Timer.Chip12">
+            <summary>Chip index for System.Device.Pwm.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.Timer.Tim14">
             <summary>API id.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.Timer.Chip13">
+            <summary>Chip index for System.Device.Pwm.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.Timer.Tim15">
             <summary>API id.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.Timer.Chip14">
+            <summary>Chip index for System.Device.Pwm.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.Timer.Tim16">
             <summary>API id.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.Timer.Chip15">
+            <summary>Chip index for System.Device.Pwm.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.Timer.Tim17">
             <summary>API id.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.Timer.Chip16">
+            <summary>Chip index for System.Device.Pwm.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.Timer.SoftwarePwm">
             <summary>API id.</summary>
@@ -4438,11 +4837,20 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.I2cBus.I2c1">
             <summary>I2C bus.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.I2cBus.Chip0">
+            <summary>Bus id for System.Device.I2c.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.I2cBus.I2c2">
             <summary>I2C bus.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.I2cBus.Chip1">
+            <summary>Bus id for System.Device.I2c.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.I2cBus.I2c3">
             <summary>I2C bus.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.I2cBus.Chip2">
+            <summary>Bus id for System.Device.I2c.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.I2cBus.Software">
             <summary>I2C software.</summary>
@@ -4453,20 +4861,38 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.SpiBus.Spi1">
             <summary>SPI bus.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.SpiBus.Chip0">
+            <summary>Bus id for System.Device.Spi.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.SpiBus.Spi2">
             <summary>SPI bus.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.SpiBus.Chip1">
+            <summary>Bus id for System.Device.Spi.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.SpiBus.Spi3">
             <summary>SPI bus.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.SpiBus.Chip2">
+            <summary>Bus id for System.Device.Spi.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.SpiBus.Spi4">
             <summary>SPI bus.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.SpiBus.Chip3">
+            <summary>Bus id for System.Device.Spi.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.SpiBus.Spi5">
             <summary>SPI bus.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.SpiBus.Chip4">
+            <summary>Bus id for System.Device.Spi.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.SpiBus.Spi6">
             <summary>SPI bus.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.SpiBus.Chip5">
+            <summary>Bus id for System.Device.Spi.</summary>
         </member>
         <member name="T:GHIElectronics.TinyCLR.Pins.STM32H7.CanBus">
             <summary>CAN bus definitions.</summary>
@@ -4718,14 +5144,26 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.STM32L4.Timer.Tim1">
             <summary>API id.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.STM32L4.Timer.Chip0">
+            <summary>Chip index for System.Device.Pwm.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.STM32L4.Timer.Tim2">
             <summary>API id.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.STM32L4.Timer.Chip1">
+            <summary>Chip index for System.Device.Pwm.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.STM32L4.Timer.Tim15">
             <summary>API id.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.STM32L4.Timer.Chip14">
+            <summary>Chip index for System.Device.Pwm.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.STM32L4.Timer.Tim16">
             <summary>API id.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.STM32L4.Timer.Chip15">
+            <summary>Chip index for System.Device.Pwm.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.STM32L4.Timer.SoftwarePwm">
             <summary>API id.</summary>
@@ -4763,11 +5201,20 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.STM32L4.I2cBus.I2c1">
             <summary>I2C bus.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.STM32L4.I2cBus.Chip0">
+            <summary>Bus id for System.Device.I2c.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.STM32L4.I2cBus.I2c2">
             <summary>I2C bus.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.STM32L4.I2cBus.Chip1">
+            <summary>Bus id for System.Device.I2c.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.STM32L4.I2cBus.I2c4">
             <summary>I2C bus.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.STM32L4.I2cBus.Chip3">
+            <summary>Bus id for System.Device.I2c.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.STM32L4.I2cBus.Software">
             <summary>I2C software.</summary>
@@ -4778,8 +5225,14 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.STM32L4.SpiBus.Spi1">
             <summary>SPI bus.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.STM32L4.SpiBus.Chip0">
+            <summary>Bus id for System.Device.Spi.</summary>
+        </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.STM32L4.SpiBus.Spi2">
             <summary>SPI bus.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Pins.STM32L4.SpiBus.Chip1">
+            <summary>Bus id for System.Device.Spi.</summary>
         </member>
         <member name="T:GHIElectronics.TinyCLR.Pins.STM32L4.CanBus">
             <summary>CAN bus definitions.</summary>

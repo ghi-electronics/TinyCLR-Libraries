@@ -1,10 +1,13 @@
 using System;
 using System.Collections;
+using System.Threading;
 
 namespace System.Device.Gpio {
     /// <summary>Edge selector for <see cref="GpioController"/> change notifications. Same shape as .NET IoT.</summary>
     [Flags]
     public enum PinEventTypes {
+        /// <summary>No edge — returned by <see cref="GpioController.WaitForEvent(int, PinEventTypes, TimeSpan)"/> when it times out or is cancelled.</summary>
+        None = 0,
         /// <summary>Rising edge (low → high).</summary>
         Rising = 1,
         /// <summary>Falling edge (high → low).</summary>
@@ -236,6 +239,14 @@ namespace System.Device.Gpio {
         }
     }
 
+    /// <summary>Result of a <see cref="GpioController.WaitForEvent(int, PinEventTypes, TimeSpan)"/> call. Same shape as .NET IoT.</summary>
+    public struct WaitForEventResult {
+        /// <summary>The edge that occurred, or <see cref="PinEventTypes.None"/> if the wait timed out or was cancelled.</summary>
+        public PinEventTypes EventTypes;
+        /// <summary>True if the wait elapsed (or was cancelled) before the event occurred.</summary>
+        public bool TimedOut;
+    }
+
     /// <summary>
     /// .NET IoT-style GPIO controller. Same surface as <c>System.Device.Gpio.GpioController</c>;
     /// internally routes through TinyCLR's GPIO HAL via <see cref="TinyClrGpioDriver"/>.
@@ -319,6 +330,77 @@ namespace System.Device.Gpio {
 
         public void UnregisterCallbackForPinValueChangedEvent(int pinNumber, PinChangeEventHandler callback) =>
             this.Driver.RemoveCallbackForPinValueChangedEvent(pinNumber, callback);
+
+        /// <summary>
+        /// Blocks until an edge of type <paramref name="eventTypes"/> occurs on <paramref name="pinNumber"/>
+        /// or <paramref name="timeout"/> elapses. The pin must already be open. Pass
+        /// <see cref="Timeout.InfiniteTimeSpan"/> to wait indefinitely.
+        /// </summary>
+        public WaitForEventResult WaitForEvent(int pinNumber, PinEventTypes eventTypes, TimeSpan timeout) {
+            var totalMs = (long)timeout.TotalMilliseconds;
+            var millisecondsTimeout = totalMs < Timeout.Infinite ? Timeout.Infinite
+                : (totalMs > int.MaxValue ? int.MaxValue : (int)totalMs);
+
+            return this.WaitForEventCore(pinNumber, eventTypes, millisecondsTimeout, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Blocks until an edge of type <paramref name="eventTypes"/> occurs on <paramref name="pinNumber"/>
+        /// or <paramref name="cancellationToken"/> is cancelled. The pin must already be open. On
+        /// cancellation the result has <see cref="WaitForEventResult.TimedOut"/> set to true.
+        /// </summary>
+        public WaitForEventResult WaitForEvent(int pinNumber, PinEventTypes eventTypes, CancellationToken cancellationToken) =>
+            this.WaitForEventCore(pinNumber, eventTypes, Timeout.Infinite, cancellationToken);
+
+        private WaitForEventResult WaitForEventCore(int pinNumber, PinEventTypes eventTypes, int millisecondsTimeout, CancellationToken cancellationToken) {
+            var signal = new AutoResetEvent(false);
+            var captured = PinEventTypes.None;
+
+            // AutoResetEvent latches a Set that arrives before WaitOne, so an edge that fires
+            // between registering and waiting is not lost.
+            PinChangeEventHandler handler = (s, e) => {
+                captured = e.ChangeType;
+                signal.Set();
+            };
+
+            this.RegisterCallbackForPinValueChangedEvent(pinNumber, eventTypes, handler);
+
+            try {
+                // TinyCLR's CancellationToken has no callback registration (poll-only), so when a
+                // cancellable token is supplied we wait in short chunks and re-check it, instead of
+                // blocking for the whole timeout. With an uncancellable token we just block once.
+                if (!cancellationToken.CanBeCanceled) {
+                    return signal.WaitOne(millisecondsTimeout, false)
+                        ? new WaitForEventResult { EventTypes = captured, TimedOut = false }
+                        : new WaitForEventResult { EventTypes = PinEventTypes.None, TimedOut = true };
+                }
+
+                const int PollMilliseconds = 50;
+                var remaining = (long)millisecondsTimeout;   // negative == infinite
+
+                while (true) {
+                    if (cancellationToken.IsCancellationRequested)
+                        return new WaitForEventResult { EventTypes = PinEventTypes.None, TimedOut = true };
+
+                    var chunk = PollMilliseconds;
+                    if (remaining >= 0) {
+                        if (remaining == 0)
+                            return new WaitForEventResult { EventTypes = PinEventTypes.None, TimedOut = true };
+                        if (remaining < chunk)
+                            chunk = (int)remaining;
+                    }
+
+                    if (signal.WaitOne(chunk, false))
+                        return new WaitForEventResult { EventTypes = captured, TimedOut = false };
+
+                    if (remaining >= 0)
+                        remaining -= chunk;
+                }
+            }
+            finally {
+                this.UnregisterCallbackForPinValueChangedEvent(pinNumber, handler);
+            }
+        }
     }
 }
 

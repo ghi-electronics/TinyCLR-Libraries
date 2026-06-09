@@ -7,6 +7,9 @@
         <member name="T:System.Device.Gpio.PinEventTypes">
             <summary>Edge selector for <see cref="T:System.Device.Gpio.GpioController"/> change notifications. Same shape as .NET IoT.</summary>
         </member>
+        <member name="F:System.Device.Gpio.PinEventTypes.None">
+            <summary>No edge — returned by <see cref="M:System.Device.Gpio.GpioController.WaitForEvent(System.Int32,System.Device.Gpio.PinEventTypes,System.TimeSpan)"/> when it times out or is cancelled.</summary>
+        </member>
         <member name="F:System.Device.Gpio.PinEventTypes.Rising">
             <summary>Rising edge (low → high).</summary>
         </member>
@@ -64,10 +67,33 @@
         <member name="T:System.Device.Gpio.TinyClrGpioDriver">
             <summary>TinyCLR-backed implementation of <see cref="T:System.Device.Gpio.GpioDriver"/>. Routes <see cref="T:System.Device.Gpio.GpioController"/> calls to <see cref="T:GHIElectronics.TinyCLR.Devices.Gpio.GpioController"/>.</summary>
         </member>
+        <member name="T:System.Device.Gpio.WaitForEventResult">
+            <summary>Result of a <see cref="M:System.Device.Gpio.GpioController.WaitForEvent(System.Int32,System.Device.Gpio.PinEventTypes,System.TimeSpan)"/> call. Same shape as .NET IoT.</summary>
+        </member>
+        <member name="F:System.Device.Gpio.WaitForEventResult.EventTypes">
+            <summary>The edge that occurred, or <see cref="F:System.Device.Gpio.PinEventTypes.None"/> if the wait timed out or was cancelled.</summary>
+        </member>
+        <member name="F:System.Device.Gpio.WaitForEventResult.TimedOut">
+            <summary>True if the wait elapsed (or was cancelled) before the event occurred.</summary>
+        </member>
         <member name="T:System.Device.Gpio.GpioController">
             <summary>
             .NET IoT-style GPIO controller. Same surface as <c>System.Device.Gpio.GpioController</c>;
             internally routes through TinyCLR's GPIO HAL via <see cref="T:System.Device.Gpio.TinyClrGpioDriver"/>.
+            </summary>
+        </member>
+        <member name="M:System.Device.Gpio.GpioController.WaitForEvent(System.Int32,System.Device.Gpio.PinEventTypes,System.TimeSpan)">
+            <summary>
+            Blocks until an edge of type <paramref name="eventTypes"/> occurs on <paramref name="pinNumber"/>
+            or <paramref name="timeout"/> elapses. The pin must already be open. Pass
+            <see cref="F:System.Threading.Timeout.InfiniteTimeSpan"/> to wait indefinitely.
+            </summary>
+        </member>
+        <member name="M:System.Device.Gpio.GpioController.WaitForEvent(System.Int32,System.Device.Gpio.PinEventTypes,System.Threading.CancellationToken)">
+            <summary>
+            Blocks until an edge of type <paramref name="eventTypes"/> occurs on <paramref name="pinNumber"/>
+            or <paramref name="cancellationToken"/> is cancelled. The pin must already be open. On
+            cancellation the result has <see cref="F:System.Device.Gpio.WaitForEventResult.TimedOut"/> set to true.
             </summary>
         </member>
         <member name="T:System.Device.Gpio.Drivers.LibGpiodDriver">
