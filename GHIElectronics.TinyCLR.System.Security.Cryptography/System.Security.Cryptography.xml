@@ -7,6 +7,45 @@
         <member name="T:System.Security.Cryptography.HashAlgorithmName">
             <summary>Well-known hash-algorithm name selector matching .NET Framework's <c>System.Security.Cryptography.HashAlgorithmName</c>.</summary>
         </member>
+        <member name="M:System.Security.Cryptography.HashAlgorithmName.#ctor(System.String)">
+            <summary>Creates a name from the given algorithm string.</summary>
+        </member>
+        <member name="P:System.Security.Cryptography.HashAlgorithmName.Name">
+            <summary>The algorithm name.</summary>
+        </member>
+        <member name="P:System.Security.Cryptography.HashAlgorithmName.MD5">
+            <summary>The MD5 algorithm name.</summary>
+        </member>
+        <member name="P:System.Security.Cryptography.HashAlgorithmName.SHA1">
+            <summary>The SHA-1 algorithm name.</summary>
+        </member>
+        <member name="P:System.Security.Cryptography.HashAlgorithmName.SHA256">
+            <summary>The SHA-256 algorithm name.</summary>
+        </member>
+        <member name="P:System.Security.Cryptography.HashAlgorithmName.SHA384">
+            <summary>The SHA-384 algorithm name.</summary>
+        </member>
+        <member name="P:System.Security.Cryptography.HashAlgorithmName.SHA512">
+            <summary>The SHA-512 algorithm name.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.HashAlgorithmName.Equals(System.Security.Cryptography.HashAlgorithmName)">
+            <summary>Returns true if the two names are equal.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.HashAlgorithmName.Equals(System.Object)">
+            <summary>Returns true if the object is an equal name.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.HashAlgorithmName.GetHashCode">
+            <summary>Returns the hash code for this name.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.HashAlgorithmName.ToString">
+            <summary>Returns the algorithm name.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.HashAlgorithmName.op_Equality(System.Security.Cryptography.HashAlgorithmName,System.Security.Cryptography.HashAlgorithmName)">
+            <summary>Returns true if the two names are equal.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.HashAlgorithmName.op_Inequality(System.Security.Cryptography.HashAlgorithmName,System.Security.Cryptography.HashAlgorithmName)">
+            <summary>Returns true if the two names differ.</summary>
+        </member>
         <member name="T:System.Security.Cryptography.RSAEncryptionPaddingMode">
             <summary>Padding scheme applied to RSA-encrypted blocks.</summary>
         </member>
@@ -18,6 +57,42 @@
         </member>
         <member name="T:System.Security.Cryptography.RSAEncryptionPadding">
             <summary>Encryption-padding configuration — padding mode plus (for OAEP) the hash algorithm. Matches the .NET Framework type.</summary>
+        </member>
+        <member name="P:System.Security.Cryptography.RSAEncryptionPadding.Pkcs1">
+            <summary>PKCS#1 v1.5 encryption padding.</summary>
+        </member>
+        <member name="P:System.Security.Cryptography.RSAEncryptionPadding.OaepSHA1">
+            <summary>OAEP padding using SHA-1.</summary>
+        </member>
+        <member name="P:System.Security.Cryptography.RSAEncryptionPadding.OaepSHA256">
+            <summary>OAEP padding using SHA-256.</summary>
+        </member>
+        <member name="P:System.Security.Cryptography.RSAEncryptionPadding.Mode">
+            <summary>The padding mode.</summary>
+        </member>
+        <member name="P:System.Security.Cryptography.RSAEncryptionPadding.OaepHashAlgorithm">
+            <summary>The hash algorithm used for OAEP padding.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.RSAEncryptionPadding.CreateOaep(System.Security.Cryptography.HashAlgorithmName)">
+            <summary>Creates OAEP padding using the given hash algorithm.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.RSAEncryptionPadding.Equals(System.Security.Cryptography.RSAEncryptionPadding)">
+            <summary>Returns true if the two paddings are equal.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.RSAEncryptionPadding.Equals(System.Object)">
+            <summary>Returns true if the object is an equal padding.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.RSAEncryptionPadding.GetHashCode">
+            <summary>Returns the hash code for this padding.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.RSAEncryptionPadding.ToString">
+            <summary>Returns a text description of this padding.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.RSAEncryptionPadding.op_Equality(System.Security.Cryptography.RSAEncryptionPadding,System.Security.Cryptography.RSAEncryptionPadding)">
+            <summary>Returns true if the two paddings are equal.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.RSAEncryptionPadding.op_Inequality(System.Security.Cryptography.RSAEncryptionPadding,System.Security.Cryptography.RSAEncryptionPadding)">
+            <summary>Returns true if the two paddings differ.</summary>
         </member>
         <member name="T:System.Security.Cryptography.RSASignaturePaddingMode">
             <summary>Padding scheme applied to RSA signatures.</summary>
@@ -31,44 +106,344 @@
         <member name="T:System.Security.Cryptography.RSASignaturePadding">
             <summary>Signature-padding configuration. Matches the .NET Framework type.</summary>
         </member>
+        <member name="P:System.Security.Cryptography.RSASignaturePadding.Pkcs1">
+            <summary>PKCS#1 v1.5 signature padding.</summary>
+        </member>
+        <member name="P:System.Security.Cryptography.RSASignaturePadding.Pss">
+            <summary>PSS signature padding.</summary>
+        </member>
+        <member name="P:System.Security.Cryptography.RSASignaturePadding.Mode">
+            <summary>The padding mode.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.RSASignaturePadding.Equals(System.Security.Cryptography.RSASignaturePadding)">
+            <summary>Returns true if the two paddings are equal.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.RSASignaturePadding.Equals(System.Object)">
+            <summary>Returns true if the object is an equal padding.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.RSASignaturePadding.GetHashCode">
+            <summary>Returns the hash code for this padding.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.RSASignaturePadding.ToString">
+            <summary>Returns a text description of this padding.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.RSASignaturePadding.op_Equality(System.Security.Cryptography.RSASignaturePadding,System.Security.Cryptography.RSASignaturePadding)">
+            <summary>Returns true if the two paddings are equal.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.RSASignaturePadding.op_Inequality(System.Security.Cryptography.RSASignaturePadding,System.Security.Cryptography.RSASignaturePadding)">
+            <summary>Returns true if the two paddings differ.</summary>
+        </member>
         <member name="T:System.Security.Cryptography.RSAParameters">
             <summary>RSA key parameters (modulus, exponent, and optional private components) matching the .NET Framework struct.</summary>
+        </member>
+        <member name="F:System.Security.Cryptography.RSAParameters.D">
+            <summary>The private exponent (private key).</summary>
+        </member>
+        <member name="F:System.Security.Cryptography.RSAParameters.DP">
+            <summary>d mod (p-1).</summary>
+        </member>
+        <member name="F:System.Security.Cryptography.RSAParameters.DQ">
+            <summary>d mod (q-1).</summary>
+        </member>
+        <member name="F:System.Security.Cryptography.RSAParameters.Exponent">
+            <summary>The public exponent.</summary>
+        </member>
+        <member name="F:System.Security.Cryptography.RSAParameters.InverseQ">
+            <summary>The CRT coefficient (q^-1 mod p).</summary>
+        </member>
+        <member name="F:System.Security.Cryptography.RSAParameters.Modulus">
+            <summary>The modulus.</summary>
+        </member>
+        <member name="F:System.Security.Cryptography.RSAParameters.P">
+            <summary>The first prime factor.</summary>
+        </member>
+        <member name="F:System.Security.Cryptography.RSAParameters.Q">
+            <summary>The second prime factor.</summary>
         </member>
         <member name="T:System.Security.Cryptography.HashAlgorithm">
             <summary>Abstract base for cryptographic hash algorithms (MD5, SHA1, SHA256). Matches the .NET BCL surface.</summary>
         </member>
+        <member name="P:System.Security.Cryptography.HashAlgorithm.HashSize">
+            <summary>Size of the computed hash, in bits.</summary>
+        </member>
+        <member name="P:System.Security.Cryptography.HashAlgorithm.Hash">
+            <summary>The hash value computed by the last operation.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.HashAlgorithm.ComputeHash(System.Byte[])">
+            <summary>Computes the hash of the given data.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.HashAlgorithm.ComputeHash(System.Byte[],System.Int32,System.Int32)">
+            <summary>Computes the hash of a region of the data.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.HashAlgorithm.ComputeHash(System.IO.Stream)">
+            <summary>Computes the hash of a stream.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.HashAlgorithm.Initialize">
+            <summary>Resets the algorithm to its initial state.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.HashAlgorithm.Clear">
+            <summary>Releases the resources used by the algorithm.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.HashAlgorithm.Dispose">
+            <summary>Releases the resources used by the algorithm.</summary>
+        </member>
         <member name="T:System.Security.Cryptography.KeyedHashAlgorithm">
             <summary>Abstract base for keyed hash algorithms (HMAC family).</summary>
+        </member>
+        <member name="P:System.Security.Cryptography.KeyedHashAlgorithm.Key">
+            <summary>The secret key used by the algorithm.</summary>
         </member>
         <member name="T:System.Security.Cryptography.HMAC">
             <summary>Abstract base for HMAC algorithms (HMAC-SHA1, HMAC-SHA256, etc.).</summary>
         </member>
+        <member name="P:System.Security.Cryptography.HMAC.HashName">
+            <summary>Name of the inner hash algorithm.</summary>
+        </member>
         <member name="T:System.Security.Cryptography.AsymmetricAlgorithm">
             <summary>Abstract base for asymmetric (public-key) algorithms.</summary>
+        </member>
+        <member name="P:System.Security.Cryptography.AsymmetricAlgorithm.KeySize">
+            <summary>The key size, in bits.</summary>
+        </member>
+        <member name="P:System.Security.Cryptography.AsymmetricAlgorithm.KeyExchangeAlgorithm">
+            <summary>Name of the key-exchange algorithm, or null.</summary>
+        </member>
+        <member name="P:System.Security.Cryptography.AsymmetricAlgorithm.SignatureAlgorithm">
+            <summary>Name of the signature algorithm, or null.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.AsymmetricAlgorithm.Dispose">
+            <summary>Releases the resources used by the algorithm.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.AsymmetricAlgorithm.Clear">
+            <summary>Releases the resources used by the algorithm.</summary>
         </member>
         <member name="T:System.Security.Cryptography.RSA">
             <summary>Abstract RSA implementation; create concrete instances via <see cref="T:System.Security.Cryptography.RSACryptoServiceProvider"/>.</summary>
         </member>
+        <member name="M:System.Security.Cryptography.RSA.ExportParameters(System.Boolean)">
+            <summary>Exports the RSA key, optionally including the private parameters.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.RSA.ImportParameters(System.Security.Cryptography.RSAParameters)">
+            <summary>Imports the given RSA key parameters.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.RSA.Encrypt(System.Byte[],System.Security.Cryptography.RSAEncryptionPadding)">
+            <summary>Encrypts data with the public key using the given padding.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.RSA.Decrypt(System.Byte[],System.Security.Cryptography.RSAEncryptionPadding)">
+            <summary>Decrypts data with the private key using the given padding.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.RSA.SignData(System.Byte[],System.Security.Cryptography.HashAlgorithmName,System.Security.Cryptography.RSASignaturePadding)">
+            <summary>Signs data with the private key.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.RSA.SignHash(System.Byte[],System.Security.Cryptography.HashAlgorithmName,System.Security.Cryptography.RSASignaturePadding)">
+            <summary>Signs a precomputed hash with the private key.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.RSA.VerifyData(System.Byte[],System.Byte[],System.Security.Cryptography.HashAlgorithmName,System.Security.Cryptography.RSASignaturePadding)">
+            <summary>Verifies a data signature against the public key.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.RSA.VerifyHash(System.Byte[],System.Byte[],System.Security.Cryptography.HashAlgorithmName,System.Security.Cryptography.RSASignaturePadding)">
+            <summary>Verifies a hash signature against the public key.</summary>
+        </member>
         <member name="T:System.Security.Cryptography.SHA1">
             <summary>SHA-1 hash (160-bit). Use <see cref="!:HashAlgorithm.Create()"/> overloads or instantiate directly.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.SHA1.Create">
+            <summary>Creates a new SHA-1 instance.</summary>
+        </member>
+        <member name="P:System.Security.Cryptography.SHA1.Hash">
+            <summary>The hash value computed by the last operation.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.SHA1.ComputeHash(System.Byte[])">
+            <summary>Computes the hash of the given data.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.SHA1.ComputeHash(System.Byte[],System.Int32,System.Int32)">
+            <summary>Computes the hash of a region of the data.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.SHA1.ComputeHash(System.IO.Stream)">
+            <summary>Computes the hash of a stream.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.SHA1.Initialize">
+            <summary>Resets the algorithm to its initial state.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.SHA1.Dispose">
+            <summary>Releases the resources used by the algorithm.</summary>
         </member>
         <member name="T:System.Security.Cryptography.SHA256">
             <summary>SHA-256 hash (256-bit).</summary>
         </member>
+        <member name="M:System.Security.Cryptography.SHA256.Create">
+            <summary>Creates a new SHA-256 instance.</summary>
+        </member>
+        <member name="P:System.Security.Cryptography.SHA256.Hash">
+            <summary>The hash value computed by the last operation.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.SHA256.ComputeHash(System.Byte[])">
+            <summary>Computes the hash of the given data.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.SHA256.ComputeHash(System.Byte[],System.Int32,System.Int32)">
+            <summary>Computes the hash of a region of the data.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.SHA256.ComputeHash(System.IO.Stream)">
+            <summary>Computes the hash of a stream.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.SHA256.Initialize">
+            <summary>Resets the algorithm to its initial state.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.SHA256.Dispose">
+            <summary>Releases the resources used by the algorithm.</summary>
+        </member>
         <member name="T:System.Security.Cryptography.MD5">
             <summary>MD5 hash (128-bit). Cryptographically broken; use for checksums, not for security.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.MD5.Create">
+            <summary>Creates a new MD5 instance.</summary>
+        </member>
+        <member name="P:System.Security.Cryptography.MD5.Hash">
+            <summary>The hash value computed by the last operation.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.MD5.ComputeHash(System.Byte[])">
+            <summary>Computes the hash of the given data.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.MD5.ComputeHash(System.Byte[],System.Int32,System.Int32)">
+            <summary>Computes the hash of a region of the data.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.MD5.ComputeHash(System.IO.Stream)">
+            <summary>Computes the hash of a stream.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.MD5.Initialize">
+            <summary>Resets the algorithm to its initial state.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.MD5.Dispose">
+            <summary>Releases the resources used by the algorithm.</summary>
         </member>
         <member name="T:System.Security.Cryptography.HMACSHA1">
             <summary>HMAC-SHA1 keyed hash (160-bit output).</summary>
         </member>
+        <member name="M:System.Security.Cryptography.HMACSHA1.#ctor">
+            <summary>Creates an HMAC-SHA1 with a random key.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.HMACSHA1.#ctor(System.Byte[])">
+            <summary>Creates an HMAC-SHA1 with the given key.</summary>
+        </member>
+        <member name="P:System.Security.Cryptography.HMACSHA1.Hash">
+            <summary>The hash value computed by the last operation.</summary>
+        </member>
+        <member name="P:System.Security.Cryptography.HMACSHA1.Key">
+            <summary>The secret key used by the algorithm.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.HMACSHA1.ComputeHash(System.Byte[])">
+            <summary>Computes the hash of the given data.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.HMACSHA1.ComputeHash(System.Byte[],System.Int32,System.Int32)">
+            <summary>Computes the hash of a region of the data.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.HMACSHA1.ComputeHash(System.IO.Stream)">
+            <summary>Computes the hash of a stream.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.HMACSHA1.Initialize">
+            <summary>Resets the algorithm to its initial state.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.HMACSHA1.Dispose">
+            <summary>Releases the resources used by the algorithm.</summary>
+        </member>
         <member name="T:System.Security.Cryptography.HMACSHA256">
             <summary>HMAC-SHA256 keyed hash (256-bit output).</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.HMACSHA256.#ctor">
+            <summary>Creates an HMAC-SHA256 with a random key.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.HMACSHA256.#ctor(System.Byte[])">
+            <summary>Creates an HMAC-SHA256 with the given key.</summary>
+        </member>
+        <member name="P:System.Security.Cryptography.HMACSHA256.Hash">
+            <summary>The hash value computed by the last operation.</summary>
+        </member>
+        <member name="P:System.Security.Cryptography.HMACSHA256.Key">
+            <summary>The secret key used by the algorithm.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.HMACSHA256.ComputeHash(System.Byte[])">
+            <summary>Computes the hash of the given data.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.HMACSHA256.ComputeHash(System.Byte[],System.Int32,System.Int32)">
+            <summary>Computes the hash of a region of the data.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.HMACSHA256.ComputeHash(System.IO.Stream)">
+            <summary>Computes the hash of a stream.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.HMACSHA256.Initialize">
+            <summary>Resets the algorithm to its initial state.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.HMACSHA256.Dispose">
+            <summary>Releases the resources used by the algorithm.</summary>
         </member>
         <member name="T:System.Security.Cryptography.RSACryptoServiceProvider">
             <summary>Concrete RSA implementation. Construct with the desired key size or with externally supplied <see cref="T:System.Security.Cryptography.RSAParameters"/>.</summary>
         </member>
+        <member name="M:System.Security.Cryptography.RSACryptoServiceProvider.#ctor">
+            <summary>Creates an RSA provider with the default key size.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.RSACryptoServiceProvider.#ctor(System.Int32)">
+            <summary>Creates an RSA provider with the given key size, in bits.</summary>
+        </member>
+        <member name="P:System.Security.Cryptography.RSACryptoServiceProvider.KeySize">
+            <summary>The key size, in bits. Set it via the constructor.</summary>
+        </member>
+        <member name="P:System.Security.Cryptography.RSACryptoServiceProvider.KeyExchangeAlgorithm">
+            <summary>Name of the key-exchange algorithm.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.RSACryptoServiceProvider.ExportParameters(System.Boolean)">
+            <summary>Exports the RSA key, optionally including the private parameters.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.RSACryptoServiceProvider.ImportParameters(System.Security.Cryptography.RSAParameters)">
+            <summary>Imports the given RSA key parameters.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.RSACryptoServiceProvider.Encrypt(System.Byte[],System.Security.Cryptography.RSAEncryptionPadding)">
+            <summary>Encrypts data with the public key. Only PKCS#1 padding is supported.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.RSACryptoServiceProvider.Decrypt(System.Byte[],System.Security.Cryptography.RSAEncryptionPadding)">
+            <summary>Decrypts data with the private key. Only PKCS#1 padding is supported.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.RSACryptoServiceProvider.SignData(System.Byte[],System.Security.Cryptography.HashAlgorithmName,System.Security.Cryptography.RSASignaturePadding)">
+            <summary>Signs data with the private key. Only PKCS#1 padding is supported.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.RSACryptoServiceProvider.SignHash(System.Byte[],System.Security.Cryptography.HashAlgorithmName,System.Security.Cryptography.RSASignaturePadding)">
+            <summary>Signs a precomputed hash with the private key. Only PKCS#1 padding is supported.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.RSACryptoServiceProvider.VerifyData(System.Byte[],System.Byte[],System.Security.Cryptography.HashAlgorithmName,System.Security.Cryptography.RSASignaturePadding)">
+            <summary>Verifies a data signature against the public key. Only PKCS#1 padding is supported.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.RSACryptoServiceProvider.VerifyHash(System.Byte[],System.Byte[],System.Security.Cryptography.HashAlgorithmName,System.Security.Cryptography.RSASignaturePadding)">
+            <summary>Verifies a hash signature against the public key. Only PKCS#1 padding is supported.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.RSACryptoServiceProvider.Encrypt(System.Byte[],System.Boolean)">
+            <summary>Encrypts data with the public key (legacy overload). OAEP is not supported.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.RSACryptoServiceProvider.Decrypt(System.Byte[],System.Boolean)">
+            <summary>Decrypts data with the private key (legacy overload). OAEP is not supported.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.RSACryptoServiceProvider.SignData(System.Byte[],System.Boolean)">
+            <summary>Signs data with the private key (legacy overload). Set <paramref name="sha256"/> to use SHA-256 instead of SHA-1.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.RSACryptoServiceProvider.VerifyData(System.Byte[],System.Byte[],System.Boolean)">
+            <summary>Verifies a data signature (legacy overload). Set <paramref name="sha256"/> to use SHA-256 instead of SHA-1.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.RSACryptoServiceProvider.Dispose">
+            <summary>Releases the resources used by the provider.</summary>
+        </member>
         <member name="T:System.Security.Cryptography.RandomNumberGenerator">
             <summary>Cryptographically secure RNG. Create via <see cref="M:System.Security.Cryptography.RandomNumberGenerator.Create"/>; do not seed manually.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.RandomNumberGenerator.Create">
+            <summary>Creates a new secure random number generator.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.RandomNumberGenerator.Fill(System.Byte[])">
+            <summary>Fills the buffer with cryptographically strong random bytes.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.RandomNumberGenerator.GetBytes(System.Byte[])">
+            <summary>Fills the buffer with cryptographically strong random bytes.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.RandomNumberGenerator.Dispose">
+            <summary>Releases the resources used by the generator.</summary>
         </member>
     </members>
 </doc>

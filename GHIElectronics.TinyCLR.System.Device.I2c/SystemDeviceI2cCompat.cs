@@ -15,10 +15,14 @@ namespace System.Device.I2c {
 
     /// <summary>Per-device I²C settings in the standard <c>System.Device.I2c</c> shape. TinyCLR maps these onto its native I²C driver via <see cref="I2cDevice.Create(I2cConnectionSettings)"/>.</summary>
     public sealed class I2cConnectionSettings {
+        /// <summary>The bus this device is on (-1 for software I²C).</summary>
         public int BusId { get; }
+        /// <summary>The 7-bit device address.</summary>
         public int DeviceAddress { get; set; }
+        /// <summary>The bus clock speed. Defaults to standard mode.</summary>
         public I2cBusSpeed BusSpeed { get; set; } = I2cBusSpeed.StandardMode;
 
+        /// <summary>Creates settings for a device at the given address on the given bus.</summary>
         public I2cConnectionSettings(int busId, int deviceAddress) {
             this.BusId = busId;
             this.DeviceAddress = deviceAddress;
@@ -30,13 +34,19 @@ namespace System.Device.I2c {
     /// internally TinyCLR routes calls through <see cref="GHIElectronics.TinyCLR.Devices.I2c.I2cController"/>.
     /// </summary>
     public abstract class I2cDevice : IDisposable {
+        /// <summary>The settings this device was created with.</summary>
         public abstract I2cConnectionSettings ConnectionSettings { get; }
 
+        /// <summary>Opens an I²C device with the given settings.</summary>
         public static I2cDevice Create(I2cConnectionSettings settings) => new TinyClrI2cDevice(settings);
 
+        /// <summary>Reads bytes from the device into the buffer.</summary>
         public abstract void Read(byte[] buffer);
+        /// <summary>Writes the buffer to the device.</summary>
         public abstract void Write(byte[] buffer);
+        /// <summary>Writes, then reads back in a single transaction.</summary>
         public abstract void WriteRead(byte[] writeBuffer, byte[] readBuffer);
+        /// <summary>Closes the device and releases the bus.</summary>
         public abstract void Dispose();
     }
 

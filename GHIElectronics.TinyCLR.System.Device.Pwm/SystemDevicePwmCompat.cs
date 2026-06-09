@@ -3,23 +3,33 @@ using System;
 using System.Reflection;
 
 namespace System.Device.Pwm {
+    /// <summary>Polarity of the active part of a PWM pulse.</summary>
     public enum PwmPulsePolarity {
+        /// <summary>The pulse is high during the duty cycle.</summary>
         ActiveHigh = 0,
+        /// <summary>The pulse is low during the duty cycle.</summary>
         ActiveLow = 1,
     }
 
+    /// <summary>
+    /// .NET-style PWM channel. Same surface as <c>System.Device.Pwm.PwmChannel</c>;
+    /// internally routes through TinyCLR's PWM driver.
+    /// </summary>
     public class PwmChannel : IDisposable {
         private readonly GHIElectronics.TinyCLR.Devices.Pwm.PwmController controller;
         private readonly GHIElectronics.TinyCLR.Devices.Pwm.PwmChannel channel;
         private bool disposed;
 
+        /// <summary>The channel number on the controller.</summary>
         public int Channel { get; }
+        /// <summary>The controller (chip) index.</summary>
         public int Controller {
             get {
                 return 0;
             }
         }
 
+        /// <summary>The output frequency in Hz. Setting it changes the whole controller's frequency.</summary>
         public double Frequency {
             get => this.controller.ActualFrequency;
             set {
@@ -31,6 +41,7 @@ namespace System.Device.Pwm {
             }
         }
 
+        /// <summary>The duty cycle from 0.0 to 1.0.</summary>
         public double DutyCycle {
             get => this.channel.GetActiveDutyCyclePercentage();
             set {
@@ -39,6 +50,7 @@ namespace System.Device.Pwm {
             }
         }
 
+        /// <summary>The pulse polarity.</summary>
         public PwmPulsePolarity Polarity {
             get => this.channel.Polarity == GHIElectronics.TinyCLR.Devices.Pwm.PwmPulsePolarity.ActiveHigh
                 ? PwmPulsePolarity.ActiveHigh
@@ -51,9 +63,11 @@ namespace System.Device.Pwm {
             }
         }
 
+        /// <summary>Opens a channel on the given chip at 400 Hz and 50% duty cycle.</summary>
         protected PwmChannel(int chip, int channel) : this(chip, channel, 400, 0.5) {
         }
 
+        /// <summary>Opens a channel on the given chip with the given frequency and duty cycle.</summary>
         protected PwmChannel(int chip, int channel, int frequency, double dutyCyclePercentage) {
             if (chip < 0)
                 throw new ArgumentOutOfRangeException(nameof(chip));
@@ -69,21 +83,26 @@ namespace System.Device.Pwm {
             this.channel.SetActiveDutyCyclePercentage(dutyCyclePercentage);
         }
 
+        /// <summary>Opens a channel on the given chip at 400 Hz and 50% duty cycle.</summary>
         public static PwmChannel Create(int chip, int channel) => new PwmChannel(chip, channel);
 
+        /// <summary>Opens a channel on the given chip with the given frequency and duty cycle.</summary>
         public static PwmChannel Create(int chip, int channel, int frequency = 400, double dutyCyclePercentage = 0.5) =>
             new PwmChannel(chip, channel, frequency, dutyCyclePercentage);
 
+        /// <summary>Starts the PWM output.</summary>
         public void Start() {
             this.ThrowIfDisposed();
             this.channel.Start();
         }
 
+        /// <summary>Stops the PWM output.</summary>
         public void Stop() {
             this.ThrowIfDisposed();
             this.channel.Stop();
         }
 
+        /// <summary>Stops the output and releases the channel.</summary>
         public void Dispose() {
             if (this.disposed)
                 return;

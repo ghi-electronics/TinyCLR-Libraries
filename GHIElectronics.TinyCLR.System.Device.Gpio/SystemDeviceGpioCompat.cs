@@ -48,9 +48,12 @@ namespace System.Device.Gpio {
 
     /// <summary>Arguments for the .NET IoT pin-change callback.</summary>
     public sealed class PinValueChangedEventArgs : EventArgs {
+        /// <summary>The edge that occurred.</summary>
         public PinEventTypes ChangeType { get; }
+        /// <summary>The pin that changed.</summary>
         public int PinNumber { get; }
 
+        /// <summary>Creates the event arguments.</summary>
         public PinValueChangedEventArgs(PinEventTypes changeType, int pinNumber) {
             this.ChangeType = changeType;
             this.PinNumber = pinNumber;
@@ -62,18 +65,29 @@ namespace System.Device.Gpio {
 
     /// <summary>Abstract GPIO driver per .NET IoT. Implemented by <see cref="TinyClrGpioDriver"/> for TinyCLR hardware.</summary>
     public abstract class GpioDriver : IDisposable {
+        /// <summary>Number of pins the driver exposes.</summary>
         public abstract int PinCount { get; }
 
+        /// <summary>Opens the pin for use.</summary>
         protected internal abstract void OpenPin(int pinNumber);
+        /// <summary>Closes the pin.</summary>
         protected internal abstract void ClosePin(int pinNumber);
+        /// <summary>Returns true if the pin supports the given mode.</summary>
         protected internal abstract bool IsPinModeSupported(int pinNumber, PinMode mode);
+        /// <summary>Sets the pin's drive mode.</summary>
         protected internal abstract void SetPinMode(int pinNumber, PinMode mode);
+        /// <summary>Gets the pin's drive mode.</summary>
         protected internal abstract PinMode GetPinMode(int pinNumber);
+        /// <summary>Reads the pin level.</summary>
         protected internal abstract PinValue Read(int pinNumber);
+        /// <summary>Writes the pin level.</summary>
         protected internal abstract void Write(int pinNumber, PinValue value);
+        /// <summary>Registers a callback for edge changes on the pin.</summary>
         protected internal abstract void AddCallbackForPinValueChangedEvent(int pinNumber, PinEventTypes eventTypes, PinChangeEventHandler callback);
+        /// <summary>Removes a previously registered callback.</summary>
         protected internal abstract void RemoveCallbackForPinValueChangedEvent(int pinNumber, PinChangeEventHandler callback);
 
+        /// <summary>Releases the driver and closes all pins.</summary>
         public abstract void Dispose();
     }
 
@@ -88,12 +102,15 @@ namespace System.Device.Gpio {
             public GHIElectronics.TinyCLR.Devices.Gpio.GpioPinValueChangedEventHandler Handler;
         }
 
+        /// <summary>Creates a driver over the default GPIO controller.</summary>
         public TinyClrGpioDriver() : this(GHIElectronics.TinyCLR.Devices.Gpio.GpioController.GetDefault(), 0) {
         }
 
+        /// <summary>Creates a driver over the default controller with a pin-number offset.</summary>
         public TinyClrGpioDriver(int pinBase) : this(GHIElectronics.TinyCLR.Devices.Gpio.GpioController.GetDefault(), pinBase) {
         }
 
+        /// <summary>Creates a driver over the given controller with an optional pin-number offset.</summary>
         public TinyClrGpioDriver(GHIElectronics.TinyCLR.Devices.Gpio.GpioController tinyClrController, int pinBase = 0) {
             this.controller = tinyClrController ?? throw new ArgumentNullException(nameof(tinyClrController));
             this.pinToTinyClrPin = new Hashtable();
@@ -101,8 +118,10 @@ namespace System.Device.Gpio {
             this.pinBase = pinBase;
         }
 
+        /// <summary>Number of pins on the controller.</summary>
         public override int PinCount => this.controller.Provider.PinCount;
 
+        /// <summary>Closes all open pins and releases the controller.</summary>
         public override void Dispose() {
             lock (this.pinToTinyClrPin) {
                 foreach (DictionaryEntry entry in this.pinToTinyClrPin)
@@ -115,6 +134,7 @@ namespace System.Device.Gpio {
             this.controller.Dispose();
         }
 
+        /// <summary>Opens the pin on the underlying controller.</summary>
         protected internal override void OpenPin(int pinNumber) {
             var mappedPin = this.MapPinNumber(pinNumber);
 
@@ -126,6 +146,7 @@ namespace System.Device.Gpio {
             }
         }
 
+        /// <summary>Closes the pin on the underlying controller.</summary>
         protected internal override void ClosePin(int pinNumber) {
             lock (this.pinToTinyClrPin) {
                 if (!this.pinToTinyClrPin.Contains(pinNumber))
@@ -137,20 +158,26 @@ namespace System.Device.Gpio {
             }
         }
 
+        /// <summary>Returns true if the pin supports the given mode.</summary>
         protected internal override bool IsPinModeSupported(int pinNumber, PinMode mode) =>
             this.GetTinyClrPin(pinNumber).IsDriveModeSupported(ToTinyClrDriveMode(mode));
 
+        /// <summary>Sets the pin's drive mode.</summary>
         protected internal override void SetPinMode(int pinNumber, PinMode mode) =>
             this.GetTinyClrPin(pinNumber).SetDriveMode(ToTinyClrDriveMode(mode));
 
+        /// <summary>Gets the pin's drive mode.</summary>
         protected internal override PinMode GetPinMode(int pinNumber) => ToPinMode(this.GetTinyClrPin(pinNumber).GetDriveMode());
 
+        /// <summary>Reads the pin level.</summary>
         protected internal override PinValue Read(int pinNumber) =>
             this.GetTinyClrPin(pinNumber).Read() == GHIElectronics.TinyCLR.Devices.Gpio.GpioPinValue.High ? PinValue.High : PinValue.Low;
 
+        /// <summary>Writes the pin level.</summary>
         protected internal override void Write(int pinNumber, PinValue value) =>
             this.GetTinyClrPin(pinNumber).Write(value == PinValue.High ? GHIElectronics.TinyCLR.Devices.Gpio.GpioPinValue.High : GHIElectronics.TinyCLR.Devices.Gpio.GpioPinValue.Low);
 
+        /// <summary>Registers a callback for edge changes on the pin.</summary>
         protected internal override void AddCallbackForPinValueChangedEvent(int pinNumber, PinEventTypes eventTypes, PinChangeEventHandler callback) {
             if (callback == null)
                 throw new ArgumentNullException(nameof(callback));
@@ -171,6 +198,7 @@ namespace System.Device.Gpio {
             }
         }
 
+        /// <summary>Removes a previously registered callback.</summary>
         protected internal override void RemoveCallbackForPinValueChangedEvent(int pinNumber, PinChangeEventHandler callback) {
             if (callback == null)
                 return;
@@ -188,6 +216,7 @@ namespace System.Device.Gpio {
             }
         }
 
+        /// <summary>Maps a controller pin number to the underlying hardware pin, applying the pin-number offset.</summary>
         protected virtual int MapPinNumber(int pinNumber) => checked(this.pinBase + pinNumber);
 
         private GHIElectronics.TinyCLR.Devices.Gpio.GpioPin GetTinyClrPin(int pinNumber) {
@@ -254,23 +283,30 @@ namespace System.Device.Gpio {
     public sealed class GpioController : IDisposable {
         private readonly Hashtable openedPins;
 
+        /// <summary>The underlying driver.</summary>
         public GpioDriver Driver { get; }
+        /// <summary>How pin numbers are interpreted.</summary>
         public PinNumberingScheme NumberingScheme { get; }
 
+        /// <summary>Number of pins on the controller.</summary>
         public int PinCount => this.Driver.PinCount;
 
+        /// <summary>Creates a controller over the default TinyCLR GPIO driver.</summary>
         public GpioController() : this(PinNumberingScheme.Logical, new TinyClrGpioDriver()) {
         }
 
+        /// <summary>Creates a controller with the given numbering scheme.</summary>
         public GpioController(PinNumberingScheme numberingScheme) : this(numberingScheme, new TinyClrGpioDriver()) {
         }
 
+        /// <summary>Creates a controller with the given numbering scheme and driver.</summary>
         public GpioController(PinNumberingScheme numberingScheme, GpioDriver driver) {
             this.NumberingScheme = numberingScheme;
             this.Driver = driver ?? throw new ArgumentNullException(nameof(driver));
             this.openedPins = new Hashtable();
         }
 
+        /// <summary>Closes all open pins and releases the driver.</summary>
         public void Dispose() {
             lock (this.openedPins) {
                 foreach (DictionaryEntry entry in this.openedPins)
@@ -282,12 +318,15 @@ namespace System.Device.Gpio {
             this.Driver.Dispose();
         }
 
+        /// <summary>Opens the pin as an input.</summary>
         public void OpenPin(int pinNumber) => this.OpenPin(pinNumber, PinMode.Input);
 
+        /// <summary>Opens the pin in the given mode.</summary>
         public void OpenPin(int pinNumber, PinMode mode) {
             this.OpenPin(pinNumber, mode, PinValue.Low);
         }
 
+        /// <summary>Opens the pin in the given mode and, for outputs, sets its initial level.</summary>
         public void OpenPin(int pinNumber, PinMode mode, PinValue initialValue) {
             lock (this.openedPins) {
                 if (this.openedPins.Contains(pinNumber))
@@ -303,11 +342,13 @@ namespace System.Device.Gpio {
                 this.Write(pinNumber, initialValue);
         }
 
+        /// <summary>Returns true if the pin is open.</summary>
         public bool IsPinOpen(int pinNumber) {
             lock (this.openedPins)
                 return this.openedPins.Contains(pinNumber);
         }
 
+        /// <summary>Closes the pin.</summary>
         public void ClosePin(int pinNumber) {
             lock (this.openedPins) {
                 if (!this.openedPins.Contains(pinNumber))
@@ -318,16 +359,23 @@ namespace System.Device.Gpio {
             }
         }
 
+        /// <summary>Gets the pin's drive mode.</summary>
         public PinMode GetPinMode(int pinNumber) => this.Driver.GetPinMode(pinNumber);
+        /// <summary>Sets the pin's drive mode.</summary>
         public void SetPinMode(int pinNumber, PinMode mode) => this.Driver.SetPinMode(pinNumber, mode);
+        /// <summary>Returns true if the pin supports the given mode.</summary>
         public bool IsPinModeSupported(int pinNumber, PinMode mode) => this.Driver.IsPinModeSupported(pinNumber, mode);
 
+        /// <summary>Reads the pin level.</summary>
         public PinValue Read(int pinNumber) => this.Driver.Read(pinNumber);
+        /// <summary>Writes the pin level.</summary>
         public void Write(int pinNumber, PinValue value) => this.Driver.Write(pinNumber, value);
 
+        /// <summary>Registers a callback for edge changes on the pin.</summary>
         public void RegisterCallbackForPinValueChangedEvent(int pinNumber, PinEventTypes eventTypes, PinChangeEventHandler callback) =>
             this.Driver.AddCallbackForPinValueChangedEvent(pinNumber, eventTypes, callback);
 
+        /// <summary>Removes a previously registered callback.</summary>
         public void UnregisterCallbackForPinValueChangedEvent(int pinNumber, PinChangeEventHandler callback) =>
             this.Driver.RemoveCallbackForPinValueChangedEvent(pinNumber, callback);
 
@@ -407,8 +455,10 @@ namespace System.Device.Gpio {
 namespace System.Device.Gpio.Drivers {
     /// <summary>Alias of <see cref="TinyClrGpioDriver"/> for source-compatibility with Linux .NET IoT samples that reference <c>LibGpiodDriver</c>.</summary>
     public sealed class LibGpiodDriver : System.Device.Gpio.TinyClrGpioDriver {
+        /// <summary>The GPIO chip number this driver maps onto.</summary>
         public int ChipNumber { get; }
 
+        /// <summary>Creates a driver for the given GPIO chip number.</summary>
         public LibGpiodDriver(int chipNumber) : base(CalculatePinBase(chipNumber)) {
             this.ChipNumber = chipNumber;
         }

@@ -25,13 +25,20 @@ namespace System.Device.Spi {
 
     /// <summary>Per-device SPI settings in the standard <c>System.Device.Spi</c> shape. TinyCLR maps these onto its native SPI driver via <see cref="SpiDevice.Create(SpiConnectionSettings)"/>.</summary>
     public sealed class SpiConnectionSettings {
+        /// <summary>The bus this device is on (-1 for software SPI).</summary>
         public int BusId { get; }
+        /// <summary>The chip-select line for this device.</summary>
         public int ChipSelectLine { get; set; }
+        /// <summary>The clock speed in Hz. Defaults to 500 kHz.</summary>
         public int ClockFrequency { get; set; } = 500000;
+        /// <summary>Bits per frame. Defaults to 8.</summary>
         public int DataBitLength { get; set; } = 8;
+        /// <summary>Bit order. Defaults to MSB first.</summary>
         public DataFlow DataFlow { get; set; } = DataFlow.MsbFirst;
+        /// <summary>Clock polarity and phase. Defaults to mode 0.</summary>
         public SpiMode Mode { get; set; } = SpiMode.Mode0;
 
+        /// <summary>Creates settings for a device on the given bus and chip-select line.</summary>
         public SpiConnectionSettings(int busId, int chipSelectLine) {
             this.BusId = busId;
             this.ChipSelectLine = chipSelectLine;
@@ -43,13 +50,19 @@ namespace System.Device.Spi {
     /// internally TinyCLR routes calls through <see cref="GHIElectronics.TinyCLR.Devices.Spi.SpiController"/>.
     /// </summary>
     public abstract class SpiDevice : IDisposable {
+        /// <summary>The settings this device was created with.</summary>
         public abstract SpiConnectionSettings ConnectionSettings { get; }
 
+        /// <summary>Opens an SPI device with the given settings.</summary>
         public static SpiDevice Create(SpiConnectionSettings settings) => new TinyClrSpiDevice(settings);
 
+        /// <summary>Reads bytes from the device into the buffer.</summary>
         public abstract void Read(byte[] buffer);
+        /// <summary>Writes the buffer to the device.</summary>
         public abstract void Write(byte[] buffer);
+        /// <summary>Writes and reads at the same time (full duplex). Both buffers must be the same length.</summary>
         public abstract void TransferFullDuplex(byte[] writeBuffer, byte[] readBuffer);
+        /// <summary>Closes the device and releases the bus.</summary>
         public abstract void Dispose();
     }
 

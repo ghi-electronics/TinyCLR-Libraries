@@ -58,14 +58,101 @@
         <member name="T:System.Device.Gpio.PinValueChangedEventArgs">
             <summary>Arguments for the .NET IoT pin-change callback.</summary>
         </member>
+        <member name="P:System.Device.Gpio.PinValueChangedEventArgs.ChangeType">
+            <summary>The edge that occurred.</summary>
+        </member>
+        <member name="P:System.Device.Gpio.PinValueChangedEventArgs.PinNumber">
+            <summary>The pin that changed.</summary>
+        </member>
+        <member name="M:System.Device.Gpio.PinValueChangedEventArgs.#ctor(System.Device.Gpio.PinEventTypes,System.Int32)">
+            <summary>Creates the event arguments.</summary>
+        </member>
         <member name="T:System.Device.Gpio.PinChangeEventHandler">
             <summary>Callback signature for .NET IoT pin-change notifications.</summary>
         </member>
         <member name="T:System.Device.Gpio.GpioDriver">
             <summary>Abstract GPIO driver per .NET IoT. Implemented by <see cref="T:System.Device.Gpio.TinyClrGpioDriver"/> for TinyCLR hardware.</summary>
         </member>
+        <member name="P:System.Device.Gpio.GpioDriver.PinCount">
+            <summary>Number of pins the driver exposes.</summary>
+        </member>
+        <member name="M:System.Device.Gpio.GpioDriver.OpenPin(System.Int32)">
+            <summary>Opens the pin for use.</summary>
+        </member>
+        <member name="M:System.Device.Gpio.GpioDriver.ClosePin(System.Int32)">
+            <summary>Closes the pin.</summary>
+        </member>
+        <member name="M:System.Device.Gpio.GpioDriver.IsPinModeSupported(System.Int32,System.Device.Gpio.PinMode)">
+            <summary>Returns true if the pin supports the given mode.</summary>
+        </member>
+        <member name="M:System.Device.Gpio.GpioDriver.SetPinMode(System.Int32,System.Device.Gpio.PinMode)">
+            <summary>Sets the pin's drive mode.</summary>
+        </member>
+        <member name="M:System.Device.Gpio.GpioDriver.GetPinMode(System.Int32)">
+            <summary>Gets the pin's drive mode.</summary>
+        </member>
+        <member name="M:System.Device.Gpio.GpioDriver.Read(System.Int32)">
+            <summary>Reads the pin level.</summary>
+        </member>
+        <member name="M:System.Device.Gpio.GpioDriver.Write(System.Int32,System.Device.Gpio.PinValue)">
+            <summary>Writes the pin level.</summary>
+        </member>
+        <member name="M:System.Device.Gpio.GpioDriver.AddCallbackForPinValueChangedEvent(System.Int32,System.Device.Gpio.PinEventTypes,System.Device.Gpio.PinChangeEventHandler)">
+            <summary>Registers a callback for edge changes on the pin.</summary>
+        </member>
+        <member name="M:System.Device.Gpio.GpioDriver.RemoveCallbackForPinValueChangedEvent(System.Int32,System.Device.Gpio.PinChangeEventHandler)">
+            <summary>Removes a previously registered callback.</summary>
+        </member>
+        <member name="M:System.Device.Gpio.GpioDriver.Dispose">
+            <summary>Releases the driver and closes all pins.</summary>
+        </member>
         <member name="T:System.Device.Gpio.TinyClrGpioDriver">
             <summary>TinyCLR-backed implementation of <see cref="T:System.Device.Gpio.GpioDriver"/>. Routes <see cref="T:System.Device.Gpio.GpioController"/> calls to <see cref="T:GHIElectronics.TinyCLR.Devices.Gpio.GpioController"/>.</summary>
+        </member>
+        <member name="M:System.Device.Gpio.TinyClrGpioDriver.#ctor">
+            <summary>Creates a driver over the default GPIO controller.</summary>
+        </member>
+        <member name="M:System.Device.Gpio.TinyClrGpioDriver.#ctor(System.Int32)">
+            <summary>Creates a driver over the default controller with a pin-number offset.</summary>
+        </member>
+        <member name="M:System.Device.Gpio.TinyClrGpioDriver.#ctor(GHIElectronics.TinyCLR.Devices.Gpio.GpioController,System.Int32)">
+            <summary>Creates a driver over the given controller with an optional pin-number offset.</summary>
+        </member>
+        <member name="P:System.Device.Gpio.TinyClrGpioDriver.PinCount">
+            <summary>Number of pins on the controller.</summary>
+        </member>
+        <member name="M:System.Device.Gpio.TinyClrGpioDriver.Dispose">
+            <summary>Closes all open pins and releases the controller.</summary>
+        </member>
+        <member name="M:System.Device.Gpio.TinyClrGpioDriver.OpenPin(System.Int32)">
+            <summary>Opens the pin on the underlying controller.</summary>
+        </member>
+        <member name="M:System.Device.Gpio.TinyClrGpioDriver.ClosePin(System.Int32)">
+            <summary>Closes the pin on the underlying controller.</summary>
+        </member>
+        <member name="M:System.Device.Gpio.TinyClrGpioDriver.IsPinModeSupported(System.Int32,System.Device.Gpio.PinMode)">
+            <summary>Returns true if the pin supports the given mode.</summary>
+        </member>
+        <member name="M:System.Device.Gpio.TinyClrGpioDriver.SetPinMode(System.Int32,System.Device.Gpio.PinMode)">
+            <summary>Sets the pin's drive mode.</summary>
+        </member>
+        <member name="M:System.Device.Gpio.TinyClrGpioDriver.GetPinMode(System.Int32)">
+            <summary>Gets the pin's drive mode.</summary>
+        </member>
+        <member name="M:System.Device.Gpio.TinyClrGpioDriver.Read(System.Int32)">
+            <summary>Reads the pin level.</summary>
+        </member>
+        <member name="M:System.Device.Gpio.TinyClrGpioDriver.Write(System.Int32,System.Device.Gpio.PinValue)">
+            <summary>Writes the pin level.</summary>
+        </member>
+        <member name="M:System.Device.Gpio.TinyClrGpioDriver.AddCallbackForPinValueChangedEvent(System.Int32,System.Device.Gpio.PinEventTypes,System.Device.Gpio.PinChangeEventHandler)">
+            <summary>Registers a callback for edge changes on the pin.</summary>
+        </member>
+        <member name="M:System.Device.Gpio.TinyClrGpioDriver.RemoveCallbackForPinValueChangedEvent(System.Int32,System.Device.Gpio.PinChangeEventHandler)">
+            <summary>Removes a previously registered callback.</summary>
+        </member>
+        <member name="M:System.Device.Gpio.TinyClrGpioDriver.MapPinNumber(System.Int32)">
+            <summary>Maps a controller pin number to the underlying hardware pin, applying the pin-number offset.</summary>
         </member>
         <member name="T:System.Device.Gpio.WaitForEventResult">
             <summary>Result of a <see cref="M:System.Device.Gpio.GpioController.WaitForEvent(System.Int32,System.Device.Gpio.PinEventTypes,System.TimeSpan)"/> call. Same shape as .NET IoT.</summary>
@@ -81,6 +168,63 @@
             .NET IoT-style GPIO controller. Same surface as <c>System.Device.Gpio.GpioController</c>;
             internally routes through TinyCLR's GPIO HAL via <see cref="T:System.Device.Gpio.TinyClrGpioDriver"/>.
             </summary>
+        </member>
+        <member name="P:System.Device.Gpio.GpioController.Driver">
+            <summary>The underlying driver.</summary>
+        </member>
+        <member name="P:System.Device.Gpio.GpioController.NumberingScheme">
+            <summary>How pin numbers are interpreted.</summary>
+        </member>
+        <member name="P:System.Device.Gpio.GpioController.PinCount">
+            <summary>Number of pins on the controller.</summary>
+        </member>
+        <member name="M:System.Device.Gpio.GpioController.#ctor">
+            <summary>Creates a controller over the default TinyCLR GPIO driver.</summary>
+        </member>
+        <member name="M:System.Device.Gpio.GpioController.#ctor(System.Device.Gpio.PinNumberingScheme)">
+            <summary>Creates a controller with the given numbering scheme.</summary>
+        </member>
+        <member name="M:System.Device.Gpio.GpioController.#ctor(System.Device.Gpio.PinNumberingScheme,System.Device.Gpio.GpioDriver)">
+            <summary>Creates a controller with the given numbering scheme and driver.</summary>
+        </member>
+        <member name="M:System.Device.Gpio.GpioController.Dispose">
+            <summary>Closes all open pins and releases the driver.</summary>
+        </member>
+        <member name="M:System.Device.Gpio.GpioController.OpenPin(System.Int32)">
+            <summary>Opens the pin as an input.</summary>
+        </member>
+        <member name="M:System.Device.Gpio.GpioController.OpenPin(System.Int32,System.Device.Gpio.PinMode)">
+            <summary>Opens the pin in the given mode.</summary>
+        </member>
+        <member name="M:System.Device.Gpio.GpioController.OpenPin(System.Int32,System.Device.Gpio.PinMode,System.Device.Gpio.PinValue)">
+            <summary>Opens the pin in the given mode and, for outputs, sets its initial level.</summary>
+        </member>
+        <member name="M:System.Device.Gpio.GpioController.IsPinOpen(System.Int32)">
+            <summary>Returns true if the pin is open.</summary>
+        </member>
+        <member name="M:System.Device.Gpio.GpioController.ClosePin(System.Int32)">
+            <summary>Closes the pin.</summary>
+        </member>
+        <member name="M:System.Device.Gpio.GpioController.GetPinMode(System.Int32)">
+            <summary>Gets the pin's drive mode.</summary>
+        </member>
+        <member name="M:System.Device.Gpio.GpioController.SetPinMode(System.Int32,System.Device.Gpio.PinMode)">
+            <summary>Sets the pin's drive mode.</summary>
+        </member>
+        <member name="M:System.Device.Gpio.GpioController.IsPinModeSupported(System.Int32,System.Device.Gpio.PinMode)">
+            <summary>Returns true if the pin supports the given mode.</summary>
+        </member>
+        <member name="M:System.Device.Gpio.GpioController.Read(System.Int32)">
+            <summary>Reads the pin level.</summary>
+        </member>
+        <member name="M:System.Device.Gpio.GpioController.Write(System.Int32,System.Device.Gpio.PinValue)">
+            <summary>Writes the pin level.</summary>
+        </member>
+        <member name="M:System.Device.Gpio.GpioController.RegisterCallbackForPinValueChangedEvent(System.Int32,System.Device.Gpio.PinEventTypes,System.Device.Gpio.PinChangeEventHandler)">
+            <summary>Registers a callback for edge changes on the pin.</summary>
+        </member>
+        <member name="M:System.Device.Gpio.GpioController.UnregisterCallbackForPinValueChangedEvent(System.Int32,System.Device.Gpio.PinChangeEventHandler)">
+            <summary>Removes a previously registered callback.</summary>
         </member>
         <member name="M:System.Device.Gpio.GpioController.WaitForEvent(System.Int32,System.Device.Gpio.PinEventTypes,System.TimeSpan)">
             <summary>
@@ -98,6 +242,12 @@
         </member>
         <member name="T:System.Device.Gpio.Drivers.LibGpiodDriver">
             <summary>Alias of <see cref="T:System.Device.Gpio.TinyClrGpioDriver"/> for source-compatibility with Linux .NET IoT samples that reference <c>LibGpiodDriver</c>.</summary>
+        </member>
+        <member name="P:System.Device.Gpio.Drivers.LibGpiodDriver.ChipNumber">
+            <summary>The GPIO chip number this driver maps onto.</summary>
+        </member>
+        <member name="M:System.Device.Gpio.Drivers.LibGpiodDriver.#ctor(System.Int32)">
+            <summary>Creates a driver for the given GPIO chip number.</summary>
         </member>
     </members>
 </doc>
