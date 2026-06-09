@@ -2,7 +2,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("System.Security.Cryptography")]
-[assembly: AssemblyDescription("System.Security.Cryptography compatibility library for TinyCLR OS.")]
+[assembly: AssemblyDescription("System.Security.Cryptography compatibility library for TinyCLR.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("GHI Electronics, LLC")]
 [assembly: AssemblyProduct("System.Security.Cryptography")]

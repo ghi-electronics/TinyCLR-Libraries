@@ -10,7 +10,7 @@
     <iconUrl>http://files.ghielectronics.com/downloads/Logos/GHIElectronicsTinyCLRNuGet.png</iconUrl>
     <licenseUrl>http://files.ghielectronics.com/downloads/TinyCLR/License.txt</licenseUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
-    <description>Load and run native C/C++ procedures (RLP) at runtime for TinyCLR OS.</description>
+    <description>Load and run native C/C++ procedures (RLP) at runtime for TinyCLR.</description>
     <copyright>Copyright GHI Electronics, LLC 2026</copyright>
     <tags>TinyCLR TinyCLROS RLP Native</tags>
     <dependencies>

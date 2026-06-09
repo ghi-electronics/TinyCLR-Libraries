@@ -2,7 +2,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("System.Device.Pwm")]
-[assembly: AssemblyDescription("System.Device.Pwm compatibility library for TinyCLR OS.")]
+[assembly: AssemblyDescription("System.Device.Pwm compatibility library for TinyCLR.")]
 [assembly: AssemblyCompany("GHI Electronics, LLC")]
 [assembly: AssemblyProduct("TinyCLR OS")]
 [assembly: AssemblyCopyright("Copyright © GHI Electronics, LLC 2026")]

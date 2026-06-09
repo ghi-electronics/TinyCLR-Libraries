@@ -2,7 +2,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("System.IO.Ports")]
-[assembly: AssemblyDescription("System.IO.Ports (SerialPort) compatibility library for TinyCLR OS.")]
+[assembly: AssemblyDescription("System.IO.Ports (SerialPort) compatibility library for TinyCLR.")]
 [assembly: AssemblyCompany("GHI Electronics, LLC")]
 [assembly: AssemblyProduct("TinyCLR OS")]
 [assembly: AssemblyCopyright("Copyright © GHI Electronics, LLC 2026")]

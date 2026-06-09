@@ -2,7 +2,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("System.Device.I2c")]
-[assembly: AssemblyDescription("System.Device.I2c compatibility library for TinyCLR OS.")]
+[assembly: AssemblyDescription("System.Device.I2c compatibility library for TinyCLR.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("GHI Electronics, LLC")]
 [assembly: AssemblyProduct("System.Device.I2c")]

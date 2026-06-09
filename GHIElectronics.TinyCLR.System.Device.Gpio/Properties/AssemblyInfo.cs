@@ -2,7 +2,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("System.Device.Gpio")]
-[assembly: AssemblyDescription("System.Device.Gpio compatibility library for TinyCLR OS.")]
+[assembly: AssemblyDescription("System.Device.Gpio compatibility library for TinyCLR.")]
 [assembly: AssemblyCompany("GHI Electronics, LLC")]
 [assembly: AssemblyProduct("TinyCLR OS")]
 [assembly: AssemblyCopyright("Copyright © GHI Electronics, LLC 2026")]
