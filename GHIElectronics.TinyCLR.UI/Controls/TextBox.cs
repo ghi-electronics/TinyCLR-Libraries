@@ -5,12 +5,16 @@ using GHIElectronics.TinyCLR.UI.Input;
 using GHIElectronics.TinyCLR.UI.Media;
 
 namespace GHIElectronics.TinyCLR.UI.Controls {
+    /// <summary>Represents the method that handles the text-changed event.</summary>
     public delegate void TextChangedEventHandler(object sender, TextChangedEventArgs e);
 
+    /// <summary>Provides data for the text-changed event.</summary>
     public class TextChangedEventArgs : RoutedEventArgs {
+        /// <summary>Initializes a new instance of the <see cref="TextChangedEventArgs"/> class.</summary>
         public TextChangedEventArgs(RoutedEvent routedEvent, object source) : base(routedEvent, source) { }
     }
 
+    /// <summary>An editable single-line text field that opens the on-screen keyboard when activated.</summary>
     public class TextBox : Control {
         // Cached once per AppDomain so every Text-change doesn't allocate a
         // fresh RoutedEvent object.
@@ -27,17 +31,22 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         private bool _bindTwoWay;
         private bool _suppressBindPush;
 
+        /// <summary>Initializes a new instance of the <see cref="TextBox"/> class.</summary>
         public TextBox() {
             this.Background = Theme.TextBoxFillBrush;
             this.bordercolor = Theme.Border;
         }
 
+        /// <summary>Raised when the text changes.</summary>
         public event TextChangedEventHandler TextChanged;
 
+        /// <summary>The horizontal alignment of the displayed text.</summary>
         public TextAlignment TextAlign { get; set; } = TextAlignment.Left;
 
+        /// <summary>When set, the character displayed in place of each typed character to mask input.</summary>
         public char PasswordChar { get; set; } = char.MinValue;
 
+        /// <summary>The current text of the field.</summary>
         public string Text {
             get => this.text;
             set {
@@ -80,6 +89,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
+        /// <summary>Removes any binding previously set with <see cref="SetTextBinding"/>.</summary>
         public void ClearTextBinding() {
             if (this._bindSource is INotifyBindablePropertyChanged n) {
                 n.BindablePropertyChanged -= this.OnBindablePropertyChanged;
@@ -140,6 +150,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             handler(this, new BindingErrorEventArgs(direction, this._bindPropertyName, ex));
         }
 
+        /// <summary>The color of the border drawn around the field.</summary>
         public Color BorderColor {
             get => this.bordercolor;
             set {
@@ -149,6 +160,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
+        /// <summary>The thickness in pixels of the border drawn around the field.</summary>
         public ushort BorderThickness {
             get => this.borderthickness;
             set {
@@ -158,6 +170,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
+        /// <summary>The horizontal padding in pixels between the border and the text.</summary>
         public ushort PaddingX {
             get => this.paddingx;
             set {
@@ -166,6 +179,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
+        /// <summary>The vertical padding in pixels between the border and the text.</summary>
         public ushort PaddingY {
             get => this.paddingy;
             set {
@@ -176,6 +190,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
         internal bool ForOnScreenKeyboard { get; set; }
 
+        /// <summary>Opens the on-screen keyboard when the field is tapped.</summary>
         protected override void OnTouchUp(TouchEventArgs e) {
             if (!this.IsEnabled) {
                 return;
@@ -200,6 +215,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
+        /// <summary>Measures the size needed for the text plus padding and border.</summary>
         protected override void MeasureOverride(int availableWidth, int availableHeight, out int desiredWidth, out int desiredHeight) {
             this._font.ComputeExtent(this.text, out desiredWidth, out desiredHeight);
 
@@ -207,11 +223,13 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             desiredHeight = this._font.Height + (this.PaddingY * 2) + (this.BorderThickness * 2);
         }
 
+        /// <summary>Records the arranged size of the field.</summary>
         protected override void ArrangeOverride(int arrangeWidth, int arrangeHeight) {
             this.width = arrangeWidth;
             this.height = arrangeHeight;
         }
 
+        /// <summary>Draws the field's border and text (masked when <see cref="PasswordChar"/> is set).</summary>
         public override void OnRender(DrawingContext dc) {
             if (this.Foreground is not SolidColorBrush b)
                 throw new NotSupportedException("TextBox.Foreground must be a SolidColorBrush; gradient or image brushes are not supported.");

@@ -31,6 +31,7 @@ namespace GHIElectronics.TinyCLR.Networking
         }
 
         // Properties
+        /// <summary>The FTP method of this request.</summary>
         public string Method
         {
             get { return m_Method; }

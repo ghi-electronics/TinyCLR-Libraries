@@ -13,6 +13,7 @@ namespace GHIElectronics.TinyCLR.UI.Media {
     public class DrawingContext : DispatcherObject, IDisposable {
         internal DrawingContext(Bitmap bmp) => this._bitmap = bmp;
 
+        /// <summary>Offsets the origin of subsequent drawing operations.</summary>
         public void Translate(int dx, int dy) {
             VerifyAccess();
 
@@ -20,6 +21,7 @@ namespace GHIElectronics.TinyCLR.UI.Media {
             this._y += dy;
         }
 
+        /// <summary>Gets the current drawing origin offset.</summary>
         public void GetTranslation(out int x, out int y) {
             VerifyAccess();
 
@@ -27,6 +29,7 @@ namespace GHIElectronics.TinyCLR.UI.Media {
             y = this._y;
         }
 
+        /// <summary>Clears the drawing surface.</summary>
         public void Clear() {
             VerifyAccess();
 
@@ -35,6 +38,7 @@ namespace GHIElectronics.TinyCLR.UI.Media {
 
         internal void Close() => this._bitmap = null;
 
+        /// <summary>Draws a polygon defined by the given points.</summary>
         public void DrawPolygon(Brush brush, Pen pen, int[] pts) {
             VerifyAccess();
 
@@ -51,12 +55,14 @@ namespace GHIElectronics.TinyCLR.UI.Media {
             }
         }
 
+        /// <summary>Sets a single pixel to the given color.</summary>
         public void SetPixel(Color color, int x, int y) {
             VerifyAccess();
 
             this._bitmap.SetPixel(this._x + x, this._y + y, color);
         }
 
+        /// <summary>Draws a line between two points.</summary>
         public void DrawLine(Pen pen, int x0, int y0, int x1, int y1) {
             VerifyAccess();
 
@@ -65,6 +71,7 @@ namespace GHIElectronics.TinyCLR.UI.Media {
             }
         }
 
+        /// <summary>Draws an ellipse with the given fill and outline.</summary>
         public void DrawEllipse(Brush brush, Pen pen, int x, int y, int xRadius, int yRadius) {
             VerifyAccess();
 
@@ -82,54 +89,63 @@ namespace GHIElectronics.TinyCLR.UI.Media {
 
         }
 
+        /// <summary>Draws an image at the given position.</summary>
         public void DrawImage(ImageSource source, int x, int y) {
             VerifyAccess();
 
             this._bitmap.DrawImage(this._x + x, this._y + y, source, 0, 0, source.Width, source.Height);
         }
 
+        /// <summary>Draws a region of an image at the given position.</summary>
         public void DrawImage(ImageSource source, int destinationX, int destinationY, int sourceX, int sourceY, int sourceWidth, int sourceHeight) {
             VerifyAccess();
 
             this._bitmap.DrawImage(this._x + destinationX, this._y + destinationY, source, sourceX, sourceY, sourceWidth, sourceHeight);
         }
 
+        /// <summary>Draws a region of an image blended with the given opacity.</summary>
         public void BlendImage(ImageSource source, int destinationX, int destinationY, int sourceX, int sourceY, int sourceWidth, int sourceHeight, ushort opacity) {
             VerifyAccess();
 
             this._bitmap.DrawImage(this._x + destinationX, this._y + destinationY, source, sourceX, sourceY, sourceWidth, sourceHeight, opacity);
         }
 
+        /// <summary>Draws a region of an image rotated by the given angle.</summary>
         public void RotateImage(int angle, int destinationX, int destinationY, ImageSource bitmap, int sourceX, int sourceY, int sourceWidth, int sourceHeight, ushort opacity) {
             VerifyAccess();
 
             this._bitmap.RotateImage(angle, this._x + destinationX, this._y + destinationY, bitmap, sourceX, sourceY, sourceWidth, sourceHeight, opacity);
         }
 
+        /// <summary>Draws a region of an image stretched to the given size.</summary>
         public void StretchImage(int xDst, int yDst, int widthDst, int heightDst, ImageSource bitmap, int xSrc, int ySrc, int widthSrc, int heightSrc, ushort opacity) {
             VerifyAccess();
 
             this._bitmap.StretchImage(this._x + xDst, this._y + yDst, widthDst, heightDst, bitmap, xSrc, ySrc, widthSrc, heightSrc, opacity);
         }
 
+        /// <summary>Draws an image tiled across the given area.</summary>
         public void TileImage(int xDst, int yDst, ImageSource bitmap, int width, int height, ushort opacity) {
             VerifyAccess();
 
             this._bitmap.TileImage(this._x + xDst, this._y + yDst, bitmap, width, height, opacity);
         }
 
+        /// <summary>Draws an image using nine-slice scaling with the given borders.</summary>
         public void Scale9Image(int xDst, int yDst, int widthDst, int heightDst, ImageSource bitmap, int leftBorder, int topBorder, int rightBorder, int bottomBorder, ushort opacity) {
             VerifyAccess();
 
             this._bitmap.Scale9Image(this._x + xDst, this._y + yDst, widthDst, heightDst, bitmap, leftBorder, topBorder, rightBorder, bottomBorder, opacity);
         }
 
+        /// <summary>Draws text at the given position.</summary>
         public void DrawText(string text, System.Drawing.Font font, Color color, int x, int y) {
             VerifyAccess();
 
             this._bitmap.DrawText(text, font, color, this._x + x, this._y + y);
         }
 
+        /// <summary>Draws text within a rectangle using the given alignment and trimming.</summary>
         public bool DrawText(ref string text, System.Drawing.Font font, Color color, int x, int y, int width, int height,
                              TextAlignment alignment, TextTrimming trimming) {
             VerifyAccess();
@@ -167,6 +183,7 @@ namespace GHIElectronics.TinyCLR.UI.Media {
                                            width, height, flags, color, font);
         }
 
+        /// <summary>Gets the current clipping rectangle.</summary>
         public void GetClippingRectangle(out int x, out int y, out int width, out int height) {
             if (this._clipDepth == 0) {
                 x = 0;
@@ -183,6 +200,7 @@ namespace GHIElectronics.TinyCLR.UI.Media {
             }
         }
 
+        /// <summary>Pushes a clipping rectangle onto the clip stack.</summary>
         public void PushClippingRectangle(int x, int y, int width, int height) {
             VerifyAccess();
 
@@ -224,6 +242,7 @@ namespace GHIElectronics.TinyCLR.UI.Media {
             this.EmptyClipRect = (rect.Width <= 0 || rect.Height <= 0);
         }
 
+        /// <summary>Pops the most recently pushed clipping rectangle.</summary>
         public void PopClippingRectangle() {
             VerifyAccess();
 
@@ -303,6 +322,7 @@ namespace GHIElectronics.TinyCLR.UI.Media {
             this._hasLastClip = false; // don't assume the surface clip survived between frames
         }
 
+        /// <summary>Draws a rectangle with the given fill and outline.</summary>
         public void DrawRectangle(Brush brush, Pen pen, int x, int y, int width, int height) {
             VerifyAccess();
 
@@ -319,8 +339,10 @@ namespace GHIElectronics.TinyCLR.UI.Media {
             }
         }
 
+        /// <summary>The width of the drawing surface in pixels.</summary>
         public int Width => this._bitmap.Width;
 
+        /// <summary>The height of the drawing surface in pixels.</summary>
         public int Height => this._bitmap.Height;
 
         // Value type so the clip stack (an array) holds no heap references and
@@ -349,11 +371,13 @@ namespace GHIElectronics.TinyCLR.UI.Media {
         private int _lastClipX, _lastClipY, _lastClipW, _lastClipH;
         private bool _hasLastClip;
 
+        /// <summary>Releases the resources used by the drawing context.</summary>
         public void Dispose() {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
 
+        /// <summary>Releases the resources used by the drawing context.</summary>
         protected virtual void Dispose(bool disposing) => this._bitmap = null;
 
     }

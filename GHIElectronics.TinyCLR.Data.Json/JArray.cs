@@ -9,10 +9,12 @@ namespace GHIElectronics.TinyCLR.Data.Json
     {
         private readonly JToken[] _contents;
 
+        /// <summary>Initializes a new empty JSON array.</summary>
         public JArray()
         {
         }
 
+        /// <summary>Initializes a new JSON array containing the given elements.</summary>
         public JArray(JToken[] values)
         {
             _contents = values;
@@ -54,16 +56,19 @@ namespace GHIElectronics.TinyCLR.Data.Json
             }
         }
 
+        /// <summary>Gets the number of elements in the array.</summary>
         public int Length
         {
             get { return _contents.Length; }
         }
 
+        /// <summary>Gets the array elements.</summary>
         public JToken[] Items
         {
             get { return _contents; }
         }
 
+        /// <summary>Serializes a .NET array into a JSON array.</summary>
         public static JArray Serialize(Type type, object oSource, JsonSerializerSettings settings = null)
         {
             if (settings == null)
@@ -74,16 +79,19 @@ namespace GHIElectronics.TinyCLR.Data.Json
             return new JArray((Array)oSource, settings);
         }
 
+        /// <summary>Gets the element at the given index.</summary>
         public JToken this[int i]
         {
             get { return _contents[i]; }
         }
 
+        /// <summary>Returns the JSON text for this array.</summary>
         public override string ToString()
         {
             return this.ToString(null);
         }
 
+        /// <summary>Returns the JSON text for this array using the given formatting options.</summary>
         public override string ToString(JsonSerializationOptions options)
 		{
 			EnterSerialization(options);
@@ -125,6 +133,7 @@ namespace GHIElectronics.TinyCLR.Data.Json
 			}
 		}
 
+		/// <summary>Gets the number of bytes this array occupies when encoded as BSON.</summary>
 		public override int GetBsonSize()
 		{
             int offset = 0;
@@ -132,11 +141,13 @@ namespace GHIElectronics.TinyCLR.Data.Json
             return offset;
         }
 
+        /// <summary>Gets the number of BSON bytes for this array including the given element name.</summary>
         public override int GetBsonSize(string ename)
 		{
             return 1 + ename.Length + 1 + this.GetBsonSize();
         }
 
+        /// <summary>Writes this array to the buffer as BSON, advancing the offset.</summary>
         public override void ToBson(byte[] buffer, ref int offset)
 		{
             int startingOffset = offset;
@@ -159,6 +170,7 @@ namespace GHIElectronics.TinyCLR.Data.Json
                 SerializationUtilities.Marshall(buffer, ref startingOffset, offset - startingOffset);
         }
 
+        /// <summary>Gets the BSON type code for an array.</summary>
         public override BsonTypes GetBsonType()
         {
             return BsonTypes.BsonArray;

@@ -13,6 +13,7 @@ namespace GHIElectronics.TinyCLR.Data.Json
 	{
 		private bool _fOwnsContext;
 
+		/// <summary>Begins a serialization scope, establishing the shared formatting context if none exists.</summary>
 		protected void EnterSerialization(JsonSerializationOptions options = null)
 		{
             if (options == null)
@@ -32,6 +33,7 @@ namespace GHIElectronics.TinyCLR.Data.Json
 			}
 		}
 
+		/// <summary>Ends the serialization scope, releasing the shared formatting context if this token owns it.</summary>
 		protected void ExitSerialization()
 		{
 			lock (JsonConverter.SyncObj)
@@ -46,6 +48,7 @@ namespace GHIElectronics.TinyCLR.Data.Json
 			}
 		}
 
+		/// <summary>Returns the indentation string for the current nesting level, optionally increasing the level afterwards.</summary>
 		protected string Indent(bool incrementAfter = false)
 		{
             if (!JsonConverter.SerializationContext.options.Indented)
@@ -65,11 +68,13 @@ namespace GHIElectronics.TinyCLR.Data.Json
 			return sb.ToString();
 		}
 
+		/// <summary>Decreases the current indentation nesting level by one.</summary>
 		protected void Outdent()
 		{
 			--JsonConverter.SerializationContext.IndentLevel;
 		}
 
+		/// <summary>Encodes this token as a standalone BSON document and returns the bytes.</summary>
 		public byte[] ToBson()
 		{
 			var size = this.GetBsonSize("") + 5;
@@ -86,14 +91,19 @@ namespace GHIElectronics.TinyCLR.Data.Json
             return buffer;
 		}
 
+        /// <summary>Gets the BSON type code for this token.</summary>
         public abstract BsonTypes GetBsonType();
 
+		/// <summary>Gets the number of bytes this token occupies when encoded as BSON.</summary>
 		public abstract int GetBsonSize();
 
+		/// <summary>Gets the number of BSON bytes for this token including the given element name.</summary>
 		public abstract int GetBsonSize(string ename);
 
+		/// <summary>Writes this token to the buffer as BSON, advancing the offset.</summary>
 		public abstract void ToBson(byte[] buffer, ref int offset);
 
+        /// <summary>Writes this token as a named BSON element (type byte, name, then value), advancing the offset.</summary>
         public void ToBson(string ename, byte[] buffer, ref int offset)
         {
 #if DEBUG
@@ -113,6 +123,7 @@ namespace GHIElectronics.TinyCLR.Data.Json
 #endif
         }
 
+        /// <summary>Writes a BSON element name as a null-terminated UTF-8 string, advancing the offset.</summary>
         protected void MarshallEName(string ename, byte[] buffer, ref int offset)
         {
             var name = Encoding.UTF8.GetBytes(ename);
@@ -144,6 +155,7 @@ namespace GHIElectronics.TinyCLR.Data.Json
             return -1;
         }
 
+        /// <summary>Returns the JSON text for this token using the given formatting options.</summary>
         public abstract string ToString(JsonSerializationOptions options);
     }
 }

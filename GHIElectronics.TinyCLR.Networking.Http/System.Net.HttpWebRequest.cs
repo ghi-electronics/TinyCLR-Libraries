@@ -929,6 +929,7 @@ namespace System.Net {
             this.m_responseCreated = false;
         }
 
+        /// <summary>Clears the sent state, content length, write mode, and headers so the instance can be reused.</summary>
         public void Reset() {
             this.m_requestSent = false;
             this.m_responseCreated = false;

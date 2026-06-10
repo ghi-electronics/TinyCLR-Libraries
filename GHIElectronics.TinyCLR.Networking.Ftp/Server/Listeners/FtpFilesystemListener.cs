@@ -5,13 +5,16 @@ using System.Net;
 
 namespace GHIElectronics.TinyCLR.Networking.Ftp
 {
+    /// <summary>An FTP listener that serves files from a real filesystem directory under a virtual root.</summary>
     public class FtpFilesystemListener : FtpListener
     {
+        /// <summary>Creates a listener that maps the virtual root to the filesystem directory, allowing uploads.</summary>
         public FtpFilesystemListener(String virtualRoot, String filesystemRoot)
             : this(virtualRoot, filesystemRoot, true)
         {
         }
 
+        /// <summary>Creates a listener that maps the virtual root to the filesystem directory, optionally allowing uploads.</summary>
         public FtpFilesystemListener(String virtualRoot, String filesystemRoot, bool uploadsAllowed)
         {
             if (filesystemRoot[filesystemRoot.Length - 1] != Path.DirectorySeparatorChar)
@@ -26,8 +29,11 @@ namespace GHIElectronics.TinyCLR.Networking.Ftp
             this.Prefixes.Add(virtualRoot);
         }
 
+        /// <summary>The filesystem directory whose contents are served.</summary>
         public String FilesystemRoot { get; private set; }
+        /// <summary>The virtual root path that clients see, mapped onto the filesystem directory.</summary>
         public String VirtualRoot { get; private set; }
+        /// <summary>Whether clients are allowed to upload files.</summary>
         public bool UploadsAllowed { get; private set; }
 
         public override void Start()

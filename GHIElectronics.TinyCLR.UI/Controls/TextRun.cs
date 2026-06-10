@@ -7,19 +7,26 @@ using System.Diagnostics;
 using GHIElectronics.TinyCLR.UI.Media;
 
 namespace GHIElectronics.TinyCLR.UI.Controls {
+    /// <summary>A run of text sharing a single font and color, used as a building block by <see cref="TextFlow"/>.</summary>
     public class TextRun {
+        /// <summary>The text of this run.</summary>
         public readonly string Text;
+        /// <summary>The font used to draw this run.</summary>
         public readonly System.Drawing.Font Font;
+        /// <summary>The color used to draw this run.</summary>
         public readonly Color ForeColor;
 
         internal bool IsEndOfLine;
 
+        /// <summary>The cached pixel width of this run.</summary>
         protected int _width;
+        /// <summary>The cached pixel height of this run.</summary>
         protected int _height;
 
         private TextRun() {
         }
 
+        /// <summary>Initializes a new text run with the given text, font, and color.</summary>
         public TextRun(string text, System.Drawing.Font font, Color foreColor) {
             if (text == null || text.Length == 0) {
                 throw new ArgumentNullException("Text must be non-null and non-empty");
@@ -30,6 +37,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             this.ForeColor = foreColor;
         }
 
+        /// <summary>Gets a special run that marks the end of a line, forcing a line break.</summary>
         public static TextRun EndOfLine {
             get {
                 var eol = new TextRun {
@@ -117,6 +125,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             return true;
         }
 
+        /// <summary>Returns the pixel width and height of this run, computing and caching it on first use.</summary>
         public void GetSize(out int width, out int height) {
             if (this._width == 0) {
                 this.Font.ComputeExtent(this.Text, out this._width, out this._height);

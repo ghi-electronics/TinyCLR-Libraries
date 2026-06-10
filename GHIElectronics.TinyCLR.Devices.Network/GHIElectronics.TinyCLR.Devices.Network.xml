@@ -356,8 +356,179 @@
         <member name="T:GHIElectronics.TinyCLR.Devices.Network.Provider.INetworkControllerProvider">
             <summary>Provider contract for a network controller.</summary>
         </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Network.Provider.INetworkControllerProvider.InterfaceType">
+            <summary>Transport type of the interface — Ethernet, WiFi, or PPP.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Network.Provider.INetworkControllerProvider.CommunicationInterface">
+            <summary>Physical bus carrying the interface — built-in MAC, SPI, or UART.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Network.Provider.INetworkControllerProvider.Enable">
+            <summary>Brings the interface up.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Network.Provider.INetworkControllerProvider.Disable">
+            <summary>Brings the interface down.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Network.Provider.INetworkControllerProvider.Suspend">
+            <summary>Suspends the interface to a low-power state.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Network.Provider.INetworkControllerProvider.Resume">
+            <summary>Resumes a suspended interface.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Network.Provider.INetworkControllerProvider.GetLinkConnected">
+            <summary>Returns true when the physical link is up.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Network.Provider.INetworkControllerProvider.GetAccessPointClientLinkConnect(GHIElectronics.TinyCLR.Devices.Network.WiFiNetworkInterfaceSettings)">
+            <summary>Returns true when a station is connected to this access point.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Network.Provider.INetworkControllerProvider.GetIPProperties">
+            <summary>Returns the current IP address, subnet, gateway, and DNS servers.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Network.Provider.INetworkControllerProvider.GetInterfaceProperties">
+            <summary>Returns interface-specific properties such as the MAC address.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Network.Provider.INetworkControllerProvider.SetInterfaceSettings(GHIElectronics.TinyCLR.Devices.Network.NetworkInterfaceSettings)">
+            <summary>Applies the interface settings (IP address, DHCP, DNS).</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Network.Provider.INetworkControllerProvider.SetCommunicationInterfaceSettings(GHIElectronics.TinyCLR.Devices.Network.NetworkCommunicationInterfaceSettings)">
+            <summary>Applies the underlying physical-bus settings.</summary>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.Devices.Network.Provider.INetworkControllerProvider.NetworkLinkConnectedChanged">
+            <summary>Raised when the physical link goes up or down.</summary>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.Devices.Network.Provider.INetworkControllerProvider.NetworkAddressChanged">
+            <summary>Raised when the IP address, gateway, or DNS servers change.</summary>
+        </member>
         <member name="T:GHIElectronics.TinyCLR.Devices.Network.Provider.NetworkControllerApiWrapper">
             <summary>Concrete <see cref="T:GHIElectronics.TinyCLR.Devices.Network.Provider.INetworkControllerProvider"/> backed by the native TinyCLR network HAL (lwIP + mbedTLS).</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Network.Provider.NetworkControllerApiWrapper.Api">
+            <summary>The native API this wrapper is bound to.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Network.Provider.NetworkControllerApiWrapper.#ctor(GHIElectronics.TinyCLR.Native.NativeApi)">
+            <summary>Creates a wrapper bound to the given native network API.</summary>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.Devices.Network.Provider.NetworkControllerApiWrapper.NetworkLinkConnectedChanged">
+            <inheritdoc/>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.Devices.Network.Provider.NetworkControllerApiWrapper.NetworkAddressChanged">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Network.Provider.NetworkControllerApiWrapper.Dispose">
+            <summary>Releases the native network controller.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Network.Provider.NetworkControllerApiWrapper.SetNetworkLinkConnectedChangedEventEnabled(System.Boolean)">
+            <summary>Enables or disables native delivery of link-connected-changed events.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Network.Provider.NetworkControllerApiWrapper.SetNetworkAddressChangedEventEnabled(System.Boolean)">
+            <summary>Enables or disables native delivery of address-changed events.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Network.Provider.NetworkControllerApiWrapper.InterfaceType">
+            <inheritdoc/>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Network.Provider.NetworkControllerApiWrapper.CommunicationInterface">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Network.Provider.NetworkControllerApiWrapper.Enable">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Network.Provider.NetworkControllerApiWrapper.EnableAsync">
+            <summary>Non-blocking variant of <see cref="M:GHIElectronics.TinyCLR.Devices.Network.Provider.NetworkControllerApiWrapper.Enable"/> that brings the interface up on a background native task.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Network.Provider.NetworkControllerApiWrapper.Disable">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Network.Provider.NetworkControllerApiWrapper.Suspend">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Network.Provider.NetworkControllerApiWrapper.Resume">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Network.Provider.NetworkControllerApiWrapper.SetAsDefault">
+            <summary>Promotes this controller's interface to lwIP's default route at the firmware level.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Network.Provider.NetworkControllerApiWrapper.SetInterfaceSettings(GHIElectronics.TinyCLR.Devices.Network.NetworkInterfaceSettings)">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Network.Provider.NetworkControllerApiWrapper.SetCommunicationInterfaceSettings(GHIElectronics.TinyCLR.Devices.Network.NetworkCommunicationInterfaceSettings)">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Network.Provider.NetworkControllerApiWrapper.GetLinkConnected">
+            <summary>Returns true when the physical link is up.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Network.Provider.NetworkControllerApiWrapper.GetIPProperties">
+            <summary>Returns the current IP address, subnet, gateway, and DNS servers.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Network.Provider.NetworkControllerApiWrapper.GetInterfaceProperties">
+            <summary>Returns interface-specific properties such as the MAC address.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Network.Provider.NetworkControllerApiWrapper.Create(System.Net.Sockets.AddressFamily,System.Net.Sockets.SocketType,System.Net.Sockets.ProtocolType)">
+            <summary>Creates a native socket and returns its handle.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Network.Provider.NetworkControllerApiWrapper.Close(System.Int32)">
+            <summary>Closes the given socket.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Network.Provider.NetworkControllerApiWrapper.Bind(System.Int32,System.Net.SocketAddress)">
+            <summary>Binds the socket to a local address.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Network.Provider.NetworkControllerApiWrapper.Listen(System.Int32,System.Int32)">
+            <summary>Places the socket into the listening state with the given backlog.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Network.Provider.NetworkControllerApiWrapper.Accept(System.Int32)">
+            <summary>Accepts a pending connection and returns the new socket handle.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Network.Provider.NetworkControllerApiWrapper.Connect(System.Int32,System.Net.SocketAddress)">
+            <summary>Connects the socket to a remote address.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Network.Provider.NetworkControllerApiWrapper.Available(System.Int32)">
+            <summary>Returns the number of bytes available to read on the socket.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Network.Provider.NetworkControllerApiWrapper.Poll(System.Int32,System.Int32,System.Net.Sockets.SelectMode)">
+            <summary>Polls the socket for the given mode within the timeout.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Network.Provider.NetworkControllerApiWrapper.Send(System.Int32,System.Byte[],System.Int32,System.Int32,System.Net.Sockets.SocketFlags)">
+            <summary>Sends data on a connected socket and returns the number of bytes sent.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Network.Provider.NetworkControllerApiWrapper.Receive(System.Int32,System.Byte[],System.Int32,System.Int32,System.Net.Sockets.SocketFlags)">
+            <summary>Receives data on a connected socket and returns the number of bytes read.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Network.Provider.NetworkControllerApiWrapper.SendTo(System.Int32,System.Byte[],System.Int32,System.Int32,System.Net.Sockets.SocketFlags,System.Net.SocketAddress)">
+            <summary>Sends data to a specific address and returns the number of bytes sent.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Network.Provider.NetworkControllerApiWrapper.ReceiveFrom(System.Int32,System.Byte[],System.Int32,System.Int32,System.Net.Sockets.SocketFlags,System.Net.SocketAddress@)">
+            <summary>Receives data and reports the sender address; returns the number of bytes read.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Network.Provider.NetworkControllerApiWrapper.GetRemoteAddress(System.Int32,System.Net.SocketAddress@)">
+            <summary>Gets the remote address of a connected socket.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Network.Provider.NetworkControllerApiWrapper.GetLocalAddress(System.Int32,System.Net.SocketAddress@)">
+            <summary>Gets the local address bound to the socket.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Network.Provider.NetworkControllerApiWrapper.GetOption(System.Int32,System.Net.Sockets.SocketOptionLevel,System.Net.Sockets.SocketOptionName,System.Byte[])">
+            <summary>Reads a socket option value.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Network.Provider.NetworkControllerApiWrapper.SetOption(System.Int32,System.Net.Sockets.SocketOptionLevel,System.Net.Sockets.SocketOptionName,System.Byte[])">
+            <summary>Writes a socket option value.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Network.Provider.NetworkControllerApiWrapper.AuthenticateAsClient(System.Int32,System.String,System.Security.Cryptography.X509Certificates.X509Certificate,System.Security.Cryptography.X509Certificates.X509Certificate,System.Security.Authentication.SslProtocols,System.Security.Authentication.SslVerification)">
+            <summary>Performs a TLS client handshake on the socket and returns the secure handle.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Network.Provider.NetworkControllerApiWrapper.AuthenticateAsServer(System.Int32,System.Security.Cryptography.X509Certificates.X509Certificate,System.Security.Authentication.SslProtocols)">
+            <summary>Performs a TLS server handshake on the socket and returns the secure handle.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Network.Provider.NetworkControllerApiWrapper.SecureRead(System.Int32,System.Byte[],System.Int32,System.Int32)">
+            <summary>Reads decrypted data from a secured connection.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Network.Provider.NetworkControllerApiWrapper.SecureWrite(System.Int32,System.Byte[],System.Int32,System.Int32)">
+            <summary>Writes data to a secured connection, encrypting it.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Network.Provider.NetworkControllerApiWrapper.GetHostByName(System.String,System.String@,System.Net.SocketAddress[]@)">
+            <summary>Resolves a host name to its canonical name and addresses via DNS.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Network.Provider.NetworkControllerApiWrapper.GetAccessPointClientLinkConnect(GHIElectronics.TinyCLR.Devices.Network.WiFiNetworkInterfaceSettings)">
+            <summary>Returns true when a station is connected to this access point.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Network.Provider.NetworkControllerApiWrapper.Shutdown(System.Int32,System.Net.Sockets.SocketShutdown)">
+            <summary>Half-closes the socket in the given direction (lwIP shutdown).</summary>
         </member>
     </members>
 </doc>

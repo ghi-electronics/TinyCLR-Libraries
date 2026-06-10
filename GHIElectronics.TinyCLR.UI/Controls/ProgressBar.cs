@@ -7,20 +7,30 @@ using GHIElectronics.TinyCLR.UI.Media;
 using GHIElectronics.TinyCLR.UI.Media.Imaging;
 
 namespace GHIElectronics.TinyCLR.UI.Controls {
+    /// <summary>Specifies the direction in which a progress bar fills.</summary>
     public enum Direction {
+        /// <summary>Fills from right to left.</summary>
         Left,
+        /// <summary>Fills from left to right.</summary>
         Right,
+        /// <summary>Fills from bottom to top.</summary>
         Up,
+        /// <summary>Fills from top to bottom.</summary>
         Down
     }
 
+    /// <summary>A bar control that visually fills to indicate progress toward a maximum value.</summary>
     public class ProgressBar : Image, IDisposable {
         private BitmapImage bitmapImageProgressBar;
         private BitmapImage bitmapImageProgressBarFill;
 
+        /// <summary>The direction in which the fill grows.</summary>
         public Direction Direction { get; set; } = Direction.Right;
+        /// <summary>The value at which the bar is considered completely full.</summary>
         public int MaxValue { get; set; } = 100;
+        /// <summary>The current progress value.</summary>
         public int Value { get; set; } = 0;
+        /// <summary>The opacity applied when rendering the bar.</summary>
         public ushort Alpha { get; set; } = Theme.DefaultAlpha;
 
         /// <summary>Corner radius in pixels for the Scale9Image-rendered bar.</summary>
@@ -39,8 +49,10 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             this.bitmapImageProgressBarFill = Resources.LoadBitmapImage(Resources.BitmapResources.ProgressBar_Fill);
         }
 
+        /// <summary>Initializes a new instance of the <see cref="ProgressBar"/> class.</summary>
         public ProgressBar() : base() => this.InitResource();
 
+        /// <summary>Renders the progress bar background and its proportional fill.</summary>
         public override void OnRender(DrawingContext dc) {
             var fullW = this.ActualWidth;
             var fullH = this.ActualHeight;
@@ -80,11 +92,13 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
         private bool disposed;
 
+        /// <summary>Releases the bitmap resources used by the progress bar.</summary>
         public void Dispose() {
             this.Dispose(true);
             GC.SuppressFinalize(this);
         }
 
+        /// <summary>Releases the bitmap resources used by the progress bar.</summary>
         protected virtual void Dispose(bool disposing) {
             if (this.disposed) return;
 

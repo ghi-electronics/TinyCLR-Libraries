@@ -7,6 +7,7 @@ using GHIElectronics.TinyCLR.UI.Media;
 using GHIElectronics.TinyCLR.UI.Media.Imaging;
 
 namespace GHIElectronics.TinyCLR.UI {
+    /// <summary>An on-screen software keyboard window used to enter text into a text box.</summary>
     public class OnScreenKeyboard : Window {
         private Hashtable views;
         private TextBox source;
@@ -18,6 +19,7 @@ namespace GHIElectronics.TinyCLR.UI {
         private int offsetX;
         private int offsetY;
 
+        /// <summary>Gets or sets the font used for the keyboard's text input field.</summary>
         public static new Font Font { get; set; }
 
         internal OnScreenKeyboard() {

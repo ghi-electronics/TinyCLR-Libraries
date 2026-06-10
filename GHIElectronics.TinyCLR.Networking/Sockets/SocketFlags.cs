@@ -45,6 +45,7 @@ namespace System.Net.Sockets
         /// </devdoc>
         DontRoute = 0x0004,
 
+        /// <summary>The maximum number of buffers that can be used in a single send or receive call.</summary>
         // see: http://as400bks.rochester.ibm.com/pubs/html/as400/v4r5/ic2978/info/apis/recvms.htm
         MaxIOVectorLength = 0x0010,
 
@@ -55,10 +56,14 @@ namespace System.Net.Sockets
         /// </devdoc>
 
         Truncated = 0x0100,
+        /// <summary>The control (ancillary) data was truncated.</summary>
         ControlDataTruncated = 0x0200,
+        /// <summary>The message was sent or received as a broadcast.</summary>
         Broadcast = 0x0400,
+        /// <summary>The message was sent or received as a multicast.</summary>
         Multicast = 0x0800,
 
+        /// <summary>A partial message was sent or received.</summary>
         Partial = 0x8000,
 
     }; // enum SocketFlags

@@ -33,6 +33,7 @@ namespace GHIElectronics.TinyCLR.UI {
     public class Application : DispatcherObject {
         private readonly DisplayController display;
 
+        /// <summary>Gets the input provider that feeds touch and button events into the application.</summary>
         public InputProvider InputProvider { get; private set; }
 
         //------------------------------------------------------
@@ -43,6 +44,7 @@ namespace GHIElectronics.TinyCLR.UI {
 
         #region Constructors
 
+        /// <summary>Initializes a new application using the default display controller.</summary>
         public Application() : this(DisplayController.GetDefault()) {
 
         }
@@ -245,6 +247,7 @@ EventTrace.EventProvider.TraceEvent(EventTrace.APPGUID, MS.Utility.EventType.Inf
             this.Dispatcher.BeginInvoke(new DispatcherOperationCallback(this.ShutdownCallback), null);
         }
 
+        /// <summary>Registers the application as an input source so it can receive and report input.</summary>
         [MethodImplAttribute(MethodImplOptions.Synchronized)]
         public void InitializeForEventSource() {
             if (_inputManager == null) {
@@ -261,6 +264,7 @@ EventTrace.EventProvider.TraceEvent(EventTrace.APPGUID, MS.Utility.EventType.Inf
             }
         }
 
+        /// <summary>Routes a raw input event to the appropriate target window and queues it for processing.</summary>
         public bool OnEvent(BaseEvent ev) {
             InputReport ir = null;
             InputDevice dev = null;

@@ -24,20 +24,29 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
         // --- public API ------------------------------------------------------
 
+        /// <summary>Represents the method that handles the slider's value-changed event.</summary>
         public delegate void ValueChangedEventHandler(object sender, ValueChangedEventArgs args);
 
+        /// <summary>Provides data for the slider's value-changed event.</summary>
         public sealed class ValueChangedEventArgs : EventArgs {
+            /// <summary>Initializes a new instance of the <see cref="ValueChangedEventArgs"/> class.</summary>
             public ValueChangedEventArgs(double value) => this.Value = value;
+            /// <summary>The new slider value.</summary>
             public double Value { get; }
         }
 
+        /// <summary>Raised when the slider value changes.</summary>
         public event ValueChangedEventHandler ValueChanged;
 
+        /// <summary>The opacity applied when rendering the knob.</summary>
         public ushort Alpha { get; set; } = Theme.DefaultAlpha;
+        /// <summary>Corner radius in pixels for the Scale9-rendered knob.</summary>
         public int RadiusBorder { get; set; } = Theme.DefaultRadiusBorder;
 
+        /// <summary>Initializes a new slider with default size.</summary>
         public Slider() : this(0, 0) { }
 
+        /// <summary>Initializes a new slider with the given width and height.</summary>
         public Slider(int width, int height) {
             if (width > 0) this.Width = width;
             if (height > 0) this.Height = height;
@@ -53,6 +62,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             this._bitmapKnobDown = Resources.LoadBitmapImage(Resources.BitmapResources.Button_Down);
         }
 
+        /// <summary>Whether the slider is laid out horizontally or vertically.</summary>
         public Orientation Orientation {
             get => this._orientation;
             set {
@@ -63,6 +73,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
+        /// <summary>The minimum value the slider can represent.</summary>
         public double Minimum {
             get => this._min;
             set {
@@ -73,6 +84,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
+        /// <summary>The maximum value the slider can represent.</summary>
         public double Maximum {
             get => this._max;
             set {
@@ -83,6 +95,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
+        /// <summary>The current slider value, clamped between <see cref="Minimum"/> and <see cref="Maximum"/>.</summary>
         public double Value {
             get => this._value;
             set {
@@ -173,6 +186,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
         // --- rendering -------------------------------------------------------
 
+        /// <summary>Renders the track, tick marks, and knob for the slider.</summary>
         public override void OnRender(DrawingContext dc) {
             var w = this.ActualWidth;
             var h = this.ActualHeight;
@@ -290,6 +304,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
         // --- input -----------------------------------------------------------
 
+        /// <summary>Begins dragging the knob when the slider is touched.</summary>
         protected override void OnTouchDown(TouchEventArgs e) {
             if (!this.IsEnabled) return;
 
@@ -301,12 +316,14 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             this.Invalidate();
         }
 
+        /// <summary>Ends knob dragging when the touch is released.</summary>
         protected override void OnTouchUp(TouchEventArgs e) {
             if (!this._dragging) return;
             this._dragging = false;
             this.Invalidate();
         }
 
+        /// <summary>Updates the value as the knob is dragged.</summary>
         protected override void OnTouchMove(TouchEventArgs e) {
             if (!this._dragging) return;
 
@@ -381,11 +398,13 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
         // --- IDisposable -----------------------------------------------------
 
+        /// <summary>Releases the knob bitmap resources used by the slider.</summary>
         public void Dispose() {
             this.Dispose(true);
             GC.SuppressFinalize(this);
         }
 
+        /// <summary>Releases the knob bitmap resources used by the slider.</summary>
         protected virtual void Dispose(bool disposing) {
             if (this._disposed) return;
 

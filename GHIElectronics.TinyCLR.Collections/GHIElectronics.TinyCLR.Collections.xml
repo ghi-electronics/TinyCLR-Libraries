@@ -11,6 +11,39 @@
             portable BCL-using code.
             </summary>
         </member>
+        <member name="M:System.Collections.Generic.ISet`1.Add(`0)">
+            <summary>Adds an element to the set and returns whether it was newly added.</summary>
+        </member>
+        <member name="M:System.Collections.Generic.ISet`1.UnionWith(System.Collections.Generic.IEnumerable{`0})">
+            <summary>Modifies the set to contain all elements that are present in itself, the specified collection, or both.</summary>
+        </member>
+        <member name="M:System.Collections.Generic.ISet`1.IntersectWith(System.Collections.Generic.IEnumerable{`0})">
+            <summary>Modifies the set to contain only elements that are also present in the specified collection.</summary>
+        </member>
+        <member name="M:System.Collections.Generic.ISet`1.ExceptWith(System.Collections.Generic.IEnumerable{`0})">
+            <summary>Removes all elements in the specified collection from the set.</summary>
+        </member>
+        <member name="M:System.Collections.Generic.ISet`1.SymmetricExceptWith(System.Collections.Generic.IEnumerable{`0})">
+            <summary>Modifies the set to contain only elements that are present either in itself or in the specified collection, but not both.</summary>
+        </member>
+        <member name="M:System.Collections.Generic.ISet`1.IsSubsetOf(System.Collections.Generic.IEnumerable{`0})">
+            <summary>Determines whether the set is a subset of the specified collection.</summary>
+        </member>
+        <member name="M:System.Collections.Generic.ISet`1.IsSupersetOf(System.Collections.Generic.IEnumerable{`0})">
+            <summary>Determines whether the set is a superset of the specified collection.</summary>
+        </member>
+        <member name="M:System.Collections.Generic.ISet`1.IsProperSupersetOf(System.Collections.Generic.IEnumerable{`0})">
+            <summary>Determines whether the set is a proper superset of the specified collection.</summary>
+        </member>
+        <member name="M:System.Collections.Generic.ISet`1.IsProperSubsetOf(System.Collections.Generic.IEnumerable{`0})">
+            <summary>Determines whether the set is a proper subset of the specified collection.</summary>
+        </member>
+        <member name="M:System.Collections.Generic.ISet`1.Overlaps(System.Collections.Generic.IEnumerable{`0})">
+            <summary>Determines whether the set and the specified collection share any common elements.</summary>
+        </member>
+        <member name="M:System.Collections.Generic.ISet`1.SetEquals(System.Collections.Generic.IEnumerable{`0})">
+            <summary>Determines whether the set and the specified collection contain the same elements.</summary>
+        </member>
         <member name="T:System.Collections.Generic.HashSet`1">
              <summary>
              Hash-table-based generic set. Mirrors the .NET BCL surface for the subset
@@ -22,6 +55,102 @@
              (<see cref="P:System.Collections.Generic.EqualityComparer`1.Default"/>) treats null consistently
              (GetHashCode(null) = 0, Equals(null, null) = true).
              </summary>
+        </member>
+        <member name="M:System.Collections.Generic.HashSet`1.#ctor">
+            <summary>Initializes a new empty set that uses the default equality comparer.</summary>
+        </member>
+        <member name="M:System.Collections.Generic.HashSet`1.#ctor(System.Collections.Generic.IEqualityComparer{`0})">
+            <summary>Initializes a new empty set that uses the specified equality comparer.</summary>
+        </member>
+        <member name="M:System.Collections.Generic.HashSet`1.#ctor(System.Int32)">
+            <summary>Initializes a new empty set with the specified initial capacity.</summary>
+        </member>
+        <member name="M:System.Collections.Generic.HashSet`1.#ctor(System.Int32,System.Collections.Generic.IEqualityComparer{`0})">
+            <summary>Initializes a new empty set with the specified initial capacity and equality comparer.</summary>
+        </member>
+        <member name="M:System.Collections.Generic.HashSet`1.#ctor(System.Collections.Generic.IEnumerable{`0})">
+            <summary>Initializes a new set that contains the elements copied from the specified collection.</summary>
+        </member>
+        <member name="M:System.Collections.Generic.HashSet`1.#ctor(System.Collections.Generic.IEnumerable{`0},System.Collections.Generic.IEqualityComparer{`0})">
+            <summary>Initializes a new set that contains the elements copied from the specified collection and uses the specified equality comparer.</summary>
+        </member>
+        <member name="P:System.Collections.Generic.HashSet`1.Comparer">
+            <summary>Gets the equality comparer used to determine equality of elements in the set.</summary>
+        </member>
+        <member name="P:System.Collections.Generic.HashSet`1.Count">
+            <summary>Gets the number of elements contained in the set.</summary>
+        </member>
+        <member name="M:System.Collections.Generic.HashSet`1.Add(`0)">
+            <summary>Adds the specified element to the set and returns whether it was newly added.</summary>
+        </member>
+        <member name="M:System.Collections.Generic.HashSet`1.Clear">
+            <summary>Removes all elements from the set.</summary>
+        </member>
+        <member name="M:System.Collections.Generic.HashSet`1.Contains(`0)">
+            <summary>Determines whether the set contains the specified element.</summary>
+        </member>
+        <member name="M:System.Collections.Generic.HashSet`1.Remove(`0)">
+            <summary>Removes the specified element from the set and returns whether it was found and removed.</summary>
+        </member>
+        <member name="M:System.Collections.Generic.HashSet`1.RemoveWhere(System.Predicate{`0})">
+            <summary>Removes all elements that match the conditions defined by the specified predicate and returns the number removed.</summary>
+        </member>
+        <member name="M:System.Collections.Generic.HashSet`1.TryGetValue(`0,`0@)">
+            <summary>Searches the set for the element that equals the specified value and returns whether it was found.</summary>
+        </member>
+        <member name="M:System.Collections.Generic.HashSet`1.CopyTo(`0[])">
+            <summary>Copies the elements of the set to the specified array.</summary>
+        </member>
+        <member name="M:System.Collections.Generic.HashSet`1.CopyTo(`0[],System.Int32)">
+            <summary>Copies the elements of the set to the specified array, starting at the specified array index.</summary>
+        </member>
+        <member name="M:System.Collections.Generic.HashSet`1.CopyTo(`0[],System.Int32,System.Int32)">
+            <summary>Copies the specified number of elements of the set to the specified array, starting at the specified array index.</summary>
+        </member>
+        <member name="M:System.Collections.Generic.HashSet`1.UnionWith(System.Collections.Generic.IEnumerable{`0})">
+            <summary>Modifies the set to contain all elements that are present in itself, the specified collection, or both.</summary>
+        </member>
+        <member name="M:System.Collections.Generic.HashSet`1.IntersectWith(System.Collections.Generic.IEnumerable{`0})">
+            <summary>Modifies the set to contain only elements that are also present in the specified collection.</summary>
+        </member>
+        <member name="M:System.Collections.Generic.HashSet`1.ExceptWith(System.Collections.Generic.IEnumerable{`0})">
+            <summary>Removes all elements in the specified collection from the set.</summary>
+        </member>
+        <member name="M:System.Collections.Generic.HashSet`1.SymmetricExceptWith(System.Collections.Generic.IEnumerable{`0})">
+            <summary>Modifies the set to contain only elements that are present either in itself or in the specified collection, but not both.</summary>
+        </member>
+        <member name="M:System.Collections.Generic.HashSet`1.IsSubsetOf(System.Collections.Generic.IEnumerable{`0})">
+            <summary>Determines whether the set is a subset of the specified collection.</summary>
+        </member>
+        <member name="M:System.Collections.Generic.HashSet`1.IsProperSubsetOf(System.Collections.Generic.IEnumerable{`0})">
+            <summary>Determines whether the set is a proper subset of the specified collection.</summary>
+        </member>
+        <member name="M:System.Collections.Generic.HashSet`1.IsSupersetOf(System.Collections.Generic.IEnumerable{`0})">
+            <summary>Determines whether the set is a superset of the specified collection.</summary>
+        </member>
+        <member name="M:System.Collections.Generic.HashSet`1.IsProperSupersetOf(System.Collections.Generic.IEnumerable{`0})">
+            <summary>Determines whether the set is a proper superset of the specified collection.</summary>
+        </member>
+        <member name="M:System.Collections.Generic.HashSet`1.Overlaps(System.Collections.Generic.IEnumerable{`0})">
+            <summary>Determines whether the set and the specified collection share any common elements.</summary>
+        </member>
+        <member name="M:System.Collections.Generic.HashSet`1.SetEquals(System.Collections.Generic.IEnumerable{`0})">
+            <summary>Determines whether the set and the specified collection contain the same elements.</summary>
+        </member>
+        <member name="M:System.Collections.Generic.HashSet`1.GetEnumerator">
+            <summary>Returns an enumerator that iterates through the set.</summary>
+        </member>
+        <member name="T:System.Collections.Generic.HashSet`1.Enumerator">
+            <summary>Enumerates the elements of a <see cref="T:System.Collections.Generic.HashSet`1"/>.</summary>
+        </member>
+        <member name="M:System.Collections.Generic.HashSet`1.Enumerator.MoveNext">
+            <summary>Advances the enumerator to the next element of the set.</summary>
+        </member>
+        <member name="P:System.Collections.Generic.HashSet`1.Enumerator.Current">
+            <summary>Gets the element at the current position of the enumerator.</summary>
+        </member>
+        <member name="M:System.Collections.Generic.HashSet`1.Enumerator.Dispose">
+            <summary>Releases all resources used by the enumerator.</summary>
         </member>
     </members>
 </doc>

@@ -3,9 +3,12 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace GHIElectronics.TinyCLR.UI.Media {
+    /// <summary>A brush that paints a region with a solid color.</summary>
     public sealed class SolidColorBrush : Brush {
+        /// <summary>The color painted by the brush.</summary>
         public Color Color;
 
+        /// <summary>Creates a brush that paints with the given color.</summary>
         public SolidColorBrush(Color color) => this.Color = color;
 
         internal override void RenderRectangle(Bitmap bmp, Pen pen, int x, int y, int width, int height) {

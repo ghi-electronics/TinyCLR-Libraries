@@ -986,25 +986,39 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
     namespace Provider {
         /// <summary>Provider contract for a network controller.</summary>
         public interface INetworkControllerProvider : IDisposable, INetworkProvider {
+            /// <summary>Transport type of the interface — Ethernet, WiFi, or PPP.</summary>
             NetworkInterfaceType InterfaceType { get; }
+            /// <summary>Physical bus carrying the interface — built-in MAC, SPI, or UART.</summary>
             NetworkCommunicationInterface CommunicationInterface { get; }
 
+            /// <summary>Brings the interface up.</summary>
             void Enable();
+            /// <summary>Brings the interface down.</summary>
             void Disable();
 
+            /// <summary>Suspends the interface to a low-power state.</summary>
             void Suspend();
+            /// <summary>Resumes a suspended interface.</summary>
             void Resume();
 
+            /// <summary>Returns true when the physical link is up.</summary>
             bool GetLinkConnected();
+            /// <summary>Returns true when a station is connected to this access point.</summary>
             bool GetAccessPointClientLinkConnect(WiFiNetworkInterfaceSettings settings);
 
+            /// <summary>Returns the current IP address, subnet, gateway, and DNS servers.</summary>
             NetworkIPProperties GetIPProperties();
+            /// <summary>Returns interface-specific properties such as the MAC address.</summary>
             NetworkInterfaceProperties GetInterfaceProperties();
 
+            /// <summary>Applies the interface settings (IP address, DHCP, DNS).</summary>
             void SetInterfaceSettings(NetworkInterfaceSettings settings);
+            /// <summary>Applies the underlying physical-bus settings.</summary>
             void SetCommunicationInterfaceSettings(NetworkCommunicationInterfaceSettings settings);
 
+            /// <summary>Raised when the physical link goes up or down.</summary>
             event NetworkLinkConnectedChangedEventHandler NetworkLinkConnectedChanged;
+            /// <summary>Raised when the IP address, gateway, or DNS servers change.</summary>
             event NetworkAddressChangedEventHandler NetworkAddressChanged;
         }
 
@@ -1016,8 +1030,10 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
             private NetworkLinkConnectedChangedEventHandler networkLinkConnectedChangedCallbacks;
             private NetworkAddressChangedEventHandler networkAddressChangedCallbacks;
 
+            /// <summary>The native API this wrapper is bound to.</summary>
             public NativeApi Api { get; }
 
+            /// <summary>Creates a wrapper bound to the given native network API.</summary>
             public NetworkControllerApiWrapper(NativeApi api) {
                 this.Api = api;
 
@@ -1032,6 +1048,7 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
                 this.networkAddressChangedDispatcher.OnInterrupt += (apiName, d0, d1, d2, d3, ts) => { if (this.Api.Name == apiName) this.networkAddressChangedCallbacks?.Invoke(null, new NetworkAddressChangedEventArgs(ts)); };
             }
 
+            /// <inheritdoc/>
             public event NetworkLinkConnectedChangedEventHandler NetworkLinkConnectedChanged {
                 add {
                     if (this.networkLinkConnectedChangedCallbacks == null)
@@ -1047,6 +1064,7 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
                 }
             }
 
+            /// <inheritdoc/>
             public event NetworkAddressChangedEventHandler NetworkAddressChanged {
                 add {
                     if (this.networkAddressChangedCallbacks == null)
@@ -1062,6 +1080,7 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
                 }
             }
 
+            /// <summary>Releases the native network controller.</summary>
             public void Dispose() => this.Release();
 
             [MethodImpl(MethodImplOptions.InternalCall)]
@@ -1070,15 +1089,20 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
             [MethodImpl(MethodImplOptions.InternalCall)]
             private extern void Release();
 
+            /// <summary>Enables or disables native delivery of link-connected-changed events.</summary>
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void SetNetworkLinkConnectedChangedEventEnabled(bool enabled);
 
+            /// <summary>Enables or disables native delivery of address-changed events.</summary>
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void SetNetworkAddressChangedEventEnabled(bool enabled);
 
+            /// <inheritdoc/>
             public extern NetworkInterfaceType InterfaceType { [MethodImpl(MethodImplOptions.InternalCall)] get; }
+            /// <inheritdoc/>
             public extern NetworkCommunicationInterface CommunicationInterface { [MethodImpl(MethodImplOptions.InternalCall)] get; }
 
+            /// <inheritdoc/>
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void Enable();
 
@@ -1088,15 +1112,19 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
             // managed threads. The interface comes up later — subscribe to
             // NetworkLinkConnectedChanged / NetworkAddressChanged on the
             // owning NetworkController to learn when it is actually ready.
+            /// <summary>Non-blocking variant of <see cref="Enable"/> that brings the interface up on a background native task.</summary>
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void EnableAsync();
 
+            /// <inheritdoc/>
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void Disable();
 
+            /// <inheritdoc/>
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void Suspend();
 
+            /// <inheritdoc/>
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void Resume();
 
@@ -1105,9 +1133,11 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
             // the public NetworkController class — without this, switching
             // the managed default would leave lwIP routing unmatched
             // destinations through whichever interface was Enable()d last.
+            /// <summary>Promotes this controller's interface to lwIP's default route at the firmware level.</summary>
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void SetAsDefault();
 
+            /// <inheritdoc/>
             public void SetInterfaceSettings(NetworkInterfaceSettings settings) {
                 switch (this.InterfaceType) {
                     case NetworkInterfaceType.Ethernet when settings is EthernetNetworkInterfaceSettings enis:
@@ -1127,6 +1157,7 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
                 }
             }
 
+            /// <inheritdoc/>
             public void SetCommunicationInterfaceSettings(NetworkCommunicationInterfaceSettings settings) {
                 switch (this.CommunicationInterface) {
                     case NetworkCommunicationInterface.BuiltIn when settings is BuiltInNetworkCommunicationInterfaceSettings bcis:
@@ -1165,84 +1196,110 @@ namespace GHIElectronics.TinyCLR.Devices.Network {
             [MethodImpl(MethodImplOptions.InternalCall)]
             private extern void SetCommunicationInterfaceSettings(UartNetworkCommunicationInterfaceSettings settings);
 
+            /// <summary>Returns true when the physical link is up.</summary>
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern bool GetLinkConnected();
 
+            /// <summary>Returns the current IP address, subnet, gateway, and DNS servers.</summary>
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern NetworkIPProperties GetIPProperties();
 
+            /// <summary>Returns interface-specific properties such as the MAC address.</summary>
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern NetworkInterfaceProperties GetInterfaceProperties();
 
+            /// <summary>Creates a native socket and returns its handle.</summary>
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern int Create(AddressFamily addressFamily, SocketType socketType, ProtocolType protocolType);
 
+            /// <summary>Closes the given socket.</summary>
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void Close(int socket);
 
+            /// <summary>Binds the socket to a local address.</summary>
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void Bind(int socket, SocketAddress address);
 
+            /// <summary>Places the socket into the listening state with the given backlog.</summary>
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void Listen(int socket, int backlog);
 
+            /// <summary>Accepts a pending connection and returns the new socket handle.</summary>
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern int Accept(int socket);
 
+            /// <summary>Connects the socket to a remote address.</summary>
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void Connect(int socket, SocketAddress address);
 
+            /// <summary>Returns the number of bytes available to read on the socket.</summary>
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern int Available(int socket);
 
+            /// <summary>Polls the socket for the given mode within the timeout.</summary>
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern bool Poll(int socket, int microSeconds, SelectMode mode);
 
+            /// <summary>Sends data on a connected socket and returns the number of bytes sent.</summary>
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern int Send(int socket, byte[] buffer, int offset, int count, SocketFlags flags);
 
+            /// <summary>Receives data on a connected socket and returns the number of bytes read.</summary>
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern int Receive(int socket, byte[] buffer, int offset, int count, SocketFlags flags);
 
+            /// <summary>Sends data to a specific address and returns the number of bytes sent.</summary>
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern int SendTo(int socket, byte[] buffer, int offset, int count, SocketFlags flags, SocketAddress address);
 
+            /// <summary>Receives data and reports the sender address; returns the number of bytes read.</summary>
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern int ReceiveFrom(int socket, byte[] buffer, int offset, int count, SocketFlags flags, ref SocketAddress address);
 
+            /// <summary>Gets the remote address of a connected socket.</summary>
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void GetRemoteAddress(int socket, out SocketAddress address);
 
+            /// <summary>Gets the local address bound to the socket.</summary>
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void GetLocalAddress(int socket, out SocketAddress address);
 
+            /// <summary>Reads a socket option value.</summary>
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void GetOption(int socket, SocketOptionLevel optionLevel, SocketOptionName optionName, byte[] optionValue);
 
+            /// <summary>Writes a socket option value.</summary>
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void SetOption(int socket, SocketOptionLevel optionLevel, SocketOptionName optionName, byte[] optionValue);
 
+            /// <summary>Performs a TLS client handshake on the socket and returns the secure handle.</summary>
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern int AuthenticateAsClient(int socketHandle, string targetHost, X509Certificate caCertificate, X509Certificate clientCertificate, SslProtocols sslProtocols, SslVerification sslVerification);
 
+            /// <summary>Performs a TLS server handshake on the socket and returns the secure handle.</summary>
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern int AuthenticateAsServer(int socketHandle, X509Certificate certificate, SslProtocols sslProtocols);
 
+            /// <summary>Reads decrypted data from a secured connection.</summary>
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern int SecureRead(int handle, byte[] buffer, int offset, int count);
 
+            /// <summary>Writes data to a secured connection, encrypting it.</summary>
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern int SecureWrite(int handle, byte[] buffer, int offset, int count);
 
+            /// <summary>Resolves a host name to its canonical name and addresses via DNS.</summary>
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void GetHostByName(string name, out string canonicalName, out SocketAddress[] addresses);
 
+            /// <summary>Returns true when a station is connected to this access point.</summary>
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern bool GetAccessPointClientLinkConnect(WiFiNetworkInterfaceSettings settings);
 
             // Half-close (lwIP shutdown). Appended at end so the metadata
             // token order — and therefore the firmware interop dispatch
             // table indices — for existing methods stay unchanged.
+            /// <summary>Half-closes the socket in the given direction (lwIP shutdown).</summary>
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void Shutdown(int socket, SocketShutdown how);
         }

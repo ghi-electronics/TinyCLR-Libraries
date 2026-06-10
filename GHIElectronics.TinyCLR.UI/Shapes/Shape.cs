@@ -5,7 +5,9 @@
 using GHIElectronics.TinyCLR.UI.Media;
 
 namespace GHIElectronics.TinyCLR.UI.Shapes {
+    /// <summary>Base class for elements that draw a shape.</summary>
     public abstract class Shape : UIElement {
+        /// <summary>The brush used to fill the shape.</summary>
         public Media.Brush Fill {
             get {
                 if (this._fill == null) {
@@ -23,6 +25,7 @@ namespace GHIElectronics.TinyCLR.UI.Shapes {
             }
         }
 
+        /// <summary>The pen used to draw the outline of the shape.</summary>
         public Media.Pen Stroke {
             get {
                 if (this._stroke == null) {

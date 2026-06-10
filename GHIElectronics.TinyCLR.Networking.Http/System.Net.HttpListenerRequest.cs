@@ -104,6 +104,7 @@ namespace System.Net
             this.m_contentLength = -1;
         }
 
+        /// <summary>Clears the request headers and content length so the instance can be reused.</summary>
         public void Reset()
         {
             this.m_httpRequestHeaders = new WebHeaderCollection(true);

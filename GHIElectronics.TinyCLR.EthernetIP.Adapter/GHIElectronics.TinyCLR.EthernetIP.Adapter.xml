@@ -37,6 +37,30 @@
             </para>
             </remarks>
         </member>
+        <member name="T:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.ReceivedExplicitTcpDataHandler">
+            <summary>Handles an explicit TCP encapsulation command received from a scanner.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.ReceivedExplicitUdpDataHandler">
+            <summary>Handles an explicit UDP encapsulation command received from a scanner.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.NotifyClassHandler">
+            <summary>Handles notification that a scanner accessed a CIP class, instance, and attribute.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.AfterAssemblyDataReceivedHandler">
+            <summary>Handles assembly data having been received into an assembly instance.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.BeforeAssemblyDataSendHandler">
+            <summary>Handles the moment just before assembly data is sent from an assembly instance.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.RegisterSessionHandler">
+            <summary>Handles a scanner registering or unregistering an encapsulation session.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.ForwardOpenHandler">
+            <summary>Handles a successful Forward Open opening a CIP connection.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.ForwardCloseHandler">
+            <summary>Handles a Forward Close tearing down a CIP connection.</summary>
+        </member>
         <member name="M:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.#ctor(System.String,System.UInt16,System.UInt16,System.UInt16,System.UInt32,System.Byte,System.Byte)">
             <summary>Construct the adapter. Identity values are set on the underlying CIP
             Identity object but the network stack isn't started yet — call <see cref="M:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.Enable"/>
@@ -105,6 +129,9 @@
             <summary>Fires when a Forward Close completes — the named CIP connection
             is being torn down.</summary>
         </member>
+        <member name="M:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.AddCipClass(GHIElectronics.TinyCLR.EthernetIP.Adapter.CIPClass)">
+            <summary>Registers a CIP object class with the adapter, creating it on the native stack.</summary>
+        </member>
         <member name="M:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.AddAssemblyObject(GHIElectronics.TinyCLR.EthernetIP.Adapter.AssemblyObject)">
             <summary>Register a Class 4 (Assembly) instance the scanner can read or write
             via implicit (Class 1) or explicit messaging. Auto-creates the Assembly class
@@ -136,6 +163,15 @@
             scanner subscribes to the same multicast input data the Exclusive Owner is
             receiving, without owning the connection.</summary>
         </member>
+        <member name="M:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.InsertService(GHIElectronics.TinyCLR.EthernetIP.Adapter.CIPClass,GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CIPServiceCode,GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CIPServiceCode,System.String)">
+            <summary>Adds a service to a CIP class, binding the given handler to the service slot.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.InsertAttribute(GHIElectronics.TinyCLR.EthernetIP.Adapter.CipInstance,System.UInt16,GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CIPDataType,GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CipAttributeEncodeInMessage,GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CipAttributeDecodeFromMessage,System.Byte[],GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CIPAttributeFlag)">
+            <summary>Adds an attribute to a CIP instance, with its data type, encode/decode functions, data, and access flags.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CreateAssemblyClass(System.Int32,System.UInt32,System.Int32,System.Int32,System.UInt32,System.Int32,System.UInt32,System.String,System.UInt16)">
+            <summary>Creates and registers the Assembly (Class 4) object class with the given attribute/service counts.</summary>
+        </member>
         <member name="M:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.Enable">
             <summary>Start the EtherNet/IP stack: opens the four CIP sockets (TCP 44818,
             UDP 44818 unicast + broadcast, UDP 2222 for Class 1), spawns the OpENer
@@ -161,6 +197,27 @@
             flags so a fresh <see cref="T:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController"/> can be constructed.
             Idempotent. Suitable for use in a <c>using</c> block.</summary>
         </member>
+        <member name="M:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.AddCipInstance(GHIElectronics.TinyCLR.EthernetIP.Adapter.CIPClass,System.UInt32)">
+            <summary>Adds a single instance with the given instance ID to a CIP class.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.AddCipInstances(GHIElectronics.TinyCLR.EthernetIP.Adapter.CIPClass,System.UInt32)">
+            <summary>Adds the configured number of instances starting at the given instance ID to a CIP class.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.AllocateAttributeMasks(GHIElectronics.TinyCLR.EthernetIP.Adapter.CIPClass)">
+            <summary>Allocates the get/set attribute bit masks for the given CIP class.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CalculateIndex(System.UInt16)">
+            <summary>Calculates the internal index for the given attribute number.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.GetCipAttribute(GHIElectronics.TinyCLR.EthernetIP.Adapter.CipInstance,System.UInt16)">
+            <summary>Gets the attribute with the given number from a CIP instance.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.GetCipClass(System.UInt16)">
+            <summary>Gets the registered CIP class with the given class ID.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.GetCipInstance(GHIElectronics.TinyCLR.EthernetIP.Adapter.CIPClass,System.UInt32)">
+            <summary>Gets the instance with the given number from a CIP class, or null if it does not exist.</summary>
+        </member>
         <member name="M:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.EnableHeaderO2T(System.Boolean)">
             <summary>Toggle the 32-bit Run/Idle header on O→T (output) Class-1 data.
             <b>Must be true</b> when talking to Allen-Bradley ControlLogix/CompactLogix
@@ -176,6 +233,111 @@
             <summary>Toggle the 32-bit Run/Idle header on T→O (input) Class-1 data.
             Less commonly required than O2T; defaults to false. Enable if your scanner's
             configuration expects it.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CipAttributeDecodeFromMessage">
+            <summary>Selects the native function used to decode an attribute value from a received message.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CipAttributeDecodeFromMessage.None">
+            <summary>No decode function.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CipAttributeDecodeFromMessage.DecodeCipBool">
+            <summary>Decode a CIP BOOL value.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CipAttributeDecodeFromMessage.DecodeCipByte">
+            <summary>Decode a CIP BYTE value.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CipAttributeDecodeFromMessage.DecodeCipByteArray">
+            <summary>Decode a CIP byte array value.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CipAttributeDecodeFromMessage.DecodeCipWord">
+            <summary>Decode a CIP WORD value.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CipAttributeDecodeFromMessage.DecodeCipDword">
+            <summary>Decode a CIP DWORD value.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CipAttributeDecodeFromMessage.DecodeCipLword">
+            <summary>Decode a CIP LWORD value.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CipAttributeDecodeFromMessage.DecodeCipUsint">
+            <summary>Decode a CIP USINT value.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CipAttributeDecodeFromMessage.DecodeCipUint">
+            <summary>Decode a CIP UINT value.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CipAttributeDecodeFromMessage.DecodeCipUdint">
+            <summary>Decode a CIP UDINT value.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CipAttributeDecodeFromMessage.DecodeCipUlint">
+            <summary>Decode a CIP ULINT value.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CipAttributeDecodeFromMessage.DecodeCipSint">
+            <summary>Decode a CIP SINT value.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CipAttributeDecodeFromMessage.DecodeCipInt">
+            <summary>Decode a CIP INT value.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CipAttributeDecodeFromMessage.DecodeCipDint">
+            <summary>Decode a CIP DINT value.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CipAttributeDecodeFromMessage.DecodeCipLint">
+            <summary>Decode a CIP LINT value.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CipAttributeDecodeFromMessage.DecodeCipReal">
+            <summary>Decode a CIP REAL value.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CipAttributeDecodeFromMessage.DecodeCipLreal">
+            <summary>Decode a CIP LREAL value.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CipAttributeDecodeFromMessage.DecodeCipString">
+            <summary>Decode a CIP STRING value.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CipAttributeDecodeFromMessage.DecodeCipShortString">
+            <summary>Decode a CIP SHORT_STRING value.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CIPAttributeFlag">
+            <summary>Access and callback flags applied to a CIP attribute.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CIPAttributeFlag.kNotSetOrGetable">
+            <summary>Neither settable nor gettable.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CIPAttributeFlag.kGetableAll">
+            <summary>Gettable, also part of the Get Attribute All service.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CIPAttributeFlag.kGetableSingle">
+            <summary>Gettable via Get Attribute Single.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CIPAttributeFlag.kSetable">
+            <summary>Settable via Set Attribute.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CIPAttributeFlag.kSetAndGetAble">
+            <summary>Both settable and gettable.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CIPAttributeFlag.kGetableSingleAndAll">
+            <summary>Gettable via both single and all.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CIPAttributeFlag.kGetableAllDummy">
+            <summary>Gettable but a dummy attribute.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CIPAttributeFlag.kPreGetFunc">
+            <summary>Enable the pre-get callback.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CIPAttributeFlag.kPostGetFunc">
+            <summary>Enable the post-get callback.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CIPAttributeFlag.kPreSetFunc">
+            <summary>Enable the pre-set callback.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CIPAttributeFlag.kPostSetFunc">
+            <summary>Enable the post-set callback.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CIPAttributeFlag.kNvDataFunc">
+            <summary>Enable the non-volatile data callback (same value as the post-set callback).</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CIPDataType">
+            <summary>The CIP data type codes used to encode attribute values on the wire.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CIPDataType.kCipAny">
+            <summary>Data type that cannot be directly encoded.</summary>
         </member>
         <!-- Badly formed XML comment ignored for member "F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CIPDataType.kCipBool" -->
         <!-- Badly formed XML comment ignored for member "F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CIPDataType.kCipSint" -->
@@ -206,13 +368,324 @@
         <!-- Badly formed XML comment ignored for member "F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CIPDataType.kCipTime" -->
         <!-- Badly formed XML comment ignored for member "F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CIPDataType.kCipEpath" -->
         <!-- Badly formed XML comment ignored for member "F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CIPDataType.kCipEngUnit" -->
-        <!-- Badly formed XML comment ignored for member "F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CIPDataType.kCipUsintUsint" -->
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CIPDataType.kCipUsintUsint">
+            <summary>Struct of two USINTs, used for CIP Identity attribute 4 (revision).</summary>
+        </member>
         <!-- Badly formed XML comment ignored for member "F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CIPDataType.kCipUdintUdintUdintUdintUdintString" -->
         <!-- Badly formed XML comment ignored for member "F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CIPDataType.kCip6Usint" -->
         <!-- Badly formed XML comment ignored for member "F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CIPDataType.kCipMemberList" -->
         <!-- Badly formed XML comment ignored for member "F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CIPDataType.kCipByteArray" -->
         <!-- Badly formed XML comment ignored for member "F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CIPDataType.kInternalUint6" -->
         <!-- Badly formed XML comment ignored for member "F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CIPDataType.kCipStringI" -->
+        <member name="T:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.ClassId">
+            <summary>Standard CIP object class codes.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.ClassId.Identity">
+            <summary>Identity object.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.ClassId.MessageRouter">
+            <summary>Message Router object.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.ClassId.DeviceNet">
+            <summary>DeviceNet object.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.ClassId.Assembly">
+            <summary>Assembly object.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.ClassId.Connection">
+            <summary>Connection object.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.ClassId.ConnectionManager">
+            <summary>Connection Manager object.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.ClassId.Dlr">
+            <summary>Device Level Ring (DLR) object.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.ClassId.QoS">
+            <summary>Quality of Service (QoS) object.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.ClassId.Port">
+            <summary>Port object.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.ClassId.TcpIpInterface">
+            <summary>TCP/IP Interface object.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.ClassId.EthernetLink">
+            <summary>Ethernet Link object.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CIPServiceCode">
+            <summary>CIP service codes for the common and object-specific services.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CIPServiceCode.kGetAttributeAll">
+            <summary>Get Attribute All service.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CIPServiceCode.kSetAttributeAll">
+            <summary>Set Attribute All service.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CIPServiceCode.kGetAttributeList">
+            <summary>Get Attribute List service.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CIPServiceCode.kSetAttributeList">
+            <summary>Set Attribute List service.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CIPServiceCode.kReset">
+            <summary>Reset service.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CIPServiceCode.kStart">
+            <summary>Start service.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CIPServiceCode.kStop">
+            <summary>Stop service.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CIPServiceCode.kCreate">
+            <summary>Create service.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CIPServiceCode.kDelete">
+            <summary>Delete service.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CIPServiceCode.kMultipleServicePacket">
+            <summary>Multiple Service Packet service.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CIPServiceCode.kApplyAttributes">
+            <summary>Apply Attributes service.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CIPServiceCode.kGetAttributeSingle">
+            <summary>Get Attribute Single service.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CIPServiceCode.kSetAttributeSingle">
+            <summary>Set Attribute Single service.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CIPServiceCode.kFindNextObjectInstance">
+            <summary>Find Next Object Instance service.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CIPServiceCode.kRestore">
+            <summary>Restore service.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CIPServiceCode.kSave">
+            <summary>Save service.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CIPServiceCode.kNoOperation">
+            <summary>No Operation service.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CIPServiceCode.kGetMember">
+            <summary>Get Member service.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CIPServiceCode.kSetMember">
+            <summary>Set Member service.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CIPServiceCode.kInsertMember">
+            <summary>Insert Member service.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CIPServiceCode.kRemoveMember">
+            <summary>Remove Member service.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CIPServiceCode.kGroupSync">
+            <summary>Group Sync service.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CIPServiceCode.kGetConnectionPointMemberList">
+            <summary>Get Connection Point Member List service.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CIPServiceCode.kEthLinkGetAndClear">
+            <summary>Ethernet Link object's Get_And_Clear service.</summary>
+        </member>
         <!-- Badly formed XML comment ignored for member "F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CIPServiceCode.kForwardOpen" -->
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CIPServiceCode.kLargeForwardOpen">
+            <summary>Large Forward Open service.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CIPServiceCode.kForwardClose">
+            <summary>Forward Close service.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CIPServiceCode.kUnconnectedSend">
+            <summary>Unconnected Send service.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CIPServiceCode.kGetConnectionOwner">
+            <summary>Get Connection Owner service.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CIPServiceCode.kGetConnectionData">
+            <summary>Get Connection Data service.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CIPServiceCode.kSearchConnectionData">
+            <summary>Search Connection Data service.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CipAttributeEncodeInMessage">
+            <summary>Selects the native function used to encode an attribute value into an outgoing message.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CipAttributeEncodeInMessage.None">
+            <summary>No encode function.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CipAttributeEncodeInMessage.EncodeCipBool">
+            <summary>Encode a CIP BOOL value.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CipAttributeEncodeInMessage.EncodeCipByte">
+            <summary>Encode a CIP BYTE value.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CipAttributeEncodeInMessage.EncodeCipWord">
+            <summary>Encode a CIP WORD value.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CipAttributeEncodeInMessage.EncodeCipDword">
+            <summary>Encode a CIP DWORD value.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CipAttributeEncodeInMessage.EncodeCipLword">
+            <summary>Encode a CIP LWORD value.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CipAttributeEncodeInMessage.EncodeCipUsint">
+            <summary>Encode a CIP USINT value.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CipAttributeEncodeInMessage.EncodeCipUint">
+            <summary>Encode a CIP UINT value.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CipAttributeEncodeInMessage.EncodeCipUdint">
+            <summary>Encode a CIP UDINT value.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CipAttributeEncodeInMessage.EncodeCipUlint">
+            <summary>Encode a CIP ULINT value.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CipAttributeEncodeInMessage.EncodeCipSint">
+            <summary>Encode a CIP SINT value.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CipAttributeEncodeInMessage.EncodeCipInt">
+            <summary>Encode a CIP INT value.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CipAttributeEncodeInMessage.EncodeCipDint">
+            <summary>Encode a CIP DINT value.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CipAttributeEncodeInMessage.EncodeCipLint">
+            <summary>Encode a CIP LINT value.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CipAttributeEncodeInMessage.EncodeCipReal">
+            <summary>Encode a CIP REAL value.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CipAttributeEncodeInMessage.EncodeCipLreal">
+            <summary>Encode a CIP LREAL value.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CipAttributeEncodeInMessage.EncodeCipShortString">
+            <summary>Encode a CIP SHORT_STRING value.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CipAttributeEncodeInMessage.EncodeCipString">
+            <summary>Encode a CIP STRING value.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CipAttributeEncodeInMessage.EncodeCipString2">
+            <summary>Encode a CIP STRING2 value.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CipAttributeEncodeInMessage.EncodeCipStringN">
+            <summary>Encode a CIP STRINGN value.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CipAttributeEncodeInMessage.EncodeCipStringI">
+            <summary>Encode a CIP STRINGI value.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CipAttributeEncodeInMessage.EncodeCipByteArray">
+            <summary>Encode a CIP byte array value.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CipAttributeEncodeInMessage.EncodeCipEPath">
+            <summary>Encode a padded CIP EPATH value.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CipAttributeEncodeInMessage.EncodeEPath">
+            <summary>Encode a packed EPATH value.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.CipAttributeEncodeInMessage.EncodeCipEthernetLinkPhyisicalAddress">
+            <summary>Encode an Ethernet Link object physical (MAC) address.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.EncapsulationCommand">
+            <summary>EtherNet/IP encapsulation command codes reported by the explicit-data events.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.EncapsulationCommand.NoOperation">
+            <summary>No operation (TCP only).</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.EncapsulationCommand.ListServices">
+            <summary>List Services command (TCP and UDP).</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.EncapsulationCommand.ListIdentity">
+            <summary>List Identity command (TCP and UDP).</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.EncapsulationCommand.ListInterfaces">
+            <summary>List Interfaces command (optional, TCP and UDP).</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.EncapsulationCommand.RegisterSession">
+            <summary>Register Session command (TCP only).</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.EncapsulationCommand.UnregisterSession">
+            <summary>Unregister Session command (TCP only).</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.EncapsulationCommand.SendRequestReplyData">
+            <summary>Send RR (request/reply) Data command (TCP only).</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.EncapsulationCommand.SendUnitData">
+            <summary>Send Unit Data command (TCP only).</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.EthernetIP.Adapter.AssemblyObject">
+            <summary>Describes a CIP Assembly (Class 4) instance that a scanner can read or write.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Adapter.AssemblyObject.Impl">
+            <summary>Native handle to the underlying assembly object.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Adapter.AssemblyObject.InstanceId">
+            <summary>The CIP instance ID of this assembly.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Adapter.AssemblyObject.Data">
+            <summary>The data buffer backing this assembly's contents.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Adapter.AssemblyObject.Size">
+            <summary>The size of the assembly data in bytes.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.EthernetIP.Adapter.AssemblyObject.#ctor(System.Int32,System.Byte[],System.UInt16)">
+            <summary>Creates an assembly object with the given instance ID, data buffer, and size.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.EthernetIP.Adapter.CipAttribute">
+            <summary>Represents a single attribute of a CIP object instance.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Adapter.CipAttribute.Impl">
+            <summary>Native handle to the underlying CIP attribute.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.EthernetIP.Adapter.CIPClass">
+            <summary>Describes a CIP object class to be registered with the adapter.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Adapter.CIPClass.Impl">
+            <summary>Native handle to the underlying CIP class.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Adapter.CIPClass.ClassCode">
+            <summary>The CIP class code identifying this object class.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Adapter.CIPClass.NumberClassAttributes">
+            <summary>The number of class-level attributes.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Adapter.CIPClass.HighestClassAttributeNumber">
+            <summary>The highest class-attribute number used.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Adapter.CIPClass.NumberClassServices">
+            <summary>The number of class-level services.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Adapter.CIPClass.NumberInstanceAttributes">
+            <summary>The number of instance-level attributes.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Adapter.CIPClass.HighestInstanceAttributeNumber">
+            <summary>The highest instance-attribute number used.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Adapter.CIPClass.NumberInstanceServices">
+            <summary>The number of instance-level services.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Adapter.CIPClass.NumberInstances">
+            <summary>The number of instances to create for this class.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Adapter.CIPClass.Name">
+            <summary>The class name.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Adapter.CIPClass.Revision">
+            <summary>The class revision number.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Adapter.CIPClass.DefaultInitialize">
+            <summary>Whether the class is created with the OpENer default initialization.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.EthernetIP.Adapter.CIPClass.#ctor">
+            <summary>Creates an empty CIP class wrapper.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.EthernetIP.Adapter.CIPClass.#ctor(GHIElectronics.TinyCLR.EthernetIP.Adapter.AdapterController.ClassId,System.Int32,System.UInt32,System.Int32,System.Int32,System.UInt32,System.Int32,System.UInt32,System.String,System.UInt16,System.Boolean)">
+            <summary>Creates a CIP class with the given class code, attribute/service counts, name, and revision.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.EthernetIP.Adapter.CipInstance">
+            <summary>Represents a single instance of a CIP object class.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.EthernetIP.Adapter.CipInstance.Impl">
+            <summary>Native handle to the underlying CIP instance.</summary>
+        </member>
     </members>
 </doc>

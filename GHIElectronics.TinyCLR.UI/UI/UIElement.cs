@@ -10,7 +10,9 @@ using GHIElectronics.TinyCLR.UI.Media;
 using GHIElectronics.TinyCLR.UI.Threading;
 
 namespace GHIElectronics.TinyCLR.UI {
+    /// <summary>The base class for all visual elements that participate in layout, rendering, and input.</summary>
     public abstract class UIElement : DispatcherObject {
+        /// <summary>Initializes a new instance of the <see cref="UIElement"/> class.</summary>
         protected UIElement() {
             EnsureClassHandlers();
 
@@ -95,6 +97,7 @@ namespace GHIElectronics.TinyCLR.UI {
 
         private static void OnGenericEventThunk(object sender, RoutedEventArgs e) => ((UIElement)sender).OnGenericEvent((GenericEventArgs)e);
 
+        /// <summary>Handles a generic input event and dispatches touch gestures to the gesture overrides.</summary>
         protected virtual void OnGenericEvent(GenericEventArgs e) {
             var genericEvent = e.InternalEvent;
             switch (genericEvent.EventCategory) {
@@ -132,16 +135,22 @@ namespace GHIElectronics.TinyCLR.UI {
 
         private static void OnTouchMoveThunk(object sender, RoutedEventArgs e) => ((UIElement)sender).OnTouchMove((TouchEventArgs)e);
 
+        /// <summary>Raises the <see cref="TouchDown"/> event.</summary>
         protected virtual void OnTouchDown(TouchEventArgs e) => TouchDown?.Invoke(this, e);
 
+        /// <summary>Raises the <see cref="TouchUp"/> event.</summary>
         protected virtual void OnTouchUp(TouchEventArgs e) => TouchUp?.Invoke(this, e);
 
+        /// <summary>Raises the <see cref="TouchMove"/> event.</summary>
         protected virtual void OnTouchMove(TouchEventArgs e) => TouchMove?.Invoke(this, e);
 
+        /// <summary>Raises the <see cref="TouchGestureStart"/> event.</summary>
         protected virtual void OnTouchGestureStarted(TouchGestureEventArgs e) => TouchGestureStart?.Invoke(this, e);
 
+        /// <summary>Raises the <see cref="TouchGestureChanged"/> event.</summary>
         protected virtual void OnTouchGestureChanged(TouchGestureEventArgs e) => TouchGestureChanged?.Invoke(this, e);
 
+        /// <summary>Raises the <see cref="TouchGestureEnd"/> event.</summary>
         protected virtual void OnTouchGestureEnded(TouchGestureEventArgs e) => TouchGestureEnd?.Invoke(this, e);
 
         /// <summary>
@@ -176,14 +185,21 @@ namespace GHIElectronics.TinyCLR.UI {
 
         #endregion Class Handlers
 
+        /// <summary>Occurs when a touch contact is pressed on this element.</summary>
         public event TouchEventHandler TouchDown;
+        /// <summary>Occurs when a touch contact is released from this element.</summary>
         public event TouchEventHandler TouchUp;
+        /// <summary>Occurs when a touch contact moves over this element.</summary>
         public event TouchEventHandler TouchMove;
 
+        /// <summary>Occurs when a touch gesture begins on this element.</summary>
         public event TouchGestureEventHandler TouchGestureStart;
+        /// <summary>Occurs when an in-progress touch gesture changes.</summary>
         public event TouchGestureEventHandler TouchGestureChanged;
+        /// <summary>Occurs when a touch gesture ends on this element.</summary>
         public event TouchGestureEventHandler TouchGestureEnd;
 
+        /// <summary>Gets the size this element computed it needs during the measure pass.</summary>
         public void GetDesiredSize(out int width, out int height) {
             if (this.Visibility == Visibility.Collapsed) {
                 width = 0;
@@ -195,6 +211,7 @@ namespace GHIElectronics.TinyCLR.UI {
             }
         }
 
+        /// <summary>Gets the margin (outer spacing) around this element.</summary>
         public void GetMargin(out int left, out int top, out int right, out int bottom) {
             left = this._marginLeft;
             top = this._marginTop;
@@ -202,12 +219,14 @@ namespace GHIElectronics.TinyCLR.UI {
             bottom = this._marginBottom;
         }
 
+        /// <summary>Sets a uniform margin on all four sides of this element.</summary>
         public void SetMargin(int length) {
             VerifyAccess();
 
             SetMargin(length, length, length, length);
         }
 
+        /// <summary>Sets the margin (outer spacing) on each side of this element.</summary>
         public void SetMargin(int left, int top, int right, int bottom) {
             VerifyAccess();
 
@@ -218,10 +237,13 @@ namespace GHIElectronics.TinyCLR.UI {
             InvalidateMeasure();
         }
 
+        /// <summary>Gets the rendered width of this element.</summary>
         public int ActualWidth => this._renderWidth;
 
+        /// <summary>Gets the rendered height of this element.</summary>
         public int ActualHeight => this._renderHeight;
 
+        /// <summary>Gets or sets the requested height of this element.</summary>
         public int Height {
             get {
                 if (IsHeightSet(out var height)) {
@@ -247,6 +269,7 @@ namespace GHIElectronics.TinyCLR.UI {
             }
         }
 
+        /// <summary>Gets or sets the requested width of this element.</summary>
         public int Width {
             get {
                 if (IsWidthSet(out var width)) {
@@ -272,6 +295,7 @@ namespace GHIElectronics.TinyCLR.UI {
             }
         }
 
+        /// <summary>Gets the requested height if one was assigned; otherwise returns false.</summary>
         // Exposed to derived controls so MeasureOverride / OnRender can probe
         // Width/Height without going through the public getters that throw
         // when the value was never assigned.
@@ -286,6 +310,7 @@ namespace GHIElectronics.TinyCLR.UI {
             return false;
         }
 
+        /// <summary>Gets the requested width if one was assigned; otherwise returns false.</summary>
         protected internal bool IsWidthSet(out int width) {
             var size = this._requestedSize;
             if (size != null && (size._status & Pair.Flags_First) != 0) {
@@ -297,16 +322,19 @@ namespace GHIElectronics.TinyCLR.UI {
             return false;
         }
 
+        /// <summary>Gets the offset of this element relative to its parent's coordinate space.</summary>
         public void GetLayoutOffset(out int x, out int y) {
             x = this._offsetX;
             y = this._offsetY;
         }
 
+        /// <summary>Gets the final rendered size of this element.</summary>
         public void GetRenderSize(out int width, out int height) {
             width = this._renderWidth;
             height = this._renderHeight;
         }
 
+        /// <summary>Gets the collection of child elements of this element.</summary>
         protected internal UIElementCollection LogicalChildren {
             get {
                 VerifyAccess();
@@ -913,8 +941,6 @@ namespace GHIElectronics.TinyCLR.UI {
         /// If there are multiple such controls, the one that was created/inserted
         /// into the list last wins. This is because we don't have explicit z-ordering
         /// right now.
-        ///
-
         /// </summary>
         /// <param name="x"></param>
         /// <param name="y"></param>
@@ -949,13 +975,16 @@ namespace GHIElectronics.TinyCLR.UI {
             return targetElement;
         }
 
+        /// <summary>Gets the desired size of this element before it was clipped to the available size.</summary>
         public void GetUnclippedSize(out int width, out int height) {
             width = this._unclippedWidth;
             height = this._unclippedHeight;
         }
 
+        /// <summary>Determines whether the given point lies within this element's bounds.</summary>
         public bool ContainsPoint(int x, int y) => (x >= this._offsetX && x < (this._offsetX + this._renderWidth) && y >= this._offsetY && y < (this._offsetY + this._renderHeight));
 
+        /// <summary>Returns the deepest visible descendant that contains the given point.</summary>
         public UIElement GetPointerTarget(int x, int y) {
             UIElement target = null;
 
@@ -998,6 +1027,7 @@ namespace GHIElectronics.TinyCLR.UI {
             }
         }
 
+        /// <summary>Converts a point from screen coordinates to this element's coordinate space.</summary>
         public void PointToClient(ref int x, ref int y) {
             var client = this;
             //need to cache this value on first call after relayout.
@@ -1069,8 +1099,10 @@ namespace GHIElectronics.TinyCLR.UI {
             }
         }
 
+        /// <summary>Gets the parent of this element, or null if it has none.</summary>
         public UIElement Parent => this._parent;
 
+        /// <summary>Gets the topmost ancestor of this element in the visual tree.</summary>
         public UIElement RootUIElement {
             get {
                 // we use two pointers to atomically check / iterate
@@ -1093,6 +1125,7 @@ namespace GHIElectronics.TinyCLR.UI {
         /// </summary>
         internal bool GetIsRootElement() => ((this._flags & Flags.ShouldPostRender) != 0);
 
+        /// <summary>Gets or sets how this element is horizontally aligned within its parent.</summary>
         public HorizontalAlignment HorizontalAlignment {
             get => this._horizontalAlignment;
 
@@ -1104,6 +1137,7 @@ namespace GHIElectronics.TinyCLR.UI {
             }
         }
 
+        /// <summary>Gets or sets how this element is vertically aligned within its parent.</summary>
         public VerticalAlignment VerticalAlignment {
             get => this._verticalAlignment;
 
@@ -1131,6 +1165,7 @@ namespace GHIElectronics.TinyCLR.UI {
             }
         }
 
+        /// <summary>Draws the content of this element. Override to provide custom rendering.</summary>
         public virtual void OnRender(DrawingContext dc) {
         }
 
@@ -1206,6 +1241,7 @@ namespace GHIElectronics.TinyCLR.UI {
         /// </summary>
         public bool IsVisible => (this._flags & Flags.IsVisibleCache) != 0;
 
+        /// <summary>Occurs when the effective visibility of this element changes.</summary>
         public event PropertyChangedEventHandler IsVisibleChanged {
             add {
                 VerifyAccess();
@@ -1260,6 +1296,7 @@ namespace GHIElectronics.TinyCLR.UI {
             }
         }
 
+        /// <summary>Occurs when the effective enabled state of this element changes.</summary>
         public event PropertyChangedEventHandler IsEnabledChanged {
             add {
                 VerifyAccess();
@@ -1274,6 +1311,7 @@ namespace GHIElectronics.TinyCLR.UI {
             }
         }
 
+        /// <summary>Renders this element and recursively renders its visible children.</summary>
         protected internal virtual void RenderRecursive(DrawingContext dc) {
             Debug.Assert(this.IsMeasureValid && this.IsArrangeValid);
 
@@ -1335,12 +1373,14 @@ namespace GHIElectronics.TinyCLR.UI {
                 Flags.IsSubtreeDirtyForRender);
         }
 
+        /// <summary>Marks the given rectangle of this element as needing to be redrawn.</summary>
         public void InvalidateRect(int x, int y, int w, int h) {
             VerifyAccess();
 
             MarkDirtyRect(x, y, w, h);
         }
 
+        /// <summary>Marks the entire element as needing to be redrawn.</summary>
         public void Invalidate() {
             VerifyAccess();
 
@@ -1539,11 +1579,13 @@ namespace GHIElectronics.TinyCLR.UI {
         #endregion
 
 #if TINYCLR_DEBUG_LAYOUT
+        /// <summary>Formats a rectangle as a string for layout debugging.</summary>
         public static string PrintRect(int x, int y, int width, int height)
         {
             return "[" + x + ", " + y + ", " + width + ", " + height + "]";
         }
 
+        /// <summary>Formats a size as a string for layout debugging.</summary>
         public static string PrintSize(int x, int y)
         {
             return "[" + x + ", " + y + "]";
@@ -1609,7 +1651,9 @@ namespace GHIElectronics.TinyCLR.UI {
         private int _marginRight;
         private int _marginBottom;
 
+        /// <summary>The horizontal alignment of this element within its parent.</summary>
         protected HorizontalAlignment _horizontalAlignment;
+        /// <summary>The vertical alignment of this element within its parent.</summary>
         protected VerticalAlignment _verticalAlignment;
 
         // Cached layout information

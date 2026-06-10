@@ -34,20 +34,27 @@ namespace GHIElectronics.TinyCLR.Data.Json
             public string TValue;
         }
 
+        /// <summary>Holds the formatting options and indentation state for one serialization pass.</summary>
         public class SerializationCtx
         {
+            /// <summary>Initializes a new serialization context with the given options.</summary>
             public SerializationCtx(JsonSerializationOptions options)
             {
                 this.options = options;
             }
 
+            /// <summary>The formatting options in effect for this serialization pass.</summary>
             public readonly JsonSerializationOptions options;
+            /// <summary>The current indentation nesting level.</summary>
             public int IndentLevel;
         }
 
+        /// <summary>The serialization context shared across the current serialization pass.</summary>
         public static SerializationCtx SerializationContext = null;
+        /// <summary>Lock object guarding access to the shared serialization context.</summary>
         public static object SyncObj = new object();
 
+        /// <summary>Serializes an object into a JSON token tree.</summary>
         public static JToken Serialize(object oSource, JsonSerializerSettings settings = null)
         {
             if (settings == null)
@@ -62,18 +69,21 @@ namespace GHIElectronics.TinyCLR.Data.Json
                 return JObject.Serialize(type, oSource, settings);
         }
 
+        /// <summary>Parses JSON text and populates a new instance of the given type.</summary>
         public static object DeserializeObject(string sourceString, Type type, InstanceFactory factory = null)
         {
             var dserResult = Deserialize(sourceString);
             return PopulateObject(dserResult, type, "/", factory);
         }
 
+        /// <summary>Parses JSON from a stream and populates a new instance of the given type.</summary>
         public static object DeserializeObject(Stream stream, Type type, InstanceFactory factory = null)
         {
             var dserResult = Deserialize(stream);
             return PopulateObject(dserResult, type, "/", factory);
         }
 
+        /// <summary>Parses JSON from a reader and populates a new instance of the given type.</summary>
         public static object DeserializeObject(StreamReader sr, Type type, InstanceFactory factory = null)
         {
             var dserResult = Deserialize(sr);
@@ -474,6 +484,7 @@ namespace GHIElectronics.TinyCLR.Data.Json
 
         private static object ConvertScalar(JProperty prop, Type targetType) => ConvertScalar((JValue)prop.Value, targetType);
 
+        /// <summary>Parses JSON text into a token tree.</summary>
         public static JToken Deserialize(string sourceString)
         {
             var data = Encoding.UTF8.GetBytes(sourceString);
@@ -482,11 +493,13 @@ namespace GHIElectronics.TinyCLR.Data.Json
             return Deserialize(new StreamReader(mem));
         }
 
+        /// <summary>Parses JSON from a stream into a token tree.</summary>
         public static JToken Deserialize(Stream sourceStream)
         {
             return Deserialize(new StreamReader(sourceStream));
         }
 
+        /// <summary>Parses JSON from a reader into a token tree.</summary>
         public static JToken Deserialize(StreamReader sourceReader)
         {
             JToken result = null;
@@ -518,6 +531,7 @@ namespace GHIElectronics.TinyCLR.Data.Json
             return result;
         }
 
+        /// <summary>Decodes a BSON byte buffer into a JSON token tree.</summary>
         public static JToken FromBson(byte[] buffer, InstanceFactory factory = null)
         {
             var offset = 0;
@@ -552,6 +566,7 @@ namespace GHIElectronics.TinyCLR.Data.Json
             return dserResult;
         }
 
+        /// <summary>Decodes a BSON byte buffer and populates a new instance of the given type.</summary>
         public static object FromBson(byte[] buffer, Type resultType, InstanceFactory factory = null)
         {
             var jtoken = FromBson(buffer);

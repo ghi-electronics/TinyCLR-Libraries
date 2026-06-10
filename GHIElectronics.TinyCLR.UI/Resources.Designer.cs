@@ -14,6 +14,7 @@ namespace GHIElectronics.TinyCLR.UI
     internal partial class Resources
     {
         private static System.Resources.ResourceManager manager;
+        /// <summary>The cached ResourceManager instance used by this class.</summary>
         internal static System.Resources.ResourceManager ResourceManager
         {
             get
@@ -25,30 +26,50 @@ namespace GHIElectronics.TinyCLR.UI
                 return Resources.manager;
             }
         }
+        /// <summary>Looks up the bitmap resource with the given id.</summary>
         internal static System.Drawing.Bitmap GetBitmap(Resources.BitmapResources id)
         {
             return ((System.Drawing.Bitmap)(ResourceManager.GetObject(((short)(id)))));
         }
+        /// <summary>Identifies the built-in bitmap resources.</summary>
         [System.SerializableAttribute()]
         internal enum BitmapResources : short
         {
+            /// <summary>The dropdown button (pressed) bitmap resource.</summary>
             DropdownButton_Down = -31110,
+            /// <summary>The descending sort data-grid icon bitmap resource.</summary>
             DataGridIcon_Desc = -27556,
+            /// <summary>The button (pressed) bitmap resource.</summary>
             Button_Down = -18532,
+            /// <summary>The numeric keyboard bitmap resource.</summary>
             Keyboard_Numbers = -14062,
+            /// <summary>The button (released) bitmap resource.</summary>
             Button_Up = -12892,
+            /// <summary>The progress bar fill bitmap resource.</summary>
             ProgressBar_Fill = -12135,
+            /// <summary>The modal background bitmap resource.</summary>
             Modal = -11358,
+            /// <summary>The lowercase keyboard bitmap resource.</summary>
             Keyboard_Lowercase = -10522,
+            /// <summary>The radio button bitmap resource.</summary>
             RadioButton = 1102,
+            /// <summary>The symbols keyboard bitmap resource.</summary>
             Keyboard_Symbols = 1558,
+            /// <summary>The dropdown text (released) bitmap resource.</summary>
             DropdownText_Up = 1846,
+            /// <summary>The dropdown button (released) bitmap resource.</summary>
             DropdownButton_Up = 4119,
+            /// <summary>The dropdown text (pressed) bitmap resource.</summary>
             DropdownText_Down = 13519,
+            /// <summary>The progress bar bitmap resource.</summary>
             ProgressBar = 15350,
+            /// <summary>The uppercase keyboard bitmap resource.</summary>
             Keyboard_Uppercase = 21332,
+            /// <summary>The unchecked check box bitmap resource.</summary>
             CheckBox_Off = 23409,
+            /// <summary>The ascending sort data-grid icon bitmap resource.</summary>
             DataGridIcon_Asc = 27566,
+            /// <summary>The checked check box bitmap resource.</summary>
             CheckBox_On = 27788,
         }
     }

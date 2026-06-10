@@ -20,6 +20,7 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
         private DataReceivedEventHandler dataReceivedCallbacks;
         private void OnDataReceived(RawDevice sender, uint count) => this.dataReceivedCallbacks?.Invoke(this, count);
 
+        /// <summary>Raised when data is received from the host.</summary>
         public event DataReceivedEventHandler DataReceived {
             add {
                 if (this.dataReceivedCallbacks == null)
@@ -107,6 +108,7 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
             /// <param name="count">The number of bytes to write.</param>
             public override void Write(byte[] buffer, int offset, int count) => base.Write(buffer, offset, count); // No need send zpl. Native will detect one end of data if multiple of 64
 
+            /// <summary>Whether or not there is data available to read.</summary>
             public override bool DataAvailable => this.BytesToRead > 0;
         }
     }

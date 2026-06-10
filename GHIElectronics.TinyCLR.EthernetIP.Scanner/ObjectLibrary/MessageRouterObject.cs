@@ -6,6 +6,7 @@ using System.Text;
 
 namespace GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary
 {
+    /// <summary>Provides explicit-message access to the Message Router Object (Class Code 0x02) on the target.</summary>
     public class MessageRouterObject
     {
         // Private read-only — see AssemblyObject for rationale.
@@ -13,9 +14,12 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary
 
         internal MessageRouterObject(ScannerController scanner) => this.scanner = scanner;
 
+        /// <summary>Holds the list of object classes supported by the target's Message Router.</summary>
         public struct ObjectListStruct
         {
+            /// <summary>The number of class codes in the list.</summary>
             public ushort Number;
+            /// <summary>The supported object class codes.</summary>
             public ushort[] Classes;
         }
 

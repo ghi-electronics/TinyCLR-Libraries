@@ -4,6 +4,30 @@
         <name>GHIElectronics.TinyCLR.Networking.Http</name>
     </assembly>
     <members>
+        <member name="T:System.Net.AuthenticationSchemes">
+            <summary>Specifies the protocols used to authenticate client requests.</summary>
+        </member>
+        <member name="F:System.Net.AuthenticationSchemes.None">
+            <summary>No authentication is allowed.</summary>
+        </member>
+        <member name="F:System.Net.AuthenticationSchemes.Digest">
+            <summary>Specifies digest authentication.</summary>
+        </member>
+        <member name="F:System.Net.AuthenticationSchemes.Negotiate">
+            <summary>Negotiates with the client to determine the authentication scheme.</summary>
+        </member>
+        <member name="F:System.Net.AuthenticationSchemes.Ntlm">
+            <summary>Specifies NTLM authentication.</summary>
+        </member>
+        <member name="F:System.Net.AuthenticationSchemes.Basic">
+            <summary>Specifies basic authentication.</summary>
+        </member>
+        <member name="F:System.Net.AuthenticationSchemes.Anonymous">
+            <summary>Specifies anonymous authentication.</summary>
+        </member>
+        <member name="F:System.Net.AuthenticationSchemes.IntegratedWindowsAuthentication">
+            <summary>Specifies Windows authentication using Negotiate or NTLM.</summary>
+        </member>
         <member name="T:System.Net.AuthenticationType">
             <summary>
             Network authentication type.
@@ -376,6 +400,9 @@
             </param>
             <param name="httpListener">TBD</param>
         </member>
+        <member name="M:System.Net.HttpListenerContext.Reset">
+            <summary>Resets the parsed-request state and the underlying request so the context can be reused.</summary>
+        </member>
         <member name="P:System.Net.HttpListenerContext.Request">
             <summary>
             Gets the <itemref>HttpListenerRequest</itemref> that represents a
@@ -479,6 +506,9 @@
             </summary>
             <param name="clientStream">Network stream to the client.</param>
             <param name="maxHeaderLen">TBD</param>
+        </member>
+        <member name="M:System.Net.HttpListenerRequest.Reset">
+            <summary>Clears the request headers and content length so the instance can be reused.</summary>
         </member>
         <member name="M:System.Net.HttpListenerRequest.ParseHTTPRequest">
             <summary>
@@ -857,6 +887,9 @@
             </summary>
             <value>The text description of the HTTP status code returned to the
             client.</value>
+        </member>
+        <member name="M:System.Net.HttpListenerResponse.Detach">
+            <summary>Sends the headers if not already sent and marks the response as closed without closing the connection.</summary>
         </member>
         <member name="M:System.Net.HttpListenerResponse.Close">
             <summary>
@@ -1742,6 +1775,9 @@
             to the basic header state.
             </summary>
             <param name="Url">The Url object for which we're creating.</param>
+        </member>
+        <member name="M:System.Net.HttpWebRequest.Reset">
+            <summary>Clears the sent state, content length, write mode, and headers so the instance can be reused.</summary>
         </member>
         <member name="P:System.Net.HttpWebRequest.HaveResponse">
             <summary>
@@ -2979,6 +3015,12 @@
             <see cref="T:System.Net.WebRequest"/> class.
             </summary>
         </member>
+        <member name="M:System.Net.WebRequest.Dispose">
+            <summary>Releases the resources used by the request.</summary>
+        </member>
+        <member name="M:System.Net.WebRequest.Dispose(System.Boolean)">
+            <summary>Releases the unmanaged resources and optionally the managed resources used by the request.</summary>
+        </member>
         <member name="P:System.Net.WebRequest.Method">
             <summary>
             When overridden in a descendant class, gets or sets the protocol
@@ -3200,6 +3242,12 @@
             <summary>
             When overridden by a descendant class, closes the response stream.
             </summary>
+        </member>
+        <member name="M:System.Net.WebResponse.Dispose">
+            <summary>Releases the resources used by the response.</summary>
+        </member>
+        <member name="M:System.Net.WebResponse.Dispose(System.Boolean)">
+            <summary>Releases the unmanaged resources and optionally the managed resources used by the response.</summary>
         </member>
         <member name="T:System.Net.WebExceptionStatus">
             <summary>
@@ -3973,12 +4021,18 @@
             </summary>
             <param name="sInput">Scheme-specific part of uri</param>
         </member>
+        <member name="M:System.Uri.Split(System.String,System.Int32,System.String@,System.String@,System.Boolean)">
+            <summary>Splits the scheme-specific part into its authority and path portions.</summary>
+        </member>
         <member name="M:System.Uri.IsIPv4(System.String)">
             <summary>
             Returns if host name is IP adress 4 bytes. Like 192.1.1.1
             </summary>
             <param name="host">string with host name</param>
             <returns>True if name is string with IPv4 address</returns>
+        </member>
+        <member name="M:System.Uri.IsIPv6(System.String)">
+            <summary>Returns whether the specified host is an IPv6 address enclosed in brackets.</summary>
         </member>
         <member name="M:System.Uri.ValidateUrn(System.String)">
             <summary>
@@ -4004,6 +4058,18 @@
             <exception cref="T:System.Exception">
             See constructor description.
             </exception>
+        </member>
+        <member name="M:System.Uri.GetHashCode">
+            <summary>Returns the hash code for this URI.</summary>
+        </member>
+        <member name="M:System.Uri.Equals(System.Object)">
+            <summary>Returns true if the object is an equal URI.</summary>
+        </member>
+        <member name="M:System.Uri.op_Equality(System.Uri,System.Uri)">
+            <summary>Determines whether two URIs are equal.</summary>
+        </member>
+        <member name="M:System.Uri.op_Inequality(System.Uri,System.Uri)">
+            <summary>Determines whether two URIs are not equal.</summary>
         </member>
         <member name="M:System.Uri.IsAlpha(System.Char)">
             <summary>

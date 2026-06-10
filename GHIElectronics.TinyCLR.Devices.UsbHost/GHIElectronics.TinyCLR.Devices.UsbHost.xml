@@ -104,6 +104,9 @@
         <member name="F:GHIElectronics.TinyCLR.Devices.UsbHost.BaseDevice.DeviceType.Custom">
             <summary>User-defined custom device class. Use this when implementing a driver that doesn't fit any of the predefined types.</summary>
         </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.BaseDevice.#ctor(System.UInt32,System.Byte,GHIElectronics.TinyCLR.Devices.UsbHost.BaseDevice.DeviceType)">
+            <summary>Creates a new base device and registers it with the USB host controller.</summary>
+        </member>
         <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.BaseDevice.Dispose">
             <summary>Disconnects and disposes the device.</summary>
         </member>
@@ -711,6 +714,24 @@
             <summary>Disconnects and disposes the device.</summary>
             <param name="disposing">Whether or not this is called from Dispose.</param>
         </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.UsbHost.DeviceConnectionStatus">
+            <summary>The connection status of a USB device.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbHost.DeviceConnectionStatus.Disconnected">
+            <summary>The device has been disconnected.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbHost.DeviceConnectionStatus.Connected">
+            <summary>The device has been connected.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbHost.DeviceConnectionStatus.Bad">
+            <summary>The device was connected but is not functioning correctly.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.UsbHost.OnConnectionChanged">
+            <summary>The delegate for when a device's connection status changes.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.UsbHost.DeviceConnectionEventArgs">
+            <summary>The event arguments for a device connection change.</summary>
+        </member>
         <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.DeviceConnectionEventArgs.Id">
             <summary>The device id.</summary>
         </member>
@@ -728,6 +749,72 @@
         </member>
         <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.DeviceConnectionEventArgs.PortNumber">
             <summary>The device's USB port number.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.DeviceConnectionEventArgs.DeviceStatus">
+            <summary>The device's connection status.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.UsbHost.UsbHostController">
+            <summary>Represents the USB host controller used to manage connected USB devices.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.UsbHostController.Provider">
+            <summary>The underlying provider that implements the host controller.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.UsbHostController.GetDefault">
+            <summary>Gets the default USB host controller for the system.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.UsbHostController.FromName(System.String)">
+            <summary>Gets the USB host controller with the given name.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.UsbHostController.FromProvider(GHIElectronics.TinyCLR.Devices.UsbHost.Provider.IUsbHostControllerProvider)">
+            <summary>Gets a USB host controller backed by the given provider.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.UsbHostController.Dispose">
+            <summary>Disposes the controller and its provider.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.UsbHostController.Enable">
+            <summary>Enables the controller so devices can be detected.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.UsbHostController.Disable">
+            <summary>Disables the controller and stops detecting devices.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.UsbHostController.GetConnectedDevices">
+            <summary>Gets the currently connected devices, or null if the controller is not enabled.</summary>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.Devices.UsbHost.UsbHostController.OnConnectionChangedEvent">
+            <summary>The event fired when a device's connection status changes.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.UsbHost.Provider.IUsbHostControllerProvider">
+            <summary>Provides the underlying implementation for a USB host controller.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.Provider.IUsbHostControllerProvider.Enable">
+            <summary>Enables the controller.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.Provider.IUsbHostControllerProvider.Disable">
+            <summary>Disables the controller.</summary>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.Devices.UsbHost.Provider.IUsbHostControllerProvider.OnConnectionChangedEvent">
+            <summary>The event fired when a device's connection status changes.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.UsbHost.Provider.UsbHostControllerApiWrapper">
+            <summary>The native API wrapper that implements the USB host controller provider.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbHost.Provider.UsbHostControllerApiWrapper.Api">
+            <summary>The native API backing this provider.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.Provider.UsbHostControllerApiWrapper.#ctor(GHIElectronics.TinyCLR.Native.NativeApi)">
+            <summary>Creates a new wrapper around the given native API.</summary>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.Devices.UsbHost.Provider.UsbHostControllerApiWrapper.OnConnectionChangedEvent">
+            <summary>The event fired when a device's connection status changes.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.Provider.UsbHostControllerApiWrapper.Dispose">
+            <summary>Releases the native API and disposes the provider.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.Provider.UsbHostControllerApiWrapper.Enable">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbHost.Provider.UsbHostControllerApiWrapper.Disable">
+            <inheritdoc/>
         </member>
         <member name="T:GHIElectronics.TinyCLR.Devices.UsbHost.Webcam">
             <summary>Allows a USB webcam (UVC class, YUY2 uncompressed) to be used.</summary>

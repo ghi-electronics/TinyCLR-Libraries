@@ -8,14 +8,20 @@ using System.Text;
 
 namespace GHIElectronics.TinyCLR.EthernetIP.Scanner
 {
+    /// <summary>Represents an EtherNet/IP encapsulation packet header plus its command-specific data.</summary>
     public class Encapsulation
     {
+        /// <summary>The encapsulation command for this packet.</summary>
         public CommandsEnum Command { get; set; }
+        /// <summary>The byte length of the command-specific data that follows the header.</summary>
         public ushort Length { get; set; }
+        /// <summary>The session handle assigned by the target after RegisterSession.</summary>
         public uint SessionHandle { get; set; }
+        /// <summary>The encapsulation status returned by the target.</summary>
         public StatusEnum Status { get; }
         private byte[] senderContext = new byte[8];
         private uint options = 0;
+        /// <summary>The command-specific data bytes appended after the 24-byte header.</summary>
         public ArrayList CommandSpecificData = new ArrayList();
 
         /// <summary>
@@ -23,12 +29,19 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner
         /// </summary>
         public enum StatusEnum : uint
         {
+            /// <summary>The request completed successfully.</summary>
             Success = 0x0000,
+            /// <summary>The encapsulation command was not recognized.</summary>
             InvalidCommand = 0x0001,
+            /// <summary>The receiver had insufficient memory to handle the request.</summary>
             InsufficientMemory = 0x0002,
+            /// <summary>The command-specific data was malformed or incorrect.</summary>
             IncorrectData = 0x0003,
+            /// <summary>The supplied session handle was not valid.</summary>
             InvalidSessionHandle = 0x0064,
+            /// <summary>The packet length field did not match the actual data.</summary>
             InvalidLength = 0x0065,
+            /// <summary>The requested encapsulation protocol version is not supported.</summary>
             UnsupportedEncapsulationProtocol = 0x0069
         }
 
@@ -41,18 +54,29 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner
         /// </summary>
         public enum CommandsEnum : ushort
         {
+            /// <summary>No-operation command.</summary>
             NOP = 0x0000,
+            /// <summary>Requests the list of encapsulation services the target supports.</summary>
             ListServices = 0x0004,
+            /// <summary>Requests identity information from devices.</summary>
             ListIdentity = 0x0063,
+            /// <summary>Requests the list of non-CIP communication interfaces.</summary>
             ListInterfaces = 0x0064,
+            /// <summary>Opens an encapsulation session with the target.</summary>
             RegisterSession = 0x0065,
+            /// <summary>Closes an encapsulation session with the target.</summary>
             UnRegisterSession = 0x0066,
+            /// <summary>Sends an unconnected (explicit) request/response message.</summary>
             SendRRData = 0x006F,
+            /// <summary>Sends a connected (implicit) data message.</summary>
             SendUnitData = 0x0070,
+            /// <summary>Requests the target's status.</summary>
             IndicateStatus = 0x0072,
+            /// <summary>Cancels a pending request.</summary>
             Cancel = 0x0073
         }
 
+        /// <summary>Serializes this encapsulation packet (24-byte header plus command-specific data) to a byte array.</summary>
         public byte[] Tobytes()
         {
             var returnValue = new byte[24 + this.CommandSpecificData.Count];
@@ -97,21 +121,35 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner
         /// </summary>
         public class CIPIdentityItem
         {
+            /// <summary>Code indicating the item type of CIP Identity (0x0C).</summary>
             public ushort ItemTypeCode;                                     //Code indicating item type of CIP Identity (0x0C)
+            /// <summary>Number of bytes in the item that follow (varies with the product name length).</summary>
             public ushort ItemLength;                                       //Number of bytes in item which follow (length varies depending on Product Name string)
+            /// <summary>Encapsulation protocol version supported by the device.</summary>
             public ushort EncapsulationProtocolVersion;                     //Encapsulation Protocol Version supported (also returned with Register Sesstion reply).
+            /// <summary>The device's socket address (IP, port, family).</summary>
             public SocketAddress SocketAddress = new SocketAddress();       //Socket Address (see section 2-6.3.2)
+            /// <summary>The device manufacturer's CIP vendor ID.</summary>
             public ushort VendorID1;                                        //Device manufacturers Vendor ID
+            /// <summary>The CIP device type of the product.</summary>
             public ushort DeviceType1;                                      //Device Type of product
+            /// <summary>The product code assigned with respect to the device type.</summary>
             public ushort ProductCode1;                                     //Product Code assigned with respect to device type
+            /// <summary>The device revision (major, minor).</summary>
             public byte[] Revision1 = new byte[2];                          //Device revision
+            /// <summary>The current status word of the device.</summary>
             public ushort Status1;                                          //Current status of device
+            /// <summary>The device's serial number.</summary>
             public uint SerialNumber1;                                      //Serial number of device
-            public byte ProductNameLength;                          
+            /// <summary>The length in bytes of the product name string.</summary>
+            public byte ProductNameLength;
+            /// <summary>The human-readable product name of the device.</summary>
             public string ProductName1;                                     //Human readable description of device
+            /// <summary>The current operational state of the device.</summary>
             public byte State1;                                             //Current state of device
 
 
+            /// <summary>Parses a CIP Identity item from a received ListIdentity response buffer.</summary>
             public static CIPIdentityItem GetCIPIdentityItem(int startingbyte, byte[] receivedData)
             {
                 startingbyte = startingbyte + 2;            //Skipped ItemCount
@@ -166,25 +204,40 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner
         /// </summary>
         public class SocketAddress
         {
+            /// <summary>The socket address family (big-endian, typically 2 for AF_INET).</summary>
             public ushort SIN_family;
+            /// <summary>The socket port number (big-endian).</summary>
             public ushort SIN_port;
+            /// <summary>The 32-bit IPv4 address (big-endian).</summary>
             public uint SIN_Address;
+            /// <summary>Reserved padding, must be zero.</summary>
             public byte[] SIN_Zero = new byte[8];
         }
 
+        /// <summary>Represents the EtherNet/IP Common Packet Format used to wrap CIP request/response data.</summary>
         public class CommonPacketFormat
         {
+            /// <summary>The number of items in the packet (2, or 3 when a socket address item is present).</summary>
             public ushort ItemCount = 2;
+            /// <summary>The address item type code (0x0000 = NULL, used for UCMM messages).</summary>
             public ushort AddressItem = 0x0000;
+            /// <summary>The byte length of the address item.</summary>
             public ushort AddressLength = 0;
+            /// <summary>The data item type code (0xB2 = unconnected data item).</summary>
             public ushort DataItem = 0xB2; //0xB2 = Unconnected Data Item
+            /// <summary>The byte length of the data item.</summary>
             public ushort DataLength = 8;
+            /// <summary>The CIP payload bytes carried in the data item.</summary>
             public ArrayList Data = new ArrayList();
+            /// <summary>The socket-address-info item type code (0x8000 for O-&gt;T, 0x8001 for T-&gt;O).</summary>
             public ushort SockaddrInfoItem_O_T = 0x8001; //8000 for O->T and 8001 for T->O - Volume 2 Table 2-6.9
+            /// <summary>The byte length of the socket-address-info item.</summary>
             public ushort SockaddrInfoLength = 16;
+            /// <summary>The optional socket address info item; null when not included.</summary>
             public SocketAddress SocketaddrInfo_O_T = null;
 
 
+            /// <summary>Serializes this common packet format (including the optional socket address item) to a byte array.</summary>
             public byte[] Tobytes()
             {
                 if (this.SocketaddrInfo_O_T != null)

@@ -26,6 +26,7 @@ namespace GHIElectronics.TinyCLR.UI.Input {
         /// </summary>
         public override UIElement Target => this._focus;
 
+        /// <summary>The input device type for this device.</summary>
         public override InputManager.InputDeviceType DeviceType => InputManager.InputDeviceType.Button;
 
         /// <summary>

@@ -8,6 +8,7 @@ using GHIElectronics.TinyCLR.UI.Media;
 using GHIElectronics.TinyCLR.UI.Media.Imaging;
 
 namespace GHIElectronics.TinyCLR.UI.Controls {
+    /// <summary>A collapsible list that shows the selected option and expands on tap.</summary>
     public class Dropdown : ListBox, IDisposable {
         private bool isOpened;
         private int originalHeight;
@@ -17,7 +18,9 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         private BitmapImage dropdownButtonUp;
         private BitmapImage dropdownButtonDown;
 
+        /// <summary>Opacity (0-255) used when drawing the dropdown images.</summary>
         public ushort Alpha { get; set; } = Theme.DefaultAlpha;
+        /// <summary>Corner radius used by the nine-slice dropdown images.</summary>
         public int RadiusBorder { get; set; } = Theme.DefaultRadiusBorder;
 
         /// <summary>
@@ -36,6 +39,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             this.dropdownButtonDown = Resources.LoadBitmapImage(Resources.BitmapResources.DropdownButton_Down);
         }
 
+        /// <summary>Creates a new Dropdown.</summary>
         public Dropdown() : base() {
             this.InitResource();
 
@@ -137,6 +141,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         }
 
         private ArrayList options;
+        /// <summary>The list of selectable options shown when the dropdown is open.</summary>
         public ArrayList Options {
             get => this.options;
 
@@ -154,6 +159,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
+        /// <summary>Draws the dropdown's text field and chevron button.</summary>
         public override void OnRender(DrawingContext dc) {
             // Honor Background/focus visual from Control base.
             base.OnRender(dc);
@@ -190,11 +196,13 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
         private bool disposed;
 
+        /// <summary>Releases the resources used by the dropdown.</summary>
         public void Dispose() {
             this.Dispose(true);
             GC.SuppressFinalize(this);
         }
 
+        /// <summary>Releases the dropdown's bitmap resources and event subscriptions.</summary>
         protected virtual void Dispose(bool disposing) {
             if (this.disposed) return;
 

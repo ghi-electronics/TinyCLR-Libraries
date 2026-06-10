@@ -65,10 +65,13 @@ namespace GHIElectronics.TinyCLR.UI.Input {
             this._genericDevice = new GenericDevice(this);
         }
 
+        /// <summary>The primary button device for this input manager.</summary>
         public ButtonDevice ButtonDevice => this._buttonDevice;
 
+        /// <summary>The primary touch device for this input manager.</summary>
         public TouchDevice TouchDevice => this._touchDevice;
 
+        /// <summary>The primary generic input device for this input manager.</summary>
         public GenericDevice GenericDevice => this._genericDevice;
 
         /// <summary>
@@ -274,13 +277,19 @@ namespace GHIElectronics.TinyCLR.UI.Input {
         private DispatcherOperationCallback _continueProcessingStagingAreaCallback;
         private ArrayList _frameStagingArea;
 
+        /// <summary>Identifies the kind of input device.</summary>
         public enum InputDeviceType : int {
+            /// <summary>A button device.</summary>
             Button = 0,
+            /// <summary>A touch device.</summary>
             Touch,
+            /// <summary>A generic input device.</summary>
             Generic,
+            /// <summary>Marks the number of device types.</summary>
             Last,
         }
 
+        /// <summary>Exposes the pre- and post-processing events for a single input device.</summary>
         public class DeviceEvents : DispatcherObject {
             /// <summary>Subscribe for all input before it is processed</summary>
             public event PreProcessInputEventHandler PreProcessInput {
@@ -361,6 +370,7 @@ namespace GHIElectronics.TinyCLR.UI.Input {
 
         }
 
+        /// <summary>The per-device input processing events, indexed by input device type.</summary>
         public DeviceEvents[] InputDeviceEvents;
 
         private ArrayList _inputProviders = new ArrayList();

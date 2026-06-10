@@ -10,8 +10,10 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
     /// Summary description for Image.
     /// </summary>
     public class Image : UIElement {
+        /// <summary>How the image is scaled to fill the control.</summary>
         public Stretch Stretch { get; set; } = Stretch.None;
 
+        /// <summary>The image to display.</summary>
         public ImageSource Source {
             get {
                 VerifyAccess();
@@ -27,6 +29,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
+        /// <summary>Measures the desired size based on the image and stretch mode.</summary>
         protected override void MeasureOverride(int availableWidth, int availableHeight, out int desiredWidth, out int desiredHeight) {
             desiredWidth = desiredHeight = 0;
             if (this._bitmap != null) {
@@ -50,6 +53,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
+        /// <summary>Draws the image using the current stretch mode.</summary>
         public override void OnRender(DrawingContext dc) {
             var bmp = this._bitmap;
             if (bmp != null) {

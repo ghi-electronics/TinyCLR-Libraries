@@ -4,6 +4,7 @@ using System.Net.Sockets;
 
 namespace System.Net.Sockets
 {
+    /// <summary>Provides the underlying stream of data for network access.</summary>
     // Summary:
     //     Provides the underlying stream of data for network access.
     public class NetworkStream : Stream
@@ -15,16 +16,20 @@ namespace System.Net.Sockets
         // Internal Socket object
         internal Socket _socket;
 
+        /// <summary>The type of the underlying socket.</summary>
         // Internal property used to store the socket type
         protected int _socketType;
 
+        /// <summary>The remote endpoint used for datagram sockets.</summary>
         // Internal endpoint ref used for dgram sockets
         protected EndPoint _remoteEndPoint;
 
         // Internal flags
         private bool _ownsSocket;
+        /// <summary>Whether the stream has been disposed.</summary>
         protected bool _disposed;
 
+        /// <summary>Creates a new network stream for the specified socket.</summary>
         // Summary:
         //     Creates a new instance of the System.Net.Sockets.NetworkStream class for
         //     the specified System.Net.Sockets.Socket.
@@ -47,6 +52,7 @@ namespace System.Net.Sockets
         {
         }
 
+        /// <summary>Creates a new network stream for the specified socket, optionally taking ownership of it.</summary>
         //
         // Summary:
         //     Initializes a new instance of the System.Net.Sockets.NetworkStream class
@@ -94,6 +100,7 @@ namespace System.Net.Sockets
             this._ownsSocket = ownsSocket;
         }
 
+        /// <summary>Whether the stream supports reading.</summary>
         // Summary:
         //     Gets a value that indicates whether the System.Net.Sockets.NetworkStream
         //     supports reading.
@@ -103,6 +110,7 @@ namespace System.Net.Sockets
         //     is true.
         public override bool CanRead => this._socket != null && this._socket.m_Handle != -1 && !this._disposed;
 
+        /// <summary>Whether the stream supports seeking; always false.</summary>
         //
         // Summary:
         //     Gets a value that indicates whether the stream supports seeking. This property
@@ -113,6 +121,7 @@ namespace System.Net.Sockets
         //     seek a specific location in the stream.
         public override bool CanSeek => false;
 
+        /// <summary>Whether the stream supports timeouts; always true.</summary>
         //
         // Summary:
         //     Indicates whether timeout properties are usable for System.Net.Sockets.NetworkStream.
@@ -121,6 +130,7 @@ namespace System.Net.Sockets
         //     true in all cases.
         public override bool CanTimeout => true;
 
+        /// <summary>Whether the stream supports writing.</summary>
         //
         // Summary:
         //     Gets a value that indicates whether the System.Net.Sockets.NetworkStream
@@ -131,6 +141,7 @@ namespace System.Net.Sockets
         //     false. The default value is true.
         public override bool CanWrite => this._socket != null && this._socket.m_Handle != -1 && !this._disposed;
 
+        /// <summary>The amount of time, in milliseconds, that a read operation waits before timing out.</summary>
         public override int ReadTimeout {
             get => this._socket.ReceiveTimeout;
             set {
@@ -140,6 +151,7 @@ namespace System.Net.Sockets
             }
         }
 
+        /// <summary>The amount of time, in milliseconds, that a write operation waits before timing out.</summary>
         public override int WriteTimeout {
             get => this._socket.SendTimeout;
             set {
@@ -149,6 +161,7 @@ namespace System.Net.Sockets
             }
         }
 
+        /// <summary>Not supported; always throws NotSupportedException.</summary>
         //
         // Summary:
         //     Length is not supported on a NetworkStream — matches full .NET
@@ -156,6 +169,7 @@ namespace System.Net.Sockets
         //     bytes.
         public override long Length => throw new NotSupportedException();
 
+        /// <summary>Not supported; always throws NotSupportedException.</summary>
         //
         // Summary:
         //     Gets or sets the current position in the stream. This property is not currently
@@ -173,6 +187,7 @@ namespace System.Net.Sockets
             set => throw new NotSupportedException();
         }
 
+        /// <summary>Whether data is available on the stream to be read.</summary>
         public override bool DataAvailable
         {
             get
@@ -184,6 +199,7 @@ namespace System.Net.Sockets
             }
         }
 
+        /// <summary>Closes the stream after waiting the specified time for data to be sent.</summary>
         //
         // Summary:
         //     Closes the System.Net.Sockets.NetworkStream after waiting the specified time
@@ -207,6 +223,7 @@ namespace System.Net.Sockets
             Close();
         }
 
+        /// <summary>Releases the resources used by the stream.</summary>
         //
         // Summary:
         //     Releases the unmanaged resources used by the System.Net.Sockets.NetworkStream
@@ -235,6 +252,7 @@ namespace System.Net.Sockets
             }
         }
 
+        /// <summary>Flushes the stream; reserved for future use.</summary>
         //
         // Summary:
         //     Flushes data from the stream. This method is reserved for future use.
@@ -242,6 +260,7 @@ namespace System.Net.Sockets
         {
         }
 
+        /// <summary>Reads data from the stream into the buffer and returns the number of bytes read.</summary>
         //
         // Summary:
         //     Reads data from the System.Net.Sockets.NetworkStream.
@@ -312,6 +331,7 @@ namespace System.Net.Sockets
             }
         }
 
+        /// <summary>Not supported; always throws NotSupportedException.</summary>
         //
         // Summary:
         //     Sets the current position of the stream to the given value. This method is
@@ -332,6 +352,7 @@ namespace System.Net.Sockets
         //     Any use of this property.
         public override long Seek(long offset, SeekOrigin origin) => throw new NotSupportedException();
 
+        /// <summary>Not supported; always throws NotSupportedException.</summary>
         //
         // Summary:
         //     Sets the length of the stream. This method always throws a System.NotSupportedException.
@@ -345,6 +366,7 @@ namespace System.Net.Sockets
         //     Any use of this property.
         public override void SetLength(long value) => throw new NotSupportedException();
 
+        /// <summary>Writes data from the buffer to the stream.</summary>
         //
         // Summary:
         //     Writes data to the System.Net.Sockets.NetworkStream.

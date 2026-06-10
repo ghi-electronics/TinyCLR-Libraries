@@ -245,6 +245,7 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner
         // Stand-in for System.EventHandler — TinyCLR's mscorlib doesn't define
         // the non-generic delegate, so the Scanner declares its own with the
         // same signature.
+        /// <summary>Handler for scanner lifecycle events (connection established/lost, RPI violated).</summary>
         public delegate void EipEventHandler(object sender, EventArgs e);
 
         /// <summary>Fired once after a successful ForwardOpen / LargeForwardOpen.</summary>
@@ -264,6 +265,7 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner
         /// race-free way to consume implicit input.
         /// </summary>
         public event ImplicitDataReceivedHandler ImplicitDataReceived;
+        /// <summary>Handler for <see cref="ImplicitDataReceived"/>; receives a race-free snapshot of each Class-1 payload.</summary>
         public delegate void ImplicitDataReceivedHandler(ScannerController scanner, byte[] snapshot);
 
         /// <summary>
@@ -309,9 +311,12 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner
             }
 
         }
+        /// <summary>Holds the UDP client and endpoint used by an asynchronous receive operation.</summary>
         public class UdpState
         {
+            /// <summary>The remote endpoint associated with the UDP operation.</summary>
             public System.Net.IPEndPoint e;
+            /// <summary>The UDP client used to send or receive.</summary>
             public UdpClient u;
 
         }
@@ -922,6 +927,7 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner
             this.ConnectionEstablished?.Invoke(this, EventArgs.Empty);
         }
 
+        /// <summary>Opens a Class-1 implicit connection using Large Forward Open (service 0x5B), for payloads larger than ~500 bytes.</summary>
         public void LargeForwardOpen() => this.ForwardOpen(true);
 
         private ushort o_t_detectedLength;
@@ -1802,28 +1808,42 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner
         public static bool ToBool(byte inputbyte, int bitposition) => (((inputbyte >> bitposition) & 0x01) != 0) ? true : false;
     }
 
+    /// <summary>The connection type for one direction of a Class-1 implicit connection.</summary>
     public enum ConnectionType : byte
     {
+        /// <summary>No connection in this direction.</summary>
         Null = 0,
+        /// <summary>Multicast connection.</summary>
         Multicast = 1,
+        /// <summary>Point-to-point (unicast) connection.</summary>
         Point_to_Point = 2
     }
 
+    /// <summary>The transport priority for one direction of a Class-1 implicit connection.</summary>
     public enum Priority : byte
     {
+        /// <summary>Low priority.</summary>
         Low = 0,
+        /// <summary>High priority.</summary>
         High = 1,
+        /// <summary>Scheduled priority.</summary>
         Scheduled = 2,
+        /// <summary>Urgent priority.</summary>
         Urgent = 3
     }
 
+    /// <summary>The real-time data format used for one direction of a Class-1 implicit connection.</summary>
     public enum RealTimeFormat : byte
     {
+        /// <summary>Pure data with no run/idle header.</summary>
         Modeless = 0,
+        /// <summary>Zero-length data (idle indication only).</summary>
         ZeroLength = 1,
+        /// <summary>Heartbeat with no data payload.</summary>
         Heartbeat = 2,
+        /// <summary>32-bit run/idle real-time header preceding the data.</summary>
         Header32Bit = 3
 
-        
+
     }
 }

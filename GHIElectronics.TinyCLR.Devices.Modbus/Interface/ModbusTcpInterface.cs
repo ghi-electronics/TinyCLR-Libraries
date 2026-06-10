@@ -124,8 +124,10 @@ namespace GHIElectronics.TinyCLR.Devices.Modbus.Interface {
             dataPos = 8;
         }
 
+        /// <summary>Prepares the interface for sending a telegram.</summary>
         public void PrepareWrite() { }
 
+        /// <summary>Prepares the interface for receiving a telegram.</summary>
         public void PrepareRead() { }
 
         /// <summary>
@@ -238,6 +240,7 @@ namespace GHIElectronics.TinyCLR.Devices.Modbus.Interface {
             }
         }
 
+        /// <summary>Gets or sets whether the socket is connected.</summary>
         public bool IsSocketConnected { get; set; }
         /// <summary>
         /// Gets if the connection is ok

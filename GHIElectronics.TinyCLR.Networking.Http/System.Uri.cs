@@ -549,6 +549,7 @@ namespace System
             return bAbsoluteUriRooted;
         }
 
+        /// <summary>Splits the scheme-specific part into its authority and path portions.</summary>
         protected void Split(string sUri, int iStart, out string sAuthority, out string sPath, bool bReplaceEmptyPath)
         {
             var iSplitter = sUri.IndexOf('/', iStart);
@@ -614,6 +615,7 @@ namespace System
             return (dots == 3) && haveNumber;
         }
 
+        /// <summary>Returns whether the specified host is an IPv6 address enclosed in brackets.</summary>
         protected bool IsIPv6(string host) => host[0] == '[' && host[host.Length - 1] == ']';
 
         /// <summary>
@@ -758,10 +760,13 @@ namespace System
             this.m_port = UnknownPort;
         }
 
+        /// <summary>Returns the hash code for this URI.</summary>
         public override int GetHashCode() => base.GetHashCode();
 
+        /// <summary>Returns true if the object is an equal URI.</summary>
         public override bool Equals(object o) => this == (Uri)o;
 
+        /// <summary>Determines whether two URIs are equal.</summary>
         public static bool operator ==(Uri lhs, Uri rhs)
         {
             object l = lhs, r = rhs;
@@ -787,6 +792,7 @@ namespace System
             }
         }
 
+        /// <summary>Determines whether two URIs are not equal.</summary>
         public static bool operator !=(Uri lhs, Uri rhs)
         {
             object l = lhs, r = rhs;

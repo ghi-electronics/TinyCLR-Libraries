@@ -3,6 +3,7 @@
 
 namespace GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary
 {
+    /// <summary>Provides explicit-message access to the Assembly Object (Class Code 0x04) on the target.</summary>
     public class AssemblyObject
     {
         // Private read-only — user shouldn't be able to swap the owning ScannerController

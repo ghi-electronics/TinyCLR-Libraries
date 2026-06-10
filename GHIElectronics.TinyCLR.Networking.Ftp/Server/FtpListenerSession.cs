@@ -1033,7 +1033,9 @@ namespace GHIElectronics.TinyCLR.Networking.Ftp
     /// </summary>
     public class UserInfo
     {
+        /// <summary>The authenticated user's name.</summary>
         public string UserName { get; internal set; }
+        /// <summary>The authenticated user's password.</summary>
         public string PassWord { get; internal set; }
     }
 }

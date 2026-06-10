@@ -6,6 +6,7 @@ using GHIElectronics.TinyCLR.UI;
 using GHIElectronics.TinyCLR.UI.Media;
 
 namespace GHIElectronics.TinyCLR.UI.Controls {
+    /// <summary>Base class for focusable UI controls with background, foreground and font.</summary>
     public class Control : UIElement {
         /// <summary>Lower values are visited first by <see cref="Input.FocusNavigator"/>.</summary>
         public int TabIndex { get; set; }
@@ -19,6 +20,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         /// <summary>Optional data context for lightweight binding (e.g. <see cref="TextBox.SetTextBinding"/>).</summary>
         public object DataContext { get; set; }
 
+        /// <summary>The brush used to paint the control's background.</summary>
         public Media.Brush Background {
             get {
                 VerifyAccess();
@@ -34,6 +36,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
+        /// <summary>The font used by the control's text.</summary>
         public System.Drawing.Font Font {
             get => this._font;
 
@@ -45,6 +48,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
+        /// <summary>The brush used to paint the control's foreground content.</summary>
         public Media.Brush Foreground {
             get {
                 VerifyAccess();
@@ -60,6 +64,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
+        /// <summary>Draws the background and, when focused, the focus rectangle.</summary>
         public override void OnRender(DrawingContext dc) {
             if (this._background != null) {
                 dc.DrawRectangle(this._background, null, 0, 0, this._renderWidth, this._renderHeight);
@@ -93,8 +98,11 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         private static bool ColorEquals(Color a, Color b) =>
             a.R == b.R && a.G == b.G && a.B == b.B && a.A == b.A;
 
+        /// <summary>Backing field for the control's background brush.</summary>
         protected internal Media.Brush _background = null;
+        /// <summary>Backing field for the control's foreground brush.</summary>
         protected internal Media.Brush _foreground = new SolidColorBrush(Colors.Black);
+        /// <summary>Backing field for the control's font.</summary>
         protected internal System.Drawing.Font _font;
     }
 }

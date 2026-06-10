@@ -37,23 +37,37 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
 
     /// <summary>Per-session MQTT settings — client ID, credentials, last-will, keepalive.</summary>
     public class MqttConnectionSetting {
+        /// <summary>The unique client identifier presented to the broker.</summary>
         public string ClientId { get; set; }
+        /// <summary>Whether the broker should start a clean session rather than resume a previous one.</summary>
         public bool CleanSession { get; set; } = true;
+        /// <summary>The user name used to authenticate with the broker.</summary>
         public string UserName { get; set; }
+        /// <summary>The password used to authenticate with the broker.</summary>
         public string Password { get; set; }
+        /// <summary>The topic the broker publishes the last-will message to if the client disconnects unexpectedly.</summary>
         public string LastWillTopic { get; set; }
+        /// <summary>The quality-of-service level used for the last-will message.</summary>
         public QoSLevel LastWillQos { get; set; } = QoSLevel.AtLeastOnce;
+        /// <summary>The message the broker publishes if the client disconnects unexpectedly.</summary>
         public string LastWillMessage { get; set; }
+        /// <summary>Whether the broker should retain the last-will message.</summary>
         public bool LastWillRetain { get; set; }
+        /// <summary>The keep-alive interval, in seconds, between client communications.</summary>
         public int KeepAliveTimeout { get; set; } = 60;
     }
 
     /// <summary>Transport-level MQTT settings — broker host/port, TLS, certificates.</summary>
     public class MqttClientSetting {
+        /// <summary>The host name or address of the MQTT broker.</summary>
         public string BrokerName { get; set; }
+        /// <summary>The TCP port of the MQTT broker.</summary>
         public int BrokerPort { get; set; }
+        /// <summary>The certificate authority certificate used to validate the broker.</summary>
         public X509Certificate CaCertificate { get; set; }
+        /// <summary>The client certificate presented to the broker for mutual TLS.</summary>
         public X509Certificate ClientCertificate { get; set; }
+        /// <summary>The TLS protocol to use, or None for an unencrypted connection.</summary>
         public SslProtocols SslProtocol { get; set; }
     }
 
@@ -67,10 +81,15 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
         const int PING_TIMEOUT_DEFAULT = 5000;
         const int RETRY_DEFAULT = 3;
 
+        /// <summary>Handles a message received on a subscribed topic.</summary>
         public delegate void PublishReceivedEventHandler(object sender, string topic, byte[] data, bool duplicate, QoSLevel qosLevel, bool retain);
+        /// <summary>Handles the result of a publish request.</summary>
         public delegate void PublishedEventHandler(object sender, uint packetId, bool published);
+        /// <summary>Handles a completed subscribe request and the granted quality-of-service levels.</summary>
         public delegate void SubscribedEventHandler(object sender, uint packetId, QoSLevel[] grantedQoSLevels);
+        /// <summary>Handles a completed unsubscribe request.</summary>
         public delegate void UnsubscribedEventHandler(object sender, uint packetId);
+        /// <summary>Handles a change in the connection state with the broker.</summary>
         public delegate void ConnectedEventHandler(object sender);
 
         private bool isRunning;
@@ -96,10 +115,15 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
         private Thread threadProcessEvents;
         private Thread threadProcessPackets;
 
+        /// <summary>Raised when a message is received on a subscribed topic.</summary>
         public event PublishReceivedEventHandler PublishReceivedChanged;
+        /// <summary>Raised when a published message is acknowledged.</summary>
         public event PublishedEventHandler PublishedChanged;
+        /// <summary>Raised when a subscribe request is acknowledged.</summary>
         public event SubscribedEventHandler SubscribedChanged;
+        /// <summary>Raised when an unsubscribe request is acknowledged.</summary>
         public event UnsubscribedEventHandler UnsubscribedChanged;
+        /// <summary>Raised when the connection to the broker is established or closed.</summary>
         public event ConnectedEventHandler ConnectedChanged;
 
         private readonly MqttStream stream;
@@ -110,13 +134,18 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
 
         private bool isConnectionClosed;
 
+        /// <summary>Gets whether the client is currently connected to the broker.</summary>
         public bool IsConnected { get; private set; }
 
+        /// <summary>Gets the client identifier of the current connection.</summary>
         public string ClientId => this.ConnectionSetting.ClientId;
 
+        /// <summary>Gets the transport-level settings the client was created with.</summary>
         public MqttClientSetting ClientSetting { get; }
+        /// <summary>Gets the per-session settings used for the current connection.</summary>
         public MqttConnectionSetting ConnectionSetting { get; private set; }
 
+        /// <summary>Creates a new MQTT client using the given transport settings.</summary>
         public Mqtt(MqttClientSetting setting) {
             this.ClientSetting = setting;
 
@@ -133,6 +162,7 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
             this.stream = new MqttStream(this.ClientSetting.BrokerName, this.ClientSetting.BrokerPort, this.ClientSetting.CaCertificate, this.ClientSetting.ClientCertificate, this.ClientSetting.SslProtocol);
         }
 
+        /// <summary>Connects to the broker using the given session settings and returns the broker's response code.</summary>
         public ConnectReturnCode Connect(MqttConnectionSetting setting) {
             this.ConnectionSetting = setting;
 
@@ -207,6 +237,7 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
                 return ConnectReturnCode.Unknown;
         }
 
+        /// <summary>Sends a disconnect request to the broker and closes the connection.</summary>
         public void Disconnect() {
             var disconnect = new MqttPacket(PacketType.Disconnect);
             this.Send(disconnect);
@@ -256,6 +287,7 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
         }
 
 
+        /// <summary>Subscribes to the given topics at the specified quality-of-service levels.</summary>
         public void Subscribe(string[] topics, QoSLevel[] qosLevels, ushort packetId) {
             if (packetId == 0) {
                 throw new ArgumentException(nameof(packetId));
@@ -273,6 +305,7 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
             this.PushPacketToQueue(subscribe, PacketDirection.ToServer);
         }
 
+        /// <summary>Unsubscribes from the given topics.</summary>
         public void Unsubscribe(string[] topics, ushort packetId) {
             if (packetId == 0) {
                 throw new ArgumentException(nameof(packetId));
@@ -288,6 +321,7 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
         }
 
 
+        /// <summary>Publishes a message to a topic at the specified quality-of-service level.</summary>
         public void Publish(string topic, byte[] data, QoSLevel qosLevel, bool retain, ushort packetId) {
             if (packetId == 0) {
                 throw new ArgumentException(nameof(packetId));

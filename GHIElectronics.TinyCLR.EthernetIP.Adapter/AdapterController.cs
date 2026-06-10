@@ -66,35 +66,43 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Adapter
         static bool isInitialized = false;   
 
         private readonly NativeEventDispatcher nedReceivedExplicitTcpData;
+        /// <summary>Handles an explicit TCP encapsulation command received from a scanner.</summary>
         public delegate void ReceivedExplicitTcpDataHandler(AdapterController adapter, ushort commandCode, IPAddress ipAddress);
         private ReceivedExplicitTcpDataHandler eventReceivedExplicitTcpDataHandler;
 
         private readonly NativeEventDispatcher nedReceivedExplicitUdpData;
+        /// <summary>Handles an explicit UDP encapsulation command received from a scanner.</summary>
         public delegate void ReceivedExplicitUdpDataHandler(AdapterController adapter, ushort commandCode, IPAddress ipAddress, bool unicast);
         private ReceivedExplicitUdpDataHandler eventReceivedExplicitUdpDataHandler;
 
         private readonly NativeEventDispatcher nedNotifyClass;
+        /// <summary>Handles notification that a scanner accessed a CIP class, instance, and attribute.</summary>
         public delegate void NotifyClassHandler(AdapterController adapter, uint classCode, ushort instanceNumber, ushort attributeNumber, IPAddress ipAddress);
         private NotifyClassHandler eventNotifyClassHandler;
 
         private readonly NativeEventDispatcher nedAfterAssemblyDataReceived;
+        /// <summary>Handles assembly data having been received into an assembly instance.</summary>
         public delegate void AfterAssemblyDataReceivedHandler(AdapterController adapter, ushort instanceNumber);
         private AfterAssemblyDataReceivedHandler eventAfterAssemblyDataReceivedHandler;
 
         private readonly NativeEventDispatcher nedBeforeAssemblyDataSend;
+        /// <summary>Handles the moment just before assembly data is sent from an assembly instance.</summary>
         public delegate void BeforeAssemblyDataSendHandler(AdapterController adapter, ushort instanceNumber);
         private BeforeAssemblyDataSendHandler eventBeforeAssemblyDataSendHandler;
 
 
+        /// <summary>Handles a scanner registering or unregistering an encapsulation session.</summary>
         public delegate void RegisterSessionHandler(AdapterController adapter, IPAddress ipAddress);
         private RegisterSessionHandler eventRegisterSessionHandler;
         private RegisterSessionHandler eventUnregisterSessionHandler;
 
         private readonly NativeEventDispatcher nedForwardOpen;
+        /// <summary>Handles a successful Forward Open opening a CIP connection.</summary>
         public delegate void ForwardOpenHandler(AdapterController adapter, IPAddress ipAddress, bool large);
         private ForwardOpenHandler eventForwardOpenHandler;
 
         private readonly NativeEventDispatcher nedForwardClose;
+        /// <summary>Handles a Forward Close tearing down a CIP connection.</summary>
         public delegate void ForwardCloseHandler(AdapterController adapter, IPAddress ipAddress);
         private ForwardCloseHandler eventForwardCloseHandler;
 
@@ -317,6 +325,7 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Adapter
             remove => this.eventForwardCloseHandler -= value;
         }
 
+        /// <summary>Registers a CIP object class with the adapter, creating it on the native stack.</summary>
         public void AddCipClass(CIPClass cipClass) {
 
             //var cip = cipClass;
@@ -365,6 +374,7 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Adapter
         /// receiving, without owning the connection.</summary>
         public void ConfigureListenOnlyConnectionPoint(uint connectionNumber, uint outputAssemblyId, uint inputAssemblyId, uint configurationAssemblyId) => this.NativeConfigureListenOnlyConnectionPoint(connectionNumber, outputAssemblyId, inputAssemblyId, configurationAssemblyId);
 
+        /// <summary>Adds a service to a CIP class, binding the given handler to the service slot.</summary>
         // serviceCode: the CIP service number recorded on the class's service slot;
         // returned to the scanner in the reply-service byte.
         // handlerCode: selects which native handler function (ForwardOpen, GetAttributeAll,
@@ -376,6 +386,7 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Adapter
             this.NativeInsertService(ptr, (uint)serviceCode, (uint)handlerCode, serviceName);
         }
 
+        /// <summary>Adds an attribute to a CIP instance, with its data type, encode/decode functions, data, and access flags.</summary>
         public void InsertAttribute(CipInstance cipInstance, ushort attributeNumber, CIPDataType cipType, CipAttributeEncodeInMessage encodeFunctionCode, CipAttributeDecodeFromMessage decodeFunctionCode, byte[] data, CIPAttributeFlag cipFlags) {
             var ptr = cipInstance.Impl;
 
@@ -392,6 +403,7 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Adapter
 
         //public void SetDeviceVendorId(uint vendorId) => this.NativeSetDeviceVendorId(vendorId);
 
+        /// <summary>Creates and registers the Assembly (Class 4) object class with the given attribute/service counts.</summary>
         public CIPClass CreateAssemblyClass(int numberClassAttributes, uint highestClassAttributeNumber, int numberClassServices, int numberInstanceAttributes, uint highestInstanceAttributeNumber, int numberInstanceServices, uint numberInstances, string name, ushort revision) {
 
             var cipClass = new CIPClass(ClassId.Assembly, numberClassAttributes, highestClassAttributeNumber, numberClassServices, numberInstanceAttributes, highestInstanceAttributeNumber, numberInstanceServices, numberInstances, name, revision) {
@@ -459,6 +471,7 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Adapter
         [MethodImpl(MethodImplOptions.InternalCall)]
         private extern void NativeShutdown();
 
+        /// <summary>Adds a single instance with the given instance ID to a CIP class.</summary>
         public void AddCipInstance(CIPClass cipClass, uint instanceId) {
             //var instance = new CipInstance {
             //    Impl = this.NativeAddCipInstance(cipClass.Impl, instanceId)
@@ -469,6 +482,7 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Adapter
             this.NativeAddCipInstance(cipClass.Impl, instanceId); ;
         }
 
+        /// <summary>Adds the configured number of instances starting at the given instance ID to a CIP class.</summary>
         public void AddCipInstances(CIPClass cipClass, uint instanceId) {
             //var instance = new CipInstance {
             //    Impl = this.NativeAddCipInstances(cipClass.Impl, instanceId)
@@ -479,9 +493,12 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Adapter
             this.NativeAddCipInstances(cipClass.Impl, instanceId); ;
         }
 
+        /// <summary>Allocates the get/set attribute bit masks for the given CIP class.</summary>
         public void AllocateAttributeMasks(CIPClass targetClass) => this.NativeAllocateAttributeMasks(targetClass.Impl);
+        /// <summary>Calculates the internal index for the given attribute number.</summary>
         public void CalculateIndex(ushort attributeNumber) => this.NativeCalculateIndex(attributeNumber);
 
+        /// <summary>Gets the attribute with the given number from a CIP instance.</summary>
         public CipAttribute GetCipAttribute(CipInstance cipInstance, ushort attributeNumber) {
 
             var attribute = new CipAttribute {
@@ -491,6 +508,7 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Adapter
             return attribute;
         }
 
+        /// <summary>Gets the registered CIP class with the given class ID.</summary>
         public CIPClass GetCipClass(ushort classId) {
 
             var cipclass = new CIPClass { Impl = this.NativeGetCipClass(classId) };
@@ -498,6 +516,7 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Adapter
             return cipclass;
         }
 
+        /// <summary>Gets the instance with the given number from a CIP class, or null if it does not exist.</summary>
         public CipInstance GetCipInstance(CIPClass cipClass, uint instanceNumber) {
 
             var cipinstance = new CipInstance { Impl = this.NativeGetCipInstance(cipClass.Impl, instanceNumber) };

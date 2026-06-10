@@ -121,11 +121,13 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             this.Clear();
         }
 
+        /// <summary>Releases the resources used by the DataGrid.</summary>
         public void Dispose() {
             this.Dispose(true);
             GC.SuppressFinalize(this);
         }
 
+        /// <summary>Releases the DataGrid's bitmap and icon resources.</summary>
         protected virtual void Dispose(bool disposing) {
             if (this.disposed) return;
 

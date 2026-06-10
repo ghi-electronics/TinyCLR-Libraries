@@ -15,7 +15,9 @@ using System.Threading;
 // to System.Net to match full .NET. Old-namespace user code needs to update
 // `using GHIElectronics.TinyCLR.Networking.Net;` -> `using System.Net;`.
 namespace System.Net {
+    /// <summary>Provides methods for encoding and decoding URLs and HTML text.</summary>
     public static class WebUtility {
+        /// <summary>URL-encodes the specified string.</summary>
         public static string UrlEncode(string value) {
             if (value == null)
                 return null;
@@ -24,6 +26,7 @@ namespace System.Net {
             return Encoding.UTF8.GetString(UrlEncode(bytes, 0, bytes.Length, false /* alwaysCreateNewReturnValue */));
         }
 
+        /// <summary>Decodes a URL-encoded string.</summary>
         public static string UrlDecode(string encodedValue) {
             if (encodedValue == null)
                 return null;
@@ -181,6 +184,7 @@ namespace System.Net {
             return true;
         }
 
+        /// <summary>HTML-encodes the specified string.</summary>
         // ----------------------------------------------------------------
         // HTML encode / decode — supports the five mandatory entities plus
         // numeric character references (&#NNN; and &#xHH;). Common need on
@@ -228,6 +232,7 @@ namespace System.Net {
             return sb.ToString();
         }
 
+        /// <summary>Decodes an HTML-encoded string.</summary>
         public static string HtmlDecode(string value) {
             if (value == null) return null;
             if (value.Length == 0) return value;

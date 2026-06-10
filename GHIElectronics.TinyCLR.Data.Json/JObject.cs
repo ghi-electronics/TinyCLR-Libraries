@@ -11,6 +11,7 @@ namespace GHIElectronics.TinyCLR.Data.Json
 		private readonly Hashtable _members = new Hashtable();
         private readonly ArrayList _orderedMembers = new ArrayList();
 
+		/// <summary>Gets or sets the property with the given name (case-insensitive).</summary>
 		public JProperty this[string name]
 		{
 			get { return (JProperty)_members[name.ToLower()]; }
@@ -22,12 +23,16 @@ namespace GHIElectronics.TinyCLR.Data.Json
             }
         }
 
+        /// <summary>Returns whether the object contains a property with the given name.</summary>
         public bool Contains(string name) => this._members.Contains(name.ToLower());
 
+        /// <summary>Gets the object's properties in insertion order.</summary>
         public ICollection Members => this._orderedMembers;
 
+        /// <summary>Adds or replaces a property with the given name and value.</summary>
         public void Add(string name, JToken value) => this.AddOrUpdateMember(name.ToLower(), new JProperty(name, value));
 
+        /// <summary>Serializes a .NET object's public properties and fields into a JSON object.</summary>
         public static JObject Serialize(Type type, object oSource, JsonSerializerSettings settings = null)
 		{
             if (settings == null)
@@ -120,11 +125,13 @@ namespace GHIElectronics.TinyCLR.Data.Json
 			return result;
 		}
 
+		/// <summary>Returns the JSON text for this object.</summary>
 		public override string ToString()
         {
             return this.ToString(null);
         }
 
+        /// <summary>Returns the JSON text for this object using the given formatting options.</summary>
         public override string ToString(JsonSerializationOptions options)
 		{
 			EnterSerialization(options);
@@ -159,6 +166,7 @@ namespace GHIElectronics.TinyCLR.Data.Json
 			}
 		}
 
+		/// <summary>Gets the number of bytes this object occupies when encoded as BSON.</summary>
 		public override int GetBsonSize()
 		{
             int offset = 0;
@@ -166,11 +174,13 @@ namespace GHIElectronics.TinyCLR.Data.Json
             return offset;
         }
 
+        /// <summary>Gets the number of BSON bytes for this object including the given element name.</summary>
         public override int GetBsonSize(string ename)
 		{
 			return 1 + ename.Length + 1 + this.GetBsonSize();
 		}
 
+		/// <summary>Writes this object to the buffer as BSON, advancing the offset.</summary>
 		public override void ToBson(byte[] buffer, ref int offset)
 		{
             int startingOffset = offset;
@@ -193,6 +203,7 @@ namespace GHIElectronics.TinyCLR.Data.Json
                 SerializationUtilities.Marshall(buffer, ref startingOffset, offset - startingOffset);
 		}
 
+        /// <summary>Gets the BSON type code for a document (object).</summary>
         public override BsonTypes GetBsonType()
         {
             return BsonTypes.BsonDocument;

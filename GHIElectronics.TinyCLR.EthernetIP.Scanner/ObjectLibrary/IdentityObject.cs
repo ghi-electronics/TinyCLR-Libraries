@@ -77,9 +77,12 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary
             }
         }
 
+        /// <summary>Holds a device revision as a major and minor number.</summary>
         public struct Revison
         {
+            /// <summary>The major revision number.</summary>
             public ushort MajorRevision;
+            /// <summary>The minor revision number.</summary>
             public ushort MinorRevision;
         }
 
@@ -122,14 +125,22 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary
             }
         }
 
+        /// <summary>The operational state reported by the Identity Object (attribute 8).</summary>
         public enum StateEnum
         {
+            /// <summary>The device or instance does not exist.</summary>
             Nonexistent = 0,
+            /// <summary>The device is performing self-test.</summary>
             DeviceSelfTesting = 1,
+            /// <summary>The device is in standby (not yet configured).</summary>
             Standby = 2,
+            /// <summary>The device is operational.</summary>
             Operational = 3,
+            /// <summary>The device has a major recoverable fault.</summary>
             MajorRecoverableFault = 4,
+            /// <summary>The device has a major unrecoverable fault.</summary>
             MajorUnrecoverableFault = 5,
+            /// <summary>Default value returned by the Get_Attributes_All service.</summary>
             DefaultforGet_Attributes_All_service = 255
         }
 
@@ -232,22 +243,35 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary
         }
 
 
+        /// <summary>Holds the class-level attributes of the Identity Object.</summary>
         public struct ClassAttributesStruct
         {
+            /// <summary>The object class revision.</summary>
             public ushort Revision;
+            /// <summary>The highest instance number created.</summary>
             public ushort MaxInstance;
+            /// <summary>The highest class-attribute ID implemented.</summary>
             public ushort MaxIDNumberOfClassAttributes;
+            /// <summary>The highest instance-attribute ID implemented.</summary>
             public ushort MaxIDNumberOfInstanceAttributes;
         }
 
+        /// <summary>Holds the instance-level attributes of the Identity Object.</summary>
         public struct InstanceAttributesStruct
         {
+            /// <summary>The device manufacturer's vendor ID.</summary>
             public ushort VendorID;
+            /// <summary>The CIP device type.</summary>
             public ushort DeviceType;
+            /// <summary>The product code.</summary>
             public ushort ProductCode;
+            /// <summary>The device revision (major, minor).</summary>
             public Revison Revision;
+            /// <summary>The current device status word.</summary>
             public ushort Status;
+            /// <summary>The device serial number.</summary>
             public uint SerialNumber;
+            /// <summary>The human-readable product name.</summary>
             public string ProductName;
         }
     }

@@ -134,6 +134,7 @@ namespace System.Text.RegularExpressions
     }
     */
 
+    /// <summary>Represents the set of captures made by a single capturing group.</summary>
     [Serializable]
     public class CaptureCollection : ICollection, IEnumerable
     {
@@ -149,6 +150,7 @@ namespace System.Text.RegularExpressions
             this._capcount = this._group._capcount;
         }
 
+        /// <summary>Copies all the elements of the collection to the given array starting at the given index.</summary>
         public void CopyTo(Array array, int arrayIndex)
         {
             if (array == null)
@@ -185,11 +187,13 @@ namespace System.Text.RegularExpressions
             return this._captures[i];
         }
 
+        /// <summary>Returns an enumerator that iterates through the collection.</summary>
         public IEnumerator GetEnumerator()
         {
             return new CaptureEnumerator(this);
         }
 
+        /// <summary>The number of captures in the collection.</summary>
         // Properties
         public int Count
         {
@@ -199,6 +203,7 @@ namespace System.Text.RegularExpressions
             }
         }
 
+        /// <summary>Gets a value indicating whether the collection is read-only.</summary>
         public bool IsReadOnly
         {
             get
@@ -207,6 +212,7 @@ namespace System.Text.RegularExpressions
             }
         }
 
+        /// <summary>Gets a value indicating whether access to the collection is synchronized (thread-safe).</summary>
         public bool IsSynchronized
         {
             get
@@ -215,6 +221,7 @@ namespace System.Text.RegularExpressions
             }
         }
 
+        /// <summary>Gets the capture at the specified index in the collection.</summary>
         public Capture this[int i]
         {
             get
@@ -223,6 +230,7 @@ namespace System.Text.RegularExpressions
             }
         }
 
+        /// <summary>An object that can be used to synchronize access to the collection.</summary>
         public object SyncRoot
         {
             get

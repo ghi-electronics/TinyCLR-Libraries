@@ -47,25 +47,32 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
         // --- public properties ------------------------------------------------
 
+        /// <summary>Font used for the dial labels and digital readout.</summary>
         public Font Font { get; set; }
+        /// <summary>When true, a seven-segment digital value is shown below the dial.</summary>
         public bool EnableDigitalNumber { get; set; }
+        /// <summary>When true, the threshold arc around the recommended value is drawn.</summary>
         public bool EnableThreshold { get; set; }
 
+        /// <summary>Background color behind the dial.</summary>
         public MediaColor BackColor {
             get => this._backColor;
             set { this._backColor = value; this.MarkDirty(); }
         }
 
+        /// <summary>Color of the dial face.</summary>
         public MediaColor DialColor {
             get => this._dialColor;
             set { this._dialColor = value; this.MarkDirty(); }
         }
 
+        /// <summary>Color of the tick marks, labels and dial text.</summary>
         public MediaColor ForeColor {
             get => this._foreColor;
             set { this._foreColor = value; this.MarkDirty(); }
         }
 
+        /// <summary>Smallest value on the dial.</summary>
         public float MinValue {
             get => this._minValue;
             set {
@@ -78,6 +85,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
+        /// <summary>Largest value on the dial.</summary>
         public float MaxValue {
             get => this._maxValue;
             set {
@@ -101,6 +109,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
+        /// <summary>Value the threshold arc is centered on.</summary>
         public float RecommendedValue {
             get => this._recommendedValue;
             set {
@@ -133,6 +142,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
+        /// <summary>Number of major tick divisions on the dial (2-24).</summary>
         public int NoOfDivisions {
             get => this._noOfDivisions;
             set {
@@ -143,6 +153,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
+        /// <summary>Number of minor tick marks between major divisions (1-10).</summary>
         public int NoOfSubDivisions {
             get => this._noOfSubDivisions;
             set {
@@ -153,6 +164,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
+        /// <summary>Label text drawn on the dial face.</summary>
         public string DialText {
             get => this._dialText;
             set { this._dialText = value ?? string.Empty; this.MarkDirty(); }
@@ -197,6 +209,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
         // --- construction ----------------------------------------------------
 
+        /// <summary>Creates a new square Gauge with the given side length in pixels.</summary>
         public Gauge(int side) : base() {
             this.Width = side;
             this.Height = side;
@@ -204,11 +217,13 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
         // --- IDisposable -----------------------------------------------------
 
+        /// <summary>Releases the resources used by the gauge.</summary>
         public void Dispose() {
             this.Dispose(true);
             GC.SuppressFinalize(this);
         }
 
+        /// <summary>Releases the gauge's cached drawing surfaces.</summary>
         protected virtual void Dispose(bool disposing) {
             if (this._disposed) return;
 
@@ -237,6 +252,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
         // --- rendering -------------------------------------------------------
 
+        /// <summary>Draws the dial face and pointer needle.</summary>
         public override void OnRender(DrawingContext dc) {
             if (this.Font == null) return;
 

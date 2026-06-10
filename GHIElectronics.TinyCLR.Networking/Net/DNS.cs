@@ -11,7 +11,9 @@ using System.Threading;
 using GHIElectronics.TinyCLR.Native;
 
 namespace System.Net {
+    /// <summary>Provides simple host name resolution functionality.</summary>
     public static class Dns {
+        /// <summary>Returns the host name of the local device.</summary>
         // Returns the device's host name. On full .NET this is the OS host
         // name; on TinyCLR we surface the device name from the Native lib —
         // it's the meaningful "what is my host" identifier on a microcontroller
@@ -27,11 +29,13 @@ namespace System.Net {
         private const int DnsTimeoutMs = 15000;
         private const int DnsPollMs = 50;
 
+        /// <summary>Resolves a host name or IP address to an array of IP addresses.</summary>
         // Convenience wrapper around GetHostEntry that returns just the IP
         // addresses. Matches full .NET signature.
         public static IPAddress[] GetHostAddresses(string hostNameOrAddress) =>
             GetHostEntry(hostNameOrAddress).AddressList;
 
+        /// <summary>Resolves a host name or IP address to an IPHostEntry containing its addresses.</summary>
         public static IPHostEntry GetHostEntry(string hostNameOrAddress) {
             if (hostNameOrAddress == null) throw new ArgumentNullException(nameof(hostNameOrAddress));
 
@@ -89,10 +93,13 @@ namespace System.Net {
         }
     }
 
+    /// <summary>Provides multicast DNS (mDNS) host name advertisement.</summary>
     public static class MulticastDns {
+        /// <summary>Starts advertising the specified host name over multicast DNS with the given time-to-live.</summary>
         [MethodImpl(MethodImplOptions.InternalCall)]
         public extern static void Start(string hostname, TimeSpan dnsTTL);
 
+        /// <summary>Stops multicast DNS host name advertisement.</summary>
         [MethodImpl(MethodImplOptions.InternalCall)]
         public extern static void Stop();
 

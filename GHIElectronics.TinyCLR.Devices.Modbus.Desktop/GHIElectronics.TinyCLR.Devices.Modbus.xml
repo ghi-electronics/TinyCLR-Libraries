@@ -35,6 +35,12 @@
             If isResponse == false, this parameter returns the interface implementation specific data which must be passed to the ParseTelegram method of the received response.
             If isResponse == true, this parameter must be called with the telegramContext parameter returned by ParseTelegram of the request telegram.</param>
         </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.Interface.IModbusInterface.PrepareWrite">
+            <summary>Prepares the interface for sending a telegram.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.Interface.IModbusInterface.PrepareRead">
+            <summary>Prepares the interface for receiving a telegram.</summary>
+        </member>
         <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.Interface.IModbusInterface.SendTelegram(System.Byte[],System.Int16)">
             <summary>
             Sends the given telegram.
@@ -91,6 +97,9 @@
             to be used with <see cref="T:GHIElectronics.TinyCLR.Devices.Modbus.ModbusMaster"/> or <see cref="T:GHIElectronics.TinyCLR.Devices.Modbus.ModbusDevice"/>.
             </summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Modbus.Interface.ModbusRtuInterface.isOpen">
+            <summary>Indicates whether the interface is currently open.</summary>
+        </member>
         <member name="P:GHIElectronics.TinyCLR.Devices.Modbus.Interface.ModbusRtuInterface.UartController">
             <summary>
             Gets the serial port which is used.
@@ -129,6 +138,12 @@
             <param name="telegramContext">
             If isResponse == false, this parameter returns the interface implementation specific data which must be passed to the ParseTelegram method of the received response.
             If isResponse == true, this parameter must be called with the telegramContext parameter returned by ParseTelegram of the request telegram.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.Interface.ModbusRtuInterface.PrepareWrite">
+            <summary>Prepares the interface for sending a telegram.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.Interface.ModbusRtuInterface.PrepareRead">
+            <summary>Prepares the interface for receiving a telegram.</summary>
         </member>
         <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.Interface.ModbusRtuInterface.SendTelegram(System.Byte[],System.Int16)">
             <summary>
@@ -243,6 +258,12 @@
             If isResponse == false, this parameter returns the interface implementation specific data which must be passed to the ParseTelegram method of the received response.
             If isResponse == true, this parameter must be called with the telegramContext parameter returned by ParseTelegram of the request telegram.</param>
         </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.Interface.ModbusTcpInterface.PrepareWrite">
+            <summary>Prepares the interface for sending a telegram.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.Interface.ModbusTcpInterface.PrepareRead">
+            <summary>Prepares the interface for receiving a telegram.</summary>
+        </member>
         <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.Interface.ModbusTcpInterface.SendTelegram(System.Byte[],System.Int16)">
             <summary>
             Sends the given telegram.
@@ -287,6 +308,9 @@
             <summary>
             Removes all data from the input interface.
             </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Modbus.Interface.ModbusTcpInterface.IsSocketConnected">
+            <summary>Gets or sets whether the socket is connected.</summary>
         </member>
         <member name="P:GHIElectronics.TinyCLR.Devices.Modbus.Interface.ModbusTcpInterface.IsConnectionOk">
             <summary>
@@ -482,6 +506,12 @@
             <summary>
             Gets if the interface message polling is running.
             </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Modbus.ModbusDevice.Buffer1">
+            <summary>Gets or sets the internal telegram buffer.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Modbus.ModbusDevice.Buffer2">
+            <summary>Gets or sets the internal telegram buffer.</summary>
         </member>
         <member name="M:GHIElectronics.TinyCLR.Devices.Modbus.ModbusDevice.OnMessageReceived(GHIElectronics.TinyCLR.Devices.Modbus.Interface.IModbusInterface,System.Byte,GHIElectronics.TinyCLR.Devices.Modbus.ModbusFunctionCode)">
             <summary>

@@ -34,30 +34,39 @@ namespace System.Collections.Generic {
         private int _version;
         private readonly IEqualityComparer<T> _comparer;
 
+        /// <summary>Initializes a new empty set that uses the default equality comparer.</summary>
         public HashSet() : this(0, null) { }
+        /// <summary>Initializes a new empty set that uses the specified equality comparer.</summary>
         public HashSet(IEqualityComparer<T> comparer) : this(0, comparer) { }
+        /// <summary>Initializes a new empty set with the specified initial capacity.</summary>
         public HashSet(int capacity) : this(capacity, null) { }
 
+        /// <summary>Initializes a new empty set with the specified initial capacity and equality comparer.</summary>
         public HashSet(int capacity, IEqualityComparer<T> comparer) {
             if (capacity < 0) throw new ArgumentOutOfRangeException();
             this._comparer = comparer ?? EqualityComparer<T>.Default;
             if (capacity > 0) this.Initialize(capacity);
         }
 
+        /// <summary>Initializes a new set that contains the elements copied from the specified collection.</summary>
         public HashSet(IEnumerable<T> collection) : this(collection, null) { }
 
+        /// <summary>Initializes a new set that contains the elements copied from the specified collection and uses the specified equality comparer.</summary>
         public HashSet(IEnumerable<T> collection, IEqualityComparer<T> comparer) : this(0, comparer) {
             if (collection == null) throw new ArgumentNullException();
             foreach (var item in collection) this.AddIfNotPresent(item);
         }
 
+        /// <summary>Gets the equality comparer used to determine equality of elements in the set.</summary>
         public IEqualityComparer<T> Comparer => this._comparer;
+        /// <summary>Gets the number of elements contained in the set.</summary>
         public int Count => this._count - this._freeCount;
 
         bool ICollection<T>.IsReadOnly => false;
         bool ICollection.IsSynchronized => false;
         object ICollection.SyncRoot => this;
 
+        /// <summary>Adds the specified element to the set and returns whether it was newly added.</summary>
         // ISet<T>.Add returns bool; ICollection<T>.Add returns void. The bool
         // overload is the canonical one — true if newly added, false if already
         // present.
@@ -65,6 +74,7 @@ namespace System.Collections.Generic {
 
         void ICollection<T>.Add(T item) => this.AddIfNotPresent(item);
 
+        /// <summary>Removes all elements from the set.</summary>
         public void Clear() {
             if (this._count > 0) {
                 for (var i = 0; i < this._buckets.Length; i++) this._buckets[i] = -1;
@@ -76,6 +86,7 @@ namespace System.Collections.Generic {
             }
         }
 
+        /// <summary>Determines whether the set contains the specified element.</summary>
         public bool Contains(T item) {
             if (this._buckets == null) return false;
             var hashCode = this.InternalGetHashCode(item);
@@ -86,6 +97,7 @@ namespace System.Collections.Generic {
             return false;
         }
 
+        /// <summary>Removes the specified element from the set and returns whether it was found and removed.</summary>
         public bool Remove(T item) {
             if (this._buckets == null) return false;
             var hashCode = this.InternalGetHashCode(item);
@@ -107,6 +119,7 @@ namespace System.Collections.Generic {
             return false;
         }
 
+        /// <summary>Removes all elements that match the conditions defined by the specified predicate and returns the number removed.</summary>
         public int RemoveWhere(Predicate<T> match) {
             if (match == null) throw new ArgumentNullException();
             var removed = 0;
@@ -121,6 +134,7 @@ namespace System.Collections.Generic {
             return removed;
         }
 
+        /// <summary>Searches the set for the element that equals the specified value and returns whether it was found.</summary>
         public bool TryGetValue(T equalValue, out T actualValue) {
             if (this._buckets != null) {
                 var hashCode = this.InternalGetHashCode(equalValue);
@@ -135,9 +149,12 @@ namespace System.Collections.Generic {
             return false;
         }
 
+        /// <summary>Copies the elements of the set to the specified array.</summary>
         public void CopyTo(T[] array) => this.CopyTo(array, 0, this.Count);
+        /// <summary>Copies the elements of the set to the specified array, starting at the specified array index.</summary>
         public void CopyTo(T[] array, int arrayIndex) => this.CopyTo(array, arrayIndex, this.Count);
 
+        /// <summary>Copies the specified number of elements of the set to the specified array, starting at the specified array index.</summary>
         public void CopyTo(T[] array, int arrayIndex, int count) {
             if (array == null) throw new ArgumentNullException();
             if (arrayIndex < 0 || count < 0) throw new ArgumentOutOfRangeException();
@@ -168,11 +185,13 @@ namespace System.Collections.Generic {
 
         // --- ISet<T> ops ---
 
+        /// <summary>Modifies the set to contain all elements that are present in itself, the specified collection, or both.</summary>
         public void UnionWith(IEnumerable<T> other) {
             if (other == null) throw new ArgumentNullException();
             foreach (var item in other) this.AddIfNotPresent(item);
         }
 
+        /// <summary>Modifies the set to contain only elements that are also present in the specified collection.</summary>
         public void IntersectWith(IEnumerable<T> other) {
             if (other == null) throw new ArgumentNullException();
             if (this.Count == 0) return;
@@ -197,12 +216,14 @@ namespace System.Collections.Generic {
             }
         }
 
+        /// <summary>Removes all elements in the specified collection from the set.</summary>
         public void ExceptWith(IEnumerable<T> other) {
             if (other == null) throw new ArgumentNullException();
             if (this.Count == 0) return;
             foreach (var item in other) this.Remove(item);
         }
 
+        /// <summary>Modifies the set to contain only elements that are present either in itself or in the specified collection, but not both.</summary>
         public void SymmetricExceptWith(IEnumerable<T> other) {
             if (other == null) throw new ArgumentNullException();
             // Match .NET BCL: items in `this XOR other`. Without an indexable
@@ -216,6 +237,7 @@ namespace System.Collections.Generic {
             }
         }
 
+        /// <summary>Determines whether the set is a subset of the specified collection.</summary>
         public bool IsSubsetOf(IEnumerable<T> other) {
             if (other == null) throw new ArgumentNullException();
             if (this.Count == 0) return true;
@@ -226,6 +248,7 @@ namespace System.Collections.Generic {
             return true;
         }
 
+        /// <summary>Determines whether the set is a proper subset of the specified collection.</summary>
         public bool IsProperSubsetOf(IEnumerable<T> other) {
             if (other == null) throw new ArgumentNullException();
             var o = ToTempSet(other);
@@ -234,12 +257,14 @@ namespace System.Collections.Generic {
             return true;
         }
 
+        /// <summary>Determines whether the set is a superset of the specified collection.</summary>
         public bool IsSupersetOf(IEnumerable<T> other) {
             if (other == null) throw new ArgumentNullException();
             foreach (var item in other) if (!this.Contains(item)) return false;
             return true;
         }
 
+        /// <summary>Determines whether the set is a proper superset of the specified collection.</summary>
         public bool IsProperSupersetOf(IEnumerable<T> other) {
             if (other == null) throw new ArgumentNullException();
             if (this.Count == 0) return false;
@@ -249,6 +274,7 @@ namespace System.Collections.Generic {
             return true;
         }
 
+        /// <summary>Determines whether the set and the specified collection share any common elements.</summary>
         public bool Overlaps(IEnumerable<T> other) {
             if (other == null) throw new ArgumentNullException();
             if (this.Count == 0) return false;
@@ -256,6 +282,7 @@ namespace System.Collections.Generic {
             return false;
         }
 
+        /// <summary>Determines whether the set and the specified collection contain the same elements.</summary>
         public bool SetEquals(IEnumerable<T> other) {
             if (other == null) throw new ArgumentNullException();
             var o = ToTempSet(other);
@@ -264,6 +291,7 @@ namespace System.Collections.Generic {
             return true;
         }
 
+        /// <summary>Returns an enumerator that iterates through the set.</summary>
         public Enumerator GetEnumerator() => new Enumerator(this);
         IEnumerator<T> IEnumerable<T>.GetEnumerator() => new Enumerator(this);
         IEnumerator IEnumerable.GetEnumerator() => new Enumerator(this);
@@ -366,6 +394,7 @@ namespace System.Collections.Generic {
             return GetPrime(newSize);
         }
 
+        /// <summary>Enumerates the elements of a <see cref="HashSet{T}"/>.</summary>
         public struct Enumerator : IEnumerator<T>, IEnumerator {
             private readonly HashSet<T> _set;
             private readonly int _version;
@@ -379,6 +408,7 @@ namespace System.Collections.Generic {
                 this._current = default(T);
             }
 
+            /// <summary>Advances the enumerator to the next element of the set.</summary>
             public bool MoveNext() {
                 if (this._version != this._set._version) throw new InvalidOperationException();
                 while ((uint)this._index < (uint)this._set._count) {
@@ -394,6 +424,7 @@ namespace System.Collections.Generic {
                 return false;
             }
 
+            /// <summary>Gets the element at the current position of the enumerator.</summary>
             public T Current => this._current;
             object IEnumerator.Current => this._current;
 
@@ -403,6 +434,7 @@ namespace System.Collections.Generic {
                 this._current = default(T);
             }
 
+            /// <summary>Releases all resources used by the enumerator.</summary>
             public void Dispose() { }
         }
     }

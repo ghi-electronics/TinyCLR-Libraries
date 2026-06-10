@@ -49,12 +49,15 @@ namespace GHIElectronics.TinyCLR.UI.Input {
     ///     report arguments
     /// </summary>
     public class InputReportArgs {
+        /// <summary>Constructs an instance of the InputReportArgs class.</summary>
         public InputReportArgs(object dev, object report) {
             this.Device = (InputDevice)dev;
             this.Report = (InputReport)report;
         }
 
+        /// <summary>Read-only access to the input device that reported the input.</summary>
         public readonly InputDevice Device;
+        /// <summary>Read-only access to the input report.</summary>
         public readonly InputReport Report;
     }
 

@@ -250,6 +250,7 @@ namespace System.Net.Sockets
         /// </devdoc>
         PacketInformation = 19,
 
+        /// <summary>The IPv6 hop limit for outgoing packets.</summary>
         //
         //good for ipv6
         //
@@ -269,6 +270,7 @@ namespace System.Net.Sockets
         ///    <para>[To be supplied.]</para>
         /// </devdoc>
         BsdUrgent = 2,
+        /// <summary>Sends data as expedited (urgent) data.</summary>
         Expedited = 2,
 
         //
@@ -286,8 +288,10 @@ namespace System.Net.Sockets
         /// </devdoc>
         ChecksumCoverage = 20,
 
+        /// <summary>Updates the socket context after a call to accept a connection.</summary>
         UpdateAcceptContext = 0x700B,
 
+        /// <summary>Updates the socket context after a call to connect.</summary>
         UpdateConnectContext = 0x7010,
 
     }; // enum SocketOptionName

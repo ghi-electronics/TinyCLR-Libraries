@@ -1461,6 +1461,30 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="T:System.Net.AuthenticationSchemes">
+            <summary>Specifies the protocols used to authenticate client requests.</summary>
+        </member>
+        <member name="F:System.Net.AuthenticationSchemes.None">
+            <summary>No authentication is allowed.</summary>
+        </member>
+        <member name="F:System.Net.AuthenticationSchemes.Digest">
+            <summary>Specifies digest authentication.</summary>
+        </member>
+        <member name="F:System.Net.AuthenticationSchemes.Negotiate">
+            <summary>Negotiates with the client to determine the authentication scheme.</summary>
+        </member>
+        <member name="F:System.Net.AuthenticationSchemes.Ntlm">
+            <summary>Specifies NTLM authentication.</summary>
+        </member>
+        <member name="F:System.Net.AuthenticationSchemes.Basic">
+            <summary>Specifies basic authentication.</summary>
+        </member>
+        <member name="F:System.Net.AuthenticationSchemes.Anonymous">
+            <summary>Specifies anonymous authentication.</summary>
+        </member>
+        <member name="F:System.Net.AuthenticationSchemes.IntegratedWindowsAuthentication">
+            <summary>Specifies Windows authentication using Negotiate or NTLM.</summary>
+        </member>
         <member name="T:System.Net.AuthenticationType">
             <summary>
             Network authentication type.
@@ -1532,6 +1556,9 @@
             See also the <see cref="T:System.Net.HttpListenerRequest"/> class.
             </param>
             <param name="httpListener">TBD</param>
+        </member>
+        <member name="M:System.Net.HttpListenerContext.Reset">
+            <summary>Resets the parsed-request state and the underlying request so the context can be reused.</summary>
         </member>
         <member name="P:System.Net.HttpListenerContext.Request">
             <summary>
@@ -1636,6 +1663,9 @@
             </summary>
             <param name="clientStream">Network stream to the client.</param>
             <param name="maxHeaderLen">TBD</param>
+        </member>
+        <member name="M:System.Net.HttpListenerRequest.Reset">
+            <summary>Clears the request headers and content length so the instance can be reused.</summary>
         </member>
         <member name="M:System.Net.HttpListenerRequest.ParseHTTPRequest">
             <summary>
@@ -2014,6 +2044,9 @@
             </summary>
             <value>The text description of the HTTP status code returned to the
             client.</value>
+        </member>
+        <member name="M:System.Net.HttpListenerResponse.Detach">
+            <summary>Sends the headers if not already sent and marks the response as closed without closing the connection.</summary>
         </member>
         <member name="M:System.Net.HttpListenerResponse.Close">
             <summary>
@@ -3375,6 +3408,12 @@
             <see cref="T:System.Net.WebRequest"/> class.
             </summary>
         </member>
+        <member name="M:System.Net.WebRequest.Dispose">
+            <summary>Releases the resources used by the request.</summary>
+        </member>
+        <member name="M:System.Net.WebRequest.Dispose(System.Boolean)">
+            <summary>Releases the unmanaged resources and optionally the managed resources used by the request.</summary>
+        </member>
         <member name="P:System.Net.WebRequest.Method">
             <summary>
             When overridden in a descendant class, gets or sets the protocol
@@ -3596,6 +3635,12 @@
             <summary>
             When overridden by a descendant class, closes the response stream.
             </summary>
+        </member>
+        <member name="M:System.Net.WebResponse.Dispose">
+            <summary>Releases the resources used by the response.</summary>
+        </member>
+        <member name="M:System.Net.WebResponse.Dispose(System.Boolean)">
+            <summary>Releases the unmanaged resources and optionally the managed resources used by the response.</summary>
         </member>
         <member name="T:System.Net.WebExceptionStatus">
             <summary>

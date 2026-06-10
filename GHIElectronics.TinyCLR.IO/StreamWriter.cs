@@ -3,6 +3,7 @@ using System.Text;
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("MFWsStack")]
 
 namespace System.IO {
+    /// <summary>Writes characters to a stream using UTF-8 encoding.</summary>
     public class StreamWriter : TextWriter
     {
         private Stream m_stream;
@@ -16,6 +17,7 @@ namespace System.IO {
 
         //--//
 
+        /// <summary>Creates a writer over the given stream.</summary>
         public StreamWriter(Stream stream)
         {
             if (stream == null)
@@ -34,18 +36,22 @@ namespace System.IO {
             this.m_disposed = false;
         }
 
+        /// <summary>Creates a writer that creates or overwrites the file at the given path.</summary>
         public StreamWriter(string path)
             : this(path, false)
         {
         }
 
+        /// <summary>Creates a writer for the file at the given path, optionally appending to it.</summary>
         public StreamWriter(string path, bool append)
             : this(new FileStream(path, append ? FileMode.Append : FileMode.Create, FileAccess.Write, FileShare.Read))
         {
         }
 
+        /// <inheritdoc/>
         public override void Close() => Dispose();
 
+        /// <inheritdoc/>
         protected override void Dispose(bool disposing)
         {
             if (this.m_stream != null)
@@ -76,6 +82,7 @@ namespace System.IO {
             this.m_disposed = true;
         }
 
+        /// <inheritdoc/>
         public override void Flush()
         {
             if (this.m_disposed) throw new ObjectDisposedException();
@@ -95,6 +102,7 @@ namespace System.IO {
             }
         }
 
+        /// <inheritdoc/>
         public override void Write(char value)
         {
             var buffer = this.Encoding.GetBytes(value.ToString());
@@ -102,6 +110,7 @@ namespace System.IO {
             WriteBytes(buffer, 0, buffer.Length);
         }
 
+        /// <inheritdoc/>
         public override void WriteLine()
         {
             var tempBuf = this.Encoding.GetBytes(c_NewLine);
@@ -109,6 +118,7 @@ namespace System.IO {
             return;
         }
 
+        /// <inheritdoc/>
         public override void WriteLine(string value)
         {
             var tempBuf = this.Encoding.GetBytes(value + c_NewLine);
@@ -116,8 +126,10 @@ namespace System.IO {
             return;
         }
 
+        /// <summary>The underlying stream being written to.</summary>
         public virtual Stream BaseStream => this.m_stream;
 
+        /// <inheritdoc/>
         public override Encoding Encoding => System.Text.Encoding.UTF8;
 
         //--//

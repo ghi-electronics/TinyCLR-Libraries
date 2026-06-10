@@ -8,6 +8,7 @@ namespace System.Net.Sockets {
     using System.Threading;
     using GHIElectronics.TinyCLR.Networking;
 
+    /// <summary>Implements the Berkeley sockets interface for network communication.</summary>
     public class Socket : IDisposable {
         /* WARNING!!!!
 * The m_Handle field MUST be the first field in the Socket class; it is expected by
@@ -25,7 +26,9 @@ namespace System.Net.Sockets {
 
         internal int m_Handle = -1;
 
+        /// <summary>The delay, in milliseconds, between successive send attempts.</summary>
         public int DelayBetweenSend { get; set; } = 1;
+        /// <summary>The delay, in milliseconds, between successive receive attempts.</summary>
         public int DelayBetweenReceive { get; set; } = 1;
 
         // Mirrors the native default in DEFAULT_*_TIMEOUT_IN_MILLISECOND. Used as
@@ -92,6 +95,7 @@ namespace System.Net.Sockets {
 
         static object socketCountObject = new object();
 
+        /// <summary>The number of sockets currently in use.</summary>
         public static int SocketInUsed => socketInUsedCount;
 
         // .NET-parity: track the address family / socket type / protocol type
@@ -101,16 +105,21 @@ namespace System.Net.Sockets {
         private readonly ProtocolType m_ProtocolType;
         private bool m_isConnected;
 
+        /// <summary>The address family of the socket.</summary>
         public AddressFamily AddressFamily => this.m_AddressFamily;
+        /// <summary>The type of the socket.</summary>
         public SocketType SocketType => this.m_SocketType;
+        /// <summary>The protocol type of the socket.</summary>
         public ProtocolType ProtocolType => this.m_ProtocolType;
 
+        /// <summary>Whether the socket is connected to a remote host.</summary>
         // True once Connect() / Accept() succeeded; false after Dispose/Close
         // or before connection. Matches full .NET semantics for a TCP socket;
         // for UDP this stays false unless Connect() (associate a remote) was
         // called, also matching .NET.
         public bool Connected => this.m_Handle != -1 && this.m_isConnected;
 
+        /// <summary>Initializes a new socket with the specified address family, type, and protocol.</summary>
         public Socket(AddressFamily addressFamily, SocketType socketType, ProtocolType protocolType) {
             this.ni = Socket.DefaultProvider;
             this.m_Handle = this.ni.Create(addressFamily, socketType, protocolType);
@@ -141,6 +150,7 @@ namespace System.Net.Sockets {
             }
         }
 
+        /// <summary>The number of bytes available to be read from the socket.</summary>
         public int Available {
             get {
                 if (this.m_Handle == -1) {
@@ -182,10 +192,13 @@ namespace System.Net.Sockets {
             return ep;
         }
 
+        /// <summary>The local endpoint the socket is bound to.</summary>
         public EndPoint LocalEndPoint => this.GetEndPoint(true);
 
+        /// <summary>The remote endpoint the socket is connected to.</summary>
         public EndPoint RemoteEndPoint => this.GetEndPoint(false);
 
+        /// <summary>The amount of time, in milliseconds, that a receive operation waits before timing out.</summary>
         public int ReceiveTimeout {
             get => this.m_recvTimeout;
 
@@ -196,6 +209,7 @@ namespace System.Net.Sockets {
             }
         }
 
+        /// <summary>The amount of time, in milliseconds, that a send operation waits before timing out.</summary>
         public int SendTimeout {
             get => this.m_sendTimeout;
 
@@ -206,6 +220,7 @@ namespace System.Net.Sockets {
             }
         }
 
+        /// <summary>Binds the socket to the specified local endpoint.</summary>
         public void Bind(EndPoint localEP) {
             if (this.m_Handle == -1) {
                 throw new ObjectDisposedException();
@@ -216,6 +231,7 @@ namespace System.Net.Sockets {
             this.m_localEndPoint = localEP;
         }
 
+        /// <summary>Connects the socket to the specified remote endpoint.</summary>
         public void Connect(EndPoint remoteEP) {
             if (this.m_Handle == -1) {
                 throw new ObjectDisposedException();
@@ -236,8 +252,10 @@ namespace System.Net.Sockets {
             this.m_isConnected = true;
         }
 
+        /// <summary>Closes the socket and releases its resources.</summary>
         public void Close() => ((IDisposable)this).Dispose();
 
+        /// <summary>Disables sending and/or receiving on the socket.</summary>
         // Disables sends and/or receives on this Socket without closing it.
         // Mirrors System.Net.Sockets.Socket.Shutdown.
         // - Send  : peer sees a graceful FIN on TCP; subsequent local sends fail.
@@ -251,6 +269,7 @@ namespace System.Net.Sockets {
             this.ni.Shutdown(this.m_Handle, how);
         }
 
+        /// <summary>Places the socket in a listening state with the specified backlog.</summary>
         public void Listen(int backlog) {
             if (this.m_Handle == -1) {
                 throw new ObjectDisposedException();
@@ -259,6 +278,7 @@ namespace System.Net.Sockets {
             this.ni.Listen(this.m_Handle, backlog);
         }
 
+        /// <summary>Accepts a pending connection request and returns a new connected socket.</summary>
         public Socket Accept() {
             if (this.m_Handle == -1) {
                 throw new ObjectDisposedException();
@@ -285,12 +305,16 @@ namespace System.Net.Sockets {
             return socket;
         }
 
+        /// <summary>Sends the specified number of bytes from the buffer and returns the number of bytes sent.</summary>
         public int Send(byte[] buffer, int size, SocketFlags socketFlags) => this.Send(buffer, 0, size, socketFlags);
 
+        /// <summary>Sends the entire buffer and returns the number of bytes sent.</summary>
         public int Send(byte[] buffer, SocketFlags socketFlags) => this.Send(buffer, 0, buffer != null ? buffer.Length : 0, socketFlags);
 
+        /// <summary>Sends the entire buffer and returns the number of bytes sent.</summary>
         public int Send(byte[] buffer) => this.Send(buffer, 0, buffer != null ? buffer.Length : 0, SocketFlags.None);
 
+        /// <summary>Sends data from the buffer starting at the given offset and returns the number of bytes sent.</summary>
         public int Send(byte[] buffer, int offset, int size, SocketFlags socketFlags) {
             if (this.m_Handle == -1) throw new ObjectDisposedException();
 
@@ -331,6 +355,7 @@ namespace System.Net.Sockets {
             return totalSend;
         }
 
+        /// <summary>Sends data to the specified endpoint and returns the number of bytes sent.</summary>
         public int SendTo(byte[] buffer, int offset, int size, SocketFlags socketFlags, EndPoint remoteEP) {
             if (this.m_Handle == -1) throw new ObjectDisposedException();
 
@@ -370,18 +395,25 @@ namespace System.Net.Sockets {
             return totalSend;
         }
 
+        /// <summary>Sends the specified number of bytes to the given endpoint and returns the number of bytes sent.</summary>
         public int SendTo(byte[] buffer, int size, SocketFlags socketFlags, EndPoint remoteEP) => this.SendTo(buffer, 0, size, socketFlags, remoteEP);
 
+        /// <summary>Sends the entire buffer to the given endpoint and returns the number of bytes sent.</summary>
         public int SendTo(byte[] buffer, SocketFlags socketFlags, EndPoint remoteEP) => this.SendTo(buffer, 0, buffer != null ? buffer.Length : 0, socketFlags, remoteEP);
 
+        /// <summary>Sends the entire buffer to the given endpoint and returns the number of bytes sent.</summary>
         public int SendTo(byte[] buffer, EndPoint remoteEP) => this.SendTo(buffer, 0, buffer != null ? buffer.Length : 0, SocketFlags.None, remoteEP);
 
+        /// <summary>Receives the specified number of bytes into the buffer and returns the number of bytes read.</summary>
         public int Receive(byte[] buffer, int size, SocketFlags socketFlags) => this.Receive(buffer, 0, size, socketFlags);
 
+        /// <summary>Receives data into the entire buffer and returns the number of bytes read.</summary>
         public int Receive(byte[] buffer, SocketFlags socketFlags) => this.Receive(buffer, 0, buffer != null ? buffer.Length : 0, socketFlags);
 
+        /// <summary>Receives data into the entire buffer and returns the number of bytes read.</summary>
         public int Receive(byte[] buffer) => this.Receive(buffer, 0, buffer != null ? buffer.Length : 0, SocketFlags.None);
 
+        /// <summary>Receives data into the buffer starting at the given offset and returns the number of bytes read.</summary>
         public int Receive(byte[] buffer, int offset, int size, SocketFlags socketFlags) {
             if (this.m_Handle == -1) throw new ObjectDisposedException();
 
@@ -428,6 +460,7 @@ namespace System.Net.Sockets {
             }
         }
 
+        /// <summary>Receives data and the sender's endpoint, returning the number of bytes read.</summary>
         public int ReceiveFrom(byte[] buffer, int offset, int size, SocketFlags socketFlags, ref EndPoint remoteEP) {
             if (this.m_Handle == -1) throw new ObjectDisposedException();
 
@@ -465,12 +498,16 @@ namespace System.Net.Sockets {
             }
         }
 
+        /// <summary>Receives the specified number of bytes and the sender's endpoint, returning the number of bytes read.</summary>
         public int ReceiveFrom(byte[] buffer, int size, SocketFlags socketFlags, ref EndPoint remoteEP) => this.ReceiveFrom(buffer, 0, size, socketFlags, ref remoteEP);
 
+        /// <summary>Receives data into the entire buffer and the sender's endpoint, returning the number of bytes read.</summary>
         public int ReceiveFrom(byte[] buffer, SocketFlags socketFlags, ref EndPoint remoteEP) => this.ReceiveFrom(buffer, 0, buffer != null ? buffer.Length : 0, socketFlags, ref remoteEP);
 
+        /// <summary>Receives data into the entire buffer and the sender's endpoint, returning the number of bytes read.</summary>
         public int ReceiveFrom(byte[] buffer, ref EndPoint remoteEP) => this.ReceiveFrom(buffer, 0, buffer != null ? buffer.Length : 0, SocketFlags.None, ref remoteEP);
 
+        /// <summary>Sets an integer-valued socket option.</summary>
         public void SetSocketOption(SocketOptionLevel optionLevel, SocketOptionName optionName, int optionValue) {
             if (this.m_Handle == -1) {
                 throw new ObjectDisposedException();
@@ -497,8 +534,10 @@ namespace System.Net.Sockets {
             this.ni.SetOption(this.m_Handle, optionLevel, optionName, val);
         }
 
+        /// <summary>Sets a boolean-valued socket option.</summary>
         public void SetSocketOption(SocketOptionLevel optionLevel, SocketOptionName optionName, bool optionValue) => this.SetSocketOption(optionLevel, optionName, (optionValue ? 1 : 0));
 
+        /// <summary>Sets a byte-array-valued socket option.</summary>
         public void SetSocketOption(SocketOptionLevel optionLevel, SocketOptionName optionName, byte[] optionValue) {
             if (this.m_Handle == -1) {
                 throw new ObjectDisposedException();
@@ -507,6 +546,7 @@ namespace System.Net.Sockets {
             this.ni.SetOption(this.m_Handle, optionLevel, optionName, optionValue);
         }
 
+        /// <summary>Returns the value of the specified socket option as an integer.</summary>
         public object GetSocketOption(SocketOptionLevel optionLevel, SocketOptionName optionName) {
             if (optionName == SocketOptionName.DontLinger ||
                 optionName == SocketOptionName.AddMembership ||
@@ -532,6 +572,7 @@ namespace System.Net.Sockets {
             return (object)iVal;
         }
 
+        /// <summary>Reads the value of the specified socket option into the given byte array.</summary>
         public void GetSocketOption(SocketOptionLevel optionLevel, SocketOptionName optionName, byte[] val) {
             if (this.m_Handle == -1) {
                 throw new ObjectDisposedException();
@@ -540,6 +581,7 @@ namespace System.Net.Sockets {
             this.ni.GetOption(this.m_Handle, optionLevel, optionName, val);
         }
 
+        /// <summary>Determines the status of the socket within the specified timeout.</summary>
         public bool Poll(int microSeconds, SelectMode mode) {
             if (this.m_Handle == -1) {
                 throw new ObjectDisposedException();
@@ -569,6 +611,7 @@ namespace System.Net.Sockets {
             return false;
         }
 
+        /// <summary>Releases the resources used by the socket.</summary>
         [MethodImpl(MethodImplOptions.Synchronized)]
         protected virtual void Dispose(bool disposing) {
             if (this.m_Handle != -1) {
@@ -589,6 +632,7 @@ namespace System.Net.Sockets {
             GC.SuppressFinalize(this);
         }
 
+        /// <summary>Releases resources when the socket is finalized.</summary>
         ~Socket() {
             this.Dispose(false);
         }

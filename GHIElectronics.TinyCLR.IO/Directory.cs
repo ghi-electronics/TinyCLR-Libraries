@@ -13,8 +13,10 @@ namespace System.IO {
 
         //--//
 
+        /// <summary>Returns the names of all mounted logical drives.</summary>
         public static string[] GetLogicalDrives() => DriveInfo.GetLogicalDrives();
 
+        /// <summary>Creates the directory at the path, including any missing parents, and returns it.</summary>
         public static DirectoryInfo CreateDirectory(string path) {
             // path validation in Path.GetFullPath()
 
@@ -27,6 +29,7 @@ namespace System.IO {
             return new DirectoryInfo(path);
         }
 
+        /// <summary>Returns whether the directory at the path exists.</summary>
         public static bool Exists(string path) {
             // path validation in Path.GetFullPath()
 
@@ -58,30 +61,37 @@ namespace System.IO {
             return false;
         }
 
+        /// <summary>Returns an enumerable over the file names in the directory.</summary>
         public static IEnumerable EnumerateFiles(string path) {
             if (!Directory.Exists(path)) throw new IOException("", (int)IOException.IOExceptionErrorCode.DirectoryNotFound);
 
             return new FileEnumerator(path, FileEnumFlags.Files);
         }
 
+        /// <summary>Returns an enumerable over the subdirectory names in the directory.</summary>
         public static IEnumerable EnumerateDirectories(string path) {
             if (!Directory.Exists(path)) throw new IOException("", (int)IOException.IOExceptionErrorCode.DirectoryNotFound);
 
             return new FileEnumerator(path, FileEnumFlags.Directories);
         }
 
+        /// <summary>Returns an enumerable over the file and subdirectory names in the directory.</summary>
         public static IEnumerable EnumerateFileSystemEntries(string path) {
             if (!Directory.Exists(path)) throw new IOException("", (int)IOException.IOExceptionErrorCode.DirectoryNotFound);
 
             return new FileEnumerator(path, FileEnumFlags.FilesAndDirectories);
         }
 
+        /// <summary>Returns the names of the files in the directory.</summary>
         public static string[] GetFiles(string path) => GetChildren(path, "*", false);
 
+        /// <summary>Returns the names of the subdirectories in the directory.</summary>
         public static string[] GetDirectories(string path) => GetChildren(path, "*", true);
 
+        /// <summary>Returns the application's current working directory.</summary>
         public static string GetCurrentDirectory() => FileSystemManager.CurrentDirectory;
 
+        /// <summary>Sets the application's current working directory.</summary>
         public static void SetCurrentDirectory(string path) {
             // path validation in Path.GetFullPath()
 
@@ -104,6 +114,7 @@ namespace System.IO {
             }
         }
 
+        /// <summary>Moves a directory and its contents to a new location.</summary>
         public static void Move(string sourceDirName, string destDirName) {
             if (Path.GetPathRoot(sourceDirName) != Path.GetPathRoot(destDirName)) throw new ArgumentException();
 
@@ -175,8 +186,10 @@ namespace System.IO {
             }
         }
 
+        /// <summary>Deletes the empty directory at the path.</summary>
         public static void Delete(string path) => Delete(path, false);
 
+        /// <summary>Deletes the directory at the path, optionally including its contents.</summary>
         public static void Delete(string path, bool recursive) {
             path = Path.GetFullPath(path);
 

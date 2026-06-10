@@ -12,6 +12,7 @@ namespace GHIElectronics.TinyCLR.IO {
     public static class FileSystem {
         private static readonly IDictionary mounted = new Hashtable();
 
+        /// <summary>Mounts the file system on the storage controller handle and returns its drive provider.</summary>
         public static IDriveProvider Mount(IntPtr hdc) {
             if (FileSystem.mounted.Contains(hdc))
                 throw new InvalidOperationException("Already mounted");
@@ -34,6 +35,7 @@ namespace GHIElectronics.TinyCLR.IO {
             return null;
         }
 
+        /// <summary>Unmounts the file system on the storage controller handle.</summary>
         public static bool Unmount(IntPtr hdc) {
             if (!FileSystem.mounted.Contains(hdc))
                 throw new InvalidOperationException("Not mounted");
@@ -47,8 +49,10 @@ namespace GHIElectronics.TinyCLR.IO {
             return FileSystem.Uninitialize(hdc);
         }
 
+        /// <summary>Flushes all pending writes for the file system on the storage controller handle.</summary>
         public static void Flush(IntPtr hdc) => FileSystem.FlushAll(hdc);
 
+        /// <summary>Formats the volume on the storage controller handle, optionally over only part of the volume.</summary>
         // forceSize:
         //   0 = full volume (100%)
         //   1 = format only first 75% of the volume; remaining 25% left untouched (raw-access only).

@@ -6,9 +6,11 @@ using System;
 using System.Runtime.CompilerServices;
 
 namespace GHIElectronics.TinyCLR.EthernetIP.Adapter {
+    /// <summary>Represents a single instance of a CIP object class.</summary>
     public class CipInstance {
 
         private IntPtr impl;
+        /// <summary>Native handle to the underlying CIP instance.</summary>
         // Phase 3.5: setter narrowed to internal. The setter was public for historical
         // reasons (parallel-with-AddCipInstance returning instances) but exposing a
         // raw mutable pointer to user code is a footgun — they could overwrite it

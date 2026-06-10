@@ -4,9 +4,9 @@ using TinyCrypto = GHIElectronics.TinyCLR.Cryptography;
 
 namespace System.Security.Cryptography {
 
-    /// <summary>Well-known hash-algorithm name selector matching .NET Framework's <c>System.Security.Cryptography.HashAlgorithmName</c>.</summary>
     // .NET hash algorithm name selector. Matches System.Security.Cryptography.HashAlgorithmName
     // shape from .NET Framework 4.6+: a struct with static well-known names + Equals.
+    /// <summary>Well-known hash-algorithm name selector matching .NET Framework's <c>System.Security.Cryptography.HashAlgorithmName</c>.</summary>
     public struct HashAlgorithmName {
         private readonly string name;
 
@@ -50,8 +50,8 @@ namespace System.Security.Cryptography {
         Oaep = 1,
     }
 
-    /// <summary>Encryption-padding configuration — padding mode plus (for OAEP) the hash algorithm. Matches the .NET Framework type.</summary>
     // Matches .NET Framework: padding mode + (for OAEP) hash algorithm bundled together.
+    /// <summary>Encryption-padding configuration — padding mode plus (for OAEP) the hash algorithm. Matches the .NET Framework type.</summary>
     public sealed class RSAEncryptionPadding {
         private static readonly RSAEncryptionPadding s_pkcs1 = new RSAEncryptionPadding(RSAEncryptionPaddingMode.Pkcs1, default(HashAlgorithmName));
         private static readonly RSAEncryptionPadding s_oaepSHA1 = new RSAEncryptionPadding(RSAEncryptionPaddingMode.Oaep, HashAlgorithmName.SHA1);

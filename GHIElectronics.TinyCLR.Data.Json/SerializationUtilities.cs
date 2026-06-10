@@ -3,8 +3,10 @@ using System.Text;
 
 namespace GHIElectronics.TinyCLR.Data.Json
 {
+    /// <summary>Helpers for marshalling primitive values to and from a BSON byte buffer.</summary>
     public static class SerializationUtilities
     {
+        /// <summary>Writes a primitive value into the buffer at the given offset, advancing it.</summary>
         public static void Marshall(byte[] buffer, ref int offset, object arg)
         {
             var type = arg.GetType();
@@ -103,6 +105,7 @@ namespace GHIElectronics.TinyCLR.Data.Json
                 throw new Exception("unsupported type for Marshall");
         }
 
+        /// <summary>Reads a value of the given type code from the buffer at the offset, advancing it.</summary>
         public static object Unmarshall(byte[] buffer, ref int offset, TypeCode tc)
         {
             object result = null;

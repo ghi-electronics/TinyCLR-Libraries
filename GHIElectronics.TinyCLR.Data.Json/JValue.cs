@@ -49,17 +49,21 @@ namespace GHIElectronics.TinyCLR.Data.Json
 
         private static char HexDigit(int n) => (char)(n < 10 ? '0' + n : 'a' + (n - 10));
 
+        /// <summary>Initializes a new JSON value holding null.</summary>
         public JValue()
         {
         }
 
+        /// <summary>Initializes a new JSON value wrapping the given primitive value.</summary>
         public JValue(object value)
         {
             this.Value = value;
         }
 
+        /// <summary>Gets or sets the underlying primitive value.</summary>
         public object Value { get; set; }
 
+        /// <summary>Wraps a primitive value in a JSON value.</summary>
         public static JValue Serialize(Type type, object oValue)
         {
             return new JValue()
@@ -68,11 +72,13 @@ namespace GHIElectronics.TinyCLR.Data.Json
             };
         }
 
+        /// <summary>Returns the JSON text for this value.</summary>
         public override string ToString()
         {
             return this.ToString(null);
         }
 
+        /// <summary>Returns the JSON text for this value using the given formatting options.</summary>
         public override string ToString(JsonSerializationOptions options)
         {
             EnterSerialization(options);
@@ -105,6 +111,7 @@ namespace GHIElectronics.TinyCLR.Data.Json
             }
         }
 
+        /// <summary>Gets the number of bytes this value occupies when encoded as BSON.</summary>
         public override int GetBsonSize()
         {
             if (this.Value == null)
@@ -129,11 +136,13 @@ namespace GHIElectronics.TinyCLR.Data.Json
                 throw new Exception("Unsupported type");
         }
 
+        /// <summary>Gets the number of BSON bytes for this value including the given element name.</summary>
         public override int GetBsonSize(string ename)
         {
             return 1 + ename.Length + 1 + this.GetBsonSize();
         }
 
+        /// <summary>Writes this value to the buffer as BSON, advancing the offset.</summary>
         public override void ToBson(byte[] buffer, ref int offset)
         {
             if (buffer != null)
@@ -147,6 +156,7 @@ namespace GHIElectronics.TinyCLR.Data.Json
             }
         }
 
+        /// <summary>Gets the BSON type code matching the underlying value's type.</summary>
         public override BsonTypes GetBsonType()
         {
             if (this.Value == null)

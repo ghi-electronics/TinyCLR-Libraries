@@ -277,6 +277,7 @@ namespace System.Net.Sockets
         /// </devdoc>
         Disconnecting = (10000 + 101), //WSAEDISCON
 
+        /// <summary>The specified class or type was not found.</summary>
         TypeNotFound = (10000 + 109), //WSATYPE_NOT_FOUND
 
         /*

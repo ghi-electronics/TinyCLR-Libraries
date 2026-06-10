@@ -3,21 +3,30 @@ using System.Collections;
 using GHIElectronics.TinyCLR.UI.Media;
 
 namespace GHIElectronics.TinyCLR.UI.Controls {
+    /// <summary>How a grid row or column is sized.</summary>
     public enum GridUnitType {
+        /// <summary>Sized to fit its content.</summary>
         Auto,
+        /// <summary>Sized to a fixed number of pixels.</summary>
         Pixel,
+        /// <summary>Sized as a weighted share of the remaining space.</summary>
         Star,
     }
 
+    /// <summary>Size of a grid row or column.</summary>
     public struct GridLength {
+        /// <summary>The sizing mode for this length.</summary>
         public GridUnitType Unit;
         /// <summary>Pixel size, or star weight when <see cref="Unit"/> is <see cref="GridUnitType.Star"/>.</summary>
         public int Value;
 
+        /// <summary>Creates an auto-sized length.</summary>
         public static GridLength Auto() => new GridLength { Unit = GridUnitType.Auto, Value = 0 };
 
+        /// <summary>Creates a fixed pixel-sized length.</summary>
         public static GridLength Pixel(int pixels) => new GridLength { Unit = GridUnitType.Pixel, Value = pixels };
 
+        /// <summary>Creates a star-sized length with the given weight.</summary>
         public static GridLength Star(int weight = 1) => new GridLength { Unit = GridUnitType.Star, Value = weight < 1 ? 1 : weight };
     }
 
@@ -32,8 +41,10 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
         internal GridLengthCollection(Grid owner) => this._owner = owner;
 
+        /// <summary>Number of definitions in the collection.</summary>
         public int Count => this._items.Count;
 
+        /// <summary>Gets or sets the definition at the given index.</summary>
         public GridLength this[int index] {
             get => (GridLength)this._items[index];
             set {
@@ -42,22 +53,26 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
+        /// <summary>Adds a definition to the collection.</summary>
         public void Add(GridLength item) {
             this._items.Add(item);
             this._owner.InvalidateMeasure();
         }
 
+        /// <summary>Removes all definitions from the collection.</summary>
         public void Clear() {
             if (this._items.Count == 0) return;
             this._items.Clear();
             this._owner.InvalidateMeasure();
         }
 
+        /// <summary>Inserts a definition at the given index.</summary>
         public void Insert(int index, GridLength item) {
             this._items.Insert(index, item);
             this._owner.InvalidateMeasure();
         }
 
+        /// <summary>Removes the definition at the given index.</summary>
         public void RemoveAt(int index) {
             this._items.RemoveAt(index);
             this._owner.InvalidateMeasure();
@@ -74,16 +89,21 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         private static readonly Hashtable RowStore = new Hashtable();
         private static readonly Hashtable ColStore = new Hashtable();
 
+        /// <summary>The row size definitions.</summary>
         public GridLengthCollection RowDefinitions { get; }
+        /// <summary>The column size definitions.</summary>
         public GridLengthCollection ColumnDefinitions { get; }
 
+        /// <summary>Creates a new Grid.</summary>
         public Grid() {
             this.RowDefinitions = new GridLengthCollection(this);
             this.ColumnDefinitions = new GridLengthCollection(this);
         }
 
+        /// <summary>Gets the grid row assigned to an element.</summary>
         public static int GetRow(UIElement e) => RowStore.Contains(e) ? (int)RowStore[e] : 0;
 
+        /// <summary>Assigns an element to a grid row.</summary>
         public static void SetRow(UIElement e, int row) {
             if (row < 0) {
                 throw new ArgumentOutOfRangeException(nameof(row));
@@ -93,8 +113,10 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             InvalidateParentGrid(e);
         }
 
+        /// <summary>Gets the grid column assigned to an element.</summary>
         public static int GetColumn(UIElement e) => ColStore.Contains(e) ? (int)ColStore[e] : 0;
 
+        /// <summary>Assigns an element to a grid column.</summary>
         public static void SetColumn(UIElement e, int column) {
             if (column < 0) {
                 throw new ArgumentOutOfRangeException(nameof(column));
@@ -121,6 +143,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             return defs[index];
         }
 
+        /// <summary>Measures children and computes row and column sizes.</summary>
         protected override void MeasureOverride(int availableWidth, int availableHeight, out int desiredWidth, out int desiredHeight) {
             var n = this.Children.Count;
             var maxCol = 0;
@@ -295,6 +318,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             this._rowHeights = rowHeights;
         }
 
+        /// <summary>Positions each child within its assigned cell.</summary>
         protected override void ArrangeOverride(int arrangeWidth, int arrangeHeight) {
             if (this._colWidths == null || this._rowHeights == null) {
                 return;

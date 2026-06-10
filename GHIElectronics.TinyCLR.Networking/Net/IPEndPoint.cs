@@ -6,14 +6,18 @@ namespace System.Net {
     using System.Diagnostics;
     using System.Net.Sockets;
 
+    /// <summary>Represents a network endpoint as an IP address and a port number.</summary>
     [Serializable]
     public class IPEndPoint : EndPoint {
+        /// <summary>The minimum value that can be assigned to the Port property.</summary>
         public const int MinPort = 0x00000000;
+        /// <summary>The maximum value that can be assigned to the Port property.</summary>
         public const int MaxPort = 0x0000FFFF;
 
         private IPAddress m_Address;
         private int m_Port;
 
+        /// <summary>Initializes a new instance with the specified address and port.</summary>
         public IPEndPoint(long address, int port) {
             if (port < MinPort || port > MaxPort) throw new ArgumentOutOfRangeException(nameof(port));
 
@@ -21,6 +25,7 @@ namespace System.Net {
             this.m_Address = new IPAddress(address);
         }
 
+        /// <summary>Initializes a new instance with the specified address and port.</summary>
         public IPEndPoint(IPAddress address, int port) {
             if (address == null) throw new ArgumentNullException(nameof(address));
             if (port < MinPort || port > MaxPort) throw new ArgumentOutOfRangeException(nameof(port));
@@ -29,13 +34,16 @@ namespace System.Net {
             this.m_Address = address;
         }
 
+        /// <inheritdoc/>
         public override AddressFamily AddressFamily => this.m_Address != null ? this.m_Address.AddressFamily : AddressFamily.InterNetwork;
 
+        /// <summary>The IP address of the endpoint.</summary>
         public IPAddress Address {
             get => this.m_Address;
             set => this.m_Address = value ?? throw new ArgumentNullException(nameof(value));
         }
 
+        /// <summary>The port number of the endpoint.</summary>
         public int Port {
             get => this.m_Port;
             set {
@@ -44,6 +52,7 @@ namespace System.Net {
             }
         }
 
+        /// <inheritdoc/>
         public override SocketAddress Serialize() {
             // create a new SocketAddress
             //
@@ -63,6 +72,7 @@ namespace System.Net {
             return socketAddress;
         }
 
+        /// <inheritdoc/>
         public override EndPoint Create(SocketAddress socketAddress) {
             // strip out of SocketAddress information on the EndPoint
             //
@@ -88,8 +98,10 @@ namespace System.Net {
             return created;
         }
 
+        /// <summary>Returns the endpoint as an "address:port" string.</summary>
         public override string ToString() => this.m_Address.ToString() + ":" + this.m_Port.ToString();
 
+        /// <summary>Determines whether the specified object is equal to this endpoint.</summary>
         public override bool Equals(object obj) {
             var ep = obj as IPEndPoint;
             if (ep == null) {
@@ -99,8 +111,10 @@ namespace System.Net {
             return ep.m_Address.Equals(this.m_Address) && ep.m_Port == this.m_Port;
         }
 
+        /// <summary>Returns a hash code for this endpoint.</summary>
         public override int GetHashCode() => this.m_Address.GetHashCode() ^ this.m_Port;
 
+        /// <summary>Parses an "address:port" string into an IP endpoint.</summary>
         // ----------------------------------------------------------------
         // Parse / TryParse — added in .NET Core 3.0+ and very useful for
         // config strings ("192.168.1.10:8080"). IPv4-only on TinyCLR.
@@ -131,6 +145,7 @@ namespace System.Net {
             return new IPEndPoint(address, port);
         }
 
+        /// <summary>Attempts to parse an "address:port" string into an IP endpoint, returning whether it succeeded.</summary>
         public static bool TryParse(string s, out IPEndPoint result) {
             try {
                 result = Parse(s);

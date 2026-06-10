@@ -4,14 +4,143 @@
         <name>GHIElectronics.TinyCLR.Data.Json</name>
     </assembly>
     <members>
+        <member name="T:GHIElectronics.TinyCLR.Data.Json.BsonTypes">
+            <summary>BSON element type codes used when encoding tokens to BSON.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Data.Json.BsonTypes.BsonDouble">
+            <summary>64-bit floating point value.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Data.Json.BsonTypes.BsonString">
+            <summary>UTF-8 string value.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Data.Json.BsonTypes.BsonDocument">
+            <summary>Embedded document (object).</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Data.Json.BsonTypes.BsonArray">
+            <summary>Array value.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Data.Json.BsonTypes.BsonBoolean">
+            <summary>Boolean value.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Data.Json.BsonTypes.BsonDateTime">
+            <summary>UTC date-time value.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Data.Json.BsonTypes.BsonNull">
+            <summary>Null value.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Data.Json.BsonTypes.BsonInt32">
+            <summary>32-bit signed integer value.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Data.Json.BsonTypes.BsonInt64">
+            <summary>64-bit signed integer value.</summary>
+        </member>
         <member name="T:GHIElectronics.TinyCLR.Data.Json.JArray">
             <summary>A JSON array — an ordered sequence of <see cref="T:GHIElectronics.TinyCLR.Data.Json.JToken"/> elements.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Data.Json.JArray.#ctor">
+            <summary>Initializes a new empty JSON array.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Data.Json.JArray.#ctor(GHIElectronics.TinyCLR.Data.Json.JToken[])">
+            <summary>Initializes a new JSON array containing the given elements.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Data.Json.JArray.Length">
+            <summary>Gets the number of elements in the array.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Data.Json.JArray.Items">
+            <summary>Gets the array elements.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Data.Json.JArray.Serialize(System.Type,System.Object,GHIElectronics.TinyCLR.Data.Json.JsonSerializerSettings)">
+            <summary>Serializes a .NET array into a JSON array.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Data.Json.JArray.Item(System.Int32)">
+            <summary>Gets the element at the given index.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Data.Json.JArray.ToString">
+            <summary>Returns the JSON text for this array.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Data.Json.JArray.ToString(GHIElectronics.TinyCLR.Data.Json.JsonSerializationOptions)">
+            <summary>Returns the JSON text for this array using the given formatting options.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Data.Json.JArray.GetBsonSize">
+            <summary>Gets the number of bytes this array occupies when encoded as BSON.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Data.Json.JArray.GetBsonSize(System.String)">
+            <summary>Gets the number of BSON bytes for this array including the given element name.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Data.Json.JArray.ToBson(System.Byte[],System.Int32@)">
+            <summary>Writes this array to the buffer as BSON, advancing the offset.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Data.Json.JArray.GetBsonType">
+            <summary>Gets the BSON type code for an array.</summary>
         </member>
         <member name="T:GHIElectronics.TinyCLR.Data.Json.JObject">
             <summary>A JSON object — an unordered map of name/<see cref="T:GHIElectronics.TinyCLR.Data.Json.JToken"/> pairs.</summary>
         </member>
+        <member name="P:GHIElectronics.TinyCLR.Data.Json.JObject.Item(System.String)">
+            <summary>Gets or sets the property with the given name (case-insensitive).</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Data.Json.JObject.Contains(System.String)">
+            <summary>Returns whether the object contains a property with the given name.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Data.Json.JObject.Members">
+            <summary>Gets the object's properties in insertion order.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Data.Json.JObject.Add(System.String,GHIElectronics.TinyCLR.Data.Json.JToken)">
+            <summary>Adds or replaces a property with the given name and value.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Data.Json.JObject.Serialize(System.Type,System.Object,GHIElectronics.TinyCLR.Data.Json.JsonSerializerSettings)">
+            <summary>Serializes a .NET object's public properties and fields into a JSON object.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Data.Json.JObject.ToString">
+            <summary>Returns the JSON text for this object.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Data.Json.JObject.ToString(GHIElectronics.TinyCLR.Data.Json.JsonSerializationOptions)">
+            <summary>Returns the JSON text for this object using the given formatting options.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Data.Json.JObject.GetBsonSize">
+            <summary>Gets the number of bytes this object occupies when encoded as BSON.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Data.Json.JObject.GetBsonSize(System.String)">
+            <summary>Gets the number of BSON bytes for this object including the given element name.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Data.Json.JObject.ToBson(System.Byte[],System.Int32@)">
+            <summary>Writes this object to the buffer as BSON, advancing the offset.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Data.Json.JObject.GetBsonType">
+            <summary>Gets the BSON type code for a document (object).</summary>
+        </member>
         <member name="T:GHIElectronics.TinyCLR.Data.Json.JProperty">
             <summary>A name/value pair inside a <see cref="T:GHIElectronics.TinyCLR.Data.Json.JObject"/>.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Data.Json.JProperty.#ctor">
+            <summary>Initializes a new empty property.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Data.Json.JProperty.#ctor(System.String,GHIElectronics.TinyCLR.Data.Json.JToken)">
+            <summary>Initializes a new property with the given name and value.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Data.Json.JProperty.Name">
+            <summary>Gets or sets the property name.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Data.Json.JProperty.Value">
+            <summary>Gets or sets the property value.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Data.Json.JProperty.ToString">
+            <summary>Returns the JSON text for this property.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Data.Json.JProperty.ToString(GHIElectronics.TinyCLR.Data.Json.JsonSerializationOptions)">
+            <summary>Returns the JSON text for this property using the given formatting options.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Data.Json.JProperty.GetBsonSize">
+            <summary>Gets the number of bytes the property value occupies when encoded as BSON.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Data.Json.JProperty.GetBsonSize(System.String)">
+            <summary>Gets the number of BSON bytes for this property including the given element name.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Data.Json.JProperty.ToBson(System.Byte[],System.Int32@)">
+            <summary>Writes the property value to the buffer as BSON, advancing the offset.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Data.Json.JProperty.GetBsonType">
+            <summary>Gets the BSON type code of the property value.</summary>
         </member>
         <member name="T:GHIElectronics.TinyCLR.Data.Json.InstanceFactory">
             <summary>
@@ -25,6 +154,63 @@
             to JSON. Strict-on-emit, generous-on-accept per RFC 8259.
             </summary>
         </member>
+        <member name="T:GHIElectronics.TinyCLR.Data.Json.JsonConverter.SerializationCtx">
+            <summary>Holds the formatting options and indentation state for one serialization pass.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Data.Json.JsonConverter.SerializationCtx.#ctor(GHIElectronics.TinyCLR.Data.Json.JsonSerializationOptions)">
+            <summary>Initializes a new serialization context with the given options.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Data.Json.JsonConverter.SerializationCtx.options">
+            <summary>The formatting options in effect for this serialization pass.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Data.Json.JsonConverter.SerializationCtx.IndentLevel">
+            <summary>The current indentation nesting level.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Data.Json.JsonConverter.SerializationContext">
+            <summary>The serialization context shared across the current serialization pass.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Data.Json.JsonConverter.SyncObj">
+            <summary>Lock object guarding access to the shared serialization context.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Data.Json.JsonConverter.Serialize(System.Object,GHIElectronics.TinyCLR.Data.Json.JsonSerializerSettings)">
+            <summary>Serializes an object into a JSON token tree.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Data.Json.JsonConverter.DeserializeObject(System.String,System.Type,GHIElectronics.TinyCLR.Data.Json.InstanceFactory)">
+            <summary>Parses JSON text and populates a new instance of the given type.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Data.Json.JsonConverter.DeserializeObject(System.IO.Stream,System.Type,GHIElectronics.TinyCLR.Data.Json.InstanceFactory)">
+            <summary>Parses JSON from a stream and populates a new instance of the given type.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Data.Json.JsonConverter.DeserializeObject(System.IO.StreamReader,System.Type,GHIElectronics.TinyCLR.Data.Json.InstanceFactory)">
+            <summary>Parses JSON from a reader and populates a new instance of the given type.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Data.Json.JsonConverter.Deserialize(System.String)">
+            <summary>Parses JSON text into a token tree.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Data.Json.JsonConverter.Deserialize(System.IO.Stream)">
+            <summary>Parses JSON from a stream into a token tree.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Data.Json.JsonConverter.Deserialize(System.IO.StreamReader)">
+            <summary>Parses JSON from a reader into a token tree.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Data.Json.JsonConverter.FromBson(System.Byte[],GHIElectronics.TinyCLR.Data.Json.InstanceFactory)">
+            <summary>Decodes a BSON byte buffer into a JSON token tree.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Data.Json.JsonConverter.FromBson(System.Byte[],System.Type,GHIElectronics.TinyCLR.Data.Json.InstanceFactory)">
+            <summary>Decodes a BSON byte buffer and populates a new instance of the given type.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Data.Json.JsonSerializationOptions">
+            <summary>Options that control how JSON text is formatted during serialization.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Data.Json.JsonSerializationOptions.Indented">
+            <summary>Gets or sets whether the JSON output is indented and line-wrapped.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Data.Json.JsonSerializerSettings">
+            <summary>Settings that control how objects are serialized to JSON tokens.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Data.Json.JsonSerializerSettings.TypeNameHandling">
+            <summary>Gets or sets how type names are emitted for serialized objects.</summary>
+        </member>
         <member name="T:GHIElectronics.TinyCLR.Data.Json.JToken">
             <summary>
             Abstract base for every JSON value type: <see cref="T:GHIElectronics.TinyCLR.Data.Json.JObject"/>, <see cref="T:GHIElectronics.TinyCLR.Data.Json.JArray"/>,
@@ -32,8 +218,113 @@
             to parse JSON text into a token tree or serialize a tree back to text.
             </summary>
         </member>
+        <member name="M:GHIElectronics.TinyCLR.Data.Json.JToken.EnterSerialization(GHIElectronics.TinyCLR.Data.Json.JsonSerializationOptions)">
+            <summary>Begins a serialization scope, establishing the shared formatting context if none exists.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Data.Json.JToken.ExitSerialization">
+            <summary>Ends the serialization scope, releasing the shared formatting context if this token owns it.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Data.Json.JToken.Indent(System.Boolean)">
+            <summary>Returns the indentation string for the current nesting level, optionally increasing the level afterwards.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Data.Json.JToken.Outdent">
+            <summary>Decreases the current indentation nesting level by one.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Data.Json.JToken.ToBson">
+            <summary>Encodes this token as a standalone BSON document and returns the bytes.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Data.Json.JToken.GetBsonType">
+            <summary>Gets the BSON type code for this token.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Data.Json.JToken.GetBsonSize">
+            <summary>Gets the number of bytes this token occupies when encoded as BSON.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Data.Json.JToken.GetBsonSize(System.String)">
+            <summary>Gets the number of BSON bytes for this token including the given element name.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Data.Json.JToken.ToBson(System.Byte[],System.Int32@)">
+            <summary>Writes this token to the buffer as BSON, advancing the offset.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Data.Json.JToken.ToBson(System.String,System.Byte[],System.Int32@)">
+            <summary>Writes this token as a named BSON element (type byte, name, then value), advancing the offset.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Data.Json.JToken.MarshallEName(System.String,System.Byte[],System.Int32@)">
+            <summary>Writes a BSON element name as a null-terminated UTF-8 string, advancing the offset.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Data.Json.JToken.ToString(GHIElectronics.TinyCLR.Data.Json.JsonSerializationOptions)">
+            <summary>Returns the JSON text for this token using the given formatting options.</summary>
+        </member>
         <member name="T:GHIElectronics.TinyCLR.Data.Json.JValue">
             <summary>A JSON primitive value — string, number, boolean, or null.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Data.Json.JValue.#ctor">
+            <summary>Initializes a new JSON value holding null.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Data.Json.JValue.#ctor(System.Object)">
+            <summary>Initializes a new JSON value wrapping the given primitive value.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Data.Json.JValue.Value">
+            <summary>Gets or sets the underlying primitive value.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Data.Json.JValue.Serialize(System.Type,System.Object)">
+            <summary>Wraps a primitive value in a JSON value.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Data.Json.JValue.ToString">
+            <summary>Returns the JSON text for this value.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Data.Json.JValue.ToString(GHIElectronics.TinyCLR.Data.Json.JsonSerializationOptions)">
+            <summary>Returns the JSON text for this value using the given formatting options.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Data.Json.JValue.GetBsonSize">
+            <summary>Gets the number of bytes this value occupies when encoded as BSON.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Data.Json.JValue.GetBsonSize(System.String)">
+            <summary>Gets the number of BSON bytes for this value including the given element name.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Data.Json.JValue.ToBson(System.Byte[],System.Int32@)">
+            <summary>Writes this value to the buffer as BSON, advancing the offset.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Data.Json.JValue.GetBsonType">
+            <summary>Gets the BSON type code matching the underlying value's type.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Data.Json.SerializationUtilities">
+            <summary>Helpers for marshalling primitive values to and from a BSON byte buffer.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Data.Json.SerializationUtilities.Marshall(System.Byte[],System.Int32@,System.Object)">
+            <summary>Writes a primitive value into the buffer at the given offset, advancing it.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Data.Json.SerializationUtilities.Unmarshall(System.Byte[],System.Int32@,System.TypeCode)">
+            <summary>Reads a value of the given type code from the buffer at the offset, advancing it.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Data.Json.DateTimeExtensions">
+            <summary>Helpers for converting dates between common JSON and calendar string formats.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Data.Json.DateTimeExtensions.FromiCalendar(System.String)">
+            <summary>Parses a date from an iCalendar date-time string.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Data.Json.DateTimeExtensions.FromIso8601(System.String)">
+            <summary>Parses a date from an ISO 8601 date-time string.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Data.Json.DateTimeExtensions.ToIso8601(System.DateTime)">
+            <summary>Formats a date as an ISO 8601 UTC date-time string.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Data.Json.DateTimeExtensions.ToASPNetAjax(System.DateTime)">
+            <summary>Formats a date as an ASP.NET Ajax \/Date(ticks)\/ string.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Data.Json.DateTimeExtensions.FromASPNetAjax(System.String)">
+            <summary>Parses a date from an ASP.NET Ajax \/Date(ticks)\/ string.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Data.Json.TypeNameHandling">
+            <summary>Controls whether type names are written into the JSON for serialized objects.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Data.Json.TypeNameHandling.None">
+            <summary>Do not write type names.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Data.Json.TypeNameHandling.Objects">
+            <summary>Write type names for objects.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Data.Json.TypeNameHandling.Auto">
+            <summary>Write type names only when the value's type differs from the declared type.</summary>
         </member>
     </members>
 </doc>

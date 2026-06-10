@@ -7,6 +7,7 @@ using System.Threading;
 using GHIElectronics.TinyCLR.Networking;
 
 namespace System.Net.Security {
+    /// <summary>Provides a stream used for client-server communication that uses SSL/TLS to secure the connection.</summary>
     public class SslStream : NetworkStream {
         // Internal flags
         private int sslHandle;
@@ -15,6 +16,7 @@ namespace System.Net.Security {
 
         //--//
 
+        /// <summary>Initializes a new instance over the specified connected socket.</summary>
         public SslStream(Socket socket)
             : base(socket, false) {
             if (SocketType.Stream != (SocketType)this._socketType) {
@@ -27,20 +29,28 @@ namespace System.Net.Security {
             this.ni = Socket.DefaultProvider;
         }
 
+        /// <summary>Performs the client side of the SSL/TLS handshake for the specified host.</summary>
         public void AuthenticateAsClient(string targetHost) => this.AuthenticateAsClient(targetHost, default(X509Certificate));
 
+        /// <summary>Performs the client side of the handshake, validating against the specified CA certificate.</summary>
         public void AuthenticateAsClient(string targetHost, X509Certificate caCertificate) => this.AuthenticateAsClient(targetHost, caCertificate, null, SslProtocols.None);
 
+        /// <summary>Performs the client side of the handshake using the specified CA and client certificates.</summary>
         public void AuthenticateAsClient(string targetHost, X509Certificate caCertificate, X509Certificate clientCertificate) => this.AuthenticateAsClient(targetHost, caCertificate, clientCertificate, SslProtocols.None);
 
+        /// <summary>Performs the client side of the handshake using the specified certificates and protocols.</summary>
         public void AuthenticateAsClient(string targetHost, X509Certificate caCertificate, X509Certificate clientCertificate, SslProtocols sslProtocols) => this.AuthenticateAsClient(targetHost, caCertificate, clientCertificate, sslProtocols, SslVerification.Optional);
 
+        /// <summary>Performs the client side of the handshake using the specified certificates, protocols, and verification mode.</summary>
         public void AuthenticateAsClient(string targetHost, X509Certificate caCertificate, X509Certificate clientCertificate, SslProtocols sslProtocols, SslVerification sslVerification) => this.sslHandle = this.ni.AuthenticateAsClient(this._socket.m_Handle, targetHost, caCertificate, clientCertificate, sslProtocols, sslVerification);
 
+        /// <summary>Performs the server side of the SSL/TLS handshake using the specified certificate and protocols.</summary>
         public void AuthenticateAsServer(X509Certificate caCertificate, SslProtocols sslProtocols) => this.sslHandle = this.ni.AuthenticateAsServer(this._socket.m_Handle, caCertificate, sslProtocols);
 
+        /// <summary>Whether this stream is acting as the server side of the connection.</summary>
         public bool IsServer => this._isServer;
 
+        /// <summary>Not supported; always throws NotSupportedException.</summary>
         // Standard .NET behavior: SslStream is not seekable and Length throws
         // NotSupportedException. The previous override returned `Available`
         // (decrypted plaintext bytes ready to read), which silently broke
@@ -51,6 +61,7 @@ namespace System.Net.Security {
         // length, read the HTTP/protocol header — never the stream's Length.
         public override long Length => throw new NotSupportedException();
 
+        /// <summary>Whether decrypted data is available to be read.</summary>
         public override bool DataAvailable {
             get {
                 if (this._disposed) throw new ObjectDisposedException();
@@ -60,6 +71,7 @@ namespace System.Net.Security {
             }
         }
 
+        /// <summary>Releases resources when the stream is finalized.</summary>
         ~SslStream() {
             // Do not re-create Dispose clean-up code here.
             // Calling Dispose(false) is optimal in terms of
@@ -67,6 +79,7 @@ namespace System.Net.Security {
             this.Dispose(false);
         }
 
+        /// <summary>Releases the resources used by the stream and closes the secure connection.</summary>
         [MethodImpl(MethodImplOptions.Synchronized)]
         protected override void Dispose(bool disposing) {
             if (!this._disposed) {
@@ -79,6 +92,7 @@ namespace System.Net.Security {
             }
         }
 
+        /// <summary>Reads decrypted data from the secure stream and returns the number of bytes read.</summary>
         public override int Read(byte[] buffer, int offset, int size) {
             if (buffer == null) {
                 throw new ArgumentNullException();
@@ -121,6 +135,7 @@ namespace System.Net.Security {
             }
         }
 
+        /// <summary>Encrypts and writes the specified data to the secure stream.</summary>
         public override void Write(byte[] buffer, int offset, int size) {
             if (buffer == null) {
                 throw new ArgumentNullException();

@@ -2,23 +2,39 @@ using System;
 using System.Text;
 
 namespace GHIElectronics.TinyCLR.Networking.Mqtt {
+    /// <summary>Identifies the type of an MQTT control packet.</summary>
     public enum PacketType {
+        /// <summary>Client request to connect to the broker.</summary>
         Connect = 1,
+        /// <summary>Broker acknowledgement of a connect request.</summary>
         ConnAck = 2,
+        /// <summary>Message published to a topic.</summary>
         Publish = 3,
+        /// <summary>Acknowledgement of a QoS 1 publish.</summary>
         PubAck = 4,
+        /// <summary>First QoS 2 publish acknowledgement (publish received).</summary>
         Pubrec = 5,
+        /// <summary>Second QoS 2 publish acknowledgement (publish release).</summary>
         Pubrel = 6,
+        /// <summary>Final QoS 2 publish acknowledgement (publish complete).</summary>
         PubComp = 7,
+        /// <summary>Client request to subscribe to one or more topics.</summary>
         Subscribe = 8,
+        /// <summary>Broker acknowledgement of a subscribe request.</summary>
         Suback = 9,
+        /// <summary>Client request to unsubscribe from one or more topics.</summary>
         Unsubscribe = 10,
+        /// <summary>Broker acknowledgement of an unsubscribe request.</summary>
         Unsuback = 11,
+        /// <summary>Keep-alive ping request sent to the broker.</summary>
         PingReq = 12,
+        /// <summary>Keep-alive ping response from the broker.</summary>
         PingResp = 13,
+        /// <summary>Client notification that it is disconnecting.</summary>
         Disconnect = 14,
     }
 
+    /// <summary>Represents a single MQTT control packet and encodes it to bytes for sending.</summary>
     public sealed class MqttPacket {
         internal const byte PACKET_TYPE_MASK = 0xF0;
         internal const byte PACKET_TYPE_OFFSET = 0x04;
@@ -95,8 +111,11 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
         internal const byte CLEAN_SESSION_FLAG_OFFSET = 0x01;
 
         // public
+        /// <summary>The message payload carried by the packet.</summary>
         public byte[] Payload { get; internal set; }
+        /// <summary>The packet identifier used to correlate acknowledgements.</summary>
         public uint PacketId { get; internal set; }
+        /// <summary>Indicates whether this packet represents an outbound published message.</summary>
         public bool IsPublished { get; internal set; }
 
         internal string[] Topics { get; set; }

@@ -37,7 +37,9 @@ namespace System.IO {
          *
          * Make this platform specific when we port.
          */
+        /// <summary>The character used to separate directory levels in a path.</summary>
         public static readonly char DirectorySeparatorChar = '\\';
+        /// <summary>The characters that are not allowed in a path.</summary>
         /*
          * Platform specific invalid list of characters in a path.
          *
@@ -66,6 +68,7 @@ namespace System.IO {
          * @see #getExtension
          * @see #hasExtension
          */
+        /// <summary>Returns the path with its file extension changed to the given one.</summary>
         public static string ChangeExtension(string path, string extension) {
             if (path != null) {
                 CheckInvalidPathChars(path);
@@ -95,6 +98,7 @@ namespace System.IO {
             return null;
         }
 
+        /// <summary>Returns the directory portion of a path, or null if the path is a root.</summary>
         /*
        * Returns the directory path of a file path. This method effectively
        * removes the last element of the given file path, i.e. it returns a
@@ -144,8 +148,10 @@ namespace System.IO {
 
         internal static bool IsDirectorySeparator(char c) => c == DirectorySeparatorChar;
 
+        /// <summary>Returns a copy of the characters that are not allowed in a path.</summary>
         public static char[] GetInvalidPathChars() => (char[])InvalidPathChars.Clone();
 
+        /// <summary>Returns the absolute path for the given path, resolving it against the current directory.</summary>
         public static string GetFullPath(string path) {
             ValidateNullOrEmpty(path);
 
@@ -173,6 +179,7 @@ namespace System.IO {
          * @see #GetRoot
          * @see #HasExtension
          */
+        /// <summary>Returns the extension of the path, including the leading period, or an empty string if there is none.</summary>
         public static string GetExtension(string path) {
             if (path == null)
                 return null;
@@ -210,6 +217,7 @@ namespace System.IO {
          * @see #GetExtension
          * @see #GetRoot
          */
+        /// <summary>Returns the file name and extension portion of the path.</summary>
         public static string GetFileName(string path) {
             if (path != null) {
                 CheckInvalidPathChars(path);
@@ -226,6 +234,7 @@ namespace System.IO {
             return path;
         }
 
+        /// <summary>Returns the file name of the path without its extension.</summary>
         public static string GetFileNameWithoutExtension(string path) {
             path = GetFileName(path);
             if (path != null) {
@@ -257,6 +266,7 @@ namespace System.IO {
          * @see #GetName
          * @see #IsRooted
          */
+        /// <summary>Returns the root portion of the path.</summary>
         public static string GetPathRoot(string path) {
             if (path == null) return null;
             return path.Substring(0, GetRootLength(path));
@@ -274,6 +284,7 @@ namespace System.IO {
         * @see #ChangeExtension
         * @see #GetExtension
         */
+        /// <summary>Returns whether the path includes a file extension.</summary>
         public static bool HasExtension(string path) {
             if (path != null) {
                 CheckInvalidPathChars(path);
@@ -303,6 +314,7 @@ namespace System.IO {
          * @exception ArgumentException if <var>path</var> contains invalid characters.
          * @see #GetRoot
          */
+        /// <summary>Returns whether the path is rooted with a drive letter.</summary>
         public static bool IsPathRooted(string path) {
             if (path != null) {
                 CheckInvalidPathChars(path);
@@ -315,6 +327,7 @@ namespace System.IO {
             return false;
         }
 
+        /// <summary>Combines two path strings into a single path.</summary>
         public static string Combine(string path1, string path2) {
             if (path1 == null || path2 == null)
                 throw new ArgumentNullException(/*(path1==null) ? "path1" : "path2"*/);

@@ -155,11 +155,13 @@ namespace System.Net {
             }
         }
 
+        /// <summary>Gets or sets the credentials used to authenticate with the FTP server.</summary>
         public NetworkCredential Credentials {
             get => m_Credential;
             set => m_Credential = value;
         }
 
+        /// <summary>Gets or sets the FTP command (method) to send to the server.</summary>
         public override string Method {
             get => m_FtpMethod;
             set => m_FtpMethod = value;

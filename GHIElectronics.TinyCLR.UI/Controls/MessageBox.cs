@@ -21,17 +21,27 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
     /// a button (or Esc cancels). Safe to call from any UI-thread event handler.
     /// </summary>
     public static class MessageBox {
+        /// <summary>Specifies which buttons are shown on the message box.</summary>
         public enum MessageBoxButtons {
+            /// <summary>A single OK button.</summary>
             OK = 0,
+            /// <summary>A single Cancel button.</summary>
             Cancel = 1,
+            /// <summary>OK and Cancel buttons.</summary>
             OKCancel = 2,
+            /// <summary>Yes and No buttons.</summary>
             YesNo = 3,
         }
 
+        /// <summary>Identifies the button the user picked to dismiss the message box.</summary>
         public enum DialogResult {
+            /// <summary>The OK button was selected.</summary>
             OK = 0,
+            /// <summary>The Cancel button was selected.</summary>
             Cancel = 1,
+            /// <summary>The Yes button was selected.</summary>
             Yes = 2,
+            /// <summary>The No button was selected.</summary>
             No = 3,
         }
 
@@ -42,12 +52,15 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         /// </summary>
         public static Font DefaultFont { get; set; }
 
+        /// <summary>Shows a modal message box using <see cref="DefaultFont"/> and returns the button the user picked.</summary>
         public static DialogResult Show(string message, string caption, MessageBoxButtons buttons)
             => Show(null, message, caption, buttons, DefaultFont);
 
+        /// <summary>Shows a modal message box with the given font and returns the button the user picked.</summary>
         public static DialogResult Show(string message, string caption, MessageBoxButtons buttons, Font font)
             => Show(null, message, caption, buttons, font);
 
+        /// <summary>Shows a modal message box hosted under the given owner and returns the button the user picked.</summary>
         public static DialogResult Show(UIElement owner, string message, string caption, MessageBoxButtons buttons, Font font) {
             if (font == null) throw new ArgumentNullException(nameof(font), "Set MessageBox.DefaultFont or pass a Font.");
 

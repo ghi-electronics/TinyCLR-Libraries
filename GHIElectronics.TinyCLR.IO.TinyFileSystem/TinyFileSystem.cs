@@ -1207,6 +1207,7 @@ namespace GHIElectronics.TinyCLR.IO.TinyFileSystem {
         }
 
         private bool disposed = false;
+        /// <summary>Releases the underlying block driver when <paramref name="disposing"/> is true.</summary>
         protected void Dispose(bool disposing) {
             if (this.disposed)
                 return;
@@ -1220,6 +1221,7 @@ namespace GHIElectronics.TinyCLR.IO.TinyFileSystem {
 
             this.disposed = true;
         }
+        /// <summary>Releases all resources used by the file system.</summary>
         public void Dispose() {
             this.Dispose(true);
             GC.SuppressFinalize(this);

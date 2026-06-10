@@ -8,6 +8,7 @@ using GHIElectronics.TinyCLR.UI.Media;
 using GHIElectronics.TinyCLR.UI.Media.Imaging;
 
 namespace GHIElectronics.TinyCLR.UI.Controls {
+    /// <summary>Tracks radio button groups so only one button per group can be selected.</summary>
     public static class RadioButtonManager {
         private static Hashtable groups = new Hashtable();
 
@@ -21,6 +22,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             ((ArrayList)groups[name]).Add(radioButton);
         }
 
+        /// <summary>Returns the value of the currently selected button in the named group, or an empty string if none is selected.</summary>
         public static string GetValue(string groupName) {
             if (!groups.Contains(groupName))
                 throw new ArgumentOutOfRangeException("groupName", "No such radio button group exists.");
@@ -37,6 +39,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             return string.Empty;
         }
 
+        /// <summary>Returns the number of buttons in the named group.</summary>
         public static int GetCount(string groupName) {
             if (!groups.Contains(groupName))
                 throw new ArgumentOutOfRangeException("groupName", "No such radio button group exists.");
@@ -65,27 +68,35 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         }
     }
 
+    /// <summary>A selectable button that is mutually exclusive with other buttons sharing its group name.</summary>
     public class RadioButton : ContentControl, IDisposable {
         // Cached once per AppDomain so every toggle doesn't allocate a fresh RoutedEvent.
         private static readonly RoutedEvent ClickRoutedEvent =
             new RoutedEvent("ClickEvent", RoutingStrategy.Bubble, typeof(RoutedEventHandler));
 
+        /// <summary>Raised when the button is clicked.</summary>
         public event RoutedEventHandler Click;
         private BitmapImage bitmapImageRadioButton;
 
         private bool isChecked = false;
         private string value = string.Empty;
 
+        /// <summary>The identifying name of this button within its group.</summary>
         public string Name { get; set; } = string.Empty;
+        /// <summary>The opacity applied when rendering the button.</summary>
         public ushort Alpha { get; set; } = Theme.DefaultAlpha;
+        /// <summary>Corner radius in pixels for the Scale9-rendered background.</summary>
         public int RadiusBorder { get; set; } = Theme.DefaultRadiusBorder;
+        /// <summary>Whether the bitmap background is drawn behind the button.</summary>
         public bool ShowBackground { get; set; } = true;
 
         private void InitResource() => this.bitmapImageRadioButton = Resources.LoadBitmapImage(Resources.BitmapResources.RadioButton);
 
+        /// <summary>Initializes a new radio button with no group name.</summary>
         public RadioButton() : this(string.Empty) {
 
         }
+        /// <summary>Initializes a new radio button belonging to the given group.</summary>
         public RadioButton(string groupName) : base() {
             this.InitResource();
 
@@ -97,6 +108,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             RadioButtonManager.AddButton(this);
         }
 
+        /// <summary>Renders the radio button background and its checked/unchecked indicator.</summary>
         public override void OnRender(DrawingContext dc) {
             var w = this.ActualWidth;
             var h = this.ActualHeight;
@@ -130,6 +142,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
+        /// <summary>Handles a touch release by clicking and toggling the button.</summary>
         protected override void OnTouchUp(TouchEventArgs e) {
             if (!this.IsEnabled) {
                 return;
@@ -138,10 +151,12 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             e.Handled = this.PerformClick();
         }
 
+        /// <summary>Handles a touch press; the click is performed on release instead.</summary>
         protected override void OnTouchDown(TouchEventArgs e) {
             // No-op. Click + Toggle now happen exactly once on TouchUp.
         }
 
+        /// <summary>Handles the Select hardware button by clicking and toggling the button.</summary>
         protected override void OnButtonUp(ButtonEventArgs e) {
             if (!this.IsEnabled || e.Button != HardwareButton.Select) {
                 return;
@@ -166,6 +181,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             return args.Handled;
         }
 
+        /// <summary>The button's value when checked, or an empty string when unchecked.</summary>
         public string Value {
             get {
                 if (this.isChecked)
@@ -177,6 +193,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         }
 
 
+        /// <summary>Whether the button is currently selected.</summary>
         public bool Checked {
             get => this.isChecked;
             set {
@@ -189,8 +206,10 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
+        /// <summary>The name of the group this button belongs to.</summary>
         public string GroupName { get; set; } = string.Empty;
 
+        /// <summary>Toggles the checked state, unselecting any other button in the group.</summary>
         public void Toggle() {
             var groupCount = RadioButtonManager.GetCount(this.GroupName);
 
@@ -201,17 +220,22 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
+        /// <summary>The outline color of the indicator when the button is unchecked.</summary>
         public GHIElectronics.TinyCLR.UI.Media.Color OutlineUnselectColor { get; set; } = GHIElectronics.TinyCLR.UI.Media.Color.FromRgb(0xb8, 0xb8, 0xb8);
+        /// <summary>The outline color of the indicator when the button is checked.</summary>
         public GHIElectronics.TinyCLR.UI.Media.Color SelectedOutlineColor { get; set; } = GHIElectronics.TinyCLR.UI.Media.Color.FromRgb(0x00, 0x2d, 0xff);
+        /// <summary>The fill color of the indicator when the button is checked.</summary>
         public GHIElectronics.TinyCLR.UI.Media.Color SelectedColor { get; set; } = GHIElectronics.TinyCLR.UI.Media.Color.FromRgb(0x35, 0x8b, 0xf6);
 
         private bool disposed;
 
+        /// <summary>Releases the bitmap resources used by the radio button.</summary>
         public void Dispose() {
             this.Dispose(true);
             GC.SuppressFinalize(this);
         }
 
+        /// <summary>Releases the bitmap resources used by the radio button.</summary>
         protected virtual void Dispose(bool disposing) {
             if (this.disposed) return;
 

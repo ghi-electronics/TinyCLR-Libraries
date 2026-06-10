@@ -25,6 +25,7 @@ namespace GHIElectronics.TinyCLR.Data.SQLite {
         private int nativePointer;
 #pragma warning restore 0414
 
+        /// <summary>Opens a new in-memory SQLite database.</summary>
         public SQLiteDatabase() {
             this.nativePointer = 0;
             this.disposed = false;
@@ -32,6 +33,7 @@ namespace GHIElectronics.TinyCLR.Data.SQLite {
             if (this.NativeOpen(":memory:") != SQLITE_OK) throw new OpenException();
         }
 
+        /// <summary>Opens or creates a file-backed SQLite database at the given path.</summary>
         public SQLiteDatabase(string file) {
             this.nativePointer = 0;
             this.disposed = false;
@@ -48,11 +50,13 @@ namespace GHIElectronics.TinyCLR.Data.SQLite {
             this.Dispose(false);
         }
 
+        /// <summary>Closes the database and releases its native resources.</summary>
         public void Dispose() {
             this.Dispose(true);
             GC.SuppressFinalize(this);
         }
 
+        /// <summary>Executes a SQL statement that does not return a result set, such as an INSERT or UPDATE.</summary>
         public void ExecuteNonQuery(string query) {
             if (this.disposed) throw new ObjectDisposedException("Object disposed.");
             if (query == null) throw new ArgumentNullException(nameof(query));
@@ -65,6 +69,7 @@ namespace GHIElectronics.TinyCLR.Data.SQLite {
             this.FinalizeSqlStatment(handle);
         }
 
+        /// <summary>Executes a SQL query and returns the result set.</summary>
         public ResultSet ExecuteQuery(string query) {
             if (this.disposed) throw new ObjectDisposedException("Object disposed.");
             if (query == null) throw new ArgumentNullException(nameof(query));
@@ -112,6 +117,7 @@ namespace GHIElectronics.TinyCLR.Data.SQLite {
             return results;
         }
 
+        /// <summary>Closes the underlying database; releases resources when disposing.</summary>
         protected virtual void Dispose(bool disposing) {
             if (this.disposed)
                 return;

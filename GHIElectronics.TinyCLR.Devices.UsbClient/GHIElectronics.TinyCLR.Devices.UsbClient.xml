@@ -12,6 +12,9 @@
             the string USB\Vid_VVVV&amp;Pid_PPPP&amp;MI_II in the INF file and update VVVV to your VID, PPPP to your PID, and II to you interface index.
             </remarks>
         </member>
+        <member name="E:GHIElectronics.TinyCLR.Devices.UsbClient.Cdc.DataReceived">
+            <summary>Raised when data is received from the host.</summary>
+        </member>
         <member name="P:GHIElectronics.TinyCLR.Devices.UsbClient.Cdc.Stream">
             <summary>The stream for the CDC connection.</summary>
         </member>
@@ -37,6 +40,240 @@
             <param name="buffer">The buffer from which to write.</param>
             <param name="offset">The offset into the buffer at which to begin writing.</param>
             <param name="count">The number of bytes to write.</param>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbClient.Cdc.CdcStream.DataAvailable">
+            <summary>Whether or not there is data available to read.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration">
+            <summary>Holds the set of USB descriptors that define a device.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.Descriptor">
+            <summary>Base class for all USB descriptors.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.Descriptor.#ctor(System.Byte)">
+            <summary>Creates a new descriptor with the given index.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.Descriptor.index">
+            <summary>The index of the descriptor.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.DeviceDescriptor">
+            <summary>The USB device descriptor.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.DeviceDescriptor.#ctor(System.UInt16,System.UInt16,System.UInt16,System.UInt16)">
+            <summary>Creates a new device descriptor.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.DeviceDescriptor.idVendor">
+            <summary>The vendor id.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.DeviceDescriptor.idProduct">
+            <summary>The product id.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.DeviceDescriptor.bcdDevice">
+            <summary>The device release number.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.DeviceDescriptor.iManufacturer">
+            <summary>The string index of the manufacturer.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.DeviceDescriptor.iProduct">
+            <summary>The string index of the product.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.DeviceDescriptor.iSerialNumber">
+            <summary>The string index of the serial number.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.DeviceDescriptor.bDeviceClass">
+            <summary>The device class code.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.DeviceDescriptor.bDeviceSubClass">
+            <summary>The device subclass code.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.DeviceDescriptor.bDeviceProtocol">
+            <summary>The device protocol code.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.DeviceDescriptor.bMaxPacketSize0">
+            <summary>The maximum packet size for endpoint zero.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.DeviceDescriptor.bcdUSB">
+            <summary>The USB specification release number.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.ClassDescriptor">
+            <summary>A class-specific descriptor.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.ClassDescriptor.#ctor(System.Byte,System.Byte[])">
+            <summary>Creates a new class descriptor.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.ClassDescriptor.bDescriptorType">
+            <summary>The descriptor type.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.Endpoint">
+            <summary>A USB endpoint descriptor.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.Endpoint.ATTRIB_Read">
+            <summary>Attribute marking the endpoint as a read endpoint.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.Endpoint.ATTRIB_Write">
+            <summary>Attribute marking the endpoint as a write endpoint.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.Endpoint.ATTRIB_Isochronous">
+            <summary>Attribute for an isochronous transfer type.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.Endpoint.ATTRIB_Bulk">
+            <summary>Attribute for a bulk transfer type.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.Endpoint.ATTRIB_Interrupt">
+            <summary>Attribute for an interrupt transfer type.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.Endpoint.ATTRIB_NoSynch">
+            <summary>Attribute for no synchronization.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.Endpoint.ATTRIB_Asynch">
+            <summary>Attribute for asynchronous synchronization.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.Endpoint.ATTRIB_Adaptive">
+            <summary>Attribute for adaptive synchronization.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.Endpoint.ATTRIB_Synchronous">
+            <summary>Attribute for synchronous synchronization.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.Endpoint.ATTRIB_Data">
+            <summary>Attribute for a data usage type.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.Endpoint.ATTRIB_Feedback">
+            <summary>Attribute for a feedback usage type.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.Endpoint.ATTRIB_Implicit">
+            <summary>Attribute for an implicit feedback data usage type.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.Endpoint.#ctor(System.Byte,System.Byte)">
+            <summary>Creates a new endpoint descriptor.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.Endpoint.bEndpointAddress">
+            <summary>The address of the endpoint.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.Endpoint.bmAttributes">
+            <summary>The endpoint attributes.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.Endpoint.wMaxPacketSize">
+            <summary>The maximum packet size for the endpoint.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.Endpoint.bInterval">
+            <summary>The polling interval for the endpoint.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.UsbInterface">
+            <summary>A USB interface descriptor.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.UsbInterface.#ctor(System.Byte,GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.Endpoint[])">
+            <summary>Creates a new interface descriptor.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.UsbInterface.bInterfaceNumber">
+            <summary>The interface number.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.UsbInterface.endpoints">
+            <summary>The endpoints belonging to this interface.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.UsbInterface.classDescriptors">
+            <summary>The class-specific descriptors for this interface.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.UsbInterface.bInterfaceClass">
+            <summary>The interface class code.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.UsbInterface.bInterfaceSubClass">
+            <summary>The interface subclass code.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.UsbInterface.bInterfaceProtocol">
+            <summary>The interface protocol code.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.UsbInterface.iInterface">
+            <summary>The string index of the interface.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.ConfigurationDescriptor">
+            <summary>A USB configuration descriptor.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.ConfigurationDescriptor.ATTRIB_Base">
+            <summary>The base configuration attribute.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.ConfigurationDescriptor.ATTRIB_SelfPowered">
+            <summary>Attribute marking the device as self powered.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.ConfigurationDescriptor.ATTRIB_RemoteWakeup">
+            <summary>Attribute marking the device as supporting remote wakeup.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.ConfigurationDescriptor.#ctor(System.UInt16,GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.UsbInterface[])">
+            <summary>Creates a new configuration descriptor.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.ConfigurationDescriptor.interfaces">
+            <summary>The interfaces belonging to this configuration.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.ConfigurationDescriptor.iConfiguration">
+            <summary>The string index of the configuration.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.ConfigurationDescriptor.bmAttributes">
+            <summary>The configuration attributes.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.ConfigurationDescriptor.bMaxPower">
+            <summary>The maximum power the configuration uses, in 2 mA units.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.StringDescriptor">
+            <summary>A USB string descriptor.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.StringDescriptor.#ctor(System.Byte,System.String)">
+            <summary>Creates a new string descriptor.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.StringDescriptor.bIndex">
+            <summary>The index of the string descriptor.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.StringDescriptor.sString">
+            <summary>The string value.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.GenericDescriptor">
+            <summary>A generic descriptor returned in response to a control request.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.GenericDescriptor.REQUEST_OUT">
+            <summary>Request direction marking an out (host to device) transfer.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.GenericDescriptor.REQUEST_IN">
+            <summary>Request direction marking an in (device to host) transfer.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.GenericDescriptor.REQUEST_Standard">
+            <summary>Standard request type.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.GenericDescriptor.REQUEST_Class">
+            <summary>Class request type.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.GenericDescriptor.REQUEST_Vendor">
+            <summary>Vendor request type.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.GenericDescriptor.REQUEST_Device">
+            <summary>Request recipient is the device.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.GenericDescriptor.REQUEST_Interface">
+            <summary>Request recipient is an interface.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.GenericDescriptor.REQUEST_Endpoint">
+            <summary>Request recipient is an endpoint.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.GenericDescriptor.REQUEST_Other">
+            <summary>Request recipient is another element.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.GenericDescriptor.#ctor(System.Byte,System.UInt16,System.Byte[])">
+            <summary>Creates a new generic descriptor.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.GenericDescriptor.bmRequestType">
+            <summary>The request type.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.GenericDescriptor.bRequest">
+            <summary>The request code.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.GenericDescriptor.wValue">
+            <summary>The request value.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.GenericDescriptor.wIndex">
+            <summary>The request index.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.GenericDescriptor.payload">
+            <summary>The descriptor data returned for the request.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.descriptors">
+            <summary>All of the descriptors that make up the configuration.</summary>
         </member>
         <member name="T:GHIElectronics.TinyCLR.Devices.UsbClient.Joystick">
             <summary>
@@ -176,6 +413,9 @@
             <param name="storage">Storage Hdc of storage controller.</param>
             <param name="number">The logical unit number.</param>
         </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.UsbClient.Mouse">
+            <summary>This device emulates a mouse. You can move the cursor, scroll the wheel, and press buttons.</summary>
+        </member>
         <member name="P:GHIElectronics.TinyCLR.Devices.UsbClient.Mouse.MaxRange">
             <summary>The maximum range for movement.</summary>
         </member>
@@ -235,6 +475,12 @@
         <member name="T:GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice">
             <summary>Represent a USB device.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice.MAX_POWER">
+            <summary>The default maximum power, in 2 mA units.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice.GHI_VID">
+            <summary>The GHI Electronics vendor id.</summary>
+        </member>
         <member name="P:GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice.MaxEndpoint">
             <summary>The maximum number of endpoints.</summary>
         </member>
@@ -265,10 +511,37 @@
         <member name="P:GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice.SerialNumber">
             <summary>The serial number of the device.</summary>
         </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice.PID">
+            <summary>The default product ids for each built-in device type.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice.PID.Mouse">
+            <summary>The product id for a mouse.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice.PID.CDC">
+            <summary>The product id for a CDC virtual COM port.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice.PID.MassStorage">
+            <summary>The product id for a mass storage device.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice.PID.Keyboard">
+            <summary>The product id for a keyboard.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice.PID.Joystick">
+            <summary>The product id for a joystick.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice.PID.WinUsb">
+            <summary>The product id for a WinUsb device.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice.PID.RawDevice">
+            <summary>The product id for a raw device.</summary>
+        </member>
         <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice.#ctor(GHIElectronics.TinyCLR.Devices.UsbClient.UsbClientController,GHIElectronics.TinyCLR.Devices.UsbClient.UsbClientSetting)">
             <summary>Creates a new raw device.</summary>
             <param name="usbClientController">UsbClient controller.</param>
             <param name="usbClientSetting">UsbClient setting</param>        
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice.DeviceStateChanged">
+            <summary>Raised when the device state changes.</summary>
         </member>
         <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice.ReserveNewEndpoint">
             <summary>Gets the next available endpoint.</summary>
@@ -293,11 +566,26 @@
         <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice.Initialize">
             <summary>Sets this device as the active device on the USB client controller. The existing active device will be deactivated if present.</summary>
         </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice.Enable">
+            <summary>Enables the device so the host can communicate with it.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice.Disable">
+            <summary>Disables the device.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice.Dispose">
+            <summary>Disposes the device.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice.DeviceState">
+            <summary>The current state of the device.</summary>
+        </member>
         <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice.CreateStream(System.Int32,System.Int32)">
             <summary>Creates a steam for reading and writing to the device.</summary>
             <param name="writeEndpoint">The write endpoint. Use RawStream.NullEndpoint if not available.</param>
             <param name="readEndpoint">The read endpoint. Use RawStream.NullEndpoint if not available.</param>
             <returns>The new stream.</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice.SetInterfaceMap(System.Byte,System.Byte,System.Byte,System.Byte)">
+            <summary>Maps additional data to the given interface index.</summary>
         </member>
         <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice.CreateStream(System.Int32,GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice)">
             <summary>Creates a new instance of the stream type for this device type.</summary>
@@ -348,6 +636,9 @@
         <member name="P:GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice.RawStream.BytesToWrite">
             <summary>The number of bytes that are in the process of being written.</summary>
         </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice.RawStream.#ctor(System.Int32,GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice)">
+            <summary>Creates a new raw stream.</summary>
+        </member>
         <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.RawDevice.RawStream.Finalize">
             <summary>The finalizer.</summary>
         </member>
@@ -390,6 +681,267 @@
             <summary>Disposes the object.</summary>
             <param name="disposing">Whether or not this is called from Dispose.</param>
         </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.UsbClient.DeviceState">
+            <summary>The possible states of a USB device.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.DeviceState.Detached">
+            <summary>The device is detached from the host.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.DeviceState.Attached">
+            <summary>The device is attached to the host.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.DeviceState.Powered">
+            <summary>The device is powered.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.DeviceState.Default">
+            <summary>The device is in the default state.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.DeviceState.Address">
+            <summary>The device has been assigned an address.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.DeviceState.Configured">
+            <summary>The device is configured and ready for use.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.DeviceState.Suspended">
+            <summary>The device is suspended.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.UsbClient.UsbClientMode">
+            <summary>The type of device to emulate.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.UsbClientMode.RawDevice">
+            <summary>A raw device.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.UsbClientMode.Cdc">
+            <summary>A CDC virtual COM port.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.UsbClientMode.WinUsb">
+            <summary>A WinUsb device.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.UsbClientMode.Keyboard">
+            <summary>A keyboard.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.UsbClientMode.Mouse">
+            <summary>A mouse.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.UsbClientMode.Joystick">
+            <summary>A joystick.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.UsbClient.UsbClientMode.MassStorage">
+            <summary>A mass storage device.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.UsbClient.DataReceivedEventHandler">
+            <summary>Represents the method that handles a data received event.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.UsbClient.DeviceStateChangedEventHandler">
+            <summary>Represents the method that handles a device state changed event.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.UsbClient.UsbClientSetting">
+            <summary>The settings used to configure a USB client device.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbClient.UsbClientSetting.Mode">
+            <summary>The type of device to emulate.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbClient.UsbClientSetting.ManufactureName">
+            <summary>The manufacturer name.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbClient.UsbClientSetting.ProductName">
+            <summary>The product name.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbClient.UsbClientSetting.SerialNumber">
+            <summary>The serial number.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbClient.UsbClientSetting.Guid">
+            <summary>The interface GUID, used by WinUsb devices.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbClient.UsbClientSetting.ProductId">
+            <summary>The product id.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbClient.UsbClientSetting.VendorId">
+            <summary>The vendor id.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbClient.UsbClientSetting.BcdUsb">
+            <summary>The USB specification release number.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbClient.UsbClientSetting.BcdDevice">
+            <summary>The device release number.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbClient.UsbClientSetting.MaxPower">
+            <summary>The maximum power the device uses, in 2 mA units.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbClient.UsbClientSetting.InterfaceName">
+            <summary>The interface name.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.UsbClient.UsbClientController">
+            <summary>Provides access to a USB client controller.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbClient.UsbClientController.Provider">
+            <summary>The underlying provider for the controller.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.UsbClientController.GetDefault">
+            <summary>Gets the default USB client controller.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.UsbClientController.FromName(System.String)">
+            <summary>Gets the USB client controller with the given name.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.UsbClientController.FromProvider(GHIElectronics.TinyCLR.Devices.UsbClient.Provider.IUsbClientControllerProvider)">
+            <summary>Gets a USB client controller from the given provider.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.UsbClientController.Dispose">
+            <summary>Disposes the controller.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.UsbClient.Provider.IUsbClientControllerProvider">
+            <summary>Provides the low-level interface for a USB client controller.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.Provider.IUsbClientControllerProvider.BytesToRead(System.Int32)">
+            <summary>The number of bytes available to read on the given stream.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.Provider.IUsbClientControllerProvider.BytesToWrite(System.Int32)">
+            <summary>The number of bytes that are in the process of being written on the given stream.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbClient.Provider.IUsbClientControllerProvider.WriteBufferSize">
+            <summary>The size of the write buffer.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbClient.Provider.IUsbClientControllerProvider.ReadBufferSize">
+            <summary>The size of the read buffer.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbClient.Provider.IUsbClientControllerProvider.DeviceState">
+            <summary>The current state of the device.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.Provider.IUsbClientControllerProvider.Enable">
+            <summary>Enables the device.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.Provider.IUsbClientControllerProvider.Disable">
+            <summary>Disables the device.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.Provider.IUsbClientControllerProvider.SetActiveSetting(GHIElectronics.TinyCLR.Devices.UsbClient.UsbClientSetting)">
+            <summary>Sets the active device setting.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.Provider.IUsbClientControllerProvider.SetDeviceDescriptor(GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.DeviceDescriptor[])">
+            <summary>Sets the device descriptor.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.Provider.IUsbClientControllerProvider.SetConfigurationDescriptor(GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.ConfigurationDescriptor[])">
+            <summary>Sets the configuration descriptor.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.Provider.IUsbClientControllerProvider.SetStringDescriptor(GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.StringDescriptor[],System.UInt32)">
+            <summary>Sets the string descriptor at the given index.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.Provider.IUsbClientControllerProvider.SetGenericDescriptor(GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.GenericDescriptor[])">
+            <summary>Sets the generic descriptor.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.Provider.IUsbClientControllerProvider.Read(System.Int32,System.Byte[],System.Int32,System.Int32)">
+            <summary>Reads data from the given stream.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.Provider.IUsbClientControllerProvider.Write(System.Int32,System.Byte[],System.Int32,System.Int32)">
+            <summary>Writes data to the given stream.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.Provider.IUsbClientControllerProvider.GetControlPacketSize">
+            <summary>Gets the maximum control packet size.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.Provider.IUsbClientControllerProvider.GetEndpointMap">
+            <summary>Gets a bitmap of the reserved endpoints.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.Provider.IUsbClientControllerProvider.ClearReadBuffer(System.Int32)">
+            <summary>Clears the read buffer of the given stream.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.Provider.IUsbClientControllerProvider.ClearWriteBuffer(System.Int32)">
+            <summary>Clears the write buffer of the given stream.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.Provider.IUsbClientControllerProvider.Flush(System.Int32)">
+            <summary>Flushes the write buffer of the given stream.</summary>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.Devices.UsbClient.Provider.IUsbClientControllerProvider.DataReceived">
+            <summary>Raised when data is received from the host.</summary>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.Devices.UsbClient.Provider.IUsbClientControllerProvider.DeviceStateChanged">
+            <summary>Raised when the device state changes.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.UsbClient.Provider.UsbClientControllerApiWrapper">
+            <summary>The native implementation of a USB client controller provider.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbClient.Provider.UsbClientControllerApiWrapper.Api">
+            <summary>The native API backing this provider.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.Provider.UsbClientControllerApiWrapper.#ctor(GHIElectronics.TinyCLR.Native.NativeApi)">
+            <summary>Creates a new provider for the given native API.</summary>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.Devices.UsbClient.Provider.UsbClientControllerApiWrapper.DataReceived">
+            <summary>Raised when data is received from the host.</summary>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.Devices.UsbClient.Provider.UsbClientControllerApiWrapper.DeviceStateChanged">
+            <summary>Raised when the device state changes.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.Provider.UsbClientControllerApiWrapper.Dispose">
+            <summary>Disposes the provider.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.Provider.UsbClientControllerApiWrapper.Dispose(System.Boolean)">
+            <summary>Disposes the provider.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.Provider.UsbClientControllerApiWrapper.BytesToRead(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.Provider.UsbClientControllerApiWrapper.BytesToWrite(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbClient.Provider.UsbClientControllerApiWrapper.DeviceState">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.Provider.UsbClientControllerApiWrapper.Enable">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.Provider.UsbClientControllerApiWrapper.Disable">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.Provider.UsbClientControllerApiWrapper.SetActiveSetting(GHIElectronics.TinyCLR.Devices.UsbClient.UsbClientSetting)">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.Provider.UsbClientControllerApiWrapper.Read(System.Int32,System.Byte[],System.Int32,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.Provider.UsbClientControllerApiWrapper.Write(System.Int32,System.Byte[],System.Int32,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.Provider.UsbClientControllerApiWrapper.Flush(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.Provider.UsbClientControllerApiWrapper.ClearReadBuffer(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.Provider.UsbClientControllerApiWrapper.ClearWriteBuffer(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbClient.Provider.UsbClientControllerApiWrapper.WriteBufferSize">
+            <inheritdoc/>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbClient.Provider.UsbClientControllerApiWrapper.ReadBufferSize">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.Provider.UsbClientControllerApiWrapper.GetControlPacketSize">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.Provider.UsbClientControllerApiWrapper.GetEndpointMap">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.Provider.UsbClientControllerApiWrapper.SetDeviceDescriptor(GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.DeviceDescriptor[])">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.Provider.UsbClientControllerApiWrapper.SetConfigurationDescriptor(GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.ConfigurationDescriptor[])">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.Provider.UsbClientControllerApiWrapper.SetStringDescriptor(GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.StringDescriptor[],System.UInt32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.Provider.UsbClientControllerApiWrapper.SetGenericDescriptor(GHIElectronics.TinyCLR.Devices.UsbClient.Configuration.GenericDescriptor[])">
+            <inheritdoc/>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.UsbClient.WinUsb">
+            <summary>This device emulates a WinUsb device for vendor-specific bulk communication with a host.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbClient.WinUsb.Stream">
+            <summary>The stream for the WinUsb connection.</summary>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.Devices.UsbClient.WinUsb.DataReceived">
+            <summary>Raised when data is received from the host.</summary>
+        </member>
         <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.WinUsb.#ctor(GHIElectronics.TinyCLR.Devices.UsbClient.UsbClientController)">
             <summary>Creates a new WinUsb interface with default parameters.</summary>
         </member>
@@ -412,6 +964,9 @@
             <param name="buffer">The buffer from which to write.</param>
             <param name="offset">The offset into the buffer at which to begin writing.</param>
             <param name="count">The number of bytes to write.</param>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.UsbClient.WinUsb.WinUsbStream.DataAvailable">
+            <summary>Whether or not there is data available to read.</summary>
         </member>
     </members>
 </doc>

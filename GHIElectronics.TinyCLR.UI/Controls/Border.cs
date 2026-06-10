@@ -6,13 +6,16 @@ using System;
 using GHIElectronics.TinyCLR.UI.Media;
 
 namespace GHIElectronics.TinyCLR.UI.Controls {
+    /// <summary>Draws a border around its single child element.</summary>
     public class Border : ContentControl {
+        /// <summary>Creates a new Border with a black, one-pixel border.</summary>
         public Border() {
             this._borderBrush = new SolidColorBrush(Colors.Black);
 
             this._borderLeft = this._borderTop = this._borderRight = this._borderBottom = 1;
         }
 
+        /// <summary>The brush used to paint the border.</summary>
         public Media.Brush BorderBrush {
             get {
                 VerifyAccess();
@@ -28,6 +31,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
+        /// <summary>Gets the border thickness on each side, in pixels.</summary>
         public void GetBorderThickness(out int left, out int top, out int right, out int bottom) {
             left = this._borderLeft;
             top = this._borderTop;
@@ -35,10 +39,12 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             bottom = this._borderBottom;
         }
 
+        /// <summary>Sets a uniform border thickness on all sides.</summary>
         public void SetBorderThickness(int length) =>
             // no need to verify access here as the next call will do it
             SetBorderThickness(length, length, length, length);
 
+        /// <summary>Sets the border thickness for each side individually.</summary>
         public void SetBorderThickness(int left, int top, int right, int bottom) {
             VerifyAccess();
 
@@ -56,6 +62,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             InvalidateMeasure();
         }
 
+        /// <summary>Arranges the child inside the border.</summary>
         protected override void ArrangeOverride(int arrangeWidth, int arrangeHeight) {
             var child = this.Child;
             if (child != null) {
@@ -66,6 +73,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
+        /// <summary>Measures the child plus the border thickness.</summary>
         protected override void MeasureOverride(int availableWidth, int availableHeight, out int desiredWidth, out int desiredHeight) {
             var child = this.Child;
             if (child != null) {
@@ -83,6 +91,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
+        /// <summary>Draws the border and background.</summary>
         public override void OnRender(DrawingContext dc) {
             var width = this._renderWidth;
             var height = this._renderHeight;

@@ -11,6 +11,18 @@
             Capture respresents one substring to a single successful catpture
             </summary>
         </member>
+        <member name="M:System.Text.RegularExpressions.Capture.ToString">
+            <summary>Returns the captured substring.</summary>
+        </member>
+        <member name="P:System.Text.RegularExpressions.Capture.Index">
+            <summary>The position in the original string where the captured substring begins.</summary>
+        </member>
+        <member name="P:System.Text.RegularExpressions.Capture.Length">
+            <summary>The length of the captured substring.</summary>
+        </member>
+        <member name="P:System.Text.RegularExpressions.Capture.Value">
+            <summary>The captured substring from the input string.</summary>
+        </member>
         <member name="M:System.Text.RegularExpressions.CharacterClass.IsNewline(System.Char@)">
             <summary>                 
             </summary>        
@@ -65,6 +77,15 @@
             <param name="minmax">Minimum and maximum end of range (inclusive)</param>
             <param name="shouldInclude">True if range should be included.  False otherwise.</param>
         </member>
+        <member name="T:System.Text.RegularExpressions.Group">
+            <summary>Represents the results from a single capturing group.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Group.Synchronized(System.Text.RegularExpressions.Group)">
+            <summary>Returns a thread-safe wrapper around the specified group.</summary>
+        </member>
+        <member name="P:System.Text.RegularExpressions.Group.Captures">
+            <summary>The collection of captures matched by this group.</summary>
+        </member>
         <member name="P:System.Text.RegularExpressions.Group.Success">
             <summary>
             Gets a value indicating whether the match was successful. 
@@ -74,6 +95,24 @@
             <summary>
             Represents the results from a single regular expression match.
             </summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Match.NextMatch">
+            <summary>Returns a new match starting at the position where the previous match ended.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Match.Result(System.String)">
+            <summary>Returns the expansion of the specified replacement pattern for this match.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Match.Synchronized(System.Text.RegularExpressions.Match)">
+            <summary>Returns a thread-safe wrapper around the specified match.</summary>
+        </member>
+        <member name="P:System.Text.RegularExpressions.Match.Empty">
+            <summary>The empty match that represents an unsuccessful match.</summary>
+        </member>
+        <member name="P:System.Text.RegularExpressions.Match.Groups">
+            <summary>The collection of groups matched by the regular expression.</summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.MatchEvaluator">
+            <summary>Represents the method that is called each time a regular expression match is found, returning the replacement string.</summary>
         </member>
         <member name="T:System.Text.RegularExpressions.Regex">
             <summary>
@@ -757,10 +796,70 @@
             <param name="pos"></param>
             <returns><tt>true</tt> iff if the specified index is past the end of the character stream</returns>
         </member>
+        <member name="T:System.Text.RegularExpressions.CaptureCollection">
+            <summary>Represents the set of captures made by a single capturing group.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.CaptureCollection.CopyTo(System.Array,System.Int32)">
+            <summary>Copies all the elements of the collection to the given array starting at the given index.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.CaptureCollection.GetEnumerator">
+            <summary>Returns an enumerator that iterates through the collection.</summary>
+        </member>
+        <member name="P:System.Text.RegularExpressions.CaptureCollection.Count">
+            <summary>The number of captures in the collection.</summary>
+        </member>
+        <member name="P:System.Text.RegularExpressions.CaptureCollection.IsReadOnly">
+            <summary>Gets a value indicating whether the collection is read-only.</summary>
+        </member>
+        <member name="P:System.Text.RegularExpressions.CaptureCollection.IsSynchronized">
+            <summary>Gets a value indicating whether access to the collection is synchronized (thread-safe).</summary>
+        </member>
+        <member name="P:System.Text.RegularExpressions.CaptureCollection.Item(System.Int32)">
+            <summary>Gets the capture at the specified index in the collection.</summary>
+        </member>
+        <member name="P:System.Text.RegularExpressions.CaptureCollection.SyncRoot">
+            <summary>An object that can be used to synchronize access to the collection.</summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.GroupCollection">
+            <summary>Represents the set of capturing groups matched by a regular expression.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.GroupCollection.CopyTo(System.Array,System.Int32)">
+            <summary>Copies all the elements of the collection to the given array starting at the given index.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.GroupCollection.GetEnumerator">
+            <summary>Returns an enumerator that iterates through the collection.</summary>
+        </member>
+        <member name="P:System.Text.RegularExpressions.GroupCollection.Count">
+            <summary>The number of groups in the collection.</summary>
+        </member>
+        <member name="P:System.Text.RegularExpressions.GroupCollection.IsReadOnly">
+            <summary>Gets a value indicating whether the collection is read-only.</summary>
+        </member>
+        <member name="P:System.Text.RegularExpressions.GroupCollection.IsSynchronized">
+            <summary>Gets a value indicating whether access to the collection is synchronized (thread-safe).</summary>
+        </member>
+        <member name="P:System.Text.RegularExpressions.GroupCollection.Item(System.Int32)">
+            <summary>Gets the group at the specified index in the collection.</summary>
+        </member>
+        <member name="P:System.Text.RegularExpressions.GroupCollection.Item(System.String)">
+            <summary>Gets the group with the specified name.</summary>
+        </member>
+        <member name="P:System.Text.RegularExpressions.GroupCollection.SyncRoot">
+            <summary>An object that can be used to synchronize access to the collection.</summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.MatchCollection">
+            <summary>Represents the set of successful matches found by iteratively applying a regular expression pattern to the input string.</summary>
+        </member>
         <member name="F:System.Text.RegularExpressions.MatchCollection._lastIndex">
             <summary>
             the last index to match against
             </summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.MatchCollection.CopyTo(System.Array,System.Int32)">
+            <summary>Copies all the elements of the collection to the given array starting at the given index.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.MatchCollection.GetEnumerator">
+            <summary>Returns an enumerator that iterates through the collection.</summary>
         </member>
         <member name="P:System.Text.RegularExpressions.MatchCollection.Count">
             <summary>
@@ -802,6 +901,12 @@
             <summary>
             Lookup table for POSIX char class names
             </summary>
+        </member>
+        <member name="P:System.Text.RegularExpressions.RegexCompiler.Instructions">
+            <summary>The compiled program instruction buffer produced by the last compilation.</summary>
+        </member>
+        <member name="P:System.Text.RegularExpressions.RegexCompiler.Pattern">
+            <summary>The pattern string that was last compiled.</summary>
         </member>
         <member name="M:System.Text.RegularExpressions.RegexCompiler.#ctor">
             <summary>
@@ -960,16 +1065,52 @@
             Options which can be applied to a RegularExpression
             </summary>
         </member>
+        <member name="F:System.Text.RegularExpressions.RegexOptions.Compiled">
+            <summary>Compile the regular expression to a program for faster execution.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.RegexOptions.CultureInvariant">
+            <summary>Ignore cultural differences in language when matching.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.RegexOptions.ECMAScript">
+            <summary>Enable ECMAScript-compliant behavior for the expression.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.RegexOptions.ExplicitCapture">
+            <summary>Capture only explicitly named or numbered groups.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.RegexOptions.IgnoreCase">
+            <summary>Match without regard to case.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.RegexOptions.IgnorePatternWhitespace">
+            <summary>Ignore unescaped whitespace in the pattern.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.RegexOptions.Multiline">
+            <summary>Treat ^ and $ as matching at the start and end of any line.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.RegexOptions.None">
+            <summary>Use the default options.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.RegexOptions.Singleline">
+            <summary>Make the period (.) match every character, including newlines.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.RegexOptions.Timed">
+            <summary>Time the match and throw if it exceeds the allowed number of ticks.</summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.ReplaceOptions">
+            <summary>Options that control how a replacement is applied to matches.</summary>
+        </member>
         <member name="F:System.Text.RegularExpressions.ReplaceOptions.ReplaceAll">
             Flag bit that indicates that subst should replace all occurrences of this
             regular expression.
+            <summary>Replace all occurrences of the regular expression.</summary>
         </member>
         <member name="F:System.Text.RegularExpressions.ReplaceOptions.ReplaceFirst">
             Flag bit that indicates that subst should only replace the first occurrence
             of this regular expression.
+            <summary>Replace only the first occurrence of the regular expression.</summary>
         </member>
         <member name="F:System.Text.RegularExpressions.ReplaceOptions.ReplaceBackrefrences">
             Flag bit that indicates that subst should replace backreferences
+            <summary>Process backreferences in the replacement string.</summary>
         </member>
         <member name="T:System.Text.RegularExpressions.SpecialEscape">
             <summary>

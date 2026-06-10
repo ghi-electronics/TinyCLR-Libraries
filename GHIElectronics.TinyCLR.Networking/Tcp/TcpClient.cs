@@ -9,6 +9,7 @@ using System.Threading;
 
 namespace System.Net.Sockets
 {
+    /// <summary>Provides client connections for TCP network services.</summary>
     // The System.Net.Sockets.TcpClient class provide TCP services at a higher level
     // of abstraction than the System.Net.Sockets.Socket class. System.Net.Sockets.TcpClient
     // is used to create a Client connection to a remote host.
@@ -24,11 +25,13 @@ namespace System.Net.Sockets
 
         private bool Disposed => this._disposed != 0;
 
+        /// <summary>Initializes a new instance with the default address family.</summary>
         // Initializes a new instance of the System.Net.Sockets.TcpClient class.
         public TcpClient() : this(AddressFamily.Unknown)
         {
         }
 
+        /// <summary>Initializes a new instance using the specified address family.</summary>
         // Initializes a new instance of the System.Net.Sockets.TcpClient class.
         public TcpClient(AddressFamily family)
         {
@@ -43,6 +46,7 @@ namespace System.Net.Sockets
             this.InitializeClientSocket();
         }
 
+        /// <summary>Initializes a new instance and binds it to the specified local endpoint.</summary>
         // Initializes a new instance of the System.Net.Sockets.TcpClient class with the specified end point.
         public TcpClient(IPEndPoint localEP)
         {
@@ -54,6 +58,7 @@ namespace System.Net.Sockets
             this._clientSocket.Bind(localEP);
         }
 
+        /// <summary>Initializes a new instance and connects to the specified host and port.</summary>
         // Initializes a new instance of the System.Net.Sockets.TcpClient class and connects to the specified port on
         // the specified host.
         public TcpClient(string hostname, int port) : this(AddressFamily.Unknown)
@@ -84,14 +89,17 @@ namespace System.Net.Sockets
             this._active = true;
         }
 
+        /// <summary>Whether a connection has been established.</summary>
         // Used by the class to indicate that a connection has been made.
         protected bool Active {
             get => this._active;
             set => this._active = value;
         }
 
+        /// <summary>The number of bytes available to be read from the connection.</summary>
         public int Available => this.Client.Available;
 
+        /// <summary>The underlying socket used by the client.</summary>
         // Used by the class to provide the underlying network socket.
         public Socket Client {
             get => this.Disposed ? null : this._clientSocket;
@@ -104,6 +112,7 @@ namespace System.Net.Sockets
             }
         }
 
+        /// <summary>Whether the client is connected to a remote host.</summary>
         // Delegates to the Socket so we have a single source of truth.
         // Previously stored in a separate _isConnected bool that the
         // accept-ctor forgot to set, causing GetStream to throw "not
@@ -123,6 +132,7 @@ namespace System.Net.Sockets
         //    }
         //}
 
+        /// <summary>Connects the client to the specified host and port.</summary>
         // Connects the Client to the specified port on the specified host.
         public void Connect(string hostname, int port)
         {
@@ -141,6 +151,7 @@ namespace System.Net.Sockets
             this._active = true;
         }
 
+        /// <summary>Connects the client to the specified IP address and port.</summary>
         // Connects the Client to the specified port on the specified host.
         public void Connect(IPAddress address, int port)
         {
@@ -156,6 +167,7 @@ namespace System.Net.Sockets
             this.Connect(remoteEP);
         }
 
+        /// <summary>Connects the client to the specified remote endpoint.</summary>
         // Connect the Client to the specified end point.
         public void Connect(IPEndPoint remoteEP)
         {
@@ -168,6 +180,7 @@ namespace System.Net.Sockets
             this._active = true;
         }
 
+        /// <summary>Connects the client to the first of the specified IP addresses on the given port.</summary>
         public void Connect(IPAddress[] ipAddresses, int port)
         {
             var remoteEndPoint = new IPEndPoint(ipAddresses[0], port);
@@ -239,6 +252,7 @@ namespace System.Net.Sockets
 
         //}
 
+        /// <summary>Returns the network stream used to send and receive data.</summary>
         // Returns the stream used to read and write data to the remote host.
         public NetworkStream GetStream()
         {
@@ -255,8 +269,10 @@ namespace System.Net.Sockets
             return this._dataStream;
         }
 
+        /// <summary>Closes the client and releases its resources.</summary>
         public void Close() => this.Dispose();
 
+        /// <summary>Releases the resources used by the client.</summary>
         // Disposes the Tcp connection.
         protected virtual void Dispose(bool disposing)
         {
@@ -300,28 +316,34 @@ namespace System.Net.Sockets
             }
         }
 
+        /// <summary>Releases the resources used by the client.</summary>
         public void Dispose() => this.Dispose(true);
 
+        /// <summary>Releases unmanaged resources when the client is finalized.</summary>
         ~TcpClient() => this.Dispose(false);
 
+        /// <summary>The size, in bytes, of the receive buffer.</summary>
         // Gets or sets the size of the receive buffer in bytes.
         public int ReceiveBufferSize {
             get => (int)this.Client.GetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReceiveBuffer);
             set => this.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReceiveBuffer, value);
         }
 
+        /// <summary>The size, in bytes, of the send buffer.</summary>
         // Gets or sets the size of the send buffer in bytes.
         public int SendBufferSize {
             get => (int)this.Client.GetSocketOption(SocketOptionLevel.Socket, SocketOptionName.SendBuffer);
             set => this.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.SendBuffer, value);
         }
 
+        /// <summary>The amount of time, in milliseconds, that a receive operation waits before timing out.</summary>
         // Gets or sets the receive time out value of the connection in milliseconds.
         public int ReceiveTimeout {
             get => (int)this.Client.GetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReceiveTimeout);
             set => this.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReceiveTimeout, value);
         }
 
+        /// <summary>The amount of time, in milliseconds, that a send operation waits before timing out.</summary>
         // Gets or sets the send time out value of the connection in milliseconds.
         public int SendTimeout {
             get => (int)this.Client.GetSocketOption(SocketOptionLevel.Socket, SocketOptionName.SendTimeout);

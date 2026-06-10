@@ -6,8 +6,11 @@ using GHIElectronics.TinyCLR.UI.Media;
 using GHIElectronics.TinyCLR.UI.Media.Imaging;
 
 namespace GHIElectronics.TinyCLR.UI.Controls {
+    /// <summary>A clickable push button that raises <see cref="Click"/> when activated.</summary>
     public class Button : ContentControl, IDisposable {
+        /// <summary>Opacity (0-255) used when drawing the button image.</summary>
         public ushort Alpha { get; set; } = Theme.DefaultAlpha;
+        /// <summary>Corner radius used by the nine-slice button image.</summary>
         public int RadiusBorder { get; set; } = Theme.DefaultRadiusBorder;
 
         // Cached events - allocated once per AppDomain, not per click. Each
@@ -23,18 +26,21 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         // on the old parent.
         private UIElement subscribedParent;
 
+        /// <summary>Creates a new Button.</summary>
         public Button() {
             this.InitResource();
 
             this.Background = Theme.ControlSurfaceBrush;
         }
 
+        /// <summary>Raised when the button is clicked.</summary>
         public event RoutedEventHandler Click;
 
         private BitmapImage bitmapImageButtonDown;
         private BitmapImage bitmapImageButtonUp;
         private bool isPressed;
 
+        /// <summary>True while the button is held down.</summary>
         public bool IsPressed => this.isPressed;
 
         private void InitResource() {
@@ -73,6 +79,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                 this.subscribedParent.TouchUp += this.OnParentTouchUp;
         }
 
+        /// <summary>Handles touch release; fires Click if the press started on this button.</summary>
         protected override void OnTouchUp(TouchEventArgs e) {
             if (!this.IsEnabled) {
                 return;
@@ -92,6 +99,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
+        /// <summary>Handles touch press; marks the button as pressed.</summary>
         protected override void OnTouchDown(TouchEventArgs e) {
             if (!this.IsEnabled) {
                 return;
@@ -106,6 +114,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                 this.Invalidate();
         }
 
+        /// <summary>Handles the Select hardware button press; marks the button as pressed.</summary>
         protected override void OnButtonDown(ButtonEventArgs e) {
             if (!this.IsEnabled || e.Button != HardwareButton.Select) {
                 return;
@@ -118,6 +127,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                 this.Invalidate();
         }
 
+        /// <summary>Handles the Select hardware button release; fires Click if it was pressed.</summary>
         protected override void OnButtonUp(ButtonEventArgs e) {
             if (!this.IsEnabled || e.Button != HardwareButton.Select) {
                 return;
@@ -143,6 +153,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             return args.Handled;
         }
 
+        /// <summary>Draws the button in its pressed or unpressed state.</summary>
         public override void OnRender(DrawingContext dc) {
             // ActualWidth/ActualHeight are populated by Arrange and never throw,
             // unlike this.Width/Height which fire "width not set" if the caller
@@ -160,11 +171,13 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
         private bool disposed;
 
+        /// <summary>Releases the resources used by the button.</summary>
         public void Dispose() {
             this.Dispose(true);
             GC.SuppressFinalize(this);
         }
 
+        /// <summary>Releases the button's bitmap resources and event subscriptions.</summary>
         protected virtual void Dispose(bool disposing) {
             if (this.disposed) return;
 

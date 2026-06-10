@@ -9,6 +9,15 @@
             Ftp command class
             </summary>
         </member>
+        <member name="F:System.Net.FTPCommand.CommandName">
+            <summary>The FTP command name (upper-cased).</summary>
+        </member>
+        <member name="F:System.Net.FTPCommand.CommandContent">
+            <summary>The argument text that follows the command name.</summary>
+        </member>
+        <member name="M:System.Net.FTPCommand.#ctor(System.String,System.String)">
+            <summary>Creates an FTP command from a name and its content.</summary>
+        </member>
         <member name="T:System.Net.FtpWebRequest">
             <summary>
             FtpWebRequest
@@ -59,6 +68,12 @@
             <summary>
             Set ftp mode
             </summary>
+        </member>
+        <member name="P:System.Net.FtpWebRequest.Credentials">
+            <summary>Gets or sets the credentials used to authenticate with the FTP server.</summary>
+        </member>
+        <member name="P:System.Net.FtpWebRequest.Method">
+            <summary>Gets or sets the FTP command (method) to send to the server.</summary>
         </member>
         <member name="P:System.Net.FtpWebRequest.RequestUri">
             <summary>
@@ -221,6 +236,111 @@
             <summary>
             Only contains a stream to write data
             </summary>
+        </member>
+        <member name="M:System.Net.FtpWebResponse.GetResponseStream">
+            <summary>Returns the stream used to read the response data.</summary>
+        </member>
+        <member name="M:System.Net.FtpWebResponse.Close">
+            <summary>Closes the response and releases its stream.</summary>
+        </member>
+        <member name="T:System.Net.FtpStatusCode">
+            <summary>Specifies the status codes returned for a File Transfer Protocol (FTP) operation.</summary>
+        </member>
+        <member name="F:System.Net.FtpStatusCode.Undefined">
+            <summary>Included for completeness; this value is never returned by servers.</summary>
+        </member>
+        <member name="F:System.Net.FtpStatusCode.OpeningData">
+            <summary>Specifies that the server is opening the data connection.</summary>
+        </member>
+        <member name="F:System.Net.FtpStatusCode.CommandOK">
+            <summary>Specifies that the command completed successfully.</summary>
+        </member>
+        <member name="F:System.Net.FtpStatusCode.FileStatus">
+            <summary>Specifies the status of a file.</summary>
+        </member>
+        <member name="F:System.Net.FtpStatusCode.ClosingData">
+            <summary>Specifies that the server is closing the data connection and the requested file action was successful.</summary>
+        </member>
+        <member name="F:System.Net.FtpStatusCode.EnteringPassive">
+            <summary>Specifies that the server is entering passive mode.</summary>
+        </member>
+        <member name="F:System.Net.FtpStatusCode.FileActionOK">
+            <summary>Specifies that the requested file action completed successfully.</summary>
+        </member>
+        <member name="F:System.Net.FtpStatusCode.PathnameCreated">
+            <summary>Specifies that the requested path name was created.</summary>
+        </member>
+        <member name="F:System.Net.FtpStatusCode.SendPasswordCommand">
+            <summary>Specifies that the server expects a password to be supplied.</summary>
+        </member>
+        <member name="F:System.Net.FtpStatusCode.NeedLoginAccount">
+            <summary>Specifies that the server requires a login account to be supplied.</summary>
+        </member>
+        <member name="F:System.Net.FtpStatusCode.FileCommandPending">
+            <summary>Specifies that the requested file action requires additional information.</summary>
+        </member>
+        <member name="F:System.Net.FtpStatusCode.ActionAbortedLocalProcessingError">
+            <summary>Specifies that an error occurred that prevented the request action from completing.</summary>
+        </member>
+        <member name="F:System.Net.FtpStatusCode.ArgumentSyntaxError">
+            <summary>Specifies that one or more command arguments has a syntax error.</summary>
+        </member>
+        <member name="F:System.Net.FtpStatusCode.CommandNotImplemented">
+            <summary>Specifies that the command is not implemented by the FTP server.</summary>
+        </member>
+        <member name="F:System.Net.FtpStatusCode.BadCommandSequence">
+            <summary>Specifies that the sequence of commands is not in the correct order.</summary>
+        </member>
+        <member name="F:System.Net.FtpStatusCode.NotLoggedIn">
+            <summary>Specifies that login information must be sent to the server.</summary>
+        </member>
+        <member name="F:System.Net.FtpStatusCode.AccountNeeded">
+            <summary>Specifies that a user account on the server is required.</summary>
+        </member>
+        <member name="F:System.Net.FtpStatusCode.ActionNotTakenFileUnavailable">
+            <summary>Specifies that the requested action cannot be performed because the file is not available.</summary>
+        </member>
+        <member name="F:System.Net.FtpStatusCode.ActionAbortedUnknownPageType">
+            <summary>Specifies that the requested action cannot be taken because the specified page type is unknown.</summary>
+        </member>
+        <member name="F:System.Net.FtpStatusCode.FileActionAborted">
+            <summary>Specifies that the requested action cannot be performed.</summary>
+        </member>
+        <member name="F:System.Net.FtpStatusCode.ActionNotTakenFilenameNotAllowed">
+            <summary>Specifies that the requested action cannot be performed on the specified file.</summary>
+        </member>
+        <member name="T:System.Net.WebRequestMethods">
+            <summary>Container for the FTP protocol method names that can be used with a web request.</summary>
+        </member>
+        <member name="T:System.Net.WebRequestMethods.Ftp">
+            <summary>Represents the types of FTP protocol methods that can be used with an FTP request.</summary>
+        </member>
+        <member name="F:System.Net.WebRequestMethods.Ftp.DeleteFile">
+            <summary>Represents the FTP DELE protocol method that deletes a file on an FTP server.</summary>
+        </member>
+        <member name="F:System.Net.WebRequestMethods.Ftp.DownloadFile">
+            <summary>Represents the FTP RETR protocol method that downloads a file from an FTP server.</summary>
+        </member>
+        <member name="F:System.Net.WebRequestMethods.Ftp.GetFileSize">
+            <summary>Represents the FTP SIZE protocol method that retrieves the size of a file on an FTP server.</summary>
+        </member>
+        <member name="F:System.Net.WebRequestMethods.Ftp.ListDirectory">
+            <summary>Represents the FTP NLST protocol method that gets a short listing of the files on an FTP server.</summary>
+        </member>
+        <member name="F:System.Net.WebRequestMethods.Ftp.ListDirectoryDetails">
+            <summary>Represents the FTP LIST protocol method that gets a detailed listing of the files on an FTP server.</summary>
+        </member>
+        <member name="F:System.Net.WebRequestMethods.Ftp.MakeDirectory">
+            <summary>Represents the FTP MKD protocol method that creates a directory on an FTP server.</summary>
+        </member>
+        <member name="F:System.Net.WebRequestMethods.Ftp.RemoveDirectory">
+            <summary>Represents the FTP RMD protocol method that removes a directory.</summary>
+        </member>
+        <member name="F:System.Net.WebRequestMethods.Ftp.Rename">
+            <summary>Represents the FTP RENAME protocol method that renames a file or directory.</summary>
+        </member>
+        <member name="F:System.Net.WebRequestMethods.Ftp.UploadFile">
+            <summary>Represents the FTP STOR protocol method that uploads a file to an FTP server.</summary>
         </member>
         <member name="T:GHIElectronics.TinyCLR.Networking.Ftp.FilePath">
             <summary>
@@ -483,6 +603,57 @@
             User information containing username and password
             </summary>
         </member>
+        <member name="P:GHIElectronics.TinyCLR.Networking.Ftp.UserInfo.UserName">
+            <summary>The authenticated user's name.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Networking.Ftp.UserInfo.PassWord">
+            <summary>The authenticated user's password.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Networking.Ftp.FtpDefaultListener">
+            <summary>The fallback FTP listener that serves contexts not claimed by any other listener.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Networking.Ftp.FtpDefaultListener.#ctor">
+            <summary>Creates the default listener that is not registered with the listener manager.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Networking.Ftp.FtpDefaultListener.Start">
+            <summary>Starts the listener at the root prefix and launches its worker thread.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Networking.Ftp.FtpDefaultListener.Stop">
+            <summary>Stops the listener and shuts down its worker thread.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Networking.Ftp.FtpDefaultListener.Run">
+            <summary>Worker loop that serves directory listing and navigation requests.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Networking.Ftp.FtpFilesystemListener">
+            <summary>An FTP listener that serves files from a real filesystem directory under a virtual root.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Networking.Ftp.FtpFilesystemListener.#ctor(System.String,System.String)">
+            <summary>Creates a listener that maps the virtual root to the filesystem directory, allowing uploads.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Networking.Ftp.FtpFilesystemListener.#ctor(System.String,System.String,System.Boolean)">
+            <summary>Creates a listener that maps the virtual root to the filesystem directory, optionally allowing uploads.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Networking.Ftp.FtpFilesystemListener.FilesystemRoot">
+            <summary>The filesystem directory whose contents are served.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Networking.Ftp.FtpFilesystemListener.VirtualRoot">
+            <summary>The virtual root path that clients see, mapped onto the filesystem directory.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Networking.Ftp.FtpFilesystemListener.UploadsAllowed">
+            <summary>Whether clients are allowed to upload files.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Networking.Ftp.FtpMemoryListener">
+            <summary>An FTP listener that serves a fixed in-memory set of files and an activity log.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Networking.Ftp.FtpMemoryListener.#ctor">
+            <summary>Creates the in-memory listener registered with the listener manager.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Networking.Ftp.FtpMemoryListener.Start">
+            <summary>Starts the listener and its worker thread.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Networking.Ftp.FtpMemoryListener.AddFile(System.IO.FileInfo)">
+            <summary>Adds a file to the set served by this listener.</summary>
+        </member>
         <member name="T:GHIElectronics.TinyCLR.Networking.Ftp.LoggingMethod">
             <summary>
             Logging choices
@@ -574,6 +745,21 @@
                 authentication events
             </summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.Networking.FtpListener.m_ContextQueue">
+            <summary>Queue of pending contexts waiting to be served by this listener.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Networking.FtpListener.m_ContextQueueLock">
+            <summary>Synchronization event signaled when a context is added to the queue.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Networking.FtpListener.m_Prefixes">
+            <summary>List of path prefixes this listener handles.</summary>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.Networking.FtpListener.AuthenticationEvent">
+            <summary>Raised to authenticate a user logging in to the FTP server.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Networking.FtpListener.#ctor">
+            <summary>Creates an FTP listener registered with the listener manager.</summary>
+        </member>
         <member name="M:GHIElectronics.TinyCLR.Networking.FtpListener.#ctor(System.Boolean)">
             <summary>
             Constructor with indication of flags whether it should be registerd in the listener manager
@@ -634,6 +820,9 @@
             Flag indicates whether the listener is listening to contexts or not
             </summary>
         </member>
+        <member name="M:GHIElectronics.TinyCLR.Networking.FtpListener.Dispose">
+            <summary>Stops the listener and releases its resources.</summary>
+        </member>
         <member name="T:GHIElectronics.TinyCLR.Networking.FtpListenerContext">
             <summary>
             A Context containing an ftp request and a response scratch that should be completed by listeners
@@ -661,6 +850,9 @@
             <summary>
             The ftp request
             </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Networking.FtpListenerRequest.Method">
+            <summary>The FTP method of this request.</summary>
         </member>
         <member name="P:GHIElectronics.TinyCLR.Networking.FtpListenerRequest.QueryString">
             <summary>
@@ -708,6 +900,45 @@
             <summary>
             A virtual stream to do the read / write job from / to sockets
             </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Networking.FtpResponseStream.#ctor(GHIElectronics.TinyCLR.Networking.FtpListenerResponse)">
+            <summary>Creates a response stream associated with the given response.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Networking.FtpResponseStream.#ctor(GHIElectronics.TinyCLR.Networking.FtpListenerResponse,System.IO.Stream)">
+            <summary>Creates a response stream that reads from or writes to the given underlying stream.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Networking.FtpResponseStream.CanRead">
+            <summary>Gets a value indicating whether the stream supports reading; always false.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Networking.FtpResponseStream.CanSeek">
+            <summary>Gets a value indicating whether the stream supports seeking; always false.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Networking.FtpResponseStream.CanWrite">
+            <summary>Gets a value indicating whether the stream supports writing; always true.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Networking.FtpResponseStream.Flush">
+            <summary>Flushes the stream; this implementation does nothing.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Networking.FtpResponseStream.Length">
+            <summary>Gets the number of bytes currently held in the internal buffer.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Networking.FtpResponseStream.Position">
+            <summary>Getting or setting the position is not supported by this stream.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Networking.FtpResponseStream.Close">
+            <summary>Closes the stream and sends the pending FTP response.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Networking.FtpResponseStream.Read(System.Byte[],System.Int32,System.Int32)">
+            <summary>Reading bytes from this stream is not supported.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Networking.FtpResponseStream.Seek(System.Int64,System.IO.SeekOrigin)">
+            <summary>Seeking is not supported by this stream.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Networking.FtpResponseStream.SetLength(System.Int64)">
+            <summary>Setting the length is not supported by this stream.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Networking.FtpResponseStream.Write(System.Byte[],System.Int32,System.Int32)">
+            <summary>Writing a byte buffer is not supported by this stream.</summary>
         </member>
         <member name="M:GHIElectronics.TinyCLR.Networking.FtpResponseStream.Write(System.String)">
             <summary>
@@ -759,6 +990,21 @@
             <param name="uri"></param>
             <returns></returns>
         </member>
+        <member name="T:GHIElectronics.TinyCLR.Networking.WebRequestMethodsEx">
+            <summary>Additional FTP protocol method names used internally by the server.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Networking.WebRequestMethodsEx.Ftp">
+            <summary>FTP protocol method names used by the server's command handling.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Networking.WebRequestMethodsEx.Ftp.ChangeDirectory">
+            <summary>Represents the FTP CWD protocol method that changes the current directory.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Networking.WebRequestMethodsEx.Ftp.RenameFrom">
+            <summary>Identifies the source name of a rename operation (RNFR).</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Networking.WebRequestMethodsEx.Ftp.RenameTo">
+            <summary>Identifies the target name of a rename operation (RNTO).</summary>
+        </member>
         <member name="T:GHIElectronics.TinyCLR.Networking.IContextManager">
             <summary>
             Interface to communcate with context manager
@@ -769,10 +1015,40 @@
             Interface to communcate with ftp session
             </summary>
         </member>
+        <member name="T:GHIElectronics.TinyCLR.Networking.UserAuthenticator">
+            <summary>Represents the method that handles user authentication for the FTP server.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Networking.UserAuthenticatorArgs">
+            <summary>Provides the user name and password for an authentication request and carries back the result.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Networking.UserAuthenticatorArgs.User">
+            <summary>The user name supplied by the client.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Networking.UserAuthenticatorArgs.Password">
+            <summary>The password supplied by the client.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Networking.UserAuthenticatorArgs.Result">
+            <summary>Gets or sets the result of the authentication request.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Networking.UserAuthenticatorArgs.#ctor(System.String,System.String)">
+            <summary>Creates authentication arguments for the given user name and password.</summary>
+        </member>
         <member name="T:GHIElectronics.TinyCLR.Networking.UserAuthenticationResult">
             <summary>
             User anthentication result
             </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Networking.UserAuthenticationResult.Unspecified">
+            <summary>No authentication decision has been made.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Networking.UserAuthenticationResult.Approved">
+            <summary>The user is allowed to log in.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Networking.UserAuthenticationResult.Denied">
+            <summary>The user is rejected.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Networking.UserAuthenticationResult.Conflicting">
+            <summary>Conflicting decisions were set by multiple handlers.</summary>
         </member>
         <member name="T:GHIElectronics.TinyCLR.Networking.FtpCommandType">
             <summary>

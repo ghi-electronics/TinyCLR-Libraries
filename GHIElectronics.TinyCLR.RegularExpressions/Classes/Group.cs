@@ -3,6 +3,7 @@ using System.Collections;
 
 namespace System.Text.RegularExpressions
 {
+    /// <summary>Represents the results from a single capturing group.</summary>
     [Serializable]
     public class Group : Capture
     {
@@ -24,6 +25,7 @@ namespace System.Text.RegularExpressions
             this._capcount = capcount;
         }
 
+        /// <summary>Returns a thread-safe wrapper around the specified group.</summary>
         //[System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.Synchronized)]
         public static Group Synchronized(Group inner)
         {
@@ -42,6 +44,7 @@ namespace System.Text.RegularExpressions
         #endregion
 
         #region Properties
+        /// <summary>The collection of captures matched by this group.</summary>
         public CaptureCollection Captures
         {
             get

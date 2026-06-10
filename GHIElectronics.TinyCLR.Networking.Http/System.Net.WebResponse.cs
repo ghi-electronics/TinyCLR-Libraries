@@ -100,8 +100,10 @@ namespace System.Net
             GC.SuppressFinalize(this);
         }
 
+        /// <summary>Releases the resources used by the response.</summary>
         public void Dispose() => Close();
 
+        /// <summary>Releases the unmanaged resources and optionally the managed resources used by the response.</summary>
         protected virtual void Dispose(bool disposing)
         {
         }

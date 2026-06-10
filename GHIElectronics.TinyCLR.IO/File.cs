@@ -8,6 +8,7 @@ namespace System.IO {
     // routines such as Delete, etc.
     public static class File
     {
+        /// <summary>Copies a file to a new path; throws if the destination already exists.</summary>
         // Copies an existing file to a new file. An exception is raised if the
         // destination file already exists. Use the
         // Copy(String, String, boolean) method to allow
@@ -19,6 +20,7 @@ namespace System.IO {
         //
         public static void Copy(string sourceFileName, string destFileName) => Copy(sourceFileName, destFileName, false, false);
 
+        /// <summary>Copies a file to a new path, optionally overwriting an existing destination.</summary>
         // Copies an existing file to a new file. If overwrite is
         // false, then an IOException is thrown if the destination file
         // already exists.  If overwrite is true, the file is
@@ -77,6 +79,7 @@ namespace System.IO {
             }
         }
 
+        /// <summary>Creates or overwrites a file and returns a read/write stream to it.</summary>
         // Creates a file in a particular path.  If the file exists, it is replaced.
         // The file is opened with ReadWrite accessand cannot be opened by another
         // application until it has been closed.  An IOException is thrown if the
@@ -87,6 +90,7 @@ namespace System.IO {
         //
         public static FileStream Create(string path) => new FileStream(path, FileMode.Create, FileAccess.ReadWrite, FileShare.None, FileStream.BufferSizeDefault);
 
+        /// <summary>Creates or overwrites a file with the given buffer size and returns a read/write stream to it.</summary>
         // Creates a file in a particular path.  If the file exists, it is replaced.
         // The file is opened with ReadWrite access and cannot be opened by another
         // application until it has been closed.  An IOException is thrown if the
@@ -97,6 +101,7 @@ namespace System.IO {
         //
         public static FileStream Create(string path, int bufferSize) => new FileStream(path, FileMode.Create, FileAccess.ReadWrite, FileShare.None, bufferSize);
 
+        /// <summary>Deletes the file at the path; succeeds silently if it does not exist.</summary>
         // Deletes a file. The file specified by the designated path is deleted.
         // If the file does not exist, Delete succeeds without throwing
         // an exception.
@@ -149,6 +154,7 @@ namespace System.IO {
             }
         }
 
+        /// <summary>Returns whether a file exists at the path.</summary>
         // Tests if a file exists. The result is true if the file
         // given by the specified path exists; otherwise, the result is
         // false.  Note that if path describes a directory,
@@ -196,12 +202,16 @@ namespace System.IO {
             return false;
         }
 
+        /// <summary>Opens a file with the given mode and returns a stream to it.</summary>
         public static FileStream Open(string path, FileMode mode) => new FileStream(path, mode, (mode == FileMode.Append ? FileAccess.Write : FileAccess.ReadWrite), FileShare.None, FileStream.BufferSizeDefault);
 
+        /// <summary>Opens a file with the given mode and access and returns a stream to it.</summary>
         public static FileStream Open(string path, FileMode mode, FileAccess access) => new FileStream(path, mode, access, FileShare.None, FileStream.BufferSizeDefault);
 
+        /// <summary>Opens a file with the given mode, access, and sharing and returns a stream to it.</summary>
         public static FileStream Open(string path, FileMode mode, FileAccess access, FileShare share) => new FileStream(path, mode, access, share, FileStream.BufferSizeDefault);
 
+        /// <summary>Returns the attributes of the file at the path.</summary>
         public static FileAttributes GetAttributes(string path)
         {
             // path validation in Path.GetFullPath()
@@ -217,6 +227,7 @@ namespace System.IO {
                 return (FileAttributes)attributes;
         }
 
+        /// <summary>Sets the attributes of the file at the path.</summary>
         public static void SetAttributes(string path, FileAttributes fileAttributes)
         {
             // path validation in Path.GetFullPath()
@@ -226,10 +237,13 @@ namespace System.IO {
             DriveInfo.GetForPath(fullPath).SetAttributes(fullPath, fileAttributes);
         }
 
+        /// <summary>Opens an existing file for reading and returns a stream to it.</summary>
         public static FileStream OpenRead(string path) => new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read, FileStream.BufferSizeDefault);
 
+        /// <summary>Opens or creates a file for writing and returns a stream to it.</summary>
         public static FileStream OpenWrite(string path) => new FileStream(path, FileMode.OpenOrCreate, FileAccess.Write, FileShare.None, FileStream.BufferSizeDefault);
 
+        /// <summary>Reads the entire contents of a file into a byte array.</summary>
         public static byte[] ReadAllBytes(string path)
         {
             byte[] bytes;
@@ -253,6 +267,7 @@ namespace System.IO {
             return bytes;
         }
 
+        /// <summary>Creates or overwrites a file and writes the byte array to it.</summary>
         public static void WriteAllBytes(string path, byte[] bytes)
         {
             if (bytes == null)
@@ -262,6 +277,7 @@ namespace System.IO {
                 fs.Write(bytes, 0, bytes.Length);
         }
 
+        /// <summary>Moves a file to a new location and name.</summary>
         // Moves a specified file to a new location and potentially a new file name.
         // This method does work across volumes.
         //

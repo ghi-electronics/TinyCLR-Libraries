@@ -98,7 +98,9 @@ namespace GHIElectronics.TinyCLR.Devices.Modbus {
         /// Gets if the interface message polling is running.
         /// </summary>
         public bool IsRunning { get; private set; }
+        /// <summary>Gets or sets the internal telegram buffer.</summary>
         public byte[] Buffer1 { get => this.Buffer2; set => this.Buffer2 = value; }
+        /// <summary>Gets or sets the internal telegram buffer.</summary>
         public byte[] Buffer2 { get => this.buffer; set => this.buffer = value; }
 
         private void Run() {

@@ -5,6 +5,7 @@ namespace System.Linq {
     /// Represents a collection of objects that have a common key. Returned by <c>GroupBy</c>.
     /// </summary>
     public interface IGrouping<TKey, TElement> : IEnumerable<TElement> {
+        /// <summary>Gets the key that the elements in this grouping have in common.</summary>
         TKey Key { get; }
     }
 }

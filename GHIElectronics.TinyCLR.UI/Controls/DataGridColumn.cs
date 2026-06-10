@@ -18,6 +18,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         /// <summary>Default sort order applied when the column header is tapped.</summary>
         public DataGrid.Order Order { get; set; }
 
+        /// <summary>Creates a new column with the given label and pixel width.</summary>
         public DataGridColumn(string label, int width) {
             this.Label = label;
             this.Width = width;

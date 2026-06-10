@@ -8,6 +8,7 @@ using GHIElectronics.TinyCLR.UI.Media;
 using GHIElectronics.TinyCLR.UI.Media.Imaging;
 
 namespace GHIElectronics.TinyCLR.UI.Controls {
+    /// <summary>A two-state check box that toggles when clicked.</summary>
     public class CheckBox : ContentControl, IDisposable {
         // Cached once per AppDomain so every toggle doesn't allocate fresh RoutedEvent objects.
         private static readonly RoutedEvent ClickRoutedEvent =
@@ -17,8 +18,11 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         private static readonly RoutedEvent UncheckedRoutedEvent =
             new RoutedEvent("UncheckedEvent", RoutingStrategy.Bubble, typeof(RoutedEventHandler));
 
+        /// <summary>Raised when the check box is clicked.</summary>
         public event RoutedEventHandler Click;
+        /// <summary>Raised when the check box becomes checked.</summary>
         public event RoutedEventHandler Checked;
+        /// <summary>Raised when the check box becomes unchecked.</summary>
         public event RoutedEventHandler Unchecked;
 
         private BitmapImage bitmapImageCheckboxOn;
@@ -26,8 +30,11 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
         private bool isChecked = false;
 
+        /// <summary>Optional name identifying the check box.</summary>
         public string Name { get; set; } = string.Empty;
+        /// <summary>Opacity (0-255) used when drawing the check box image.</summary>
         public ushort Alpha { get; set; } = Theme.DefaultAlpha;
+        /// <summary>Corner radius used by the nine-slice check box image.</summary>
         public ushort RadiusBorder { get; set; } = (ushort)Theme.DefaultRadiusBorder;
 
 
@@ -36,6 +43,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             this.bitmapImageCheckboxOff = Resources.LoadBitmapImage(Resources.BitmapResources.CheckBox_Off);
         }
 
+        /// <summary>Creates a new CheckBox.</summary>
         public CheckBox() : base() {
             this.InitResource();
 
@@ -43,6 +51,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             this.Height = this.bitmapImageCheckboxOn.Height;
         }
 
+        /// <summary>Draws the check box in its checked or unchecked state.</summary>
         public override void OnRender(DrawingContext dc) {
             // The ctor pre-sets Width/Height from the bitmap, so this normally
             // wouldn't throw — but a caller can still override Width/Height
@@ -56,6 +65,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             dc.Scale9Image(0, 0, w, h, img, this.RadiusBorder, this.RadiusBorder, this.RadiusBorder, this.RadiusBorder, this.Alpha);
         }
 
+        /// <summary>Handles touch release; toggles the check box.</summary>
         protected override void OnTouchUp(TouchEventArgs e) {
             if (!this.IsEnabled) {
                 return;
@@ -64,11 +74,13 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             e.Handled = this.PerformClick();
         }
 
+        /// <summary>Handles touch press. Toggling is deferred to touch release.</summary>
         protected override void OnTouchDown(TouchEventArgs e) {
             // No-op. Toggling happens on TouchUp so that drag-off-and-release-elsewhere
             // doesn't flip state, and Click fires exactly once per activation.
         }
 
+        /// <summary>Handles the Select hardware button release; toggles the check box.</summary>
         protected override void OnButtonUp(ButtonEventArgs e) {
             if (!this.IsEnabled || e.Button != HardwareButton.Select) {
                 return;
@@ -102,6 +114,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         }
 
 
+        /// <summary>Whether the check box is currently checked.</summary>
         public bool IsChecked {
             get => this.isChecked;
             set {
@@ -117,11 +130,13 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
         private bool disposed;
 
+        /// <summary>Releases the resources used by the check box.</summary>
         public void Dispose() {
             this.Dispose(true);
             GC.SuppressFinalize(this);
         }
 
+        /// <summary>Releases the check box's bitmap resources.</summary>
         protected virtual void Dispose(bool disposing) {
             if (this.disposed) return;
 

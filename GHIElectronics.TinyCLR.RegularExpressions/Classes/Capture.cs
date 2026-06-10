@@ -43,6 +43,7 @@ namespace System.Text.RegularExpressions
             return this._text.Substring(this._index + this._length, (this._text.Length - this._index) - this._length);
         }
 
+        /// <summary>Returns the captured substring.</summary>
         public override string ToString()
         {
             return this.Value;
@@ -52,6 +53,7 @@ namespace System.Text.RegularExpressions
 
         #region Properties
 
+        /// <summary>The position in the original string where the captured substring begins.</summary>
         public int Index
         {
             get
@@ -60,6 +62,7 @@ namespace System.Text.RegularExpressions
             }
         }
 
+        /// <summary>The length of the captured substring.</summary>
         public int Length
         {
             get
@@ -68,6 +71,7 @@ namespace System.Text.RegularExpressions
             }
         }
 
+        /// <summary>The captured substring from the input string.</summary>
         public string Value
         {
             get

@@ -4,12 +4,19 @@ using GHIElectronics.TinyCLR.IO;
 namespace System.IO {
     /// <summary>Classification of a mounted volume.</summary>
     public enum DriveType {
+        /// <summary>The drive type is unknown.</summary>
         Unknown = 0,
+        /// <summary>The drive has no root directory.</summary>
         NoRootDirectory = 1,
+        /// <summary>The drive is removable, such as an SD card or USB stick.</summary>
         Removable = 2,
+        /// <summary>The drive is a fixed disk.</summary>
         Fixed = 3,
+        /// <summary>The drive is a network drive.</summary>
         Network = 4,
+        /// <summary>The drive is an optical disc.</summary>
         CDRom = 5,
+        /// <summary>The drive is a RAM disk.</summary>
         Ram = 6
     }
 
@@ -20,17 +27,27 @@ namespace System.IO {
 
         private readonly IDriveProvider provider;
 
+        /// <summary>The root name of the drive.</summary>
         public string Name { get; }
+        /// <summary>The root directory of the drive.</summary>
         public DirectoryInfo RootDirectory => new DirectoryInfo(this.Name);
 
+        /// <summary>The type of the drive.</summary>
         public DriveType DriveType => this.provider.DriveType;
+        /// <summary>The name of the file system format on the drive.</summary>
         public string DriveFormat => this.provider.DriveFormat;
+        /// <summary>Whether the drive is ready for access.</summary>
         public bool IsReady => this.provider.IsReady;
+        /// <summary>The amount of free space available on the drive in bytes.</summary>
         public long AvailableFreeSpace => this.provider.AvailableFreeSpace;
+        /// <summary>The total free space on the drive in bytes.</summary>
         public long TotalFreeSpace => this.provider.TotalFreeSpace;
+        /// <summary>The total size of the drive in bytes.</summary>
         public long TotalSize => this.provider.TotalSize;
+        /// <summary>The volume label of the drive.</summary>
         public string VolumeLabel => this.provider.VolumeLabel;
 
+        /// <summary>Creates a new instance for the registered drive with the given root name.</summary>
         public DriveInfo(string driveName) {
             lock (DriveInfo.driveProviders) {
                 if (!DriveInfo.driveProviders.Contains(driveName)) throw new ArgumentException();
@@ -41,6 +58,7 @@ namespace System.IO {
             }
         }
 
+        /// <summary>Returns information about all mounted drives.</summary>
         public static DriveInfo[] GetDrives() {
             var drives = Directory.GetLogicalDrives();
             var di = new DriveInfo[drives.Length];
@@ -51,6 +69,7 @@ namespace System.IO {
             return di;
         }
 
+        /// <summary>Assigns the next free root name to the provider and registers it as a drive.</summary>
         public static IDriveProvider RegisterDriveProvider(IDriveProvider provider) {
             if (provider == null) throw new ArgumentNullException();
 
@@ -76,6 +95,7 @@ namespace System.IO {
             return provider;
         }
 
+        /// <summary>Unregisters the provider and frees its root name.</summary>
         public static void DeregisterDriveProvider(IDriveProvider provider) {
             if (provider == null) throw new ArgumentNullException();
 

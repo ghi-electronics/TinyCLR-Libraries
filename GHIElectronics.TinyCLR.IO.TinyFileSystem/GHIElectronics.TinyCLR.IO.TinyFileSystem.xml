@@ -417,6 +417,12 @@
             </summary>
             <returns>Structure with the statistics of the file system.</returns>
         </member>
+        <member name="M:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.Dispose(System.Boolean)">
+            <summary>Releases the underlying block driver when <paramref name="disposing"/> is true.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.Dispose">
+            <summary>Releases all resources used by the file system.</summary>
+        </member>
         <member name="T:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.UInt16Array">
             <summary>
             Dynamically growing array of UInt16 (ushort) elements.    

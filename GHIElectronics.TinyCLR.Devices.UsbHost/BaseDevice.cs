@@ -133,6 +133,7 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
             Custom,
         }
 
+        /// <summary>Creates a new base device and registers it with the USB host controller.</summary>
         protected BaseDevice(uint id, byte interfaceIndex, DeviceType type) {
             UsbHostController.RegisterDevice(this);
             UsbHostControllerApiWrapper.GetDeviceInformation(id, out var vendor, out var product, out var port);

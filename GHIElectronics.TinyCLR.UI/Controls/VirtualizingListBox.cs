@@ -19,6 +19,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         private int _selectedIndex = -1;
         private SelectionChangedEventHandler _selectionChanged;
 
+        /// <summary>Initializes a new instance of the <see cref="VirtualizingListBox"/> class.</summary>
         public VirtualizingListBox() {
             this.host = new VirtualPanel(this);
             for (var i = 0; i < DefaultPoolSize; i++) {
@@ -39,6 +40,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             this.LogicalChildren.Add(this.scroll);
         }
 
+        /// <summary>The list of items shown in the list box; each item is displayed via its <c>ToString()</c>.</summary>
         public IList ItemsSource {
             get => this._itemsSource;
 
@@ -68,6 +70,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
+        /// <summary>The index of the currently selected item, or -1 if none is selected.</summary>
         public int SelectedIndex {
             get => this._selectedIndex;
 
@@ -84,16 +87,19 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
+        /// <summary>Raised when the selected item changes.</summary>
         public event SelectionChangedEventHandler SelectionChanged {
             add => this._selectionChanged += value;
             remove => this._selectionChanged -= value;
         }
 
+        /// <summary>The current horizontal scroll offset of the list.</summary>
         public int HorizontalOffset {
             get => this.scroll.HorizontalOffset;
             set => this.scroll.HorizontalOffset = value;
         }
 
+        /// <summary>The current vertical scroll offset of the list.</summary>
         public int VerticalOffset {
             get => this.scroll.VerticalOffset;
             set => this.scroll.VerticalOffset = value;
@@ -146,11 +152,13 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
+        /// <summary>Measures the inner scroll viewer to determine the desired size.</summary>
         protected override void MeasureOverride(int availableWidth, int availableHeight, out int desiredWidth, out int desiredHeight) {
             this.scroll.Measure(availableWidth, availableHeight);
             this.scroll.GetDesiredSize(out desiredWidth, out desiredHeight);
         }
 
+        /// <summary>Arranges the inner scroll viewer to fill the list box.</summary>
         protected override void ArrangeOverride(int arrangeWidth, int arrangeHeight) {
             this.scroll.Arrange(0, 0, arrangeWidth, arrangeHeight);
         }
@@ -166,11 +174,13 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
         private bool _disposed;
 
+        /// <summary>Detaches the list box's event handlers for deterministic teardown.</summary>
         public void Dispose() {
             this.Dispose(true);
             GC.SuppressFinalize(this);
         }
 
+        /// <summary>Detaches the list box's event handlers for deterministic teardown.</summary>
         protected virtual void Dispose(bool disposing) {
             if (this._disposed) return;
 

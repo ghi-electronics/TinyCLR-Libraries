@@ -3,12 +3,12 @@ using System.Collections;
 using System.Runtime.CompilerServices;
 
 namespace GHIElectronics.TinyCLR.Native {
+    //Keep in sync with native
     /// <summary>
     /// Identifies a category of native API. Each managed library (Gpio, Spi, …)
     /// uses its own value to look up a matching native implementation via
     /// <see cref="NativeApi.Find(string, NativeApiType)"/>.
     /// </summary>
-    //Keep in sync with native
     public enum NativeApiType : uint {
         /// <summary>API manager itself.</summary>
         ApiManager = 0,

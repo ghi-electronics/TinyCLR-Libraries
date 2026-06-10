@@ -16,10 +16,13 @@ namespace GHIElectronics.TinyCLR.UI.Input {
             this._inputManager.InputDeviceEvents[(int)InputManager.InputDeviceType.Touch].PostProcessInput += new ProcessInputEventHandler(this.PostProcessInput);
         }
 
+        /// <summary>Returns the element that input from this device is sent to.</summary>
         public override UIElement Target => this._focus;
 
+        /// <summary>The input device type for this device.</summary>
         public override InputManager.InputDeviceType DeviceType => InputManager.InputDeviceType.Touch;
 
+        /// <summary>Sets the element that input from this device is sent to.</summary>
         public void SetTarget(UIElement target) => this._focus = target;
 
         private void PostProcessInput(object sender, ProcessInputEventArgs e) {

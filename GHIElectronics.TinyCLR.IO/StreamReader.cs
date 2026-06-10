@@ -7,6 +7,7 @@ using System.Collections;
 
 namespace System.IO
 {
+    /// <summary>Reads characters from a stream using UTF-8 decoding.</summary>
     public class StreamReader : TextReader
     {
         private const int c_MaxReadLineLen = 0xFFFF;
@@ -44,6 +45,7 @@ namespace System.IO
         private int m_curBufPos;
         private int m_curBufLen;
 
+        /// <summary>Creates a reader over the given stream.</summary>
         public StreamReader(Stream stream)
         {
             if (stream == null)
@@ -65,13 +67,16 @@ namespace System.IO
             this.m_disposed = false;
         }
 
+        /// <summary>Creates a reader that opens the file at the given path for reading.</summary>
         public StreamReader(string path)
             : this(new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
         {
         }
 
+        /// <inheritdoc/>
         public override void Close() => Dispose();
 
+        /// <inheritdoc/>
         protected override void Dispose(bool disposing)
         {
             if (this.m_stream != null)
@@ -90,6 +95,7 @@ namespace System.IO
             this.m_disposed = true;
         }
 
+        /// <inheritdoc/>
         public override int Peek()
         {
             var tempPos = this.m_curBufPos;
@@ -145,6 +151,7 @@ namespace System.IO
             return nextChar;
         }
 
+        /// <inheritdoc/>
         public override int Read()
         {
             var completed = false;
@@ -179,6 +186,7 @@ namespace System.IO
             return (int)this.m_singleCharBuff[0];
         }
 
+        /// <inheritdoc/>
         public override int Read(char[] buffer, int index, int count)
         {
             if (buffer == null)
@@ -216,6 +224,7 @@ namespace System.IO
             return charUsed;
         }
 
+        /// <inheritdoc/>
         public override string ReadLine()
         {
 
@@ -269,6 +278,7 @@ namespace System.IO
             return new string(readLineBuff, 0, curPos);
         }
 
+        /// <inheritdoc/>
         public override string ReadToEnd()
         {
             char[] result = null;
@@ -368,10 +378,13 @@ namespace System.IO
 
         //--//
 
+        /// <summary>The underlying stream being read from.</summary>
         public virtual Stream BaseStream => this.m_stream;
 
+        /// <summary>The character encoding the reader uses.</summary>
         public virtual Encoding CurrentEncoding => System.Text.Encoding.UTF8;
 
+        /// <summary>Whether the reader has reached the end of the buffered data.</summary>
         public bool EndOfStream => this.m_curBufLen == this.m_curBufPos;
 
         private int FillBufferAndReset(int count)

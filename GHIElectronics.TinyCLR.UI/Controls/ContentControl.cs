@@ -5,7 +5,9 @@
 
 
 namespace GHIElectronics.TinyCLR.UI.Controls {
+    /// <summary>Base class for controls that host a single child element.</summary>
     public abstract class ContentControl : Control {
+        /// <summary>The single child element hosted by this control.</summary>
         public UIElement Child {
             get {
                 if (this.LogicalChildren.Count > 0) {
@@ -24,6 +26,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
+        /// <summary>Measures the child element.</summary>
         protected override void MeasureOverride(int availableWidth, int availableHeight, out int desiredWidth, out int desiredHeight) {
             var child = this.Child;
             if (child != null) {

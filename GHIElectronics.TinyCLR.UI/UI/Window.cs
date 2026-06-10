@@ -8,6 +8,7 @@ using GHIElectronics.TinyCLR.UI.Controls;
 using GHIElectronics.TinyCLR.UI.Media;
 
 namespace GHIElectronics.TinyCLR.UI {
+    /// <summary>Represents a top-level window that hosts content and is managed by the window manager.</summary>
     public class Window : ContentControl {
         //---------------------------------------------------
         //
@@ -70,6 +71,7 @@ namespace GHIElectronics.TinyCLR.UI {
 
         #region Public Methods
 
+        /// <summary>Closes the window and removes it from the application and window manager.</summary>
         [MethodImplAttribute(MethodImplOptions.Synchronized)]
         public void Close() {
             var app = GHIElectronics.TinyCLR.UI.Application.Current;
@@ -121,6 +123,7 @@ namespace GHIElectronics.TinyCLR.UI {
             }
         }
 
+        /// <summary>Gets or sets the position of the left edge of the window.</summary>
         public int Left {
             get => Canvas.GetLeft(this);
 

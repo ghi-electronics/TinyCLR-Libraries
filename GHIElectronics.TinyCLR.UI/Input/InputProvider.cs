@@ -2,15 +2,18 @@
 using GHIElectronics.TinyCLR.UI.Threading;
 
 namespace GHIElectronics.TinyCLR.UI.Input {
+    /// <summary>Feeds button, touch and focus-navigation input into the input manager.</summary>
     public sealed class InputProvider {
         private readonly InputProviderSite buttonSite;
         private readonly Application application;
 
+        /// <summary>Constructs an instance of the InputProvider class for the given application.</summary>
         public InputProvider(Application a) {
             this.buttonSite = InputManager.CurrentInputManager.RegisterInputProvider(this);
             this.application = a;
         }
 
+        /// <summary>Reports a button press or release to the input manager.</summary>
         public void RaiseButton(HardwareButton button, bool state, DateTime time) {
             var report = new RawButtonInputReport(null, time, button, state ? RawButtonActions.ButtonUp : RawButtonActions.ButtonDown);
             var dev = InputManager.CurrentInputManager.ButtonDevice;
@@ -31,6 +34,7 @@ namespace GHIElectronics.TinyCLR.UI.Input {
             return null;
         }
 
+        /// <summary>Reports a touch event at the given position to the input manager.</summary>
         public void RaiseTouch(int x, int y, TouchMessages which, DateTime time) => Application.Current.OnEvent(new TouchEvent() { Time = time, EventMessage = (byte)which, Touches = new[] { new TouchInput() { X = x, Y = y } } });
 
         /// <summary>

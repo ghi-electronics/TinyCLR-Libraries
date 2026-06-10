@@ -5,13 +5,18 @@ using System.Collections;
 using GHIElectronics.TinyCLR.IO;
 
 namespace System.IO {
+    /// <summary>Selects which kinds of entries a file enumeration returns.</summary>
     public enum FileEnumFlags
     {
+        /// <summary>Enumerate only files.</summary>
         Files = 0x0001,
+        /// <summary>Enumerate only directories.</summary>
         Directories = 0x0002,
+        /// <summary>Enumerate both files and directories.</summary>
         FilesAndDirectories = Files | Directories,
     }
 
+    /// <summary>Enumerates the file-system entries under a path.</summary>
     public class FileEnum : IEnumerator, IDisposable
     {
         private IFileSystemEntryFinder  m_findFile;
@@ -21,6 +26,7 @@ namespace System.IO {
         private bool            m_disposed;
         private object          m_openForReadHandle;
 
+        /// <summary>Creates an enumerator over the entries matching the given flags under the path.</summary>
         public FileEnum(string path, FileEnumFlags flags)
         {
             this.m_flags = flags;
@@ -32,6 +38,7 @@ namespace System.IO {
 
         #region IEnumerator Members
 
+        /// <inheritdoc/>
         public object Current
         {
             get
@@ -42,6 +49,7 @@ namespace System.IO {
             }
         }
 
+        /// <summary>Advances to the next entry.</summary>
         public bool MoveNext()
         {
             if (this.m_disposed) throw new ObjectDisposedException();
@@ -81,6 +89,7 @@ namespace System.IO {
             return fileinfo != null;
         }
 
+        /// <summary>Resets the enumerator to the start.</summary>
         public void Reset()
         {
             if (this.m_disposed) throw new ObjectDisposedException();
@@ -100,6 +109,7 @@ namespace System.IO {
 
         #endregion
 
+        /// <summary>Releases the enumerator's resources and removes it from the open list.</summary>
         protected virtual void Dispose(bool disposing)
         {
             if (this.m_findFile != null)
@@ -124,6 +134,7 @@ namespace System.IO {
 
         #region IDisposable Members
 
+        /// <inheritdoc/>
         public void Dispose()
         {
             Dispose(true);
@@ -133,11 +144,13 @@ namespace System.IO {
         #endregion
     }
 
+    /// <summary>Provides an enumerable over the entries of a directory.</summary>
     public class FileEnumerator : IEnumerable
     {
         private string m_path;
         private FileEnumFlags m_flags;
 
+        /// <summary>Creates an enumerable over the entries matching the given flags under the path.</summary>
         public FileEnumerator(string path, FileEnumFlags flags)
         {
             this.m_path  = Path.GetFullPath(path);
@@ -148,6 +161,7 @@ namespace System.IO {
 
         #region IEnumerable Members
 
+        /// <inheritdoc/>
         public IEnumerator GetEnumerator() => new FileEnum(this.m_path, this.m_flags);
 
         #endregion

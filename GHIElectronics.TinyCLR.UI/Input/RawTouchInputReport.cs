@@ -30,6 +30,7 @@ namespace GHIElectronics.TinyCLR.UI.Input {
             this.Touches = touches;
         }
 
+        /// <summary>Constructs an instance of the RawTouchInputReport class targeting a specific element.</summary>
         public RawTouchInputReport(PresentationSource inputSource,
                     DateTime timestamp, byte eventMessage, TouchInput[] touches, UIElement destTarget)
             : base(inputSource, timestamp) {
@@ -38,16 +39,25 @@ namespace GHIElectronics.TinyCLR.UI.Input {
             this.Target = destTarget;
         }
 
+        /// <summary>Read-only access to the element this report is directed at, or null.</summary>
         public readonly UIElement Target;
+        /// <summary>Read-only access to the touch message code.</summary>
         public readonly byte EventMessage;
+        /// <summary>Read-only access to the touch points reported.</summary>
         public readonly TouchInput[] Touches;
     }
 
+    /// <summary>Describes the raw actions reported for a touch.</summary>
     public enum RawTouchActions {
+        /// <summary>A touch press occurred.</summary>
         TouchDown = 0x01,
+        /// <summary>A touch release occurred.</summary>
         TouchUp = 0x02,
+        /// <summary>The touch input source became active.</summary>
         Activate = 0x04,
+        /// <summary>The touch input source became inactive.</summary>
         Deactivate = 0x08,
+        /// <summary>A touch move occurred.</summary>
         TouchMove = 0x10,
     }
 }

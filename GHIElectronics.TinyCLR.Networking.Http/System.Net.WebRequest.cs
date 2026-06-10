@@ -92,12 +92,14 @@ namespace System.Net
             Dispose(false);
         }
 
+        /// <summary>Releases the resources used by the request.</summary>
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
 
+        /// <summary>Releases the unmanaged resources and optionally the managed resources used by the request.</summary>
         protected virtual void Dispose(bool disposing)
         {
         }

@@ -43,8 +43,50 @@
         <member name="T:GHIElectronics.TinyCLR.Networking.Mqtt.MqttConnectionSetting">
             <summary>Per-session MQTT settings — client ID, credentials, last-will, keepalive.</summary>
         </member>
+        <member name="P:GHIElectronics.TinyCLR.Networking.Mqtt.MqttConnectionSetting.ClientId">
+            <summary>The unique client identifier presented to the broker.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Networking.Mqtt.MqttConnectionSetting.CleanSession">
+            <summary>Whether the broker should start a clean session rather than resume a previous one.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Networking.Mqtt.MqttConnectionSetting.UserName">
+            <summary>The user name used to authenticate with the broker.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Networking.Mqtt.MqttConnectionSetting.Password">
+            <summary>The password used to authenticate with the broker.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Networking.Mqtt.MqttConnectionSetting.LastWillTopic">
+            <summary>The topic the broker publishes the last-will message to if the client disconnects unexpectedly.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Networking.Mqtt.MqttConnectionSetting.LastWillQos">
+            <summary>The quality-of-service level used for the last-will message.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Networking.Mqtt.MqttConnectionSetting.LastWillMessage">
+            <summary>The message the broker publishes if the client disconnects unexpectedly.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Networking.Mqtt.MqttConnectionSetting.LastWillRetain">
+            <summary>Whether the broker should retain the last-will message.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Networking.Mqtt.MqttConnectionSetting.KeepAliveTimeout">
+            <summary>The keep-alive interval, in seconds, between client communications.</summary>
+        </member>
         <member name="T:GHIElectronics.TinyCLR.Networking.Mqtt.MqttClientSetting">
             <summary>Transport-level MQTT settings — broker host/port, TLS, certificates.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Networking.Mqtt.MqttClientSetting.BrokerName">
+            <summary>The host name or address of the MQTT broker.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Networking.Mqtt.MqttClientSetting.BrokerPort">
+            <summary>The TCP port of the MQTT broker.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Networking.Mqtt.MqttClientSetting.CaCertificate">
+            <summary>The certificate authority certificate used to validate the broker.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Networking.Mqtt.MqttClientSetting.ClientCertificate">
+            <summary>The client certificate presented to the broker for mutual TLS.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Networking.Mqtt.MqttClientSetting.SslProtocol">
+            <summary>The TLS protocol to use, or None for an unencrypted connection.</summary>
         </member>
         <member name="T:GHIElectronics.TinyCLR.Networking.Mqtt.Mqtt">
             <summary>
@@ -52,6 +94,123 @@
             <c>Connect</c> with an <see cref="T:GHIElectronics.TinyCLR.Networking.Mqtt.MqttConnectionSetting"/>, subscribe to
             topics, and publish messages. Asynchronous events deliver inbound traffic.
             </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Networking.Mqtt.Mqtt.PublishReceivedEventHandler">
+            <summary>Handles a message received on a subscribed topic.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Networking.Mqtt.Mqtt.PublishedEventHandler">
+            <summary>Handles the result of a publish request.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Networking.Mqtt.Mqtt.SubscribedEventHandler">
+            <summary>Handles a completed subscribe request and the granted quality-of-service levels.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Networking.Mqtt.Mqtt.UnsubscribedEventHandler">
+            <summary>Handles a completed unsubscribe request.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Networking.Mqtt.Mqtt.ConnectedEventHandler">
+            <summary>Handles a change in the connection state with the broker.</summary>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.Networking.Mqtt.Mqtt.PublishReceivedChanged">
+            <summary>Raised when a message is received on a subscribed topic.</summary>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.Networking.Mqtt.Mqtt.PublishedChanged">
+            <summary>Raised when a published message is acknowledged.</summary>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.Networking.Mqtt.Mqtt.SubscribedChanged">
+            <summary>Raised when a subscribe request is acknowledged.</summary>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.Networking.Mqtt.Mqtt.UnsubscribedChanged">
+            <summary>Raised when an unsubscribe request is acknowledged.</summary>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.Networking.Mqtt.Mqtt.ConnectedChanged">
+            <summary>Raised when the connection to the broker is established or closed.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Networking.Mqtt.Mqtt.IsConnected">
+            <summary>Gets whether the client is currently connected to the broker.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Networking.Mqtt.Mqtt.ClientId">
+            <summary>Gets the client identifier of the current connection.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Networking.Mqtt.Mqtt.ClientSetting">
+            <summary>Gets the transport-level settings the client was created with.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Networking.Mqtt.Mqtt.ConnectionSetting">
+            <summary>Gets the per-session settings used for the current connection.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Networking.Mqtt.Mqtt.#ctor(GHIElectronics.TinyCLR.Networking.Mqtt.MqttClientSetting)">
+            <summary>Creates a new MQTT client using the given transport settings.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Networking.Mqtt.Mqtt.Connect(GHIElectronics.TinyCLR.Networking.Mqtt.MqttConnectionSetting)">
+            <summary>Connects to the broker using the given session settings and returns the broker's response code.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Networking.Mqtt.Mqtt.Disconnect">
+            <summary>Sends a disconnect request to the broker and closes the connection.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Networking.Mqtt.Mqtt.Subscribe(System.String[],GHIElectronics.TinyCLR.Networking.Mqtt.QoSLevel[],System.UInt16)">
+            <summary>Subscribes to the given topics at the specified quality-of-service levels.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Networking.Mqtt.Mqtt.Unsubscribe(System.String[],System.UInt16)">
+            <summary>Unsubscribes from the given topics.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Networking.Mqtt.Mqtt.Publish(System.String,System.Byte[],GHIElectronics.TinyCLR.Networking.Mqtt.QoSLevel,System.Boolean,System.UInt16)">
+            <summary>Publishes a message to a topic at the specified quality-of-service level.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Networking.Mqtt.PacketType">
+            <summary>Identifies the type of an MQTT control packet.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Networking.Mqtt.PacketType.Connect">
+            <summary>Client request to connect to the broker.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Networking.Mqtt.PacketType.ConnAck">
+            <summary>Broker acknowledgement of a connect request.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Networking.Mqtt.PacketType.Publish">
+            <summary>Message published to a topic.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Networking.Mqtt.PacketType.PubAck">
+            <summary>Acknowledgement of a QoS 1 publish.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Networking.Mqtt.PacketType.Pubrec">
+            <summary>First QoS 2 publish acknowledgement (publish received).</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Networking.Mqtt.PacketType.Pubrel">
+            <summary>Second QoS 2 publish acknowledgement (publish release).</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Networking.Mqtt.PacketType.PubComp">
+            <summary>Final QoS 2 publish acknowledgement (publish complete).</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Networking.Mqtt.PacketType.Subscribe">
+            <summary>Client request to subscribe to one or more topics.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Networking.Mqtt.PacketType.Suback">
+            <summary>Broker acknowledgement of a subscribe request.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Networking.Mqtt.PacketType.Unsubscribe">
+            <summary>Client request to unsubscribe from one or more topics.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Networking.Mqtt.PacketType.Unsuback">
+            <summary>Broker acknowledgement of an unsubscribe request.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Networking.Mqtt.PacketType.PingReq">
+            <summary>Keep-alive ping request sent to the broker.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Networking.Mqtt.PacketType.PingResp">
+            <summary>Keep-alive ping response from the broker.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Networking.Mqtt.PacketType.Disconnect">
+            <summary>Client notification that it is disconnecting.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Networking.Mqtt.MqttPacket">
+            <summary>Represents a single MQTT control packet and encodes it to bytes for sending.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Networking.Mqtt.MqttPacket.Payload">
+            <summary>The message payload carried by the packet.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Networking.Mqtt.MqttPacket.PacketId">
+            <summary>The packet identifier used to correlate acknowledgements.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Networking.Mqtt.MqttPacket.IsPublished">
+            <summary>Indicates whether this packet represents an outbound published message.</summary>
         </member>
     </members>
 </doc>

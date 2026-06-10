@@ -4,28 +4,36 @@
 using GHIElectronics.TinyCLR.IO;
 
 namespace System.IO {
+    /// <summary>Base class for objects that describe a file or directory.</summary>
     public abstract class FileSystemInfo : MarshalByRefObject
     {
+        /// <summary>The fully qualified path of the file or directory.</summary>
         protected string m_fullPath;  // fully qualified path of the directory
 
         //--//
 
+        /// <summary>The full path of the file or directory.</summary>
         public virtual string FullName => this.m_fullPath;
 
+        /// <summary>The extension portion of the name, including the leading period.</summary>
         public string Extension => Path.GetExtension(this.FullName);
 
+        /// <summary>The name of the file or directory.</summary>
         public abstract string Name
         {
             get;
         }
 
+        /// <summary>Whether the file or directory exists.</summary>
         public abstract bool Exists
         {
             get;
         }
 
+        /// <summary>Deletes the file or directory.</summary>
         public abstract void Delete();
 
+        /// <summary>The attributes of the file or directory.</summary>
         public FileAttributes Attributes
         {
             get
@@ -35,8 +43,10 @@ namespace System.IO {
             }
         }
 
+        /// <summary>The creation time in local time.</summary>
         public DateTime CreationTime => this.CreationTimeUtc.ToLocalTime();
 
+        /// <summary>The creation time in UTC.</summary>
         public DateTime CreationTimeUtc
         {
             get
@@ -46,8 +56,10 @@ namespace System.IO {
             }
         }
 
+        /// <summary>The last access time in local time.</summary>
         public DateTime LastAccessTime => this.LastAccessTimeUtc.ToLocalTime();
 
+        /// <summary>The last access time in UTC.</summary>
         public DateTime LastAccessTimeUtc
         {
             get
@@ -57,8 +69,10 @@ namespace System.IO {
             }
         }
 
+        /// <summary>The last write time in local time.</summary>
         public DateTime LastWriteTime => this.LastWriteTimeUtc.ToLocalTime();
 
+        /// <summary>The last write time in UTC.</summary>
         public DateTime LastWriteTimeUtc
         {
             get
@@ -68,6 +82,7 @@ namespace System.IO {
             }
         }
 
+        /// <summary>Reloads the cached metadata from the underlying file system.</summary>
         public void Refresh()
         {
             var record = FileSystemManager.AddToOpenListForRead(this.m_fullPath);
@@ -88,6 +103,7 @@ namespace System.IO {
             }
         }
 
+        /// <summary>Loads the cached metadata if it has not been loaded yet.</summary>
         protected void RefreshIfNull()
         {
             if (this._nativeFileInfo == null)

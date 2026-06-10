@@ -126,6 +126,7 @@ namespace System.Net
             catch { }
         }
 
+        /// <summary>Resets the parsed-request state and the underlying request so the context can be reused.</summary>
         public void Reset()
         {
             this.m_IsHTTPRequestParsed = false;

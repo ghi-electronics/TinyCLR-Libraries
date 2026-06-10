@@ -7,6 +7,7 @@ namespace GHIElectronics.TinyCLR.UI {
     /// (or null / empty to refresh all bindings on the object).
     /// </summary>
     public interface INotifyBindablePropertyChanged {
+        /// <summary>Occurs when a bound property value changes.</summary>
         event BindablePropertyChangedEventHandler BindablePropertyChanged;
     }
 }

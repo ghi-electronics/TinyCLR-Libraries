@@ -400,6 +400,7 @@ namespace System.Net
             }
         }
 
+        /// <summary>Sends the headers if not already sent and marks the response as closed without closing the connection.</summary>
         public void Detach()
         {
             if (!this.m_IsResponseClosed)

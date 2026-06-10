@@ -7,20 +7,239 @@
         <member name="T:System.Drawing.Brush">
             <summary>Abstract base for objects that fill graphics shapes (rectangles, ellipses, paths).</summary>
         </member>
+        <member name="M:System.Drawing.Brush.Clone">
+            <summary>Creates an exact copy of this brush.</summary>
+        </member>
+        <member name="M:System.Drawing.Brush.Dispose">
+            <summary>Releases the resources used by this brush.</summary>
+        </member>
+        <member name="M:System.Drawing.Brush.Dispose(System.Boolean)">
+            <summary>Releases the resources used by this brush.</summary>
+        </member>
         <member name="T:System.Drawing.SolidBrush">
             <summary>A brush that fills with a single solid <see cref="P:System.Drawing.SolidBrush.Color"/>.</summary>
+        </member>
+        <member name="M:System.Drawing.SolidBrush.#ctor(System.Drawing.Color)">
+            <summary>Initializes a new solid brush with the specified fill color.</summary>
+        </member>
+        <member name="P:System.Drawing.SolidBrush.Color">
+            <summary>Gets or sets the color used to fill shapes.</summary>
+        </member>
+        <member name="M:System.Drawing.SolidBrush.Clone">
+            <summary>Creates an exact copy of this solid brush.</summary>
         </member>
         <member name="T:System.Drawing.Color">
             <summary>32-bit ARGB color value. Construct via <see cref="M:System.Drawing.Color.FromArgb(System.Int32,System.Int32,System.Int32)"/> / <see cref="M:System.Drawing.Color.FromArgb(System.Int32,System.Int32,System.Int32,System.Int32)"/>, or use one of the named static constants.</summary>
         </member>
+        <member name="F:System.Drawing.Color.Empty">
+            <summary>Represents a color that is null or uninitialized.</summary>
+        </member>
+        <member name="P:System.Drawing.Color.Transparent">
+            <summary>Gets a fully transparent color.</summary>
+        </member>
+        <member name="P:System.Drawing.Color.Black">
+            <summary>Gets the color black.</summary>
+        </member>
+        <member name="P:System.Drawing.Color.White">
+            <summary>Gets the color white.</summary>
+        </member>
+        <member name="P:System.Drawing.Color.Gray">
+            <summary>Gets the color gray.</summary>
+        </member>
+        <member name="P:System.Drawing.Color.Red">
+            <summary>Gets the color red.</summary>
+        </member>
+        <member name="P:System.Drawing.Color.Green">
+            <summary>Gets the color green.</summary>
+        </member>
+        <member name="P:System.Drawing.Color.Blue">
+            <summary>Gets the color blue.</summary>
+        </member>
+        <member name="P:System.Drawing.Color.Yellow">
+            <summary>Gets the color yellow.</summary>
+        </member>
+        <member name="P:System.Drawing.Color.Purple">
+            <summary>Gets the color purple.</summary>
+        </member>
+        <member name="P:System.Drawing.Color.Teal">
+            <summary>Gets the color teal.</summary>
+        </member>
+        <member name="P:System.Drawing.Color.R">
+            <summary>Gets the red component of this color.</summary>
+        </member>
+        <member name="P:System.Drawing.Color.G">
+            <summary>Gets the green component of this color.</summary>
+        </member>
+        <member name="P:System.Drawing.Color.B">
+            <summary>Gets the blue component of this color.</summary>
+        </member>
+        <member name="P:System.Drawing.Color.A">
+            <summary>Gets the alpha component of this color.</summary>
+        </member>
+        <member name="P:System.Drawing.Color.IsEmpty">
+            <summary>Gets a value indicating whether this color is empty.</summary>
+        </member>
+        <member name="P:System.Drawing.Color.Name">
+            <summary>Gets the hexadecimal string representation of this color's value.</summary>
+        </member>
+        <member name="M:System.Drawing.Color.FromArgb(System.Int32)">
+            <summary>Creates a color from a 32-bit ARGB value.</summary>
+        </member>
+        <member name="M:System.Drawing.Color.FromArgb(System.Int32,System.Int32,System.Int32)">
+            <summary>Creates an opaque color from the given red, green, and blue components.</summary>
+        </member>
+        <member name="M:System.Drawing.Color.FromArgb(System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>Creates a color from the given alpha, red, green, and blue components.</summary>
+        </member>
+        <member name="M:System.Drawing.Color.FromArgb(System.Int32,System.Drawing.Color)">
+            <summary>Creates a color from an existing color with the given alpha value.</summary>
+        </member>
+        <member name="M:System.Drawing.Color.GetBrightness">
+            <summary>Gets the brightness (lightness) of this color as a value from 0 to 1.</summary>
+        </member>
+        <member name="M:System.Drawing.Color.GetHue">
+            <summary>Gets the hue of this color in degrees (0 to 360).</summary>
+        </member>
+        <member name="M:System.Drawing.Color.GetSaturation">
+            <summary>Gets the saturation of this color as a value from 0 to 1.</summary>
+        </member>
+        <member name="M:System.Drawing.Color.ToArgb">
+            <summary>Gets the 32-bit ARGB value of this color.</summary>
+        </member>
+        <member name="M:System.Drawing.Color.ToString">
+            <summary>Returns a string describing this color's ARGB components.</summary>
+        </member>
+        <member name="M:System.Drawing.Color.op_Equality(System.Drawing.Color,System.Drawing.Color)">
+            <summary>Determines whether two colors have the same ARGB value.</summary>
+        </member>
+        <member name="M:System.Drawing.Color.op_Inequality(System.Drawing.Color,System.Drawing.Color)">
+            <summary>Determines whether two colors have different ARGB values.</summary>
+        </member>
+        <member name="M:System.Drawing.Color.GetHashCode">
+            <summary>Returns a hash code for this color.</summary>
+        </member>
+        <member name="M:System.Drawing.Color.Equals(System.Object)">
+            <summary>Determines whether the specified object is a color with the same ARGB value.</summary>
+        </member>
+        <member name="T:System.Drawing.Color.ColorFormat">
+            <summary>Specifies the bits-per-pixel layout of color data.</summary>
+        </member>
+        <member name="F:System.Drawing.Color.ColorFormat.Rgb8888">
+            <summary>32 bits per pixel (8 bits each for alpha, red, green, blue).</summary>
+        </member>
+        <member name="F:System.Drawing.Color.ColorFormat.Rgb888">
+            <summary>24 bits per pixel (8 bits each for red, green, blue).</summary>
+        </member>
+        <member name="F:System.Drawing.Color.ColorFormat.Rgb565">
+            <summary>16 bits per pixel (5 red, 6 green, 5 blue).</summary>
+        </member>
+        <member name="F:System.Drawing.Color.ColorFormat.Rgb444">
+            <summary>12 bits per pixel (4 bits each for red, green, blue).</summary>
+        </member>
+        <member name="F:System.Drawing.Color.ColorFormat.Rgb332">
+            <summary>8 bits per pixel (3 red, 3 green, 2 blue).</summary>
+        </member>
+        <member name="T:System.Drawing.Color.RgbFormat">
+            <summary>Specifies the channel ordering of color data.</summary>
+        </member>
+        <member name="F:System.Drawing.Color.RgbFormat.Rgb">
+            <summary>Red, green, blue order.</summary>
+        </member>
+        <member name="F:System.Drawing.Color.RgbFormat.Bgr">
+            <summary>Blue, green, red order.</summary>
+        </member>
+        <member name="F:System.Drawing.Color.RgbFormat.Grg">
+            <summary>Green, red, green order.</summary>
+        </member>
+        <member name="F:System.Drawing.Color.RgbFormat.Rbg">
+            <summary>Red, blue, green order.</summary>
+        </member>
+        <member name="T:System.Drawing.Color.BitFormat">
+            <summary>Specifies the bit ordering used when converting to 1 bit per pixel.</summary>
+        </member>
+        <member name="F:System.Drawing.Color.BitFormat.Vertical">
+            <summary>Bits are packed vertically.</summary>
+        </member>
+        <member name="F:System.Drawing.Color.BitFormat.Horizontal">
+            <summary>Bits are packed horizontally.</summary>
+        </member>
+        <member name="M:System.Drawing.Color.Convert(System.Byte[],System.Byte[],System.Drawing.Color.ColorFormat)">
+            <summary>Converts color data from one format to another.</summary>
+        </member>
+        <member name="M:System.Drawing.Color.Convert(System.Byte[],System.Byte[],System.Drawing.Color.ColorFormat,System.Drawing.Color.RgbFormat)">
+            <summary>Converts color data using the specified color and channel formats.</summary>
+        </member>
+        <member name="M:System.Drawing.Color.Convert(System.Byte[],System.Byte[],System.Drawing.Color.ColorFormat,System.Drawing.Color.RgbFormat,System.Byte)">
+            <summary>Converts color data using the specified formats and alpha value.</summary>
+        </member>
+        <member name="M:System.Drawing.Color.Convert(System.Byte[],System.Byte[],System.Drawing.Color.ColorFormat,System.Drawing.Color.RgbFormat,System.Byte,System.Byte[])">
+            <summary>Converts color data using the specified formats, alpha value, and color table.</summary>
+        </member>
+        <member name="M:System.Drawing.Color.ConvertTo1Bpp(System.Byte[],System.Byte[],System.UInt32)">
+            <summary>Converts color data to a 1-bit-per-pixel monochrome representation.</summary>
+        </member>
+        <member name="M:System.Drawing.Color.ConvertTo1Bpp(System.Byte[],System.Byte[],System.UInt32,System.Drawing.Color.BitFormat)">
+            <summary>Converts color data to a 1-bit-per-pixel monochrome representation using the given bit format.</summary>
+        </member>
         <member name="T:System.Drawing.GraphicsUnit">
             <summary>Unit of measurement for text and graphics sizes.</summary>
+        </member>
+        <member name="F:System.Drawing.GraphicsUnit.World">
+            <summary>The world coordinate system unit as the unit of measure.</summary>
+        </member>
+        <member name="F:System.Drawing.GraphicsUnit.Display">
+            <summary>The unit of measure of the display device.</summary>
+        </member>
+        <member name="F:System.Drawing.GraphicsUnit.Pixel">
+            <summary>A device pixel as the unit of measure.</summary>
+        </member>
+        <member name="F:System.Drawing.GraphicsUnit.Point">
+            <summary>A printer's point (1/72 inch) as the unit of measure.</summary>
+        </member>
+        <member name="F:System.Drawing.GraphicsUnit.Inch">
+            <summary>An inch as the unit of measure.</summary>
+        </member>
+        <member name="F:System.Drawing.GraphicsUnit.Document">
+            <summary>A document unit (1/300 inch) as the unit of measure.</summary>
+        </member>
+        <member name="F:System.Drawing.GraphicsUnit.Millimeter">
+            <summary>A millimeter as the unit of measure.</summary>
         </member>
         <member name="T:System.Drawing.Font">
             <summary>
             A bitmap font loaded from a TinyCLR resource. Use the resource designer to
             embed .tinyfnt files, then construct via <c>Resources.GetFont</c>.
             </summary>
+        </member>
+        <member name="M:System.Drawing.Font.#ctor(System.Byte[])">
+            <summary>Initializes a new font from raw .tinyfnt font data.</summary>
+        </member>
+        <member name="M:System.Drawing.Font.#ctor(System.Byte[],System.Int32,System.Int32)">
+            <summary>Initializes a new font from a range of raw .tinyfnt font data.</summary>
+        </member>
+        <member name="M:System.Drawing.Font.#ctor(System.String,System.Single)">
+            <summary>Initializes a new font from a family name and em size (only the built-in GHIMono8x5 family is supported).</summary>
+        </member>
+        <member name="M:System.Drawing.Font.Clone">
+            <summary>Creates a copy of this font.</summary>
+        </member>
+        <member name="P:System.Drawing.Font.Unit">
+            <summary>Gets the unit of measure for this font, which is always pixels.</summary>
+        </member>
+        <member name="P:System.Drawing.Font.Height">
+            <summary>Gets the height of this font in pixels.</summary>
+        </member>
+        <member name="M:System.Drawing.Font.ComputeExtent(System.String,System.Int32@,System.Int32@)">
+            <summary>Computes the pixel width and height needed to render the given text.</summary>
+        </member>
+        <member name="M:System.Drawing.Font.ComputeTextInRect(System.String,System.Int32@,System.Int32@)">
+            <summary>Computes the pixel width and height needed to render the given text with word wrapping.</summary>
+        </member>
+        <member name="M:System.Drawing.Font.ComputeTextInRect(System.String,System.Int32@,System.Int32@,System.Int32)">
+            <summary>Computes the pixel width and height needed to render the given text wrapped within the available width.</summary>
+        </member>
+        <member name="M:System.Drawing.Font.Dispose">
+            <summary>Releases the resources used by this font.</summary>
         </member>
         <member name="T:System.Drawing.Graphics">
             <summary>
@@ -29,23 +248,458 @@
             the display via <see cref="!:Flush(IntPtr)"/>.
             </summary>
         </member>
+        <member name="P:System.Drawing.Graphics.Width">
+            <summary>Gets the width of the drawing surface in pixels.</summary>
+        </member>
+        <member name="P:System.Drawing.Graphics.Height">
+            <summary>Gets the height of the drawing surface in pixels.</summary>
+        </member>
+        <member name="P:System.Drawing.Graphics.PageUnit">
+            <summary>Gets the unit of measure for this surface, which is always pixels.</summary>
+        </member>
+        <member name="M:System.Drawing.Graphics.GetPixel(System.Int32,System.Int32)">
+            <summary>Gets the ARGB color of the pixel at the given coordinates.</summary>
+        </member>
+        <member name="M:System.Drawing.Graphics.SetPixel(System.Int32,System.Int32,System.Drawing.Color)">
+            <summary>Sets the color of the pixel at the given coordinates.</summary>
+        </member>
+        <member name="M:System.Drawing.Graphics.GetBitmap">
+            <summary>Gets the raw pixel data of the drawing surface.</summary>
+        </member>
+        <member name="M:System.Drawing.Graphics.GetBitmap(System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>Gets the raw pixel data for a rectangular region of the drawing surface.</summary>
+        </member>
+        <member name="M:System.Drawing.Graphics.Dispose">
+            <summary>Releases the resources used by this drawing surface.</summary>
+        </member>
+        <member name="M:System.Drawing.Graphics.MeasureString(System.String,System.Drawing.Font)">
+            <summary>Measures the pixel size needed to render the given text in the given font.</summary>
+        </member>
+        <member name="M:System.Drawing.Graphics.MeasureString(System.String,System.Drawing.Font,System.Drawing.SizeF,System.Drawing.StringFormat)">
+            <summary>Measures the pixel size needed to render the given text within a layout area using the given format.</summary>
+        </member>
+        <member name="M:System.Drawing.Graphics.Clear">
+            <summary>Clears the entire drawing surface to its default color.</summary>
+        </member>
+        <member name="M:System.Drawing.Graphics.FromHdc(System.IntPtr)">
+            <summary>Creates a drawing surface for the display referenced by the given device context handle.</summary>
+        </member>
+        <member name="M:System.Drawing.Graphics.FromImage(System.Drawing.Image)">
+            <summary>Gets the drawing surface backing the given image.</summary>
+        </member>
+        <member name="T:System.Drawing.Graphics.OnFlushHandler">
+            <summary>Represents the method that handles the flush event for a drawing surface.</summary>
+        </member>
+        <member name="E:System.Drawing.Graphics.OnFlushEvent">
+            <summary>Occurs when the drawing surface is flushed.</summary>
+        </member>
+        <member name="M:System.Drawing.Graphics.Flush">
+            <summary>Pushes the contents of the drawing surface to the display.</summary>
+        </member>
+        <member name="M:System.Drawing.Graphics.DrawImage(System.Drawing.Image,System.Int32,System.Int32,System.Drawing.Rectangle,System.Drawing.GraphicsUnit)">
+            <summary>Draws a portion of an image at the specified location.</summary>
+        </member>
+        <member name="M:System.Drawing.Graphics.DrawImage(System.Drawing.Image,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>Draws an image at the specified location, scaled to the given size.</summary>
+        </member>
+        <member name="M:System.Drawing.Graphics.DrawImage(System.Drawing.Image,System.Int32,System.Int32)">
+            <summary>Draws an image at the specified location using its original size.</summary>
+        </member>
+        <member name="M:System.Drawing.Graphics.DrawImage(System.Drawing.Image,System.Drawing.Rectangle,System.Drawing.Rectangle,System.Drawing.GraphicsUnit)">
+            <summary>Draws a portion of an image into the destination rectangle, scaling as needed.</summary>
+        </member>
+        <member name="M:System.Drawing.Graphics.DrawLine(System.Drawing.Pen,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>Draws a line between two points using the given pen.</summary>
+        </member>
+        <member name="M:System.Drawing.Graphics.DrawString(System.String,System.Drawing.Font,System.Drawing.Brush,System.Single,System.Single)">
+            <summary>Draws text at the given location using the specified font and brush.</summary>
+        </member>
+        <member name="M:System.Drawing.Graphics.DrawString(System.String,System.Drawing.Font,System.Drawing.Brush,System.Drawing.RectangleF)">
+            <summary>Draws text wrapped within the given layout rectangle.</summary>
+        </member>
+        <member name="M:System.Drawing.Graphics.DrawString(System.String,System.Drawing.Font,System.Drawing.Brush,System.Drawing.RectangleF,System.Drawing.StringFormat)">
+            <summary>Draws text within the given layout rectangle using the specified format.</summary>
+        </member>
+        <member name="M:System.Drawing.Graphics.DrawEllipse(System.Drawing.Pen,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>Draws the outline of an ellipse bounded by the given rectangle using the specified pen.</summary>
+        </member>
+        <member name="M:System.Drawing.Graphics.DrawRectangle(System.Drawing.Pen,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>Draws the outline of a rectangle using the specified pen.</summary>
+        </member>
+        <member name="M:System.Drawing.Graphics.FillEllipse(System.Drawing.Brush,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>Fills the interior of an ellipse bounded by the given rectangle using the specified brush.</summary>
+        </member>
+        <member name="M:System.Drawing.Graphics.FillRectangle(System.Drawing.Brush,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>Fills the interior of a rectangle using the specified brush.</summary>
+        </member>
+        <member name="M:System.Drawing.Graphics.DrawImage(System.Int32,System.Int32,System.Drawing.Image,System.Int32,System.Int32,System.Int32,System.Int32,System.UInt16)">
+            <summary>Draws a region of an image at the destination location with the given opacity.</summary>
+        </member>
+        <member name="M:System.Drawing.Graphics.Flush(System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>Pushes a rectangular region of the drawing surface to the display.</summary>
+        </member>
+        <member name="M:System.Drawing.Graphics.SetClippingRectangle(System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>Restricts drawing to the given rectangular region.</summary>
+        </member>
+        <member name="M:System.Drawing.Graphics.DrawTextInRect(System.String,System.Int32,System.Int32,System.Int32,System.Int32,System.Drawing.Graphics.DrawTextAlignment,System.Drawing.Color,System.Drawing.Font)">
+            <summary>Draws text within the given rectangle using the specified alignment flags.</summary>
+        </member>
+        <member name="M:System.Drawing.Graphics.DrawTextInRect(System.String@,System.Int32@,System.Int32@,System.Int32,System.Int32,System.Int32,System.Int32,System.Drawing.Graphics.DrawTextAlignment,System.Drawing.Color,System.Drawing.Font)">
+            <summary>Draws text within the given rectangle, updating the relative start position, and returns whether more text remains.</summary>
+        </member>
+        <member name="M:System.Drawing.Graphics.RotateImage(System.Int32,System.Int32,System.Int32,System.Drawing.Image,System.Int32,System.Int32,System.Int32,System.Int32,System.UInt16)">
+            <summary>Draws a region of an image rotated by the given angle at the destination location.</summary>
+        </member>
+        <member name="M:System.Drawing.Graphics.MakeTransparent(System.Drawing.Color)">
+            <summary>Makes the given color transparent on the drawing surface.</summary>
+        </member>
+        <member name="M:System.Drawing.Graphics.StretchImage(System.Int32,System.Int32,System.Int32,System.Int32,System.Drawing.Image,System.Int32,System.Int32,System.Int32,System.Int32,System.UInt16)">
+            <summary>Draws a region of an image scaled to fill the destination rectangle.</summary>
+        </member>
+        <member name="M:System.Drawing.Graphics.TileImage(System.Int32,System.Int32,System.Drawing.Image,System.Int32,System.Int32,System.UInt16)">
+            <summary>Tiles an image to fill the given area at the destination location.</summary>
+        </member>
+        <member name="M:System.Drawing.Graphics.Scale9Image(System.Int32,System.Int32,System.Int32,System.Int32,System.Drawing.Image,System.Int32,System.Int32,System.Int32,System.Int32,System.UInt16)">
+            <summary>Draws an image using nine-slice scaling so its borders are not stretched.</summary>
+        </member>
+        <member name="T:System.Drawing.Graphics.DrawTextAlignment">
+            <summary>Bit flags that control how text is aligned, wrapped, and trimmed within a rectangle.</summary>
+        </member>
+        <member name="F:System.Drawing.Graphics.DrawTextAlignment.None">
+            <summary>No special alignment behavior.</summary>
+        </member>
+        <member name="F:System.Drawing.Graphics.DrawTextAlignment.WordWrap">
+            <summary>Text wraps to the next line when it does not fit.</summary>
+        </member>
+        <member name="F:System.Drawing.Graphics.DrawTextAlignment.TruncateAtBottom">
+            <summary>Text that overflows the bottom of the rectangle is truncated.</summary>
+        </member>
+        <member name="F:System.Drawing.Graphics.DrawTextAlignment.Ellipsis">
+            <summary>Overflowing text is replaced with an ellipsis.</summary>
+        </member>
+        <member name="F:System.Drawing.Graphics.DrawTextAlignment.IgnoreHeight">
+            <summary>The available height is ignored during layout.</summary>
+        </member>
+        <member name="F:System.Drawing.Graphics.DrawTextAlignment.AlignmentLeft">
+            <summary>Text is aligned to the left edge.</summary>
+        </member>
+        <member name="F:System.Drawing.Graphics.DrawTextAlignment.AlignmentCenter">
+            <summary>Text is centered horizontally.</summary>
+        </member>
+        <member name="F:System.Drawing.Graphics.DrawTextAlignment.AlignmentRight">
+            <summary>Text is aligned to the right edge.</summary>
+        </member>
+        <member name="F:System.Drawing.Graphics.DrawTextAlignment.AlignmentMask">
+            <summary>Bit mask for the horizontal alignment flags.</summary>
+        </member>
+        <member name="F:System.Drawing.Graphics.DrawTextAlignment.TrimmingNone">
+            <summary>Text is not trimmed.</summary>
+        </member>
+        <member name="F:System.Drawing.Graphics.DrawTextAlignment.TrimmingWordEllipsis">
+            <summary>Text is trimmed at a word boundary with an ellipsis.</summary>
+        </member>
+        <member name="F:System.Drawing.Graphics.DrawTextAlignment.TrimmingCharacterEllipsis">
+            <summary>Text is trimmed at a character boundary with an ellipsis.</summary>
+        </member>
+        <member name="F:System.Drawing.Graphics.DrawTextAlignment.TrimmingMask">
+            <summary>Bit mask for the trimming flags.</summary>
+        </member>
         <member name="T:System.Drawing.Image">
             <summary>Abstract base for raster images. Concrete subclass: <see cref="T:System.Drawing.Bitmap"/>.</summary>
+        </member>
+        <member name="P:System.Drawing.Image.Width">
+            <summary>Gets the width of this image in pixels.</summary>
+        </member>
+        <member name="P:System.Drawing.Image.Height">
+            <summary>Gets the height of this image in pixels.</summary>
+        </member>
+        <member name="M:System.Drawing.Image.Clone">
+            <summary>Creates a copy of this image.</summary>
+        </member>
+        <member name="M:System.Drawing.Image.FromStream(System.IO.Stream)">
+            <summary>Creates an image from data in the given stream.</summary>
+        </member>
+        <member name="M:System.Drawing.Image.Save(System.IO.Stream,System.Drawing.Imaging.ImageFormat)">
+            <summary>Saves this image to the given stream in the specified format (only RawBitmap and Bmp are supported).</summary>
+        </member>
+        <member name="M:System.Drawing.Image.Dispose(System.Boolean)">
+            <summary>Releases the resources used by this image.</summary>
+        </member>
+        <member name="M:System.Drawing.Image.Dispose">
+            <summary>Releases the resources used by this image.</summary>
+        </member>
+        <member name="M:System.Drawing.Image.SetPixel(System.Int32,System.Int32,System.Drawing.Color)">
+            <summary>Sets the color of the pixel at the given coordinates.</summary>
+        </member>
+        <member name="M:System.Drawing.Image.GetPixel(System.Int32,System.Int32)">
+            <summary>Gets the color of the pixel at the given coordinates.</summary>
+        </member>
+        <member name="M:System.Drawing.Image.GetBitmap">
+            <summary>Gets the raw pixel data of this image.</summary>
+        </member>
+        <member name="M:System.Drawing.Image.GetBitmap(System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>Gets the raw pixel data for a rectangular region of this image.</summary>
+        </member>
+        <member name="M:System.Drawing.Image.MakeTransparent(System.Drawing.Color)">
+            <summary>Makes the given color transparent in this image.</summary>
+        </member>
+        <member name="T:System.Drawing.BitmapImageType">
+            <summary>Identifies the encoded format of bitmap data.</summary>
+        </member>
+        <member name="F:System.Drawing.BitmapImageType.TinyCLRBitmap">
+            <summary>The native TinyCLR bitmap format.</summary>
+        </member>
+        <member name="F:System.Drawing.BitmapImageType.Gif">
+            <summary>The GIF image format.</summary>
+        </member>
+        <member name="F:System.Drawing.BitmapImageType.Jpeg">
+            <summary>The JPEG image format.</summary>
+        </member>
+        <member name="F:System.Drawing.BitmapImageType.Bmp">
+            <summary>The Windows .bmp format.</summary>
         </member>
         <member name="T:System.Drawing.Bitmap">
             <summary>A raster bitmap loaded from a resource or stream (BMP/JPEG/GIF; PNG and TIFF are not supported).</summary>
         </member>
+        <member name="M:System.Drawing.Bitmap.#ctor(System.Int32,System.Int32)">
+            <summary>Initializes a new blank bitmap of the given pixel size.</summary>
+        </member>
+        <member name="M:System.Drawing.Bitmap.#ctor(System.Byte[],System.Int32,System.Int32)">
+            <summary>Initializes a new bitmap from raw pixel data of the given pixel size.</summary>
+        </member>
+        <member name="M:System.Drawing.Bitmap.#ctor(System.IO.Stream)">
+            <summary>Initializes a new bitmap by decoding image data from the given stream.</summary>
+        </member>
+        <member name="M:System.Drawing.Bitmap.#ctor(System.Byte[],System.Drawing.BitmapImageType)">
+            <summary>Initializes a new bitmap by decoding image data of the given type.</summary>
+        </member>
+        <member name="M:System.Drawing.Bitmap.#ctor(System.Byte[],System.Int32,System.Int32,System.Drawing.BitmapImageType)">
+            <summary>Initializes a new bitmap by decoding a range of image data of the given type.</summary>
+        </member>
+        <member name="M:System.Drawing.Bitmap.SetPixel(System.Int32,System.Int32,System.Drawing.Color)">
+            <summary>Sets the color of the pixel at the given coordinates.</summary>
+        </member>
+        <member name="M:System.Drawing.Bitmap.GetPixel(System.Int32,System.Int32)">
+            <summary>Gets the color of the pixel at the given coordinates.</summary>
+        </member>
+        <member name="T:System.Drawing.Imaging.ImageFormat">
+            <summary>Identifies the file format of an image by a unique GUID.</summary>
+        </member>
+        <member name="M:System.Drawing.Imaging.ImageFormat.#ctor(System.Guid)">
+            <summary>Initializes a new image format identified by the given GUID.</summary>
+        </member>
+        <member name="P:System.Drawing.Imaging.ImageFormat.Guid">
+            <summary>Gets the GUID that identifies this image format.</summary>
+        </member>
+        <member name="P:System.Drawing.Imaging.ImageFormat.RawBitmap">
+            <summary>Gets the raw (uncompressed) bitmap format.</summary>
+        </member>
+        <member name="P:System.Drawing.Imaging.ImageFormat.Bmp">
+            <summary>Gets the Windows bitmap (BMP) format.</summary>
+        </member>
+        <member name="P:System.Drawing.Imaging.ImageFormat.Emf">
+            <summary>Gets the enhanced metafile (EMF) format.</summary>
+        </member>
+        <member name="P:System.Drawing.Imaging.ImageFormat.Wmf">
+            <summary>Gets the Windows metafile (WMF) format.</summary>
+        </member>
+        <member name="P:System.Drawing.Imaging.ImageFormat.Gif">
+            <summary>Gets the GIF format.</summary>
+        </member>
+        <member name="P:System.Drawing.Imaging.ImageFormat.Jpeg">
+            <summary>Gets the JPEG format.</summary>
+        </member>
+        <member name="P:System.Drawing.Imaging.ImageFormat.Png">
+            <summary>Gets the PNG format.</summary>
+        </member>
+        <member name="P:System.Drawing.Imaging.ImageFormat.Tiff">
+            <summary>Gets the TIFF format.</summary>
+        </member>
+        <member name="P:System.Drawing.Imaging.ImageFormat.Exif">
+            <summary>Gets the EXIF format.</summary>
+        </member>
+        <member name="P:System.Drawing.Imaging.ImageFormat.Icon">
+            <summary>Gets the icon format.</summary>
+        </member>
+        <member name="M:System.Drawing.Imaging.ImageFormat.Equals(System.Object)">
+            <summary>Determines whether the specified object is an image format with the same GUID.</summary>
+        </member>
+        <member name="M:System.Drawing.Imaging.ImageFormat.GetHashCode">
+            <summary>Returns a hash code for this image format.</summary>
+        </member>
+        <member name="M:System.Drawing.Imaging.ImageFormat.ToString">
+            <summary>Returns the name of this image format.</summary>
+        </member>
         <member name="T:System.Drawing.Pen">
             <summary>Defines an object used to draw lines and outlines — color, width, and brush.</summary>
+        </member>
+        <member name="P:System.Drawing.Pen.Width">
+            <summary>Gets or sets the width of this pen in pixels.</summary>
+        </member>
+        <member name="P:System.Drawing.Pen.Color">
+            <summary>Gets or sets the color of this pen.</summary>
+        </member>
+        <member name="P:System.Drawing.Pen.PenType">
+            <summary>Gets the style of this pen.</summary>
+        </member>
+        <member name="P:System.Drawing.Pen.Brush">
+            <summary>Gets or sets the brush used by this pen; only a solid brush is supported.</summary>
+        </member>
+        <member name="M:System.Drawing.Pen.#ctor(System.Drawing.Color)">
+            <summary>Initializes a new pen of width 1 with the specified color.</summary>
+        </member>
+        <member name="M:System.Drawing.Pen.#ctor(System.Drawing.Brush)">
+            <summary>Initializes a new pen of width 1 with the specified brush.</summary>
+        </member>
+        <member name="M:System.Drawing.Pen.#ctor(System.Drawing.Color,System.Single)">
+            <summary>Initializes a new pen with the specified color and width.</summary>
+        </member>
+        <member name="M:System.Drawing.Pen.#ctor(System.Drawing.Brush,System.Single)">
+            <summary>Initializes a new pen with the specified brush and width.</summary>
+        </member>
+        <member name="M:System.Drawing.Pen.Dispose">
+            <summary>Releases the resources used by this pen.</summary>
+        </member>
+        <member name="M:System.Drawing.Pen.Clone">
+            <summary>Creates an exact copy of this pen.</summary>
+        </member>
+        <member name="T:System.Drawing.Drawing2D.PenType">
+            <summary>Specifies the type of fill a pen uses.</summary>
+        </member>
+        <member name="F:System.Drawing.Drawing2D.PenType.SolidColor">
+            <summary>The pen draws using a single solid color.</summary>
         </member>
         <member name="T:System.Drawing.Rectangle">
             <summary>An integer rectangle defined by upper-left corner (X,Y) and size (Width,Height).</summary>
         </member>
+        <member name="M:System.Drawing.Rectangle.#ctor(System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>Initializes a new rectangle with the given location and size.</summary>
+        </member>
+        <member name="P:System.Drawing.Rectangle.X">
+            <summary>Gets or sets the x-coordinate of the upper-left corner.</summary>
+        </member>
+        <member name="P:System.Drawing.Rectangle.Y">
+            <summary>Gets or sets the y-coordinate of the upper-left corner.</summary>
+        </member>
+        <member name="P:System.Drawing.Rectangle.Width">
+            <summary>Gets or sets the width of the rectangle.</summary>
+        </member>
+        <member name="P:System.Drawing.Rectangle.Height">
+            <summary>Gets or sets the height of the rectangle.</summary>
+        </member>
         <member name="T:System.Drawing.RectangleF">
             <summary>A floating-point rectangle defined by upper-left corner (X,Y) and size (Width,Height).</summary>
         </member>
+        <member name="M:System.Drawing.RectangleF.#ctor(System.Single,System.Single,System.Single,System.Single)">
+            <summary>Initializes a new rectangle with the given location and size.</summary>
+        </member>
+        <member name="P:System.Drawing.RectangleF.X">
+            <summary>Gets or sets the x-coordinate of the upper-left corner.</summary>
+        </member>
+        <member name="P:System.Drawing.RectangleF.Y">
+            <summary>Gets or sets the y-coordinate of the upper-left corner.</summary>
+        </member>
+        <member name="P:System.Drawing.RectangleF.Width">
+            <summary>Gets or sets the width of the rectangle.</summary>
+        </member>
+        <member name="P:System.Drawing.RectangleF.Height">
+            <summary>Gets or sets the height of the rectangle.</summary>
+        </member>
         <member name="T:System.Drawing.SizeF">
             <summary>A floating-point width × height size.</summary>
+        </member>
+        <member name="F:System.Drawing.SizeF.Empty">
+            <summary>Represents a size with zero width and height.</summary>
+        </member>
+        <member name="M:System.Drawing.SizeF.#ctor(System.Drawing.SizeF)">
+            <summary>Initializes a new size as a copy of an existing size.</summary>
+        </member>
+        <member name="M:System.Drawing.SizeF.#ctor(System.Single,System.Single)">
+            <summary>Initializes a new size with the given width and height.</summary>
+        </member>
+        <member name="P:System.Drawing.SizeF.IsEmpty">
+            <summary>Gets a value indicating whether both width and height are zero.</summary>
+        </member>
+        <member name="P:System.Drawing.SizeF.Width">
+            <summary>Gets or sets the width.</summary>
+        </member>
+        <member name="P:System.Drawing.SizeF.Height">
+            <summary>Gets or sets the height.</summary>
+        </member>
+        <member name="T:System.Drawing.StringAlignment">
+            <summary>Specifies how text is aligned within its layout rectangle.</summary>
+        </member>
+        <member name="F:System.Drawing.StringAlignment.Near">
+            <summary>Text is aligned near the layout origin (left or top).</summary>
+        </member>
+        <member name="F:System.Drawing.StringAlignment.Center">
+            <summary>Text is centered within the layout rectangle.</summary>
+        </member>
+        <member name="F:System.Drawing.StringAlignment.Far">
+            <summary>Text is aligned far from the layout origin (right or bottom).</summary>
+        </member>
+        <member name="T:System.Drawing.StringTrimming">
+            <summary>Specifies how text is trimmed when it does not fit in the layout rectangle.</summary>
+        </member>
+        <member name="F:System.Drawing.StringTrimming.None">
+            <summary>Text is not trimmed.</summary>
+        </member>
+        <member name="F:System.Drawing.StringTrimming.Character">
+            <summary>Text is trimmed to the nearest character.</summary>
+        </member>
+        <member name="F:System.Drawing.StringTrimming.Word">
+            <summary>Text is trimmed to the nearest word.</summary>
+        </member>
+        <member name="F:System.Drawing.StringTrimming.EllipsisCharacter">
+            <summary>Text is trimmed to the nearest character and an ellipsis is inserted.</summary>
+        </member>
+        <member name="F:System.Drawing.StringTrimming.EllipsisWord">
+            <summary>Text is trimmed to the nearest word and an ellipsis is inserted.</summary>
+        </member>
+        <member name="F:System.Drawing.StringTrimming.EllipsisPath">
+            <summary>The center of a path is removed and replaced with an ellipsis.</summary>
+        </member>
+        <member name="T:System.Drawing.StringFormatFlags">
+            <summary>Bit flags that control text layout and rendering behavior.</summary>
+        </member>
+        <member name="F:System.Drawing.StringFormatFlags.DirectionRightToLeft">
+            <summary>Text is laid out from right to left.</summary>
+        </member>
+        <member name="F:System.Drawing.StringFormatFlags.DirectionVertical">
+            <summary>Text is laid out vertically.</summary>
+        </member>
+        <member name="F:System.Drawing.StringFormatFlags.FitBlackBox">
+            <summary>Parts of characters are allowed to overhang the layout rectangle.</summary>
+        </member>
+        <member name="F:System.Drawing.StringFormatFlags.DisplayFormatControl">
+            <summary>Control characters are shown with representative glyphs.</summary>
+        </member>
+        <member name="F:System.Drawing.StringFormatFlags.NoFontFallback">
+            <summary>Fallback to alternate fonts for missing characters is disabled.</summary>
+        </member>
+        <member name="F:System.Drawing.StringFormatFlags.MeasureTrailingSpaces">
+            <summary>Trailing spaces are included when measuring text.</summary>
+        </member>
+        <member name="F:System.Drawing.StringFormatFlags.NoWrap">
+            <summary>Text wrapping between lines is disabled.</summary>
+        </member>
+        <member name="F:System.Drawing.StringFormatFlags.LineLimit">
+            <summary>Only entire lines are laid out within the rectangle.</summary>
+        </member>
+        <member name="F:System.Drawing.StringFormatFlags.NoClip">
+            <summary>Glyph overhangs and unwrapped text are not clipped.</summary>
+        </member>
+        <member name="T:System.Drawing.StringFormat">
+            <summary>Encapsulates text layout information such as alignment, trimming, and format flags.</summary>
+        </member>
+        <member name="P:System.Drawing.StringFormat.Alignment">
+            <summary>Gets or sets the horizontal alignment of the text.</summary>
+        </member>
+        <member name="P:System.Drawing.StringFormat.Trimming">
+            <summary>Gets or sets how text is trimmed when it does not fit.</summary>
+        </member>
+        <member name="P:System.Drawing.StringFormat.FormatFlags">
+            <summary>Gets or sets the flags that control text layout and rendering.</summary>
         </member>
     </members>
 </doc>

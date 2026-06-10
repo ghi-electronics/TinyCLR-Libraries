@@ -8,8 +8,10 @@ using System.Text;
 using System.Threading;
 
 namespace GHIElectronics.TinyCLR.EthernetIP.Adapter {
+    /// <summary>Represents a single attribute of a CIP object instance.</summary>
     public class CipAttribute {
         private IntPtr impl = IntPtr.Zero;
+        /// <summary>Native handle to the underlying CIP attribute.</summary>
         public IntPtr Impl {
             get => this.impl;
             internal set => this.impl = value;

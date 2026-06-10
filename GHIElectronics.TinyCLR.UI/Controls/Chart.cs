@@ -13,48 +13,75 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
     /// </summary>
     public class Chart : Image, IDisposable {
 
+        /// <summary>How the chart series is drawn.</summary>
         public enum ChartMode {
+            /// <summary>Draws the series as a connected line.</summary>
             LineMode,
+            /// <summary>Draws the series as vertical bars.</summary>
             RectangleMode
         }
 
+        /// <summary>A single data point in the chart.</summary>
         public class DataItem {
+            /// <summary>The point's value.</summary>
             public double Value { get; set; }
+            /// <summary>The point's axis label.</summary>
             public string Name { get; set; }
         }
 
         // Named "ChartPoint" rather than "Point" so it doesn't visually collide
         // with System.Drawing.Point inside this file (both are in scope via
         // `using System.Drawing`).
+        /// <summary>An x/y pixel coordinate used by the chart.</summary>
         public class ChartPoint {
+            /// <summary>Creates a point at the origin.</summary>
             public ChartPoint() { }
+            /// <summary>Creates a point at the given coordinates.</summary>
             public ChartPoint(int ax, int ay) { this.X = ax; this.Y = ay; }
+            /// <summary>The X coordinate in pixels.</summary>
             public int X { get; set; }
+            /// <summary>The Y coordinate in pixels.</summary>
             public int Y { get; set; }
         }
 
+        /// <summary>Pairs a plotted point with its source value.</summary>
         public class ChartPointModel {
+            /// <summary>The point's pixel location.</summary>
             public ChartPoint Point { get; set; }
+            /// <summary>The value the point represents.</summary>
             public double Value { get; set; }
         }
 
+        /// <summary>Spacing factor between labeled divisions on the X axis.</summary>
         public int DivisionAxisX { get; set; } = 1;
+        /// <summary>Spacing factor between labeled divisions on the Y axis.</summary>
         public int DivisionAxisY { get; set; } = 1;
 
+        /// <summary>Font used for chart text.</summary>
         public Font Font { get; set; }
 
         // Public styling — Media types, like every other control. Internally
         // converted to System.Drawing at rebuild time.
+        /// <summary>Pen used to draw the axes.</summary>
         public Media.Pen AxisPen { get; set; } = new Media.Pen(Colors.Black, 1);
+        /// <summary>Pen used to draw the chart series.</summary>
         public Media.Pen ChartPen { get; set; } = new Media.Pen(Colors.Green, 1);
+        /// <summary>Brush used to fill the data point markers.</summary>
         public Media.SolidColorBrush EllipseColor { get; set; } = new Media.SolidColorBrush(Colors.Black);
+        /// <summary>Brush used to draw the axis division markers.</summary>
         public Media.SolidColorBrush DivisionColor { get; set; } = new Media.SolidColorBrush(Colors.Black);
+        /// <summary>Brush used to draw chart text.</summary>
         public Media.SolidColorBrush TextColor { get; set; } = new Media.SolidColorBrush(Colors.Black);
+        /// <summary>Brush used to fill the chart background.</summary>
         public Media.SolidColorBrush BackgroundColor { get; set; } = new Media.SolidColorBrush(Colors.White);
 
+        /// <summary>Radius in pixels of the data point markers.</summary>
         public int RadiusPoint { get; set; } = 10;
+        /// <summary>Title text shown above the chart.</summary>
         public string ChartTitle { get; set; } = "Chart1";
+        /// <summary>The data points to plot.</summary>
         public ArrayList Items { get; set; }
+        /// <summary>Whether the series is drawn as a line or as bars.</summary>
         public ChartMode Mode { get; set; } = ChartMode.LineMode;
 
         private int paddingLeft = 50;
@@ -73,6 +100,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         private int _cachedH;
         private bool _dirty = true;
 
+        /// <summary>Creates a new Chart with the given pixel size.</summary>
         public Chart(int width, int height) {
             this.Width = width;
             this.Height = height;
@@ -93,6 +121,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             this.Invalidate();
         }
 
+        /// <summary>Draws the cached chart surface.</summary>
         public override void OnRender(DrawingContext dc) {
             if (this.Font == null) return;
             if (this.Items == null || this.Items.Count == 0) return;
@@ -340,11 +369,13 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
         private bool disposed;
 
+        /// <summary>Releases the resources used by the chart.</summary>
         public void Dispose() {
             this.Dispose(true);
             GC.SuppressFinalize(this);
         }
 
+        /// <summary>Releases the cached chart bitmap.</summary>
         protected virtual void Dispose(bool disposing) {
             if (this.disposed) return;
 
