@@ -534,15 +534,15 @@ namespace GHIElectronics.TinyCLR.Pins {
             /// <summary>I2C bus.</summary>
             public const string I2c1 = "GHIElectronics.TinyCLR.NativeApis.STM32H7.I2cController\\0";
             /// <summary>Bus id for System.Device.I2c.</summary>
-            public const int Chip0 = 0;
+            public const int I2c1BusId = 0;
             /// <summary>I2C bus.</summary>
             public const string I2c2 = "GHIElectronics.TinyCLR.NativeApis.STM32H7.I2cController\\1";
             /// <summary>Bus id for System.Device.I2c.</summary>
-            public const int Chip1 = 1;
+            public const int I2c2BusId = 1;
             /// <summary>I2C bus.</summary>
             public const string I2c3 = "GHIElectronics.TinyCLR.NativeApis.STM32H7.I2cController\\2";
             /// <summary>Bus id for System.Device.I2c.</summary>
-            public const int Chip2 = 2;
+            public const int I2c3BusId = 2;
             /// <summary>I2C software.</summary>
             public const string Software = "GHIElectronics.TinyCLR.NativeApis.SoftwareI2cController";
         }
@@ -552,27 +552,27 @@ namespace GHIElectronics.TinyCLR.Pins {
             /// <summary>SPI bus.</summary>
             public const string Spi1 = "GHIElectronics.TinyCLR.NativeApis.STM32H7.SpiController\\0";
             /// <summary>Bus id for System.Device.Spi.</summary>
-            public const int Chip0 = 0;
+            public const int Spi1BusId = 0;
             /// <summary>SPI bus.</summary>
             public const string Spi2 = "GHIElectronics.TinyCLR.NativeApis.STM32H7.SpiController\\1";
             /// <summary>Bus id for System.Device.Spi.</summary>
-            public const int Chip1 = 1;
+            public const int Spi2BusId = 1;
             /// <summary>SPI bus.</summary>
             public const string Spi3 = "GHIElectronics.TinyCLR.NativeApis.STM32H7.SpiController\\2";
             /// <summary>Bus id for System.Device.Spi.</summary>
-            public const int Chip2 = 2;
+            public const int Spi3BusId = 2;
             /// <summary>SPI bus.</summary>
             public const string Spi4 = "GHIElectronics.TinyCLR.NativeApis.STM32H7.SpiController\\3";
             /// <summary>Bus id for System.Device.Spi.</summary>
-            public const int Chip3 = 3;
+            public const int Spi4BusId = 3;
             /// <summary>SPI bus.</summary>
             public const string Spi5 = "GHIElectronics.TinyCLR.NativeApis.STM32H7.SpiController\\4";
             /// <summary>Bus id for System.Device.Spi.</summary>
-            public const int Chip4 = 4;
+            public const int Spi5BusId = 4;
             /// <summary>SPI bus.</summary>
             public const string Spi6 = "GHIElectronics.TinyCLR.NativeApis.STM32H7.SpiController\\5";
             /// <summary>Bus id for System.Device.Spi.</summary>
-            public const int Chip5 = 5;
+            public const int Spi6BusId = 5;
         }
 
         /// <summary>CAN bus definitions.</summary>

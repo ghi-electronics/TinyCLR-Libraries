@@ -263,7 +263,7 @@ namespace GHIElectronics.TinyCLR.Pins {
             /// <summary>I2C bus on PB9 (SDA) and PB8 (SCL).</summary>
             public const string I2c1 = STM32H7.I2cBus.I2c1;
             /// <summary>Bus id for System.Device.I2c.</summary>
-            public const int Chip0 = 0;
+            public const int I2c1BusId = 0;
             /// <summary>I2C software.</summary>
             public const string Software = STM32H7.I2cBus.Software;
         }
@@ -273,15 +273,15 @@ namespace GHIElectronics.TinyCLR.Pins {
             /// <summary>SPI bus on PE14 (MOSI), PE13 (MISO), and PE12 (SCK).</summary>
             public const string Spi4 = STM32H7.SpiBus.Spi4;
             /// <summary>Bus id for System.Device.Spi.</summary>
-            public const int Chip3 = 3;
+            public const int Spi4BusId = 3;
             /// <summary>SPI bus on PA7 (MOSI), PA6 (MISO), and PA5 (SCK).</summary>
             public const string Spi6 = STM32H7.SpiBus.Spi6;
             /// <summary>Bus id for System.Device.Spi.</summary>
-            public const int Chip5 = 5;
+            public const int Spi6BusId = 5;
             /// <summary>SPI bus.</summary>
             public const string WiFi = STM32H7.SpiBus.Spi3;
             /// <summary>Bus id for System.Device.Spi.</summary>
-            public const int Chip2 = 2;
+            public const int WiFiBusId = 2;
         }
 
         /// <summary>CAN bus definitions.</summary>

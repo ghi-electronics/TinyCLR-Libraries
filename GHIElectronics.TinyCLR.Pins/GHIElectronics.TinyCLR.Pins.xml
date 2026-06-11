@@ -271,19 +271,19 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZBit.SpiBus.Display">
             <summary>SPI bus.</summary>
         </member>
-        <member name="F:GHIElectronics.TinyCLR.Pins.FEZBit.SpiBus.Chip3">
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZBit.SpiBus.DisplayBusId">
             <summary>Bus id for System.Device.Spi.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZBit.SpiBus.WiFi">
             <summary>SPI bus.</summary>
         </member>
-        <member name="F:GHIElectronics.TinyCLR.Pins.FEZBit.SpiBus.Chip2">
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZBit.SpiBus.WiFiBusId">
             <summary>Bus id for System.Device.Spi.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZBit.SpiBus.Edge">
             <summary>SPI bus.</summary>
         </member>
-        <member name="F:GHIElectronics.TinyCLR.Pins.FEZBit.SpiBus.Chip5">
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZBit.SpiBus.EdgeBusId">
             <summary>Bus id for System.Device.Spi.</summary>
         </member>
         <member name="T:GHIElectronics.TinyCLR.Pins.FEZBit.I2cBus">
@@ -292,7 +292,7 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZBit.I2cBus.Edge">
             <summary>I2C bus on PB9 (SDA) and PB8 (SCL).</summary>
         </member>
-        <member name="F:GHIElectronics.TinyCLR.Pins.FEZBit.I2cBus.Chip0">
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZBit.I2cBus.EdgeBusId">
             <summary>Bus id for System.Device.I2c.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZBit.I2cBus.Accelerometer">
@@ -664,13 +664,13 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZDuino.SpiBus.Spi3">
             <summary>SPI bus on PB5 (MOSI), PB4 (MISO), and PB3 (SCK).</summary>
         </member>
-        <member name="F:GHIElectronics.TinyCLR.Pins.FEZDuino.SpiBus.Chip2">
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZDuino.SpiBus.Spi3BusId">
             <summary>Bus id for System.Device.Spi.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZDuino.SpiBus.Spi6">
             <summary>SPI bus on PA7 (MOSI), PA6 (MISO), and PA5 (SCK).</summary>
         </member>
-        <member name="F:GHIElectronics.TinyCLR.Pins.FEZDuino.SpiBus.Chip5">
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZDuino.SpiBus.Spi6BusId">
             <summary>Bus id for System.Device.Spi.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZDuino.SpiBus.WiFi">
@@ -682,13 +682,13 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZDuino.I2cBus.I2c1">
             <summary>I2C bus on PB9 (SDA) and PB8 (SCL).</summary>
         </member>
-        <member name="F:GHIElectronics.TinyCLR.Pins.FEZDuino.I2cBus.Chip0">
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZDuino.I2cBus.I2c1BusId">
             <summary>Bus id for System.Device.I2c.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZDuino.I2cBus.I2c2">
             <summary>I2C bus on PB11 (SDA) and PB10 (SCL).</summary>
         </member>
-        <member name="F:GHIElectronics.TinyCLR.Pins.FEZDuino.I2cBus.Chip1">
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZDuino.I2cBus.I2c2BusId">
             <summary>Bus id for System.Device.I2c.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZDuino.I2cBus.Software">
@@ -997,7 +997,7 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZFeather.I2cBus.I2c1">
             <summary>I2C bus on PB9 (SDA) and PB8 (SCL).</summary>
         </member>
-        <member name="F:GHIElectronics.TinyCLR.Pins.FEZFeather.I2cBus.Chip0">
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZFeather.I2cBus.I2c1BusId">
             <summary>Bus id for System.Device.I2c.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZFeather.I2cBus.Software">
@@ -1009,19 +1009,19 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZFeather.SpiBus.Spi4">
             <summary>SPI bus on PE14 (MOSI), PE13 (MISO), and PE12 (SCK).</summary>
         </member>
-        <member name="F:GHIElectronics.TinyCLR.Pins.FEZFeather.SpiBus.Chip3">
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZFeather.SpiBus.Spi4BusId">
             <summary>Bus id for System.Device.Spi.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZFeather.SpiBus.Spi6">
             <summary>SPI bus on PA7 (MOSI), PA6 (MISO), and PA5 (SCK).</summary>
         </member>
-        <member name="F:GHIElectronics.TinyCLR.Pins.FEZFeather.SpiBus.Chip5">
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZFeather.SpiBus.Spi6BusId">
             <summary>Bus id for System.Device.Spi.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZFeather.SpiBus.WiFi">
             <summary>SPI bus.</summary>
         </member>
-        <member name="F:GHIElectronics.TinyCLR.Pins.FEZFeather.SpiBus.Chip2">
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZFeather.SpiBus.WiFiBusId">
             <summary>Bus id for System.Device.Spi.</summary>
         </member>
         <member name="T:GHIElectronics.TinyCLR.Pins.FEZFeather.CanBus">
@@ -1195,13 +1195,13 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZFlea.I2cBus.I2c1">
             <summary>I2C bus on PB9 (SDA) and PB8 (SCL).</summary>
         </member>
-        <member name="F:GHIElectronics.TinyCLR.Pins.FEZFlea.I2cBus.Chip0">
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZFlea.I2cBus.I2c1BusId">
             <summary>Bus id for System.Device.I2c.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZFlea.I2cBus.I2c2">
             <summary>I2C bus on PB14 (SDA) and PB13 (SCL).</summary>
         </member>
-        <member name="F:GHIElectronics.TinyCLR.Pins.FEZFlea.I2cBus.Chip1">
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZFlea.I2cBus.I2c2BusId">
             <summary>Bus id for System.Device.I2c.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZFlea.I2cBus.Software">
@@ -1213,7 +1213,7 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZFlea.SpiBus.Spi2">
             <summary>SPI bus on PB15 (MOSI), PB14 (MISO), and PB13 (SCK).</summary>
         </member>
-        <member name="F:GHIElectronics.TinyCLR.Pins.FEZFlea.SpiBus.Chip1">
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZFlea.SpiBus.Spi2BusId">
             <summary>Bus id for System.Device.Spi.</summary>
         </member>
         <member name="T:GHIElectronics.TinyCLR.Pins.FEZFlea.RtcController">
@@ -1450,13 +1450,13 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZPico.I2cBus.I2c1">
             <summary>I2C bus on PB9 (SDA) and PB8 (SCL).</summary>
         </member>
-        <member name="F:GHIElectronics.TinyCLR.Pins.FEZPico.I2cBus.Chip0">
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZPico.I2cBus.I2c1BusId">
             <summary>Bus id for System.Device.I2c.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZPico.I2cBus.I2c2">
             <summary>I2C bus on PB14 (SDA) and PB13 (SCL).</summary>
         </member>
-        <member name="F:GHIElectronics.TinyCLR.Pins.FEZPico.I2cBus.Chip1">
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZPico.I2cBus.I2c2BusId">
             <summary>Bus id for System.Device.I2c.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZPico.I2cBus.Software">
@@ -1468,7 +1468,7 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZPico.SpiBus.Spi1">
             <summary>SPI bus on PB3 (MOSI), PB4 (MISO), and PB5 (SCK).</summary>
         </member>
-        <member name="F:GHIElectronics.TinyCLR.Pins.FEZPico.SpiBus.Chip1">
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZPico.SpiBus.Spi1BusId">
             <summary>Bus id for System.Device.Spi.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZPico.SpiBus.Spi2">
@@ -1882,7 +1882,7 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZPortal.I2cBus.I2c1">
             <summary>I2C bus on PB9 (SDA) and PB8 (SCL).</summary>
         </member>
-        <member name="F:GHIElectronics.TinyCLR.Pins.FEZPortal.I2cBus.Chip0">
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZPortal.I2cBus.I2c1BusId">
             <summary>Bus id for System.Device.I2c.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZPortal.I2cBus.Touch">
@@ -1900,7 +1900,7 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZPortal.SpiBus.Spi2">
             <summary>SPI bus on PI3 (MOSI), PI2 (MISO), and PI1 (SCK).</summary>
         </member>
-        <member name="F:GHIElectronics.TinyCLR.Pins.FEZPortal.SpiBus.Chip1">
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZPortal.SpiBus.Spi2BusId">
             <summary>Bus id for System.Device.Spi.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZPortal.SpiBus.MikroBus">
@@ -1909,13 +1909,13 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZPortal.SpiBus.Spi3">
             <summary>SPI bus on PB5 (MOSI), PB4 (MISO), and PB3 (SCK).</summary>
         </member>
-        <member name="F:GHIElectronics.TinyCLR.Pins.FEZPortal.SpiBus.Chip2">
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZPortal.SpiBus.Spi3BusId">
             <summary>Bus id for System.Device.Spi.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZPortal.SpiBus.Spi5">
             <summary>SPI bus on PJ10 (MOSI), PJ11 (MISO), and PK0 (SCK).</summary>
         </member>
-        <member name="F:GHIElectronics.TinyCLR.Pins.FEZPortal.SpiBus.Chip4">
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZPortal.SpiBus.Spi5BusId">
             <summary>Bus id for System.Device.Spi.</summary>
         </member>
         <member name="T:GHIElectronics.TinyCLR.Pins.FEZPortal.CanBus">
@@ -2185,13 +2185,13 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZStick.I2cBus.I2c1">
             <summary>I2C bus on PB9 (SDA) and PB8 (SCL).</summary>
         </member>
-        <member name="F:GHIElectronics.TinyCLR.Pins.FEZStick.I2cBus.Chip0">
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZStick.I2cBus.I2c1BusId">
             <summary>Bus id for System.Device.I2c.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZStick.I2cBus.I2c2">
             <summary>I2C bus on PB11 (SDA) and PB10 (SCL).</summary>
         </member>
-        <member name="F:GHIElectronics.TinyCLR.Pins.FEZStick.I2cBus.Chip1">
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZStick.I2cBus.I2c2BusId">
             <summary>Bus id for System.Device.I2c.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZStick.I2cBus.Software">
@@ -2203,13 +2203,13 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZStick.SpiBus.Spi3">
             <summary>SPI bus on PB5 (MOSI), PB4 (MISO), and PB3 (SCK).</summary>
         </member>
-        <member name="F:GHIElectronics.TinyCLR.Pins.FEZStick.SpiBus.Chip2">
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZStick.SpiBus.Spi3BusId">
             <summary>Bus id for System.Device.Spi.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.FEZStick.SpiBus.Spi4">
             <summary>SPI bus on PE14 (MOSI), PE13 (MISO), and PE12 (SCK).</summary>
         </member>
-        <member name="F:GHIElectronics.TinyCLR.Pins.FEZStick.SpiBus.Chip3">
+        <member name="F:GHIElectronics.TinyCLR.Pins.FEZStick.SpiBus.Spi4BusId">
             <summary>Bus id for System.Device.Spi.</summary>
         </member>
         <member name="T:GHIElectronics.TinyCLR.Pins.FEZStick.CanBus">
@@ -2488,19 +2488,19 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.SC13048.I2cBus.I2c1">
             <summary>I2C bus on PB9 (SDA) and PB8 (SCL).</summary>
         </member>
-        <member name="F:GHIElectronics.TinyCLR.Pins.SC13048.I2cBus.Chip0">
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC13048.I2cBus.I2c1BusId">
             <summary>Bus id for System.Device.I2c.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.SC13048.I2cBus.I2c2">
             <summary>I2C bus on PB14 (SDA) and PB13 (SCL).</summary>
         </member>
-        <member name="F:GHIElectronics.TinyCLR.Pins.SC13048.I2cBus.Chip1">
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC13048.I2cBus.I2c2BusId">
             <summary>Bus id for System.Device.I2c.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.SC13048.I2cBus.I2c4">
             <summary>I2C bus on PB11 (SDA) and PB10 (SCL).</summary>
         </member>
-        <member name="F:GHIElectronics.TinyCLR.Pins.SC13048.I2cBus.Chip3">
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC13048.I2cBus.I2c4BusId">
             <summary>Bus id for System.Device.I2c.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.SC13048.I2cBus.Software">
@@ -2512,13 +2512,13 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.SC13048.SpiBus.Spi1">
             <summary>SPI bus on PB5 (MOSI), PB4 (MISO), and PB3 (SCK).</summary>
         </member>
-        <member name="F:GHIElectronics.TinyCLR.Pins.SC13048.SpiBus.Chip0">
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC13048.SpiBus.Spi1BusId">
             <summary>Bus id for System.Device.Spi.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.SC13048.SpiBus.Spi2">
             <summary>SPI bus on PB15 (MOSI), PB14 (MISO), and PB13 (SCK).</summary>
         </member>
-        <member name="F:GHIElectronics.TinyCLR.Pins.SC13048.SpiBus.Chip1">
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC13048.SpiBus.Spi2BusId">
             <summary>Bus id for System.Device.Spi.</summary>
         </member>
         <member name="T:GHIElectronics.TinyCLR.Pins.SC13048.CanBus">
@@ -3061,13 +3061,13 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20100.I2cBus.I2c1">
             <summary>I2C bus on PB9 (SDA) and PB8 (SCL).</summary>
         </member>
-        <member name="F:GHIElectronics.TinyCLR.Pins.SC20100.I2cBus.Chip0">
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC20100.I2cBus.I2c1BusId">
             <summary>Bus id for System.Device.I2c.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20100.I2cBus.I2c2">
             <summary>I2C bus on PB11 (SDA) and PB10 (SCL).</summary>
         </member>
-        <member name="F:GHIElectronics.TinyCLR.Pins.SC20100.I2cBus.Chip1">
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC20100.I2cBus.I2c2BusId">
             <summary>Bus id for System.Device.I2c.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20100.I2cBus.Software">
@@ -3079,19 +3079,19 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20100.SpiBus.Spi3">
             <summary>SPI bus on PB5 (MOSI), PB4 (MISO), and PB3 (SCK).</summary>
         </member>
-        <member name="F:GHIElectronics.TinyCLR.Pins.SC20100.SpiBus.Chip2">
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC20100.SpiBus.Spi3BusId">
             <summary>Bus id for System.Device.Spi.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20100.SpiBus.Spi4">
             <summary>SPI bus on PE14 (MOSI), PE13 (MISO), and PE12 (SCK).</summary>
         </member>
-        <member name="F:GHIElectronics.TinyCLR.Pins.SC20100.SpiBus.Chip3">
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC20100.SpiBus.Spi4BusId">
             <summary>Bus id for System.Device.Spi.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20100.SpiBus.Spi6">
             <summary>SPI bus on PA7 (MOSI), PA6 (MISO), and PA5 (SCK).</summary>
         </member>
-        <member name="F:GHIElectronics.TinyCLR.Pins.SC20100.SpiBus.Chip5">
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC20100.SpiBus.Spi6BusId">
             <summary>Bus id for System.Device.Spi.</summary>
         </member>
         <member name="T:GHIElectronics.TinyCLR.Pins.SC20100.CanBus">
@@ -3970,19 +3970,19 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.I2cBus.I2c1">
             <summary>I2C bus on PB9 (SDA) and PB8 (SCL).</summary>
         </member>
-        <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.I2cBus.Chip0">
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.I2cBus.I2c1BusId">
             <summary>Bus id for System.Device.I2c.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.I2cBus.I2c2">
             <summary>I2C bus on PB11 (SDA) and PB10 (SCL).</summary>
         </member>
-        <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.I2cBus.Chip1">
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.I2cBus.I2c2BusId">
             <summary>Bus id for System.Device.I2c.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.I2cBus.I2c3">
             <summary>I2C bus on PH8 (SDA) and PH7 (SCL).</summary>
         </member>
-        <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.I2cBus.Chip2">
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.I2cBus.I2c3BusId">
             <summary>Bus id for System.Device.I2c.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.I2cBus.Software">
@@ -3994,19 +3994,19 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.SpiBus.Spi2">
             <summary>SPI bus on PI3 (MOSI), PI2 (MISO), and PI1 (SCK).</summary>
         </member>
-        <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.SpiBus.Chip1">
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.SpiBus.Spi2BusId">
             <summary>Bus id for System.Device.Spi.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.SpiBus.Spi3">
             <summary>SPI bus on PB5 (MOSI), PB4 (MISO), and PB3 (SCK).</summary>
         </member>
-        <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.SpiBus.Chip2">
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.SpiBus.Spi3BusId">
             <summary>Bus id for System.Device.Spi.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.SpiBus.Spi5">
             <summary>SPI bus on PJ10 (MOSI), PJ11 (MISO), and PK0 (SCK).</summary>
         </member>
-        <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.SpiBus.Chip4">
+        <member name="F:GHIElectronics.TinyCLR.Pins.SC20260.SpiBus.Spi5BusId">
             <summary>Bus id for System.Device.Spi.</summary>
         </member>
         <member name="T:GHIElectronics.TinyCLR.Pins.SC20260.CanBus">
@@ -4837,19 +4837,19 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.I2cBus.I2c1">
             <summary>I2C bus.</summary>
         </member>
-        <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.I2cBus.Chip0">
+        <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.I2cBus.I2c1BusId">
             <summary>Bus id for System.Device.I2c.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.I2cBus.I2c2">
             <summary>I2C bus.</summary>
         </member>
-        <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.I2cBus.Chip1">
+        <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.I2cBus.I2c2BusId">
             <summary>Bus id for System.Device.I2c.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.I2cBus.I2c3">
             <summary>I2C bus.</summary>
         </member>
-        <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.I2cBus.Chip2">
+        <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.I2cBus.I2c3BusId">
             <summary>Bus id for System.Device.I2c.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.I2cBus.Software">
@@ -4861,37 +4861,37 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.SpiBus.Spi1">
             <summary>SPI bus.</summary>
         </member>
-        <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.SpiBus.Chip0">
+        <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.SpiBus.Spi1BusId">
             <summary>Bus id for System.Device.Spi.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.SpiBus.Spi2">
             <summary>SPI bus.</summary>
         </member>
-        <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.SpiBus.Chip1">
+        <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.SpiBus.Spi2BusId">
             <summary>Bus id for System.Device.Spi.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.SpiBus.Spi3">
             <summary>SPI bus.</summary>
         </member>
-        <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.SpiBus.Chip2">
+        <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.SpiBus.Spi3BusId">
             <summary>Bus id for System.Device.Spi.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.SpiBus.Spi4">
             <summary>SPI bus.</summary>
         </member>
-        <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.SpiBus.Chip3">
+        <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.SpiBus.Spi4BusId">
             <summary>Bus id for System.Device.Spi.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.SpiBus.Spi5">
             <summary>SPI bus.</summary>
         </member>
-        <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.SpiBus.Chip4">
+        <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.SpiBus.Spi5BusId">
             <summary>Bus id for System.Device.Spi.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.SpiBus.Spi6">
             <summary>SPI bus.</summary>
         </member>
-        <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.SpiBus.Chip5">
+        <member name="F:GHIElectronics.TinyCLR.Pins.STM32H7.SpiBus.Spi6BusId">
             <summary>Bus id for System.Device.Spi.</summary>
         </member>
         <member name="T:GHIElectronics.TinyCLR.Pins.STM32H7.CanBus">
@@ -5201,19 +5201,19 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.STM32L4.I2cBus.I2c1">
             <summary>I2C bus.</summary>
         </member>
-        <member name="F:GHIElectronics.TinyCLR.Pins.STM32L4.I2cBus.Chip0">
+        <member name="F:GHIElectronics.TinyCLR.Pins.STM32L4.I2cBus.I2c1BusId">
             <summary>Bus id for System.Device.I2c.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.STM32L4.I2cBus.I2c2">
             <summary>I2C bus.</summary>
         </member>
-        <member name="F:GHIElectronics.TinyCLR.Pins.STM32L4.I2cBus.Chip1">
+        <member name="F:GHIElectronics.TinyCLR.Pins.STM32L4.I2cBus.I2c2BusId">
             <summary>Bus id for System.Device.I2c.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.STM32L4.I2cBus.I2c4">
             <summary>I2C bus.</summary>
         </member>
-        <member name="F:GHIElectronics.TinyCLR.Pins.STM32L4.I2cBus.Chip3">
+        <member name="F:GHIElectronics.TinyCLR.Pins.STM32L4.I2cBus.I2c4BusId">
             <summary>Bus id for System.Device.I2c.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.STM32L4.I2cBus.Software">
@@ -5225,13 +5225,13 @@
         <member name="F:GHIElectronics.TinyCLR.Pins.STM32L4.SpiBus.Spi1">
             <summary>SPI bus.</summary>
         </member>
-        <member name="F:GHIElectronics.TinyCLR.Pins.STM32L4.SpiBus.Chip0">
+        <member name="F:GHIElectronics.TinyCLR.Pins.STM32L4.SpiBus.Spi1BusId">
             <summary>Bus id for System.Device.Spi.</summary>
         </member>
         <member name="F:GHIElectronics.TinyCLR.Pins.STM32L4.SpiBus.Spi2">
             <summary>SPI bus.</summary>
         </member>
-        <member name="F:GHIElectronics.TinyCLR.Pins.STM32L4.SpiBus.Chip1">
+        <member name="F:GHIElectronics.TinyCLR.Pins.STM32L4.SpiBus.Spi2BusId">
             <summary>Bus id for System.Device.Spi.</summary>
         </member>
         <member name="T:GHIElectronics.TinyCLR.Pins.STM32L4.CanBus">

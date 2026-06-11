@@ -357,7 +357,7 @@ namespace GHIElectronics.TinyCLR.Pins {
             /// <summary>I2C bus on PB9 (SDA) and PB8 (SCL).</summary>
             public const string I2c1 = STM32H7.I2cBus.I2c1;
             /// <summary>Bus id for System.Device.I2c.</summary>
-            public const int Chip0 = 0;
+            public const int I2c1BusId = 0;
             /// <summary>I2C bus on PB9 (SDA) and PB8 (SCL).</summary>
             public const string Touch = STM32H7.I2cBus.I2c1;
             /// <summary>I2C bus on PB9 (SDA) and PB8 (SCL).</summary>
@@ -371,17 +371,17 @@ namespace GHIElectronics.TinyCLR.Pins {
             /// <summary>SPI bus on PI3 (MOSI), PI2 (MISO), and PI1 (SCK).</summary>
             public const string Spi2 = STM32H7.SpiBus.Spi2;
             /// <summary>Bus id for System.Device.Spi.</summary>
-            public const int Chip1 = 1;
+            public const int Spi2BusId = 1;
             /// <summary>SPI bus on PI3 (MOSI), PI2 (MISO), and PI1 (SCK).</summary>
             public const string MikroBus = STM32H7.SpiBus.Spi2;
             /// <summary>SPI bus on PB5 (MOSI), PB4 (MISO), and PB3 (SCK).</summary>
             public const string Spi3 = STM32H7.SpiBus.Spi3;
             /// <summary>Bus id for System.Device.Spi.</summary>
-            public const int Chip2 = 2;
+            public const int Spi3BusId = 2;
             /// <summary>SPI bus on PJ10 (MOSI), PJ11 (MISO), and PK0 (SCK).</summary>
             public const string Spi5 = STM32H7.SpiBus.Spi5;            
             /// <summary>Bus id for System.Device.Spi.</summary>
-            public const int Chip4 = 4;
+            public const int Spi5BusId = 4;
         }
 
         /// <summary>CAN bus definitions.</summary>

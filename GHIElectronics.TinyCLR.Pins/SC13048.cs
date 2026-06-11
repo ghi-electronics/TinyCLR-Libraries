@@ -212,15 +212,15 @@ namespace GHIElectronics.TinyCLR.Pins {
             /// <summary>I2C bus on PB9 (SDA) and PB8 (SCL).</summary>
             public const string I2c1 = STM32L4.I2cBus.I2c1;
             /// <summary>Bus id for System.Device.I2c.</summary>
-            public const int Chip0 = 0;
+            public const int I2c1BusId = 0;
             /// <summary>I2C bus on PB14 (SDA) and PB13 (SCL).</summary>
             public const string I2c2 = STM32L4.I2cBus.I2c2;
             /// <summary>Bus id for System.Device.I2c.</summary>
-            public const int Chip1 = 1;
+            public const int I2c2BusId = 1;
             /// <summary>I2C bus on PB11 (SDA) and PB10 (SCL).</summary>
             public const string I2c4 = STM32L4.I2cBus.I2c4;
             /// <summary>Bus id for System.Device.I2c.</summary>
-            public const int Chip3 = 3;
+            public const int I2c4BusId = 3;
             /// <summary>I2C software.</summary>
             public const string Software = STM32L4.I2cBus.Software;
         }
@@ -230,11 +230,11 @@ namespace GHIElectronics.TinyCLR.Pins {
             /// <summary>SPI bus on PB5 (MOSI), PB4 (MISO), and PB3 (SCK).</summary>
             public const string Spi1 = STM32L4.SpiBus.Spi1;
             /// <summary>Bus id for System.Device.Spi.</summary>
-            public const int Chip0 = 0;
+            public const int Spi1BusId = 0;
             /// <summary>SPI bus on PB15 (MOSI), PB14 (MISO), and PB13 (SCK).</summary>
             public const string Spi2 = STM32L4.SpiBus.Spi2;
             /// <summary>Bus id for System.Device.Spi.</summary>
-            public const int Chip1 = 1;
+            public const int Spi2BusId = 1;
         }
 
         /// <summary>CAN bus definitions.</summary>
