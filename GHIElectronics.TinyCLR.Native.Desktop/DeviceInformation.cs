@@ -9,7 +9,8 @@ namespace GHIElectronics.TinyCLR.Native {
 
     public static class DeviceInformation {
         public static string DeviceName => "Desktop";
-        public static string ManufacturerName => string.Empty;
+        public static string DeviceFamily => "STM32H7";
+        public static string ManufacturerName => "GHI Electronics";
         public static ulong Version => 0;
         public static DebugInterface DebugInterface => DebugInterface.Disable;
         public static uint DebugPort => 0;

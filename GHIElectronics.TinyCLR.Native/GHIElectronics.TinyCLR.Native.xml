@@ -194,6 +194,9 @@
         <member name="P:GHIElectronics.TinyCLR.Native.DeviceInformation.DeviceName">
             <summary>The device's friendly name (settable via <see cref="M:GHIElectronics.TinyCLR.Native.DeviceInformation.SetDeviceName(System.String)"/>).</summary>
         </member>
+        <member name="P:GHIElectronics.TinyCLR.Native.DeviceInformation.DeviceFamily">
+            <summary>The MCU family of the running device (e.g. "STM32H7", "STM32L4"). Supplied by the board/firmware layer; not user-settable.</summary>
+        </member>
         <member name="P:GHIElectronics.TinyCLR.Native.DeviceInformation.ManufacturerName">
             <summary>The manufacturer reported by the firmware.</summary>
         </member>

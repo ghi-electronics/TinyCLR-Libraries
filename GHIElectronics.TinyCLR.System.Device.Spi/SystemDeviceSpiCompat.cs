@@ -127,21 +127,13 @@ namespace System.Device.Spi {
             if (busId == -1)
                 return TinySpi.SpiController.FromName("GHIElectronics.TinyCLR.NativeApis.SoftwareSpiController");
 
-            var deviceName = DeviceInformation.DeviceName;
-            if (string.IsNullOrEmpty(deviceName))
-                throw new InvalidOperationException("DeviceInformation.DeviceName is not available.");
+            var family = DeviceInformation.DeviceFamily;
+            if (string.IsNullOrEmpty(family))
+                throw new InvalidOperationException("DeviceInformation.DeviceFamily is not available.");
 
-            var apiFamily = IsSc13Device(deviceName) ? "STM32L4" : "STM32H7";
-            var controllerName = "GHIElectronics.TinyCLR.NativeApis." + apiFamily + ".SpiController\\" + busId.ToString();
+            var controllerName = "GHIElectronics.TinyCLR.NativeApis." + family + ".SpiController\\" + busId.ToString();
             return TinySpi.SpiController.FromName(controllerName);
         }
-
-        private static bool IsSc13Device(string deviceName) =>
-            deviceName.Length >= 4 &&
-            deviceName[0] == 'S' &&
-            deviceName[1] == 'C' &&
-            deviceName[2] == '1' &&
-            deviceName[3] == '3';
 
         private static NotSupportedException CreateTodoNotSupportedException(string feature) =>
             new NotSupportedException("TODO-Not supported: " + feature);

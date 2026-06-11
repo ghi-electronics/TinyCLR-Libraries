@@ -19,6 +19,8 @@ namespace GHIElectronics.TinyCLR.Native {
     public static class DeviceInformation {
         /// <summary>The device's friendly name (settable via <see cref="SetDeviceName"/>).</summary>
         public static string DeviceName { [MethodImpl(MethodImplOptions.InternalCall)] get; }
+        /// <summary>The MCU family of the running device (e.g. "STM32H7", "STM32L4"). Supplied by the board/firmware layer; not user-settable.</summary>
+        public static string DeviceFamily { [MethodImpl(MethodImplOptions.InternalCall)] get; }
         /// <summary>The manufacturer reported by the firmware.</summary>
         public static string ManufacturerName { [MethodImpl(MethodImplOptions.InternalCall)] get; }
         /// <summary>Firmware version (packed major/minor/build).</summary>

@@ -116,19 +116,11 @@ namespace System.Device.Pwm {
             if (chip < 0)
                 throw new ArgumentOutOfRangeException(nameof(chip));
 
-            var deviceName = DeviceInformation.DeviceName;
-            if (string.IsNullOrEmpty(deviceName))
-                throw new InvalidOperationException("DeviceInformation.DeviceName is not available.");
+            var family = DeviceInformation.DeviceFamily;
+            if (string.IsNullOrEmpty(family))
+                throw new InvalidOperationException("DeviceInformation.DeviceFamily is not available.");
 
-            var controllerName = $"GHIElectronics.TinyCLR.NativeApis.STM32H7.PwmController\\{chip}";
-
-            if (deviceName.Length >=4 &&
-                deviceName[0] == 'S' &&
-                deviceName[1] == 'C' &&
-                deviceName[2] == '1' &&
-                deviceName[3] == '3' ) {
-                controllerName = $"GHIElectronics.TinyCLR.NativeApis.STM32L4.PwmController\\{chip}";
-            }
+            var controllerName = "GHIElectronics.TinyCLR.NativeApis." + family + ".PwmController\\" + chip.ToString();
 
             return GHIElectronics.TinyCLR.Devices.Pwm.PwmController.FromName(controllerName);
         }
