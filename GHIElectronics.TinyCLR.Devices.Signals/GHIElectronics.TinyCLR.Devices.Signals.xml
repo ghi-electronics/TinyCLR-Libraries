@@ -1,0 +1,242 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>GHIElectronics.TinyCLR.Devices.Signals</name>
+    </assembly>
+    <members>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Signals.PulseFeedbackMode">
+            <summary>How a <see cref="T:GHIElectronics.TinyCLR.Devices.Signals.PulseFeedback"/> session is driven.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Signals.PulseFeedbackMode.DrainDuration">
+            <summary>Measure the time the pin takes to be pulled back to its idle state on a single shared pin.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Signals.PulseFeedbackMode.EchoDuration">
+            <summary>Drive a pulse on one pin, then measure the duration of the echo pulse on a separate pin (e.g. ultrasonic ECHO).</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Signals.PulseFeedbackMode.DurationUntilEcho">
+            <summary>Drive a pulse on one pin, then measure how long it takes the echo pin to respond (e.g. distance-sensor TOF).</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Signals.PulseFeedback">
+            <summary>
+            Generates a digital pulse on one pin and measures a pulse-related duration on
+            the same pin or a separate echo pin. Common applications: ultrasonic distance
+            sensors (HC-SR04), 1-wire interrogation, capacitive touch.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Signals.PulseFeedback.DisableInterrupts">
+            <summary>When true, the trigger runs with interrupts disabled for jitter-free timing.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Signals.PulseFeedback.Timeout">
+            <summary>Maximum time to wait for the echo before giving up.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Signals.PulseFeedback.PulseLength">
+            <summary>How long to drive the stimulus pulse before measuring.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Signals.PulseFeedback.PulseValue">
+            <summary>Active level of the stimulus pulse on <c>pulsePin</c>.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Signals.PulseFeedback.EchoValue">
+            <summary>Active level of the echo on <c>echoPin</c>.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Signals.PulseFeedback.#ctor(GHIElectronics.TinyCLR.Devices.Gpio.GpioPin,GHIElectronics.TinyCLR.Devices.Signals.PulseFeedbackMode)">
+            <summary>Single-pin (drain-duration) constructor.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Signals.PulseFeedback.#ctor(GHIElectronics.TinyCLR.Devices.Gpio.GpioPin,GHIElectronics.TinyCLR.Devices.Gpio.GpioPin,GHIElectronics.TinyCLR.Devices.Signals.PulseFeedbackMode)">
+            <summary>Two-pin (echo / duration-until-echo) constructor.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Signals.PulseFeedback.Dispose">
+            <summary>Returns the pin(s) to high-impedance input.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Signals.PulseFeedback.Trigger">
+            <summary>
+            Runs one stimulate-and-measure cycle. Returns the measured duration,
+            or <see cref="P:GHIElectronics.TinyCLR.Devices.Signals.PulseFeedback.Timeout"/> when no echo arrives in time.
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Signals.SignalGenerator">
+            <summary>
+            Drives a pin through a precise sequence of high/low transitions. Suitable
+            for generating IR-remote waveforms, addressable-LED streams (WS281x), and
+            other strict-timing protocols. Optional carrier-frequency modulation is
+            available for IR.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Signals.SignalGenerator.DisableInterrupts">
+            <summary>When true, the write runs with interrupts disabled for sub-microsecond accuracy.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Signals.SignalGenerator.GenerateCarrierFrequency">
+            <summary>When true, the output is modulated with the carrier frequency.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Signals.SignalGenerator.CarrierFrequency">
+            <summary>Carrier frequency in Hz used when <see cref="P:GHIElectronics.TinyCLR.Devices.Signals.SignalGenerator.GenerateCarrierFrequency"/> is true.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Signals.SignalGenerator.IdleValue">
+            <summary>The level the pin returns to between transitions.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Signals.SignalGenerator.#ctor(GHIElectronics.TinyCLR.Devices.Gpio.GpioPin)">
+            <summary>Opens a signal generator on the given pin (drives it as a push-pull output).</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Signals.SignalGenerator.Dispose">
+            <summary>Returns the pin to high-impedance input.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Signals.SignalGenerator.Write(GHIElectronics.TinyCLR.Devices.Gpio.GpioPinValue)">
+            <summary>Sets the pin to a static level.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Signals.SignalGenerator.Write(System.TimeSpan[])">
+            <summary>Drives the pin through a sequence of timed transitions.</summary>
+            <param name="buffer">Durations of each segment, alternating active/inactive starting from the current <see cref="P:GHIElectronics.TinyCLR.Devices.Signals.SignalGenerator.IdleValue"/>'s opposite.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Signals.SignalGenerator.Write(System.TimeSpan[],System.Int32,System.Int32)">
+            <summary>Drives a slice of the timed transitions.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Signals.SignalCapture">
+            <summary>
+            Samples a digital input and records the durations between successive edges
+            — the inverse of <see cref="T:GHIElectronics.TinyCLR.Devices.Signals.SignalGenerator"/>. Useful for capturing IR-remote
+            codes, decoding bit-banged protocols, or measuring pulse widths.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Signals.SignalCapture.DisableInterrupts">
+            <summary>When true, capture runs with interrupts disabled.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Signals.SignalCapture.Timeout">
+            <summary>Maximum total time the capture will wait before returning.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Signals.SignalCapture.DriveMode">
+            <summary>Drive mode applied to the capture pin (typically input or input-pull-up).</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Signals.SignalCapture.#ctor(GHIElectronics.TinyCLR.Devices.Gpio.GpioPin)">
+            <summary>Opens a capture session on the given pin.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Signals.SignalCapture.Dispose">
+            <summary>Returns the pin to high-impedance input.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Signals.SignalCapture.Read">
+            <summary>Samples the current level of the pin without waiting.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Signals.SignalCapture.Read(GHIElectronics.TinyCLR.Devices.Gpio.GpioPinValue@,System.TimeSpan[])">
+            <summary>Captures up to <paramref name="buffer"/>.Length inter-edge intervals starting now.</summary>
+            <param name="initialState">Receives the level of the pin at the moment capture began.</param>
+            <param name="buffer">Receives inter-edge intervals.</param>
+            <returns>Number of intervals captured.</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Signals.SignalCapture.Read(GHIElectronics.TinyCLR.Devices.Gpio.GpioPinValue,System.TimeSpan[])">
+            <summary>Waits for the pin to reach <paramref name="waitForState"/>, then captures inter-edge intervals.</summary>
+            <param name="waitForState">Level the capture should be armed by.</param>
+            <param name="buffer">Receives inter-edge intervals.</param>
+            <returns>Number of intervals captured.</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Signals.SignalCapture.Read(GHIElectronics.TinyCLR.Devices.Gpio.GpioPinValue@,System.TimeSpan[],System.Int32,System.Int32)">
+            <summary>Captures a slice of inter-edge intervals.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Signals.SignalCapture.Read(GHIElectronics.TinyCLR.Devices.Gpio.GpioPinValue,System.TimeSpan[],System.Int32,System.Int32)">
+            <summary>Captures a slice of inter-edge intervals after waiting for <paramref name="waitForState"/>.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Signals.DigitalSignal">
+            <summary>
+            DMA/timer-backed pulse-train I/O on a small set of pins. Capable of pulse
+            counting (<see cref="M:GHIElectronics.TinyCLR.Devices.Signals.DigitalSignal.ReadPulse(System.UInt32,GHIElectronics.TinyCLR.Devices.Gpio.GpioPinEdge,System.Boolean)"/>), high-resolution edge capture
+            (<see cref="M:GHIElectronics.TinyCLR.Devices.Signals.DigitalSignal.Capture(System.UInt32,GHIElectronics.TinyCLR.Devices.Gpio.GpioPinEdge,System.Boolean)"/>), and emitting pulse-width-modulated sequences
+            (<see cref="M:GHIElectronics.TinyCLR.Devices.Signals.DigitalSignal.Generate(System.UInt32[],System.UInt32,System.UInt32)"/>). All three operations are mutually exclusive and
+            run asynchronously — completion is reported via <see cref="E:GHIElectronics.TinyCLR.Devices.Signals.DigitalSignal.OnReadPulseFinished"/>
+            / <see cref="E:GHIElectronics.TinyCLR.Devices.Signals.DigitalSignal.OnCaptureFinished"/> / <see cref="E:GHIElectronics.TinyCLR.Devices.Signals.DigitalSignal.OnGenerateFinished"/>.
+            Only specific pins are supported (currently 0, 1, and 19).
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Signals.DigitalSignal.PulseReadEventHandler">
+            <summary>Handler for <see cref="E:GHIElectronics.TinyCLR.Devices.Signals.DigitalSignal.OnReadPulseFinished"/>.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Signals.DigitalSignal.PulseCaptureEventHandler">
+            <summary>Handler for <see cref="E:GHIElectronics.TinyCLR.Devices.Signals.DigitalSignal.OnCaptureFinished"/>.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Signals.DigitalSignal.PulseGenerateEventHandler">
+            <summary>Handler for <see cref="E:GHIElectronics.TinyCLR.Devices.Signals.DigitalSignal.OnGenerateFinished"/>.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Signals.DigitalSignal.CanReadPulse">
+            <summary>True when no operation is in progress and <see cref="M:GHIElectronics.TinyCLR.Devices.Signals.DigitalSignal.ReadPulse(System.UInt32,GHIElectronics.TinyCLR.Devices.Gpio.GpioPinEdge,System.Boolean)"/> may be called.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Signals.DigitalSignal.CanCapture">
+            <summary>True when no operation is in progress and <see cref="M:GHIElectronics.TinyCLR.Devices.Signals.DigitalSignal.Capture(System.UInt32,GHIElectronics.TinyCLR.Devices.Gpio.GpioPinEdge,System.Boolean)"/> may be called.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Signals.DigitalSignal.CanGenerate">
+            <summary>True when no operation is in progress and <see cref="M:GHIElectronics.TinyCLR.Devices.Signals.DigitalSignal.Generate(System.UInt32[],System.UInt32,System.UInt32)"/> may be called.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Signals.DigitalSignal.#ctor(GHIElectronics.TinyCLR.Devices.Gpio.GpioPin)">
+            <summary>Opens a digital-signal session on a supported pin (0, 1, or 19).</summary>
+            <exception cref="T:System.NotSupportedException">Thrown when the pin is not one of the supported ones.</exception>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Signals.DigitalSignal.Dispose">
+            <summary>Releases the native pulse-train resources.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Signals.DigitalSignal.Dispose(System.Boolean)">
+            <summary>Dispose implementation.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Signals.DigitalSignal.Finalize">
+            <summary>Finalizer.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Signals.DigitalSignal.ReadPulse(System.UInt32,GHIElectronics.TinyCLR.Devices.Gpio.GpioPinEdge,System.Boolean)">
+            <summary>
+            Counts up to <paramref name="pulseNum"/> edges matching <paramref name="edge"/>
+            and measures the total elapsed time. Result is delivered via <see cref="E:GHIElectronics.TinyCLR.Devices.Signals.DigitalSignal.OnReadPulseFinished"/>.
+            </summary>
+            <param name="pulseNum">Number of edges to count.</param>
+            <param name="edge">Which edge(s) to count.</param>
+            <param name="waitForEdge">When true, the timer starts on the first matching edge instead of immediately.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Signals.DigitalSignal.Capture(System.UInt32,GHIElectronics.TinyCLR.Devices.Gpio.GpioPinEdge,System.Boolean)">
+            <summary>Captures inter-edge intervals. See full-parameter overload for buffer-layout details.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Signals.DigitalSignal.Capture(System.UInt32,GHIElectronics.TinyCLR.Devices.Gpio.GpioPinEdge,System.Boolean,System.TimeSpan)">
+            <summary>
+            Capture timestamps of `count` edges on the pin.
+            </summary>
+            <remarks>
+            The returned buffer holds nanosecond values that are inter-edge
+            intervals EXCEPT for <c>buffer[0]</c>, which in both modes is a
+            DMA-arm-to-first-captured-edge artifact:
+            - When <paramref name="waitForEdge"/> is false the timer starts
+              immediately. <c>buffer[0]</c> is the time from timer-start to
+              the first edge (~150 ns of counter-vs-DMA startup latency
+              included). Returned length is <c>count</c>.
+            - When <paramref name="waitForEdge"/> is true the FIRST signal
+              edge fires a GPIO ISR which arms the capture-DMA; the timer
+              then counts from zero and the next <c>count - 1</c> edges are
+              captured. Returned length is <c>count - 1</c>. <c>buffer[0]</c>
+              is the phase between DMA-arm and the next signal edge — a
+              random fraction of one period, NOT an edge1→edge2 interval.
+            Callers performing jitter/period analysis should DISCARD
+            <c>buffer[0]</c> in both modes; valid inter-edge intervals start
+            at <c>buffer[1]</c>.
+            </remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Signals.DigitalSignal.Generate(System.UInt32[],System.UInt32,System.UInt32)">
+            <summary>Emits a pulse train described by <paramref name="data"/> with default multiplier and starting high.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Signals.DigitalSignal.Generate(System.UInt32[],System.UInt32,System.UInt32,System.UInt32)">
+            <summary>Emits a pulse train with explicit multiplier and starting high.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Signals.DigitalSignal.Generate(System.UInt32[],System.UInt32,System.UInt32,System.UInt32,GHIElectronics.TinyCLR.Devices.Gpio.GpioPinValue)">
+            <summary>
+            Emits a pulse train: each <paramref name="data"/> entry is a duration in
+            timer ticks, alternating polarity starting from <paramref name="startingPolarity"/>.
+            </summary>
+            <param name="data">Buffer of segment durations.</param>
+            <param name="offset">Starting index in <paramref name="data"/>.</param>
+            <param name="count">Number of entries to emit.</param>
+            <param name="multiplier">Multiplier applied to each duration entry (timer-tick scaling).</param>
+            <param name="startingPolarity">Polarity of the first segment.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Signals.DigitalSignal.Abort">
+            <summary>Aborts the running operation, if any.</summary>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.Devices.Signals.DigitalSignal.OnReadPulseFinished">
+            <summary>Raised when <see cref="M:GHIElectronics.TinyCLR.Devices.Signals.DigitalSignal.ReadPulse(System.UInt32,GHIElectronics.TinyCLR.Devices.Gpio.GpioPinEdge,System.Boolean)"/> completes.</summary>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.Devices.Signals.DigitalSignal.OnCaptureFinished">
+            <summary>Raised when <see cref="M:GHIElectronics.TinyCLR.Devices.Signals.DigitalSignal.Capture(System.UInt32,GHIElectronics.TinyCLR.Devices.Gpio.GpioPinEdge,System.Boolean)"/> completes.</summary>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.Devices.Signals.DigitalSignal.OnGenerateFinished">
+            <summary>Raised when <see cref="M:GHIElectronics.TinyCLR.Devices.Signals.DigitalSignal.Generate(System.UInt32[],System.UInt32,System.UInt32)"/> completes.</summary>
+        </member>
+    </members>
+</doc>

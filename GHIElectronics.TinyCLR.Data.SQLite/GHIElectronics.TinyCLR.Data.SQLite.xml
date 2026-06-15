@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>GHIElectronics.TinyCLR.Data.SQLite</name>
+    </assembly>
+    <members>
+        <member name="T:GHIElectronics.TinyCLR.Data.SQLite.OpenException">
+            <summary>Thrown when a database file cannot be opened.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Data.SQLite.QueryExecutionException">
+            <summary>Thrown when SQLite returns an error during query execution.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Data.SQLite.QueryFinalizationException">
+            <summary>Thrown when SQLite fails to finalize (release) a prepared statement.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Data.SQLite.QueryPrepareException">
+            <summary>Thrown when SQLite cannot prepare (compile) a query.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Data.SQLite.ResultSet">
+            <summary>
+            Result of a SQL SELECT — rows × columns plus column-name metadata. Index by
+            <c>this[row]</c> for an ArrayList of cells in that row, or <c>this[row, column]</c>
+            for an individual cell.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Data.SQLite.ResultSet.RowCount">
+            <summary>The number of rows in the result set.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Data.SQLite.ResultSet.ColumnCount">
+            <summary>The number of columns in the result set.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Data.SQLite.ResultSet.ColumnNames">
+            <summary>The names of the columns in the result set.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Data.SQLite.ResultSet.Data">
+            <summary>The rows of the result set, each an ArrayList of cell values.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Data.SQLite.ResultSet.Item(System.Int32)">
+            <summary>Gets the cells of the given row as an ArrayList.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Data.SQLite.ResultSet.Item(System.Int32,System.Int32)">
+            <summary>Gets the value of the cell at the given row and column.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Data.SQLite.SQLiteDatabase">
+            <summary>
+            SQLite database handle. Open an in-memory database with the parameterless
+            constructor or a file-backed database via the path constructor. Use
+            <c>ExecuteNonQuery</c> for inserts/updates and <c>ExecuteQuery</c> for SELECTs
+            that return a <see cref="T:GHIElectronics.TinyCLR.Data.SQLite.ResultSet"/>.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Data.SQLite.SQLiteDatabase.#ctor">
+            <summary>Opens a new in-memory SQLite database.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Data.SQLite.SQLiteDatabase.#ctor(System.String)">
+            <summary>Opens or creates a file-backed SQLite database at the given path.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Data.SQLite.SQLiteDatabase.Dispose">
+            <summary>Closes the database and releases its native resources.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Data.SQLite.SQLiteDatabase.ExecuteNonQuery(System.String)">
+            <summary>Executes a SQL statement that does not return a result set, such as an INSERT or UPDATE.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Data.SQLite.SQLiteDatabase.ExecuteQuery(System.String)">
+            <summary>Executes a SQL query and returns the result set.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Data.SQLite.SQLiteDatabase.Dispose(System.Boolean)">
+            <summary>Closes the underlying database; releases resources when disposing.</summary>
+        </member>
+    </members>
+</doc>

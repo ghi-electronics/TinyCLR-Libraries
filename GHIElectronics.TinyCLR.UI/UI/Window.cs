@@ -8,6 +8,7 @@ using GHIElectronics.TinyCLR.UI.Controls;
 using GHIElectronics.TinyCLR.UI.Media;
 
 namespace GHIElectronics.TinyCLR.UI {
+    /// <summary>Represents a top-level window that hosts content and is managed by the window manager.</summary>
     public class Window : ContentControl {
         //---------------------------------------------------
         //
@@ -33,7 +34,7 @@ namespace GHIElectronics.TinyCLR.UI {
 
             this._windowManager = WindowManager.Instance;
 
-            this._background = new SolidColorBrush(Colors.White);
+            this._background = Theme.WindowBackgroundBrush;
             //
             // dependency property initialization.
             // we don't have them, so we just update the properties on the base class,
@@ -42,6 +43,8 @@ namespace GHIElectronics.TinyCLR.UI {
             // Visibility HAS to be set to Collapsed prior to adding this child to the
             // window manager, otherwise the window manager sets the focus to this window
             this.Visibility = Visibility.Collapsed;
+            this.IsTabStop = false;
+            this.ShowFocusVisual = false;
 
             // register us with the window manager, like a good little boy
             this._windowManager.Children.Add(this);
@@ -68,6 +71,7 @@ namespace GHIElectronics.TinyCLR.UI {
 
         #region Public Methods
 
+        /// <summary>Closes the window and removes it from the application and window manager.</summary>
         [MethodImplAttribute(MethodImplOptions.Synchronized)]
         public void Close() {
             var app = GHIElectronics.TinyCLR.UI.Application.Current;
@@ -119,6 +123,7 @@ namespace GHIElectronics.TinyCLR.UI {
             }
         }
 
+        /// <summary>Gets or sets the position of the left edge of the window.</summary>
         public int Left {
             get => Canvas.GetLeft(this);
 

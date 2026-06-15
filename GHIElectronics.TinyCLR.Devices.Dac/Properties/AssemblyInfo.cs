@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("GHIElectronics.TinyCLR.Devices.Dac")]
@@ -8,6 +8,6 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCopyright("Copyright © GHI Electronics, LLC 2022")]
 [assembly: ComVisible(false)]
 [assembly: Guid("A35B5EE4-20EE-4E01-B218-C0B4B2DD3219")]
-[assembly: AssemblyVersion("2.4.0.1000")]
-[assembly: AssemblyFileVersion("2.4.0.1000")]
-[assembly: AssemblyInformationalVersion("2.4.0.1000")]
+[assembly: AssemblyVersion("3.0.0.2000")]
+[assembly: AssemblyFileVersion("3.0.0.2000")]
+[assembly: AssemblyInformationalVersion("3.0.0.2000-prerelease")]

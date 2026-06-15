@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 
 namespace GHIElectronics.TinyCLR.Cryptography {
     /**
@@ -7,8 +8,9 @@ namespace GHIElectronics.TinyCLR.Cryptography {
          * It is interesting to ponder why the, apart from the extra IV, the other difference here from MD5
          * is the "endianness" of the word processing!
          */
-    public class SHA1 {
+    internal class SHA1 : IDisposable {
         private const int DigestLength = 20;
+        public int HashSize => 160;
         private byte[] hash;
         private uint H1, H2, H3, H4, H5;
 
@@ -67,7 +69,7 @@ namespace GHIElectronics.TinyCLR.Cryptography {
                 throw new ArgumentNullException();
             }
 
-            if (offset + count > buffer.Length) {
+            if (offset < 0 || count < 0 || offset + count > buffer.Length) {
                 throw new ArgumentOutOfRangeException();
             }
 
@@ -75,7 +77,27 @@ namespace GHIElectronics.TinyCLR.Cryptography {
 
             this.DoFinal(this.hash, 0);
 
-            return this.hash;
+            return (byte[])this.hash.Clone();
+        }
+
+        public byte[] ComputeHash(Stream inputStream) {
+            if (inputStream == null) throw new ArgumentNullException();
+
+            var buffer = new byte[64];
+            int read;
+            while ((read = inputStream.Read(buffer, 0, buffer.Length)) > 0) {
+                this.BlockUpdate(buffer, 0, read);
+            }
+
+            this.DoFinal(this.hash, 0);
+            return (byte[])this.hash.Clone();
+        }
+
+        // Initialize() matches .NET's HashAlgorithm.Initialize(); equivalent to Clear().
+        public void Initialize() => this.Clear();
+
+        public void Dispose() {
+            // No native resources to release; provided for IDisposable parity with .NET.
         }
 
         internal void Finish() {

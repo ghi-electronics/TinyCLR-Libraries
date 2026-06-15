@@ -7,14 +7,13 @@ using System.Text;
 
 namespace GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary
 {
+    /// <summary>Provides explicit-message access to the TCP/IP Interface Object (Class Code 0xF5) on the target.</summary>
     public class TcpIpInterfaceObject
     {
-        public ScannerController eeipClient;
+        // Private read-only — see AssemblyObject for rationale.
+        private readonly ScannerController scanner;
 
-        /// <summary>
-        /// Constructor. </summary>
-        /// <param name="eeipClient"> EthernetIPClient Object</param>
-        public TcpIpInterfaceObject(ScannerController eeipClient) => this.eeipClient = eeipClient;
+        internal TcpIpInterfaceObject(ScannerController scanner) => this.scanner = scanner;
 
         /// <summary>
         /// gets the Status / Read "TCP/IP Interface Object" Class Code 0xF5 - Attribute ID 1
@@ -23,7 +22,7 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary
         {
             get
             {
-                var byteArray = this.eeipClient.GetAttributeSingle(0xF5, 1, 1);
+                var byteArray = this.scanner.GetAttributeSingle(0xF5, 1, 1);
                 var status = new InterfaceStatus();
                 if ((byteArray[0] & 0x0F) == 0)
                     status.NotConfigured = true;
@@ -45,7 +44,7 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary
         {
             get
             {
-                var byteArray = this.eeipClient.GetAttributeSingle(0xF5, 1, 2);
+                var byteArray = this.scanner.GetAttributeSingle(0xF5, 1, 2);
                     var configurationCapability = new InterfaceCapabilityFlags();
                 if ((byteArray[0] & 0x01) != 0)
                     configurationCapability.BootPClient = true;
@@ -54,7 +53,7 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary
                 if ((byteArray[0] & 0x04) != 0)
                     configurationCapability.DHCPClient = true;
                 if ((byteArray[0] & 0x08) != 0)
-                    configurationCapability.DHCPClient = true;
+                    configurationCapability.DHCP_DNSUpdate = true;
                 if ((byteArray[0] & 0x10) != 0)
                     configurationCapability.ConfigurationSettable = true;
                 return configurationCapability;
@@ -68,11 +67,16 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary
         {
             get
             {
-                var byteArray = this.eeipClient.GetAttributeSingle(0xF5, 1, 4);
+                var byteArray = this.scanner.GetAttributeSingle(0xF5, 1, 4);
                 var physicalLinkObject = new PhysicalLink();
                 physicalLinkObject.PathSize = (ushort)(byteArray[1] << 8 | byteArray[0]);
-                if (byteArray.Length > 2)
+                if (byteArray.Length > 2) {
+                    physicalLinkObject.Path = new byte[byteArray.Length - 2];
                     Array.Copy(byteArray, 2 , physicalLinkObject.Path, 0, byteArray.Length - 2);
+                }
+                else {
+                    physicalLinkObject.Path = new byte[0];
+                }
                 return physicalLinkObject;
             }
         }
@@ -91,7 +95,7 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary
                     valueToWrite[0] = 2;
                 if (value.EnableDNS)
                     valueToWrite[0] = (byte)(valueToWrite[0] | 0x10);
-                this.eeipClient.SetAttributeSingle(0xF5, 1, 3, valueToWrite);
+                this.scanner.SetAttributeSingle(0xF5, 1, 3, valueToWrite);
             }
         }
 
@@ -128,7 +132,7 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary
                     byte[] domainName = Encoding.UTF8.GetBytes(value.DomainName);
                     Array.Copy(domainName, 0, valueToWrite, 20, domainName.Length);
                 }
-                this.eeipClient.SetAttributeSingle(0xF5, 1, 5, valueToWrite);
+                this.scanner.SetAttributeSingle(0xF5, 1, 5, valueToWrite);
             }
         }
 
@@ -139,10 +143,14 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary
     /// </summary>
     public struct InterfaceStatus
         {
+            /// <summary>The interface configuration has not been set.</summary>
             public bool NotConfigured;
+            /// <summary>The interface holds a valid (e.g. BootP/DHCP) configuration.</summary>
             public bool ValidConfiguration;
+            /// <summary>The interface holds a valid manually-entered configuration.</summary>
             public bool ValidManualConfiguration;
-            public bool McastPending;  
+            /// <summary>A multicast address reconfiguration is pending.</summary>
+            public bool McastPending;
         }
 
     /// <summary>
@@ -150,10 +158,15 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary
     /// </summary>
     public struct InterfaceCapabilityFlags
     {
+        /// <summary>The interface supports BootP client configuration.</summary>
         public bool BootPClient;
+        /// <summary>The interface supports DNS client resolution.</summary>
         public bool DNSClient;
+        /// <summary>The interface supports DHCP client configuration.</summary>
         public bool DHCPClient;
+        /// <summary>The interface supports DHCP-DNS updates.</summary>
         public bool DHCP_DNSUpdate;
+        /// <summary>The interface configuration can be set via this object.</summary>
         public bool ConfigurationSettable;
     }
     /// <summary>
@@ -161,9 +174,13 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary
     /// </summary>
     public struct InterfaceControlFlags
     {
+        /// <summary>Use the previously stored interface configuration.</summary>
         public bool UsePreviouslyStored;
+        /// <summary>Obtain the interface configuration via BootP.</summary>
         public bool EnableBootP;
+        /// <summary>Obtain the interface configuration via DHCP.</summary>
         public bool EnableDHCP;
+        /// <summary>Enable DNS resolution on the interface.</summary>
         public bool EnableDNS;
     }
 
@@ -172,7 +189,9 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary
     /// </summary>
     public struct PhysicalLink
     {
+        /// <summary>The size of the path, in 16-bit words.</summary>
         public ushort PathSize;
+        /// <summary>The encoded EPATH to the physical link object.</summary>
         public byte[] Path;
     }
 
@@ -181,11 +200,17 @@ namespace GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary
     /// </summary>
     public struct NetworkInterfaceConfiguration
     {
+        /// <summary>The interface IP address.</summary>
         public uint IPAddress;
+        /// <summary>The subnet mask.</summary>
         public uint NetworkMask;
+        /// <summary>The default gateway address.</summary>
         public uint GatewayAddress;
+        /// <summary>The primary DNS server address.</summary>
         public uint NameServer;
+        /// <summary>The secondary DNS server address.</summary>
         public uint NameServer2;
+        /// <summary>The domain name.</summary>
         public string DomainName;
     }
 

@@ -13,7 +13,7 @@ namespace GHIElectronics.TinyCLR.Data.Xml
 {
 
     // XmlReaderSettings class specifies features of an XmlReader.
-    public class XmlReaderSettings
+    internal class XmlReaderSettings
     {
         //
         // Fields

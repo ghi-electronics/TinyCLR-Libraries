@@ -6,21 +6,26 @@ using System;
 using GHIElectronics.TinyCLR.UI.Media;
 
 namespace GHIElectronics.TinyCLR.UI.Controls {
+    /// <summary>A lightweight element that draws a single string in a given font.</summary>
     public class Text : UIElement {
+        /// <summary>Initializes a new empty text element.</summary>
         public Text()
             : this(null, null) {
         }
 
+        /// <summary>Initializes a new text element with the given content and no font.</summary>
         public Text(string content)
             : this(null, content) {
         }
 
+        /// <summary>Initializes a new text element with the given font and content.</summary>
         public Text(System.Drawing.Font font, string content) {
             this._text = content;
             this._font = font;
             this._foreColor = Colors.Black;
         }
 
+        /// <summary>The font used to draw the text.</summary>
         public System.Drawing.Font Font {
             get => this._font;
 
@@ -32,6 +37,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
+        /// <summary>The color used to draw the text.</summary>
         public Color ForeColor {
             get => this._foreColor;
 
@@ -43,6 +49,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
+        /// <summary>The string of text to display.</summary>
         public string TextContent {
             get => this._text;
 
@@ -56,6 +63,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
+        /// <summary>How text that does not fit is trimmed (for example, with an ellipsis).</summary>
         public TextTrimming Trimming {
             get => this._trimming;
 
@@ -67,6 +75,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
+        /// <summary>The horizontal alignment of the text.</summary>
         public TextAlignment TextAlignment {
             get => this._alignment;
 
@@ -78,8 +87,10 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
+        /// <summary>The height of a single line of text, including external leading.</summary>
         public int LineHeight => (this._font != null) ? (this._font.Height + this._font.ExternalLeading) : 0;
 
+        /// <summary>Whether text wraps onto multiple lines when it exceeds the available width.</summary>
         public bool TextWrap {
             get => this._textWrap;
 
@@ -91,6 +102,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
+        /// <summary>Measures the size needed to draw the text in the available width.</summary>
         protected override void MeasureOverride(int availableWidth, int availableHeight, out int desiredWidth, out int desiredHeight) {
             if (this._font != null && this._text != null && this._text.Length > 0) {
                 var flags = Bitmap.DT_IgnoreHeight | Bitmap.DT_WordWrap;
@@ -106,7 +118,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                         flags |= Bitmap.DT_AlignmentCenter;
                         break;
                     default:
-                        throw new NotSupportedException();
+                        throw new NotSupportedException("TextAlignment value " + this._alignment + " is not supported.");
                 }
 
                 switch (this._trimming) {
@@ -131,6 +143,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
+        /// <summary>Draws the text using the current font, color, alignment, and trimming.</summary>
         public override void OnRender(DrawingContext dc) {
             if (this._font != null && this._text != null) {
                 var height = this._textWrap ? this._renderHeight : this._font.Height;
@@ -141,6 +154,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         }
 
 #if TINYCLR_TRACE
+        /// <summary>Returns a string representation of the element including its text content.</summary>
         public override string ToString()
         {
             return base.ToString() + " [" + this.TextContent + "]";
@@ -148,8 +162,10 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
 #endif
 
+        /// <summary>The font used to render the text.</summary>
         protected System.Drawing.Font _font;
         private Color _foreColor;
+        /// <summary>The text content to render.</summary>
         protected string _text;
         private bool _textWrap;
         private TextTrimming _trimming = TextTrimming.WordEllipsis;

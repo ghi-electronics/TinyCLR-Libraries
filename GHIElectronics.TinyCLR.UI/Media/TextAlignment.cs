@@ -4,9 +4,13 @@
 
 
 namespace GHIElectronics.TinyCLR.UI.Media {
+    /// <summary>Specifies how text is horizontally aligned.</summary>
     public enum TextAlignment {
+        /// <summary>Text is aligned to the left.</summary>
         Left,
+        /// <summary>Text is centered.</summary>
         Center,
+        /// <summary>Text is aligned to the right.</summary>
         Right,
     }
 }

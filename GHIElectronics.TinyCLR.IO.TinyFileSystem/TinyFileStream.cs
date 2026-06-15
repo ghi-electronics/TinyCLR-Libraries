@@ -135,7 +135,7 @@ namespace GHIElectronics.TinyCLR.IO.TinyFileSystem {
                 }
 
                 if (newFilePointer < 0 || newFilePointer > this.fileRef.fileSize)
-                    throw new IOException(StringTable.Error_OutOfBounds, (int) IOException.IOExceptionErrorCode.Others);
+                    throw new IOException(StringTable.Error_OutOfBounds, unchecked((int)0xE0000000));
 
                 this.filePointer = newFilePointer;
 
@@ -154,7 +154,7 @@ namespace GHIElectronics.TinyCLR.IO.TinyFileSystem {
                 this.CheckState();
                 if (value < 0 || value > this.fileRef.fileSize)
                 {
-                    throw new IOException(StringTable.Error_OutOfBounds, (int) IOException.IOExceptionErrorCode.Others);
+                    throw new IOException(StringTable.Error_OutOfBounds, unchecked((int)0xE0000000));
                 }
                 this.Flush();
                 this.tfs.Truncate(this.fileRef, value);

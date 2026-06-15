@@ -1,0 +1,841 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>GHIElectronics.TinyCLR.IO</name>
+    </assembly>
+    <members>
+        <member name="T:System.IO.Directory">
+            <summary>Static helpers for directory management — create, delete, enumerate, get current directory.</summary>
+        </member>
+        <member name="M:System.IO.Directory.GetLogicalDrives">
+            <summary>Returns the names of all mounted logical drives.</summary>
+        </member>
+        <member name="M:System.IO.Directory.CreateDirectory(System.String)">
+            <summary>Creates the directory at the path, including any missing parents, and returns it.</summary>
+        </member>
+        <member name="M:System.IO.Directory.Exists(System.String)">
+            <summary>Returns whether the directory at the path exists.</summary>
+        </member>
+        <member name="M:System.IO.Directory.EnumerateFiles(System.String)">
+            <summary>Returns an enumerable over the file names in the directory.</summary>
+        </member>
+        <member name="M:System.IO.Directory.EnumerateDirectories(System.String)">
+            <summary>Returns an enumerable over the subdirectory names in the directory.</summary>
+        </member>
+        <member name="M:System.IO.Directory.EnumerateFileSystemEntries(System.String)">
+            <summary>Returns an enumerable over the file and subdirectory names in the directory.</summary>
+        </member>
+        <member name="M:System.IO.Directory.GetFiles(System.String)">
+            <summary>Returns the names of the files in the directory.</summary>
+        </member>
+        <member name="M:System.IO.Directory.GetDirectories(System.String)">
+            <summary>Returns the names of the subdirectories in the directory.</summary>
+        </member>
+        <member name="M:System.IO.Directory.GetCurrentDirectory">
+            <summary>Returns the application's current working directory.</summary>
+        </member>
+        <member name="M:System.IO.Directory.SetCurrentDirectory(System.String)">
+            <summary>Sets the application's current working directory.</summary>
+        </member>
+        <member name="M:System.IO.Directory.Move(System.String,System.String)">
+            <summary>Moves a directory and its contents to a new location.</summary>
+        </member>
+        <member name="M:System.IO.Directory.Delete(System.String)">
+            <summary>Deletes the empty directory at the path.</summary>
+        </member>
+        <member name="M:System.IO.Directory.Delete(System.String,System.Boolean)">
+            <summary>Deletes the directory at the path, optionally including its contents.</summary>
+        </member>
+        <member name="T:System.IO.DirectoryInfo">
+            <summary>Provides information about a directory and the means to create or delete it.</summary>
+        </member>
+        <member name="M:System.IO.DirectoryInfo.#ctor(System.String)">
+            <summary>Creates a new instance for the directory at the given path.</summary>
+        </member>
+        <member name="P:System.IO.DirectoryInfo.Name">
+            <inheritdoc/>
+        </member>
+        <member name="P:System.IO.DirectoryInfo.Parent">
+            <summary>The parent directory, or null if this is a root.</summary>
+        </member>
+        <member name="M:System.IO.DirectoryInfo.CreateSubdirectory(System.String)">
+            <summary>Creates a subdirectory under this directory and returns it.</summary>
+        </member>
+        <member name="M:System.IO.DirectoryInfo.Create">
+            <summary>Creates the directory.</summary>
+        </member>
+        <member name="P:System.IO.DirectoryInfo.Exists">
+            <inheritdoc/>
+        </member>
+        <member name="M:System.IO.DirectoryInfo.GetFiles">
+            <summary>Returns the files contained in the directory.</summary>
+        </member>
+        <member name="M:System.IO.DirectoryInfo.GetDirectories">
+            <summary>Returns the subdirectories contained in the directory.</summary>
+        </member>
+        <member name="P:System.IO.DirectoryInfo.Root">
+            <summary>The root portion of the directory's path.</summary>
+        </member>
+        <member name="M:System.IO.DirectoryInfo.MoveTo(System.String)">
+            <summary>Moves the directory and its contents to a new path.</summary>
+        </member>
+        <member name="M:System.IO.DirectoryInfo.Delete">
+            <inheritdoc/>
+        </member>
+        <member name="M:System.IO.DirectoryInfo.Delete(System.Boolean)">
+            <summary>Deletes the directory, optionally including its contents.</summary>
+        </member>
+        <member name="M:System.IO.DirectoryInfo.ToString">
+            <summary>Returns the full path of the directory.</summary>
+        </member>
+        <member name="T:System.IO.File">
+            <summary>
+            Static helpers for file management — copy, move, delete, exists, open. Mirrors
+            the .NET BCL <c>System.IO.File</c> API for the file-system mount points
+            registered via <see cref="T:GHIElectronics.TinyCLR.IO.FileSystem"/>.
+            </summary>
+        </member>
+        <member name="M:System.IO.File.Copy(System.String,System.String)">
+            <summary>Copies a file to a new path; throws if the destination already exists.</summary>
+        </member>
+        <member name="M:System.IO.File.Copy(System.String,System.String,System.Boolean)">
+            <summary>Copies a file to a new path, optionally overwriting an existing destination.</summary>
+        </member>
+        <member name="M:System.IO.File.Copy(System.String,System.String,System.Boolean,System.Boolean)">
+            Experiment on desktop shows 2k-4k is ideal size perfwise.
+        </member>
+        <member name="M:System.IO.File.Create(System.String)">
+            <summary>Creates or overwrites a file and returns a read/write stream to it.</summary>
+        </member>
+        <member name="M:System.IO.File.Create(System.String,System.Int32)">
+            <summary>Creates or overwrites a file with the given buffer size and returns a read/write stream to it.</summary>
+        </member>
+        <member name="M:System.IO.File.Delete(System.String)">
+            <summary>Deletes the file at the path; succeeds silently if it does not exist.</summary>
+        </member>
+        <member name="M:System.IO.File.Exists(System.String)">
+            <summary>Returns whether a file exists at the path.</summary>
+        </member>
+        <member name="M:System.IO.File.Open(System.String,System.IO.FileMode)">
+            <summary>Opens a file with the given mode and returns a stream to it.</summary>
+        </member>
+        <member name="M:System.IO.File.Open(System.String,System.IO.FileMode,System.IO.FileAccess)">
+            <summary>Opens a file with the given mode and access and returns a stream to it.</summary>
+        </member>
+        <member name="M:System.IO.File.Open(System.String,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare)">
+            <summary>Opens a file with the given mode, access, and sharing and returns a stream to it.</summary>
+        </member>
+        <member name="M:System.IO.File.GetAttributes(System.String)">
+            <summary>Returns the attributes of the file at the path.</summary>
+        </member>
+        <member name="M:System.IO.File.SetAttributes(System.String,System.IO.FileAttributes)">
+            <summary>Sets the attributes of the file at the path.</summary>
+        </member>
+        <member name="M:System.IO.File.OpenRead(System.String)">
+            <summary>Opens an existing file for reading and returns a stream to it.</summary>
+        </member>
+        <member name="M:System.IO.File.OpenWrite(System.String)">
+            <summary>Opens or creates a file for writing and returns a stream to it.</summary>
+        </member>
+        <member name="M:System.IO.File.ReadAllBytes(System.String)">
+            <summary>Reads the entire contents of a file into a byte array.</summary>
+        </member>
+        <member name="M:System.IO.File.WriteAllBytes(System.String,System.Byte[])">
+            <summary>Creates or overwrites a file and writes the byte array to it.</summary>
+        </member>
+        <member name="M:System.IO.File.Move(System.String,System.String)">
+            <summary>Moves a file to a new location and name.</summary>
+        </member>
+        <member name="T:System.IO.FileAccess">
+            <summary>Specifies the access a file can be opened with.</summary>
+        </member>
+        <member name="F:System.IO.FileAccess.Read">
+            <summary>Read access to the file.</summary>
+        </member>
+        <member name="F:System.IO.FileAccess.Write">
+            <summary>Write access to the file.</summary>
+        </member>
+        <member name="F:System.IO.FileAccess.ReadWrite">
+            <summary>Read and write access to the file.</summary>
+        </member>
+        <member name="T:System.IO.FileAttributes">
+            <summary>Attributes that can be set on a file or directory.</summary>
+        </member>
+        <member name="F:System.IO.FileAttributes.ReadOnly">
+            <summary>The file or directory is read-only.</summary>
+        </member>
+        <member name="F:System.IO.FileAttributes.Hidden">
+            <summary>The file or directory is hidden.</summary>
+        </member>
+        <member name="F:System.IO.FileAttributes.System">
+            <summary>The file or directory is part of the operating system.</summary>
+        </member>
+        <member name="F:System.IO.FileAttributes.Directory">
+            <summary>The entry is a directory.</summary>
+        </member>
+        <member name="F:System.IO.FileAttributes.Archive">
+            <summary>The file is marked for backup or removal.</summary>
+        </member>
+        <member name="F:System.IO.FileAttributes.Normal">
+            <summary>The file has no other attributes set.</summary>
+        </member>
+        <member name="T:System.IO.FileEnumFlags">
+            <summary>Selects which kinds of entries a file enumeration returns.</summary>
+        </member>
+        <member name="F:System.IO.FileEnumFlags.Files">
+            <summary>Enumerate only files.</summary>
+        </member>
+        <member name="F:System.IO.FileEnumFlags.Directories">
+            <summary>Enumerate only directories.</summary>
+        </member>
+        <member name="F:System.IO.FileEnumFlags.FilesAndDirectories">
+            <summary>Enumerate both files and directories.</summary>
+        </member>
+        <member name="T:System.IO.FileEnum">
+            <summary>Enumerates the file-system entries under a path.</summary>
+        </member>
+        <member name="M:System.IO.FileEnum.#ctor(System.String,System.IO.FileEnumFlags)">
+            <summary>Creates an enumerator over the entries matching the given flags under the path.</summary>
+        </member>
+        <member name="P:System.IO.FileEnum.Current">
+            <inheritdoc/>
+        </member>
+        <member name="M:System.IO.FileEnum.MoveNext">
+            <summary>Advances to the next entry.</summary>
+        </member>
+        <member name="M:System.IO.FileEnum.Reset">
+            <summary>Resets the enumerator to the start.</summary>
+        </member>
+        <member name="M:System.IO.FileEnum.Dispose(System.Boolean)">
+            <summary>Releases the enumerator's resources and removes it from the open list.</summary>
+        </member>
+        <member name="M:System.IO.FileEnum.Dispose">
+            <inheritdoc/>
+        </member>
+        <member name="T:System.IO.FileEnumerator">
+            <summary>Provides an enumerable over the entries of a directory.</summary>
+        </member>
+        <member name="M:System.IO.FileEnumerator.#ctor(System.String,System.IO.FileEnumFlags)">
+            <summary>Creates an enumerable over the entries matching the given flags under the path.</summary>
+        </member>
+        <member name="M:System.IO.FileEnumerator.GetEnumerator">
+            <inheritdoc/>
+        </member>
+        <member name="T:System.IO.FileInfo">
+            <summary>Provides information about a file and the means to create or delete it.</summary>
+        </member>
+        <member name="M:System.IO.FileInfo.#ctor(System.String)">
+            <summary>Creates a new instance for the file at the given path.</summary>
+        </member>
+        <member name="P:System.IO.FileInfo.Name">
+            <inheritdoc/>
+        </member>
+        <member name="P:System.IO.FileInfo.Length">
+            <summary>The size of the file in bytes.</summary>
+        </member>
+        <member name="P:System.IO.FileInfo.DirectoryName">
+            <summary>The full path of the directory that contains the file.</summary>
+        </member>
+        <member name="P:System.IO.FileInfo.Directory">
+            <summary>The directory that contains the file, or null if there is none.</summary>
+        </member>
+        <member name="M:System.IO.FileInfo.Create">
+            <summary>Creates the file and returns a stream to it.</summary>
+        </member>
+        <member name="M:System.IO.FileInfo.Delete">
+            <inheritdoc/>
+        </member>
+        <member name="P:System.IO.FileInfo.Exists">
+            <inheritdoc/>
+        </member>
+        <member name="M:System.IO.FileInfo.ToString">
+            <summary>Returns the full path of the file.</summary>
+        </member>
+        <member name="T:System.IO.FileMode">
+            <summary>Specifies how the operating system should open a file.</summary>
+        </member>
+        <member name="F:System.IO.FileMode.CreateNew">
+            <summary>Creates a new file; throws if the file already exists.</summary>
+        </member>
+        <member name="F:System.IO.FileMode.Create">
+            <summary>Creates a new file, overwriting one if it already exists.</summary>
+        </member>
+        <member name="F:System.IO.FileMode.Open">
+            <summary>Opens an existing file; throws if the file does not exist.</summary>
+        </member>
+        <member name="F:System.IO.FileMode.OpenOrCreate">
+            <summary>Opens the file if it exists; otherwise creates a new file.</summary>
+        </member>
+        <member name="F:System.IO.FileMode.Truncate">
+            <summary>Opens an existing file and truncates it to zero bytes; throws if it does not exist.</summary>
+        </member>
+        <member name="F:System.IO.FileMode.Append">
+            <summary>Opens the file and seeks to the end, or creates a new file, for appending.</summary>
+        </member>
+        <member name="T:System.IO.FileShare">
+            <summary>Controls the access other openers may have to a file that is already open.</summary>
+        </member>
+        <member name="F:System.IO.FileShare.None">
+            <summary>No sharing; the file cannot be reopened until it is closed.</summary>
+        </member>
+        <member name="F:System.IO.FileShare.Read">
+            <summary>Allows the file to be subsequently opened for reading.</summary>
+        </member>
+        <member name="F:System.IO.FileShare.Write">
+            <summary>Allows the file to be subsequently opened for writing.</summary>
+        </member>
+        <member name="F:System.IO.FileShare.ReadWrite">
+            <summary>Allows the file to be subsequently opened for reading or writing.</summary>
+        </member>
+        <member name="T:System.IO.FileStream">
+            <summary>A read/write stream backed by a file on a mounted file system. Construct via <see cref="M:System.IO.File.OpenRead(System.String)"/> / <see cref="M:System.IO.File.OpenWrite(System.String)"/> / <see cref="M:System.IO.File.Create(System.String)"/>.</summary>
+        </member>
+        <member name="M:System.IO.FileStream.#ctor(System.String,System.IO.FileMode)">
+            <summary>Opens the file at the path with the given mode.</summary>
+        </member>
+        <member name="M:System.IO.FileStream.#ctor(System.String,System.IO.FileMode,System.IO.FileAccess)">
+            <summary>Opens the file at the path with the given mode and access.</summary>
+        </member>
+        <member name="M:System.IO.FileStream.#ctor(System.String,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare)">
+            <summary>Opens the file at the path with the given mode, access, and sharing.</summary>
+        </member>
+        <member name="M:System.IO.FileStream.#ctor(System.String,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare,System.Int32)">
+            <summary>Opens the file at the path with the given mode, access, sharing, and buffer size.</summary>
+        </member>
+        <member name="M:System.IO.FileStream.Dispose(System.Boolean)">
+            <summary>Closes the file and releases the stream's resources.</summary>
+        </member>
+        <member name="M:System.IO.FileStream.Flush">
+            <summary>Flushes buffered data to the file.</summary>
+        </member>
+        <member name="M:System.IO.FileStream.SetLength(System.Int64)">
+            <summary>Sets the length of the file.</summary>
+        </member>
+        <member name="M:System.IO.FileStream.Read(System.Byte[],System.Int32,System.Int32)">
+            <summary>Reads bytes from the file into the buffer.</summary>
+        </member>
+        <member name="M:System.IO.FileStream.Seek(System.Int64,System.IO.SeekOrigin)">
+            <summary>Moves the file position.</summary>
+        </member>
+        <member name="M:System.IO.FileStream.Write(System.Byte[],System.Int32,System.Int32)">
+            <summary>Writes bytes from the buffer to the file.</summary>
+        </member>
+        <member name="P:System.IO.FileStream.CanRead">
+            <summary>Whether the stream supports reading.</summary>
+        </member>
+        <member name="P:System.IO.FileStream.CanWrite">
+            <summary>Whether the stream supports writing.</summary>
+        </member>
+        <member name="P:System.IO.FileStream.CanSeek">
+            <summary>Whether the stream supports seeking.</summary>
+        </member>
+        <member name="P:System.IO.FileStream.IsAsync">
+            <summary>Whether the stream operates asynchronously; always false.</summary>
+        </member>
+        <member name="P:System.IO.FileStream.Length">
+            <summary>The length of the file in bytes.</summary>
+        </member>
+        <member name="P:System.IO.FileStream.Name">
+            <summary>The full path of the file the stream was opened on.</summary>
+        </member>
+        <member name="P:System.IO.FileStream.Position">
+            <summary>The current byte position within the file.</summary>
+        </member>
+        <member name="T:System.IO.FileSystemInfo">
+            <summary>Base class for objects that describe a file or directory.</summary>
+        </member>
+        <member name="F:System.IO.FileSystemInfo.m_fullPath">
+            <summary>The fully qualified path of the file or directory.</summary>
+        </member>
+        <member name="P:System.IO.FileSystemInfo.FullName">
+            <summary>The full path of the file or directory.</summary>
+        </member>
+        <member name="P:System.IO.FileSystemInfo.Extension">
+            <summary>The extension portion of the name, including the leading period.</summary>
+        </member>
+        <member name="P:System.IO.FileSystemInfo.Name">
+            <summary>The name of the file or directory.</summary>
+        </member>
+        <member name="P:System.IO.FileSystemInfo.Exists">
+            <summary>Whether the file or directory exists.</summary>
+        </member>
+        <member name="M:System.IO.FileSystemInfo.Delete">
+            <summary>Deletes the file or directory.</summary>
+        </member>
+        <member name="P:System.IO.FileSystemInfo.Attributes">
+            <summary>The attributes of the file or directory.</summary>
+        </member>
+        <member name="P:System.IO.FileSystemInfo.CreationTime">
+            <summary>The creation time in local time.</summary>
+        </member>
+        <member name="P:System.IO.FileSystemInfo.CreationTimeUtc">
+            <summary>The creation time in UTC.</summary>
+        </member>
+        <member name="P:System.IO.FileSystemInfo.LastAccessTime">
+            <summary>The last access time in local time.</summary>
+        </member>
+        <member name="P:System.IO.FileSystemInfo.LastAccessTimeUtc">
+            <summary>The last access time in UTC.</summary>
+        </member>
+        <member name="P:System.IO.FileSystemInfo.LastWriteTime">
+            <summary>The last write time in local time.</summary>
+        </member>
+        <member name="P:System.IO.FileSystemInfo.LastWriteTimeUtc">
+            <summary>The last write time in UTC.</summary>
+        </member>
+        <member name="M:System.IO.FileSystemInfo.Refresh">
+            <summary>Reloads the cached metadata from the underlying file system.</summary>
+        </member>
+        <member name="M:System.IO.FileSystemInfo.RefreshIfNull">
+            <summary>Loads the cached metadata if it has not been loaded yet.</summary>
+        </member>
+        <member name="T:System.IO.DriveType">
+            <summary>Classification of a mounted volume.</summary>
+        </member>
+        <member name="F:System.IO.DriveType.Unknown">
+            <summary>The drive type is unknown.</summary>
+        </member>
+        <member name="F:System.IO.DriveType.NoRootDirectory">
+            <summary>The drive has no root directory.</summary>
+        </member>
+        <member name="F:System.IO.DriveType.Removable">
+            <summary>The drive is removable, such as an SD card or USB stick.</summary>
+        </member>
+        <member name="F:System.IO.DriveType.Fixed">
+            <summary>The drive is a fixed disk.</summary>
+        </member>
+        <member name="F:System.IO.DriveType.Network">
+            <summary>The drive is a network drive.</summary>
+        </member>
+        <member name="F:System.IO.DriveType.CDRom">
+            <summary>The drive is an optical disc.</summary>
+        </member>
+        <member name="F:System.IO.DriveType.Ram">
+            <summary>The drive is a RAM disk.</summary>
+        </member>
+        <member name="T:System.IO.DriveInfo">
+            <summary>Information about a mounted volume — total/available space, type, root path.</summary>
+        </member>
+        <member name="P:System.IO.DriveInfo.Name">
+            <summary>The root name of the drive.</summary>
+        </member>
+        <member name="P:System.IO.DriveInfo.RootDirectory">
+            <summary>The root directory of the drive.</summary>
+        </member>
+        <member name="P:System.IO.DriveInfo.DriveType">
+            <summary>The type of the drive.</summary>
+        </member>
+        <member name="P:System.IO.DriveInfo.DriveFormat">
+            <summary>The name of the file system format on the drive.</summary>
+        </member>
+        <member name="P:System.IO.DriveInfo.IsReady">
+            <summary>Whether the drive is ready for access.</summary>
+        </member>
+        <member name="P:System.IO.DriveInfo.AvailableFreeSpace">
+            <summary>The amount of free space available on the drive in bytes.</summary>
+        </member>
+        <member name="P:System.IO.DriveInfo.TotalFreeSpace">
+            <summary>The total free space on the drive in bytes.</summary>
+        </member>
+        <member name="P:System.IO.DriveInfo.TotalSize">
+            <summary>The total size of the drive in bytes.</summary>
+        </member>
+        <member name="P:System.IO.DriveInfo.VolumeLabel">
+            <summary>The volume label of the drive.</summary>
+        </member>
+        <member name="M:System.IO.DriveInfo.#ctor(System.String)">
+            <summary>Creates a new instance for the registered drive with the given root name.</summary>
+        </member>
+        <member name="M:System.IO.DriveInfo.GetDrives">
+            <summary>Returns information about all mounted drives.</summary>
+        </member>
+        <member name="M:System.IO.DriveInfo.RegisterDriveProvider(GHIElectronics.TinyCLR.IO.IDriveProvider)">
+            <summary>Assigns the next free root name to the provider and registers it as a drive.</summary>
+        </member>
+        <member name="M:System.IO.DriveInfo.DeregisterDriveProvider(GHIElectronics.TinyCLR.IO.IDriveProvider)">
+            <summary>Unregisters the provider and frees its root name.</summary>
+        </member>
+        <member name="T:System.IO.Path">
+            <summary>Static helpers for path-string manipulation — Combine, GetExtension, GetFileName, etc.</summary>
+        </member>
+        <member name="F:System.IO.Path.DirectorySeparatorChar">
+            <summary>The character used to separate directory levels in a path.</summary>
+        </member>
+        <member name="F:System.IO.Path.InvalidPathChars">
+            <summary>The characters that are not allowed in a path.</summary>
+        </member>
+        <member name="M:System.IO.Path.ChangeExtension(System.String,System.String)">
+            <summary>Returns the path with its file extension changed to the given one.</summary>
+        </member>
+        <member name="M:System.IO.Path.GetDirectoryName(System.String)">
+            <summary>Returns the directory portion of a path, or null if the path is a root.</summary>
+        </member>
+        <member name="M:System.IO.Path.GetInvalidPathChars">
+            <summary>Returns a copy of the characters that are not allowed in a path.</summary>
+        </member>
+        <member name="M:System.IO.Path.GetFullPath(System.String)">
+            <summary>Returns the absolute path for the given path, resolving it against the current directory.</summary>
+        </member>
+        <member name="M:System.IO.Path.GetExtension(System.String)">
+            <summary>Returns the extension of the path, including the leading period, or an empty string if there is none.</summary>
+        </member>
+        <member name="M:System.IO.Path.GetFileName(System.String)">
+            <summary>Returns the file name and extension portion of the path.</summary>
+        </member>
+        <member name="M:System.IO.Path.GetFileNameWithoutExtension(System.String)">
+            <summary>Returns the file name of the path without its extension.</summary>
+        </member>
+        <member name="M:System.IO.Path.GetPathRoot(System.String)">
+            <summary>Returns the root portion of the path.</summary>
+        </member>
+        <member name="M:System.IO.Path.HasExtension(System.String)">
+            <summary>Returns whether the path includes a file extension.</summary>
+        </member>
+        <member name="M:System.IO.Path.IsPathRooted(System.String)">
+            <summary>Returns whether the path is rooted with a drive letter.</summary>
+        </member>
+        <member name="M:System.IO.Path.Combine(System.String,System.String)">
+            <summary>Combines two path strings into a single path.</summary>
+        </member>
+        <member name="T:System.IO.StreamReader">
+            <summary>Reads characters from a stream using UTF-8 decoding.</summary>
+        </member>
+        <member name="M:System.IO.StreamReader.#ctor(System.IO.Stream)">
+            <summary>Creates a reader over the given stream.</summary>
+        </member>
+        <member name="M:System.IO.StreamReader.#ctor(System.String)">
+            <summary>Creates a reader that opens the file at the given path for reading.</summary>
+        </member>
+        <member name="M:System.IO.StreamReader.Close">
+            <inheritdoc/>
+        </member>
+        <member name="M:System.IO.StreamReader.Dispose(System.Boolean)">
+            <inheritdoc/>
+        </member>
+        <member name="M:System.IO.StreamReader.Peek">
+            <inheritdoc/>
+        </member>
+        <member name="M:System.IO.StreamReader.Read">
+            <inheritdoc/>
+        </member>
+        <member name="M:System.IO.StreamReader.Read(System.Char[],System.Int32,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:System.IO.StreamReader.ReadLine">
+            <inheritdoc/>
+        </member>
+        <member name="M:System.IO.StreamReader.ReadToEnd">
+            <inheritdoc/>
+        </member>
+        <member name="P:System.IO.StreamReader.BaseStream">
+            <summary>The underlying stream being read from.</summary>
+        </member>
+        <member name="P:System.IO.StreamReader.CurrentEncoding">
+            <summary>The character encoding the reader uses.</summary>
+        </member>
+        <member name="P:System.IO.StreamReader.EndOfStream">
+            <summary>Whether the reader has reached the end of the buffered data.</summary>
+        </member>
+        <member name="T:System.IO.StreamWriter">
+            <summary>Writes characters to a stream using UTF-8 encoding.</summary>
+        </member>
+        <member name="M:System.IO.StreamWriter.#ctor(System.IO.Stream)">
+            <summary>Creates a writer over the given stream.</summary>
+        </member>
+        <member name="M:System.IO.StreamWriter.#ctor(System.String)">
+            <summary>Creates a writer that creates or overwrites the file at the given path.</summary>
+        </member>
+        <member name="M:System.IO.StreamWriter.#ctor(System.String,System.Boolean)">
+            <summary>Creates a writer for the file at the given path, optionally appending to it.</summary>
+        </member>
+        <member name="M:System.IO.StreamWriter.Close">
+            <inheritdoc/>
+        </member>
+        <member name="M:System.IO.StreamWriter.Dispose(System.Boolean)">
+            <inheritdoc/>
+        </member>
+        <member name="M:System.IO.StreamWriter.Flush">
+            <inheritdoc/>
+        </member>
+        <member name="M:System.IO.StreamWriter.Write(System.Char)">
+            <inheritdoc/>
+        </member>
+        <member name="M:System.IO.StreamWriter.WriteLine">
+            <inheritdoc/>
+        </member>
+        <member name="M:System.IO.StreamWriter.WriteLine(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="P:System.IO.StreamWriter.BaseStream">
+            <summary>The underlying stream being written to.</summary>
+        </member>
+        <member name="P:System.IO.StreamWriter.Encoding">
+            <inheritdoc/>
+        </member>
+        <member name="T:System.IO.TextReader">
+            <summary>Base class for reading a sequential series of characters.</summary>
+        </member>
+        <member name="M:System.IO.TextReader.#ctor">
+            <summary>Initializes the reader.</summary>
+        </member>
+        <member name="M:System.IO.TextReader.Close">
+            <summary>Closes the reader and releases its resources.</summary>
+        </member>
+        <member name="M:System.IO.TextReader.Dispose">
+            <summary>Releases the resources used by the reader.</summary>
+        </member>
+        <member name="M:System.IO.TextReader.Dispose(System.Boolean)">
+            <summary>Releases the resources used by the reader.</summary>
+        </member>
+        <member name="M:System.IO.TextReader.Peek">
+            <summary>Returns the next character without consuming it, or -1 at end of stream.</summary>
+        </member>
+        <member name="M:System.IO.TextReader.Read">
+            <summary>Reads and consumes the next character, or returns -1 at end of stream.</summary>
+        </member>
+        <member name="M:System.IO.TextReader.Read(System.Char[],System.Int32,System.Int32)">
+            <summary>Reads up to count characters into the buffer, returning the number read.</summary>
+        </member>
+        <member name="M:System.IO.TextReader.ReadBlock(System.Char[],System.Int32,System.Int32)">
+            <summary>Reads count characters into the buffer, blocking until they are available or the stream ends.</summary>
+        </member>
+        <member name="M:System.IO.TextReader.ReadToEnd">
+            <summary>Reads all remaining characters and returns them as a string.</summary>
+        </member>
+        <member name="M:System.IO.TextReader.ReadLine">
+            <summary>Reads a line of characters and returns it, or null at end of stream.</summary>
+        </member>
+        <member name="T:System.IO.TextWriter">
+            <summary>Base class for writing a sequential series of characters.</summary>
+        </member>
+        <member name="F:System.IO.TextWriter.CoreNewLine">
+            <summary>The characters written for a line terminator.</summary>
+        </member>
+        <member name="M:System.IO.TextWriter.Close">
+            <summary>Closes the writer and releases its resources.</summary>
+        </member>
+        <member name="M:System.IO.TextWriter.Dispose">
+            <summary>Releases the resources used by the writer.</summary>
+        </member>
+        <member name="M:System.IO.TextWriter.Dispose(System.Boolean)">
+            <summary>Releases the resources used by the writer.</summary>
+        </member>
+        <member name="M:System.IO.TextWriter.Flush">
+            <summary>Flushes any buffered data to the underlying store.</summary>
+        </member>
+        <member name="P:System.IO.TextWriter.Encoding">
+            <summary>The character encoding the writer uses.</summary>
+        </member>
+        <member name="P:System.IO.TextWriter.NewLine">
+            <summary>The line terminator string used by the writer.</summary>
+        </member>
+        <member name="M:System.IO.TextWriter.Write(System.Char)">
+            <summary>Writes a character.</summary>
+        </member>
+        <member name="M:System.IO.TextWriter.Write(System.Char[])">
+            <summary>Writes a character array.</summary>
+        </member>
+        <member name="M:System.IO.TextWriter.Write(System.Char[],System.Int32,System.Int32)">
+            <summary>Writes a range of characters from an array.</summary>
+        </member>
+        <member name="M:System.IO.TextWriter.Write(System.Boolean)">
+            <summary>Writes the text representation of a boolean value.</summary>
+        </member>
+        <member name="M:System.IO.TextWriter.Write(System.Int32)">
+            <summary>Writes the text representation of an integer.</summary>
+        </member>
+        <member name="M:System.IO.TextWriter.Write(System.UInt32)">
+            <summary>Writes the text representation of an unsigned integer.</summary>
+        </member>
+        <member name="M:System.IO.TextWriter.Write(System.Int64)">
+            <summary>Writes the text representation of a long integer.</summary>
+        </member>
+        <member name="M:System.IO.TextWriter.Write(System.UInt64)">
+            <summary>Writes the text representation of an unsigned long integer.</summary>
+        </member>
+        <member name="M:System.IO.TextWriter.Write(System.Single)">
+            <summary>Writes the text representation of a single-precision number.</summary>
+        </member>
+        <member name="M:System.IO.TextWriter.Write(System.Double)">
+            <summary>Writes the text representation of a double-precision number.</summary>
+        </member>
+        <member name="M:System.IO.TextWriter.Write(System.String)">
+            <summary>Writes a string.</summary>
+        </member>
+        <member name="M:System.IO.TextWriter.Write(System.Object)">
+            <summary>Writes the text representation of an object.</summary>
+        </member>
+        <member name="M:System.IO.TextWriter.WriteLine">
+            <summary>Writes a line terminator.</summary>
+        </member>
+        <member name="M:System.IO.TextWriter.WriteLine(System.Char)">
+            <summary>Writes a character followed by a line terminator.</summary>
+        </member>
+        <member name="M:System.IO.TextWriter.WriteLine(System.Char[])">
+            <summary>Writes a character array followed by a line terminator.</summary>
+        </member>
+        <member name="M:System.IO.TextWriter.WriteLine(System.Char[],System.Int32,System.Int32)">
+            <summary>Writes a range of characters followed by a line terminator.</summary>
+        </member>
+        <member name="M:System.IO.TextWriter.WriteLine(System.Boolean)">
+            <summary>Writes a boolean value followed by a line terminator.</summary>
+        </member>
+        <member name="M:System.IO.TextWriter.WriteLine(System.Int32)">
+            <summary>Writes an integer followed by a line terminator.</summary>
+        </member>
+        <member name="M:System.IO.TextWriter.WriteLine(System.UInt32)">
+            <summary>Writes an unsigned integer followed by a line terminator.</summary>
+        </member>
+        <member name="M:System.IO.TextWriter.WriteLine(System.Int64)">
+            <summary>Writes a long integer followed by a line terminator.</summary>
+        </member>
+        <member name="M:System.IO.TextWriter.WriteLine(System.UInt64)">
+            <summary>Writes an unsigned long integer followed by a line terminator.</summary>
+        </member>
+        <member name="M:System.IO.TextWriter.WriteLine(System.Single)">
+            <summary>Writes a single-precision number followed by a line terminator.</summary>
+        </member>
+        <member name="M:System.IO.TextWriter.WriteLine(System.Double)">
+            <summary>Writes a double-precision number followed by a line terminator.</summary>
+        </member>
+        <member name="M:System.IO.TextWriter.WriteLine(System.String)">
+            <summary>Writes a string followed by a line terminator.</summary>
+        </member>
+        <member name="M:System.IO.TextWriter.WriteLine(System.Object)">
+            <summary>Writes the text representation of an object followed by a line terminator.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.IO.FileSystem">
+            <summary>
+            Mounts and unmounts file systems on top of a <see cref="!:GHIElectronics.TinyCLR.Devices.Storage.StorageController"/>.
+            Pass the controller's <c>Hdc</c> to <see cref="M:GHIElectronics.TinyCLR.IO.FileSystem.Mount(System.IntPtr)"/> to make its
+            content accessible via <see cref="T:System.IO.File"/> / <see cref="T:System.IO.Directory"/>.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.IO.FileSystem.Mount(System.IntPtr)">
+            <summary>Mounts the file system on the storage controller handle and returns its drive provider.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.IO.FileSystem.Unmount(System.IntPtr)">
+            <summary>Unmounts the file system on the storage controller handle.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.IO.FileSystem.Flush(System.IntPtr)">
+            <summary>Flushes all pending writes for the file system on the storage controller handle.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.IO.FileSystem.Format(System.IntPtr,System.String,System.UInt32,System.Byte)">
+            <summary>Formats the volume on the storage controller handle, optionally over only part of the volume.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.IO.FileSystemEntry">
+            <summary>Describes a single file or directory returned by a drive provider.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.IO.FileSystemEntry.Attributes">
+            <summary>The attributes of the entry.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.IO.FileSystemEntry.CreationTime">
+            <summary>The time the entry was created.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.IO.FileSystemEntry.LastAccessTime">
+            <summary>The time the entry was last accessed.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.IO.FileSystemEntry.LastWriteTime">
+            <summary>The time the entry was last written.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.IO.FileSystemEntry.Size">
+            <summary>The size of the entry in bytes.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.IO.FileSystemEntry.FileName">
+            <summary>The name of the entry.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.IO.IDriveProvider">
+            <summary>Backing store for a mounted drive that the IO library calls into.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.IO.IDriveProvider.DriveType">
+            <summary>The type of the drive.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.IO.IDriveProvider.DriveFormat">
+            <summary>The name of the file system format on the drive.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.IO.IDriveProvider.IsReady">
+            <summary>Whether the drive is ready for access.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.IO.IDriveProvider.AvailableFreeSpace">
+            <summary>The amount of free space available on the drive in bytes.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.IO.IDriveProvider.TotalFreeSpace">
+            <summary>The total free space on the drive in bytes.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.IO.IDriveProvider.TotalSize">
+            <summary>The total size of the drive in bytes.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.IO.IDriveProvider.VolumeLabel">
+            <summary>The volume label of the drive.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.IO.IDriveProvider.Name">
+            <summary>The root name assigned to the drive.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.IO.IDriveProvider.Find(System.String,System.String)">
+            <summary>Returns a finder for the entries under the path that match the search pattern.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.IO.IDriveProvider.GetFileSystemEntry(System.String)">
+            <summary>Returns metadata for the entry at the path, or null if it does not exist.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.IO.IDriveProvider.OpenFile(System.String,System.Int32)">
+            <summary>Opens the file at the path and returns a stream to it.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.IO.IDriveProvider.Delete(System.String)">
+            <summary>Deletes the file or directory at the path.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.IO.IDriveProvider.Move(System.String,System.String)">
+            <summary>Moves an entry from the source path to the destination path.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.IO.IDriveProvider.CreateDirectory(System.String)">
+            <summary>Creates a directory at the path.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.IO.IDriveProvider.GetAttributes(System.String)">
+            <summary>Returns the attributes of the entry at the path.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.IO.IDriveProvider.SetAttributes(System.String,System.IO.FileAttributes)">
+            <summary>Sets the attributes of the entry at the path.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.IO.IDriveProvider.Initialize(System.String)">
+            <summary>Initializes the provider with the given root name.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.IO.IFileStream">
+            <summary>A low-level file stream supplied by a drive provider.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.IO.IFileStream.CanWrite">
+            <summary>Whether the stream supports writing.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.IO.IFileStream.CanRead">
+            <summary>Whether the stream supports reading.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.IO.IFileStream.CanSeek">
+            <summary>Whether the stream supports seeking.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.IO.IFileStream.Length">
+            <summary>The length of the stream in bytes.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.IO.IFileStream.Read(System.Byte[],System.Int32,System.Int32,System.TimeSpan)">
+            <summary>Reads up to count bytes into the buffer, returning the number read.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.IO.IFileStream.Write(System.Byte[],System.Int32,System.Int32,System.TimeSpan)">
+            <summary>Writes count bytes from the buffer, returning the number written.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.IO.IFileStream.Seek(System.Int64,System.IO.SeekOrigin)">
+            <summary>Moves the stream position relative to the given origin and returns the new position.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.IO.IFileStream.Flush">
+            <summary>Flushes any buffered data to the underlying store.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.IO.IFileStream.Close">
+            <summary>Closes the stream.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.IO.IFileSystemEntryFinder">
+            <summary>Iterates over the entries returned by a drive provider's search.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.IO.IFileSystemEntryFinder.GetNext">
+            <summary>Returns the next entry, or null when there are no more.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.IO.IFileSystemEntryFinder.Close">
+            <summary>Closes the finder and releases its resources.</summary>
+        </member>
+    </members>
+</doc>

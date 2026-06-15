@@ -14,17 +14,22 @@ namespace GHIElectronics.TinyCLR.Networking
     public class FtpListener : IDisposable
     {
         // Fields
-        protected Queue m_ContextQueue = null;                  // context queue         
+        /// <summary>Queue of pending contexts waiting to be served by this listener.</summary>
+        protected Queue m_ContextQueue = null;                  // context queue
+        /// <summary>Synchronization event signaled when a context is added to the queue.</summary>
         protected AutoResetEvent m_ContextQueueLock
             = new AutoResetEvent(false);                        // event for context read/write syncronization
+        /// <summary>List of path prefixes this listener handles.</summary>
         protected ArrayList m_Prefixes = null;                  // list of listening prefixes
         private bool m_IsNeedAttach = true;                     // indicate whether this listener should be owned by the listener manager, if yes then the value should be true
         private bool m_IsRunning = false;                       // flag to show whether this listener is listening to requests
 
+        /// <summary>Raised to authenticate a user logging in to the FTP server.</summary>
         public static event UserAuthenticator AuthenticationEvent;
                                                                 // User authentication event, handled by API user's registered handlers
 
         // Methods
+        /// <summary>Creates an FTP listener registered with the listener manager.</summary>
         public FtpListener()
             : this(true)
         {
@@ -185,6 +190,7 @@ namespace GHIElectronics.TinyCLR.Networking
 
         #region IDisposable Members
 
+        /// <summary>Stops the listener and releases its resources.</summary>
         public void Dispose()
         {
             this.Stop();

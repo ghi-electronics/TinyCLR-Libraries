@@ -5,13 +5,17 @@
 
 
 namespace GHIElectronics.TinyCLR.UI.Controls {
+    /// <summary>A panel that stacks its children in a single row or column.</summary>
     public class StackPanel : Panel {
+        /// <summary>Initializes a new stack panel that stacks children vertically.</summary>
         public StackPanel()
             : this(Orientation.Vertical) {
         }
 
+        /// <summary>Initializes a new stack panel with the given stacking orientation.</summary>
         public StackPanel(Orientation orientation) => this.Orientation = orientation;
 
+        /// <summary>The direction in which children are stacked.</summary>
         public Orientation Orientation {
             get => this._orientation;
 
@@ -23,6 +27,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
+        /// <summary>Measures the panel as the sum of child sizes along the stacking axis.</summary>
         protected override void MeasureOverride(int availableWidth, int availableHeight, out int desiredWidth, out int desiredHeight) {
             desiredWidth = 0;
             desiredHeight = 0;
@@ -61,6 +66,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
+        /// <summary>Positions children one after another along the stacking axis.</summary>
         protected override void ArrangeOverride(int arrangeWidth, int arrangeHeight) {
             var fHorizontal = (this.Orientation == Orientation.Horizontal);
             var previousChildSize = 0;

@@ -1,0 +1,506 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>GHIElectronics.TinyCLR.IO.TinyFileSystem</name>
+    </assembly>
+    <members>
+        <member name="T:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem">
+            <summary>
+            Markers used to indicate the state of the a cluster or sector on the disk
+            In the case of a sector, this is just the first cluster on the disk which
+            has the additional possible state of having the FormattedSector marker.
+            </summary>
+            <summary>
+            Tiny File System provides a basic file system which can be overlayed on any device providing
+            a concrete implementation of the IBlockDriver interface.
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.BufferedStream">
+            <summary>
+            Main class for the BufferedStream object.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.BufferedStream.#ctor(System.IO.Stream)">
+            <summary>
+            Initializes a new instance of the <see cref="T:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.BufferedStream"/> class with a default buffer size of 4096 bytes.
+            </summary>
+            <param name="stream">The stream.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.BufferedStream.#ctor(System.IO.Stream,System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.BufferedStream"/> class.
+            </summary>
+            <param name="stream">The stream.</param>
+            <param name="bufferSize">The buffer_size.</param>
+            <exception cref="T:System.ArgumentNullException">stream</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">buffer_size &lt;= 0</exception>
+            <exception cref="T:System.ObjectDisposedException">Cannot access a closed Stream.</exception>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.FileRef">
+            <summary>
+            In memory representation of a file on "disk".
+            This structure tracks the files total size, the clusters 
+            that make up the content of the file and the number of currently open
+            Streams on the file.
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.FileRef.objId">
+            <summary>
+            Unique object id of the file.
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.FileRef.fileSize">
+            <summary>
+            Size of the file in bytes.
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.FileRef.openCount">
+            <summary>
+            Number of open streams on the file.
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.FileRef.blocks">
+             <summary>
+             The list of clusters that make up the file content.
+            
+             Each block is sequenced in the order that the data occurs in the file.
+             For example, index 0's value is the  cluster id of the disk location that 
+             storing the data for the first block of file data, index 1 points to the 
+             cluster id of the second block of data etc.
+             <remarks>
+             Block 0 also contains the files meta data in the form of a FileClusterBlock,
+             subsequent block will be in the form of DataClusterBlocks. As a space optimization
+             the FileClusterBlock also contain the initial data in the file.
+             </remarks>
+             </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.DeviceStats">
+            <summary>
+            Statistics for the device
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.DeviceStats.BytesFree">
+            <summary>
+            Free memory available for use.
+            </summary>
+            <remarks>
+            The free memory is reported in multiples of free cluster sizes. The unused space
+            on currently allocated clusters is not reported. This also excludes any potential 
+            free space that is currently occupied by orphaned clusters.
+            </remarks>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.DeviceStats.BytesOrphaned">
+            <summary>
+            Memory occupied by orphaned clusters.
+            </summary>
+            <remarks>
+            This counter will report the amount of space currently allocated to orphaned clusters.
+            Compacting the file system will return this memory to the free pool.
+            </remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.DeviceStats.#ctor(System.Int32,System.Int32)">
+            <summary>
+            Creates an instance of the DeviceStats structure.
+            </summary>
+            <param name="bytesFree">Bytes free in the file system.</param>
+            <param name="bytesOrphaned">Bytes orphaned in the file system.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.DeviceStats.ToString">
+            <summary>
+            Returns a <see cref="T:System.String" /> that represents this instance.
+            </summary>
+            <returns>
+            A <see cref="T:System.String" /> that represents this instance.
+            </returns>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.ClusterBuffer">
+            <summary>
+            Utility class used to serialize/deserialize the data structures of the file system
+            between the in memory representation and the on device representation.
+            </summary>
+            <remarks>
+            If these structures are changed you need to be very careful about correctly updating
+            the constants found in this structure.
+            </remarks>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.Blitter">
+            <summary>
+            A utility class to facilitate the serialization and deserialization
+            of the data types used in the FileS System structures to and from memory.
+            </summary>
+            <remarks>
+            This utility class is limited to the types required by the file system.
+            GetXXX  - functions extract the data type XXX from the supplied buffer starting at the specified index
+            ToBytes - function push the byte representation of the data type into the supplied byte buffer starting at the specified index.
+            </remarks>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.IBlockDriver">
+            <summary>
+            Interface to abstract the file system from the physical device.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.IBlockDriver.EraseChip">
+            <summary>
+            Completely erases the memory chip (fills it with 0xFF, in reality, as it is a Flash memory).
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.IBlockDriver.EraseSector(System.Int32)">
+            <summary>
+            Erases a sector on the device.
+            </summary>
+            <param name="sectorId">Sector to be erased.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.IBlockDriver.Read(System.UInt16,System.Int32,System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Read a block of data from a cluster.
+            </summary>
+            <param name="clusterId">The cluster to read from.</param>
+            <param name="clusterOffset">The offset into the cluster to start reading from.</param>
+            <param name="data">The byte array to fill with the data read from the device.</param>
+            <param name="index">The index into the array to start filling the data.</param>
+            <param name="count">The maximum number of bytes to read.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.IBlockDriver.Write(System.UInt16,System.Int32,System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Write a block of data to a cluster.
+            </summary>
+            <param name="clusterId">The cluster to write to.</param>
+            <param name="clusterOffset">The offset into the cluster to start writting to.</param>
+            <param name="data">The byte array containing the data to be written.</param>
+            <param name="index">The index into the array to start writting from</param>
+            <param name="count">The number of bytes to write.</param>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.IBlockDriver.DeviceSize">
+            <summary>
+            Full capacity of the device in bytes.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.IBlockDriver.SectorSize">
+            <summary>
+            The size in bytes of a sector on the device.
+            </summary>    
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.IBlockDriver.ClusterSize">
+            <summary>
+            The cluster size in bytes.
+            </summary>
+            <remarks>
+            Typically a flash devices have their sectors sub-divided into pages.
+            A cluster size must be a multiple of the page size of the device, where
+            a cluster overlays one or more pages.
+            For example a device with a page size of 256 bytes can have cluster sizes
+            of any multiple of 256 ie. 256, 512, 768, 1024...
+            </remarks>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.StringTable">
+            <summary>
+            Table of commonly used strings in the Tiny File System.
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.TinyFileStream">
+            <summary>
+            Provides a stream for a file in the Tiny File System.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.TinyFileStream.#ctor(GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem,GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.FileRef)">
+            <summary>
+            Creates an instance of TinyFileStream.
+            </summary>
+            <param name="fileSystem">TinyFileSystem instance on which the file this stream exposes exists.</param>
+            <param name="fileRef">The file to expose through the TinyFileStream.</param>
+            <remarks>
+            Instances of this class should never be created directly. The should be created by calls to Create or Open
+            on the TinyFileSystem instance.
+            </remarks>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.TinyFileStream.CanRead">
+            <summary>
+            Gets a value indicating whether the current stream supports reading.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.TinyFileStream.CanSeek">
+            <summary>
+            Gets a value indicating whether the current stream supports seeking.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.TinyFileStream.CanWrite">
+            <summary>
+            Gets a value indicating whether the current stream supports writing.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.TinyFileStream.Length">
+            <summary>
+            Gets length of bytes in the stream.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.TinyFileStream.Position">
+            <summary>
+            Gets or sets the current possition in the stream.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.TinyFileStream.Flush">
+            <summary>
+            Writes unwritten data to the file.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.TinyFileStream.Read(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Reads a block of bytes from the stream.
+            </summary>
+            <param name="array">The array to fill with the data read from the file.</param>
+            <param name="offset">The byte offset in the array at which read bytes will be placed.</param>
+            <param name="count">The maximun number of bytes to read.</param>
+            <returns></returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.TinyFileStream.Seek(System.Int64,System.IO.SeekOrigin)">
+            <summary>
+            Sets the current position of this stream to a given value.
+            </summary>
+            <param name="offset">The offset of the positon relative to the origin.</param>
+            <param name="origin">Specified the beginning, end or current postion as a reference point to apply the offset.</param>
+            <returns>The new postion in the stream.</returns>    
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.TinyFileStream.SetLength(System.Int64)">
+            <summary>
+            Sets the length of this stream to a given value.
+            </summary>
+            <param name="value">The new length of the stream</param>
+            <remarks>
+            If the length is less than the current length of the stream, the stream is truncated.
+            </remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.TinyFileStream.Write(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Writes a block of bytes to the file stream.
+            </summary>
+            <param name="array">The buffer containing the data to write to the stream.</param>
+            <param name="offset">The byte offset in the array from which to start writing bytes to the stream.</param>
+            <param name="count">The number of bytes to write.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.TinyFileStream.Dispose(System.Boolean)">
+            <summary>
+            Dispose the TinyFileStream.
+            </summary>
+            <param name="disposing">true if being disposed from a call to Dispose otherwise false if called from the finalizer.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.#ctor(GHIElectronics.TinyCLR.Devices.Storage.Provider.IStorageControllerProvider,System.UInt32)">
+            <summary>
+            Creates an instance of TinyFileSystem.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.CheckIfFormatted">
+            <summary>
+            Scan the flash module to verify that it is formatted.
+            </summary>
+            <returns>true if formatted else false.</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.Mount">
+            <summary>
+            Mount an existing file system from a device.    
+            </summary>
+            <remarks>
+            Before using the file system it must be mounted. The only exception is
+            for Format, which will format the device and mount it immediately.
+            
+            The user should ensure that the device has a valid file system.
+            Currently there are only very basic heuristics to determine if the
+            device has a valid file system. This will be improved over time.
+            </remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.Format">
+            <summary>
+            Formats the device.
+            </summary>
+            <remarks>
+            This will prepare the device for the file system. 
+            Note that this will destroy any pre-existing data on the device.
+            </remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.Compact">
+            <summary>
+            Compacts the file system.
+            </summary>
+            <remarks>
+            Collects all the active clusters and puts them together on the device and formats add the freed sectors.
+            Frees up all the space occupied by inactive clusters.
+            </remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.Copy(System.String,System.String,System.Boolean)">
+            <summary>
+            Copies a file to a new file.
+            </summary>
+            <param name="sourceFileName">The file to copy.</param>
+            <param name="destFileName">The name of the destination file</param>
+            <param name="overwrite">Specifies if the destination should be overwritten if it already exists. Default true.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.Create(System.String,System.Int32)">
+            <summary>
+            Creates or overwrites a file.
+            </summary>
+            <param name="fileName">Name of the file to create.</param>
+            <param name="bufferSize">Size of the read/write buffer. 0 for no buffering.</param>
+            <returns>TinyFileStream that provides stream based access to the file.</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.Delete(System.String)">
+            <summary>
+            Deletes a file from the device.
+            </summary>
+            <param name="fileName">Name of the file to delete.</param>
+            <remarks>
+            An IOException will be thrown if the file is open.
+            </remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.Exists(System.String)">
+            <summary>
+            Determines if the specified file exists.
+            </summary>
+            <param name="fileName">Name of the file to check.</param>
+            <returns>true if the file exists otherwise false.</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.Move(System.String,System.String)">
+            <summary>
+            Moves a file from the source to the destination.
+            </summary>
+            <remarks>
+            Since the Tiny File System does not support directories, move is only used to rename a file.
+            </remarks>
+            <param name="sourceFileName">Name of the file to move.</param>
+            <param name="destFileName">New name of the file.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.Open(System.String,System.IO.FileMode,System.Int32)">
+            <summary>
+            Opens a TinyFileStream for the specified file.
+            </summary>
+            <param name="fileName">Name of the file to open.</param>
+            <param name="fileMode">Specifies what to do when opening the file.</param>
+            <param name="bufferSize">Size of the read/write buffer. 0 for no buffering.</param>
+            <returns>A TinyFileStream which provides stream based access to the file.</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.ReadAllBytes(System.String)">
+            <summary>
+            Opens a file, reads the content into a byte array and then closes the file.
+            </summary>
+            <param name="fileName">Name of the file to read.</param>
+            <returns>A byte array containing the data from the file.</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.WriteAllBytes(System.String,System.Byte[])">
+            <summary>
+            Creates a new file, writes the byte array to the file and then closes it.
+            The file is overwritten if it already exists.
+            </summary>
+            <param name="fileName">Name of the file to create.</param>
+            <param name="data">Bytes to be written to the file.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.GetFiles">
+            <summary>
+            Returns the names of the files in the file system.
+            </summary>
+            <returns>An array of the names of the files.</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.GetFileSize(System.String)">
+            <summary>
+            Gets the size of the specified file.
+            </summary>
+            <param name="fileName">Name of the file for which to retrieve the file size.</param>
+            <returns>Size of the file in bytes.</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.GetFileCreationTime(System.String)">
+            <summary>
+            Gets the creation time of the specified file.
+            </summary>
+            <param name="fileName">Name of the file for which to retrieve the creation time.</param>
+            <returns>The creation time of the specified file.</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.GetStats">
+            <summary>
+            Get the current statistics of the file system.
+            </summary>
+            <returns>Structure with the statistics of the file system.</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.Dispose(System.Boolean)">
+            <summary>Releases the underlying block driver when <paramref name="disposing"/> is true.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.Dispose">
+            <summary>Releases all resources used by the file system.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.UInt16Array">
+            <summary>
+            Dynamically growing array of UInt16 (ushort) elements.    
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.UInt16Array.Item(System.Int32)">
+            <summary>
+            Gets or sets the element at the specified index.
+            </summary>
+            <param name="index">The zero-based index of the element to get or set.</param>
+            <returns>The element a the specified index.</returns>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.UInt16Array.Count">
+            <summary>
+            Gets the number of elements contained in the array.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.UInt16Array.Add(System.UInt16)">
+            <summary>
+            Adds an element to the end of the collection.
+            </summary>
+            <param name="value">Value of the element to add.</param>
+            <returns>The new count of items in the array.</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.UInt16Array.SetLength(System.Int32)">
+            <summary>
+            Adjusts the length of the array. 
+            This can be used to trim the end of the array.
+            </summary>
+            <param name="length">New length of the array.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.UInt16Array.Set(System.Int32,System.UInt16)">
+            <summary>
+            Sets the value of an element at the specified index.
+            If the index is beyond the end of the array, the array will grow 
+            to accomodate the new element.
+            </summary>
+            <param name="index">The zero-based index of the element to set.</param>
+            <param name="value"></param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.UInt16Array.Grow(System.Int32)">
+            <summary>
+            Grows the internal array to increase the capacity.
+            </summary>
+            <param name="newSize">New size of the array.</param>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.Utilities">
+            <summary>
+            General utility functions.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.Utilities.Sort(System.String[])">
+            <summary>
+            Sorts an array of strings.
+            </summary>
+            <remarks>
+            Original code by user "Jay Jay"
+            http://www.tinyclr.com/codeshare/entry/475
+            Modified to be specifically suites to sorting arrays of strings.    
+            </remarks>
+            <param name="array">Array of string to be sorted.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.IO.TinyFileSystem.TinyFileSystem.Utilities.Sort(System.String[],System.Int32,System.Int32)">
+            <summary>
+            This is a generic version of C.A.R Hoare's Quick Sort 
+            algorithm.  This will handle arrays that are already
+            sorted, and arrays with duplicate keys.
+            </summary>
+            <remarks>
+            If you think of a one dimensional array as going from
+            the lowest index on the left to the highest index on the right
+            then the parameters to this function are lowest index or
+            left and highest index or right.  The first time you call
+            this function it will be with the parameters 0, a.length - 1.
+            </remarks>
+            <param name="array">Array of string to be sorted.</param>
+            <param name="l">Left boundary of array partition</param>
+            <param name="r">Right boundary of array partition</param>
+        </member>
+    </members>
+</doc>

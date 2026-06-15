@@ -148,6 +148,7 @@ namespace System.Text.RegularExpressions
     }
     */
 
+    /// <summary>Represents the set of capturing groups matched by a regular expression.</summary>
     [Serializable]
     public class GroupCollection : ICollection, IEnumerable
     {
@@ -163,6 +164,7 @@ namespace System.Text.RegularExpressions
             this._captureMap = caps;
         }
 
+        /// <summary>Copies all the elements of the collection to the given array starting at the given index.</summary>
         public void CopyTo(Array array, int arrayIndex)
         {
             if (array == null)
@@ -178,6 +180,7 @@ namespace System.Text.RegularExpressions
             }
         }
 
+        /// <summary>Returns an enumerator that iterates through the collection.</summary>
         public IEnumerator GetEnumerator()
         {
             return new GroupEnumerator(this);
@@ -234,6 +237,7 @@ namespace System.Text.RegularExpressions
             return this._groups[groupnum - 1];
         }
 
+        /// <summary>The number of groups in the collection.</summary>
         // Properties
         public int Count
         {
@@ -243,6 +247,7 @@ namespace System.Text.RegularExpressions
             }
         }
 
+        /// <summary>Gets a value indicating whether the collection is read-only.</summary>
         public bool IsReadOnly
         {
             get
@@ -251,6 +256,7 @@ namespace System.Text.RegularExpressions
             }
         }
 
+        /// <summary>Gets a value indicating whether access to the collection is synchronized (thread-safe).</summary>
         public bool IsSynchronized
         {
             get
@@ -259,6 +265,7 @@ namespace System.Text.RegularExpressions
             }
         }
 
+        /// <summary>Gets the group at the specified index in the collection.</summary>
         public Group this[int groupnum]
         {
             get
@@ -267,6 +274,7 @@ namespace System.Text.RegularExpressions
             }
         }
 
+        /// <summary>Gets the group with the specified name.</summary>
         public Group this[string groupname]
         {
             get
@@ -282,6 +290,7 @@ namespace System.Text.RegularExpressions
             }
         }
 
+        /// <summary>An object that can be used to synchronize access to the collection.</summary>
         public object SyncRoot
         {
             get

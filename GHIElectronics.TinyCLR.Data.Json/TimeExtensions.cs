@@ -2,8 +2,10 @@ using System;
 
 namespace GHIElectronics.TinyCLR.Data.Json
 {
+	/// <summary>Helpers for converting dates between common JSON and calendar string formats.</summary>
 	public static class DateTimeExtensions
 	{
+		/// <summary>Parses a date from an iCalendar date-time string.</summary>
 		public static DateTime FromiCalendar(string iCalendar)
 		{
 			DateTime dt = DateTime.MinValue;
@@ -68,6 +70,7 @@ namespace GHIElectronics.TinyCLR.Data.Json
 			return dt;
 		}
 
+		/// <summary>Parses a date from an ISO 8601 date-time string.</summary>
 		public static DateTime FromIso8601(string date)
 		{
 			string result = string.Empty;
@@ -117,6 +120,7 @@ namespace GHIElectronics.TinyCLR.Data.Json
 			return dt;
 		}
 
+		/// <summary>Formats a date as an ISO 8601 UTC date-time string.</summary>
 		public static string ToIso8601(DateTime dt)
 		{
 			string result = dt.Year.ToString() + "-" +
@@ -155,6 +159,7 @@ namespace GHIElectronics.TinyCLR.Data.Json
 			return value.ToString();
 		}
 
+		/// <summary>Formats a date as an ASP.NET Ajax \/Date(ticks)\/ string.</summary>
 		public static string ToASPNetAjax(DateTime dt)
 		{
 			string value = dt.Ticks.ToString();
@@ -162,6 +167,7 @@ namespace GHIElectronics.TinyCLR.Data.Json
 			return @"\/Date(" + value + @")\/";
 		}
 
+		/// <summary>Parses a date from an ASP.NET Ajax \/Date(ticks)\/ string.</summary>
 		public static DateTime FromASPNetAjax(string ajax)
 		{
 			string[] parts = ajax.Split(new char[] { '(', ')' });

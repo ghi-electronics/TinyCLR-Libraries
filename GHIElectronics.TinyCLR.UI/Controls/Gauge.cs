@@ -1,804 +1,647 @@
 using System;
-using System.Collections;
 using System.Drawing;
-using System.Text;
-using System.Threading;
 using GHIElectronics.TinyCLR.UI.Media;
 using GHIElectronics.TinyCLR.UI.Media.Imaging;
-using Color = GHIElectronics.TinyCLR.UI.Media.Color;
+using MediaColor = GHIElectronics.TinyCLR.UI.Media.Color;
 
 namespace GHIElectronics.TinyCLR.UI.Controls {
+    /// <summary>
+    /// Analog gauge with calibrated tick marks, optional threshold arc, optional
+    /// seven-segment digital readout, dial label, and pointer needle. Always
+    /// square — pass the side length to the constructor.
+    ///
+    /// Rendering is cached: the static background (dial face, calibration,
+    /// threshold, digital number, label) is drawn once into a backing bitmap;
+    /// only the pointer is redrawn each paint. Any property change marks the
+    /// background dirty.
+    /// </summary>
     public class Gauge : Image, IDisposable {
-
-        #region Private Attributes       
-        private float minValue = 0;
-        private float maxValue = 100;
-        private float threshold = 25;
-        private float currentValue = 0;
-        private float recommendedValue = 25;
-        private int noOfDivisions = 10;
-        private int noOfSubDivisions = 3;
-        private string dialText = string.Empty;
-        private System.Drawing.Color foreColor = System.Drawing.Color.FromArgb(255, 0, 0, 0);
-        private System.Drawing.Color dialColor = System.Drawing.Color.FromArgb(255, 230, 230, 250);
-        private float glossinessAlpha = 72;//25;
-        private int oldWidth, oldHeight;
-        int x, y, width, height;
-        float fromAngle = 135F;
-        float toAngle = 405F;
-        private bool enableTransparentBackground = true;
-        private bool requiresRedraw;
-        private System.Drawing.Image backgroundImg;
-        private Rectangle rectImg;
-        System.Drawing.Bitmap bmp;
-
-
-        #endregion
-        public Font Font { get; set; }
-        public bool EnableDigitalNumber { get; set; }
-        public bool EnableThresold { get; set; }
-
+        // TinyCLR's System.Drawing has no PointF; this is a local sub for
+        // floating-point polygon vertices.
         private struct PointF {
-            public PointF(float ax, float ay) {
-                this.X = ax;
-                this.Y = ay;
-
-            }
-            public float X { get; set; }
-            public float Y { get; set; }
+            public float X;
+            public float Y;
         }
 
-        public Gauge(int radius) : base() {
-            this.Width = radius;
-            this.Height = radius;
+        // --- visual constants (extracted from inline magic numbers) -----------
 
-            this.noOfDivisions = 10;
-            this.noOfSubDivisions = 3;
-            this.requiresRedraw = true;
+        private const float FromAngleDeg = 135f;
+        private const float ToAngleDeg = 405f;          // 270° sweep, clockwise
+        private const float PointerSpread = 20f;        // half-base spread in degrees
+        private const float PointerTipOffset = 0.02f;   // radians of secondary tip used by glossy half
 
-            this.Resize();
+        private const float PointerRadiusFactor = 0.12f; // tip-of-needle distance from center as a fraction of side
+        private const float PointerBaseFactor = 0.09f;   // half-base width of needle as a fraction of side
+
+        private const int MinDivisions = 2;
+        private const int MaxDivisions = 24;
+        private const int MaxSubDivisions = 10;
+
+        private const float GlossinessMaxAlpha = 220f;   // map Glossiness (0..100) → alpha (0..220)
+
+        private static readonly MediaColor RimColor = MediaColor.FromArgb(0xFF, 112, 128, 144);   // SlateGray
+        private static readonly MediaColor ThresholdRimColor = MediaColor.FromArgb(0xFF, 220, 220, 220);
+        private static readonly MediaColor ThresholdMarkColor = MediaColor.FromArgb(0xFF, 124, 252, 0); // LawnGreen
+        private static readonly MediaColor PointerColor = MediaColor.FromArgb(0xFF, 0, 0, 0);
+        private static readonly MediaColor DigitalPanelColor = MediaColor.FromArgb(0xFF, 128, 128, 128);
+
+        // --- public properties ------------------------------------------------
+
+        /// <summary>Font used for the dial labels and digital readout.</summary>
+        public Font Font { get; set; }
+        /// <summary>When true, a seven-segment digital value is shown below the dial.</summary>
+        public bool EnableDigitalNumber { get; set; }
+        /// <summary>When true, the threshold arc around the recommended value is drawn.</summary>
+        public bool EnableThreshold { get; set; }
+
+        /// <summary>Background color behind the dial.</summary>
+        public MediaColor BackColor {
+            get => this._backColor;
+            set { this._backColor = value; this.MarkDirty(); }
         }
 
-
-        private System.Drawing.Color backColor = System.Drawing.Color.FromArgb(255, 255, 255, 255);
-        public Color BackColor {
-            get => Color.FromArgb(this.backColor.A, this.backColor.R, this.backColor.G, this.backColor.B);
-            set => this.backColor = System.Drawing.Color.FromArgb(value.A, value.R, value.G, value.B);
+        /// <summary>Color of the dial face.</summary>
+        public MediaColor DialColor {
+            get => this._dialColor;
+            set { this._dialColor = value; this.MarkDirty(); }
         }
 
-        #region Public Properties
-        /// <summary>
-        /// Mininum value on the scale
-        /// </summary>
+        /// <summary>Color of the tick marks, labels and dial text.</summary>
+        public MediaColor ForeColor {
+            get => this._foreColor;
+            set { this._foreColor = value; this.MarkDirty(); }
+        }
 
+        /// <summary>Smallest value on the dial.</summary>
         public float MinValue {
-            get => this.minValue;
+            get => this._minValue;
             set {
-                if (value < this.maxValue) {
-                    this.minValue = value;
-                    if (this.currentValue < this.minValue)
-                        this.currentValue = this.minValue;
-                    if (this.recommendedValue < this.minValue)
-                        this.recommendedValue = this.minValue;
-                    this.requiresRedraw = true;
-
+                if (value < this._maxValue) {
+                    this._minValue = value;
+                    if (this._currentValue < value) this._currentValue = value;
+                    if (this._recommendedValue < value) this._recommendedValue = value;
+                    this.MarkDirty();
                 }
             }
         }
 
-        /// <summary>
-        /// Maximum value on the scale
-        /// </summary>
-
+        /// <summary>Largest value on the dial.</summary>
         public float MaxValue {
-            get => this.maxValue;
+            get => this._maxValue;
             set {
-                if (value > this.minValue) {
-                    this.maxValue = value;
-                    if (this.currentValue > this.maxValue)
-                        this.currentValue = this.maxValue;
-                    if (this.recommendedValue > this.maxValue)
-                        this.recommendedValue = this.maxValue;
-                    this.requiresRedraw = true;
-
+                if (value > this._minValue) {
+                    this._maxValue = value;
+                    if (this._currentValue > value) this._currentValue = value;
+                    if (this._recommendedValue > value) this._recommendedValue = value;
+                    this.MarkDirty();
                 }
             }
         }
 
-        /// <summary>
-        /// Gets or Sets the Threshold area from the Recommended Value. (1-99%)
-        /// </summary>
+        /// <summary>Threshold area around the recommended value, 1–99%.</summary>
         public float ThresholdPercent {
-            get => this.threshold;
+            get => this._threshold;
             set {
                 if (value > 0 && value < 100) {
-                    this.threshold = value;
-                    this.requiresRedraw = true;
-
+                    this._threshold = value;
+                    this.MarkDirty();
                 }
             }
         }
 
-        /// <summary>
-        /// Threshold value from which green area will be marked.
-        /// </summary>
+        /// <summary>Value the threshold arc is centered on.</summary>
         public float RecommendedValue {
-            get => this.recommendedValue;
+            get => this._recommendedValue;
             set {
-                if (value > this.minValue && value < this.maxValue) {
-                    this.recommendedValue = value;
-                    this.requiresRedraw = true;
-
+                if (value > this._minValue && value < this._maxValue) {
+                    this._recommendedValue = value;
+                    this.MarkDirty();
                 }
             }
         }
 
-        /// <summary>
-        /// Value where the pointer will point to.
-        /// </summary>
+        /// <summary>Current needle position. Only this property doesn't dirty
+        /// the background — the pointer is repainted every frame.</summary>
         public float Value {
-            get => this.currentValue;
+            get => this._currentValue;
             set {
-                if (value >= this.minValue && value <= this.maxValue) {
-                    this.currentValue = value;
-
+                if (value >= this._minValue && value <= this._maxValue) {
+                    this._currentValue = value;
+                    this.Invalidate();
                 }
             }
         }
 
-        /// <summary>
-        /// Background color of the dial
-        /// </summary>
-        public Color DialColor {
-            get => Color.FromArgb(this.dialColor.A, this.dialColor.R, this.dialColor.G, this.dialColor.B);
-            set {
-                this.dialColor = System.Drawing.Color.FromArgb(value.A, value.R, value.G, value.B);
-                this.requiresRedraw = true;
-
-            }
-        }
-
-        /// <summary>
-        /// Glossiness strength. Range: 0-100
-        /// </summary>
-
+        /// <summary>Glossiness strength 0..100 (mapped to 0..220 alpha internally).</summary>
         public float Glossiness {
-            get => (this.glossinessAlpha * 100) / 220;
+            get => this._glossinessAlpha * 100f / GlossinessMaxAlpha;
             set {
-                var val = value;
-                if (val > 100)
-                    value = 100;
-                if (val < 0)
-                    value = 0;
-                this.glossinessAlpha = (value * 220) / 100;
-
+                if (value < 0) value = 0;
+                if (value > 100) value = 100;
+                this._glossinessAlpha = value * GlossinessMaxAlpha / 100f;
             }
         }
 
-        /// <summary>
-        /// Get or Sets the number of Divisions in the dial scale.
-        /// </summary>
+        /// <summary>Number of major tick divisions on the dial (2-24).</summary>
         public int NoOfDivisions {
-            get => this.noOfDivisions;
+            get => this._noOfDivisions;
             set {
-                if (value > 1 && value < 25) {
-                    this.noOfDivisions = value;
-                    this.requiresRedraw = true;
-
+                if (value > MinDivisions - 1 && value < MaxDivisions + 1) {
+                    this._noOfDivisions = value;
+                    this.MarkDirty();
                 }
             }
         }
 
-        /// <summary>
-        /// Gets or Sets the number of Sub Divisions in the scale per Division.
-        /// </summary>
+        /// <summary>Number of minor tick marks between major divisions (1-10).</summary>
         public int NoOfSubDivisions {
-            get => this.noOfSubDivisions;
+            get => this._noOfSubDivisions;
             set {
-                if (value > 0 && value <= 10) {
-                    this.noOfSubDivisions = value;
-                    this.requiresRedraw = true;
+                if (value > 0 && value <= MaxSubDivisions) {
+                    this._noOfSubDivisions = value;
+                    this.MarkDirty();
                 }
             }
         }
 
-        /// <summary>
-        /// Gets or Sets the Text to be displayed in the dial
-        /// </summary>
+        /// <summary>Label text drawn on the dial face.</summary>
         public string DialText {
-            get => this.dialText;
-            set {
-                this.dialText = value;
-                this.requiresRedraw = true;
-
-            }
+            get => this._dialText;
+            set { this._dialText = value ?? string.Empty; this.MarkDirty(); }
         }
 
         /// <summary>
-        /// Enables or Disables Transparent Background color.
-        /// Note: Enabling this will reduce the performance and may make the control flicker.
+        /// When true, the dial face is overlapped by a slightly larger ellipse
+        /// in the back color so the dial appears to float. Costs an extra
+        /// FillEllipse per redraw.
         /// </summary>
         public bool EnableTransparentBackground {
-            get => this.enableTransparentBackground;
-            set {
-                this.enableTransparentBackground = value;
-                this.requiresRedraw = true;
-
-            }
-        }
-        #endregion
-
-        #region Overriden Control methods
-        /// <summary>
-        /// Draws the pointer.
-        /// </summary>
-        /// <param name="e"></param>
-        private System.Drawing.Bitmap GetGauge() {
-            this.width = this.Width - this.x * 2;
-            this.height = this.Height - this.y * 2;
-
-            var gfx = Graphics.FromImage(this.bmp);
-            gfx.Clear();
-
-            this.PaintBackground(gfx);
-            this.DrawPointer(gfx, ((this.width) / 2) + this.x, ((this.height) / 2) + this.y);
-            //gfx.Flush();
-
-            return this.bmp;
+            get => this._enableTransparentBackground;
+            set { this._enableTransparentBackground = value; this.MarkDirty(); }
         }
 
-        /// <summary>
-        /// Draws the dial background.
-        /// </summary>
-        /// <param name="e"></param>
-        protected void PaintBackground(Graphics gfx) {
+        // --- private state ---------------------------------------------------
 
-            gfx.FillRectangle(new SolidBrush(this.backColor), 0, 0, this.Width, this.Height);
-            if (this.backgroundImg == null)
-                this.backgroundImg = new System.Drawing.Bitmap(this.Width, this.Height);
+        private float _minValue = 0;
+        private float _maxValue = 100;
+        private float _threshold = 25;
+        private float _currentValue = 0;
+        private float _recommendedValue = 25;
+        private int _noOfDivisions = 10;
+        private int _noOfSubDivisions = 3;
+        private string _dialText = string.Empty;
+        private MediaColor _backColor = MediaColor.FromArgb(0xFF, 0xFF, 0xFF, 0xFF);
+        private MediaColor _dialColor = MediaColor.FromArgb(0xFF, 230, 230, 250);   // Lavender
+        private MediaColor _foreColor = MediaColor.FromArgb(0xFF, 0, 0, 0);
+        private float _glossinessAlpha = 72;
+        private bool _enableTransparentBackground = true;
 
-            if (this.requiresRedraw) {
-                var g = Graphics.FromImage(this.backgroundImg);
-                g.FillRectangle(new SolidBrush(this.backColor), 0, 0, this.Width, this.Height);
-                //g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
-                this.width = this.Width - this.x * 2;
-                this.height = this.Height - this.y * 2;
-                this.rectImg = new Rectangle(this.x, this.y, this.width, this.height);
+        // Cached System.Drawing surfaces — the composite bitmap we hand to the
+        // UI layer (`_bmp` wrapped by `_cachedImage`), and a separate background
+        // bitmap so we can repaint only the pointer between value changes.
+        private System.Drawing.Bitmap _bmp;
+        private System.Drawing.Image _backgroundImg;
+        private BitmapImage _cachedImage;
+        private int _cachedSide;
+        private bool _backgroundDirty = true;
 
-                //Draw background color
-                var backGroundBrush = new SolidBrush(this.dialColor);//new SolidBrush(Color.FromArgb(120, dialColor));
-                if (this.enableTransparentBackground) {
-                    float gg = this.width / 60;
-                    g.FillEllipse(new SolidBrush(this.backColor), (int)-gg, (int)-gg, (int)(this.Width + gg * 2), (int)(this.Height + gg * 2));
-                }
-                g.FillEllipse(backGroundBrush, this.x, this.y, this.width, this.height);
+        private bool _disposed;
 
-                //Draw Rim
-                var outlineBrush = new SolidBrush(System.Drawing.Color.FromArgb(112, 128, 144));//gray
-                var outline = new System.Drawing.Pen(outlineBrush, (float)(this.width * .03));
-                //g.DrawEllipse(outline, this.rectImg.X, this.rectImg.Y, this.rectImg.Width, this.rectImg.Height);
-                var darkRim = new System.Drawing.Pen(System.Drawing.Color.FromArgb(112, 128, 144));//gray
-                g.DrawEllipse(darkRim, this.x, this.y, this.width, this.height);
+        // --- construction ----------------------------------------------------
 
-                //Draw Callibration
-                this.DrawCalibration(g, this.rectImg, ((this.width) / 2) + this.x, ((this.height) / 2) + this.y);
-
-                if (this.EnableThresold) {
-                    //Draw Colored Rim
-                    var colorPen = new System.Drawing.Pen(System.Drawing.Color.FromArgb(220, 220, 220), this.Width / 40);//new Pen(Color.FromArgb(190, Color.FromArgb(220, 220, 220)), this.Width / 40);
-                                                                                                                         //var blackPen = new System.Drawing.Pen(System.Drawing.Color.Black, this.Width / 200);//new Pen(Color.FromArgb(250, Color.Black), this.Width / 200);
-                    var gap = (int)(this.Width * 0.01F);
-                    var rectg = new Rectangle(this.rectImg.X + gap, this.rectImg.Y + gap, this.rectImg.Width - gap * 2, this.rectImg.Height - gap * 2);
-
-                    this.DrawArc(g, colorPen, rectg, 135, 270);
-
-
-                    //Draw Threshold
-                    colorPen = new System.Drawing.Pen(System.Drawing.Color.FromArgb(124, 252, 0), this.Width / 50);
-                    rectg = new Rectangle(this.rectImg.X + gap, this.rectImg.Y + gap, this.rectImg.Width - gap * 2, this.rectImg.Height - gap * 2);
-                    var val = this.MaxValue - this.MinValue;
-                    val = (100 * (this.recommendedValue - this.MinValue)) / val;
-                    val = ((this.toAngle - this.fromAngle) * val) / 100;
-                    val += this.fromAngle;
-                    var stAngle = val - ((270 * this.threshold) / 200);
-                    if (stAngle <= 135) stAngle = 135;
-                    var sweepAngle = ((270 * this.threshold) / 100);
-                    if (stAngle + sweepAngle > 405) sweepAngle = 405 - stAngle;
-                    this.DrawArc(g, colorPen, rectg, stAngle, sweepAngle);
-                }
-
-
-                if (this.EnableDigitalNumber) {
-
-                    //Draw Digital Value
-                    var digiRect = new Rectangle((int)(this.Width / 2F - (int)this.width / 5F), (int)(this.height / 1.2F), (int)(this.width / 2.5F), (int)(this.Height / 9F));
-                    var digiFRect = new Rectangle((int)(this.Width / 2 - this.width / 7), (int)(this.height / 1.18), (int)(this.width / 4), (int)(this.Height / 12));
-                    g.FillRectangle(new SolidBrush(System.Drawing.Color.Gray), digiRect.X, digiRect.Y, digiRect.Width, digiRect.Height);
-                    this.DisplayNumber(g, this.currentValue, digiFRect);
-                }
-
-
-                var textSize = g.MeasureString(this.dialText, this.Font);
-                var digiFRectText = new RectangleF(this.Width / 2 - textSize.Width / 2, (int)(this.height / 1.5), textSize.Width, textSize.Height);
-                g.DrawString(this.dialText, this.Font, new SolidBrush(this.foreColor), digiFRectText);
-            }
-            gfx.DrawImage(this.backgroundImg, this.rectImg.X, this.rectImg.Y);
+        /// <summary>Creates a new square Gauge with the given side length in pixels.</summary>
+        public Gauge(int side) : base() {
+            this.Width = side;
+            this.Height = side;
         }
 
-        void DrawArc(Graphics g, System.Drawing.Pen pen, Rectangle rect, double startAngle, double sweepAngle) {
-            int ax, ay;
-            var start_angle = ToRadians(startAngle);
-            var end_angle = ToRadians(sweepAngle);
-            var r = rect.Width / 2;
-            for (var i = start_angle; i < end_angle; i = i + 0.05) {
-                ax = rect.X + (int)(r + Math.Cos(i) * r);
-                ay = rect.Y + (int)(r + Math.Sin(i) * r);
-                var solid = new SolidBrush(pen.Color);
-                g.FillRectangle(solid, ax, ay, (int)pen.Width, (int)pen.Width); // center point is (x = 50, y = 100)
-            }
-        }
+        // --- IDisposable -----------------------------------------------------
 
-
-        #endregion
-
-        #region Private methods
-        /// <summary>
-        /// Draws the Pointer.
-        /// </summary>
-        /// <param name="gr"></param>
-        /// <param name="cx"></param>
-        /// <param name="cy"></param>
-        private void DrawPointer(Graphics g, int cx, int cy) {
-            var radius = this.Width / 2 - (this.Width * .12F);
-            var val = this.MaxValue - this.MinValue;
-
-            val = (100 * (this.currentValue - this.MinValue)) / val;
-            val = ((this.toAngle - this.fromAngle) * val) / 100;
-            val += this.fromAngle;
-
-            var angle = this.GetRadian(val);
-
-            var pts = new PointF[5];
-
-            pts[0].X = (float)(cx + radius * Math.Cos(angle));
-            pts[0].Y = (float)(cy + radius * Math.Sin(angle));
-
-            pts[4].X = (float)(cx + radius * Math.Cos(angle - 0.02));
-            pts[4].Y = (float)(cy + radius * Math.Sin(angle - 0.02));
-
-            angle = this.GetRadian((val + 20));
-            pts[1].X = (float)(cx + (this.Width * .09F) * Math.Cos(angle));
-            pts[1].Y = (float)(cy + (this.Width * .09F) * Math.Sin(angle));
-
-            pts[2].X = cx;
-            pts[2].Y = cy;
-
-            angle = this.GetRadian((val - 20));
-            pts[3].X = (float)(cx + (this.Width * .09F) * Math.Cos(angle));
-            pts[3].Y = (float)(cy + (this.Width * .09F) * Math.Sin(angle));
-
-            var pointer = new System.Drawing.SolidBrush(System.Drawing.Color.Black);
-            this.FillPolygon(g, pointer, pts);
-
-            var shinePts = new PointF[3];
-            angle = this.GetRadian(val);
-            shinePts[0].X = (float)(cx + radius * Math.Cos(angle));
-            shinePts[0].Y = (float)(cy + radius * Math.Sin(angle));
-
-            angle = this.GetRadian(val + 20);
-            shinePts[1].X = (float)(cx + (this.Width * .09F) * Math.Cos(angle));
-            shinePts[1].Y = (float)(cy + (this.Width * .09F) * Math.Sin(angle));
-
-            shinePts[2].X = cx;
-            shinePts[2].Y = cy;
-
-            var gpointer = new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(112, 128, 144)); //(shinePts[0], shinePts[2], Color.SlateGray, Color.Black);
-            this.FillPolygon(g, gpointer, shinePts);
-
-            var rect = new Rectangle(this.x, this.y, this.width, this.height);
-            this.DrawCenterPoint(g, rect, ((this.width) / 2) + this.x, ((this.height) / 2) + this.y);
-        }
-        void FillPolygon(Graphics g, System.Drawing.Brush brush, PointF[] points) {
-            if (points.Length <= 1) return;
-            var pen = new System.Drawing.Pen(brush);
-            for (var i = 0; i < points.Length; i++) {
-                if (i + 1 < points.Length) {
-                    var src = points[i];
-                    var dst = points[i + 1];
-                    g.DrawLine(pen, (int)src.X, (int)src.Y, (int)dst.X, (int)dst.Y);
-                }
-            }
-        }
-        /// <summary>
-        /// Draws the glossiness.
-        /// </summary>
-        /// <param name="g"></param>
-        private void DrawGloss(Graphics g) {
-            var glossRect = new RectangleF(
-               this.x + (float)(this.width * 0.10),
-               this.y + (float)(this.height * 0.07),
-               (float)(this.width * 0.80),
-               (float)(this.height * 0.7));
-            var gradientBrush = new System.Drawing.SolidBrush(System.Drawing.Color.White);
-            /*
-            new LinearGradientBrush(glossRect,
-            Color.FromArgb((int)glossinessAlpha, Color.White),
-            Color.Transparent,
-            LinearGradientMode.Vertical);
-            */
-            g.FillEllipse(gradientBrush, (int)glossRect.X, (int)glossRect.Y, (int)glossRect.Width, (int)glossRect.Height);
-
-            //TODO: Gradient from bottom
-            glossRect = new RectangleF(
-               this.x + (float)(this.width * 0.25),
-               this.y + (float)(this.height * 0.77),
-               (float)(this.width * 0.50),
-               (float)(this.height * 0.2));
-            var gloss = (int)(this.glossinessAlpha / 3);
-            gradientBrush = new SolidBrush(this.backColor);
-            /*
-                new LinearGradientBrush(glossRect,
-                Color.Transparent, Color.FromArgb(gloss, this.BackColor),
-                LinearGradientMode.Vertical);
-            */
-            g.FillEllipse(gradientBrush, (int)glossRect.X, (int)glossRect.Y, (int)glossRect.Width, (int)glossRect.Height);
-        }
-
-        /// <summary>
-        /// Draws the center point.
-        /// </summary>
-        /// <param name="g"></param>
-        /// <param name="rect"></param>
-        /// <param name="cX"></param>
-        /// <param name="cY"></param>
-        private void DrawCenterPoint(Graphics g, Rectangle rect, int cX, int cY) {
-            float shift = this.Width / 5;
-            var rectangle = new RectangleF(cX - (shift / 2), cY - (shift / 2), shift, shift);
-            var brush = new SolidBrush(this.dialColor); //LinearGradientBrush(rect, Color.Black, Color.FromArgb(100, this.dialColor), LinearGradientMode.Vertical);
-            g.FillEllipse(brush, (int)rectangle.X, (int)rectangle.Y, (int)rectangle.Width, (int)rectangle.Height);
-
-            shift = this.Width / 7;
-            rectangle = new RectangleF(cX - (shift / 2), cY - (shift / 2), shift, shift);
-            brush = new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(112, 128, 144));//new LinearGradientBrush(rect, Color.SlateGray, Color.Black, LinearGradientMode.ForwardDiagonal);
-            g.FillEllipse(brush, (int)rectangle.X, (int)rectangle.Y, (int)rectangle.Width, (int)rectangle.Height);
-        }
-
-        /// <summary>
-        /// Draws the Ruler
-        /// </summary>
-        /// <param name="g"></param>
-        /// <param name="rect"></param>
-        /// <param name="cX"></param>
-        /// <param name="cY"></param>
-        private void DrawCalibration(Graphics g, Rectangle rect, int cX, int cY) {
-            var noOfParts = this.noOfDivisions + 1;
-            var noOfIntermediates = this.noOfSubDivisions;
-            var currentAngle = this.GetRadian(this.fromAngle);
-            var gap = (int)(this.Width * 0.01F);
-            float shift = this.Width / 25;
-            var rectangle = new Rectangle(rect.X + gap, rect.Y + gap, rect.Width - gap, rect.Height - gap);
-
-            int x, y, x1, y1;
-            float tx, ty, radius;
-            radius = rectangle.Width / 2 - gap * 5;
-            var totalAngle = this.toAngle - this.fromAngle;
-            var incr = this.GetRadian(((totalAngle) / ((noOfParts - 1) * (noOfIntermediates + 1))));
-
-            var thickPen = new System.Drawing.Pen(System.Drawing.Color.Black, this.Width / 50);
-            var thinPen = new System.Drawing.Pen(System.Drawing.Color.Black, this.Width / 100);
-            var rulerValue = this.MinValue;
-            for (var i = 0; i <= noOfParts; i++) {
-                //Draw Thick Line
-                x = (int)(cX + radius * Math.Cos(currentAngle));
-                y = (int)(cY + radius * Math.Sin(currentAngle));
-                x1 = (int)(cX + (radius - this.Width / 20) * Math.Cos(currentAngle));
-                y1 = (int)(cY + (radius - this.Width / 20) * Math.Sin(currentAngle));
-                g.DrawLine(thickPen, x, y, x1, y1);
-
-                //Draw Strings
-                var format = new StringFormat();
-                tx = (float)(cX + (radius - this.Width / 10) * Math.Cos(currentAngle));
-                ty = (float)(cY - shift + (radius - this.Width / 10) * Math.Sin(currentAngle));
-                var stringPen = new System.Drawing.SolidBrush(this.foreColor);
-
-                this.Font.ComputeTextInRect(rulerValue.ToString(), out var rulerValueWidth, out var height);
-
-                g.DrawString(rulerValue.ToString() + "", this.Font, stringPen, tx - rulerValueWidth / 2, ty + height / 2);
-
-                rulerValue += (float)((this.MaxValue - this.MinValue) / (noOfParts - 1));
-                rulerValue = (float)Math.Round(rulerValue);
-
-                //currentAngle += incr;
-                if (i == noOfParts - 1)
-                    break;
-                for (var j = 0; j <= noOfIntermediates; j++) {
-                    //Draw thin lines 
-                    currentAngle += incr;
-                    x = (int)(cX + radius * Math.Cos(currentAngle));
-                    y = (int)(cY + radius * Math.Sin(currentAngle));
-                    x1 = (int)(cX + (radius - this.Width / 50) * Math.Cos(currentAngle));
-                    y1 = (int)(cY + (radius - this.Width / 50) * Math.Sin(currentAngle));
-                    g.DrawLine(thinPen, x, y, x1, y1);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Converts the given degree to radian.
-        /// </summary>
-        /// <param name="theta"></param>
-        /// <returns></returns>
-        public float GetRadian(float theta) => theta * (float)Math.PI / 180F;
-
-        /// <summary>
-        /// Displays the given number in the 7-Segement format.
-        /// </summary>
-        /// <param name="g"></param>
-        /// <param name="number"></param>
-        /// <param name="drect"></param>
-        private void DisplayNumber(Graphics g, float number, Rectangle drect) {
-
-
-            var n = number.ToString("n0");
-            var num = PadLeft(n, ((int)(this.MaxValue)).ToString().Length, '0');
-            float shift = 0;
-            if (number < 0) {
-                shift -= this.width / 17;
-            }
-            var drawDPS = false;
-            var chars = num.ToCharArray();
-            for (var i = 0; i < chars.Length; i++) {
-                var c = chars[i];
-                if (i < chars.Length - 1 && chars[i + 1] == '.')
-                    drawDPS = true;
-                else
-                    drawDPS = false;
-                if (c != '.') {
-                    if (c == '-') {
-                        this.DrawDigit(g, -1, new PointF(drect.X + shift, drect.Y), drawDPS, drect.Height);
-                    }
-                    else {
-                        this.DrawDigit(g, short.Parse(c.ToString()), new PointF(drect.X + shift, drect.Y), drawDPS, drect.Height);
-                    }
-                    shift += 15 * this.width / 250;
-                }
-                else {
-                    shift += 2 * this.width / 250;
-                }
-            }
-
-
-        }
-
-        /// <summary>
-        /// Draws a digit in 7-Segement format.
-        /// </summary>
-        /// <param name="g"></param>
-        /// <param name="number"></param>
-        /// <param name="position"></param>
-        /// <param name="dp"></param>
-        /// <param name="height"></param>
-        private void DrawDigit(Graphics g, int number, PointF position, bool dp, float height) {
-            float width;
-            width = 10F * height / 13;
-
-            var outline = new System.Drawing.Pen(System.Drawing.Color.Black);//new Pen(Color.FromArgb(40, this.dialColor));
-            var fillPen = new System.Drawing.Pen(this.dialColor);
-
-            #region Form Polygon Points
-            //Segment A
-            var segmentA = new PointF[5];
-            segmentA[0] = segmentA[4] = new PointF(position.X + this.GetX(2.8F, width), position.Y + this.GetY(1F, height));
-            segmentA[1] = new PointF(position.X + this.GetX(10, width), position.Y + this.GetY(1F, height));
-            segmentA[2] = new PointF(position.X + this.GetX(8.8F, width), position.Y + this.GetY(2F, height));
-            segmentA[3] = new PointF(position.X + this.GetX(3.8F, width), position.Y + this.GetY(2F, height));
-
-            //Segment B
-            var segmentB = new PointF[5];
-            segmentB[0] = segmentB[4] = new PointF(position.X + this.GetX(10, width), position.Y + this.GetY(1.4F, height));
-            segmentB[1] = new PointF(position.X + this.GetX(9.3F, width), position.Y + this.GetY(6.8F, height));
-            segmentB[2] = new PointF(position.X + this.GetX(8.4F, width), position.Y + this.GetY(6.4F, height));
-            segmentB[3] = new PointF(position.X + this.GetX(9F, width), position.Y + this.GetY(2.2F, height));
-
-            //Segment C
-            var segmentC = new PointF[5];
-            segmentC[0] = segmentC[4] = new PointF(position.X + this.GetX(9.2F, width), position.Y + this.GetY(7.2F, height));
-            segmentC[1] = new PointF(position.X + this.GetX(8.7F, width), position.Y + this.GetY(12.7F, height));
-            segmentC[2] = new PointF(position.X + this.GetX(7.6F, width), position.Y + this.GetY(11.9F, height));
-            segmentC[3] = new PointF(position.X + this.GetX(8.2F, width), position.Y + this.GetY(7.7F, height));
-
-            //Segment D
-            var segmentD = new PointF[5];
-            segmentD[0] = segmentD[4] = new PointF(position.X + this.GetX(7.4F, width), position.Y + this.GetY(12.1F, height));
-            segmentD[1] = new PointF(position.X + this.GetX(8.4F, width), position.Y + this.GetY(13F, height));
-            segmentD[2] = new PointF(position.X + this.GetX(1.3F, width), position.Y + this.GetY(13F, height));
-            segmentD[3] = new PointF(position.X + this.GetX(2.2F, width), position.Y + this.GetY(12.1F, height));
-
-            //Segment E
-            var segmentE = new PointF[5];
-            segmentE[0] = segmentE[4] = new PointF(position.X + this.GetX(2.2F, width), position.Y + this.GetY(11.8F, height));
-            segmentE[1] = new PointF(position.X + this.GetX(1F, width), position.Y + this.GetY(12.7F, height));
-            segmentE[2] = new PointF(position.X + this.GetX(1.7F, width), position.Y + this.GetY(7.2F, height));
-            segmentE[3] = new PointF(position.X + this.GetX(2.8F, width), position.Y + this.GetY(7.7F, height));
-
-            //Segment F
-            var segmentF = new PointF[5];
-            segmentF[0] = segmentF[4] = new PointF(position.X + this.GetX(3F, width), position.Y + this.GetY(6.4F, height));
-            segmentF[1] = new PointF(position.X + this.GetX(1.8F, width), position.Y + this.GetY(6.8F, height));
-            segmentF[2] = new PointF(position.X + this.GetX(2.6F, width), position.Y + this.GetY(1.3F, height));
-            segmentF[3] = new PointF(position.X + this.GetX(3.6F, width), position.Y + this.GetY(2.2F, height));
-
-            //Segment G
-            var segmentG = new PointF[7];
-            segmentG[0] = segmentG[6] = new PointF(position.X + this.GetX(2F, width), position.Y + this.GetY(7F, height));
-            segmentG[1] = new PointF(position.X + this.GetX(3.1F, width), position.Y + this.GetY(6.5F, height));
-            segmentG[2] = new PointF(position.X + this.GetX(8.3F, width), position.Y + this.GetY(6.5F, height));
-            segmentG[3] = new PointF(position.X + this.GetX(9F, width), position.Y + this.GetY(7F, height));
-            segmentG[4] = new PointF(position.X + this.GetX(8.2F, width), position.Y + this.GetY(7.5F, height));
-            segmentG[5] = new PointF(position.X + this.GetX(2.9F, width), position.Y + this.GetY(7.5F, height));
-
-            //Segment DP
-            #endregion
-
-            #region Draw Segments Outline
-            this.FillPolygon(g, outline.Brush, segmentA);
-            this.FillPolygon(g, outline.Brush, segmentB);
-            this.FillPolygon(g, outline.Brush, segmentC);
-            this.FillPolygon(g, outline.Brush, segmentD);
-            this.FillPolygon(g, outline.Brush, segmentE);
-            this.FillPolygon(g, outline.Brush, segmentF);
-            this.FillPolygon(g, outline.Brush, segmentG);
-            #endregion
-
-            #region Fill Segments
-            //Fill SegmentA
-            if (this.IsNumberAvailable(number, 0, 2, 3, 5, 6, 7, 8, 9)) {
-                this.FillPolygon(g, fillPen.Brush, segmentA);
-            }
-
-            //Fill SegmentB
-            if (this.IsNumberAvailable(number, 0, 1, 2, 3, 4, 7, 8, 9)) {
-                this.FillPolygon(g, fillPen.Brush, segmentB);
-            }
-
-            //Fill SegmentC
-            if (this.IsNumberAvailable(number, 0, 1, 3, 4, 5, 6, 7, 8, 9)) {
-                this.FillPolygon(g, fillPen.Brush, segmentC);
-            }
-
-            //Fill SegmentD
-            if (this.IsNumberAvailable(number, 0, 2, 3, 5, 6, 8, 9)) {
-                this.FillPolygon(g, fillPen.Brush, segmentD);
-            }
-
-            //Fill SegmentE
-            if (this.IsNumberAvailable(number, 0, 2, 6, 8)) {
-                this.FillPolygon(g, fillPen.Brush, segmentE);
-            }
-
-            //Fill SegmentF
-            if (this.IsNumberAvailable(number, 0, 4, 5, 6, 7, 8, 9)) {
-                this.FillPolygon(g, fillPen.Brush, segmentF);
-            }
-
-            //Fill SegmentG
-            if (this.IsNumberAvailable(number, 2, 3, 4, 5, 6, 8, 9, -1)) {
-                this.FillPolygon(g, fillPen.Brush, segmentG);
-            }
-            #endregion
-
-            //Draw decimal point
-            if (dp) {
-                g.FillEllipse(fillPen.Brush,
-                (int)(position.X + this.GetX(10F, width)),
-                (int)(position.Y + this.GetY(12F, height)),
-                (int)(width / 7),
-                (int)(width / 7));
-            }
-        }
-
-        /// <summary>
-        /// Gets Relative X for the given width to draw digit
-        /// </summary>
-        /// <param name="x"></param>
-        /// <param name="width"></param>
-        /// <returns></returns>
-        private float GetX(float x, float width) => x * width / 12;
-
-        /// <summary>
-        /// Gets relative Y for the given height to draw digit
-        /// </summary>
-        /// <param name="y"></param>
-        /// <param name="height"></param>
-        /// <returns></returns>
-        private float GetY(float y, float height) => y * height / 15;
-
-        /// <summary>
-        /// Returns true if a given number is available in the given list.
-        /// </summary>
-        /// <param name="number"></param>
-        /// <param name="listOfNumbers"></param>
-        /// <returns></returns>
-        private bool IsNumberAvailable(int number, params int[] listOfNumbers) {
-            if (listOfNumbers.Length > 0) {
-                foreach (var i in listOfNumbers) {
-                    if (i == number)
-                        return true;
-                }
-            }
-            return false;
-        }
-
-        /// <summary>
-        /// Restricts the size to make sure the height and width are always same.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Resize() {
-            if (this.oldWidth != this.Width) {
-                this.Height = this.Width;
-                this.oldHeight = this.Width;
-            }
-            if (this.oldHeight != this.Height) {
-                this.Width = this.Height;
-                this.oldWidth = this.Width;
-            }
-
-            this.x = 0;
-            this.y = 0;
-            this.width = this.Width - this.x * 2;
-            this.height = this.Height - this.y * 2;
-
-            this.bmp = new System.Drawing.Bitmap(this.Width, this.Height);
-
-
-        }
-        #endregion
-
-
-        static double ToRadians(double val) => (Math.PI / 180) * val;
-
-        static string PadLeft(string val, int count, char c) {
-            var iter = count - val.Length;
-            var add = "";
-            if (iter > 0) {
-                for (var i = 0; i < iter; i++)
-                    add += c;
-            }
-
-            return (add + val);
-        }
-
-
-        private bool disposed;
-
+        /// <summary>Releases the resources used by the gauge.</summary>
         public void Dispose() {
             this.Dispose(true);
             GC.SuppressFinalize(this);
         }
 
+        /// <summary>Releases the gauge's cached drawing surfaces.</summary>
         protected virtual void Dispose(bool disposing) {
-            if (!this.disposed) {
-                this.disposed = true;
+            if (this._disposed) return;
+
+            if (disposing) {
+                this.ReleaseSurfaces();
+            }
+
+            this._disposed = true;
+        }
+
+        ~Gauge() => this.Dispose(false);
+
+        private void ReleaseSurfaces() {
+            this._cachedImage?.graphics?.Dispose();
+            this._cachedImage = null;
+            this._bmp?.Dispose();
+            this._bmp = null;
+            this._backgroundImg?.Dispose();
+            this._backgroundImg = null;
+        }
+
+        private void MarkDirty() {
+            this._backgroundDirty = true;
+            this.Invalidate();
+        }
+
+        // --- rendering -------------------------------------------------------
+
+        /// <summary>Draws the dial face and pointer needle.</summary>
+        public override void OnRender(DrawingContext dc) {
+            if (this.Font == null) return;
+
+            var w = this.ActualWidth;
+            var h = this.ActualHeight;
+            if (w <= 0 || h <= 0) return;
+            if (!this.IsWidthSet(out _) || !this.IsHeightSet(out _)) return;
+
+            // Gauge is always square. Use the smaller of width/height so a
+            // rectangular Width/Height assignment doesn't distort the dial.
+            var side = w < h ? w : h;
+            this.EnsureSurfaces(side);
+
+            using (var gfx = Graphics.FromImage(this._bmp)) {
+                gfx.Clear();
+                this.PaintBackground(gfx, side);
+                this.PaintPointer(gfx, side / 2, side / 2, side);
+            }
+
+            if (this._cachedImage == null) {
+                this._cachedImage = BitmapImage.FromGraphics(Graphics.FromImage(this._bmp));
+            }
+            dc.DrawImage(this._cachedImage, 0, 0);
+        }
+
+        // Allocates or grows the backing bitmaps to fit a `side`×`side` square.
+        private void EnsureSurfaces(int side) {
+            if (this._bmp != null && this._cachedSide == side) return;
+
+            this.ReleaseSurfaces();
+            this._bmp = new System.Drawing.Bitmap(side, side);
+            this._backgroundImg = new System.Drawing.Bitmap(side, side);
+            this._cachedSide = side;
+            this._backgroundDirty = true;
+        }
+
+        // Paints (or reuses) the static dial face onto `gfx`. Re-renders the
+        // background bitmap only when a property change marked it dirty.
+        private void PaintBackground(Graphics gfx, int side) {
+            using (var bg = ToSdBrush(this._backColor))
+                gfx.FillRectangle(bg, 0, 0, side, side);
+
+            if (this._backgroundDirty) {
+                this.RedrawBackgroundImg(side);
+                this._backgroundDirty = false;
+            }
+
+            gfx.DrawImage(this._backgroundImg, 0, 0);
+        }
+
+        private void RedrawBackgroundImg(int side) {
+            using var g = Graphics.FromImage(this._backgroundImg);
+
+            using (var bg = ToSdBrush(this._backColor))
+                g.FillRectangle(bg, 0, 0, side, side);
+
+            // Outer ring: a slightly larger transparent-color ellipse hides the
+            // background corners. Optional via EnableTransparentBackground.
+            if (this._enableTransparentBackground) {
+                var gg = side / 60;
+                using var tb = ToSdBrush(this._backColor);
+                g.FillEllipse(tb, -gg, -gg, side + gg * 2, side + gg * 2);
+            }
+
+            // Dial face.
+            using (var dialBrush = ToSdBrush(this._dialColor))
+                g.FillEllipse(dialBrush, 0, 0, side, side);
+
+            // Dark rim outline.
+            using (var rimPen = ToSdPen(RimColor, 1))
+                g.DrawEllipse(rimPen, 0, 0, side, side);
+
+            this.DrawCalibration(g, side);
+
+            if (this.EnableThreshold) {
+                this.DrawThresholdRing(g, side);
+            }
+
+            if (this.EnableDigitalNumber) {
+                this.DrawDigitalReadout(g, side);
+            }
+
+            this.DrawDialLabel(g, side);
+        }
+
+        private void DrawThresholdRing(Graphics g, int side) {
+            var gap = (int)(side * 0.01f);
+            var ringRect = new Rectangle(gap, gap, side - gap * 2, side - gap * 2);
+
+            using (var rimPen = ToSdPen(ThresholdRimColor, side / 40))
+                this.DrawArc(g, rimPen, ringRect, FromAngleDeg, 270);
+
+            // Threshold band centered on the recommended value.
+            var valuePct = 100 * (this._recommendedValue - this._minValue) / (this._maxValue - this._minValue);
+            var valueAngle = (ToAngleDeg - FromAngleDeg) * valuePct / 100 + FromAngleDeg;
+            var startAngle = valueAngle - 270 * this._threshold / 200;
+            if (startAngle <= FromAngleDeg) startAngle = FromAngleDeg;
+            var sweep = 270 * this._threshold / 100;
+            if (startAngle + sweep > ToAngleDeg) sweep = ToAngleDeg - startAngle;
+
+            using (var threshPen = ToSdPen(ThresholdMarkColor, side / 50))
+                this.DrawArc(g, threshPen, ringRect, startAngle, sweep);
+        }
+
+        private void DrawDigitalReadout(Graphics g, int side) {
+            // Rounded rectangle behind the digits. The two rects are the visual
+            // panel and the slightly inset region the digits actually draw into.
+            var panelRect = new Rectangle(
+                (int)(side / 2f - side / 5f),
+                (int)(side / 1.2f),
+                (int)(side / 2.5f),
+                (int)(side / 9f));
+            var digitRect = new Rectangle(
+                (int)(side / 2 - side / 7),
+                (int)(side / 1.18),
+                (int)(side / 4),
+                (int)(side / 12));
+
+            using (var panelBrush = ToSdBrush(DigitalPanelColor))
+                g.FillRectangle(panelBrush, panelRect.X, panelRect.Y, panelRect.Width, panelRect.Height);
+
+            this.DrawSevenSegmentNumber(g, this._currentValue, digitRect);
+        }
+
+        private void DrawDialLabel(Graphics g, int side) {
+            if (this._dialText.Length == 0) return;
+
+            var textSize = g.MeasureString(this._dialText, this.Font);
+            var rect = new RectangleF(side / 2 - textSize.Width / 2,
+                (int)(side / 1.5),
+                textSize.Width, textSize.Height);
+
+            using var brush = ToSdBrush(this._foreColor);
+            g.DrawString(this._dialText, this.Font, brush, rect);
+        }
+
+        // Pointer needle + glossy half + center cap.
+        private void PaintPointer(Graphics g, int cx, int cy, int side) {
+            var radius = side / 2 - side * PointerRadiusFactor;
+            var baseR = side * PointerBaseFactor;
+
+            var valuePct = 100 * (this._currentValue - this._minValue) / (this._maxValue - this._minValue);
+            var valueDeg = (ToAngleDeg - FromAngleDeg) * valuePct / 100 + FromAngleDeg;
+
+            // Needle polygon: tip — right base — pivot — left base — slightly off-tip.
+            var pts = new PointF[5];
+            var ang = DegToRad(valueDeg);
+            pts[0].X = cx + (float)(radius * System.Math.Cos(ang));
+            pts[0].Y = cy + (float)(radius * System.Math.Sin(ang));
+            pts[4].X = cx + (float)(radius * System.Math.Cos(ang - PointerTipOffset));
+            pts[4].Y = cy + (float)(radius * System.Math.Sin(ang - PointerTipOffset));
+
+            var rightAng = DegToRad(valueDeg + PointerSpread);
+            pts[1].X = cx + (float)(baseR * System.Math.Cos(rightAng));
+            pts[1].Y = cy + (float)(baseR * System.Math.Sin(rightAng));
+
+            pts[2].X = cx;
+            pts[2].Y = cy;
+
+            var leftAng = DegToRad(valueDeg - PointerSpread);
+            pts[3].X = cx + (float)(baseR * System.Math.Cos(leftAng));
+            pts[3].Y = cy + (float)(baseR * System.Math.Sin(leftAng));
+
+            using (var pointerBrush = ToSdBrush(PointerColor))
+                FillPolygon(g, pointerBrush, pts);
+
+            // Glossy half: triangle from tip to pivot via the +PointerSpread edge.
+            var shine = new PointF[3];
+            shine[0].X = pts[0].X;
+            shine[0].Y = pts[0].Y;
+            shine[1].X = pts[1].X;
+            shine[1].Y = pts[1].Y;
+            shine[2].X = cx;
+            shine[2].Y = cy;
+            using (var rimBrush = ToSdBrush(RimColor))
+                FillPolygon(g, rimBrush, shine);
+
+            this.DrawCenterCap(g, cx, cy, side);
+        }
+
+        private void DrawCenterCap(Graphics g, int cx, int cy, int side) {
+            var outer = (float)side / 5;
+            using (var brush = ToSdBrush(this._dialColor))
+                g.FillEllipse(brush, (int)(cx - outer / 2), (int)(cy - outer / 2), (int)outer, (int)outer);
+
+            var inner = (float)side / 7;
+            using (var brush = ToSdBrush(RimColor))
+                g.FillEllipse(brush, (int)(cx - inner / 2), (int)(cy - inner / 2), (int)inner, (int)inner);
+        }
+
+        // Draws ruler tick marks and numeric labels around the arc.
+        private void DrawCalibration(Graphics g, int side) {
+            var noOfParts = this._noOfDivisions + 1;
+            var noOfIntermediates = this._noOfSubDivisions;
+            var cx = side / 2;
+            var cy = side / 2;
+            var currentAngle = DegToRad(FromAngleDeg);
+            var gap = (int)(side * 0.01f);
+            var shift = (float)side / 25;
+            var radius = (side - gap * 2) / 2f - gap * 5;
+
+            var totalAngle = ToAngleDeg - FromAngleDeg;
+            var incr = DegToRad(totalAngle / ((noOfParts - 1) * (noOfIntermediates + 1)));
+
+            using var thickPen = ToSdPen(this._foreColor, side / 50);
+            using var thinPen = ToSdPen(this._foreColor, side / 100);
+            using var stringBrush = ToSdBrush(this._foreColor);
+
+            var rulerValue = this._minValue;
+            for (var i = 0; i <= noOfParts; i++) {
+                var x0 = (int)(cx + radius * System.Math.Cos(currentAngle));
+                var y0 = (int)(cy + radius * System.Math.Sin(currentAngle));
+                var x1 = (int)(cx + (radius - side / 20f) * System.Math.Cos(currentAngle));
+                var y1 = (int)(cy + (radius - side / 20f) * System.Math.Sin(currentAngle));
+                g.DrawLine(thickPen, x0, y0, x1, y1);
+
+                var tx = (float)(cx + (radius - side / 10f) * System.Math.Cos(currentAngle));
+                var ty = (float)(cy - shift + (radius - side / 10f) * System.Math.Sin(currentAngle));
+
+                var label = rulerValue.ToString();
+                this.Font.ComputeTextInRect(label, out var labelW, out var labelH);
+                g.DrawString(label, this.Font, stringBrush, tx - labelW / 2, ty + labelH / 2);
+
+                rulerValue += (this._maxValue - this._minValue) / (noOfParts - 1);
+                rulerValue = (float)System.Math.Round(rulerValue);
+
+                if (i == noOfParts - 1) break;
+
+                // Sub-division tick marks between major ticks.
+                for (var j = 0; j <= noOfIntermediates; j++) {
+                    currentAngle += incr;
+                    x0 = (int)(cx + radius * System.Math.Cos(currentAngle));
+                    y0 = (int)(cy + radius * System.Math.Sin(currentAngle));
+                    x1 = (int)(cx + (radius - side / 50f) * System.Math.Cos(currentAngle));
+                    y1 = (int)(cy + (radius - side / 50f) * System.Math.Sin(currentAngle));
+                    g.DrawLine(thinPen, x0, y0, x1, y1);
+                }
             }
         }
 
-        ~Gauge() {
-            this.Dispose(false);
+        // Pixel-spaced rasterized arc (TinyCLR Graphics doesn't expose DrawArc).
+        private void DrawArc(Graphics g, System.Drawing.Pen pen, Rectangle rect, double startDeg, double sweepDeg) {
+            var startRad = DegToRad((float)startDeg);
+            var endRad = DegToRad((float)sweepDeg);
+            var r = rect.Width / 2;
+            var w = (int)pen.Width;
+
+            using var solid = new System.Drawing.SolidBrush(pen.Color);
+            for (var t = startRad; t < endRad; t += 0.05f) {
+                var ax = rect.X + (int)(r + System.Math.Cos(t) * r);
+                var ay = rect.Y + (int)(r + System.Math.Sin(t) * r);
+                g.FillRectangle(solid, ax, ay, w, w);
+            }
         }
 
-        public override void OnRender(DrawingContext dc) {
-            if (this.Font == null)
-                throw new ArgumentNullException("Font null!");
-
-            var x = 0;
-            var y = 0;
-
-            var uiBmp = BitmapImage.FromGraphics(Graphics.FromImage(this.GetGauge()));
-
-            dc.DrawImage(uiBmp, x, y);
+        private static void FillPolygon(Graphics g, System.Drawing.Brush brush, PointF[] points) {
+            if (points.Length <= 1) return;
+            using var pen = new System.Drawing.Pen(brush);
+            for (var i = 0; i < points.Length - 1; i++) {
+                g.DrawLine(pen, (int)points[i].X, (int)points[i].Y, (int)points[i + 1].X, (int)points[i + 1].Y);
+            }
         }
 
+        // --- seven-segment digit rendering -----------------------------------
+        //
+        // Each digit is drawn as 7 segments (A=top, B=top-right, C=bottom-right,
+        // D=bottom, E=bottom-left, F=top-left, G=middle). Segment shapes are
+        // static in a unit grid; only the position and scale change per digit.
 
+        // Bits: 1=A, 2=B, 4=C, 8=D, 16=E, 32=F, 64=G.
+        private static readonly int[] DigitSegmentBits = new int[] {
+            0b0111111, // 0: A B C D E F
+            0b0000110, // 1: B C
+            0b1011011, // 2: A B D E G
+            0b1001111, // 3: A B C D G
+            0b1100110, // 4: B C F G
+            0b1101101, // 5: A C D F G
+            0b1111101, // 6: A C D E F G
+            0b0000111, // 7: A B C
+            0b1111111, // 8: all
+            0b1101111, // 9: A B C D F G
+        };
+        private const int MinusSignBits = 0b1000000;     // G only
+
+        // Each segment is a closed polygon (first point == last) in unit
+        // coordinates: X is 0..12, Y is 0..15. Multiplied by per-digit
+        // width/12 and height/15 at draw time.
+        private static readonly float[][] SegmentXY = new float[][] {
+            // A (top horizontal)
+            new float[] { 2.8f, 1f,  10f, 1f,  8.8f, 2f,  3.8f, 2f,  2.8f, 1f },
+            // B (top right vertical)
+            new float[] { 10f, 1.4f,  9.3f, 6.8f,  8.4f, 6.4f,  9f, 2.2f,  10f, 1.4f },
+            // C (bottom right vertical)
+            new float[] { 9.2f, 7.2f,  8.7f, 12.7f,  7.6f, 11.9f,  8.2f, 7.7f,  9.2f, 7.2f },
+            // D (bottom horizontal)
+            new float[] { 7.4f, 12.1f,  8.4f, 13f,  1.3f, 13f,  2.2f, 12.1f,  7.4f, 12.1f },
+            // E (bottom left vertical)
+            new float[] { 2.2f, 11.8f,  1f, 12.7f,  1.7f, 7.2f,  2.8f, 7.7f,  2.2f, 11.8f },
+            // F (top left vertical)
+            new float[] { 3f, 6.4f,  1.8f, 6.8f,  2.6f, 1.3f,  3.6f, 2.2f,  3f, 6.4f },
+            // G (middle horizontal — 7 points instead of 5 because it has flat top/bottom)
+            new float[] { 2f, 7f,  3.1f, 6.5f,  8.3f, 6.5f,  9f, 7f,  8.2f, 7.5f,  2.9f, 7.5f,  2f, 7f },
+        };
+
+        private void DrawSevenSegmentNumber(Graphics g, float number, Rectangle rect) {
+            var formatted = number.ToString("n0");
+            var padded = PadLeft(formatted, ((int)this._maxValue).ToString().Length, '0');
+
+            var digitH = rect.Height;
+            var digitW = digitH * 10 / 13;
+
+            float xCursor = rect.X;
+            if (number < 0) xCursor -= digitW / 17f;
+
+            using var outlinePen = ToSdPen(PointerColor, 1);
+            using var fillBrush = ToSdBrush(this._dialColor);
+
+            var chars = padded.ToCharArray();
+            var buffer5 = new PointF[5];
+            var buffer7 = new PointF[7];
+            for (var i = 0; i < chars.Length; i++) {
+                var c = chars[i];
+                if (c == '.') {
+                    xCursor += 2 * digitW / 250f;
+                    continue;
+                }
+
+                var dpFollows = i + 1 < chars.Length && chars[i + 1] == '.';
+                var digitValue = c == '-' ? -1 : (int)(c - '0');
+
+                this.DrawSingleDigit(g, outlinePen, fillBrush, digitValue, xCursor, rect.Y, digitW, digitH, dpFollows, buffer5, buffer7);
+                xCursor += 15 * digitW / 250f;
+            }
+        }
+
+        // Renders one 7-segment digit. `bufferA` and `bufferG` are caller-owned
+        // PointF arrays we reuse for the 5-point and 7-point polygons so the
+        // hot path doesn't allocate.
+        private void DrawSingleDigit(Graphics g, System.Drawing.Pen outlinePen, System.Drawing.Brush fillBrush,
+                                     int digit, float originX, float originY, float w, float h,
+                                     bool decimalPoint, PointF[] bufferA, PointF[] bufferG) {
+            var bits = digit == -1 ? MinusSignBits : DigitSegmentBits[digit];
+
+            for (var seg = 0; seg < SegmentXY.Length; seg++) {
+                var rel = SegmentXY[seg];
+                var poly = (seg == 6) ? bufferG : bufferA;        // segment G has 7 points
+                var pointCount = rel.Length / 2;
+                for (var p = 0; p < pointCount; p++) {
+                    poly[p].X = originX + rel[p * 2] * w / 12f;
+                    poly[p].Y = originY + rel[p * 2 + 1] * h / 15f;
+                }
+                // Outline every segment so the LCD style is visible even on
+                // segments the digit doesn't light up.
+                FillPolygon(g, outlinePen.Brush, poly);
+
+                if ((bits & (1 << seg)) != 0) {
+                    FillPolygon(g, fillBrush, poly);
+                }
+            }
+
+            if (decimalPoint) {
+                g.FillEllipse(fillBrush,
+                    (int)(originX + 10f * w / 12f),
+                    (int)(originY + 12f * h / 15f),
+                    (int)(w / 7),
+                    (int)(w / 7));
+            }
+        }
+
+        // --- helpers ---------------------------------------------------------
+
+        private static float DegToRad(float deg) => deg * (float)System.Math.PI / 180f;
+
+        // TinyCLR mscorlib doesn't have string.PadLeft.
+        private static string PadLeft(string value, int totalWidth, char pad) {
+            var missing = totalWidth - value.Length;
+            if (missing <= 0) return value;
+            var result = "";
+            for (var i = 0; i < missing; i++) result += pad;
+            return result + value;
+        }
+
+        private static System.Drawing.Color ToSd(MediaColor c) =>
+            System.Drawing.Color.FromArgb(c.A, c.R, c.G, c.B);
+
+        private static System.Drawing.SolidBrush ToSdBrush(MediaColor c) =>
+            new System.Drawing.SolidBrush(ToSd(c));
+
+        private static System.Drawing.Pen ToSdPen(MediaColor c, int thickness) =>
+            new System.Drawing.Pen(ToSd(c), thickness);
     }
 }

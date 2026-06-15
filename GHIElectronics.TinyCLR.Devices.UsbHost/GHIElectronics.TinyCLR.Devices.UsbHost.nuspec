@@ -3,23 +3,29 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>GHIElectronics.TinyCLR.Devices.UsbHost</id>
-    <version>2.4.0.1000</version>
+    <version>3.0.0.2000-prerelease</version>
     <authors>GHI Electronics, LLC</authors>
     <owners>GHI Electronics, LLC</owners>
     <projectUrl>https://ghielectronics.com/</projectUrl>
     <iconUrl>http://files.ghielectronics.com/downloads/Logos/GHIElectronicsTinyCLRNuGet.png</iconUrl>
     <licenseUrl>http://files.ghielectronics.com/downloads/TinyCLR/License.txt</licenseUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
-    <description>The UsbHost library for TinyCLR OS.</description>
+    <description>USB host (connect USB peripherals) for TinyCLR.</description>
     <copyright>Copyright GHI Electronics, LLC 2022</copyright>
     <tags>TinyCLR TinyCLROS</tags>
     <dependencies>
-      <dependency id="GHIElectronics.TinyCLR.Core" version="2.4.0.1000" />
-      <dependency id="GHIElectronics.TinyCLR.Devices.Usb" version="2.4.0.1000" />
-      <dependency id="GHIElectronics.TinyCLR.Native" version="2.4.0.1000" />
+      <dependency id="GHIElectronics.TinyCLR.Core" version="3.0.0.2000-prerelease" />
+      <dependency id="GHIElectronics.TinyCLR.Devices.Usb" version="3.0.0.2000-prerelease" />
+      <dependency id="GHIElectronics.TinyCLR.Native" version="3.0.0.2000-prerelease" />
     </dependencies>
   </metadata>
   <files>
-    <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.UsbHost.dll" target="lib\net48" />
+    <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.UsbHost.dll" target="lib\net48" />
+    <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.UsbHost.xml" target="lib\net48" />
+    <file src="..\GHIElectronics.TinyCLR.Devices.UsbHost.Desktop\bin\$Configuration$\GHIElectronics.TinyCLR.Devices.UsbHost.dll" target="desktop-shim" />
+    <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.UsbHost.xml" target="desktop-shim" />
+    <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.UsbHost.dll" target="tinyclr" />
+    <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.UsbHost.xml" target="tinyclr" />
+    <file src="$ProjectDir$GHIElectronics.TinyCLR.Devices.UsbHost.props" target="build\net48" />
   </files>
 </package>

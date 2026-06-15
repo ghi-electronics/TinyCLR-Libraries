@@ -5,7 +5,8 @@ using System.Text;
 
 
 namespace GHIElectronics.TinyCLR.EthernetIP.Scanner.ObjectLibrary
-{    /// <summary>
+{
+    /// <summary>
      /// Connection Manager Object - Class Code: 06 Hex
      /// </summary>
      /// <remarks>

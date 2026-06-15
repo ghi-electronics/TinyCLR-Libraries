@@ -4,7 +4,9 @@
 
 
 namespace GHIElectronics.TinyCLR.UI.Media {
+    /// <summary>Provides constant values used by the media types.</summary>
     public static class Constants {
+        /// <summary>The maximum extent allowed for a drawing operation.</summary>
         public const int MaxExtent = 0x7ffff;
     }
 }

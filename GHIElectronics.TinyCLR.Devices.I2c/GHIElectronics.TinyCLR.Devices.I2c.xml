@@ -1,0 +1,383 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>GHIElectronics.TinyCLR.Devices.I2c</name>
+    </assembly>
+    <members>
+        <member name="T:GHIElectronics.TinyCLR.Devices.I2c.I2cController">
+            <summary>
+            Represents an I²C bus controller. Open a peer with <see cref="M:GHIElectronics.TinyCLR.Devices.I2c.I2cController.GetDevice(GHIElectronics.TinyCLR.Devices.I2c.I2cConnectionSettings)"/>
+            to transact with a specific slave address. The same controller can serve
+            multiple slaves — settings are re-applied per transfer.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.I2c.I2cController.Provider">
+            <summary>The low-level provider backing this controller.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.I2c.I2cController.Timeout">
+            <summary>Maximum time the controller will block on a single transfer before giving up.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.I2c.I2cController.GetDefault">
+            <summary>Returns the default I²C controller for this device.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.I2c.I2cController.FromName(System.String)">
+            <summary>Returns an I²C controller identified by its native API name.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.I2c.I2cController.FromName(System.String,GHIElectronics.TinyCLR.Devices.Gpio.GpioPin,GHIElectronics.TinyCLR.Devices.Gpio.GpioPin)">
+            <summary>Returns a software (bit-bang) I²C controller using the supplied SDA/SCL pins.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.I2c.I2cController.FromName(System.String,GHIElectronics.TinyCLR.Devices.Gpio.GpioPin,GHIElectronics.TinyCLR.Devices.Gpio.GpioPin,System.Boolean)">
+            <summary>Returns a software I²C controller, optionally engaging the internal pull-ups.</summary>
+            <param name="name">Must be the SoftwareI2cController native API name.</param>
+            <param name="sdaPin">Pin used as SDA.</param>
+            <param name="sclPin">Pin used as SCL.</param>
+            <param name="usePullups">When true, configures SDA/SCL as inputs with internal pull-ups.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.I2c.I2cController.FromProvider(GHIElectronics.TinyCLR.Devices.I2c.Provider.II2cControllerProvider)">
+            <summary>Creates a controller from a custom <see cref="T:GHIElectronics.TinyCLR.Devices.I2c.Provider.II2cControllerProvider"/>.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.I2c.I2cController.Dispose">
+            <summary>Releases the underlying provider.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.I2c.I2cController.GetDevice(GHIElectronics.TinyCLR.Devices.I2c.I2cConnectionSettings)">
+            <summary>Creates an <see cref="T:GHIElectronics.TinyCLR.Devices.I2c.I2cDevice"/> bound to this controller using the supplied settings.</summary>
+            <param name="connectionSettings">Slave address, bus speed, and master/slave mode.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.I2c.I2cController.ClearWriteBuffer">
+            <summary>Slave-mode only: empties the controller's outgoing buffer.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.I2c.I2cController.ClearReadBuffer">
+            <summary>Slave-mode only: empties the controller's incoming buffer.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.I2c.I2cController.WriteBufferSize">
+            <summary>Slave-mode only: size in bytes of the controller's outgoing buffer.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.I2c.I2cController.ReadBufferSize">
+            <summary>Slave-mode only: size in bytes of the controller's incoming buffer.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.I2c.I2cController.BytesToWrite">
+            <summary>Slave-mode only: bytes currently queued to transmit.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.I2c.I2cController.BytesToRead">
+            <summary>Slave-mode only: bytes currently available to read.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.I2c.I2cDevice">
+            <summary>
+            Represents a single slave on the I²C bus. Master-mode devices use the
+            blocking <see cref="M:GHIElectronics.TinyCLR.Devices.I2c.I2cDevice.Read(System.Byte[])"/> / <see cref="M:GHIElectronics.TinyCLR.Devices.I2c.I2cDevice.Write(System.Byte[])"/> / <see cref="M:GHIElectronics.TinyCLR.Devices.I2c.I2cDevice.WriteRead(System.Byte[],System.Byte[])"/>
+            family; slave-mode devices additionally expose <see cref="E:GHIElectronics.TinyCLR.Devices.I2c.I2cDevice.FrameReceived"/>
+            and <see cref="E:GHIElectronics.TinyCLR.Devices.I2c.I2cDevice.ErrorReceived"/> events.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.I2c.I2cDevice.ConnectionSettings">
+            <summary>The per-device connection settings.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.I2c.I2cDevice.Controller">
+            <summary>The <see cref="T:GHIElectronics.TinyCLR.Devices.I2c.I2cController"/> that owns this device.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.I2c.I2cDevice.Dispose">
+            <summary>Releases device-level resources.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.I2c.I2cDevice.Read(System.Byte[])">
+            <summary>Reads <paramref name="buffer"/>.Length bytes from the slave.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.I2c.I2cDevice.Write(System.Byte[])">
+            <summary>Writes <paramref name="buffer"/>.Length bytes to the slave.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.I2c.I2cDevice.WriteRead(System.Byte[],System.Byte[])">
+            <summary>Performs a register-style write-then-read transaction.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.I2c.I2cDevice.Read(System.Byte[],System.Int32,System.Int32)">
+            <summary>Reads <paramref name="length"/> bytes into <paramref name="buffer"/> starting at <paramref name="offset"/>.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.I2c.I2cDevice.Write(System.Byte[],System.Int32,System.Int32)">
+            <summary>Writes <paramref name="length"/> bytes from <paramref name="buffer"/> starting at <paramref name="offset"/>.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.I2c.I2cDevice.WriteRead(System.Byte[],System.Int32,System.Int32,System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Performs a write-then-read transaction with explicit slice offsets and lengths.
+            Throws when the slave NACKs or the transfer is otherwise incomplete (master mode only).
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.I2c.I2cDevice.ReadPartial(System.Byte[])">
+            <summary>Like <see cref="M:GHIElectronics.TinyCLR.Devices.I2c.I2cDevice.Read(System.Byte[])"/> but returns a status + count instead of throwing on a partial transfer.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.I2c.I2cDevice.WritePartial(System.Byte[])">
+            <summary>Like <see cref="M:GHIElectronics.TinyCLR.Devices.I2c.I2cDevice.Write(System.Byte[])"/> but returns a status + count instead of throwing on a partial transfer.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.I2c.I2cDevice.WriteReadPartial(System.Byte[],System.Byte[])">
+            <summary>Like <see cref="M:GHIElectronics.TinyCLR.Devices.I2c.I2cDevice.WriteRead(System.Byte[],System.Byte[])"/> but returns a status + counts.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.I2c.I2cDevice.ReadPartial(System.Byte[],System.Int32,System.Int32)">
+            <summary>Partial read with explicit slice offsets and lengths.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.I2c.I2cDevice.WritePartial(System.Byte[],System.Int32,System.Int32)">
+            <summary>Partial write with explicit slice offsets and lengths.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.I2c.I2cDevice.WriteReadPartial(System.Byte[],System.Int32,System.Int32,System.Byte[],System.Int32,System.Int32)">
+            <summary>Partial write-then-read with explicit slice offsets and lengths.</summary>
+            <returns>A <see cref="T:GHIElectronics.TinyCLR.Devices.I2c.I2cTransferResult"/> with the transfer status and byte counts.</returns>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.Devices.I2c.I2cDevice.FrameReceived">
+            <summary>Slave-mode only: raised when a master start/stop or data frame is observed addressed to this slave.</summary>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.Devices.I2c.I2cDevice.ErrorReceived">
+            <summary>Slave-mode only: raised when the controller detects a bus error (overrun, arbitration loss, etc.).</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.I2c.I2cDevice.ClearWriteBuffer">
+            <summary>Slave-mode only: empties the controller's outgoing buffer.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.I2c.I2cDevice.ClearReadBuffer">
+            <summary>Slave-mode only: empties the controller's incoming buffer.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.I2c.I2cDevice.WriteBufferSize">
+            <summary>Slave-mode only: size in bytes of the controller's outgoing buffer.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.I2c.I2cDevice.ReadBufferSize">
+            <summary>Slave-mode only: size in bytes of the controller's incoming buffer.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.I2c.I2cDevice.BytesToWrite">
+            <summary>Slave-mode only: bytes currently queued to transmit.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.I2c.I2cDevice.BytesToRead">
+            <summary>Slave-mode only: bytes currently available to read.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.I2c.I2cConnectionSettings">
+            <summary>Per-device I²C connection settings: address, bus speed, and master/slave role.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.I2c.I2cConnectionSettings.SlaveAddress">
+            <summary>The peer's slave address.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.I2c.I2cConnectionSettings.AddressFormat">
+            <summary>7-bit or 10-bit address format.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.I2c.I2cConnectionSettings.BusSpeed">
+            <summary>Bus speed in Hz (e.g. 100_000 for standard, 400_000 for fast mode).</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.I2c.I2cConnectionSettings.Mode">
+            <summary>Whether this device acts as master or slave.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.I2c.I2cConnectionSettings.EnableClockStretching">
+            <summary>Slave-mode only: allow the controller to stretch the clock while it's not ready.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.I2c.I2cConnectionSettings.#ctor(System.Int32)">
+            <summary>Builds a 7-bit master-mode settings object at standard speed.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.I2c.I2cConnectionSettings.#ctor(System.Int32,System.UInt32)">
+            <summary>Builds a 7-bit master-mode settings object at the given bus speed.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.I2c.I2cConnectionSettings.#ctor(System.Int32,GHIElectronics.TinyCLR.Devices.I2c.I2cAddressFormat,System.UInt32)">
+            <summary>Builds a master-mode settings object with explicit address format.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.I2c.I2cConnectionSettings.#ctor(System.Int32,GHIElectronics.TinyCLR.Devices.I2c.I2cMode)">
+            <summary>Builds a 7-bit settings object with the given role (master/slave).</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.I2c.I2cConnectionSettings.#ctor(System.Int32,GHIElectronics.TinyCLR.Devices.I2c.I2cMode,GHIElectronics.TinyCLR.Devices.I2c.I2cAddressFormat,System.UInt32)">
+            <summary>Builds a settings object with explicit role and address format.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.I2c.I2cConnectionSettings.#ctor(System.Int32,GHIElectronics.TinyCLR.Devices.I2c.I2cMode,GHIElectronics.TinyCLR.Devices.I2c.I2cAddressFormat,System.UInt32,System.Boolean)">
+            <summary>Builds a settings object with full control over every field.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.I2c.I2cAddressFormat">
+            <summary>I²C address width.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.I2c.I2cAddressFormat.SevenBit">
+            <summary>Standard 7-bit slave address.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.I2c.I2cAddressFormat.TenBit">
+            <summary>Extended 10-bit slave address.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.I2c.I2cMode">
+            <summary>Bus role for an <see cref="T:GHIElectronics.TinyCLR.Devices.I2c.I2cDevice"/>.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.I2c.I2cMode.Master">
+            <summary>This endpoint is the master (originates clock and transactions).</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.I2c.I2cMode.Slave">
+            <summary>This endpoint is the slave (responds to addressed transactions).</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.I2c.I2cTransferStatus">
+            <summary>Outcome of an I²C transfer.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.I2c.I2cTransferStatus.FullTransfer">
+            <summary>All requested bytes were transferred successfully.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.I2c.I2cTransferStatus.PartialTransfer">
+            <summary>Some, but not all, requested bytes were transferred.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.I2c.I2cTransferStatus.SlaveAddressNotAcknowledged">
+            <summary>The slave did not acknowledge its address.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.I2c.I2cTransferStatus.ClockStretchTimeout">
+            <summary>The slave held the clock low past the configured timeout.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.I2c.I2cError">
+            <summary>Bus errors reported via <see cref="E:GHIElectronics.TinyCLR.Devices.I2c.I2cDevice.ErrorReceived"/>.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.I2c.I2cError.Overrun">
+            <summary>Receive overrun.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.I2c.I2cError.Bus">
+            <summary>Generic bus error.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.I2c.I2cError.ArbitrationLoss">
+            <summary>Lost arbitration to another master.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.I2c.I2cError.BufferFull">
+            <summary>Internal buffer full.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.I2c.I2cTransaction">
+            <summary>Master-initiated transaction kind observed by a slave.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.I2c.I2cTransaction.MasterWrite">
+            <summary>Master is writing to this slave.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.I2c.I2cTransaction.MasterRead">
+            <summary>Master is reading from this slave.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.I2c.I2cTransaction.MasterStop">
+            <summary>Master issued a stop condition.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.I2c.FrameEventArgs">
+            <summary>Arguments for <see cref="E:GHIElectronics.TinyCLR.Devices.I2c.I2cDevice.FrameReceived"/>.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.I2c.FrameEventArgs.Timestamp">
+            <summary>Driver-captured time of the frame.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.I2c.FrameEventArgs.DataCount">
+            <summary>Number of bytes associated with this frame.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.I2c.FrameEventArgs.Address">
+            <summary>The address that was acknowledged.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.I2c.FrameEventArgs.Event">
+            <summary>The kind of master-initiated transaction observed.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.I2c.ErrorReceivedEventArgs">
+            <summary>Arguments for <see cref="E:GHIElectronics.TinyCLR.Devices.I2c.I2cDevice.ErrorReceived"/>.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.I2c.ErrorReceivedEventArgs.Timestamp">
+            <summary>Driver-captured time of the error.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.I2c.ErrorReceivedEventArgs.Error">
+            <summary>The kind of error detected.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.I2c.ErrorReceivedEventArgs.Address">
+            <summary>The address (if any) the error was associated with.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.I2c.I2cTransferResult">
+            <summary>Outcome of a partial-transfer call (<see cref="M:GHIElectronics.TinyCLR.Devices.I2c.I2cDevice.ReadPartial(System.Byte[])"/> and friends).</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.I2c.I2cTransferResult.Status">
+            <summary>Whether the transfer was full, partial, NAK'd, or timed out.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.I2c.I2cTransferResult.BytesWritten">
+            <summary>Bytes actually written.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.I2c.I2cTransferResult.BytesRead">
+            <summary>Bytes actually read.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.I2c.I2cTransferResult.BytesTransferred">
+            <summary>Sum of <see cref="P:GHIElectronics.TinyCLR.Devices.I2c.I2cTransferResult.BytesWritten"/> and <see cref="P:GHIElectronics.TinyCLR.Devices.I2c.I2cTransferResult.BytesRead"/>.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.I2c.FrameReceivedEventHandler">
+            <summary>Handler signature for <see cref="E:GHIElectronics.TinyCLR.Devices.I2c.I2cDevice.FrameReceived"/>.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.I2c.ErrorReceivedEventHandler">
+            <summary>Handler signature for <see cref="E:GHIElectronics.TinyCLR.Devices.I2c.I2cDevice.ErrorReceived"/>.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.I2c.Provider.II2cControllerProvider">
+            <summary>Provider contract for an I²C controller.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.I2c.Provider.II2cControllerProvider.WriteBufferSize">
+            <summary>Slave-mode only: size in bytes of the controller's outgoing buffer.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.I2c.Provider.II2cControllerProvider.ReadBufferSize">
+            <summary>Slave-mode only: size in bytes of the controller's incoming buffer.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.I2c.Provider.II2cControllerProvider.BytesToWrite">
+            <summary>Slave-mode only: bytes currently queued to transmit.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.I2c.Provider.II2cControllerProvider.BytesToRead">
+            <summary>Slave-mode only: bytes currently available to read.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.I2c.Provider.II2cControllerProvider.ClearWriteBuffer">
+            <summary>Slave-mode only: empties the controller's outgoing buffer.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.I2c.Provider.II2cControllerProvider.ClearReadBuffer">
+            <summary>Slave-mode only: empties the controller's incoming buffer.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.I2c.Provider.II2cControllerProvider.SetActiveSettings(GHIElectronics.TinyCLR.Devices.I2c.I2cConnectionSettings)">
+            <summary>Applies the given settings before the next transfer.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.I2c.Provider.II2cControllerProvider.WriteRead(System.Byte[],System.Int32,System.Int32,System.Byte[],System.Int32,System.Int32,System.Int32@,System.Int32@)">
+            <summary>Performs a write-then-read transaction.</summary>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.Devices.I2c.Provider.II2cControllerProvider.FrameReceived">
+            <summary>Slave-mode only: raised when a master frame addressed to this slave is observed.</summary>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.Devices.I2c.Provider.II2cControllerProvider.ErrorReceived">
+            <summary>Slave-mode only: raised when the controller detects a bus error.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.I2c.Provider.II2cControllerProvider.Timeout">
+            <summary>Maximum time the controller will block on a single transfer.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.I2c.Provider.I2cControllerApiWrapper">
+            <summary>Concrete <see cref="T:GHIElectronics.TinyCLR.Devices.I2c.Provider.II2cControllerProvider"/> backed by the native TinyCLR I²C HAL.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.I2c.Provider.I2cControllerApiWrapper.Api">
+            <summary>The underlying native API descriptor.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.I2c.Provider.I2cControllerApiWrapper.#ctor(GHIElectronics.TinyCLR.Native.NativeApi)">
+            <summary>Wraps the given native API as a provider.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.I2c.Provider.I2cControllerApiWrapper.Dispose">
+            <summary>Releases the native controller.</summary>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.Devices.I2c.Provider.I2cControllerApiWrapper.FrameReceived">
+            <inheritdoc/>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.Devices.I2c.Provider.I2cControllerApiWrapper.ErrorReceived">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.I2c.Provider.I2cControllerApiWrapper.SetActiveSettings(GHIElectronics.TinyCLR.Devices.I2c.I2cConnectionSettings)">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.I2c.Provider.I2cControllerApiWrapper.WriteRead(System.Byte[],System.Int32,System.Int32,System.Byte[],System.Int32,System.Int32,System.Int32@,System.Int32@)">
+            <inheritdoc/>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.I2c.Provider.I2cControllerApiWrapper.WriteBufferSize">
+            <inheritdoc/>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.I2c.Provider.I2cControllerApiWrapper.ReadBufferSize">
+            <inheritdoc/>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.I2c.Provider.I2cControllerApiWrapper.BytesToWrite">
+            <inheritdoc/>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.I2c.Provider.I2cControllerApiWrapper.BytesToRead">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.I2c.Provider.I2cControllerApiWrapper.ClearWriteBuffer">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.I2c.Provider.I2cControllerApiWrapper.ClearReadBuffer">
+            <inheritdoc/>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.I2c.Provider.I2cControllerApiWrapper.Timeout">
+            <inheritdoc/>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.I2c.Provider.I2cControllerSoftwareProvider">
+            <summary>
+            Software (bit-bang) I²C provider. Used when no hardware I²C peripheral is
+            available on the desired SDA/SCL pins. Master mode only.
+            </summary>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.Devices.I2c.Provider.I2cControllerSoftwareProvider.ErrorReceived">
+            <inheritdoc/>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.Devices.I2c.Provider.I2cControllerSoftwareProvider.FrameReceived">
+            <inheritdoc/>
+        </member>
+    </members>
+</doc>

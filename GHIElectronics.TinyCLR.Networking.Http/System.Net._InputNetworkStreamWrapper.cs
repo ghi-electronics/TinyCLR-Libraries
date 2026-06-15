@@ -118,16 +118,18 @@ namespace System.Net
 #endif
             //  m_dataStart should be equal to m_dataEnd. Purge buffered data.
             this.m_dataStart = this.m_dataEnd = 0;
-            // Read up to read_buffer_size, but less data can be read.
-            // This function does not try to block, so it reads available data or 1 byte at least.
-            var readCount = (int)this.m_Stream.Length;
-            if ( readCount > read_buffer_size )
-            {
+            // Standard .NET: NetworkStream.Length always throws NotSupportedException
+            // (network streams aren't seekable). To find out "how many bytes can I read
+            // right now without blocking", use Socket.Available — that's what BCL code
+            // does, and it matches the Desktop sibling of this wrapper. The previous
+            // `(int)this.m_Stream.Length` was legacy NETMF behavior and broke every
+            // GetResponse() call with NotSupportedException.
+            //
+            // If Available is 0, ask for read_buffer_size and let Stream.Read block
+            // until at least 1 byte arrives (standard Stream.Read semantics).
+            var readCount = this.m_Socket != null ? this.m_Socket.Available : 0;
+            if (readCount > read_buffer_size || readCount == 0) {
                 readCount = read_buffer_size;
-            }
-            else if (readCount == 0)
-            {
-                readCount = 1;
             }
 
             //this.m_dataEnd = this.m_Stream.Read(this.m_readBuffer, 0, readCount);
@@ -404,7 +406,11 @@ namespace System.Net
         /// </summary>
         /// <returns>The length of the data available on the stream.
         /// Add data cached in the stream buffer to available on socket</returns>
-        public override long Length => this.m_EnableChunkedDecoding && this.m_chunk != null ? this.m_chunk.m_Size : this.m_Stream.Length + this.m_dataEnd - this.m_dataStart;
+        public override long Length => this.m_EnableChunkedDecoding && this.m_chunk != null
+            ? (long)this.m_chunk.m_Size
+            // NetworkStream.Length throws NotSupportedException per standard .NET.
+            // Use Socket.Available + buffered bytes — same as the Desktop sibling.
+            : (this.m_Socket != null ? this.m_Socket.Available : 0) + this.m_dataEnd - this.m_dataStart;
 
         /// <summary>
         /// Position is not supported for NetworkStream
@@ -558,7 +564,24 @@ namespace System.Net
             }
             else if(curPos == 0)
             {
-                throw new SocketException(SocketError.ConnectionAborted);
+                // Peer closed the connection before sending an HTTP request line
+                // (typical when a browser times out an idle keep-alive socket and
+                // the listener accepted/peeked enough bytes to dispatch the
+                // connection — e.g. a TLS close_notify alert — but no actual
+                // request followed).
+                //
+                // Throw IOException, not SocketException. SocketException is a
+                // sibling of Exception in this BCL (does not derive from
+                // IOException), so callers that put up a silent
+                // `catch (IOException) {}` over their request loop — the
+                // idiomatic shape — would otherwise fall through to the generic
+                // `catch (Exception)` handler and log the keep-alive close as a
+                // visible error. IOException matches what the rest of the
+                // request-pipeline read path throws on transient transport
+                // failures (SslStream surfaces its own errors as IOException
+                // too), and it's the shape Microsoft's BCL HttpListener uses
+                // for the equivalent condition.
+                throw new IOException("Connection aborted before HTTP request line was received.");
             }
 
             return "";
@@ -573,7 +596,10 @@ namespace System.Net
             // Refills internal buffer if there is no more data
             if (this.m_dataEnd == this.m_dataStart)
             {
-                if(0 == RefillInternalBuffer()) throw new SocketException(SocketError.ConnectionAborted);
+                // IOException, not SocketException — see the rationale at the
+                // throw site in Read_HTTP_Line; same condition (peer closed
+                // before sending the byte we wanted to peek).
+                if(0 == RefillInternalBuffer()) throw new IOException("Connection aborted while peeking next byte.");
             }
             return this.m_readBuffer[this.m_dataStart];
         }
@@ -587,7 +613,10 @@ namespace System.Net
             // Refills internal buffer if there is no more data
             if (this.m_dataEnd == this.m_dataStart)
             {
-                if(0 == RefillInternalBuffer()) throw new SocketException(SocketError.ConnectionAborted);
+                // IOException, not SocketException — see the rationale at the
+                // throw site in Read_HTTP_Line; same condition (peer closed
+                // before sending the byte we wanted to read).
+                if(0 == RefillInternalBuffer()) throw new IOException("Connection aborted while reading next byte.");
             }
             // Very similar to Peek, but moves current position to next byte.
             return this.m_readBuffer[this.m_dataStart++];

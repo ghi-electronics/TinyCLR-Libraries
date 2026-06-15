@@ -28,17 +28,16 @@ namespace System.Net {
             Unknown = 100
         }
 
-        public enum RepresentationType {
-            ASCII,
-            Image
-        }
+        // Demoted from public to internal in the BCL-alignment audit (Step 3):
+        // these are implementation/worker-thread state, never part of BCL FtpWebRequest's
+        // surface, and exposing them invited brittle external use.
+        internal string[] RequestPath = null;
+        internal IPAddress ServerIP = null;
+        internal int ServerPort = 21;
+        internal string FTPActiveAddress = null;
+        internal int FTPActivePort = 0;
 
-        public string[] RequestPath = null;
-        public IPAddress ServerIP = null;
-        public int ServerPort = 21;
-        public string FTPActiveAddress = null;
-        public int FTPActivePort = 0;
-
+        private Uri m_RequestUri = null;
         private NetworkCredential m_Credential = new NetworkCredential("anonymous", "anonymous@");  // credential used for the connection
         private string m_FtpMethod = null;              // the ftp request method type
 
@@ -52,17 +51,18 @@ namespace System.Net {
         private NetworkStream m_DataStream = null;      // data connnection stream
         private FtpWebResponse m_FtpResponse = null;    // the ftp response
 
-        // System running flags
-        public bool DataSocketReady = false;            // indicates that the data transmission has started
-        public bool TransmissionFinished = false;       // indicates that the data transmission has finished
+        internal bool DataSocketReady = false;          // indicates that the data transmission has started
+        internal bool TransmissionFinished = false;     // indicates that the data transmission has finished
 
         // Configuration Variables
         private bool m_IsClosed = false;                // whether the request has been closed
         private bool m_IsPassive = false;               // whether working under passive mode
-        private string m_Type = "A";                    // REPRESENTATION TYPE
-        private int m_CommandTimeout = 1000;            // time for waiting a single ftp command
-        private int m_DataTimeout = 5000;               // time for waiting a active data connection
-        private bool m_IsStarted = false;               // make sure that the request can only be executed once (restricted by current version)   
+        private bool m_UseBinary = true;                // BCL default: binary ("I"); ASCII ("A") if false
+        private bool m_KeepAlive = true;                // BCL default
+        private bool m_EnableSsl = false;               // BCL default; TinyCLR-side throws if set true (no FTPS support on device)
+        private int m_CommandTimeout = 100000;          // BCL Timeout default 100s
+        private int m_DataTimeout = 300000;             // BCL ReadWriteTimeout default 300s
+        private bool m_IsStarted = false;               // make sure that the request can only be executed once (restricted by current version)
         private string m_RenameTo = null;               // the new name towards the rename method
         private FTPStatusCode m_StatusCode = FTPStatusCode.Unknown; // the response status code
 
@@ -100,29 +100,48 @@ namespace System.Net {
             set;
         }
 
-        public RepresentationType Type {
-            get {
-                if (m_Type == "I") {
-                    return RepresentationType.Image;
-                }
-                else {
-                    return RepresentationType.ASCII;
-                }
-            }
-            set {
-                if (value == RepresentationType.Image) {
-                    m_Type = "I";
-                }
-                else {
-                    m_Type = "A";
-                }
-            }
+        // Internal accessor still used by ASCII/Image command building inside
+        // worker threads. "I" = binary, "A" = ASCII.
+        internal string TypeCode => m_UseBinary ? "I" : "A";
+
+        /// <summary>
+        /// Gets or sets a Boolean value that specifies the data type for file
+        /// transfers. <c>true</c> for binary (Image / "I"), <c>false</c> for
+        /// ASCII ("A"). Mirrors <see cref="System.Net.FtpWebRequest.UseBinary"/>.
+        /// </summary>
+        public bool UseBinary {
+            get => m_UseBinary;
+            set => m_UseBinary = value;
         }
 
-        //internal ArrayList ResponseStack {
-        //    get;
-        //    set;
-        //}
+        /// <summary>
+        /// Gets or sets a value that specifies whether to keep the control
+        /// connection alive after the request completes. Mirrors
+        /// <see cref="System.Net.FtpWebRequest.KeepAlive"/>. The TinyCLR
+        /// implementation closes connections after each request regardless;
+        /// the property is accepted for source-compatibility.
+        /// </summary>
+        public bool KeepAlive {
+            get => m_KeepAlive;
+            set => m_KeepAlive = value;
+        }
+
+        /// <summary>
+        /// Gets or sets a value that specifies that an SSL connection should
+        /// be used (FTPS). Mirrors <see cref="System.Net.FtpWebRequest.EnableSsl"/>.
+        /// On TinyCLR, FTPS is not supported and setting this to <c>true</c>
+        /// throws <see cref="NotSupportedException"/>. The Desktop sister
+        /// wires this up to <c>SslStream</c>.
+        /// </summary>
+        public bool EnableSsl {
+            get => m_EnableSsl;
+            set {
+                if (value && !m_EnableSsl) {
+                    throw new NotSupportedException("FTPS (EnableSsl) is not supported on TinyCLR.");
+                }
+                m_EnableSsl = value;
+            }
+        }
 
         /// <summary>
         /// Set ftp mode
@@ -136,15 +155,49 @@ namespace System.Net {
             }
         }
 
+        /// <summary>Gets or sets the credentials used to authenticate with the FTP server.</summary>
         public NetworkCredential Credentials {
             get => m_Credential;
             set => m_Credential = value;
         }
 
+        /// <summary>Gets or sets the FTP command (method) to send to the server.</summary>
         public override string Method {
             get => m_FtpMethod;
             set => m_FtpMethod = value;
         }
+
+        /// <summary>
+        /// Gets the URI requested by the <see cref="FtpWebRequest"/>. Override
+        /// of <see cref="System.Net.WebRequest.RequestUri"/>.
+        /// </summary>
+        public override Uri RequestUri => m_RequestUri;
+
+        /// <summary>
+        /// Gets or sets the length of time, in milliseconds, until the request
+        /// to the server times out. Mirrors <see cref="System.Net.WebRequest.Timeout"/>.
+        /// </summary>
+        public override int Timeout {
+            get => m_CommandTimeout;
+            set => m_CommandTimeout = value;
+        }
+
+        /// <summary>
+        /// Gets or sets a time-out, in milliseconds, when reading from or
+        /// writing to a stream. Mirrors
+        /// <see cref="System.Net.FtpWebRequest.ReadWriteTimeout"/>.
+        /// </summary>
+        public int ReadWriteTimeout {
+            get => m_DataTimeout;
+            set => m_DataTimeout = value;
+        }
+
+        /// <summary>
+        /// Cancels a request to an FTP server. Override of
+        /// <see cref="System.Net.WebRequest.Abort"/>. Best-effort: closes
+        /// the command and data sockets if they are open.
+        /// </summary>
+        public override void Abort() => Close();
 
         /// <summary>
         /// currently only support Uri of the form ftp://Dns|IPv4[:Port][/Path]
@@ -155,6 +208,8 @@ namespace System.Net {
                 if (uri == null) {
                     throw new ArgumentNullException("URI is not resolvable.");
                 }
+
+                m_RequestUri = uri;
 
                 if (uri.HostNameType == UriHostNameType.Dns) {
                     System.Diagnostics.Debug.WriteLine("Status: Resolving address of " + uri.Host);
@@ -650,8 +705,8 @@ namespace System.Net {
                 string command;
                 int responseNumber;
 
-                System.Diagnostics.Debug.WriteLine("Command:\tTYPE " + m_Type);
-                CommandSocket.Send(Encoding.UTF8.GetBytes("TYPE " + m_Type + "\r\n"));
+                System.Diagnostics.Debug.WriteLine("Command:\tTYPE " + TypeCode);
+                CommandSocket.Send(Encoding.UTF8.GetBytes("TYPE " + TypeCode + "\r\n"));
                 responseNumber = WaitResponse();
                 if (responseNumber != 200) {
                     return;

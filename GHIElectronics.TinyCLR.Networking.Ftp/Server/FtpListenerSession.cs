@@ -127,7 +127,11 @@ namespace GHIElectronics.TinyCLR.Networking.Ftp
             {
                 m_ListenSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                 m_ListenSocket.Bind(ep);
-                m_ListenSocket.Listen(0);
+                // Backlog=1: leaves one slot in the pending-accept queue so the
+                // client's passive-mode connect attempt doesn't race accept().
+                // Listen(0) on some TCP stacks (lwIP without SO_REUSEPORT, etc.)
+                // RST's any connect that arrives before accept() is in flight.
+                m_ListenSocket.Listen(1);
                 m_HostPort = (m_ListenSocket.LocalEndPoint as IPEndPoint).Port;
                 m_PassThreadW = true;
             }
@@ -1029,7 +1033,9 @@ namespace GHIElectronics.TinyCLR.Networking.Ftp
     /// </summary>
     public class UserInfo
     {
+        /// <summary>The authenticated user's name.</summary>
         public string UserName { get; internal set; }
+        /// <summary>The authenticated user's password.</summary>
         public string PassWord { get; internal set; }
     }
 }

@@ -4,9 +4,15 @@ using System.IO;
 using System.Runtime.CompilerServices;
 
 namespace GHIElectronics.TinyCLR.IO {
+    /// <summary>
+    /// Mounts and unmounts file systems on top of a <see cref="GHIElectronics.TinyCLR.Devices.Storage.StorageController"/>.
+    /// Pass the controller's <c>Hdc</c> to <see cref="Mount(IntPtr)"/> to make its
+    /// content accessible via <see cref="System.IO.File"/> / <see cref="System.IO.Directory"/>.
+    /// </summary>
     public static class FileSystem {
         private static readonly IDictionary mounted = new Hashtable();
 
+        /// <summary>Mounts the file system on the storage controller handle and returns its drive provider.</summary>
         public static IDriveProvider Mount(IntPtr hdc) {
             if (FileSystem.mounted.Contains(hdc))
                 throw new InvalidOperationException("Already mounted");
@@ -29,6 +35,7 @@ namespace GHIElectronics.TinyCLR.IO {
             return null;
         }
 
+        /// <summary>Unmounts the file system on the storage controller handle.</summary>
         public static bool Unmount(IntPtr hdc) {
             if (!FileSystem.mounted.Contains(hdc))
                 throw new InvalidOperationException("Not mounted");
@@ -42,11 +49,19 @@ namespace GHIElectronics.TinyCLR.IO {
             return FileSystem.Uninitialize(hdc);
         }
 
+        /// <summary>Flushes all pending writes for the file system on the storage controller handle.</summary>
         public static void Flush(IntPtr hdc) => FileSystem.FlushAll(hdc);
 
-        public static bool Format(IntPtr hdc, string volume = null, uint parameter = 0, bool force = false) {
+        /// <summary>Formats the volume on the storage controller handle, optionally over only part of the volume.</summary>
+        // forceSize:
+        //   0 = full volume (100%)
+        //   1 = format only first 75% of the volume; remaining 25% left untouched (raw-access only).
+        //   2 = format only first 50% of the volume; remaining 50% left untouched.
+        public static bool Format(IntPtr hdc, string volume = null, uint parameter = 0, byte forceSize = 0) {
+            if (forceSize > 2)
+                throw new ArgumentOutOfRangeException("forceSize", "Valid values: 0 (100%), 1 (75%), 2 (50%).");
 
-            return NativeFormat(hdc, volume, parameter, force); ;
+            return NativeFormat(hdc, volume, parameter, forceSize);
         }
 
         [MethodImpl(MethodImplOptions.InternalCall)]
@@ -59,7 +74,7 @@ namespace GHIElectronics.TinyCLR.IO {
         private extern static bool Uninitialize(IntPtr nativeProvider);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private extern static bool NativeFormat(IntPtr nativeProvider, string volume, uint parameter, bool force);
+        private extern static bool NativeFormat(IntPtr nativeProvider, string volume, uint parameter, byte forceSize);
 
         private class NativeDriveProvider : IDriveProvider {
             private bool initialized;

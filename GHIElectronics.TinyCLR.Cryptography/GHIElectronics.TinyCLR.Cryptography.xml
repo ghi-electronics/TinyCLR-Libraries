@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>GHIElectronics.TinyCLR.Cryptography</name>
+    </assembly>
+    <members>
+        <member name="T:GHIElectronics.TinyCLR.Cryptography.Crc16">
+            <summary>CRC-16 hash. Computes a 16-bit CRC over a byte buffer, optionally with a non-zero seed.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Cryptography.Crc16.#ctor">
+            <summary>Creates a new CRC-16 calculator.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Cryptography.Crc16.ComputeHash(System.Byte[])">
+            <summary>Computes the 16-bit CRC over the entire buffer with a zero seed.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Cryptography.Crc16.ComputeHash(System.Byte[],System.Int32,System.Int32)">
+            <summary>Computes the 16-bit CRC over a range of the buffer with a zero seed.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Cryptography.Crc16.ComputeHash(System.Byte[],System.Int32,System.Int32,System.UInt16)">
+            <summary>Computes the 16-bit CRC over a range of the buffer using the given seed.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Cryptography.HMACSHA1.Reset">
+            Reset the mac generator.
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Cryptography.SHA1">
+             implementation of SHA-1 as outlined in "Handbook of Applied Cryptography", pages 346 - 349.
+            
+             It is interesting to ponder why the, apart from the extra IV, the other difference here from MD5
+             is the "endianness" of the word processing!
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Cryptography.SHA1.Clear">
+            reset the chaining variables
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Cryptography.Xtea">
+            <summary>XTEA (eXtended Tiny Encryption Algorithm) block cipher. 128-bit key, 64-bit blocks.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Cryptography.Xtea.#ctor(System.UInt32[])">
+            <summary>Creates an XTEA cipher with the given 128-bit key (four 32-bit words).</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Cryptography.Xtea.Encrypt(System.Byte[],System.UInt32,System.UInt32)">
+            <summary>Encrypts a range of the buffer and returns the ciphertext.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Cryptography.Xtea.Decrypt(System.Byte[],System.UInt32,System.UInt32)">
+            <summary>Decrypts a range of the buffer and returns the plaintext.</summary>
+        </member>
+    </members>
+</doc>

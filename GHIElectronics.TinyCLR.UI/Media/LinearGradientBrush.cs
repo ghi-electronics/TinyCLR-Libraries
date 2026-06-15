@@ -4,20 +4,29 @@
 
 
 namespace GHIElectronics.TinyCLR.UI.Media {
+    /// <summary>A brush that paints a region with a linear color gradient.</summary>
     public sealed class LinearGradientBrush : Brush {
+        /// <summary>The color at the start of the gradient.</summary>
         public Color StartColor;
+        /// <summary>The color at the end of the gradient.</summary>
         public Color EndColor;
 
+        /// <summary>How the gradient start and end coordinates are interpreted.</summary>
         public BrushMappingMode MappingMode = BrushMappingMode.RelativeToBoundingBox;
 
+        /// <summary>The start coordinates of the gradient.</summary>
         public int StartX, StartY;
+        /// <summary>The end coordinates of the gradient.</summary>
         public int EndX, EndY;
 
+        /// <summary>The coordinate range used for relative gradient mapping.</summary>
         public const int RelativeBoundingBoxSize = 1000;
 
+        /// <summary>Creates a gradient brush spanning the painted region.</summary>
         public LinearGradientBrush(Color startColor, Color endColor)
             : this(startColor, endColor, 0, 0, RelativeBoundingBoxSize, RelativeBoundingBoxSize) { }
 
+        /// <summary>Creates a gradient brush with the given start and end coordinates.</summary>
         public LinearGradientBrush(Color startColor, Color endColor, int startX, int startY, int endX, int endY) {
             this.StartColor = startColor;
             this.EndColor = endColor;

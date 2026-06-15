@@ -4,9 +4,13 @@
 
 
 namespace GHIElectronics.TinyCLR.UI.Media {
+    /// <summary>Specifies how text is trimmed when it overflows its region.</summary>
     public enum TextTrimming {
+        /// <summary>Text is trimmed at a character boundary with an ellipsis.</summary>
         CharacterEllipsis,
+        /// <summary>Text is not trimmed.</summary>
         None,
+        /// <summary>Text is trimmed at a word boundary with an ellipsis.</summary>
         WordEllipsis,
     }
 }

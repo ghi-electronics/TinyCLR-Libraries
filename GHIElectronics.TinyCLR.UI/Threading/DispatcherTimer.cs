@@ -147,13 +147,16 @@ namespace GHIElectronics.TinyCLR.UI.Threading {
         private bool _isEnabled;
         private Timer _timer;
 
+        /// <summary>Stops the timer and releases its resources.</summary>
         public virtual void Close() => Dispose();
 
+        /// <summary>Releases all resources used by the timer.</summary>
         public void Dispose() {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
 
+        /// <summary>Releases the resources used by the timer.</summary>
         protected virtual void Dispose(bool disposing) => this._timer.Dispose();
     }
 }

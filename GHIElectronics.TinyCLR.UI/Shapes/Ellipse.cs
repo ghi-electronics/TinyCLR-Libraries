@@ -5,7 +5,9 @@
 using System;
 
 namespace GHIElectronics.TinyCLR.UI.Shapes {
+    /// <summary>Draws an ellipse.</summary>
     public class Ellipse : Shape {
+        /// <summary>Creates an ellipse with the given horizontal and vertical radii.</summary>
         public Ellipse(int xRadius, int yRadius) {
             if (xRadius < 0 || yRadius < 0) {
                 throw new ArgumentException();
@@ -15,8 +17,9 @@ namespace GHIElectronics.TinyCLR.UI.Shapes {
             this.Height = yRadius * 2 + 1;
         }
 
+        /// <summary>Renders the ellipse to the drawing context.</summary>
         public override void OnRender(Media.DrawingContext dc) {
-            /// Make room for cases when strokes are thick.
+            // Make room for cases when strokes are thick.
             var x = this._renderWidth / 2 + this.Stroke.Thickness - 1;
             var y = this._renderHeight / 2 + this.Stroke.Thickness - 1;
             var w = this._renderWidth / 2 - (this.Stroke.Thickness - 1) * 2;

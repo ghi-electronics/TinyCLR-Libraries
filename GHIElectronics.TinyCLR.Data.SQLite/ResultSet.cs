@@ -2,17 +2,27 @@
 using System.Collections;
 
 namespace GHIElectronics.TinyCLR.Data.SQLite {
+    /// <summary>
+    /// Result of a SQL SELECT — rows × columns plus column-name metadata. Index by
+    /// <c>this[row]</c> for an ArrayList of cells in that row, or <c>this[row, column]</c>
+    /// for an individual cell.
+    /// </summary>
     public class ResultSet {
         private int rowCount;
         private int columnCount;
         private string[] columnNames;
         private ArrayList data;
 
+        /// <summary>The number of rows in the result set.</summary>
         public int RowCount => this.rowCount;
+        /// <summary>The number of columns in the result set.</summary>
         public int ColumnCount => this.columnCount;
+        /// <summary>The names of the columns in the result set.</summary>
         public string[] ColumnNames => this.columnNames;
+        /// <summary>The rows of the result set, each an ArrayList of cell values.</summary>
         public ArrayList Data => this.data;
 
+        /// <summary>Gets the cells of the given row as an ArrayList.</summary>
         public ArrayList this[int row] {
             get {
                 if (row < 0 || row >= this.rowCount) throw new ArgumentOutOfRangeException(nameof(row));
@@ -21,6 +31,7 @@ namespace GHIElectronics.TinyCLR.Data.SQLite {
             }
         }
 
+        /// <summary>Gets the value of the cell at the given row and column.</summary>
         public object this[int row, int column] {
             get {
                 if (row < 0 || row >= this.rowCount) throw new ArgumentOutOfRangeException(nameof(row));

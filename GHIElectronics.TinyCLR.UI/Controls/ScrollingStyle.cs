@@ -3,13 +3,18 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace GHIElectronics.TinyCLR.UI.Controls {
+    /// <summary>Specifies how a control advances its content when scrolling.</summary>
     public enum ScrollingStyle {
+        /// <summary>The first defined scrolling style.</summary>
         First,
 
+        /// <summary>Scrolls one line at a time.</summary>
         LineByLine = First,
 
+        /// <summary>Scrolls one page at a time.</summary>
         PageByPage,
 
+        /// <summary>The last defined scrolling style.</summary>
         Last = PageByPage
     }
 }

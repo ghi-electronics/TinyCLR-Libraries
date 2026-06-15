@@ -18,40 +18,47 @@ namespace GHIElectronics.TinyCLR.Networking
         private FtpListenerResponse m_Response = null;      // the response
         private Stream m_InternalStream = null;             // input stream to be read from
 
+        /// <summary>Creates a response stream associated with the given response.</summary>
         public FtpResponseStream(FtpListenerResponse responese)
         {
             m_Response = responese;
         }
 
+        /// <summary>Creates a response stream that reads from or writes to the given underlying stream.</summary>
         public FtpResponseStream(FtpListenerResponse responese, Stream stream)
             : this(responese)
         {
             m_InternalStream = stream;
         }
 
+        /// <summary>Gets a value indicating whether the stream supports reading; always false.</summary>
         public override bool CanRead
         {
             get { return false; }
         }
 
+        /// <summary>Gets a value indicating whether the stream supports seeking; always false.</summary>
         public override bool CanSeek
         {
             get { return false; }
         }
 
+        /// <summary>Gets a value indicating whether the stream supports writing; always true.</summary>
         public override bool CanWrite
         {
             get { return true; }
         }
 
+        /// <summary>Flushes the stream; this implementation does nothing.</summary>
         public override void Flush()
         {
-            
+
         }
 
+        /// <summary>Gets the number of bytes currently held in the internal buffer.</summary>
         public override long Length
         {
-            get 
+            get
             {
                 if (m_Memory != null)
                 {
@@ -64,6 +71,7 @@ namespace GHIElectronics.TinyCLR.Networking
             }
         }
 
+        /// <summary>Getting or setting the position is not supported by this stream.</summary>
         public override long Position
         {
             get
@@ -76,6 +84,7 @@ namespace GHIElectronics.TinyCLR.Networking
             }
         }
 
+        /// <summary>Closes the stream and sends the pending FTP response.</summary>
         public override void Close()
         {
             if (m_Response != null)
@@ -83,21 +92,25 @@ namespace GHIElectronics.TinyCLR.Networking
             base.Close();
         }
 
+        /// <summary>Reading bytes from this stream is not supported.</summary>
         public override int Read(byte[] buffer, int offset, int count)
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>Seeking is not supported by this stream.</summary>
         public override long Seek(long offset, SeekOrigin origin)
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>Setting the length is not supported by this stream.</summary>
         public override void SetLength(long value)
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>Writing a byte buffer is not supported by this stream.</summary>
         public override void Write(byte[] buffer, int offset, int count)
         {
             throw new NotImplementedException();

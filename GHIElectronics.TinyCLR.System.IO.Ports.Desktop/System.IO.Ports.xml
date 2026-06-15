@@ -1,0 +1,290 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>System.IO.Ports</name>
+    </assembly>
+    <members>
+        <member name="T:System.IO.Ports.SerialData">
+            <summary>Type of data received on the serial port.</summary>
+        </member>
+        <member name="F:System.IO.Ports.SerialData.Chars">
+            <summary>Data other than the end-of-file character was received.</summary>
+        </member>
+        <member name="F:System.IO.Ports.SerialData.Eof">
+            <summary>The end-of-file character was received.</summary>
+        </member>
+        <member name="T:System.IO.Ports.SerialError">
+            <summary>Errors that can occur on the serial port.</summary>
+        </member>
+        <member name="F:System.IO.Ports.SerialError.TXFull">
+            <summary>The transmit buffer is full.</summary>
+        </member>
+        <member name="F:System.IO.Ports.SerialError.RXOver">
+            <summary>The receive buffer overflowed.</summary>
+        </member>
+        <member name="F:System.IO.Ports.SerialError.Overrun">
+            <summary>A character was received before the previous one was read (hardware overrun).</summary>
+        </member>
+        <member name="F:System.IO.Ports.SerialError.RXParity">
+            <summary>A parity error was detected.</summary>
+        </member>
+        <member name="F:System.IO.Ports.SerialError.Frame">
+            <summary>A framing error was detected.</summary>
+        </member>
+        <member name="T:System.IO.Ports.SerialPin">
+            <summary>Serial control-pin changes that can raise the pin-changed event.</summary>
+        </member>
+        <member name="F:System.IO.Ports.SerialPin.CtsChanged">
+            <summary>Clear-to-Send changed.</summary>
+        </member>
+        <member name="F:System.IO.Ports.SerialPin.DsrChanged">
+            <summary>Data-Set-Ready changed.</summary>
+        </member>
+        <member name="F:System.IO.Ports.SerialPin.CDChanged">
+            <summary>Carrier-Detect changed.</summary>
+        </member>
+        <member name="F:System.IO.Ports.SerialPin.Break">
+            <summary>A break was detected.</summary>
+        </member>
+        <member name="F:System.IO.Ports.SerialPin.Ring">
+            <summary>A ring indicator was detected.</summary>
+        </member>
+        <member name="T:System.IO.Ports.StopBits">
+            <summary>Number of stop bits per frame.</summary>
+        </member>
+        <member name="F:System.IO.Ports.StopBits.None">
+            <summary>No stop bits (not supported by most hardware).</summary>
+        </member>
+        <member name="F:System.IO.Ports.StopBits.One">
+            <summary>One stop bit.</summary>
+        </member>
+        <member name="F:System.IO.Ports.StopBits.Two">
+            <summary>Two stop bits.</summary>
+        </member>
+        <member name="F:System.IO.Ports.StopBits.OnePointFive">
+            <summary>One and a half stop bits.</summary>
+        </member>
+        <member name="T:System.IO.Ports.Handshake">
+            <summary>Flow-control method.</summary>
+        </member>
+        <member name="F:System.IO.Ports.Handshake.None">
+            <summary>No flow control.</summary>
+        </member>
+        <member name="F:System.IO.Ports.Handshake.XOnXOff">
+            <summary>Software (XON/XOFF) flow control.</summary>
+        </member>
+        <member name="F:System.IO.Ports.Handshake.RequestToSend">
+            <summary>Hardware (RTS/CTS) flow control.</summary>
+        </member>
+        <member name="F:System.IO.Ports.Handshake.RequestToSendXOnXOff">
+            <summary>Both hardware and software flow control.</summary>
+        </member>
+        <member name="T:System.IO.Ports.Parity">
+            <summary>Parity-checking scheme.</summary>
+        </member>
+        <member name="F:System.IO.Ports.Parity.None">
+            <summary>No parity bit.</summary>
+        </member>
+        <member name="F:System.IO.Ports.Parity.Odd">
+            <summary>Odd parity.</summary>
+        </member>
+        <member name="F:System.IO.Ports.Parity.Even">
+            <summary>Even parity.</summary>
+        </member>
+        <member name="F:System.IO.Ports.Parity.Mark">
+            <summary>Parity bit always 1.</summary>
+        </member>
+        <member name="F:System.IO.Ports.Parity.Space">
+            <summary>Parity bit always 0.</summary>
+        </member>
+        <member name="T:System.IO.Ports.SerialDataReceivedEventHandler">
+            <summary>Handler for the <see cref="E:System.IO.Ports.SerialPort.DataReceived"/> event.</summary>
+        </member>
+        <member name="T:System.IO.Ports.SerialErrorReceivedEventHandler">
+            <summary>Handler for the <see cref="E:System.IO.Ports.SerialPort.ErrorReceived"/> event.</summary>
+        </member>
+        <member name="T:System.IO.Ports.SerialPinChangedEventHandler">
+            <summary>Handler for the <see cref="E:System.IO.Ports.SerialPort.PinChanged"/> event.</summary>
+        </member>
+        <member name="T:System.IO.Ports.SerialDataReceivedEventArgs">
+            <summary>Arguments for the data-received event.</summary>
+        </member>
+        <member name="P:System.IO.Ports.SerialDataReceivedEventArgs.EventType">
+            <summary>The kind of data that was received.</summary>
+        </member>
+        <member name="M:System.IO.Ports.SerialDataReceivedEventArgs.#ctor(System.IO.Ports.SerialData)">
+            <summary>Creates the event arguments.</summary>
+        </member>
+        <member name="T:System.IO.Ports.SerialErrorReceivedEventArgs">
+            <summary>Arguments for the error-received event.</summary>
+        </member>
+        <member name="P:System.IO.Ports.SerialErrorReceivedEventArgs.EventType">
+            <summary>The error that occurred.</summary>
+        </member>
+        <member name="M:System.IO.Ports.SerialErrorReceivedEventArgs.#ctor(System.IO.Ports.SerialError)">
+            <summary>Creates the event arguments.</summary>
+        </member>
+        <member name="T:System.IO.Ports.SerialPinChangedEventArgs">
+            <summary>Arguments for the pin-changed event.</summary>
+        </member>
+        <member name="P:System.IO.Ports.SerialPinChangedEventArgs.EventType">
+            <summary>The control pin that changed.</summary>
+        </member>
+        <member name="M:System.IO.Ports.SerialPinChangedEventArgs.#ctor(System.IO.Ports.SerialPin)">
+            <summary>Creates the event arguments.</summary>
+        </member>
+        <member name="T:System.IO.Ports.SerialPort">
+            <summary>
+            .NET-style serial port. Same surface as <c>System.IO.Ports.SerialPort</c>;
+            internally routes through TinyCLR's <see cref="T:GHIElectronics.TinyCLR.Devices.Uart.UartController"/>.
+            </summary>
+        </member>
+        <member name="P:System.IO.Ports.SerialPort.PortName">
+            <summary>The port name, e.g. "COM1" or a TinyCLR UART API name.</summary>
+        </member>
+        <member name="P:System.IO.Ports.SerialPort.BaudRate">
+            <summary>The baud rate. Defaults to 9600.</summary>
+        </member>
+        <member name="P:System.IO.Ports.SerialPort.Parity">
+            <summary>The parity scheme. Defaults to none.</summary>
+        </member>
+        <member name="P:System.IO.Ports.SerialPort.DataBits">
+            <summary>Bits per byte. Defaults to 8.</summary>
+        </member>
+        <member name="P:System.IO.Ports.SerialPort.StopBits">
+            <summary>Number of stop bits. Defaults to one.</summary>
+        </member>
+        <member name="P:System.IO.Ports.SerialPort.Handshake">
+            <summary>The flow-control method. Defaults to none.</summary>
+        </member>
+        <member name="P:System.IO.Ports.SerialPort.ReadTimeout">
+            <summary>Read timeout in milliseconds, or <see cref="F:System.IO.Ports.SerialPort.InfiniteTimeout"/>.</summary>
+        </member>
+        <member name="P:System.IO.Ports.SerialPort.WriteTimeout">
+            <summary>Write timeout in milliseconds, or <see cref="F:System.IO.Ports.SerialPort.InfiniteTimeout"/>.</summary>
+        </member>
+        <member name="P:System.IO.Ports.SerialPort.ReadBufferSize">
+            <summary>Receive buffer size in bytes. Defaults to 256.</summary>
+        </member>
+        <member name="P:System.IO.Ports.SerialPort.WriteBufferSize">
+            <summary>Transmit buffer size in bytes. Defaults to 256.</summary>
+        </member>
+        <member name="P:System.IO.Ports.SerialPort.ReceivedBytesThreshold">
+            <summary>Bytes that must be buffered before the data-received event fires. Defaults to 1.</summary>
+        </member>
+        <member name="P:System.IO.Ports.SerialPort.NewLine">
+            <summary>The line terminator used by <see cref="M:System.IO.Ports.SerialPort.ReadLine"/> and <see cref="M:System.IO.Ports.SerialPort.WriteLine(System.String)"/>. Defaults to "\n".</summary>
+        </member>
+        <member name="P:System.IO.Ports.SerialPort.Encoding">
+            <summary>The text encoding used by the string read/write methods. Defaults to UTF-8.</summary>
+        </member>
+        <member name="P:System.IO.Ports.SerialPort.IsOpen">
+            <summary>True if the port is open.</summary>
+        </member>
+        <member name="P:System.IO.Ports.SerialPort.BytesToRead">
+            <summary>Number of bytes available to read.</summary>
+        </member>
+        <member name="P:System.IO.Ports.SerialPort.BytesToWrite">
+            <summary>Number of bytes waiting to be sent.</summary>
+        </member>
+        <member name="P:System.IO.Ports.SerialPort.CtsHolding">
+            <summary>State of the Clear-to-Send line.</summary>
+        </member>
+        <member name="P:System.IO.Ports.SerialPort.CDHolding">
+            <summary>State of the Carrier-Detect line. Not supported.</summary>
+        </member>
+        <member name="P:System.IO.Ports.SerialPort.DsrHolding">
+            <summary>State of the Data-Set-Ready line. Not supported.</summary>
+        </member>
+        <member name="P:System.IO.Ports.SerialPort.BreakState">
+            <summary>Whether the port is in a break state. Not supported.</summary>
+        </member>
+        <member name="P:System.IO.Ports.SerialPort.DtrEnable">
+            <summary>Whether the Data-Terminal-Ready line is enabled. Not supported.</summary>
+        </member>
+        <member name="P:System.IO.Ports.SerialPort.RtsEnable">
+            <summary>Whether the Request-to-Send line is enabled.</summary>
+        </member>
+        <member name="F:System.IO.Ports.SerialPort.InfiniteTimeout">
+            <summary>Value meaning "no timeout" for the timeout properties.</summary>
+        </member>
+        <member name="E:System.IO.Ports.SerialPort.DataReceived">
+            <summary>Raised when data is received.</summary>
+        </member>
+        <member name="E:System.IO.Ports.SerialPort.ErrorReceived">
+            <summary>Raised when a receive error occurs.</summary>
+        </member>
+        <member name="E:System.IO.Ports.SerialPort.PinChanged">
+            <summary>Raised when a control pin changes.</summary>
+        </member>
+        <member name="M:System.IO.Ports.SerialPort.#ctor">
+            <summary>Creates a port using "COM1".</summary>
+        </member>
+        <member name="M:System.IO.Ports.SerialPort.#ctor(System.String)">
+            <summary>Creates a port for the given port name.</summary>
+        </member>
+        <member name="M:System.IO.Ports.SerialPort.#ctor(System.String,System.Int32)">
+            <summary>Creates a port with the given name and baud rate.</summary>
+        </member>
+        <member name="M:System.IO.Ports.SerialPort.#ctor(System.String,System.Int32,System.IO.Ports.Parity)">
+            <summary>Creates a port with the given name, baud rate, and parity.</summary>
+        </member>
+        <member name="M:System.IO.Ports.SerialPort.#ctor(System.String,System.Int32,System.IO.Ports.Parity,System.Int32)">
+            <summary>Creates a port with the given name, baud rate, parity, and data bits.</summary>
+        </member>
+        <member name="M:System.IO.Ports.SerialPort.#ctor(System.String,System.Int32,System.IO.Ports.Parity,System.Int32,System.IO.Ports.StopBits)">
+            <summary>Creates a port with the given name, baud rate, parity, data bits, and stop bits.</summary>
+        </member>
+        <member name="M:System.IO.Ports.SerialPort.Open">
+            <summary>Opens the port using the current settings.</summary>
+        </member>
+        <member name="M:System.IO.Ports.SerialPort.Close">
+            <summary>Closes the port.</summary>
+        </member>
+        <member name="M:System.IO.Ports.SerialPort.Dispose">
+            <summary>Closes the port and releases its resources.</summary>
+        </member>
+        <member name="M:System.IO.Ports.SerialPort.Read(System.Byte[],System.Int32,System.Int32)">
+            <summary>Reads up to <paramref name="count"/> bytes into the buffer. Returns the number of bytes read.</summary>
+        </member>
+        <member name="M:System.IO.Ports.SerialPort.ReadByte">
+            <summary>Reads a single byte. Throws on timeout.</summary>
+        </member>
+        <member name="M:System.IO.Ports.SerialPort.ReadChar">
+            <summary>Reads a single character. Throws on timeout.</summary>
+        </member>
+        <member name="M:System.IO.Ports.SerialPort.Read(System.Char[],System.Int32,System.Int32)">
+            <summary>Reads characters into the buffer. Not supported.</summary>
+        </member>
+        <member name="M:System.IO.Ports.SerialPort.ReadExisting">
+            <summary>Reads all bytes currently available and returns them as a string.</summary>
+        </member>
+        <member name="M:System.IO.Ports.SerialPort.ReadLine">
+            <summary>Reads up to the <see cref="P:System.IO.Ports.SerialPort.NewLine"/> terminator and returns the line.</summary>
+        </member>
+        <member name="M:System.IO.Ports.SerialPort.ReadTo(System.String)">
+            <summary>Reads up to the given delimiter and returns the text before it.</summary>
+        </member>
+        <member name="M:System.IO.Ports.SerialPort.Write(System.String)">
+            <summary>Writes a string using the current encoding.</summary>
+        </member>
+        <member name="M:System.IO.Ports.SerialPort.WriteLine(System.String)">
+            <summary>Writes a string followed by the <see cref="P:System.IO.Ports.SerialPort.NewLine"/> terminator.</summary>
+        </member>
+        <member name="M:System.IO.Ports.SerialPort.Write(System.Byte[],System.Int32,System.Int32)">
+            <summary>Writes <paramref name="count"/> bytes from the buffer.</summary>
+        </member>
+        <member name="M:System.IO.Ports.SerialPort.Write(System.Char[],System.Int32,System.Int32)">
+            <summary>Writes <paramref name="count"/> characters from the buffer using the current encoding.</summary>
+        </member>
+        <member name="M:System.IO.Ports.SerialPort.DiscardInBuffer">
+            <summary>Discards the contents of the receive buffer.</summary>
+        </member>
+        <member name="M:System.IO.Ports.SerialPort.DiscardOutBuffer">
+            <summary>Discards the contents of the transmit buffer.</summary>
+        </member>
+        <member name="M:System.IO.Ports.SerialPort.GetPortNames">
+            <summary>Returns the available port names. Not supported.</summary>
+        </member>
+    </members>
+</doc>

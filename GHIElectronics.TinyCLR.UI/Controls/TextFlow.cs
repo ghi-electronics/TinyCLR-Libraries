@@ -9,7 +9,9 @@ using GHIElectronics.TinyCLR.UI.Input;
 using GHIElectronics.TinyCLR.UI.Media;
 
 namespace GHIElectronics.TinyCLR.UI.Controls {
+    /// <summary>An element that lays out and scrolls a collection of styled text runs across multiple wrapped lines.</summary>
     public class TextFlow : UIElement {
+        /// <summary>The collection of text runs displayed by this element.</summary>
         public TextRunCollection TextRuns;
 
         internal class TextLine {
@@ -55,8 +57,10 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
         internal ScrollingStyle _scrollingStyle = ScrollingStyle.LineByLine;
 
+        /// <summary>Initializes a new instance of the <see cref="TextFlow"/> class.</summary>
         public TextFlow() => this.TextRuns = new TextRunCollection(this);
 
+        /// <summary>Whether hardware-button scrolling advances by line or by page.</summary>
         public ScrollingStyle ScrollingStyle {
             get => this._scrollingStyle;
 
@@ -71,6 +75,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
+        /// <summary>The horizontal alignment of each line of text.</summary>
         public TextAlignment TextAlignment {
             get => this._alignment;
 
@@ -82,6 +87,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
+        /// <summary>Wraps the text runs into lines and measures the total height required.</summary>
         protected override void MeasureOverride(int availableWidth, int availableHeight, out int desiredWidth, out int desiredHeight) {
             desiredWidth = availableWidth;
             desiredHeight = availableHeight;
@@ -272,6 +278,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             return lineCache;
         }
 
+        /// <summary>Handles the Up/Down hardware buttons to scroll the text by line or page.</summary>
         protected override void OnButtonDown(GHIElectronics.TinyCLR.UI.Input.ButtonEventArgs e) {
             if (e.Button == HardwareButton.Up || e.Button == HardwareButton.Down) {
                 var isUp = (e.Button == HardwareButton.Up);
@@ -289,6 +296,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
+        /// <summary>Draws the visible wrapped lines starting from the current top line.</summary>
         public override void OnRender(Media.DrawingContext dc) {
             if (this._lineCache == null || this._lineCache.Count == 0) {
                 return;
@@ -324,7 +332,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                         break;
 
                     default:
-                        throw new NotSupportedException();
+                        throw new NotSupportedException("TextAlignment value " + this._alignment + " is not supported.");
                 }
 
                 for (var i = 0; i < runs.Length; i++) {
@@ -340,6 +348,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
+        /// <summary>The index of the first line currently displayed at the top.</summary>
         public int TopLine {
             get => this._currentLine;
 
@@ -353,6 +362,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
+        /// <summary>The total number of wrapped lines after the last measure.</summary>
         public int LineCount => this._lineCache.Count; // if _lineCache is null, it'll throw a NullReferenceException
     }
 }

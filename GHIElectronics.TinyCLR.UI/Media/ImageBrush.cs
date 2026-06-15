@@ -3,10 +3,14 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace GHIElectronics.TinyCLR.UI.Media {
+    /// <summary>A brush that paints a region with an image.</summary>
     public sealed class ImageBrush : Brush {
+        /// <summary>The image painted by the brush.</summary>
         public ImageSource ImageSource;
+        /// <summary>How the image is stretched to fill the region.</summary>
         public Stretch Stretch = Stretch.Fill;
 
+        /// <summary>Creates a brush that paints with the given image.</summary>
         public ImageBrush(ImageSource imagesource) => this.ImageSource = imagesource;
 
         internal override void RenderRectangle(Bitmap bmp, Pen pen, int x, int y, int width, int height) {

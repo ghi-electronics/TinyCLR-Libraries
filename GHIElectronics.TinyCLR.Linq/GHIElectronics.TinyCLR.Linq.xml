@@ -1,0 +1,276 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>GHIElectronics.TinyCLR.Linq</name>
+    </assembly>
+    <members>
+        <member name="T:System.Linq.IGrouping`2">
+            <summary>
+            Represents a collection of objects that have a common key. Returned by <c>GroupBy</c>.
+            </summary>
+        </member>
+        <member name="P:System.Linq.IGrouping`2.Key">
+            <summary>Gets the key that the elements in this grouping have in common.</summary>
+        </member>
+        <member name="T:System.Linq.IOrderedEnumerable`1">
+            <summary>
+            Represents a sorted sequence. Used as the chain link between
+            <c>OrderBy</c>/<c>OrderByDescending</c> and <c>ThenBy</c>/<c>ThenByDescending</c>.
+            </summary>
+        </member>
+        <member name="M:System.Linq.IOrderedEnumerable`1.CreateOrderedEnumerable``1(System.Func{`0,``0},System.Collections.Generic.IComparer{``0},System.Boolean)">
+            <summary>Performs a subsequent ordering on the elements by a key, used to implement ThenBy and ThenByDescending.</summary>
+        </member>
+        <member name="T:System.Linq.Grouping`2">
+            <summary>
+            Internal IGrouping implementation backed by a List. Allocated by
+            <see cref="M:System.Linq.Enumerable.GroupBy``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1})"/> and friends.
+            </summary>
+        </member>
+        <member name="T:System.Linq.OrderedEnumerable`1">
+            <summary>
+            Internal implementation that materializes the source on first
+            enumeration, sorts it using a chain of key-comparers (one per
+            OrderBy / ThenBy call), and yields the result. The chain is built up
+            by <see cref="M:System.Linq.OrderedEnumerable`1.CreateOrderedEnumerable``1(System.Func{`0,``0},System.Collections.Generic.IComparer{``0},System.Boolean)"/>.
+            </summary>
+        </member>
+        <member name="T:System.Linq.Enumerable">
+            <summary>
+            LINQ to Objects on top of <see cref="T:System.Collections.Generic.IEnumerable`1"/>. Subset of the
+            .NET BCL surface picked for embedded use - covers the common
+            filter / project / aggregate / order / group / convert operators.
+            Lazy operators (Where, Select, etc.) use iterator state machines;
+            terminal operators (ToArray, Sum, OrderBy, etc.) are eager.
+            </summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.Where``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})">
+            <summary>Filters a sequence of values based on a predicate.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.Where``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int32,System.Boolean})">
+            <summary>Filters a sequence of values based on a predicate that receives each element's index.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.OfType``1(System.Collections.IEnumerable)">
+            <summary>Filters the elements of a sequence based on a specified type.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.Cast``1(System.Collections.IEnumerable)">
+            <summary>Casts the elements of a sequence to the specified type.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.Select``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1})">
+            <summary>Projects each element of a sequence into a new form.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.Select``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int32,``1})">
+            <summary>Projects each element of a sequence into a new form by incorporating the element's index.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.SelectMany``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Collections.Generic.IEnumerable{``1}})">
+            <summary>Projects each element of a sequence to an <see cref="T:System.Collections.Generic.IEnumerable`1"/> and flattens the results into one sequence.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.Skip``1(System.Collections.Generic.IEnumerable{``0},System.Int32)">
+            <summary>Bypasses a specified number of elements and returns the remaining elements.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.Take``1(System.Collections.Generic.IEnumerable{``0},System.Int32)">
+            <summary>Returns a specified number of contiguous elements from the start of a sequence.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.SkipWhile``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})">
+            <summary>Bypasses elements while a predicate is true and returns the remaining elements.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.TakeWhile``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})">
+            <summary>Returns elements from the start of a sequence while a predicate is true.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.Distinct``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>Returns distinct elements from a sequence using the default equality comparer.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.Distinct``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEqualityComparer{``0})">
+            <summary>Returns distinct elements from a sequence using a specified equality comparer.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.Concat``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0})">
+            <summary>Concatenates two sequences.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.Reverse``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>Inverts the order of the elements in a sequence.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.SequenceEqual``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0})">
+            <summary>Determines whether two sequences are equal using the default equality comparer.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.SequenceEqual``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEqualityComparer{``0})">
+            <summary>Determines whether two sequences are equal using a specified equality comparer.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.Any``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>Determines whether a sequence contains any elements.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.Any``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})">
+            <summary>Determines whether any element of a sequence satisfies a predicate.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.All``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})">
+            <summary>Determines whether all elements of a sequence satisfy a predicate.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.Contains``1(System.Collections.Generic.IEnumerable{``0},``0)">
+            <summary>Determines whether a sequence contains a specified element using the default equality comparer.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.Contains``1(System.Collections.Generic.IEnumerable{``0},``0,System.Collections.Generic.IEqualityComparer{``0})">
+            <summary>Determines whether a sequence contains a specified element using a specified equality comparer.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.First``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>Returns the first element of a sequence, throwing if the sequence is empty.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.First``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})">
+            <summary>Returns the first element that satisfies a predicate, throwing if none match.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.FirstOrDefault``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>Returns the first element of a sequence, or a default value if the sequence is empty.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.FirstOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})">
+            <summary>Returns the first element that satisfies a predicate, or a default value if none match.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.Last``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>Returns the last element of a sequence, throwing if the sequence is empty.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.Last``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})">
+            <summary>Returns the last element that satisfies a predicate, throwing if none match.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.LastOrDefault``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>Returns the last element of a sequence, or a default value if the sequence is empty.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.LastOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})">
+            <summary>Returns the last element that satisfies a predicate, or a default value if none match.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.Single``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>Returns the only element of a sequence, throwing if it is empty or has more than one element.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.Single``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})">
+            <summary>Returns the only element that satisfies a predicate, throwing if none or more than one match.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.SingleOrDefault``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>Returns the only element of a sequence, a default value if empty, or throws if more than one element.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.SingleOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})">
+            <summary>Returns the only element that satisfies a predicate, a default value if none match, or throws if more than one matches.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.ElementAt``1(System.Collections.Generic.IEnumerable{``0},System.Int32)">
+            <summary>Returns the element at a specified index in a sequence.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.ElementAtOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Int32)">
+            <summary>Returns the element at a specified index, or a default value if the index is out of range.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.Count``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>Returns the number of elements in a sequence.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.Count``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Boolean})">
+            <summary>Returns the number of elements in a sequence that satisfy a predicate.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.LongCount``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>Returns the number of elements in a sequence as a 64-bit integer.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.Sum(System.Collections.Generic.IEnumerable{System.Int32})">
+            <summary>Computes the sum of a sequence of 32-bit integers.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.Sum``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int32})">
+            <summary>Computes the sum of the 32-bit integer values selected from each element.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.Sum(System.Collections.Generic.IEnumerable{System.Int64})">
+            <summary>Computes the sum of a sequence of 64-bit integers.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.Sum``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Int64})">
+            <summary>Computes the sum of the 64-bit integer values selected from each element.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.Sum(System.Collections.Generic.IEnumerable{System.Double})">
+            <summary>Computes the sum of a sequence of double-precision values.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.Sum``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,System.Double})">
+            <summary>Computes the sum of the double-precision values selected from each element.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.Sum(System.Collections.Generic.IEnumerable{System.Single})">
+            <summary>Computes the sum of a sequence of single-precision values.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.Min``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>Returns the minimum value in a sequence using the default comparer.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.Min``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1})">
+            <summary>Returns the minimum value selected from each element of a sequence.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.Max``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>Returns the maximum value in a sequence using the default comparer.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.Max``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1})">
+            <summary>Returns the maximum value selected from each element of a sequence.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.Average(System.Collections.Generic.IEnumerable{System.Int32})">
+            <summary>Computes the average of a sequence of 32-bit integers.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.Average(System.Collections.Generic.IEnumerable{System.Int64})">
+            <summary>Computes the average of a sequence of 64-bit integers.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.Average(System.Collections.Generic.IEnumerable{System.Double})">
+            <summary>Computes the average of a sequence of double-precision values.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.Aggregate``2(System.Collections.Generic.IEnumerable{``0},``1,System.Func{``1,``0,``1})">
+            <summary>Applies an accumulator function over a sequence starting from a seed value.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.Aggregate``1(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``0,``0})">
+            <summary>Applies an accumulator function over a sequence using the first element as the seed.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.OrderBy``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1})">
+            <summary>Sorts the elements of a sequence in ascending order by a key.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.OrderBy``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Collections.Generic.IComparer{``1})">
+            <summary>Sorts the elements of a sequence in ascending order by a key using a specified comparer.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.OrderByDescending``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1})">
+            <summary>Sorts the elements of a sequence in descending order by a key.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.OrderByDescending``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Collections.Generic.IComparer{``1})">
+            <summary>Sorts the elements of a sequence in descending order by a key using a specified comparer.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.ThenBy``2(System.Linq.IOrderedEnumerable{``0},System.Func{``0,``1})">
+            <summary>Performs a subsequent ascending sort on an already ordered sequence by a key.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.ThenBy``2(System.Linq.IOrderedEnumerable{``0},System.Func{``0,``1},System.Collections.Generic.IComparer{``1})">
+            <summary>Performs a subsequent ascending sort on an already ordered sequence by a key using a specified comparer.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.ThenByDescending``2(System.Linq.IOrderedEnumerable{``0},System.Func{``0,``1})">
+            <summary>Performs a subsequent descending sort on an already ordered sequence by a key.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.ThenByDescending``2(System.Linq.IOrderedEnumerable{``0},System.Func{``0,``1},System.Collections.Generic.IComparer{``1})">
+            <summary>Performs a subsequent descending sort on an already ordered sequence by a key using a specified comparer.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.GroupBy``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1})">
+            <summary>Groups the elements of a sequence by a key.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.GroupBy``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Collections.Generic.IEqualityComparer{``1})">
+            <summary>Groups the elements of a sequence by a key using a specified equality comparer.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.GroupBy``3(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Func{``0,``2})">
+            <summary>Groups the elements of a sequence by a key and projects each element with an element selector.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.GroupBy``3(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Func{``0,``2},System.Collections.Generic.IEqualityComparer{``1})">
+            <summary>Groups the elements of a sequence by a key, projecting each element with an element selector and using a specified equality comparer.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.ToArray``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>Creates an array from a sequence.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.ToList``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>Creates a <see cref="T:System.Collections.Generic.List`1"/> from a sequence.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.ToDictionary``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1})">
+            <summary>Creates a <see cref="T:System.Collections.Generic.Dictionary`2"/> from a sequence using a key selector.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.ToDictionary``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Collections.Generic.IEqualityComparer{``1})">
+            <summary>Creates a <see cref="T:System.Collections.Generic.Dictionary`2"/> from a sequence using a key selector and a specified equality comparer.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.ToDictionary``3(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Func{``0,``2})">
+            <summary>Creates a <see cref="T:System.Collections.Generic.Dictionary`2"/> from a sequence using key and element selectors.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.ToDictionary``3(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1},System.Func{``0,``2},System.Collections.Generic.IEqualityComparer{``1})">
+            <summary>Creates a <see cref="T:System.Collections.Generic.Dictionary`2"/> from a sequence using key and element selectors and a specified equality comparer.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.Range(System.Int32,System.Int32)">
+            <summary>Generates a sequence of consecutive integers starting at a specified value.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.Repeat``1(``0,System.Int32)">
+            <summary>Generates a sequence that contains one repeated value.</summary>
+        </member>
+        <member name="M:System.Linq.Enumerable.Empty``1">
+            <summary>Returns an empty sequence of the specified type.</summary>
+        </member>
+    </members>
+</doc>

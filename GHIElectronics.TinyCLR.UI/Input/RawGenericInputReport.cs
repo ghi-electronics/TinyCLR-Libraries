@@ -29,6 +29,7 @@ namespace GHIElectronics.TinyCLR.UI.Input {
             this.Target = null;
         }
 
+        /// <summary>Constructs an instance of the RawGenericInputReport class targeting a specific element.</summary>
         public RawGenericInputReport(PresentationSource inputSource,
                         GenericEvent genericEvent, UIElement destTarget)
             : base(inputSource, genericEvent.Time) {
@@ -36,8 +37,10 @@ namespace GHIElectronics.TinyCLR.UI.Input {
             this.Target = destTarget;
         }
 
+        /// <summary>Read-only access to the element this report is directed at, or null.</summary>
         public readonly UIElement Target;
 
+        /// <summary>Read-only access to the underlying generic event.</summary>
         public readonly GenericEvent InternalEvent;
     }
 }

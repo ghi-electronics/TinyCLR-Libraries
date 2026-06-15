@@ -1,0 +1,201 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>GHIElectronics.TinyCLR.Devices.Display</name>
+    </assembly>
+    <members>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Display.DisplayController">
+            <summary>
+            Represents the framebuffer / panel controller. After supplying timing via
+            <see cref="M:GHIElectronics.TinyCLR.Devices.Display.DisplayController.SetConfiguration(GHIElectronics.TinyCLR.Devices.Display.DisplayControllerSettings)"/> and calling
+            <see cref="M:GHIElectronics.TinyCLR.Devices.Display.DisplayController.Enable"/>, push pixels with <see cref="M:GHIElectronics.TinyCLR.Devices.Display.DisplayController.DrawBuffer(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Byte[],System.Int32)"/> /
+            <see cref="M:GHIElectronics.TinyCLR.Devices.Display.DisplayController.DrawPixel(System.Int32,System.Int32,System.Int64)"/> — or mount the controller into the higher-level
+            drawing/UI stack via <see cref="P:GHIElectronics.TinyCLR.Devices.Display.DisplayController.Hdc"/>.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Display.DisplayController.Provider">
+            <summary>The low-level provider backing this controller.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Display.DisplayController.GetDefault">
+            <summary>Returns the default display controller for this device.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Display.DisplayController.FromName(System.String)">
+            <summary>Returns a display controller identified by its native API name.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Display.DisplayController.FromProvider(GHIElectronics.TinyCLR.Devices.Display.Provider.IDisplayControllerProvider)">
+            <summary>Creates a controller from a custom <see cref="T:GHIElectronics.TinyCLR.Devices.Display.Provider.IDisplayControllerProvider"/>.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Display.DisplayController.Hdc">
+            <summary>Native handle (HDC) for use with the drawing/UI stack.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Display.DisplayController.ActiveConfiguration">
+            <summary>The settings most recently applied via <see cref="M:GHIElectronics.TinyCLR.Devices.Display.DisplayController.SetConfiguration(GHIElectronics.TinyCLR.Devices.Display.DisplayControllerSettings)"/>.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Display.DisplayController.Dispose">
+            <summary>Releases the underlying provider.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Display.DisplayController.Enable">
+            <summary>Powers on the panel and the timing engine.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Display.DisplayController.Disable">
+            <summary>Powers off the panel.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Display.DisplayController.DrawBuffer(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Byte[],System.Int32)">
+            <summary>Blits a rectangular region of an off-screen buffer to the panel.</summary>
+            <param name="targetX">Destination left edge.</param>
+            <param name="targetY">Destination top edge.</param>
+            <param name="sourceX">Source-buffer left edge.</param>
+            <param name="sourceY">Source-buffer top edge.</param>
+            <param name="width">Width of the region in pixels.</param>
+            <param name="height">Height of the region in pixels.</param>
+            <param name="originalWidth">Width of the full source buffer in pixels.</param>
+            <param name="data">Pixel data (RGB565 byte pairs).</param>
+            <param name="offset">Starting offset within <paramref name="data"/>.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Display.DisplayController.DrawPixel(System.Int32,System.Int32,System.Int64)">
+            <summary>Sets a single pixel.</summary>
+            <param name="x">X coordinate.</param>
+            <param name="y">Y coordinate.</param>
+            <param name="color">Pixel color in the active <see cref="T:GHIElectronics.TinyCLR.Devices.Display.DisplayDataFormat"/>.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Display.DisplayController.DrawString(System.String)">
+            <summary>Renders a string via the controller's built-in text mode (where supported).</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Display.DisplayController.SetConfiguration(GHIElectronics.TinyCLR.Devices.Display.DisplayControllerSettings)">
+            <summary>Applies a display configuration (timing, size, orientation, color format).</summary>
+            <param name="configuration">A concrete settings instance — pass a <see cref="T:GHIElectronics.TinyCLR.Devices.Display.ParallelDisplayControllerSettings"/> for parallel RGB panels.</param>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Display.DisplayInterface">
+            <summary>Physical bus connecting the SoC to the panel.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Display.DisplayInterface.Parallel">
+            <summary>Parallel RGB / RGBxxx interface.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Display.DisplayDataFormat">
+            <summary>Pixel encoding written to the framebuffer.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Display.DisplayDataFormat.Rgb565">
+            <summary>16-bit RGB (5 red, 6 green, 5 blue).</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Display.DisplayOrientation">
+            <summary>Logical screen rotation applied to drawing operations.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Display.DisplayOrientation.Degrees0">
+            <summary>No rotation.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Display.DisplayOrientation.Degrees90">
+            <summary>Rotated 90° clockwise.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Display.DisplayOrientation.Degrees180">
+            <summary>Rotated 180°.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Display.DisplayOrientation.Degrees270">
+            <summary>Rotated 270° clockwise.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Display.DisplayControllerSettings">
+            <summary>Common settings for any display controller (size, color format, orientation).</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Display.DisplayControllerSettings.Width">
+            <summary>Panel width in pixels (before rotation).</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Display.DisplayControllerSettings.Height">
+            <summary>Panel height in pixels (before rotation).</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Display.DisplayControllerSettings.DataFormat">
+            <summary>Pixel encoding.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Display.DisplayControllerSettings.Orientation">
+            <summary>Logical screen rotation.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Display.ParallelDisplayControllerSettings">
+            <summary>Timing settings for a parallel RGB panel. Values come from the panel's datasheet.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Display.ParallelDisplayControllerSettings.DataEnableIsFixed">
+            <summary>True when the data-enable signal is generated by the panel rather than the controller.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Display.ParallelDisplayControllerSettings.DataEnablePolarity">
+            <summary>Polarity of the data-enable signal.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Display.ParallelDisplayControllerSettings.PixelPolarity">
+            <summary>Polarity of the pixel-clock signal.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Display.ParallelDisplayControllerSettings.PixelClockRate">
+            <summary>Pixel-clock rate in Hz.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Display.ParallelDisplayControllerSettings.HorizontalSyncPolarity">
+            <summary>Polarity of the horizontal-sync signal.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Display.ParallelDisplayControllerSettings.HorizontalSyncPulseWidth">
+            <summary>Horizontal-sync pulse width in pixel clocks.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Display.ParallelDisplayControllerSettings.HorizontalFrontPorch">
+            <summary>Pixel clocks between the last active pixel of a line and HSYNC assertion.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Display.ParallelDisplayControllerSettings.HorizontalBackPorch">
+            <summary>Pixel clocks between HSYNC deassertion and the first active pixel of the next line.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Display.ParallelDisplayControllerSettings.VerticalSyncPolarity">
+            <summary>Polarity of the vertical-sync signal.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Display.ParallelDisplayControllerSettings.VerticalSyncPulseWidth">
+            <summary>Vertical-sync pulse width in line periods.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Display.ParallelDisplayControllerSettings.VerticalFrontPorch">
+            <summary>Lines between the last active row of a frame and VSYNC assertion.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Display.ParallelDisplayControllerSettings.VerticalBackPorch">
+            <summary>Lines between VSYNC deassertion and the first active row of the next frame.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Display.Provider.IDisplayControllerProvider">
+            <summary>Provider contract for a display controller.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Display.Provider.IDisplayControllerProvider.Enable">
+            <summary>Powers on the panel.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Display.Provider.IDisplayControllerProvider.Disable">
+            <summary>Powers off the panel.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Display.Provider.IDisplayControllerProvider.SetConfiguration(GHIElectronics.TinyCLR.Devices.Display.DisplayControllerSettings)">
+            <summary>Applies a configuration.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Display.Provider.IDisplayControllerProvider.DrawBuffer(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Byte[],System.Int32)">
+            <summary>Blits a rectangle of pixel data to the panel.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Display.Provider.IDisplayControllerProvider.DrawPixel(System.Int32,System.Int32,System.Int64)">
+            <summary>Sets a single pixel.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Display.Provider.IDisplayControllerProvider.DrawString(System.String)">
+            <summary>Renders text via the controller's built-in text mode.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Display.Provider.DisplayControllerApiWrapper">
+            <summary>Concrete <see cref="T:GHIElectronics.TinyCLR.Devices.Display.Provider.IDisplayControllerProvider"/> backed by the native TinyCLR display HAL.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Display.Provider.DisplayControllerApiWrapper.Api">
+            <summary>The underlying native API descriptor.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Display.Provider.DisplayControllerApiWrapper.#ctor(GHIElectronics.TinyCLR.Native.NativeApi)">
+            <summary>Wraps the given native API as a provider.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Display.Provider.DisplayControllerApiWrapper.Dispose">
+            <summary>Releases the native controller.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Display.Provider.DisplayControllerApiWrapper.Enable">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Display.Provider.DisplayControllerApiWrapper.Disable">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Display.Provider.DisplayControllerApiWrapper.DrawBuffer(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Byte[],System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Display.Provider.DisplayControllerApiWrapper.DrawPixel(System.Int32,System.Int32,System.Int64)">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Display.Provider.DisplayControllerApiWrapper.DrawString(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Display.Provider.DisplayControllerApiWrapper.SetConfiguration(GHIElectronics.TinyCLR.Devices.Display.DisplayControllerSettings)">
+            <inheritdoc/>
+        </member>
+    </members>
+</doc>

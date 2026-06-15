@@ -42,10 +42,15 @@ namespace GHIElectronics.TinyCLR.UI.Input {
     }
 
     // REFACTOR -- this goes in a separate CS file.
+    /// <summary>Describes the raw actions reported for a button.</summary>
     public enum RawButtonActions {
+        /// <summary>The button was pressed down.</summary>
         ButtonDown = 1,
+        /// <summary>The button was released.</summary>
         ButtonUp = 2,
+        /// <summary>The button input source became active.</summary>
         Activate = 4,
+        /// <summary>The button input source became inactive.</summary>
         Deactivate = 8,
     }
 }

@@ -20,7 +20,7 @@ namespace GHIElectronics.TinyCLR.Data.Xml
     // ------------------------------------------------------------------------------------------------------------
 
     // Specifies how end of line is handled in XmlWriter.
-    public enum NewLineHandling
+    internal enum NewLineHandling
     {
         Replace = 0,
         Entitize = 1,

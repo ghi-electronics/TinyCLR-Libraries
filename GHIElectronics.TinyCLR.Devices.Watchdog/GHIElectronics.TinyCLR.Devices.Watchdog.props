@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Reference Include="GHIElectronics.TinyCLR.Devices.Watchdog">
+      <HintPath>$(MSBuildThisFileDirectory)..\..\lib\net48\GHIElectronics.TinyCLR.Devices.Watchdog.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <_TinyCLRWatchdogShimSource>$(MSBuildThisFileDirectory)..\..\desktop-shim\GHIElectronics.TinyCLR.Devices.Watchdog.dll</_TinyCLRWatchdogShimSource>
+    <_TinyCLRWatchdogImplSource>$(MSBuildThisFileDirectory)..\..\tinyclr\GHIElectronics.TinyCLR.Devices.Watchdog.dll</_TinyCLRWatchdogImplSource>
+  </PropertyGroup>
+  <Target Name="CopyTinyCLRWatchdogDesktopShim" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRWatchdogShimSource)')">
+    <Copy SourceFiles="$(_TinyCLRWatchdogShimSource)"
+          DestinationFiles="$(OutDir)GHIElectronics.TinyCLR.Devices.Watchdog.dll"
+          OverwriteReadOnlyFiles="true"
+          SkipUnchangedFiles="false" />
+  </Target>
+  <Target Name="CopyTinyCLRWatchdogImplForDebugger" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRWatchdogImplSource)')">
+    <Copy SourceFiles="$(_TinyCLRWatchdogImplSource)"
+          DestinationFiles="$(OutDir)pe\GHIElectronics.TinyCLR.Devices.Watchdog.dll"
+          OverwriteReadOnlyFiles="true"
+          SkipUnchangedFiles="false" />
+  </Target>
+</Project>

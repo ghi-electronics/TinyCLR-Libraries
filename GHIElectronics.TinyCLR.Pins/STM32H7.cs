@@ -424,38 +424,72 @@ namespace GHIElectronics.TinyCLR.Pins {
         public static class Timer {
             /// <summary>API id.</summary>
             public const string Tim1 = "GHIElectronics.TinyCLR.NativeApis.STM32H7.PwmController\\0";
+            /// <summary>Chip index for System.Device.Pwm.</summary>
+            public const int Chip0 = 0;
             /// <summary>API id.</summary>
             public const string Tim2 = "GHIElectronics.TinyCLR.NativeApis.STM32H7.PwmController\\1";
+            /// <summary>Chip index for System.Device.Pwm.</summary>
+            public const int Chip1 = 1;
             /// <summary>API id.</summary>
             public const string Tim3 = "GHIElectronics.TinyCLR.NativeApis.STM32H7.PwmController\\2";
+            /// <summary>Chip index for System.Device.Pwm.</summary>
+            public const int Chip2 = 2;
             /// <summary>API id.</summary>
             public const string Tim4 = "GHIElectronics.TinyCLR.NativeApis.STM32H7.PwmController\\3";
+            /// <summary>Chip index for System.Device.Pwm.</summary>
+            public const int Chip3 = 3;
             /// <summary>API id.</summary>
             public const string Tim5 = "GHIElectronics.TinyCLR.NativeApis.STM32H7.PwmController\\4";
+            /// <summary>Chip index for System.Device.Pwm.</summary>
+            public const int Chip4 = 4;
             /// <summary>API id.</summary>
             public const string Tim6 = "GHIElectronics.TinyCLR.NativeApis.STM32H7.PwmController\\5";
+            /// <summary>Chip index for System.Device.Pwm.</summary>
+            public const int Chip5 = 5;
             /// <summary>API id.</summary>
             public const string Tim7 = "GHIElectronics.TinyCLR.NativeApis.STM32H7.PwmController\\6";
+            /// <summary>Chip index for System.Device.Pwm.</summary>
+            public const int Chip6 = 6;
             /// <summary>API id.</summary>
             public const string Tim8 = "GHIElectronics.TinyCLR.NativeApis.STM32H7.PwmController\\7";
+            /// <summary>Chip index for System.Device.Pwm.</summary>
+            public const int Chip7 = 7;
             /// <summary>API id.</summary>
             public const string Tim9 = "GHIElectronics.TinyCLR.NativeApis.STM32H7.PwmController\\8";
+            /// <summary>Chip index for System.Device.Pwm.</summary>
+            public const int Chip8 = 8;
             /// <summary>API id.</summary>
             public const string Tim10 = "GHIElectronics.TinyCLR.NativeApis.STM32H7.PwmController\\9";
+            /// <summary>Chip index for System.Device.Pwm.</summary>
+            public const int Chip9 = 9;
             /// <summary>API id.</summary>
             public const string Tim11 = "GHIElectronics.TinyCLR.NativeApis.STM32H7.PwmController\\10";
+            /// <summary>Chip index for System.Device.Pwm.</summary>
+            public const int Chip10 = 10;
             /// <summary>API id.</summary>
             public const string Tim12 = "GHIElectronics.TinyCLR.NativeApis.STM32H7.PwmController\\11";
+            /// <summary>Chip index for System.Device.Pwm.</summary>
+            public const int Chip11 = 11;
             /// <summary>API id.</summary>
             public const string Tim13 = "GHIElectronics.TinyCLR.NativeApis.STM32H7.PwmController\\12";
+            /// <summary>Chip index for System.Device.Pwm.</summary>
+            public const int Chip12 = 12;
             /// <summary>API id.</summary>
             public const string Tim14 = "GHIElectronics.TinyCLR.NativeApis.STM32H7.PwmController\\13";
+            /// <summary>Chip index for System.Device.Pwm.</summary>
+            public const int Chip13 = 13;
             /// <summary>API id.</summary>
             public const string Tim15 = "GHIElectronics.TinyCLR.NativeApis.STM32H7.PwmController\\14";
+            /// <summary>Chip index for System.Device.Pwm.</summary>
+            public const int Chip14 = 14;
             /// <summary>API id.</summary>
             public const string Tim16 = "GHIElectronics.TinyCLR.NativeApis.STM32H7.PwmController\\15";
+            /// <summary>Chip index for System.Device.Pwm.</summary>
+            public const int Chip15 = 15;
             /// <summary>API id.</summary>
             public const string Tim17 = "GHIElectronics.TinyCLR.NativeApis.STM32H7.PwmController\\16";
+            /// <summary>Chip index for System.Device.Pwm.</summary>
+            public const int Chip16 = 16;
             /// <summary>API id.</summary>
             public const string SoftwarePwm = "GHIElectronics.TinyCLR.NativeApis.STM32H7.SoftwarePwmController";
 
@@ -499,10 +533,16 @@ namespace GHIElectronics.TinyCLR.Pins {
         public static class I2cBus {
             /// <summary>I2C bus.</summary>
             public const string I2c1 = "GHIElectronics.TinyCLR.NativeApis.STM32H7.I2cController\\0";
+            /// <summary>Bus id for System.Device.I2c.</summary>
+            public const int I2c1BusId = 0;
             /// <summary>I2C bus.</summary>
             public const string I2c2 = "GHIElectronics.TinyCLR.NativeApis.STM32H7.I2cController\\1";
+            /// <summary>Bus id for System.Device.I2c.</summary>
+            public const int I2c2BusId = 1;
             /// <summary>I2C bus.</summary>
             public const string I2c3 = "GHIElectronics.TinyCLR.NativeApis.STM32H7.I2cController\\2";
+            /// <summary>Bus id for System.Device.I2c.</summary>
+            public const int I2c3BusId = 2;
             /// <summary>I2C software.</summary>
             public const string Software = "GHIElectronics.TinyCLR.NativeApis.SoftwareI2cController";
         }
@@ -511,16 +551,28 @@ namespace GHIElectronics.TinyCLR.Pins {
         public static class SpiBus {
             /// <summary>SPI bus.</summary>
             public const string Spi1 = "GHIElectronics.TinyCLR.NativeApis.STM32H7.SpiController\\0";
+            /// <summary>Bus id for System.Device.Spi.</summary>
+            public const int Spi1BusId = 0;
             /// <summary>SPI bus.</summary>
             public const string Spi2 = "GHIElectronics.TinyCLR.NativeApis.STM32H7.SpiController\\1";
+            /// <summary>Bus id for System.Device.Spi.</summary>
+            public const int Spi2BusId = 1;
             /// <summary>SPI bus.</summary>
             public const string Spi3 = "GHIElectronics.TinyCLR.NativeApis.STM32H7.SpiController\\2";
+            /// <summary>Bus id for System.Device.Spi.</summary>
+            public const int Spi3BusId = 2;
             /// <summary>SPI bus.</summary>
             public const string Spi4 = "GHIElectronics.TinyCLR.NativeApis.STM32H7.SpiController\\3";
+            /// <summary>Bus id for System.Device.Spi.</summary>
+            public const int Spi4BusId = 3;
             /// <summary>SPI bus.</summary>
             public const string Spi5 = "GHIElectronics.TinyCLR.NativeApis.STM32H7.SpiController\\4";
+            /// <summary>Bus id for System.Device.Spi.</summary>
+            public const int Spi5BusId = 4;
             /// <summary>SPI bus.</summary>
             public const string Spi6 = "GHIElectronics.TinyCLR.NativeApis.STM32H7.SpiController\\5";
+            /// <summary>Bus id for System.Device.Spi.</summary>
+            public const int Spi6BusId = 5;
         }
 
         /// <summary>CAN bus definitions.</summary>
@@ -567,6 +619,26 @@ namespace GHIElectronics.TinyCLR.Pins {
         public static class RtcController {
             /// <summary>API id.</summary>
             public const string Id = "GHIElectronics.TinyCLR.NativeApis.STM32H7.RtcController\\0";
+        }
+
+        /// <summary>
+        /// Hardware wake-up pin bit flags for <see cref="GHIElectronics.TinyCLR.Native.Power.Shutdown(int, System.DateTime)"/>.
+        /// OR-combine to allow any of the selected pins to wake the device.
+        /// Bit position matches the STM32H7 PWR_WAKEUP_PINx slot index (bit N → WKUP(N+1)).
+        /// </summary>
+        public static class WakeupPin {
+            /// <summary>PA0 — WKUP1.</summary>
+            public const int PA0  = 1 << 0;
+            /// <summary>PA2 — WKUP2.</summary>
+            public const int PA2  = 1 << 1;
+            /// <summary>PI8 — WKUP3.</summary>
+            public const int PI8  = 1 << 2;
+            /// <summary>PC13 — WKUP4.</summary>
+            public const int PC13 = 1 << 3;
+            /// <summary>PI11 — WKUP5.</summary>
+            public const int PI11 = 1 << 4;
+            /// <summary>PC1 — WKUP6.</summary>
+            public const int PC1  = 1 << 5;
         }
     }
 }

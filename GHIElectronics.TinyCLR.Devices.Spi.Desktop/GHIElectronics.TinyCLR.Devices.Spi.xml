@@ -1,0 +1,240 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>GHIElectronics.TinyCLR.Devices.Spi</name>
+    </assembly>
+    <members>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Spi.SpiController">
+            <summary>
+            Represents an SPI bus controller. Obtain one via <see cref="M:GHIElectronics.TinyCLR.Devices.Spi.SpiController.GetDefault"/>
+            or <see cref="M:GHIElectronics.TinyCLR.Devices.Spi.SpiController.FromName(System.String)"/>, then create a <see cref="T:GHIElectronics.TinyCLR.Devices.Spi.SpiDevice"/> for
+            each chip on the bus via <see cref="M:GHIElectronics.TinyCLR.Devices.Spi.SpiController.GetDevice(GHIElectronics.TinyCLR.Devices.Spi.SpiConnectionSettings)"/>.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Spi.SpiController.Provider">
+            <summary>The low-level provider backing this controller.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Spi.SpiController.GetDefault">
+            <summary>Returns the default SPI controller for this device.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Spi.SpiController.FromName(System.String)">
+            <summary>Returns an SPI controller identified by its native API name.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Spi.SpiController.FromProvider(GHIElectronics.TinyCLR.Devices.Spi.Provider.ISpiControllerProvider)">
+            <summary>Creates a controller from a custom <see cref="T:GHIElectronics.TinyCLR.Devices.Spi.Provider.ISpiControllerProvider"/>.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Spi.SpiController.Dispose">
+            <summary>Releases the underlying provider.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Spi.SpiController.GetDevice(GHIElectronics.TinyCLR.Devices.Spi.SpiConnectionSettings)">
+            <summary>Creates a <see cref="T:GHIElectronics.TinyCLR.Devices.Spi.SpiDevice"/> bound to this controller using the given settings.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Spi.SpiController.ChipSelectLineCount">
+            <summary>Number of hardware chip-select lines exposed by this controller.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Spi.SpiController.MinClockFrequency">
+            <summary>Minimum SCK frequency in Hz.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Spi.SpiController.MaxClockFrequency">
+            <summary>Maximum SCK frequency in Hz.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Spi.SpiController.SupportedDataBitLengths">
+            <summary>Supported frame widths in bits.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Spi.SpiDevice">
+            <summary>Represents a single chip on an SPI bus.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Spi.SpiDevice.ConnectionSettings">
+            <summary>The per-device bus settings.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Spi.SpiDevice.Controller">
+            <summary>The <see cref="T:GHIElectronics.TinyCLR.Devices.Spi.SpiController"/> this device transacts over.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Spi.SpiDevice.Dispose">
+            <summary>Releases device-level resources.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Spi.SpiDevice.Read(System.Byte[])">
+            <summary>Reads <paramref name="buffer"/>.Length bytes.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Spi.SpiDevice.Write(System.Byte[])">
+            <summary>Writes <paramref name="buffer"/>.Length bytes.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Spi.SpiDevice.Write(System.Byte[],System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>Writes a rectangular sub-region of a larger framebuffer.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Spi.SpiDevice.TransferFullDuplex(System.Byte[],System.Byte[])">
+            <summary>Writes and reads simultaneously; both buffers must be the same length.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Spi.SpiDevice.TransferSequential(System.Byte[],System.Byte[])">
+            <summary>Writes all of <paramref name="writeBuffer"/>, then reads all of <paramref name="readBuffer"/> in a single CS-low transaction.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Spi.SpiDevice.Read(System.Byte[],System.Int32,System.Int32)">
+            <summary>Reads <paramref name="length"/> bytes into <paramref name="buffer"/> starting at <paramref name="offset"/>.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Spi.SpiDevice.Write(System.Byte[],System.Int32,System.Int32)">
+            <summary>Writes <paramref name="length"/> bytes from <paramref name="buffer"/> starting at <paramref name="offset"/>.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Spi.SpiDevice.TransferFullDuplex(System.Byte[],System.Int32,System.Int32,System.Byte[],System.Int32,System.Int32)">
+            <summary>Full-duplex transfer with explicit slice offsets and lengths.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Spi.SpiDevice.TransferSequential(System.Byte[],System.Int32,System.Int32,System.Byte[],System.Int32,System.Int32)">
+            <summary>Sequential write-then-read with explicit slice offsets and lengths.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Spi.SpiDevice.Write(System.Byte[],System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>Writes a rectangular framebuffer region with optional pixel replication.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Spi.SpiConnectionSettings">
+            <summary>Per-device SPI bus settings.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Spi.SpiConnectionSettings.ChipSelectType">
+            <summary>How chip-select is driven.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Spi.SpiConnectionSettings.ChipSelectLine">
+            <summary>The GPIO pin that drives chip-select.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Spi.SpiConnectionSettings.ClockFrequency">
+            <summary>SCK frequency in Hz.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Spi.SpiConnectionSettings.DataBitLength">
+            <summary>Frame width in bits. Fixed at 8 in this build.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Spi.SpiConnectionSettings.DataFrameFormat">
+            <summary>Bit ordering on the wire.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Spi.SpiConnectionSettings.Mode">
+            <summary>SPI mode (clock polarity + phase).</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Spi.SpiConnectionSettings.ChipSelectSetupTime">
+            <summary>Delay between asserting chip-select and starting the first clock.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Spi.SpiConnectionSettings.ChipSelectHoldTime">
+            <summary>Delay between the last clock and deasserting chip-select.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Spi.SpiConnectionSettings.ChipSelectActiveState">
+            <summary>The level that means "selected" — false = active-low, true = active-high.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Spi.SpiDataFrame">
+            <summary>Bit ordering within an SPI byte.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Spi.SpiDataFrame.MsbFirst">
+            <summary>Most-significant bit first.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Spi.SpiDataFrame.LsbFirst">
+            <summary>Least-significant bit first.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Spi.SpiMode">
+            <summary>Standard SPI modes — combinations of clock polarity (CPOL) and clock phase (CPHA).</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Spi.SpiMode.Mode0">
+            <summary>CPOL=0, CPHA=0.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Spi.SpiMode.Mode1">
+            <summary>CPOL=0, CPHA=1.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Spi.SpiMode.Mode2">
+            <summary>CPOL=1, CPHA=0.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Spi.SpiMode.Mode3">
+            <summary>CPOL=1, CPHA=1.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Spi.SpiChipSelectType">
+            <summary>How chip-select is driven.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Spi.SpiChipSelectType.None">
+            <summary>No chip-select line is asserted by the controller.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Spi.SpiChipSelectType.Gpio">
+            <summary>Chip-select is driven by a user-supplied <see cref="T:GHIElectronics.TinyCLR.Devices.Gpio.GpioPin"/>.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Spi.Provider.ISpiControllerProvider">
+            <summary>Provider contract for an SPI controller.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Spi.Provider.ISpiControllerProvider.ChipSelectLineCount">
+            <summary>Number of hardware chip-select lines.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Spi.Provider.ISpiControllerProvider.MinClockFrequency">
+            <summary>Minimum SCK frequency in Hz.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Spi.Provider.ISpiControllerProvider.MaxClockFrequency">
+            <summary>Maximum SCK frequency in Hz.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Spi.Provider.ISpiControllerProvider.SupportedDataBitLengths">
+            <summary>Supported frame widths in bits.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Spi.Provider.ISpiControllerProvider.SetActiveSettings(GHIElectronics.TinyCLR.Devices.Spi.SpiConnectionSettings)">
+            <summary>Applies the given settings before the next transfer.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Spi.Provider.ISpiControllerProvider.Write(System.Byte[],System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>Writes a rectangular framebuffer region with optional pixel replication.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Spi.Provider.ISpiControllerProvider.WriteRead(System.Byte[],System.Int32,System.Int32,System.Byte[],System.Int32,System.Int32,System.Boolean)">
+            <summary>Performs a full-duplex transfer.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Spi.Provider.SpiControllerApiWrapper">
+            <summary>Concrete <see cref="T:GHIElectronics.TinyCLR.Devices.Spi.Provider.ISpiControllerProvider"/> backed by the native TinyCLR SPI HAL.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Spi.Provider.SpiControllerApiWrapper.Api">
+            <summary>The underlying native API descriptor.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Spi.Provider.SpiControllerApiWrapper.#ctor(GHIElectronics.TinyCLR.Native.NativeApi)">
+            <summary>Wraps the given native API as a provider.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Spi.Provider.SpiControllerApiWrapper.Dispose">
+            <summary>Releases the native controller.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Spi.Provider.SpiControllerApiWrapper.ChipSelectLineCount">
+            <inheritdoc/>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Spi.Provider.SpiControllerApiWrapper.MinClockFrequency">
+            <inheritdoc/>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Spi.Provider.SpiControllerApiWrapper.MaxClockFrequency">
+            <inheritdoc/>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Spi.Provider.SpiControllerApiWrapper.SupportedDataBitLengths">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Spi.Provider.SpiControllerApiWrapper.SetActiveSettings(GHIElectronics.TinyCLR.Devices.Spi.SpiConnectionSettings)">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Spi.Provider.SpiControllerApiWrapper.WriteRead(System.Byte[],System.Int32,System.Int32,System.Byte[],System.Int32,System.Int32,System.Boolean)">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Spi.Provider.SpiControllerApiWrapper.Write(System.Byte[],System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Spi.Provider.SpiControllerSoftwareProvider">
+            <summary>Software (bit-bang) SPI provider — Desktop stub.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Spi.Provider.SpiControllerSoftwareProvider.ChipSelectLineCount">
+            <inheritdoc/>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Spi.Provider.SpiControllerSoftwareProvider.MinClockFrequency">
+            <inheritdoc/>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Spi.Provider.SpiControllerSoftwareProvider.MaxClockFrequency">
+            <inheritdoc/>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Spi.Provider.SpiControllerSoftwareProvider.SupportedDataBitLengths">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Spi.Provider.SpiControllerSoftwareProvider.#ctor(System.Int32,System.Int32,System.Int32)">
+            <summary>Builds a software SPI provider on the default <see cref="T:GHIElectronics.TinyCLR.Devices.Gpio.GpioController"/>.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Spi.Provider.SpiControllerSoftwareProvider.#ctor(GHIElectronics.TinyCLR.Devices.Gpio.GpioController,System.Int32,System.Int32,System.Int32)">
+            <summary>Builds a software SPI provider on the supplied <see cref="T:GHIElectronics.TinyCLR.Devices.Gpio.GpioController"/>.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Spi.Provider.SpiControllerSoftwareProvider.Dispose">
+            <summary>Releases the GPIO pins held for MOSI/MISO/SCK/CS.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Spi.Provider.SpiControllerSoftwareProvider.SetActiveSettings(GHIElectronics.TinyCLR.Devices.Spi.SpiConnectionSettings)">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Spi.Provider.SpiControllerSoftwareProvider.WriteRead(System.Byte[],System.Int32,System.Int32,System.Byte[],System.Int32,System.Int32,System.Boolean)">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Spi.Provider.SpiControllerSoftwareProvider.Write(System.Byte[],System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <inheritdoc/>
+        </member>
+    </members>
+</doc>

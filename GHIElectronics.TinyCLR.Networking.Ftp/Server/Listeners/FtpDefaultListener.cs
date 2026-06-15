@@ -6,14 +6,17 @@ using System.Net;
 
 namespace GHIElectronics.TinyCLR.Networking.Ftp
 {
+    /// <summary>The fallback FTP listener that serves contexts not claimed by any other listener.</summary>
     public class FtpDefaultListener : FtpListener
     {
 
+        /// <summary>Creates the default listener that is not registered with the listener manager.</summary>
         public FtpDefaultListener()
             : base(false)
         {
         }
 
+        /// <summary>Starts the listener at the root prefix and launches its worker thread.</summary>
         public override void Start()
         {
             m_Prefixes.Add("/");
@@ -23,6 +26,7 @@ namespace GHIElectronics.TinyCLR.Networking.Ftp
             m_worker.Start();
         }
 
+        /// <summary>Stops the listener and shuts down its worker thread.</summary>
         public override void Stop()
         {
             base.Stop();
@@ -39,6 +43,7 @@ namespace GHIElectronics.TinyCLR.Networking.Ftp
         }
 
         private Thread m_worker;
+        /// <summary>Worker loop that serves directory listing and navigation requests.</summary>
         protected virtual void Run()
         {
             for (; ; )

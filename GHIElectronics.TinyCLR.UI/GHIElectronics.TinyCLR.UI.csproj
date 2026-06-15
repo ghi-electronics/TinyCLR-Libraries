@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildThisFileDirectory)..\mscorlib.props" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
@@ -10,6 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>GHIElectronics.TinyCLR.UI</RootNamespace>
     <AssemblyName>GHIElectronics.TinyCLR.UI</AssemblyName>
+    <DocumentationFile>$(OutputPath)$(AssemblyName).xml</DocumentationFile>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A1948822-69DD-4150-919B-F3F42EFB71CC};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -43,6 +44,7 @@
     <Compile Include="Controls\DataGridItem.cs" />
     <Compile Include="Controls\DataGridItemComparer.cs" />
     <Compile Include="Controls\Dropdown.cs" />
+    <Compile Include="Controls\Grid.cs" />
     <Compile Include="Controls\Gauge.cs" />
     <Compile Include="Controls\ListBoxItemHighlightable.cs" />
     <Compile Include="Controls\MessageBox.cs" />
@@ -51,8 +53,11 @@
     <Compile Include="Controls\Slider.cs" />
     <Compile Include="Controls\TextBox.cs" />
     <Compile Include="Controls\Button.cs" />
+    <Compile Include="Controls\BindingErrorEventArgs.cs" />
     <Compile Include="Input\InputProvider.cs" />
+    <Compile Include="Input\FocusNavigator.cs" />
     <Compile Include="Media\Color.cs" />
+    <Compile Include="Resources.cs" />
     <Compile Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -105,6 +110,7 @@
     <Compile Include="Controls\StackPanel.cs" />
     <Compile Include="Controls\Text.cs" />
     <Compile Include="Controls\TextFlow.cs" />
+    <Compile Include="Controls\VirtualizingListBox.cs" />
     <Compile Include="Controls\TextRun.cs" />
     <Compile Include="Controls\TextRunCollection.cs" />
     <Compile Include="Input\HardwareButton.cs" />
@@ -138,6 +144,8 @@
     <Compile Include="UI\WindowManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UI\Application.cs" />
+    <Compile Include="UI\DataBinding.cs" />
+    <Compile Include="UI\Theme.cs" />
     <Compile Include="UI\EventHandler.cs" />
     <Compile Include="UI\EventRoute.cs" />
     <Compile Include="UI\PropertyChangedEventArgs.cs" />
@@ -159,6 +167,7 @@
     <None Include="GHIElectronics.TinyCLR.UI.nuspec">
       <SubType>Designer</SubType>
     </None>
+    <None Include="GHIElectronics.TinyCLR.UI.props" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -169,6 +178,12 @@
     <ProjectReference Include="..\GHIElectronics.TinyCLR.Drawing\GHIElectronics.TinyCLR.Drawing.csproj">
       <Project>{52A54E94-2FD8-4EEE-822C-C8C7F27AF423}</Project>
       <Name>GHIElectronics.TinyCLR.Drawing</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GHIElectronics.TinyCLR.UI.Desktop\GHIElectronics.TinyCLR.UI.Desktop.csproj">
+      <Project>{E3F4A5B6-C7D8-4E9F-1A2B-3C4D5E6F7A8B}</Project>
+      <Name>GHIElectronics.TinyCLR.UI.Desktop</Name>
+      <ReferenceOutputAssembly>False</ReferenceOutputAssembly>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -232,6 +247,28 @@
     <None Include="Resources\DataGridIcon_Asc.gif" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <TcuiBuildTasksProject>$(MSBuildThisFileDirectory)..\..\TinyCLR-SDK\GHIElectronics.TinyCLR.UI.BuildTasks\GHIElectronics.TinyCLR.UI.BuildTasks.csproj</TcuiBuildTasksProject>
+    <TcuiCodegenPayloadDir>$(MSBuildThisFileDirectory)build\net48\</TcuiCodegenPayloadDir>
+
+    <!-- Pass the active Configuration through to NuGetPacker so the nuspec can
+         substitute $Configuration$ instead of hardcoding bin\Debug\ for the
+         desktop-shim path. Works the same whether the build was started from
+         the VS IDE (Debug/Release picked in the toolbar) or the CLI
+         (msbuild /p:Configuration=...). -->
+    <NuGetPackerProperties>Configuration=$(Configuration);$(NuGetPackerProperties)</NuGetPackerProperties>
+  </PropertyGroup>
+  <Target Name="StageTcuiCodegenPayload" BeforeTargets="BeforeBuild;PackNuGet" Condition="Exists('$(TcuiBuildTasksProject)')">
+    <MSBuild Projects="$(TcuiBuildTasksProject)" Targets="Restore;Build" Properties="Configuration=$(Configuration)" />
+    <PropertyGroup>
+      <_TcuiTasksOutDir>$(MSBuildThisFileDirectory)..\..\TinyCLR-SDK\GHIElectronics.TinyCLR.UI.BuildTasks\bin\$(Configuration)\net472\</_TcuiTasksOutDir>
+    </PropertyGroup>
+    <ItemGroup>
+      <_TcuiCodegenBinaries Include="$(_TcuiTasksOutDir)GHIElectronics.TinyCLR.UI.BuildTasks.dll" />
+      <_TcuiCodegenBinaries Include="$(_TcuiTasksOutDir)Newtonsoft.Json.dll" />
+    </ItemGroup>
+    <Copy SourceFiles="@(_TcuiCodegenBinaries)" DestinationFolder="$(TcuiCodegenPayloadDir)" SkipUnchangedFiles="true" />
+  </Target>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>

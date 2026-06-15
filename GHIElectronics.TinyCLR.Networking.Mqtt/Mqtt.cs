@@ -7,51 +7,89 @@ using System.Threading;
 using static GHIElectronics.TinyCLR.Networking.Mqtt.MqttPacket;
 
 namespace GHIElectronics.TinyCLR.Networking.Mqtt {
+    /// <summary>MQTT Quality-of-Service level.</summary>
     public enum QoSLevel {
-        MostOnce = 0,
-        LeastOnce = 1,
+        /// <summary>Fire-and-forget; the message may be lost.</summary>
+        AtMostOnce = 0,
+        /// <summary>Acknowledged delivery; the message may be delivered more than once.</summary>
+        AtLeastOnce = 1,
+        /// <summary>Acknowledged delivery; the message is delivered exactly once.</summary>
         ExactlyOnce = 2,
     }
 
+    /// <summary>Result of a CONNECT request reported by the broker.</summary>
     public enum ConnectReturnCode {
+        /// <summary>Connection succeeded.</summary>
         ConnectionAccepted = 0,
+        /// <summary>Broker does not support the requested MQTT protocol version.</summary>
         UnacceptableProtocol = 1,
+        /// <summary>The supplied client ID is not valid or is in use.</summary>
         IdentifierRejected = 2,
+        /// <summary>Broker reachable but currently rejecting connections.</summary>
         ServerUnavailable = 3,
+        /// <summary>Authentication failed.</summary>
         BadUserNameOrPassword = 4,
+        /// <summary>Authenticated client is not authorized for this operation.</summary>
         NotAuthorized = 5,
+        /// <summary>No CONNACK received or the code didn't match a known value.</summary>
         Unknown = -1
     }
 
+    /// <summary>Per-session MQTT settings — client ID, credentials, last-will, keepalive.</summary>
     public class MqttConnectionSetting {
+        /// <summary>The unique client identifier presented to the broker.</summary>
         public string ClientId { get; set; }
+        /// <summary>Whether the broker should start a clean session rather than resume a previous one.</summary>
         public bool CleanSession { get; set; } = true;
+        /// <summary>The user name used to authenticate with the broker.</summary>
         public string UserName { get; set; }
+        /// <summary>The password used to authenticate with the broker.</summary>
         public string Password { get; set; }
+        /// <summary>The topic the broker publishes the last-will message to if the client disconnects unexpectedly.</summary>
         public string LastWillTopic { get; set; }
-        public QoSLevel LastWillQos { get; set; } = QoSLevel.LeastOnce;
+        /// <summary>The quality-of-service level used for the last-will message.</summary>
+        public QoSLevel LastWillQos { get; set; } = QoSLevel.AtLeastOnce;
+        /// <summary>The message the broker publishes if the client disconnects unexpectedly.</summary>
         public string LastWillMessage { get; set; }
+        /// <summary>Whether the broker should retain the last-will message.</summary>
         public bool LastWillRetain { get; set; }
+        /// <summary>The keep-alive interval, in seconds, between client communications.</summary>
         public int KeepAliveTimeout { get; set; } = 60;
     }
 
+    /// <summary>Transport-level MQTT settings — broker host/port, TLS, certificates.</summary>
     public class MqttClientSetting {
+        /// <summary>The host name or address of the MQTT broker.</summary>
         public string BrokerName { get; set; }
+        /// <summary>The TCP port of the MQTT broker.</summary>
         public int BrokerPort { get; set; }
+        /// <summary>The certificate authority certificate used to validate the broker.</summary>
         public X509Certificate CaCertificate { get; set; }
+        /// <summary>The client certificate presented to the broker for mutual TLS.</summary>
         public X509Certificate ClientCertificate { get; set; }
+        /// <summary>The TLS protocol to use, or None for an unencrypted connection.</summary>
         public SslProtocols SslProtocol { get; set; }
     }
 
+    /// <summary>
+    /// MQTT client. Construct with an <see cref="MqttClientSetting"/>, call
+    /// <c>Connect</c> with an <see cref="MqttConnectionSetting"/>, subscribe to
+    /// topics, and publish messages. Asynchronous events deliver inbound traffic.
+    /// </summary>
     public class Mqtt {
         const int CONNECTION_TIMEOUT_DEFAULT = 60000;
         const int PING_TIMEOUT_DEFAULT = 5000;
         const int RETRY_DEFAULT = 3;
 
+        /// <summary>Handles a message received on a subscribed topic.</summary>
         public delegate void PublishReceivedEventHandler(object sender, string topic, byte[] data, bool duplicate, QoSLevel qosLevel, bool retain);
+        /// <summary>Handles the result of a publish request.</summary>
         public delegate void PublishedEventHandler(object sender, uint packetId, bool published);
+        /// <summary>Handles a completed subscribe request and the granted quality-of-service levels.</summary>
         public delegate void SubscribedEventHandler(object sender, uint packetId, QoSLevel[] grantedQoSLevels);
+        /// <summary>Handles a completed unsubscribe request.</summary>
         public delegate void UnsubscribedEventHandler(object sender, uint packetId);
+        /// <summary>Handles a change in the connection state with the broker.</summary>
         public delegate void ConnectedEventHandler(object sender);
 
         private bool isRunning;
@@ -60,22 +98,32 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
         private AutoResetEvent waitForPushPacketEvent;
         private AutoResetEvent waitSendReceiveEvent;
 
-        private MqttPacket connectAckReceived;
-        private bool isConnectAckReceivedSuccess;
+        // Holds the most recent ConnAck or PingResp received by ReceiveThread,
+        // for handoff to the SendReceive caller via waitSendReceiveEvent. Only
+        // safe because Connect and PingReq are issued from threads that don't
+        // overlap each other - if you ever add another sync request type,
+        // replace this with a per-call slot.
+        private MqttPacket syncReply;
+        private bool lastReceiveSucceeded;
 
-        private int keepAliveTimeoutInMilisecond;
+        private int keepAliveTimeoutInMs;
         private AutoResetEvent autoPingReqEvent;
-        private long lastCommunationInMilisecond;
+        private long lastCommunicationInMs;
 
         private Thread threadReceiveThread;
         private Thread threadStartThread;
-        private Thread threadProssessEventThread;
-        private Thread threadProssessPacketsThread;
+        private Thread threadProcessEvents;
+        private Thread threadProcessPackets;
 
+        /// <summary>Raised when a message is received on a subscribed topic.</summary>
         public event PublishReceivedEventHandler PublishReceivedChanged;
+        /// <summary>Raised when a published message is acknowledged.</summary>
         public event PublishedEventHandler PublishedChanged;
+        /// <summary>Raised when a subscribe request is acknowledged.</summary>
         public event SubscribedEventHandler SubscribedChanged;
+        /// <summary>Raised when an unsubscribe request is acknowledged.</summary>
         public event UnsubscribedEventHandler UnsubscribedChanged;
+        /// <summary>Raised when the connection to the broker is established or closed.</summary>
         public event ConnectedEventHandler ConnectedChanged;
 
         private readonly MqttStream stream;
@@ -86,13 +134,18 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
 
         private bool isConnectionClosed;
 
+        /// <summary>Gets whether the client is currently connected to the broker.</summary>
         public bool IsConnected { get; private set; }
 
+        /// <summary>Gets the client identifier of the current connection.</summary>
         public string ClientId => this.ConnectionSetting.ClientId;
 
+        /// <summary>Gets the transport-level settings the client was created with.</summary>
         public MqttClientSetting ClientSetting { get; }
+        /// <summary>Gets the per-session settings used for the current connection.</summary>
         public MqttConnectionSetting ConnectionSetting { get; private set; }
 
+        /// <summary>Creates a new MQTT client using the given transport settings.</summary>
         public Mqtt(MqttClientSetting setting) {
             this.ClientSetting = setting;
 
@@ -109,16 +162,17 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
             this.stream = new MqttStream(this.ClientSetting.BrokerName, this.ClientSetting.BrokerPort, this.ClientSetting.CaCertificate, this.ClientSetting.ClientCertificate, this.ClientSetting.SslProtocol);
         }
 
+        /// <summary>Connects to the broker using the given session settings and returns the broker's response code.</summary>
         public ConnectReturnCode Connect(MqttConnectionSetting setting) {
             this.ConnectionSetting = setting;
 
             var connect = new MqttPacket(PacketType.Connect) {
                 ClientId = this.ConnectionSetting.ClientId,
-                LastWillRetain = this.ConnectionSetting.LastWillRetain,
+                Retain = this.ConnectionSetting.LastWillRetain,
                 CleanSession = this.ConnectionSetting.CleanSession,
-                LastWillQosLevel = this.ConnectionSetting.LastWillQos,
-                LastWillTopic = this.ConnectionSetting.LastWillTopic,
-                Data = this.ConnectionSetting.LastWillMessage != null ? System.Text.UTF8Encoding.UTF8.GetBytes(this.ConnectionSetting.LastWillMessage) : null,
+                QosLevel = this.ConnectionSetting.LastWillQos,
+                Topic = this.ConnectionSetting.LastWillTopic,
+                Payload = this.ConnectionSetting.LastWillMessage != null ? System.Text.UTF8Encoding.UTF8.GetBytes(this.ConnectionSetting.LastWillMessage) : null,
                 Username = this.ConnectionSetting.UserName,
                 Password = this.ConnectionSetting.Password,
                 KeepAliveTimeout = this.ConnectionSetting.KeepAliveTimeout
@@ -131,34 +185,50 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
                 throw new Exception("Connecting failed");
             }
 
-            this.lastCommunationInMilisecond = 0;
+            this.lastCommunicationInMs = 0;
             this.isRunning = true;
             this.isConnectionClosed = false;
 
             this.threadReceiveThread = new Thread(this.ReceiveThread);
             this.threadReceiveThread.Start();
 
-            var connack = this.SendReceive(connect, CONNECTION_TIMEOUT_DEFAULT);
+            MqttPacket connack;
+            try {
+                connack = this.SendReceive(connect, CONNECTION_TIMEOUT_DEFAULT);
+            }
+            catch {
+                // Broker didn't reply or send failed - tear down ReceiveThread
+                // and the just-opened socket before propagating, otherwise a
+                // retry from the caller would leak threads.
+                this.Close();
+                throw;
+            }
 
             if (connack != null && connack.ReturnCode == ConnectReturnCode.ConnectionAccepted) {
-                this.keepAliveTimeoutInMilisecond = this.ConnectionSetting.KeepAliveTimeout * 1000;
+                this.keepAliveTimeoutInMs = this.ConnectionSetting.KeepAliveTimeout * 1000;
 
-                if (this.keepAliveTimeoutInMilisecond != 0) {
+                if (this.keepAliveTimeoutInMs != 0) {
 
                     this.threadStartThread = new Thread(this.StartThread);
                     this.threadStartThread.Start();
                 }
 
-                this.threadProssessEventThread = new Thread(this.ProcessEventsThread);
-                this.threadProssessEventThread.Start();
+                this.threadProcessEvents = new Thread(this.ProcessEventsThread);
+                this.threadProcessEvents.Start();
 
-                this.threadProssessPacketsThread = new Thread(this.ProcessPacketsThread);
-                this.threadProssessPacketsThread.Start();
+                this.threadProcessPackets = new Thread(this.ProcessPacketsThread);
+                this.threadProcessPackets.Start();
 
                 this.IsConnected = true;
 
                 this.OnConnectedChanged(); // Raise event connected
 
+            }
+            else {
+                // Broker rejected the Connect (bad credentials, unsupported
+                // protocol, etc). ReceiveThread was already started above and
+                // would otherwise leak.
+                this.Close();
             }
 
             if (connack != null)
@@ -167,6 +237,7 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
                 return ConnectReturnCode.Unknown;
         }
 
+        /// <summary>Sends a disconnect request to the broker and closes the connection.</summary>
         public void Disconnect() {
             var disconnect = new MqttPacket(PacketType.Disconnect);
             this.Send(disconnect);
@@ -216,6 +287,7 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
         }
 
 
+        /// <summary>Subscribes to the given topics at the specified quality-of-service levels.</summary>
         public void Subscribe(string[] topics, QoSLevel[] qosLevels, ushort packetId) {
             if (packetId == 0) {
                 throw new ArgumentException(nameof(packetId));
@@ -227,12 +299,13 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
                     PacketId = packetId,
                     Topics = topics,
                     QosLevels = qosLevels,
-                    LastWillQosLevel = QoSLevel.LeastOnce // Subcribe is always Qos1
+                    QosLevel = QoSLevel.AtLeastOnce // Subcribe is always Qos1
                 };
 
             this.PushPacketToQueue(subscribe, PacketDirection.ToServer);
         }
 
+        /// <summary>Unsubscribes from the given topics.</summary>
         public void Unsubscribe(string[] topics, ushort packetId) {
             if (packetId == 0) {
                 throw new ArgumentException(nameof(packetId));
@@ -248,6 +321,7 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
         }
 
 
+        /// <summary>Publishes a message to a topic at the specified quality-of-service level.</summary>
         public void Publish(string topic, byte[] data, QoSLevel qosLevel, bool retain, ushort packetId) {
             if (packetId == 0) {
                 throw new ArgumentException(nameof(packetId));
@@ -255,11 +329,11 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
 
             var publish =
                     new MqttPacket(PacketType.Publish) {
-                        LastWillTopic = topic,
-                        Data = data,
+                        Topic = topic,
+                        Payload = data,
                         IsDuplicated = false,
-                        LastWillQosLevel = qosLevel,
-                        LastWillRetain = retain,
+                        QosLevel = qosLevel,
+                        Retain = retain,
                         PacketId = packetId
                     };
 
@@ -288,7 +362,7 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
             }
         }
 
-        private void OnTopicPublishReceived(MqttPacket packet) => this.PublishReceivedChanged?.Invoke(this, packet.LastWillTopic, packet.Data, packet.IsDuplicated, packet.LastWillQosLevel, packet.LastWillRetain);
+        private void OnTopicPublishReceived(MqttPacket packet) => this.PublishReceivedChanged?.Invoke(this, packet.Topic, packet.Payload, packet.IsDuplicated, packet.QosLevel, packet.Retain);
 
         private void OnTopicPublished(uint packetId, bool isPublished) => this.PublishedChanged?.Invoke(this, packetId, isPublished);
 
@@ -302,7 +376,7 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
                 var sent = this.stream.Send(packetBytes);
 
                 if (sent == packetBytes.Length)
-                    this.lastCommunationInMilisecond = ToMillisecond(DateTime.Now.Ticks);
+                    this.lastCommunicationInMs = ToMillisecond(DateTime.Now.Ticks);
 
             }
             catch {
@@ -314,30 +388,21 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
         private void Send(MqttPacket packet) => this.Send(packet.CreatePacket());
 
         private MqttPacket SendReceive(byte[] packetBytes, int timeout) {
-
             this.waitSendReceiveEvent.Reset();
 
             try {
-
                 this.stream.Send(packetBytes);
-
-                this.lastCommunationInMilisecond = ToMillisecond(DateTime.Now.Ticks);
+                this.lastCommunicationInMs = ToMillisecond(DateTime.Now.Ticks);
             }
-            catch {
-
-                throw new Exception();
+            catch (Exception ex) {
+                throw new Exception("Send failed.", ex);
             }
 
-            if (this.waitSendReceiveEvent.WaitOne(timeout, false)) {
-                if (this.isConnectAckReceivedSuccess)
-                    return this.connectAckReceived;
-                else
-                    return null;
+            if (!this.waitSendReceiveEvent.WaitOne(timeout, false)) {
+                throw new TimeoutException("Timed out waiting for broker reply.");
             }
-            else {
 
-                return null;
-            }
+            return this.lastReceiveSucceeded ? this.syncReply : null;
         }
 
         private MqttPacket SendReceive(MqttPacket packet, int timeout) => this.SendReceive(packet.CreatePacket(), timeout);
@@ -424,7 +489,7 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
             var enqueue = packet != null;
 
             if ((packet.Type == PacketType.Publish) &&
-                (packet.LastWillQosLevel == QoSLevel.ExactlyOnce)) {
+                (packet.QosLevel == QoSLevel.ExactlyOnce)) {
                 lock (this.packetQueue) {
                     foreach (var item in this.packetQueue) {
                         var q = (MqttPacket)item;
@@ -448,12 +513,12 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
                 packet.Direction = dir;
                 packet.RetryCount = 0;
 
-                switch (packet.LastWillQosLevel) {
-                    case QoSLevel.MostOnce:
+                switch (packet.QosLevel) {
+                    case QoSLevel.AtMostOnce:
                         packet.State = PacketState.QueuedQos0;
                         break;
 
-                    case QoSLevel.LeastOnce:
+                    case QoSLevel.AtLeastOnce:
                         packet.State = PacketState.QueuedQos1;
                         break;
 
@@ -496,13 +561,13 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
 
                         switch (packetType) {
                             case PacketType.ConnAck:
-                                this.connectAckReceived = this.DecodePacketTypeConnectAck(controlHeaderByte[0]);
+                                this.syncReply = this.DecodePacketTypeConnectAck(controlHeaderByte[0]);
 
                                 this.waitSendReceiveEvent.Set();
                                 break;
 
                             case PacketType.PingResp:
-                                this.connectAckReceived = this.DecodePacketTypePingResponse(controlHeaderByte[0]);
+                                this.syncReply = this.DecodePacketTypePingResponse(controlHeaderByte[0]);
 
                                 this.waitSendReceiveEvent.Set();
                                 break;
@@ -541,15 +606,15 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
                                 break;
 
                             case PacketType.PubComp:
-                                var pubcom = this.DecodePacketTypePublishComp(controlHeaderByte[0]);
+                                var pubcomp = this.DecodePacketTypePublishComp(controlHeaderByte[0]);
 
-                                this.PushPacketToInternalQueue(pubcom);
+                                this.PushPacketToInternalQueue(pubcomp);
                                 break;
 
                             case PacketType.Unsuback:
-                                var pubUnsubAck = this.DecodePacketTypeUnsubAck(controlHeaderByte[0]);
+                                var unsuback = this.DecodePacketTypeUnsubAck(controlHeaderByte[0]);
 
-                                this.PushPacketToInternalQueue(pubUnsubAck);
+                                this.PushPacketToInternalQueue(unsuback);
                                 break;
 
 
@@ -559,7 +624,7 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
                                 throw new Exception("Unknown packet type.");
                         }
 
-                        this.isConnectAckReceivedSuccess = true;
+                        this.lastReceiveSucceeded = true;
                     }
                     else {
                         this.CloseConnection();
@@ -567,7 +632,7 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
                 }
                 catch {
 
-                    this.isConnectAckReceivedSuccess = false;
+                    this.lastReceiveSucceeded = false;
                     this.CloseConnection();
 
                 }
@@ -575,23 +640,27 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
         }
 
         private void StartThread() {
-            var timeoutInMillisecond = this.keepAliveTimeoutInMilisecond;
+            var timeoutInMs = this.keepAliveTimeoutInMs;
 
-            while (this.isRunning) {
+            // Also bail when the connection is closed. PingReq calls
+            // CloseConnection on failure but doesn't flip isRunning, so
+            // without this check we'd keep PingReq-ing a dead socket
+            // until ProcessEventsThread eventually calls Close().
+            while (this.isRunning && !this.isConnectionClosed) {
 
-                this.autoPingReqEvent.WaitOne(timeoutInMillisecond, false);
+                this.autoPingReqEvent.WaitOne(timeoutInMs, false);
 
-                if (this.isRunning) {
-                    var d = ToMillisecond(DateTime.Now.Ticks) - this.lastCommunationInMilisecond;
+                if (this.isRunning && !this.isConnectionClosed) {
+                    var d = ToMillisecond(DateTime.Now.Ticks) - this.lastCommunicationInMs;
 
-                    if (d > this.keepAliveTimeoutInMilisecond) {
+                    if (d > this.keepAliveTimeoutInMs) {
 
                         this.PingReq(PING_TIMEOUT_DEFAULT);
-                        timeoutInMillisecond = this.keepAliveTimeoutInMilisecond;
+                        timeoutInMs = this.keepAliveTimeoutInMs;
 
                     }
                     else {
-                        timeoutInMillisecond = (int)(this.keepAliveTimeoutInMilisecond - d);
+                        timeoutInMs = (int)(this.keepAliveTimeoutInMs - d);
                     }
                 }
             }
@@ -1054,16 +1123,16 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
             Array.Copy(buffer, index, topicToBytes, 0, topicToBytesLength);
             index += topicToBytesLength;
 
-            packet.LastWillTopic = new string(Encoding.UTF8.GetChars(topicToBytes));
+            packet.Topic = new string(Encoding.UTF8.GetChars(topicToBytes));
 
-            packet.LastWillQosLevel = (QoSLevel)((controlHeaderByte & QOS_LEVEL_MASK) >> QOS_LEVEL_OFFSET);
+            packet.QosLevel = (QoSLevel)((controlHeaderByte & QOS_LEVEL_MASK) >> QOS_LEVEL_OFFSET);
 
             packet.IsDuplicated = (((controlHeaderByte & DUPLICATE_FLAG_MASK) >> DUPLICATE_FLAG_OFFSET) == 0x01);
 
-            packet.LastWillRetain = (((controlHeaderByte & RETAIN_FLAG_MASK) >> RETAIN_FLAG_OFFSET) == 0x01);
+            packet.Retain = (((controlHeaderByte & RETAIN_FLAG_MASK) >> RETAIN_FLAG_OFFSET) == 0x01);
 
-            if ((packet.LastWillQosLevel == QoSLevel.LeastOnce) ||
-                (packet.LastWillQosLevel == QoSLevel.ExactlyOnce)) {
+            if ((packet.QosLevel == QoSLevel.AtLeastOnce) ||
+                (packet.QosLevel == QoSLevel.ExactlyOnce)) {
 
                 packet.PacketId = (ushort)((buffer[index++] << 8) & 0xFF00);
                 packet.PacketId |= (buffer[index++]);
@@ -1072,15 +1141,15 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
             var packetSize = remainSize - index;
             var remaining = packetSize;
             var packetOffset = 0;
-            packet.Data = new byte[packetSize];
+            packet.Payload = new byte[packetSize];
 
-            Array.Copy(buffer, index, packet.Data, packetOffset, received - index);
+            Array.Copy(buffer, index, packet.Payload, packetOffset, received - index);
             remaining -= (received - index);
             packetOffset += (received - index);
 
             while (remaining > 0) {
                 received = this.stream.Receive(buffer);
-                Array.Copy(buffer, 0, packet.Data, packetOffset, received);
+                Array.Copy(buffer, 0, packet.Payload, packetOffset, received);
                 remaining -= received;
                 packetOffset += received;
             }

@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("GHIElectronics.TinyCLR.Native")]
@@ -8,6 +8,6 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCopyright("Copyright © GHI Electronics, LLC 2022")]
 [assembly: ComVisible(false)]
 [assembly: Guid("B602474A-AEB0-491C-832B-7EAF0B4511C0")]
-[assembly: AssemblyVersion("2.4.0.1000")]
-[assembly: AssemblyFileVersion("2.4.0.1000")]
-[assembly: AssemblyInformationalVersion("2.4.0.1000")]
+[assembly: AssemblyVersion("3.0.0.2000")]
+[assembly: AssemblyFileVersion("3.0.0.2000")]
+[assembly: AssemblyInformationalVersion("3.0.0.2000-prerelease")]

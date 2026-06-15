@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>GHIElectronics.TinyCLR.IO</name>
+    </assembly>
+    <members>
+        <member name="M:System.IO.File.Copy(System.String,System.String,System.Boolean,System.Boolean)">
+            Experiment on desktop shows 2k-4k is ideal size perfwise.
+        </member>
+    </members>
+</doc>

@@ -2,8 +2,11 @@
 using System.Runtime.CompilerServices;
 
 namespace GHIElectronics.TinyCLR.IO {
+    /// <summary>Iterates over the entries returned by a drive provider's search.</summary>
     public interface IFileSystemEntryFinder {
+        /// <summary>Returns the next entry, or null when there are no more.</summary>
         FileSystemEntry GetNext();
+        /// <summary>Closes the finder and releases its resources.</summary>
         void Close();
     }
 

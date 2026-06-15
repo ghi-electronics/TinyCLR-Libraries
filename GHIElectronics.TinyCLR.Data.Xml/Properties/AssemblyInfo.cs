@@ -1,5 +1,10 @@
-﻿using System.Reflection;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+
+// .NET-overlap XML types (XmlReader/XmlWriter/etc.) are internal here; their public
+// surface lives in the System.Xml compat assembly which delegates back via friend access.
+[assembly: InternalsVisibleTo("GHIElectronics.TinyCLR.System.Xml")]
 
 [assembly: AssemblyTitle("GHIElectronics.TinyCLR.Data.Xml")]
 [assembly: AssemblyDescription("TinyCLR OS Xml library.")]
@@ -8,7 +13,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCopyright("Copyright © GHI Electronics, LLC 2022")]
 [assembly: ComVisible(false)]
 [assembly: Guid("C591328A-97A3-4392-96B2-D3DB823E8CFF")]
-[assembly: AssemblyVersion("2.4.0.1000")]
-[assembly: AssemblyFileVersion("2.4.0.1000")]
-[assembly: AssemblyInformationalVersion("2.4.0.1000")]
+[assembly: AssemblyVersion("3.0.0.2000")]
+[assembly: AssemblyFileVersion("3.0.0.2000")]
+[assembly: AssemblyInformationalVersion("3.0.0.2000-prerelease")]
 

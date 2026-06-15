@@ -4,6 +4,7 @@ using System.Net.Sockets;
 
 namespace System.Net.Sockets
 {
+    /// <summary>Provides the underlying stream of data for network access.</summary>
     // Summary:
     //     Provides the underlying stream of data for network access.
     public class NetworkStream : Stream
@@ -15,16 +16,20 @@ namespace System.Net.Sockets
         // Internal Socket object
         internal Socket _socket;
 
+        /// <summary>The type of the underlying socket.</summary>
         // Internal property used to store the socket type
         protected int _socketType;
 
+        /// <summary>The remote endpoint used for datagram sockets.</summary>
         // Internal endpoint ref used for dgram sockets
         protected EndPoint _remoteEndPoint;
 
         // Internal flags
         private bool _ownsSocket;
+        /// <summary>Whether the stream has been disposed.</summary>
         protected bool _disposed;
 
+        /// <summary>Creates a new network stream for the specified socket.</summary>
         // Summary:
         //     Creates a new instance of the System.Net.Sockets.NetworkStream class for
         //     the specified System.Net.Sockets.Socket.
@@ -47,6 +52,7 @@ namespace System.Net.Sockets
         {
         }
 
+        /// <summary>Creates a new network stream for the specified socket, optionally taking ownership of it.</summary>
         //
         // Summary:
         //     Initializes a new instance of the System.Net.Sockets.NetworkStream class
@@ -94,6 +100,7 @@ namespace System.Net.Sockets
             this._ownsSocket = ownsSocket;
         }
 
+        /// <summary>Whether the stream supports reading.</summary>
         // Summary:
         //     Gets a value that indicates whether the System.Net.Sockets.NetworkStream
         //     supports reading.
@@ -103,6 +110,7 @@ namespace System.Net.Sockets
         //     is true.
         public override bool CanRead => this._socket != null && this._socket.m_Handle != -1 && !this._disposed;
 
+        /// <summary>Whether the stream supports seeking; always false.</summary>
         //
         // Summary:
         //     Gets a value that indicates whether the stream supports seeking. This property
@@ -113,6 +121,7 @@ namespace System.Net.Sockets
         //     seek a specific location in the stream.
         public override bool CanSeek => false;
 
+        /// <summary>Whether the stream supports timeouts; always true.</summary>
         //
         // Summary:
         //     Indicates whether timeout properties are usable for System.Net.Sockets.NetworkStream.
@@ -121,6 +130,7 @@ namespace System.Net.Sockets
         //     true in all cases.
         public override bool CanTimeout => true;
 
+        /// <summary>Whether the stream supports writing.</summary>
         //
         // Summary:
         //     Gets a value that indicates whether the System.Net.Sockets.NetworkStream
@@ -131,6 +141,7 @@ namespace System.Net.Sockets
         //     false. The default value is true.
         public override bool CanWrite => this._socket != null && this._socket.m_Handle != -1 && !this._disposed;
 
+        /// <summary>The amount of time, in milliseconds, that a read operation waits before timing out.</summary>
         public override int ReadTimeout {
             get => this._socket.ReceiveTimeout;
             set {
@@ -140,6 +151,7 @@ namespace System.Net.Sockets
             }
         }
 
+        /// <summary>The amount of time, in milliseconds, that a write operation waits before timing out.</summary>
         public override int WriteTimeout {
             get => this._socket.SendTimeout;
             set {
@@ -149,26 +161,15 @@ namespace System.Net.Sockets
             }
         }
 
+        /// <summary>Not supported; always throws NotSupportedException.</summary>
         //
         // Summary:
-        //     Gets the length of the data available on the stream.
-        //
-        // Returns:
-        //     The length of the data available on the stream.
-        //
-        // Exceptions:
-        //     InvalidOperationException - when socket is disposed.
-        public override long Length
-        {
-            get
-            {
-                if (this._disposed) return 0;// throw new ObjectDisposedException();
-                if (this._socket.m_Handle == -1) throw new IOException();
+        //     Length is not supported on a NetworkStream — matches full .NET
+        //     behaviour. Use DataAvailable / Socket.Available to query unread
+        //     bytes.
+        public override long Length => throw new NotSupportedException();
 
-                return this._socket.Available;
-            }
-        }
-
+        /// <summary>Not supported; always throws NotSupportedException.</summary>
         //
         // Summary:
         //     Gets or sets the current position in the stream. This property is not currently
@@ -186,7 +187,8 @@ namespace System.Net.Sockets
             set => throw new NotSupportedException();
         }
 
-        public virtual bool DataAvailable
+        /// <summary>Whether data is available on the stream to be read.</summary>
+        public override bool DataAvailable
         {
             get
             {
@@ -197,6 +199,7 @@ namespace System.Net.Sockets
             }
         }
 
+        /// <summary>Closes the stream after waiting the specified time for data to be sent.</summary>
         //
         // Summary:
         //     Closes the System.Net.Sockets.NetworkStream after waiting the specified time
@@ -220,6 +223,7 @@ namespace System.Net.Sockets
             Close();
         }
 
+        /// <summary>Releases the resources used by the stream.</summary>
         //
         // Summary:
         //     Releases the unmanaged resources used by the System.Net.Sockets.NetworkStream
@@ -248,6 +252,7 @@ namespace System.Net.Sockets
             }
         }
 
+        /// <summary>Flushes the stream; reserved for future use.</summary>
         //
         // Summary:
         //     Flushes data from the stream. This method is reserved for future use.
@@ -255,6 +260,7 @@ namespace System.Net.Sockets
         {
         }
 
+        /// <summary>Reads data from the stream into the buffer and returns the number of bytes read.</summary>
         //
         // Summary:
         //     Reads data from the System.Net.Sockets.NetworkStream.
@@ -299,30 +305,33 @@ namespace System.Net.Sockets
             if (offset < 0 || offset > buffer.Length) throw new ArgumentOutOfRangeException();
             if (count < 0 || count > buffer.Length - offset) throw new ArgumentOutOfRangeException();
 
-            var available = this._socket.Available;
+            // Previously this method consulted Socket.Available and shrank
+            // `count` to whatever was visible right now. That caused every Read
+            // to be one syscall per packet boundary even when the caller asked
+            // for a large buffer. .NET's NetworkStream.Read passes count through
+            // to the kernel and lets it decide how much it can return in one
+            // shot. We do the same now that Socket.Receive correctly returns:
+            //   N>0 immediately, 0 on FIN, or throws on real error / timeout.
 
-            // we will need to read using thr timeout specified
-            // if there is data available we can return with that data only
-            // the underlying socket infrastructure will handle the timeout
-            if (count > available && available > 0)
-            {
-                count = available;
+            try {
+                if (this._socketType == (int)SocketType.Stream) {
+                    return this._socket.Receive(buffer, offset, count, SocketFlags.None);
+                }
+                else if (this._socketType == (int)SocketType.Dgram) {
+                    return this._socket.ReceiveFrom(buffer, offset, count, SocketFlags.None, ref this._remoteEndPoint);
+                }
+                else {
+                    throw new NotSupportedException();
+                }
             }
-
-            if (this._socketType == (int)SocketType.Stream)
-            {
-                return this._socket.Receive(buffer, offset, count, SocketFlags.None);
-            }
-            else if (this._socketType == (int)SocketType.Dgram)
-            {
-                return this._socket.ReceiveFrom(buffer, offset, count, SocketFlags.None, ref this._remoteEndPoint);
-            }
-            else
-            {
-                throw new NotSupportedException();
+            catch (SocketException ex) {
+                // .NET parity: NetworkStream surfaces SocketException as IOException
+                // (with the SocketException as InnerException).
+                throw new IOException(ex.Message, ex);
             }
         }
 
+        /// <summary>Not supported; always throws NotSupportedException.</summary>
         //
         // Summary:
         //     Sets the current position of the stream to the given value. This method is
@@ -343,6 +352,7 @@ namespace System.Net.Sockets
         //     Any use of this property.
         public override long Seek(long offset, SeekOrigin origin) => throw new NotSupportedException();
 
+        /// <summary>Not supported; always throws NotSupportedException.</summary>
         //
         // Summary:
         //     Sets the length of the stream. This method always throws a System.NotSupportedException.
@@ -356,6 +366,7 @@ namespace System.Net.Sockets
         //     Any use of this property.
         public override void SetLength(long value) => throw new NotSupportedException();
 
+        /// <summary>Writes data from the buffer to the stream.</summary>
         //
         // Summary:
         //     Writes data to the System.Net.Sockets.NetworkStream.
@@ -396,38 +407,34 @@ namespace System.Net.Sockets
             if (offset < 0 || offset > buffer.Length) throw new ArgumentOutOfRangeException();
             if (count < 0 || count > buffer.Length - offset) throw new ArgumentOutOfRangeException();
 
-            var bytesSent = 0;
-            int retries = 5;
-            do {
+            // Socket.Send now loops until all bytes are sent, throws on real
+            // error, and throws TimedOut on SendTimeout. We only need to call
+            // it once and let it do the work. Wrap SocketException as IOException
+            // for .NET-compatible exception surface.
+            try {
+                int sent;
                 if (this._socketType == (int)SocketType.Stream) {
-                    bytesSent = this._socket.Send(buffer, offset, count, SocketFlags.None);
+                    sent = this._socket.Send(buffer, offset, count, SocketFlags.None);
                 }
                 else if (this._socketType == (int)SocketType.Dgram) {
-                    bytesSent = this._socket.SendTo(buffer, offset, count, SocketFlags.None, this._socket.RemoteEndPoint);
+                    sent = this._socket.SendTo(buffer, offset, count, SocketFlags.None, this._socket.RemoteEndPoint);
                 }
                 else {
                     throw new NotSupportedException();
                 }
-                count -= bytesSent;
-                offset += bytesSent;
-                if (bytesSent == 0 && count > 0)
-                {
-                    // last send was not successful - wait a bit for the buffers to flush
-                    Threading.Thread.Sleep(100);
-                    --retries;
-                }
-                else
-                {
-                    // last send was fully or partially successful - reset the retries
-                    retries = 5;
-                }
-            } while (retries != 0 && count > 0 && !this._disposed);
 
-            if (count != 0)
-                throw new IOException();
+                if (sent != count)
+                    throw new IOException();
+            }
+            catch (SocketException ex) {
+                throw new IOException(ex.Message, ex);
+            }
         }
 
-        public bool WriteHeaderOnClose(byte[] buffer, int offset, int count) {
+        // TinyCLR-internal helper used by HTTP server response close path. Not
+        // part of the public Stream surface in full .NET — keep internal so we
+        // don't pollute the public API.
+        internal bool WriteHeaderOnClose(byte[] buffer, int offset, int count) {
             if (this._disposed) return false;
             if (this._socket.m_Handle == -1) return false;
             if (buffer == null) return false;

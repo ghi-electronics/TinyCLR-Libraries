@@ -1,0 +1,112 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>GHIElectronics.TinyCLR.RuntimeLoadableProcedures</name>
+    </assembly>
+    <members>
+        <member name="T:GHIElectronics.TinyCLR.RuntimeLoadableProcedures.RuntimeLoadableProcedures">
+            <summary>
+            Runtime Loadable Procedures (RLP) — load a compiled ELF blob onto the
+            device at runtime, look up symbols by name, and call native C functions
+            from managed code. Useful for shipping hardware-accelerated routines
+            (DSP, image processing) without rebuilding the firmware.
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.RuntimeLoadableProcedures.RuntimeLoadableProcedures.NativeEventHandler">
+            <summary>Handler signature for <see cref="E:GHIElectronics.TinyCLR.RuntimeLoadableProcedures.RuntimeLoadableProcedures.NativeEvent"/>. The argument is whatever the native code passed to <c>RLP_PostManagedEvent</c>.</summary>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.RuntimeLoadableProcedures.RuntimeLoadableProcedures.NativeEvent">
+            <summary>Raised when native RLP code calls <c>RLP_PostManagedEvent</c>. Runs on a managed thread, never in ISR context.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.RuntimeLoadableProcedures.RuntimeLoadableProcedures.ElfImage">
+            <summary>
+            A loaded ELF binary. Construct with the ELF bytes, look up symbols by
+            name, then build a <see cref="T:GHIElectronics.TinyCLR.RuntimeLoadableProcedures.RuntimeLoadableProcedures.NativeFunction"/> from a function-symbol's
+            address to call it.
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.RuntimeLoadableProcedures.RuntimeLoadableProcedures.ElfImage.SymbolType">
+            <summary>Classification of an ELF symbol.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.RuntimeLoadableProcedures.RuntimeLoadableProcedures.ElfImage.SymbolType.None">
+            <summary>Untyped or section symbol.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.RuntimeLoadableProcedures.RuntimeLoadableProcedures.ElfImage.SymbolType.Object">
+            <summary>Data symbol (variable, array).</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.RuntimeLoadableProcedures.RuntimeLoadableProcedures.ElfImage.SymbolType.Function">
+            <summary>Code symbol (function).</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.RuntimeLoadableProcedures.RuntimeLoadableProcedures.ElfImage.SymbolType.Section">
+            <summary>Section symbol.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.RuntimeLoadableProcedures.RuntimeLoadableProcedures.ElfImage.Address">
+            <summary>Start address of the loaded image in target memory.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.RuntimeLoadableProcedures.RuntimeLoadableProcedures.ElfImage.Size">
+            <summary>Total size of the loaded image.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.RuntimeLoadableProcedures.RuntimeLoadableProcedures.ElfImage.RegionCount">
+            <summary>Number of distinct ELF regions loaded.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.RuntimeLoadableProcedures.RuntimeLoadableProcedures.ElfImage.#ctor(System.Byte[])">
+            <summary>Loads an ELF image into device memory.</summary>
+            <param name="elfImageData">ELF binary bytes.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.RuntimeLoadableProcedures.RuntimeLoadableProcedures.ElfImage.Finalize">
+            <summary>Finalizer; ensures the image is unloaded.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.RuntimeLoadableProcedures.RuntimeLoadableProcedures.ElfImage.Dispose">
+            <summary>Unloads the image from device memory.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.RuntimeLoadableProcedures.RuntimeLoadableProcedures.ElfImage.FindSymbolAddress(System.String,GHIElectronics.TinyCLR.RuntimeLoadableProcedures.RuntimeLoadableProcedures.ElfImage.SymbolType)">
+            <summary>Looks up a symbol by name and type.</summary>
+            <param name="name">Symbol name.</param>
+            <param name="type">Symbol classification.</param>
+            <returns>Symbol's runtime address, or 0 if not found.</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.RuntimeLoadableProcedures.RuntimeLoadableProcedures.ElfImage.FindFunction(System.String)">
+            <summary>Locates a function symbol and wraps it in a <see cref="T:GHIElectronics.TinyCLR.RuntimeLoadableProcedures.RuntimeLoadableProcedures.NativeFunction"/>.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.RuntimeLoadableProcedures.RuntimeLoadableProcedures.ElfImage.InitializeBssRegion">
+            <summary>Zero-initializes the loaded image's BSS region using the standard <c>__bss_start__</c>/<c>__bss_end__</c> symbols.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.RuntimeLoadableProcedures.RuntimeLoadableProcedures.ElfImage.InitializeBssRegion(System.String,System.String)">
+            <summary>Zero-initializes the region delimited by two symbols.</summary>
+            <param name="startSymbolName">Symbol marking the start of the region.</param>
+            <param name="endSymbolName">Symbol marking the end of the region.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.RuntimeLoadableProcedures.RuntimeLoadableProcedures.ElfImage.ZeroRegion(System.UInt32,System.UInt32)">
+            <summary>Zero-fills a span of <paramref name="length"/> bytes starting at <paramref name="address"/>.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.RuntimeLoadableProcedures.RuntimeLoadableProcedures.NativeFunction">
+            <summary>
+            Wraps a native function located at a known address. The first call to
+            <see cref="M:GHIElectronics.TinyCLR.RuntimeLoadableProcedures.RuntimeLoadableProcedures.NativeFunction.Invoke(System.Object[])"/> fixes the argument count and types; subsequent calls
+            must match. Supported argument types: 8/16/32/64-bit integers (signed and
+            unsigned), float, double, bool, and arrays of those types.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.RuntimeLoadableProcedures.RuntimeLoadableProcedures.NativeFunction.Address">
+            <summary>Runtime address of the function.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.RuntimeLoadableProcedures.RuntimeLoadableProcedures.NativeFunction.#ctor(System.UInt32)">
+            <summary>Constructs a <see cref="T:GHIElectronics.TinyCLR.RuntimeLoadableProcedures.RuntimeLoadableProcedures.NativeFunction"/> pointing at the given address.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.RuntimeLoadableProcedures.RuntimeLoadableProcedures.NativeFunction.Finalize">
+            <summary>Finalizer; releases interop resources.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.RuntimeLoadableProcedures.RuntimeLoadableProcedures.NativeFunction.Dispose">
+            <summary>Releases interop resources associated with this function.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.RuntimeLoadableProcedures.RuntimeLoadableProcedures.NativeFunction.Invoke(System.Object[])">
+            <summary>
+            Calls the native function with the given arguments and returns its
+            32-bit return value. The first invocation locks the argument count;
+            subsequent calls must pass the same number of arguments.
+            </summary>
+            <param name="arguments">Arguments to pass. Supported types: integer (any width, signed or unsigned), float, double, bool, and arrays of those.</param>
+            <returns>The function's int return value.</returns>
+        </member>
+    </members>
+</doc>

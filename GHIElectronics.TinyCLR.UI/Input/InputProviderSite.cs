@@ -28,6 +28,7 @@ namespace GHIElectronics.TinyCLR.UI.Input {
             GC.SuppressFinalize(this);
         }
 
+        /// <summary>Unregisters this input provider and releases its resources.</summary>
         protected virtual void Dispose(bool disposing) {
             if (!this._isDisposed) {
                 this._isDisposed = true;

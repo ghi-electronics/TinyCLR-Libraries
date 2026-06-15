@@ -1,0 +1,501 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>GHIElectronics.TinyCLR.Native</name>
+    </assembly>
+    <members>
+        <member name="T:GHIElectronics.TinyCLR.Native.Flash">
+            <summary>
+            Controls how the firmware uses the device's flash storage. Most apps don't
+            need this — call <see cref="M:GHIElectronics.TinyCLR.Native.Flash.EnableExtendDeployment"/> only on devices with
+            external flash that should be used to extend the deployment region.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Native.Flash.EnableExtendDeployment">
+            <summary>Permanently enables external flash as an extension of the deployment region.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Native.Flash.IsEnabledExtendDeployment">
+            <summary>True when external-flash deployment extension is enabled.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Native.Interrupt">
+            <summary>
+            CPU interrupt mask. Wrap a tight critical section in
+            <see cref="M:GHIElectronics.TinyCLR.Native.Interrupt.Disable"/>/<see cref="M:GHIElectronics.TinyCLR.Native.Interrupt.Enable"/> to prevent context switches and
+            hardware interrupts from running during it. Keep the disabled window short —
+            while interrupts are off, RTOS threads cannot preempt and ISR latencies grow.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Native.Interrupt.Enable">
+            <summary>Re-enables interrupts after a matching <see cref="M:GHIElectronics.TinyCLR.Native.Interrupt.Disable"/>.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Native.Interrupt.Disable">
+            <summary>Disables interrupts on the current core. Always pair with <see cref="M:GHIElectronics.TinyCLR.Native.Interrupt.Enable"/>.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Native.Interrupt.IsDisabled">
+            <summary>True when interrupts are currently masked.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Native.NativeApiType">
+            <summary>
+            Identifies a category of native API. Each managed library (Gpio, Spi, …)
+            uses its own value to look up a matching native implementation via
+            <see cref="M:GHIElectronics.TinyCLR.Native.NativeApi.Find(System.String,GHIElectronics.TinyCLR.Native.NativeApiType)"/>.
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Native.NativeApiType.ApiManager">
+            <summary>API manager itself.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Native.NativeApiType.DebuggerManager">
+            <summary>Debugger transport manager.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Native.NativeApiType.InteropManager">
+            <summary>Interop / extern-call manager.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Native.NativeApiType.MemoryManager">
+            <summary>Managed heap / allocator manager.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Native.NativeApiType.TimeManager">
+            <summary>System-time manager (DateTime, ticks).</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Native.NativeApiType.AdcController">
+            <summary>ADC controller.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Native.NativeApiType.CanController">
+            <summary>CAN controller.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Native.NativeApiType.DacController">
+            <summary>DAC controller.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Native.NativeApiType.DcmiController">
+            <summary>DCMI / parallel camera controller.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Native.NativeApiType.DisplayController">
+            <summary>Display controller.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Native.NativeApiType.GpioController">
+            <summary>GPIO controller.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Native.NativeApiType.I2cController">
+            <summary>I²C controller.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Native.NativeApiType.I2sController">
+            <summary>I²S audio controller.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Native.NativeApiType.NetworkController">
+            <summary>Network controller.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Native.NativeApiType.OneWireController">
+            <summary>1-Wire controller.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Native.NativeApiType.PowerController">
+            <summary>Power-management controller.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Native.NativeApiType.PwmController">
+            <summary>PWM controller.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Native.NativeApiType.RtcController">
+            <summary>RTC controller.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Native.NativeApiType.SaiController">
+            <summary>SAI audio controller.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Native.NativeApiType.SpiController">
+            <summary>SPI controller.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Native.NativeApiType.StorageController">
+            <summary>Block-storage controller (internal flash, SD, etc.).</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Native.NativeApiType.TaskController">
+            <summary>Task / RTOS controller.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Native.NativeApiType.TouchController">
+            <summary>Touch controller.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Native.NativeApiType.UartController">
+            <summary>UART controller.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Native.NativeApiType.UsbClientController">
+            <summary>USB device controller.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Native.NativeApiType.UsbHostController">
+            <summary>USB host controller.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Native.NativeApiType.WatchdogController">
+            <summary>Watchdog timer.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Native.NativeApiType.Custom">
+            <summary>Custom / out-of-tree API.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Native.IApiImplementation">
+            <summary>Implemented by managed wrappers that expose their underlying native handle.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Native.IApiImplementation.Implementation">
+            <summary>Pointer to the native implementation struct.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Native.NativeApi">
+            <summary>
+            Handle to a native API surfaced by the firmware. Use <see cref="M:GHIElectronics.TinyCLR.Native.NativeApi.Find(System.String,GHIElectronics.TinyCLR.Native.NativeApiType)"/>
+            to obtain a specific API by name, or <see cref="M:GHIElectronics.TinyCLR.Native.NativeApi.FindAll"/> to enumerate
+            everything the firmware exposes.
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Native.NativeApi.DefaultCreator">
+            <summary>Factory used when a managed library asks for the "default" API of a given type.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Native.NativeApi.GetDefaultFromCreator(GHIElectronics.TinyCLR.Native.NativeApiType)">
+            <summary>Invokes a registered default-creator for the given API type, if any.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Native.NativeApi.Find(System.String,GHIElectronics.TinyCLR.Native.NativeApiType)">
+            <summary>Locates a native API by name and type.</summary>
+            <param name="name">Native API name (e.g. one of the platform-specific constants).</param>
+            <param name="type">Category of API to find.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Native.NativeApi.GetDefaultName(GHIElectronics.TinyCLR.Native.NativeApiType)">
+            <summary>Returns the name of the default API for a given type.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Native.NativeApi.FindAll">
+            <summary>Returns every native API the firmware exposes.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Native.NativeApi.Author">
+            <summary>The author / vendor string the firmware attached to this API.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Native.NativeApi.Name">
+            <summary>The native API name.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Native.NativeApi.Version">
+            <summary>Version number of the native API (packed major/minor/build).</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Native.NativeApi.Type">
+            <summary>Category of native API.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Native.NativeApi.Implementation">
+            <summary>Pointer to the native implementation struct.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Native.NativeApi.State">
+            <summary>Pointer to per-API state.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Native.DebugInterface">
+            <summary>Transport used by the debugger to attach to the device.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Native.DebugInterface.Disable">
+            <summary>Debugging disabled.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Native.DebugInterface.Usb">
+            <summary>USB CDC debug port.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Native.DebugInterface.Serial">
+            <summary>UART debug port.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Native.DeviceInformation">
+            <summary>
+            Read-only metadata about the running device (name, manufacturer, firmware
+            version) plus debug-interface and unique-ID controls.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Native.DeviceInformation.DeviceName">
+            <summary>The device's friendly name (settable via <see cref="M:GHIElectronics.TinyCLR.Native.DeviceInformation.SetDeviceName(System.String)"/>).</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Native.DeviceInformation.DeviceFamily">
+            <summary>The MCU family of the running device (e.g. "STM32H7", "STM32L4"). Supplied by the board/firmware layer; not user-settable.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Native.DeviceInformation.ManufacturerName">
+            <summary>The manufacturer reported by the firmware.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Native.DeviceInformation.Version">
+            <summary>Firmware version (packed major/minor/build).</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Native.DeviceInformation.DebugInterface">
+            <summary>Active debugger transport.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Native.DeviceInformation.DebugPort">
+            <summary>Hardware port the debugger is bound to (controller index).</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Native.DeviceInformation.SetDebugInterface(GHIElectronics.TinyCLR.Native.DebugInterface)">
+            <summary>Routes the debugger to a different transport without specifying a port.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Native.DeviceInformation.SetDebugInterface(GHIElectronics.TinyCLR.Native.DebugInterface,System.Int32)">
+            <summary>Routes the debugger to a specific transport and port (e.g. UART2).</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Native.DeviceInformation.IsModePinDisabled">
+            <summary>True when the bootloader-mode pin has been disabled by firmware policy.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Native.DeviceInformation.AppPinDisable">
+            <summary>Permanently disables the app-mode pin. Cannot be undone.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Native.DeviceInformation.IsAppPinDisabled">
+            <summary>True when the app-mode pin has been disabled by <see cref="M:GHIElectronics.TinyCLR.Native.DeviceInformation.AppPinDisable"/>.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Native.DeviceInformation.SetDeviceName(System.String)">
+            <summary>Writes a new value for <see cref="P:GHIElectronics.TinyCLR.Native.DeviceInformation.DeviceName"/>. Persisted in secure storage.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Native.DeviceInformation.GetUniqueId">
+            <summary>Returns the chip's unique 96-bit identifier (12 bytes).</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Native.DeviceInformation.GetCpuUsageStatistic">
+            <summary>Returns a 0.0..1.0 estimate of recent CPU load.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Native.Interop">
+            <summary>
+            Represents an interop module — a native C library whose methods are callable
+            from managed code via <c>[MethodImpl(InternalCall)]</c>. Use <see cref="M:GHIElectronics.TinyCLR.Native.Interop.FindAll"/>
+            to enumerate every interop module the firmware exposes.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Native.Interop.FindAll">
+            <summary>Returns every interop module registered with the runtime.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Native.Interop.Name">
+            <summary>The interop module's assembly name.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Native.Interop.Checksum">
+            <summary>CRC of the module's interop table — must match the managed assembly.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Native.Interop.Methods">
+            <summary>Pointer to the module's method-dispatch table.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Native.NativeEventHandler">
+            <summary>Handler signature for <see cref="E:GHIElectronics.TinyCLR.Native.NativeEventDispatcher.OnInterrupt"/>.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Native.NativeEventDispatcher">
+            <summary>
+            Marshals native ISR events to managed handlers. One dispatcher exists per
+            well-known event name (e.g. <c>GHIElectronics.TinyCLR.NativeEventNames.Gpio.PinChanged</c>);
+            retrieve the singleton with <see cref="M:GHIElectronics.TinyCLR.Native.NativeEventDispatcher.GetDispatcher(System.String)"/> and subscribe
+            to <see cref="E:GHIElectronics.TinyCLR.Native.NativeEventDispatcher.OnInterrupt"/>. The first subscription enables the native
+            interrupt; removing the last one disables it.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Native.NativeEventDispatcher.EnableInterrupt">
+            <summary>Manually arms the native interrupt source. Usually unnecessary — <see cref="E:GHIElectronics.TinyCLR.Native.NativeEventDispatcher.OnInterrupt"/> handles it.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Native.NativeEventDispatcher.DisableInterrupt">
+            <summary>Manually disarms the native interrupt source.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Native.NativeEventDispatcher.Finalize">
+            <summary>Finalizer; ensures the native dispatcher is released.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Native.NativeEventDispatcher.Dispose">
+            <summary>Releases the native dispatcher and removes it from the per-name registry.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Native.NativeEventDispatcher.GetDispatcher(System.String)">
+            <summary>
+            Returns the singleton dispatcher for a given event name, creating it on
+            first request. All managed subscribers to the same name share one dispatcher.
+            </summary>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.Native.NativeEventDispatcher.OnInterrupt">
+            <summary>
+            Raised by the firmware when the underlying native event fires. The first
+            subscription enables the native interrupt; removing the last unsubscribes
+            and disables it. Multi-cast subscribers are dispatched on the same thread.
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Native.Memory">
+            <summary>
+            Allocator façade exposing both the managed (GC) heap and the unmanaged
+            heap. Most apps don't touch this directly — use <see cref="T:GHIElectronics.TinyCLR.Native.UnmanagedBuffer"/>
+            when you need a fixed-address byte buffer (for DMA, native interop, etc.).
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Native.Memory.ManagedMemory">
+            <summary>The managed (GC) heap allocator.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Native.Memory.UnmanagedMemory">
+            <summary>The unmanaged heap allocator (fixed addresses, not GC-tracked).</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Native.Memory.Allocate(System.Int64)">
+            <summary>Allocates <paramref name="length"/> bytes; returns the pointer.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Native.Memory.Allocate(System.IntPtr)">
+            <summary>Allocates the given number of bytes.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Native.Memory.Free(System.IntPtr)">
+            <summary>Frees a pointer returned by <see cref="M:GHIElectronics.TinyCLR.Native.Memory.Allocate(System.Int64)"/>.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Native.Memory.ToBytes(System.IntPtr,System.Int64)">
+            <summary>Returns a byte[] aliased to a fixed-address region (no copy).</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Native.Memory.ToBytes(System.IntPtr,System.IntPtr)">
+            <summary>Returns a byte[] aliased to a fixed-address region (no copy).</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Native.Memory.GetStats(System.IntPtr@,System.IntPtr@)">
+            <summary>Reads current heap usage and free space.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Native.Memory.UsedBytes">
+            <summary>Bytes currently allocated from this heap.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Native.Memory.FreeBytes">
+            <summary>Bytes currently free in this heap.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Native.Memory.ExtendHeap">
+            <summary>Permanently extends the managed heap into external SDRAM (where supported).</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Native.Memory.IsExtendedHeap">
+            <summary>True when the managed heap has been extended via <see cref="M:GHIElectronics.TinyCLR.Native.Memory.ExtendHeap"/>.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Native.UnmanagedBufferLocation">
+            <summary>Which heap an <see cref="T:GHIElectronics.TinyCLR.Native.UnmanagedBuffer"/> draws from.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Native.UnmanagedBufferLocation.ManagedMemory">
+            <summary>Allocated from the managed (GC) heap.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Native.UnmanagedBufferLocation.UnmanagedMemory">
+            <summary>Allocated from the unmanaged heap (fixed address).</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Native.UnmanagedBuffer">
+            <summary>
+            A fixed-address byte buffer suitable for DMA targets and native interop.
+            The <see cref="P:GHIElectronics.TinyCLR.Native.UnmanagedBuffer.Bytes"/> property exposes it as a regular byte[]. Dispose to
+            release the underlying memory.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Native.UnmanagedBuffer.Bytes">
+            <summary>Byte[] view of the unmanaged region. Same address every read.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Native.UnmanagedBuffer.#ctor(System.Int32)">
+            <summary>Allocates a buffer of the given length in the unmanaged heap.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Native.UnmanagedBuffer.#ctor(System.Int32,GHIElectronics.TinyCLR.Native.UnmanagedBufferLocation)">
+            <summary>Allocates a buffer of the given length from the specified heap.</summary>
+            <param name="length">Buffer size in bytes.</param>
+            <param name="location">Heap to allocate from. Only <see cref="F:GHIElectronics.TinyCLR.Native.UnmanagedBufferLocation.UnmanagedMemory"/> is supported.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Native.UnmanagedBuffer.Finalize">
+            <summary>Finalizer; releases the unmanaged region if not already disposed.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Native.UnmanagedBuffer.Dispose">
+            <summary>Releases the unmanaged region.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Native.ResetSource">
+            <summary>Reasons reported by <see cref="M:GHIElectronics.TinyCLR.Native.Power.GetResetSource"/>.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Native.ResetSource.Other">
+            <summary>Reason not categorized.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Native.ResetSource.PowerOn">
+            <summary>Cold start (rail came up from zero).</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Native.ResetSource.ResetPin">
+            <summary>Hardware NRST line was asserted.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Native.ResetSource.BrownoutReset">
+            <summary>Supply rail dipped below the brown-out threshold.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Native.ResetSource.SystemReset">
+            <summary>Firmware-initiated soft reset (e.g. <see cref="M:GHIElectronics.TinyCLR.Native.Power.Reset"/>).</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Native.ResetSource.WatchdogReset">
+            <summary>Watchdog timer expired without being kicked.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Native.ResetSource.LowPowerRtc">
+            <summary>Resumed from low-power state by the RTC alarm.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Native.ResetSource.LowPowerWakeupPin">
+            <summary>Resumed from low-power state by the wake-up pin.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Native.SystemClock">
+            <summary>Core-clock profile.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Native.SystemClock.High">
+            <summary>Standard high-speed clock.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Native.SystemClock.Low">
+            <summary>Reduced clock for lower power draw.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Native.SystemClock.Overclock">
+            <summary>Overclocked profile (may exceed datasheet spec).</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Native.WakeupEdge">
+            <summary>Polarity of the wake-up pin.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Native.WakeupEdge.Falling">
+            <summary>Wake on falling edge.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Native.WakeupEdge.Rising">
+            <summary>Wake on rising edge.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Native.Power">
+            <summary>
+            Power-management entry points: <see cref="M:GHIElectronics.TinyCLR.Native.Power.Reset"/> for a soft reset,
+            <see cref="M:GHIElectronics.TinyCLR.Native.Power.Sleep"/> for low-power stop with wake-up, <see cref="M:GHIElectronics.TinyCLR.Native.Power.Shutdown(System.Int32,System.DateTime)"/>
+            for power-off with RTC/pin wake-up, and <see cref="M:GHIElectronics.TinyCLR.Native.Power.SetSystemClock(GHIElectronics.TinyCLR.Native.SystemClock,System.Boolean)"/> for
+            dynamic clock scaling.
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Native.Power.WakeupEdge">
+            <summary>Polarity used by <see cref="M:GHIElectronics.TinyCLR.Native.Power.Shutdown(System.Int32,System.DateTime)"/> when waking from a pin event. Applies to every pin set in the wake-up bit mask.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Native.Power.Reset">
+            <summary>Soft-resets the device, re-running the app afterward.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Native.Power.Sleep">
+            <summary>Enters Sleep3 (deepest sleep). Wakes on any GPIO EXTI interrupt.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Native.Power.Sleep(System.DateTime)">
+            <summary>Enters Sleep3 with an optional wake time. Pass <see cref="F:System.DateTime.MaxValue"/> for "pin only".</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Native.Power.Shutdown(System.Int32,System.DateTime)">
+            <summary>
+            Powers off until either one of the selected wake-up pins asserts or the
+            RTC alarm fires.
+            </summary>
+            <param name="wakeupPins">
+            OR-combined wake-up pin bit mask. Each SoC's pin-package exposes a
+            <c>WakeupPin</c> class (e.g. <c>SC20260.WakeupPin.PA0</c>) with one
+            <c>int</c> constant per pin its hardware can wake on; OR them together
+            to allow any of those pins to wake the device. Pass <c>0</c> for
+            RTC-only wake. A bit not routed to this SoC's wake-up peripheral
+            throws <see cref="T:System.ArgumentException"/>.
+            <para>
+            Example: <c>Power.Shutdown(SC20260.WakeupPin.PA0 | SC20260.WakeupPin.PA2, t)</c>.
+            </para>
+            </param>
+            <param name="wakeupTime">
+            Wall-clock time at which the RTC should wake the device, or
+            <see cref="F:System.DateTime.MaxValue"/> for "pin only".
+            </param>
+            <exception cref="T:System.ArgumentException">
+            Thrown when <paramref name="wakeupPins"/> is <c>0</c> AND <paramref name="wakeupTime"/>
+            is <see cref="F:System.DateTime.MaxValue"/> (no wake source — the device would never
+            come back), or when any bit in <paramref name="wakeupPins"/> isn't routed to
+            this SoC's hardware wake-up peripheral.
+            </exception>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Native.Power.SetSystemClock(GHIElectronics.TinyCLR.Native.SystemClock,System.Boolean)">
+            <summary>Switches the core-clock profile. <paramref name="persist"/> stores the choice across resets.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Native.Power.GetSystemClock">
+            <summary>Returns the current core-clock profile.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Native.Power.Reset(System.Boolean)">
+            <summary>Soft-resets the device. When <paramref name="runCoreAfter"/> is true, the app re-runs after reset; otherwise the device boots to bootloader.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Native.Power.GetResetSource">
+            <summary>Returns the reason for the most recent reset.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Native.SystemTime">
+            <summary>
+            Reads and writes the system wall clock (separate from the
+            <see cref="!:GHIElectronics.TinyCLR.Devices.Rtc.RtcController"/> chip
+            register). Time zone is carried as a minutes-from-UTC offset.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Native.SystemTime.SetTime(System.Int64,System.Int32)">
+            <summary>Sets the system clock from raw 100 ns ticks (UTC).</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Native.SystemTime.GetTime(System.Int64@,System.Int32@)">
+            <summary>Reads the system clock as raw 100 ns ticks (UTC).</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Native.SystemTime.SetTime(System.DateTime)">
+            <summary>Sets the system clock from a UTC <see cref="T:System.DateTime"/>.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Native.SystemTime.SetTime(System.DateTime,System.Int32)">
+            <summary>Sets the system clock from a UTC <see cref="T:System.DateTime"/> with a time-zone offset.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Native.SystemTime.GetTime">
+            <summary>Reads the system clock as a UTC <see cref="T:System.DateTime"/>.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Native.SystemTime.GetTime(System.DateTime@,System.Int32@)">
+            <summary>Reads the system clock as a UTC <see cref="T:System.DateTime"/> together with the local time-zone offset.</summary>
+        </member>
+    </members>
+</doc>

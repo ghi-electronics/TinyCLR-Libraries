@@ -5,7 +5,13 @@ using System;
 using GHIElectronics.TinyCLR.UI.Input;
 
 namespace GHIElectronics.TinyCLR.UI.Controls {
+    /// <summary>A scrollable list of selectable items.</summary>
     public class ListBox : ContentControl {
+        // Cached once per AppDomain so each commit doesn't allocate a fresh RoutedEvent.
+        private static readonly RoutedEvent ClickRoutedEvent =
+            new RoutedEvent("ListBoxClickEvent", RoutingStrategy.Bubble, typeof(RoutedEventHandler));
+
+        /// <summary>Creates a new ListBox.</summary>
         public ListBox() {
             this._panel = new StackPanel();
             this._scrollViewer = new ScrollViewer {
@@ -14,6 +20,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             this.LogicalChildren.Add(this._scrollViewer);
         }
 
+        /// <summary>The collection of items in the list.</summary>
         public ListBoxItemCollection Items {
             get {
                 VerifyAccess();
@@ -26,6 +33,14 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
+        /// <summary>
+        /// Fires when the user commits the current selection — either by tapping a
+        /// ListBoxItem or by pressing <see cref="HardwareButton.Select"/> while the
+        /// ListBox has focus. The event source is the committed <see cref="ListBoxItem"/>.
+        /// </summary>
+        public event RoutedEventHandler Click;
+
+        /// <summary>Raised when the selected item changes.</summary>
         public event SelectionChangedEventHandler SelectionChanged {
             add {
                 VerifyAccess();
@@ -38,6 +53,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
+        /// <summary>Index of the selected item, or -1 if none is selected.</summary>
         public int SelectedIndex {
             get => this._selectedIndex;
 
@@ -72,6 +88,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
+        /// <summary>The currently selected item, or null if none is selected.</summary>
         public ListBoxItem SelectedItem {
             get {
                 if (this._items != null && this._selectedIndex >= 0 && this._selectedIndex < this._items.Count) {
@@ -91,6 +108,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
+        /// <summary>Scrolls the list so the given item is visible.</summary>
         public void ScrollIntoView(ListBoxItem item) {
             VerifyAccess();
 
@@ -114,6 +132,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
+        /// <summary>Handles Up/Down navigation and Select activation via hardware buttons.</summary>
         protected override void OnButtonDown(GHIElectronics.TinyCLR.UI.Input.ButtonEventArgs e) {
             if (e.Button == HardwareButton.Down && this._selectedIndex < this.Items.Count - 1) {
                 var newIndex = this._selectedIndex + 1;
@@ -135,6 +154,21 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                     e.Handled = true;
                 }
             }
+            else if (e.Button == HardwareButton.Select) {
+                var item = this.SelectedItem;
+                if (item != null) {
+                    e.Handled = this.RaiseClick(item);
+                }
+            }
+        }
+
+        // Raises Click with the supplied ListBoxItem as the event source.
+        // Used by ListBoxItem.OnTouchUp and by Select-button activation.
+        // Exceptions from user handlers propagate.
+        internal bool RaiseClick(ListBoxItem source) {
+            var args = new RoutedEventArgs(ClickRoutedEvent, source);
+            this.Click?.Invoke(this, args);
+            return args.Handled;
         }
 
         //

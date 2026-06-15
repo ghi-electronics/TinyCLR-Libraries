@@ -7,6 +7,7 @@ using System.Threading;
 using GHIElectronics.TinyCLR.Networking;
 
 namespace System.Net.Security {
+    /// <summary>Provides a stream used for client-server communication that uses SSL/TLS to secure the connection.</summary>
     public class SslStream : NetworkStream {
         // Internal flags
         private int sslHandle;
@@ -15,6 +16,7 @@ namespace System.Net.Security {
 
         //--//
 
+        /// <summary>Initializes a new instance over the specified connected socket.</summary>
         public SslStream(Socket socket)
             : base(socket, false) {
             if (SocketType.Stream != (SocketType)this._socketType) {
@@ -27,29 +29,39 @@ namespace System.Net.Security {
             this.ni = Socket.DefaultProvider;
         }
 
+        /// <summary>Performs the client side of the SSL/TLS handshake for the specified host.</summary>
         public void AuthenticateAsClient(string targetHost) => this.AuthenticateAsClient(targetHost, default(X509Certificate));
 
+        /// <summary>Performs the client side of the handshake, validating against the specified CA certificate.</summary>
         public void AuthenticateAsClient(string targetHost, X509Certificate caCertificate) => this.AuthenticateAsClient(targetHost, caCertificate, null, SslProtocols.None);
 
+        /// <summary>Performs the client side of the handshake using the specified CA and client certificates.</summary>
         public void AuthenticateAsClient(string targetHost, X509Certificate caCertificate, X509Certificate clientCertificate) => this.AuthenticateAsClient(targetHost, caCertificate, clientCertificate, SslProtocols.None);
 
-        public void AuthenticateAsClient(string targetHost, X509Certificate caCertificate, X509Certificate clientCertificate, SslProtocols sslProtocols) => this.AuthenticateAsClient(targetHost, caCertificate, clientCertificate, SslProtocols.None, SslVerification.Optional);
+        /// <summary>Performs the client side of the handshake using the specified certificates and protocols.</summary>
+        public void AuthenticateAsClient(string targetHost, X509Certificate caCertificate, X509Certificate clientCertificate, SslProtocols sslProtocols) => this.AuthenticateAsClient(targetHost, caCertificate, clientCertificate, sslProtocols, SslVerification.Optional);
 
+        /// <summary>Performs the client side of the handshake using the specified certificates, protocols, and verification mode.</summary>
         public void AuthenticateAsClient(string targetHost, X509Certificate caCertificate, X509Certificate clientCertificate, SslProtocols sslProtocols, SslVerification sslVerification) => this.sslHandle = this.ni.AuthenticateAsClient(this._socket.m_Handle, targetHost, caCertificate, clientCertificate, sslProtocols, sslVerification);
 
+        /// <summary>Performs the server side of the SSL/TLS handshake using the specified certificate and protocols.</summary>
         public void AuthenticateAsServer(X509Certificate caCertificate, SslProtocols sslProtocols) => this.sslHandle = this.ni.AuthenticateAsServer(this._socket.m_Handle, caCertificate, sslProtocols);
 
+        /// <summary>Whether this stream is acting as the server side of the connection.</summary>
         public bool IsServer => this._isServer;
 
-        public override long Length {
-            get {
-                if (this._disposed) throw new ObjectDisposedException();
-                if (this._socket == null) throw new IOException();
+        /// <summary>Not supported; always throws NotSupportedException.</summary>
+        // Standard .NET behavior: SslStream is not seekable and Length throws
+        // NotSupportedException. The previous override returned `Available`
+        // (decrypted plaintext bytes ready to read), which silently broke
+        // callers that did `new byte[stream.Length]` — they'd get a buffer
+        // sized to whatever happened to be buffered at that instant rather
+        // than the full content. For "is there data ready" use DataAvailable
+        // (bool, matches BCL NetworkStream.DataAvailable). For a content
+        // length, read the HTTP/protocol header — never the stream's Length.
+        public override long Length => throw new NotSupportedException();
 
-                return this.ni.Available(this.sslHandle);
-            }
-        }
-
+        /// <summary>Whether decrypted data is available to be read.</summary>
         public override bool DataAvailable {
             get {
                 if (this._disposed) throw new ObjectDisposedException();
@@ -59,6 +71,7 @@ namespace System.Net.Security {
             }
         }
 
+        /// <summary>Releases resources when the stream is finalized.</summary>
         ~SslStream() {
             // Do not re-create Dispose clean-up code here.
             // Calling Dispose(false) is optimal in terms of
@@ -66,6 +79,7 @@ namespace System.Net.Security {
             this.Dispose(false);
         }
 
+        /// <summary>Releases the resources used by the stream and closes the secure connection.</summary>
         [MethodImpl(MethodImplOptions.Synchronized)]
         protected override void Dispose(bool disposing) {
             if (!this._disposed) {
@@ -78,6 +92,7 @@ namespace System.Net.Security {
             }
         }
 
+        /// <summary>Reads decrypted data from the secure stream and returns the number of bytes read.</summary>
         public override int Read(byte[] buffer, int offset, int size) {
             if (buffer == null) {
                 throw new ArgumentNullException();
@@ -96,29 +111,31 @@ namespace System.Net.Security {
             }
 
             var expired = DateTime.MaxValue.Ticks;
-            var totalBytesReceive = 0;
 
             if (this._socket.ReceiveTimeout != System.Threading.Timeout.Infinite) {
                 expired = DateTime.Now.Ticks + (this._socket.ReceiveTimeout * 10000L);
             }
 
-            while (DateTime.Now.Ticks < expired && totalBytesReceive < size) {
-                var read =  this.ni.SecureRead(this.sslHandle, buffer, offset + totalBytesReceive, size - totalBytesReceive);
+            // Sentinels from native SecureRead (see Socket.NativeTimeoutSentinel).
+            while (true) {
+                var read = this.ni.SecureRead(this.sslHandle, buffer, offset, size);
 
-                if (read < 0) { // error
-                    break;
+                if (read > 0) return read;
+                if (read == 0) return 0; // TLS close_notify / peer close — match .NET
+                if (read == -2) {
+                    // WANT_READ / WANT_WRITE: handshake or record fragment in flight.
+                    if (DateTime.Now.Ticks >= expired)
+                        throw new IOException("SSL read timed out.");
+                    if (this._socket.DelayBetweenReceive > 0)
+                        Thread.Sleep(this._socket.DelayBetweenReceive);
+                    continue;
                 }
-                else if (read > 0) { // valid data
-                    totalBytesReceive += read;
-                    break;
-                }
-
-                Thread.Sleep(this._socket.DelayBetweenReceive);
+                // Real TLS / transport error.
+                throw new IOException("SSL read failed.");
             }
-
-            return totalBytesReceive;
         }
 
+        /// <summary>Encrypts and writes the specified data to the secure stream.</summary>
         public override void Write(byte[] buffer, int offset, int size) {
             if (buffer == null) {
                 throw new ArgumentNullException();
@@ -143,33 +160,29 @@ namespace System.Net.Security {
                 expired = DateTime.Now.Ticks + (this._socket.SendTimeout * 10000L);
             }
 
-            while (DateTime.Now.Ticks < expired && totalSent < size) {
+            while (totalSent < size) {
                 var sent = this.ni.SecureWrite(this.sslHandle, buffer, offset + totalSent, size - totalSent);
 
-                if (sent < 0) { // error, stop
-                    break;
-                }
-                else if (sent > 0) { // reset timeout
-
+                if (sent > 0) {
+                    totalSent += sent;
                     if (this._socket.SendTimeout != System.Threading.Timeout.Infinite) {
                         expired = DateTime.Now.Ticks + (this._socket.SendTimeout * 10000L);
                     }
+                    if (totalSent < size && this._socket.DelayBetweenSend > 0)
+                        Thread.Sleep(this._socket.DelayBetweenSend);
+                    continue;
                 }
-
-                totalSent += sent;
-
-                if (totalSent < size) {
-                    Thread.Sleep(this._socket.DelayBetweenSend);
-                }              
+                if (sent == -2) {
+                    // WANT_READ / WANT_WRITE — transient, retry.
+                    if (DateTime.Now.Ticks >= expired)
+                        throw new IOException("SSL write timed out.");
+                    if (this._socket.DelayBetweenSend > 0)
+                        Thread.Sleep(this._socket.DelayBetweenSend);
+                    continue;
+                }
+                // sent == 0 or other negative: TLS error or peer close mid-write.
+                throw new IOException("SSL write failed.");
             }
-
-            if (DateTime.Now.Ticks > expired) {
-                throw new Exception("Socket error timeout.");
-            }
-
-            if (totalSent != size)
-                throw new IOException();
-
         }
     }
 

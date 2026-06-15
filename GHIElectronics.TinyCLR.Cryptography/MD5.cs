@@ -7,7 +7,7 @@ using System.Threading;
 using GHIElectronics.TinyCLR.Cryptography.Provider;
 
 namespace GHIElectronics.TinyCLR.Cryptography {
-    public class MD5 : IDisposable {
+    internal class MD5 : IDisposable {
 
         public IHashAlgorithmProvider Provider { get; }
 
@@ -22,6 +22,8 @@ namespace GHIElectronics.TinyCLR.Cryptography {
         public byte[] Hash => this.Provider.Hash;
 
         public void Clear() => this.Provider.Clear();
+
+        public void Initialize() => this.Provider.Clear();
 
         public byte[] ComputeHash(Stream stream) => this.Provider.ComputeHash(stream);
 
@@ -39,7 +41,7 @@ namespace GHIElectronics.TinyCLR.Cryptography {
     }
 
     namespace Provider {
-        public interface IHashAlgorithmProvider : IDisposable {
+        internal interface IHashAlgorithmProvider : IDisposable {
             int HashSize { get; }
             byte[] Hash { get; }
 
@@ -50,11 +52,14 @@ namespace GHIElectronics.TinyCLR.Cryptography {
             byte[] ComputeHash(byte[] buffer, int offset, int count);
         }
 
-        public sealed class HashAlgorithmApiWrapper : IHashAlgorithmProvider {
-            private readonly IntPtr impl;
+        internal sealed class HashAlgorithmApiWrapper : IHashAlgorithmProvider {
+            private readonly IntPtr impl = IntPtr.Zero;
             private byte[] hashValue;
 
-            public HashAlgorithmApiWrapper() => this.Acquire();
+            public HashAlgorithmApiWrapper() {
+                this.Acquire();
+                _ = this.impl; // Backing field is initialized by native side.
+            }
 
             public void Dispose() => this.Release();
 
@@ -74,29 +79,15 @@ namespace GHIElectronics.TinyCLR.Cryptography {
 
                 const int BLOCK_SIZE = 64;
 
-                var streamLength = inputStream.Length;
-                var block = streamLength / BLOCK_SIZE;
-                var remain = streamLength % BLOCK_SIZE;
-
                 if (!this.NativeComputeStart())
                     throw new InvalidOperationException();
 
                 var buffer = new byte[BLOCK_SIZE];
+                int read;
 
-                while (block-- > 0) {
-
-                    inputStream.Read(buffer, 0, BLOCK_SIZE);
-
-                    if (!this.NativeComputeUpdate(buffer, 0, BLOCK_SIZE))
+                while ((read = inputStream.Read(buffer, 0, BLOCK_SIZE)) > 0)
+                    if (!this.NativeComputeUpdate(buffer, 0, read))
                         throw new InvalidOperationException();
-                }
-
-                if (remain > 0) {
-                    inputStream.Read(buffer, 0, (int)remain);
-
-                    if (!this.NativeComputeUpdate(buffer, 0, (int)remain))
-                        throw new InvalidOperationException();
-                }
 
                 return this.NativeComputeFinish();
             }

@@ -1,0 +1,14 @@
+using System.Reflection;
+using System.Runtime.InteropServices;
+
+// Identity MUST match GHIElectronics.TinyCLR.Devices.Gpio\Properties\AssemblyInfo.cs.
+[assembly: AssemblyTitle("GHIElectronics.TinyCLR.Devices.Gpio")]
+[assembly: AssemblyDescription("TinyCLR OS GPIO library.")]
+[assembly: AssemblyCompany("GHI Electronics, LLC")]
+[assembly: AssemblyProduct("TinyCLR OS")]
+[assembly: AssemblyCopyright("Copyright © GHI Electronics, LLC 2022")]
+[assembly: ComVisible(false)]
+[assembly: Guid("21FBFF15-D7C4-48A8-B3D1-CE70A288B3EA")]
+[assembly: AssemblyVersion("3.0.0.2000")]
+[assembly: AssemblyFileVersion("3.0.0.2000")]
+[assembly: AssemblyInformationalVersion("3.0.0.2000-prerelease")]

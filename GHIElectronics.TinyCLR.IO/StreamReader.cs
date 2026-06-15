@@ -7,10 +7,23 @@ using System.Collections;
 
 namespace System.IO
 {
+    /// <summary>Reads characters from a stream using UTF-8 decoding.</summary>
     public class StreamReader : TextReader
     {
         private const int c_MaxReadLineLen = 0xFFFF;
         private const int c_BufferSize = 512;
+
+        // Larger chunk used only in ReadNonSeekableStream.
+        // Why not reuse c_BufferSize (512): on a body of N chars, the old
+        // 512-char chunks produced ceil(N/512) ArrayList entries — for a
+        // ~80 KB response that's ~160 small char[] objects, each with its
+        // own GC header. The cumulative fragmentation made it impossible
+        // to allocate the final contiguous char[N] concat buffer on devices
+        // without external heap (failed at ~161 KB with the heap holding
+        // plenty of total free space — just no contiguous slab). 4096-char
+        // (8 KB) chunks cost the same total bytes but produce ~8× fewer
+        // allocations and ~8× fewer holes, so the final concat slab fits.
+        private const int c_ReadToEndChunkSize = 4096;
 
         //--//
 
@@ -32,6 +45,7 @@ namespace System.IO
         private int m_curBufPos;
         private int m_curBufLen;
 
+        /// <summary>Creates a reader over the given stream.</summary>
         public StreamReader(Stream stream)
         {
             if (stream == null)
@@ -53,13 +67,16 @@ namespace System.IO
             this.m_disposed = false;
         }
 
+        /// <summary>Creates a reader that opens the file at the given path for reading.</summary>
         public StreamReader(string path)
             : this(new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
         {
         }
 
+        /// <inheritdoc/>
         public override void Close() => Dispose();
 
+        /// <inheritdoc/>
         protected override void Dispose(bool disposing)
         {
             if (this.m_stream != null)
@@ -78,6 +95,7 @@ namespace System.IO
             this.m_disposed = true;
         }
 
+        /// <inheritdoc/>
         public override int Peek()
         {
             var tempPos = this.m_curBufPos;
@@ -99,16 +117,20 @@ namespace System.IO
                 // Get the new buffer
                 try
                 {
-                    // Retry read until response timeout expires
-                    while (this.m_stream.Length > 0 && totRead < this.m_buffer.Length)
+                    // Standard .NET pattern: ask Stream.Read for the full
+                    // remaining buffer space and let the stream return what
+                    // it has (>=1 byte for blocking streams, 0 for EOF). The
+                    // previous `m_stream.Length` guard was legacy NETMF —
+                    // NetworkStream/SslStream throw NotSupportedException on
+                    // .Length, so any user wrapping a network stream in a
+                    // StreamReader hit this immediately.
+                    while (totRead < this.m_buffer.Length)
                     {
-                        var len = (int)(this.m_buffer.Length - totRead);
-
-                        if(len > this.m_stream.Length) len = (int)this.m_stream.Length;
+                        var len = this.m_buffer.Length - totRead;
 
                         len = this.m_stream.Read(this.m_buffer, totRead, len);
 
-                        if(len <= 0) break;
+                        if (len <= 0) break;
 
                         totRead += len;
                     }
@@ -129,6 +151,7 @@ namespace System.IO
             return nextChar;
         }
 
+        /// <inheritdoc/>
         public override int Read()
         {
             var completed = false;
@@ -145,16 +168,12 @@ namespace System.IO
                 }
                 else
                 {
-                    // get more data to feed the decider and try again.
-                    // Try to fill the m_buffer.
-                    // FillBufferAndReset purges processed data in front of buffer. Thus we can use up to full m_buffer.Length
+                    // get more data to feed the decoder and try again.
+                    // Ask for the full buffer; Stream.Read returns whatever
+                    // it has (>=1 for blocking streams, 0 for EOF). The
+                    // previous `m_stream.Length` cap blew up on network
+                    // streams (NotSupportedException).
                     var readCount = this.m_buffer.Length;
-                    // Put it to the maximum of available data and readCount
-                    readCount = readCount > (int)this.m_stream.Length ? (int)this.m_stream.Length : readCount;
-                    if (readCount == 0)
-                    {
-                        readCount = 1;
-                    }
 
                     // If there is no data, then return -1
                     if (FillBufferAndReset(readCount) == 0)
@@ -167,6 +186,7 @@ namespace System.IO
             return (int)this.m_singleCharBuff[0];
         }
 
+        /// <inheritdoc/>
         public override int Read(char[] buffer, int index, int count)
         {
             if (buffer == null)
@@ -204,6 +224,7 @@ namespace System.IO
             return charUsed;
         }
 
+        /// <inheritdoc/>
         public override string ReadLine()
         {
 
@@ -257,6 +278,7 @@ namespace System.IO
             return new string(readLineBuff, 0, curPos);
         }
 
+        /// <inheritdoc/>
         public override string ReadToEnd()
         {
             char[] result = null;
@@ -284,73 +306,85 @@ namespace System.IO
 
         private char[] ReadNonSeekableStream()
         {
+            // Larger 8 KB chunks (vs the old 512-byte ones) keep the
+            // small-allocation count low so the heap stays defragmented
+            // enough to allocate the final concat buffer below — critical
+            // on devices without external heap. See c_ReadToEndChunkSize.
+            //
+            // Feed each chunk by calling Read() in c_BufferSize-sized
+            // batches into a small reusable temp buffer, then copy into
+            // the current chunk at the running write position. Why not
+            // call Read(chunk, 0, chunk.Length) directly: the underlying
+            // Read overload returns the *last Convert iteration's* char
+            // count rather than the cumulative total when count exceeds
+            // the internal m_buffer size — for ASCII bodies > 512 chars
+            // it would silently truncate to the tail's char count. Reading
+            // in m_buffer-sized batches keeps Read on its single-iteration
+            // happy path so the returned count is reliable.
             var buffers = new ArrayList();
-
-            int read;
             var totalRead = 0;
-
-            char[] lastBuffer = null;
-            var done = false;
+            int chunkRead;
+            var temp = new char[c_BufferSize];
 
             do
             {
-                var chars = new char[c_BufferSize];
-
-                read = Read(chars, 0, chars.Length);
-
-                totalRead += read;
-
-                if (read < c_BufferSize) // we are done
+                var chunk = new char[c_ReadToEndChunkSize];
+                chunkRead = 0;
+                while (chunkRead < chunk.Length)
                 {
-                    if (read > 0) // copy last scraps
-                    {
-                        var newChars = new char[read];
-
-                        Array.Copy(chars, newChars, read);
-
-                        lastBuffer = newChars;
-                    }
-
-                    done = true;
+                    var n = Read(temp, 0, temp.Length);
+                    if (n <= 0) break;
+                    Array.Copy(temp, 0, chunk, chunkRead, n);
+                    chunkRead += n;
                 }
-                else
+                if (chunkRead > 0)
                 {
-                    lastBuffer = chars;
+                    buffers.Add(chunk);
+                    totalRead += chunkRead;
                 }
-
-                buffers.Add(lastBuffer);
             }
+            while (chunkRead == c_ReadToEndChunkSize);
 
-            while (!done);
+            if (totalRead == 0) return new char[0];
 
-            if (buffers.Count > 1)
+            if (buffers.Count == 1)
             {
-                var text = new char[totalRead];
+                var only = (char[])buffers[0];
+                if (totalRead == only.Length) return only;
 
-                var len = 0;
-                for (var i = 0; i < buffers.Count; ++i)
-                {
-                    var buffer = (char[])buffers[i];
-
-                    buffer.CopyTo(text, len);
-
-                    len += buffer.Length;
-                }
-
-                return text;
+                // Single partial chunk — trim to exact length.
+                var trimmed = new char[totalRead];
+                Array.Copy(only, 0, trimmed, 0, totalRead);
+                return trimmed;
             }
-            else
+
+            // Multi-chunk concat. Null each source slot as we copy from it
+            // so the GC has a chance to reclaim individual chunks if the
+            // caller's `new string(...)` later triggers GC under pressure.
+            var text = new char[totalRead];
+            var pos = 0;
+            var count = buffers.Count;
+            for (var i = 0; i < count; i++)
             {
-                return (char[])buffers[0];
+                var buf = (char[])buffers[i];
+                var copyLen = totalRead - pos;
+                if (copyLen > buf.Length) copyLen = buf.Length;
+                Array.Copy(buf, 0, text, pos, copyLen);
+                pos += copyLen;
+                buffers[i] = null;
             }
+            return text;
         }
 
         //--//
 
+        /// <summary>The underlying stream being read from.</summary>
         public virtual Stream BaseStream => this.m_stream;
 
+        /// <summary>The character encoding the reader uses.</summary>
         public virtual Encoding CurrentEncoding => System.Text.Encoding.UTF8;
 
+        /// <summary>Whether the reader has reached the end of the buffered data.</summary>
         public bool EndOfStream => this.m_curBufLen == this.m_curBufPos;
 
         private int FillBufferAndReset(int count)

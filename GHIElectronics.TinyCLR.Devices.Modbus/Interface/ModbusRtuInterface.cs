@@ -16,6 +16,7 @@ namespace GHIElectronics.TinyCLR.Devices.Modbus.Interface {
         private int dataBits;
         private UartStopBitCount stopBits;
         private UartParity parity;
+        /// <summary>Indicates whether the interface is currently open.</summary>
         public bool isOpen = true;
         /// <summary>
         /// Gets the serial port which is used.
@@ -97,9 +98,11 @@ namespace GHIElectronics.TinyCLR.Devices.Modbus.Interface {
             buffer[1] = fkt;
         }
 
+        /// <summary>Prepares the interface for sending a telegram.</summary>
         public void PrepareWrite() {
         }
 
+        /// <summary>Prepares the interface for receiving a telegram.</summary>
         public void PrepareRead() {
         }
 

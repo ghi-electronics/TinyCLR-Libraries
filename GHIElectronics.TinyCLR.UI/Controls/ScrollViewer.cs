@@ -3,12 +3,15 @@ using System.Diagnostics;
 using GHIElectronics.TinyCLR.UI.Input;
 
 namespace GHIElectronics.TinyCLR.UI.Controls {
+    /// <summary>A container that lets a single child be scrolled horizontally and vertically within a smaller viewport.</summary>
     public class ScrollViewer : ContentControl {
+        /// <summary>Initializes a new instance of the <see cref="ScrollViewer"/> class.</summary>
         public ScrollViewer() {
             this.HorizontalAlignment = HorizontalAlignment.Left;
             this.VerticalAlignment = VerticalAlignment.Stretch;
         }
 
+        /// <summary>Raised when the scroll offset changes.</summary>
         public event ScrollChangedEventHandler ScrollChanged {
             add {
                 VerifyAccess();
@@ -23,6 +26,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
+        /// <summary>The current horizontal scroll offset, clamped to the scrollable range.</summary>
         public int HorizontalOffset {
             get => this._horizontalOffset;
 
@@ -43,6 +47,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
+        /// <summary>The current vertical scroll offset, clamped to the scrollable range.</summary>
         public int VerticalOffset {
             get => this._verticalOffset;
 
@@ -63,10 +68,13 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
+        /// <summary>The full height of the scrollable content.</summary>
         public int ExtentHeight => this._extentHeight;
 
+        /// <summary>The full width of the scrollable content.</summary>
         public int ExtentWidth => this._extentWidth;
 
+        /// <summary>The horizontal distance scrolled by one line step.</summary>
         public int LineWidth {
             get => this._lineWidth;
 
@@ -81,6 +89,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
+        /// <summary>The vertical distance scrolled by one line step.</summary>
         public int LineHeight {
             get => this._lineHeight;
 
@@ -95,6 +104,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
+        /// <summary>Whether hardware-button scrolling advances by line or by page.</summary>
         public ScrollingStyle ScrollingStyle {
             get => this._scrollingStyle;
 
@@ -109,6 +119,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
+        /// <summary>Measures the child against the viewer's alignment and records its extent.</summary>
         protected override void MeasureOverride(int availableWidth, int availableHeight, out int desiredWidth, out int desiredHeight) {
             var child = this.Child;
             if (child != null && child.Visibility != Visibility.Collapsed) {
@@ -123,6 +134,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
+        /// <summary>Positions the child according to the current scroll offsets.</summary>
         protected override void ArrangeOverride(int arrangeWidth, int arrangeHeight) {
             var child = this.Child;
             if (child != null) {
@@ -148,20 +160,28 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             InvalidateScrollInfo();
         }
 
+        /// <summary>Scrolls down by one line.</summary>
         public void LineDown() => this.VerticalOffset += this._lineHeight;
 
+        /// <summary>Scrolls left by one line.</summary>
         public void LineLeft() => this.HorizontalOffset -= this._lineWidth;
 
+        /// <summary>Scrolls right by one line.</summary>
         public void LineRight() => this.HorizontalOffset += this._lineWidth;
 
+        /// <summary>Scrolls up by one line.</summary>
         public void LineUp() => this.VerticalOffset -= this._lineHeight;
 
+        /// <summary>Scrolls down by one page (the viewport height).</summary>
         public void PageDown() => this.VerticalOffset += this.ActualHeight;
 
+        /// <summary>Scrolls left by one page (the viewport width).</summary>
         public void PageLeft() => this.HorizontalOffset -= this.ActualWidth;
 
+        /// <summary>Scrolls right by one page (the viewport width).</summary>
         public void PageRight() => this.HorizontalOffset += this.ActualWidth;
 
+        /// <summary>Scrolls up by one page (the viewport height).</summary>
         public void PageUp() => this.VerticalOffset -= this.ActualHeight;
 
         private void InvalidateScrollInfo() {
@@ -175,6 +195,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             this._previousVerticalOffset = this._verticalOffset;
         }
 
+        /// <summary>Handles directional hardware buttons by scrolling by line or page.</summary>
         protected override void OnButtonDown(GHIElectronics.TinyCLR.UI.Input.ButtonEventArgs e) {
             switch (e.Button) {
                 case HardwareButton.Up:

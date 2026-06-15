@@ -112,11 +112,13 @@ namespace System.Text.RegularExpressions
 
         #region Properties
 
+        /// <summary>The compiled program instruction buffer produced by the last compilation.</summary>
         public char[] Instructions
         {
             get { return instruction; }
         }
 
+        /// <summary>The pattern string that was last compiled.</summary>
         public string Pattern { get { return pattern; } }
 
         #endregion

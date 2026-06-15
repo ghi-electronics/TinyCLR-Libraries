@@ -35,9 +35,16 @@ namespace System.Drawing
         void Scale9Image(int xDst, int yDst, int widthDst, int heightDst, IGraphics image, int leftBorder, int topBorder, int rightBorder, int bottomBorder, ushort opacity);
     }
 
+    /// <summary>
+    /// 2-D drawing surface backed by a <see cref="Bitmap"/>. Issue line, rectangle,
+    /// ellipse, text, and image draws against this surface, then push the result to
+    /// the display via <see cref="Flush(IntPtr)"/>.
+    /// </summary>
     public class Graphics : MarshalByRefObject, IDisposable
     {
+        /// <summary>Gets the width of the drawing surface in pixels.</summary>
         public int Width => this.surface.Width;
+        /// <summary>Gets the height of the drawing surface in pixels.</summary>
         public int Height => this.surface.Height;
 
         internal IGraphics surface;
@@ -45,11 +52,16 @@ namespace System.Drawing
         internal bool callFromImage;
         private IntPtr hdc;
 
+        /// <summary>Gets the unit of measure for this surface, which is always pixels.</summary>
         public GraphicsUnit PageUnit { get; } = GraphicsUnit.Pixel;
 
+        /// <summary>Gets the ARGB color of the pixel at the given coordinates.</summary>
         public uint GetPixel(int x, int y) => this.surface.GetPixel(x, y);
+        /// <summary>Sets the color of the pixel at the given coordinates.</summary>
         public void SetPixel(int x, int y, Color color) => this.surface.SetPixel(x, y, (uint)color.ToArgb());
+        /// <summary>Gets the raw pixel data of the drawing surface.</summary>
         public byte[] GetBitmap() => this.surface.GetBitmap();
+        /// <summary>Gets the raw pixel data for a rectangular region of the drawing surface.</summary>
         public byte[] GetBitmap(int x, int y, int width, int height) => this.surface.GetBitmap(x, y, width, height);
 
         private static IGraphics CreateSurface(byte[] buffer) => CreateSurface(buffer, BitmapImageType.Bmp);
@@ -99,6 +111,7 @@ namespace System.Drawing
             this.hdc = hdc;
         }
 
+        /// <summary>Releases the resources used by this drawing surface.</summary>
         public void Dispose()
         {
             this.Dispose(true);
@@ -154,6 +167,7 @@ namespace System.Drawing
 
         ~Graphics() => this.Dispose(false);
 
+        /// <summary>Measures the pixel size needed to render the given text in the given font.</summary>
         public SizeF MeasureString(string text, Font font)
         {
             font.ComputeExtent(text, out var width, out var height);
@@ -161,6 +175,7 @@ namespace System.Drawing
             return new SizeF(width, height);
         }
 
+        /// <summary>Measures the pixel size needed to render the given text within a layout area using the given format.</summary>
         public SizeF MeasureString(string text, Font font, SizeF layoutArea, StringFormat stringFormat)
         {
             font.ComputeTextInRect(text, out var width, out var height, 0, 0, (int)layoutArea.Width, (int)layoutArea.Height, this.ToFlags(stringFormat, layoutArea.Height, false, false));
@@ -168,8 +183,10 @@ namespace System.Drawing
             return new SizeF(width, height);
         }
 
+        /// <summary>Clears the entire drawing surface to its default color.</summary>
         public void Clear() => this.surface.Clear();
 
+        /// <summary>Creates a drawing surface for the display referenced by the given device context handle.</summary>
         public static Graphics FromHdc(IntPtr hdc)
         {
             if (hdc == IntPtr.Zero) throw new ArgumentNullException(nameof(hdc));
@@ -181,6 +198,7 @@ namespace System.Drawing
             return new Graphics(width, height, hdc);
         }
 
+        /// <summary>Gets the drawing surface backing the given image.</summary>
         public static Graphics FromImage(Image image)
         {
             image.data.callFromImage = true;
@@ -188,10 +206,13 @@ namespace System.Drawing
             return image.data;
         }
 
+        /// <summary>Represents the method that handles the flush event for a drawing surface.</summary>
         public delegate void OnFlushHandler(Graphics sender, byte[] data, int x, int y, int width, int height, int originalWidth);
 
+        /// <summary>Occurs when the drawing surface is flushed.</summary>
         static public event OnFlushHandler OnFlushEvent;
 
+        /// <summary>Pushes the contents of the drawing surface to the display.</summary>
         public void Flush()
         {
             if (this.hdc != IntPtr.Zero)
@@ -202,18 +223,23 @@ namespace System.Drawing
             OnFlushEvent?.Invoke(this, this.surface.GetBitmap(), 0, 0, this.surface.Width, this.surface.Height, this.surface.Width);
         }
 
+        /// <summary>Draws a portion of an image at the specified location.</summary>
         //Draws a portion of an image at a specified location.
         public void DrawImage(Image image, int x, int y, Rectangle srcRect, GraphicsUnit srcUnit) => this.surface.StretchImage(x, y, srcRect.Width, srcRect.Height, image.data.surface, srcRect.X, srcRect.Y, srcRect.Width, srcRect.Height, 0xFF);
 
+        /// <summary>Draws an image at the specified location, scaled to the given size.</summary>
         //Draws the specified Image at the specified location and with the specified size.
         public void DrawImage(Image image, int x, int y, int width, int height) => this.surface.StretchImage(x, y, width, height, image.data.surface, 0, 0, image.Width, image.Height, 0xFF);
 
+        /// <summary>Draws an image at the specified location using its original size.</summary>
         //Draws the specified image, using its original physical size, at the location specified by a coordinate pair.
         public void DrawImage(Image image, int x, int y) => this.surface.StretchImage(x, y, image.Width, image.Height, image.data.surface, 0, 0, image.Width, image.Height, 0xFF);
 
+        /// <summary>Draws a portion of an image into the destination rectangle, scaling as needed.</summary>
         //Draws the specified portion of the specified Image at the specified location and with the specified size.
         public void DrawImage(Image image, Rectangle destRect, Rectangle srcRect, GraphicsUnit srcUnit) => this.surface.StretchImage(destRect.X, destRect.Y, destRect.Width, destRect.Height, image.data.surface, srcRect.X, srcRect.Y, srcRect.Width, srcRect.Height, 0xFF);
 
+        /// <summary>Draws a line between two points using the given pen.</summary>
         public void DrawLine(Pen pen, int x1, int y1, int x2, int y2)
         {
             if (pen.Color.A != 0xFF) throw new NotSupportedException("Alpha not supported.");
@@ -221,6 +247,7 @@ namespace System.Drawing
             this.surface.DrawLine((uint)(pen.Color.value & 0x00FFFFFF), (int)pen.Width, x1, y1, x2, y2);
         }
 
+        /// <summary>Draws text at the given location using the specified font and brush.</summary>
         public void DrawString(string s, Font font, Brush brush, float x, float y)
         {
             if (brush is SolidBrush b)
@@ -235,12 +262,14 @@ namespace System.Drawing
             }
         }
 
+        /// <summary>Draws text wrapped within the given layout rectangle.</summary>
         public void DrawString(string s, Font font, Brush brush, RectangleF layoutRectangle) => this.DrawString(s, font, brush, layoutRectangle, new StringFormat
         {
             Trimming = StringTrimming.EllipsisWord,
             Alignment = StringAlignment.Near
         });
 
+        /// <summary>Draws text within the given layout rectangle using the specified format.</summary>
         public void DrawString(string s, Font font, Brush brush, RectangleF layoutRectangle, StringFormat format)
         {
             if (brush is SolidBrush b)
@@ -255,6 +284,7 @@ namespace System.Drawing
             }
         }
 
+        /// <summary>Draws the outline of an ellipse bounded by the given rectangle using the specified pen.</summary>
         public void DrawEllipse(Pen pen, int x, int y, int width, int height)
         {
             if (pen.Color.A != 0xFF) throw new NotSupportedException("Alpha not supported.");
@@ -270,6 +300,7 @@ namespace System.Drawing
             this.surface.DrawEllipse(rgb, (int)pen.Width, x, y, width, height, (uint)Color.Transparent.value, x, y, (uint)Color.Transparent.value, x + width * 2, y + height * 2, 0x00);
         }
 
+        /// <summary>Draws the outline of a rectangle using the specified pen.</summary>
         public void DrawRectangle(Pen pen, int x, int y, int width, int height)
         {
             if (pen.Color.A != 0xFF) throw new NotSupportedException("Alpha not supported.");
@@ -279,6 +310,7 @@ namespace System.Drawing
             this.surface.DrawRectangle(rgb, (int)pen.Width, x, y, width, height, 0, 0, (uint)Color.Transparent.value, x, y, (uint)Color.Transparent.value, x + width, y + height, 0x00);
         }
 
+        /// <summary>Fills the interior of an ellipse bounded by the given rectangle using the specified brush.</summary>
         public void FillEllipse(Brush brush, int x, int y, int width, int height)
         {
             if (brush is SolidBrush b)
@@ -299,6 +331,7 @@ namespace System.Drawing
             }
         }
 
+        /// <summary>Fills the interior of a rectangle using the specified brush.</summary>
         public void FillRectangle(Brush brush, int x, int y, int width, int height)
         {
             if (brush is SolidBrush b)
@@ -313,8 +346,10 @@ namespace System.Drawing
             }
         }
 
+        /// <summary>Draws a region of an image at the destination location with the given opacity.</summary>
         public void DrawImage(int xDst, int yDst, Image image, int xSrc, int ySrc, int width, int height, ushort opacity) => this.surface.DrawImage(xDst, yDst, image.data.surface, xSrc, ySrc, width, height, opacity);
 
+        /// <summary>Pushes a rectangular region of the drawing surface to the display.</summary>
         public void Flush(int x, int y, int width, int height)
         {
             if (this.hdc != IntPtr.Zero)
@@ -328,9 +363,13 @@ namespace System.Drawing
            OnFlushEvent?.Invoke(this, this.surface.GetBitmap(), x, y, width, height, this.surface.Width);
         }
 
+        /// <summary>Restricts drawing to the given rectangular region.</summary>
         public void SetClippingRectangle(int x, int y, int width, int height) => this.surface.SetClippingRectangle(x, y, width, height);
+        /// <summary>Draws text within the given rectangle using the specified alignment flags.</summary>
         public void DrawTextInRect(string text, int x, int y, int width, int height, DrawTextAlignment dtFlags, Color color, Font font) => this.surface.DrawTextInRect(text, x, y, width, height, (uint)dtFlags, color, font);
+        /// <summary>Draws text within the given rectangle, updating the relative start position, and returns whether more text remains.</summary>
         public bool DrawTextInRect(ref string text, ref int xRelStart, ref int yRelStart, int x, int y, int width, int height, DrawTextAlignment dtFlags, Color color, Font font) => this.surface.DrawTextInRect(ref text, ref xRelStart, ref yRelStart, x, y, width, height, (uint)dtFlags, (uint)color.ToArgb(), font);
+        /// <summary>Draws a region of an image rotated by the given angle at the destination location.</summary>
         public void RotateImage(int angle, int xDst, int yDst, Image image, int xSrc, int ySrc, int width, int height, ushort opacity)
         {
             if (image == null) throw new ArgumentNullException("image null.");
@@ -340,28 +379,46 @@ namespace System.Drawing
 
             this.surface.RotateImage(angle, xDst, yDst, image.data.surface, xSrc, ySrc, width, height, opacity);
         }
+        /// <summary>Makes the given color transparent on the drawing surface.</summary>
         public void MakeTransparent(Color color) => this.surface.MakeTransparent((uint)color.ToArgb());
+        /// <summary>Draws a region of an image scaled to fill the destination rectangle.</summary>
         public void StretchImage(int xDst, int yDst, int widthDst, int heightDst, Image image, int xSrc, int ySrc, int widthSrc, int heightSrc, ushort opacity) => this.surface.StretchImage(xDst, yDst, widthDst, heightDst, image.data.surface, xSrc, ySrc, widthSrc, heightSrc, opacity);
+        /// <summary>Tiles an image to fill the given area at the destination location.</summary>
         public void TileImage(int xDst, int yDst, Image image, int width, int height, ushort opacity) => this.surface.TileImage(xDst, yDst, image.data.surface, width, height, opacity);
+        /// <summary>Draws an image using nine-slice scaling so its borders are not stretched.</summary>
         public void Scale9Image(int xDst, int yDst, int widthDst, int heightDst, Image image, int leftBorder, int topBorder, int rightBorder, int bottomBorder, ushort opacity) => this.surface.Scale9Image(xDst, yDst, widthDst, heightDst, image.data.surface, leftBorder, topBorder, rightBorder, bottomBorder, opacity);
 
+        /// <summary>Bit flags that control how text is aligned, wrapped, and trimmed within a rectangle.</summary>
         //
         // These have to be kept in sync with the CLR_GFX_Bitmap::c_DrawText_ flags.
         //
         public enum DrawTextAlignment : uint
         {
+            /// <summary>No special alignment behavior.</summary>
             None = 0x00000000,
+            /// <summary>Text wraps to the next line when it does not fit.</summary>
             WordWrap = 0x00000001,
+            /// <summary>Text that overflows the bottom of the rectangle is truncated.</summary>
             TruncateAtBottom = 0x00000004,
+            /// <summary>Overflowing text is replaced with an ellipsis.</summary>
             Ellipsis = 0x00000008,
+            /// <summary>The available height is ignored during layout.</summary>
             IgnoreHeight = 0x00000010,
+            /// <summary>Text is aligned to the left edge.</summary>
             AlignmentLeft = 0x00000000,
+            /// <summary>Text is centered horizontally.</summary>
             AlignmentCenter = 0x00000002,
+            /// <summary>Text is aligned to the right edge.</summary>
             AlignmentRight = 0x00000020,
+            /// <summary>Bit mask for the horizontal alignment flags.</summary>
             AlignmentMask = 0x00000022,
+            /// <summary>Text is not trimmed.</summary>
             TrimmingNone = 0x00000000,
+            /// <summary>Text is trimmed at a word boundary with an ellipsis.</summary>
             TrimmingWordEllipsis = 0x00000008,
+            /// <summary>Text is trimmed at a character boundary with an ellipsis.</summary>
             TrimmingCharacterEllipsis = 0x00000040,
+            /// <summary>Bit mask for the trimming flags.</summary>
             TrimmingMask = 0x00000048,
         }
 

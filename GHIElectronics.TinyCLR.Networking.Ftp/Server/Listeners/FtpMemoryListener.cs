@@ -5,12 +5,14 @@ using System.Net;
 
 namespace GHIElectronics.TinyCLR.Networking.Ftp
 {
+    /// <summary>An FTP listener that serves a fixed in-memory set of files and an activity log.</summary>
     public sealed class FtpMemoryListener : FtpListener
     {
         private Thread m_worker = null;
         private ArrayList m_FileInfo = null;
         private ArrayList m_Logging = null;
 
+        /// <summary>Creates the in-memory listener registered with the listener manager.</summary>
         public FtpMemoryListener()
             : base(true)
         {
@@ -18,6 +20,7 @@ namespace GHIElectronics.TinyCLR.Networking.Ftp
             m_Logging = new ArrayList();
         }
 
+        /// <summary>Starts the listener and its worker thread.</summary>
         public override void Start()
         {
             m_worker = new Thread(WorkerThread);
@@ -25,6 +28,7 @@ namespace GHIElectronics.TinyCLR.Networking.Ftp
             base.Start();
         }
 
+        /// <summary>Adds a file to the set served by this listener.</summary>
         public void AddFile(FileInfo info)
         {
             m_FileInfo.Add(info);

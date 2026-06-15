@@ -42,7 +42,7 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
         }
 
         /// <summary>Sends a USB setup packet.</summary>
-        /// <param name="requestType">The request type, receipient, and direction.</param>
+        /// <param name="requestType">The request type, recipient, and direction.</param>
         /// <param name="request">The request to make.</param>
         /// <param name="value">The value of the request.</param>
         /// <param name="index">The index of the request.</param>
@@ -56,7 +56,7 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
         }
 
         /// <summary>Sends a USB setup packet.</summary>
-        /// <param name="requestType">The request type, receipient, and direction.</param>
+        /// <param name="requestType">The request type, recipient, and direction.</param>
         /// <param name="request">The request to make.</param>
         /// <param name="value">The value of the request.</param>
         /// <param name="index">The index of the request.</param>

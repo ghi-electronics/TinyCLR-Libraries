@@ -3,7 +3,7 @@ namespace System {
     using System.Runtime.CompilerServices;
 
     [Serializable]
-    public struct Double : IFormattable {
+    public struct Double : IFormattable, IComparable, IComparable<double> {
 #pragma warning disable CS0649 // Field is never assigned to, and will always have its default value
         internal double m_value;
 #pragma warning restore CS0649 // Field is never assigned to, and will always have its default value
@@ -113,6 +113,60 @@ namespace System {
         //     true if d evaluates to System.Double.PositiveInfinity; otherwise, false.
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         public static extern bool IsPositiveInfinity(double d);
+
+        public bool Equals(double obj) {
+            if (IsNaN(obj) && IsNaN(this.m_value)) {
+                return true;
+            }
+
+            return this.m_value == obj;
+        }
+
+        public override bool Equals(object obj) {
+            if (obj == null) {
+                return false;
+            }
+
+            if (!(obj is double)) {
+                return false;
+            }
+
+            return Equals((double)obj);
+        }
+
+        public override int GetHashCode() {
+            long bits = BitConverter.DoubleToInt64Bits(this.m_value);
+            return (int)bits ^ (int)(bits >> 32);
+        }
+
+        public static bool operator ==(Double left, Double right) {
+            return left.m_value == right.m_value;
+        }
+
+        public static bool operator !=(Double left, Double right) {
+            return left.m_value != right.m_value;
+        }
+
+        // Instance form matching .NET BCL IComparable<double>. NaN is checked
+        // BEFORE the </>= operators because TinyCLR's float-comparison
+        // operators may not follow strict IEEE semantics (returning true for
+        // some comparisons with NaN, which would shortcut past my NaN
+        // handling and produce the wrong sign).
+        public int CompareTo(double value) {
+            // NaN sorts before any non-NaN per .NET BCL; NaN == NaN.
+            if (IsNaN(this.m_value)) return IsNaN(value) ? 0 : -1;
+            if (IsNaN(value)) return 1;
+            if (this.m_value < value) return -1;
+            if (this.m_value > value) return 1;
+            return 0;
+        }
+
+        public int CompareTo(object obj) {
+            if (obj == null) return 1;
+            if (!(obj is double)) throw new ArgumentException();
+            return this.CompareTo((double)obj);
+        }
+
         //
         // Summary:
         //     Converts the string representation of a number in a specified style and culture-specific
@@ -217,7 +271,20 @@ namespace System {
             return Number.Format(this.m_value, false, format, NumberFormatInfo.CurrentInfo);
         }
 
-        public string ToString(string format, IFormatProvider provider) => Number.Format(this.m_value, false, format, NumberFormatInfo.GetInstance(provider));
+        // 3-arg overload is the IFormattable contract — String.Format,
+        // $"{x}" interpolation, and StringBuilder.AppendFormat all dispatch
+        // to this one. Must short-circuit NaN / ±Infinity the same way the
+        // other two ToString overloads do: passing those values to
+        // Number.Format reaches the native normalization loop in
+        // tinycrt.cpp (norm /= 10.0; exp++) which never terminates for
+        // Infinity (Infinity / 10 = Infinity) and is similarly wedged on
+        // NaN, hanging the device.
+        public string ToString(string format, IFormatProvider provider) {
+            if (IsPositiveInfinity(this)) return "Infinity";
+            if (IsNegativeInfinity(this)) return "-Infinity";
+            if (IsNaN(this)) return "NaN";
+            return Number.Format(this.m_value, false, format, NumberFormatInfo.GetInstance(provider));
+        }
 
         //
         // Summary:

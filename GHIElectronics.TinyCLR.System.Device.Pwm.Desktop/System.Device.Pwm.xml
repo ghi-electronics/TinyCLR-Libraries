@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>System.Device.Pwm</name>
+    </assembly>
+    <members>
+        <member name="T:System.Device.Pwm.PwmPulsePolarity">
+            <summary>Polarity of the active part of a PWM pulse.</summary>
+        </member>
+        <member name="F:System.Device.Pwm.PwmPulsePolarity.ActiveHigh">
+            <summary>The pulse is high during the duty cycle.</summary>
+        </member>
+        <member name="F:System.Device.Pwm.PwmPulsePolarity.ActiveLow">
+            <summary>The pulse is low during the duty cycle.</summary>
+        </member>
+        <member name="T:System.Device.Pwm.PwmChannel">
+            <summary>
+            .NET-style PWM channel. Same surface as <c>System.Device.Pwm.PwmChannel</c>;
+            internally routes through TinyCLR's PWM driver.
+            </summary>
+        </member>
+        <member name="P:System.Device.Pwm.PwmChannel.Channel">
+            <summary>The channel number on the controller.</summary>
+        </member>
+        <member name="P:System.Device.Pwm.PwmChannel.Controller">
+            <summary>The controller (chip) index.</summary>
+        </member>
+        <member name="P:System.Device.Pwm.PwmChannel.Frequency">
+            <summary>The output frequency in Hz. Setting it changes the whole controller's frequency.</summary>
+        </member>
+        <member name="P:System.Device.Pwm.PwmChannel.DutyCycle">
+            <summary>The duty cycle from 0.0 to 1.0.</summary>
+        </member>
+        <member name="P:System.Device.Pwm.PwmChannel.Polarity">
+            <summary>The pulse polarity.</summary>
+        </member>
+        <member name="M:System.Device.Pwm.PwmChannel.#ctor(System.Int32,System.Int32)">
+            <summary>Opens a channel on the given chip at 400 Hz and 50% duty cycle.</summary>
+        </member>
+        <member name="M:System.Device.Pwm.PwmChannel.#ctor(System.Int32,System.Int32,System.Int32,System.Double)">
+            <summary>Opens a channel on the given chip with the given frequency and duty cycle.</summary>
+        </member>
+        <member name="M:System.Device.Pwm.PwmChannel.Create(System.Int32,System.Int32)">
+            <summary>Opens a channel on the given chip at 400 Hz and 50% duty cycle.</summary>
+        </member>
+        <member name="M:System.Device.Pwm.PwmChannel.Create(System.Int32,System.Int32,System.Int32,System.Double)">
+            <summary>Opens a channel on the given chip with the given frequency and duty cycle.</summary>
+        </member>
+        <member name="M:System.Device.Pwm.PwmChannel.Start">
+            <summary>Starts the PWM output.</summary>
+        </member>
+        <member name="M:System.Device.Pwm.PwmChannel.Stop">
+            <summary>Stops the PWM output.</summary>
+        </member>
+        <member name="M:System.Device.Pwm.PwmChannel.Dispose">
+            <summary>Stops the output and releases the channel.</summary>
+        </member>
+    </members>
+</doc>

@@ -9,7 +9,9 @@ using GHIElectronics.TinyCLR.Devices.UsbClient.Provider;
 namespace GHIElectronics.TinyCLR.Devices.UsbClient {
     /// <summary>Represent a USB device.</summary>
 	public class RawDevice {
+        /// <summary>The default maximum power, in 2 mA units.</summary>
         public const ushort MAX_POWER = 250;
+        /// <summary>The GHI Electronics vendor id.</summary>
         public const ushort GHI_VID = 0x1B9F;
         private const int MAX_INTERFACE_COUNT = 10;
         private const byte MANUFACTURER_STRING_INDEX = 1;
@@ -69,13 +71,21 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
         /// <summary>The serial number of the device.</summary>
         public string SerialNumber => (string)this.serialNumber;
 
+        /// <summary>The default product ids for each built-in device type.</summary>
         public enum PID : ushort {
+            /// <summary>The product id for a mouse.</summary>
             Mouse = 0xF000,
+            /// <summary>The product id for a CDC virtual COM port.</summary>
             CDC = 0xF001,
+            /// <summary>The product id for a mass storage device.</summary>
             MassStorage = 0xF002,
+            /// <summary>The product id for a keyboard.</summary>
             Keyboard = 0xF004,
+            /// <summary>The product id for a joystick.</summary>
             Joystick = 0xF005,
+            /// <summary>The product id for a WinUsb device.</summary>
             WinUsb = 0xF006,
+            /// <summary>The product id for a raw device.</summary>
             RawDevice = 0xF007,
         }
 
@@ -167,6 +177,7 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
 
         private void OnDeviceStateChanged(RawDevice sender, DeviceState state) => this.deviceStateChangedCallbacks?.Invoke(this, state);
 
+        /// <summary>Raised when the device state changes.</summary>
         public event DeviceStateChangedEventHandler DeviceStateChanged {
             add {
                 if (this.deviceStateChangedCallbacks == null)
@@ -298,8 +309,9 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
 
         internal bool Initialized { get => this.initialized; set => this.initialized = value; }
 
+        /// <summary>Enables the device so the host can communicate with it.</summary>
         public virtual void Enable() {
-            
+
             if (!this.initialized) {
                 this.Initialize();
 
@@ -309,8 +321,11 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
             this.usbClientController.Provider.SetActiveSetting(this.usbClientSetting);
             this.usbClientController.Provider.Enable();
         }
-        public virtual void Disable() => this.usbClientController.Provider.Disable();        
+        /// <summary>Disables the device.</summary>
+        public virtual void Disable() => this.usbClientController.Provider.Disable();
+        /// <summary>Disposes the device.</summary>
         public void Dispose() => this.usbClientController.Dispose();
+        /// <summary>The current state of the device.</summary>
         public DeviceState DeviceState => this.usbClientController.Provider.DeviceState;
 
         /// <summary>Creates a steam for reading and writing to the device.</summary>
@@ -338,6 +353,7 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
             this.streamMap[index] = 0;
         }
 
+        /// <summary>Maps additional data to the given interface index.</summary>
         public void SetInterfaceMap(byte interfaceIndex, byte data1, byte data2, byte data3) => this.interfaceMap[interfaceIndex] = (uint)((data1 << 8) | (data2 << 16) | (data3 << 24));
 
         /// <summary>Creates a new instance of the stream type for this device type.</summary>
@@ -419,6 +435,7 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
             /// <summary>The number of bytes that are in the process of being written.</summary>
             public int BytesToWrite => this.parent.usbClientController.Provider.BytesToWrite(this.streamIndex);
 
+            /// <summary>Creates a new raw stream.</summary>
             public RawStream(int streamIndex, RawDevice parent) {
                 this.disposed = false;
                 this.readTimeout = 0;

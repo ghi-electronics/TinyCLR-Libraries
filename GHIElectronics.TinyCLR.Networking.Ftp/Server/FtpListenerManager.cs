@@ -192,7 +192,9 @@ namespace GHIElectronics.TinyCLR.Networking.Ftp
             IPEndPoint ep = new IPEndPoint(hostIp, m_HostPort);
 
             m_ListenSocket.Bind(ep);
-            m_ListenSocket.Listen(0);
+            // Listen(1) instead of Listen(0) so a client connect arriving
+            // before accept() is in flight gets queued instead of RST'd.
+            m_ListenSocket.Listen(1);
             Socket aSocket = null;
             try
             {

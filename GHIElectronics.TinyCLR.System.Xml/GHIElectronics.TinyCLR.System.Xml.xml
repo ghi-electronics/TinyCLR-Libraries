@@ -1,0 +1,455 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>GHIElectronics.TinyCLR.System.Xml</name>
+    </assembly>
+    <members>
+        <member name="T:System.Xml.XmlNodeType">
+            <summary>Node kinds in an XML document. Same values as .NET's <c>System.Xml.XmlNodeType</c>.</summary>
+        </member>
+        <member name="F:System.Xml.XmlNodeType.None">
+            <summary>No node returned, or the reader has not yet read anything.</summary>
+        </member>
+        <member name="F:System.Xml.XmlNodeType.Element">
+            <summary>An element start tag.</summary>
+        </member>
+        <member name="F:System.Xml.XmlNodeType.Attribute">
+            <summary>An attribute.</summary>
+        </member>
+        <member name="F:System.Xml.XmlNodeType.Text">
+            <summary>The text content of a node.</summary>
+        </member>
+        <member name="F:System.Xml.XmlNodeType.CDATA">
+            <summary>A CDATA section.</summary>
+        </member>
+        <member name="F:System.Xml.XmlNodeType.EntityReference">
+            <summary>A reference to an entity.</summary>
+        </member>
+        <member name="F:System.Xml.XmlNodeType.Entity">
+            <summary>An entity declaration.</summary>
+        </member>
+        <member name="F:System.Xml.XmlNodeType.ProcessingInstruction">
+            <summary>A processing instruction.</summary>
+        </member>
+        <member name="F:System.Xml.XmlNodeType.Comment">
+            <summary>A comment.</summary>
+        </member>
+        <member name="F:System.Xml.XmlNodeType.Document">
+            <summary>The document root that contains the whole tree.</summary>
+        </member>
+        <member name="F:System.Xml.XmlNodeType.DocumentType">
+            <summary>A document type declaration.</summary>
+        </member>
+        <member name="F:System.Xml.XmlNodeType.DocumentFragment">
+            <summary>A document fragment.</summary>
+        </member>
+        <member name="F:System.Xml.XmlNodeType.Notation">
+            <summary>A notation in a document type declaration.</summary>
+        </member>
+        <member name="F:System.Xml.XmlNodeType.Whitespace">
+            <summary>Whitespace between markup.</summary>
+        </member>
+        <member name="F:System.Xml.XmlNodeType.SignificantWhitespace">
+            <summary>Whitespace between markup in a mixed content model, or within an xml:space="preserve" scope.</summary>
+        </member>
+        <member name="F:System.Xml.XmlNodeType.EndElement">
+            <summary>An element end tag.</summary>
+        </member>
+        <member name="F:System.Xml.XmlNodeType.EndEntity">
+            <summary>The end of an included entity.</summary>
+        </member>
+        <member name="F:System.Xml.XmlNodeType.XmlDeclaration">
+            <summary>The XML declaration.</summary>
+        </member>
+        <member name="T:System.Xml.ReadState">
+            <summary>Reader lifecycle state.</summary>
+        </member>
+        <member name="F:System.Xml.ReadState.Initial">
+            <summary>The Read method has not been called yet.</summary>
+        </member>
+        <member name="F:System.Xml.ReadState.Interactive">
+            <summary>The Read method has been called and more can be read.</summary>
+        </member>
+        <member name="F:System.Xml.ReadState.Error">
+            <summary>An error occurred that prevents further reading.</summary>
+        </member>
+        <member name="F:System.Xml.ReadState.EndOfFile">
+            <summary>The end of the file has been reached.</summary>
+        </member>
+        <member name="F:System.Xml.ReadState.Closed">
+            <summary>The reader has been closed.</summary>
+        </member>
+        <member name="T:System.Xml.ConformanceLevel">
+            <summary>XML conformance level (auto-detect, fragment, or full document).</summary>
+        </member>
+        <member name="F:System.Xml.ConformanceLevel.Auto">
+            <summary>The conformance level is detected automatically from the input.</summary>
+        </member>
+        <member name="F:System.Xml.ConformanceLevel.Fragment">
+            <summary>The input conforms to the rules for a well-formed XML fragment.</summary>
+        </member>
+        <member name="F:System.Xml.ConformanceLevel.Document">
+            <summary>The input conforms to the rules for a well-formed XML document.</summary>
+        </member>
+        <member name="T:System.Xml.WhitespaceHandling">
+            <summary>How the reader treats whitespace nodes.</summary>
+        </member>
+        <member name="F:System.Xml.WhitespaceHandling.All">
+            <summary>Return all whitespace and significant whitespace nodes.</summary>
+        </member>
+        <member name="F:System.Xml.WhitespaceHandling.Significant">
+            <summary>Return only significant whitespace nodes.</summary>
+        </member>
+        <member name="F:System.Xml.WhitespaceHandling.None">
+            <summary>Return no whitespace nodes.</summary>
+        </member>
+        <member name="T:System.Xml.NewLineHandling">
+            <summary>How the writer represents line breaks.</summary>
+        </member>
+        <member name="F:System.Xml.NewLineHandling.Replace">
+            <summary>Replace new line characters with the configured new line string.</summary>
+        </member>
+        <member name="F:System.Xml.NewLineHandling.Entitize">
+            <summary>Replace new line characters with character entities.</summary>
+        </member>
+        <member name="F:System.Xml.NewLineHandling.None">
+            <summary>Leave new line characters unchanged.</summary>
+        </member>
+        <member name="T:System.Xml.XmlSpace">
+            <summary>Value of an in-scope <c>xml:space</c> attribute.</summary>
+        </member>
+        <member name="F:System.Xml.XmlSpace.None">
+            <summary>No xml:space scope is in effect.</summary>
+        </member>
+        <member name="F:System.Xml.XmlSpace.Default">
+            <summary>The xml:space scope equals "default".</summary>
+        </member>
+        <member name="F:System.Xml.XmlSpace.Preserve">
+            <summary>The xml:space scope equals "preserve".</summary>
+        </member>
+        <member name="T:System.Xml.ValidationType">
+            <summary>XML validation policy (none or DTD/Schema).</summary>
+        </member>
+        <member name="F:System.Xml.ValidationType.None">
+            <summary>No validation is performed.</summary>
+        </member>
+        <member name="F:System.Xml.ValidationType.Auto">
+            <summary>The validation type is detected automatically.</summary>
+        </member>
+        <member name="F:System.Xml.ValidationType.DTD">
+            <summary>Validate according to a DTD.</summary>
+        </member>
+        <member name="F:System.Xml.ValidationType.XDR">
+            <summary>Validate according to XML-Data Reduced (XDR) schemas.</summary>
+        </member>
+        <member name="F:System.Xml.ValidationType.Schema">
+            <summary>Validate according to XSD schemas.</summary>
+        </member>
+        <member name="T:System.Xml.IXmlLineInfo">
+            <summary>Provides line and position information for the current node.</summary>
+        </member>
+        <member name="M:System.Xml.IXmlLineInfo.HasLineInfo">
+            <summary>Gets a value indicating whether line information is available.</summary>
+        </member>
+        <member name="P:System.Xml.IXmlLineInfo.LineNumber">
+            <summary>Gets the line number of the current node.</summary>
+        </member>
+        <member name="P:System.Xml.IXmlLineInfo.LinePosition">
+            <summary>Gets the line position of the current node.</summary>
+        </member>
+        <member name="T:System.Xml.XmlException">
+            <summary>Thrown for XML parse errors; carries line/position info.</summary>
+        </member>
+        <member name="M:System.Xml.XmlException.#ctor">
+            <summary>Initializes a new instance of the <see cref="T:System.Xml.XmlException"/> class.</summary>
+        </member>
+        <member name="M:System.Xml.XmlException.#ctor(System.String)">
+            <summary>Initializes a new instance of the <see cref="T:System.Xml.XmlException"/> class with the specified message.</summary>
+        </member>
+        <member name="M:System.Xml.XmlException.#ctor(System.String,System.Exception)">
+            <summary>Initializes a new instance of the <see cref="T:System.Xml.XmlException"/> class with the specified message and inner exception.</summary>
+        </member>
+        <member name="P:System.Xml.XmlException.LineNumber">
+            <summary>The line number where the error occurred.</summary>
+        </member>
+        <member name="P:System.Xml.XmlException.LinePosition">
+            <summary>The line position where the error occurred.</summary>
+        </member>
+        <member name="M:System.Xml.XmlException.#ctor(System.String,System.Exception,System.Int32,System.Int32)">
+            <summary>Initializes a new instance of the <see cref="T:System.Xml.XmlException"/> class with the specified message, inner exception, and line information.</summary>
+        </member>
+        <member name="T:System.Xml.XmlNameTable">
+            <summary>Atomized-string table shared between readers and writers.</summary>
+        </member>
+        <member name="M:System.Xml.XmlNameTable.Add(System.String)">
+            <summary>Atomizes the specified string and adds it to the table.</summary>
+        </member>
+        <member name="M:System.Xml.XmlNameTable.Add(System.Char[],System.Int32,System.Int32)">
+            <summary>Atomizes the specified character range and adds it to the table.</summary>
+        </member>
+        <member name="M:System.Xml.XmlNameTable.Get(System.String)">
+            <summary>Gets the atomized string equal to the specified string, or null if it is not in the table.</summary>
+        </member>
+        <member name="M:System.Xml.XmlNameTable.Get(System.Char[],System.Int32,System.Int32)">
+            <summary>Gets the atomized string equal to the specified character range, or null if it is not in the table.</summary>
+        </member>
+        <member name="T:System.Xml.NameTable">
+            <summary>Hashtable-backed <see cref="T:System.Xml.XmlNameTable"/>.</summary>
+        </member>
+        <member name="M:System.Xml.NameTable.#ctor">
+            <summary>Initializes a new instance of the <see cref="T:System.Xml.NameTable"/> class.</summary>
+        </member>
+        <member name="M:System.Xml.NameTable.Add(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:System.Xml.NameTable.Add(System.Char[],System.Int32,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:System.Xml.NameTable.Get(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:System.Xml.NameTable.Get(System.Char[],System.Int32,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="T:System.Xml.XmlReaderSettings">
+            <summary>Settings bag passed to <see cref="M:System.Xml.XmlReader.Create(System.IO.Stream,System.Xml.XmlReaderSettings)"/>. Mirrors the .NET BCL type.</summary>
+        </member>
+        <member name="M:System.Xml.XmlReaderSettings.#ctor">
+            <summary>Initializes a new instance of the <see cref="T:System.Xml.XmlReaderSettings"/> class.</summary>
+        </member>
+        <member name="P:System.Xml.XmlReaderSettings.NameTable">
+            <summary>The name table used by the reader. Not wrapped; always returns null.</summary>
+        </member>
+        <member name="P:System.Xml.XmlReaderSettings.LineNumberOffset">
+            <summary>The starting line number reported by the reader.</summary>
+        </member>
+        <member name="P:System.Xml.XmlReaderSettings.LinePositionOffset">
+            <summary>The starting line position reported by the reader.</summary>
+        </member>
+        <member name="P:System.Xml.XmlReaderSettings.ConformanceLevel">
+            <summary>The level of conformance the reader enforces.</summary>
+        </member>
+        <member name="P:System.Xml.XmlReaderSettings.CheckCharacters">
+            <summary>Indicates whether the reader checks that characters are legal XML.</summary>
+        </member>
+        <member name="P:System.Xml.XmlReaderSettings.ValidationType">
+            <summary>The type of validation the reader performs.</summary>
+        </member>
+        <member name="P:System.Xml.XmlReaderSettings.IgnoreWhitespace">
+            <summary>Indicates whether to ignore insignificant whitespace.</summary>
+        </member>
+        <member name="P:System.Xml.XmlReaderSettings.IgnoreProcessingInstructions">
+            <summary>Indicates whether to ignore processing instructions.</summary>
+        </member>
+        <member name="P:System.Xml.XmlReaderSettings.IgnoreComments">
+            <summary>Indicates whether to ignore comments.</summary>
+        </member>
+        <member name="P:System.Xml.XmlReaderSettings.CloseInput">
+            <summary>Indicates whether to close the underlying input when the reader is closed.</summary>
+        </member>
+        <member name="M:System.Xml.XmlReaderSettings.Reset">
+            <summary>Resets the settings to their default values.</summary>
+        </member>
+        <member name="M:System.Xml.XmlReaderSettings.Clone">
+            <summary>Returns a copy of this settings object.</summary>
+        </member>
+        <member name="T:System.Xml.XmlReader">
+            <summary>Forward-only XML reader. Same surface as .NET's <c>System.Xml.XmlReader</c>.</summary>
+        </member>
+        <member name="P:System.Xml.XmlReader.NodeType">
+            <summary>The type of the current node.</summary>
+        </member>
+        <member name="P:System.Xml.XmlReader.LocalName">
+            <summary>The local name of the current node.</summary>
+        </member>
+        <member name="P:System.Xml.XmlReader.NamespaceURI">
+            <summary>The namespace URI of the current node.</summary>
+        </member>
+        <member name="P:System.Xml.XmlReader.Prefix">
+            <summary>The namespace prefix of the current node.</summary>
+        </member>
+        <member name="P:System.Xml.XmlReader.HasValue">
+            <summary>Indicates whether the current node has a value.</summary>
+        </member>
+        <member name="P:System.Xml.XmlReader.Value">
+            <summary>The text value of the current node.</summary>
+        </member>
+        <member name="P:System.Xml.XmlReader.Depth">
+            <summary>The depth of the current node in the element tree.</summary>
+        </member>
+        <member name="P:System.Xml.XmlReader.BaseURI">
+            <summary>The base URI of the current node.</summary>
+        </member>
+        <member name="P:System.Xml.XmlReader.IsEmptyElement">
+            <summary>Indicates whether the current element is empty.</summary>
+        </member>
+        <member name="P:System.Xml.XmlReader.AttributeCount">
+            <summary>The number of attributes on the current node.</summary>
+        </member>
+        <member name="P:System.Xml.XmlReader.EOF">
+            <summary>Indicates whether the reader is positioned at the end of the stream.</summary>
+        </member>
+        <member name="P:System.Xml.XmlReader.ReadState">
+            <summary>The current state of the reader.</summary>
+        </member>
+        <member name="P:System.Xml.XmlReader.Name">
+            <summary>The qualified name of the current node.</summary>
+        </member>
+        <member name="P:System.Xml.XmlReader.HasAttributes">
+            <summary>Indicates whether the current node has any attributes.</summary>
+        </member>
+        <member name="M:System.Xml.XmlReader.GetAttribute(System.String)">
+            <summary>Gets the value of the attribute with the specified name.</summary>
+        </member>
+        <member name="M:System.Xml.XmlReader.GetAttribute(System.String,System.String)">
+            <summary>Gets the value of the attribute with the specified local name and namespace URI.</summary>
+        </member>
+        <member name="M:System.Xml.XmlReader.GetAttribute(System.Int32)">
+            <summary>Gets the value of the attribute at the specified index.</summary>
+        </member>
+        <member name="M:System.Xml.XmlReader.MoveToAttribute(System.String)">
+            <summary>Moves to the attribute with the specified name.</summary>
+        </member>
+        <member name="M:System.Xml.XmlReader.MoveToAttribute(System.String,System.String)">
+            <summary>Moves to the attribute with the specified local name and namespace URI.</summary>
+        </member>
+        <member name="M:System.Xml.XmlReader.MoveToFirstAttribute">
+            <summary>Moves to the first attribute of the current node.</summary>
+        </member>
+        <member name="M:System.Xml.XmlReader.MoveToNextAttribute">
+            <summary>Moves to the next attribute of the current node.</summary>
+        </member>
+        <member name="M:System.Xml.XmlReader.MoveToElement">
+            <summary>Moves to the element that contains the current attribute node.</summary>
+        </member>
+        <member name="M:System.Xml.XmlReader.ReadAttributeValue">
+            <summary>Parses the attribute value into one or more Text, EntityReference, or EndEntity nodes.</summary>
+        </member>
+        <member name="M:System.Xml.XmlReader.Read">
+            <summary>Reads the next node from the stream.</summary>
+        </member>
+        <member name="M:System.Xml.XmlReader.Close">
+            <summary>Closes the reader and the underlying stream.</summary>
+        </member>
+        <member name="M:System.Xml.XmlReader.LookupNamespace(System.String)">
+            <summary>Resolves a namespace prefix in the scope of the current node.</summary>
+        </member>
+        <member name="M:System.Xml.XmlReader.ResolveEntity">
+            <summary>Resolves the entity reference for EntityReference nodes.</summary>
+        </member>
+        <member name="M:System.Xml.XmlReader.Skip">
+            <summary>Skips the children of the current node.</summary>
+        </member>
+        <member name="M:System.Xml.XmlReader.ReadString">
+            <summary>Reads the contents of the current text or element node as a string.</summary>
+        </member>
+        <member name="M:System.Xml.XmlReader.IsStartElement">
+            <summary>Indicates whether the current content node is a start tag.</summary>
+        </member>
+        <member name="M:System.Xml.XmlReader.IsStartElement(System.String)">
+            <summary>Indicates whether the current content node is a start tag with the specified name.</summary>
+        </member>
+        <member name="M:System.Xml.XmlReader.MoveToContent">
+            <summary>Advances past non-content nodes to the next content node and returns its type.</summary>
+        </member>
+        <member name="M:System.Xml.XmlReader.ReadStartElement">
+            <summary>Verifies the current content node is a start tag and advances the reader past it.</summary>
+        </member>
+        <member name="M:System.Xml.XmlReader.ReadStartElement(System.String)">
+            <summary>Verifies the current content node is a start tag with the specified name and advances the reader past it.</summary>
+        </member>
+        <member name="M:System.Xml.XmlReader.ReadEndElement">
+            <summary>Verifies the current content node is an end tag and advances the reader past it.</summary>
+        </member>
+        <member name="M:System.Xml.XmlReader.ReadElementString">
+            <summary>Reads a text-only element and returns its content as a string.</summary>
+        </member>
+        <member name="M:System.Xml.XmlReader.Dispose">
+            <summary>Releases the resources used by the reader.</summary>
+        </member>
+        <member name="M:System.Xml.XmlReader.Create(System.IO.Stream)">
+            <summary>Creates a new reader over the specified stream.</summary>
+        </member>
+        <member name="M:System.Xml.XmlReader.Create(System.IO.Stream,System.Xml.XmlReaderSettings)">
+            <summary>Creates a new reader over the specified stream using the specified settings.</summary>
+        </member>
+        <member name="M:System.Xml.XmlReader.Create(System.IO.Stream,System.Xml.XmlReaderSettings,System.String)">
+            <summary>Creates a new reader over the specified stream using the specified settings and base URI.</summary>
+        </member>
+        <member name="M:System.Xml.XmlReader.IsName(System.String)">
+            <summary>Indicates whether the specified string is a valid XML name.</summary>
+        </member>
+        <member name="M:System.Xml.XmlReader.IsNameToken(System.String)">
+            <summary>Indicates whether the specified string is a valid XML name token.</summary>
+        </member>
+        <member name="T:System.Xml.XmlWriter">
+            <summary>Forward-only XML writer. Same surface as .NET's <c>System.Xml.XmlWriter</c>.</summary>
+        </member>
+        <member name="M:System.Xml.XmlWriter.WriteStartDocument">
+            <summary>Writes the XML declaration.</summary>
+        </member>
+        <member name="M:System.Xml.XmlWriter.WriteStartDocument(System.Boolean)">
+            <summary>Writes the XML declaration with the specified standalone attribute.</summary>
+        </member>
+        <member name="M:System.Xml.XmlWriter.WriteEndDocument">
+            <summary>Closes any open elements and the document.</summary>
+        </member>
+        <member name="M:System.Xml.XmlWriter.WriteStartElement(System.String)">
+            <summary>Writes a start tag with the specified local name.</summary>
+        </member>
+        <member name="M:System.Xml.XmlWriter.WriteStartElement(System.String,System.String)">
+            <summary>Writes a start tag with the specified local name and namespace URI.</summary>
+        </member>
+        <member name="M:System.Xml.XmlWriter.WriteStartElement(System.String,System.String,System.String)">
+            <summary>Writes a start tag with the specified prefix, local name, and namespace URI.</summary>
+        </member>
+        <member name="M:System.Xml.XmlWriter.WriteEndElement">
+            <summary>Closes the most recently opened element.</summary>
+        </member>
+        <member name="M:System.Xml.XmlWriter.WriteFullEndElement">
+            <summary>Closes the most recently opened element, always writing a full end tag.</summary>
+        </member>
+        <member name="M:System.Xml.XmlWriter.WriteAttributeString(System.String,System.String)">
+            <summary>Writes an attribute with the specified local name and value.</summary>
+        </member>
+        <member name="M:System.Xml.XmlWriter.WriteAttributeString(System.String,System.String,System.String)">
+            <summary>Writes an attribute with the specified local name, namespace URI, and value.</summary>
+        </member>
+        <member name="M:System.Xml.XmlWriter.WriteAttributeString(System.String,System.String,System.String,System.String)">
+            <summary>Writes an attribute with the specified prefix, local name, namespace URI, and value.</summary>
+        </member>
+        <member name="M:System.Xml.XmlWriter.WriteString(System.String)">
+            <summary>Writes the specified text content.</summary>
+        </member>
+        <member name="M:System.Xml.XmlWriter.WriteRaw(System.String)">
+            <summary>Writes the specified markup verbatim without escaping.</summary>
+        </member>
+        <member name="M:System.Xml.XmlWriter.WriteCData(System.String)">
+            <summary>Writes the specified text inside a CDATA section.</summary>
+        </member>
+        <member name="M:System.Xml.XmlWriter.WriteComment(System.String)">
+            <summary>Writes the specified text inside a comment.</summary>
+        </member>
+        <member name="M:System.Xml.XmlWriter.WriteProcessingInstruction(System.String,System.String)">
+            <summary>Writes a processing instruction with the specified name and text.</summary>
+        </member>
+        <member name="M:System.Xml.XmlWriter.Flush">
+            <summary>Flushes buffered output to the underlying stream.</summary>
+        </member>
+        <member name="M:System.Xml.XmlWriter.Close">
+            <summary>Closes the writer and flushes any buffered output.</summary>
+        </member>
+        <member name="M:System.Xml.XmlWriter.LookupPrefix(System.String)">
+            <summary>Returns the closest prefix in scope for the specified namespace URI.</summary>
+        </member>
+        <member name="M:System.Xml.XmlWriter.WriteElementString(System.String,System.String)">
+            <summary>Writes an element with the specified local name and text content.</summary>
+        </member>
+        <member name="M:System.Xml.XmlWriter.Dispose">
+            <summary>Releases the resources used by the writer.</summary>
+        </member>
+        <member name="M:System.Xml.XmlWriter.Create(System.IO.Stream)">
+            <summary>Creates a new writer over the specified stream.</summary>
+        </member>
+    </members>
+</doc>

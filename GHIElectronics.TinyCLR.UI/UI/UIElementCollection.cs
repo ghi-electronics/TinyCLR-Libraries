@@ -15,15 +15,19 @@ namespace GHIElectronics.TinyCLR.UI {
     /// </remarks>
     public class UIElementCollection : ICollection {
 
+        /// <summary>Initializes a new collection owned by the specified element.</summary>
         public UIElementCollection(UIElement owner) {
             Debug.Assert(owner != null);
             this._owner = owner;
         }
 
+        /// <summary>Gets the number of elements in the collection.</summary>
         public virtual int Count => this._size;
 
+        /// <summary>Gets a value indicating whether access to the collection is thread-safe.</summary>
         public virtual bool IsSynchronized => false;
 
+        /// <summary>Gets an object that can be used to synchronize access to the collection.</summary>
         public virtual object SyncRoot => this;
 
         /// <summary>

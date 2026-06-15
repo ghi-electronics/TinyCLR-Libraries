@@ -8,15 +8,21 @@ using GHIElectronics.TinyCLR.Native;
 using static GHIElectronics.TinyCLR.Devices.UsbHost.BaseDevice;
 
 namespace GHIElectronics.TinyCLR.Devices.UsbHost {
+    /// <summary>The connection status of a USB device.</summary>
     public enum DeviceConnectionStatus {
+        /// <summary>The device has been disconnected.</summary>
         Disconnected = 0,
+        /// <summary>The device has been connected.</summary>
         Connected = 1,
+        /// <summary>The device was connected but is not functioning correctly.</summary>
         Bad = 2,
     };
 
 
+    /// <summary>The delegate for when a device's connection status changes.</summary>
     public delegate void OnConnectionChanged(UsbHostController sender, DeviceConnectionEventArgs e);
 
+    /// <summary>The event arguments for a device connection change.</summary>
     public class DeviceConnectionEventArgs : EventArgs {
         private readonly uint id;
         private readonly byte interfaceIndex;
@@ -35,7 +41,7 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
         /// <summary>The device's type.</summary>
         public BaseDevice.DeviceType Type => this.type;
 
-        /// <summary>The devic's vendor id.</summary>
+        /// <summary>The device's vendor id.</summary>
         public ushort VendorId => this.vendorId;
 
         /// <summary>The device's product id.</summary>
@@ -44,6 +50,7 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
         /// <summary>The device's USB port number.</summary>
         public byte PortNumber => this.portNumber;
 
+        /// <summary>The device's connection status.</summary>
         public DeviceConnectionStatus DeviceStatus => this.deviceStatus;
 
 
@@ -58,6 +65,7 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
         }
     }
 
+    /// <summary>Represents the USB host controller used to manage connected USB devices.</summary>
     public class UsbHostController : IDisposable {
 
         private static bool started;
@@ -67,6 +75,7 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
 
         private OnConnectionChanged onConnectionChangedCallbacks;
 
+        /// <summary>The underlying provider that implements the host controller.</summary>
         public IUsbHostControllerProvider Provider { get; }
 
         private UsbHostController(IUsbHostControllerProvider provider) {
@@ -77,22 +86,29 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
             listLock = new object();
         }
 
+        /// <summary>Gets the default USB host controller for the system.</summary>
         public static UsbHostController GetDefault() => NativeApi.GetDefaultFromCreator(NativeApiType.UsbHostController) is UsbHostController c ? c : UsbHostController.FromName(NativeApi.GetDefaultName(NativeApiType.UsbHostController));
+        /// <summary>Gets the USB host controller with the given name.</summary>
         public static UsbHostController FromName(string name) => UsbHostController.FromProvider(new UsbHostControllerApiWrapper(NativeApi.Find(name, NativeApiType.UsbHostController)));
+        /// <summary>Gets a USB host controller backed by the given provider.</summary>
         public static UsbHostController FromProvider(IUsbHostControllerProvider provider) => new UsbHostController(provider);
 
+        /// <summary>Disposes the controller and its provider.</summary>
         public void Dispose() => this.Provider.Dispose();
 
+        /// <summary>Enables the controller so devices can be detected.</summary>
         public void Enable() {
             this.Provider.Enable();
             started = true;
         }
+        /// <summary>Disables the controller and stops detecting devices.</summary>
         public void Disable() {
             started = false;
             this.Provider.Disable();
 
         }
 
+        /// <summary>Gets the currently connected devices, or null if the controller is not enabled.</summary>
         public static BaseDevice[] GetConnectedDevices() {
             if (started == false)
                 return null;
@@ -134,6 +150,7 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
         }
 
 
+        /// <summary>The event fired when a device's connection status changes.</summary>
         public event OnConnectionChanged OnConnectionChangedEvent {
             add {
                 if (this.onConnectionChangedCallbacks == null)
@@ -152,14 +169,19 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
     }
 
     namespace Provider {
+        /// <summary>Provides the underlying implementation for a USB host controller.</summary>
         public interface IUsbHostControllerProvider : IDisposable {
+            /// <summary>Enables the controller.</summary>
             void Enable();
+            /// <summary>Disables the controller.</summary>
             void Disable();
 
 
+            /// <summary>The event fired when a device's connection status changes.</summary>
             event OnConnectionChanged OnConnectionChangedEvent;
         }
 
+        /// <summary>The native API wrapper that implements the USB host controller provider.</summary>
         public sealed class UsbHostControllerApiWrapper : IUsbHostControllerProvider {
             private readonly IntPtr impl;
 
@@ -167,8 +189,10 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
 
             private OnConnectionChanged onConnectionChangedCallbacks;
 
+            /// <summary>The native API backing this provider.</summary>
             public NativeApi Api { get; }
 
+            /// <summary>Creates a new wrapper around the given native API.</summary>
             public UsbHostControllerApiWrapper(NativeApi api) {
                 this.Api = api;
 
@@ -198,6 +222,7 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
 
             }
 
+            /// <summary>The event fired when a device's connection status changes.</summary>
             public event OnConnectionChanged OnConnectionChangedEvent {
                 add {
                     if (this.onConnectionChangedCallbacks == null)
@@ -213,6 +238,7 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
                 }
             }
 
+            /// <summary>Releases the native API and disposes the provider.</summary>
             public void Dispose() => this.Release();
 
             [MethodImpl(MethodImplOptions.InternalCall)]
@@ -221,9 +247,11 @@ namespace GHIElectronics.TinyCLR.Devices.UsbHost {
             [MethodImpl(MethodImplOptions.InternalCall)]
             private extern void Release();
 
+            /// <inheritdoc/>
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void Enable();
 
+            /// <inheritdoc/>
             [MethodImpl(MethodImplOptions.InternalCall)]
             public extern void Disable();
 

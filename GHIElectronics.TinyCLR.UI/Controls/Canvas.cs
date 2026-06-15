@@ -4,7 +4,9 @@
 
 
 namespace GHIElectronics.TinyCLR.UI.Controls {
+    /// <summary>Panel that positions children by explicit left/top/right/bottom anchors.</summary>
     public class Canvas : Panel {
+        /// <summary>Creates a new Canvas.</summary>
         public Canvas() {
         }
 
@@ -51,22 +53,31 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
+        /// <summary>Gets the distance between the element's bottom edge and the canvas bottom.</summary>
         public static int GetBottom(UIElement e) => GetAnchorValue(e, Edge_Bottom);
 
+        /// <summary>Sets the distance between the element's bottom edge and the canvas bottom.</summary>
         public static void SetBottom(UIElement e, int bottom) => SetAnchorValue(e, Edge_Bottom, bottom);
 
+        /// <summary>Gets the distance between the element's left edge and the canvas left.</summary>
         public static int GetLeft(UIElement e) => GetAnchorValue(e, Edge_Left);
 
+        /// <summary>Sets the distance between the element's left edge and the canvas left.</summary>
         public static void SetLeft(UIElement e, int left) => SetAnchorValue(e, Edge_Left, left);
 
+        /// <summary>Gets the distance between the element's right edge and the canvas right.</summary>
         public static int GetRight(UIElement e) => GetAnchorValue(e, Edge_Right);
 
+        /// <summary>Sets the distance between the element's right edge and the canvas right.</summary>
         public static void SetRight(UIElement e, int right) => SetAnchorValue(e, Edge_Right, right);
 
+        /// <summary>Gets the distance between the element's top edge and the canvas top.</summary>
         public static int GetTop(UIElement e) => GetAnchorValue(e, Edge_Top);
 
+        /// <summary>Sets the distance between the element's top edge and the canvas top.</summary>
         public static void SetTop(UIElement e, int top) => SetAnchorValue(e, Edge_Top, top);
 
+        /// <summary>Arranges children according to their canvas anchors.</summary>
         protected override void ArrangeOverride(int arrangeWidth, int arrangeHeight) {
             VerifyAccess();
 
@@ -93,6 +104,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
+        /// <summary>Measures each child with unconstrained space.</summary>
         protected override void MeasureOverride(int availableWidth, int availableHeight, out int desiredWidth, out int desiredHeight) {
             var children = this._logicalChildren;
             if (children != null) {

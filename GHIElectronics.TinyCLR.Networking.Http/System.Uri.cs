@@ -95,16 +95,6 @@ namespace System
         }
 
         /// <summary>
-        /// Default port for http protocol - 80
-        /// </summary>
-        public const int HttpDefaultPort = 80;
-
-        /// <summary>
-        /// Default port for https protocol - 443
-        /// </summary>
-        public const int HttpsDefaultPort = 443;
-
-        /// <summary>
         /// Constant to indicate that port for this protocol is unknown
         /// </summary>
         protected const int UnknownPort = -1;
@@ -559,6 +549,7 @@ namespace System
             return bAbsoluteUriRooted;
         }
 
+        /// <summary>Splits the scheme-specific part into its authority and path portions.</summary>
         protected void Split(string sUri, int iStart, out string sAuthority, out string sPath, bool bReplaceEmptyPath)
         {
             var iSplitter = sUri.IndexOf('/', iStart);
@@ -624,6 +615,7 @@ namespace System
             return (dots == 3) && haveNumber;
         }
 
+        /// <summary>Returns whether the specified host is an IPv6 address enclosed in brackets.</summary>
         protected bool IsIPv6(string host) => host[0] == '[' && host[host.Length - 1] == ']';
 
         /// <summary>
@@ -768,10 +760,13 @@ namespace System
             this.m_port = UnknownPort;
         }
 
+        /// <summary>Returns the hash code for this URI.</summary>
         public override int GetHashCode() => base.GetHashCode();
 
+        /// <summary>Returns true if the object is an equal URI.</summary>
         public override bool Equals(object o) => this == (Uri)o;
 
+        /// <summary>Determines whether two URIs are equal.</summary>
         public static bool operator ==(Uri lhs, Uri rhs)
         {
             object l = lhs, r = rhs;
@@ -797,6 +792,7 @@ namespace System
             }
         }
 
+        /// <summary>Determines whether two URIs are not equal.</summary>
         public static bool operator !=(Uri lhs, Uri rhs)
         {
             object l = lhs, r = rhs;
@@ -908,14 +904,121 @@ namespace System
         /// This instance represents a relative URI, and this property is valid
         /// only for absolute URIs.
         /// </exception>
+        /// <summary>
+        /// Path portion of the URI, without the query string. Matches BCL.
+        /// </summary>
+        /// <remarks>
+        /// Internal storage (<see cref="m_AbsolutePath"/>) historically held
+        /// "path?query" because the URI parser doesn't split on '?' (the
+        /// parser only splits on '/' between authority and the rest). The
+        /// getter strips at '?' here so the public value matches BCL
+        /// semantics. Use <see cref="PathAndQuery"/> if you need the
+        /// path-plus-query string (e.g. for an HTTP request line).
+        /// </remarks>
         public string AbsolutePath
         {
             get
             {
                 if (this.m_isAbsoluteUri == false)
                     throw new InvalidOperationException();
+                var p = this.m_AbsolutePath;
+                var q = p.IndexOf('?');
+                return q < 0 ? p : p.Substring(0, q);
+            }
+        }
+
+        /// <summary>
+        /// The <see cref="AbsolutePath"/> and <see cref="Query"/> properties
+        /// joined by '?'. Matches the BCL property of the same name. Meant
+        /// for callers that need the path-plus-query part to send on the
+        /// wire (HTTP request line, etc.).
+        /// </summary>
+        public string PathAndQuery
+        {
+            get
+            {
+                if (this.m_isAbsoluteUri == false)
+                    throw new InvalidOperationException();
+                // Storage already holds "path?query" — return it verbatim so
+                // we don't have to reconcatenate Query into AbsolutePath.
                 return this.m_AbsolutePath;
             }
+        }
+
+        /// <summary>
+        /// Gets any query information included in the specified URI, including the
+        /// leading '?' character. Returns an empty string if no query is present.
+        /// </summary>
+        public string Query
+        {
+            get
+            {
+                if (this.m_isAbsoluteUri == false)
+                    throw new InvalidOperationException();
+                var s = this.m_OriginalUriString;
+                if (s == null) return string.Empty;
+                var q = s.IndexOf('?');
+                if (q < 0) return string.Empty;
+                var f = s.IndexOf('#', q);
+                return f < 0 ? s.Substring(q) : s.Substring(q, f - q);
+            }
+        }
+
+        /// <summary>
+        /// Gets any URI fragment, including the leading '#' character.
+        /// Returns an empty string if no fragment is present.
+        /// </summary>
+        public string Fragment
+        {
+            get
+            {
+                if (this.m_isAbsoluteUri == false)
+                    throw new InvalidOperationException();
+                var s = this.m_OriginalUriString;
+                if (s == null) return string.Empty;
+                var f = s.IndexOf('#');
+                return f < 0 ? string.Empty : s.Substring(f);
+            }
+        }
+
+        /// <summary>
+        /// Determines whether the specified host name is a valid DNS name, an IPv4
+        /// address, an IPv6 address, or otherwise unknown. Matches .NET BCL shape.
+        /// </summary>
+        public static UriHostNameType CheckHostName(string name)
+        {
+            if (string.IsNullOrEmpty(name)) return UriHostNameType.Unknown;
+            if (name.IndexOf(':') >= 0) return UriHostNameType.IPv6;
+
+            // IPv4 detection: 4 dot-separated octets, each 0..255
+            var parts = name.Split('.');
+            if (parts.Length == 4)
+            {
+                var allOctets = true;
+                for (var i = 0; i < 4; i++)
+                {
+                    var p = parts[i];
+                    if (p.Length == 0 || p.Length > 3) { allOctets = false; break; }
+                    var v = 0;
+                    for (var j = 0; j < p.Length; j++)
+                    {
+                        var c = p[j];
+                        if (c < '0' || c > '9') { allOctets = false; break; }
+                        v = v * 10 + (c - '0');
+                    }
+                    if (!allOctets || v > 255) { allOctets = false; break; }
+                }
+                if (allOctets) return UriHostNameType.IPv4;
+            }
+
+            // DNS detection: must contain only letters, digits, '-', '.'; first char alphanumeric.
+            for (var i = 0; i < name.Length; i++)
+            {
+                var c = name[i];
+                var ok = (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '-' || c == '.';
+                if (!ok) return UriHostNameType.Unknown;
+            }
+            return UriHostNameType.Dns;
         }
 
         /// <summary>

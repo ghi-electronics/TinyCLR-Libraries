@@ -75,6 +75,9 @@ namespace GHIElectronics.TinyCLR.Pins {
                     /// <summary>API id.</summary>
                     public const string Id = STM32L4.Timer.Tim1;
 
+                    /// <summary>Chip index for System.Device.Pwm.</summary>
+                    public const int Chip = 0;
+
                     /// <summary>PWM pin.</summary>
                     public const int Led = STM32L4.Timer.Channel1;                    
                 }
@@ -83,6 +86,9 @@ namespace GHIElectronics.TinyCLR.Pins {
                 public static class Controller2 {
                     /// <summary>API id.</summary>
                     public const string Id = STM32L4.Timer.Tim2;
+
+                    /// <summary>Chip index for System.Device.Pwm.</summary>
+                    public const int Chip = 1;
 
                     /// <summary>PWM pin.</summary>
                     public const int PA5 = STM32L4.Timer.Channel1;
@@ -93,6 +99,9 @@ namespace GHIElectronics.TinyCLR.Pins {
                     /// <summary>API id.</summary>
                     public const string Id = STM32L4.Timer.Tim15;
 
+                    /// <summary>Chip index for System.Device.Pwm.</summary>
+                    public const int Chip = 14;
+
                     /// <summary>PWM pin.</summary>
                     public const int PA2 = STM32L4.Timer.Channel1;
                     /// <summary>PWM pin.</summary>
@@ -102,6 +111,9 @@ namespace GHIElectronics.TinyCLR.Pins {
                 public static class Controller16 {
                     /// <summary>API id.</summary>
                     public const string Id = STM32L4.Timer.Tim16;
+
+                    /// <summary>Chip index for System.Device.Pwm.</summary>
+                    public const int Chip = 15;
 
                     /// <summary>PWM pin.</summary>
                     public const int PB8 = STM32L4.Timer.Channel1;
@@ -133,8 +145,12 @@ namespace GHIElectronics.TinyCLR.Pins {
         public static class I2cBus {
             /// <summary>I2C bus on PB9 (SDA) and PB8 (SCL).</summary>
             public const string I2c1 = STM32L4.I2cBus.I2c1;
+            /// <summary>Bus id for System.Device.I2c.</summary>
+            public const int I2c1BusId = 0;
             /// <summary>I2C bus on PB14 (SDA) and PB13 (SCL).</summary>
             public const string I2c2 = STM32L4.I2cBus.I2c2;            
+            /// <summary>Bus id for System.Device.I2c.</summary>
+            public const int I2c2BusId = 1;
             /// <summary>I2C software.</summary>
             public const string Software = STM32L4.I2cBus.Software;
         }
@@ -143,6 +159,8 @@ namespace GHIElectronics.TinyCLR.Pins {
         public static class SpiBus {           
             /// <summary>SPI bus on PB15 (MOSI), PB14 (MISO), and PB13 (SCK).</summary>
             public const string Spi2 = STM32L4.SpiBus.Spi2;
+            /// <summary>Bus id for System.Device.Spi.</summary>
+            public const int Spi2BusId = 1;
         }
 
         /// <summary>RTC controller definitions.</summary>

@@ -1,28 +1,52 @@
 using System;
+using System.Reflection;
+using GHIElectronics.TinyCLR.UI;
 using GHIElectronics.TinyCLR.UI.Input;
 using GHIElectronics.TinyCLR.UI.Media;
 
 namespace GHIElectronics.TinyCLR.UI.Controls {
+    /// <summary>Represents the method that handles the text-changed event.</summary>
     public delegate void TextChangedEventHandler(object sender, TextChangedEventArgs e);
 
+    /// <summary>Provides data for the text-changed event.</summary>
     public class TextChangedEventArgs : RoutedEventArgs {
+        /// <summary>Initializes a new instance of the <see cref="TextChangedEventArgs"/> class.</summary>
         public TextChangedEventArgs(RoutedEvent routedEvent, object source) : base(routedEvent, source) { }
     }
 
+    /// <summary>An editable single-line text field that opens the on-screen keyboard when activated.</summary>
     public class TextBox : Control {
+        // Cached once per AppDomain so every Text-change doesn't allocate a
+        // fresh RoutedEvent object.
+        private static readonly RoutedEvent TextChangedRoutedEvent =
+            new RoutedEvent("TextChangedEvent", RoutingStrategy.Bubble, typeof(TextChangedEventHandler));
+
         private string text = string.Empty;
         private Color bordercolor = Colors.Black;
         private ushort borderthickness = 1, paddingx, paddingy;
         private int width, height;
 
-        public TextBox() => this.Background = new SolidColorBrush(Colors.White);
+        private object _bindSource;
+        private string _bindPropertyName;
+        private bool _bindTwoWay;
+        private bool _suppressBindPush;
 
+        /// <summary>Initializes a new instance of the <see cref="TextBox"/> class.</summary>
+        public TextBox() {
+            this.Background = Theme.TextBoxFillBrush;
+            this.bordercolor = Theme.Border;
+        }
+
+        /// <summary>Raised when the text changes.</summary>
         public event TextChangedEventHandler TextChanged;
 
+        /// <summary>The horizontal alignment of the displayed text.</summary>
         public TextAlignment TextAlign { get; set; } = TextAlignment.Left;
 
+        /// <summary>When set, the character displayed in place of each typed character to mask input.</summary>
         public char PasswordChar { get; set; } = char.MinValue;
 
+        /// <summary>The current text of the field.</summary>
         public string Text {
             get => this.text;
             set {
@@ -30,13 +54,103 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
                 this.InvalidateMeasure();
 
-                var evt = new RoutedEvent("TextChangedEvent", RoutingStrategy.Bubble, typeof(TextChangedEventHandler));
-                var args = new TextChangedEventArgs(evt, this);
+                if (!this._suppressBindPush) {
+                    this.PushTextToBinding();
+                }
+
+                var args = new TextChangedEventArgs(TextChangedRoutedEvent, this);
 
                 this.TextChanged?.Invoke(this, args);
             }
         }
 
+        /// <summary>
+        /// Raised when a binding pull (source → TextBox) or push (TextBox → source)
+        /// fails. Default behavior is silent (the framework can't sensibly recover);
+        /// subscribe here to log or surface the error during development.
+        /// </summary>
+        public event BindingErrorEventHandler BindingError;
+
+        /// <summary>
+        /// One-way or two-way bind <see cref="Text"/> to a CLR property on <paramref name="source"/> using reflection.
+        /// For change notifications implement <see cref="INotifyBindablePropertyChanged"/> on the source.
+        /// </summary>
+        public void SetTextBinding(object source, string propertyName, bool twoWay = true) {
+            this.ClearTextBinding();
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (propertyName == null) throw new ArgumentNullException(nameof(propertyName));
+
+            this._bindSource = source;
+            this._bindPropertyName = propertyName;
+            this._bindTwoWay = twoWay;
+            this.PullTextFromBinding();
+            if (source is INotifyBindablePropertyChanged n) {
+                n.BindablePropertyChanged += this.OnBindablePropertyChanged;
+            }
+        }
+
+        /// <summary>Removes any binding previously set with <see cref="SetTextBinding"/>.</summary>
+        public void ClearTextBinding() {
+            if (this._bindSource is INotifyBindablePropertyChanged n) {
+                n.BindablePropertyChanged -= this.OnBindablePropertyChanged;
+            }
+
+            this._bindSource = null;
+            this._bindPropertyName = null;
+        }
+
+        private void OnBindablePropertyChanged(object sender, string propertyName) {
+            if (propertyName == null || propertyName.Length == 0 || propertyName == this._bindPropertyName) {
+                this.PullTextFromBinding();
+            }
+        }
+
+        private void PullTextFromBinding() {
+            if (this._bindSource == null || this._bindPropertyName == null) {
+                return;
+            }
+
+            try {
+                var v = this._bindSource.GetType().InvokeMember(this._bindPropertyName, BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.Instance, null, this._bindSource, null);
+                var s = v == null ? string.Empty : v.ToString();
+                this._suppressBindPush = true;
+                try {
+                    this.text = s;
+                    this.InvalidateMeasure();
+                }
+                finally {
+                    this._suppressBindPush = false;
+                }
+            }
+            catch (Exception ex) {
+                // Reflection can throw a wide range of types here (missing
+                // member, mismatched signature, user-getter throwing). Don't
+                // tear down the paint pass — instead surface via BindingError
+                // so a dev subscriber can log it.
+                this.RaiseBindingError(BindingErrorDirection.Pull, ex);
+            }
+        }
+
+        private void PushTextToBinding() {
+            if (!this._bindTwoWay || this._bindSource == null || this._bindPropertyName == null) {
+                return;
+            }
+
+            try {
+                this._bindSource.GetType().InvokeMember(this._bindPropertyName, BindingFlags.SetProperty | BindingFlags.Public | BindingFlags.Instance, null, this._bindSource, new object[] { this.text });
+            }
+            catch (Exception ex) {
+                this.RaiseBindingError(BindingErrorDirection.Push, ex);
+            }
+        }
+
+        private void RaiseBindingError(BindingErrorDirection direction, Exception ex) {
+            var handler = this.BindingError;
+            if (handler == null) return;
+            handler(this, new BindingErrorEventArgs(direction, this._bindPropertyName, ex));
+        }
+
+        /// <summary>The color of the border drawn around the field.</summary>
         public Color BorderColor {
             get => this.bordercolor;
             set {
@@ -46,6 +160,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
+        /// <summary>The thickness in pixels of the border drawn around the field.</summary>
         public ushort BorderThickness {
             get => this.borderthickness;
             set {
@@ -55,18 +170,27 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
+        /// <summary>The horizontal padding in pixels between the border and the text.</summary>
         public ushort PaddingX {
             get => this.paddingx;
-            set => this.paddingx = value;
+            set {
+                this.paddingx = value;
+                this.InvalidateMeasure();
+            }
         }
 
+        /// <summary>The vertical padding in pixels between the border and the text.</summary>
         public ushort PaddingY {
             get => this.paddingy;
-            set => this.paddingy = value;
+            set {
+                this.paddingy = value;
+                this.InvalidateMeasure();
+            }
         }
 
         internal bool ForOnScreenKeyboard { get; set; }
 
+        /// <summary>Opens the on-screen keyboard when the field is tapped.</summary>
         protected override void OnTouchUp(TouchEventArgs e) {
             if (!this.IsEnabled) {
                 return;
@@ -76,6 +200,22 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                 Application.Current.ShowOnScreenKeyboardFor(this);
         }
 
+        /// <summary>
+        /// Hardware button support: <see cref="HardwareButton.Select"/> opens the
+        /// on-screen keyboard, mirroring tap-to-edit behavior.
+        /// </summary>
+        protected override void OnButtonDown(ButtonEventArgs e) {
+            if (!this.IsEnabled || e.Button != HardwareButton.Select) {
+                return;
+            }
+
+            if (!this.ForOnScreenKeyboard) {
+                Application.Current.ShowOnScreenKeyboardFor(this);
+                e.Handled = true;
+            }
+        }
+
+        /// <summary>Measures the size needed for the text plus padding and border.</summary>
         protected override void MeasureOverride(int availableWidth, int availableHeight, out int desiredWidth, out int desiredHeight) {
             this._font.ComputeExtent(this.text, out desiredWidth, out desiredHeight);
 
@@ -83,13 +223,16 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             desiredHeight = this._font.Height + (this.PaddingY * 2) + (this.BorderThickness * 2);
         }
 
+        /// <summary>Records the arranged size of the field.</summary>
         protected override void ArrangeOverride(int arrangeWidth, int arrangeHeight) {
             this.width = arrangeWidth;
             this.height = arrangeHeight;
         }
 
+        /// <summary>Draws the field's border and text (masked when <see cref="PasswordChar"/> is set).</summary>
         public override void OnRender(DrawingContext dc) {
-            if (!(this.Foreground is SolidColorBrush b)) throw new NotSupportedException();
+            if (this.Foreground is not SolidColorBrush b)
+                throw new NotSupportedException("TextBox.Foreground must be a SolidColorBrush; gradient or image brushes are not supported.");
 
             base.OnRender(dc);
 

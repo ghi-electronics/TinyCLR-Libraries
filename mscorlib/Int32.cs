@@ -2,7 +2,7 @@ namespace System {
     using System.Globalization;
 
     [Serializable]
-    public struct Int32 : IFormattable {
+    public struct Int32 : IFormattable, IComparable, IComparable<int> {
         internal int m_value;
 
         public const int MaxValue = 0x7fffffff;
@@ -34,6 +34,23 @@ namespace System {
             }
         }
 
+        // Explicit override so virtual dispatch in FindVirtualMethodDef resolves at Int32
+        // directly, without needing to walk up to ValueType.Equals via IsInstanceOf matching.
+        // Needed for List<int>.IndexOf / Remove, which call Object.Equals(object, object) ->
+        // callvirt objA.Equals(objB) on a boxed Int32.
+        public override bool Equals(object obj) {
+            if (!(obj is int)) return false;
+            return m_value == (int)(Int32)obj;
+        }
+
+        public override int GetHashCode() => this.m_value;
+
+        public int CompareTo(int value) => this.m_value < value ? -1 : (this.m_value > value ? 1 : 0);
+        public int CompareTo(object obj) {
+            if (obj == null) return 1;
+            if (!(obj is int)) throw new ArgumentException();
+            return this.CompareTo((int)obj);
+        }
     }
 }
 

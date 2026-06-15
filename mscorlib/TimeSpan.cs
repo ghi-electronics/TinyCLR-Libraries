@@ -18,11 +18,20 @@ namespace System {
     [Serializable]
 #pragma warning disable CS0659 // Type overrides Object.Equals(object o) but does not override Object.GetHashCode()
 #pragma warning disable CS0661 // Type defines operator == or operator != but does not override Object.GetHashCode()
-    public struct TimeSpan : IFormattable
+    public struct TimeSpan : IFormattable, IComparable, IComparable<TimeSpan>
 #pragma warning restore CS0661 // Type defines operator == or operator != but does not override Object.GetHashCode()
 #pragma warning restore CS0659 // Type overrides Object.Equals(object o) but does not override Object.GetHashCode()
     {
         internal long m_ticks;
+
+        // Strongly-typed companion for IComparable<TimeSpan>; delegates to the
+        // existing tick-based comparison since TimeSpan is a thin wrapper
+        // around a long.
+        public int CompareTo(TimeSpan value) =>
+            this.m_ticks < value.m_ticks ? -1 : (this.m_ticks > value.m_ticks ? 1 : 0);
+
+        public override int GetHashCode() =>
+            unchecked((int)this.m_ticks) ^ (int)(this.m_ticks >> 32);
 
         public const long TicksPerMillisecond = 10000;
         private const double MillisecondsPerTick = 1.0 / TicksPerMillisecond;
@@ -34,6 +43,21 @@ namespace System {
         private const double HoursPerTick = 1.0 / TicksPerHour;
         public const long TicksPerDay = TicksPerHour * 24;
         private const double DaysPerTick = 1.0 / TicksPerDay;
+
+        // Forward-direction double constants. Used by the FromX(double) factory
+        // methods below so the multiplication is unambiguously `double * double`
+        // in IL — `ldc.r8 <literal>; mul`. Previously the FromX methods used
+        // `(double)TicksPerX` (cast of a const long), expecting the C# compiler
+        // to fold it to a double literal at compile time. In Debug builds it
+        // does; in Release builds Roslyn sometimes emits
+        // `ldc.i8 N; conv.r8; mul` instead, which re-introduces the broken
+        // `conv.r8 + mul` interpreter pattern. Defining the double-typed
+        // constants explicitly removes the ambiguity.
+        private const double TicksPerMillisecondAsDouble = 10000.0;
+        private const double TicksPerSecondAsDouble      = 10000000.0;
+        private const double TicksPerMinuteAsDouble      = 600000000.0;
+        private const double TicksPerHourAsDouble        = 36000000000.0;
+        private const double TicksPerDayAsDouble         = 864000000000.0;
 
         private const long MaxMilliSeconds = long.MaxValue / TicksPerMillisecond;
         private const long MinMilliSeconds = long.MinValue / TicksPerMillisecond;
@@ -66,23 +90,38 @@ namespace System {
 
         public int Seconds => (int)((this.m_ticks / TicksPerSecond) % 60);
 
-        public double TotalDays => this.m_ticks * DaysPerTick;
-        public double TotalHours => this.m_ticks * HoursPerTick;
+        // Total* properties go through DivToDouble to avoid `long * double` in
+        // the IL, which the TinyCLR interpreter mis-executes on Release-built
+        // mscorlib (Total* would return the clamp bound for any nonzero
+        // TimeSpan). (double)whole is exact for any TimeSpan up to ~285,000
+        // years (53-bit mantissa).
+        public double TotalDays => DivToDouble(this.m_ticks, TicksPerDay);
+        public double TotalHours => DivToDouble(this.m_ticks, TicksPerHour);
+
+        // Must be a single ternary expression, not multi-`if`-return. Roslyn's
+        // Release-mode optimizer emits IL for the if/return form that the
+        // TinyCLR interpreter mis-executes inside mscorlib (returns the clamp
+        // bound for legitimate in-range inputs). The ternary form produces
+        // single-expression IL that survives the optimizer.
         public double TotalMilliseconds {
             get {
-                var temp = this.m_ticks * MillisecondsPerTick;
-                if (temp > MaxMilliSeconds)
-                    return MaxMilliSeconds;
-
-                if (temp < MinMilliSeconds)
-                    return MinMilliSeconds;
-
-                return temp;
+                var r = DivToDouble(this.m_ticks, TicksPerMillisecond);
+                return r > MaxMilliSeconds ? (double)MaxMilliSeconds
+                     : r < MinMilliSeconds ? (double)MinMilliSeconds
+                     : r;
             }
         }
 
-        public double TotalMinutes => this.m_ticks * MinutesPerTick;
-        public double TotalSeconds => this.m_ticks * SecondsPerTick;
+        public double TotalMinutes => DivToDouble(this.m_ticks, TicksPerMinute);
+        public double TotalSeconds => DivToDouble(this.m_ticks, TicksPerSecond);
+
+        // Computes `ticks / divisor` as a double without going through the
+        // broken long*double multiplication path. `divisor` must be > 0.
+        private static double DivToDouble(long ticks, long divisor) {
+            var whole = ticks / divisor;
+            var remainder = ticks - whole * divisor;
+            return (double)whole + (double)remainder / (double)divisor;
+        }
         public TimeSpan Add(TimeSpan ts) => new TimeSpan(this.m_ticks + ts.m_ticks);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
@@ -104,11 +143,18 @@ namespace System {
         public TimeSpan Subtract(TimeSpan ts) => new TimeSpan(this.m_ticks - ts.m_ticks);
 
         public static TimeSpan FromTicks(long val) => new TimeSpan(val);
-        public static TimeSpan FromMilliseconds(double milliseconds) => new TimeSpan((long)(milliseconds * TimeSpan.TicksPerMillisecond));
-        public static TimeSpan FromSeconds(double seconds) => new TimeSpan((long)(seconds * TimeSpan.TicksPerSecond));
-        public static TimeSpan FromMinutes(double minutes) => new TimeSpan((long)(minutes * TimeSpan.TicksPerMinute));
-        public static TimeSpan FromHours(double hours) => new TimeSpan((long)(hours * TimeSpan.TicksPerHour));
-        public static TimeSpan FromDays(double days) => new TimeSpan((long)(days * TimeSpan.TicksPerDay));
+
+        // Use the explicit-double constants (defined near the top of this
+        // class) rather than `(double)TicksPerX`. The cast-of-const-long form
+        // worked in Debug builds but Release builds re-introduced the broken
+        // `conv.r8 + mul` IL pattern. Using a const that is already a double
+        // means the IL is unambiguously `ldc.r8 <literal>; mul` (pure
+        // double * double) regardless of optimization level.
+        public static TimeSpan FromMilliseconds(double milliseconds) => new TimeSpan((long)(milliseconds * TicksPerMillisecondAsDouble));
+        public static TimeSpan FromSeconds(double seconds)           => new TimeSpan((long)(seconds      * TicksPerSecondAsDouble));
+        public static TimeSpan FromMinutes(double minutes)           => new TimeSpan((long)(minutes      * TicksPerMinuteAsDouble));
+        public static TimeSpan FromHours(double hours)               => new TimeSpan((long)(hours        * TicksPerHourAsDouble));
+        public static TimeSpan FromDays(double days)                 => new TimeSpan((long)(days         * TicksPerDayAsDouble));
 
         public string ToString(string format, IFormatProvider formatProvider) => this.ToString();
 

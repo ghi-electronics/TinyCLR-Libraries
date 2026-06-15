@@ -7,9 +7,12 @@ using GHIElectronics.TinyCLR.Devices.Display;
 using GHIElectronics.TinyCLR.UI.Media;
 
 namespace GHIElectronics.TinyCLR.UI {
+    /// <summary>Represents a method that performs custom drawing after the window tree has been rendered.</summary>
     public delegate void PostRenderEventHandler(DrawingContext dc);
 
+    /// <summary>The root container that hosts all windows and drives rendering for a display.</summary>
     public class WindowManager : Controls.Canvas {
+        /// <summary>Gets the display controller this window manager renders to.</summary>
         public DisplayController DisplayController { get; }
 
         private WindowManager(DisplayController displayController) {
@@ -42,6 +45,7 @@ namespace GHIElectronics.TinyCLR.UI {
             return Instance;
         }
 
+        /// <summary>Measures the window manager to the size of the active display configuration.</summary>
         protected override void MeasureOverride(int availableWidth, int availableHeight, out int desiredWidth, out int desiredHeight) {
             base.MeasureOverride(availableWidth, availableHeight, out desiredWidth, out desiredHeight);
             desiredWidth = (int)this.DisplayController.ActiveConfiguration.Width;
@@ -65,6 +69,7 @@ namespace GHIElectronics.TinyCLR.UI {
         //
         // this was added for aux, behavior needs to change for watch.
         //
+        /// <summary>Updates focus and touch capture when a window is added to or removed from the manager.</summary>
         protected internal override void OnChildrenChanged(UIElement added, UIElement removed, int indexAffected) {
             base.OnChildrenChanged(added, removed, indexAffected);
 
@@ -89,12 +94,14 @@ namespace GHIElectronics.TinyCLR.UI {
 
         //--//
 
+        /// <summary>The singleton window manager instance for the application.</summary>
         public static WindowManager Instance;
 
         //--//
 
         private PostRenderEventHandler _postRenderHandler;
 
+        /// <summary>Occurs after the window tree has been rendered, allowing custom overlay drawing.</summary>
         public event PostRenderEventHandler PostRender {
             add {
                 this._postRenderHandler += value;
@@ -105,6 +112,7 @@ namespace GHIElectronics.TinyCLR.UI {
             }
         }
 
+        /// <summary>Renders the window tree and then raises the <see cref="PostRender"/> event.</summary>
         protected internal override void RenderRecursive(DrawingContext dc) {
             base.RenderRecursive(dc);
 

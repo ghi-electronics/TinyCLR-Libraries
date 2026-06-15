@@ -3,7 +3,7 @@ namespace System {
     using System.Globalization;
 
     [Serializable()]
-    public struct Single : IFormattable {
+    public struct Single : IFormattable, IComparable, IComparable<float> {
 #pragma warning disable CS0649 // Field is never assigned to, and will always have its default value
         internal float m_value;
 #pragma warning restore CS0649 // Field is never assigned to, and will always have its default value
@@ -42,7 +42,71 @@ namespace System {
             }
         }
 
-        public string ToString(string format, IFormatProvider provider) => Number.Format(this.m_value, false, format, NumberFormatInfo.GetInstance(provider));
+        // Same fix as Double.ToString(string, IFormatProvider): String.Format
+        // and $"{x}" dispatch through this overload, so it must short-circuit
+        // NaN / ±Infinity. Without the guard, Number.Format reaches the
+        // native normalization loop in tinycrt.cpp which hangs on Infinity
+        // (Infinity / 10 = Infinity) and misbehaves on NaN.
+        public string ToString(string format, IFormatProvider provider) {
+            var str = ((double)this.m_value).ToString();
+            switch (str) {
+                case "Infinity":
+                case "-Infinity":
+                case "NaN":
+                    return str;
+                default:
+                    return Number.Format(this.m_value, false, format, NumberFormatInfo.GetInstance(provider));
+            }
+        }
+
+        public bool Equals(float obj) {
+            if (Double.IsNaN(obj) && Double.IsNaN(this.m_value)) {
+                return true;
+            }
+
+            return this.m_value == obj;
+        }
+
+        public override bool Equals(object obj) {
+            if (obj == null) {
+                return false;
+            }
+
+            if (!(obj is float)) {
+                return false;
+            }
+
+            return Equals((float)obj);
+        }
+
+        public override int GetHashCode() {
+            return BitConverter.ToInt32(BitConverter.GetBytes(this.m_value), 0);
+        }
+
+        public static bool operator ==(Single left, Single right) {
+            return left.m_value == right.m_value;
+        }
+
+        public static bool operator !=(Single left, Single right) {
+            return left.m_value != right.m_value;
+        }
+
+        // NaN check first - TinyCLR's float comparison operators may not
+        // follow IEEE strictly with NaN, so we can't rely on </>= falling
+        // through to the NaN handling below.
+        public int CompareTo(float value) {
+            if (Double.IsNaN(this.m_value)) return Double.IsNaN(value) ? 0 : -1;
+            if (Double.IsNaN(value)) return 1;
+            if (this.m_value < value) return -1;
+            if (this.m_value > value) return 1;
+            return 0;
+        }
+
+        public int CompareTo(object obj) {
+            if (obj == null) return 1;
+            if (!(obj is float)) throw new ArgumentException();
+            return this.CompareTo((float)obj);
+        }
     }
 }
 

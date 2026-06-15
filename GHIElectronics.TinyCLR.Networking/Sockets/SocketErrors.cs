@@ -37,11 +37,11 @@ namespace System.Net.Sockets
         ///    </para>
         /// </devdoc>
         Interrupted = (10000 + 4),      //WSAEINTR
-        /// <devdoc>
-        ///    <para>
-        ///       [To be supplied.]
-        ///    </para>
-        /// </devdoc>
+        // <devdoc>
+        //    <para>
+        //       [To be supplied.]
+        //    </para>
+        // </devdoc>
         //WSAEBADF               = (10000+9),   //
         /// <devdoc>
         ///    <para>
@@ -242,11 +242,11 @@ namespace System.Net.Sockets
         ///    </para>
         /// </devdoc>
         ProcessLimit = (10000 + 67), //WSAEPROCLIM
-        /// <devdoc>
-        ///    <para>
-        ///       [To be supplied.]
-        ///    </para>
-        /// </devdoc>
+        // <devdoc>
+        //    <para>
+        //       [To be supplied.]
+        //    </para>
+        // </devdoc>
         /*
          * Extended Windows Sockets error constant definitions
          */
@@ -277,6 +277,7 @@ namespace System.Net.Sockets
         /// </devdoc>
         Disconnecting = (10000 + 101), //WSAEDISCON
 
+        /// <summary>The specified class or type was not found.</summary>
         TypeNotFound = (10000 + 109), //WSATYPE_NOT_FOUND
 
         /*

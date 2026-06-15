@@ -1,0 +1,323 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>GHIElectronics.TinyCLR.Devices.Gpio</name>
+    </assembly>
+    <members>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Gpio.GpioPinValueChangedEventHandler">
+            <summary>
+            Handler invoked when a <see cref="T:GHIElectronics.TinyCLR.Devices.Gpio.GpioPin"/> configured as an input
+            observes a level change matching its <see cref="P:GHIElectronics.TinyCLR.Devices.Gpio.GpioPin.ValueChangedEdge"/>.
+            </summary>
+            <param name="sender">The pin that detected the edge.</param>
+            <param name="e">Edge direction and timestamp captured by the driver.</param>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Gpio.GpioPinValueChangedEventArgs">
+            <summary>Arguments for the <see cref="E:GHIElectronics.TinyCLR.Devices.Gpio.GpioPin.ValueChanged"/> event.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Gpio.GpioPinValueChangedEventArgs.Edge">
+            <summary>The edge direction (rising or falling) that triggered the event.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Gpio.GpioPinValueChangedEventArgs.Timestamp">
+            <summary>Driver-captured time at which the transition was detected.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Gpio.GpioPinValueChangedEventArgs.#ctor(GHIElectronics.TinyCLR.Devices.Gpio.GpioPinEdge,System.DateTime)">
+            <summary>Creates a new <see cref="T:GHIElectronics.TinyCLR.Devices.Gpio.GpioPinValueChangedEventArgs"/>.</summary>
+            <param name="edge">The edge direction that triggered the event.</param>
+            <param name="timestamp">Driver-captured time of the transition.</param>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Gpio.GpioPinDriveMode">
+            <summary>
+            Electrical drive mode applied to a <see cref="T:GHIElectronics.TinyCLR.Devices.Gpio.GpioPin"/>. Not every mode
+            is available on every pin — call <see cref="M:GHIElectronics.TinyCLR.Devices.Gpio.GpioPin.IsDriveModeSupported(GHIElectronics.TinyCLR.Devices.Gpio.GpioPinDriveMode)"/>
+            before <see cref="M:GHIElectronics.TinyCLR.Devices.Gpio.GpioPin.SetDriveMode(GHIElectronics.TinyCLR.Devices.Gpio.GpioPinDriveMode)"/> when in doubt.
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Gpio.GpioPinDriveMode.Input">
+            <summary>High-impedance input with no internal resistor.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Gpio.GpioPinDriveMode.Output">
+            <summary>Push-pull output. The pin actively drives both high and low.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Gpio.GpioPinDriveMode.InputPullUp">
+            <summary>Input with the internal pull-up resistor enabled.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Gpio.GpioPinDriveMode.InputPullDown">
+            <summary>Input with the internal pull-down resistor enabled.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Gpio.GpioPinDriveMode.OutputOpenDrain">
+            <summary>Open-drain output: the pin actively pulls low and floats when set high.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Gpio.GpioPinValue">
+            <summary>Logical level of a <see cref="T:GHIElectronics.TinyCLR.Devices.Gpio.GpioPin"/>.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Gpio.GpioPinValue.Low">
+            <summary>The pin is at the low (0 V / ground) level.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Gpio.GpioPinValue.High">
+            <summary>The pin is at the high (Vcc) level.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Gpio.GpioPinEdge">
+            <summary>
+            Which edges trigger the <see cref="E:GHIElectronics.TinyCLR.Devices.Gpio.GpioPin.ValueChanged"/> event. The flags
+            can be combined to fire on both edges.
+            </summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Gpio.GpioPinEdge.FallingEdge">
+            <summary>Fire when the input transitions from high to low.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.Devices.Gpio.GpioPinEdge.RisingEdge">
+            <summary>Fire when the input transitions from low to high.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Gpio.GpioController">
+            <summary>
+            Represents a GPIO controller — the hardware peripheral that owns a set of
+            individually addressable pins. Use <see cref="M:GHIElectronics.TinyCLR.Devices.Gpio.GpioController.GetDefault"/> to obtain the
+            device's primary controller, then <see cref="M:GHIElectronics.TinyCLR.Devices.Gpio.GpioController.OpenPin(System.Int32)"/> to acquire
+            pins for input or output.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Gpio.GpioController.Provider">
+            <summary>The low-level provider backing this controller.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Gpio.GpioController.GetDefault">
+            <summary>Returns the default GPIO controller for this device.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Gpio.GpioController.FromName(System.String)">
+            <summary>Returns a GPIO controller identified by its native API name.</summary>
+            <param name="name">Native API name (e.g. one of the platform-specific Pin map constants).</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Gpio.GpioController.FromProvider(GHIElectronics.TinyCLR.Devices.Gpio.Provider.IGpioControllerProvider)">
+            <summary>Creates a controller from a custom <see cref="T:GHIElectronics.TinyCLR.Devices.Gpio.Provider.IGpioControllerProvider"/>.</summary>
+            <param name="provider">Provider implementing the pin operations.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Gpio.GpioController.Dispose">
+            <summary>Releases the underlying provider and any pins it still holds open.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Gpio.GpioController.OpenPin(System.Int32)">
+            <summary>Opens a single pin for input or output.</summary>
+            <param name="pinNumber">Controller-relative pin index.</param>
+            <returns>A <see cref="T:GHIElectronics.TinyCLR.Devices.Gpio.GpioPin"/> bound to this controller; dispose it to release the pin.</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Gpio.GpioController.OpenPins(System.Int32[])">
+            <summary>
+            Opens multiple pins atomically. If any pin fails to open, every pin
+            already opened by this call is disposed and the original exception is rethrown.
+            </summary>
+            <param name="pinNumbers">Controller-relative pin indices.</param>
+            <returns>An array of opened pins in the same order as <paramref name="pinNumbers"/>.</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Gpio.GpioController.TryOpenPin(System.Int32,GHIElectronics.TinyCLR.Devices.Gpio.GpioPin@)">
+            <summary>Non-throwing version of <see cref="M:GHIElectronics.TinyCLR.Devices.Gpio.GpioController.OpenPin(System.Int32)"/>.</summary>
+            <param name="pinNumber">Controller-relative pin index.</param>
+            <param name="pin">Receives the opened pin on success; null on failure.</param>
+            <returns>True if the pin was opened; false if it was unavailable or in use.</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Gpio.GpioController.TryOpenPins(GHIElectronics.TinyCLR.Devices.Gpio.GpioPin[]@,System.Int32[])">
+            <summary>Non-throwing batch version of <see cref="M:GHIElectronics.TinyCLR.Devices.Gpio.GpioController.OpenPins(System.Int32[])"/>.</summary>
+            <param name="pins">Receives the opened pins on success; null on failure.</param>
+            <param name="pinNumbers">Controller-relative pin indices.</param>
+            <returns>True if every pin opened; false if any one failed (in which case no pins remain open).</returns>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Gpio.GpioPin">
+            <summary>
+            A single GPIO pin opened from a <see cref="T:GHIElectronics.TinyCLR.Devices.Gpio.GpioController"/>. Configure the
+            direction with <see cref="M:GHIElectronics.TinyCLR.Devices.Gpio.GpioPin.SetDriveMode(GHIElectronics.TinyCLR.Devices.Gpio.GpioPinDriveMode)"/>, then drive it
+            with <see cref="M:GHIElectronics.TinyCLR.Devices.Gpio.GpioPin.Write(GHIElectronics.TinyCLR.Devices.Gpio.GpioPinValue)"/> or sample it with <see cref="M:GHIElectronics.TinyCLR.Devices.Gpio.GpioPin.Read"/>.
+            Subscribe to <see cref="E:GHIElectronics.TinyCLR.Devices.Gpio.GpioPin.ValueChanged"/> for edge-triggered notifications on inputs.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Gpio.GpioPin.PinNumber">
+            <summary>The controller-relative pin index this object represents.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Gpio.GpioPin.Controller">
+            <summary>The <see cref="T:GHIElectronics.TinyCLR.Devices.Gpio.GpioController"/> that owns this pin.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Gpio.GpioPin.Dispose">
+            <summary>Releases the pin so another caller can open it.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Gpio.GpioPin.IsDriveModeSupported(GHIElectronics.TinyCLR.Devices.Gpio.GpioPinDriveMode)">
+            <summary>Tests whether a given drive mode is supported on this pin.</summary>
+            <param name="mode">The drive mode to test.</param>
+            <returns>True if the pin can be configured with the given mode.</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Gpio.GpioPin.IsDriveModeSupported(System.Int32,GHIElectronics.TinyCLR.Devices.Gpio.GpioPinDriveMode)">
+            <summary>
+            Obsolete. The <paramref name="pin"/> argument is ignored — the pin's own
+            <see cref="P:GHIElectronics.TinyCLR.Devices.Gpio.GpioPin.PinNumber"/> is used. Call the no-pin overload instead.
+            </summary>
+            <param name="pin">Ignored.</param>
+            <param name="mode">The drive mode to test.</param>
+            <returns>True if the pin can be configured with the given mode.</returns>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Gpio.GpioPin.DebounceTimeout">
+            <summary>
+            Debounce window applied before <see cref="E:GHIElectronics.TinyCLR.Devices.Gpio.GpioPin.ValueChanged"/> fires.
+            Transitions shorter than this duration are suppressed.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Gpio.GpioPin.GetDriveMode">
+            <summary>Returns the pin's currently configured drive mode.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Gpio.GpioPin.SetDriveMode(GHIElectronics.TinyCLR.Devices.Gpio.GpioPinDriveMode)">
+            <summary>Configures the pin's electrical drive mode.</summary>
+            <param name="value">New drive mode. Must be supported on this pin (see <see cref="M:GHIElectronics.TinyCLR.Devices.Gpio.GpioPin.IsDriveModeSupported(GHIElectronics.TinyCLR.Devices.Gpio.GpioPinDriveMode)"/>).</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Gpio.GpioPin.Read">
+            <summary>Samples the pin and returns the current logical level.</summary>
+            <returns>The pin's present <see cref="T:GHIElectronics.TinyCLR.Devices.Gpio.GpioPinValue"/>.</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Gpio.GpioPin.Write(GHIElectronics.TinyCLR.Devices.Gpio.GpioPinValue)">
+            <summary>Drives an output pin to the specified level. No effect on input modes.</summary>
+            <param name="value">The logical level to drive.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Gpio.GpioPin.Toggle">
+            <summary>
+            Inverts the pin's current output level. Equivalent to reading the
+            current state and writing its opposite.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Gpio.GpioPin.ValueChangedEdge">
+            <summary>
+            Selects which edges raise <see cref="E:GHIElectronics.TinyCLR.Devices.Gpio.GpioPin.ValueChanged"/>. Defaults to both
+            rising and falling. Updates take effect immediately if a handler is attached.
+            </summary>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.Devices.Gpio.GpioPin.ValueChanged">
+            <summary>
+            Raised when the pin transitions on an edge selected by <see cref="P:GHIElectronics.TinyCLR.Devices.Gpio.GpioPin.ValueChangedEdge"/>.
+            The handler runs on the driver's event thread — keep it short and avoid blocking.
+            </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Gpio.Provider.IGpioControllerProvider">
+            <summary>
+            Provider contract for a GPIO controller. Most users call
+            <see cref="T:GHIElectronics.TinyCLR.Devices.Gpio.GpioController"/> / <see cref="T:GHIElectronics.TinyCLR.Devices.Gpio.GpioPin"/> directly; implement
+            this interface only when supplying a custom or virtual controller.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Gpio.Provider.IGpioControllerProvider.PinCount">
+            <summary>Total number of pins exposed by this controller.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Gpio.Provider.IGpioControllerProvider.OpenPin(System.Int32)">
+            <summary>Acquires exclusive access to the specified pin.</summary>
+            <param name="pin">Controller-relative pin index.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Gpio.Provider.IGpioControllerProvider.ClosePin(System.Int32)">
+            <summary>Releases a previously opened pin.</summary>
+            <param name="pin">Controller-relative pin index.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Gpio.Provider.IGpioControllerProvider.IsDriveModeSupported(System.Int32,GHIElectronics.TinyCLR.Devices.Gpio.GpioPinDriveMode)">
+            <summary>Tests whether the pin supports a given drive mode.</summary>
+            <param name="pin">Controller-relative pin index.</param>
+            <param name="mode">The drive mode to test.</param>
+            <returns>True if the mode is supported on that pin.</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Gpio.Provider.IGpioControllerProvider.SetPinChangedHandler(System.Int32,GHIElectronics.TinyCLR.Devices.Gpio.GpioPinEdge,GHIElectronics.TinyCLR.Devices.Gpio.GpioPinValueChangedEventHandler)">
+            <summary>Installs or replaces the edge-change handler for a pin.</summary>
+            <param name="pin">Controller-relative pin index.</param>
+            <param name="edge">Which edges should raise the event.</param>
+            <param name="value">Delegate to invoke on a matching edge.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Gpio.Provider.IGpioControllerProvider.ClearPinChangedHandler(System.Int32)">
+            <summary>Removes any previously installed edge-change handler.</summary>
+            <param name="pin">Controller-relative pin index.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Gpio.Provider.IGpioControllerProvider.GetDebounceTimeout(System.Int32)">
+            <summary>Returns the pin's current debounce window.</summary>
+            <param name="pin">Controller-relative pin index.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Gpio.Provider.IGpioControllerProvider.SetDebounceTimeout(System.Int32,System.TimeSpan)">
+            <summary>Sets the pin's debounce window.</summary>
+            <param name="pin">Controller-relative pin index.</param>
+            <param name="value">Minimum stable interval before an edge is reported.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Gpio.Provider.IGpioControllerProvider.GetDriveMode(System.Int32)">
+            <summary>Returns the pin's currently configured drive mode.</summary>
+            <param name="pin">Controller-relative pin index.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Gpio.Provider.IGpioControllerProvider.SetDriveMode(System.Int32,GHIElectronics.TinyCLR.Devices.Gpio.GpioPinDriveMode)">
+            <summary>Configures the pin's drive mode.</summary>
+            <param name="pin">Controller-relative pin index.</param>
+            <param name="value">Drive mode to apply.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Gpio.Provider.IGpioControllerProvider.Read(System.Int32)">
+            <summary>Samples the pin and returns its current logical level.</summary>
+            <param name="pin">Controller-relative pin index.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Gpio.Provider.IGpioControllerProvider.Write(System.Int32,GHIElectronics.TinyCLR.Devices.Gpio.GpioPinValue)">
+            <summary>Drives an output pin to the specified level.</summary>
+            <param name="pin">Controller-relative pin index.</param>
+            <param name="value">Level to drive.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Gpio.Provider.IGpioControllerProvider.TransferFeature(System.Int32,System.Int32,System.UInt32,System.UInt32,System.UInt32,System.UInt32,System.UInt32)">
+            <summary>
+            Re-routes a pin's signal through the controller's alternate-function fabric.
+            Advanced; used by peripheral drivers (UART/SPI/I2C/etc.) to claim package pins.
+            </summary>
+            <param name="pinSource">Source pin index.</param>
+            <param name="pinDestination">Destination pin index.</param>
+            <param name="mode">Platform-specific mode bits.</param>
+            <param name="type">Platform-specific type bits.</param>
+            <param name="direction">Platform-specific direction bits.</param>
+            <param name="speed">Platform-specific speed/slew bits.</param>
+            <param name="alternate">Alternate-function index.</param>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Gpio.Provider.GpioControllerApiWrapper">
+            <summary>
+            Concrete <see cref="T:GHIElectronics.TinyCLR.Devices.Gpio.Provider.IGpioControllerProvider"/> backed by the native
+            TinyCLR GPIO HAL. Constructed internally by <see cref="T:GHIElectronics.TinyCLR.Devices.Gpio.GpioController"/>;
+            you don't normally need to use this type directly.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Gpio.Provider.GpioControllerApiWrapper.Api">
+            <summary>The underlying native API descriptor.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Gpio.Provider.GpioControllerApiWrapper.#ctor(GHIElectronics.TinyCLR.Native.NativeApi)">
+            <summary>Wraps the given native API as a provider.</summary>
+            <param name="api">The native GPIO API to bind to.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Gpio.Provider.GpioControllerApiWrapper.Dispose">
+            <summary>Releases the native controller.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Gpio.Provider.GpioControllerApiWrapper.PinCount">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Gpio.Provider.GpioControllerApiWrapper.OpenPin(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Gpio.Provider.GpioControllerApiWrapper.ClosePin(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Gpio.Provider.GpioControllerApiWrapper.GetDebounceTimeout(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Gpio.Provider.GpioControllerApiWrapper.SetDebounceTimeout(System.Int32,System.TimeSpan)">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Gpio.Provider.GpioControllerApiWrapper.GetDriveMode(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Gpio.Provider.GpioControllerApiWrapper.SetDriveMode(System.Int32,GHIElectronics.TinyCLR.Devices.Gpio.GpioPinDriveMode)">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Gpio.Provider.GpioControllerApiWrapper.Read(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Gpio.Provider.GpioControllerApiWrapper.Write(System.Int32,GHIElectronics.TinyCLR.Devices.Gpio.GpioPinValue)">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Gpio.Provider.GpioControllerApiWrapper.IsDriveModeSupported(System.Int32,GHIElectronics.TinyCLR.Devices.Gpio.GpioPinDriveMode)">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Gpio.Provider.GpioControllerApiWrapper.SetPinChangedHandler(System.Int32,GHIElectronics.TinyCLR.Devices.Gpio.GpioPinEdge,GHIElectronics.TinyCLR.Devices.Gpio.GpioPinValueChangedEventHandler)">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Gpio.Provider.GpioControllerApiWrapper.ClearPinChangedHandler(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Gpio.Provider.GpioControllerApiWrapper.TransferFeature(System.Int32,System.Int32,System.UInt32,System.UInt32,System.UInt32,System.UInt32,System.UInt32)">
+            <inheritdoc/>
+        </member>
+    </members>
+</doc>

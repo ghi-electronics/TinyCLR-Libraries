@@ -21,6 +21,7 @@ namespace GHIElectronics.TinyCLR.UI.Input {
         /// </summary>
         public abstract UIElement Target { get; }
 
+        /// <summary>The input device type for this device.</summary>
         public abstract InputManager.InputDeviceType DeviceType { get; }
     }
 }

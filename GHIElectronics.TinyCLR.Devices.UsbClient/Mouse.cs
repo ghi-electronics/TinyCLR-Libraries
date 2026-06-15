@@ -5,6 +5,7 @@ using System.Threading;
 using GHIElectronics.TinyCLR.Devices.Usb;
 
 namespace GHIElectronics.TinyCLR.Devices.UsbClient {
+    /// <summary>This device emulates a mouse. You can move the cursor, scroll the wheel, and press buttons.</summary>
     public class Mouse : RawDevice {
         private const byte HID_INTERFACE_CLASS = 0x03;
         private const byte HID_DESCRIPTOR_TYPE = 0x21;

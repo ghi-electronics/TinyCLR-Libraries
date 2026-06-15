@@ -128,12 +128,20 @@ namespace GHIElectronics.TinyCLR.Pins {
         public static class Timer {
             /// <summary>API id.</summary>
             public const string Tim1 = "GHIElectronics.TinyCLR.NativeApis.STM32L4.PwmController\\0";
+            /// <summary>Chip index for System.Device.Pwm.</summary>
+            public const int Chip0 = 0;
             /// <summary>API id.</summary>
             public const string Tim2 = "GHIElectronics.TinyCLR.NativeApis.STM32L4.PwmController\\1";           
+            /// <summary>Chip index for System.Device.Pwm.</summary>
+            public const int Chip1 = 1;
             /// <summary>API id.</summary>
             public const string Tim15 = "GHIElectronics.TinyCLR.NativeApis.STM32L4.PwmController\\14";
+            /// <summary>Chip index for System.Device.Pwm.</summary>
+            public const int Chip14 = 14;
             /// <summary>API id.</summary>
             public const string Tim16 = "GHIElectronics.TinyCLR.NativeApis.STM32L4.PwmController\\15";
+            /// <summary>Chip index for System.Device.Pwm.</summary>
+            public const int Chip15 = 15;
             /// <summary>API id.</summary>
             public const string SoftwarePwm = "GHIElectronics.TinyCLR.NativeApis.STM32L4.SoftwarePwmController";
             /// <summary>PWM pin.</summary>
@@ -163,10 +171,16 @@ namespace GHIElectronics.TinyCLR.Pins {
         public static class I2cBus {
             /// <summary>I2C bus.</summary>
             public const string I2c1 = "GHIElectronics.TinyCLR.NativeApis.STM32L4.I2cController\\0";
+            /// <summary>Bus id for System.Device.I2c.</summary>
+            public const int I2c1BusId = 0;
             /// <summary>I2C bus.</summary>
             public const string I2c2 = "GHIElectronics.TinyCLR.NativeApis.STM32L4.I2cController\\1";
+            /// <summary>Bus id for System.Device.I2c.</summary>
+            public const int I2c2BusId = 1;
             /// <summary>I2C bus.</summary>
             public const string I2c4 = "GHIElectronics.TinyCLR.NativeApis.STM32L4.I2cController\\3";
+            /// <summary>Bus id for System.Device.I2c.</summary>
+            public const int I2c4BusId = 3;
             /// <summary>I2C software.</summary>
             public const string Software = "GHIElectronics.TinyCLR.NativeApis.SoftwareI2cController";
         }
@@ -175,8 +189,12 @@ namespace GHIElectronics.TinyCLR.Pins {
         public static class SpiBus {
             /// <summary>SPI bus.</summary>
             public const string Spi1 = "GHIElectronics.TinyCLR.NativeApis.STM32L4.SpiController\\0";
+            /// <summary>Bus id for System.Device.Spi.</summary>
+            public const int Spi1BusId = 0;
             /// <summary>SPI bus.</summary>
             public const string Spi2 = "GHIElectronics.TinyCLR.NativeApis.STM32L4.SpiController\\1";
+            /// <summary>Bus id for System.Device.Spi.</summary>
+            public const int Spi2BusId = 1;
         }
 
         /// <summary>CAN bus definitions.</summary>
@@ -220,6 +238,24 @@ namespace GHIElectronics.TinyCLR.Pins {
         public static class RtcController {
             /// <summary>API id.</summary>
             public const string Id = "GHIElectronics.TinyCLR.NativeApis.STM32L4.RtcController\\0";
+        }
+
+        /// <summary>
+        /// Hardware wake-up pin bit flags for <see cref="GHIElectronics.TinyCLR.Native.Power.Shutdown(int, System.DateTime)"/>.
+        /// OR-combine to allow any of the selected pins to wake the device.
+        /// Bit position matches the STM32L4 PWR_WAKEUP_PINx slot index (bit N → WKUP(N+1)).
+        /// </summary>
+        public static class WakeupPin {
+            /// <summary>PA0 — WKUP1.</summary>
+            public const int PA0  = 1 << 0;
+            /// <summary>PC13 — WKUP2.</summary>
+            public const int PC13 = 1 << 1;
+            /// <summary>PE6 — WKUP3.</summary>
+            public const int PE6  = 1 << 2;
+            /// <summary>PA2 — WKUP4.</summary>
+            public const int PA2  = 1 << 3;
+            /// <summary>PC5 — WKUP5.</summary>
+            public const int PC5  = 1 << 4;
         }
     }
 }

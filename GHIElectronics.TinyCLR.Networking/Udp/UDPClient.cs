@@ -7,10 +7,11 @@ using System.Runtime.Versioning;
 using System.Threading;
 
 namespace System.Net.Sockets {
+    /// <summary>Provides User Datagram Protocol (UDP) network services.</summary>
     // The System.Net.Sockets.UdpClient class provides access to UDP services at a higher abstraction
     // level than the System.Net.Sockets.Socket class. System.Net.Sockets.UdpClient is used to
     // connect to a remote host and to receive connections from a remote client.
-    public partial class UdpClient : IDisposable {
+    public class UdpClient : IDisposable {
         private const int MaxUDPSize = 0x10000;
 
         private Socket _clientSocket = null; // initialized by helper called from ctor
@@ -18,10 +19,12 @@ namespace System.Net.Sockets {
         private readonly byte[] _buffer = new byte[MaxUDPSize];
         private AddressFamily _family = AddressFamily.InterNetwork;
 
+        /// <summary>Initializes a new instance using the default address family.</summary>
         // Initializes a new instance of the System.Net.Sockets.UdpClientclass.
         public UdpClient() : this(AddressFamily.InterNetwork) {
         }
 
+        /// <summary>Initializes a new instance using the specified address family.</summary>
         // Initializes a new instance of the System.Net.Sockets.UdpClientclass.
         public UdpClient(AddressFamily family) {
             if (family != AddressFamily.InterNetwork && family != AddressFamily.InterNetworkV6) {
@@ -34,6 +37,7 @@ namespace System.Net.Sockets {
             this.CreateClientSocket();
         }
 
+        /// <summary>Initializes a new instance bound to the specified local port.</summary>
         // Creates a new instance of the UdpClient class that communicates on the
         // specified port number.
         //
@@ -43,6 +47,7 @@ namespace System.Net.Sockets {
         public UdpClient(int port) : this(port, AddressFamily.InterNetwork) {
         }
 
+        /// <summary>Initializes a new instance bound to the specified local port and address family.</summary>
         // Creates a new instance of the UdpClient class that communicates on the
         // specified port number.
         public UdpClient(int port, AddressFamily family) {
@@ -71,6 +76,7 @@ namespace System.Net.Sockets {
             this._clientSocket.Bind(localEP);
         }
 
+        /// <summary>Initializes a new instance bound to the specified local endpoint.</summary>
         // Creates a new instance of the UdpClient class that communicates on the
         // specified end point.
         public UdpClient(IPEndPoint localEP) {
@@ -85,16 +91,19 @@ namespace System.Net.Sockets {
             this._clientSocket.Bind(localEP);
         }
 
+        /// <summary>Whether a default remote host has been established.</summary>
         // Used by the class to indicate that a connection to a remote host has been made.
         protected bool Active {
             get => this._active;
             set => this._active = value;
         }
 
+        /// <summary>The number of bytes available to be read.</summary>
         public int Available => this._clientSocket.Available;
 
-       
 
+
+        /// <summary>The underlying socket used by the client.</summary>
         public Socket Client {
             get => this._clientSocket;
             set => this._clientSocket = value;
@@ -145,8 +154,10 @@ namespace System.Net.Sockets {
             return false;
         }
 
+        /// <summary>Releases the resources used by the client.</summary>
         public void Dispose() => this.Dispose(true);
 
+        /// <summary>Releases the resources used by the client.</summary>
         protected virtual void Dispose(bool disposing) {
             if (disposing) {
                 //if (NetEventSource.Log.IsEnabled()) NetEventSource.Info(this);
@@ -161,12 +172,18 @@ namespace System.Net.Sockets {
 
                 var chkClientSocket = this._clientSocket;
                 if (chkClientSocket != null) {
-                    // If the NetworkStream wasn't retrieved, the Socket might
-                    // still be there and needs to be closed to release the effect
-                    // of the Bind() call and free the bound IPEndPoint.
-                    //chkClientSocket.InternalShutdown(SocketShutdown.Both);
-                    //chkClientSocket.Dispose();
-
+                    // BCL's UdpClient.Dispose calls Socket.InternalShutdown(Both)
+                    // — a best-effort half-close that silently swallows the
+                    // failure that always happens on UDP (no FIN at the wire
+                    // level, lwIP/POSIX return ENOTCONN for unconnected UDP
+                    // sockets). We can't replicate the silent swallow on
+                    // TinyCLR because the VS debugger surfaces every *thrown*
+                    // exception via first-chance reporting, even when caught
+                    // — so Shutdown produces noisy log spam at every Close.
+                    // Skip the call entirely on UDP: end state is identical
+                    // (Close releases the port and any lwIP socket state),
+                    // and BCL's effective behavior is preserved. Keep
+                    // Shutdown for TCP in TcpClient — TCP needs the FIN.
                     chkClientSocket.Close();
                     this._clientSocket = null;
                 }
@@ -201,12 +218,15 @@ namespace System.Net.Sockets {
             }
         }
 
+        /// <summary>Sends a datagram on the connected socket and returns the number of bytes sent.</summary>
         public int BeginSend(byte[] datagram, int bytes) =>
             this.BeginSend(datagram, bytes, null);
 
+        /// <summary>Sends a datagram to the specified host and port and returns the number of bytes sent.</summary>
         public int BeginSend(byte[] datagram, int bytes, string hostname, int port) =>
             this.BeginSend(datagram, bytes, this.GetEndpoint(hostname, port));
 
+        /// <summary>Sends a datagram to the specified endpoint and returns the number of bytes sent.</summary>
         public int BeginSend(byte[] datagram, int bytes, IPEndPoint endPoint) {
             this.ValidateDatagram(datagram, bytes, endPoint);
 
@@ -220,6 +240,7 @@ namespace System.Net.Sockets {
             }
         }
 
+        /// <summary>Not implemented; always throws NotImplementedException.</summary>
         public int EndSend(IAsyncResult asyncResult) {
             //this.ThrowIfDisposed();
 
@@ -279,6 +300,7 @@ namespace System.Net.Sockets {
             return ipEndPoint;
         }
 
+        /// <summary>Receives a datagram into the internal buffer and returns the number of bytes read.</summary>
         public int BeginReceive(int port) {
             this.ThrowIfDisposed();
 
@@ -295,6 +317,7 @@ namespace System.Net.Sockets {
             return this._clientSocket.ReceiveFrom(this._buffer, 0, MaxUDPSize, SocketFlags.None, ref tempRemoteEP);
         }
 
+        /// <summary>Returns the buffer holding the data received by a previous BeginReceive call.</summary>
         public byte[] EndReceive(IAsyncResult asyncResult, ref IPEndPoint remoteEP) {
             this.ThrowIfDisposed();
 
@@ -316,6 +339,7 @@ namespace System.Net.Sockets {
             return this._buffer;
         }
 
+        /// <summary>Joins the specified multicast group.</summary>
         // Joins a multicast address group.
         public void JoinMulticastGroup(IPAddress multicastAddr) {
             this.ThrowIfDisposed();
@@ -579,6 +603,7 @@ namespace System.Net.Sockets {
             // IPv6 Changes: Use the AddressFamily of this class rather than hardcode.
             this._clientSocket = new Socket(this._family, SocketType.Dgram, ProtocolType.Udp);
 
+        /// <summary>Initializes a new instance and connects to the specified host and port.</summary>
         public UdpClient(string hostname, int port) {
             //ArgumentNullException.ThrowIfNull(hostname);
 
@@ -593,8 +618,10 @@ namespace System.Net.Sockets {
             this.Connect(hostname, port); ;
         }
 
+        /// <summary>Closes the client and releases its resources.</summary>
         public void Close() => this.Dispose(true);
 
+        /// <summary>Establishes a default remote host using the specified host name and port.</summary>
         public void Connect(string hostname, int port) {
             this.ThrowIfDisposed();
 
@@ -688,6 +715,7 @@ namespace System.Net.Sockets {
             }
         }
 
+        /// <summary>Establishes a default remote host using the specified IP address and port.</summary>
         public void Connect(IPAddress addr, int port) {
             this.ThrowIfDisposed();
 
@@ -701,6 +729,7 @@ namespace System.Net.Sockets {
             this.Connect(endPoint);
         }
 
+        /// <summary>Establishes a default remote host using the specified endpoint.</summary>
         public void Connect(IPEndPoint endPoint) {
             this.ThrowIfDisposed();
 
@@ -711,6 +740,7 @@ namespace System.Net.Sockets {
             this._active = true;
         }
 
+        /// <summary>Receives a datagram and returns its data, reporting the sender's endpoint.</summary>
         public byte[] Receive(ref IPEndPoint remoteEP) {
             this.ThrowIfDisposed();
 
@@ -739,6 +769,7 @@ namespace System.Net.Sockets {
         }
 
 
+        /// <summary>Sends the specified number of bytes of a datagram to the given endpoint.</summary>
         // Sends a UDP datagram to the host at the remote end point.
         public int Send(byte[] dgram, int bytes, IPEndPoint endPoint) {
             this.ThrowIfDisposed();
@@ -788,6 +819,7 @@ namespace System.Net.Sockets {
             return this.Client.SendTo(datagram, SocketFlags.None, endPoint);
         }
 
+        /// <summary>Sends the specified number of bytes of a datagram to the given host and port.</summary>
         // Sends a UDP datagram to the specified port on the specified remote host.
         public int Send(byte[] dgram, int bytes, string hostname, int port) => this.Send(dgram, bytes, this.GetEndpoint(hostname, port));
 
@@ -809,6 +841,7 @@ namespace System.Net.Sockets {
         /// <exception cref="SocketException">An error occurred when accessing the socket.</exception>
         public int Send(byte[] datagram, string hostname, int port) => this.Send(datagram, this.GetEndpoint(hostname, port));
 
+        /// <summary>Sends the specified number of bytes of a datagram to the connected remote host.</summary>
         // Sends a UDP datagram to a remote host.
         public int Send(byte[] dgram, int bytes) {
             this.ThrowIfDisposed();

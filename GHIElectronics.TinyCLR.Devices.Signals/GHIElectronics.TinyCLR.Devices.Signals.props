@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Reference Include="GHIElectronics.TinyCLR.Devices.Signals">
+      <HintPath>$(MSBuildThisFileDirectory)..\..\lib\net48\GHIElectronics.TinyCLR.Devices.Signals.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <_TinyCLRSignalsShimSource>$(MSBuildThisFileDirectory)..\..\desktop-shim\GHIElectronics.TinyCLR.Devices.Signals.dll</_TinyCLRSignalsShimSource>
+    <_TinyCLRSignalsImplSource>$(MSBuildThisFileDirectory)..\..\tinyclr\GHIElectronics.TinyCLR.Devices.Signals.dll</_TinyCLRSignalsImplSource>
+  </PropertyGroup>
+  <Target Name="CopyTinyCLRSignalsDesktopShim" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRSignalsShimSource)')">
+    <Copy SourceFiles="$(_TinyCLRSignalsShimSource)" DestinationFiles="$(OutDir)GHIElectronics.TinyCLR.Devices.Signals.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
+  </Target>
+  <Target Name="CopyTinyCLRSignalsImplForDebugger" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRSignalsImplSource)')">
+    <Copy SourceFiles="$(_TinyCLRSignalsImplSource)" DestinationFiles="$(OutDir)pe\GHIElectronics.TinyCLR.Devices.Signals.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
+  </Target>
+</Project>

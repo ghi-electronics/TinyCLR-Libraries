@@ -1,0 +1,95 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>GHIElectronics.TinyCLR.Devices.Watchdog</name>
+    </assembly>
+    <members>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Watchdog.WatchdogController">
+            <summary>
+            Independent watchdog timer. <see cref="M:GHIElectronics.TinyCLR.Devices.Watchdog.WatchdogController.Enable(System.UInt32)"/> with a timeout and
+            call <see cref="M:GHIElectronics.TinyCLR.Devices.Watchdog.WatchdogController.Reset"/> periodically — if the timer ever expires without
+            being reset, the chip reboots. Useful as a failsafe against firmware lockups.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Watchdog.WatchdogController.Provider">
+            <summary>The low-level provider backing this controller.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Watchdog.WatchdogController.GetDefault">
+            <summary>Returns the default watchdog for this device.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Watchdog.WatchdogController.FromName(System.String)">
+            <summary>Returns a watchdog identified by its native API name.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Watchdog.WatchdogController.FromProvider(GHIElectronics.TinyCLR.Devices.Watchdog.Provider.IWatchdogControllerProvider)">
+            <summary>Creates a controller from a custom <see cref="T:GHIElectronics.TinyCLR.Devices.Watchdog.Provider.IWatchdogControllerProvider"/>.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Watchdog.WatchdogController.Dispose">
+            <summary>Releases the underlying provider.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Watchdog.WatchdogController.GetMaxTimeout">
+            <summary>Largest legal value (in milliseconds) for the <see cref="M:GHIElectronics.TinyCLR.Devices.Watchdog.WatchdogController.Enable(System.UInt32)"/> timeout argument.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Watchdog.WatchdogController.IsEnabled">
+            <summary>True once <see cref="M:GHIElectronics.TinyCLR.Devices.Watchdog.WatchdogController.Enable(System.UInt32)"/> has been called.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Watchdog.WatchdogController.Enable(System.UInt32)">
+            <summary>
+            Starts the watchdog. From this point on, <see cref="M:GHIElectronics.TinyCLR.Devices.Watchdog.WatchdogController.Reset"/> must be
+            called more often than <paramref name="timeout"/> or the device will reboot.
+            On many chips the watchdog cannot be disabled once enabled.
+            </summary>
+            <param name="timeout">Timeout in milliseconds (must be &gt; 0 and ≤ <see cref="P:GHIElectronics.TinyCLR.Devices.Watchdog.WatchdogController.GetMaxTimeout"/>).</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Watchdog.WatchdogController.Disable">
+            <summary>Disables the watchdog (only supported on hardware that allows it).</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Watchdog.WatchdogController.Reset">
+            <summary>Re-arms the watchdog. Must be called before the timeout elapses.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Watchdog.Provider.IWatchdogControllerProvider">
+            <summary>Provider contract for a watchdog controller.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Watchdog.Provider.IWatchdogControllerProvider.GetMaxTimeout">
+            <summary>Largest legal timeout in milliseconds.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Watchdog.Provider.IWatchdogControllerProvider.IsEnabled">
+            <summary>True once the watchdog is running.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Watchdog.Provider.IWatchdogControllerProvider.Enable(System.UInt32)">
+            <summary>Starts the watchdog with the given timeout in milliseconds.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Watchdog.Provider.IWatchdogControllerProvider.Disable">
+            <summary>Disables the watchdog where the hardware permits it.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Watchdog.Provider.IWatchdogControllerProvider.Reset">
+            <summary>Re-arms the watchdog.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.Devices.Watchdog.Provider.WatchdogControllerApiWrapper">
+            <summary>Concrete <see cref="T:GHIElectronics.TinyCLR.Devices.Watchdog.Provider.IWatchdogControllerProvider"/> backed by the native TinyCLR HAL.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Watchdog.Provider.WatchdogControllerApiWrapper.Api">
+            <summary>The underlying native API descriptor.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Watchdog.Provider.WatchdogControllerApiWrapper.#ctor(GHIElectronics.TinyCLR.Native.NativeApi)">
+            <summary>Wraps the given native API as a provider.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Watchdog.Provider.WatchdogControllerApiWrapper.Dispose">
+            <summary>Releases the native controller.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Watchdog.Provider.WatchdogControllerApiWrapper.Enable(System.UInt32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Watchdog.Provider.WatchdogControllerApiWrapper.Disable">
+            <inheritdoc/>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.Watchdog.Provider.WatchdogControllerApiWrapper.Reset">
+            <inheritdoc/>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Watchdog.Provider.WatchdogControllerApiWrapper.GetMaxTimeout">
+            <inheritdoc/>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Watchdog.Provider.WatchdogControllerApiWrapper.IsEnabled">
+            <inheritdoc/>
+        </member>
+    </members>
+</doc>

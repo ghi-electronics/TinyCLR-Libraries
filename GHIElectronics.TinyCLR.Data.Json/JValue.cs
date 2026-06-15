@@ -1,20 +1,69 @@
 using System;
+using System.Text;
 
 namespace GHIElectronics.TinyCLR.Data.Json
 {
+    /// <summary>A JSON primitive value — string, number, boolean, or null.</summary>
     public class JValue : JToken
     {
+        // JSON string escape per RFC 8259 section 7. Wraps in double quotes
+        // and escapes the six required chars (", \, /, control chars), plus
+        // emits \uXXXX for any char below 0x20.
+        internal static string EscapeJsonString(string s) {
+            var sb = new StringBuilder(s.Length + 2);
+            sb.Append('"');
+            for (var i = 0; i < s.Length; i++) {
+                var c = s[i];
+                switch (c) {
+                    case '"':  sb.Append("\\\""); break;
+                    case '\\': sb.Append("\\\\"); break;
+                    case '\b': sb.Append("\\b"); break;
+                    case '\f': sb.Append("\\f"); break;
+                    case '\n': sb.Append("\\n"); break;
+                    case '\r': sb.Append("\\r"); break;
+                    case '\t': sb.Append("\\t"); break;
+                    default:
+                        if (c < 0x20) {
+                            sb.Append("\\u");
+                            var hex = ((int)c).ToString();
+                            // Manual zero-pad to 4 hex digits without String.Format
+                            // (TinyCLR mscorlib doesn't support format specifiers everywhere).
+                            var hexHi = ((c >> 12) & 0xF);
+                            var hexMh = ((c >> 8) & 0xF);
+                            var hexMl = ((c >> 4) & 0xF);
+                            var hexLo = (c & 0xF);
+                            sb.Append(HexDigit(hexHi));
+                            sb.Append(HexDigit(hexMh));
+                            sb.Append(HexDigit(hexMl));
+                            sb.Append(HexDigit(hexLo));
+                        }
+                        else {
+                            sb.Append(c);
+                        }
+                        break;
+                }
+            }
+            sb.Append('"');
+            return sb.ToString();
+        }
+
+        private static char HexDigit(int n) => (char)(n < 10 ? '0' + n : 'a' + (n - 10));
+
+        /// <summary>Initializes a new JSON value holding null.</summary>
         public JValue()
         {
         }
 
+        /// <summary>Initializes a new JSON value wrapping the given primitive value.</summary>
         public JValue(object value)
         {
             this.Value = value;
         }
 
+        /// <summary>Gets or sets the underlying primitive value.</summary>
         public object Value { get; set; }
 
+        /// <summary>Wraps a primitive value in a JSON value.</summary>
         public static JValue Serialize(Type type, object oValue)
         {
             return new JValue()
@@ -23,11 +72,13 @@ namespace GHIElectronics.TinyCLR.Data.Json
             };
         }
 
+        /// <summary>Returns the JSON text for this value.</summary>
         public override string ToString()
         {
             return this.ToString(null);
         }
 
+        /// <summary>Returns the JSON text for this value using the given formatting options.</summary>
         public override string ToString(JsonSerializationOptions options)
         {
             EnterSerialization(options);
@@ -37,12 +88,20 @@ namespace GHIElectronics.TinyCLR.Data.Json
                     return "null";
 
                 var type = this.Value.GetType();
-                if (type == typeof(string) || type == typeof(char))
-                    return "\"" + this.Value.ToString() + "\"";
+                if (type == typeof(string))
+                    return EscapeJsonString((string)this.Value);
+                else if (type == typeof(char))
+                    return EscapeJsonString(this.Value.ToString());
                 else if (type == typeof(DateTime))
                     return "\"" + DateTimeExtensions.ToIso8601(((DateTime)this.Value)) + "\"";
                 else if (type == typeof(bool))
                     return this.Value.ToString().ToLower();
+                else if (type.IsEnum)
+                    // Default policy: serialize enums as quoted string of the
+                    // member name. Without quoting, ToString() returns "Foo"
+                    // unquoted -> invalid JSON. Caller can opt into integer
+                    // form by casting to the underlying type before wrapping.
+                    return EscapeJsonString(this.Value.ToString());
                 else
                     return this.Value.ToString();
             }
@@ -52,6 +111,7 @@ namespace GHIElectronics.TinyCLR.Data.Json
             }
         }
 
+        /// <summary>Gets the number of bytes this value occupies when encoded as BSON.</summary>
         public override int GetBsonSize()
         {
             if (this.Value == null)
@@ -76,11 +136,13 @@ namespace GHIElectronics.TinyCLR.Data.Json
                 throw new Exception("Unsupported type");
         }
 
+        /// <summary>Gets the number of BSON bytes for this value including the given element name.</summary>
         public override int GetBsonSize(string ename)
         {
             return 1 + ename.Length + 1 + this.GetBsonSize();
         }
 
+        /// <summary>Writes this value to the buffer as BSON, advancing the offset.</summary>
         public override void ToBson(byte[] buffer, ref int offset)
         {
             if (buffer != null)
@@ -94,6 +156,7 @@ namespace GHIElectronics.TinyCLR.Data.Json
             }
         }
 
+        /// <summary>Gets the BSON type code matching the underlying value's type.</summary>
         public override BsonTypes GetBsonType()
         {
             if (this.Value == null)

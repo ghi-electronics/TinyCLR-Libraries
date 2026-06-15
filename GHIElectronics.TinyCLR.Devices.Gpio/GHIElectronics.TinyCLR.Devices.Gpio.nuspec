@@ -3,22 +3,43 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>GHIElectronics.TinyCLR.Devices.Gpio</id>
-    <version>2.4.0.1000</version>
+    <version>3.0.0.2000-prerelease</version>
     <authors>GHI Electronics, LLC</authors>
     <owners>GHI Electronics, LLC</owners>
     <projectUrl>https://ghielectronics.com/</projectUrl>
     <iconUrl>http://files.ghielectronics.com/downloads/Logos/GHIElectronicsTinyCLRNuGet.png</iconUrl>
     <licenseUrl>http://files.ghielectronics.com/downloads/TinyCLR/License.txt</licenseUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
-    <description>The GPIO library for TinyCLR OS.</description>
+    <description>Digital I/O pin (GPIO) control for TinyCLR.</description>
     <copyright>Copyright GHI Electronics, LLC 2022</copyright>
     <tags>TinyCLR TinyCLROS</tags>
     <dependencies>
-      <dependency id="GHIElectronics.TinyCLR.Core" version="2.4.0.1000" />
-      <dependency id="GHIElectronics.TinyCLR.Native" version="2.4.0.1000" />
+      <dependency id="GHIElectronics.TinyCLR.Core" version="3.0.0.2000-prerelease" />
+      <dependency id="GHIElectronics.TinyCLR.Native" version="3.0.0.2000-prerelease" />
     </dependencies>
   </metadata>
   <files>
+    <!-- lib/net48/ : TinyCLR-IMPL DLL (auto-referenced for compile). -->
     <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.Gpio.dll" target="lib\net48" />
+    <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.Gpio.xml" target="lib\net48" />
+
+    <!-- System.Device.Gpio compat DLL (Microsoft-style API), TinyCLR-impl. -->
+    <file src="$TargetDir$System.Device.Gpio.dll" target="lib\net48" />
+    <file src="$TargetDir$System.Device.Gpio.xml" target="lib\net48" />
+
+    <!-- desktop-shim/ : Desktop SHIM DLLs (no-op safe defaults). Copied to
+         bin\$Configuration$\ at AfterBuild via the .props file's Targets. -->
+    <file src="..\GHIElectronics.TinyCLR.Devices.Gpio.Desktop\bin\$Configuration$\GHIElectronics.TinyCLR.Devices.Gpio.dll" target="desktop-shim" />
+    <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.Gpio.xml" target="desktop-shim" />
+    <file src="..\GHIElectronics.TinyCLR.System.Device.Gpio.Desktop\bin\$Configuration$\System.Device.Gpio.dll" target="desktop-shim" />
+    <file src="$TargetDir$System.Device.Gpio.xml" target="desktop-shim" />
+    <!-- tinyclr/ : TinyCLR-IMPL DLLs (deploy artifact for the IDE). -->
+    <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.Gpio.dll" target="tinyclr" />
+    <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.Gpio.xml" target="tinyclr" />
+    <file src="$TargetDir$System.Device.Gpio.dll" target="tinyclr" />
+    <file src="$TargetDir$System.Device.Gpio.xml" target="tinyclr" />
+
+    <!-- Consumer-side props. -->
+    <file src="$ProjectDir$GHIElectronics.TinyCLR.Devices.Gpio.props" target="build\net48" />
   </files>
 </package>

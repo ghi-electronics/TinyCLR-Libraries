@@ -5,7 +5,7 @@
 namespace GHIElectronics.TinyCLR.Data.Xml
 {
     // Specifies how entities are handled in XmlTextReader and XmlValidatingReader.
-    public enum EntityHandling
+    internal enum EntityHandling
     {
         // Expand all entities. This is the default in XmlValidatingReader. No nodes with NodeType EntityReference will be returned.
         // The entity text is expanded in place of the entity references.

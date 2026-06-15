@@ -31,8 +31,10 @@ namespace GHIElectronics.TinyCLR.Devices.Modbus.Interface {
         /// If isResponse == true, this parameter must be called with the telegramContext parameter returned by ParseTelegram of the request telegram.</param>
         void CreateTelegram(byte addr, byte fkt, short dataLength, byte[] buffer, out short telegramLength, out short dataPos, bool isResponse, ref object telegramContext);
 
+        /// <summary>Prepares the interface for sending a telegram.</summary>
         void PrepareWrite();
 
+        /// <summary>Prepares the interface for receiving a telegram.</summary>
         void PrepareRead();
 
 

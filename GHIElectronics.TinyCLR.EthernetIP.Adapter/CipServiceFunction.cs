@@ -2,51 +2,13 @@
 // Based on OpENer library: Copyright (c) 2009, Rockwell Automation, Inc. ALL RIGHTS RESERVED.
 // EtherNet/IP is a trademark of ODVA, Inc.
 
-using System;
-using System.Collections;
-using System.Text;
-using System.Threading;
-
-namespace GHIElectronics.TinyCLR.EthernetIP.Adapter {
-    public partial class AdapterController {
-
-        public enum CipServiceFunctionCode : uint {
-            kGetAttributeAll = 0x01,
-            kSetAttributeAll = 0x02,
-            kGetAttributeList = 0x03,
-            kSetAttributeList = 0x04,
-            kReset = 0x05,
-            kStart = 0x06,
-            kStop = 0x07,
-            kCreate = 0x08,
-            kDelete = 0x09,
-            kMultipleServicePacket = 0x0A,
-            kApplyAttributes = 0x0D,
-            kGetAttributeSingle = 0x0E,
-            kSetAttributeSingle = 0x10,
-            kFindNextObjectInstance = 0x11,
-            kRestore = 0x15,
-            kSave = 0x16,
-            kNoOperation = 0x17,
-            kGetMember = 0x18,
-            kSetMember = 0x19,
-            kInsertMember = 0x1A,
-            kRemoveMember = 0x1B,
-            kGroupSync = 0x1C,
-            kGetConnectionPointMemberList = 0x1D,
-            /* End CIP common services */
-
-            /* Start CIP object-specific services */
-            kEthLinkGetAndClear = 0x4C, /**< Ethernet Link object's Get_And_Clear service */
-            kForwardOpen = 0x54,
-            kLargeForwardOpen = 0x5B,
-            kForwardClose = 0x4E,
-            kUnconnectedSend = 0x52,
-            kGetConnectionOwner = 0x5A,
-            kGetConnectionData = 0x56,
-            kSearchConnectionData = 0x57
-        }
-
-
-    }
-}
+// This file is intentionally empty after Phase 3 cleanup.
+//
+// The CipServiceFunctionCode enum that lived here was a byte-for-byte duplicate of
+// CIPServiceCode (see CIPServiceCode.cs). Both were just CIP service numbers — there
+// was no semantic difference between "which service number to record" and "which
+// handler to bind"; same values, different name. The InsertService method now takes
+// CIPServiceCode for both the serviceCode and handlerCode parameters.
+//
+// File kept (instead of deleted) so existing csproj references still resolve until
+// a follow-up commit removes the <Compile Include="CipServiceFunction.cs" /> line.

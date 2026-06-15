@@ -124,6 +124,7 @@ namespace System.Text.RegularExpressions
             return this._matches[cap][-3 - num];
         }
 
+        /// <summary>Returns a new match starting at the position where the previous match ended.</summary>
         public Match NextMatch()
         {
             //if (this._regex == null)
@@ -150,6 +151,7 @@ namespace System.Text.RegularExpressions
             this._balancing = false;
         }
 
+        /// <summary>Returns the expansion of the specified replacement pattern for this match.</summary>
         public virtual string Result(string replacement)
         {
             //if (replacement == null)
@@ -173,6 +175,7 @@ namespace System.Text.RegularExpressions
             return this._regex.Replace(this.Value, replacement);
         }
 
+        /// <summary>Returns a thread-safe wrapper around the specified match.</summary>
         //[System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.Synchronized)]
         public static Match Synchronized(Match inner)
         {
@@ -239,6 +242,7 @@ namespace System.Text.RegularExpressions
 
         #region Properties
 
+        /// <summary>The empty match that represents an unsuccessful match.</summary>
         public static Match Empty
         {
             get
@@ -247,6 +251,7 @@ namespace System.Text.RegularExpressions
             }
         }
 
+        /// <summary>The collection of groups matched by the regular expression.</summary>
         public virtual GroupCollection Groups
         {
             get

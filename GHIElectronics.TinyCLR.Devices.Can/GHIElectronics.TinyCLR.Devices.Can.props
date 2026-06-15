@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Reference Include="GHIElectronics.TinyCLR.Devices.Can">
+      <HintPath>$(MSBuildThisFileDirectory)..\..\lib\net48\GHIElectronics.TinyCLR.Devices.Can.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <_TinyCLRCanShimSource>$(MSBuildThisFileDirectory)..\..\desktop-shim\GHIElectronics.TinyCLR.Devices.Can.dll</_TinyCLRCanShimSource>
+    <_TinyCLRCanImplSource>$(MSBuildThisFileDirectory)..\..\tinyclr\GHIElectronics.TinyCLR.Devices.Can.dll</_TinyCLRCanImplSource>
+  </PropertyGroup>
+  <Target Name="CopyTinyCLRCanDesktopShim" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRCanShimSource)')">
+    <Copy SourceFiles="$(_TinyCLRCanShimSource)" DestinationFiles="$(OutDir)GHIElectronics.TinyCLR.Devices.Can.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
+  </Target>
+  <Target Name="CopyTinyCLRCanImplForDebugger" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRCanImplSource)')">
+    <Copy SourceFiles="$(_TinyCLRCanImplSource)" DestinationFiles="$(OutDir)pe\GHIElectronics.TinyCLR.Devices.Can.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
+  </Target>
+</Project>

@@ -10,8 +10,10 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
     /// Summary description for Image.
     /// </summary>
     public class Image : UIElement {
+        /// <summary>How the image is scaled to fill the control.</summary>
         public Stretch Stretch { get; set; } = Stretch.None;
 
+        /// <summary>The image to display.</summary>
         public ImageSource Source {
             get {
                 VerifyAccess();
@@ -27,6 +29,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
+        /// <summary>Measures the desired size based on the image and stretch mode.</summary>
         protected override void MeasureOverride(int availableWidth, int availableHeight, out int desiredWidth, out int desiredHeight) {
             desiredWidth = desiredHeight = 0;
             if (this._bitmap != null) {
@@ -37,15 +40,20 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                         break;
 
                     case Stretch.Fill:
-                        desiredWidth = this.Width;
-                        desiredHeight = this.Height;
+                        // Width/Height are optional with Stretch.Fill — when the
+                        // caller didn't specify, fall back to the bitmap's
+                        // natural size instead of throwing "width not set" and
+                        // tearing down the parent's paint pass.
+                        desiredWidth = this.IsWidthSet(out var fillW) ? fillW : this._bitmap.Width;
+                        desiredHeight = this.IsHeightSet(out var fillH) ? fillH : this._bitmap.Height;
                         break;
 
-                    default: throw new NotSupportedException();
+                    default: throw new NotSupportedException("Stretch value " + this.Stretch + " is not supported. Use Stretch.None or Stretch.Fill.");
                 }
             }
         }
 
+        /// <summary>Draws the image using the current stretch mode.</summary>
         public override void OnRender(DrawingContext dc) {
             var bmp = this._bitmap;
             if (bmp != null) {

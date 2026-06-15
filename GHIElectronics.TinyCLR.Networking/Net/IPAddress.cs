@@ -11,14 +11,19 @@ namespace System.Net {
     [Serializable]
     public class IPAddress {
 
+        /// <summary>An IP address that indicates any available address (0.0.0.0).</summary>
         public static readonly IPAddress Any = new IPAddress(0x0000000000000000);
+        /// <summary>The loopback IP address (127.0.0.1).</summary>
         public static readonly IPAddress Loopback = new IPAddress(0x000000000100007F);
+        /// <summary>The limited broadcast IP address (255.255.255.255).</summary>
         public static readonly IPAddress Broadcast = new IPAddress(0x00000000FFFFFFFF);
+        /// <summary>An IP address that indicates no address.</summary>
         public static readonly IPAddress None = Broadcast;
         internal long m_Address;
 
         private AddressFamily m_Family = AddressFamily.InterNetwork;
 
+        /// <summary>Initializes a new instance from an address specified as a 32-bit value.</summary>
         public IPAddress(long newAddress) {
             if (newAddress < 0 || newAddress > 0x00000000FFFFFFFF) {
                 throw new ArgumentOutOfRangeException();
@@ -27,18 +32,21 @@ namespace System.Net {
             this.m_Address = newAddress;
         }
 
+        /// <summary>Initializes a new instance from an address specified as a byte array.</summary>
         public IPAddress(byte[] newAddressBytes)
             : this(((((newAddressBytes[3] << 0x18) | (newAddressBytes[2] << 0x10)) | (newAddressBytes[1] << 0x08)) | newAddressBytes[0]) & ((long)0xFFFFFFFF)) {
         }
 
+        /// <summary>Determines whether the specified object is equal to this IP address.</summary>
         public override bool Equals(object obj) {
             var addr = obj as IPAddress;
 
-            if (obj == null) return false;
+            if (addr == null) return false;
 
             return this.m_Address == addr.m_Address;
         }
 
+        /// <summary>Returns the IP address as a byte array.</summary>
         public byte[] GetAddressBytes() => new byte[]
             {
                 (byte)(this.m_Address),
@@ -47,6 +55,19 @@ namespace System.Net {
                 (byte)(this.m_Address >> 24)
             };
 
+        /// <summary>Attempts to parse a string into an IP address, returning whether it succeeded.</summary>
+        public static bool TryParse(string ipString, out IPAddress address) {
+            try {
+                address = Parse(ipString);
+                return true;
+            }
+            catch {
+                address = null;
+                return false;
+            }
+        }
+
+        /// <summary>Parses a dotted-quad string into an IP address.</summary>
         public static IPAddress Parse(string ipString) {
             if (ipString == null)
                 throw new ArgumentNullException();
@@ -79,8 +100,43 @@ namespace System.Net {
             return new IPAddress((long)ipAddress);
         }
 
+        /// <summary>Returns a hash code for this IP address.</summary>
         public override int GetHashCode() => unchecked((int)this.m_Address);
 
+        // ----------------------------------------------------------------
+        // Static helpers — match full .NET surface so binary-protocol code
+        // (port packing, raw socket payloads) ports without conditionals.
+        // ----------------------------------------------------------------
+
+        /// <summary>Determines whether the specified IP address is a loopback address.</summary>
+        public static bool IsLoopback(IPAddress address) {
+            if (address == null) throw new ArgumentNullException(nameof(address));
+            // 127.0.0.0/8. Match any address whose first octet is 127.
+            return ((byte)address.m_Address) == 127;
+        }
+
+        /// <summary>Converts a 16-bit value from host byte order to network byte order.</summary>
+        public static short HostToNetworkOrder(short host) =>
+            unchecked((short)((host & 0xFF) << 8 | (host >> 8) & 0xFF));
+
+        /// <summary>Converts a 32-bit value from host byte order to network byte order.</summary>
+        public static int HostToNetworkOrder(int host) =>
+            unchecked((int)(((uint)HostToNetworkOrder((short)host) & 0xFFFF) << 16
+                         | ((uint)HostToNetworkOrder((short)(host >> 16)) & 0xFFFF)));
+
+        /// <summary>Converts a 64-bit value from host byte order to network byte order.</summary>
+        public static long HostToNetworkOrder(long host) =>
+            unchecked(((long)HostToNetworkOrder((int)host) & 0xFFFFFFFFL) << 32
+                   | ((long)HostToNetworkOrder((int)(host >> 32)) & 0xFFFFFFFFL));
+
+        /// <summary>Converts a 16-bit value from network byte order to host byte order.</summary>
+        public static short NetworkToHostOrder(short network) => HostToNetworkOrder(network);
+        /// <summary>Converts a 32-bit value from network byte order to host byte order.</summary>
+        public static int NetworkToHostOrder(int network) => HostToNetworkOrder(network);
+        /// <summary>Converts a 64-bit value from network byte order to host byte order.</summary>
+        public static long NetworkToHostOrder(long network) => HostToNetworkOrder(network);
+
+        /// <summary>Returns the IP address as a dotted-quad string.</summary>
         public override string ToString() => ((byte)(this.m_Address)).ToString() +
                     "." +
                     ((byte)(this.m_Address >> 8)).ToString() +
@@ -151,6 +207,7 @@ namespace System.Net {
             }
         }
 
+        /// <summary>The address family of the IP address.</summary>
         public AddressFamily AddressFamily
         {
             get

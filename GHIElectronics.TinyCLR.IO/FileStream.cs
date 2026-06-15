@@ -6,6 +6,7 @@ using GHIElectronics.TinyCLR.IO;
 
 namespace System.IO {
 
+    /// <summary>A read/write stream backed by a file on a mounted file system. Construct via <see cref="File.OpenRead(string)"/> / <see cref="File.OpenWrite(string)"/> / <see cref="File.Create(string)"/>.</summary>
     public class FileStream : Stream {
         internal const int TimeoutDefault = 5000;
         internal const int BufferSizeDefault = 0;
@@ -25,18 +26,22 @@ namespace System.IO {
 
         //--//
 
+        /// <summary>Opens the file at the path with the given mode.</summary>
         public FileStream(string path, FileMode mode)
             : this(path, mode, (mode == FileMode.Append ? FileAccess.Write : FileAccess.ReadWrite), FileShare.Read, FileStream.BufferSizeDefault) {
         }
 
+        /// <summary>Opens the file at the path with the given mode and access.</summary>
         public FileStream(string path, FileMode mode, FileAccess access)
             : this(path, mode, access, FileShare.Read, FileStream.BufferSizeDefault) {
         }
 
+        /// <summary>Opens the file at the path with the given mode, access, and sharing.</summary>
         public FileStream(string path, FileMode mode, FileAccess access, FileShare share)
             : this(path, mode, access, share, FileStream.BufferSizeDefault) {
         }
 
+        /// <summary>Opens the file at the path with the given mode, access, sharing, and buffer size.</summary>
         public FileStream(string path, FileMode mode, FileAccess access, FileShare share, int bufferSize) {
             // This will perform validation on path
             this._fileName = Path.GetFullPath(path);
@@ -136,6 +141,7 @@ namespace System.IO {
             }
         }
 
+        /// <summary>Closes the file and releases the stream's resources.</summary>
         protected override void Dispose(bool disposing) {
             if (!this._disposed) {
                 try {
@@ -168,11 +174,13 @@ namespace System.IO {
             this.Dispose(true);
         }
 
+        /// <summary>Flushes buffered data to the file.</summary>
         public override void Flush() {
             if (this._disposed) throw new ObjectDisposedException();
             this._nativeFileStream.Flush();
         }
 
+        /// <summary>Sets the length of the file.</summary>
         public override void SetLength(long value) {
             if (this._disposed) throw new ObjectDisposedException();
             if (!this.CanWrite || !this.CanSeek) throw new NotSupportedException();
@@ -181,6 +189,7 @@ namespace System.IO {
             this._nativeFileStream.Length = value;
         }
 
+        /// <summary>Reads bytes from the file into the buffer.</summary>
         public override int Read(byte[] buffer, int offset, int count) {
             if (this._disposed) throw new ObjectDisposedException();
             if (!this.CanRead) throw new NotSupportedException();
@@ -193,6 +202,7 @@ namespace System.IO {
             }
         }
 
+        /// <summary>Moves the file position.</summary>
         public override long Seek(long offset, SeekOrigin origin) {
             if (this._disposed) throw new ObjectDisposedException();
             if (!this.CanSeek) throw new NotSupportedException();
@@ -208,6 +218,7 @@ namespace System.IO {
             return newPosition;
         }
 
+        /// <summary>Writes bytes from the buffer to the file.</summary>
         public override void Write(byte[] buffer, int offset, int count) {
             if (this._disposed) throw new ObjectDisposedException();
             if (!this.CanWrite) throw new NotSupportedException();
@@ -231,14 +242,19 @@ namespace System.IO {
             }
         }
 
+        /// <summary>Whether the stream supports reading.</summary>
         public override bool CanRead => this.wantsRead && this._nativeFileStream.CanRead;
 
+        /// <summary>Whether the stream supports writing.</summary>
         public override bool CanWrite => !this.isReadOnly && this.wantsWrite && this._nativeFileStream.CanWrite;
 
+        /// <summary>Whether the stream supports seeking.</summary>
         public override bool CanSeek => this._nativeFileStream.CanSeek;
 
+        /// <summary>Whether the stream operates asynchronously; always false.</summary>
         public virtual bool IsAsync => false;
 
+        /// <summary>The length of the file in bytes.</summary>
         public override long Length {
             get {
                 if (this._disposed) throw new ObjectDisposedException();
@@ -248,8 +264,10 @@ namespace System.IO {
             }
         }
 
+        /// <summary>The full path of the file the stream was opened on.</summary>
         public string Name => this._fileName;
 
+        /// <summary>The current byte position within the file.</summary>
         public override long Position {
             get {
                 if (this._disposed) throw new ObjectDisposedException();

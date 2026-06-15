@@ -3,6 +3,7 @@ using System.Collections;
 
 namespace System.Text.RegularExpressions
 {
+    /// <summary>Represents the set of successful matches found by iteratively applying a regular expression pattern to the input string.</summary>
     [Serializable]
     public class MatchCollection : ICollection, IEnumerable
     {
@@ -40,6 +41,7 @@ namespace System.Text.RegularExpressions
 
         #region Methods
 
+        /// <summary>Copies all the elements of the collection to the given array starting at the given index.</summary>
         public void CopyTo(Array array, int arrayIndex)
         {
             int count = this.Count;
@@ -53,6 +55,7 @@ namespace System.Text.RegularExpressions
             }
         }
 
+        /// <summary>Returns an enumerator that iterates through the collection.</summary>
         public IEnumerator GetEnumerator()
         {
             return new MatchEnumerator(this);

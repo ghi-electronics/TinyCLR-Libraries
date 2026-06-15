@@ -158,6 +158,24 @@ namespace System {
 
         public override string ToString() => this.FullName;
 
+        // C# 9 records auto-generate code that compares the EqualityContract
+        // (a Type) via the `==` operator. Roslyn requires Type.op_Equality
+        // to be present in mscorlib or any `record` declaration fails with
+        // CS0656 "Missing compiler required member System.Type.op_Equality".
+        public static bool operator ==(Type left, Type right) {
+            if (object.ReferenceEquals(left, null)) return object.ReferenceEquals(right, null);
+            return left.Equals(right);
+        }
+        public static bool operator !=(Type left, Type right) => !(left == right);
+
+        // Type instances are interned by the runtime — there's exactly one Type
+        // per distinct CLR type — so the base Object reference-equality and
+        // identity-hash implementations give correct results. These overrides
+        // exist only to silence CS0660 / CS0661 (the compiler can't see that
+        // identity equality is the intended semantics for Type).
+        public override bool Equals(object obj) => base.Equals(obj);
+        public override int GetHashCode() => base.GetHashCode();
+
         // private convenience data
         private const BindingFlags DefaultLookup = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public;
 

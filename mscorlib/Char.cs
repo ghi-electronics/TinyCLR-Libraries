@@ -1,6 +1,6 @@
 namespace System {
     [Serializable]
-    public struct Char {
+    public struct Char : IComparable, IComparable<char> {
         //
         // Member Variables
         //
@@ -37,6 +37,29 @@ namespace System {
 
             return this.m_value;
         }
+
+        // Static forms that match BCL System.Char's API. Lets shared source
+        // (e.g. Data.Json on both TinyCLR and Desktop) use char.ToLower(c)
+        // instead of TinyCLR's instance-only c.ToLower().
+        public static char ToLower(char c) {
+            if ('A' <= c && c <= 'Z') return (char)(c - ('A' - 'a'));
+            return c;
+        }
+
+        public static char ToUpper(char c) {
+            if ('a' <= c && c <= 'z') return (char)(c + ('A' - 'a'));
+            return c;
+        }
+
+        public int CompareTo(char value) => this.m_value < value ? -1 : (this.m_value > value ? 1 : 0);
+        public int CompareTo(object obj) {
+            if (obj == null) return 1;
+            if (!(obj is char)) throw new ArgumentException();
+            return this.CompareTo((char)obj);
+        }
+
+        public override int GetHashCode() => this.m_value | (this.m_value << 16);
+        public override bool Equals(object obj) => obj is char c && c == this.m_value;
     }
 }
 
