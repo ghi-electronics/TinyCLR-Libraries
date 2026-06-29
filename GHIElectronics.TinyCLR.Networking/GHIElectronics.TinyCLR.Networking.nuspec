@@ -3,7 +3,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>GHIElectronics.TinyCLR.Networking</id>
-    <version>3.0.0.2000-prerelease</version>
+    <version>3.0.0.3000-prerelease</version>
     <authors>GHI Electronics, LLC</authors>
     <owners>GHI Electronics, LLC</owners>
     <projectUrl>https://ghielectronics.com/</projectUrl>
@@ -14,8 +14,8 @@
     <copyright>Copyright GHI Electronics, LLC 2022</copyright>
     <tags>TinyCLR TinyCLROS</tags>
     <dependencies>
-      <dependency id="GHIElectronics.TinyCLR.Core" version="3.0.0.2000-prerelease" />
-      <dependency id="GHIElectronics.TinyCLR.Native" version="3.0.0.2000-prerelease" />
+      <dependency id="GHIElectronics.TinyCLR.Core" version="3.0.0.3000-prerelease" />
+      <dependency id="GHIElectronics.TinyCLR.Native" version="3.0.0.3000-prerelease" />
     </dependencies>
   </metadata>
   <files>
@@ -24,7 +24,7 @@
          for compile (so user code sees TinyCLR's API) and AUTO-COPIES it
          to bin\$Configuration$\. The compile path uses this. -->
     <file src="$TargetDir$GHIElectronics.TinyCLR.Networking.dll" target="lib\net48" />
-
+
     <file src="$TargetDir$GHIElectronics.TinyCLR.Networking.xml" target="lib\net48" />
     <!-- desktop-shim/ : the Desktop SHIM DLL (TypeForwardedTo to framework
          System.dll). The .props file's <None Include> copies this to
@@ -32,13 +32,13 @@
          Result: bin\$Configuration$\ has the shim at Desktop runtime, which forwards
          type lookups to framework System.dll. -->
     <file src="..\GHIElectronics.TinyCLR.Networking.Desktop\bin\$Configuration$\GHIElectronics.TinyCLR.Networking.dll" target="desktop-shim" />
-
+
     <file src="$TargetDir$GHIElectronics.TinyCLR.Networking.xml" target="desktop-shim" />
     <!-- tinyclr/ : the TinyCLR-IMPL DLL again (same content as lib/net48/).
          The deploy step (DebugServer / VS Code extension) reads from this
          folder, MMP-processes the DLL into a .pe, sends to device. -->
     <file src="$TargetDir$GHIElectronics.TinyCLR.Networking.dll" target="tinyclr" />
-
+
     <file src="$TargetDir$GHIElectronics.TinyCLR.Networking.xml" target="tinyclr" />
     <!-- Consumer-side props: imported via NuGet package convention. -->
     <file src="$ProjectDir$GHIElectronics.TinyCLR.Networking.props" target="build\net48" />

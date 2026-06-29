@@ -3,7 +3,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>GHIElectronics.TinyCLR.Devices.I2c</id>
-    <version>3.0.0.2000-prerelease</version>
+    <version>3.0.0.3000-prerelease</version>
     <authors>GHI Electronics, LLC</authors>
     <owners>GHI Electronics, LLC</owners>
     <projectUrl>https://ghielectronics.com/</projectUrl>
@@ -14,23 +14,23 @@
     <copyright>Copyright GHI Electronics, LLC 2022</copyright>
     <tags>TinyCLR TinyCLROS</tags>
     <dependencies>
-      <dependency id="GHIElectronics.TinyCLR.Core" version="3.0.0.2000-prerelease" />
-      <dependency id="GHIElectronics.TinyCLR.Native" version="3.0.0.2000-prerelease" />
-      <dependency id="GHIElectronics.TinyCLR.Devices.Gpio" version="3.0.0.2000-prerelease" />
+      <dependency id="GHIElectronics.TinyCLR.Core" version="3.0.0.3000-prerelease" />
+      <dependency id="GHIElectronics.TinyCLR.Native" version="3.0.0.3000-prerelease" />
+      <dependency id="GHIElectronics.TinyCLR.Devices.Gpio" version="3.0.0.3000-prerelease" />
     </dependencies>
   </metadata>
   <files>
-    <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.I2c.dll" target="lib\net48" />
+    <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.I2c.dll" target="lib\net48" />
     <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.I2c.xml" target="lib\net48" />
-    <file src="$TargetDir$System.Device.I2c.dll" target="lib\net48" />
+    <file src="$TargetDir$System.Device.I2c.dll" target="lib\net48" />
     <file src="$TargetDir$System.Device.I2c.xml" target="lib\net48" />
-    <file src="..\GHIElectronics.TinyCLR.Devices.I2c.Desktop\bin\$Configuration$\GHIElectronics.TinyCLR.Devices.I2c.dll" target="desktop-shim" />
+    <file src="..\GHIElectronics.TinyCLR.Devices.I2c.Desktop\bin\$Configuration$\GHIElectronics.TinyCLR.Devices.I2c.dll" target="desktop-shim" />
     <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.I2c.xml" target="desktop-shim" />
-    <file src="..\GHIElectronics.TinyCLR.System.Device.I2c.Desktop\bin\$Configuration$\System.Device.I2c.dll" target="desktop-shim" />
+    <file src="..\GHIElectronics.TinyCLR.System.Device.I2c.Desktop\bin\$Configuration$\System.Device.I2c.dll" target="desktop-shim" />
     <file src="$TargetDir$System.Device.I2c.xml" target="desktop-shim" />
-    <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.I2c.dll" target="tinyclr" />
+    <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.I2c.dll" target="tinyclr" />
     <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.I2c.xml" target="tinyclr" />
-    <file src="$TargetDir$System.Device.I2c.dll" target="tinyclr" />
+    <file src="$TargetDir$System.Device.I2c.dll" target="tinyclr" />
     <file src="$TargetDir$System.Device.I2c.xml" target="tinyclr" />
     <file src="$ProjectDir$GHIElectronics.TinyCLR.Devices.I2c.props" target="build\net48" />
   </files>

@@ -554,6 +554,14 @@
             Windows app.
             </remarks>
         </member>
+        <member name="P:System.Net.HttpWebRequest.SslVerification">
+            <summary>
+            Gets or sets how the server's certificate is verified during the TLS
+            handshake. Default <see cref="F:System.Security.Authentication.SslVerification.Optional"/>. Set to
+            <see cref="F:System.Security.Authentication.SslVerification.None"/> to accept ANY server certificate.
+            On Desktop this installs an accept-all validation callback.
+            </summary>
+        </member>
         <member name="P:System.Net.HttpWebRequest.ReadWriteTimeout">
             <summary>
             Gets or sets a timeout in milliseconds when writing to or reading

@@ -9,6 +9,7 @@ namespace System.Net {
     using System.IO;
     using System.Net.Security;
     using System.Net.Sockets;
+    using System.Security.Authentication;
     using System.Security.Cryptography.X509Certificates;
     using System.Text;
     using System.Threading;
@@ -205,6 +206,13 @@ namespace System.Net {
         /// </remarks>
         X509Certificate[] m_caCerts;
 
+        // TinyCLR-only: how the server certificate is verified during the TLS
+        // handshake for https. Default Optional preserves historical behavior
+        // (validate against HttpsAuthentCerts; with no CA the handshake fails -
+        // the device has no certificate trust store). Set to SslVerification.None
+        // to accept ANY server certificate without a root CA.
+        SslVerification m_sslVerification = SslVerification.Optional;
+
         /// <summary>
         /// The number of people using the connection.  Must reference-count this
         /// stuff.  Except reference counting is apparently insufficient.  I'm going to flag each section
@@ -340,6 +348,25 @@ namespace System.Net {
         public X509Certificate[] HttpsAuthentCerts {
             get => this.m_caCerts;
             set => this.m_caCerts = value;
+        }
+
+        /// <summary>
+        /// Gets or sets how the server's certificate is verified during the TLS
+        /// handshake for https requests. Default <see cref="SslVerification.Optional"/>.
+        /// Set to <see cref="SslVerification.None"/> to accept ANY server certificate
+        /// without a root CA (the device has no certificate trust store) - the
+        /// embedded equivalent of <c>curl -k</c>.
+        /// </summary>
+        /// <remarks>
+        /// <b>TinyCLR-only extension.</b> <see cref="SslVerification.None"/> disables
+        /// authentication of the server and is vulnerable to man-in-the-middle
+        /// attacks; prefer pinning the server's long-lived root CA via
+        /// <see cref="HttpsAuthentCerts"/>. On the Desktop sibling, None maps to an
+        /// accept-all server-certificate validation callback.
+        /// </remarks>
+        public SslVerification SslVerification {
+            get => this.m_sslVerification;
+            set => this.m_sslVerification = value;
         }
 
         /// <summary>
@@ -1318,11 +1345,12 @@ namespace System.Net {
                     // Once connection estiblished need to create secure stream and authenticate server.
                     var sslStream = new SslStream(retStream.m_Socket);
 
-                    // Throws exception is fails.
-                    if (this.m_caCerts != null)
-                        sslStream.AuthenticateAsClient(this.m_originalUrl.Host, this.m_caCerts[0]);
-                    else
-                        sslStream.AuthenticateAsClient(this.m_originalUrl.Host);
+                    // Throws if the handshake / server-cert verification fails. Pass the
+                    // caller-selected verification mode through the full overload so
+                    // SslVerification.None can accept a server cert with no root CA.
+                    // (Default Optional + caCert is identical to the previous behavior.)
+                    var caCert = this.m_caCerts != null ? this.m_caCerts[0] : null;
+                    sslStream.AuthenticateAsClient(this.m_originalUrl.Host, caCert, null, SslProtocols.None, this.m_sslVerification);
 
                     // Changes the stream to SSL stream.
                     retStream.m_Stream = sslStream;

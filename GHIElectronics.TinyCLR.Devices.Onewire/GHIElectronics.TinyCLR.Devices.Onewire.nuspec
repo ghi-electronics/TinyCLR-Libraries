@@ -3,7 +3,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>GHIElectronics.TinyCLR.Devices.Onewire</id>
-    <version>3.0.0.2000-prerelease</version>
+    <version>3.0.0.3000-prerelease</version>
     <authors>GHI Electronics, LLC</authors>
     <owners>GHI Electronics, LLC</owners>
     <projectUrl>https://ghielectronics.com/</projectUrl>
@@ -14,16 +14,16 @@
     <copyright>Copyright GHI Electronics, LLC 2022</copyright>
     <tags>TinyCLR TinyCLROS</tags>
     <dependencies>
-      <dependency id="GHIElectronics.TinyCLR.Core" version="3.0.0.2000-prerelease" />
-      <dependency id="GHIElectronics.TinyCLR.Native" version="3.0.0.2000-prerelease" />
+      <dependency id="GHIElectronics.TinyCLR.Core" version="3.0.0.3000-prerelease" />
+      <dependency id="GHIElectronics.TinyCLR.Native" version="3.0.0.3000-prerelease" />
     </dependencies>
   </metadata>
   <files>
-    <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.Onewire.dll" target="lib\net48" />
+    <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.Onewire.dll" target="lib\net48" />
     <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.Onewire.xml" target="lib\net48" />
-    <file src="..\GHIElectronics.TinyCLR.Devices.Onewire.Desktop\bin\$Configuration$\GHIElectronics.TinyCLR.Devices.Onewire.dll" target="desktop-shim" />
+    <file src="..\GHIElectronics.TinyCLR.Devices.Onewire.Desktop\bin\$Configuration$\GHIElectronics.TinyCLR.Devices.Onewire.dll" target="desktop-shim" />
     <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.Onewire.xml" target="desktop-shim" />
-    <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.Onewire.dll" target="tinyclr" />
+    <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.Onewire.dll" target="tinyclr" />
     <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.Onewire.xml" target="tinyclr" />
     <file src="$ProjectDir$GHIElectronics.TinyCLR.Devices.Onewire.props" target="build\net48" />
   </files>

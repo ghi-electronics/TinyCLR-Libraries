@@ -40,7 +40,7 @@
        MMP processed into the .pe. -->
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Reference Include="GHIElectronics.TinyCLR.Networking">
+    <Reference Include="GHIElectronics.TinyCLR.Networking" Condition="'$(NuGetProjectStyle)' != 'PackageReference'">
       <HintPath>$(MSBuildThisFileDirectory)..\..\lib\net48\GHIElectronics.TinyCLR.Networking.dll</HintPath>
       <Private>False</Private>
     </Reference>

@@ -9,6 +9,7 @@ namespace System.Net {
     using System.IO;
     using System.Net.Security;
     using System.Net.Sockets;
+    using System.Security.Authentication;
     using System.Security.Cryptography.X509Certificates;
     using System.Text;
     using System.Threading;
@@ -205,6 +206,11 @@ namespace System.Net {
         /// </remarks>
         X509Certificate[] m_caCerts;
 
+        // Mirrors the device HttpWebRequest. On Desktop, None installs an
+        // accept-all RemoteCertificateValidationCallback; otherwise the Windows
+        // trust store validates the chain (so HttpsAuthentCerts stays unused here).
+        SslVerification m_sslVerification = SslVerification.Optional;
+
         /// <summary>
         /// The number of people using the connection.  Must reference-count this
         /// stuff.  Except reference counting is apparently insufficient.  I'm going to flag each section
@@ -340,6 +346,17 @@ namespace System.Net {
         public X509Certificate[] HttpsAuthentCerts {
             get => this.m_caCerts;
             set => this.m_caCerts = value;
+        }
+
+        /// <summary>
+        /// Gets or sets how the server's certificate is verified during the TLS
+        /// handshake. Default <see cref="SslVerification.Optional"/>. Set to
+        /// <see cref="SslVerification.None"/> to accept ANY server certificate.
+        /// On Desktop this installs an accept-all validation callback.
+        /// </summary>
+        public SslVerification SslVerification {
+            get => this.m_sslVerification;
+            set => this.m_sslVerification = value;
         }
 
         /// <summary>
@@ -1319,7 +1336,16 @@ namespace System.Net {
                     // NetworkStream-typed m_Stream), and AuthenticateAsClient(host) does the
                     // TLS handshake using the Windows certificate store for chain validation.
                     // TinyCLR's m_caCerts are unused here — Windows trusts the standard root CAs.
-                    var sslStream = new SslStream(retStream.m_Stream, leaveInnerStreamOpen: false);
+                    // SslVerification.None -> accept ANY server cert (mirrors the device's
+                    // mbedTLS VERIFY_NONE). Otherwise let the Windows trust store validate.
+                    SslStream sslStream;
+                    if (this.m_sslVerification == SslVerification.None) {
+                        sslStream = new SslStream(retStream.m_Stream, leaveInnerStreamOpen: false,
+                            (sender, certificate, chain, sslPolicyErrors) => true);
+                    }
+                    else {
+                        sslStream = new SslStream(retStream.m_Stream, leaveInnerStreamOpen: false);
+                    }
                     sslStream.AuthenticateAsClient(this.m_originalUrl.Host);
                     retStream.m_Stream = sslStream;
 
