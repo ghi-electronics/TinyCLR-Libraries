@@ -5,7 +5,7 @@
      on why a Target is used instead of <None Include>. -->
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Reference Include="GHIElectronics.TinyCLR.RuntimeLoadableProcedures" Condition="'$(NuGetProjectStyle)' != 'PackageReference'">
+    <Reference Include="GHIElectronics.TinyCLR.RuntimeLoadableProcedures" Condition="Exists('$(MSBuildProjectDirectory)\packages.config')">
       <HintPath>$(MSBuildThisFileDirectory)..\..\lib\net48\GHIElectronics.TinyCLR.RuntimeLoadableProcedures.dll</HintPath>
       <Private>False</Private>
     </Reference>

@@ -4,7 +4,7 @@
      mechanism. See the Networking / Native equivalents for full rationale. -->
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Reference Include="GHIElectronics.TinyCLR.Devices.Gpio" Condition="'$(NuGetProjectStyle)' != 'PackageReference'">
+    <Reference Include="GHIElectronics.TinyCLR.Devices.Gpio" Condition="Exists('$(MSBuildProjectDirectory)\packages.config')">
       <HintPath>$(MSBuildThisFileDirectory)..\..\lib\net48\GHIElectronics.TinyCLR.Devices.Gpio.dll</HintPath>
       <Private>False</Private>
     </Reference>
