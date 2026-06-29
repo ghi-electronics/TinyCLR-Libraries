@@ -28,7 +28,7 @@
        impl. Copying the shim via an AfterBuild target sidesteps RAR. -->
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Reference Include="GHIElectronics.TinyCLR.Native" Condition="Exists('$(MSBuildProjectDirectory)\packages.config')">
+    <Reference Include="GHIElectronics.TinyCLR.Native">
       <HintPath>$(MSBuildThisFileDirectory)..\..\lib\net48\GHIElectronics.TinyCLR.Native.dll</HintPath>
       <Private>False</Private>
     </Reference>
