@@ -3,7 +3,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>GHIElectronics.TinyCLR.RuntimeLoadableProcedures</id>
-    <version>3.0.0.2000-prerelease</version>
+    <version>3.0.0.3000-prerelease</version>
     <authors>GHI Electronics, LLC</authors>
     <owners>GHI Electronics, LLC</owners>
     <projectUrl>https://ghielectronics.com/</projectUrl>
@@ -14,8 +14,8 @@
     <copyright>Copyright GHI Electronics, LLC 2026</copyright>
     <tags>TinyCLR TinyCLROS RLP Native</tags>
     <dependencies>
-      <dependency id="GHIElectronics.TinyCLR.Core" version="3.0.0.2000-prerelease" />
-      <dependency id="GHIElectronics.TinyCLR.Native" version="3.0.0.2000-prerelease" />
+      <dependency id="GHIElectronics.TinyCLR.Core" version="3.0.0.3000-prerelease" />
+      <dependency id="GHIElectronics.TinyCLR.Native" version="3.0.0.3000-prerelease" />
     </dependencies>
   </metadata>
   <files>
@@ -23,17 +23,17 @@
          packages.config NuGet. Compile-time only — .props sets Private=False
          so it does NOT end up in bin\$Configuration$\. -->
     <file src="$TargetDir$GHIElectronics.TinyCLR.RuntimeLoadableProcedures.dll" target="lib\net48" />
-
+
     <file src="$TargetDir$GHIElectronics.TinyCLR.RuntimeLoadableProcedures.xml" target="lib\net48" />
     <!-- desktop-shim/ : Desktop SHIM DLL (no-op safe defaults). Copied to
          bin\$Configuration$\ at AfterBuild via a Target in the .props file. -->
     <file src="..\GHIElectronics.TinyCLR.RuntimeLoadableProcedures.Desktop\bin\$Configuration$\GHIElectronics.TinyCLR.RuntimeLoadableProcedures.dll" target="desktop-shim" />
-
+
     <file src="$TargetDir$GHIElectronics.TinyCLR.RuntimeLoadableProcedures.xml" target="desktop-shim" />
     <!-- tinyclr/ : TinyCLR-IMPL DLL again. Read by the deploy step
          (DebugServer / VS extension), MMP'd into a .pe and pushed to device. -->
     <file src="$TargetDir$GHIElectronics.TinyCLR.RuntimeLoadableProcedures.dll" target="tinyclr" />
-
+
     <file src="$TargetDir$GHIElectronics.TinyCLR.RuntimeLoadableProcedures.xml" target="tinyclr" />
     <!-- Consumer-side props: imported via NuGet package convention. -->
     <file src="$ProjectDir$GHIElectronics.TinyCLR.RuntimeLoadableProcedures.props" target="build\net48" />
