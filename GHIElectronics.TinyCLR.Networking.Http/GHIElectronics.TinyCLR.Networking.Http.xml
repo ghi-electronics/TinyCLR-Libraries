@@ -1458,6 +1458,22 @@
             Windows app.
             </remarks>
         </member>
+        <member name="P:System.Net.HttpWebRequest.SslVerification">
+            <summary>
+            Gets or sets how the server's certificate is verified during the TLS
+            handshake for https requests. Default <see cref="F:System.Security.Authentication.SslVerification.Optional"/>.
+            Set to <see cref="F:System.Security.Authentication.SslVerification.None"/> to accept ANY server certificate
+            without a root CA (the device has no certificate trust store) - the
+            embedded equivalent of <c>curl -k</c>.
+            </summary>
+            <remarks>
+            <b>TinyCLR-only extension.</b> <see cref="F:System.Security.Authentication.SslVerification.None"/> disables
+            authentication of the server and is vulnerable to man-in-the-middle
+            attacks; prefer pinning the server's long-lived root CA via
+            <see cref="P:System.Net.HttpWebRequest.HttpsAuthentCerts"/>. On the Desktop sibling, None maps to an
+            accept-all server-certificate validation callback.
+            </remarks>
+        </member>
         <member name="P:System.Net.HttpWebRequest.ReadWriteTimeout">
             <summary>
             Gets or sets a timeout in milliseconds when writing to or reading
