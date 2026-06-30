@@ -31,6 +31,50 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             this.InitResource();
 
             this.Background = Theme.ControlSurfaceBrush;
+
+            // A button centers its content by default (WPF/WinForms convention), so a
+            // Text child lands in the middle instead of the top-left of the button face.
+            this.HorizontalContentAlignment = HorizontalAlignment.Center;
+            this.VerticalContentAlignment = VerticalAlignment.Center;
+        }
+
+        /// <summary>Places the content (<see cref="ContentControl.Child"/>) inside the button face according to
+        /// <see cref="ContentControl.HorizontalContentAlignment"/> / <see cref="ContentControl.VerticalContentAlignment"/>.
+        /// For the default Center/Center this sizes the child to its desired size and centers it; Stretch fills the
+        /// face (the pre-existing behavior).</summary>
+        protected override void ArrangeOverride(int arrangeWidth, int arrangeHeight) {
+            var child = this.Child;
+            if (child == null) {
+                return;
+            }
+
+            child.GetDesiredSize(out var desiredWidth, out var desiredHeight);
+            ArrangeContentAxis((int)this.HorizontalContentAlignment, arrangeWidth, desiredWidth, out var x, out var w);
+            ArrangeContentAxis((int)this.VerticalContentAlignment, arrangeHeight, desiredHeight, out var y, out var h);
+            child.Arrange(x, y, w, h);
+        }
+
+        // Shared by both axes (HorizontalAlignment and VerticalAlignment share Stretch/near/center/far ordinals).
+        private static void ArrangeContentAxis(int alignment, int container, int desired, out int offset, out int size) {
+            // Stretch (0): fill the face; the child's own alignment then applies inside.
+            if (alignment == (int)HorizontalAlignment.Stretch) {
+                offset = 0;
+                size = container;
+                return;
+            }
+
+            size = (desired < container) ? desired : container;
+
+            // Left/Top (1) = start, Center (2), Right/Bottom (3) = end.
+            if (alignment == (int)HorizontalAlignment.Center) {
+                offset = (container - size) / 2;
+            }
+            else if (alignment == (int)HorizontalAlignment.Right) {
+                offset = container - size;
+            }
+            else {
+                offset = 0;
+            }
         }
 
         /// <summary>Raised when the button is clicked.</summary>

@@ -413,6 +413,12 @@
         <member name="M:GHIElectronics.TinyCLR.UI.Controls.Button.#ctor">
             <summary>Creates a new Button.</summary>
         </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Button.ArrangeOverride(System.Int32,System.Int32)">
+            <summary>Places the content (<see cref="P:GHIElectronics.TinyCLR.UI.Controls.ContentControl.Child"/>) inside the button face according to
+            <see cref="P:GHIElectronics.TinyCLR.UI.Controls.ContentControl.HorizontalContentAlignment"/> / <see cref="P:GHIElectronics.TinyCLR.UI.Controls.ContentControl.VerticalContentAlignment"/>.
+            For the default Center/Center this sizes the child to its desired size and centers it; Stretch fills the
+            face (the pre-existing behavior).</summary>
+        </member>
         <member name="E:GHIElectronics.TinyCLR.UI.Controls.Button.Click">
             <summary>Raised when the button is clicked.</summary>
         </member>
@@ -630,6 +636,16 @@
         </member>
         <member name="T:GHIElectronics.TinyCLR.UI.Controls.ContentControl">
             <summary>Base class for controls that host a single child element.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.ContentControl.HorizontalContentAlignment">
+            <summary>Horizontal placement of <see cref="P:GHIElectronics.TinyCLR.UI.Controls.ContentControl.Child"/> within this control's content area.
+            <see cref="F:GHIElectronics.TinyCLR.UI.HorizontalAlignment.Stretch"/> (the default) gives the child the full width and lets the
+            child's own <see cref="P:GHIElectronics.TinyCLR.UI.UIElement.HorizontalAlignment"/> take effect (back-compat). Derived controls
+            such as <see cref="T:GHIElectronics.TinyCLR.UI.Controls.Button"/> default this to <see cref="F:GHIElectronics.TinyCLR.UI.HorizontalAlignment.Center"/>.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.ContentControl.VerticalContentAlignment">
+            <summary>Vertical placement of <see cref="P:GHIElectronics.TinyCLR.UI.Controls.ContentControl.Child"/> within this control's content area.
+            See <see cref="P:GHIElectronics.TinyCLR.UI.Controls.ContentControl.HorizontalContentAlignment"/> for the Stretch/back-compat semantics.</summary>
         </member>
         <member name="P:GHIElectronics.TinyCLR.UI.Controls.ContentControl.Child">
             <summary>The single child element hosted by this control.</summary>
