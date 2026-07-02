@@ -46,6 +46,12 @@
     <Compile Include="Controls\ComboBox.cs" />
     <Compile Include="Controls\Grid.cs" />
     <Compile Include="Controls\Gauge.cs" />
+    <Compile Include="Controls\GroupBox.cs" />
+    <Compile Include="Controls\Expander.cs" />
+    <Compile Include="Controls\TabControl.cs" />
+    <Compile Include="Controls\TreeView.cs" />
+    <Compile Include="Controls\Calendar.cs" />
+    <Compile Include="Controls\Menu.cs" />
     <Compile Include="Controls\ListBoxItemHighlightable.cs" />
     <Compile Include="Controls\MessageBox.cs" />
     <Compile Include="Controls\ProgressBar.cs" />

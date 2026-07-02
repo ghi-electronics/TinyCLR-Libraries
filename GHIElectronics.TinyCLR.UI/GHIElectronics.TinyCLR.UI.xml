@@ -784,6 +784,209 @@
         <member name="M:GHIElectronics.TinyCLR.UI.Controls.Gauge.OnRender(GHIElectronics.TinyCLR.UI.Media.DrawingContext)">
             <summary>Draws the dial face and pointer needle.</summary>
         </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Controls.GroupBox">
+            <summary>A titled frame around a single child: draws a labelled border with the header above the content.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.GroupBox.Header">
+            <summary>The title shown above the frame. Uses the inherited <see cref="P:GHIElectronics.TinyCLR.UI.Controls.Control.Font"/>.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.GroupBox.BorderColor">
+            <summary>The colour of the frame border.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.GroupBox.HeaderColor">
+            <summary>The colour of the header text.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.GroupBox.MeasureOverride(System.Int32,System.Int32,System.Int32@,System.Int32@)">
+            <summary>Measures the child plus the header + frame padding.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.GroupBox.ArrangeOverride(System.Int32,System.Int32)">
+            <summary>Arranges the child inside the frame, below the header.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.GroupBox.OnRender(GHIElectronics.TinyCLR.UI.Media.DrawingContext)">
+            <summary>Draws the frame border and the header text.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Controls.Expander">
+            <summary>A header with an expand/collapse chevron; tapping the header shows or hides the single child content.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Expander.Header">
+            <summary>The header text (always visible). Uses the inherited <see cref="P:GHIElectronics.TinyCLR.UI.Controls.Control.Font"/>.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Expander.HeaderColor">
+            <summary>The colour of the header text and chevron.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Expander.IsExpanded">
+            <summary>Whether the content is shown. Tapping the header toggles this.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Expander.OnTouchUp(GHIElectronics.TinyCLR.UI.Input.TouchEventArgs)">
+            <summary>Toggles expansion when the header row is tapped.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Expander.MeasureOverride(System.Int32,System.Int32,System.Int32@,System.Int32@)">
+            <summary>Measures the header plus (when expanded) the child.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Expander.ArrangeOverride(System.Int32,System.Int32)">
+            <summary>Arranges the child below the header (zero size when collapsed).</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Expander.OnRender(GHIElectronics.TinyCLR.UI.Media.DrawingContext)">
+            <summary>Draws the chevron + header text + a separator line under the header.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Controls.TabControl">
+            <summary>A tabbed container: a strip of tab headers over a body that shows the selected tab's content.
+            Add tabs with <see cref="M:GHIElectronics.TinyCLR.UI.Controls.TabControl.AddTab(System.String,GHIElectronics.TinyCLR.UI.UIElement)"/>; tapping a header selects it.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.TabControl.TabColor">
+            <summary>Fill of an unselected tab header.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.TabControl.SelectedTabColor">
+            <summary>Fill of the selected tab header (and the body).</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.TabControl.HeaderColor">
+            <summary>Colour of the header text and separators.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.TabControl.HeaderHeight">
+            <summary>Height in pixels of the tab-header strip.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.TabControl.SelectedIndex">
+            <summary>The index of the visible tab. May be set before tabs are added (it is clamped when rendering).</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.TabControl.AddTab(System.String,GHIElectronics.TinyCLR.UI.UIElement)">
+            <summary>Adds a tab with the given header text and content element.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.TabControl.MeasureOverride(System.Int32,System.Int32,System.Int32@,System.Int32@)">
+            <summary>Measures every tab's content against the body area.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.TabControl.ArrangeOverride(System.Int32,System.Int32)">
+            <summary>Arranges the selected tab's content in the body; collapses the rest.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.TabControl.OnTouchUp(GHIElectronics.TinyCLR.UI.Input.TouchEventArgs)">
+            <summary>Selects the tapped tab header.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.TabControl.OnRender(GHIElectronics.TinyCLR.UI.Media.DrawingContext)">
+            <summary>Draws the tab-header strip.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Controls.TreeNode">
+            <summary>A node in a <see cref="T:GHIElectronics.TinyCLR.UI.Controls.TreeView"/>: a header plus optional child nodes.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Controls.TreeNode.Header">
+            <summary>The text shown for this node.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Controls.TreeNode.IsExpanded">
+            <summary>Whether the node's children are shown.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Controls.TreeNode.Children">
+            <summary>The child nodes.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.TreeNode.#ctor(System.String)">
+            <summary>Creates a node with the given header.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.TreeNode.Add(GHIElectronics.TinyCLR.UI.Controls.TreeNode)">
+            <summary>Adds a child node.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Controls.TreeView">
+            <summary>A hierarchical list of <see cref="T:GHIElectronics.TinyCLR.UI.Controls.TreeNode"/>s with expand/collapse. Tapping a node's chevron toggles
+            its children; tapping the row selects it.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.TreeView.RowHeight">
+            <summary>Row height in pixels.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.TreeView.HeaderColor">
+            <summary>Colour of node text.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.TreeView.SelectionColor">
+            <summary>Fill behind the selected row.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.TreeView.AddNode(GHIElectronics.TinyCLR.UI.Controls.TreeNode)">
+            <summary>Adds a top-level node.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.TreeView.MeasureOverride(System.Int32,System.Int32,System.Int32@,System.Int32@)">
+            <summary>Reports the full height of all visible rows.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.TreeView.OnTouchUp(GHIElectronics.TinyCLR.UI.Input.TouchEventArgs)">
+            <summary>Toggles a node's expansion (chevron zone) or selects the tapped row.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.TreeView.OnRender(GHIElectronics.TinyCLR.UI.Media.DrawingContext)">
+            <summary>Draws each visible node with indentation, a chevron for parents, and the header text.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Controls.Calendar">
+            <summary>A month calendar: a header with prev/next month arrows, a day-of-week row, and a grid of day cells.
+            Tapping the arrows changes the month; tapping a day selects it.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Calendar.ForeColor">
+            <summary>Colour of the day / header text.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Calendar.SelectionColor">
+            <summary>Fill behind the selected day.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Calendar.#ctor">
+            <summary>Creates a calendar showing the current month.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Calendar.Year">
+            <summary>The displayed year.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Calendar.Month">
+            <summary>The displayed month (1-12).</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Calendar.SelectedDay">
+            <summary>The selected day of month (0 = none).</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Calendar.MeasureOverride(System.Int32,System.Int32,System.Int32@,System.Int32@)">
+            <summary>Reports the full grid height (header + day-of-week row + 6 week rows).</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Calendar.OnTouchUp(GHIElectronics.TinyCLR.UI.Input.TouchEventArgs)">
+            <summary>Handles taps on the prev/next arrows and the day cells.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Calendar.OnRender(GHIElectronics.TinyCLR.UI.Media.DrawingContext)">
+            <summary>Draws the header, weekday initials, and the day grid.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Controls.MenuEntry">
+            <summary>An entry in a <see cref="T:GHIElectronics.TinyCLR.UI.Controls.Menu"/>: a header plus optional sub-items.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Controls.MenuEntry.Header">
+            <summary>The text shown for this entry.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Controls.MenuEntry.Children">
+            <summary>The sub-items shown when this top-level entry is opened.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.MenuEntry.#ctor(System.String)">
+            <summary>Creates an entry with the given header.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.MenuEntry.Add(GHIElectronics.TinyCLR.UI.Controls.MenuEntry)">
+            <summary>Adds a sub-item.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Controls.Menu">
+            <summary>A simple two-level menu bar: a row of top-level entries; tapping one opens its sub-items as an inline
+            dropdown drawn within the control's bounds. (Embedded UIs have no popup layer, so size the Menu tall enough to
+            show the open dropdown.) Tapping a sub-item raises <see cref="E:GHIElectronics.TinyCLR.UI.Controls.Menu.ItemClick"/>.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Menu.BarColor">
+            <summary>Fill of the menu bar.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Menu.DropColor">
+            <summary>Fill of an open dropdown.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Menu.ForeColor">
+            <summary>Colour of the entry text.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Menu.ItemWidth">
+            <summary>Width in pixels of each top-level bar entry.</summary>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.UI.Controls.Menu.ItemClick">
+            <summary>Raised when a sub-item is tapped; the argument is its header text.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Menu.AddItem(GHIElectronics.TinyCLR.UI.Controls.MenuEntry)">
+            <summary>Adds a top-level entry.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Menu.MeasureOverride(System.Int32,System.Int32,System.Int32@,System.Int32@)">
+            <summary>Reports the bar height (the open dropdown draws within the control's assigned height).</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Menu.OnTouchUp(GHIElectronics.TinyCLR.UI.Input.TouchEventArgs)">
+            <summary>Opens/closes a top entry, or selects a sub-item.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Menu.OnRender(GHIElectronics.TinyCLR.UI.Media.DrawingContext)">
+            <summary>Draws the bar and (if open) the dropdown.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Controls.MenuItemClickHandler">
+            <summary>Handles a <see cref="E:GHIElectronics.TinyCLR.UI.Controls.Menu.ItemClick"/> event.</summary>
+        </member>
         <member name="T:GHIElectronics.TinyCLR.UI.Controls.ListBoxItemHighlightable">
             <summary>A list box item that highlights its text and background when selected.</summary>
         </member>
