@@ -12,6 +12,9 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         public ushort Alpha { get; set; } = Theme.DefaultAlpha;
         /// <summary>Corner radius used by the nine-slice button image.</summary>
         public int RadiusBorder { get; set; } = Theme.DefaultRadiusBorder;
+        /// <summary>Optional custom face image, nine-slice scaled with <see cref="RadiusBorder"/>. When set it replaces
+        /// the default themed button skin (and takes priority over <see cref="Control.Background"/>).</summary>
+        public ImageSource BackgroundImage { get; set; }
 
         // Cached events - allocated once per AppDomain, not per click. Each
         // click still needs a fresh RoutedEventArgs, but the event identity
@@ -30,7 +33,8 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         public Button() {
             this.InitResource();
 
-            this.Background = Theme.ControlSurfaceBrush;
+            // Background is left null so a default button paints the themed nine-slice skin (see OnRender). Set
+            // Background to a SolidColorBrush for a flat coloured button, or BackgroundImage for a custom face.
 
             // A button centers its content by default (WPF/WinForms convention), so a
             // Text child lands in the middle instead of the top-left of the button face.
@@ -208,8 +212,30 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             if (w <= 0 || h <= 0) return;
 
             var alpha = (this.IsEnabled) ? this.Alpha : (ushort)(this.Alpha / 2);
+            var pressed = this.isPressed && this.IsEnabled;
 
-            var img = (this.isPressed && this.IsEnabled) ? this.bitmapImageButtonDown : this.bitmapImageButtonUp;
+            // 1) Custom face image (nine-slice) — highest priority.
+            if (this.BackgroundImage != null) {
+                var a = pressed ? (ushort)(alpha * 3 / 4) : alpha; // dim slightly when pressed
+                dc.Scale9Image(0, 0, w, h, this.BackgroundImage, this.RadiusBorder, this.RadiusBorder, this.RadiusBorder, this.RadiusBorder, a);
+                return;
+            }
+
+            // 2) Flat colour — when the caller set a SolidColorBrush Background. Fill + a darker border, darkened on press.
+            if (this.Background is SolidColorBrush scb) {
+                // Media.-qualified: the dual-mode Desktop build also has System.Drawing.Color/Pen in scope.
+                var c = scb.Color;
+                if (pressed) {
+                    c = Media.Color.FromArgb(c.A, (byte)(c.R * 4 / 5), (byte)(c.G * 4 / 5), (byte)(c.B * 4 / 5));
+                }
+
+                var border = Media.Color.FromArgb(0xFF, (byte)(c.R * 3 / 5), (byte)(c.G * 3 / 5), (byte)(c.B * 3 / 5));
+                dc.DrawRectangle(new SolidColorBrush(c), new Media.Pen(border, 1), 0, 0, w, h);
+                return;
+            }
+
+            // 3) Default themed skin.
+            var img = pressed ? this.bitmapImageButtonDown : this.bitmapImageButtonUp;
             dc.Scale9Image(0, 0, w, h, img, this.RadiusBorder, this.RadiusBorder, this.RadiusBorder, this.RadiusBorder, alpha);
         }
 

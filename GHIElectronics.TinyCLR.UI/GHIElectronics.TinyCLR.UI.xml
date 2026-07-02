@@ -1141,6 +1141,10 @@
         <member name="P:GHIElectronics.TinyCLR.UI.Controls.Button.RadiusBorder">
             <summary>Corner radius used by the nine-slice button image.</summary>
         </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Button.BackgroundImage">
+            <summary>Optional custom face image, nine-slice scaled with <see cref="P:GHIElectronics.TinyCLR.UI.Controls.Button.RadiusBorder"/>. When set it replaces
+            the default themed button skin (and takes priority over <see cref="P:GHIElectronics.TinyCLR.UI.Controls.Control.Background"/>).</summary>
+        </member>
         <member name="M:GHIElectronics.TinyCLR.UI.Controls.Button.#ctor">
             <summary>Creates a new Button.</summary>
         </member>

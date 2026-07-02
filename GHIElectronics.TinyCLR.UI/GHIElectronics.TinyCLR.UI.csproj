@@ -264,8 +264,8 @@
       <_TcuiTasksOutDir>$(MSBuildThisFileDirectory)..\..\TinyCLR-SDK\GHIElectronics.TinyCLR.UI.BuildTasks\bin\$(Configuration)\net472\</_TcuiTasksOutDir>
     </PropertyGroup>
     <ItemGroup>
+      <!-- Codegen now reads the .tcui XML via System.Xml.Linq — no Newtonsoft.Json to ship. -->
       <_TcuiCodegenBinaries Include="$(_TcuiTasksOutDir)GHIElectronics.TinyCLR.UI.BuildTasks.dll" />
-      <_TcuiCodegenBinaries Include="$(_TcuiTasksOutDir)Newtonsoft.Json.dll" />
     </ItemGroup>
     <Copy SourceFiles="@(_TcuiCodegenBinaries)" DestinationFolder="$(TcuiCodegenPayloadDir)" SkipUnchangedFiles="true" />
   </Target>
