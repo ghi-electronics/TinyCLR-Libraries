@@ -43,7 +43,7 @@
     <Compile Include="Controls\DataGridColumn.cs" />
     <Compile Include="Controls\DataGridItem.cs" />
     <Compile Include="Controls\DataGridItemComparer.cs" />
-    <Compile Include="Controls\Dropdown.cs" />
+    <Compile Include="Controls\ComboBox.cs" />
     <Compile Include="Controls\Grid.cs" />
     <Compile Include="Controls\Gauge.cs" />
     <Compile Include="Controls\ListBoxItemHighlightable.cs" />
@@ -110,7 +110,6 @@
     <Compile Include="Controls\StackPanel.cs" />
     <Compile Include="Controls\Text.cs" />
     <Compile Include="Controls\TextFlow.cs" />
-    <Compile Include="Controls\VirtualizingListBox.cs" />
     <Compile Include="Controls\TextRun.cs" />
     <Compile Include="Controls\TextRunCollection.cs" />
     <Compile Include="Input\HardwareButton.cs" />

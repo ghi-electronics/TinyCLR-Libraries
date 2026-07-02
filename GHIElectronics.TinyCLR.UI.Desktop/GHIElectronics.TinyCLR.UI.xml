@@ -638,6 +638,44 @@
         <member name="M:GHIElectronics.TinyCLR.UI.Controls.CheckBox.Dispose(System.Boolean)">
             <summary>Releases the check box's bitmap resources.</summary>
         </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Controls.ComboBox">
+            <summary>A collapsible selection list (combo box): shows the selected option and expands to the full list on tap.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.ComboBox.Alpha">
+            <summary>Opacity (0-255) used when drawing the combo box images.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.ComboBox.RadiusBorder">
+            <summary>Corner radius used by the nine-slice combo box images.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.ComboBox.MaxOpenHeight">
+            <summary>
+            Optional cap on the expanded list height. When set to a positive value
+            the open combo box is clamped to this height and overflow scrolls through
+            the inherited ScrollViewer. Default 0 = no clamp (legacy behavior).
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.ComboBox.#ctor">
+            <summary>Creates a new ComboBox.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.ComboBox.OnButtonDown(GHIElectronics.TinyCLR.UI.Input.ButtonEventArgs)">
+            <summary>
+            Hardware button support: <see cref="F:GHIElectronics.TinyCLR.UI.Input.HardwareButton.Select"/> toggles the
+            combo box open/closed (parity with touch). <see cref="F:GHIElectronics.TinyCLR.UI.Input.HardwareButton.Back"/>
+            closes an open combo box. Up/Down navigation comes free from <see cref="T:GHIElectronics.TinyCLR.UI.Controls.ListBox"/>.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.ComboBox.Options">
+            <summary>The list of selectable options shown when the combo box is open.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.ComboBox.OnRender(GHIElectronics.TinyCLR.UI.Media.DrawingContext)">
+            <summary>Draws the combo box's text field and chevron button.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.ComboBox.Dispose">
+            <summary>Releases the resources used by the combo box.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.ComboBox.Dispose(System.Boolean)">
+            <summary>Releases the combo box's bitmap resources and event subscriptions.</summary>
+        </member>
         <member name="T:GHIElectronics.TinyCLR.UI.Controls.ContentControl">
             <summary>Base class for controls that host a single child element.</summary>
         </member>
@@ -766,44 +804,6 @@
             <summary>
             Column index to compare.
             </summary>
-        </member>
-        <member name="T:GHIElectronics.TinyCLR.UI.Controls.Dropdown">
-            <summary>A collapsible list that shows the selected option and expands on tap.</summary>
-        </member>
-        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Dropdown.Alpha">
-            <summary>Opacity (0-255) used when drawing the dropdown images.</summary>
-        </member>
-        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Dropdown.RadiusBorder">
-            <summary>Corner radius used by the nine-slice dropdown images.</summary>
-        </member>
-        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Dropdown.MaxOpenHeight">
-            <summary>
-            Optional cap on the expanded list height. When set to a positive value
-            the open dropdown is clamped to this height and overflow scrolls through
-            the inherited ScrollViewer. Default 0 = no clamp (legacy behavior).
-            </summary>
-        </member>
-        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Dropdown.#ctor">
-            <summary>Creates a new Dropdown.</summary>
-        </member>
-        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Dropdown.OnButtonDown(GHIElectronics.TinyCLR.UI.Input.ButtonEventArgs)">
-            <summary>
-            Hardware button support: <see cref="F:GHIElectronics.TinyCLR.UI.Input.HardwareButton.Select"/> toggles the
-            dropdown open/closed (parity with touch). <see cref="F:GHIElectronics.TinyCLR.UI.Input.HardwareButton.Back"/>
-            closes an open dropdown. Up/Down navigation comes free from <see cref="T:GHIElectronics.TinyCLR.UI.Controls.ListBox"/>.
-            </summary>
-        </member>
-        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Dropdown.Options">
-            <summary>The list of selectable options shown when the dropdown is open.</summary>
-        </member>
-        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Dropdown.OnRender(GHIElectronics.TinyCLR.UI.Media.DrawingContext)">
-            <summary>Draws the dropdown's text field and chevron button.</summary>
-        </member>
-        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Dropdown.Dispose">
-            <summary>Releases the resources used by the dropdown.</summary>
-        </member>
-        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Dropdown.Dispose(System.Boolean)">
-            <summary>Releases the dropdown's bitmap resources and event subscriptions.</summary>
         </member>
         <member name="T:GHIElectronics.TinyCLR.UI.Controls.Gauge">
              <summary>
@@ -1003,7 +1003,16 @@
             <summary>Draws the image using the current stretch mode.</summary>
         </member>
         <member name="T:GHIElectronics.TinyCLR.UI.Controls.ListBox">
-            <summary>A scrollable list of selectable items.</summary>
+            <summary>
+            A scrollable list of selectable items. Two content modes:
+            <list type="bullet">
+            <item><b>Items</b> — add explicit <see cref="T:GHIElectronics.TinyCLR.UI.Controls.ListBoxItem"/> rows via <see cref="P:GHIElectronics.TinyCLR.UI.Controls.ListBox.Items"/> (fully realized).</item>
+            <item><b>ItemsSource</b> — bind a large <see cref="T:System.Collections.IList"/> of data to <see cref="P:GHIElectronics.TinyCLR.UI.Controls.ListBox.ItemsSource"/>; the list then
+            virtualizes, recycling a small pool of rows (each item shown via <c>ToString()</c>). This replaces the former
+            separate <c>VirtualizingListBox</c>.</item>
+            </list>
+            The two modes are mutually exclusive; setting <see cref="P:GHIElectronics.TinyCLR.UI.Controls.ListBox.ItemsSource"/> switches the list into virtualized mode.
+            </summary>
         </member>
         <member name="M:GHIElectronics.TinyCLR.UI.Controls.ListBox.#ctor">
             <summary>Creates a new ListBox.</summary>
@@ -1062,6 +1071,17 @@
             <summary>
             The scrolling style.
             </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.ListBox.ItemsSource">
+            <summary>
+            Binds a large data list to the list box; each item is shown via its <c>ToString()</c>. Setting this switches
+            the list into virtualized mode (a small pool of rows is recycled while scrolling), for big lists that would
+            be too heavy as explicit <see cref="P:GHIElectronics.TinyCLR.UI.Controls.ListBox.Items"/>. Leave null to use the <see cref="P:GHIElectronics.TinyCLR.UI.Controls.ListBox.Items"/> collection. This
+            replaces the former separate <c>VirtualizingListBox</c> control.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.ListBox.ItemHeight">
+            <summary>Fixed row height in pixels used for the virtualization math in <see cref="P:GHIElectronics.TinyCLR.UI.Controls.ListBox.ItemsSource"/> mode.</summary>
         </member>
         <member name="T:GHIElectronics.TinyCLR.UI.Controls.ListBoxItem">
             <summary>A single selectable item within a <see cref="T:GHIElectronics.TinyCLR.UI.Controls.ListBox"/>.</summary>
@@ -1785,45 +1805,6 @@
         </member>
         <member name="M:GHIElectronics.TinyCLR.UI.Controls.TextRunCollection.GetEnumerator">
             <summary>Returns an enumerator over the runs in the collection.</summary>
-        </member>
-        <member name="T:GHIElectronics.TinyCLR.UI.Controls.VirtualizingListBox">
-            <summary>
-            Large homogeneous lists: recycles a small pool of rows while preserving full scroll extent.
-            Set <see cref="P:GHIElectronics.TinyCLR.UI.Controls.VirtualizingListBox.ItemsSource"/> to an <see cref="T:System.Collections.IList"/> (e.g. <see cref="T:System.Collections.ArrayList"/>); each item is shown via <c>ToString()</c>.
-            </summary>
-        </member>
-        <member name="M:GHIElectronics.TinyCLR.UI.Controls.VirtualizingListBox.#ctor">
-            <summary>Initializes a new instance of the <see cref="T:GHIElectronics.TinyCLR.UI.Controls.VirtualizingListBox"/> class.</summary>
-        </member>
-        <member name="P:GHIElectronics.TinyCLR.UI.Controls.VirtualizingListBox.ItemsSource">
-            <summary>The list of items shown in the list box; each item is displayed via its <c>ToString()</c>.</summary>
-        </member>
-        <member name="P:GHIElectronics.TinyCLR.UI.Controls.VirtualizingListBox.ItemHeight">
-            <summary>Fixed row height in pixels (all rows use this for virtualization math).</summary>
-        </member>
-        <member name="P:GHIElectronics.TinyCLR.UI.Controls.VirtualizingListBox.SelectedIndex">
-            <summary>The index of the currently selected item, or -1 if none is selected.</summary>
-        </member>
-        <member name="E:GHIElectronics.TinyCLR.UI.Controls.VirtualizingListBox.SelectionChanged">
-            <summary>Raised when the selected item changes.</summary>
-        </member>
-        <member name="P:GHIElectronics.TinyCLR.UI.Controls.VirtualizingListBox.HorizontalOffset">
-            <summary>The current horizontal scroll offset of the list.</summary>
-        </member>
-        <member name="P:GHIElectronics.TinyCLR.UI.Controls.VirtualizingListBox.VerticalOffset">
-            <summary>The current vertical scroll offset of the list.</summary>
-        </member>
-        <member name="M:GHIElectronics.TinyCLR.UI.Controls.VirtualizingListBox.MeasureOverride(System.Int32,System.Int32,System.Int32@,System.Int32@)">
-            <summary>Measures the inner scroll viewer to determine the desired size.</summary>
-        </member>
-        <member name="M:GHIElectronics.TinyCLR.UI.Controls.VirtualizingListBox.ArrangeOverride(System.Int32,System.Int32)">
-            <summary>Arranges the inner scroll viewer to fill the list box.</summary>
-        </member>
-        <member name="M:GHIElectronics.TinyCLR.UI.Controls.VirtualizingListBox.Dispose">
-            <summary>Detaches the list box's event handlers for deterministic teardown.</summary>
-        </member>
-        <member name="M:GHIElectronics.TinyCLR.UI.Controls.VirtualizingListBox.Dispose(System.Boolean)">
-            <summary>Detaches the list box's event handlers for deterministic teardown.</summary>
         </member>
         <member name="T:GHIElectronics.TinyCLR.UI.Input.ButtonDevice">
             <summary>
@@ -4458,7 +4439,7 @@
             <summary>The default color used to highlight selected content.</summary>
         </member>
         <member name="P:GHIElectronics.TinyCLR.UI.Theme.DefaultAlpha">
-            <summary>Default Scale9Image alpha for surface-rendered controls (Button, CheckBox, RadioButton, ProgressBar, Dropdown, Slider). ~78% opacity.</summary>
+            <summary>Default Scale9Image alpha for surface-rendered controls (Button, CheckBox, RadioButton, ProgressBar, ComboBox, Slider). ~78% opacity.</summary>
         </member>
         <member name="P:GHIElectronics.TinyCLR.UI.Theme.DefaultRadiusBorder">
             <summary>Default corner radius (in pixels) for Scale9Image-rendered surfaces.</summary>
