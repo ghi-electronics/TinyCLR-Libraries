@@ -27,11 +27,6 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
         private const float FromAngleDeg = 135f;
         private const float ToAngleDeg = 405f;          // 270° sweep, clockwise
-        private const float PointerSpread = 20f;        // half-base spread in degrees
-        private const float PointerTipOffset = 0.02f;   // radians of secondary tip used by glossy half
-
-        private const float PointerRadiusFactor = 0.12f; // tip-of-needle distance from center as a fraction of side
-        private const float PointerBaseFactor = 0.09f;   // half-base width of needle as a fraction of side
 
         private const int MinDivisions = 2;
         private const int MaxDivisions = 24;
@@ -180,6 +175,27 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             set { this._enableTransparentBackground = value; this.MarkDirty(); }
         }
 
+        /// <summary>
+        /// Optional custom dial-face image, drawn scaled to the square dial in place of the flat
+        /// <see cref="DialColor"/> face. The tick marks, labels, threshold and needle are still drawn on top. Use with
+        /// <see cref="TransparentColor"/> to key out a colour so a rectangular image can present as a circular (or any)
+        /// shaped gauge.
+        /// </summary>
+        public System.Drawing.Image BackgroundImage {
+            get => this._backgroundImage;
+            set { this._backgroundImage = value; this._backgroundTransparentApplied = false; this.MarkDirty(); }
+        }
+
+        /// <summary>
+        /// A colour in <see cref="BackgroundImage"/> to make transparent (so a rectangular source image can show as a
+        /// circular / custom-shaped gauge). Mirrors <c>System.Drawing.Image.MakeTransparent</c>; applied once when the
+        /// background is next redrawn.
+        /// </summary>
+        public MediaColor TransparentColor {
+            get => this._transparentColor;
+            set { this._transparentColor = value; this._hasTransparentColor = true; this._backgroundTransparentApplied = false; this.MarkDirty(); }
+        }
+
         // --- private state ---------------------------------------------------
 
         private float _minValue = 0;
@@ -195,6 +211,10 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         private MediaColor _foreColor = MediaColor.FromArgb(0xFF, 0, 0, 0);
         private float _glossinessAlpha = 72;
         private bool _enableTransparentBackground = true;
+        private System.Drawing.Image _backgroundImage;
+        private MediaColor _transparentColor;
+        private bool _hasTransparentColor;
+        private bool _backgroundTransparentApplied;
 
         // Cached System.Drawing surfaces — the composite bitmap we hand to the
         // UI layer (`_bmp` wrapped by `_cachedImage`), and a separate background
@@ -317,13 +337,23 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                 g.FillEllipse(tb, -gg, -gg, side + gg * 2, side + gg * 2);
             }
 
-            // Dial face.
-            using (var dialBrush = ToSdBrush(this._dialColor))
-                g.FillEllipse(dialBrush, 0, 0, side, side);
+            // Dial face: a custom background image (optionally colour-keyed to transparent) or the flat DialColor face.
+            if (this._backgroundImage != null) {
+                if (this._hasTransparentColor && !this._backgroundTransparentApplied) {
+                    this._backgroundImage.MakeTransparent(ToSd(this._transparentColor));
+                    this._backgroundTransparentApplied = true;
+                }
 
-            // Dark rim outline.
-            using (var rimPen = ToSdPen(RimColor, 1))
-                g.DrawEllipse(rimPen, 0, 0, side, side);
+                g.DrawImage(this._backgroundImage, 0, 0, side, side);
+            }
+            else {
+                using (var dialBrush = ToSdBrush(this._dialColor))
+                    g.FillEllipse(dialBrush, 0, 0, side, side);
+
+                // Dark rim outline.
+                using (var rimPen = ToSdPen(RimColor, 1))
+                    g.DrawEllipse(rimPen, 0, 0, side, side);
+            }
 
             this.DrawCalibration(g, side);
 
@@ -389,46 +419,20 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             g.DrawString(this._dialText, this.Font, brush, rect);
         }
 
-        // Pointer needle + glossy half + center cap.
+        // Pointer needle: a single solid line from the centre to the value tip (matching the designer preview), plus
+        // the centre cap. The old code drew the needle as an outline polygon via FillPolygon() — which actually only
+        // STROKES the edges, not fills — so on the device it read as a thin, doubled sliver instead of a clean needle.
         private void PaintPointer(Graphics g, int cx, int cy, int side) {
-            var radius = side / 2 - side * PointerRadiusFactor;
-            var baseR = side * PointerBaseFactor;
+            var radius = side / 2f - side * 0.16f;
 
             var valuePct = 100 * (this._currentValue - this._minValue) / (this._maxValue - this._minValue);
             var valueDeg = (ToAngleDeg - FromAngleDeg) * valuePct / 100 + FromAngleDeg;
-
-            // Needle polygon: tip — right base — pivot — left base — slightly off-tip.
-            var pts = new PointF[5];
             var ang = DegToRad(valueDeg);
-            pts[0].X = cx + (float)(radius * System.Math.Cos(ang));
-            pts[0].Y = cy + (float)(radius * System.Math.Sin(ang));
-            pts[4].X = cx + (float)(radius * System.Math.Cos(ang - PointerTipOffset));
-            pts[4].Y = cy + (float)(radius * System.Math.Sin(ang - PointerTipOffset));
 
-            var rightAng = DegToRad(valueDeg + PointerSpread);
-            pts[1].X = cx + (float)(baseR * System.Math.Cos(rightAng));
-            pts[1].Y = cy + (float)(baseR * System.Math.Sin(rightAng));
-
-            pts[2].X = cx;
-            pts[2].Y = cy;
-
-            var leftAng = DegToRad(valueDeg - PointerSpread);
-            pts[3].X = cx + (float)(baseR * System.Math.Cos(leftAng));
-            pts[3].Y = cy + (float)(baseR * System.Math.Sin(leftAng));
-
-            using (var pointerBrush = ToSdBrush(PointerColor))
-                FillPolygon(g, pointerBrush, pts);
-
-            // Glossy half: triangle from tip to pivot via the +PointerSpread edge.
-            var shine = new PointF[3];
-            shine[0].X = pts[0].X;
-            shine[0].Y = pts[0].Y;
-            shine[1].X = pts[1].X;
-            shine[1].Y = pts[1].Y;
-            shine[2].X = cx;
-            shine[2].Y = cy;
-            using (var rimBrush = ToSdBrush(RimColor))
-                FillPolygon(g, rimBrush, shine);
+            var tipX = (int)(cx + radius * System.Math.Cos(ang));
+            var tipY = (int)(cy + radius * System.Math.Sin(ang));
+            using (var pointerPen = ToSdPen(PointerColor, System.Math.Max(2, side / 50)))
+                g.DrawLine(pointerPen, cx, cy, tipX, tipY);
 
             this.DrawCenterCap(g, cx, cy, side);
         }
@@ -443,52 +447,57 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                 g.FillEllipse(brush, (int)(cx - inner / 2), (int)(cy - inner / 2), (int)inner, (int)inner);
         }
 
-        // Draws ruler tick marks and numeric labels around the arc.
+        // Draws ruler tick marks and numeric labels around the arc: exactly NoOfDivisions+1 major ticks (values
+        // MinValue..MaxValue, no overshoot) each with a value label centred on its point, and NoOfSubDivisions thin
+        // minor ticks between neighbouring majors. Thin crisp pens + centred labels match the designer preview.
         private void DrawCalibration(Graphics g, int side) {
-            var noOfParts = this._noOfDivisions + 1;
-            var noOfIntermediates = this._noOfSubDivisions;
-            var cx = side / 2;
-            var cy = side / 2;
-            var currentAngle = DegToRad(FromAngleDeg);
+            var divisions = this._noOfDivisions;
+            var subs = this._noOfSubDivisions;
+            var cx = side / 2f;
+            var cy = side / 2f;
             var gap = (int)(side * 0.01f);
-            var shift = (float)side / 25;
             var radius = (side - gap * 2) / 2f - gap * 5;
 
-            var totalAngle = ToAngleDeg - FromAngleDeg;
-            var incr = DegToRad(totalAngle / ((noOfParts - 1) * (noOfIntermediates + 1)));
+            var fromRad = DegToRad(FromAngleDeg);
+            var sweepRad = DegToRad(ToAngleDeg - FromAngleDeg);
 
-            using var thickPen = ToSdPen(this._foreColor, side / 50);
-            using var thinPen = ToSdPen(this._foreColor, side / 100);
+            using var majorPen = ToSdPen(this._foreColor, System.Math.Max(1, side / 90));
+            using var minorPen = ToSdPen(this._foreColor, System.Math.Max(1, side / 170));
             using var stringBrush = ToSdBrush(this._foreColor);
 
-            var rulerValue = this._minValue;
-            for (var i = 0; i <= noOfParts; i++) {
-                var x0 = (int)(cx + radius * System.Math.Cos(currentAngle));
-                var y0 = (int)(cy + radius * System.Math.Sin(currentAngle));
-                var x1 = (int)(cx + (radius - side / 20f) * System.Math.Cos(currentAngle));
-                var y1 = (int)(cy + (radius - side / 20f) * System.Math.Sin(currentAngle));
-                g.DrawLine(thickPen, x0, y0, x1, y1);
+            var majorLen = side / 18f;
+            var minorLen = side / 34f;
+            var labelR = radius - side / 9f;
 
-                var tx = (float)(cx + (radius - side / 10f) * System.Math.Cos(currentAngle));
-                var ty = (float)(cy - shift + (radius - side / 10f) * System.Math.Sin(currentAngle));
+            for (var i = 0; i <= divisions; i++) {
+                var t = (float)i / divisions;
+                var ang = fromRad + sweepRad * t;
+                var cos = (float)System.Math.Cos(ang);
+                var sin = (float)System.Math.Sin(ang);
 
-                var label = rulerValue.ToString();
+                g.DrawLine(majorPen,
+                    (int)(cx + radius * cos), (int)(cy + radius * sin),
+                    (int)(cx + (radius - majorLen) * cos), (int)(cy + (radius - majorLen) * sin));
+
+                // Label centred on (lx, ly), matching the designer.
+                var value = this._minValue + (this._maxValue - this._minValue) * t;
+                var label = ((int)System.Math.Round(value)).ToString();
                 this.Font.ComputeTextInRect(label, out var labelW, out var labelH);
-                g.DrawString(label, this.Font, stringBrush, tx - labelW / 2, ty + labelH / 2);
+                var lx = cx + labelR * cos;
+                var ly = cy + labelR * sin;
+                g.DrawString(label, this.Font, stringBrush, lx - labelW / 2f, ly - labelH / 2f);
 
-                rulerValue += (this._maxValue - this._minValue) / (noOfParts - 1);
-                rulerValue = (float)System.Math.Round(rulerValue);
-
-                if (i == noOfParts - 1) break;
-
-                // Sub-division tick marks between major ticks.
-                for (var j = 0; j <= noOfIntermediates; j++) {
-                    currentAngle += incr;
-                    x0 = (int)(cx + radius * System.Math.Cos(currentAngle));
-                    y0 = (int)(cy + radius * System.Math.Sin(currentAngle));
-                    x1 = (int)(cx + (radius - side / 50f) * System.Math.Cos(currentAngle));
-                    y1 = (int)(cy + (radius - side / 50f) * System.Math.Sin(currentAngle));
-                    g.DrawLine(thinPen, x0, y0, x1, y1);
+                // Minor ticks up to (but not reaching) the next major.
+                if (i < divisions && subs > 0) {
+                    for (var j = 1; j <= subs; j++) {
+                        var tj = ((float)i + (float)j / (subs + 1)) / divisions;
+                        var aj = fromRad + sweepRad * tj;
+                        var cj = (float)System.Math.Cos(aj);
+                        var sj = (float)System.Math.Sin(aj);
+                        g.DrawLine(minorPen,
+                            (int)(cx + radius * cj), (int)(cy + radius * sj),
+                            (int)(cx + (radius - minorLen) * cj), (int)(cy + (radius - minorLen) * sj));
+                    }
                 }
             }
         }

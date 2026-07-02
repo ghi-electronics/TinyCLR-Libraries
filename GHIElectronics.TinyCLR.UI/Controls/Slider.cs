@@ -162,6 +162,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         private Orientation _orientation = Orientation.Horizontal;
         private bool _dragging;
         private int _dragOriginX, _dragOriginY;
+        private UIElement _previousCapture;
 
         private int _knobSize;
         private int _tickInterval;
@@ -312,6 +313,22 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             this._dragOriginY = 0;
             this.PointToScreen(ref this._dragOriginX, ref this._dragOriginY);
             this._dragging = true;
+
+            // Capture touch to this slider so the knob keeps following the finger for the whole gesture. Without
+            // capture each move event hit-tests to whatever is under the finger, so the drag is lost the moment the
+            // finger strays off the (thin) track — the routed touch events only bubble UP from the hit element, they
+            // are never re-dispatched down to us. Remember whatever held capture before so we can restore it on release.
+            this._previousCapture = TouchCapture.Captured;
+            try {
+                TouchCapture.Capture(this);
+            }
+            catch {
+                this._previousCapture = null; // not attached to the window subtree — fall back to hit-test routing
+            }
+
+            // Tap-to-set: move the value to the touch point (this also seeds the drag from where the finger landed).
+            this.UpdateValueFromTouch(e.Touches[0].X - this._dragOriginX, e.Touches[0].Y - this._dragOriginY);
+
             e.Handled = true;
             this.Invalidate();
         }
@@ -320,6 +337,23 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         protected override void OnTouchUp(TouchEventArgs e) {
             if (!this._dragging) return;
             this._dragging = false;
+
+            // Release capture back to whoever held it before the drag (typically nothing / the window).
+            if (TouchCapture.Captured == this) {
+                try {
+                    if (this._previousCapture != null) {
+                        TouchCapture.Capture(this._previousCapture);
+                    }
+                    else {
+                        TouchCapture.Capture(null, CaptureMode.None);
+                    }
+                }
+                catch {
+                    TouchCapture.Capture(null, CaptureMode.None);
+                }
+            }
+
+            this._previousCapture = null;
             this.Invalidate();
         }
 

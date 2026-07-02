@@ -870,6 +870,21 @@
             FillEllipse per redraw.
             </summary>
         </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Gauge.BackgroundImage">
+            <summary>
+            Optional custom dial-face image, drawn scaled to the square dial in place of the flat
+            <see cref="P:GHIElectronics.TinyCLR.UI.Controls.Gauge.DialColor"/> face. The tick marks, labels, threshold and needle are still drawn on top. Use with
+            <see cref="P:GHIElectronics.TinyCLR.UI.Controls.Gauge.TransparentColor"/> to key out a colour so a rectangular image can present as a circular (or any)
+            shaped gauge.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Gauge.TransparentColor">
+            <summary>
+            A colour in <see cref="P:GHIElectronics.TinyCLR.UI.Controls.Gauge.BackgroundImage"/> to make transparent (so a rectangular source image can show as a
+            circular / custom-shaped gauge). Mirrors <c>System.Drawing.Image.MakeTransparent</c>; applied once when the
+            background is next redrawn.
+            </summary>
+        </member>
         <member name="M:GHIElectronics.TinyCLR.UI.Controls.Gauge.#ctor(System.Int32)">
             <summary>Creates a new square Gauge with the given side length in pixels.</summary>
         </member>
