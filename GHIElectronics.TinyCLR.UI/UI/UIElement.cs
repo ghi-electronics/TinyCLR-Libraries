@@ -994,7 +994,7 @@ namespace GHIElectronics.TinyCLR.UI {
                 var i = children.Count;
                 while (--i >= 0) {
                     var element = children[i];
-                    if (element != null && element.Visibility == Visibility.Visible && element.ContainsPoint(x, y)) {
+                    if (element != null && element.Visibility == Visibility.Visible && (element._flags & Flags.NotHitTestable) == 0 && element.ContainsPoint(x, y)) {
                         target = element;
                         children = element._logicalChildren;
 
@@ -1241,6 +1241,14 @@ namespace GHIElectronics.TinyCLR.UI {
         /// </summary>
         public bool IsVisible => (this._flags & Flags.IsVisibleCache) != 0;
 
+        /// <summary>Whether this element takes part in pointer/touch hit-testing. Set to <c>false</c> for a
+        /// decorative overlay (e.g. a cursor or a background animation) so touches pass through to the controls
+        /// underneath instead of being swallowed. Default is <c>true</c>.</summary>
+        public bool IsHitTestVisible {
+            get => (this._flags & Flags.NotHitTestable) == 0;
+            set => this._flags = value ? (this._flags & ~Flags.NotHitTestable) : (this._flags | Flags.NotHitTestable);
+        }
+
         /// <summary>Occurs when the effective visibility of this element changes.</summary>
         public event PropertyChangedEventHandler IsVisibleChanged {
             add {
@@ -1386,6 +1394,14 @@ namespace GHIElectronics.TinyCLR.UI {
 
             MarkDirtyRect(0, 0, this._renderWidth, this._renderHeight);
         }
+
+        /// <summary>Delivers a typed character (from a physical keyboard) to this element. Override to handle text
+        /// input - the base implementation ignores it. A backspace arrives as '\b', a delete as (char)127; other
+        /// control characters are not delivered. Fed by <see cref="Input.InputProvider.RaiseCharacter"/>, which
+        /// routes to the focused element.</summary>
+        protected virtual void OnCharacter(char c) { }
+
+        internal void ProcessCharacter(char c) => this.OnCharacter(c);
 
         #region Eventing
 
@@ -1621,6 +1637,11 @@ namespace GHIElectronics.TinyCLR.UI {
             IsLayoutSuspended = 0x00004000,
 
             IsVisibleCache = 0x00008000,
+
+            // Set = this element is transparent to pointer/touch hit-testing (GetPointerTarget skips it), so a
+            // decorative overlay or cursor drawn on top does not swallow touches meant for controls underneath.
+            // Default (bit clear) = hit-testable, so existing elements are unchanged.
+            NotHitTestable = 0x00010000,
         }
 
         //--//

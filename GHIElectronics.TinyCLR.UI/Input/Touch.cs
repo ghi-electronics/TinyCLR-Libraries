@@ -56,9 +56,14 @@ namespace GHIElectronics.TinyCLR.UI.Input {
         public static UIElement Captured => _captureElement;
 
         private static bool IsMainWindowChild(UIElement element) {
-            UIElement mainWindow = Application.Current.MainWindow;
+            // Touch may be captured by any element in the active window tree. All top-level Windows are children of
+            // the WindowManager (not necessarily of Application.MainWindow), so validating only against MainWindow
+            // broke multi-window apps: navigating by bringing a non-main Window to the top made WindowManager call
+            // Capture on it, which threw here and wedged the UI dispatcher. Accept the WindowManager root too.
+            UIElement mainWindow = Application.Current?.MainWindow;
+            UIElement root = WindowManager.Instance;
             while (element != null) {
-                if (element == mainWindow)
+                if (element == mainWindow || element == root)
                     return true;
 
                 element = element.Parent;

@@ -71,6 +71,42 @@ namespace GHIElectronics.TinyCLR.UI {
 
         #region Public Methods
 
+        /// <summary>Makes the window visible and brings it to the front, WPF-style. Use with <see cref="Hide"/> to
+        /// switch between screens: <c>current.Hide(); next.Show();</c>. (Prefer this over the low-level
+        /// <see cref="Topmost"/> property.)</summary>
+        public void Show() {
+            VerifyAccess();
+
+            this.Visibility = Visibility.Visible;
+            this.Activate();
+        }
+
+        /// <summary>Hides the window without closing it, WPF-style. It stays alive and can be shown again with
+        /// <see cref="Show"/>.</summary>
+        public void Hide() {
+            VerifyAccess();
+
+            this.Visibility = Visibility.Hidden;
+        }
+
+        /// <summary>Brings the window to the front of the z-order and gives it input focus, WPF-style.</summary>
+        public void Activate() {
+            VerifyAccess();
+
+            // Bring to the front of the z-order. (This no longer captures the window - see WindowManager - so touch
+            // still hit-tests down to the controls.)
+            this._windowManager?.SetTopMost(this);
+
+            // Make this the active window so keyboard focus navigation (Tab) and modal dialogs scope to it, then put
+            // focus on its first control so the keyboard/Select works immediately.
+            var app = GHIElectronics.TinyCLR.UI.Application.Current;
+            if (app != null) {
+                app.MainWindow = this;
+            }
+
+            Input.FocusNavigator.TryMoveFocus(true, this);
+        }
+
         /// <summary>Closes the window and removes it from the application and window manager.</summary>
         [MethodImplAttribute(MethodImplOptions.Synchronized)]
         public void Close() {

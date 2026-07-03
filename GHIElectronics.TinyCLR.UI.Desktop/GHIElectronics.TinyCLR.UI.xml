@@ -1847,13 +1847,22 @@
             <summary>The vertical padding in pixels between the border and the text.</summary>
         </member>
         <member name="M:GHIElectronics.TinyCLR.UI.Controls.TextBox.OnTouchUp(GHIElectronics.TinyCLR.UI.Input.TouchEventArgs)">
-            <summary>Opens the on-screen keyboard when the field is tapped.</summary>
+            <summary>Focuses the field on tap and, unless a physical keyboard has suppressed it, opens the on-screen
+            keyboard.</summary>
         </member>
         <member name="M:GHIElectronics.TinyCLR.UI.Controls.TextBox.OnButtonDown(GHIElectronics.TinyCLR.UI.Input.ButtonEventArgs)">
-            <summary>
-            Hardware button support: <see cref="F:GHIElectronics.TinyCLR.UI.Input.HardwareButton.Select"/> opens the
-            on-screen keyboard, mirroring tap-to-edit behavior.
-            </summary>
+            <summary>Hardware buttons: Select opens the on-screen keyboard (unless suppressed); Left/Right/Home move
+            the caret. Arrow keys from a physical keyboard map here.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.TextBox.OnCharacter(System.Char)">
+            <summary>Inserts or removes a character at the caret (physical-keyboard text entry). Backspace = '\b',
+            delete = (char)127.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.TextBox.OnGotFocus(GHIElectronics.TinyCLR.UI.Input.FocusChangedEventArgs)">
+            <summary>Starts the blinking caret and moves it to the end of the text when the field gains focus.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.TextBox.OnLostFocus(GHIElectronics.TinyCLR.UI.Input.FocusChangedEventArgs)">
+            <summary>Stops the blinking caret when the field loses focus.</summary>
         </member>
         <member name="M:GHIElectronics.TinyCLR.UI.Controls.TextBox.MeasureOverride(System.Int32,System.Int32,System.Int32@,System.Int32@)">
             <summary>Measures the size needed for the text plus padding and border.</summary>
@@ -2500,6 +2509,11 @@
         <member name="M:GHIElectronics.TinyCLR.UI.Input.InputProvider.RaiseTouch(System.Int32,System.Int32,GHIElectronics.TinyCLR.UI.Input.TouchMessages,System.DateTime)">
             <summary>Reports a touch event at the given position to the input manager.</summary>
         </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Input.InputProvider.RaiseCharacter(System.Char)">
+            <summary>Reports a typed character (from a physical keyboard) to the focused element. Map a real
+            keyboard's characters to this for PC-style text entry into a focused TextBox. Backspace = '\b',
+            delete = (char)127. Safe to call from any thread - it marshals onto the UI dispatcher.</summary>
+        </member>
         <member name="M:GHIElectronics.TinyCLR.UI.Input.InputProvider.RaiseFocusNavigation(System.Boolean)">
             <summary>
             Moves focus between tab stops (map hardware keys or UART keys to this for PC-style navigation).
@@ -2633,6 +2647,50 @@
                 Delegate type for handles of events that use
                 <see cref="T:GHIElectronics.TinyCLR.UI.Input.NotifyInputEventArgs"/>.
             </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Input.Pointer">
+            <summary>
+            An on-screen mouse cursor for pointer-driven UIs (e.g. an HDMI monitor with a USB mouse, where there is no
+            touch panel). It draws an arrow on top of the whole UI and turns pointer motion + the left button into the
+            framework's normal touch events, so every existing control works unchanged.
+            </summary>
+            <remarks>
+            The device-specific part (reading a USB-host mouse, a trackball, etc.) stays in the application; it just
+            feeds this class:
+            <code>
+              var pointer = new Pointer(Application.Current);
+              // when the mouse reports movement / a button:
+              pointer.MoveTo(x, y);            // or pointer.MoveBy(dx, dy)
+              pointer.SetLeftButton(pressed);  // press = touch-down, release = touch-up, move-while-pressed = drag
+              pointer.Visible = false;         // e.g. when the mouse is unplugged
+            </code>
+            The cursor is drawn via <see cref="E:GHIElectronics.TinyCLR.UI.WindowManager.PostRender"/> and only invalidates its own small rectangle
+            as it moves, so it costs almost nothing to render and never triggers a full-screen repaint. All members are
+            safe to call from any thread (the mouse driver's worker thread included); they marshal onto the UI dispatcher
+            internally.
+            </remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Input.Pointer.#ctor(GHIElectronics.TinyCLR.UI.Application)">
+            <summary>Creates a cursor for the given application and shows it centered once the UI is running.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Input.Pointer.X">
+            <summary>The current cursor x position, in screen pixels.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Input.Pointer.Y">
+            <summary>The current cursor y position, in screen pixels.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Input.Pointer.Visible">
+            <summary>Whether the cursor is drawn. Set to <c>false</c> to hide it (e.g. when the mouse is unplugged).</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Input.Pointer.MoveTo(System.Int32,System.Int32)">
+            <summary>Moves the cursor to an absolute screen position (clamped to the display).</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Input.Pointer.MoveBy(System.Int32,System.Int32)">
+            <summary>Moves the cursor by a relative delta.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Input.Pointer.SetLeftButton(System.Boolean)">
+            <summary>Reports the left button state: <c>true</c> = press (touch-down), <c>false</c> = release
+            (touch-up). While pressed, subsequent moves are reported as drags.</summary>
         </member>
         <member name="T:GHIElectronics.TinyCLR.UI.Input.PreProcessInputEventArgs">
             <summary>
@@ -4046,6 +4104,18 @@
             </remarks>
             <param name="e">The event args that will be passed to the Exit event</param>
         </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Application.ShowOnScreenKeyboardAutomatically">
+            <summary>Whether tapping (or Select-ing) a TextBox automatically pops up the on-screen keyboard. Default
+            true. Set to false when a physical keyboard is connected so the user types on it instead (tablet-style);
+            the on-screen keyboard can still be shown on demand via <see cref="M:GHIElectronics.TinyCLR.UI.Application.ShowOnScreenKeyboardFor(GHIElectronics.TinyCLR.UI.Controls.TextBox)"/>. When set
+            back to true, tapping a TextBox pops the keyboard again.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Application.ShowOnScreenKeyboardFor(GHIElectronics.TinyCLR.UI.Controls.TextBox)">
+            <summary>Shows the on-screen keyboard for the given TextBox (its text is edited and written back when the
+            user accepts). Called automatically when a TextBox is tapped unless
+            <see cref="P:GHIElectronics.TinyCLR.UI.Application.ShowOnScreenKeyboardAutomatically"/> is false; call it yourself for an on-demand keyboard
+            button.</summary>
+        </member>
         <member name="M:GHIElectronics.TinyCLR.UI.Application.DoShutdown">
             <summary>
             DO NOT USE - internal method
@@ -5038,6 +5108,11 @@
                 A property indicating if this element is Visible or not.
             </summary>
         </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.UIElement.IsHitTestVisible">
+            <summary>Whether this element takes part in pointer/touch hit-testing. Set to <c>false</c> for a
+            decorative overlay (e.g. a cursor or a background animation) so touches pass through to the controls
+            underneath instead of being swallowed. Default is <c>true</c>.</summary>
+        </member>
         <member name="E:GHIElectronics.TinyCLR.UI.UIElement.IsVisibleChanged">
             <summary>Occurs when the effective visibility of this element changes.</summary>
         </member>
@@ -5057,6 +5132,12 @@
         </member>
         <member name="M:GHIElectronics.TinyCLR.UI.UIElement.Invalidate">
             <summary>Marks the entire element as needing to be redrawn.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.UIElement.OnCharacter(System.Char)">
+            <summary>Delivers a typed character (from a physical keyboard) to this element. Override to handle text
+            input - the base implementation ignores it. A backspace arrives as '\b', a delete as (char)127; other
+            control characters are not delivered. Fed by <see cref="M:GHIElectronics.TinyCLR.UI.Input.InputProvider.RaiseCharacter(System.Char)"/>, which
+            routes to the focused element.</summary>
         </member>
         <member name="M:GHIElectronics.TinyCLR.UI.UIElement.RaiseEvent(GHIElectronics.TinyCLR.UI.RoutedEventArgs)">
              <summary>
@@ -5417,6 +5498,18 @@
             </remarks>
                 Initializes the Width/Height, Top/Left properties to use windows
                 default. Updates Application object properties if inside app.
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Window.Show">
+            <summary>Makes the window visible and brings it to the front, WPF-style. Use with <see cref="M:GHIElectronics.TinyCLR.UI.Window.Hide"/> to
+            switch between screens: <c>current.Hide(); next.Show();</c>. (Prefer this over the low-level
+            <see cref="P:GHIElectronics.TinyCLR.UI.Window.Topmost"/> property.)</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Window.Hide">
+            <summary>Hides the window without closing it, WPF-style. It stays alive and can be shown again with
+            <see cref="M:GHIElectronics.TinyCLR.UI.Window.Show"/>.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Window.Activate">
+            <summary>Brings the window to the front of the z-order and gives it input focus, WPF-style.</summary>
         </member>
         <member name="M:GHIElectronics.TinyCLR.UI.Window.Close">
             <summary>Closes the window and removes it from the application and window manager.</summary>

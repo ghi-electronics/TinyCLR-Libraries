@@ -37,6 +37,20 @@ namespace GHIElectronics.TinyCLR.UI.Input {
         /// <summary>Reports a touch event at the given position to the input manager.</summary>
         public void RaiseTouch(int x, int y, TouchMessages which, DateTime time) => Application.Current.OnEvent(new TouchEvent() { Time = time, EventMessage = (byte)which, Touches = new[] { new TouchInput() { X = x, Y = y } } });
 
+        /// <summary>Reports a typed character (from a physical keyboard) to the focused element. Map a real
+        /// keyboard's characters to this for PC-style text entry into a focused TextBox. Backspace = '\b',
+        /// delete = (char)127. Safe to call from any thread - it marshals onto the UI dispatcher.</summary>
+        public void RaiseCharacter(char character) {
+            if (this.application.Dispatcher.CheckAccess()) {
+                Buttons.FocusedElement?.ProcessCharacter(character);
+            }
+            else {
+                this.application.Dispatcher.BeginInvoke(
+                    new DispatcherOperationCallback(o => { Buttons.FocusedElement?.ProcessCharacter((char)o); return null; }),
+                    character);
+            }
+        }
+
         /// <summary>
         /// Moves focus between tab stops (map hardware keys or UART keys to this for PC-style navigation).
         /// </summary>

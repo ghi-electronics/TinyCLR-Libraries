@@ -3,6 +3,7 @@ using System.Reflection;
 using GHIElectronics.TinyCLR.UI;
 using GHIElectronics.TinyCLR.UI.Input;
 using GHIElectronics.TinyCLR.UI.Media;
+using GHIElectronics.TinyCLR.UI.Threading;
 
 namespace GHIElectronics.TinyCLR.UI.Controls {
     /// <summary>Represents the method that handles the text-changed event.</summary>
@@ -25,6 +26,11 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         private Color bordercolor = Colors.Black;
         private ushort borderthickness = 1, paddingx, paddingy;
         private int width, height;
+
+        // Physical-keyboard editing: insertion point + blinking caret (shown only while focused).
+        private int caretIndex;
+        private bool caretVisible;
+        private DispatcherTimer caretTimer;
 
         private object _bindSource;
         private string _bindPropertyName;
@@ -50,7 +56,11 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         public string Text {
             get => this.text;
             set {
-                this.text = value;
+                this.text = value ?? string.Empty;
+
+                if (this.caretIndex > this.text.Length) {
+                    this.caretIndex = this.text.Length;
+                }
 
                 this.InvalidateMeasure();
 
@@ -190,28 +200,119 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
         internal bool ForOnScreenKeyboard { get; set; }
 
-        /// <summary>Opens the on-screen keyboard when the field is tapped.</summary>
+        /// <summary>Focuses the field on tap and, unless a physical keyboard has suppressed it, opens the on-screen
+        /// keyboard.</summary>
         protected override void OnTouchUp(TouchEventArgs e) {
-            if (!this.IsEnabled) {
+            if (!this.IsEnabled || this.ForOnScreenKeyboard) {
                 return;
             }
 
-            if (!this.ForOnScreenKeyboard)
+            // Focus so a physical keyboard (and the caret) target this field...
+            Buttons.Focus(this);
+
+            // ...and pop the on-screen keyboard only when auto-show is on (no physical keyboard is taking over).
+            if (Application.Current.ShowOnScreenKeyboardAutomatically) {
                 Application.Current.ShowOnScreenKeyboardFor(this);
+            }
         }
 
-        /// <summary>
-        /// Hardware button support: <see cref="HardwareButton.Select"/> opens the
-        /// on-screen keyboard, mirroring tap-to-edit behavior.
-        /// </summary>
+        /// <summary>Hardware buttons: Select opens the on-screen keyboard (unless suppressed); Left/Right/Home move
+        /// the caret. Arrow keys from a physical keyboard map here.</summary>
         protected override void OnButtonDown(ButtonEventArgs e) {
-            if (!this.IsEnabled || e.Button != HardwareButton.Select) {
+            if (!this.IsEnabled || this.ForOnScreenKeyboard) {
                 return;
             }
 
-            if (!this.ForOnScreenKeyboard) {
-                Application.Current.ShowOnScreenKeyboardFor(this);
-                e.Handled = true;
+            switch (e.Button) {
+                case HardwareButton.Select:
+                    if (Application.Current.ShowOnScreenKeyboardAutomatically) {
+                        Application.Current.ShowOnScreenKeyboardFor(this);
+                        e.Handled = true;
+                    }
+                    break;
+                case HardwareButton.Left:
+                    this.SetCaret(this.caretIndex - 1);
+                    e.Handled = true;
+                    break;
+                case HardwareButton.Right:
+                    this.SetCaret(this.caretIndex + 1);
+                    e.Handled = true;
+                    break;
+                case HardwareButton.Home:
+                    this.SetCaret(0);
+                    e.Handled = true;
+                    break;
+            }
+        }
+
+        /// <summary>Inserts or removes a character at the caret (physical-keyboard text entry). Backspace = '\b',
+        /// delete = (char)127.</summary>
+        protected override void OnCharacter(char c) {
+            if (!this.IsEnabled || this.ForOnScreenKeyboard) {
+                return;
+            }
+
+            var t = this.text;
+            var i = this.caretIndex;
+
+            if (c == '\b') {                          // backspace
+                if (i <= 0) return;
+                this.Text = t.Substring(0, i - 1) + t.Substring(i);
+                this.caretIndex = i - 1;
+            }
+            else if (c == (char)127) {                // delete
+                if (i >= t.Length) return;
+                this.Text = t.Substring(0, i) + t.Substring(i + 1);
+                this.caretIndex = i;
+            }
+            else if (c >= ' ') {                      // printable
+                this.Text = t.Substring(0, i) + c + t.Substring(i);
+                this.caretIndex = i + 1;
+            }
+            else {
+                return;                               // other control characters ignored
+            }
+
+            this.caretVisible = true;
+            this.Invalidate();
+        }
+
+        /// <summary>Starts the blinking caret and moves it to the end of the text when the field gains focus.</summary>
+        protected override void OnGotFocus(FocusChangedEventArgs e) {
+            base.OnGotFocus(e);
+
+            this.caretIndex = this.text.Length;
+            this.caretVisible = true;
+            this.EnsureCaretTimer();
+            this.caretTimer.Start();
+            this.Invalidate();
+        }
+
+        /// <summary>Stops the blinking caret when the field loses focus.</summary>
+        protected override void OnLostFocus(FocusChangedEventArgs e) {
+            base.OnLostFocus(e);
+
+            this.caretVisible = false;
+            this.caretTimer?.Stop();
+            this.Invalidate();
+        }
+
+        private void SetCaret(int index) {
+            if (index < 0) index = 0;
+            if (index > this.text.Length) index = this.text.Length;
+
+            this.caretIndex = index;
+            this.caretVisible = true;
+            this.Invalidate();
+        }
+
+        private void EnsureCaretTimer() {
+            if (this.caretTimer == null) {
+                this.caretTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };
+                this.caretTimer.Tick += (s, ev) => {
+                    this.caretVisible = !this.caretVisible;
+                    this.Invalidate();
+                };
             }
         }
 
@@ -261,6 +362,21 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
             if (txt != string.Empty)
                 dc.DrawText(ref txt, this._font, b.Color, x, y, w, this._font.Height, this.TextAlign, TextTrimming.CharacterEllipsis);
+
+            // Blinking caret at the insertion point, drawn only while the field is focused. Positioned after the
+            // displayed text up to the caret (approximate for non-left alignment).
+            if (this.IsFocused && this.caretVisible) {
+                var idx = this.caretIndex;
+                if (idx > txt.Length) idx = txt.Length;
+
+                this._font.ComputeExtent(txt.Substring(0, idx), out var caretW, out var caretH);
+
+                var caretX = x + caretW;
+                var maxX = this.width - this.BorderThickness - 1;
+                if (caretX > maxX) caretX = maxX;
+
+                dc.DrawLine(new Pen(b.Color, 1), caretX, y, caretX, y + this._font.Height);
+            }
         }
     }
 }
