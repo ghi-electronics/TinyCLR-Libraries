@@ -836,6 +836,46 @@
             Column index to compare.
             </summary>
         </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Controls.Dock">
+            <summary>The edge of a <see cref="T:GHIElectronics.TinyCLR.UI.Controls.DockPanel"/> that a child is docked to.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Controls.Dock.Left">
+            <summary>Dock to the left edge.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Controls.Dock.Top">
+            <summary>Dock to the top edge.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Controls.Dock.Right">
+            <summary>Dock to the right edge.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Controls.Dock.Bottom">
+            <summary>Dock to the bottom edge.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Controls.DockPanel">
+            <summary>
+            Panel that docks each child to one edge (Left/Top/Right/Bottom) of the space left by the previously docked
+            children; when <see cref="P:GHIElectronics.TinyCLR.UI.Controls.DockPanel.LastChildFill"/> is true (the default) the last child fills whatever remains in the
+            centre. WPF-style. Choose an edge per child with <see cref="M:GHIElectronics.TinyCLR.UI.Controls.DockPanel.GetDock(GHIElectronics.TinyCLR.UI.UIElement)"/> / <see cref="M:GHIElectronics.TinyCLR.UI.Controls.DockPanel.SetDock(GHIElectronics.TinyCLR.UI.UIElement,GHIElectronics.TinyCLR.UI.Controls.Dock)"/> (default Left).
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.DockPanel.LastChildFill">
+            <summary>Whether the last child fills the remaining central area instead of being docked (default true).</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.DockPanel.#ctor">
+            <summary>Creates a new DockPanel.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.DockPanel.GetDock(GHIElectronics.TinyCLR.UI.UIElement)">
+            <summary>Gets the edge an element is docked to (default <see cref="F:GHIElectronics.TinyCLR.UI.Controls.Dock.Left"/>).</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.DockPanel.SetDock(GHIElectronics.TinyCLR.UI.UIElement,GHIElectronics.TinyCLR.UI.Controls.Dock)">
+            <summary>Docks an element to an edge of its parent DockPanel.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.DockPanel.MeasureOverride(System.Int32,System.Int32,System.Int32@,System.Int32@)">
+            <summary>Measures children, accumulating docked extents along each axis (WPF DockPanel algorithm).</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.DockPanel.ArrangeOverride(System.Int32,System.Int32)">
+            <summary>Arranges each child against its docked edge; the last child fills the remainder when enabled.</summary>
+        </member>
         <member name="T:GHIElectronics.TinyCLR.UI.Controls.Expander">
             <summary>A header with an expand/collapse chevron; tapping the header shows or hides the single child content.</summary>
         </member>
