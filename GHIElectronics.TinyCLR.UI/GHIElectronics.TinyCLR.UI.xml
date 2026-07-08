@@ -1810,6 +1810,16 @@
         <member name="P:GHIElectronics.TinyCLR.UI.Controls.Panel.Children">
             <summary>The collection of child elements contained in this panel.</summary>
         </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Panel.Background">
+            <summary>
+            The brush used to paint the panel's background, matching WPF's <c>Panel.Background</c>
+            (Canvas/Grid/StackPanel/DockPanel). Null (the default) leaves the panel transparent, so
+            whatever is behind it shows through.
+            </summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Panel.OnRender(GHIElectronics.TinyCLR.UI.Media.DrawingContext)">
+            <summary>Paints the background across the panel's render area (WPF Panel parity).</summary>
+        </member>
         <member name="M:GHIElectronics.TinyCLR.UI.Controls.Panel.MeasureOverride(System.Int32,System.Int32,System.Int32@,System.Int32@)">
             <summary>Measures the panel as the bounding size of all its children.</summary>
         </member>
