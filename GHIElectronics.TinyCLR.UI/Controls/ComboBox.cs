@@ -69,6 +69,19 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                 this.Invalidate();
         }
 
+        // The collapsed display is ONE row: the selected option, or the first option when nothing is selected yet.
+        // A freshly-populated combo box (Options set, no SelectedIndex) must show a single row, not every option —
+        // otherwise the ListBox base renders as many option rows as fit the control height (e.g. two rows of a small
+        // font in a 28px box), which is neither what the designer previews nor what a collapsed combo box should look
+        // like. Font-agnostic: always exactly one row, whatever the font/size.
+        private void ShowCollapsedItem() {
+            this.Items.Clear();
+            if (this.options != null && this.options.Count > 0) {
+                var index = (this.SelectedIndex >= 0 && this.SelectedIndex < this.options.Count) ? this.SelectedIndex : 0;
+                this.Items.Add(this.CreateOptionText(this.options[index].ToString()));
+            }
+        }
+
         private void ComboBox_TouchUp(object sender, TouchEventArgs e) => this.ToggleOpen();
 
         /// <summary>
@@ -115,6 +128,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             else {
                 if (this.options != null && this.options.Count > 0) {
                     this.Height = this.originalHeight;
+                    this.ShowCollapsedItem(); // closing without a pick still collapses to a single row
                 }
             }
 
@@ -150,11 +164,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
                 if (this.options != null) {
                     this.EnsureOriginalHeight();
-
-                    this.Items.Clear();
-                    for (var i = 0; i < this.options.Count; i++) {
-                        this.Items.Add(this.CreateOptionText(this.options[i].ToString()));
-                    }
+                    this.ShowCollapsedItem(); // collapsed = ONE row (the first/selected option), never the whole list
                 }
             }
         }

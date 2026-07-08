@@ -414,6 +414,11 @@
             <summary>Optional custom face image, nine-slice scaled with <see cref="P:GHIElectronics.TinyCLR.UI.Controls.Button.RadiusBorder"/>. When set it replaces
             the default themed button skin (and takes priority over <see cref="P:GHIElectronics.TinyCLR.UI.Controls.Control.Background"/>).</summary>
         </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Button.ClickMode">
+            <summary>Determines whether <see cref="E:GHIElectronics.TinyCLR.UI.Controls.Button.Click"/> fires on touch press or release. Default is
+            <see cref="F:GHIElectronics.TinyCLR.UI.Controls.ClickMode.Release"/> (WPF convention); set to <see cref="F:GHIElectronics.TinyCLR.UI.Controls.ClickMode.Press"/> for the
+            instant TinyCLR 2.x response (fires the moment the button is touched).</summary>
+        </member>
         <member name="M:GHIElectronics.TinyCLR.UI.Controls.Button.#ctor">
             <summary>Creates a new Button.</summary>
         </member>
@@ -433,7 +438,8 @@
             <summary>Handles touch release; fires Click if the press started on this button.</summary>
         </member>
         <member name="M:GHIElectronics.TinyCLR.UI.Controls.Button.OnTouchDown(GHIElectronics.TinyCLR.UI.Input.TouchEventArgs)">
-            <summary>Handles touch press; marks the button as pressed.</summary>
+            <summary>Handles touch press; marks the button as pressed (and, in <see cref="F:GHIElectronics.TinyCLR.UI.Controls.ClickMode.Press"/>
+            mode, fires <see cref="E:GHIElectronics.TinyCLR.UI.Controls.Button.Click"/> immediately).</summary>
         </member>
         <member name="M:GHIElectronics.TinyCLR.UI.Controls.Button.OnButtonDown(GHIElectronics.TinyCLR.UI.Input.ButtonEventArgs)">
             <summary>Handles the Select hardware button press; marks the button as pressed.</summary>
@@ -645,6 +651,11 @@
         <member name="P:GHIElectronics.TinyCLR.UI.Controls.CheckBox.RadiusBorder">
             <summary>Corner radius used by the nine-slice check box image.</summary>
         </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.CheckBox.ClickMode">
+            <summary>Determines whether the check box clicks/toggles on touch press or release. Default is
+            <see cref="F:GHIElectronics.TinyCLR.UI.Controls.ClickMode.Release"/> (WPF convention); set to <see cref="F:GHIElectronics.TinyCLR.UI.Controls.ClickMode.Press"/> for the
+            instant TinyCLR 2.x response.</summary>
+        </member>
         <member name="M:GHIElectronics.TinyCLR.UI.Controls.CheckBox.#ctor">
             <summary>Creates a new CheckBox.</summary>
         </member>
@@ -652,10 +663,11 @@
             <summary>Draws the check box in its checked or unchecked state.</summary>
         </member>
         <member name="M:GHIElectronics.TinyCLR.UI.Controls.CheckBox.OnTouchUp(GHIElectronics.TinyCLR.UI.Input.TouchEventArgs)">
-            <summary>Handles touch release; toggles the check box.</summary>
+            <summary>Handles touch release; toggles the check box (unless it already toggled on press).</summary>
         </member>
         <member name="M:GHIElectronics.TinyCLR.UI.Controls.CheckBox.OnTouchDown(GHIElectronics.TinyCLR.UI.Input.TouchEventArgs)">
-            <summary>Handles touch press. Toggling is deferred to touch release.</summary>
+            <summary>Handles touch press. In the default Release mode toggling is deferred to touch release;
+            in <see cref="F:GHIElectronics.TinyCLR.UI.Controls.ClickMode.Press"/> mode it toggles immediately.</summary>
         </member>
         <member name="M:GHIElectronics.TinyCLR.UI.Controls.CheckBox.OnButtonUp(GHIElectronics.TinyCLR.UI.Input.ButtonEventArgs)">
             <summary>Handles the Select hardware button release; toggles the check box.</summary>
@@ -668,6 +680,24 @@
         </member>
         <member name="M:GHIElectronics.TinyCLR.UI.Controls.CheckBox.Dispose(System.Boolean)">
             <summary>Releases the check box's bitmap resources.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Controls.ClickMode">
+            <summary>Specifies when the <c>Click</c> event fires for button-family controls
+            (<see cref="T:GHIElectronics.TinyCLR.UI.Controls.Button"/>, <see cref="T:GHIElectronics.TinyCLR.UI.Controls.CheckBox"/>, <see cref="T:GHIElectronics.TinyCLR.UI.Controls.RadioButton"/>). Mirrors WPF's
+            <c>System.Windows.Controls.ClickMode</c>. Governs touch activation; the default is
+            <see cref="F:GHIElectronics.TinyCLR.UI.Controls.ClickMode.Release"/>.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Controls.ClickMode.Release">
+            <summary>Click fires when the touch is pressed and then released over the control (default,
+            matches WPF). Allows dragging off the control before release to cancel.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Controls.ClickMode.Press">
+            <summary>Click fires as soon as the control is pressed (touch down) for the snappiest response.
+            This matches the TinyCLR 2.x behavior; there is no drag-off-to-cancel in this mode.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Controls.ClickMode.Hover">
+            <summary>Reserved for pointer hover. A touch-only panel never hovers, so this behaves like
+            <see cref="F:GHIElectronics.TinyCLR.UI.Controls.ClickMode.Release"/> for touch input.</summary>
         </member>
         <member name="T:GHIElectronics.TinyCLR.UI.Controls.ComboBox">
             <summary>A collapsible selection list (combo box): shows the selected option and expands to the full list on tap.</summary>
@@ -1483,6 +1513,11 @@
         <member name="P:GHIElectronics.TinyCLR.UI.Controls.RadioButton.ShowBackground">
             <summary>Whether the bitmap background is drawn behind the button.</summary>
         </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.RadioButton.ClickMode">
+            <summary>Determines whether the button clicks/selects on touch press or release. Default is
+            <see cref="F:GHIElectronics.TinyCLR.UI.Controls.ClickMode.Release"/> (WPF convention); set to <see cref="F:GHIElectronics.TinyCLR.UI.Controls.ClickMode.Press"/> for the
+            instant TinyCLR 2.x response.</summary>
+        </member>
         <member name="M:GHIElectronics.TinyCLR.UI.Controls.RadioButton.#ctor">
             <summary>Initializes a new radio button with no group name.</summary>
         </member>
@@ -1493,10 +1528,11 @@
             <summary>Renders the radio button background and its checked/unchecked indicator.</summary>
         </member>
         <member name="M:GHIElectronics.TinyCLR.UI.Controls.RadioButton.OnTouchUp(GHIElectronics.TinyCLR.UI.Input.TouchEventArgs)">
-            <summary>Handles a touch release by clicking and toggling the button.</summary>
+            <summary>Handles a touch release by clicking and selecting the button (unless it already fired on press).</summary>
         </member>
         <member name="M:GHIElectronics.TinyCLR.UI.Controls.RadioButton.OnTouchDown(GHIElectronics.TinyCLR.UI.Input.TouchEventArgs)">
-            <summary>Handles a touch press; the click is performed on release instead.</summary>
+            <summary>Handles a touch press. In the default Release mode the click is performed on release; in
+            <see cref="F:GHIElectronics.TinyCLR.UI.Controls.ClickMode.Press"/> mode it fires immediately.</summary>
         </member>
         <member name="M:GHIElectronics.TinyCLR.UI.Controls.RadioButton.OnButtonUp(GHIElectronics.TinyCLR.UI.Input.ButtonEventArgs)">
             <summary>Handles the Select hardware button by clicking and toggling the button.</summary>

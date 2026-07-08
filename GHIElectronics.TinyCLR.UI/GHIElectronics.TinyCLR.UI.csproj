@@ -39,6 +39,7 @@
   <ItemGroup>
     <Compile Include="Controls\Chart.cs" />
     <Compile Include="Controls\CheckBox.cs" />
+    <Compile Include="Controls\ClickMode.cs" />
     <Compile Include="Controls\DataGrid.cs" />
     <Compile Include="Controls\DataGridColumn.cs" />
     <Compile Include="Controls\DataGridItem.cs" />
