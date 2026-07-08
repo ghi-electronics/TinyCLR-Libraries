@@ -89,6 +89,10 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         public int RadiusBorder { get; set; } = Theme.DefaultRadiusBorder;
         /// <summary>Whether the bitmap background is drawn behind the button.</summary>
         public bool ShowBackground { get; set; } = true;
+        /// <summary>Determines whether the button clicks/selects on touch press or release. Default is
+        /// <see cref="ClickMode.Release"/> (WPF convention); set to <see cref="ClickMode.Press"/> for the
+        /// instant TinyCLR 2.x response.</summary>
+        public ClickMode ClickMode { get; set; } = ClickMode.Release;
 
         private void InitResource() => this.bitmapImageRadioButton = Resources.LoadBitmapImage(Resources.BitmapResources.RadioButton);
 
@@ -142,18 +146,26 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
-        /// <summary>Handles a touch release by clicking and toggling the button.</summary>
+        /// <summary>Handles a touch release by clicking and selecting the button (unless it already fired on press).</summary>
         protected override void OnTouchUp(TouchEventArgs e) {
             if (!this.IsEnabled) {
                 return;
             }
 
-            e.Handled = this.PerformClick();
+            // In Press mode the click already fired on TouchDown; don't fire it twice.
+            if (this.ClickMode != ClickMode.Press) {
+                e.Handled = this.PerformClick();
+            }
         }
 
-        /// <summary>Handles a touch press; the click is performed on release instead.</summary>
+        /// <summary>Handles a touch press. In the default Release mode the click is performed on release; in
+        /// <see cref="ClickMode.Press"/> mode it fires immediately.</summary>
         protected override void OnTouchDown(TouchEventArgs e) {
-            // No-op. Click + Toggle now happen exactly once on TouchUp.
+            // ClickMode.Press: select immediately on press (the TinyCLR 2.x behavior). The default
+            // Release mode fires on TouchUp instead.
+            if (this.IsEnabled && this.ClickMode == ClickMode.Press) {
+                e.Handled = this.PerformClick();
+            }
         }
 
         /// <summary>Handles the Select hardware button by clicking and toggling the button.</summary>

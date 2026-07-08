@@ -37,6 +37,11 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         /// <summary>Corner radius used by the nine-slice check box image.</summary>
         public ushort RadiusBorder { get; set; } = (ushort)Theme.DefaultRadiusBorder;
 
+        /// <summary>Determines whether the check box clicks/toggles on touch press or release. Default is
+        /// <see cref="ClickMode.Release"/> (WPF convention); set to <see cref="ClickMode.Press"/> for the
+        /// instant TinyCLR 2.x response.</summary>
+        public ClickMode ClickMode { get; set; } = ClickMode.Release;
+
 
         private void InitResource() {
             this.bitmapImageCheckboxOn = Resources.LoadBitmapImage(Resources.BitmapResources.CheckBox_On);
@@ -65,19 +70,27 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             dc.Scale9Image(0, 0, w, h, img, this.RadiusBorder, this.RadiusBorder, this.RadiusBorder, this.RadiusBorder, this.Alpha);
         }
 
-        /// <summary>Handles touch release; toggles the check box.</summary>
+        /// <summary>Handles touch release; toggles the check box (unless it already toggled on press).</summary>
         protected override void OnTouchUp(TouchEventArgs e) {
             if (!this.IsEnabled) {
                 return;
             }
 
-            e.Handled = this.PerformClick();
+            // In Press mode the toggle already fired on TouchDown; don't fire it twice.
+            if (this.ClickMode != ClickMode.Press) {
+                e.Handled = this.PerformClick();
+            }
         }
 
-        /// <summary>Handles touch press. Toggling is deferred to touch release.</summary>
+        /// <summary>Handles touch press. In the default Release mode toggling is deferred to touch release;
+        /// in <see cref="ClickMode.Press"/> mode it toggles immediately.</summary>
         protected override void OnTouchDown(TouchEventArgs e) {
-            // No-op. Toggling happens on TouchUp so that drag-off-and-release-elsewhere
-            // doesn't flip state, and Click fires exactly once per activation.
+            // Default (Release): toggle on TouchUp so drag-off-and-release-elsewhere doesn't flip state,
+            // and Click fires exactly once per activation.
+            // ClickMode.Press: toggle immediately on press (the TinyCLR 2.x behavior).
+            if (this.IsEnabled && this.ClickMode == ClickMode.Press) {
+                e.Handled = this.PerformClick();
+            }
         }
 
         /// <summary>Handles the Select hardware button release; toggles the check box.</summary>

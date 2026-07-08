@@ -16,6 +16,11 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         /// the default themed button skin (and takes priority over <see cref="Control.Background"/>).</summary>
         public ImageSource BackgroundImage { get; set; }
 
+        /// <summary>Determines whether <see cref="Click"/> fires on touch press or release. Default is
+        /// <see cref="ClickMode.Release"/> (WPF convention); set to <see cref="ClickMode.Press"/> for the
+        /// instant TinyCLR 2.x response (fires the moment the button is touched).</summary>
+        public ClickMode ClickMode { get; set; } = ClickMode.Release;
+
         // Cached events - allocated once per AppDomain, not per click. Each
         // click still needs a fresh RoutedEventArgs, but the event identity
         // is constant.
@@ -142,12 +147,14 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             if (this.Parent != null)
                 this.Invalidate();
 
-            if (wasPressed) {
+            // In Press mode the click already fired on TouchDown; don't fire it twice.
+            if (wasPressed && this.ClickMode != ClickMode.Press) {
                 e.Handled = this.PerformClick();
             }
         }
 
-        /// <summary>Handles touch press; marks the button as pressed.</summary>
+        /// <summary>Handles touch press; marks the button as pressed (and, in <see cref="ClickMode.Press"/>
+        /// mode, fires <see cref="Click"/> immediately).</summary>
         protected override void OnTouchDown(TouchEventArgs e) {
             if (!this.IsEnabled) {
                 return;
@@ -160,6 +167,12 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
             if (this.Parent != null)
                 this.Invalidate();
+
+            // ClickMode.Press: activate on press (the TinyCLR 2.x behavior). The default
+            // Release mode fires in OnTouchUp instead.
+            if (this.ClickMode == ClickMode.Press) {
+                this.PerformClick();
+            }
         }
 
         /// <summary>Handles the Select hardware button press; marks the button as pressed.</summary>
