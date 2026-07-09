@@ -103,27 +103,48 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             var width = this._renderWidth;
             var height = this._renderHeight;
             var r = this._cornerRadius;
+            var bg = this._background;
 
-            // Outer shape (border color). FillRoundedRectangle composes the rounded fill from the proven square
-            // path, so it renders correct rounded corners on device without the native rounded-rect (which faults).
-            if (r > 0)
-                dc.FillRoundedRectangle(this._borderBrush, 0, 0, width, height, r);
-            else
-                dc.DrawRectangle(this._borderBrush, null, 0, 0, width, height);
+            // A translucent background must blend directly over whatever is behind the Border — the wallpaper — so
+            // paint it across the FULL area and skip the opaque border under-fill, which would tint the blend. This
+            // is the frosted macOS-dock look. Static content is painted once, so the blend costs nothing per frame
+            // (the standing MCU-perf rule).
+            if (IsTranslucent(bg)) {
+                FillRect(dc, bg, 0, 0, width, height, r);
+                return;
+            }
 
-            // Background: an inset rounded rect over the border, leaving the border thickness as a rounded frame.
-            if (this._background != null) {
+            // Opaque: outer border fill + inset background, leaving the border thickness as a (rounded) frame.
+            // FillRoundedRectangle composes the rounded fill from the proven square path, so corners render on
+            // device without the native rounded-rect (which faults).
+            FillRect(dc, this._borderBrush, 0, 0, width, height, r);
+
+            if (bg != null) {
                 var innerW = width - this._borderLeft - this._borderRight;
                 var innerH = height - this._borderTop - this._borderBottom;
-
-                if (r > 0) {
-                    var innerR = System.Math.Max(0, r - System.Math.Max(this._borderLeft, this._borderTop));
-                    dc.FillRoundedRectangle(this._background, this._borderLeft, this._borderTop, innerW, innerH, innerR);
-                }
-                else {
-                    dc.DrawRectangle(this._background, null, this._borderLeft, this._borderTop, innerW, innerH);
-                }
+                var innerR = r > 0 ? System.Math.Max(0, r - System.Math.Max(this._borderLeft, this._borderTop)) : 0;
+                FillRect(dc, bg, this._borderLeft, this._borderTop, innerW, innerH, innerR);
             }
+        }
+
+        private static void FillRect(DrawingContext dc, Media.Brush brush, int x, int y, int w, int h, int r) {
+            if (r > 0)
+                dc.FillRoundedRectangle(brush, x, y, w, h, r);
+            else
+                dc.DrawRectangle(brush, null, x, y, w, h);
+        }
+
+        // A background is translucent if its brush Opacity is below opaque, OR (the natural authoring form) it's a
+        // SolidColorBrush whose colour carries a #AARRGGBB alpha. In the latter case mirror that alpha into the
+        // brush Opacity, which is what the fill blit actually blends by. Idempotent; each element owns its brush.
+        internal static bool IsTranslucent(Media.Brush brush) {
+            if (brush == null)
+                return false;
+
+            if (brush is Media.SolidColorBrush scb && scb.Color.A < Bitmap.OpacityOpaque)
+                brush.Opacity = scb.Color.A;
+
+            return brush.Opacity < Bitmap.OpacityOpaque;
         }
 
         private Media.Brush _borderBrush;

@@ -36,6 +36,11 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         /// <summary>Paints the background across the panel's render area (WPF Panel parity).</summary>
         public override void OnRender(Media.DrawingContext dc) {
             if (this._background != null) {
+                // A #AARRGGBB background blends over what's behind the panel (the fill blit blends by brush
+                // Opacity — Border.IsTranslucent mirrors the colour's alpha into it). A single fill already
+                // composites over the wallpaper, so no special path is needed here beyond syncing the opacity.
+                Border.IsTranslucent(this._background);
+
                 if (this._cornerRadius > 0)
                     dc.FillRoundedRectangle(this._background, 0, 0, this._renderWidth, this._renderHeight, this._cornerRadius);
                 else

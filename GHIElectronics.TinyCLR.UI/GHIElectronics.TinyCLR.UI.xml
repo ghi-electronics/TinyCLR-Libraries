@@ -743,6 +743,11 @@
         <member name="P:GHIElectronics.TinyCLR.UI.Controls.Gauge.EnableThreshold">
             <summary>When true, the threshold arc around the recommended value is drawn.</summary>
         </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Gauge.EnableScale">
+            <summary>When true (the default), the control draws the tick marks and scale numbers. Set false when the
+            dial face is supplied as a <see cref="P:GHIElectronics.TinyCLR.UI.Controls.Gauge.BackgroundImage"/> that already includes the scale, so the control
+            draws only the needle over your artwork (no numbers on top).</summary>
+        </member>
         <member name="P:GHIElectronics.TinyCLR.UI.Controls.Gauge.SweepAngle">
             <summary>Sweep of the dial arc in degrees (30–360). 270 (default) = classic dial, 180 = half dial,
             360 = full ring. The arc is centred on the bottom opening.</summary>
@@ -1003,6 +1008,12 @@
         <member name="P:GHIElectronics.TinyCLR.UI.Controls.Menu.ItemWidth">
             <summary>Width in pixels of each top-level bar entry.</summary>
         </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Menu.DropDirection">
+            <summary>Which way dropdowns open. <see cref="F:GHIElectronics.TinyCLR.UI.Controls.MenuDropDirection.Down"/> (default) suits a menu at the top
+            of the screen; <see cref="F:GHIElectronics.TinyCLR.UI.Controls.MenuDropDirection.Up"/> suits a menu at the bottom (so the dropdown stays on
+            screen). Up requires the Menu to sit in a Canvas (it shifts its own Canvas.Top up while open so the bar
+            stays put) — same idea WPF handles automatically by re-placing the popup.</summary>
+        </member>
         <member name="E:GHIElectronics.TinyCLR.UI.Controls.Menu.ItemClick">
             <summary>Raised when a sub-item is tapped; the argument is its header text.</summary>
         </member>
@@ -1019,6 +1030,15 @@
         </member>
         <member name="M:GHIElectronics.TinyCLR.UI.Controls.Menu.OnRender(GHIElectronics.TinyCLR.UI.Media.DrawingContext)">
             <summary>Draws the bar and (if open) the dropdown.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Controls.MenuDropDirection">
+            <summary>The direction a <see cref="T:GHIElectronics.TinyCLR.UI.Controls.Menu"/> opens its dropdowns.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Controls.MenuDropDirection.Down">
+            <summary>Dropdowns open downward (for a menu at the top of the screen).</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Controls.MenuDropDirection.Up">
+            <summary>Dropdowns open upward (for a menu at the bottom of the screen).</summary>
         </member>
         <member name="T:GHIElectronics.TinyCLR.UI.Controls.MenuItemClickHandler">
             <summary>Handles a <see cref="E:GHIElectronics.TinyCLR.UI.Controls.Menu.ItemClick"/> event.</summary>

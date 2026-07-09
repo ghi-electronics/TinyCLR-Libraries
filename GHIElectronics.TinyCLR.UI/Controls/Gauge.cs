@@ -52,6 +52,13 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         public bool EnableDigitalNumber { get; set; }
         /// <summary>When true, the threshold arc around the recommended value is drawn.</summary>
         public bool EnableThreshold { get; set; }
+        /// <summary>When true (the default), the control draws the tick marks and scale numbers. Set false when the
+        /// dial face is supplied as a <see cref="BackgroundImage"/> that already includes the scale, so the control
+        /// draws only the needle over your artwork (no numbers on top).</summary>
+        public bool EnableScale {
+            get => this._enableScale;
+            set { this._enableScale = value; this.MarkDirty(); }
+        }
 
         /// <summary>Sweep of the dial arc in degrees (30–360). 270 (default) = classic dial, 180 = half dial,
         /// 360 = full ring. The arc is centred on the bottom opening.</summary>
@@ -207,7 +214,9 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         /// circular / custom-shaped gauge). Mirrors <c>System.Drawing.Image.MakeTransparent</c>; applied once when the
         /// background is next redrawn.
         /// </summary>
-        public MediaColor TransparentColor {
+        // 'new': intentionally shadows Image.TransparentColor (an int color key). The Gauge takes a Media.Color
+        // and applies it to its BackgroundImage, so it keeps its own typed property.
+        public new MediaColor TransparentColor {
             get => this._transparentColor;
             set { this._transparentColor = value; this._hasTransparentColor = true; this._backgroundTransparentApplied = false; this.MarkDirty(); }
         }
@@ -240,6 +249,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         private BitmapImage _cachedImage;
         private int _cachedSide;
         private bool _backgroundDirty = true;
+        private bool _enableScale = true;
 
         private bool _disposed;
 
@@ -371,7 +381,10 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                     g.DrawEllipse(rimPen, 0, 0, side, side);
             }
 
-            this.DrawCalibration(g, side);
+            // Ticks + scale numbers. Skip when the face is a supplied image that already has them (EnableScale=false).
+            if (this._enableScale) {
+                this.DrawCalibration(g, side);
+            }
 
             if (this.EnableThreshold) {
                 this.DrawThresholdRing(g, side);
