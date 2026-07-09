@@ -25,8 +25,12 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
         // --- visual constants (extracted from inline magic numbers) -----------
 
-        private const float FromAngleDeg = 135f;
-        private const float ToAngleDeg = 405f;          // 270° sweep, clockwise
+        // Sweep angle (degrees) of the dial arc, centred on the bottom opening. 270° is the classic look;
+        // 180° gives a half dial, 360° a full ring. From/To are derived symmetrically so SweepAngle=270
+        // reproduces the original 135°/405° constants.
+        private float _sweepAngle = 270f;
+        private float FromAngleDeg => 90f + (360f - this._sweepAngle) / 2f;
+        private float ToAngleDeg => this.FromAngleDeg + this._sweepAngle;
 
         private const int MinDivisions = 2;
         private const int MaxDivisions = 24;
@@ -48,6 +52,18 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         public bool EnableDigitalNumber { get; set; }
         /// <summary>When true, the threshold arc around the recommended value is drawn.</summary>
         public bool EnableThreshold { get; set; }
+
+        /// <summary>Sweep of the dial arc in degrees (30–360). 270 (default) = classic dial, 180 = half dial,
+        /// 360 = full ring. The arc is centred on the bottom opening.</summary>
+        public float SweepAngle {
+            get => this._sweepAngle;
+            set {
+                if (value < 30f) value = 30f;
+                if (value > 360f) value = 360f;
+                this._sweepAngle = value;
+                this.MarkDirty();
+            }
+        }
 
         /// <summary>Background color behind the dial.</summary>
         public MediaColor BackColor {
@@ -373,14 +389,14 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             var ringRect = new Rectangle(gap, gap, side - gap * 2, side - gap * 2);
 
             using (var rimPen = ToSdPen(ThresholdRimColor, side / 40))
-                this.DrawArc(g, rimPen, ringRect, FromAngleDeg, 270);
+                this.DrawArc(g, rimPen, ringRect, FromAngleDeg, this._sweepAngle);
 
             // Threshold band centered on the recommended value.
             var valuePct = 100 * (this._recommendedValue - this._minValue) / (this._maxValue - this._minValue);
             var valueAngle = (ToAngleDeg - FromAngleDeg) * valuePct / 100 + FromAngleDeg;
-            var startAngle = valueAngle - 270 * this._threshold / 200;
+            var startAngle = valueAngle - this._sweepAngle * this._threshold / 200;
             if (startAngle <= FromAngleDeg) startAngle = FromAngleDeg;
-            var sweep = 270 * this._threshold / 100;
+            var sweep = this._sweepAngle * this._threshold / 100;
             if (startAngle + sweep > ToAngleDeg) sweep = ToAngleDeg - startAngle;
 
             using (var threshPen = ToSdPen(ThresholdMarkColor, side / 50))
@@ -567,7 +583,9 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         };
 
         private void DrawSevenSegmentNumber(Graphics g, float number, Rectangle rect) {
-            var formatted = number.ToString("n0");
+            // Integer ToString (not "n0") — "n0" inserts a thousands separator (e.g. 1650 -> "1,650"), and the
+            // comma is not a digit, so the seven-segment lookup below would index out of range.
+            var formatted = ((int)number).ToString();
             var padded = PadLeft(formatted, ((int)this._maxValue).ToString().Length, '0');
 
             var digitH = rect.Height;
@@ -603,6 +621,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         private void DrawSingleDigit(Graphics g, System.Drawing.Pen outlinePen, System.Drawing.Brush fillBrush,
                                      int digit, float originX, float originY, float w, float h,
                                      bool decimalPoint, PointF[] bufferA, PointF[] bufferG) {
+            if (digit < -1 || digit > 9) return; // ignore any unexpected char (e.g. a group separator) — never index out of range
             var bits = digit == -1 ? MinusSignBits : DigitSegmentBits[digit];
 
             for (var seg = 0; seg < SegmentXY.Length; seg++) {

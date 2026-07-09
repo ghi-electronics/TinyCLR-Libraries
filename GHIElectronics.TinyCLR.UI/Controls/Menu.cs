@@ -54,10 +54,17 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
-        /// <summary>Reports the bar height (the open dropdown draws within the control's assigned height).</summary>
+        /// <summary>Reports the bar height, growing to include the open dropdown so it is both visible AND
+        /// hit-testable. When closed the control is only the bar tall, so it doesn't block touches to whatever
+        /// sits beneath it (hit-testing is bounds-based).</summary>
         protected override void MeasureOverride(int availableWidth, int availableHeight, out int desiredWidth, out int desiredHeight) {
             desiredWidth = availableWidth < Media.Constants.MaxExtent ? availableWidth : this._items.Count * this._itemWidth;
             desiredHeight = this._barHeight;
+
+            if (this._openIndex >= 0 && this._openIndex < this._items.Count) {
+                var open = (MenuEntry)this._items[this._openIndex];
+                desiredHeight += open.Children.Count * this._barHeight;
+            }
         }
 
         /// <summary>Opens/closes a top entry, or selects a sub-item.</summary>
@@ -72,7 +79,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                 var idx = x / this._itemWidth;
                 if (idx >= 0 && idx < this._items.Count) {
                     this._openIndex = (this._openIndex == idx) ? -1 : idx;
-                    this.Invalidate();
+                    this.InvalidateMeasure(); // re-measure: the control grows/shrinks with the dropdown
                     e.Handled = true;
                 }
 
@@ -87,7 +94,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                     if (x >= dropX && x < dropX + this._itemWidth) {
                         var child = (MenuEntry)open.Children[row];
                         this._openIndex = -1;
-                        this.Invalidate();
+                        this.InvalidateMeasure();
                         this.ItemClick?.Invoke(this, child.Header);
                         e.Handled = true;
                         return;
@@ -96,7 +103,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
                 // Tapped outside the dropdown: close it.
                 this._openIndex = -1;
-                this.Invalidate();
+                this.InvalidateMeasure();
             }
         }
 

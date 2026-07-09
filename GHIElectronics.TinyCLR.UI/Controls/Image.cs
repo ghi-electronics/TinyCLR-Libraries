@@ -25,8 +25,30 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                 VerifyAccess();
 
                 this._bitmap = value;
+                ApplyTransparency();
                 InvalidateMeasure();
             }
+        }
+
+        /// <summary>
+        /// A color key (0xRRGGBB) rendered as transparent, e.g. an icon's magenta backdrop (0xFF00F2). The
+        /// default -1 means no key (the image draws opaque). Order-independent: setting either this or
+        /// <see cref="Source"/> (re)applies the key.
+        /// </summary>
+        public int TransparentColor {
+            get => this._transparentColor;
+            set {
+                VerifyAccess();
+
+                this._transparentColor = value;
+                ApplyTransparency();
+                Invalidate();
+            }
+        }
+
+        private void ApplyTransparency() {
+            if (this._bitmap != null && this._transparentColor >= 0)
+                this._bitmap.MakeTransparent(this._transparentColor);
         }
 
         /// <summary>Measures the desired size based on the image and stretch mode.</summary>
@@ -70,6 +92,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         }
 
         private ImageSource _bitmap;
+        private int _transparentColor = -1;
     }
 }
 

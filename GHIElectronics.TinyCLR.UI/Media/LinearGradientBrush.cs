@@ -36,12 +36,12 @@ namespace GHIElectronics.TinyCLR.UI.Media {
             this.EndY = endY;
         }
 
-        internal override void RenderRectangle(Bitmap bmp, Pen pen, int x, int y, int width, int height) {
-            var outlineColor = (pen != null) ? pen.Color : Colors.Transparent;
-            var outlineThickness = (ushort)0;
+        internal override void RenderRectangle(Bitmap bmp, Pen pen, int x, int y, int width, int height) =>
+            this.RenderRectangle(bmp, pen, x, y, width, height, 0, 0);
 
-            if (pen != null)
-                outlineThickness = pen.Thickness;
+        internal override void RenderRectangle(Bitmap bmp, Pen pen, int x, int y, int width, int height, int xCornerRadius, int yCornerRadius) {
+            var outlineColor = (pen != null) ? pen.Color : Colors.Transparent;
+            var outlineThickness = (pen != null) ? pen.Thickness : (ushort)0;
 
             int x1, y1;
             int x2, y2;
@@ -61,7 +61,7 @@ namespace GHIElectronics.TinyCLR.UI.Media {
                     break;
             }
 
-            bmp.DrawRectangle(outlineColor, outlineThickness, x, y, width, height, 0, 0,
+            bmp.DrawRectangle(outlineColor, outlineThickness, x, y, width, height, xCornerRadius, yCornerRadius,
                                           this.StartColor, x1, y1, this.EndColor, x2, y2, this.Opacity);
         }
     }

@@ -91,26 +91,44 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
+        /// <summary>Corner radius in pixels (0 = square corners, the default). Rounds both the border and the
+        /// background fill — cheap (only the corner pixels rasterize).</summary>
+        public int CornerRadius {
+            get => this._cornerRadius;
+            set { this._cornerRadius = value < 0 ? 0 : value; Invalidate(); }
+        }
+
         /// <summary>Draws the border and background.</summary>
         public override void OnRender(DrawingContext dc) {
             var width = this._renderWidth;
             var height = this._renderHeight;
+            var r = this._cornerRadius;
 
-            // Border
-            //
-            dc.DrawRectangle(this._borderBrush, null, 0, 0, width, height);
+            // Outer shape (border color). FillRoundedRectangle composes the rounded fill from the proven square
+            // path, so it renders correct rounded corners on device without the native rounded-rect (which faults).
+            if (r > 0)
+                dc.FillRoundedRectangle(this._borderBrush, 0, 0, width, height, r);
+            else
+                dc.DrawRectangle(this._borderBrush, null, 0, 0, width, height);
 
-            // Background
-            //
+            // Background: an inset rounded rect over the border, leaving the border thickness as a rounded frame.
             if (this._background != null) {
-                dc.DrawRectangle(this._background, null, this._borderLeft, this._borderTop,
-                                                     width - this._borderLeft - this._borderRight,
-                                                     height - this._borderTop - this._borderBottom);
+                var innerW = width - this._borderLeft - this._borderRight;
+                var innerH = height - this._borderTop - this._borderBottom;
+
+                if (r > 0) {
+                    var innerR = System.Math.Max(0, r - System.Math.Max(this._borderLeft, this._borderTop));
+                    dc.FillRoundedRectangle(this._background, this._borderLeft, this._borderTop, innerW, innerH, innerR);
+                }
+                else {
+                    dc.DrawRectangle(this._background, null, this._borderLeft, this._borderTop, innerW, innerH);
+                }
             }
         }
 
         private Media.Brush _borderBrush;
         private int _borderLeft, _borderTop, _borderRight, _borderBottom;
+        private int _cornerRadius;
     }
 }
 

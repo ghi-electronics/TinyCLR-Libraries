@@ -21,6 +21,9 @@
         <member name="F:GHIElectronics.TinyCLR.UI.Controls.Chart.ChartMode.RectangleMode">
             <summary>Draws the series as vertical bars.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Controls.Chart.ChartMode.AreaMode">
+            <summary>Draws the series as a line with the area beneath it filled (uses <see cref="P:GHIElectronics.TinyCLR.UI.Controls.Chart.AreaColor"/>).</summary>
+        </member>
         <member name="T:GHIElectronics.TinyCLR.UI.Controls.Chart.DataItem">
             <summary>A single data point in the chart.</summary>
         </member>
@@ -80,6 +83,9 @@
         </member>
         <member name="P:GHIElectronics.TinyCLR.UI.Controls.Chart.BackgroundColor">
             <summary>Brush used to fill the chart background.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Chart.AreaColor">
+            <summary>Fill under the series when <see cref="P:GHIElectronics.TinyCLR.UI.Controls.Chart.Mode"/> is <see cref="F:GHIElectronics.TinyCLR.UI.Controls.Chart.ChartMode.AreaMode"/>.</summary>
         </member>
         <member name="P:GHIElectronics.TinyCLR.UI.Controls.Chart.RadiusPoint">
             <summary>Radius in pixels of the data point markers.</summary>
@@ -737,6 +743,10 @@
         <member name="P:GHIElectronics.TinyCLR.UI.Controls.Gauge.EnableThreshold">
             <summary>When true, the threshold arc around the recommended value is drawn.</summary>
         </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Gauge.SweepAngle">
+            <summary>Sweep of the dial arc in degrees (30–360). 270 (default) = classic dial, 180 = half dial,
+            360 = full ring. The arc is centred on the bottom opening.</summary>
+        </member>
         <member name="P:GHIElectronics.TinyCLR.UI.Controls.Gauge.BackColor">
             <summary>Background color behind the dial.</summary>
         </member>
@@ -1000,7 +1010,9 @@
             <summary>Adds a top-level entry.</summary>
         </member>
         <member name="M:GHIElectronics.TinyCLR.UI.Controls.Menu.MeasureOverride(System.Int32,System.Int32,System.Int32@,System.Int32@)">
-            <summary>Reports the bar height (the open dropdown draws within the control's assigned height).</summary>
+            <summary>Reports the bar height, growing to include the open dropdown so it is both visible AND
+            hit-testable. When closed the control is only the bar tall, so it doesn't block touches to whatever
+            sits beneath it (hit-testing is bounds-based).</summary>
         </member>
         <member name="M:GHIElectronics.TinyCLR.UI.Controls.Menu.OnTouchUp(GHIElectronics.TinyCLR.UI.Input.TouchEventArgs)">
             <summary>Opens/closes a top entry, or selects a sub-item.</summary>
@@ -1500,6 +1512,10 @@
         <member name="M:GHIElectronics.TinyCLR.UI.Controls.Border.MeasureOverride(System.Int32,System.Int32,System.Int32@,System.Int32@)">
             <summary>Measures the child plus the border thickness.</summary>
         </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Border.CornerRadius">
+            <summary>Corner radius in pixels (0 = square corners, the default). Rounds both the border and the
+            background fill — cheap (only the corner pixels rasterize).</summary>
+        </member>
         <member name="M:GHIElectronics.TinyCLR.UI.Controls.Border.OnRender(GHIElectronics.TinyCLR.UI.Media.DrawingContext)">
             <summary>Draws the border and background.</summary>
         </member>
@@ -1644,6 +1660,13 @@
         </member>
         <member name="P:GHIElectronics.TinyCLR.UI.Controls.Image.Source">
             <summary>The image to display.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Image.TransparentColor">
+            <summary>
+            A color key (0xRRGGBB) rendered as transparent, e.g. an icon's magenta backdrop (0xFF00F2). The
+            default -1 means no key (the image draws opaque). Order-independent: setting either this or
+            <see cref="P:GHIElectronics.TinyCLR.UI.Controls.Image.Source"/> (re)applies the key.
+            </summary>
         </member>
         <member name="M:GHIElectronics.TinyCLR.UI.Controls.Image.MeasureOverride(System.Int32,System.Int32,System.Int32@,System.Int32@)">
             <summary>Measures the desired size based on the image and stretch mode.</summary>
@@ -1816,6 +1839,10 @@
             (Canvas/Grid/StackPanel/DockPanel). Null (the default) leaves the panel transparent, so
             whatever is behind it shows through.
             </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Panel.CornerRadius">
+            <summary>Corner radius in pixels for the panel background (0 = square, the default). Cheap — only
+            the corner pixels rasterize.</summary>
         </member>
         <member name="M:GHIElectronics.TinyCLR.UI.Controls.Panel.OnRender(GHIElectronics.TinyCLR.UI.Media.DrawingContext)">
             <summary>Paints the background across the panel's render area (WPF Panel parity).</summary>
@@ -3300,6 +3327,13 @@
         <member name="M:GHIElectronics.TinyCLR.UI.Media.ImageSource.#ctor(System.Drawing.Graphics)">
             <summary>Creates an image source backed by the given graphics.</summary>
         </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Media.ImageSource.MakeTransparent(System.Int32)">
+            <summary>
+            Marks a color key (0xRRGGBB) transparent so those pixels are skipped when the image is drawn — the
+            standard TinyCLR way to knock out an icon's flat backdrop (e.g. 0xFF00F2 magenta). Applies to the
+            backing surface, so it affects every subsequent draw of this image.
+            </summary>
+        </member>
         <member name="T:GHIElectronics.TinyCLR.UI.Media.Imaging.BitmapSource">
             <summary>Base class for image sources backed by a bitmap.</summary>
         </member>
@@ -3317,6 +3351,10 @@
         </member>
         <member name="P:GHIElectronics.TinyCLR.UI.Media.Brush.Opacity">
             <summary>The opacity of the brush.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Media.Brush.RenderRectangle(GHIElectronics.TinyCLR.UI.Bitmap,GHIElectronics.TinyCLR.UI.Media.Pen,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>Fills a rectangle with rounded corners (radius in pixels). Cheap: only the corner pixels
+            rasterize. Brushes that don't override it fall back to a square fill (radius ignored).</summary>
         </member>
         <member name="T:GHIElectronics.TinyCLR.UI.Media.BrushMappingMode">
             <summary>Specifies how brush coordinates are interpreted.</summary>
@@ -3397,6 +3435,20 @@
         </member>
         <member name="M:GHIElectronics.TinyCLR.UI.Media.DrawingContext.DrawRectangle(GHIElectronics.TinyCLR.UI.Media.Brush,GHIElectronics.TinyCLR.UI.Media.Pen,System.Int32,System.Int32,System.Int32,System.Int32)">
             <summary>Draws a rectangle with the given fill and outline.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Media.DrawingContext.DrawRectangle(GHIElectronics.TinyCLR.UI.Media.Brush,GHIElectronics.TinyCLR.UI.Media.Pen,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>Fills/strokes a rectangle with rounded corners (radius in pixels).</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Media.DrawingContext.FillRoundedRectangle(GHIElectronics.TinyCLR.UI.Media.Brush,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+             <summary>
+             Fills a rectangle with rounded corners, composed entirely from the proven square-fill path (one
+             horizontal span per scan line). This deliberately avoids the native rounded-rectangle primitive,
+             which is unexercised elsewhere and hard-faults on device. It runs only when a control is
+             (re)painted — not per frame — so the extra spans cost nothing during animation.
+            
+             Exact for a <see cref="T:GHIElectronics.TinyCLR.UI.Media.SolidColorBrush"/>. A non-solid brush (e.g. a gradient) can't be span-filled
+             without distorting its ramp, so it falls back to a square fill (correct colors, square corners).
+             </summary>
         </member>
         <member name="P:GHIElectronics.TinyCLR.UI.Media.DrawingContext.Width">
             <summary>The width of the drawing surface in pixels.</summary>

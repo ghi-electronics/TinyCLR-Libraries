@@ -26,12 +26,24 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
+        /// <summary>Corner radius in pixels for the panel background (0 = square, the default). Cheap — only
+        /// the corner pixels rasterize.</summary>
+        public int CornerRadius {
+            get => this._cornerRadius;
+            set { this._cornerRadius = value < 0 ? 0 : value; Invalidate(); }
+        }
+
         /// <summary>Paints the background across the panel's render area (WPF Panel parity).</summary>
         public override void OnRender(Media.DrawingContext dc) {
             if (this._background != null) {
-                dc.DrawRectangle(this._background, null, 0, 0, this._renderWidth, this._renderHeight);
+                if (this._cornerRadius > 0)
+                    dc.FillRoundedRectangle(this._background, 0, 0, this._renderWidth, this._renderHeight, this._cornerRadius);
+                else
+                    dc.DrawRectangle(this._background, null, 0, 0, this._renderWidth, this._renderHeight);
             }
         }
+
+        private int _cornerRadius;
 
         /// <summary>Measures the panel as the bounding size of all its children.</summary>
         protected override void MeasureOverride(int availableWidth, int availableHeight, out int desiredWidth, out int desiredHeight) {

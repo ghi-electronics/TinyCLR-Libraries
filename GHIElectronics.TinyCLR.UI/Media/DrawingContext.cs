@@ -335,7 +335,66 @@ namespace GHIElectronics.TinyCLR.UI.Media {
             // Pen
             else if (pen != null && pen.Thickness > 0) {
                 this._bitmap.DrawRectangle(pen.Color, pen.Thickness, this._x + x, this._y + y, width, height, 0, 0,
+                    Colors.Transparent, 0, 0, Colors.Transparent, 0, 0, Bitmap.OpacityOpaque);
+            }
+        }
+
+        /// <summary>Fills/strokes a rectangle with rounded corners (radius in pixels).</summary>
+        public void DrawRectangle(Brush brush, Pen pen, int x, int y, int width, int height, int xCornerRadius, int yCornerRadius) {
+            VerifyAccess();
+
+            // The native rounded-rect path is unproven and hard-faults on device, so we round the FILL with the
+            // safe span composer instead. A rounded stroke isn't supported by that path, so a pen-only rectangle
+            // falls back to a square stroke.
+            if (brush != null) {
+                FillRoundedRectangle(brush, x, y, width, height, System.Math.Max(xCornerRadius, yCornerRadius));
+            }
+            else if (pen != null && pen.Thickness > 0) {
+                this._bitmap.DrawRectangle(pen.Color, pen.Thickness, this._x + x, this._y + y, width, height, 0, 0,
                                       Colors.Transparent, 0, 0, Colors.Transparent, 0, 0, 0);
+            }
+        }
+
+        /// <summary>
+        /// Fills a rectangle with rounded corners, composed entirely from the proven square-fill path (one
+        /// horizontal span per scan line). This deliberately avoids the native rounded-rectangle primitive,
+        /// which is unexercised elsewhere and hard-faults on device. It runs only when a control is
+        /// (re)painted — not per frame — so the extra spans cost nothing during animation.
+        ///
+        /// Exact for a <see cref="SolidColorBrush"/>. A non-solid brush (e.g. a gradient) can't be span-filled
+        /// without distorting its ramp, so it falls back to a square fill (correct colors, square corners).
+        /// </summary>
+        public void FillRoundedRectangle(Brush brush, int x, int y, int width, int height, int radius) {
+            VerifyAccess();
+
+            if (brush == null || width <= 0 || height <= 0)
+                return;
+
+            var r = radius;
+            var maxR = System.Math.Min(width, height) / 2;
+            if (r > maxR) r = maxR;
+
+            if (r <= 0 || !(brush is SolidColorBrush)) {
+                DrawRectangle(brush, null, x, y, width, height);
+                return;
+            }
+
+            // Middle band spanning the full width, between the two corner zones (a single fill).
+            if (height - 2 * r > 0)
+                DrawRectangle(brush, null, x, y + r, width, height - 2 * r);
+
+            // Corner zones: one horizontal span per scan line, inset to follow the quarter circle.
+            for (var i = 0; i < r; i++) {
+                var dy = r - i;                                                    // distance from the arc-center row
+                var halfWidth = (int)(System.Math.Sqrt((double)(r * r - dy * dy)) + 0.5);
+                var inset = r - halfWidth;
+                var spanX = x + inset;
+                var spanW = width - 2 * inset;
+                if (spanW <= 0)
+                    continue;
+
+                DrawRectangle(brush, null, spanX, y + i, spanW, 1);               // top corner row
+                DrawRectangle(brush, null, spanX, y + height - 1 - i, spanW, 1);  // mirrored bottom corner row
             }
         }
 
