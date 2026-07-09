@@ -60,6 +60,24 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             set { this._enableScale = value; this.MarkDirty(); }
         }
 
+        /// <summary>Length of the pointer needle as a fraction of the dial radius (half the control size). Default
+        /// 0.68 (the classic length). Lower = shorter needle — handy when a <see cref="BackgroundImage"/> dial's
+        /// scale sits well inside the control. Clamped 0.1–1.2.</summary>
+        public double NeedleLength {
+            get => this._needleLength;
+            set { if (value < 0.1) value = 0.1; if (value > 1.2) value = 1.2; this._needleLength = value; this.MarkDirty(); }
+        }
+
+        /// <summary>Vertical position of the needle pivot (and centre cap) as a fraction of the control height.
+        /// Default 0.5 (centre). Raise toward 1.0 (e.g. 0.75) to drop the pivot to the BOTTOM — the natural hub for
+        /// a half (180°) dial whose arc sits in the upper area. Clamped 0–1. Affects only the needle/cap, so it's
+        /// meant for an image-faced gauge (EnableScale=false); with drawn ticks it would offset the needle from
+        /// the (centred) scale.</summary>
+        public double NeedleCenterY {
+            get => this._needleCenterY;
+            set { if (value < 0.0) value = 0.0; if (value > 1.0) value = 1.0; this._needleCenterY = value; this.MarkDirty(); }
+        }
+
         /// <summary>Sweep of the dial arc in degrees (30–360). 270 (default) = classic dial, 180 = half dial,
         /// 360 = full ring. The arc is centred on the bottom opening.</summary>
         public float SweepAngle {
@@ -250,6 +268,8 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         private int _cachedSide;
         private bool _backgroundDirty = true;
         private bool _enableScale = true;
+        private double _needleLength = 0.68;
+        private double _needleCenterY = 0.5;
 
         private bool _disposed;
 
@@ -315,7 +335,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             using (var gfx = Graphics.FromImage(this._bmp)) {
                 gfx.Clear();
                 this.PaintBackground(gfx, side);
-                this.PaintPointer(gfx, side / 2, side / 2, side);
+                this.PaintPointer(gfx, side / 2, (int)(side * this._needleCenterY), side);
             }
 
             if (this._cachedImage == null) {
@@ -452,7 +472,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         // the centre cap. The old code drew the needle as an outline polygon via FillPolygon() — which actually only
         // STROKES the edges, not fills — so on the device it read as a thin, doubled sliver instead of a clean needle.
         private void PaintPointer(Graphics g, int cx, int cy, int side) {
-            var radius = side / 2f - side * 0.16f;
+            var radius = (side / 2f) * this._needleLength;
 
             var valuePct = 100 * (this._currentValue - this._minValue) / (this._maxValue - this._minValue);
             var valueDeg = (ToAngleDeg - FromAngleDeg) * valuePct / 100 + FromAngleDeg;

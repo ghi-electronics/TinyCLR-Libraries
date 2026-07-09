@@ -584,7 +584,9 @@
             <summary>Spacing factor between labeled divisions on the X axis.</summary>
         </member>
         <member name="P:GHIElectronics.TinyCLR.UI.Controls.Chart.DivisionAxisY">
-            <summary>Spacing factor between labeled divisions on the Y axis.</summary>
+            <summary>Value step ("offset") between Y-axis labels. Labels are drawn at step, 2×step, … up to the
+            first multiple that is &gt;= the max data value; 0 is not labelled. Default 1 (every integer). E.g. 5
+            gives 5, 10, 15, … The plot scales from 0 to that top value.</summary>
         </member>
         <member name="P:GHIElectronics.TinyCLR.UI.Controls.Chart.Font">
             <summary>Font used for chart text.</summary>
@@ -965,6 +967,18 @@
             <summary>When true (the default), the control draws the tick marks and scale numbers. Set false when the
             dial face is supplied as a <see cref="P:GHIElectronics.TinyCLR.UI.Controls.Gauge.BackgroundImage"/> that already includes the scale, so the control
             draws only the needle over your artwork (no numbers on top).</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Gauge.NeedleLength">
+            <summary>Length of the pointer needle as a fraction of the dial radius (half the control size). Default
+            0.68 (the classic length). Lower = shorter needle — handy when a <see cref="P:GHIElectronics.TinyCLR.UI.Controls.Gauge.BackgroundImage"/> dial's
+            scale sits well inside the control. Clamped 0.1–1.2.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Gauge.NeedleCenterY">
+            <summary>Vertical position of the needle pivot (and centre cap) as a fraction of the control height.
+            Default 0.5 (centre). Raise toward 1.0 (e.g. 0.75) to drop the pivot to the BOTTOM — the natural hub for
+            a half (180°) dial whose arc sits in the upper area. Clamped 0–1. Affects only the needle/cap, so it's
+            meant for an image-faced gauge (EnableScale=false); with drawn ticks it would offset the needle from
+            the (centred) scale.</summary>
         </member>
         <member name="P:GHIElectronics.TinyCLR.UI.Controls.Gauge.SweepAngle">
             <summary>Sweep of the dial arc in degrees (30–360). 270 (default) = classic dial, 180 = half dial,

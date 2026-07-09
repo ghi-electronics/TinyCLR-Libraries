@@ -56,7 +56,9 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
         /// <summary>Spacing factor between labeled divisions on the X axis.</summary>
         public int DivisionAxisX { get; set; } = 1;
-        /// <summary>Spacing factor between labeled divisions on the Y axis.</summary>
+        /// <summary>Value step ("offset") between Y-axis labels. Labels are drawn at step, 2×step, … up to the
+        /// first multiple that is &gt;= the max data value; 0 is not labelled. Default 1 (every integer). E.g. 5
+        /// gives 5, 10, 15, … The plot scales from 0 to that top value.</summary>
         public int DivisionAxisY { get; set; } = 1;
 
         /// <summary>Font used for chart text.</summary>
@@ -220,8 +222,13 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             graph.DrawLine(axisPen, this.margin, this.margin + (int)Scale(100, SCALE_FROM_HEIGHT, this.Height), this.margin, this.Height - this.margin);
             graph.DrawLine(axisPen, this.margin, this.Height - this.margin, this.Width - this.margin, this.Height - this.margin);
 
-            var maxValue = Math.Ceiling(this.GetMax(this.Items));
-            var minValue = (int)this.GetMin(this.Items);
+            // Y axis: label at multiples of DivisionAxisY (the value "step"/offset), from the first step ABOVE 0
+            // up to the first multiple that is >= the max data value (so the top label clears the highest point).
+            // 0 itself is not labelled. The plot is scaled 0..maxValue.
+            var step = this.DivisionAxisY > 0 ? this.DivisionAxisY : 1;
+            var minValue = 0;
+            var maxValue = Math.Ceiling(Math.Ceiling(this.GetMax(this.Items)) / step) * step;
+            if (maxValue < step) maxValue = step;
             var countValue = this.Items.Count;
 
             var chartWidth = Math.Abs(this.pEnd.X - this.pStart.X - (int)Scale(50, SCALE_FROM_WIDTH, this.Width));
@@ -242,14 +249,14 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                 startDivX += divisionWidth * this.DivisionAxisX;
             }
 
-            var startDivY = this.pStart.Y - (int)Scale(25, SCALE_FROM_HEIGHT, this.Height);
-            for (var i = minValue; i <= maxValue; i += this.DivisionAxisY) {
-                graph.FillEllipse(divisionBrush, this.pStart.X - this.paddingLeft - this.RadiusPoint / 2, startDivY - this.RadiusPoint / 2,
+            var baseDivY = this.pStart.Y - (int)Scale(25, SCALE_FROM_HEIGHT, this.Height);
+            for (var i = step; i <= maxValue; i += step) {
+                var labelY = baseDivY - (int)(divisionHeight * i);
+                graph.FillEllipse(divisionBrush, this.pStart.X - this.paddingLeft - this.RadiusPoint / 2, labelY - this.RadiusPoint / 2,
                     this.RadiusPoint, this.RadiusPoint);
                 graph.DrawString(i.ToString(), this.Font, textBrush,
                     this.pStart.X - this.paddingLeft + this.margin / 2,
-                    startDivY - (int)Scale(10, SCALE_FROM_HEIGHT, this.Height));
-                startDivY -= (int)(divisionHeight * this.DivisionAxisY);
+                    labelY - (int)Scale(10, SCALE_FROM_HEIGHT, this.Height));
             }
 
             // Pass 1: compute all plotted points (no drawing yet, so an area fill can go UNDER the line).
@@ -324,8 +331,13 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             graph.DrawLine(axisPen, this.margin, this.margin + (int)Scale(100, SCALE_FROM_HEIGHT, this.Height), this.margin, this.Height - this.margin);
             graph.DrawLine(axisPen, this.margin, this.Height - this.margin, this.Width - this.margin, this.Height - this.margin);
 
-            var maxValue = Math.Ceiling(this.GetMax(this.Items));
-            var minValue = (int)this.GetMin(this.Items);
+            // Y axis: label at multiples of DivisionAxisY (the value "step"/offset), from the first step ABOVE 0
+            // up to the first multiple that is >= the max data value (so the top label clears the highest point).
+            // 0 itself is not labelled. The plot is scaled 0..maxValue.
+            var step = this.DivisionAxisY > 0 ? this.DivisionAxisY : 1;
+            var minValue = 0;
+            var maxValue = Math.Ceiling(Math.Ceiling(this.GetMax(this.Items)) / step) * step;
+            if (maxValue < step) maxValue = step;
             var countValue = this.Items.Count;
 
             var chartWidth = Math.Abs(this.pEnd.X - this.pStart.X - (int)Scale(50, SCALE_FROM_WIDTH, this.Width));
@@ -345,14 +357,14 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                 startDivX += divisionWidth * this.DivisionAxisX;
             }
 
-            var startDivY = this.pStart.Y - (int)Scale(25, SCALE_FROM_HEIGHT, this.Height);
-            for (var i = minValue; i <= maxValue; i += this.DivisionAxisY) {
-                graph.FillEllipse(divisionBrush, this.pStart.X - this.paddingLeft - this.RadiusPoint / 2, startDivY - this.RadiusPoint / 2,
+            var baseDivY = this.pStart.Y - (int)Scale(25, SCALE_FROM_HEIGHT, this.Height);
+            for (var i = step; i <= maxValue; i += step) {
+                var labelY = baseDivY - (int)(divisionHeight * i);
+                graph.FillEllipse(divisionBrush, this.pStart.X - this.paddingLeft - this.RadiusPoint / 2, labelY - this.RadiusPoint / 2,
                     this.RadiusPoint, this.RadiusPoint);
                 graph.DrawString(i.ToString(), this.Font, textBrush,
                     this.pStart.X - this.paddingLeft + this.margin / 2,
-                    startDivY - (int)Scale(10, SCALE_FROM_HEIGHT, this.Height));
-                startDivY -= (int)(divisionHeight * this.DivisionAxisY);
+                    labelY - (int)Scale(10, SCALE_FROM_HEIGHT, this.Height));
             }
 
             for (var i = 0; i < this.Items.Count; i++) {
