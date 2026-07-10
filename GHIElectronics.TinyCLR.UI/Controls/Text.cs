@@ -58,7 +58,17 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
                 if (this._text != value) {
                     this._text = value;
-                    InvalidateMeasure();
+
+                    // A fixed-width, single-line Text (e.g. a clock updated every second) keeps the same footprint
+                    // when its content changes, so just repaint it. InvalidateMeasure() would propagate up to the
+                    // Window and trigger a full layout+repaint pass that visibly stalls other animations (a moving
+                    // gauge, etc.). Only re-measure when the element's size can actually change.
+                    if (this.IsWidthSet(out _) && !this._textWrap) {
+                        Invalidate();
+                    }
+                    else {
+                        InvalidateMeasure();
+                    }
                 }
             }
         }

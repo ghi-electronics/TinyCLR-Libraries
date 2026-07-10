@@ -23,12 +23,24 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
     /// <summary>A simple two-level menu bar: a row of top-level entries; tapping one opens its sub-items as an inline
     /// dropdown drawn within the control's bounds. (Embedded UIs have no popup layer, so size the Menu tall enough to
-    /// show the open dropdown.) Tapping a sub-item raises <see cref="ItemClick"/>.</summary>
+    /// show the open dropdown.) Bar entries are sized to their text so they sit close together like a real menu bar.
+    /// Tapping a sub-item raises <see cref="ItemClick"/>.</summary>
     public class Menu : Control {
         private readonly ArrayList _items = new ArrayList(); // MenuEntry
         private int _openIndex = -1;
         private int _barHeight = 24;
         private int _itemWidth = 64;
+
+        // Padding on each side of the text; bar entries are tight (real menu look), dropdown rows a bit roomier.
+        private const int BarTextPad = 8;
+        private const int DropTextPad = 12;
+
+        // Cached, text-measured layout (rebuilt when items/font change). _barItemX/_barItemW are per top entry;
+        // _dropWidth is the shared dropdown box width; _totalBarWidth is the sum of the bar entry widths.
+        private int[] _barItemX;
+        private int[] _barItemW;
+        private int _dropWidth;
+        private int _totalBarWidth;
 
         /// <summary>Fill of the menu bar.</summary>
         public Color BarColor { get; set; } = Color.FromRgb(0xE0, 0xE0, 0xE4);
@@ -37,10 +49,11 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         /// <summary>Colour of the entry text.</summary>
         public Color ForeColor { get; set; } = Colors.Black;
 
-        /// <summary>Width in pixels of each top-level bar entry.</summary>
+        /// <summary>Minimum width in pixels of the dropdown box. (Top-bar entries auto-size to their text now, so
+        /// this only sets a floor for how wide an open dropdown is; it grows to fit the widest sub-item.)</summary>
         public int ItemWidth {
             get => this._itemWidth;
-            set { if (value > 0) { this._itemWidth = value; this.Invalidate(); } }
+            set { if (value > 0) { this._itemWidth = value; this.InvalidateLayout(); this.Invalidate(); } }
         }
 
         /// <summary>Which way dropdowns open. <see cref="MenuDropDirection.Down"/> (default) suits a menu at the top
@@ -58,15 +71,66 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         public void AddItem(MenuEntry item) {
             if (item != null) {
                 this._items.Add(item);
+                this.InvalidateLayout();
                 this.InvalidateMeasure();
             }
+        }
+
+        private void InvalidateLayout() => this._barItemX = null;
+
+        // Measures every entry's text (once, cached) to lay the bar out tight. Needs the Font; a no-op until it's set.
+        private void EnsureLayout() {
+            if (this._barItemX != null || this.Font == null) {
+                return;
+            }
+
+            var n = this._items.Count;
+            this._barItemX = new int[n];
+            this._barItemW = new int[n];
+
+            var x = 0;
+            var dropW = this._itemWidth; // floor
+            for (var i = 0; i < n; i++) {
+                var entry = (MenuEntry)this._items[i];
+                this.Font.ComputeExtent(entry.Header, out var tw, out _);
+                this._barItemX[i] = x;
+                this._barItemW[i] = tw + BarTextPad * 2;
+                x += this._barItemW[i];
+
+                foreach (MenuEntry c in entry.Children) {
+                    this.Font.ComputeExtent(c.Header, out var cw, out _);
+                    if (cw + DropTextPad * 2 > dropW) {
+                        dropW = cw + DropTextPad * 2;
+                    }
+                }
+            }
+
+            this._totalBarWidth = x;
+            this._dropWidth = dropW;
+        }
+
+        private int BarItemAt(int x) {
+            if (this._barItemX == null) {
+                return -1;
+            }
+
+            for (var i = 0; i < this._items.Count; i++) {
+                if (x >= this._barItemX[i] && x < this._barItemX[i] + this._barItemW[i]) {
+                    return i;
+                }
+            }
+
+            return -1;
         }
 
         /// <summary>Reports the bar height, growing to include the open dropdown so it is both visible AND
         /// hit-testable. When closed the control is only the bar tall, so it doesn't block touches to whatever
         /// sits beneath it (hit-testing is bounds-based).</summary>
         protected override void MeasureOverride(int availableWidth, int availableHeight, out int desiredWidth, out int desiredHeight) {
-            desiredWidth = availableWidth < Media.Constants.MaxExtent ? availableWidth : this._items.Count * this._itemWidth;
+            this.EnsureLayout();
+
+            var barW = this._barItemX != null ? this._totalBarWidth : this._items.Count * this._itemWidth;
+            desiredWidth = availableWidth < Media.Constants.MaxExtent ? availableWidth : barW;
             desiredHeight = this._barHeight;
 
             if (this._openIndex >= 0 && this._openIndex < this._items.Count) {
@@ -81,6 +145,19 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
         private int OpenRowCount => (this._openIndex >= 0 && this._openIndex < this._items.Count)
             ? ((MenuEntry)this._items[this._openIndex]).Children.Count : 0;
+
+        // Left edge of the open dropdown. Aligned under its bar entry, but shifted LEFT if it would overflow the
+        // control's right edge — so a right-side menu (e.g. "Help") stays fully visible instead of running off the
+        // screen (the dropdown is clipped to the control bounds). Same idea WPF/macOS use to re-place a popup.
+        private int ClampedDropX {
+            get {
+                var x = this._barItemX[this._openIndex];
+                var maxX = this._renderWidth - this._dropWidth;
+                if (x > maxX) x = maxX;
+                if (x < 0) x = 0;
+                return x;
+            }
+        }
 
         // Up mode only: shift the control's own Canvas.Top up by the open dropdown height so the BAR stays anchored
         // and the dropdown appears above it. dropH is 0 when closed, restoring the anchor.
@@ -108,16 +185,18 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                 return;
             }
 
+            this.EnsureLayout();
+
             e.GetPosition(this, 0, out var x, out var y);
 
             var bh = this._barHeight;
             var barTop = this.BarTop;
             var up = this.DropDirection == MenuDropDirection.Up;
 
-            // Bar row: toggle the tapped top-level entry.
+            // Bar row: toggle the tapped top-level entry (variable-width hit test).
             if (y >= barTop && y < barTop + bh) {
-                var idx = x / this._itemWidth;
-                if (idx >= 0 && idx < this._items.Count) {
+                var idx = this.BarItemAt(x);
+                if (idx >= 0) {
                     this.SetOpen(this._openIndex == idx ? -1 : idx);
                     e.Handled = true;
                 }
@@ -130,8 +209,8 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                 var open = (MenuEntry)this._items[this._openIndex];
                 var row = up ? (barTop - 1 - y) / bh : (y - (barTop + bh)) / bh;
                 if (row >= 0 && row < open.Children.Count) {
-                    var dropX = this._openIndex * this._itemWidth;
-                    if (x >= dropX && x < dropX + this._itemWidth) {
+                    var dropX = this.ClampedDropX;
+                    if (x >= dropX && x < dropX + this._dropWidth) {
                         var child = (MenuEntry)open.Children[row];
                         this.SetOpen(-1);
                         this.ItemClick?.Invoke(this, child.Header);
@@ -153,37 +232,42 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                 return;
             }
 
-            var w = this._renderWidth;
+            this.EnsureLayout();
+            if (this._barItemX == null) {
+                return;
+            }
+
             var bh = this._barHeight;
-            var iw = this._itemWidth;
             var fh = this.Font.Height;
             var barTop = this.BarTop;
             var up = this.DropDirection == MenuDropDirection.Up;
             var pen = new Media.Pen(Color.FromRgb(0x80, 0x80, 0x86), 1);
 
-            dc.DrawRectangle(new SolidColorBrush(this.BarColor), null, 0, barTop, w, bh);
+            dc.DrawRectangle(new SolidColorBrush(this.BarColor), null, 0, barTop, this._renderWidth, bh);
 
             for (var i = 0; i < this._items.Count; i++) {
                 var entry = (MenuEntry)this._items[i];
-                var x = i * iw;
+                var x = this._barItemX[i];
+                var iw = this._barItemW[i];
                 if (i == this._openIndex) {
                     dc.DrawRectangle(new SolidColorBrush(this.DropColor), pen, x, barTop, iw, bh);
                 }
 
                 var txt = entry.Header;
-                dc.DrawText(ref txt, this.Font, this.ForeColor, x + 4, barTop + (bh - fh) / 2, iw - 8, fh, TextAlignment.Left, TextTrimming.CharacterEllipsis);
+                dc.DrawText(ref txt, this.Font, this.ForeColor, x + BarTextPad, barTop + (bh - fh) / 2, iw - BarTextPad, fh, TextAlignment.Left, TextTrimming.CharacterEllipsis);
             }
 
             if (this._openIndex >= 0 && this._openIndex < this._items.Count) {
                 var open = (MenuEntry)this._items[this._openIndex];
-                var dropX = this._openIndex * iw;
+                var dropX = this.ClampedDropX;
+                var dw = this._dropWidth;
                 for (var r = 0; r < open.Children.Count; r++) {
                     var child = (MenuEntry)open.Children[r];
                     // Row r sits just below the bar for Down, or just above it (stacking upward) for Up.
                     var y = up ? (barTop - (r + 1) * bh) : (barTop + bh + r * bh);
-                    dc.DrawRectangle(new SolidColorBrush(this.DropColor), pen, dropX, y, iw, bh);
+                    dc.DrawRectangle(new SolidColorBrush(this.DropColor), pen, dropX, y, dw, bh);
                     var txt = child.Header;
-                    dc.DrawText(ref txt, this.Font, this.ForeColor, dropX + 4, y + (bh - fh) / 2, iw - 8, fh, TextAlignment.Left, TextTrimming.CharacterEllipsis);
+                    dc.DrawText(ref txt, this.Font, this.ForeColor, dropX + DropTextPad, y + (bh - fh) / 2, dw - DropTextPad, fh, TextAlignment.Left, TextTrimming.CharacterEllipsis);
                 }
             }
         }

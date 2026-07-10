@@ -1359,7 +1359,8 @@
         <member name="T:GHIElectronics.TinyCLR.UI.Controls.Menu">
             <summary>A simple two-level menu bar: a row of top-level entries; tapping one opens its sub-items as an inline
             dropdown drawn within the control's bounds. (Embedded UIs have no popup layer, so size the Menu tall enough to
-            show the open dropdown.) Tapping a sub-item raises <see cref="E:GHIElectronics.TinyCLR.UI.Controls.Menu.ItemClick"/>.</summary>
+            show the open dropdown.) Bar entries are sized to their text so they sit close together like a real menu bar.
+            Tapping a sub-item raises <see cref="E:GHIElectronics.TinyCLR.UI.Controls.Menu.ItemClick"/>.</summary>
         </member>
         <member name="P:GHIElectronics.TinyCLR.UI.Controls.Menu.BarColor">
             <summary>Fill of the menu bar.</summary>
@@ -1371,7 +1372,8 @@
             <summary>Colour of the entry text.</summary>
         </member>
         <member name="P:GHIElectronics.TinyCLR.UI.Controls.Menu.ItemWidth">
-            <summary>Width in pixels of each top-level bar entry.</summary>
+            <summary>Minimum width in pixels of the dropdown box. (Top-bar entries auto-size to their text now, so
+            this only sets a floor for how wide an open dropdown is; it grows to fit the widest sub-item.)</summary>
         </member>
         <member name="P:GHIElectronics.TinyCLR.UI.Controls.Menu.DropDirection">
             <summary>Which way dropdowns open. <see cref="F:GHIElectronics.TinyCLR.UI.Controls.MenuDropDirection.Down"/> (default) suits a menu at the top
