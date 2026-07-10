@@ -366,21 +366,38 @@ namespace GHIElectronics.TinyCLR.Devices.Signals {
         }
 
         /// <summary>Emits a pulse train described by <paramref name="data"/> with default multiplier and starting high.</summary>
-        public void Generate(uint[] data, uint offset, uint count) => this.Generate(data, offset, count, 100, GpioPinValue.High);
+        public void Generate(uint[] data, uint offset, uint count) => this.Generate(data, offset, count, 100, GpioPinValue.High, 1);
 
         /// <summary>Emits a pulse train with explicit multiplier and starting high.</summary>
-        public void Generate(uint[] data, uint offset, uint count, uint multiplier) => this.Generate(data, offset, count, multiplier, GpioPinValue.High);
+        public void Generate(uint[] data, uint offset, uint count, uint multiplier) => this.Generate(data, offset, count, multiplier, GpioPinValue.High, 1);
+
+        /// <summary>Emits the pulse train once (equivalent to <c>repeatCount: 1</c>).</summary>
+        public void Generate(uint[] data, uint offset, uint count, uint multiplier, GpioPinValue startingPolarity)
+            => this.Generate(data, offset, count, multiplier, startingPolarity, 1);
 
         /// <summary>
         /// Emits a pulse train: each <paramref name="data"/> entry is a duration in
         /// timer ticks, alternating polarity starting from <paramref name="startingPolarity"/>.
+        /// The waveform can be repeated back-to-back with no gap between repeats.
         /// </summary>
         /// <param name="data">Buffer of segment durations.</param>
         /// <param name="offset">Starting index in <paramref name="data"/>.</param>
         /// <param name="count">Number of entries to emit.</param>
         /// <param name="multiplier">Multiplier applied to each duration entry (timer-tick scaling).</param>
         /// <param name="startingPolarity">Polarity of the first segment.</param>
-        public void Generate(uint[] data, uint offset, uint count, uint multiplier, GpioPinValue startingPolarity) {
+        /// <param name="repeatCount">
+        /// How many times to play the waveform:
+        /// <c>1</c> = once (default, single shot);
+        /// <c>N &gt; 1</c> = play N times back-to-back then stop and raise
+        /// <see cref="OnGenerateFinished"/>;
+        /// <c>0</c> = repeat forever until <see cref="Abort"/> (or <see cref="Dispose()"/>)
+        /// is called. In repeat mode the output runs off a circular DMA so there is
+        /// no gap between repeats. For the waveform to repeat identically, provide an
+        /// even number of transitions (<paramref name="count"/> even) so the pin
+        /// returns to <paramref name="startingPolarity"/> at the end of each cycle;
+        /// an odd count inverts the polarity every cycle (inherent to toggle output).
+        /// </param>
+        public void Generate(uint[] data, uint offset, uint count, uint multiplier, GpioPinValue startingPolarity, uint repeatCount=1) {
             if (data == null)
                 throw new ArgumentNullException(nameof(data));
 
@@ -392,10 +409,16 @@ namespace GHIElectronics.TinyCLR.Devices.Signals {
             if (Interlocked.CompareExchange(ref this.state, StateGenerate, StateIdle) != StateIdle)
                 throw new InvalidOperationException();
 
-            this.NativeWrite(data, offset, count, multiplier, startingPolarity);
+            this.NativeWrite(data, offset, count, multiplier, startingPolarity, repeatCount);
         }
 
-        /// <summary>Aborts the running operation, if any.</summary>
+        /// <summary>
+        /// Aborts the running operation, if any. Safe to call during an infinite
+        /// (<c>repeatCount: 0</c>) or multi-shot Generate: it stops the circular DMA,
+        /// returns the driver to idle, and raises <see cref="OnGenerateFinished"/> so
+        /// the next <see cref="Generate(uint[], uint, uint, uint, GpioPinValue, uint)"/>
+        /// call re-arms cleanly.
+        /// </summary>
         public void Abort() => this.NativeAbort();
 
         /// <summary>Raised when <see cref="ReadPulse"/> completes.</summary>
@@ -435,7 +458,7 @@ namespace GHIElectronics.TinyCLR.Devices.Signals {
         private extern bool NativeGetBuffer(double[] data);
 
         [MethodImpl(MethodImplOptions.InternalCall)]
-        private extern void NativeWrite(uint[] data, uint offset, uint count, uint multiplier, GpioPinValue polarity);
+        private extern void NativeWrite(uint[] data, uint offset, uint count, uint multiplier, GpioPinValue polarity, uint repeatCount);
 
     }
 }

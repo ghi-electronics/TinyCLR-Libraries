@@ -54,7 +54,11 @@
     <Compile Include="Controls\DataGrid.cs" />
     <!-- Link rest of UI impl source verbatim. UI is pure managed code with no
          InternalCall externs (verified via grep). UI compiles on Desktop —
-         calls that flow into Drawing/Display hit those libs' throw-shims. -->
+         calls that flow into Drawing/Display hit those libs' throw-shims.
+         This is a recursive glob, so control sources added/renamed/removed in the UI
+         project (e.g. ComboBox replacing Dropdown; VirtualizingListBox folded into
+         ListBox) are picked up automatically — reload this project if VS caches a
+         stale file list after files change on disk. -->
     <Compile Include="..\GHIElectronics.TinyCLR.UI\**\*.cs"
              Exclude="..\GHIElectronics.TinyCLR.UI\Properties\**\*.cs;..\GHIElectronics.TinyCLR.UI\obj\**\*.cs;..\GHIElectronics.TinyCLR.UI\bin\**\*.cs;..\GHIElectronics.TinyCLR.UI\Resources.Designer.cs;..\GHIElectronics.TinyCLR.UI\Controls\DataGrid.cs">
       <Link>%(RecursiveDir)%(Filename)%(Extension)</Link>

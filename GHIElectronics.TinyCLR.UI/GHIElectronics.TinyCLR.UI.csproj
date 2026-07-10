@@ -39,13 +39,20 @@
   <ItemGroup>
     <Compile Include="Controls\Chart.cs" />
     <Compile Include="Controls\CheckBox.cs" />
+    <Compile Include="Controls\ClickMode.cs" />
     <Compile Include="Controls\DataGrid.cs" />
     <Compile Include="Controls\DataGridColumn.cs" />
     <Compile Include="Controls\DataGridItem.cs" />
     <Compile Include="Controls\DataGridItemComparer.cs" />
-    <Compile Include="Controls\Dropdown.cs" />
+    <Compile Include="Controls\ComboBox.cs" />
     <Compile Include="Controls\Grid.cs" />
     <Compile Include="Controls\Gauge.cs" />
+    <Compile Include="Controls\GroupBox.cs" />
+    <Compile Include="Controls\Expander.cs" />
+    <Compile Include="Controls\TabControl.cs" />
+    <Compile Include="Controls\TreeView.cs" />
+    <Compile Include="Controls\Calendar.cs" />
+    <Compile Include="Controls\Menu.cs" />
     <Compile Include="Controls\ListBoxItemHighlightable.cs" />
     <Compile Include="Controls\MessageBox.cs" />
     <Compile Include="Controls\ProgressBar.cs" />
@@ -55,6 +62,7 @@
     <Compile Include="Controls\Button.cs" />
     <Compile Include="Controls\BindingErrorEventArgs.cs" />
     <Compile Include="Input\InputProvider.cs" />
+    <Compile Include="Input\Pointer.cs" />
     <Compile Include="Input\FocusNavigator.cs" />
     <Compile Include="Media\Color.cs" />
     <Compile Include="Resources.cs" />
@@ -93,6 +101,7 @@
     <Compile Include="Input\TouchDevice.cs" />
     <Compile Include="Controls\Border.cs" />
     <Compile Include="Controls\Canvas.cs" />
+    <Compile Include="Controls\DockPanel.cs" />
     <Compile Include="Controls\ContentControl.cs" />
     <Compile Include="Controls\Control.cs" />
     <Compile Include="Controls\Image.cs" />
@@ -110,7 +119,6 @@
     <Compile Include="Controls\StackPanel.cs" />
     <Compile Include="Controls\Text.cs" />
     <Compile Include="Controls\TextFlow.cs" />
-    <Compile Include="Controls\VirtualizingListBox.cs" />
     <Compile Include="Controls\TextRun.cs" />
     <Compile Include="Controls\TextRunCollection.cs" />
     <Compile Include="Input\HardwareButton.cs" />
@@ -264,8 +272,8 @@
       <_TcuiTasksOutDir>$(MSBuildThisFileDirectory)..\..\TinyCLR-SDK\GHIElectronics.TinyCLR.UI.BuildTasks\bin\$(Configuration)\net472\</_TcuiTasksOutDir>
     </PropertyGroup>
     <ItemGroup>
+      <!-- Codegen now reads the .tcui XML via System.Xml.Linq — no Newtonsoft.Json to ship. -->
       <_TcuiCodegenBinaries Include="$(_TcuiTasksOutDir)GHIElectronics.TinyCLR.UI.BuildTasks.dll" />
-      <_TcuiCodegenBinaries Include="$(_TcuiTasksOutDir)Newtonsoft.Json.dll" />
     </ItemGroup>
     <Copy SourceFiles="@(_TcuiCodegenBinaries)" DestinationFolder="$(TcuiCodegenPayloadDir)" SkipUnchangedFiles="true" />
   </Target>

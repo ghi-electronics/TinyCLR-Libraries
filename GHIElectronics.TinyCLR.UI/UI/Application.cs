@@ -651,7 +651,17 @@ EventTrace.EventProvider.TraceEvent(EventTrace.APPGUID, MS.Utility.EventType.Inf
 
         private OnScreenKeyboard onScreenKeyboard;
 
-        internal void ShowOnScreenKeyboardFor(TextBox textBox) {
+        /// <summary>Whether tapping (or Select-ing) a TextBox automatically pops up the on-screen keyboard. Default
+        /// true. Set to false when a physical keyboard is connected so the user types on it instead (tablet-style);
+        /// the on-screen keyboard can still be shown on demand via <see cref="ShowOnScreenKeyboardFor"/>. When set
+        /// back to true, tapping a TextBox pops the keyboard again.</summary>
+        public bool ShowOnScreenKeyboardAutomatically { get; set; } = true;
+
+        /// <summary>Shows the on-screen keyboard for the given TextBox (its text is edited and written back when the
+        /// user accepts). Called automatically when a TextBox is tapped unless
+        /// <see cref="ShowOnScreenKeyboardAutomatically"/> is false; call it yourself for an on-demand keyboard
+        /// button.</summary>
+        public void ShowOnScreenKeyboardFor(TextBox textBox) {
             this.onScreenKeyboard = this.onScreenKeyboard ?? new OnScreenKeyboard();
 
             this.onScreenKeyboard.ShowFor(textBox);

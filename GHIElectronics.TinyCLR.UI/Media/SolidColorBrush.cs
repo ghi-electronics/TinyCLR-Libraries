@@ -22,6 +22,14 @@ namespace GHIElectronics.TinyCLR.UI.Media {
                                       this.Color, 0, 0, this.Color, 0, 0, this.Opacity);
         }
 
+        internal override void RenderRectangle(Bitmap bmp, Pen pen, int x, int y, int width, int height, int xCornerRadius, int yCornerRadius) {
+            var outlineColor = (pen != null) ? pen.Color : Colors.Transparent;
+            var outlineThickness = (pen != null) ? pen.Thickness : (ushort)0;
+
+            bmp.DrawRectangle(outlineColor, outlineThickness, x, y, width, height, xCornerRadius, yCornerRadius,
+                                      this.Color, 0, 0, this.Color, 0, 0, this.Opacity);
+        }
+
         internal override void RenderEllipse(Bitmap bmp, Pen pen, int x, int y, int xRadius, int yRadius) {
             var outlineColor = (pen != null) ? pen.Color : Colors.Transparent;
             var outlineThickness = (ushort)0;

@@ -12,6 +12,13 @@ namespace GHIElectronics.TinyCLR.UI.Media {
 
         /// <summary>Creates an image source backed by the given graphics.</summary>
         protected ImageSource(Graphics g) => this.graphics = g;
+
+        /// <summary>
+        /// Marks a color key (0xRRGGBB) transparent so those pixels are skipped when the image is drawn — the
+        /// standard TinyCLR way to knock out an icon's flat backdrop (e.g. 0xFF00F2 magenta). Applies to the
+        /// backing surface, so it affects every subsequent draw of this image.
+        /// </summary>
+        public void MakeTransparent(int rgb) => this.graphics.MakeTransparent(System.Drawing.Color.FromArgb((byte)0x00, (byte)((rgb >> 16) & 0xFF), (byte)((rgb >> 8) & 0xFF), (byte)(rgb & 0xFF)));
     }
 
     namespace Imaging {

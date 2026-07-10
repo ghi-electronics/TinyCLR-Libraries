@@ -21,7 +21,7 @@ namespace GHIElectronics.TinyCLR.UI {
         /// <summary>The default color used to highlight selected content.</summary>
         public static Color SelectionHighlight { get; set; } = Colors.Teal;
 
-        /// <summary>Default Scale9Image alpha for surface-rendered controls (Button, CheckBox, RadioButton, ProgressBar, Dropdown, Slider). ~78% opacity.</summary>
+        /// <summary>Default Scale9Image alpha for surface-rendered controls (Button, CheckBox, RadioButton, ProgressBar, ComboBox, Slider). ~78% opacity.</summary>
         public static ushort DefaultAlpha { get; set; } = 0xC8;
 
         /// <summary>Default corner radius (in pixels) for Scale9Image-rendered surfaces.</summary>

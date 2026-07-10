@@ -12,6 +12,14 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         public ushort Alpha { get; set; } = Theme.DefaultAlpha;
         /// <summary>Corner radius used by the nine-slice button image.</summary>
         public int RadiusBorder { get; set; } = Theme.DefaultRadiusBorder;
+        /// <summary>Optional custom face image, nine-slice scaled with <see cref="RadiusBorder"/>. When set it replaces
+        /// the default themed button skin (and takes priority over <see cref="Control.Background"/>).</summary>
+        public ImageSource BackgroundImage { get; set; }
+
+        /// <summary>Determines whether <see cref="Click"/> fires on touch press or release. Default is
+        /// <see cref="ClickMode.Release"/> (WPF convention); set to <see cref="ClickMode.Press"/> for the
+        /// instant TinyCLR 2.x response (fires the moment the button is touched).</summary>
+        public ClickMode ClickMode { get; set; } = ClickMode.Release;
 
         // Cached events - allocated once per AppDomain, not per click. Each
         // click still needs a fresh RoutedEventArgs, but the event identity
@@ -30,7 +38,52 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         public Button() {
             this.InitResource();
 
-            this.Background = Theme.ControlSurfaceBrush;
+            // Background is left null so a default button paints the themed nine-slice skin (see OnRender). Set
+            // Background to a SolidColorBrush for a flat coloured button, or BackgroundImage for a custom face.
+
+            // A button centers its content by default (WPF/WinForms convention), so a
+            // Text child lands in the middle instead of the top-left of the button face.
+            this.HorizontalContentAlignment = HorizontalAlignment.Center;
+            this.VerticalContentAlignment = VerticalAlignment.Center;
+        }
+
+        /// <summary>Places the content (<see cref="ContentControl.Child"/>) inside the button face according to
+        /// <see cref="ContentControl.HorizontalContentAlignment"/> / <see cref="ContentControl.VerticalContentAlignment"/>.
+        /// For the default Center/Center this sizes the child to its desired size and centers it; Stretch fills the
+        /// face (the pre-existing behavior).</summary>
+        protected override void ArrangeOverride(int arrangeWidth, int arrangeHeight) {
+            var child = this.Child;
+            if (child == null) {
+                return;
+            }
+
+            child.GetDesiredSize(out var desiredWidth, out var desiredHeight);
+            ArrangeContentAxis((int)this.HorizontalContentAlignment, arrangeWidth, desiredWidth, out var x, out var w);
+            ArrangeContentAxis((int)this.VerticalContentAlignment, arrangeHeight, desiredHeight, out var y, out var h);
+            child.Arrange(x, y, w, h);
+        }
+
+        // Shared by both axes (HorizontalAlignment and VerticalAlignment share Stretch/near/center/far ordinals).
+        private static void ArrangeContentAxis(int alignment, int container, int desired, out int offset, out int size) {
+            // Stretch (0): fill the face; the child's own alignment then applies inside.
+            if (alignment == (int)HorizontalAlignment.Stretch) {
+                offset = 0;
+                size = container;
+                return;
+            }
+
+            size = (desired < container) ? desired : container;
+
+            // Left/Top (1) = start, Center (2), Right/Bottom (3) = end.
+            if (alignment == (int)HorizontalAlignment.Center) {
+                offset = (container - size) / 2;
+            }
+            else if (alignment == (int)HorizontalAlignment.Right) {
+                offset = container - size;
+            }
+            else {
+                offset = 0;
+            }
         }
 
         /// <summary>Raised when the button is clicked.</summary>
@@ -94,12 +147,14 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             if (this.Parent != null)
                 this.Invalidate();
 
-            if (wasPressed) {
+            // In Press mode the click already fired on TouchDown; don't fire it twice.
+            if (wasPressed && this.ClickMode != ClickMode.Press) {
                 e.Handled = this.PerformClick();
             }
         }
 
-        /// <summary>Handles touch press; marks the button as pressed.</summary>
+        /// <summary>Handles touch press; marks the button as pressed (and, in <see cref="ClickMode.Press"/>
+        /// mode, fires <see cref="Click"/> immediately).</summary>
         protected override void OnTouchDown(TouchEventArgs e) {
             if (!this.IsEnabled) {
                 return;
@@ -112,6 +167,12 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
             if (this.Parent != null)
                 this.Invalidate();
+
+            // ClickMode.Press: activate on press (the TinyCLR 2.x behavior). The default
+            // Release mode fires in OnTouchUp instead.
+            if (this.ClickMode == ClickMode.Press) {
+                this.PerformClick();
+            }
         }
 
         /// <summary>Handles the Select hardware button press; marks the button as pressed.</summary>
@@ -164,8 +225,30 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             if (w <= 0 || h <= 0) return;
 
             var alpha = (this.IsEnabled) ? this.Alpha : (ushort)(this.Alpha / 2);
+            var pressed = this.isPressed && this.IsEnabled;
 
-            var img = (this.isPressed && this.IsEnabled) ? this.bitmapImageButtonDown : this.bitmapImageButtonUp;
+            // 1) Custom face image (nine-slice) — highest priority.
+            if (this.BackgroundImage != null) {
+                var a = pressed ? (ushort)(alpha * 3 / 4) : alpha; // dim slightly when pressed
+                dc.Scale9Image(0, 0, w, h, this.BackgroundImage, this.RadiusBorder, this.RadiusBorder, this.RadiusBorder, this.RadiusBorder, a);
+                return;
+            }
+
+            // 2) Flat colour — when the caller set a SolidColorBrush Background. Fill + a darker border, darkened on press.
+            if (this.Background is SolidColorBrush scb) {
+                // Media.-qualified: the dual-mode Desktop build also has System.Drawing.Color/Pen in scope.
+                var c = scb.Color;
+                if (pressed) {
+                    c = Media.Color.FromArgb(c.A, (byte)(c.R * 4 / 5), (byte)(c.G * 4 / 5), (byte)(c.B * 4 / 5));
+                }
+
+                var border = Media.Color.FromArgb(0xFF, (byte)(c.R * 3 / 5), (byte)(c.G * 3 / 5), (byte)(c.B * 3 / 5));
+                dc.DrawRectangle(new SolidColorBrush(c), new Media.Pen(border, 1), 0, 0, w, h);
+                return;
+            }
+
+            // 3) Default themed skin.
+            var img = pressed ? this.bitmapImageButtonDown : this.bitmapImageButtonUp;
             dc.Scale9Image(0, 0, w, h, img, this.RadiusBorder, this.RadiusBorder, this.RadiusBorder, this.RadiusBorder, alpha);
         }
 

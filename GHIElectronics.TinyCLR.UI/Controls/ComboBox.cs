@@ -8,8 +8,8 @@ using GHIElectronics.TinyCLR.UI.Media;
 using GHIElectronics.TinyCLR.UI.Media.Imaging;
 
 namespace GHIElectronics.TinyCLR.UI.Controls {
-    /// <summary>A collapsible list that shows the selected option and expands on tap.</summary>
-    public class Dropdown : ListBox, IDisposable {
+    /// <summary>A collapsible selection list (combo box): shows the selected option and expands to the full list on tap.</summary>
+    public class ComboBox : ListBox, IDisposable {
         private bool isOpened;
         private int originalHeight;
 
@@ -18,14 +18,14 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         private BitmapImage dropdownButtonUp;
         private BitmapImage dropdownButtonDown;
 
-        /// <summary>Opacity (0-255) used when drawing the dropdown images.</summary>
+        /// <summary>Opacity (0-255) used when drawing the combo box images.</summary>
         public ushort Alpha { get; set; } = Theme.DefaultAlpha;
-        /// <summary>Corner radius used by the nine-slice dropdown images.</summary>
+        /// <summary>Corner radius used by the nine-slice combo box images.</summary>
         public int RadiusBorder { get; set; } = Theme.DefaultRadiusBorder;
 
         /// <summary>
         /// Optional cap on the expanded list height. When set to a positive value
-        /// the open dropdown is clamped to this height and overflow scrolls through
+        /// the open combo box is clamped to this height and overflow scrolls through
         /// the inherited ScrollViewer. Default 0 = no clamp (legacy behavior).
         /// </summary>
         public int MaxOpenHeight { get; set; }
@@ -39,12 +39,12 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             this.dropdownButtonDown = Resources.LoadBitmapImage(Resources.BitmapResources.DropdownButton_Down);
         }
 
-        /// <summary>Creates a new Dropdown.</summary>
-        public Dropdown() : base() {
+        /// <summary>Creates a new ComboBox.</summary>
+        public ComboBox() : base() {
             this.InitResource();
 
-            this.TouchUp += this.Dropdown_TouchUp;
-            this.SelectionChanged += this.Dropdown_SelectionChanged;
+            this.TouchUp += this.ComboBox_TouchUp;
+            this.SelectionChanged += this.ComboBox_SelectionChanged;
         }
 
         private Media.Color GetForeColor() =>
@@ -58,7 +58,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             return text;
         }
 
-        private void Dropdown_SelectionChanged(object sender, SelectionChangedEventArgs args) {
+        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs args) {
             if (this.options == null || this.SelectedIndex < 0 || this.SelectedIndex >= this.options.Count)
                 return;
 
@@ -69,12 +69,25 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                 this.Invalidate();
         }
 
-        private void Dropdown_TouchUp(object sender, TouchEventArgs e) => this.ToggleOpen();
+        // The collapsed display is ONE row: the selected option, or the first option when nothing is selected yet.
+        // A freshly-populated combo box (Options set, no SelectedIndex) must show a single row, not every option —
+        // otherwise the ListBox base renders as many option rows as fit the control height (e.g. two rows of a small
+        // font in a 28px box), which is neither what the designer previews nor what a collapsed combo box should look
+        // like. Font-agnostic: always exactly one row, whatever the font/size.
+        private void ShowCollapsedItem() {
+            this.Items.Clear();
+            if (this.options != null && this.options.Count > 0) {
+                var index = (this.SelectedIndex >= 0 && this.SelectedIndex < this.options.Count) ? this.SelectedIndex : 0;
+                this.Items.Add(this.CreateOptionText(this.options[index].ToString()));
+            }
+        }
+
+        private void ComboBox_TouchUp(object sender, TouchEventArgs e) => this.ToggleOpen();
 
         /// <summary>
         /// Hardware button support: <see cref="HardwareButton.Select"/> toggles the
-        /// dropdown open/closed (parity with touch). <see cref="HardwareButton.Back"/>
-        /// closes an open dropdown. Up/Down navigation comes free from <see cref="ListBox"/>.
+        /// combo box open/closed (parity with touch). <see cref="HardwareButton.Back"/>
+        /// closes an open combo box. Up/Down navigation comes free from <see cref="ListBox"/>.
         /// </summary>
         protected override void OnButtonDown(ButtonEventArgs e) {
             if (e.Button == HardwareButton.Select) {
@@ -89,7 +102,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                 return;
             }
 
-            // Delegate Up/Down to the ListBox base only while open; collapsed dropdowns
+            // Delegate Up/Down to the ListBox base only while open; collapsed combo boxes
             // shouldn't eat navigation keys.
             if (this.isOpened) {
                 base.OnButtonDown(e);
@@ -115,6 +128,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             else {
                 if (this.options != null && this.options.Count > 0) {
                     this.Height = this.originalHeight;
+                    this.ShowCollapsedItem(); // closing without a pick still collapses to a single row
                 }
             }
 
@@ -141,7 +155,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         }
 
         private ArrayList options;
-        /// <summary>The list of selectable options shown when the dropdown is open.</summary>
+        /// <summary>The list of selectable options shown when the combo box is open.</summary>
         public ArrayList Options {
             get => this.options;
 
@@ -150,16 +164,12 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
                 if (this.options != null) {
                     this.EnsureOriginalHeight();
-
-                    this.Items.Clear();
-                    for (var i = 0; i < this.options.Count; i++) {
-                        this.Items.Add(this.CreateOptionText(this.options[i].ToString()));
-                    }
+                    this.ShowCollapsedItem(); // collapsed = ONE row (the first/selected option), never the whole list
                 }
             }
         }
 
-        /// <summary>Draws the dropdown's text field and chevron button.</summary>
+        /// <summary>Draws the combo box's text field and chevron button.</summary>
         public override void OnRender(DrawingContext dc) {
             // Honor Background/focus visual from Control base.
             base.OnRender(dc);
@@ -196,19 +206,19 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
         private bool disposed;
 
-        /// <summary>Releases the resources used by the dropdown.</summary>
+        /// <summary>Releases the resources used by the combo box.</summary>
         public void Dispose() {
             this.Dispose(true);
             GC.SuppressFinalize(this);
         }
 
-        /// <summary>Releases the dropdown's bitmap resources and event subscriptions.</summary>
+        /// <summary>Releases the combo box's bitmap resources and event subscriptions.</summary>
         protected virtual void Dispose(bool disposing) {
             if (this.disposed) return;
 
             if (disposing) {
-                this.TouchUp -= this.Dropdown_TouchUp;
-                this.SelectionChanged -= this.Dropdown_SelectionChanged;
+                this.TouchUp -= this.ComboBox_TouchUp;
+                this.SelectionChanged -= this.ComboBox_SelectionChanged;
 
                 this.dropdownTextUp?.graphics?.Dispose();
                 this.dropdownTextDown?.graphics?.Dispose();
@@ -219,7 +229,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             this.disposed = true;
         }
 
-        ~Dropdown() {
+        ~ComboBox() {
             this.Dispose(false);
         }
     }

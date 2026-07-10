@@ -21,6 +21,9 @@
         <member name="F:GHIElectronics.TinyCLR.UI.Controls.Chart.ChartMode.RectangleMode">
             <summary>Draws the series as vertical bars.</summary>
         </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Controls.Chart.ChartMode.AreaMode">
+            <summary>Draws the series as a line with the area beneath it filled (uses <see cref="P:GHIElectronics.TinyCLR.UI.Controls.Chart.AreaColor"/>).</summary>
+        </member>
         <member name="T:GHIElectronics.TinyCLR.UI.Controls.Chart.DataItem">
             <summary>A single data point in the chart.</summary>
         </member>
@@ -58,7 +61,9 @@
             <summary>Spacing factor between labeled divisions on the X axis.</summary>
         </member>
         <member name="P:GHIElectronics.TinyCLR.UI.Controls.Chart.DivisionAxisY">
-            <summary>Spacing factor between labeled divisions on the Y axis.</summary>
+            <summary>Value step ("offset") between Y-axis labels. Labels are drawn at step, 2×step, … up to the
+            first multiple that is &gt;= the max data value; 0 is not labelled. Default 1 (every integer). E.g. 5
+            gives 5, 10, 15, … The plot scales from 0 to that top value.</summary>
         </member>
         <member name="P:GHIElectronics.TinyCLR.UI.Controls.Chart.Font">
             <summary>Font used for chart text.</summary>
@@ -80,6 +85,9 @@
         </member>
         <member name="P:GHIElectronics.TinyCLR.UI.Controls.Chart.BackgroundColor">
             <summary>Brush used to fill the chart background.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Chart.AreaColor">
+            <summary>Fill under the series when <see cref="P:GHIElectronics.TinyCLR.UI.Controls.Chart.Mode"/> is <see cref="F:GHIElectronics.TinyCLR.UI.Controls.Chart.ChartMode.AreaMode"/>.</summary>
         </member>
         <member name="P:GHIElectronics.TinyCLR.UI.Controls.Chart.RadiusPoint">
             <summary>Radius in pixels of the data point markers.</summary>
@@ -132,6 +140,11 @@
         <member name="P:GHIElectronics.TinyCLR.UI.Controls.CheckBox.RadiusBorder">
             <summary>Corner radius used by the nine-slice check box image.</summary>
         </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.CheckBox.ClickMode">
+            <summary>Determines whether the check box clicks/toggles on touch press or release. Default is
+            <see cref="F:GHIElectronics.TinyCLR.UI.Controls.ClickMode.Release"/> (WPF convention); set to <see cref="F:GHIElectronics.TinyCLR.UI.Controls.ClickMode.Press"/> for the
+            instant TinyCLR 2.x response.</summary>
+        </member>
         <member name="M:GHIElectronics.TinyCLR.UI.Controls.CheckBox.#ctor">
             <summary>Creates a new CheckBox.</summary>
         </member>
@@ -139,10 +152,11 @@
             <summary>Draws the check box in its checked or unchecked state.</summary>
         </member>
         <member name="M:GHIElectronics.TinyCLR.UI.Controls.CheckBox.OnTouchUp(GHIElectronics.TinyCLR.UI.Input.TouchEventArgs)">
-            <summary>Handles touch release; toggles the check box.</summary>
+            <summary>Handles touch release; toggles the check box (unless it already toggled on press).</summary>
         </member>
         <member name="M:GHIElectronics.TinyCLR.UI.Controls.CheckBox.OnTouchDown(GHIElectronics.TinyCLR.UI.Input.TouchEventArgs)">
-            <summary>Handles touch press. Toggling is deferred to touch release.</summary>
+            <summary>Handles touch press. In the default Release mode toggling is deferred to touch release;
+            in <see cref="F:GHIElectronics.TinyCLR.UI.Controls.ClickMode.Press"/> mode it toggles immediately.</summary>
         </member>
         <member name="M:GHIElectronics.TinyCLR.UI.Controls.CheckBox.OnButtonUp(GHIElectronics.TinyCLR.UI.Input.ButtonEventArgs)">
             <summary>Handles the Select hardware button release; toggles the check box.</summary>
@@ -155,6 +169,24 @@
         </member>
         <member name="M:GHIElectronics.TinyCLR.UI.Controls.CheckBox.Dispose(System.Boolean)">
             <summary>Releases the check box's bitmap resources.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Controls.ClickMode">
+            <summary>Specifies when the <c>Click</c> event fires for button-family controls
+            (<see cref="T:GHIElectronics.TinyCLR.UI.Controls.Button"/>, <see cref="T:GHIElectronics.TinyCLR.UI.Controls.CheckBox"/>, <see cref="T:GHIElectronics.TinyCLR.UI.Controls.RadioButton"/>). Mirrors WPF's
+            <c>System.Windows.Controls.ClickMode</c>. Governs touch activation; the default is
+            <see cref="F:GHIElectronics.TinyCLR.UI.Controls.ClickMode.Release"/>.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Controls.ClickMode.Release">
+            <summary>Click fires when the touch is pressed and then released over the control (default,
+            matches WPF). Allows dragging off the control before release to cancel.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Controls.ClickMode.Press">
+            <summary>Click fires as soon as the control is pressed (touch down) for the snappiest response.
+            This matches the TinyCLR 2.x behavior; there is no drag-off-to-cancel in this mode.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Controls.ClickMode.Hover">
+            <summary>Reserved for pointer hover. A touch-only panel never hovers, so this behaves like
+            <see cref="F:GHIElectronics.TinyCLR.UI.Controls.ClickMode.Release"/> for touch input.</summary>
         </member>
         <member name="T:GHIElectronics.TinyCLR.UI.Controls.DataGrid">
             <summary>
@@ -566,43 +598,43 @@
             Column index to compare.
             </summary>
         </member>
-        <member name="T:GHIElectronics.TinyCLR.UI.Controls.Dropdown">
-            <summary>A collapsible list that shows the selected option and expands on tap.</summary>
+        <member name="T:GHIElectronics.TinyCLR.UI.Controls.ComboBox">
+            <summary>A collapsible selection list (combo box): shows the selected option and expands to the full list on tap.</summary>
         </member>
-        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Dropdown.Alpha">
-            <summary>Opacity (0-255) used when drawing the dropdown images.</summary>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.ComboBox.Alpha">
+            <summary>Opacity (0-255) used when drawing the combo box images.</summary>
         </member>
-        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Dropdown.RadiusBorder">
-            <summary>Corner radius used by the nine-slice dropdown images.</summary>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.ComboBox.RadiusBorder">
+            <summary>Corner radius used by the nine-slice combo box images.</summary>
         </member>
-        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Dropdown.MaxOpenHeight">
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.ComboBox.MaxOpenHeight">
             <summary>
             Optional cap on the expanded list height. When set to a positive value
-            the open dropdown is clamped to this height and overflow scrolls through
+            the open combo box is clamped to this height and overflow scrolls through
             the inherited ScrollViewer. Default 0 = no clamp (legacy behavior).
             </summary>
         </member>
-        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Dropdown.#ctor">
-            <summary>Creates a new Dropdown.</summary>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.ComboBox.#ctor">
+            <summary>Creates a new ComboBox.</summary>
         </member>
-        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Dropdown.OnButtonDown(GHIElectronics.TinyCLR.UI.Input.ButtonEventArgs)">
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.ComboBox.OnButtonDown(GHIElectronics.TinyCLR.UI.Input.ButtonEventArgs)">
             <summary>
             Hardware button support: <see cref="F:GHIElectronics.TinyCLR.UI.Input.HardwareButton.Select"/> toggles the
-            dropdown open/closed (parity with touch). <see cref="F:GHIElectronics.TinyCLR.UI.Input.HardwareButton.Back"/>
-            closes an open dropdown. Up/Down navigation comes free from <see cref="T:GHIElectronics.TinyCLR.UI.Controls.ListBox"/>.
+            combo box open/closed (parity with touch). <see cref="F:GHIElectronics.TinyCLR.UI.Input.HardwareButton.Back"/>
+            closes an open combo box. Up/Down navigation comes free from <see cref="T:GHIElectronics.TinyCLR.UI.Controls.ListBox"/>.
             </summary>
         </member>
-        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Dropdown.Options">
-            <summary>The list of selectable options shown when the dropdown is open.</summary>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.ComboBox.Options">
+            <summary>The list of selectable options shown when the combo box is open.</summary>
         </member>
-        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Dropdown.OnRender(GHIElectronics.TinyCLR.UI.Media.DrawingContext)">
-            <summary>Draws the dropdown's text field and chevron button.</summary>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.ComboBox.OnRender(GHIElectronics.TinyCLR.UI.Media.DrawingContext)">
+            <summary>Draws the combo box's text field and chevron button.</summary>
         </member>
-        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Dropdown.Dispose">
-            <summary>Releases the resources used by the dropdown.</summary>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.ComboBox.Dispose">
+            <summary>Releases the resources used by the combo box.</summary>
         </member>
-        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Dropdown.Dispose(System.Boolean)">
-            <summary>Releases the dropdown's bitmap resources and event subscriptions.</summary>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.ComboBox.Dispose(System.Boolean)">
+            <summary>Releases the combo box's bitmap resources and event subscriptions.</summary>
         </member>
         <member name="T:GHIElectronics.TinyCLR.UI.Controls.GridUnitType">
             <summary>How a grid row or column is sized.</summary>
@@ -713,6 +745,27 @@
         <member name="P:GHIElectronics.TinyCLR.UI.Controls.Gauge.EnableThreshold">
             <summary>When true, the threshold arc around the recommended value is drawn.</summary>
         </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Gauge.EnableScale">
+            <summary>When true (the default), the control draws the tick marks and scale numbers. Set false when the
+            dial face is supplied as a <see cref="P:GHIElectronics.TinyCLR.UI.Controls.Gauge.BackgroundImage"/> that already includes the scale, so the control
+            draws only the needle over your artwork (no numbers on top).</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Gauge.NeedleLength">
+            <summary>Length of the pointer needle as a fraction of the dial radius (half the control size). Default
+            0.68 (the classic length). Lower = shorter needle — handy when a <see cref="P:GHIElectronics.TinyCLR.UI.Controls.Gauge.BackgroundImage"/> dial's
+            scale sits well inside the control. Clamped 0.1–1.2.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Gauge.NeedleCenterY">
+            <summary>Vertical position of the needle pivot (and centre cap) as a fraction of the control height.
+            Default 0.5 (centre). Raise toward 1.0 (e.g. 0.75) to drop the pivot to the BOTTOM — the natural hub for
+            a half (180°) dial whose arc sits in the upper area. Clamped 0–1. Affects only the needle/cap, so it's
+            meant for an image-faced gauge (EnableScale=false); with drawn ticks it would offset the needle from
+            the (centred) scale.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Gauge.SweepAngle">
+            <summary>Sweep of the dial arc in degrees (30–360). 270 (default) = classic dial, 180 = half dial,
+            360 = full ring. The arc is centred on the bottom opening.</summary>
+        </member>
         <member name="P:GHIElectronics.TinyCLR.UI.Controls.Gauge.BackColor">
             <summary>Background color behind the dial.</summary>
         </member>
@@ -757,6 +810,21 @@
             FillEllipse per redraw.
             </summary>
         </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Gauge.BackgroundImage">
+            <summary>
+            Optional custom dial-face image, drawn scaled to the square dial in place of the flat
+            <see cref="P:GHIElectronics.TinyCLR.UI.Controls.Gauge.DialColor"/> face. The tick marks, labels, threshold and needle are still drawn on top. Use with
+            <see cref="P:GHIElectronics.TinyCLR.UI.Controls.Gauge.TransparentColor"/> to key out a colour so a rectangular image can present as a circular (or any)
+            shaped gauge.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Gauge.TransparentColor">
+            <summary>
+            A colour in <see cref="P:GHIElectronics.TinyCLR.UI.Controls.Gauge.BackgroundImage"/> to make transparent (so a rectangular source image can show as a
+            circular / custom-shaped gauge). Mirrors <c>System.Drawing.Image.MakeTransparent</c>; applied once when the
+            background is next redrawn.
+            </summary>
+        </member>
         <member name="M:GHIElectronics.TinyCLR.UI.Controls.Gauge.#ctor(System.Int32)">
             <summary>Creates a new square Gauge with the given side length in pixels.</summary>
         </member>
@@ -768,6 +836,228 @@
         </member>
         <member name="M:GHIElectronics.TinyCLR.UI.Controls.Gauge.OnRender(GHIElectronics.TinyCLR.UI.Media.DrawingContext)">
             <summary>Draws the dial face and pointer needle.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Controls.GroupBox">
+            <summary>A titled frame around a single child: draws a labelled border with the header above the content.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.GroupBox.Header">
+            <summary>The title shown above the frame. Uses the inherited <see cref="P:GHIElectronics.TinyCLR.UI.Controls.Control.Font"/>.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.GroupBox.BorderColor">
+            <summary>The colour of the frame border.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.GroupBox.HeaderColor">
+            <summary>The colour of the header text.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.GroupBox.MeasureOverride(System.Int32,System.Int32,System.Int32@,System.Int32@)">
+            <summary>Measures the child plus the header + frame padding.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.GroupBox.ArrangeOverride(System.Int32,System.Int32)">
+            <summary>Arranges the child inside the frame, below the header.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.GroupBox.OnRender(GHIElectronics.TinyCLR.UI.Media.DrawingContext)">
+            <summary>Draws the frame border and the header text.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Controls.Expander">
+            <summary>A header with an expand/collapse chevron; tapping the header shows or hides the single child content.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Expander.Header">
+            <summary>The header text (always visible). Uses the inherited <see cref="P:GHIElectronics.TinyCLR.UI.Controls.Control.Font"/>.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Expander.HeaderColor">
+            <summary>The colour of the header text and chevron.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Expander.IsExpanded">
+            <summary>Whether the content is shown. Tapping the header toggles this.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Expander.OnTouchUp(GHIElectronics.TinyCLR.UI.Input.TouchEventArgs)">
+            <summary>Toggles expansion when the header row is tapped.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Expander.MeasureOverride(System.Int32,System.Int32,System.Int32@,System.Int32@)">
+            <summary>Measures the header plus (when expanded) the child.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Expander.ArrangeOverride(System.Int32,System.Int32)">
+            <summary>Arranges the child below the header (zero size when collapsed).</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Expander.OnRender(GHIElectronics.TinyCLR.UI.Media.DrawingContext)">
+            <summary>Draws the chevron + header text + a separator line under the header.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Controls.TabControl">
+            <summary>A tabbed container: a strip of tab headers over a body that shows the selected tab's content.
+            Add tabs with <see cref="M:GHIElectronics.TinyCLR.UI.Controls.TabControl.AddTab(System.String,GHIElectronics.TinyCLR.UI.UIElement)"/>; tapping a header selects it.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.TabControl.TabColor">
+            <summary>Fill of an unselected tab header.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.TabControl.SelectedTabColor">
+            <summary>Fill of the selected tab header (and the body).</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.TabControl.HeaderColor">
+            <summary>Colour of the header text and separators.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.TabControl.HeaderHeight">
+            <summary>Height in pixels of the tab-header strip.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.TabControl.SelectedIndex">
+            <summary>The index of the visible tab. May be set before tabs are added (it is clamped when rendering).</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.TabControl.AddTab(System.String,GHIElectronics.TinyCLR.UI.UIElement)">
+            <summary>Adds a tab with the given header text and content element.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.TabControl.MeasureOverride(System.Int32,System.Int32,System.Int32@,System.Int32@)">
+            <summary>Measures every tab's content against the body area.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.TabControl.ArrangeOverride(System.Int32,System.Int32)">
+            <summary>Arranges the selected tab's content in the body; collapses the rest.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.TabControl.OnTouchUp(GHIElectronics.TinyCLR.UI.Input.TouchEventArgs)">
+            <summary>Selects the tapped tab header.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.TabControl.OnRender(GHIElectronics.TinyCLR.UI.Media.DrawingContext)">
+            <summary>Draws the tab-header strip.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Controls.TreeNode">
+            <summary>A node in a <see cref="T:GHIElectronics.TinyCLR.UI.Controls.TreeView"/>: a header plus optional child nodes.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Controls.TreeNode.Header">
+            <summary>The text shown for this node.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Controls.TreeNode.IsExpanded">
+            <summary>Whether the node's children are shown.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Controls.TreeNode.Children">
+            <summary>The child nodes.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.TreeNode.#ctor(System.String)">
+            <summary>Creates a node with the given header.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.TreeNode.Add(GHIElectronics.TinyCLR.UI.Controls.TreeNode)">
+            <summary>Adds a child node.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Controls.TreeView">
+            <summary>A hierarchical list of <see cref="T:GHIElectronics.TinyCLR.UI.Controls.TreeNode"/>s with expand/collapse. Tapping a node's chevron toggles
+            its children; tapping the row selects it.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.TreeView.RowHeight">
+            <summary>Row height in pixels.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.TreeView.HeaderColor">
+            <summary>Colour of node text.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.TreeView.SelectionColor">
+            <summary>Fill behind the selected row.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.TreeView.AddNode(GHIElectronics.TinyCLR.UI.Controls.TreeNode)">
+            <summary>Adds a top-level node.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.TreeView.MeasureOverride(System.Int32,System.Int32,System.Int32@,System.Int32@)">
+            <summary>Reports the full height of all visible rows.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.TreeView.OnTouchUp(GHIElectronics.TinyCLR.UI.Input.TouchEventArgs)">
+            <summary>Toggles a node's expansion (chevron zone) or selects the tapped row.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.TreeView.OnRender(GHIElectronics.TinyCLR.UI.Media.DrawingContext)">
+            <summary>Draws each visible node with indentation, a chevron for parents, and the header text.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Controls.Calendar">
+            <summary>A month calendar: a header with prev/next month arrows, a day-of-week row, and a grid of day cells.
+            Tapping the arrows changes the month; tapping a day selects it.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Calendar.ForeColor">
+            <summary>Colour of the day / header text.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Calendar.SelectionColor">
+            <summary>Fill behind the selected day.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Calendar.#ctor">
+            <summary>Creates a calendar showing the current month.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Calendar.Year">
+            <summary>The displayed year.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Calendar.Month">
+            <summary>The displayed month (1-12).</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Calendar.SelectedDay">
+            <summary>The selected day of month (0 = none).</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Calendar.MeasureOverride(System.Int32,System.Int32,System.Int32@,System.Int32@)">
+            <summary>Reports the full grid height (header + day-of-week row + 6 week rows).</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Calendar.OnTouchUp(GHIElectronics.TinyCLR.UI.Input.TouchEventArgs)">
+            <summary>Handles taps on the prev/next arrows and the day cells.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Calendar.OnRender(GHIElectronics.TinyCLR.UI.Media.DrawingContext)">
+            <summary>Draws the header, weekday initials, and the day grid.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Controls.MenuEntry">
+            <summary>An entry in a <see cref="T:GHIElectronics.TinyCLR.UI.Controls.Menu"/>: a header plus optional sub-items.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Controls.MenuEntry.Header">
+            <summary>The text shown for this entry.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Controls.MenuEntry.Children">
+            <summary>The sub-items shown when this top-level entry is opened.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.MenuEntry.#ctor(System.String)">
+            <summary>Creates an entry with the given header.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.MenuEntry.Add(GHIElectronics.TinyCLR.UI.Controls.MenuEntry)">
+            <summary>Adds a sub-item.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Controls.Menu">
+            <summary>A simple two-level menu bar: a row of top-level entries; tapping one opens its sub-items as an inline
+            dropdown drawn within the control's bounds. (Embedded UIs have no popup layer, so size the Menu tall enough to
+            show the open dropdown.) Bar entries are sized to their text so they sit close together like a real menu bar.
+            Tapping a sub-item raises <see cref="E:GHIElectronics.TinyCLR.UI.Controls.Menu.ItemClick"/>.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Menu.BarColor">
+            <summary>Fill of the menu bar.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Menu.DropColor">
+            <summary>Fill of an open dropdown.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Menu.ForeColor">
+            <summary>Colour of the entry text.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Menu.ItemWidth">
+            <summary>Minimum width in pixels of the dropdown box. (Top-bar entries auto-size to their text now, so
+            this only sets a floor for how wide an open dropdown is; it grows to fit the widest sub-item.)</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Menu.DropDirection">
+            <summary>Which way dropdowns open. <see cref="F:GHIElectronics.TinyCLR.UI.Controls.MenuDropDirection.Down"/> (default) suits a menu at the top
+            of the screen; <see cref="F:GHIElectronics.TinyCLR.UI.Controls.MenuDropDirection.Up"/> suits a menu at the bottom (so the dropdown stays on
+            screen). Up requires the Menu to sit in a Canvas (it shifts its own Canvas.Top up while open so the bar
+            stays put) — same idea WPF handles automatically by re-placing the popup.</summary>
+        </member>
+        <member name="E:GHIElectronics.TinyCLR.UI.Controls.Menu.ItemClick">
+            <summary>Raised when a sub-item is tapped; the argument is its header text.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Menu.AddItem(GHIElectronics.TinyCLR.UI.Controls.MenuEntry)">
+            <summary>Adds a top-level entry.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Menu.MeasureOverride(System.Int32,System.Int32,System.Int32@,System.Int32@)">
+            <summary>Reports the bar height, growing to include the open dropdown so it is both visible AND
+            hit-testable. When closed the control is only the bar tall, so it doesn't block touches to whatever
+            sits beneath it (hit-testing is bounds-based).</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Menu.OnTouchUp(GHIElectronics.TinyCLR.UI.Input.TouchEventArgs)">
+            <summary>Opens/closes a top entry, or selects a sub-item.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Menu.OnRender(GHIElectronics.TinyCLR.UI.Media.DrawingContext)">
+            <summary>Draws the bar and (if open) the dropdown.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Controls.MenuDropDirection">
+            <summary>The direction a <see cref="T:GHIElectronics.TinyCLR.UI.Controls.Menu"/> opens its dropdowns.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Controls.MenuDropDirection.Down">
+            <summary>Dropdowns open downward (for a menu at the top of the screen).</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Controls.MenuDropDirection.Up">
+            <summary>Dropdowns open upward (for a menu at the bottom of the screen).</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Controls.MenuItemClickHandler">
+            <summary>Handles a <see cref="E:GHIElectronics.TinyCLR.UI.Controls.Menu.ItemClick"/> event.</summary>
         </member>
         <member name="T:GHIElectronics.TinyCLR.UI.Controls.ListBoxItemHighlightable">
             <summary>A list box item that highlights its text and background when selected.</summary>
@@ -922,6 +1212,11 @@
         <member name="P:GHIElectronics.TinyCLR.UI.Controls.RadioButton.ShowBackground">
             <summary>Whether the bitmap background is drawn behind the button.</summary>
         </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.RadioButton.ClickMode">
+            <summary>Determines whether the button clicks/selects on touch press or release. Default is
+            <see cref="F:GHIElectronics.TinyCLR.UI.Controls.ClickMode.Release"/> (WPF convention); set to <see cref="F:GHIElectronics.TinyCLR.UI.Controls.ClickMode.Press"/> for the
+            instant TinyCLR 2.x response.</summary>
+        </member>
         <member name="M:GHIElectronics.TinyCLR.UI.Controls.RadioButton.#ctor">
             <summary>Initializes a new radio button with no group name.</summary>
         </member>
@@ -932,10 +1227,11 @@
             <summary>Renders the radio button background and its checked/unchecked indicator.</summary>
         </member>
         <member name="M:GHIElectronics.TinyCLR.UI.Controls.RadioButton.OnTouchUp(GHIElectronics.TinyCLR.UI.Input.TouchEventArgs)">
-            <summary>Handles a touch release by clicking and toggling the button.</summary>
+            <summary>Handles a touch release by clicking and selecting the button (unless it already fired on press).</summary>
         </member>
         <member name="M:GHIElectronics.TinyCLR.UI.Controls.RadioButton.OnTouchDown(GHIElectronics.TinyCLR.UI.Input.TouchEventArgs)">
-            <summary>Handles a touch press; the click is performed on release instead.</summary>
+            <summary>Handles a touch press. In the default Release mode the click is performed on release; in
+            <see cref="F:GHIElectronics.TinyCLR.UI.Controls.ClickMode.Press"/> mode it fires immediately.</summary>
         </member>
         <member name="M:GHIElectronics.TinyCLR.UI.Controls.RadioButton.OnButtonUp(GHIElectronics.TinyCLR.UI.Input.ButtonEventArgs)">
             <summary>Handles the Select hardware button by clicking and toggling the button.</summary>
@@ -1115,13 +1411,22 @@
             <summary>The vertical padding in pixels between the border and the text.</summary>
         </member>
         <member name="M:GHIElectronics.TinyCLR.UI.Controls.TextBox.OnTouchUp(GHIElectronics.TinyCLR.UI.Input.TouchEventArgs)">
-            <summary>Opens the on-screen keyboard when the field is tapped.</summary>
+            <summary>Focuses the field on tap and, unless a physical keyboard has suppressed it, opens the on-screen
+            keyboard.</summary>
         </member>
         <member name="M:GHIElectronics.TinyCLR.UI.Controls.TextBox.OnButtonDown(GHIElectronics.TinyCLR.UI.Input.ButtonEventArgs)">
-            <summary>
-            Hardware button support: <see cref="F:GHIElectronics.TinyCLR.UI.Input.HardwareButton.Select"/> opens the
-            on-screen keyboard, mirroring tap-to-edit behavior.
-            </summary>
+            <summary>Hardware buttons: Select opens the on-screen keyboard (unless suppressed); Left/Right/Home move
+            the caret. Arrow keys from a physical keyboard map here.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.TextBox.OnCharacter(System.Char)">
+            <summary>Inserts or removes a character at the caret (physical-keyboard text entry). Backspace = '\b',
+            delete = (char)127.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.TextBox.OnGotFocus(GHIElectronics.TinyCLR.UI.Input.FocusChangedEventArgs)">
+            <summary>Starts the blinking caret and moves it to the end of the text when the field gains focus.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.TextBox.OnLostFocus(GHIElectronics.TinyCLR.UI.Input.FocusChangedEventArgs)">
+            <summary>Stops the blinking caret when the field loses focus.</summary>
         </member>
         <member name="M:GHIElectronics.TinyCLR.UI.Controls.TextBox.MeasureOverride(System.Int32,System.Int32,System.Int32@,System.Int32@)">
             <summary>Measures the size needed for the text plus padding and border.</summary>
@@ -1141,8 +1446,23 @@
         <member name="P:GHIElectronics.TinyCLR.UI.Controls.Button.RadiusBorder">
             <summary>Corner radius used by the nine-slice button image.</summary>
         </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Button.BackgroundImage">
+            <summary>Optional custom face image, nine-slice scaled with <see cref="P:GHIElectronics.TinyCLR.UI.Controls.Button.RadiusBorder"/>. When set it replaces
+            the default themed button skin (and takes priority over <see cref="P:GHIElectronics.TinyCLR.UI.Controls.Control.Background"/>).</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Button.ClickMode">
+            <summary>Determines whether <see cref="E:GHIElectronics.TinyCLR.UI.Controls.Button.Click"/> fires on touch press or release. Default is
+            <see cref="F:GHIElectronics.TinyCLR.UI.Controls.ClickMode.Release"/> (WPF convention); set to <see cref="F:GHIElectronics.TinyCLR.UI.Controls.ClickMode.Press"/> for the
+            instant TinyCLR 2.x response (fires the moment the button is touched).</summary>
+        </member>
         <member name="M:GHIElectronics.TinyCLR.UI.Controls.Button.#ctor">
             <summary>Creates a new Button.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Button.ArrangeOverride(System.Int32,System.Int32)">
+            <summary>Places the content (<see cref="P:GHIElectronics.TinyCLR.UI.Controls.ContentControl.Child"/>) inside the button face according to
+            <see cref="P:GHIElectronics.TinyCLR.UI.Controls.ContentControl.HorizontalContentAlignment"/> / <see cref="P:GHIElectronics.TinyCLR.UI.Controls.ContentControl.VerticalContentAlignment"/>.
+            For the default Center/Center this sizes the child to its desired size and centers it; Stretch fills the
+            face (the pre-existing behavior).</summary>
         </member>
         <member name="E:GHIElectronics.TinyCLR.UI.Controls.Button.Click">
             <summary>Raised when the button is clicked.</summary>
@@ -1154,7 +1474,8 @@
             <summary>Handles touch release; fires Click if the press started on this button.</summary>
         </member>
         <member name="M:GHIElectronics.TinyCLR.UI.Controls.Button.OnTouchDown(GHIElectronics.TinyCLR.UI.Input.TouchEventArgs)">
-            <summary>Handles touch press; marks the button as pressed.</summary>
+            <summary>Handles touch press; marks the button as pressed (and, in <see cref="F:GHIElectronics.TinyCLR.UI.Controls.ClickMode.Press"/>
+            mode, fires <see cref="E:GHIElectronics.TinyCLR.UI.Controls.Button.Click"/> immediately).</summary>
         </member>
         <member name="M:GHIElectronics.TinyCLR.UI.Controls.Button.OnButtonDown(GHIElectronics.TinyCLR.UI.Input.ButtonEventArgs)">
             <summary>Handles the Select hardware button press; marks the button as pressed.</summary>
@@ -1227,6 +1548,10 @@
         <member name="M:GHIElectronics.TinyCLR.UI.Controls.Border.MeasureOverride(System.Int32,System.Int32,System.Int32@,System.Int32@)">
             <summary>Measures the child plus the border thickness.</summary>
         </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Border.CornerRadius">
+            <summary>Corner radius in pixels (0 = square corners, the default). Rounds both the border and the
+            background fill — cheap (only the corner pixels rasterize).</summary>
+        </member>
         <member name="M:GHIElectronics.TinyCLR.UI.Controls.Border.OnRender(GHIElectronics.TinyCLR.UI.Media.DrawingContext)">
             <summary>Draws the border and background.</summary>
         </member>
@@ -1266,8 +1591,58 @@
         <member name="M:GHIElectronics.TinyCLR.UI.Controls.Canvas.MeasureOverride(System.Int32,System.Int32,System.Int32@,System.Int32@)">
             <summary>Measures each child with unconstrained space.</summary>
         </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Controls.Dock">
+            <summary>The edge of a <see cref="T:GHIElectronics.TinyCLR.UI.Controls.DockPanel"/> that a child is docked to.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Controls.Dock.Left">
+            <summary>Dock to the left edge.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Controls.Dock.Top">
+            <summary>Dock to the top edge.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Controls.Dock.Right">
+            <summary>Dock to the right edge.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Controls.Dock.Bottom">
+            <summary>Dock to the bottom edge.</summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Controls.DockPanel">
+            <summary>
+            Panel that docks each child to one edge (Left/Top/Right/Bottom) of the space left by the previously docked
+            children; when <see cref="P:GHIElectronics.TinyCLR.UI.Controls.DockPanel.LastChildFill"/> is true (the default) the last child fills whatever remains in the
+            centre. WPF-style. Choose an edge per child with <see cref="M:GHIElectronics.TinyCLR.UI.Controls.DockPanel.GetDock(GHIElectronics.TinyCLR.UI.UIElement)"/> / <see cref="M:GHIElectronics.TinyCLR.UI.Controls.DockPanel.SetDock(GHIElectronics.TinyCLR.UI.UIElement,GHIElectronics.TinyCLR.UI.Controls.Dock)"/> (default Left).
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.DockPanel.LastChildFill">
+            <summary>Whether the last child fills the remaining central area instead of being docked (default true).</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.DockPanel.#ctor">
+            <summary>Creates a new DockPanel.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.DockPanel.GetDock(GHIElectronics.TinyCLR.UI.UIElement)">
+            <summary>Gets the edge an element is docked to (default <see cref="F:GHIElectronics.TinyCLR.UI.Controls.Dock.Left"/>).</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.DockPanel.SetDock(GHIElectronics.TinyCLR.UI.UIElement,GHIElectronics.TinyCLR.UI.Controls.Dock)">
+            <summary>Docks an element to an edge of its parent DockPanel.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.DockPanel.MeasureOverride(System.Int32,System.Int32,System.Int32@,System.Int32@)">
+            <summary>Measures children, accumulating docked extents along each axis (WPF DockPanel algorithm).</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.DockPanel.ArrangeOverride(System.Int32,System.Int32)">
+            <summary>Arranges each child against its docked edge; the last child fills the remainder when enabled.</summary>
+        </member>
         <member name="T:GHIElectronics.TinyCLR.UI.Controls.ContentControl">
             <summary>Base class for controls that host a single child element.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.ContentControl.HorizontalContentAlignment">
+            <summary>Horizontal placement of <see cref="P:GHIElectronics.TinyCLR.UI.Controls.ContentControl.Child"/> within this control's content area.
+            <see cref="F:GHIElectronics.TinyCLR.UI.HorizontalAlignment.Stretch"/> (the default) gives the child the full width and lets the
+            child's own <see cref="P:GHIElectronics.TinyCLR.UI.UIElement.HorizontalAlignment"/> take effect (back-compat). Derived controls
+            such as <see cref="T:GHIElectronics.TinyCLR.UI.Controls.Button"/> default this to <see cref="F:GHIElectronics.TinyCLR.UI.HorizontalAlignment.Center"/>.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.ContentControl.VerticalContentAlignment">
+            <summary>Vertical placement of <see cref="P:GHIElectronics.TinyCLR.UI.Controls.ContentControl.Child"/> within this control's content area.
+            See <see cref="P:GHIElectronics.TinyCLR.UI.Controls.ContentControl.HorizontalContentAlignment"/> for the Stretch/back-compat semantics.</summary>
         </member>
         <member name="P:GHIElectronics.TinyCLR.UI.Controls.ContentControl.Child">
             <summary>The single child element hosted by this control.</summary>
@@ -1322,6 +1697,13 @@
         <member name="P:GHIElectronics.TinyCLR.UI.Controls.Image.Source">
             <summary>The image to display.</summary>
         </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Image.TransparentColor">
+            <summary>
+            A color key (0xRRGGBB) rendered as transparent, e.g. an icon's magenta backdrop (0xFF00F2). The
+            default -1 means no key (the image draws opaque). Order-independent: setting either this or
+            <see cref="P:GHIElectronics.TinyCLR.UI.Controls.Image.Source"/> (re)applies the key.
+            </summary>
+        </member>
         <member name="M:GHIElectronics.TinyCLR.UI.Controls.Image.MeasureOverride(System.Int32,System.Int32,System.Int32@,System.Int32@)">
             <summary>Measures the desired size based on the image and stretch mode.</summary>
         </member>
@@ -1329,7 +1711,16 @@
             <summary>Draws the image using the current stretch mode.</summary>
         </member>
         <member name="T:GHIElectronics.TinyCLR.UI.Controls.ListBox">
-            <summary>A scrollable list of selectable items.</summary>
+            <summary>
+            A scrollable list of selectable items. Two content modes:
+            <list type="bullet">
+            <item><b>Items</b> — add explicit <see cref="T:GHIElectronics.TinyCLR.UI.Controls.ListBoxItem"/> rows via <see cref="P:GHIElectronics.TinyCLR.UI.Controls.ListBox.Items"/> (fully realized).</item>
+            <item><b>ItemsSource</b> — bind a large <see cref="T:System.Collections.IList"/> of data to <see cref="P:GHIElectronics.TinyCLR.UI.Controls.ListBox.ItemsSource"/>; the list then
+            virtualizes, recycling a small pool of rows (each item shown via <c>ToString()</c>). This replaces the former
+            separate <c>VirtualizingListBox</c>.</item>
+            </list>
+            The two modes are mutually exclusive; setting <see cref="P:GHIElectronics.TinyCLR.UI.Controls.ListBox.ItemsSource"/> switches the list into virtualized mode.
+            </summary>
         </member>
         <member name="M:GHIElectronics.TinyCLR.UI.Controls.ListBox.#ctor">
             <summary>Creates a new ListBox.</summary>
@@ -1388,6 +1779,17 @@
             <summary>
             The scrolling style.
             </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.ListBox.ItemsSource">
+            <summary>
+            Binds a large data list to the list box; each item is shown via its <c>ToString()</c>. Setting this switches
+            the list into virtualized mode (a small pool of rows is recycled while scrolling), for big lists that would
+            be too heavy as explicit <see cref="P:GHIElectronics.TinyCLR.UI.Controls.ListBox.Items"/>. Leave null to use the <see cref="P:GHIElectronics.TinyCLR.UI.Controls.ListBox.Items"/> collection. This
+            replaces the former separate <c>VirtualizingListBox</c> control.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.ListBox.ItemHeight">
+            <summary>Fixed row height in pixels used for the virtualization math in <see cref="P:GHIElectronics.TinyCLR.UI.Controls.ListBox.ItemsSource"/> mode.</summary>
         </member>
         <member name="T:GHIElectronics.TinyCLR.UI.Controls.ListBoxItem">
             <summary>A single selectable item within a <see cref="T:GHIElectronics.TinyCLR.UI.Controls.ListBox"/>.</summary>
@@ -1466,6 +1868,20 @@
         </member>
         <member name="P:GHIElectronics.TinyCLR.UI.Controls.Panel.Children">
             <summary>The collection of child elements contained in this panel.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Panel.Background">
+            <summary>
+            The brush used to paint the panel's background, matching WPF's <c>Panel.Background</c>
+            (Canvas/Grid/StackPanel/DockPanel). Null (the default) leaves the panel transparent, so
+            whatever is behind it shows through.
+            </summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Panel.CornerRadius">
+            <summary>Corner radius in pixels for the panel background (0 = square, the default). Cheap — only
+            the corner pixels rasterize.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.Panel.OnRender(GHIElectronics.TinyCLR.UI.Media.DrawingContext)">
+            <summary>Paints the background across the panel's render area (WPF Panel parity).</summary>
         </member>
         <member name="M:GHIElectronics.TinyCLR.UI.Controls.Panel.MeasureOverride(System.Int32,System.Int32,System.Int32@,System.Int32@)">
             <summary>Measures the panel as the bounding size of all its children.</summary>
@@ -1677,45 +2093,6 @@
         <member name="P:GHIElectronics.TinyCLR.UI.Controls.TextFlow.LineCount">
             <summary>The total number of wrapped lines after the last measure.</summary>
         </member>
-        <member name="T:GHIElectronics.TinyCLR.UI.Controls.VirtualizingListBox">
-            <summary>
-            Large homogeneous lists: recycles a small pool of rows while preserving full scroll extent.
-            Set <see cref="P:GHIElectronics.TinyCLR.UI.Controls.VirtualizingListBox.ItemsSource"/> to an <see cref="T:System.Collections.IList"/> (e.g. <see cref="T:System.Collections.ArrayList"/>); each item is shown via <c>ToString()</c>.
-            </summary>
-        </member>
-        <member name="M:GHIElectronics.TinyCLR.UI.Controls.VirtualizingListBox.#ctor">
-            <summary>Initializes a new instance of the <see cref="T:GHIElectronics.TinyCLR.UI.Controls.VirtualizingListBox"/> class.</summary>
-        </member>
-        <member name="P:GHIElectronics.TinyCLR.UI.Controls.VirtualizingListBox.ItemsSource">
-            <summary>The list of items shown in the list box; each item is displayed via its <c>ToString()</c>.</summary>
-        </member>
-        <member name="P:GHIElectronics.TinyCLR.UI.Controls.VirtualizingListBox.ItemHeight">
-            <summary>Fixed row height in pixels (all rows use this for virtualization math).</summary>
-        </member>
-        <member name="P:GHIElectronics.TinyCLR.UI.Controls.VirtualizingListBox.SelectedIndex">
-            <summary>The index of the currently selected item, or -1 if none is selected.</summary>
-        </member>
-        <member name="E:GHIElectronics.TinyCLR.UI.Controls.VirtualizingListBox.SelectionChanged">
-            <summary>Raised when the selected item changes.</summary>
-        </member>
-        <member name="P:GHIElectronics.TinyCLR.UI.Controls.VirtualizingListBox.HorizontalOffset">
-            <summary>The current horizontal scroll offset of the list.</summary>
-        </member>
-        <member name="P:GHIElectronics.TinyCLR.UI.Controls.VirtualizingListBox.VerticalOffset">
-            <summary>The current vertical scroll offset of the list.</summary>
-        </member>
-        <member name="M:GHIElectronics.TinyCLR.UI.Controls.VirtualizingListBox.MeasureOverride(System.Int32,System.Int32,System.Int32@,System.Int32@)">
-            <summary>Measures the inner scroll viewer to determine the desired size.</summary>
-        </member>
-        <member name="M:GHIElectronics.TinyCLR.UI.Controls.VirtualizingListBox.ArrangeOverride(System.Int32,System.Int32)">
-            <summary>Arranges the inner scroll viewer to fill the list box.</summary>
-        </member>
-        <member name="M:GHIElectronics.TinyCLR.UI.Controls.VirtualizingListBox.Dispose">
-            <summary>Detaches the list box's event handlers for deterministic teardown.</summary>
-        </member>
-        <member name="M:GHIElectronics.TinyCLR.UI.Controls.VirtualizingListBox.Dispose(System.Boolean)">
-            <summary>Detaches the list box's event handlers for deterministic teardown.</summary>
-        </member>
         <member name="T:GHIElectronics.TinyCLR.UI.Controls.TextRun">
             <summary>A run of text sharing a single font and color, used as a building block by <see cref="T:GHIElectronics.TinyCLR.UI.Controls.TextFlow"/>.</summary>
         </member>
@@ -1800,10 +2177,59 @@
         <member name="M:GHIElectronics.TinyCLR.UI.Input.InputProvider.RaiseTouch(System.Int32,System.Int32,GHIElectronics.TinyCLR.UI.Input.TouchMessages,System.DateTime)">
             <summary>Reports a touch event at the given position to the input manager.</summary>
         </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Input.InputProvider.RaiseCharacter(System.Char)">
+            <summary>Reports a typed character (from a physical keyboard) to the focused element. Map a real
+            keyboard's characters to this for PC-style text entry into a focused TextBox. Backspace = '\b',
+            delete = (char)127. Safe to call from any thread - it marshals onto the UI dispatcher.</summary>
+        </member>
         <member name="M:GHIElectronics.TinyCLR.UI.Input.InputProvider.RaiseFocusNavigation(System.Boolean)">
             <summary>
             Moves focus between tab stops (map hardware keys or UART keys to this for PC-style navigation).
             </summary>
+        </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Input.Pointer">
+            <summary>
+            An on-screen mouse cursor for pointer-driven UIs (e.g. an HDMI monitor with a USB mouse, where there is no
+            touch panel). It draws an arrow on top of the whole UI and turns pointer motion + the left button into the
+            framework's normal touch events, so every existing control works unchanged.
+            </summary>
+            <remarks>
+            The device-specific part (reading a USB-host mouse, a trackball, etc.) stays in the application; it just
+            feeds this class:
+            <code>
+              var pointer = new Pointer(Application.Current);
+              // when the mouse reports movement / a button:
+              pointer.MoveTo(x, y);            // or pointer.MoveBy(dx, dy)
+              pointer.SetLeftButton(pressed);  // press = touch-down, release = touch-up, move-while-pressed = drag
+              pointer.Visible = false;         // e.g. when the mouse is unplugged
+            </code>
+            The cursor is drawn via <see cref="E:GHIElectronics.TinyCLR.UI.WindowManager.PostRender"/> and only invalidates its own small rectangle
+            as it moves, so it costs almost nothing to render and never triggers a full-screen repaint. All members are
+            safe to call from any thread (the mouse driver's worker thread included); they marshal onto the UI dispatcher
+            internally.
+            </remarks>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Input.Pointer.#ctor(GHIElectronics.TinyCLR.UI.Application)">
+            <summary>Creates a cursor for the given application and shows it centered once the UI is running.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Input.Pointer.X">
+            <summary>The current cursor x position, in screen pixels.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Input.Pointer.Y">
+            <summary>The current cursor y position, in screen pixels.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Input.Pointer.Visible">
+            <summary>Whether the cursor is drawn. Set to <c>false</c> to hide it (e.g. when the mouse is unplugged).</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Input.Pointer.MoveTo(System.Int32,System.Int32)">
+            <summary>Moves the cursor to an absolute screen position (clamped to the display).</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Input.Pointer.MoveBy(System.Int32,System.Int32)">
+            <summary>Moves the cursor by a relative delta.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Input.Pointer.SetLeftButton(System.Boolean)">
+            <summary>Reports the left button state: <c>true</c> = press (touch-down), <c>false</c> = release
+            (touch-up). While pressed, subsequent moves are reported as drags.</summary>
         </member>
         <member name="T:GHIElectronics.TinyCLR.UI.Input.FocusNavigator">
             <summary>
@@ -2937,6 +3363,13 @@
         <member name="M:GHIElectronics.TinyCLR.UI.Media.ImageSource.#ctor(System.Drawing.Graphics)">
             <summary>Creates an image source backed by the given graphics.</summary>
         </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Media.ImageSource.MakeTransparent(System.Int32)">
+            <summary>
+            Marks a color key (0xRRGGBB) transparent so those pixels are skipped when the image is drawn — the
+            standard TinyCLR way to knock out an icon's flat backdrop (e.g. 0xFF00F2 magenta). Applies to the
+            backing surface, so it affects every subsequent draw of this image.
+            </summary>
+        </member>
         <member name="T:GHIElectronics.TinyCLR.UI.Media.Imaging.BitmapSource">
             <summary>Base class for image sources backed by a bitmap.</summary>
         </member>
@@ -2954,6 +3387,10 @@
         </member>
         <member name="P:GHIElectronics.TinyCLR.UI.Media.Brush.Opacity">
             <summary>The opacity of the brush.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Media.Brush.RenderRectangle(GHIElectronics.TinyCLR.UI.Bitmap,GHIElectronics.TinyCLR.UI.Media.Pen,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>Fills a rectangle with rounded corners (radius in pixels). Cheap: only the corner pixels
+            rasterize. Brushes that don't override it fall back to a square fill (radius ignored).</summary>
         </member>
         <member name="T:GHIElectronics.TinyCLR.UI.Media.BrushMappingMode">
             <summary>Specifies how brush coordinates are interpreted.</summary>
@@ -3034,6 +3471,20 @@
         </member>
         <member name="M:GHIElectronics.TinyCLR.UI.Media.DrawingContext.DrawRectangle(GHIElectronics.TinyCLR.UI.Media.Brush,GHIElectronics.TinyCLR.UI.Media.Pen,System.Int32,System.Int32,System.Int32,System.Int32)">
             <summary>Draws a rectangle with the given fill and outline.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Media.DrawingContext.DrawRectangle(GHIElectronics.TinyCLR.UI.Media.Brush,GHIElectronics.TinyCLR.UI.Media.Pen,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>Fills/strokes a rectangle with rounded corners (radius in pixels).</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Media.DrawingContext.FillRoundedRectangle(GHIElectronics.TinyCLR.UI.Media.Brush,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+             <summary>
+             Fills a rectangle with rounded corners, composed entirely from the proven square-fill path (one
+             horizontal span per scan line). This deliberately avoids the native rounded-rectangle primitive,
+             which is unexercised elsewhere and hard-faults on device. It runs only when a control is
+             (re)painted — not per frame — so the extra spans cost nothing during animation.
+            
+             Exact for a <see cref="T:GHIElectronics.TinyCLR.UI.Media.SolidColorBrush"/>. A non-solid brush (e.g. a gradient) can't be span-filled
+             without distorting its ramp, so it falls back to a square fill (correct colors, square corners).
+             </summary>
         </member>
         <member name="P:GHIElectronics.TinyCLR.UI.Media.DrawingContext.Width">
             <summary>The width of the drawing surface in pixels.</summary>
@@ -3789,6 +4240,11 @@
                 A property indicating if this element is Visible or not.
             </summary>
         </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.UIElement.IsHitTestVisible">
+            <summary>Whether this element takes part in pointer/touch hit-testing. Set to <c>false</c> for a
+            decorative overlay (e.g. a cursor or a background animation) so touches pass through to the controls
+            underneath instead of being swallowed. Default is <c>true</c>.</summary>
+        </member>
         <member name="E:GHIElectronics.TinyCLR.UI.UIElement.IsVisibleChanged">
             <summary>Occurs when the effective visibility of this element changes.</summary>
         </member>
@@ -3808,6 +4264,12 @@
         </member>
         <member name="M:GHIElectronics.TinyCLR.UI.UIElement.Invalidate">
             <summary>Marks the entire element as needing to be redrawn.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.UIElement.OnCharacter(System.Char)">
+            <summary>Delivers a typed character (from a physical keyboard) to this element. Override to handle text
+            input - the base implementation ignores it. A backspace arrives as '\b', a delete as (char)127; other
+            control characters are not delivered. Fed by <see cref="M:GHIElectronics.TinyCLR.UI.Input.InputProvider.RaiseCharacter(System.Char)"/>, which
+            routes to the focused element.</summary>
         </member>
         <member name="M:GHIElectronics.TinyCLR.UI.UIElement.RaiseEvent(GHIElectronics.TinyCLR.UI.RoutedEventArgs)">
              <summary>
@@ -4169,6 +4631,18 @@
                 Initializes the Width/Height, Top/Left properties to use windows
                 default. Updates Application object properties if inside app.
         </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Window.Show">
+            <summary>Makes the window visible and brings it to the front, WPF-style. Use with <see cref="M:GHIElectronics.TinyCLR.UI.Window.Hide"/> to
+            switch between screens: <c>current.Hide(); next.Show();</c>. (Prefer this over the low-level
+            <see cref="P:GHIElectronics.TinyCLR.UI.Window.Topmost"/> property.)</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Window.Hide">
+            <summary>Hides the window without closing it, WPF-style. It stays alive and can be shown again with
+            <see cref="M:GHIElectronics.TinyCLR.UI.Window.Show"/>.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Window.Activate">
+            <summary>Brings the window to the front of the z-order and gives it input focus, WPF-style.</summary>
+        </member>
         <member name="M:GHIElectronics.TinyCLR.UI.Window.Close">
             <summary>Closes the window and removes it from the application and window manager.</summary>
         </member>
@@ -4391,6 +4865,18 @@
             </remarks>
             <param name="e">The event args that will be passed to the Exit event</param>
         </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Application.ShowOnScreenKeyboardAutomatically">
+            <summary>Whether tapping (or Select-ing) a TextBox automatically pops up the on-screen keyboard. Default
+            true. Set to false when a physical keyboard is connected so the user types on it instead (tablet-style);
+            the on-screen keyboard can still be shown on demand via <see cref="M:GHIElectronics.TinyCLR.UI.Application.ShowOnScreenKeyboardFor(GHIElectronics.TinyCLR.UI.Controls.TextBox)"/>. When set
+            back to true, tapping a TextBox pops the keyboard again.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Application.ShowOnScreenKeyboardFor(GHIElectronics.TinyCLR.UI.Controls.TextBox)">
+            <summary>Shows the on-screen keyboard for the given TextBox (its text is edited and written back when the
+            user accepts). Called automatically when a TextBox is tapped unless
+            <see cref="P:GHIElectronics.TinyCLR.UI.Application.ShowOnScreenKeyboardAutomatically"/> is false; call it yourself for an on-demand keyboard
+            button.</summary>
+        </member>
         <member name="M:GHIElectronics.TinyCLR.UI.Application.DoShutdown">
             <summary>
             DO NOT USE - internal method
@@ -4481,7 +4967,7 @@
             <summary>The default color used to highlight selected content.</summary>
         </member>
         <member name="P:GHIElectronics.TinyCLR.UI.Theme.DefaultAlpha">
-            <summary>Default Scale9Image alpha for surface-rendered controls (Button, CheckBox, RadioButton, ProgressBar, Dropdown, Slider). ~78% opacity.</summary>
+            <summary>Default Scale9Image alpha for surface-rendered controls (Button, CheckBox, RadioButton, ProgressBar, ComboBox, Slider). ~78% opacity.</summary>
         </member>
         <member name="P:GHIElectronics.TinyCLR.UI.Theme.DefaultRadiusBorder">
             <summary>Default corner radius (in pixels) for Scale9Image-rendered surfaces.</summary>

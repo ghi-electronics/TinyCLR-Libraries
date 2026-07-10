@@ -126,6 +126,8 @@ namespace GHIElectronics.TinyCLR.Devices.Signals {
         public void Capture(uint count, GpioPinEdge edge, bool waitForEdge, TimeSpan timeout) { }
         public void Generate(uint[] data, uint offset, uint count) { }
         public void Generate(uint[] data, uint offset, uint count, uint multiplier) { }
+        public void Generate(uint[] data, uint offset, uint count, uint multiplier, GpioPinValue startingPolarity) { }
+        public void Generate(uint[] data, uint offset, uint count, uint multiplier, GpioPinValue startingPolarity, uint repeatCount) { }
         public void Abort() { }
 
         public event PulseReadEventHandler OnReadPulseFinished { add { } remove { } }

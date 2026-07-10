@@ -76,10 +76,14 @@ namespace GHIElectronics.TinyCLR.UI {
             var children = this.LogicalChildren;
             var last = children.Count - 1;
 
-            // something was added, and it's the topmost. Make sure it is visible before setting focus
+            // something was added, and it's the topmost. Make sure it is visible before setting focus.
+            // NOTE: do NOT TouchCapture.Capture() the window here. Touch capture routes ALL touches to the captured
+            // element and BYPASSES hit-testing (see Application.OnEvent) - which is what a dragging control (e.g.
+            // Slider) wants, but for a whole window it means touches land on the window instead of its buttons/
+            // textboxes, freezing input after a window is brought to the front. Hit-testing (GetPointerTarget)
+            // already routes to the topmost visible window's controls, so no capture is needed for activation.
             if (added != null && indexAffected == last && Visibility.Visible == added.Visibility) {
                 Input.Buttons.Focus(added);
-                Input.TouchCapture.Capture(added);
             }
 
             // something was removed and it lost focus to us.
@@ -87,7 +91,6 @@ namespace GHIElectronics.TinyCLR.UI {
                 // we still have a window left, so make it focused.
                 if (last >= 0) {
                     Input.Buttons.Focus(children[last]);
-                    Input.TouchCapture.Capture(children[last]);
                 }
             }
         }

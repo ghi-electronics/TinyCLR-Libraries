@@ -18,7 +18,9 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             /// <summary>Draws the series as a connected line.</summary>
             LineMode,
             /// <summary>Draws the series as vertical bars.</summary>
-            RectangleMode
+            RectangleMode,
+            /// <summary>Draws the series as a line with the area beneath it filled (uses <see cref="AreaColor"/>).</summary>
+            AreaMode
         }
 
         /// <summary>A single data point in the chart.</summary>
@@ -54,7 +56,9 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
         /// <summary>Spacing factor between labeled divisions on the X axis.</summary>
         public int DivisionAxisX { get; set; } = 1;
-        /// <summary>Spacing factor between labeled divisions on the Y axis.</summary>
+        /// <summary>Value step ("offset") between Y-axis labels. Labels are drawn at step, 2×step, … up to the
+        /// first multiple that is &gt;= the max data value; 0 is not labelled. Default 1 (every integer). E.g. 5
+        /// gives 5, 10, 15, … The plot scales from 0 to that top value.</summary>
         public int DivisionAxisY { get; set; } = 1;
 
         /// <summary>Font used for chart text.</summary>
@@ -74,6 +78,8 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         public Media.SolidColorBrush TextColor { get; set; } = new Media.SolidColorBrush(Colors.Black);
         /// <summary>Brush used to fill the chart background.</summary>
         public Media.SolidColorBrush BackgroundColor { get; set; } = new Media.SolidColorBrush(Colors.White);
+        /// <summary>Fill under the series when <see cref="Mode"/> is <see cref="ChartMode.AreaMode"/>.</summary>
+        public Media.SolidColorBrush AreaColor { get; set; } = new Media.SolidColorBrush(Media.Color.FromRgb(0xBB, 0xDE, 0xFB));
 
         /// <summary>Radius in pixels of the data point markers.</summary>
         public int RadiusPoint { get; set; } = 10;
@@ -161,6 +167,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
         private System.Drawing.Bitmap RenderChart() => this.Mode switch {
             ChartMode.LineMode => this.GetLineChart(),
+            ChartMode.AreaMode => this.GetLineChart(fillArea: true),
             ChartMode.RectangleMode => this.GetRectangleChart(),
             _ => null,
         };
@@ -195,7 +202,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         private static System.Drawing.SolidBrush ToSdBrush(Media.SolidColorBrush b) =>
             new System.Drawing.SolidBrush(ToSd(b.Color));
 
-        private System.Drawing.Bitmap GetLineChart() {
+        private System.Drawing.Bitmap GetLineChart(bool fillArea = false) {
             var bitmap = new System.Drawing.Bitmap(this.Width, this.Height);
 
             using var graph = Graphics.FromImage(bitmap);
@@ -215,8 +222,13 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             graph.DrawLine(axisPen, this.margin, this.margin + (int)Scale(100, SCALE_FROM_HEIGHT, this.Height), this.margin, this.Height - this.margin);
             graph.DrawLine(axisPen, this.margin, this.Height - this.margin, this.Width - this.margin, this.Height - this.margin);
 
-            var maxValue = Math.Ceiling(this.GetMax(this.Items));
-            var minValue = (int)this.GetMin(this.Items);
+            // Y axis: label at multiples of DivisionAxisY (the value "step"/offset), from the first step ABOVE 0
+            // up to the first multiple that is >= the max data value (so the top label clears the highest point).
+            // 0 itself is not labelled. The plot is scaled 0..maxValue.
+            var step = this.DivisionAxisY > 0 ? this.DivisionAxisY : 1;
+            var minValue = 0;
+            var maxValue = Math.Ceiling(Math.Ceiling(this.GetMax(this.Items)) / step) * step;
+            if (maxValue < step) maxValue = step;
             var countValue = this.Items.Count;
 
             var chartWidth = Math.Abs(this.pEnd.X - this.pStart.X - (int)Scale(50, SCALE_FROM_WIDTH, this.Width));
@@ -237,17 +249,17 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                 startDivX += divisionWidth * this.DivisionAxisX;
             }
 
-            var startDivY = this.pStart.Y - (int)Scale(25, SCALE_FROM_HEIGHT, this.Height);
-            for (var i = minValue; i <= maxValue; i += this.DivisionAxisY) {
-                graph.FillEllipse(divisionBrush, this.pStart.X - this.paddingLeft - this.RadiusPoint / 2, startDivY - this.RadiusPoint / 2,
+            var baseDivY = this.pStart.Y - (int)Scale(25, SCALE_FROM_HEIGHT, this.Height);
+            for (var i = step; i <= maxValue; i += step) {
+                var labelY = baseDivY - (int)(divisionHeight * i);
+                graph.FillEllipse(divisionBrush, this.pStart.X - this.paddingLeft - this.RadiusPoint / 2, labelY - this.RadiusPoint / 2,
                     this.RadiusPoint, this.RadiusPoint);
                 graph.DrawString(i.ToString(), this.Font, textBrush,
                     this.pStart.X - this.paddingLeft + this.margin / 2,
-                    startDivY - (int)Scale(10, SCALE_FROM_HEIGHT, this.Height));
-                startDivY -= (int)(divisionHeight * this.DivisionAxisY);
+                    labelY - (int)Scale(10, SCALE_FROM_HEIGHT, this.Height));
             }
 
-            var prevPoint = new ChartPoint();
+            // Pass 1: compute all plotted points (no drawing yet, so an area fill can go UNDER the line).
             var ellipsePoints = new ArrayList(); // ChartPointModel
             for (var i = 0; i < this.Items.Count; i++) {
                 var item = (DataItem)this.Items[i];
@@ -255,17 +267,33 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                     divisionHeight * minValue + (int)Scale(25, SCALE_FROM_HEIGHT, this.Height);
                 var pixelXValue = divisionWidth * (i + 1);
 
-                if (i > 0) {
-                    var currentPoint = new ChartPoint(this.pStart.X + pixelXValue, (int)(this.pStart.Y - pixelYValue));
-                    graph.DrawLine(chartPen, prevPoint.X, prevPoint.Y, currentPoint.X, currentPoint.Y);
-                }
-
                 ellipsePoints.Add(new ChartPointModel {
                     Point = new ChartPoint(this.pStart.X + pixelXValue, (int)(this.pStart.Y - pixelYValue)),
                     Value = item.Value,
                 });
+            }
 
-                prevPoint = new ChartPoint(this.pStart.X + pixelXValue, (int)(this.pStart.Y - pixelYValue));
+            // Optional area fill (AreaMode): fill from the baseline up to the interpolated line, one 1px strip
+            // per column. Done at rebuild time (cached), so it costs nothing per frame.
+            if (fillArea && ellipsePoints.Count > 1) {
+                using var areaBrush = ToSdBrush(this.AreaColor);
+                var baseline = this.pStart.Y;
+                for (var s = 0; s < ellipsePoints.Count - 1; s++) {
+                    var a = ((ChartPointModel)ellipsePoints[s]).Point;
+                    var b = ((ChartPointModel)ellipsePoints[s + 1]).Point;
+                    var dx = Math.Max(1, b.X - a.X);
+                    for (var px = a.X; px <= b.X; px++) {
+                        var y = a.Y + (b.Y - a.Y) * (px - a.X) / dx;
+                        if (baseline > y) graph.FillRectangle(areaBrush, px, y, 1, baseline - y);
+                    }
+                }
+            }
+
+            // Pass 2: the connecting line, on top of any fill.
+            for (var s = 1; s < ellipsePoints.Count; s++) {
+                var a = ((ChartPointModel)ellipsePoints[s - 1]).Point;
+                var b = ((ChartPointModel)ellipsePoints[s]).Point;
+                graph.DrawLine(chartPen, a.X, a.Y, b.X, b.Y);
             }
 
             foreach (ChartPointModel pm in ellipsePoints) {
@@ -303,8 +331,13 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             graph.DrawLine(axisPen, this.margin, this.margin + (int)Scale(100, SCALE_FROM_HEIGHT, this.Height), this.margin, this.Height - this.margin);
             graph.DrawLine(axisPen, this.margin, this.Height - this.margin, this.Width - this.margin, this.Height - this.margin);
 
-            var maxValue = Math.Ceiling(this.GetMax(this.Items));
-            var minValue = (int)this.GetMin(this.Items);
+            // Y axis: label at multiples of DivisionAxisY (the value "step"/offset), from the first step ABOVE 0
+            // up to the first multiple that is >= the max data value (so the top label clears the highest point).
+            // 0 itself is not labelled. The plot is scaled 0..maxValue.
+            var step = this.DivisionAxisY > 0 ? this.DivisionAxisY : 1;
+            var minValue = 0;
+            var maxValue = Math.Ceiling(Math.Ceiling(this.GetMax(this.Items)) / step) * step;
+            if (maxValue < step) maxValue = step;
             var countValue = this.Items.Count;
 
             var chartWidth = Math.Abs(this.pEnd.X - this.pStart.X - (int)Scale(50, SCALE_FROM_WIDTH, this.Width));
@@ -324,14 +357,14 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                 startDivX += divisionWidth * this.DivisionAxisX;
             }
 
-            var startDivY = this.pStart.Y - (int)Scale(25, SCALE_FROM_HEIGHT, this.Height);
-            for (var i = minValue; i <= maxValue; i += this.DivisionAxisY) {
-                graph.FillEllipse(divisionBrush, this.pStart.X - this.paddingLeft - this.RadiusPoint / 2, startDivY - this.RadiusPoint / 2,
+            var baseDivY = this.pStart.Y - (int)Scale(25, SCALE_FROM_HEIGHT, this.Height);
+            for (var i = step; i <= maxValue; i += step) {
+                var labelY = baseDivY - (int)(divisionHeight * i);
+                graph.FillEllipse(divisionBrush, this.pStart.X - this.paddingLeft - this.RadiusPoint / 2, labelY - this.RadiusPoint / 2,
                     this.RadiusPoint, this.RadiusPoint);
                 graph.DrawString(i.ToString(), this.Font, textBrush,
                     this.pStart.X - this.paddingLeft + this.margin / 2,
-                    startDivY - (int)Scale(10, SCALE_FROM_HEIGHT, this.Height));
-                startDivY -= (int)(divisionHeight * this.DivisionAxisY);
+                    labelY - (int)Scale(10, SCALE_FROM_HEIGHT, this.Height));
             }
 
             for (var i = 0; i < this.Items.Count; i++) {

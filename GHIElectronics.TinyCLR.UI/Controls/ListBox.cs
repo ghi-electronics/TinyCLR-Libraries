@@ -2,10 +2,21 @@
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 using System;
+using System.Collections;
 using GHIElectronics.TinyCLR.UI.Input;
+using GHIElectronics.TinyCLR.UI.Media;
 
 namespace GHIElectronics.TinyCLR.UI.Controls {
-    /// <summary>A scrollable list of selectable items.</summary>
+    /// <summary>
+    /// A scrollable list of selectable items. Two content modes:
+    /// <list type="bullet">
+    /// <item><b>Items</b> — add explicit <see cref="ListBoxItem"/> rows via <see cref="Items"/> (fully realized).</item>
+    /// <item><b>ItemsSource</b> — bind a large <see cref="IList"/> of data to <see cref="ItemsSource"/>; the list then
+    /// virtualizes, recycling a small pool of rows (each item shown via <c>ToString()</c>). This replaces the former
+    /// separate <c>VirtualizingListBox</c>.</item>
+    /// </list>
+    /// The two modes are mutually exclusive; setting <see cref="ItemsSource"/> switches the list into virtualized mode.
+    /// </summary>
     public class ListBox : ContentControl {
         // Cached once per AppDomain so each commit doesn't allocate a fresh RoutedEvent.
         private static readonly RoutedEvent ClickRoutedEvent =
@@ -60,31 +71,42 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             set {
                 VerifyAccess();
 
-                if (this._selectedIndex != value) {
-                    if (value < -1) {
-                        throw new ArgumentOutOfRangeException("SelectedIndex");
-                    }
-
-                    var item = (this._items != null && value >= 0 && value < this._items.Count) ? this._items[value] : null;
-
-                    if (item != null && !item.IsSelectable) {
-                        throw new InvalidOperationException("Item is not selectable");
-                    }
-
-                    var previousItem = this.SelectedItem;
-                    if (previousItem != null) {
-                        previousItem.OnIsSelectedChanged(false);
-                    }
-
-                    var args = new SelectionChangedEventArgs(this._selectedIndex, value);
-                    this._selectedIndex = value;
-
-                    if (item != null) {
-                        item.OnIsSelectedChanged(true);
-                    }
-
-                    this._selectionChanged?.Invoke(this, args);
+                if (this._selectedIndex == value) {
+                    return;
                 }
+
+                if (value < -1) {
+                    throw new ArgumentOutOfRangeException("SelectedIndex");
+                }
+
+                // Virtualized (ItemsSource) mode: selection is purely index-based; there is no ListBoxItem container.
+                if (this._itemsSource != null) {
+                    var prev = this._selectedIndex;
+                    this._selectedIndex = value;
+                    this.SyncRows();
+                    this._selectionChanged?.Invoke(this, new SelectionChangedEventArgs(prev, value));
+                    return;
+                }
+
+                var item = (this._items != null && value >= 0 && value < this._items.Count) ? this._items[value] : null;
+
+                if (item != null && !item.IsSelectable) {
+                    throw new InvalidOperationException("Item is not selectable");
+                }
+
+                var previousItem = this.SelectedItem;
+                if (previousItem != null) {
+                    previousItem.OnIsSelectedChanged(false);
+                }
+
+                var args = new SelectionChangedEventArgs(this._selectedIndex, value);
+                this._selectedIndex = value;
+
+                if (item != null) {
+                    item.OnIsSelectedChanged(true);
+                }
+
+                this._selectionChanged?.Invoke(this, args);
             }
         }
 
@@ -220,12 +242,169 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             set => this._scrollViewer.ScrollingStyle = value;
         }
 
+        // ---- ItemsSource (virtualized) mode: recycles a small pool of rows for a large IList of data. ----
+
+        private const int VirtualPoolSize = 12;
+
+        /// <summary>
+        /// Binds a large data list to the list box; each item is shown via its <c>ToString()</c>. Setting this switches
+        /// the list into virtualized mode (a small pool of rows is recycled while scrolling), for big lists that would
+        /// be too heavy as explicit <see cref="Items"/>. Leave null to use the <see cref="Items"/> collection. This
+        /// replaces the former separate <c>VirtualizingListBox</c> control.
+        /// </summary>
+        public IList ItemsSource {
+            get => this._itemsSource;
+
+            set {
+                VerifyAccess();
+                this._itemsSource = value;
+                this._selectedIndex = -1;
+                this._firstVisible = 0;
+
+                if (value != null) {
+                    this.EnsureVirtualPanel();
+                    if (this._scrollViewer.Child != this._virtualPanel) {
+                        this._scrollViewer.Child = this._virtualPanel;
+                    }
+
+                    this._scrollViewer.VerticalOffset = 0;
+                    this._virtualPanel.InvalidateMeasure();
+                    this.SyncRows();
+                }
+                else if (this._scrollViewer.Child != this._panel) {
+                    this._scrollViewer.Child = this._panel;
+                }
+            }
+        }
+
+        /// <summary>Fixed row height in pixels used for the virtualization math in <see cref="ItemsSource"/> mode.</summary>
+        public int ItemHeight {
+            get => this._itemHeight;
+
+            set {
+                if (value < 4) {
+                    throw new ArgumentOutOfRangeException("ItemHeight");
+                }
+
+                VerifyAccess();
+                this._itemHeight = value;
+                this._virtualPanel?.InvalidateMeasure();
+            }
+        }
+
+        private int ItemCount => this._itemsSource == null ? 0 : this._itemsSource.Count;
+
+        private void EnsureVirtualPanel() {
+            if (this._virtualPanel != null) {
+                return;
+            }
+
+            this._virtualPanel = new VirtualPanel(this);
+            for (var i = 0; i < VirtualPoolSize; i++) {
+                var text = new Text { TextContent = string.Empty };
+                var border = new Border { Child = text, Background = Theme.TextBoxFillBrush };
+                border.SetBorderThickness(0, 0, 0, 1);
+                border.TouchUp += this.VirtualRow_TouchUp;
+                this._virtualPanel.Children.Add(border);
+            }
+
+            this._scrollViewer.ScrollChanged += this.Virtual_ScrollChanged;
+        }
+
+        private void Virtual_ScrollChanged(object sender, ScrollChangedEventArgs e) {
+            if (this._itemsSource == null) {
+                return;
+            }
+
+            this._firstVisible = this._scrollViewer.VerticalOffset / this._itemHeight;
+            if (this._firstVisible < 0) {
+                this._firstVisible = 0;
+            }
+
+            this.SyncRows();
+        }
+
+        private void VirtualRow_TouchUp(object sender, TouchEventArgs e) {
+            if (!this.IsEnabled || this._itemsSource == null) {
+                return;
+            }
+
+            var slot = this._virtualPanel.Children.IndexOf((Border)sender);
+            if (slot < 0) {
+                return;
+            }
+
+            var idx = this._firstVisible + slot;
+            if (idx >= 0 && idx < this.ItemCount) {
+                this.SelectedIndex = idx;
+            }
+        }
+
+        private void SyncRows() {
+            if (this._virtualPanel == null) {
+                return;
+            }
+
+            var count = this.ItemCount;
+            for (var i = 0; i < this._virtualPanel.Children.Count; i++) {
+                var border = (Border)this._virtualPanel.Children[i];
+                var text = (Text)border.Child;
+                var idx = this._firstVisible + i;
+                if (idx >= count) {
+                    border.Visibility = Visibility.Collapsed;
+                    continue;
+                }
+
+                border.Visibility = Visibility.Visible;
+                var item = this._itemsSource[idx];
+                text.TextContent = item == null ? string.Empty : item.ToString();
+                border.Background = idx == this._selectedIndex ? Theme.SelectionBrush : Theme.TextBoxFillBrush;
+            }
+        }
+
+        // Virtualizing panel: reports the full scroll extent (ItemCount × ItemHeight) but only lays out the recycled
+        // pool of rows at their virtual scroll positions. (Ported from the former VirtualizingListBox.)
+        private sealed class VirtualPanel : Panel {
+            private readonly ListBox owner;
+
+            public VirtualPanel(ListBox owner) => this.owner = owner;
+
+            protected override void MeasureOverride(int availableWidth, int availableHeight, out int desiredWidth, out int desiredHeight) {
+                var ih = this.owner._itemHeight;
+                desiredHeight = this.owner.ItemCount * ih;
+                desiredWidth = 0;
+                var n = this.Children.Count;
+                for (var i = 0; i < n; i++) {
+                    this.Children[i].Measure(availableWidth, ih);
+                    this.Children[i].GetDesiredSize(out var w, out _);
+                    desiredWidth = System.Math.Max(desiredWidth, w);
+                }
+
+                if (desiredWidth == 0 && availableWidth > 0 && availableWidth < Media.Constants.MaxExtent) {
+                    desiredWidth = availableWidth;
+                }
+            }
+
+            protected override void ArrangeOverride(int arrangeWidth, int arrangeHeight) {
+                var ih = this.owner._itemHeight;
+                var fv = this.owner._firstVisible;
+                var n = this.Children.Count;
+                for (var i = 0; i < n; i++) {
+                    this.Children[i].Arrange(0, (fv + i) * ih, arrangeWidth, ih);
+                }
+            }
+        }
+
         internal ScrollViewer _scrollViewer;
         internal StackPanel _panel;
         private int _selectedIndex = -1;
         private SelectionChangedEventHandler _selectionChanged;
 
         private ListBoxItemCollection _items;
+        private IList _itemsSource;
+        private int _itemHeight = 28;
+        private int _firstVisible;
+        private VirtualPanel _virtualPanel;
     }
 }
 
