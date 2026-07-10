@@ -397,7 +397,7 @@ namespace GHIElectronics.TinyCLR.Devices.Signals {
         /// returns to <paramref name="startingPolarity"/> at the end of each cycle;
         /// an odd count inverts the polarity every cycle (inherent to toggle output).
         /// </param>
-        public void Generate(uint[] data, uint offset, uint count, uint multiplier, GpioPinValue startingPolarity, uint repeatCount) {
+        public void Generate(uint[] data, uint offset, uint count, uint multiplier, GpioPinValue startingPolarity, uint repeatCount=1) {
             if (data == null)
                 throw new ArgumentNullException(nameof(data));
 
