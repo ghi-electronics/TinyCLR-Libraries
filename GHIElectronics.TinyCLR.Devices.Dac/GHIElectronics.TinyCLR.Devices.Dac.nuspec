@@ -21,10 +21,6 @@
   <files>
     <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.Dac.dll" target="lib\net48" />
     <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.Dac.xml" target="lib\net48" />
-    <file src="..\GHIElectronics.TinyCLR.Devices.Dac.Desktop\bin\$Configuration$\GHIElectronics.TinyCLR.Devices.Dac.dll" target="desktop-shim" />
-    <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.Dac.xml" target="desktop-shim" />
-    <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.Dac.dll" target="tinyclr" />
-    <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.Dac.xml" target="tinyclr" />
     <file src="$ProjectDir$GHIElectronics.TinyCLR.Devices.Dac.props" target="build\net48" />
   </files>
 </package>

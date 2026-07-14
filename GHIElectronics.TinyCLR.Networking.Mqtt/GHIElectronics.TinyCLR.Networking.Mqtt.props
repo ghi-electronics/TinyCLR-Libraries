@@ -8,12 +8,8 @@
   </ItemGroup>
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
-    <_TinyCLRNetworkingMqttShimSource>$(MSBuildThisFileDirectory)..\..\desktop-shim\GHIElectronics.TinyCLR.Networking.Mqtt.dll</_TinyCLRNetworkingMqttShimSource>
-    <_TinyCLRNetworkingMqttImplSource>$(MSBuildThisFileDirectory)..\..\tinyclr\GHIElectronics.TinyCLR.Networking.Mqtt.dll</_TinyCLRNetworkingMqttImplSource>
+    <_TinyCLRNetworkingMqttImplSource>$(MSBuildThisFileDirectory)..\..\lib\net48\GHIElectronics.TinyCLR.Networking.Mqtt.dll</_TinyCLRNetworkingMqttImplSource>
   </PropertyGroup>
-  <Target Name="CopyTinyCLRNetworkingMqttDesktopShim" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRNetworkingMqttShimSource)')">
-    <Copy SourceFiles="$(_TinyCLRNetworkingMqttShimSource)" DestinationFiles="$(OutDir)GHIElectronics.TinyCLR.Networking.Mqtt.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
-  </Target>
   <Target Name="CopyTinyCLRNetworkingMqttImplForDebugger" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRNetworkingMqttImplSource)')">
     <Copy SourceFiles="$(_TinyCLRNetworkingMqttImplSource)" DestinationFiles="$(OutDir)pe\GHIElectronics.TinyCLR.Networking.Mqtt.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
   </Target>

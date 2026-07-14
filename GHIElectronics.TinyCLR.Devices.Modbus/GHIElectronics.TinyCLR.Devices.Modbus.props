@@ -8,12 +8,8 @@
   </ItemGroup>
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
-    <_TinyCLRDevicesModbusShimSource>$(MSBuildThisFileDirectory)..\..\desktop-shim\GHIElectronics.TinyCLR.Devices.Modbus.dll</_TinyCLRDevicesModbusShimSource>
-    <_TinyCLRDevicesModbusImplSource>$(MSBuildThisFileDirectory)..\..\tinyclr\GHIElectronics.TinyCLR.Devices.Modbus.dll</_TinyCLRDevicesModbusImplSource>
+    <_TinyCLRDevicesModbusImplSource>$(MSBuildThisFileDirectory)..\..\lib\net48\GHIElectronics.TinyCLR.Devices.Modbus.dll</_TinyCLRDevicesModbusImplSource>
   </PropertyGroup>
-  <Target Name="CopyTinyCLRDevicesModbusDesktopShim" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRDevicesModbusShimSource)')">
-    <Copy SourceFiles="$(_TinyCLRDevicesModbusShimSource)" DestinationFiles="$(OutDir)GHIElectronics.TinyCLR.Devices.Modbus.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
-  </Target>
   <Target Name="CopyTinyCLRDevicesModbusImplForDebugger" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRDevicesModbusImplSource)')">
     <Copy SourceFiles="$(_TinyCLRDevicesModbusImplSource)" DestinationFiles="$(OutDir)pe\GHIElectronics.TinyCLR.Devices.Modbus.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
   </Target>

@@ -8,15 +8,8 @@
   </ItemGroup>
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
-    <_TinyCLROnewireShimSource>$(MSBuildThisFileDirectory)..\..\desktop-shim\GHIElectronics.TinyCLR.Devices.Onewire.dll</_TinyCLROnewireShimSource>
-    <_TinyCLROnewireImplSource>$(MSBuildThisFileDirectory)..\..\tinyclr\GHIElectronics.TinyCLR.Devices.Onewire.dll</_TinyCLROnewireImplSource>
+    <_TinyCLROnewireImplSource>$(MSBuildThisFileDirectory)..\..\lib\net48\GHIElectronics.TinyCLR.Devices.Onewire.dll</_TinyCLROnewireImplSource>
   </PropertyGroup>
-  <Target Name="CopyTinyCLROnewireDesktopShim" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLROnewireShimSource)')">
-    <Copy SourceFiles="$(_TinyCLROnewireShimSource)"
-          DestinationFiles="$(OutDir)GHIElectronics.TinyCLR.Devices.Onewire.dll"
-          OverwriteReadOnlyFiles="true"
-          SkipUnchangedFiles="false" />
-  </Target>
   <Target Name="CopyTinyCLROnewireImplForDebugger" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLROnewireImplSource)')">
     <Copy SourceFiles="$(_TinyCLROnewireImplSource)"
           DestinationFiles="$(OutDir)pe\GHIElectronics.TinyCLR.Devices.Onewire.dll"

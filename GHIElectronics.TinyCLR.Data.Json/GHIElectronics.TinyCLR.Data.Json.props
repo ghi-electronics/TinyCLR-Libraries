@@ -8,12 +8,8 @@
   </ItemGroup>
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
-    <_TinyCLRDataJsonShimSource>$(MSBuildThisFileDirectory)..\..\desktop-shim\GHIElectronics.TinyCLR.Data.Json.dll</_TinyCLRDataJsonShimSource>
-    <_TinyCLRDataJsonImplSource>$(MSBuildThisFileDirectory)..\..\tinyclr\GHIElectronics.TinyCLR.Data.Json.dll</_TinyCLRDataJsonImplSource>
+    <_TinyCLRDataJsonImplSource>$(MSBuildThisFileDirectory)..\..\lib\net48\GHIElectronics.TinyCLR.Data.Json.dll</_TinyCLRDataJsonImplSource>
   </PropertyGroup>
-  <Target Name="CopyTinyCLRDataJsonDesktopShim" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRDataJsonShimSource)')">
-    <Copy SourceFiles="$(_TinyCLRDataJsonShimSource)" DestinationFiles="$(OutDir)GHIElectronics.TinyCLR.Data.Json.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
-  </Target>
   <Target Name="CopyTinyCLRDataJsonImplForDebugger" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRDataJsonImplSource)')">
     <Copy SourceFiles="$(_TinyCLRDataJsonImplSource)" DestinationFiles="$(OutDir)pe\GHIElectronics.TinyCLR.Data.Json.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
   </Target>

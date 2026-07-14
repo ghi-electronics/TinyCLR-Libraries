@@ -49,12 +49,6 @@
       <Project>{B602474A-AEB0-491C-832B-7EAF0B4511C0}</Project>
       <Name>GHIElectronics.TinyCLR.Native</Name>
     </ProjectReference>
-    <ProjectReference Include="..\GHIElectronics.TinyCLR.Devices.Pwm.Desktop\GHIElectronics.TinyCLR.Devices.Pwm.Desktop.csproj">
-      <Project>{8D9E6F4A-3B2C-4D1E-9F8A-7B6C5D4E3F2A}</Project>
-      <Name>GHIElectronics.TinyCLR.Devices.Pwm.Desktop</Name>
-      <ReferenceOutputAssembly>False</ReferenceOutputAssembly>
-      <Private>False</Private>
-    </ProjectReference>
   </ItemGroup>
   <!-- Build the System.Device.Pwm .NET-style compatibility assembly and its Desktop
        shim, then stage System.Device.Pwm.dll/.xml in $(TargetDir) so the nuspec can
@@ -64,7 +58,6 @@
     <MSBuild Projects="..\GHIElectronics.TinyCLR.System.Device.Pwm\GHIElectronics.TinyCLR.System.Device.Pwm.csproj" Targets="Build" Properties="Configuration=$(Configuration);Platform=$(Platform);BuildProjectReferences=false" />
     <Copy SourceFiles="..\GHIElectronics.TinyCLR.System.Device.Pwm\bin\$(Configuration)\System.Device.Pwm.dll" DestinationFolder="$(TargetDir)" SkipUnchangedFiles="true" />
     <Copy SourceFiles="..\GHIElectronics.TinyCLR.System.Device.Pwm\bin\$(Configuration)\System.Device.Pwm.xml" DestinationFolder="$(TargetDir)" SkipUnchangedFiles="true" Condition="Exists('..\GHIElectronics.TinyCLR.System.Device.Pwm\bin\$(Configuration)\System.Device.Pwm.xml')" />
-    <MSBuild Projects="..\GHIElectronics.TinyCLR.System.Device.Pwm.Desktop\GHIElectronics.TinyCLR.System.Device.Pwm.Desktop.csproj" Targets="Build" Properties="Configuration=$(Configuration);Platform=$(Platform);BuildProjectReferences=false" />
   </Target>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

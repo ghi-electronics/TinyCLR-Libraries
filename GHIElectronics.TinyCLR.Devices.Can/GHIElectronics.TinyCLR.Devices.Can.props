@@ -8,12 +8,8 @@
   </ItemGroup>
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
-    <_TinyCLRCanShimSource>$(MSBuildThisFileDirectory)..\..\desktop-shim\GHIElectronics.TinyCLR.Devices.Can.dll</_TinyCLRCanShimSource>
-    <_TinyCLRCanImplSource>$(MSBuildThisFileDirectory)..\..\tinyclr\GHIElectronics.TinyCLR.Devices.Can.dll</_TinyCLRCanImplSource>
+    <_TinyCLRCanImplSource>$(MSBuildThisFileDirectory)..\..\lib\net48\GHIElectronics.TinyCLR.Devices.Can.dll</_TinyCLRCanImplSource>
   </PropertyGroup>
-  <Target Name="CopyTinyCLRCanDesktopShim" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRCanShimSource)')">
-    <Copy SourceFiles="$(_TinyCLRCanShimSource)" DestinationFiles="$(OutDir)GHIElectronics.TinyCLR.Devices.Can.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
-  </Target>
   <Target Name="CopyTinyCLRCanImplForDebugger" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRCanImplSource)')">
     <Copy SourceFiles="$(_TinyCLRCanImplSource)" DestinationFiles="$(OutDir)pe\GHIElectronics.TinyCLR.Devices.Can.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
   </Target>

@@ -25,14 +25,10 @@
     <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.Adc.xml" target="lib\net48" />
     <!-- desktop-shim/ : Desktop SHIM DLL (no-op safe defaults). Copied to
          bin\$Configuration$\ at AfterBuild via the .props file's Target. -->
-    <file src="..\GHIElectronics.TinyCLR.Devices.Adc.Desktop\bin\$Configuration$\GHIElectronics.TinyCLR.Devices.Adc.dll" target="desktop-shim" />
 
-    <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.Adc.xml" target="desktop-shim" />
     <!-- tinyclr/ : TinyCLR-IMPL DLL again (deploy artifact for the IDE,
          and source for the debugger-metadata copy in .props). -->
-    <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.Adc.dll" target="tinyclr" />
 
-    <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.Adc.xml" target="tinyclr" />
     <!-- Consumer-side props. -->
     <file src="$ProjectDir$GHIElectronics.TinyCLR.Devices.Adc.props" target="build\net48" />
   </files>

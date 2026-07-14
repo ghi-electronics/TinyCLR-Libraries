@@ -8,12 +8,8 @@
   </ItemGroup>
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
-    <_TinyCLRUsbClientShimSource>$(MSBuildThisFileDirectory)..\..\desktop-shim\GHIElectronics.TinyCLR.Devices.UsbClient.dll</_TinyCLRUsbClientShimSource>
-    <_TinyCLRUsbClientImplSource>$(MSBuildThisFileDirectory)..\..\tinyclr\GHIElectronics.TinyCLR.Devices.UsbClient.dll</_TinyCLRUsbClientImplSource>
+    <_TinyCLRUsbClientImplSource>$(MSBuildThisFileDirectory)..\..\lib\net48\GHIElectronics.TinyCLR.Devices.UsbClient.dll</_TinyCLRUsbClientImplSource>
   </PropertyGroup>
-  <Target Name="CopyTinyCLRUsbClientDesktopShim" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRUsbClientShimSource)')">
-    <Copy SourceFiles="$(_TinyCLRUsbClientShimSource)" DestinationFiles="$(OutDir)GHIElectronics.TinyCLR.Devices.UsbClient.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
-  </Target>
   <Target Name="CopyTinyCLRUsbClientImplForDebugger" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRUsbClientImplSource)')">
     <Copy SourceFiles="$(_TinyCLRUsbClientImplSource)" DestinationFiles="$(OutDir)pe\GHIElectronics.TinyCLR.Devices.UsbClient.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
   </Target>

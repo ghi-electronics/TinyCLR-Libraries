@@ -8,12 +8,8 @@
   </ItemGroup>
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
-    <_TinyCLRCollectionsShimSource>$(MSBuildThisFileDirectory)..\..\desktop-shim\GHIElectronics.TinyCLR.Collections.dll</_TinyCLRCollectionsShimSource>
-    <_TinyCLRCollectionsImplSource>$(MSBuildThisFileDirectory)..\..\tinyclr\GHIElectronics.TinyCLR.Collections.dll</_TinyCLRCollectionsImplSource>
+    <_TinyCLRCollectionsImplSource>$(MSBuildThisFileDirectory)..\..\lib\net48\GHIElectronics.TinyCLR.Collections.dll</_TinyCLRCollectionsImplSource>
   </PropertyGroup>
-  <Target Name="CopyTinyCLRCollectionsDesktopShim" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRCollectionsShimSource)')">
-    <Copy SourceFiles="$(_TinyCLRCollectionsShimSource)" DestinationFiles="$(OutDir)GHIElectronics.TinyCLR.Collections.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
-  </Target>
   <Target Name="CopyTinyCLRCollectionsImplForDebugger" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRCollectionsImplSource)')">
     <Copy SourceFiles="$(_TinyCLRCollectionsImplSource)" DestinationFiles="$(OutDir)pe\GHIElectronics.TinyCLR.Collections.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
   </Target>

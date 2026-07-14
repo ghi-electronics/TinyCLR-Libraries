@@ -8,12 +8,8 @@
   </ItemGroup>
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
-    <_TinyCLRSystemDeviceGpioShimSource>$(MSBuildThisFileDirectory)..\..\desktop-shim\GHIElectronics.TinyCLR.System.Device.Gpio.dll</_TinyCLRSystemDeviceGpioShimSource>
-    <_TinyCLRSystemDeviceGpioImplSource>$(MSBuildThisFileDirectory)..\..\tinyclr\GHIElectronics.TinyCLR.System.Device.Gpio.dll</_TinyCLRSystemDeviceGpioImplSource>
+    <_TinyCLRSystemDeviceGpioImplSource>$(MSBuildThisFileDirectory)..\..\lib\net48\GHIElectronics.TinyCLR.System.Device.Gpio.dll</_TinyCLRSystemDeviceGpioImplSource>
   </PropertyGroup>
-  <Target Name="CopyTinyCLRSystemDeviceGpioDesktopShim" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRSystemDeviceGpioShimSource)')">
-    <Copy SourceFiles="$(_TinyCLRSystemDeviceGpioShimSource)" DestinationFiles="$(OutDir)GHIElectronics.TinyCLR.System.Device.Gpio.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
-  </Target>
   <Target Name="CopyTinyCLRSystemDeviceGpioImplForDebugger" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRSystemDeviceGpioImplSource)')">
     <Copy SourceFiles="$(_TinyCLRSystemDeviceGpioImplSource)" DestinationFiles="$(OutDir)pe\GHIElectronics.TinyCLR.System.Device.Gpio.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
   </Target>

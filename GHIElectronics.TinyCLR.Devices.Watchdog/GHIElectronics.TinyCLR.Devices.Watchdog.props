@@ -8,15 +8,8 @@
   </ItemGroup>
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
-    <_TinyCLRWatchdogShimSource>$(MSBuildThisFileDirectory)..\..\desktop-shim\GHIElectronics.TinyCLR.Devices.Watchdog.dll</_TinyCLRWatchdogShimSource>
-    <_TinyCLRWatchdogImplSource>$(MSBuildThisFileDirectory)..\..\tinyclr\GHIElectronics.TinyCLR.Devices.Watchdog.dll</_TinyCLRWatchdogImplSource>
+    <_TinyCLRWatchdogImplSource>$(MSBuildThisFileDirectory)..\..\lib\net48\GHIElectronics.TinyCLR.Devices.Watchdog.dll</_TinyCLRWatchdogImplSource>
   </PropertyGroup>
-  <Target Name="CopyTinyCLRWatchdogDesktopShim" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRWatchdogShimSource)')">
-    <Copy SourceFiles="$(_TinyCLRWatchdogShimSource)"
-          DestinationFiles="$(OutDir)GHIElectronics.TinyCLR.Devices.Watchdog.dll"
-          OverwriteReadOnlyFiles="true"
-          SkipUnchangedFiles="false" />
-  </Target>
   <Target Name="CopyTinyCLRWatchdogImplForDebugger" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRWatchdogImplSource)')">
     <Copy SourceFiles="$(_TinyCLRWatchdogImplSource)"
           DestinationFiles="$(OutDir)pe\GHIElectronics.TinyCLR.Devices.Watchdog.dll"

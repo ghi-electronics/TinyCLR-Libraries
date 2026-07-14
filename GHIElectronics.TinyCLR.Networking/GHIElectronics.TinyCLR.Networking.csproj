@@ -71,17 +71,7 @@
     <None Include="GHIElectronics.TinyCLR.Networking.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
-  <!-- Build-order dependency: PackNuGet target reads the Desktop SHIM DLL from
-       ..\GHIElectronics.TinyCLR.Networking.Desktop\bin\Debug\. ReferenceOutputAssembly=False
-       and Private=False ensure msbuild builds the sister project first WITHOUT making
-       the shim a compile/runtime reference of this TinyCLR-impl assembly. -->
   <ItemGroup>
-    <ProjectReference Include="..\GHIElectronics.TinyCLR.Networking.Desktop\GHIElectronics.TinyCLR.Networking.Desktop.csproj">
-      <Project>{2C4D8A1F-9E5B-4D7F-AE6C-1B3D5E7F9B82}</Project>
-      <Name>GHIElectronics.TinyCLR.Networking.Desktop</Name>
-      <ReferenceOutputAssembly>False</ReferenceOutputAssembly>
-      <Private>False</Private>
-    </ProjectReference>
     <!-- Compile-only reference to Native for Dns.GetHostName() — uses
          DeviceInformation.DeviceName as the device's "host name". -->
     <ProjectReference Include="..\GHIElectronics.TinyCLR.Native\GHIElectronics.TinyCLR.Native.csproj">

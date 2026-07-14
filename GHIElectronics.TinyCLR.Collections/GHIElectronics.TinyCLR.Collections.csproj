@@ -47,12 +47,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\GHIElectronics.TinyCLR.Collections.Desktop\GHIElectronics.TinyCLR.Collections.Desktop.csproj">
-      <Project>{2C5C09D0-DD8A-4958-BAAE-E4C6EB98C7A4}</Project>
-      <Name>GHIElectronics.TinyCLR.Collections.Desktop</Name>
-      <ReferenceOutputAssembly>False</ReferenceOutputAssembly>
-      <Private>False</Private>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

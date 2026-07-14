@@ -12,12 +12,5 @@
   </ItemGroup>
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
-    <_TinyCLRRlpShimSource>$(MSBuildThisFileDirectory)..\..\desktop-shim\GHIElectronics.TinyCLR.RuntimeLoadableProcedures.dll</_TinyCLRRlpShimSource>
   </PropertyGroup>
-  <Target Name="CopyTinyCLRRuntimeLoadableProceduresDesktopShim" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRRlpShimSource)')">
-    <Copy SourceFiles="$(_TinyCLRRlpShimSource)"
-          DestinationFiles="$(OutDir)GHIElectronics.TinyCLR.RuntimeLoadableProcedures.dll"
-          OverwriteReadOnlyFiles="true"
-          SkipUnchangedFiles="false" />
-  </Target>
 </Project>

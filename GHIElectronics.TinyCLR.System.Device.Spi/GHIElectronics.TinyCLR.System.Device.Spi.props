@@ -8,12 +8,8 @@
   </ItemGroup>
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
-    <_TinyCLRSystemDeviceSpiShimSource>$(MSBuildThisFileDirectory)..\..\desktop-shim\GHIElectronics.TinyCLR.System.Device.Spi.dll</_TinyCLRSystemDeviceSpiShimSource>
-    <_TinyCLRSystemDeviceSpiImplSource>$(MSBuildThisFileDirectory)..\..\tinyclr\GHIElectronics.TinyCLR.System.Device.Spi.dll</_TinyCLRSystemDeviceSpiImplSource>
+    <_TinyCLRSystemDeviceSpiImplSource>$(MSBuildThisFileDirectory)..\..\lib\net48\GHIElectronics.TinyCLR.System.Device.Spi.dll</_TinyCLRSystemDeviceSpiImplSource>
   </PropertyGroup>
-  <Target Name="CopyTinyCLRSystemDeviceSpiDesktopShim" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRSystemDeviceSpiShimSource)')">
-    <Copy SourceFiles="$(_TinyCLRSystemDeviceSpiShimSource)" DestinationFiles="$(OutDir)GHIElectronics.TinyCLR.System.Device.Spi.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
-  </Target>
   <Target Name="CopyTinyCLRSystemDeviceSpiImplForDebugger" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRSystemDeviceSpiImplSource)')">
     <Copy SourceFiles="$(_TinyCLRSystemDeviceSpiImplSource)" DestinationFiles="$(OutDir)pe\GHIElectronics.TinyCLR.System.Device.Spi.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
   </Target>

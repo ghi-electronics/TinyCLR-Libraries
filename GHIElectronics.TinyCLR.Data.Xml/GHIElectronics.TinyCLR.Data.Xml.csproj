@@ -69,12 +69,6 @@
     <None Include="GHIElectronics.TinyCLR.Data.Xml.props" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\GHIElectronics.TinyCLR.Data.Xml.Desktop\GHIElectronics.TinyCLR.Data.Xml.Desktop.csproj">
-      <Project>{F8D9E1F2-A3B4-4C5D-6E7F-8A9B1C2D3E4F}</Project>
-      <Name>GHIElectronics.TinyCLR.Data.Xml.Desktop</Name>
-      <ReferenceOutputAssembly>False</ReferenceOutputAssembly>
-      <Private>False</Private>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

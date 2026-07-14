@@ -8,19 +8,11 @@
   </ItemGroup>
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
-    <_TinyCLRSpiShimSource>$(MSBuildThisFileDirectory)..\..\desktop-shim\GHIElectronics.TinyCLR.Devices.Spi.dll</_TinyCLRSpiShimSource>
-    <_TinyCLRSpiImplSource>$(MSBuildThisFileDirectory)..\..\tinyclr\GHIElectronics.TinyCLR.Devices.Spi.dll</_TinyCLRSpiImplSource>
-    <_SystemDeviceSpiShimSource>$(MSBuildThisFileDirectory)..\..\desktop-shim\System.Device.Spi.dll</_SystemDeviceSpiShimSource>
-    <_SystemDeviceSpiImplSource>$(MSBuildThisFileDirectory)..\..\tinyclr\System.Device.Spi.dll</_SystemDeviceSpiImplSource>
+    <_TinyCLRSpiImplSource>$(MSBuildThisFileDirectory)..\..\lib\net48\GHIElectronics.TinyCLR.Devices.Spi.dll</_TinyCLRSpiImplSource>
+    <_SystemDeviceSpiImplSource>$(MSBuildThisFileDirectory)..\..\lib\net48\System.Device.Spi.dll</_SystemDeviceSpiImplSource>
   </PropertyGroup>
-  <Target Name="CopyTinyCLRSpiDesktopShim" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRSpiShimSource)')">
-    <Copy SourceFiles="$(_TinyCLRSpiShimSource)" DestinationFiles="$(OutDir)GHIElectronics.TinyCLR.Devices.Spi.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
-  </Target>
   <Target Name="CopyTinyCLRSpiImplForDebugger" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRSpiImplSource)')">
     <Copy SourceFiles="$(_TinyCLRSpiImplSource)" DestinationFiles="$(OutDir)pe\GHIElectronics.TinyCLR.Devices.Spi.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
-  </Target>
-  <Target Name="CopySystemDeviceSpiDesktopShim" AfterTargets="AfterBuild" Condition="Exists('$(_SystemDeviceSpiShimSource)')">
-    <Copy SourceFiles="$(_SystemDeviceSpiShimSource)" DestinationFiles="$(OutDir)System.Device.Spi.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
   </Target>
   <Target Name="CopySystemDeviceSpiImplForDebugger" AfterTargets="AfterBuild" Condition="Exists('$(_SystemDeviceSpiImplSource)')">
     <Copy SourceFiles="$(_SystemDeviceSpiImplSource)" DestinationFiles="$(OutDir)pe\System.Device.Spi.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />

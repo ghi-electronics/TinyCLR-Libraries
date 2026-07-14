@@ -47,15 +47,8 @@
   </ItemGroup>
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
-    <_TinyCLRNetworkingShimSource>$(MSBuildThisFileDirectory)..\..\desktop-shim\GHIElectronics.TinyCLR.Networking.dll</_TinyCLRNetworkingShimSource>
-    <_TinyCLRNetworkingImplSource>$(MSBuildThisFileDirectory)..\..\tinyclr\GHIElectronics.TinyCLR.Networking.dll</_TinyCLRNetworkingImplSource>
+    <_TinyCLRNetworkingImplSource>$(MSBuildThisFileDirectory)..\..\lib\net48\GHIElectronics.TinyCLR.Networking.dll</_TinyCLRNetworkingImplSource>
   </PropertyGroup>
-  <Target Name="CopyTinyCLRNetworkingDesktopShim" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRNetworkingShimSource)')">
-    <Copy SourceFiles="$(_TinyCLRNetworkingShimSource)"
-          DestinationFiles="$(OutDir)GHIElectronics.TinyCLR.Networking.dll"
-          OverwriteReadOnlyFiles="true"
-          SkipUnchangedFiles="false" />
-  </Target>
   <Target Name="CopyTinyCLRNetworkingImplForDebugger" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRNetworkingImplSource)')">
     <Copy SourceFiles="$(_TinyCLRNetworkingImplSource)"
           DestinationFiles="$(OutDir)pe\GHIElectronics.TinyCLR.Networking.dll"

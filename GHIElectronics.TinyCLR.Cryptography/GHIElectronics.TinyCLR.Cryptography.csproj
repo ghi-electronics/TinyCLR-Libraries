@@ -52,12 +52,6 @@
     <None Include="GHIElectronics.TinyCLR.Cryptography.props" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\GHIElectronics.TinyCLR.Cryptography.Desktop\GHIElectronics.TinyCLR.Cryptography.Desktop.csproj">
-      <Project>{F8A9B1C2-D3E4-4F5A-6B7C-8D9E1F2A3B4C}</Project>
-      <Name>GHIElectronics.TinyCLR.Cryptography.Desktop</Name>
-      <ReferenceOutputAssembly>False</ReferenceOutputAssembly>
-      <Private>False</Private>
-    </ProjectReference>
   </ItemGroup>
   <Target Name="BuildCryptoCompatAssembly" AfterTargets="Build">
     <MSBuild Projects="..\GHIElectronics.TinyCLR.System.Security.Cryptography\GHIElectronics.TinyCLR.System.Security.Cryptography.csproj" Targets="Build" Properties="Configuration=$(Configuration);Platform=$(Platform);BuildProjectReferences=false" />
@@ -66,7 +60,6 @@
     <!-- Also build the System.Security.Cryptography.Desktop sibling so its
          bin\$(Configuration)\ folder exists for PackNuGet (the nuspec pulls
          the Desktop shim from there). Same pattern as I2c/Gpio/Spi. -->
-    <MSBuild Projects="..\GHIElectronics.TinyCLR.System.Security.Cryptography.Desktop\GHIElectronics.TinyCLR.System.Security.Cryptography.Desktop.csproj" Targets="Build" Properties="Configuration=$(Configuration);Platform=$(Platform);BuildProjectReferences=false" />
   </Target>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

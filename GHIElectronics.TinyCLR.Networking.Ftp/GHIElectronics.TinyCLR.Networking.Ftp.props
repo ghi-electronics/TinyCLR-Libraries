@@ -8,12 +8,8 @@
   </ItemGroup>
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
-    <_TinyCLRNetworkingFtpShimSource>$(MSBuildThisFileDirectory)..\..\desktop-shim\GHIElectronics.TinyCLR.Networking.Ftp.dll</_TinyCLRNetworkingFtpShimSource>
-    <_TinyCLRNetworkingFtpImplSource>$(MSBuildThisFileDirectory)..\..\tinyclr\GHIElectronics.TinyCLR.Networking.Ftp.dll</_TinyCLRNetworkingFtpImplSource>
+    <_TinyCLRNetworkingFtpImplSource>$(MSBuildThisFileDirectory)..\..\lib\net48\GHIElectronics.TinyCLR.Networking.Ftp.dll</_TinyCLRNetworkingFtpImplSource>
   </PropertyGroup>
-  <Target Name="CopyTinyCLRNetworkingFtpDesktopShim" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRNetworkingFtpShimSource)')">
-    <Copy SourceFiles="$(_TinyCLRNetworkingFtpShimSource)" DestinationFiles="$(OutDir)GHIElectronics.TinyCLR.Networking.Ftp.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
-  </Target>
   <Target Name="CopyTinyCLRNetworkingFtpImplForDebugger" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRNetworkingFtpImplSource)')">
     <Copy SourceFiles="$(_TinyCLRNetworkingFtpImplSource)" DestinationFiles="$(OutDir)pe\GHIElectronics.TinyCLR.Networking.Ftp.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
   </Target>

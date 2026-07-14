@@ -8,12 +8,8 @@
   </ItemGroup>
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
-    <_TinyCLRDevicesCameraShimSource>$(MSBuildThisFileDirectory)..\..\desktop-shim\GHIElectronics.TinyCLR.Devices.Camera.dll</_TinyCLRDevicesCameraShimSource>
-    <_TinyCLRDevicesCameraImplSource>$(MSBuildThisFileDirectory)..\..\tinyclr\GHIElectronics.TinyCLR.Devices.Camera.dll</_TinyCLRDevicesCameraImplSource>
+    <_TinyCLRDevicesCameraImplSource>$(MSBuildThisFileDirectory)..\..\lib\net48\GHIElectronics.TinyCLR.Devices.Camera.dll</_TinyCLRDevicesCameraImplSource>
   </PropertyGroup>
-  <Target Name="CopyTinyCLRDevicesCameraDesktopShim" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRDevicesCameraShimSource)')">
-    <Copy SourceFiles="$(_TinyCLRDevicesCameraShimSource)" DestinationFiles="$(OutDir)GHIElectronics.TinyCLR.Devices.Camera.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
-  </Target>
   <Target Name="CopyTinyCLRDevicesCameraImplForDebugger" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRDevicesCameraImplSource)')">
     <Copy SourceFiles="$(_TinyCLRDevicesCameraImplSource)" DestinationFiles="$(OutDir)pe\GHIElectronics.TinyCLR.Devices.Camera.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
   </Target>

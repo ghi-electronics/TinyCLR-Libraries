@@ -8,15 +8,8 @@
   </ItemGroup>
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
-    <_TinyCLRDacShimSource>$(MSBuildThisFileDirectory)..\..\desktop-shim\GHIElectronics.TinyCLR.Devices.Dac.dll</_TinyCLRDacShimSource>
-    <_TinyCLRDacImplSource>$(MSBuildThisFileDirectory)..\..\tinyclr\GHIElectronics.TinyCLR.Devices.Dac.dll</_TinyCLRDacImplSource>
+    <_TinyCLRDacImplSource>$(MSBuildThisFileDirectory)..\..\lib\net48\GHIElectronics.TinyCLR.Devices.Dac.dll</_TinyCLRDacImplSource>
   </PropertyGroup>
-  <Target Name="CopyTinyCLRDacDesktopShim" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRDacShimSource)')">
-    <Copy SourceFiles="$(_TinyCLRDacShimSource)"
-          DestinationFiles="$(OutDir)GHIElectronics.TinyCLR.Devices.Dac.dll"
-          OverwriteReadOnlyFiles="true"
-          SkipUnchangedFiles="false" />
-  </Target>
   <Target Name="CopyTinyCLRDacImplForDebugger" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRDacImplSource)')">
     <Copy SourceFiles="$(_TinyCLRDacImplSource)"
           DestinationFiles="$(OutDir)pe\GHIElectronics.TinyCLR.Devices.Dac.dll"

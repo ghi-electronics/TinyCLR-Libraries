@@ -26,14 +26,10 @@
     <file src="$TargetDir$GHIElectronics.TinyCLR.Native.xml" target="lib\net48" />
     <!-- desktop-shim/ : Desktop SHIM DLL (no-op safe defaults). Copied to
          bin\$Configuration$\ at AfterBuild via a Target in the .props file. -->
-    <file src="..\GHIElectronics.TinyCLR.Native.Desktop\bin\$Configuration$\GHIElectronics.TinyCLR.Native.dll" target="desktop-shim" />
 
-    <file src="$TargetDir$GHIElectronics.TinyCLR.Native.xml" target="desktop-shim" />
     <!-- tinyclr/ : TinyCLR-IMPL DLL again. Read by the deploy step
          (DebugServer / VS extension), MMP'd into a .pe and pushed to device. -->
-    <file src="$TargetDir$GHIElectronics.TinyCLR.Native.dll" target="tinyclr" />
 
-    <file src="$TargetDir$GHIElectronics.TinyCLR.Native.xml" target="tinyclr" />
     <!-- Consumer-side props: imported via NuGet package convention. -->
     <file src="$ProjectDir$GHIElectronics.TinyCLR.Native.props" target="build\net48" />
   </files>

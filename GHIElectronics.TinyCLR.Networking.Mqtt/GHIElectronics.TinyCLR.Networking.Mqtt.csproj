@@ -46,12 +46,6 @@
     <None Include="GHIElectronics.TinyCLR.Networking.Mqtt.props" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\GHIElectronics.TinyCLR.Networking.Mqtt.Desktop\GHIElectronics.TinyCLR.Networking.Mqtt.Desktop.csproj">
-      <Project>{F6E7F8A9-B1C2-4D3E-4F5A-6B7C8D9E1F2A}</Project>
-      <Name>GHIElectronics.TinyCLR.Networking.Mqtt.Desktop</Name>
-      <ReferenceOutputAssembly>False</ReferenceOutputAssembly>
-      <Private>False</Private>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GHIElectronics.TinyCLR.Networking\GHIElectronics.TinyCLR.Networking.csproj">

@@ -8,12 +8,5 @@
   </ItemGroup>
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
-    <_TinyCLRPinsShimSource>$(MSBuildThisFileDirectory)..\..\desktop-shim\GHIElectronics.TinyCLR.Pins.dll</_TinyCLRPinsShimSource>
   </PropertyGroup>
-  <Target Name="CopyTinyCLRPinsDesktopShim" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRPinsShimSource)')">
-    <Copy SourceFiles="$(_TinyCLRPinsShimSource)"
-          DestinationFiles="$(OutDir)GHIElectronics.TinyCLR.Pins.dll"
-          OverwriteReadOnlyFiles="true"
-          SkipUnchangedFiles="false" />
-  </Target>
 </Project>

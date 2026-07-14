@@ -72,12 +72,6 @@
     <None Include="GHIElectronics.TinyCLR.Networking.Http.props" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\GHIElectronics.TinyCLR.Networking.Http.Desktop\GHIElectronics.TinyCLR.Networking.Http.Desktop.csproj">
-      <Project>{F5D6E7F8-A9B1-4C2D-3E4F-5A6B7C8D9E1F}</Project>
-      <Name>GHIElectronics.TinyCLR.Networking.Http.Desktop</Name>
-      <ReferenceOutputAssembly>False</ReferenceOutputAssembly>
-      <Private>False</Private>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GHIElectronics.TinyCLR.Networking\GHIElectronics.TinyCLR.Networking.csproj">

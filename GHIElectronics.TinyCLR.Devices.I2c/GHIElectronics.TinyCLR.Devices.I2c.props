@@ -8,19 +8,11 @@
   </ItemGroup>
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
-    <_TinyCLRI2cShimSource>$(MSBuildThisFileDirectory)..\..\desktop-shim\GHIElectronics.TinyCLR.Devices.I2c.dll</_TinyCLRI2cShimSource>
-    <_TinyCLRI2cImplSource>$(MSBuildThisFileDirectory)..\..\tinyclr\GHIElectronics.TinyCLR.Devices.I2c.dll</_TinyCLRI2cImplSource>
-    <_SystemDeviceI2cShimSource>$(MSBuildThisFileDirectory)..\..\desktop-shim\System.Device.I2c.dll</_SystemDeviceI2cShimSource>
-    <_SystemDeviceI2cImplSource>$(MSBuildThisFileDirectory)..\..\tinyclr\System.Device.I2c.dll</_SystemDeviceI2cImplSource>
+    <_TinyCLRI2cImplSource>$(MSBuildThisFileDirectory)..\..\lib\net48\GHIElectronics.TinyCLR.Devices.I2c.dll</_TinyCLRI2cImplSource>
+    <_SystemDeviceI2cImplSource>$(MSBuildThisFileDirectory)..\..\lib\net48\System.Device.I2c.dll</_SystemDeviceI2cImplSource>
   </PropertyGroup>
-  <Target Name="CopyTinyCLRI2cDesktopShim" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRI2cShimSource)')">
-    <Copy SourceFiles="$(_TinyCLRI2cShimSource)" DestinationFiles="$(OutDir)GHIElectronics.TinyCLR.Devices.I2c.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
-  </Target>
   <Target Name="CopyTinyCLRI2cImplForDebugger" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRI2cImplSource)')">
     <Copy SourceFiles="$(_TinyCLRI2cImplSource)" DestinationFiles="$(OutDir)pe\GHIElectronics.TinyCLR.Devices.I2c.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
-  </Target>
-  <Target Name="CopySystemDeviceI2cDesktopShim" AfterTargets="AfterBuild" Condition="Exists('$(_SystemDeviceI2cShimSource)')">
-    <Copy SourceFiles="$(_SystemDeviceI2cShimSource)" DestinationFiles="$(OutDir)System.Device.I2c.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
   </Target>
   <Target Name="CopySystemDeviceI2cImplForDebugger" AfterTargets="AfterBuild" Condition="Exists('$(_SystemDeviceI2cImplSource)')">
     <Copy SourceFiles="$(_SystemDeviceI2cImplSource)" DestinationFiles="$(OutDir)pe\System.Device.I2c.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />

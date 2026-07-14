@@ -21,10 +21,6 @@
   <files>
     <file src="$TargetDir$GHIElectronics.TinyCLR.Networking.Http.dll" target="lib\net48" />
     <file src="$TargetDir$GHIElectronics.TinyCLR.Networking.Http.xml" target="lib\net48" />
-    <file src="..\GHIElectronics.TinyCLR.Networking.Http.Desktop\bin\$Configuration$\GHIElectronics.TinyCLR.Networking.Http.dll" target="desktop-shim" />
-    <file src="$TargetDir$GHIElectronics.TinyCLR.Networking.Http.xml" target="desktop-shim" />
-    <file src="$TargetDir$GHIElectronics.TinyCLR.Networking.Http.dll" target="tinyclr" />
-    <file src="$TargetDir$GHIElectronics.TinyCLR.Networking.Http.xml" target="tinyclr" />
     <file src="$ProjectDir$GHIElectronics.TinyCLR.Networking.Http.props" target="build\net48" />
   </files>
 </package>

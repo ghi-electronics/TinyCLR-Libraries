@@ -8,12 +8,8 @@
   </ItemGroup>
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
-    <_TinyCLRSystemDeviceI2cShimSource>$(MSBuildThisFileDirectory)..\..\desktop-shim\GHIElectronics.TinyCLR.System.Device.I2c.dll</_TinyCLRSystemDeviceI2cShimSource>
-    <_TinyCLRSystemDeviceI2cImplSource>$(MSBuildThisFileDirectory)..\..\tinyclr\GHIElectronics.TinyCLR.System.Device.I2c.dll</_TinyCLRSystemDeviceI2cImplSource>
+    <_TinyCLRSystemDeviceI2cImplSource>$(MSBuildThisFileDirectory)..\..\lib\net48\GHIElectronics.TinyCLR.System.Device.I2c.dll</_TinyCLRSystemDeviceI2cImplSource>
   </PropertyGroup>
-  <Target Name="CopyTinyCLRSystemDeviceI2cDesktopShim" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRSystemDeviceI2cShimSource)')">
-    <Copy SourceFiles="$(_TinyCLRSystemDeviceI2cShimSource)" DestinationFiles="$(OutDir)GHIElectronics.TinyCLR.System.Device.I2c.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
-  </Target>
   <Target Name="CopyTinyCLRSystemDeviceI2cImplForDebugger" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRSystemDeviceI2cImplSource)')">
     <Copy SourceFiles="$(_TinyCLRSystemDeviceI2cImplSource)" DestinationFiles="$(OutDir)pe\GHIElectronics.TinyCLR.System.Device.I2c.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
   </Target>

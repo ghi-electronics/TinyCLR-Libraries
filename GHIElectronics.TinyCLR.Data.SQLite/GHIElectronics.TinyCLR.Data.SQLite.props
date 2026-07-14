@@ -8,12 +8,8 @@
   </ItemGroup>
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
-    <_TinyCLRDataSQLiteShimSource>$(MSBuildThisFileDirectory)..\..\desktop-shim\GHIElectronics.TinyCLR.Data.SQLite.dll</_TinyCLRDataSQLiteShimSource>
-    <_TinyCLRDataSQLiteImplSource>$(MSBuildThisFileDirectory)..\..\tinyclr\GHIElectronics.TinyCLR.Data.SQLite.dll</_TinyCLRDataSQLiteImplSource>
+    <_TinyCLRDataSQLiteImplSource>$(MSBuildThisFileDirectory)..\..\lib\net48\GHIElectronics.TinyCLR.Data.SQLite.dll</_TinyCLRDataSQLiteImplSource>
   </PropertyGroup>
-  <Target Name="CopyTinyCLRDataSQLiteDesktopShim" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRDataSQLiteShimSource)')">
-    <Copy SourceFiles="$(_TinyCLRDataSQLiteShimSource)" DestinationFiles="$(OutDir)GHIElectronics.TinyCLR.Data.SQLite.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
-  </Target>
   <Target Name="CopyTinyCLRDataSQLiteImplForDebugger" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRDataSQLiteImplSource)')">
     <Copy SourceFiles="$(_TinyCLRDataSQLiteImplSource)" DestinationFiles="$(OutDir)pe\GHIElectronics.TinyCLR.Data.SQLite.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
   </Target>

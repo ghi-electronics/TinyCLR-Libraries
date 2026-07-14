@@ -35,12 +35,5 @@
   </ItemGroup>
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
-    <_TinyCLRNativeShimSource>$(MSBuildThisFileDirectory)..\..\desktop-shim\GHIElectronics.TinyCLR.Native.dll</_TinyCLRNativeShimSource>
   </PropertyGroup>
-  <Target Name="CopyTinyCLRNativeDesktopShim" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRNativeShimSource)')">
-    <Copy SourceFiles="$(_TinyCLRNativeShimSource)"
-          DestinationFiles="$(OutDir)GHIElectronics.TinyCLR.Native.dll"
-          OverwriteReadOnlyFiles="true"
-          SkipUnchangedFiles="false" />
-  </Target>
 </Project>

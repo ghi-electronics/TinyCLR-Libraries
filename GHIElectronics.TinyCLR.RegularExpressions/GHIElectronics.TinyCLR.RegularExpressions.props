@@ -8,12 +8,8 @@
   </ItemGroup>
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
-    <_TinyCLRRegexShimSource>$(MSBuildThisFileDirectory)..\..\desktop-shim\GHIElectronics.TinyCLR.RegularExpressions.dll</_TinyCLRRegexShimSource>
-    <_TinyCLRRegexImplSource>$(MSBuildThisFileDirectory)..\..\tinyclr\GHIElectronics.TinyCLR.RegularExpressions.dll</_TinyCLRRegexImplSource>
+    <_TinyCLRRegexImplSource>$(MSBuildThisFileDirectory)..\..\lib\net48\GHIElectronics.TinyCLR.RegularExpressions.dll</_TinyCLRRegexImplSource>
   </PropertyGroup>
-  <Target Name="CopyTinyCLRRegexDesktopShim" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRRegexShimSource)')">
-    <Copy SourceFiles="$(_TinyCLRRegexShimSource)" DestinationFiles="$(OutDir)GHIElectronics.TinyCLR.RegularExpressions.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
-  </Target>
   <Target Name="CopyTinyCLRRegexImplForDebugger" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRRegexImplSource)')">
     <Copy SourceFiles="$(_TinyCLRRegexImplSource)" DestinationFiles="$(OutDir)pe\GHIElectronics.TinyCLR.RegularExpressions.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
   </Target>

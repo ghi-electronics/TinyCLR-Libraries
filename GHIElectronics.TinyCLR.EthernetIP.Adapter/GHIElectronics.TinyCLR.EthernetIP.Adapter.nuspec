@@ -22,10 +22,6 @@
   <files>
     <file src="$TargetDir$GHIElectronics.TinyCLR.EthernetIP.Adapter.dll" target="lib\net48" />
     <file src="$TargetDir$GHIElectronics.TinyCLR.EthernetIP.Adapter.xml" target="lib\net48" />
-    <file src="..\GHIElectronics.TinyCLR.EthernetIP.Adapter.Desktop\bin\$Configuration$\GHIElectronics.TinyCLR.EthernetIP.Adapter.dll" target="desktop-shim" />
-    <file src="$TargetDir$GHIElectronics.TinyCLR.EthernetIP.Adapter.xml" target="desktop-shim" />
-    <file src="$TargetDir$GHIElectronics.TinyCLR.EthernetIP.Adapter.dll" target="tinyclr" />
-    <file src="$TargetDir$GHIElectronics.TinyCLR.EthernetIP.Adapter.xml" target="tinyclr" />
     <file src="$ProjectDir$GHIElectronics.TinyCLR.EthernetIP.Adapter.props" target="build\net48" />
   </files>
 </package>

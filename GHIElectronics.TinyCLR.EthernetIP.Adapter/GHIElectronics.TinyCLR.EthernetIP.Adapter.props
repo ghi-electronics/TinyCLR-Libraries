@@ -8,12 +8,8 @@
   </ItemGroup>
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
-    <_TinyCLREipAdapterShimSource>$(MSBuildThisFileDirectory)..\..\desktop-shim\GHIElectronics.TinyCLR.EthernetIP.Adapter.dll</_TinyCLREipAdapterShimSource>
-    <_TinyCLREipAdapterImplSource>$(MSBuildThisFileDirectory)..\..\tinyclr\GHIElectronics.TinyCLR.EthernetIP.Adapter.dll</_TinyCLREipAdapterImplSource>
+    <_TinyCLREipAdapterImplSource>$(MSBuildThisFileDirectory)..\..\lib\net48\GHIElectronics.TinyCLR.EthernetIP.Adapter.dll</_TinyCLREipAdapterImplSource>
   </PropertyGroup>
-  <Target Name="CopyTinyCLREipAdapterDesktopShim" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLREipAdapterShimSource)')">
-    <Copy SourceFiles="$(_TinyCLREipAdapterShimSource)" DestinationFiles="$(OutDir)GHIElectronics.TinyCLR.EthernetIP.Adapter.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
-  </Target>
   <Target Name="CopyTinyCLREipAdapterImplForDebugger" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLREipAdapterImplSource)')">
     <Copy SourceFiles="$(_TinyCLREipAdapterImplSource)" DestinationFiles="$(OutDir)pe\GHIElectronics.TinyCLR.EthernetIP.Adapter.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
   </Target>

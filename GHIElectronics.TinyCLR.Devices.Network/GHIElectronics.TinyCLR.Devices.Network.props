@@ -8,12 +8,5 @@
   </ItemGroup>
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
-    <_TinyCLRNetworkShimSource>$(MSBuildThisFileDirectory)..\..\desktop-shim\GHIElectronics.TinyCLR.Devices.Network.dll</_TinyCLRNetworkShimSource>
   </PropertyGroup>
-  <Target Name="CopyTinyCLRNetworkDesktopShim" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRNetworkShimSource)')">
-    <Copy SourceFiles="$(_TinyCLRNetworkShimSource)"
-          DestinationFiles="$(OutDir)GHIElectronics.TinyCLR.Devices.Network.dll"
-          OverwriteReadOnlyFiles="true"
-          SkipUnchangedFiles="false" />
-  </Target>
 </Project>

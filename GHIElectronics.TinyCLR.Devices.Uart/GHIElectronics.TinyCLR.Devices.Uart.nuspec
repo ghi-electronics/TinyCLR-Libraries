@@ -27,17 +27,7 @@
     <file src="$TargetDir$System.IO.Ports.dll" target="lib\net48" />
     <file src="$TargetDir$System.IO.Ports.xml" target="lib\net48" />
 
-    <!-- desktop-shim/ : Desktop SHIM DLLs (no-op safe defaults). -->
-    <file src="..\GHIElectronics.TinyCLR.Devices.Uart.Desktop\bin\$Configuration$\GHIElectronics.TinyCLR.Devices.Uart.dll" target="desktop-shim" />
-    <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.Uart.xml" target="desktop-shim" />
-    <file src="..\GHIElectronics.TinyCLR.System.IO.Ports.Desktop\bin\$Configuration$\System.IO.Ports.dll" target="desktop-shim" />
-    <file src="$TargetDir$System.IO.Ports.xml" target="desktop-shim" />
 
-    <!-- tinyclr/ : TinyCLR-IMPL DLLs (deploy artifact for the IDE). -->
-    <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.Uart.dll" target="tinyclr" />
-    <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.Uart.xml" target="tinyclr" />
-    <file src="$TargetDir$System.IO.Ports.dll" target="tinyclr" />
-    <file src="$TargetDir$System.IO.Ports.xml" target="tinyclr" />
 
     <!-- Consumer-side props. -->
     <file src="$ProjectDir$GHIElectronics.TinyCLR.Devices.Uart.props" target="build\net48" />

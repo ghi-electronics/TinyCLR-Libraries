@@ -8,12 +8,8 @@
   </ItemGroup>
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
-    <_TinyCLRStorageShimSource>$(MSBuildThisFileDirectory)..\..\desktop-shim\GHIElectronics.TinyCLR.Devices.Storage.dll</_TinyCLRStorageShimSource>
-    <_TinyCLRStorageImplSource>$(MSBuildThisFileDirectory)..\..\tinyclr\GHIElectronics.TinyCLR.Devices.Storage.dll</_TinyCLRStorageImplSource>
+    <_TinyCLRStorageImplSource>$(MSBuildThisFileDirectory)..\..\lib\net48\GHIElectronics.TinyCLR.Devices.Storage.dll</_TinyCLRStorageImplSource>
   </PropertyGroup>
-  <Target Name="CopyTinyCLRStorageDesktopShim" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRStorageShimSource)')">
-    <Copy SourceFiles="$(_TinyCLRStorageShimSource)" DestinationFiles="$(OutDir)GHIElectronics.TinyCLR.Devices.Storage.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
-  </Target>
   <Target Name="CopyTinyCLRStorageImplForDebugger" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRStorageImplSource)')">
     <Copy SourceFiles="$(_TinyCLRStorageImplSource)" DestinationFiles="$(OutDir)pe\GHIElectronics.TinyCLR.Devices.Storage.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
   </Target>
