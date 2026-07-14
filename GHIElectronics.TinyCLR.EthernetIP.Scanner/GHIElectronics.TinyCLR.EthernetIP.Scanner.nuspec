@@ -3,7 +3,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>GHIElectronics.TinyCLR.EthernetIP.Scanner</id>
-    <version>3.0.0.3000-prerelease</version>
+    <version>3.0.1.1000</version>
     <authors>GHI Electronics, LLC</authors>
     <owners>GHI Electronics, LLC</owners>
     <projectUrl>https://ghielectronics.com/</projectUrl>
@@ -11,12 +11,12 @@
     <licenseUrl>http://files.ghielectronics.com/downloads/TinyCLR/License.txt</licenseUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>EtherNet/IP scanner (industrial fieldbus controller) for TinyCLR.</description>
-    <copyright>Copyright GHI Electronics, LLC 2022</copyright>
+    <copyright>Copyright GHI Electronics, LLC 2026</copyright>
     <tags>TinyCLR TinyCLROS</tags>
     <dependencies>
-      <dependency id="GHIElectronics.TinyCLR.Core" version="3.0.0.3000-prerelease" />
-      <dependency id="GHIElectronics.TinyCLR.Networking" version="3.0.0.3000-prerelease" />      
-	  <dependency id="GHIElectronics.TinyCLR.Devices.Network" version="3.0.0.3000-prerelease" />      
+      <dependency id="GHIElectronics.TinyCLR.Core" version="3.0.1.1000" />
+      <dependency id="GHIElectronics.TinyCLR.Networking" version="3.0.1.1000" />      
+	  <dependency id="GHIElectronics.TinyCLR.Devices.Network" version="3.0.1.1000" />      
     </dependencies>
   </metadata>
   <files>
