@@ -5,7 +5,7 @@
 namespace GHIElectronics.TinyCLR.Data.Xml
 {
     // Specifies the state of the XmlReader.
-    internal enum ReadState
+    public enum ReadState
     {
         // The Read method has not been called yet.
         Initial = 0,

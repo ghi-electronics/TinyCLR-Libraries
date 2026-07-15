@@ -85,7 +85,7 @@ namespace GHIElectronics.TinyCLR.Data.Xml
     // Summary:
     //     Represents a writer that provides a fast, non-cached, forward-only means
     //     of generating streams or files containing XML data.
-    internal class XmlWriter : IDisposable
+    public class XmlWriter : IDisposable
     {
         // Fields
         //private XmlWriterSettings _Settings;

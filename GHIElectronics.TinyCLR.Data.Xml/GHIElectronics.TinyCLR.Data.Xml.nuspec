@@ -18,8 +18,16 @@
     </dependencies>
   </metadata>
   <files>
+    <!-- One package, two DLLs (same as Devices.Gpio which ships Devices.Gpio.dll +
+         System.Device.Gpio.dll): the Data.Xml impl exposes the original public API so
+         2.x/legacy code (using GHIElectronics.TinyCLR.Data.Xml) compiles unchanged, and the
+         System.Xml facade (built + copied into $TargetDir$ by BuildXmlCompatAssembly) exposes
+         the Microsoft-compatible API (using System.Xml). SDK-style projects auto-reference both
+         from lib\net48; packages.config projects get both via the build\net48 props. -->
     <file src="$TargetDir$GHIElectronics.TinyCLR.Data.Xml.dll" target="lib\net48" />
     <file src="$TargetDir$GHIElectronics.TinyCLR.Data.Xml.xml" target="lib\net48" />
+    <file src="$TargetDir$GHIElectronics.TinyCLR.System.Xml.dll" target="lib\net48" />
+    <file src="$TargetDir$GHIElectronics.TinyCLR.System.Xml.xml" target="lib\net48" />
     <file src="$ProjectDir$GHIElectronics.TinyCLR.Data.Xml.props" target="build\net48" />
   </files>
 </package>

@@ -1,16 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- DEPRECATED redirect package - intentionally a no-op.
+     System.Xml.dll now ships inside the GHIElectronics.TinyCLR.Data.Xml package (one nuget, two
+     DLLs, same pattern as Devices.Gpio + System.Device.Gpio). This package no longer carries the
+     assembly; its <dependency> on GHIElectronics.TinyCLR.Data.Xml brings it in, and that package's
+     props adds the <Reference>s and stages the DLL for the debugger. This file exists only so a
+     legacy packages.config project that imported it still resolves the import after an update. -->
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <ItemGroup>
-    <Reference Include="GHIElectronics.TinyCLR.System.Xml">
-      <HintPath>$(MSBuildThisFileDirectory)..\..\lib\net48\GHIElectronics.TinyCLR.System.Xml.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-  </ItemGroup>
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
-    <_TinyCLRSystemXmlImplSource>$(MSBuildThisFileDirectory)..\..\lib\net48\GHIElectronics.TinyCLR.System.Xml.dll</_TinyCLRSystemXmlImplSource>
   </PropertyGroup>
-  <Target Name="CopyTinyCLRSystemXmlImplForDebugger" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRSystemXmlImplSource)')">
-    <Copy SourceFiles="$(_TinyCLRSystemXmlImplSource)" DestinationFiles="$(OutDir)pe\GHIElectronics.TinyCLR.System.Xml.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
-  </Target>
 </Project>

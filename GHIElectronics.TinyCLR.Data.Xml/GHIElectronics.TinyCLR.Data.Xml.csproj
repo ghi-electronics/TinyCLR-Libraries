@@ -70,6 +70,16 @@
   </ItemGroup>
   <ItemGroup>
   </ItemGroup>
+  <!-- One NuGet, two DLLs (same pattern as Devices.Gpio + System.Device.Gpio): after building the
+       Data.Xml impl, build the System.Xml compat facade against it and copy its DLL/XML into this
+       project's output so the nuspec can pack both into the single Data.Xml package. BuildProject-
+       References=false stops the facade's ProjectReference back to Data.Xml from rebuilding it
+       (would be circular); it links against the impl we just built. -->
+  <Target Name="BuildXmlCompatAssembly" AfterTargets="Build">
+    <MSBuild Projects="..\GHIElectronics.TinyCLR.System.Xml\GHIElectronics.TinyCLR.System.Xml.csproj" Targets="Build" Properties="Configuration=$(Configuration);Platform=$(Platform);BuildProjectReferences=false" />
+    <Copy SourceFiles="..\GHIElectronics.TinyCLR.System.Xml\bin\$(Configuration)\GHIElectronics.TinyCLR.System.Xml.dll" DestinationFolder="$(TargetDir)" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="..\GHIElectronics.TinyCLR.System.Xml\bin\$(Configuration)\GHIElectronics.TinyCLR.System.Xml.xml" DestinationFolder="$(TargetDir)" SkipUnchangedFiles="true" Condition="Exists('..\GHIElectronics.TinyCLR.System.Xml\bin\$(Configuration)\GHIElectronics.TinyCLR.System.Xml.xml')" />
+  </Target>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
