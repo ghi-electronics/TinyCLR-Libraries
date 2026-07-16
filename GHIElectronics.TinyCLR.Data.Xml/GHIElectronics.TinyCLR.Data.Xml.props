@@ -1,20 +1,12 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <!-- packages.config projects only: inject the <Reference>s (CLI `nuget restore` does not add
-       them to the csproj, unlike the VS Package Manager UI). Two DLLs ship in this one package -
-       the Data.Xml impl (old public API) and the System.Xml facade (Microsoft-compatible API) -
-       just like Devices.Gpio ships both Devices.Gpio.dll and System.Device.Gpio.dll. SDK-style
-       (PackageReference) projects ignore this file and auto-reference both from lib\net48. -->
-  <ItemGroup>
-    <Reference Include="GHIElectronics.TinyCLR.Data.Xml">
-      <HintPath>$(MSBuildThisFileDirectory)..\..\lib\net48\GHIElectronics.TinyCLR.Data.Xml.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="GHIElectronics.TinyCLR.System.Xml">
-      <HintPath>$(MSBuildThisFileDirectory)..\..\lib\net48\GHIElectronics.TinyCLR.System.Xml.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-  </ItemGroup>
+  <!-- Consumer-side props imported by user projects via the NuGet package mechanism.
+     References come from lib\net48 directly: packages.config projects via the literal <Reference>
+     the VS Package Manager adds at install time, PackageReference projects automatically. This file
+     injects NO <Reference> - doing so made VS's classic project system render a spurious unresolved
+     0.0.0.0 reference (yellow warning) in Solution Explorer, because VS reads props <Reference>
+     elements ignoring their Condition. V2 device packages shipped no props here and were clean.
+     This file only stages the impl DLL(s) into pe\ so the debugger can resolve them. -->
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
     <_TinyCLRDataXmlImplSource>$(MSBuildThisFileDirectory)..\..\lib\net48\GHIElectronics.TinyCLR.Data.Xml.dll</_TinyCLRDataXmlImplSource>

@@ -1,18 +1,13 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 
 <!-- Consumer-side props imported by user projects via the NuGet package mechanism.
-     Standardized (no desktop-shim): for legacy packages.config projects this injects the
-     compile Reference to the lib/net48 impl and stages the impl DLL into pe\ for the debugger.
-     SDK-style projects auto-reference lib/net48 (this Reference coexists harmlessly). The
-     desktop-shim copies were removed - the TinyCLR emulator replaces desktop dual-mode; the
-     impl-for-debugger copy now sources lib\net48 directly (the old tinyclr\ folder is gone). -->
+     References come from lib\net48 directly: packages.config projects via the literal <Reference>
+     the VS Package Manager adds at install time, PackageReference projects automatically. This file
+     injects NO <Reference> - doing so made VS's classic project system render a spurious unresolved
+     0.0.0.0 reference (yellow warning) in Solution Explorer, because VS reads props <Reference>
+     elements ignoring their Condition. V2 device packages shipped no props here and were clean.
+     This file only stages the impl DLL(s) into pe\ so the debugger can resolve them. -->
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <ItemGroup>
-    <Reference Include="GHIElectronics.TinyCLR.Devices.Gpio">
-      <HintPath>$(MSBuildThisFileDirectory)..\..\lib\net48\GHIElectronics.TinyCLR.Devices.Gpio.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-  </ItemGroup>
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
     <_TinyCLRGpioImplSource>$(MSBuildThisFileDirectory)..\..\lib\net48\GHIElectronics.TinyCLR.Devices.Gpio.dll</_TinyCLRGpioImplSource>
