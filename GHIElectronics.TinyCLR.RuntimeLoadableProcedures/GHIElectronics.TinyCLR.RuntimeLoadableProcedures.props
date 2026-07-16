@@ -1,10 +1,14 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 
-<!-- Consumer-side props imported by user projects via the NuGet package
-     mechanism. See GHIElectronics.TinyCLR.Native.props for full commentary
-     on why a Target is used instead of <None Include>. -->
+<!-- Consumer-side props imported by user projects via the NuGet package mechanism. Injects no
+     <Reference> (references come from lib\net48 directly); the AfterBuild target only stages the
+     impl DLL into bin\Debug\pe\ so the TinyCLR debugger reads the metadata MMP put in the .pe. -->
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <_TinyCLRRlpImplSource>$(MSBuildThisFileDirectory)..\..\lib\net48\GHIElectronics.TinyCLR.RuntimeLoadableProcedures.dll</_TinyCLRRlpImplSource>
   </PropertyGroup>
+  <Target Name="CopyTinyCLRRlpImplForDebugger" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRRlpImplSource)')">
+    <Copy SourceFiles="$(_TinyCLRRlpImplSource)" DestinationFiles="$(OutDir)pe\GHIElectronics.TinyCLR.RuntimeLoadableProcedures.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
+  </Target>
 </Project>

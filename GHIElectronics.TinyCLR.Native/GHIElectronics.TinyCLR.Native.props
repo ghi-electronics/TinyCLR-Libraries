@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 
 <!-- Consumer-side props imported by user projects via the NuGet package mechanism.
 
@@ -6,10 +6,15 @@
      the VS Package Manager adds at install time, PackageReference projects automatically. This file
      injects NO <Reference> - VS's classic project system reads props <Reference> elements ignoring
      their Condition, so an injected one appeared as a spurious unresolved 0.0.0.0 reference (yellow
-     warning) in Solution Explorer. V2 device packages shipped no props here and were clean. Native
-     needs no debugger pe\ staging, so this file only registers itself in MSBuildAllProjects. -->
+     warning) in Solution Explorer. V2 device packages shipped no props here and were clean. The
+     AfterBuild target only stages the impl DLL into bin\Debug\pe\ so the TinyCLR debugger reads the
+     metadata it MMP'd into the deployed .pe. -->
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <_TinyCLRNativeImplSource>$(MSBuildThisFileDirectory)..\..\lib\net48\GHIElectronics.TinyCLR.Native.dll</_TinyCLRNativeImplSource>
   </PropertyGroup>
+  <Target Name="CopyTinyCLRNativeImplForDebugger" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRNativeImplSource)')">
+    <Copy SourceFiles="$(_TinyCLRNativeImplSource)" DestinationFiles="$(OutDir)pe\GHIElectronics.TinyCLR.Native.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
+  </Target>
 </Project>
