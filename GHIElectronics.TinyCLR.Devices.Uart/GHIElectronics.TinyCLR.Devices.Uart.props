@@ -1,6 +1,14 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <_TinyCLRUartImplSource>$(MSBuildThisFileDirectory)..\..\lib\net48\GHIElectronics.TinyCLR.Devices.Uart.dll</_TinyCLRUartImplSource>
+    <_SystemIOPortsImplSource>$(MSBuildThisFileDirectory)..\..\lib\net48\System.IO.Ports.dll</_SystemIOPortsImplSource>
   </PropertyGroup>
+  <Target Name="CopyTinyCLRUartImplForDebugger" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRUartImplSource)')">
+    <Copy SourceFiles="$(_TinyCLRUartImplSource)" DestinationFiles="$(OutDir)pe\GHIElectronics.TinyCLR.Devices.Uart.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
+  </Target>
+  <Target Name="CopySystemIOPortsImplForDebugger" AfterTargets="AfterBuild" Condition="Exists('$(_SystemIOPortsImplSource)')">
+    <Copy SourceFiles="$(_SystemIOPortsImplSource)" DestinationFiles="$(OutDir)pe\System.IO.Ports.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
+  </Target>
 </Project>
