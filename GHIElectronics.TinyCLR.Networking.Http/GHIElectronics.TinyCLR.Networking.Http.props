@@ -1,19 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <ItemGroup>
-    <Reference Include="GHIElectronics.TinyCLR.Networking.Http">
-      <HintPath>$(MSBuildThisFileDirectory)..\..\lib\net48\GHIElectronics.TinyCLR.Networking.Http.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-  </ItemGroup>
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
-    <_TinyCLRNetworkingHttpShimSource>$(MSBuildThisFileDirectory)..\..\desktop-shim\GHIElectronics.TinyCLR.Networking.Http.dll</_TinyCLRNetworkingHttpShimSource>
-    <_TinyCLRNetworkingHttpImplSource>$(MSBuildThisFileDirectory)..\..\tinyclr\GHIElectronics.TinyCLR.Networking.Http.dll</_TinyCLRNetworkingHttpImplSource>
+    <_TinyCLRNetworkingHttpImplSource>$(MSBuildThisFileDirectory)..\..\lib\net48\GHIElectronics.TinyCLR.Networking.Http.dll</_TinyCLRNetworkingHttpImplSource>
   </PropertyGroup>
-  <Target Name="CopyTinyCLRNetworkingHttpDesktopShim" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRNetworkingHttpShimSource)')">
-    <Copy SourceFiles="$(_TinyCLRNetworkingHttpShimSource)" DestinationFiles="$(OutDir)GHIElectronics.TinyCLR.Networking.Http.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
-  </Target>
   <Target Name="CopyTinyCLRNetworkingHttpImplForDebugger" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRNetworkingHttpImplSource)')">
     <Copy SourceFiles="$(_TinyCLRNetworkingHttpImplSource)" DestinationFiles="$(OutDir)pe\GHIElectronics.TinyCLR.Networking.Http.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
   </Target>

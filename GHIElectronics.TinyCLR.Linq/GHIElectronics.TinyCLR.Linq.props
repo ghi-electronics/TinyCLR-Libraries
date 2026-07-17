@@ -1,19 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <ItemGroup>
-    <Reference Include="GHIElectronics.TinyCLR.Linq">
-      <HintPath>$(MSBuildThisFileDirectory)..\..\lib\net48\GHIElectronics.TinyCLR.Linq.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-  </ItemGroup>
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
-    <_TinyCLRLinqShimSource>$(MSBuildThisFileDirectory)..\..\desktop-shim\GHIElectronics.TinyCLR.Linq.dll</_TinyCLRLinqShimSource>
-    <_TinyCLRLinqImplSource>$(MSBuildThisFileDirectory)..\..\tinyclr\GHIElectronics.TinyCLR.Linq.dll</_TinyCLRLinqImplSource>
+    <_TinyCLRLinqImplSource>$(MSBuildThisFileDirectory)..\..\lib\net48\GHIElectronics.TinyCLR.Linq.dll</_TinyCLRLinqImplSource>
   </PropertyGroup>
-  <Target Name="CopyTinyCLRLinqDesktopShim" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRLinqShimSource)')">
-    <Copy SourceFiles="$(_TinyCLRLinqShimSource)" DestinationFiles="$(OutDir)GHIElectronics.TinyCLR.Linq.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
-  </Target>
   <Target Name="CopyTinyCLRLinqImplForDebugger" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRLinqImplSource)')">
     <Copy SourceFiles="$(_TinyCLRLinqImplSource)" DestinationFiles="$(OutDir)pe\GHIElectronics.TinyCLR.Linq.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
   </Target>

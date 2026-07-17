@@ -5,7 +5,7 @@
 namespace GHIElectronics.TinyCLR.Data.Xml
 {
     // An enumeration for the xml:space scope used in XmlReader and XmlWriter.
-    internal enum XmlSpace
+    public enum XmlSpace
     {
         // xml:space scope has not been specified.
         None = 0,

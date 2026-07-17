@@ -1,19 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <ItemGroup>
-    <Reference Include="GHIElectronics.TinyCLR.Devices.Display">
-      <HintPath>$(MSBuildThisFileDirectory)..\..\lib\net48\GHIElectronics.TinyCLR.Devices.Display.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-  </ItemGroup>
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
-    <_TinyCLRDisplayShimSource>$(MSBuildThisFileDirectory)..\..\desktop-shim\GHIElectronics.TinyCLR.Devices.Display.dll</_TinyCLRDisplayShimSource>
-    <_TinyCLRDisplayImplSource>$(MSBuildThisFileDirectory)..\..\tinyclr\GHIElectronics.TinyCLR.Devices.Display.dll</_TinyCLRDisplayImplSource>
+    <_TinyCLRDisplayImplSource>$(MSBuildThisFileDirectory)..\..\lib\net48\GHIElectronics.TinyCLR.Devices.Display.dll</_TinyCLRDisplayImplSource>
   </PropertyGroup>
-  <Target Name="CopyTinyCLRDisplayDesktopShim" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRDisplayShimSource)')">
-    <Copy SourceFiles="$(_TinyCLRDisplayShimSource)" DestinationFiles="$(OutDir)GHIElectronics.TinyCLR.Devices.Display.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
-  </Target>
   <Target Name="CopyTinyCLRDisplayImplForDebugger" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRDisplayImplSource)')">
     <Copy SourceFiles="$(_TinyCLRDisplayImplSource)" DestinationFiles="$(OutDir)pe\GHIElectronics.TinyCLR.Devices.Display.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
   </Target>

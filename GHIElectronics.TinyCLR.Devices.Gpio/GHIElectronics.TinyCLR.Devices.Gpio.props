@@ -1,29 +1,20 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 
-<!-- Consumer-side props imported by user projects via the NuGet package
-     mechanism. See the Networking / Native equivalents for full rationale. -->
+<!-- Consumer-side props imported by user projects via the NuGet package mechanism.
+     References come from lib\net48 directly: packages.config projects via the literal <Reference>
+     the VS Package Manager adds at install time, PackageReference projects automatically. This file
+     injects NO <Reference> - doing so made VS's classic project system render a spurious unresolved
+     0.0.0.0 reference (yellow warning) in Solution Explorer, because VS reads props <Reference>
+     elements ignoring their Condition. V2 device packages shipped no props here and were clean.
+     This file only stages the impl DLL(s) into pe\ so the debugger can resolve them. -->
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <ItemGroup>
-    <Reference Include="GHIElectronics.TinyCLR.Devices.Gpio">
-      <HintPath>$(MSBuildThisFileDirectory)..\..\lib\net48\GHIElectronics.TinyCLR.Devices.Gpio.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-  </ItemGroup>
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
-    <_TinyCLRGpioShimSource>$(MSBuildThisFileDirectory)..\..\desktop-shim\GHIElectronics.TinyCLR.Devices.Gpio.dll</_TinyCLRGpioShimSource>
-    <_TinyCLRGpioImplSource>$(MSBuildThisFileDirectory)..\..\tinyclr\GHIElectronics.TinyCLR.Devices.Gpio.dll</_TinyCLRGpioImplSource>
-    <_SystemDeviceGpioShimSource>$(MSBuildThisFileDirectory)..\..\desktop-shim\System.Device.Gpio.dll</_SystemDeviceGpioShimSource>
-    <_SystemDeviceGpioImplSource>$(MSBuildThisFileDirectory)..\..\tinyclr\System.Device.Gpio.dll</_SystemDeviceGpioImplSource>
+    <_TinyCLRGpioImplSource>$(MSBuildThisFileDirectory)..\..\lib\net48\GHIElectronics.TinyCLR.Devices.Gpio.dll</_TinyCLRGpioImplSource>
+    <_SystemDeviceGpioImplSource>$(MSBuildThisFileDirectory)..\..\lib\net48\System.Device.Gpio.dll</_SystemDeviceGpioImplSource>
   </PropertyGroup>
-  <Target Name="CopyTinyCLRGpioDesktopShim" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRGpioShimSource)')">
-    <Copy SourceFiles="$(_TinyCLRGpioShimSource)" DestinationFiles="$(OutDir)GHIElectronics.TinyCLR.Devices.Gpio.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
-  </Target>
   <Target Name="CopyTinyCLRGpioImplForDebugger" AfterTargets="AfterBuild" Condition="Exists('$(_TinyCLRGpioImplSource)')">
     <Copy SourceFiles="$(_TinyCLRGpioImplSource)" DestinationFiles="$(OutDir)pe\GHIElectronics.TinyCLR.Devices.Gpio.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
-  </Target>
-  <Target Name="CopySystemDeviceGpioDesktopShim" AfterTargets="AfterBuild" Condition="Exists('$(_SystemDeviceGpioShimSource)')">
-    <Copy SourceFiles="$(_SystemDeviceGpioShimSource)" DestinationFiles="$(OutDir)System.Device.Gpio.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />
   </Target>
   <Target Name="CopySystemDeviceGpioImplForDebugger" AfterTargets="AfterBuild" Condition="Exists('$(_SystemDeviceGpioImplSource)')">
     <Copy SourceFiles="$(_SystemDeviceGpioImplSource)" DestinationFiles="$(OutDir)pe\System.Device.Gpio.dll" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" />

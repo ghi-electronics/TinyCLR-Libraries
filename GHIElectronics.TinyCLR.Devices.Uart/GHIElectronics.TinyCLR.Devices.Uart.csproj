@@ -49,12 +49,6 @@
       <Project>{B602474A-AEB0-491C-832B-7EAF0B4511C0}</Project>
       <Name>GHIElectronics.TinyCLR.Native</Name>
     </ProjectReference>
-    <ProjectReference Include="..\GHIElectronics.TinyCLR.Devices.Uart.Desktop\GHIElectronics.TinyCLR.Devices.Uart.Desktop.csproj">
-      <Project>{6E2A8B4C-7D3F-4E1A-9C5B-2D3F4E5A6B7C}</Project>
-      <Name>GHIElectronics.TinyCLR.Devices.Uart.Desktop</Name>
-      <ReferenceOutputAssembly>False</ReferenceOutputAssembly>
-      <Private>False</Private>
-    </ProjectReference>
   </ItemGroup>
   <!-- Build the System.IO.Ports (SerialPort) .NET-style compatibility assembly and
        its Desktop shim, then stage System.IO.Ports.dll/.xml in $(TargetDir) so the
@@ -64,7 +58,6 @@
     <MSBuild Projects="..\GHIElectronics.TinyCLR.System.IO.Ports\GHIElectronics.TinyCLR.System.IO.Ports.csproj" Targets="Build" Properties="Configuration=$(Configuration);Platform=$(Platform);BuildProjectReferences=false" />
     <Copy SourceFiles="..\GHIElectronics.TinyCLR.System.IO.Ports\bin\$(Configuration)\System.IO.Ports.dll" DestinationFolder="$(TargetDir)" SkipUnchangedFiles="true" />
     <Copy SourceFiles="..\GHIElectronics.TinyCLR.System.IO.Ports\bin\$(Configuration)\System.IO.Ports.xml" DestinationFolder="$(TargetDir)" SkipUnchangedFiles="true" Condition="Exists('..\GHIElectronics.TinyCLR.System.IO.Ports\bin\$(Configuration)\System.IO.Ports.xml')" />
-    <MSBuild Projects="..\GHIElectronics.TinyCLR.System.IO.Ports.Desktop\GHIElectronics.TinyCLR.System.IO.Ports.Desktop.csproj" Targets="Build" Properties="Configuration=$(Configuration);Platform=$(Platform);BuildProjectReferences=false" />
   </Target>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

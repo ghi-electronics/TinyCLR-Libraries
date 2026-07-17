@@ -5,7 +5,7 @@
 namespace GHIElectronics.TinyCLR.Data.Xml
 {
     // Specifies the type of validation to perform in XmlValidatingReader or in XmlReaderSettings.
-    internal enum ValidationType
+    public enum ValidationType
     {
         // No validation will be performed.
         None,

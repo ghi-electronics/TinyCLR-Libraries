@@ -54,19 +54,12 @@
       <Name>GHIElectronics.TinyCLR.Native</Name>
     </ProjectReference>
     <!-- Build-order dependency on Desktop sister so PackNuGet sees the shim. -->
-    <ProjectReference Include="..\GHIElectronics.TinyCLR.Devices.Spi.Desktop\GHIElectronics.TinyCLR.Devices.Spi.Desktop.csproj">
-      <Project>{5D7F9C2A-3E4B-4F2C-9D6E-7A8B1C3D4E5F}</Project>
-      <Name>GHIElectronics.TinyCLR.Devices.Spi.Desktop</Name>
-      <ReferenceOutputAssembly>False</ReferenceOutputAssembly>
-      <Private>False</Private>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="BuildSpiCompatAssembly" AfterTargets="Build">
     <MSBuild Projects="..\GHIElectronics.TinyCLR.System.Device.Spi\GHIElectronics.TinyCLR.System.Device.Spi.csproj" Targets="Build" Properties="Configuration=$(Configuration);Platform=$(Platform);BuildProjectReferences=false" />
     <Copy SourceFiles="..\GHIElectronics.TinyCLR.System.Device.Spi\bin\$(Configuration)\System.Device.Spi.dll" DestinationFolder="$(TargetDir)" SkipUnchangedFiles="true" />
     <Copy SourceFiles="..\GHIElectronics.TinyCLR.System.Device.Spi\bin\$(Configuration)\System.Device.Spi.xml" DestinationFolder="$(TargetDir)" SkipUnchangedFiles="true" Condition="Exists('..\GHIElectronics.TinyCLR.System.Device.Spi\bin\$(Configuration)\System.Device.Spi.xml')" />
-    <MSBuild Projects="..\GHIElectronics.TinyCLR.System.Device.Spi.Desktop\GHIElectronics.TinyCLR.System.Device.Spi.Desktop.csproj" Targets="Build" Properties="Configuration=$(Configuration);Platform=$(Platform);BuildProjectReferences=false" />
   </Target>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

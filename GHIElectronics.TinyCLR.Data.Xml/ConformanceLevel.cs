@@ -5,7 +5,7 @@
 namespace GHIElectronics.TinyCLR.Data.Xml
 {
 
-    internal enum ConformanceLevel
+    public enum ConformanceLevel
     {
         // With conformance level Auto an XmlReader or XmlWriter automatically determines whether in incoming XML is an XML fragment or document.
         Auto = 0,

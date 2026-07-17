@@ -3,28 +3,29 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>GHIElectronics.TinyCLR.System.Xml</id>
-    <version>3.0.0.3000-prerelease</version>
+    <version>3.0.1.1000</version>
+    <title>GHIElectronics.TinyCLR.System.Xml (deprecated - use GHIElectronics.TinyCLR.Data.Xml)</title>
     <authors>GHI Electronics, LLC</authors>
     <owners>GHI Electronics, LLC</owners>
     <projectUrl>https://ghielectronics.com/</projectUrl>
     <iconUrl>http://files.ghielectronics.com/downloads/Logos/GHIElectronicsTinyCLRNuGet.png</iconUrl>
     <licenseUrl>http://files.ghielectronics.com/downloads/TinyCLR/License.txt</licenseUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
-    <description>System.Xml-compatible XML API for TinyCLR.</description>
+    <description>DEPRECATED - this package is no longer needed. The System.Xml API now ships inside the GHIElectronics.TinyCLR.Data.Xml package. Reference GHIElectronics.TinyCLR.Data.Xml instead; your code does not change (keep using System.Xml). This package is now an empty redirect that only depends on GHIElectronics.TinyCLR.Data.Xml, so existing projects keep building after an update. You may safely remove it once you reference GHIElectronics.TinyCLR.Data.Xml directly.</description>
+    <releaseNotes>Deprecated. Both the System.Xml facade and the original XML API now ship together in GHIElectronics.TinyCLR.Data.Xml (one package, two DLLs). This package is kept only as an empty redirect so 'Update' does not error for existing projects.</releaseNotes>
     <copyright>Copyright GHI Electronics, LLC 2026</copyright>
-    <tags>TinyCLR TinyCLROS Xml</tags>
+    <tags>TinyCLR TinyCLROS Xml deprecated</tags>
     <dependencies>
-      <dependency id="GHIElectronics.TinyCLR.Core" version="3.0.0.3000-prerelease" />
-      <dependency id="GHIElectronics.TinyCLR.Data.Xml" version="3.0.0.3000-prerelease" />
+      <dependency id="GHIElectronics.TinyCLR.Core" version="3.0.1.1000" />
+      <dependency id="GHIElectronics.TinyCLR.Data.Xml" version="3.0.1.1000" />
     </dependencies>
   </metadata>
   <files>
-    <file src="$TargetDir$GHIElectronics.TinyCLR.System.Xml.dll" target="lib\net48" />
-    <file src="$TargetDir$GHIElectronics.TinyCLR.System.Xml.xml" target="lib\net48" />
-    <file src="..\GHIElectronics.TinyCLR.System.Xml.Desktop\bin\$Configuration$\GHIElectronics.TinyCLR.System.Xml.dll" target="desktop-shim" />
-    <file src="$TargetDir$GHIElectronics.TinyCLR.System.Xml.xml" target="desktop-shim" />
-    <file src="$TargetDir$GHIElectronics.TinyCLR.System.Xml.dll" target="tinyclr" />
-    <file src="$TargetDir$GHIElectronics.TinyCLR.System.Xml.xml" target="tinyclr" />
+    <!-- Empty redirect package: NO lib assembly. System.Xml.dll now ships inside the
+         GHIElectronics.TinyCLR.Data.Xml package (one nuget, two DLLs, Gpio-style), and the
+         <dependency> above pulls it in. Only a no-op props is shipped so that a legacy
+         packages.config project which imported this package's props still resolves the import
+         after updating (the actual <Reference>s come from GHIElectronics.TinyCLR.Data.Xml.props). -->
     <file src="$ProjectDir$GHIElectronics.TinyCLR.System.Xml.props" target="build\net48" />
   </files>
 </package>

@@ -73,12 +73,6 @@
     <None Include="GHIElectronics.TinyCLR.RegularExpressions.props" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\GHIElectronics.TinyCLR.RegularExpressions.Desktop\GHIElectronics.TinyCLR.RegularExpressions.Desktop.csproj">
-      <Project>{C7D8E9F1-A2B3-4C4D-5E6F-7A8B9C1D2E3F}</Project>
-      <Name>GHIElectronics.TinyCLR.RegularExpressions.Desktop</Name>
-      <ReferenceOutputAssembly>False</ReferenceOutputAssembly>
-      <Private>False</Private>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GHIElectronics.TinyCLR.IO\GHIElectronics.TinyCLR.IO.csproj">

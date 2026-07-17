@@ -3,7 +3,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>GHIElectronics.TinyCLR.Devices.Spi</id>
-    <version>3.0.0.3000-prerelease</version>
+    <version>3.0.1.1000</version>
     <authors>GHI Electronics, LLC</authors>
     <owners>GHI Electronics, LLC</owners>
     <projectUrl>https://ghielectronics.com/</projectUrl>
@@ -11,12 +11,12 @@
     <licenseUrl>http://files.ghielectronics.com/downloads/TinyCLR/License.txt</licenseUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>SPI bus communication for TinyCLR.</description>
-    <copyright>Copyright GHI Electronics, LLC 2022</copyright>
+    <copyright>Copyright GHI Electronics, LLC 2026</copyright>
     <tags>TinyCLR TinyCLROS</tags>
     <dependencies>
-      <dependency id="GHIElectronics.TinyCLR.Core" version="3.0.0.3000-prerelease" />
-      <dependency id="GHIElectronics.TinyCLR.Native" version="3.0.0.3000-prerelease" />
-      <dependency id="GHIElectronics.TinyCLR.Devices.Gpio" version="3.0.0.3000-prerelease" />
+      <dependency id="GHIElectronics.TinyCLR.Core" version="3.0.1.1000" />
+      <dependency id="GHIElectronics.TinyCLR.Native" version="3.0.1.1000" />
+      <dependency id="GHIElectronics.TinyCLR.Devices.Gpio" version="3.0.1.1000" />
     </dependencies>
   </metadata>
   <files>
@@ -24,14 +24,6 @@
     <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.Spi.xml" target="lib\net48" />
     <file src="$TargetDir$System.Device.Spi.dll" target="lib\net48" />
     <file src="$TargetDir$System.Device.Spi.xml" target="lib\net48" />
-    <file src="..\GHIElectronics.TinyCLR.Devices.Spi.Desktop\bin\$Configuration$\GHIElectronics.TinyCLR.Devices.Spi.dll" target="desktop-shim" />
-    <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.Spi.xml" target="desktop-shim" />
-    <file src="..\GHIElectronics.TinyCLR.System.Device.Spi.Desktop\bin\$Configuration$\System.Device.Spi.dll" target="desktop-shim" />
-    <file src="$TargetDir$System.Device.Spi.xml" target="desktop-shim" />
-    <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.Spi.dll" target="tinyclr" />
-    <file src="$TargetDir$GHIElectronics.TinyCLR.Devices.Spi.xml" target="tinyclr" />
-    <file src="$TargetDir$System.Device.Spi.dll" target="tinyclr" />
-    <file src="$TargetDir$System.Device.Spi.xml" target="tinyclr" />
     <file src="$ProjectDir$GHIElectronics.TinyCLR.Devices.Spi.props" target="build\net48" />
   </files>
 </package>

@@ -49,12 +49,6 @@
       <Project>{B602474A-AEB0-491C-832B-7EAF0B4511C0}</Project>
       <Name>GHIElectronics.TinyCLR.Native</Name>
     </ProjectReference>
-    <ProjectReference Include="..\GHIElectronics.TinyCLR.Devices.Rtc.Desktop\GHIElectronics.TinyCLR.Devices.Rtc.Desktop.csproj">
-      <Project>{AB1C2D3E-4F5A-4B6C-9D7E-8F1A2B3C4D5E}</Project>
-      <Name>GHIElectronics.TinyCLR.Devices.Rtc.Desktop</Name>
-      <ReferenceOutputAssembly>False</ReferenceOutputAssembly>
-      <Private>False</Private>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
