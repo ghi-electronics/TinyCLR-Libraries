@@ -37,6 +37,8 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                 return;
             }
 
+            base.OnTouchUp(e); // raise the public TouchUp event for user/designer handlers
+
             e.GetPosition(this, 0, out _, out var y);
             if (y >= 0 && y < this.HeaderHeight) {
                 this.IsExpanded = !this.IsExpanded;

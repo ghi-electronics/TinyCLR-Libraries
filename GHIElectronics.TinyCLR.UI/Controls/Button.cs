@@ -138,6 +138,8 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                 return;
             }
 
+            base.OnTouchUp(e); // raise the public TouchUp event for user/designer handlers
+
             // Only fire Click if the press actually started on this Button.
             // OnParentTouchUp clears isPressed when the user releases off-button,
             // so a press-then-drag-away-then-release-elsewhere yields no Click.
@@ -159,6 +161,8 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             if (!this.IsEnabled) {
                 return;
             }
+
+            base.OnTouchDown(e); // raise the public TouchDown event for user/designer handlers
 
             this.EnsureParentSubscription();
 

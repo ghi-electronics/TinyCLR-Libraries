@@ -365,7 +365,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         /// <param name="e">Touch event arguments.</param>
         /// <returns>Touch event arguments.</returns>
         protected override void OnTouchDown(TouchEventArgs e) {
-
+            base.OnTouchDown(e); // raise the public TouchDown event for user/designer handlers
 
             if (this.rows_.Count > 0) {
                 this.pressed = true;
@@ -387,6 +387,8 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         /// <param name="e">Touch event arguments.</param>
         /// <returns>Touch event arguments.</returns>
         protected override void OnTouchUp(TouchEventArgs e) {
+            base.OnTouchUp(e); // raise the public TouchUp event for user/designer handlers
+
             if (!this.pressed)
                 return;
 
@@ -443,6 +445,8 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         /// <param name="e">Touch event arguments.</param>
         /// <returns>Touch event arguments.</returns>
         protected override void OnTouchMove(TouchEventArgs e) {
+            base.OnTouchMove(e); // raise the public TouchMove event for user/designer handlers
+
             if (!this.Draggable || !this.pressed || this.rows_.Count <= this.RowCount)
                 return;
 

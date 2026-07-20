@@ -76,6 +76,8 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                 return;
             }
 
+            base.OnTouchUp(e); // raise the public TouchUp event for user/designer handlers
+
             // In Press mode the toggle already fired on TouchDown; don't fire it twice.
             if (this.ClickMode != ClickMode.Press) {
                 e.Handled = this.PerformClick();
@@ -85,6 +87,8 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         /// <summary>Handles touch press. In the default Release mode toggling is deferred to touch release;
         /// in <see cref="ClickMode.Press"/> mode it toggles immediately.</summary>
         protected override void OnTouchDown(TouchEventArgs e) {
+            base.OnTouchDown(e); // raise the public TouchDown event for user/designer handlers
+
             // Default (Release): toggle on TouchUp so drag-off-and-release-elsewhere doesn't flip state,
             // and Click fires exactly once per activation.
             // ClickMode.Press: toggle immediately on press (the TinyCLR 2.x behavior).

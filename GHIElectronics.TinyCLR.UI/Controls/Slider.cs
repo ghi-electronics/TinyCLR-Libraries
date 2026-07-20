@@ -309,6 +309,8 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         protected override void OnTouchDown(TouchEventArgs e) {
             if (!this.IsEnabled) return;
 
+            base.OnTouchDown(e); // raise the public TouchDown event for user/designer handlers
+
             this._dragOriginX = 0;
             this._dragOriginY = 0;
             this.PointToScreen(ref this._dragOriginX, ref this._dragOriginY);
@@ -335,6 +337,8 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
         /// <summary>Ends knob dragging when the touch is released.</summary>
         protected override void OnTouchUp(TouchEventArgs e) {
+            base.OnTouchUp(e); // raise the public TouchUp event for user/designer handlers
+
             if (!this._dragging) return;
             this._dragging = false;
 
@@ -359,6 +363,8 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
         /// <summary>Updates the value as the knob is dragged.</summary>
         protected override void OnTouchMove(TouchEventArgs e) {
+            base.OnTouchMove(e); // raise the public TouchMove event for user/designer handlers
+
             if (!this._dragging) return;
 
             var localX = e.Touches[0].X - this._dragOriginX;

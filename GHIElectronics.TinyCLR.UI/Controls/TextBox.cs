@@ -207,6 +207,8 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                 return;
             }
 
+            base.OnTouchUp(e); // raise the public TouchUp event for user/designer handlers
+
             // Focus so a physical keyboard (and the caret) target this field...
             Buttons.Focus(this);
 

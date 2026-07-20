@@ -95,6 +95,8 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                 return;
             }
 
+            base.OnTouchUp(e); // raise the public TouchUp event for user/designer handlers
+
             e.GetPosition(this, 0, out var x, out var y);
             var n = this._headers.Count;
             if (y >= 0 && y < this._headerHeight && n > 0) {

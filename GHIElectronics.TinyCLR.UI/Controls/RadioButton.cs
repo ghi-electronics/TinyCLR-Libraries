@@ -152,6 +152,8 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                 return;
             }
 
+            base.OnTouchUp(e); // raise the public TouchUp event for user/designer handlers
+
             // In Press mode the click already fired on TouchDown; don't fire it twice.
             if (this.ClickMode != ClickMode.Press) {
                 e.Handled = this.PerformClick();
@@ -161,6 +163,8 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         /// <summary>Handles a touch press. In the default Release mode the click is performed on release; in
         /// <see cref="ClickMode.Press"/> mode it fires immediately.</summary>
         protected override void OnTouchDown(TouchEventArgs e) {
+            base.OnTouchDown(e); // raise the public TouchDown event for user/designer handlers
+
             // ClickMode.Press: select immediately on press (the TinyCLR 2.x behavior). The default
             // Release mode fires on TouchUp instead.
             if (this.IsEnabled && this.ClickMode == ClickMode.Press) {

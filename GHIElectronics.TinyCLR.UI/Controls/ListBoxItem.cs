@@ -32,6 +32,8 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                 return;
             }
 
+            base.OnTouchUp(e); // raise the public TouchUp event for user/designer handlers
+
             if (this.IsSelectable) {
                 this._listBox.SelectedItem = this;
                 e.Handled = this._listBox.RaiseClick(this);
