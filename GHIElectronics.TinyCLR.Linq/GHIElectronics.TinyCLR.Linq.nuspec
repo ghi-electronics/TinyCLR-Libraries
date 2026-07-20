@@ -3,7 +3,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>GHIElectronics.TinyCLR.Linq</id>
-    <version>3.0.1.1000</version>
+    <version>3.0.1.1000-prerelease</version>
     <authors>GHI Electronics, LLC</authors>
     <owners>GHI Electronics, LLC</owners>
     <projectUrl>https://ghielectronics.com/</projectUrl>
@@ -14,7 +14,7 @@
     <copyright>Copyright GHI Electronics, LLC 2026</copyright>
     <tags>TinyCLR TinyCLROS LINQ</tags>
     <dependencies>
-      <dependency id="GHIElectronics.TinyCLR.Core" version="3.0.1.1000" />
+      <dependency id="GHIElectronics.TinyCLR.Core" version="3.0.1.1000-prerelease" />
     </dependencies>
   </metadata>
   <files>
