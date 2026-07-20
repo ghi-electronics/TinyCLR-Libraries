@@ -10,4 +10,4 @@ using System.Runtime.InteropServices;
 [assembly: Guid("F3CD9D5A-75B4-4AD9-852D-4B0895ED3979")]
 [assembly: AssemblyVersion("3.0.1.1000")]
 [assembly: AssemblyFileVersion("3.0.1.1000")]
-[assembly: AssemblyInformationalVersion("3.0.1.1000")]
+[assembly: AssemblyInformationalVersion("3.0.1.1000-prerelease")]
