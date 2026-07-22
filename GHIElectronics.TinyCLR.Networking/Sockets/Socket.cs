@@ -293,6 +293,21 @@ namespace System.Net.Sockets {
             int socketHandle;
             while (true) {
                 if (this.m_Handle == -1) throw new ObjectDisposedException();
+
+                // Cooperative readiness gate. A pending connection raises
+                // rcvevent on the listening socket, so lwip_poll(SelectRead)
+                // reports it. Only then do we enter the native accept, which
+                // returns at once instead of parking the single interpreter
+                // task inside a blocking lwip_accept for up to SO_RCVTIMEO
+                // (250 ms) — that native block is what quantized every other
+                // managed thread's Thread.Sleep to ~250 ms. The native timeout
+                // remains as a backstop for the rare race where the pending
+                // connection is consumed before we call Accept.
+                if (!this.ni.Poll(this.m_Handle, 0, SelectMode.SelectRead)) {
+                    Thread.Sleep(1);
+                    continue;
+                }
+
                 socketHandle = this.ni.Accept(this.m_Handle);
                 if (socketHandle != -1) break;
                 Thread.Sleep(1);
@@ -327,6 +342,22 @@ namespace System.Net.Sockets {
 
             while (totalSend < size) {
                 if (this.m_Handle == -1) throw new ObjectDisposedException();
+
+                // Cooperative readiness gate — see Accept(). lwIP raises
+                // sendevent when the TCP send buffer has room (and on error),
+                // so gating on SelectWrite lets a full send buffer park in the
+                // cooperative sleep below instead of inside a blocking lwip_send
+                // that freezes the interpreter for up to SO_SNDTIMEO (250 ms) —
+                // the freeze the "slows down while sending" reports were hitting.
+                // Backstop: the native send timeout still bounds the rare
+                // writable-then-refilled race.
+                if (!this.ni.Poll(this.m_Handle, 0, SelectMode.SelectWrite)) {
+                    if (DateTime.Now.Ticks >= expired)
+                        throw new SocketException(SocketError.TimedOut);
+                    if (this.DelayBetweenSend > 0)
+                        Thread.Sleep(this.DelayBetweenSend);
+                    continue;
+                }
 
                 var sent = this.ni.Send(this.m_Handle, buffer, offset + totalSend, size - totalSend, socketFlags);
 
@@ -370,6 +401,19 @@ namespace System.Net.Sockets {
 
             while (totalSend < size) {
                 if (this.m_Handle == -1) throw new ObjectDisposedException();
+
+                // Cooperative readiness gate — see Send(). For UDP lwIP keeps
+                // sendevent permanently set, so this poll passes straight
+                // through (datagram sends don't backpressure like TCP) and UDP
+                // behaviour is unchanged; on a connected/stream socket it gates
+                // exactly like Send().
+                if (!this.ni.Poll(this.m_Handle, 0, SelectMode.SelectWrite)) {
+                    if (DateTime.Now.Ticks >= expired)
+                        throw new SocketException(SocketError.TimedOut);
+                    if (this.DelayBetweenSend > 0)
+                        Thread.Sleep(this.DelayBetweenSend);
+                    continue;
+                }
 
                 var sent = this.ni.SendTo(this.m_Handle, buffer, offset + totalSend, size - totalSend, socketFlags, address);
 
@@ -425,6 +469,22 @@ namespace System.Net.Sockets {
             while (true) {
                 if (this.m_Handle == -1) throw new ObjectDisposedException();
 
+                // Cooperative readiness gate — see Accept(). lwIP raises
+                // rcvevent on data arrival, peer FIN, and socket error, and
+                // reports leftover buffered data via lastdata, so gating on
+                // SelectRead never masks a close (Receive returns 0) or an
+                // error (Receive throws). Entering the native receive only when
+                // readable keeps it from blocking the interpreter task for up
+                // to SO_RCVTIMEO (250 ms). Backstop: the native timeout still
+                // bounds the rare readable-then-drained race handled below.
+                if (!this.ni.Poll(this.m_Handle, 0, SelectMode.SelectRead)) {
+                    if (DateTime.Now.Ticks >= expired)
+                        throw new SocketException(SocketError.TimedOut);
+                    if (this.DelayBetweenReceive > 0)
+                        Thread.Sleep(this.DelayBetweenReceive);
+                    continue;
+                }
+
                 var read = this.ni.Receive(this.m_Handle, buffer, offset, size, socketFlags);
 
                 if (read > 0) {
@@ -473,6 +533,18 @@ namespace System.Net.Sockets {
 
             while (true) {
                 if (this.m_Handle == -1) throw new ObjectDisposedException();
+
+                // Cooperative readiness gate — see Receive(). A queued datagram
+                // raises rcvevent, so gating on SelectRead keeps the native
+                // ReceiveFrom from parking the interpreter task on an empty
+                // socket. Backstop: native SO_RCVTIMEO bounds the drained race.
+                if (!this.ni.Poll(this.m_Handle, 0, SelectMode.SelectRead)) {
+                    if (DateTime.Now.Ticks >= expired)
+                        throw new SocketException(SocketError.TimedOut);
+                    if (this.DelayBetweenReceive > 0)
+                        Thread.Sleep(this.DelayBetweenReceive);
+                    continue;
+                }
 
                 var read = this.ni.ReceiveFrom(this.m_Handle, buffer, offset, size, socketFlags, ref address);
 

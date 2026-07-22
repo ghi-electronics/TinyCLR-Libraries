@@ -118,6 +118,25 @@ namespace System.Net.Security {
 
             // Sentinels from native SecureRead (see Socket.NativeTimeoutSentinel).
             while (true) {
+                // Cooperative readiness gate for the TLS data phase. SecureRead
+                // ultimately calls a *blocking* lwip_recv inside mbedTLS
+                // (mbedtls_net_recv, flags 0, SO_RCVTIMEO 250 ms), so without a
+                // gate it freezes the single interpreter task exactly like a raw
+                // Receive. Proceed when mbedTLS already holds decrypted
+                // plaintext (Available > 0) OR the socket has bytes / FIN /
+                // error pending (SelectRead). Any leftover socket bytes keep
+                // lwIP readable (lastdata), so pipelined records never stall
+                // here; the native 250 ms timeout is the backstop for a record
+                // split across TCP segments.
+                if (this.ni.Available(this.sslHandle) <= 0
+                    && !this._socket.Poll(0, SelectMode.SelectRead)) {
+                    if (DateTime.Now.Ticks >= expired)
+                        throw new IOException("SSL read timed out.");
+                    if (this._socket.DelayBetweenReceive > 0)
+                        Thread.Sleep(this._socket.DelayBetweenReceive);
+                    continue;
+                }
+
                 var read = this.ni.SecureRead(this.sslHandle, buffer, offset, size);
 
                 if (read > 0) return read;
@@ -161,6 +180,20 @@ namespace System.Net.Security {
             }
 
             while (totalSent < size) {
+                // Cooperative readiness gate for the TLS data phase — see Read().
+                // SecureWrite calls a blocking lwip_send inside mbedTLS
+                // (mbedtls_net_send, SO_SNDTIMEO 250 ms); gate on socket
+                // writability so a full send buffer parks cooperatively here
+                // instead of freezing the interpreter. The native send timeout
+                // backstops the rare writable-then-refilled race.
+                if (!this._socket.Poll(0, SelectMode.SelectWrite)) {
+                    if (DateTime.Now.Ticks >= expired)
+                        throw new IOException("SSL write timed out.");
+                    if (this._socket.DelayBetweenSend > 0)
+                        Thread.Sleep(this._socket.DelayBetweenSend);
+                    continue;
+                }
+
                 var sent = this.ni.SecureWrite(this.sslHandle, buffer, offset + totalSent, size - totalSent);
 
                 if (sent > 0) {
