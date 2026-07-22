@@ -838,7 +838,8 @@
             <summary>Draws the dial face and pointer needle.</summary>
         </member>
         <member name="T:GHIElectronics.TinyCLR.UI.Controls.GroupBox">
-            <summary>A titled frame around a single child: draws a labelled border with the header above the content.</summary>
+            <summary>A titled frame around a single child: draws a labelled border with the header sitting ON the top
+            border line (WinForms/WPF "fieldset" style — the border is broken by a gap around the header text).</summary>
         </member>
         <member name="P:GHIElectronics.TinyCLR.UI.Controls.GroupBox.Header">
             <summary>The title shown above the frame. Uses the inherited <see cref="P:GHIElectronics.TinyCLR.UI.Controls.Control.Font"/>.</summary>
@@ -856,7 +857,8 @@
             <summary>Arranges the child inside the frame, below the header.</summary>
         </member>
         <member name="M:GHIElectronics.TinyCLR.UI.Controls.GroupBox.OnRender(GHIElectronics.TinyCLR.UI.Media.DrawingContext)">
-            <summary>Draws the frame border and the header text.</summary>
+            <summary>Draws the fieldset frame: the top border runs through the vertical middle of the header text,
+            broken by a gap around it (WinForms/WPF style).</summary>
         </member>
         <member name="T:GHIElectronics.TinyCLR.UI.Controls.Expander">
             <summary>A header with an expand/collapse chevron; tapping the header shows or hides the single child content.</summary>
