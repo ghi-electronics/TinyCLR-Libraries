@@ -3,7 +3,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>GHIElectronics.TinyCLR.System.Xml</id>
-    <version>3.0.1.1000-prerelease</version>
+    <version>3.0.1.2000-prerelease</version>
     <title>GHIElectronics.TinyCLR.System.Xml (deprecated - use GHIElectronics.TinyCLR.Data.Xml)</title>
     <authors>GHI Electronics, LLC</authors>
     <owners>GHI Electronics, LLC</owners>
@@ -16,8 +16,8 @@
     <copyright>Copyright GHI Electronics, LLC 2026</copyright>
     <tags>TinyCLR TinyCLROS Xml deprecated</tags>
     <dependencies>
-      <dependency id="GHIElectronics.TinyCLR.Core" version="3.0.1.1000-prerelease" />
-      <dependency id="GHIElectronics.TinyCLR.Data.Xml" version="3.0.1.1000-prerelease" />
+      <dependency id="GHIElectronics.TinyCLR.Core" version="3.0.1.2000-prerelease" />
+      <dependency id="GHIElectronics.TinyCLR.Data.Xml" version="3.0.1.2000-prerelease" />
     </dependencies>
   </metadata>
   <files>
