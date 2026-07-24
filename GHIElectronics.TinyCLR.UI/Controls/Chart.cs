@@ -82,7 +82,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         public Media.SolidColorBrush AreaColor { get; set; } = new Media.SolidColorBrush(Media.Color.FromRgb(0xBB, 0xDE, 0xFB));
 
         /// <summary>Radius in pixels of the data point markers.</summary>
-        public int RadiusPoint { get; set; } = 10;
+        public int RadiusPoint { get; set; } = 5;
         /// <summary>Title text shown above the chart.</summary>
         public string ChartTitle { get; set; } = "Chart1";
         /// <summary>The data points to plot.</summary>
@@ -241,8 +241,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
             var startDivX = this.pStart.X + divisionWidth;
             foreach (DataItem xx in this.Items) {
-                graph.FillEllipse(divisionBrush, startDivX - this.RadiusPoint / 2, this.pStart.Y - this.RadiusPoint / 2,
-                    this.RadiusPoint, this.RadiusPoint);
+                // No dot on the X axis (only the Y axis divisions get a dot) — just the category label under the axis.
                 graph.DrawString(xx.Name, this.Font, textBrush,
                     startDivX - (int)Scale(7, SCALE_FROM_WIDTH, this.Width),
                     this.pStart.Y + this.margin / 2 - (int)Scale(7, SCALE_FROM_HEIGHT, this.Height));
@@ -318,9 +317,6 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             using var ellipseBrush = ToSdBrush(this.EllipseColor);
             using var divisionBrush = ToSdBrush(this.DivisionColor);
             using var textBrush = ToSdBrush(this.TextColor);
-            // The bar outline strokes use the chart's background color (gives
-            // the bars a "card cut from the background" look). One pen, reused.
-            using var barOutlinePen = new System.Drawing.Pen(ToSd(this.BackgroundColor.Color), 2);
 
             graph.FillRectangle(bgBrush, 0, 0, this.Width, this.Height);
 
@@ -349,8 +345,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
             var startDivX = this.pStart.X + divisionWidth;
             foreach (DataItem xx in this.Items) {
-                graph.FillEllipse(divisionBrush, startDivX - this.RadiusPoint / 2, this.pStart.Y - this.RadiusPoint / 2,
-                    this.RadiusPoint, this.RadiusPoint);
+                // No dot on the X axis (only the Y axis divisions get a dot) — just the category label under the axis.
                 graph.DrawString(xx.Name, this.Font, textBrush,
                     startDivX - (int)Scale(7, SCALE_FROM_WIDTH, this.Width),
                     this.pStart.Y + this.margin / 2 - (int)Scale(7, SCALE_FROM_HEIGHT, this.Height));
@@ -372,21 +367,20 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                 var pixelYValue = divisionHeight * item.Value -
                     divisionHeight * minValue + (int)Scale(25, SCALE_FROM_HEIGHT, this.Height);
                 var pixelXValue = divisionWidth * (i + 1);
-                const int BorderWidth = 2;
 
-                graph.FillRectangle(ellipseBrush, this.pStart.X + pixelXValue - divisionWidth / 2,
-                    this.pStart.Y - (int)pixelYValue, divisionWidth, (int)pixelYValue - BorderWidth);
+                // Slim bars centred on the column, sitting ON the X axis (no bottom gap) and with no separator
+                // outline — a plain filled bar, matching the UI Designer preview.
+                var barWidth = divisionWidth * 55 / 100;
+                if (barWidth < 3) barWidth = 3;
+                var barX = this.pStart.X + pixelXValue - barWidth / 2;
 
-                var commonX = this.pStart.X + pixelXValue - divisionWidth / 2;
-                graph.DrawLine(barOutlinePen, commonX, this.pStart.Y - BorderWidth, commonX, this.pStart.Y - (int)pixelYValue);
-                graph.DrawLine(barOutlinePen, commonX, this.pStart.Y - (int)pixelYValue, commonX + divisionWidth, this.pStart.Y - (int)pixelYValue);
-                graph.DrawLine(barOutlinePen, commonX + divisionWidth, this.pStart.Y - (int)pixelYValue, commonX + divisionWidth, this.pStart.Y - BorderWidth);
+                graph.FillRectangle(ellipseBrush, barX, this.pStart.Y - (int)pixelYValue, barWidth, (int)pixelYValue);
 
                 var textSize = graph.MeasureString(item.Value.ToString(), this.Font);
 
                 graph.DrawString(item.Value.ToString(), this.Font, textBrush,
-                    commonX + (divisionWidth - textSize.Width) / 2,
-                    this.pStart.Y - (int)pixelYValue - this.Font.Height - BorderWidth);
+                    this.pStart.X + pixelXValue - (int)textSize.Width / 2,
+                    this.pStart.Y - (int)pixelYValue - this.Font.Height);
             }
 
             return bitmap;
