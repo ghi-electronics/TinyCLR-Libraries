@@ -5,6 +5,18 @@ using GHIElectronics.TinyCLR.UI.Media.Imaging;
 using MediaColor = GHIElectronics.TinyCLR.UI.Media.Color;
 
 namespace GHIElectronics.TinyCLR.UI.Controls {
+    /// <summary>Clock position of a <see cref="Gauge"/>'s dial opening (the gap between the low and high ends).</summary>
+    public enum GaugeStartPosition {
+        /// <summary>Opening at the bottom (6 o'clock) — the classic dial.</summary>
+        Bottom,
+        /// <summary>Opening at the left (9 o'clock).</summary>
+        Left,
+        /// <summary>Opening at the top (12 o'clock).</summary>
+        Top,
+        /// <summary>Opening at the right (3 o'clock).</summary>
+        Right,
+    }
+
     /// <summary>
     /// Analog gauge with calibrated tick marks, optional threshold arc, optional
     /// seven-segment digital readout, dial label, and pointer needle. Always
@@ -25,11 +37,26 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
         // --- visual constants (extracted from inline magic numbers) -----------
 
-        // Sweep angle (degrees) of the dial arc, centred on the bottom opening. 270° is the classic look;
-        // 180° gives a half dial, 360° a full ring. From/To are derived symmetrically so SweepAngle=270
-        // reproduces the original 135°/405° constants.
+        // Sweep angle (degrees) of the dial arc. 270° is the classic look; 180° gives a half dial, 360° a full ring.
+        // The arc is centred on the OPENING, whose clock position is StartPosition (default Bottom). From/To are derived
+        // symmetrically so SweepAngle=270 + Bottom reproduces the original 135°/405° constants.
         private float _sweepAngle = 270f;
-        private float FromAngleDeg => 90f + (360f - this._sweepAngle) / 2f;
+        private GaugeStartPosition _startPosition = GaugeStartPosition.Bottom;
+
+        // System.Drawing angles run clockwise from 3 o'clock: 0°=Right, 90°=Bottom, 180°=Left, 270°=Top. This is the
+        // angle the dial opening is centred on.
+        private float OpeningCenterDeg {
+            get {
+                switch (this._startPosition) {
+                    case GaugeStartPosition.Left: return 180f;
+                    case GaugeStartPosition.Top: return 270f;
+                    case GaugeStartPosition.Right: return 0f;
+                    default: return 90f; // Bottom
+                }
+            }
+        }
+
+        private float FromAngleDeg => this.OpeningCenterDeg + (360f - this._sweepAngle) / 2f;
         private float ToAngleDeg => this.FromAngleDeg + this._sweepAngle;
 
         private const int MinDivisions = 2;
@@ -88,6 +115,14 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                 this._sweepAngle = value;
                 this.MarkDirty();
             }
+        }
+
+        /// <summary>Which side the dial's OPENING (the gap between the low and high ends of the scale) sits on.
+        /// Default <see cref="GaugeStartPosition.Bottom"/> (6 o'clock, the classic dial); Left = 9 o'clock,
+        /// Top = 12 o'clock, Right = 3 o'clock. Rotates the whole dial together (arc, needle, ticks and labels).</summary>
+        public GaugeStartPosition StartPosition {
+            get => this._startPosition;
+            set { this._startPosition = value; this.MarkDirty(); }
         }
 
         /// <summary>Background color behind the dial.</summary>
@@ -518,7 +553,12 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             var minorLen = side / 34f;
             var labelR = radius - side / 9f;
 
-            for (var i = 0; i <= divisions; i++) {
+            // On a FULL ring (360° sweep) the last major (value = MaxValue) sits on the exact same point as the first
+            // (value = MinValue) — so its tick and label overlap the first. Drop it, drawing NoOfDivisions majors, not
+            // NoOfDivisions+1 (like a clock face shows 12 positions, not 13). A partial dial keeps both ends.
+            var lastMajor = this._sweepAngle >= 360f ? divisions - 1 : divisions;
+
+            for (var i = 0; i <= lastMajor; i++) {
                 var t = (float)i / divisions;
                 var ang = fromRad + sweepRad * t;
                 var cos = (float)System.Math.Cos(ang);

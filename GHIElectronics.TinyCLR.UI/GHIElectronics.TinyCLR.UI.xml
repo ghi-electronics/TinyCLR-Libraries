@@ -724,6 +724,21 @@
         <member name="M:GHIElectronics.TinyCLR.UI.Controls.Grid.ArrangeOverride(System.Int32,System.Int32)">
             <summary>Positions each child within its assigned cell.</summary>
         </member>
+        <member name="T:GHIElectronics.TinyCLR.UI.Controls.GaugeStartPosition">
+            <summary>Clock position of a <see cref="T:GHIElectronics.TinyCLR.UI.Controls.Gauge"/>'s dial opening (the gap between the low and high ends).</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Controls.GaugeStartPosition.Bottom">
+            <summary>Opening at the bottom (6 o'clock) — the classic dial.</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Controls.GaugeStartPosition.Left">
+            <summary>Opening at the left (9 o'clock).</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Controls.GaugeStartPosition.Top">
+            <summary>Opening at the top (12 o'clock).</summary>
+        </member>
+        <member name="F:GHIElectronics.TinyCLR.UI.Controls.GaugeStartPosition.Right">
+            <summary>Opening at the right (3 o'clock).</summary>
+        </member>
         <member name="T:GHIElectronics.TinyCLR.UI.Controls.Gauge">
              <summary>
              Analog gauge with calibrated tick marks, optional threshold arc, optional
@@ -765,6 +780,11 @@
         <member name="P:GHIElectronics.TinyCLR.UI.Controls.Gauge.SweepAngle">
             <summary>Sweep of the dial arc in degrees (30–360). 270 (default) = classic dial, 180 = half dial,
             360 = full ring. The arc is centred on the bottom opening.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.Controls.Gauge.StartPosition">
+            <summary>Which side the dial's OPENING (the gap between the low and high ends of the scale) sits on.
+            Default <see cref="F:GHIElectronics.TinyCLR.UI.Controls.GaugeStartPosition.Bottom"/> (6 o'clock, the classic dial); Left = 9 o'clock,
+            Top = 12 o'clock, Right = 3 o'clock. Rotates the whole dial together (arc, needle, ticks and labels).</summary>
         </member>
         <member name="P:GHIElectronics.TinyCLR.UI.Controls.Gauge.BackColor">
             <summary>Background color behind the dial.</summary>
