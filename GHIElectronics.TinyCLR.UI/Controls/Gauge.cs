@@ -515,20 +515,19 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
 
             var tipX = (int)(cx + radius * System.Math.Cos(ang));
             var tipY = (int)(cy + radius * System.Math.Sin(ang));
-            using (var pointerPen = ToSdPen(PointerColor, System.Math.Max(2, side / 50)))
+            // Thin needle drawn straight from the centre (no gap), matching the designer preview (side/55).
+            using (var pointerPen = ToSdPen(PointerColor, System.Math.Max(2, side / 55)))
                 g.DrawLine(pointerPen, cx, cy, tipX, tipY);
 
             this.DrawCenterCap(g, cx, cy, side);
         }
 
+        // A single small hub over the needle base (matches the designer's ~side*0.11 slate cap). The old two-ring cap
+        // (side/5 dial-coloured + side/7 rim) was much larger and, with the older needle, left a visible gap.
         private void DrawCenterCap(Graphics g, int cx, int cy, int side) {
-            var outer = (float)side / 5;
-            using (var brush = ToSdBrush(this._dialColor))
-                g.FillEllipse(brush, (int)(cx - outer / 2), (int)(cy - outer / 2), (int)outer, (int)outer);
-
-            var inner = (float)side / 7;
-            using (var brush = ToSdBrush(RimColor))
-                g.FillEllipse(brush, (int)(cx - inner / 2), (int)(cy - inner / 2), (int)inner, (int)inner);
+            var d = System.Math.Max(6f, side * 0.11f);
+            using var brush = ToSdBrush(RimColor);
+            g.FillEllipse(brush, (int)(cx - d / 2), (int)(cy - d / 2), (int)d, (int)d);
         }
 
         // Draws ruler tick marks and numeric labels around the arc: exactly NoOfDivisions+1 major ticks (values
