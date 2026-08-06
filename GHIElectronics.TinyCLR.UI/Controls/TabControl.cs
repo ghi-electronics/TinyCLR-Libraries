@@ -5,10 +5,12 @@ using GHIElectronics.TinyCLR.UI.Media;
 
 namespace GHIElectronics.TinyCLR.UI.Controls {
     /// <summary>A tabbed container: a strip of tab headers over a body that shows the selected tab's content.
-    /// Add tabs with <see cref="AddTab"/>; tapping a header selects it.</summary>
+    /// Add tabs with <see cref="AddTab(string, UIElement)"/>; tapping a header selects it. A header is either a plain text label or, like
+    /// WPF's <c>TabItem.Header</c>, any UIElement (an Image, a StackPanel of icon + text, …).</summary>
     public class TabControl : Control {
-        private readonly ArrayList _headers = new ArrayList();  // string
-        private readonly ArrayList _contents = new ArrayList(); // UIElement (may be null)
+        private readonly ArrayList _headerStrings = new ArrayList();  // string header (null when the tab uses a UIElement header)
+        private readonly ArrayList _headerElements = new ArrayList(); // UIElement header (null when the tab uses a string header)
+        private readonly ArrayList _contents = new ArrayList();       // UIElement (may be null)
         private int _selectedIndex;
         private int _headerHeight = 24;
 
@@ -40,9 +42,10 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         // The selected index clamped to the current tab count (the setter allows values set before tabs exist).
         private int SafeSelectedIndex => (this._selectedIndex < this._contents.Count) ? this._selectedIndex : this._contents.Count - 1;
 
-        /// <summary>Adds a tab with the given header text and content element.</summary>
+        /// <summary>Adds a tab with a plain text header and content element.</summary>
         public void AddTab(string header, UIElement content) {
-            this._headers.Add(header ?? string.Empty);
+            this._headerStrings.Add(header ?? string.Empty);
+            this._headerElements.Add(null);
             this._contents.Add(content);
             if (content != null) {
                 this.LogicalChildren.Add(content);
@@ -51,14 +54,35 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             this.InvalidateMeasure();
         }
 
-        /// <summary>Measures every tab's content against the body area.</summary>
+        /// <summary>Adds a tab whose header is an arbitrary UIElement — WPF's <c>TabItem.Header</c> model. Pass an
+        /// <see cref="Image"/>, a <see cref="StackPanel"/> of icon + text, or any control; it is measured and centred
+        /// in the header, and clipped to the tab. A null header shows an empty tab.</summary>
+        public void AddTab(UIElement header, UIElement content) {
+            this._headerStrings.Add(null);
+            this._headerElements.Add(header);
+            this._contents.Add(content);
+            if (header != null) {
+                this.LogicalChildren.Add(header);
+            }
+
+            if (content != null) {
+                this.LogicalChildren.Add(content);
+            }
+
+            this.InvalidateMeasure();
+        }
+
+        /// <summary>Measures each tab's header (in its strip slot) and content (against the body area).</summary>
         protected override void MeasureOverride(int availableWidth, int availableHeight, out int desiredWidth, out int desiredHeight) {
             var bodyH = availableHeight - this._headerHeight;
             if (bodyH < 0) {
                 bodyH = 0;
             }
 
-            for (var i = 0; i < this._contents.Count; i++) {
+            var n = this._contents.Count;
+            var tabW = n > 0 ? availableWidth / n : availableWidth;
+            for (var i = 0; i < n; i++) {
+                ((UIElement)this._headerElements[i])?.Measure(tabW, this._headerHeight);
                 ((UIElement)this._contents[i])?.Measure(availableWidth, bodyH);
             }
 
@@ -66,15 +90,36 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             desiredHeight = availableHeight < Media.Constants.MaxExtent ? availableHeight : this._headerHeight;
         }
 
-        /// <summary>Arranges the selected tab's content in the body; collapses the rest.</summary>
+        /// <summary>Arranges each UIElement header centred in its strip slot, and the selected tab's content in the
+        /// body (collapsing the rest).</summary>
         protected override void ArrangeOverride(int arrangeWidth, int arrangeHeight) {
             var bodyH = arrangeHeight - this._headerHeight;
             if (bodyH < 0) {
                 bodyH = 0;
             }
 
+            var n = this._contents.Count;
+            var tabW = n > 0 ? arrangeWidth / n : arrangeWidth;
             var sel = this.SafeSelectedIndex;
-            for (var i = 0; i < this._contents.Count; i++) {
+            for (var i = 0; i < n; i++) {
+                var h = (UIElement)this._headerElements[i];
+                if (h != null) {
+                    // Inset the header region by the 1px tab-outline pen so content sits INSIDE the border rather
+                    // than painting over it (WPF's Border insets its child by BorderThickness; we do it explicitly).
+                    const int border = 1;
+                    var innerX = i * tabW + border;
+                    var innerW = tabW - 2 * border;
+                    var innerH = this._headerHeight - 2 * border;
+                    if (innerW < 0) innerW = 0;
+                    if (innerH < 0) innerH = 0;
+
+                    h.GetDesiredSize(out var hw, out var hh);
+                    if (hw > innerW) hw = innerW;
+                    if (hh > innerH) hh = innerH;
+                    // Centre the header content in the inset slot (like WPF's default header alignment).
+                    h.Arrange(innerX + (innerW - hw) / 2, border + (innerH - hh) / 2, hw, hh);
+                }
+
                 var c = (UIElement)this._contents[i];
                 if (c == null) {
                     continue;
@@ -98,7 +143,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             base.OnTouchUp(e); // raise the public TouchUp event for user/designer handlers
 
             e.GetPosition(this, 0, out var x, out var y);
-            var n = this._headers.Count;
+            var n = this._contents.Count;
             if (y >= 0 && y < this._headerHeight && n > 0) {
                 var tabW = this._renderWidth / n;
                 if (tabW > 0) {
@@ -111,12 +156,13 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
             }
         }
 
-        /// <summary>Draws the tab-header strip.</summary>
+        /// <summary>Draws the tab-header backgrounds and separators. String headers are drawn here; UIElement headers
+        /// are rendered by the framework (as children) on top of the backgrounds.</summary>
         public override void OnRender(DrawingContext dc) {
             base.OnRender(dc);
 
             var w = this._renderWidth;
-            var n = this._headers.Count;
+            var n = this._contents.Count;
             if (n == 0) {
                 return;
             }
@@ -133,8 +179,7 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
                 var selected = i == sel;
                 dc.DrawRectangle(new SolidColorBrush(selected ? this.SelectedTabColor : this.TabColor), pen, x, 0, tabW, this._headerHeight);
 
-                if (this.Font != null) {
-                    var txt = (string)this._headers[i];
+                if (this._headerStrings[i] is string txt && this.Font != null) {
                     dc.DrawText(ref txt, this.Font, this.HeaderColor, x + 3, (this._headerHeight - this.Font.Height) / 2, tabW - 6, this.Font.Height, TextAlignment.Center, TextTrimming.CharacterEllipsis);
                 }
             }

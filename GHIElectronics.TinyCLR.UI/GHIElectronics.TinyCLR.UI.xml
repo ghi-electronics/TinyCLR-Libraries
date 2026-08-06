@@ -906,7 +906,8 @@
         </member>
         <member name="T:GHIElectronics.TinyCLR.UI.Controls.TabControl">
             <summary>A tabbed container: a strip of tab headers over a body that shows the selected tab's content.
-            Add tabs with <see cref="M:GHIElectronics.TinyCLR.UI.Controls.TabControl.AddTab(System.String,GHIElectronics.TinyCLR.UI.UIElement)"/>; tapping a header selects it.</summary>
+            Add tabs with <see cref="M:GHIElectronics.TinyCLR.UI.Controls.TabControl.AddTab(System.String,GHIElectronics.TinyCLR.UI.UIElement)"/>; tapping a header selects it. A header is either a plain text label or, like
+            WPF's <c>TabItem.Header</c>, any UIElement (an Image, a StackPanel of icon + text, …).</summary>
         </member>
         <member name="P:GHIElectronics.TinyCLR.UI.Controls.TabControl.TabColor">
             <summary>Fill of an unselected tab header.</summary>
@@ -924,19 +925,26 @@
             <summary>The index of the visible tab. May be set before tabs are added (it is clamped when rendering).</summary>
         </member>
         <member name="M:GHIElectronics.TinyCLR.UI.Controls.TabControl.AddTab(System.String,GHIElectronics.TinyCLR.UI.UIElement)">
-            <summary>Adds a tab with the given header text and content element.</summary>
+            <summary>Adds a tab with a plain text header and content element.</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.UI.Controls.TabControl.AddTab(GHIElectronics.TinyCLR.UI.UIElement,GHIElectronics.TinyCLR.UI.UIElement)">
+            <summary>Adds a tab whose header is an arbitrary UIElement — WPF's <c>TabItem.Header</c> model. Pass an
+            <see cref="T:GHIElectronics.TinyCLR.UI.Controls.Image"/>, a <see cref="T:GHIElectronics.TinyCLR.UI.Controls.StackPanel"/> of icon + text, or any control; it is measured and centred
+            in the header, and clipped to the tab. A null header shows an empty tab.</summary>
         </member>
         <member name="M:GHIElectronics.TinyCLR.UI.Controls.TabControl.MeasureOverride(System.Int32,System.Int32,System.Int32@,System.Int32@)">
-            <summary>Measures every tab's content against the body area.</summary>
+            <summary>Measures each tab's header (in its strip slot) and content (against the body area).</summary>
         </member>
         <member name="M:GHIElectronics.TinyCLR.UI.Controls.TabControl.ArrangeOverride(System.Int32,System.Int32)">
-            <summary>Arranges the selected tab's content in the body; collapses the rest.</summary>
+            <summary>Arranges each UIElement header centred in its strip slot, and the selected tab's content in the
+            body (collapsing the rest).</summary>
         </member>
         <member name="M:GHIElectronics.TinyCLR.UI.Controls.TabControl.OnTouchUp(GHIElectronics.TinyCLR.UI.Input.TouchEventArgs)">
             <summary>Selects the tapped tab header.</summary>
         </member>
         <member name="M:GHIElectronics.TinyCLR.UI.Controls.TabControl.OnRender(GHIElectronics.TinyCLR.UI.Media.DrawingContext)">
-            <summary>Draws the tab-header strip.</summary>
+            <summary>Draws the tab-header backgrounds and separators. String headers are drawn here; UIElement headers
+            are rendered by the framework (as children) on top of the backgrounds.</summary>
         </member>
         <member name="T:GHIElectronics.TinyCLR.UI.Controls.TreeNode">
             <summary>A node in a <see cref="T:GHIElectronics.TinyCLR.UI.Controls.TreeView"/>: a header plus optional child nodes.</summary>
