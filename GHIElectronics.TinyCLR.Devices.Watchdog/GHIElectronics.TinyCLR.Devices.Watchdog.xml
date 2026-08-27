@@ -6,7 +6,7 @@
     <members>
         <member name="T:GHIElectronics.TinyCLR.Devices.Watchdog.WatchdogController">
             <summary>
-            Independent watchdog timer. <see cref="M:GHIElectronics.TinyCLR.Devices.Watchdog.WatchdogController.Enable(System.UInt32)"/> with a timeout and
+            Independent watchdog timer. <see cref="!:Enable(uint)"/> with a timeout and
             call <see cref="M:GHIElectronics.TinyCLR.Devices.Watchdog.WatchdogController.Reset"/> periodically — if the timer ever expires without
             being reset, the chip reboots. Useful as a failsafe against firmware lockups.
             </summary>
@@ -26,19 +26,19 @@
         <member name="M:GHIElectronics.TinyCLR.Devices.Watchdog.WatchdogController.Dispose">
             <summary>Releases the underlying provider.</summary>
         </member>
-        <member name="P:GHIElectronics.TinyCLR.Devices.Watchdog.WatchdogController.GetMaxTimeout">
-            <summary>Largest legal value (in milliseconds) for the <see cref="M:GHIElectronics.TinyCLR.Devices.Watchdog.WatchdogController.Enable(System.UInt32)"/> timeout argument.</summary>
+        <member name="P:GHIElectronics.TinyCLR.Devices.Watchdog.WatchdogController.MaxTimeout">
+            <summary>Largest legal value for the <see cref="M:GHIElectronics.TinyCLR.Devices.Watchdog.WatchdogController.Enable(System.TimeSpan)"/> timeout argument.</summary>
         </member>
         <member name="P:GHIElectronics.TinyCLR.Devices.Watchdog.WatchdogController.IsEnabled">
-            <summary>True once <see cref="M:GHIElectronics.TinyCLR.Devices.Watchdog.WatchdogController.Enable(System.UInt32)"/> has been called.</summary>
+            <summary>True once <see cref="!:Enable(uint)"/> has been called.</summary>
         </member>
-        <member name="M:GHIElectronics.TinyCLR.Devices.Watchdog.WatchdogController.Enable(System.UInt32)">
+        <member name="M:GHIElectronics.TinyCLR.Devices.Watchdog.WatchdogController.Enable(System.TimeSpan)">
             <summary>
             Starts the watchdog. From this point on, <see cref="M:GHIElectronics.TinyCLR.Devices.Watchdog.WatchdogController.Reset"/> must be
             called more often than <paramref name="timeout"/> or the device will reboot.
             On many chips the watchdog cannot be disabled once enabled.
             </summary>
-            <param name="timeout">Timeout in milliseconds (must be &gt; 0 and ≤ <see cref="P:GHIElectronics.TinyCLR.Devices.Watchdog.WatchdogController.GetMaxTimeout"/>).</param>
+            <param name="timeout">Timeout in TimeSpan (must be &gt; 0 and ≤ <see cref="P:GHIElectronics.TinyCLR.Devices.Watchdog.WatchdogController.MaxTimeout"/>).</param>
         </member>
         <member name="M:GHIElectronics.TinyCLR.Devices.Watchdog.WatchdogController.Disable">
             <summary>Disables the watchdog (only supported on hardware that allows it).</summary>

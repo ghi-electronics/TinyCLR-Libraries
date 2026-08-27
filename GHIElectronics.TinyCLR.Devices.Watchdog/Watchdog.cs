@@ -6,8 +6,7 @@ using System.Threading;
 using GHIElectronics.TinyCLR.Devices.Watchdog.Provider;
 using GHIElectronics.TinyCLR.Native;
 
-namespace GHIElectronics.TinyCLR.Devices.Watchdog
-{
+namespace GHIElectronics.TinyCLR.Devices.Watchdog {
     /// <summary>
     /// Independent watchdog timer. <see cref="Enable(uint)"/> with a timeout and
     /// call <see cref="Reset"/> periodically — if the timer ever expires without
@@ -28,8 +27,13 @@ namespace GHIElectronics.TinyCLR.Devices.Watchdog
 
         /// <summary>Releases the underlying provider.</summary>
         public void Dispose() => this.Provider.Dispose();
-        /// <summary>Largest legal value (in milliseconds) for the <see cref="Enable(uint)"/> timeout argument.</summary>
-        public uint GetMaxTimeout => this.Provider.GetMaxTimeout;
+        /// <summary>Largest legal value for the <see cref="Enable(TimeSpan)"/> timeout argument.</summary>
+        public TimeSpan MaxTimeout {
+            get {
+                var time = TimeSpan.FromMilliseconds(this.Provider.GetMaxTimeout);
+                return time;
+            }            
+        }
         /// <summary>True once <see cref="Enable(uint)"/> has been called.</summary>
         public bool IsEnabled => this.Provider.IsEnabled;
         /// <summary>
@@ -37,12 +41,13 @@ namespace GHIElectronics.TinyCLR.Devices.Watchdog
         /// called more often than <paramref name="timeout"/> or the device will reboot.
         /// On many chips the watchdog cannot be disabled once enabled.
         /// </summary>
-        /// <param name="timeout">Timeout in milliseconds (must be &gt; 0 and ≤ <see cref="GetMaxTimeout"/>).</param>
-        public void Enable(uint timeout) {
-            if (timeout == 0 || timeout > this.GetMaxTimeout)
+        /// <param name="timeout">Timeout in TimeSpan (must be &gt; 0 and ≤ <see cref="MaxTimeout"/>).</param>
+        public void Enable(TimeSpan timeout) {
+            var t = (uint)timeout.TotalMilliseconds;
+            if (t == 0 || t > this.Provider.GetMaxTimeout)
                 throw new ArgumentOutOfRangeException(nameof(timeout));
 
-            this.Provider.Enable(timeout);
+            this.Provider.Enable(t);
         }
         /// <summary>Disables the watchdog (only supported on hardware that allows it).</summary>
         public void Disable() => this.Provider.Disable();
