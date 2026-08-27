@@ -51,12 +51,18 @@ namespace GHIElectronics.TinyCLR.UI.Controls {
         /// <summary>Draws the fieldset frame: the top border runs through the vertical middle of the header text,
         /// broken by a gap around it (WinForms/WPF style).</summary>
         public override void OnRender(DrawingContext dc) {
-            base.OnRender(dc); // Background + focus visual
-
             var w = this._renderWidth;
             var h = this._renderHeight;
             var hasHeader = this.Font != null && this._header.Length > 0;
             var lineY = hasHeader ? this.Font.Height / 2 : 0; // top border passes through the header's vertical middle
+
+            // Fill ONLY the framed interior (from the top border line down), not the whole bounds — so the header
+            // strip above the frame shows whatever is behind the GroupBox. Deliberately NOT base.OnRender, which
+            // fills 0..h (Control.OnRender) and would colour the header area too. (Focus visual is dropped: a
+            // GroupBox is a container and isn't a focus target in practice.)
+            if (this._background != null) {
+                dc.DrawRectangle(this._background, null, 0, lineY, w, h - lineY);
+            }
 
             var pen = new Media.Pen(this.BorderColor, 1);
             dc.DrawLine(pen, 0, h - 1, w - 1, h - 1);  // bottom
