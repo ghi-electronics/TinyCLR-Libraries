@@ -863,7 +863,10 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
                                             }
 
                                             if (!acknowledge) {
-                                                var delta = DateTime.Now.Ticks - packetFromQueue.Timestamp;
+                                                // Timestamp is in ticks; CONNECTION_TIMEOUT_DEFAULT is in milliseconds.
+                                                // Convert before comparing, or the 60 s retry fires after 6 ms and the
+                                                // packet is transmitted up to RETRY_DEFAULT times.
+                                                var delta = ToMillisecond(DateTime.Now.Ticks - packetFromQueue.Timestamp);
 
                                                 if (delta >= CONNECTION_TIMEOUT_DEFAULT) {
 
@@ -925,7 +928,10 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
                                             }
 
                                             if (!acknowledge) {
-                                                var delta = DateTime.Now.Ticks - packetFromQueue.Timestamp;
+                                                // Timestamp is in ticks; CONNECTION_TIMEOUT_DEFAULT is in milliseconds.
+                                                // Convert before comparing, or the 60 s retry fires after 6 ms and the
+                                                // packet is transmitted up to RETRY_DEFAULT times.
+                                                var delta = ToMillisecond(DateTime.Now.Ticks - packetFromQueue.Timestamp);
 
                                                 if (delta >= CONNECTION_TIMEOUT_DEFAULT) {
                                                     if (packetFromQueue.RetryCount < RETRY_DEFAULT) {
@@ -1015,7 +1021,10 @@ namespace GHIElectronics.TinyCLR.Networking.Mqtt {
                                             }
 
                                             if (!acknowledge) {
-                                                var delta = DateTime.Now.Ticks - packetFromQueue.Timestamp;
+                                                // Timestamp is in ticks; CONNECTION_TIMEOUT_DEFAULT is in milliseconds.
+                                                // Convert before comparing, or the 60 s retry fires after 6 ms and the
+                                                // packet is transmitted up to RETRY_DEFAULT times.
+                                                var delta = ToMillisecond(DateTime.Now.Ticks - packetFromQueue.Timestamp);
                                                 if (delta >= CONNECTION_TIMEOUT_DEFAULT) {
                                                     if (packetFromQueue.RetryCount < RETRY_DEFAULT) {
                                                         packetFromQueue.State = PacketState.SendPubRel;
