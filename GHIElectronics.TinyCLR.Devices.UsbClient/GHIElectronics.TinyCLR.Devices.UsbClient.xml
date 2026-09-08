@@ -389,7 +389,28 @@
         </member>
         <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.MassStorage.AttachLogicalUnit(System.IntPtr)">
             <summary>Attaches a removable storage device.</summary>
-            <param name="storage">The storage device (hdc )to attach.</param>        
+            <param name="storage">The storage device (hdc )to attach.</param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.MassStorage.AttachLogicalUnit(System.IntPtr,System.String,System.String)">
+            <summary>Attaches a removable storage device, giving it SCSI identification strings.</summary>
+            <param name="storage">The storage device (hdc )to attach.</param>
+            <param name="vendor">
+            SCSI vendor identification, up to 8 characters. Reported by INQUIRY and shown by
+            Windows as the <c>Ven_</c> part of the device id. Pass <c>null</c> to keep the
+            default. Longer strings are truncated by the device; shorter ones are space padded.
+            </param>
+            <param name="product">
+            SCSI product identification, up to 16 characters, shown as the <c>Prod_</c> part.
+            Pass <c>null</c> to use <see cref="P:GHIElectronics.TinyCLR.Devices.UsbClient.UsbClientSetting.ProductName"/>, which is what
+            earlier releases always did.
+            </param>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.MassStorage.AttachLogicalUnit(System.IntPtr,System.String,System.String,System.String)">
+            <summary>Attaches a removable storage device, giving it SCSI identification strings.</summary>
+            <param name="storage">The storage device (hdc )to attach.</param>
+            <param name="vendor">SCSI vendor identification, up to 8 characters. <c>null</c> keeps the default.</param>
+            <param name="product">SCSI product identification, up to 16 characters. <c>null</c> uses <see cref="P:GHIElectronics.TinyCLR.Devices.UsbClient.UsbClientSetting.ProductName"/>.</param>
+            <param name="revision">SCSI product revision level, up to 4 characters. <c>null</c> keeps "1.00".</param>
         </member>
         <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.MassStorage.RemoveLogicalUnit(System.IntPtr)">
             <summary>Remove a removable storage device.</summary>
@@ -401,7 +422,7 @@
         <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.MassStorage.Disable">
             <summary>Disable a removable storage device.</summary>         
         </member>
-        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.MassStorage.EnableLogicalUnit(System.IntPtr,System.Int32,System.String,System.String)">
+        <member name="M:GHIElectronics.TinyCLR.Devices.UsbClient.MassStorage.EnableLogicalUnit(System.IntPtr,System.Int32,System.String,System.String,System.String)">
             <summary>Enables the logical unit associated with the given number.</summary>
             <param name="storage">Storage Hdc of storage controller.</param>
             <param name="number">The logical unit number.</param>

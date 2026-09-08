@@ -19,6 +19,9 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
         private int logicalUnitCount;
         private static bool enabled;
         private static IntPtr storage;
+        private static string vendor;
+        private static string product;
+        private static string revision;
 
         /// <summary>The maximum number of logical units that any mass storage can support.</summary>
         public static int MaximumSupportedLogicalUnits => MassStorage.maxSupportLogicaUnits;
@@ -28,6 +31,9 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
 
         static MassStorage() {
             MassStorage.nextLogicalUnitNumber = 0;
+            MassStorage.vendor = null;
+            MassStorage.product = null;
+            MassStorage.revision = null;
             MassStorage.maxSupportLogicaUnits = 1;
         }
 
@@ -81,14 +87,39 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
         }
 
         /// <summary>Attaches a removable storage device.</summary>
-        /// <param name="storage">The storage device (hdc )to attach.</param>        
-        public void AttachLogicalUnit(IntPtr storage) {
+        /// <param name="storage">The storage device (hdc )to attach.</param>
+        public void AttachLogicalUnit(IntPtr storage) => this.AttachLogicalUnit(storage, null, null, null);
+
+        /// <summary>Attaches a removable storage device, giving it SCSI identification strings.</summary>
+        /// <param name="storage">The storage device (hdc )to attach.</param>
+        /// <param name="vendor">
+        /// SCSI vendor identification, up to 8 characters. Reported by INQUIRY and shown by
+        /// Windows as the <c>Ven_</c> part of the device id. Pass <c>null</c> to keep the
+        /// default. Longer strings are truncated by the device; shorter ones are space padded.
+        /// </param>
+        /// <param name="product">
+        /// SCSI product identification, up to 16 characters, shown as the <c>Prod_</c> part.
+        /// Pass <c>null</c> to use <see cref="UsbClientSetting.ProductName"/>, which is what
+        /// earlier releases always did.
+        /// </param>
+        public void AttachLogicalUnit(IntPtr storage, string vendor, string product) =>
+            this.AttachLogicalUnit(storage, vendor, product, null);
+
+        /// <summary>Attaches a removable storage device, giving it SCSI identification strings.</summary>
+        /// <param name="storage">The storage device (hdc )to attach.</param>
+        /// <param name="vendor">SCSI vendor identification, up to 8 characters. <c>null</c> keeps the default.</param>
+        /// <param name="product">SCSI product identification, up to 16 characters. <c>null</c> uses <see cref="UsbClientSetting.ProductName"/>.</param>
+        /// <param name="revision">SCSI product revision level, up to 4 characters. <c>null</c> keeps "1.00".</param>
+        public void AttachLogicalUnit(IntPtr storage, string vendor, string product, string revision) {
             if (MassStorage.nextLogicalUnitNumber >= 1 || MassStorage.enabled) {
                 throw new IndexOutOfRangeException("Support one Logical Unit only!");
             }
 
             MassStorage.nextLogicalUnitNumber++;
             MassStorage.storage = storage;
+            MassStorage.vendor = vendor;
+            MassStorage.product = product;
+            MassStorage.revision = revision;
         }
 
         /// <summary>Remove a removable storage device.</summary>
@@ -114,7 +145,14 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
                 throw new InvalidOperationException("No LogicalUnit found.");
             }
 
-            this.EnableLogicalUnit(MassStorage.storage, MassStorage.nextLogicalUnitNumber - 1, " ", this.usbClientSetting.ProductName);
+            // Vendor used to be hardcoded to a single space, which Windows shows as an
+            // empty Ven_ field and SCSI INQUIRY does not really allow. Callers can now
+            // supply both strings via AttachLogicalUnit; the old defaults are kept for
+            // anyone who does not.
+            this.EnableLogicalUnit(MassStorage.storage, MassStorage.nextLogicalUnitNumber - 1,
+                MassStorage.vendor ?? " ",
+                MassStorage.product ?? this.usbClientSetting.ProductName,
+                MassStorage.revision ?? "1.00");
 
             base.Enable();
 
@@ -144,10 +182,10 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
         /// <param name="number">The logical unit number.</param>
         /// <param name="vendor">vendor.</param>
         /// <param name="product">product.</param>
-        private void EnableLogicalUnit(IntPtr storage, int number, string vendor, string product) {
+        private void EnableLogicalUnit(IntPtr storage, int number, string vendor, string product, string revision) {
             if (number < 0 || number > 255) throw new ArgumentOutOfRangeException("number", "number must be non-negative and less than 256.");
 
-            MassStorage.NativeEnableLogicalUnit(storage, (byte)number, vendor, product);
+            MassStorage.NativeEnableLogicalUnit(storage, (byte)number, vendor, product, revision);
         }
 
         /// <summary>Disables the logical unit associated with the given number.</summary>
@@ -160,7 +198,7 @@ namespace GHIElectronics.TinyCLR.Devices.UsbClient {
         }
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        extern private static void NativeEnableLogicalUnit(IntPtr storage, byte number, string vendor, string product);
+        extern private static void NativeEnableLogicalUnit(IntPtr storage, byte number, string vendor, string product, string revision);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         extern private static void NativeDisableLogicalUnit(IntPtr storage, byte number);
