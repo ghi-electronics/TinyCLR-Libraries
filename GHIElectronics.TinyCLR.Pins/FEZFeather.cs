@@ -108,11 +108,11 @@ namespace GHIElectronics.TinyCLR.Pins {
                 public const string Id = STM32H7.Adc.Adc3;
                 
                 /// <summary>ADC pin.</summary>
-                public const int InternalReferenceVoltage = STM32H7.Adc.Channel17;
+                public const int InternalReferenceVoltage = STM32H7.Adc.Channel19;
                 /// <summary>ADC pin.</summary>
                 public const int InternalTemperatureSensor = STM32H7.Adc.Channel18;
                 /// <summary>ADC pin.</summary>
-                public const int VBAT = STM32H7.Adc.Channel19;
+                public const int VBAT = STM32H7.Adc.Channel17;
             }
         }
         /// <summary>DAC channel definitions.</summary>
