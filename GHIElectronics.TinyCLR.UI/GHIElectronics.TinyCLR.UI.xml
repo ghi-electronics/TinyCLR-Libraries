@@ -3787,6 +3787,17 @@
         <member name="P:GHIElectronics.TinyCLR.UI.OnScreenKeyboard.Font">
             <summary>Gets or sets the font used for the keyboard's text input field.</summary>
         </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.OnScreenKeyboard.ShowPressFeedback">
+            <summary>Whether the keyboard darkens a key while it is being pressed to give
+            visual feedback. Enabled by default. Set to false to fall back to the flat
+            touch-up-only behavior that shipped prior to this option being added.</summary>
+        </member>
+        <member name="P:GHIElectronics.TinyCLR.UI.OnScreenKeyboard.RepeatBackspaceOnHold">
+            <summary>Whether holding the Backspace key auto-repeats the delete (like a
+            physical keyboard). After an initial ~500 ms delay characters are removed
+            every ~100 ms until the finger is released. Enabled by default. Set to
+            false to require a fresh tap per delete.</summary>
+        </member>
         <member name="T:GHIElectronics.TinyCLR.UI.PresentationSource">
              <summary>
              Presentation source is our connection to the rest of the managed system.
