@@ -121,6 +121,26 @@ namespace System.Collections.Generic {
         public void InsertRange(int index, IEnumerable<T> collection) {
             if (collection == null) throw new ArgumentNullException();
             if ((uint)index > (uint)_size) throw new ArgumentOutOfRangeException();
+
+            // Fast path for T[]: bypass IEnumerator<T>.Current on an array source.
+            // SZArrayEnumerator.Current returns `object` (boxed value for a value-type
+            // array), and the erased-generic callvirt in this method does NOT unbox
+            // back to T before the inner `stelem !0`, so a List<int>.AddRange(int[])
+            // would store boxed-pointer bits instead of the int values. Array.Copy
+            // sidesteps the enumerator entirely and does value-type copying at the
+            // native level. Reported: forum #26385.
+            if (collection is Array arr) {
+                var n = arr.Length;
+                if (n > 0) {
+                    EnsureCapacity(_size + n);
+                    if (index < _size) Array.Copy(_items, index, _items, index + n, _size - index);
+                    Array.Copy(arr, 0, _items, index, n);
+                    _size += n;
+                    _version++;
+                }
+                return;
+            }
+
             var en = collection.GetEnumerator();
             var any = false;
             while (en.MoveNext()) {
