@@ -4,6 +4,12 @@
         <name>GHIElectronics.TinyCLR.Cryptography</name>
     </assembly>
     <members>
+        <member name="M:GHIElectronics.TinyCLR.Cryptography.AesCryptoServiceProvider.Encrypt(System.Byte[],System.Byte[],System.Byte[],System.Int32,System.Int32,GHIElectronics.TinyCLR.Cryptography.AesCryptoServiceProvider.AesMode,GHIElectronics.TinyCLR.Cryptography.AesCryptoServiceProvider.AesPadding)">
+            <summary>Encrypt the given slice. Key must be 16/24/32 bytes. IV must be 16 bytes (ignored for ECB).</summary>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Cryptography.AesCryptoServiceProvider.Decrypt(System.Byte[],System.Byte[],System.Byte[],System.Int32,System.Int32,GHIElectronics.TinyCLR.Cryptography.AesCryptoServiceProvider.AesMode,GHIElectronics.TinyCLR.Cryptography.AesCryptoServiceProvider.AesPadding)">
+            <summary>Decrypt the given slice. Returns plaintext with padding removed (if specified).</summary>
+        </member>
         <member name="T:GHIElectronics.TinyCLR.Cryptography.Crc16">
             <summary>CRC-16 hash. Computes a 16-bit CRC over a byte buffer, optionally with a non-zero seed.</summary>
         </member>

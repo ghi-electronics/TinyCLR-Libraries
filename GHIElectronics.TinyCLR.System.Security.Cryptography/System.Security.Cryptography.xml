@@ -445,5 +445,200 @@
         <member name="M:System.Security.Cryptography.RandomNumberGenerator.Dispose">
             <summary>Releases the resources used by the generator.</summary>
         </member>
+        <member name="T:System.Security.Cryptography.CipherMode">
+            <summary>Block-cipher mode. Supported: <see cref="F:System.Security.Cryptography.CipherMode.CBC"/>, <see cref="F:System.Security.Cryptography.CipherMode.ECB"/>. Other values throw at use.</summary>
+        </member>
+        <member name="F:System.Security.Cryptography.CipherMode.CBC">
+            <summary>Cipher Block Chaining.</summary>
+        </member>
+        <member name="F:System.Security.Cryptography.CipherMode.ECB">
+            <summary>Electronic Codebook.</summary>
+        </member>
+        <member name="F:System.Security.Cryptography.CipherMode.OFB">
+            <summary>Output Feedback (not supported).</summary>
+        </member>
+        <member name="F:System.Security.Cryptography.CipherMode.CFB">
+            <summary>Cipher Feedback (not supported).</summary>
+        </member>
+        <member name="F:System.Security.Cryptography.CipherMode.CTS">
+            <summary>Ciphertext Stealing (not supported).</summary>
+        </member>
+        <member name="T:System.Security.Cryptography.PaddingMode">
+            <summary>Padding scheme for block ciphers. Supported: <see cref="F:System.Security.Cryptography.PaddingMode.None"/>, <see cref="F:System.Security.Cryptography.PaddingMode.PKCS7"/>, <see cref="F:System.Security.Cryptography.PaddingMode.Zeros"/>.</summary>
+        </member>
+        <member name="F:System.Security.Cryptography.PaddingMode.None">
+            <summary>No padding; the input must already be a whole number of blocks.</summary>
+        </member>
+        <member name="F:System.Security.Cryptography.PaddingMode.PKCS7">
+            <summary>PKCS#7 padding.</summary>
+        </member>
+        <member name="F:System.Security.Cryptography.PaddingMode.Zeros">
+            <summary>Pad with zero bytes (ambiguous — decryptor cannot strip).</summary>
+        </member>
+        <member name="F:System.Security.Cryptography.PaddingMode.ANSIX923">
+            <summary>ANSI X.923 padding (not supported).</summary>
+        </member>
+        <member name="F:System.Security.Cryptography.PaddingMode.ISO10126">
+            <summary>ISO 10126 padding (not supported).</summary>
+        </member>
+        <member name="T:System.Security.Cryptography.KeySizes">
+            <summary>Describes an allowed key/block size range as Min/Max with a Skip step. Matches the .NET type.</summary>
+        </member>
+        <member name="P:System.Security.Cryptography.KeySizes.MinSize">
+            <summary>Minimum valid size, in bits.</summary>
+        </member>
+        <member name="P:System.Security.Cryptography.KeySizes.MaxSize">
+            <summary>Maximum valid size, in bits.</summary>
+        </member>
+        <member name="P:System.Security.Cryptography.KeySizes.SkipSize">
+            <summary>Step between valid sizes, in bits.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.KeySizes.#ctor(System.Int32,System.Int32,System.Int32)">
+            <summary>Creates a new range.</summary>
+        </member>
+        <member name="T:System.Security.Cryptography.ICryptoTransform">
+            <summary>Cryptographic transformation interface. Matches the .NET BCL interface.</summary>
+        </member>
+        <member name="P:System.Security.Cryptography.ICryptoTransform.CanReuseTransform">
+            <summary>True if the transform can be reused after a final block.</summary>
+        </member>
+        <member name="P:System.Security.Cryptography.ICryptoTransform.CanTransformMultipleBlocks">
+            <summary>True if the transform can process more than one block in a single call.</summary>
+        </member>
+        <member name="P:System.Security.Cryptography.ICryptoTransform.InputBlockSize">
+            <summary>Input block size, in bytes.</summary>
+        </member>
+        <member name="P:System.Security.Cryptography.ICryptoTransform.OutputBlockSize">
+            <summary>Output block size, in bytes.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.ICryptoTransform.TransformBlock(System.Byte[],System.Int32,System.Int32,System.Byte[],System.Int32)">
+            <summary>Transforms the given region of the input and writes the result to the output buffer.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.ICryptoTransform.TransformFinalBlock(System.Byte[],System.Int32,System.Int32)">
+            <summary>Transforms the final region of the input and returns the (possibly padded) result.</summary>
+        </member>
+        <member name="T:System.Security.Cryptography.SymmetricAlgorithm">
+            <summary>Base class for symmetric algorithms (AES on this platform). Matches the .NET BCL abstract class.</summary>
+        </member>
+        <member name="F:System.Security.Cryptography.SymmetricAlgorithm.BlockSizeValue">
+            <summary>Block size, in bits.</summary>
+        </member>
+        <member name="F:System.Security.Cryptography.SymmetricAlgorithm.FeedbackSizeValue">
+            <summary>Feedback size, in bits.</summary>
+        </member>
+        <member name="F:System.Security.Cryptography.SymmetricAlgorithm.IVValue">
+            <summary>Initialization vector.</summary>
+        </member>
+        <member name="F:System.Security.Cryptography.SymmetricAlgorithm.KeySizeValue">
+            <summary>Key size, in bits.</summary>
+        </member>
+        <member name="F:System.Security.Cryptography.SymmetricAlgorithm.KeyValue">
+            <summary>Secret key bytes.</summary>
+        </member>
+        <member name="F:System.Security.Cryptography.SymmetricAlgorithm.LegalBlockSizesValue">
+            <summary>Allowed block-size ranges.</summary>
+        </member>
+        <member name="F:System.Security.Cryptography.SymmetricAlgorithm.LegalKeySizesValue">
+            <summary>Allowed key-size ranges.</summary>
+        </member>
+        <member name="F:System.Security.Cryptography.SymmetricAlgorithm.ModeValue">
+            <summary>Cipher mode.</summary>
+        </member>
+        <member name="F:System.Security.Cryptography.SymmetricAlgorithm.PaddingValue">
+            <summary>Padding mode.</summary>
+        </member>
+        <member name="P:System.Security.Cryptography.SymmetricAlgorithm.BlockSize">
+            <summary>Block size, in bits.</summary>
+        </member>
+        <member name="P:System.Security.Cryptography.SymmetricAlgorithm.FeedbackSize">
+            <summary>Feedback size, in bits (unused on this platform).</summary>
+        </member>
+        <member name="P:System.Security.Cryptography.SymmetricAlgorithm.IV">
+            <summary>Initialization vector. Auto-generated (random) on first read if not set.</summary>
+        </member>
+        <member name="P:System.Security.Cryptography.SymmetricAlgorithm.Key">
+            <summary>Secret key. Auto-generated (random) on first read if not set.</summary>
+        </member>
+        <member name="P:System.Security.Cryptography.SymmetricAlgorithm.KeySize">
+            <summary>Key size, in bits.</summary>
+        </member>
+        <member name="P:System.Security.Cryptography.SymmetricAlgorithm.LegalBlockSizes">
+            <summary>Allowed block-size ranges, in bits.</summary>
+        </member>
+        <member name="P:System.Security.Cryptography.SymmetricAlgorithm.LegalKeySizes">
+            <summary>Allowed key-size ranges, in bits.</summary>
+        </member>
+        <member name="P:System.Security.Cryptography.SymmetricAlgorithm.Mode">
+            <summary>Cipher mode.</summary>
+        </member>
+        <member name="P:System.Security.Cryptography.SymmetricAlgorithm.Padding">
+            <summary>Padding mode.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.SymmetricAlgorithm.CreateEncryptor">
+            <summary>Creates an encryptor using the current <see cref="P:System.Security.Cryptography.SymmetricAlgorithm.Key"/> and <see cref="P:System.Security.Cryptography.SymmetricAlgorithm.IV"/>.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.SymmetricAlgorithm.CreateDecryptor">
+            <summary>Creates a decryptor using the current <see cref="P:System.Security.Cryptography.SymmetricAlgorithm.Key"/> and <see cref="P:System.Security.Cryptography.SymmetricAlgorithm.IV"/>.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.SymmetricAlgorithm.CreateEncryptor(System.Byte[],System.Byte[])">
+            <summary>Creates an encryptor using the given key and IV.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.SymmetricAlgorithm.CreateDecryptor(System.Byte[],System.Byte[])">
+            <summary>Creates a decryptor using the given key and IV.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.SymmetricAlgorithm.GenerateIV">
+            <summary>Generates a random initialization vector.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.SymmetricAlgorithm.GenerateKey">
+            <summary>Generates a random key.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.SymmetricAlgorithm.ValidKeySize(System.Int32)">
+            <summary>Returns true if the given size matches one of the given ranges.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.SymmetricAlgorithm.Dispose">
+            <summary>Releases the resources used by the algorithm.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.SymmetricAlgorithm.Clear">
+            <summary>Releases the resources used by the algorithm.</summary>
+        </member>
+        <member name="T:System.Security.Cryptography.CryptographicException">
+            <summary>Thrown for cryptographic errors (bad key/IV length, invalid padding, etc.). Matches the .NET type.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.CryptographicException.#ctor">
+            <summary>Creates a new exception.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.CryptographicException.#ctor(System.String)">
+            <summary>Creates a new exception with a message.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.CryptographicException.#ctor(System.String,System.Exception)">
+            <summary>Creates a new exception with a message and inner exception.</summary>
+        </member>
+        <member name="T:System.Security.Cryptography.Aes">
+            <summary>Abstract AES. Use <see cref="M:System.Security.Cryptography.Aes.Create"/> or construct <see cref="T:System.Security.Cryptography.AesCryptoServiceProvider"/> directly.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.Aes.#ctor">
+            <summary>Protected constructor initializing legal sizes (128-bit block, 128/192/256-bit key).</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.Aes.Create">
+            <summary>Creates a new AES instance.</summary>
+        </member>
+        <member name="T:System.Security.Cryptography.AesCryptoServiceProvider">
+            <summary>Concrete AES backed by the firmware's mbedTLS AES implementation.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.AesCryptoServiceProvider.#ctor">
+            <summary>Creates a new AES provider. Key and IV are generated on first access if not set.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.AesCryptoServiceProvider.GenerateIV">
+            <summary>Generates a random initialization vector.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.AesCryptoServiceProvider.GenerateKey">
+            <summary>Generates a random key.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.AesCryptoServiceProvider.CreateEncryptor(System.Byte[],System.Byte[])">
+            <summary>Creates an encryptor using the given key and IV.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.AesCryptoServiceProvider.CreateDecryptor(System.Byte[],System.Byte[])">
+            <summary>Creates a decryptor using the given key and IV.</summary>
+        </member>
     </members>
 </doc>

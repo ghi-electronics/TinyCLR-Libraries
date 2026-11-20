@@ -561,6 +561,364 @@ namespace System.Security.Cryptography {
         public abstract void Dispose();
     }
 
+    // ===== AES (symmetric) =====
+    //
+    // Shape matches .NET BCL: CipherMode / PaddingMode enums, KeySizes, ICryptoTransform,
+    // SymmetricAlgorithm abstract, Aes abstract, AesCryptoServiceProvider concrete.
+    // Backed by GHIElectronics.TinyCLR.Cryptography.AesCryptoServiceProvider (mbedTLS AES).
+    //
+    // Supported subset: CBC + ECB; None / PKCS7 / Zeros padding; 128/192/256-bit keys.
+    // OFB, CFB, CTS, ANSIX923, ISO10126 throw NotSupportedException from CreateEncryptor/Decryptor —
+    // matches .NET's behavior that the algorithm can reject modes it doesn't implement.
+
+    /// <summary>Block-cipher mode. Supported: <see cref="CBC"/>, <see cref="ECB"/>. Other values throw at use.</summary>
+    public enum CipherMode {
+        /// <summary>Cipher Block Chaining.</summary>
+        CBC = 1,
+        /// <summary>Electronic Codebook.</summary>
+        ECB = 2,
+        /// <summary>Output Feedback (not supported).</summary>
+        OFB = 3,
+        /// <summary>Cipher Feedback (not supported).</summary>
+        CFB = 4,
+        /// <summary>Ciphertext Stealing (not supported).</summary>
+        CTS = 5,
+    }
+
+    /// <summary>Padding scheme for block ciphers. Supported: <see cref="None"/>, <see cref="PKCS7"/>, <see cref="Zeros"/>.</summary>
+    public enum PaddingMode {
+        /// <summary>No padding; the input must already be a whole number of blocks.</summary>
+        None = 1,
+        /// <summary>PKCS#7 padding.</summary>
+        PKCS7 = 2,
+        /// <summary>Pad with zero bytes (ambiguous — decryptor cannot strip).</summary>
+        Zeros = 3,
+        /// <summary>ANSI X.923 padding (not supported).</summary>
+        ANSIX923 = 4,
+        /// <summary>ISO 10126 padding (not supported).</summary>
+        ISO10126 = 5,
+    }
+
+    /// <summary>Describes an allowed key/block size range as Min/Max with a Skip step. Matches the .NET type.</summary>
+    public sealed class KeySizes {
+        /// <summary>Minimum valid size, in bits.</summary>
+        public int MinSize { get; }
+        /// <summary>Maximum valid size, in bits.</summary>
+        public int MaxSize { get; }
+        /// <summary>Step between valid sizes, in bits.</summary>
+        public int SkipSize { get; }
+
+        /// <summary>Creates a new range.</summary>
+        public KeySizes(int minSize, int maxSize, int skipSize) {
+            this.MinSize = minSize;
+            this.MaxSize = maxSize;
+            this.SkipSize = skipSize;
+        }
+    }
+
+    /// <summary>Cryptographic transformation interface. Matches the .NET BCL interface.</summary>
+    public interface ICryptoTransform : IDisposable {
+        /// <summary>True if the transform can be reused after a final block.</summary>
+        bool CanReuseTransform { get; }
+        /// <summary>True if the transform can process more than one block in a single call.</summary>
+        bool CanTransformMultipleBlocks { get; }
+        /// <summary>Input block size, in bytes.</summary>
+        int InputBlockSize { get; }
+        /// <summary>Output block size, in bytes.</summary>
+        int OutputBlockSize { get; }
+        /// <summary>Transforms the given region of the input and writes the result to the output buffer.</summary>
+        int TransformBlock(byte[] inputBuffer, int inputOffset, int inputCount, byte[] outputBuffer, int outputOffset);
+        /// <summary>Transforms the final region of the input and returns the (possibly padded) result.</summary>
+        byte[] TransformFinalBlock(byte[] inputBuffer, int inputOffset, int inputCount);
+    }
+
+    /// <summary>Base class for symmetric algorithms (AES on this platform). Matches the .NET BCL abstract class.</summary>
+    public abstract class SymmetricAlgorithm : IDisposable {
+        /// <summary>Block size, in bits.</summary>
+        protected int BlockSizeValue;
+        /// <summary>Feedback size, in bits.</summary>
+        protected int FeedbackSizeValue;
+        /// <summary>Initialization vector.</summary>
+        protected byte[] IVValue;
+        /// <summary>Key size, in bits.</summary>
+        protected int KeySizeValue;
+        /// <summary>Secret key bytes.</summary>
+        protected byte[] KeyValue;
+        /// <summary>Allowed block-size ranges.</summary>
+        protected KeySizes[] LegalBlockSizesValue;
+        /// <summary>Allowed key-size ranges.</summary>
+        protected KeySizes[] LegalKeySizesValue;
+        /// <summary>Cipher mode.</summary>
+        protected CipherMode ModeValue;
+        /// <summary>Padding mode.</summary>
+        protected PaddingMode PaddingValue;
+
+        /// <summary>Block size, in bits.</summary>
+        public virtual int BlockSize {
+            get => this.BlockSizeValue;
+            set {
+                if (!ValidSize(this.LegalBlockSizesValue, value)) throw new CryptographicException("Invalid block size.");
+                this.BlockSizeValue = value;
+            }
+        }
+
+        /// <summary>Feedback size, in bits (unused on this platform).</summary>
+        public virtual int FeedbackSize {
+            get => this.FeedbackSizeValue;
+            set => this.FeedbackSizeValue = value;
+        }
+
+        /// <summary>Initialization vector. Auto-generated (random) on first read if not set.</summary>
+        public virtual byte[] IV {
+            get {
+                if (this.IVValue == null) this.GenerateIV();
+                return (byte[])this.IVValue.Clone();
+            }
+            set {
+                if (value == null) throw new ArgumentNullException(nameof(value));
+                if (value.Length * 8 != this.BlockSizeValue) throw new CryptographicException("Invalid IV size.");
+                this.IVValue = (byte[])value.Clone();
+            }
+        }
+
+        /// <summary>Secret key. Auto-generated (random) on first read if not set.</summary>
+        public virtual byte[] Key {
+            get {
+                if (this.KeyValue == null) this.GenerateKey();
+                return (byte[])this.KeyValue.Clone();
+            }
+            set {
+                if (value == null) throw new ArgumentNullException(nameof(value));
+                if (!ValidSize(this.LegalKeySizesValue, value.Length * 8)) throw new CryptographicException("Invalid key size.");
+                this.KeyValue = (byte[])value.Clone();
+                this.KeySizeValue = value.Length * 8;
+            }
+        }
+
+        /// <summary>Key size, in bits.</summary>
+        public virtual int KeySize {
+            get => this.KeySizeValue;
+            set {
+                if (!ValidSize(this.LegalKeySizesValue, value)) throw new CryptographicException("Invalid key size.");
+                this.KeySizeValue = value;
+                this.KeyValue = null;
+            }
+        }
+
+        /// <summary>Allowed block-size ranges, in bits.</summary>
+        public virtual KeySizes[] LegalBlockSizes => (KeySizes[])this.LegalBlockSizesValue.Clone();
+        /// <summary>Allowed key-size ranges, in bits.</summary>
+        public virtual KeySizes[] LegalKeySizes => (KeySizes[])this.LegalKeySizesValue.Clone();
+
+        /// <summary>Cipher mode.</summary>
+        public virtual CipherMode Mode {
+            get => this.ModeValue;
+            set => this.ModeValue = value;
+        }
+
+        /// <summary>Padding mode.</summary>
+        public virtual PaddingMode Padding {
+            get => this.PaddingValue;
+            set => this.PaddingValue = value;
+        }
+
+        /// <summary>Creates an encryptor using the current <see cref="Key"/> and <see cref="IV"/>.</summary>
+        public virtual ICryptoTransform CreateEncryptor() => this.CreateEncryptor(this.Key, this.IV);
+        /// <summary>Creates a decryptor using the current <see cref="Key"/> and <see cref="IV"/>.</summary>
+        public virtual ICryptoTransform CreateDecryptor() => this.CreateDecryptor(this.Key, this.IV);
+        /// <summary>Creates an encryptor using the given key and IV.</summary>
+        public abstract ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[] rgbIV);
+        /// <summary>Creates a decryptor using the given key and IV.</summary>
+        public abstract ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[] rgbIV);
+        /// <summary>Generates a random initialization vector.</summary>
+        public abstract void GenerateIV();
+        /// <summary>Generates a random key.</summary>
+        public abstract void GenerateKey();
+
+        /// <summary>Returns true if the given size matches one of the given ranges.</summary>
+        public bool ValidKeySize(int bitLength) => ValidSize(this.LegalKeySizesValue, bitLength);
+
+        internal static bool ValidSize(KeySizes[] sizes, int bitLength) {
+            if (sizes == null) return false;
+            for (var i = 0; i < sizes.Length; i++) {
+                var s = sizes[i];
+                if (s.SkipSize == 0) {
+                    if (s.MinSize == bitLength) return true;
+                }
+                else {
+                    for (var size = s.MinSize; size <= s.MaxSize; size += s.SkipSize)
+                        if (size == bitLength) return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>Releases the resources used by the algorithm.</summary>
+        public virtual void Dispose() {
+            if (this.KeyValue != null) Array.Clear(this.KeyValue, 0, this.KeyValue.Length);
+            if (this.IVValue != null) Array.Clear(this.IVValue, 0, this.IVValue.Length);
+            this.KeyValue = null;
+            this.IVValue = null;
+        }
+        /// <summary>Releases the resources used by the algorithm.</summary>
+        public void Clear() => this.Dispose();
+    }
+
+    /// <summary>Thrown for cryptographic errors (bad key/IV length, invalid padding, etc.). Matches the .NET type.</summary>
+    [Serializable]
+    public class CryptographicException : SystemException {
+        /// <summary>Creates a new exception.</summary>
+        public CryptographicException() { }
+        /// <summary>Creates a new exception with a message.</summary>
+        public CryptographicException(string message) : base(message) { }
+        /// <summary>Creates a new exception with a message and inner exception.</summary>
+        public CryptographicException(string message, Exception inner) : base(message, inner) { }
+    }
+
+    /// <summary>Abstract AES. Use <see cref="Create()"/> or construct <see cref="AesCryptoServiceProvider"/> directly.</summary>
+    public abstract class Aes : SymmetricAlgorithm {
+        /// <summary>Protected constructor initializing legal sizes (128-bit block, 128/192/256-bit key).</summary>
+        protected Aes() {
+            this.LegalKeySizesValue = new[] { new KeySizes(128, 256, 64) };
+            this.LegalBlockSizesValue = new[] { new KeySizes(128, 128, 0) };
+            this.KeySizeValue = 256;
+            this.BlockSizeValue = 128;
+            this.FeedbackSizeValue = 8;
+            this.ModeValue = CipherMode.CBC;
+            this.PaddingValue = PaddingMode.PKCS7;
+        }
+
+        /// <summary>Creates a new AES instance.</summary>
+        public static Aes Create() => new AesCryptoServiceProvider();
+    }
+
+    /// <summary>Concrete AES backed by the firmware's mbedTLS AES implementation.</summary>
+    public sealed class AesCryptoServiceProvider : Aes {
+        /// <summary>Creates a new AES provider. Key and IV are generated on first access if not set.</summary>
+        public AesCryptoServiceProvider() { }
+
+        /// <summary>Generates a random initialization vector.</summary>
+        public override void GenerateIV() {
+            var iv = new byte[this.BlockSizeValue / 8];
+            RandomNumberGenerator.Fill(iv);
+            this.IVValue = iv;
+        }
+
+        /// <summary>Generates a random key.</summary>
+        public override void GenerateKey() {
+            var key = new byte[this.KeySizeValue / 8];
+            RandomNumberGenerator.Fill(key);
+            this.KeyValue = key;
+        }
+
+        /// <summary>Creates an encryptor using the given key and IV.</summary>
+        public override ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[] rgbIV) =>
+            new AesTransform(rgbKey, rgbIV, this.ModeValue, this.PaddingValue, encrypt: true);
+
+        /// <summary>Creates a decryptor using the given key and IV.</summary>
+        public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[] rgbIV) =>
+            new AesTransform(rgbKey, rgbIV, this.ModeValue, this.PaddingValue, encrypt: false);
+    }
+
+    // AES transform — wraps the native bulk Encrypt/Decrypt. TransformBlock accumulates
+    // bytes into an internal buffer; TransformFinalBlock calls native once on the whole
+    // payload. This matches .NET semantics (final call produces ciphertext including padding)
+    // and keeps interop round-trips to one per operation.
+    internal sealed class AesTransform : ICryptoTransform {
+        private readonly byte[] key;
+        private readonly byte[] iv;
+        private readonly TinyCrypto.AesCryptoServiceProvider.AesMode mode;
+        private readonly TinyCrypto.AesCryptoServiceProvider.AesPadding padding;
+        private readonly bool encrypt;
+        private byte[] buffer;
+        private int bufferLength;
+        private bool disposed;
+
+        public AesTransform(byte[] key, byte[] iv, CipherMode mode, PaddingMode padding, bool encrypt) {
+            if (key == null) throw new ArgumentNullException(nameof(key));
+            if (key.Length != 16 && key.Length != 24 && key.Length != 32)
+                throw new CryptographicException("Key must be 128, 192, or 256 bits.");
+
+            switch (mode) {
+                case CipherMode.CBC:
+                    if (iv == null) throw new ArgumentNullException(nameof(iv));
+                    if (iv.Length != 16) throw new CryptographicException("IV must be 128 bits.");
+                    this.mode = TinyCrypto.AesCryptoServiceProvider.AesMode.Cbc;
+                    this.iv = (byte[])iv.Clone();
+                    break;
+                case CipherMode.ECB:
+                    this.mode = TinyCrypto.AesCryptoServiceProvider.AesMode.Ecb;
+                    this.iv = null;
+                    break;
+                default:
+                    throw new CryptographicException("Only CBC and ECB modes are supported.");
+            }
+
+            switch (padding) {
+                case PaddingMode.None: this.padding = TinyCrypto.AesCryptoServiceProvider.AesPadding.None; break;
+                case PaddingMode.PKCS7: this.padding = TinyCrypto.AesCryptoServiceProvider.AesPadding.Pkcs7; break;
+                case PaddingMode.Zeros: this.padding = TinyCrypto.AesCryptoServiceProvider.AesPadding.Zeros; break;
+                default: throw new CryptographicException("Only None, PKCS7, and Zeros padding are supported.");
+            }
+
+            this.key = (byte[])key.Clone();
+            this.encrypt = encrypt;
+            this.buffer = new byte[16];
+            this.bufferLength = 0;
+        }
+
+        public bool CanReuseTransform => false;
+        public bool CanTransformMultipleBlocks => true;
+        public int InputBlockSize => 16;
+        public int OutputBlockSize => 16;
+
+        public int TransformBlock(byte[] inputBuffer, int inputOffset, int inputCount, byte[] outputBuffer, int outputOffset) {
+            if (this.disposed) throw new ObjectDisposedException(nameof(AesTransform));
+            if (inputBuffer == null) throw new ArgumentNullException(nameof(inputBuffer));
+            if (outputBuffer == null) throw new ArgumentNullException(nameof(outputBuffer));
+            if (inputOffset < 0 || inputCount < 0 || inputOffset + inputCount > inputBuffer.Length)
+                throw new ArgumentOutOfRangeException();
+
+            this.Append(inputBuffer, inputOffset, inputCount);
+            return 0;
+        }
+
+        public byte[] TransformFinalBlock(byte[] inputBuffer, int inputOffset, int inputCount) {
+            if (this.disposed) throw new ObjectDisposedException(nameof(AesTransform));
+            if (inputBuffer == null) throw new ArgumentNullException(nameof(inputBuffer));
+            if (inputOffset < 0 || inputCount < 0 || inputOffset + inputCount > inputBuffer.Length)
+                throw new ArgumentOutOfRangeException();
+
+            this.Append(inputBuffer, inputOffset, inputCount);
+
+            using (var aes = new TinyCrypto.AesCryptoServiceProvider()) {
+                return this.encrypt
+                    ? aes.Encrypt(this.key, this.iv, this.buffer, 0, this.bufferLength, this.mode, this.padding)
+                    : aes.Decrypt(this.key, this.iv, this.buffer, 0, this.bufferLength, this.mode, this.padding);
+            }
+        }
+
+        private void Append(byte[] src, int offset, int count) {
+            if (count == 0) return;
+            var needed = this.bufferLength + count;
+            if (needed > this.buffer.Length) {
+                var grown = new byte[Math.Max(this.buffer.Length * 2, needed)];
+                Array.Copy(this.buffer, 0, grown, 0, this.bufferLength);
+                this.buffer = grown;
+            }
+            Array.Copy(src, offset, this.buffer, this.bufferLength, count);
+            this.bufferLength += count;
+        }
+
+        public void Dispose() {
+            if (this.disposed) return;
+            if (this.key != null) Array.Clear(this.key, 0, this.key.Length);
+            if (this.iv != null) Array.Clear(this.iv, 0, this.iv.Length);
+            if (this.buffer != null) Array.Clear(this.buffer, 0, this.buffer.Length);
+            this.disposed = true;
+        }
+    }
+
     internal sealed class TinyClrRandomNumberGenerator : RandomNumberGenerator {
         public override void GetBytes(byte[] data) {
             if (data == null)
