@@ -891,10 +891,24 @@ namespace System.Security.Cryptography {
 
             this.Append(inputBuffer, inputOffset, inputCount);
 
+            // Translate native-side failures to CryptographicException to match the .NET
+            // BCL contract. The low-level provider surfaces bad-padding / bad-key-length /
+            // bad-alignment as InvalidOperationException / ArgumentException (whatever
+            // TinyCLR_Result the native side returned); BCL always throws
+            // CryptographicException from TransformFinalBlock for those. Exception filters
+            // (`catch when`) aren't portable to TinyCLR — use plain rethrow instead.
             using (var aes = new TinyCrypto.AesCryptoServiceProvider()) {
-                return this.encrypt
-                    ? aes.Encrypt(this.key, this.iv, this.buffer, 0, this.bufferLength, this.mode, this.padding)
-                    : aes.Decrypt(this.key, this.iv, this.buffer, 0, this.bufferLength, this.mode, this.padding);
+                try {
+                    return this.encrypt
+                        ? aes.Encrypt(this.key, this.iv, this.buffer, 0, this.bufferLength, this.mode, this.padding)
+                        : aes.Decrypt(this.key, this.iv, this.buffer, 0, this.bufferLength, this.mode, this.padding);
+                }
+                catch (CryptographicException) {
+                    throw;
+                }
+                catch (Exception ex) {
+                    throw new CryptographicException("AES operation failed.", ex);
+                }
             }
         }
 
