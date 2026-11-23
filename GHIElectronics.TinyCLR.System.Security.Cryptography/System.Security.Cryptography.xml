@@ -640,5 +640,59 @@
         <member name="M:System.Security.Cryptography.AesCryptoServiceProvider.CreateDecryptor(System.Byte[],System.Byte[])">
             <summary>Creates a decryptor using the given key and IV.</summary>
         </member>
+        <member name="T:System.Security.Cryptography.KeySizesRange">
+            <summary>Allowed sizes for AES-GCM nonce / tag. Matches the .NET BCL type.</summary>
+        </member>
+        <member name="P:System.Security.Cryptography.KeySizesRange.MinSize">
+            <summary>Minimum valid size, in bytes.</summary>
+        </member>
+        <member name="P:System.Security.Cryptography.KeySizesRange.MaxSize">
+            <summary>Maximum valid size, in bytes.</summary>
+        </member>
+        <member name="P:System.Security.Cryptography.KeySizesRange.SkipSize">
+            <summary>Step between valid sizes, in bytes.</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.KeySizesRange.#ctor(System.Int32,System.Int32,System.Int32)">
+            <summary>Creates a new range.</summary>
+        </member>
+        <member name="T:System.Security.Cryptography.AesGcm">
+            <summary>Authenticated AES in Galois/Counter Mode. Matches .NET BCL AesGcm (TinyCLR subset).</summary>
+        </member>
+        <member name="P:System.Security.Cryptography.AesGcm.NonceByteSizes">
+            <summary>Nonce size required by this implementation: 12 bytes (the de-facto standard).</summary>
+        </member>
+        <member name="P:System.Security.Cryptography.AesGcm.TagByteSizes">
+            <summary>Tag size produced by this implementation: 16 bytes (the de-facto standard).</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.AesGcm.#ctor(System.Byte[])">
+            <summary>Creates a new AES-GCM context bound to the given key (128/192/256 bits).</summary>
+        </member>
+        <member name="M:System.Security.Cryptography.AesGcm.Encrypt(System.Byte[],System.Byte[],System.Byte[],System.Byte[],System.Byte[])">
+            <summary>
+            Encrypt <paramref name="plaintext"/> into <paramref name="ciphertext"/> and write the
+            16-byte authentication <paramref name="tag"/>. <paramref name="associatedData"/> is
+            authenticated but not encrypted (may be null or empty).
+            </summary>
+            <param name="nonce">12 bytes. MUST be unique per key — reusing a nonce with the same key breaks GCM's security entirely.</param>
+            <param name="plaintext">Input data (any length, including zero).</param>
+            <param name="ciphertext">Output buffer — must be exactly plaintext.Length bytes.</param>
+            <param name="tag">Output tag buffer — must be exactly 16 bytes.</param>
+            <param name="associatedData">Additional authenticated (but not encrypted) data. Typically a header. May be null.</param>
+        </member>
+        <member name="M:System.Security.Cryptography.AesGcm.Decrypt(System.Byte[],System.Byte[],System.Byte[],System.Byte[],System.Byte[])">
+            <summary>
+            Verify the <paramref name="tag"/> and decrypt <paramref name="ciphertext"/> into
+            <paramref name="plaintext"/>. Throws <see cref="T:System.Security.Cryptography.CryptographicException"/> if the tag
+            does not match (ciphertext was tampered or associatedData doesn't match).
+            </summary>
+            <param name="nonce">12 bytes. Must match the nonce used for Encrypt.</param>
+            <param name="ciphertext">Encrypted data.</param>
+            <param name="tag">16-byte authentication tag from Encrypt.</param>
+            <param name="plaintext">Output buffer — must be exactly ciphertext.Length bytes.</param>
+            <param name="associatedData">Must match the value passed to Encrypt. May be null.</param>
+        </member>
+        <member name="M:System.Security.Cryptography.AesGcm.Dispose">
+            <summary>Releases the resources used by the AES-GCM context. Key material is zeroed.</summary>
+        </member>
     </members>
 </doc>

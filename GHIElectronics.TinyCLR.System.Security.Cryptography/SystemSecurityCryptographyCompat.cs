@@ -933,6 +933,144 @@ namespace System.Security.Cryptography {
         }
     }
 
+    // ===== AES-GCM (authenticated encryption) =====
+    //
+    // Shape matches .NET BCL System.Security.Cryptography.AesGcm: standalone sealed
+    // class (NOT derived from SymmetricAlgorithm), no ICryptoTransform, no padding
+    // mode. GCM has its own class in the BCL precisely because its AEAD interface
+    // doesn't fit the block-cipher-mode / padding / transform hierarchy.
+    //
+    // Backed by GHIElectronics.TinyCLR.Cryptography.AesGcmController (mbedTLS GCM).
+    //
+    // Fixed tag size: 16 bytes. Fixed nonce size: 12 bytes. Both are the universal
+    // real-world defaults (TLS, JWE A128GCM/A256GCM, Noise, WireGuard, age, …).
+    // BCL allows 12..16 byte tags and variable nonce lengths — we don't, to keep
+    // the native + managed surface small on an embedded target. If a customer
+    // specifically needs a different size we can expand later.
+
+    /// <summary>Allowed sizes for AES-GCM nonce / tag. Matches the .NET BCL type.</summary>
+    public struct KeySizesRange {
+        /// <summary>Minimum valid size, in bytes.</summary>
+        public int MinSize { get; }
+        /// <summary>Maximum valid size, in bytes.</summary>
+        public int MaxSize { get; }
+        /// <summary>Step between valid sizes, in bytes.</summary>
+        public int SkipSize { get; }
+
+        /// <summary>Creates a new range.</summary>
+        public KeySizesRange(int minSize, int maxSize, int skipSize) {
+            this.MinSize = minSize;
+            this.MaxSize = maxSize;
+            this.SkipSize = skipSize;
+        }
+    }
+
+    /// <summary>Authenticated AES in Galois/Counter Mode. Matches .NET BCL AesGcm (TinyCLR subset).</summary>
+    public sealed class AesGcm : IDisposable {
+        /// <summary>Nonce size required by this implementation: 12 bytes (the de-facto standard).</summary>
+        public static KeySizesRange NonceByteSizes { get; } = new KeySizesRange(12, 12, 1);
+        /// <summary>Tag size produced by this implementation: 16 bytes (the de-facto standard).</summary>
+        public static KeySizesRange TagByteSizes { get; } = new KeySizesRange(16, 16, 1);
+
+        private TinyCrypto.AesGcmController impl;
+
+        /// <summary>Creates a new AES-GCM context bound to the given key (128/192/256 bits).</summary>
+        public AesGcm(byte[] key) {
+            if (key == null) throw new ArgumentNullException(nameof(key));
+            if (key.Length != 16 && key.Length != 24 && key.Length != 32)
+                throw new CryptographicException("Key must be 128, 192, or 256 bits.");
+
+            try {
+                this.impl = new TinyCrypto.AesGcmController(key);
+            }
+            catch (Exception ex) {
+                throw new CryptographicException("Failed to initialize AES-GCM.", ex);
+            }
+        }
+
+        /// <summary>
+        /// Encrypt <paramref name="plaintext"/> into <paramref name="ciphertext"/> and write the
+        /// 16-byte authentication <paramref name="tag"/>. <paramref name="associatedData"/> is
+        /// authenticated but not encrypted (may be null or empty).
+        /// </summary>
+        /// <param name="nonce">12 bytes. MUST be unique per key — reusing a nonce with the same key breaks GCM's security entirely.</param>
+        /// <param name="plaintext">Input data (any length, including zero).</param>
+        /// <param name="ciphertext">Output buffer — must be exactly plaintext.Length bytes.</param>
+        /// <param name="tag">Output tag buffer — must be exactly 16 bytes.</param>
+        /// <param name="associatedData">Additional authenticated (but not encrypted) data. Typically a header. May be null.</param>
+        public void Encrypt(byte[] nonce, byte[] plaintext, byte[] ciphertext, byte[] tag, byte[] associatedData = null) {
+            if (this.impl == null) throw new ObjectDisposedException(nameof(AesGcm));
+            if (nonce == null) throw new ArgumentNullException(nameof(nonce));
+            if (plaintext == null) throw new ArgumentNullException(nameof(plaintext));
+            if (ciphertext == null) throw new ArgumentNullException(nameof(ciphertext));
+            if (tag == null) throw new ArgumentNullException(nameof(tag));
+            if (nonce.Length != 12) throw new ArgumentException("Nonce must be 12 bytes.", nameof(nonce));
+            if (tag.Length != 16) throw new ArgumentException("Tag must be 16 bytes.", nameof(tag));
+            if (ciphertext.Length != plaintext.Length)
+                throw new ArgumentException("ciphertext.Length must equal plaintext.Length.", nameof(ciphertext));
+
+            byte[] result;
+            try {
+                result = this.impl.EncryptAndTag(nonce, plaintext, associatedData);
+            }
+            catch (CryptographicException) { throw; }
+            catch (Exception ex) {
+                throw new CryptographicException("AES-GCM encrypt failed.", ex);
+            }
+
+            // Native returns ciphertext || tag in one buffer. Split into caller's output arrays.
+            Array.Copy(result, 0, ciphertext, 0, plaintext.Length);
+            Array.Copy(result, plaintext.Length, tag, 0, 16);
+        }
+
+        /// <summary>
+        /// Verify the <paramref name="tag"/> and decrypt <paramref name="ciphertext"/> into
+        /// <paramref name="plaintext"/>. Throws <see cref="CryptographicException"/> if the tag
+        /// does not match (ciphertext was tampered or associatedData doesn't match).
+        /// </summary>
+        /// <param name="nonce">12 bytes. Must match the nonce used for Encrypt.</param>
+        /// <param name="ciphertext">Encrypted data.</param>
+        /// <param name="tag">16-byte authentication tag from Encrypt.</param>
+        /// <param name="plaintext">Output buffer — must be exactly ciphertext.Length bytes.</param>
+        /// <param name="associatedData">Must match the value passed to Encrypt. May be null.</param>
+        public void Decrypt(byte[] nonce, byte[] ciphertext, byte[] tag, byte[] plaintext, byte[] associatedData = null) {
+            if (this.impl == null) throw new ObjectDisposedException(nameof(AesGcm));
+            if (nonce == null) throw new ArgumentNullException(nameof(nonce));
+            if (ciphertext == null) throw new ArgumentNullException(nameof(ciphertext));
+            if (tag == null) throw new ArgumentNullException(nameof(tag));
+            if (plaintext == null) throw new ArgumentNullException(nameof(plaintext));
+            if (nonce.Length != 12) throw new ArgumentException("Nonce must be 12 bytes.", nameof(nonce));
+            if (tag.Length != 16) throw new ArgumentException("Tag must be 16 bytes.", nameof(tag));
+            if (plaintext.Length != ciphertext.Length)
+                throw new ArgumentException("plaintext.Length must equal ciphertext.Length.", nameof(plaintext));
+
+            // Native wants ciphertext || tag concatenated. Build it once.
+            var combined = new byte[ciphertext.Length + 16];
+            Array.Copy(ciphertext, 0, combined, 0, ciphertext.Length);
+            Array.Copy(tag, 0, combined, ciphertext.Length, 16);
+
+            byte[] result;
+            try {
+                result = this.impl.DecryptAndVerify(nonce, combined, associatedData);
+            }
+            catch (CryptographicException) { throw; }
+            catch (Exception ex) {
+                // Tag mismatch arrives as InvalidOperationException from the native side.
+                throw new CryptographicException("The computed authentication tag did not match the input authentication tag.", ex);
+            }
+
+            Array.Copy(result, 0, plaintext, 0, plaintext.Length);
+        }
+
+        /// <summary>Releases the resources used by the AES-GCM context. Key material is zeroed.</summary>
+        public void Dispose() {
+            if (this.impl != null) {
+                this.impl.Dispose();
+                this.impl = null;
+            }
+        }
+    }
+
     internal sealed class TinyClrRandomNumberGenerator : RandomNumberGenerator {
         public override void GetBytes(byte[] data) {
             if (data == null)

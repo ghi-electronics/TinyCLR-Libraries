@@ -10,6 +10,20 @@
         <member name="M:GHIElectronics.TinyCLR.Cryptography.AesCryptoServiceProvider.Decrypt(System.Byte[],System.Byte[],System.Byte[],System.Int32,System.Int32,GHIElectronics.TinyCLR.Cryptography.AesCryptoServiceProvider.AesMode,GHIElectronics.TinyCLR.Cryptography.AesCryptoServiceProvider.AesPadding)">
             <summary>Decrypt the given slice. Returns plaintext with padding removed (if specified).</summary>
         </member>
+        <member name="M:GHIElectronics.TinyCLR.Cryptography.AesGcmController.EncryptAndTag(System.Byte[],System.Byte[],System.Byte[])">
+            <summary>Encrypt and produce authentication tag.</summary>
+            <param name="nonce">12 bytes.</param>
+            <param name="plaintext">Raw data to encrypt (any length, including 0).</param>
+            <param name="associatedData">Optional unencrypted-but-authenticated data (may be null).</param>
+            <returns>Buffer of length = plaintext.Length + 16: ciphertext followed by 16-byte tag.</returns>
+        </member>
+        <member name="M:GHIElectronics.TinyCLR.Cryptography.AesGcmController.DecryptAndVerify(System.Byte[],System.Byte[],System.Byte[])">
+            <summary>Verify tag and decrypt. Throws on tag mismatch (ciphertext was tampered).</summary>
+            <param name="nonce">12 bytes.</param>
+            <param name="ciphertextWithTag">Ciphertext followed by 16-byte tag. Must be ≥ 16 bytes.</param>
+            <param name="associatedData">Optional unencrypted-but-authenticated data (may be null).</param>
+            <returns>Plaintext (ciphertext length minus 16 tag bytes).</returns>
+        </member>
         <member name="T:GHIElectronics.TinyCLR.Cryptography.Crc16">
             <summary>CRC-16 hash. Computes a 16-bit CRC over a byte buffer, optionally with a non-zero seed.</summary>
         </member>

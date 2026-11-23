@@ -37,6 +37,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Aes.cs" />
+    <Compile Include="AesGcm.cs" />
     <Compile Include="Crc.cs" />
     <Compile Include="HMACSHA1.cs" />
     <Compile Include="HMACSHA256.cs" />
